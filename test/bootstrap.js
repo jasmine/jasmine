@@ -93,7 +93,7 @@ var testSpecs = function () {
       "Spec did not have a description");
 
   Jasmine = jasmine_init();
-  var another_spec = it('spec with an expectation', function () {
+  var another_spec = it('spec with an expectation').runs(function () {
     var foo = 'bar';
     expects_that(foo).should_equal('bar');
   });
@@ -106,7 +106,7 @@ var testSpecs = function () {
       "Results has a result, but it's true");
 
   Jasmine = jasmine_init();
-  var yet_another_spec = it('spec with failing expectation', function () {
+  var yet_another_spec = it('spec with failing expectation').runs(function () {
     var foo = 'bar';
     expects_that(foo).should_equal('baz');
   });
@@ -117,7 +117,7 @@ var testSpecs = function () {
       "Expectation that failed, passed");
 
   Jasmine = jasmine_init();
-  var yet_yet_another_spec = it('spec with multiple assertions', function () {
+  var yet_yet_another_spec = it('spec with multiple assertions').runs( function () {
     var foo = 'bar';
     var baz = 'quux';
 
@@ -135,7 +135,7 @@ var testAsyncSpecs = function () {
   Jasmine = jasmine_init();
   var foo = 0;
 
-  var a_spec = it_async('simple queue test').
+  var a_spec = it('simple queue test').
       runs(function () {
     foo++;
   }).then(function() {
@@ -147,7 +147,7 @@ var testAsyncSpecs = function () {
 
   Jasmine = jasmine_init();
   foo = 0;
-  a_spec = it_async('spec w/ queued statments').
+  a_spec = it('spec w/ queued statments').
       runs(function () {
     foo++;
   }).then(function() {
@@ -163,7 +163,7 @@ var testAsyncSpecs = function () {
 
   Jasmine = jasmine_init();
   foo = 0;
-  a_spec = it_async('spec w/ queued statments').
+  a_spec = it('spec w/ queued statments').
       runs(function () {
              setTimeout(function() {
                foo++
@@ -181,6 +181,64 @@ var testAsyncSpecs = function () {
     reporter.test((Jasmine.results[0].passed === true),
         'Calling waits(): Queued expectation failed');
   }, 1250);
+
+  setTimeout(function() {
+    Jasmine = jasmine_init();
+    var bar = 0;
+    var another_spec = it('spec w/ queued statments').
+        runs(function () {
+               setTimeout(function() {
+                 bar++;
+               }, 250);
+            }).
+        waits(500).
+        then(function () {
+               setTimeout(function() {
+                 bar++;
+               }, 250);
+            }).
+        waits(1500).
+        then(function() {
+          expects_that(bar).should_equal(2);
+        });
+
+    another_spec.execute();
+    setTimeout(function(){
+      reporter.test((another_spec.queue.length === 3),
+          'Calling 2 waits(): Spec queue was less than expected length');
+      reporter.test((Jasmine.results.length === 1),
+          'Calling 2 waits(): Spec queue did not run all functions');
+      reporter.test((Jasmine.results[0].passed === true),
+          'Calling 2 waits(): Queued expectation failed');
+    }, 2500);
+  }, 1500);
+
+  setTimeout(function() {
+    Jasmine = jasmine_init();
+    var baz = 0;
+    var yet_another_spec = it('spec w/ async fail').
+        runs(function () {
+               setTimeout(function() {
+                 baz++;
+               }, 250);
+            }).
+        waits(100).
+        then(function() {
+          expects_that(baz).should_equal(1);
+        });
+
+    yet_another_spec.execute();
+    setTimeout(function(){
+      reporter.test((yet_another_spec.queue.length === 2),
+          'Calling 2 waits(): Spec queue was less than expected length');
+      reporter.test((Jasmine.results.length === 1),
+          'Calling 2 waits(): Spec queue did not run all functions');
+      reporter.test((Jasmine.results[0].passed === false),
+          'Calling 2 waits(): Queued expectation failed');
+    }, 2500);
+  }, 5000);
+
+
 }
 
 var runTests = function () {
@@ -194,7 +252,7 @@ var runTests = function () {
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();
-  }, 1500);
+  }, 10000);
 }
 
   //it('should be an async test') {
