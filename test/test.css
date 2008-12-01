@@ -3,10 +3,6 @@ body {
   padding-left: 40px;
 }
 
-img#spinner {
-  display: block;
-}
-
 h1 {
   padding-top: 20px;
   font-weight: bold;

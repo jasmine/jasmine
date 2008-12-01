@@ -151,46 +151,50 @@ var testAsyncSpecs = function () {
       runs(function () {
     foo++;
   }).then(function() {
-    expects_that(foo).should_equal(1)
-  });
-
-  a_spec.execute();
-
-  reporter.test((Jasmine.results.length === 1),
-      'Spec queue did not run all functions');
-  reporter.test((Jasmine.results[0].passed === true),
-      'Queued expectation failed');
-
-  Jasmine = jasmine_init();
-  foo = 0;
-  a_spec = it_async('spec w/ queued statments').
-      runs(function () {
-    setTimeout(function() {
-      foo++
-    }, 500);
-  }).waits(1000).then(function() {
     expects_that(foo).should_equal(1);
   });
 
   a_spec.execute();
 
   reporter.test((Jasmine.results.length === 1),
-      'Spec queue did not run all functions');
-
+      'No call to waits(): Spec queue did not run all functions');
   reporter.test((Jasmine.results[0].passed === true),
-      'Queued expectation failed');
+      'No call to waits(): Queued expectation failed');
+
+  Jasmine = jasmine_init();
+  foo = 0;
+  a_spec = it_async('spec w/ queued statments').
+      runs(function () {
+             setTimeout(function() {
+               foo++
+             }, 500);
+          }).waits(1000).
+      then(function() {
+            expects_that(foo).should_equal(1);
+      });
+
+  a_spec.execute();
+  setTimeout(function(){
+    reporter.test((Jasmine.results.length === 1),
+        'Calling waits(): Spec queue did not run all functions');
+
+    reporter.test((Jasmine.results[0].passed === true),
+        'Calling waits(): Queued expectation failed');
+  }, 1250);
 }
 
 var runTests = function () {
   $('spinner').show();
 
-//  testMatchersComparisons();
-  //  testMatchersReporting();
-  //  testSpecs();
-
+  testMatchersComparisons();
+  testMatchersReporting();
+  testSpecs();
   testAsyncSpecs();
-  $('spinner').hide();
-  reporter.summary();
+  
+  setTimeout(function() {
+    $('spinner').hide();
+    reporter.summary();
+  }, 1500);
 }
 
   //it('should be an async test') {
