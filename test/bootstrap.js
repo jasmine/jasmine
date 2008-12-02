@@ -399,16 +399,66 @@ var testSpecScope = function () {
   }, 1000);
 }
 
+
+var testRunner = function() {
+
+  var runner = Jasmine();
+  describe('one suite description', function () {
+    it('should be a test');
+  });
+  reporter.test((runner.suites.length === 1),
+      "Runner expected one suite");
+
+  runner = Jasmine();
+  describe('one suite description', function () {
+    it('should be a test');
+  });
+  describe('another suite description', function () {
+    it('should be a test');
+  });
+  reporter.test((runner.suites.length === 2),
+      "Runner expected two suites");
+
+  runner = Jasmine();
+  describe('one suite description', function () {
+    it('should be a test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+  });
+
+  describe('another suite description', function () {
+    it('should be another test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(false);
+      });
+    });
+  });
+
+  runner.execute();
+
+  setTimeout(function () {
+    reporter.test((runner.suites.length === 2),
+        "Runner expected two suites");
+    reporter.test((runner.suites[0].specs[0].results[0].passed === true),
+        "Runner should have run specs in first suite");
+    reporter.test((runner.suites[1].specs[0].results[0].passed === false),
+        "Runner should have run specs in second suite");
+  }, 1000);
+}
+
 var runTests = function () {
   $('spinner').show();
 
   testMatchersComparisons();
-  testMatchersReporting();
-  testSpecs();
-  testAsyncSpecs();
-  testAsyncSpecsWithMockSuite();
-  testSuites();
-  testSpecScope();
+    testMatchersReporting();
+    testSpecs();
+    testAsyncSpecs();
+    testAsyncSpecsWithMockSuite();
+    testSuites();
+    testSpecScope();
+  testRunner();
 
   setTimeout(function() {
     $('spinner').hide();

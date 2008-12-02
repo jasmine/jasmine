@@ -92,7 +92,7 @@
       <file leaf-file-name="bootstrap.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="411" column="0" selection-start="11018" selection-end="11018" vertical-scroll-proportion="0.7427466">
+            <state line="465" column="7" selection-start="12461" selection-end="12461" vertical-scroll-proportion="0.9632495">
               <folding />
             </state>
           </provider>
@@ -110,7 +110,7 @@
       <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="199" column="0" selection-start="4076" selection-end="4076" vertical-scroll-proportion="1.8949951">
+            <state line="238" column="9" selection-start="4765" selection-end="4765" vertical-scroll-proportion="0.5599194">
               <folding />
             </state>
           </provider>
@@ -451,14 +451,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="199" column="0" selection-start="4076" selection-end="4076" vertical-scroll-proportion="1.8949951">
+        <state line="238" column="9" selection-start="4765" selection-end="4765" vertical-scroll-proportion="0.5599194">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="411" column="0" selection-start="11018" selection-end="11018" vertical-scroll-proportion="0.7427466">
+        <state line="465" column="7" selection-start="12461" selection-end="12461" vertical-scroll-proportion="0.9632495">
           <folding />
         </state>
       </provider>
