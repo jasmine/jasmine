@@ -31,7 +31,7 @@ var reporter = function () {
 
     summary: function () {
       summary = new Element('p', {'class': ((fails > 0) ? 'fail_in_summary' : '') });
-      summary.innerHTML = total + ' tests, ' + passes + ' passing, ' + fails + ' failed.';
+      summary.innerHTML = total + ' expectations, ' + passes + ' passing, ' + fails + ' failed.';
 
       var summaryElement = $('results_summary');
       summaryElement.appendChild(summary);
@@ -102,9 +102,9 @@ var testSpecs = function () {
   another_spec.execute();
   another_spec.done = true;
 
-  reporter.test((another_spec.results.length == 1),
+  reporter.test((another_spec.results.results.length == 1),
       "Results aren't there after a spec was executed");
-  reporter.test((another_spec.results[0].passed == true),
+  reporter.test((another_spec.results.results[0].passed == true),
       "Results has a result, but it's true");
 
   var yet_another_spec = it('spec with failing expectation').runs(function () {
@@ -114,7 +114,7 @@ var testSpecs = function () {
   yet_another_spec.execute();
   yet_another_spec.done = true;
 
-  reporter.test((yet_another_spec.results[0].passed == false),
+  reporter.test((yet_another_spec.results.results[0].passed == false),
       "Expectation that failed, passed");
 
   var yet_yet_another_spec = it('spec with multiple assertions').runs(function () {
@@ -127,7 +127,7 @@ var testSpecs = function () {
   yet_yet_another_spec.execute();
   yet_yet_another_spec.done = true;
 
-  reporter.test((yet_yet_another_spec.results.length == 2),
+  reporter.test((yet_yet_another_spec.results.results.length == 2),
       "Spec doesn't support multiple expectations");
 }
 
@@ -154,9 +154,9 @@ var testAsyncSpecs = function () {
 
   a_spec.execute();
 
-  reporter.test((a_spec.results.length === 1),
+  reporter.test((a_spec.results.results.length === 1),
       'No call to waits(): Spec queue did not run all functions');
-  reporter.test((a_spec.results[0].passed === true),
+  reporter.test((a_spec.results.results[0].passed === true),
       'No call to waits(): Queued expectation failed');
 
   foo = 0;
@@ -172,10 +172,10 @@ var testAsyncSpecs = function () {
 
   var mockSuite = {
     next: function() {
-      reporter.test((a_spec.results.length === 1),
+      reporter.test((a_spec.results.results.length === 1),
           'Calling waits(): Spec queue did not run all functions');
 
-      reporter.test((a_spec.results[0].passed === true),
+      reporter.test((a_spec.results.results[0].passed === true),
           'Calling waits(): Queued expectation failed');
     }
   };
@@ -203,9 +203,9 @@ var testAsyncSpecs = function () {
     next: function() {
       reporter.test((another_spec.queue.length === 3),
           'Calling 2 waits(): Spec queue was less than expected length');
-      reporter.test((another_spec.results.length === 1),
+      reporter.test((another_spec.results.results.length === 1),
           'Calling 2 waits(): Spec queue did not run all functions');
-      reporter.test((another_spec.results[0].passed === true),
+      reporter.test((another_spec.results.results[0].passed === true),
           'Calling 2 waits(): Queued expectation failed');
     }
   };
@@ -229,9 +229,9 @@ var testAsyncSpecs = function () {
 
       reporter.test((yet_another_spec.queue.length === 2),
           'Calling 2 waits(): Spec queue was less than expected length');
-      reporter.test((yet_another_spec.results.length === 1),
+      reporter.test((yet_another_spec.results.results.length === 1),
           'Calling 2 waits(): Spec queue did not run all functions');
-      reporter.test((yet_another_spec.results[0].passed === false),
+      reporter.test((yet_another_spec.results.results[0].passed === false),
           'Calling 2 waits(): Queued expectation failed');
     }
   };
@@ -263,9 +263,9 @@ var testAsyncSpecsWithMockSuite = function () {
     next: function () {
       reporter.test((another_spec.queue.length === 3),
           'Calling 2 waits(): Spec queue was less than expected length');
-      reporter.test((another_spec.results.length === 1),
+      reporter.test((another_spec.results.results.length === 1),
           'Calling 2 waits(): Spec queue did not run all functions');
-      reporter.test((another_spec.results[0].passed === true),
+      reporter.test((another_spec.results.results[0].passed === true),
           'Calling 2 waits(): Queued expectation failed');
     }
   };
@@ -330,7 +330,6 @@ var testSuites = function () {
   reporter.test((suite.specs[0].queue.length === 2),
       "Suite's spec did not get 2 functions pushed");
 
-
   var foo = 0;
   suite = describe('one suite description', function () {
     it('should be a test with queuedFunctions', function() {
@@ -390,11 +389,11 @@ var testSpecScope = function () {
   setTimeout(function () {
     reporter.test((suite.specs[0].foo === 2),
         "Spec does not maintain scope in between functions");
-    reporter.test((suite.specs[0].results.length === 2),
+    reporter.test((suite.specs[0].results.results.length === 2),
         "Spec did not get results for all expectations");
-    reporter.test((suite.specs[0].results[0].passed === false),
+    reporter.test((suite.specs[0].results.results[0].passed === false),
         "Spec did not return false for a failed expectation");
-    reporter.test((suite.specs[0].results[1].passed === true),
+    reporter.test((suite.specs[0].results.results[1].passed === true),
         "Spec did not return true for a passing expectation");
   }, 1000);
 }
@@ -441,24 +440,108 @@ var testRunner = function() {
   setTimeout(function () {
     reporter.test((runner.suites.length === 2),
         "Runner expected two suites");
-    reporter.test((runner.suites[0].specs[0].results[0].passed === true),
+    reporter.test((runner.suites[0].specs[0].results.results[0].passed === true),
         "Runner should have run specs in first suite");
-    reporter.test((runner.suites[1].specs[0].results[0].passed === false),
+    reporter.test((runner.suites[1].specs[0].results.results[0].passed === false),
         "Runner should have run specs in second suite");
   }, 1000);
+}
+
+var testNestedResults = function () {
+
+  // Leaf case
+  var results = nestedResults();
+
+  results.push({passed: true, message: 'Passed.'});
+
+  reporter.test((results.results.length === 1),
+                "nestedResults.push didn't work");
+  reporter.test((results.totalCount === 1),
+                "nestedResults.push didn't increment totalCount");
+  reporter.test((results.passedCount === 1),
+                "nestedResults.push didn't increment passedCount");
+  reporter.test((results.failedCount === 0),
+                "nestedResults.push didn't ignore failedCount");
+
+  results.push({passed: false, message: 'FAIL.'});
+
+  reporter.test((results.results.length === 2),
+                "nestedResults.push didn't work");
+  reporter.test((results.totalCount === 2),
+                "nestedResults.push didn't increment totalCount");
+  reporter.test((results.passedCount === 1),
+                "nestedResults.push didn't ignore passedCount");
+  reporter.test((results.failedCount === 1),
+                "nestedResults.push didn't increment failedCount");
+
+  // Branch case
+  var leafResultsOne = nestedResults();
+  leafResultsOne.push({passed: true, message: ''});
+  leafResultsOne.push({passed: false, message: ''});
+
+  var leafResultsTwo = nestedResults();
+  leafResultsTwo.push({passed: true, message: ''});
+  leafResultsTwo.push({passed: false, message: ''});
+
+  var branchResults = nestedResults();
+  branchResults.push(leafResultsOne);
+  branchResults.push(leafResultsTwo);
+
+  reporter.test((branchResults.results.length === 2),
+              "Branch Results should have 2 nestedResults, has " + branchResults.results.length);    
+  reporter.test((branchResults.totalCount === 4),
+              "Branch Results should have 4 results, has " + branchResults.totalCount);
+  reporter.test((branchResults.passedCount === 2),
+              "Branch Results should have 2 passed, has " + branchResults.passedCount);
+  reporter.test((branchResults.failedCount === 2),
+              "Branch Results should have 2 failed, has " + branchResults.failedCount);
+
+}
+
+var testReporting = function () {
+  var runner = Jasmine();
+  describe('one suite description', function () {
+    it('should be a test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+  });
+
+  describe('another suite description', function () {
+    it('should be another test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(false);
+      });
+    });
+  });
+
+  runner.execute();
+
+  setTimeout(function () {
+    reporter.test((runner.results.totalCount === 2),
+        'Expectation count should be 2, but was ' + runner.results.totalCount);
+    reporter.test((runner.results.passedCount === 1),
+        'Expectation Passed count should be 1, but was ' + runner.results.passedCount);
+    reporter.test((runner.results.failedCount === 1),
+        'Expectation Failed count should be 1, but was ' + runner.results.failedCount);
+  }, 1000);
+
 }
 
 var runTests = function () {
   $('spinner').show();
 
   testMatchersComparisons();
-    testMatchersReporting();
-    testSpecs();
-    testAsyncSpecs();
-    testAsyncSpecsWithMockSuite();
-    testSuites();
-    testSpecScope();
+  testMatchersReporting();
+  testSpecs();
+  testAsyncSpecs();
+  testAsyncSpecsWithMockSuite();
+  testSuites();
+  testSpecScope();
   testRunner();
+  testNestedResults();
+  testReporting();
 
   setTimeout(function() {
     $('spinner').hide();
