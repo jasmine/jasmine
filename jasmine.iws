@@ -92,7 +92,7 @@
       <file leaf-file-name="bootstrap.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="230" column="37" selection-start="6830" selection-end="6830" vertical-scroll-proportion="0.74496645">
+            <state line="239" column="43" selection-start="6804" selection-end="6804" vertical-scroll-proportion="0.28954938">
               <folding />
             </state>
           </provider>
@@ -110,7 +110,7 @@
       <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="63" column="6" selection-start="1593" selection-end="1593" vertical-scroll-proportion="0.40661478">
+            <state line="88" column="0" selection-start="2048" selection-end="2048" vertical-scroll-proportion="0.2422179">
               <folding />
             </state>
           </provider>
@@ -522,13 +522,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="6" selection-start="1593" selection-end="1593" vertical-scroll-proportion="0.40661478">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
       <provider editor-type-id="HtmlPreview">
         <state />
@@ -539,9 +532,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="88" column="0" selection-start="2048" selection-end="2048" vertical-scroll-proportion="0.2422179">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="230" column="37" selection-start="6830" selection-end="6830" vertical-scroll-proportion="0.74496645">
+        <state line="239" column="43" selection-start="6804" selection-end="6804" vertical-scroll-proportion="0.28954938">
           <folding />
         </state>
       </provider>

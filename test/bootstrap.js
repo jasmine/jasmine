@@ -54,7 +54,7 @@ var testMatchersComparisons = function () {
   reporter.test(expected.should_not_equal(false),
       'expects_that(true).should_not_equal(false) retruned false');
 
-  expected = new Matchers(true);  
+  expected = new Matchers(true);
   reporter.test(!(expected.should_not_equal(true)),
       'expects_that(true).should_not_equal(false) retruned true');
 }
@@ -117,7 +117,7 @@ var testSpecs = function () {
   reporter.test((yet_another_spec.results[0].passed == false),
       "Expectation that failed, passed");
 
-  var yet_yet_another_spec = it('spec with multiple assertions').runs( function () {
+  var yet_yet_another_spec = it('spec with multiple assertions').runs(function () {
     var foo = 'bar';
     var baz = 'quux';
 
@@ -162,78 +162,124 @@ var testAsyncSpecs = function () {
   foo = 0;
   a_spec = it('spec w/ queued statments').
       runs(function () {
-             setTimeout(function() {
-               foo++
-             }, 500);
-          }).waits(1000).
+    setTimeout(function() {
+      foo++
+    }, 500);
+  }).waits(1000).
       then(function() {
-        this.expects_that(foo).should_equal(1);
-      });
+    this.expects_that(foo).should_equal(1);
+  });
 
+  var mockSuite = {
+    next: function() {
+      reporter.test((a_spec.results.length === 1),
+          'Calling waits(): Spec queue did not run all functions');
+
+      reporter.test((a_spec.results[0].passed === true),
+          'Calling waits(): Queued expectation failed');
+    }
+  };
   a_spec.execute();
-  setTimeout(function(){
-    reporter.test((a_spec.results.length === 1),
-        'Calling waits(): Spec queue did not run all functions');
+  waitForDone(a_spec, mockSuite);
 
-    reporter.test((a_spec.results[0].passed === true),
-        'Calling waits(): Queued expectation failed');
-  }, 1250);
-
-  setTimeout(function() {
-    var bar = 0;
-    var another_spec = it('spec w/ queued statments').
-        runs(function () {
-               setTimeout(function() {
-                 bar++;
-               }, 250);
-            }).
-        waits(500).
-        then(function () {
-               setTimeout(function() {
-                 bar++;
-               }, 250);
-            }).
-        waits(1500).
-        then(function() {
-          this.expects_that(bar).should_equal(2);
-        });
-
-    another_spec.execute();
-    setTimeout(function(){
+  var bar = 0;
+  var another_spec = it('spec w/ queued statments').
+      runs(function () {
+    setTimeout(function() {
+      bar++;
+    }, 250);
+  }).
+      waits(500).
+      then(function () {
+    setTimeout(function() {
+      bar++;
+    }, 250);
+  }).
+      waits(1500).
+      then(function() {
+    this.expects_that(bar).should_equal(2);
+  });
+  mockSuite = {
+    next: function() {
       reporter.test((another_spec.queue.length === 3),
           'Calling 2 waits(): Spec queue was less than expected length');
       reporter.test((another_spec.results.length === 1),
           'Calling 2 waits(): Spec queue did not run all functions');
       reporter.test((another_spec.results[0].passed === true),
           'Calling 2 waits(): Queued expectation failed');
-    }, 2500);
-  }, 1500);
+    }
+  };
+  another_spec.execute();
+  waitForDone(another_spec, mockSuite);
 
-  setTimeout(function() {
-    var baz = 0;
-    var yet_another_spec = it('spec w/ async fail').
-        runs(function () {
-               setTimeout(function() {
-                 baz++;
-               }, 250);
-            }).
-        waits(100).
-        then(function() {
-          this.expects_that(baz).should_equal(1);
-        });
+  var baz = 0;
+  var yet_another_spec = it('spec w/ async fail').
+      runs(function () {
+    setTimeout(function() {
+      baz++;
+    }, 250);
+  }).
+      waits(100).
+      then(function() {
+    this.expects_that(baz).should_equal(1);
+  });
 
-    yet_another_spec.execute();
-    setTimeout(function(){
+  mockSuite = {
+    next: function() {
+
       reporter.test((yet_another_spec.queue.length === 2),
           'Calling 2 waits(): Spec queue was less than expected length');
       reporter.test((yet_another_spec.results.length === 1),
           'Calling 2 waits(): Spec queue did not run all functions');
       reporter.test((yet_another_spec.results[0].passed === false),
           'Calling 2 waits(): Queued expectation failed');
-    }, 2500);
-  }, 5000);
+    }
+  };
 
+  yet_another_spec.execute();
+  waitForDone(yet_another_spec, mockSuite);
+}
 
+var testAsyncSpecsWithMockSuite = function () {
+  var bar = 0;
+  var another_spec = it('spec w/ queued statments').
+      runs(function () {
+    setTimeout(function() {
+      bar++;
+    }, 250);
+  }).
+      waits(500).
+      then(function () {
+    setTimeout(function() {
+      bar++;
+    }, 250);
+  }).
+      waits(1500).
+      then(function() {
+    this.expects_that(bar).should_equal(2);
+  });
+
+  var mockSuite = {
+    next: function () {
+      reporter.test((another_spec.queue.length === 3),
+          'Calling 2 waits(): Spec queue was less than expected length');
+      reporter.test((another_spec.results.length === 1),
+          'Calling 2 waits(): Spec queue did not run all functions');
+      reporter.test((another_spec.results[0].passed === true),
+          'Calling 2 waits(): Queued expectation failed');
+    }
+  };
+  another_spec.execute();
+  waitForDone(another_spec, mockSuite);
+}
+
+var waitForDone = function(spec, mockSuite) {
+  var id = setInterval(function () {
+    if (spec.finished) {
+      clearInterval(id);
+      mockSuite.next();
+    }
+  }, 150);
 }
 
 var runTests = function () {
@@ -243,7 +289,8 @@ var runTests = function () {
   testMatchersReporting();
   testSpecs();
   testAsyncSpecs();
-  
+  testAsyncSpecsWithMockSuite();
+
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();
