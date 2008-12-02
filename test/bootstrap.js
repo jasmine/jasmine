@@ -69,21 +69,21 @@ var testMatchersReporting = function () {
   reporter.test((results.length == 2),
       "Results array doesn't have 2 results");
 
-  reporter.test((results[0].passed == true),
+  reporter.test((results[0].passed === true),
       "First spec didn't pass");
 
-  reporter.test((results[1].passed == false),
+  reporter.test((results[1].passed === false),
       "Second spec did pass");
 
   results = [];
-  var expected = new Matchers(false, results);
+  expected = new Matchers(false, results);
   expected.should_equal(true);
 
   reporter.test((results[0].message == 'Expected true but got false.'),
       "Failed expectation didn't test the failure message");
 
   results = [];
-  var expected = new Matchers(true, results);
+  expected = new Matchers(true, results);
   expected.should_equal(true);
 
   reporter.test((results[0].message == 'Passed.'),
@@ -102,10 +102,12 @@ var testSpecs = function () {
   another_spec.execute();
   another_spec.done = true;
 
-  reporter.test((another_spec.results.results.length == 1),
+  reporter.test((another_spec.results.results.length === 1),
       "Results aren't there after a spec was executed");
-  reporter.test((another_spec.results.results[0].passed == true),
+  reporter.test((another_spec.results.results[0].passed === true),
       "Results has a result, but it's true");
+  reporter.test((another_spec.results.description === 'spec with an expectation'),
+      "Spec's results did not get the spec's description");
 
   var yet_another_spec = it('spec with failing expectation').runs(function () {
     var foo = 'bar';
@@ -114,7 +116,7 @@ var testSpecs = function () {
   yet_another_spec.execute();
   yet_another_spec.done = true;
 
-  reporter.test((yet_another_spec.results.results[0].passed == false),
+  reporter.test((yet_another_spec.results.results[0].passed === false),
       "Expectation that failed, passed");
 
   var yet_yet_another_spec = it('spec with multiple assertions').runs(function () {
@@ -127,7 +129,7 @@ var testSpecs = function () {
   yet_yet_another_spec.execute();
   yet_yet_another_spec.done = true;
 
-  reporter.test((yet_yet_another_spec.results.results.length == 2),
+  reporter.test((yet_yet_another_spec.results.results.length === 2),
       "Spec doesn't support multiple expectations");
 }
 
@@ -395,6 +397,8 @@ var testSpecScope = function () {
         "Spec did not return false for a failed expectation");
     reporter.test((suite.specs[0].results.results[1].passed === true),
         "Spec did not return true for a passing expectation");
+    reporter.test((suite.results.description === 'one suite description'),
+        "Suite did not get its description in the results");
   }, 1000);
 }
 
@@ -495,7 +499,6 @@ var testNestedResults = function () {
               "Branch Results should have 2 passed, has " + branchResults.passedCount);
   reporter.test((branchResults.failedCount === 2),
               "Branch Results should have 2 failed, has " + branchResults.failedCount);
-
 }
 
 var testReporting = function () {
@@ -525,6 +528,8 @@ var testReporting = function () {
         'Expectation Passed count should be 1, but was ' + runner.results.passedCount);
     reporter.test((runner.results.failedCount === 1),
         'Expectation Failed count should be 1, but was ' + runner.results.failedCount);
+    reporter.test((runner.results.description === 'All Jasmine Suites'),
+        'Jasmine Runner does not have the expected description, has: ' + runner.results.description);    
   }, 1000);
 
 }
@@ -546,7 +551,7 @@ var runTests = function () {
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();
-  }, 10000);
+  }, 3500);
 }
 
 
