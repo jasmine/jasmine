@@ -282,23 +282,37 @@ var waitForDone = function(spec, mockSuite) {
   }, 150);
 }
 
+var testSuites = function () {
+
+  // suite has a description
+  var suite = describe('one suite description', function() {});
+  reporter.test((suite.description == 'one suite description'),
+                'Suite did not get a description');
+
+  // suite can have a test
+  suite = describe('one suite description', function () {
+    it('should be a test');
+  });
+  
+  reporter.test((suite.tests[0].queue.length === 1),
+                'Suite did not get a test pushed');
+}
+
+
 var runTests = function () {
   $('spinner').show();
 
-  testMatchersComparisons();
-  testMatchersReporting();
-  testSpecs();
-  testAsyncSpecs();
-  testAsyncSpecsWithMockSuite();
+//  testMatchersComparisons();
+  //  testMatchersReporting();
+  //  testSpecs();
+  //  testAsyncSpecs();
+  //  testAsyncSpecsWithMockSuite();
+  testSuites();
 
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();
-  }, 10000);
+  }, 100);
 }
-
-  //it('should be an async test') {
-  //  run(function() {setup}).and.wait(2000).then.expects_that(true).should_equal(true).and.expects_that
-  //}
 
 
