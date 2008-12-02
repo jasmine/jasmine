@@ -89,7 +89,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bootstrap.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="bootstrap.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
             <state line="361" column="6" selection-start="10010" selection-end="10010" vertical-scroll-proportion="0.14728682">
@@ -107,10 +107,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="jasmine.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="64" column="0" selection-start="1377" selection-end="1377" vertical-scroll-proportion="0.7820122">
+            <state line="274" column="0" selection-start="5628" selection-end="5628" vertical-scroll-proportion="0.07317073">
               <folding />
             </state>
           </provider>
@@ -449,16 +449,16 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
+    <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="0" selection-start="1377" selection-end="1377" vertical-scroll-proportion="0.7820122">
+        <state line="361" column="6" selection-start="10010" selection-end="10010" vertical-scroll-proportion="0.14728682">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="361" column="6" selection-start="10010" selection-end="10010" vertical-scroll-proportion="0.14728682">
+        <state line="274" column="0" selection-start="5628" selection-end="5628" vertical-scroll-proportion="0.07317073">
           <folding />
         </state>
       </provider>
