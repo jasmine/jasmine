@@ -89,10 +89,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bootstrap.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="bootstrap.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="465" column="7" selection-start="12461" selection-end="12461" vertical-scroll-proportion="0.9632495">
+            <state line="333" column="14" selection-start="9162" selection-end="9162" vertical-scroll-proportion="1.0473888">
               <folding />
             </state>
           </provider>
@@ -107,10 +107,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="jasmine.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="238" column="9" selection-start="4765" selection-end="4765" vertical-scroll-proportion="0.5599194">
+            <state line="230" column="0" selection-start="4905" selection-end="4938" vertical-scroll-proportion="0.7703928">
               <folding />
             </state>
           </provider>
@@ -449,16 +449,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
+    <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="238" column="9" selection-start="4765" selection-end="4765" vertical-scroll-proportion="0.5599194">
+        <state line="333" column="14" selection-start="9162" selection-end="9162" vertical-scroll-proportion="1.0473888">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="465" column="7" selection-start="12461" selection-end="12461" vertical-scroll-proportion="0.9632495">
+        <state line="230" column="0" selection-start="4905" selection-end="4938" vertical-scroll-proportion="0.7703928">
           <folding />
         </state>
       </provider>
