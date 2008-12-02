@@ -357,6 +357,82 @@ var testSuites = function () {
   }, 500);
 }
 
+var testBeforeAndAfterCallbacks = function () {
+
+  var suiteWithBefore = describe('one suite with a before', function () {
+
+    beforeEach(function () {
+      this.foo = 1;
+    });
+
+    it('should be a spec', function () {
+      runs(function() {
+        this.foo++;
+        this.expects_that(this.foo).should_equal(2);
+      });
+    });
+
+    it('should be another spec', function () {
+      runs(function() {
+        this.foo++;
+        this.expects_that(this.foo).should_equal(2);
+      });
+    });
+  });
+
+  suiteWithBefore.execute();
+  setTimeout(function () {
+    var suite = suiteWithBefore;
+    reporter.test((suite.beforeEach !== undefined),
+        "Suite's beforeEach was not defined");
+    reporter.test((suite.results.results[0].results[0].passed === true),
+        "the first spec's foo should have been 2");
+    reporter.test((suite.results.results[1].results[0].passed === true),
+        "the second spec's this.foo should have been 2");
+  }, 750);
+
+  setTimeout(function () {
+    var suiteWithAfter = describe('one suite with an after_each', function () {
+
+      it('should be a spec with an after_each', function () {
+        runs(function() {
+          this.foo = 0;
+          this.foo++;
+          this.expects_that(this.foo).should_equal(1);
+        });
+      });
+
+      it('should be another spec with an after_each', function () {
+        runs(function() {
+          this.foo = 0;
+          this.foo++;
+          this.expects_that(this.foo).should_equal(1);
+        });
+      });
+
+      afterEach(function () {
+        this.foo = 0;
+      });
+    });
+
+    suiteWithAfter.execute();
+    setTimeout(function () {
+      var suite = suiteWithAfter;
+      reporter.test((suite.afterEach !== undefined),
+          "Suite's afterEach was not defined");
+      reporter.test((suite.results.results[0].results[0].passed === true),
+          "afterEach failure: " + suite.results.results[0].results[0].message);
+      reporter.test((suite.specs[0].foo === 0),
+          "afterEach failure: foo was not reset to 0");
+      reporter.test((suite.results.results[1].results[0].passed === true),
+          "afterEach failure: " + suite.results.results[0].results[0].message);
+      reporter.test((suite.specs[1].foo === 0),
+          "afterEach failure: foo was not reset to 0");
+    }, 500);
+  }, 1200);
+
+}
+
 var testSpecScope = function () {
 
   suite = describe('one suite description', function () {
@@ -459,24 +535,24 @@ var testNestedResults = function () {
   results.push({passed: true, message: 'Passed.'});
 
   reporter.test((results.results.length === 1),
-                "nestedResults.push didn't work");
+      "nestedResults.push didn't work");
   reporter.test((results.totalCount === 1),
-                "nestedResults.push didn't increment totalCount");
+      "nestedResults.push didn't increment totalCount");
   reporter.test((results.passedCount === 1),
-                "nestedResults.push didn't increment passedCount");
+      "nestedResults.push didn't increment passedCount");
   reporter.test((results.failedCount === 0),
-                "nestedResults.push didn't ignore failedCount");
+      "nestedResults.push didn't ignore failedCount");
 
   results.push({passed: false, message: 'FAIL.'});
 
   reporter.test((results.results.length === 2),
-                "nestedResults.push didn't work");
+      "nestedResults.push didn't work");
   reporter.test((results.totalCount === 2),
-                "nestedResults.push didn't increment totalCount");
+      "nestedResults.push didn't increment totalCount");
   reporter.test((results.passedCount === 1),
-                "nestedResults.push didn't ignore passedCount");
+      "nestedResults.push didn't ignore passedCount");
   reporter.test((results.failedCount === 1),
-                "nestedResults.push didn't increment failedCount");
+      "nestedResults.push didn't increment failedCount");
 
   // Branch case
   var leafResultsOne = nestedResults();
@@ -492,13 +568,13 @@ var testNestedResults = function () {
   branchResults.push(leafResultsTwo);
 
   reporter.test((branchResults.results.length === 2),
-              "Branch Results should have 2 nestedResults, has " + branchResults.results.length);    
+      "Branch Results should have 2 nestedResults, has " + branchResults.results.length);
   reporter.test((branchResults.totalCount === 4),
-              "Branch Results should have 4 results, has " + branchResults.totalCount);
+      "Branch Results should have 4 results, has " + branchResults.totalCount);
   reporter.test((branchResults.passedCount === 2),
-              "Branch Results should have 2 passed, has " + branchResults.passedCount);
+      "Branch Results should have 2 passed, has " + branchResults.passedCount);
   reporter.test((branchResults.failedCount === 2),
-              "Branch Results should have 2 failed, has " + branchResults.failedCount);
+      "Branch Results should have 2 failed, has " + branchResults.failedCount);
 }
 
 var testReporting = function () {
@@ -529,7 +605,7 @@ var testReporting = function () {
     reporter.test((runner.results.failedCount === 1),
         'Expectation Failed count should be 1, but was ' + runner.results.failedCount);
     reporter.test((runner.results.description === 'All Jasmine Suites'),
-        'Jasmine Runner does not have the expected description, has: ' + runner.results.description);    
+        'Jasmine Runner does not have the expected description, has: ' + runner.results.description);
   }, 1000);
 
 }
@@ -543,6 +619,7 @@ var runTests = function () {
   testAsyncSpecs();
   testAsyncSpecsWithMockSuite();
   testSuites();
+  testBeforeAndAfterCallbacks();
   testSpecScope();
   testRunner();
   testNestedResults();
@@ -551,7 +628,7 @@ var runTests = function () {
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();
-  }, 3500);
+  }, 4500);
 }
 
 

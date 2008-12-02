@@ -92,7 +92,7 @@
       <file leaf-file-name="bootstrap.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="553" column="7" selection-start="16102" selection-end="16102" vertical-scroll-proportion="0.70542634">
+            <state line="361" column="6" selection-start="10010" selection-end="10010" vertical-scroll-proportion="0.14728682">
               <folding />
             </state>
           </provider>
@@ -110,7 +110,7 @@
       <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="260" column="33" selection-start="5439" selection-end="5439" vertical-scroll-proportion="0.7619048">
+            <state line="64" column="0" selection-start="1377" selection-end="1377" vertical-scroll-proportion="0.7820122">
               <folding />
             </state>
           </provider>
@@ -311,10 +311,10 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21091811" order="0" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21091811" order="0" />
       <window_info id="RDoc" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32841328" order="1" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" order="1" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
@@ -432,6 +432,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test/test.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="0" selection-start="118" selection-end="118" vertical-scroll-proportion="0.14157973">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="15" column="26" selection-start="541" selection-end="541" vertical-scroll-proportion="0.47342193">
@@ -442,23 +449,16 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/test.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="0" selection-start="118" selection-end="118" vertical-scroll-proportion="0.14157973">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="260" column="33" selection-start="5439" selection-end="5439" vertical-scroll-proportion="0.7619048">
+        <state line="64" column="0" selection-start="1377" selection-end="1377" vertical-scroll-proportion="0.7820122">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="553" column="7" selection-start="16102" selection-end="16102" vertical-scroll-proportion="0.70542634">
+        <state line="361" column="6" selection-start="10010" selection-end="10010" vertical-scroll-proportion="0.14728682">
           <folding />
         </state>
       </provider>
