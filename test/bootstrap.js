@@ -285,34 +285,135 @@ var waitForDone = function(spec, mockSuite) {
 var testSuites = function () {
 
   // suite has a description
-  var suite = describe('one suite description', function() {});
+  var suite = describe('one suite description', function() {
+  });
   reporter.test((suite.description == 'one suite description'),
-                'Suite did not get a description');
+      'Suite did not get a description');
 
   // suite can have a test
   suite = describe('one suite description', function () {
     it('should be a test');
   });
-  
-  reporter.test((suite.tests[0].queue.length === 1),
-                'Suite did not get a test pushed');
+
+  reporter.test((suite.specs.length === 1),
+      'Suite did not get a spec pushed');
+  reporter.test((suite.specs[0].queue.length === 0),
+      "Suite's Spec should not have queuedFunctions");
+
+  suite = describe('one suite description', function () {
+    it('should be a test with queuedFunctions', function() {
+      runs(function() {
+        var foo = 0;
+        foo++;
+      });
+    });
+  });
+
+  reporter.test((suite.specs[0].queue.length === 1),
+      "Suite's spec did not get a function pushed");
+
+  suite = describe('one suite description', function () {
+    it('should be a test with queuedFunctions', function() {
+      runs(function() {
+        var foo = 0;
+        foo++;
+      });
+      waits(100);
+      runs(function() {
+        var bar = 0;
+        bar++;
+      });
+
+    });
+  });
+
+  reporter.test((suite.specs[0].queue.length === 2),
+      "Suite's spec did not get 2 functions pushed");
+
+
+  var foo = 0;
+  suite = describe('one suite description', function () {
+    it('should be a test with queuedFunctions', function() {
+      runs(function() {
+        foo++;
+      });
+    });
+
+    it('should be a another spec with queuedFunctions', function() {
+      runs(function() {
+        foo++;
+      });
+    });
+  });
+
+  suite.execute();
+
+  setTimeout(function () {
+    reporter.test((suite.specs.length === 2),
+        "Suite doesn't have two specs");
+    reporter.test((foo === 2),
+        "Suite didn't execute both specs");
+  }, 500);
 }
 
+var testSpecScope = function () {
+
+  suite = describe('one suite description', function () {
+    it('should be a test with queuedFunctions', function() {
+      runs(function() {
+        this.foo = 0;
+        this.foo++;
+      });
+
+      runs(function() {
+        var that = this;
+        setTimeout(function() {
+          that.foo++;
+        }, 250);
+      });
+
+      runs(function() {
+        this.expects_that(this.foo).should_equal(2);
+      });
+
+      waits(300);
+
+      runs(function() {
+        this.expects_that(this.foo).should_equal(2);
+      });
+    });
+
+  });
+
+  suite.execute();
+
+  setTimeout(function () {
+    reporter.test((suite.specs[0].foo === 2),
+        "Spec does not maintain scope in between functions");
+    reporter.test((suite.specs[0].results.length === 2),
+        "Spec did not get results for all expectations");
+    reporter.test((suite.specs[0].results[0].passed === false),
+        "Spec did not return false for a failed expectation");
+    reporter.test((suite.specs[0].results[1].passed === true),
+        "Spec did not return true for a passing expectation");
+  }, 1000);
+}
 
 var runTests = function () {
   $('spinner').show();
 
-//  testMatchersComparisons();
-  //  testMatchersReporting();
-  //  testSpecs();
-  //  testAsyncSpecs();
-  //  testAsyncSpecsWithMockSuite();
+  testMatchersComparisons();
+  testMatchersReporting();
+  testSpecs();
+  testAsyncSpecs();
+  testAsyncSpecsWithMockSuite();
   testSuites();
+  testSpecScope();
 
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();
-  }, 100);
+  }, 10000);
 }
 
 
