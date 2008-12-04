@@ -658,7 +658,7 @@ var testJSONReporter = function () {
     });
   });
 
-  runner.reporter = JasmineReporters.JSON();
+  runner.reporter = JasmineReporters.JSON('json_reporter_results');
 
   reporter.test((runner.reporter !== undefined),
                 "Runner's reporter is undefined");
@@ -670,7 +670,10 @@ var testJSONReporter = function () {
   expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "one suite description"}], "description": "All Jasmine Suites"}';
   setTimeout(function() {
     reporter.test((runner.reporter.report() === expectedJSONString),
-          'Jasmine Reporter does not have the expected report, has: ' + runner.reporter.report());    
+          'Jasmine Reporter does not have the expected report, has: ' + runner.reporter.report());
+    reporter.test((document.getElementById('json_reporter_results').innerHTML === expectedJSONString),
+          'Jasmine Reporter did not output the string to the DOM');    
+
   }, 500);
 }
 
