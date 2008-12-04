@@ -89,7 +89,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="json_reporter.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="json_reporter.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
           <provider selected="true" editor-type-id="text-editor">
             <state line="2" column="25" selection-start="87" selection-end="87" vertical-scroll-proportion="0.036750484">
@@ -98,10 +98,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bootstrap.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="bootstrap.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="674" column="65" selection-start="20000" selection-end="20000" vertical-scroll-proportion="0.5947007">
+            <state line="714" column="25" selection-start="21145" selection-end="21145" vertical-scroll-proportion="0.85083413">
               <folding />
             </state>
           </provider>
@@ -548,16 +548,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
+    <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="674" column="65" selection-start="20000" selection-end="20000" vertical-scroll-proportion="0.5947007">
+        <state line="2" column="25" selection-start="87" selection-end="87" vertical-scroll-proportion="0.036750484">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
+    <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="25" selection-start="87" selection-end="87" vertical-scroll-proportion="0.036750484">
+        <state line="714" column="25" selection-start="21145" selection-end="21145" vertical-scroll-proportion="0.85083413">
           <folding />
         </state>
       </provider>

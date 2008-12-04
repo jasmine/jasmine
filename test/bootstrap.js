@@ -658,7 +658,7 @@ var testJSONReporter = function () {
     });
   });
 
-  runner.reporter = JasmineReporters.JSON('json_reporter_results');
+  runner.reporter = JasmineReporters.JSON();
 
   reporter.test((runner.reporter !== undefined),
                 "Runner's reporter is undefined");
@@ -671,8 +671,27 @@ var testJSONReporter = function () {
   setTimeout(function() {
     reporter.test((runner.reporter.report() === expectedJSONString),
           'Jasmine Reporter does not have the expected report, has: ' + runner.reporter.report());
+  }, 500);
+}
+
+var testJSONReporterWithDOM = function () {
+  var runner = Runner();
+  describe('one suite description', function () {
+    it('should be a test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+  });
+
+  runner.reporter = JasmineReporters.JSON('json_reporter_results');
+
+  runner.execute();
+
+  expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "one suite description"}], "description": "All Jasmine Suites"}';
+  setTimeout(function() {
     reporter.test((document.getElementById('json_reporter_results').innerHTML === expectedJSONString),
-          'Jasmine Reporter did not output the string to the DOM');    
+          'Jasmine Reporter did not output the string to the DOM');
 
   }, 500);
 }
@@ -693,6 +712,7 @@ var runTests = function () {
   testNestedResults();
   testResults();
   testJSONReporter();
+  testJSONReporterWithDOM();
 
   setTimeout(function() {
     $('spinner').hide();
