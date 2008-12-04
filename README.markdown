@@ -169,7 +169,7 @@ Your contributions are welcome.  Please submit tests with your pull request.
 ## Maintainers
 
 * [Davis W. Frank](dwfrank@pivotallabs.com), Pivotal Labs
-* [Rajan Akasgar](rajan@pivotallabs.com), Pivotal Labs
+* [Rajan Agaskar](rajan@pivotallabs.com), Pivotal Labs
 
 ## TODO List
 
