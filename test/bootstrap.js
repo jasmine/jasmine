@@ -541,6 +541,34 @@ var testRunner = function() {
   }, 1000);
 }
 
+var testRunnerFinishCallback = function () {
+  var runner = Runner();
+  var foo = 0;
+
+  runner.finish();
+
+  reporter.test((runner.finishCallback === undefined),
+                "Runner finish callback was defined");
+  reporter.test((runner.finished === true),
+                "Runner finished flag was not set.");
+
+
+  runner.finishCallback = function () {
+    foo++;
+  }
+
+  runner.finish();
+
+  reporter.test((runner.finished === true),
+                "Runner finished flag was not set.");
+  reporter.test((runner.finishCallback !== undefined),
+                "Runner finish callback was not defined");
+  reporter.test((foo === 1),
+                "Runner finish callback was not called");
+}
+
+
+
 var testNestedResults = function () {
 
   // Leaf case
@@ -636,6 +664,7 @@ var runTests = function () {
   testBeforeAndAfterCallbacks();
   testSpecScope();
   testRunner();
+  testRunnerFinishCallback();
   testNestedResults();
   testReporting();
 
