@@ -79,29 +79,38 @@
     <leaf>
       <file leaf-file-name="bootstrap.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="7" column="58" selection-start="347" selection-end="347" vertical-scroll-proportion="0.13782384">
+              <folding />
+            </state>
+          </provider>
           <provider editor-type-id="HtmlPreview">
             <state />
           </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="json_reporter.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="61" selection-start="350" selection-end="350" vertical-scroll-proportion="0.13782384">
+            <state line="15" column="37" selection-start="279" selection-end="279" vertical-scroll-proportion="0.27562863">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bootstrap.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="bootstrap.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="565" column="0" selection-start="15772" selection-end="15858" vertical-scroll-proportion="0.7794971">
+            <state line="670" column="25" selection-start="19640" selection-end="19640" vertical-scroll-proportion="0.5093229">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="jasmine.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="70" column="0" selection-start="1481" selection-end="1553" vertical-scroll-proportion="0.2205029">
+            <state line="285" column="5" selection-start="6014" selection-end="6014" vertical-scroll-proportion="0.43650794">
               <folding />
             </state>
           </provider>
@@ -109,13 +118,13 @@
       </file>
       <file leaf-file-name="example.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example/example.html">
-          <provider editor-type-id="HtmlPreview">
-            <state />
-          </provider>
           <provider selected="true" editor-type-id="text-editor">
             <state line="8" column="7" selection-start="355" selection-end="355" vertical-scroll-proportion="0.15751295">
               <folding />
             </state>
+          </provider>
+          <provider editor-type-id="HtmlPreview">
+            <state />
           </provider>
         </entry>
       </file>
@@ -296,6 +305,39 @@
     <RUBY_DOC NAME="NUMBER" VALUE="0" />
   </component>
   <component name="RunManager">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+    </configuration>
+    <configuration default="true" type="RubyRunConfigurationType" factoryName="Ruby test">
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TESTS_FOLDER_PATH" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_SCRIPT_PATH" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_CLASS_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_FILE_MASK" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_METHOD_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_TEST_TYPE" VALUE="TEST_SCRIPT" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="RUBY_ARGS" VALUE="-e STDOUT.sync=true;STDERR.sync=true;load($0=ARGV.shift)" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="WORK DIR" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="MODULE_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="SHOULD_USE_SDK" VALUE="false" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="ALTERN_SDK_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="INHERITANCE_CHECK_DISABLED" VALUE="false" />
+    </configuration>
     <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
       <option name="MAIN_CLASS_NAME" />
       <option name="VM_PARAMETERS" />
@@ -327,39 +369,6 @@
         <value defaultName="wholeProject" />
       </option>
       <envs />
-    </configuration>
-    <configuration default="true" type="RubyRunConfigurationType" factoryName="Ruby test">
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TESTS_FOLDER_PATH" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_SCRIPT_PATH" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_CLASS_NAME" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_FILE_MASK" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_METHOD_NAME" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_TEST_TYPE" VALUE="TEST_SCRIPT" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="RUBY_ARGS" VALUE="-e STDOUT.sync=true;STDERR.sync=true;load($0=ARGV.shift)" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="WORK DIR" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="MODULE_NAME" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="SHOULD_USE_SDK" VALUE="false" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="ALTERN_SDK_NAME" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="INHERITANCE_CHECK_DISABLED" VALUE="false" />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-    </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
     </configuration>
     <list size="0" />
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
@@ -498,14 +507,14 @@
     </GetOptions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
-      <provider editor-type-id="HtmlPreview">
-        <state />
-      </provider>
+    <entry file="file://$PROJECT_DIR$/example/example.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="61" selection-start="350" selection-end="350" vertical-scroll-proportion="0.13782384">
+        <state line="8" column="7" selection-start="355" selection-end="355" vertical-scroll-proportion="0.15751295">
           <folding />
         </state>
+      </provider>
+      <provider editor-type-id="HtmlPreview">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/jasmine.css">
@@ -522,26 +531,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example/example.html">
+    <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="58" selection-start="347" selection-end="347" vertical-scroll-proportion="0.13782384">
+          <folding />
+        </state>
+      </provider>
       <provider editor-type-id="HtmlPreview">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="7" selection-start="355" selection-end="355" vertical-scroll-proportion="0.15751295">
+        <state line="285" column="5" selection-start="6014" selection-end="6014" vertical-scroll-proportion="0.43650794">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="37" selection-start="279" selection-end="279" vertical-scroll-proportion="0.27562863">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="565" column="0" selection-start="15772" selection-end="15858" vertical-scroll-proportion="0.7794971">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="0" selection-start="1481" selection-end="1553" vertical-scroll-proportion="0.2205029">
+        <state line="670" column="25" selection-start="19640" selection-end="19640" vertical-scroll-proportion="0.5093229">
           <folding />
         </state>
       </provider>

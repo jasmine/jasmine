@@ -544,14 +544,12 @@ var testRunner = function() {
 var testRunnerFinishCallback = function () {
   var runner = Runner();
   var foo = 0;
+  var s
 
   runner.finish();
 
-  reporter.test((runner.finishCallback === undefined),
-                "Runner finish callback was defined");
   reporter.test((runner.finished === true),
                 "Runner finished flag was not set.");
-
 
   runner.finishCallback = function () {
     foo++;
@@ -561,8 +559,6 @@ var testRunnerFinishCallback = function () {
 
   reporter.test((runner.finished === true),
                 "Runner finished flag was not set.");
-  reporter.test((runner.finishCallback !== undefined),
-                "Runner finish callback was not defined");
   reporter.test((foo === 1),
                 "Runner finish callback was not called");
 }
@@ -619,7 +615,7 @@ var testNestedResults = function () {
       "Branch Results should have 2 failed, has " + branchResults.failedCount);
 }
 
-var testReporting = function () {
+var testResults = function () {
   var runner = Runner();
   describe('one suite description', function () {
     it('should be a test', function() {
@@ -652,6 +648,32 @@ var testReporting = function () {
 
 }
 
+var testJSONReporter = function () {
+  var runner = Runner();
+  describe('one suite description', function () {
+    it('should be a test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+  });
+
+  runner.reporter = JasmineReporters.JSON();
+
+  reporter.test((runner.reporter !== undefined),
+                "Runner's reporter is undefined");
+  reporter.test((runner.finishCallback !== undefined),
+                "Runner's finishCallback is undefined");
+
+  runner.execute();
+
+  expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "one suite description"}], "description": "All Jasmine Suites"}';
+  setTimeout(function() {
+    reporter.test((runner.reporter.report() === expectedJSONString),
+          'Jasmine Reporter does not have the expected report, has: ' + runner.reporter.report());    
+  }, 500);
+}
+
 var runTests = function () {
   $('spinner').show();
 
@@ -666,7 +688,8 @@ var runTests = function () {
   testRunner();
   testRunnerFinishCallback();
   testNestedResults();
-  testReporting();
+  testResults();
+  testJSONReporter();
 
   setTimeout(function() {
     $('spinner').hide();
