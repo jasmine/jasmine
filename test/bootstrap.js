@@ -91,6 +91,8 @@ var testMatchersReporting = function () {
 }
 
 var testSpecs = function () {
+  var currentSuite = describe('default current suite', function() {});
+
   var spec = it('new spec');
   reporter.test((spec.description == 'new spec'),
       "Spec did not have a description");
@@ -508,7 +510,7 @@ var testRunner = function() {
     it('should be a test');
   });
   reporter.test((runner.suites.length === 2),
-      "Runner expected two suites");
+      "Runner expected two suites, but got " + runner.suites.length);
 
   runner = Runner();
   describe('one suite description', function () {

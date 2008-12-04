@@ -80,7 +80,7 @@
       <file leaf-file-name="bootstrap.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="26" selection-start="541" selection-end="541" vertical-scroll-proportion="0.29533678">
+            <state line="7" column="61" selection-start="350" selection-end="350" vertical-scroll-proportion="0.13782384">
               <folding />
             </state>
           </provider>
@@ -89,19 +89,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bootstrap.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="bootstrap.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="642" column="7" selection-start="18504" selection-end="18504" vertical-scroll-proportion="0.81150794">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test.css" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/test.css">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="0" selection-start="118" selection-end="118" vertical-scroll-proportion="0.09187621">
+            <state line="518" column="0" selection-start="14460" selection-end="14460" vertical-scroll-proportion="0.59381044">
               <folding />
             </state>
           </provider>
@@ -110,7 +101,37 @@
       <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="284" column="31" selection-start="5933" selection-end="5933" vertical-scroll-proportion="0.85083413">
+            <state line="279" column="17" selection-start="5820" selection-end="5820" vertical-scroll-proportion="0.3968254">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="example.html" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/example/example.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="18" column="6" selection-start="620" selection-end="620" vertical-scroll-proportion="0.35440415">
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="HtmlPreview">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="jasmine.css" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/jasmine.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="8" selection-start="315" selection-end="315" vertical-scroll-proportion="0.29400387">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="example.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/example/example.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.11025145">
               <folding />
             </state>
           </provider>
@@ -221,6 +242,24 @@
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="PsiDirectory:/Users/pivotal/workspace/jasmine/images" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="jasmine" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="jasmine" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:/Users/pivotal/workspace/jasmine" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:/Users/pivotal/workspace/jasmine/example" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -379,7 +418,7 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21091811" order="0" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21091811" order="0" />
       <window_info id="RDoc" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32841328" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
@@ -461,7 +500,7 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="26" selection-start="541" selection-end="541" vertical-scroll-proportion="0.29533678">
+        <state line="7" column="61" selection-start="350" selection-end="350" vertical-scroll-proportion="0.13782384">
           <folding />
         </state>
       </provider>
@@ -469,25 +508,42 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/test.css">
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="0" selection-start="118" selection-end="118" vertical-scroll-proportion="0.09187621">
+        <state line="16" column="8" selection-start="315" selection-end="315" vertical-scroll-proportion="0.29400387">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
+    <entry file="file://$PROJECT_DIR$/example/example.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="284" column="31" selection-start="5933" selection-end="5933" vertical-scroll-proportion="0.85083413">
+        <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.11025145">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="642" column="7" selection-start="18504" selection-end="18504" vertical-scroll-proportion="0.81150794">
+        <state line="518" column="0" selection-start="14460" selection-end="14460" vertical-scroll-proportion="0.59381044">
           <folding />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="279" column="17" selection-start="5820" selection-end="5820" vertical-scroll-proportion="0.3968254">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/example/example.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="6" selection-start="620" selection-end="620" vertical-scroll-proportion="0.35440415">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="HtmlPreview">
+        <state />
       </provider>
     </entry>
   </component>
