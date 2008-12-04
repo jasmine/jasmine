@@ -136,22 +136,26 @@ var testSpecs = function () {
 var testAsyncSpecs = function () {
   var foo = 0;
 
-  var a_spec = it('simple queue test').
-      runs(function () {
-    foo++;
-  }).then(function() {
-    this.expects_that(foo).should_equal(1)
+  var a_spec = it('simple queue test', function () {
+    runs(function () {
+      foo++;
+    });
+    runs(function () {
+      this.expects_that(foo).should_equal(1)
+    });
   });
 
   reporter.test(a_spec.queue.length === 2,
       'Spec queue length is not 2');
 
   foo = 0;
-  a_spec = it('spec w/ queued statments').
-      runs(function () {
-    foo++;
-  }).then(function() {
-    this.expects_that(foo).should_equal(1);
+  a_spec = it('spec w/ queued statments', function () {
+    runs(function () {
+      foo++;
+    });
+    runs(function () {
+      this.expects_that(foo).should_equal(1);
+    });
   });
 
   a_spec.execute();
@@ -162,14 +166,16 @@ var testAsyncSpecs = function () {
       'No call to waits(): Queued expectation failed');
 
   foo = 0;
-  a_spec = it('spec w/ queued statments').
-      runs(function () {
-    setTimeout(function() {
-      foo++
-    }, 500);
-  }).waits(1000).
-      then(function() {
-    this.expects_that(foo).should_equal(1);
+  a_spec = it('spec w/ queued statments', function () {
+    runs(function () {
+      setTimeout(function() {
+        foo++
+      }, 500);
+    });
+    waits(1000);
+    runs(function() {
+      this.expects_that(foo).should_equal(1);
+    });
   });
 
   var mockSuite = {
@@ -185,22 +191,25 @@ var testAsyncSpecs = function () {
   waitForDone(a_spec, mockSuite);
 
   var bar = 0;
-  var another_spec = it('spec w/ queued statments').
-      runs(function () {
-    setTimeout(function() {
-      bar++;
-    }, 250);
-  }).
-      waits(500).
-      then(function () {
-    setTimeout(function() {
-      bar++;
-    }, 250);
-  }).
-      waits(1500).
-      then(function() {
-    this.expects_that(bar).should_equal(2);
+  var another_spec = it('spec w/ queued statments', function () {
+    runs(function () {
+      setTimeout(function() {
+        bar++;
+      }, 250);
+
+    });
+    waits(500);
+    runs(function () {
+      setTimeout(function() {
+        bar++;
+      }, 250);
+    });
+    waits(500);
+    runs(function () {
+      this.expects_that(bar).should_equal(2);
+    });
   });
+
   mockSuite = {
     next: function() {
       reporter.test((another_spec.queue.length === 3),
@@ -215,16 +224,18 @@ var testAsyncSpecs = function () {
   waitForDone(another_spec, mockSuite);
 
   var baz = 0;
-  var yet_another_spec = it('spec w/ async fail').
-      runs(function () {
-    setTimeout(function() {
-      baz++;
-    }, 250);
-  }).
-      waits(100).
-      then(function() {
-    this.expects_that(baz).should_equal(1);
+  var yet_another_spec = it('spec w/ async fail', function () {
+    runs(function () {
+      setTimeout(function() {
+        baz++;
+      }, 250);
+    });
+    waits(100);
+    runs(function() {
+      this.expects_that(baz).should_equal(1);
+    });
   });
+
 
   mockSuite = {
     next: function() {
@@ -244,21 +255,22 @@ var testAsyncSpecs = function () {
 
 var testAsyncSpecsWithMockSuite = function () {
   var bar = 0;
-  var another_spec = it('spec w/ queued statments').
-      runs(function () {
-    setTimeout(function() {
-      bar++;
-    }, 250);
-  }).
-      waits(500).
-      then(function () {
-    setTimeout(function() {
-      bar++;
-    }, 250);
-  }).
-      waits(1500).
-      then(function() {
-    this.expects_that(bar).should_equal(2);
+  var another_spec = it('spec w/ queued statments', function () {
+    runs(function () {
+      setTimeout(function() {
+        bar++;
+      }, 250);
+    });
+    waits(500);
+    runs(function () {
+      setTimeout(function() {
+        bar++;
+      }, 250);
+    });
+    waits(1500)
+    runs(function() {
+      this.expects_that(bar).should_equal(2);
+    });
   });
 
   var mockSuite = {
@@ -481,14 +493,14 @@ var testSpecScope = function () {
 
 var testRunner = function() {
 
-  var runner = Jasmine();
+  var runner = Runner();
   describe('one suite description', function () {
     it('should be a test');
   });
   reporter.test((runner.suites.length === 1),
       "Runner expected one suite");
 
-  runner = Jasmine();
+  runner = Runner();
   describe('one suite description', function () {
     it('should be a test');
   });
@@ -498,7 +510,7 @@ var testRunner = function() {
   reporter.test((runner.suites.length === 2),
       "Runner expected two suites");
 
-  runner = Jasmine();
+  runner = Runner();
   describe('one suite description', function () {
     it('should be a test', function() {
       runs(function () {
@@ -578,7 +590,7 @@ var testNestedResults = function () {
 }
 
 var testReporting = function () {
-  var runner = Jasmine();
+  var runner = Runner();
   describe('one suite description', function () {
     it('should be a test', function() {
       runs(function () {
@@ -628,7 +640,7 @@ var runTests = function () {
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();
-  }, 4500);
+  }, 3500);
 }
 
 
