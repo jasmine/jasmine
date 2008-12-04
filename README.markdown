@@ -64,9 +64,9 @@ Your spec can call `runs()` multiple times if you need to break your spec up for
 	  });
 
 	  runs(function () {
-		this.foo++;
-		
-		this.expects_that(this.foo).should_equal(2);
+	    this.foo++;
+
+	    this.expects_that(this.foo).should_equal(2);
 	  })
 	});
 
@@ -82,21 +82,21 @@ Jasmine allows you to do this by chaining calls to `runs()` with calls to `waits
 
 	it('should be a test', function () {
 	  runs(function () {
-		this.foo = 0;
+	    this.foo = 0;
 	    var that = this;
-	    setTimeout(function () {}
-		  that.foo++;
-    	}, 250);
-      });
-	
-      runs(function () {
-		this.expects_that(this.foo).should_equal(0);
-	  });  
-	
-	  waits(500);
-	
+	    setTimeout(function () {
+	      that.foo++;
+	    }, 250);
+	  });
+
 	  runs(function () {
-		this.expects_that(this.foo).should_equal(1);
+	    this.expects_that(this.foo).should_equal(0);
+	  });  
+
+	  waits(500);
+
+	  runs(function () {
+	    this.expects_that(this.foo).should_equal(1);
 	  });
 	});
 
@@ -111,14 +111,14 @@ What's happening here?
 
 Specs are grouped in Suites.  Suites are defined using the global `describe()` function:
     
-    describe('One suite', function () {
-		it('has a test', function () { 
-		...
-		});	
-		
-		it('has another test', function () {
+	describe('One suite', function () {
+	  it('has a test', function () { 
 	    ...
-		});
+	  });	
+
+	  it('has another test', function () {
+	    ...
+	  });
 	});
 
 The name is so that reporting is more descriptive.

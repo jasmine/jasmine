@@ -110,7 +110,7 @@
       <file leaf-file-name="example.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/example/example.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="6" selection-start="620" selection-end="620" vertical-scroll-proportion="0.35440415">
+            <state line="8" column="7" selection-start="355" selection-end="355" vertical-scroll-proportion="0.15751295">
               <folding />
             </state>
           </provider>
@@ -538,7 +538,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/example/example.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="6" selection-start="620" selection-end="620" vertical-scroll-proportion="0.35440415">
+        <state line="8" column="7" selection-start="355" selection-end="355" vertical-scroll-proportion="0.15751295">
           <folding />
         </state>
       </provider>
