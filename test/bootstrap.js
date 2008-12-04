@@ -91,7 +91,8 @@ var testMatchersReporting = function () {
 }
 
 var testSpecs = function () {
-  var currentSuite = describe('default current suite', function() {});
+  var currentSuite = describe('default current suite', function() {
+  });
 
   var spec = it('new spec');
   reporter.test((spec.description == 'new spec'),
@@ -549,7 +550,7 @@ var testRunnerFinishCallback = function () {
   runner.finish();
 
   reporter.test((runner.finished === true),
-                "Runner finished flag was not set.");
+      "Runner finished flag was not set.");
 
   runner.finishCallback = function () {
     foo++;
@@ -558,11 +559,10 @@ var testRunnerFinishCallback = function () {
   runner.finish();
 
   reporter.test((runner.finished === true),
-                "Runner finished flag was not set.");
+      "Runner finished flag was not set.");
   reporter.test((foo === 1),
-                "Runner finish callback was not called");
+      "Runner finish callback was not called");
 }
-
 
 
 var testNestedResults = function () {
@@ -650,7 +650,7 @@ var testResults = function () {
 
 var testJSONReporter = function () {
   var runner = Runner();
-  describe('one suite description', function () {
+  describe('Suite for JSON Reporter, NO DOM', function () {
     it('should be a test', function() {
       runs(function () {
         this.expects_that(true).should_equal(true);
@@ -661,22 +661,22 @@ var testJSONReporter = function () {
   runner.reporter = JasmineReporters.JSON();
 
   reporter.test((runner.reporter !== undefined),
-                "Runner's reporter is undefined");
+      "Runner's reporter is undefined");
   reporter.test((runner.finishCallback !== undefined),
-                "Runner's finishCallback is undefined");
+      "Runner's finishCallback is undefined");
 
   runner.execute();
 
-  expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "one suite description"}], "description": "All Jasmine Suites"}';
+  var expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter, NO DOM"}], "description": "All Jasmine Suites"}';
   setTimeout(function() {
-    reporter.test((runner.reporter.report() === expectedJSONString),
-          'Jasmine Reporter does not have the expected report, has: ' + runner.reporter.report());
+    reporter.test((runner.reporter.output === expectedJSONString),
+        'Jasmine Reporter with No DOM does not have the expected report.<br /> <b>Expected:</b><br /> ' + expectedJSONString + '<br /><b>Got:</b><br /> ' + runner.reporter.output);
   }, 500);
 }
 
 var testJSONReporterWithDOM = function () {
   var runner = Runner();
-  describe('one suite description', function () {
+  describe('Suite for JSON Reporter/DOM', function () {
     it('should be a test', function() {
       runs(function () {
         this.expects_that(true).should_equal(true);
@@ -688,13 +688,42 @@ var testJSONReporterWithDOM = function () {
 
   runner.execute();
 
-  expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "one suite description"}], "description": "All Jasmine Suites"}';
+  var expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter/DOM"}], "description": "All Jasmine Suites"}';
   setTimeout(function() {
     reporter.test((document.getElementById('json_reporter_results').innerHTML === expectedJSONString),
-          'Jasmine Reporter did not output the string to the DOM');
-
+        'Jasmine Reporter did not output the string to the DOM, got:' + document.getElementById('json_reporter_results').innerHTML);
   }, 500);
 }
+
+var testJSONReporterWithIncrementalSpecReports = function() {
+    setTimeout( function () {
+    var runner = Runner();
+      describe('Suite for Incremental JSON Reporter/DOM', function () {
+      it('should be a test', function() {
+        runs(function () {
+          this.expects_that(true).should_equal(true);
+        });
+      });
+      it('should be a failing test', function() {
+        runs(function () {
+          this.expects_that(false).should_equal(true);
+        });
+      });
+    });
+
+    runner.reporter = JasmineReporters.IncrementalJSON('json_reporter_results_incremental');
+    runner.execute();
+    var expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}{"totalCount": 1, "passedCount": 0, "failedCount": 1, "results": [{"passed": false, "message": "Expected true but got false."}], "description": "should be a failing test"}'
+
+    setTimeout(function() {
+      reporter.test((document.getElementById('json_reporter_results_incremental').innerHTML === expectedJSONString),
+          'Jasmine Incremental Reporter did not output the correct string to the DOM, got ' + document.getElementById('json_reporter_results_incremental').innerHTML);
+
+    }, 500);
+    }, 2500);
+
+}
+
 
 var runTests = function () {
   $('spinner').show();
@@ -713,6 +742,7 @@ var runTests = function () {
   testResults();
   testJSONReporter();
   testJSONReporterWithDOM();
+  testJSONReporterWithIncrementalSpecReports();
 
   setTimeout(function() {
     $('spinner').hide();
