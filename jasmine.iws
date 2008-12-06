@@ -92,7 +92,7 @@
       <file leaf-file-name="json_reporter.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="22" column="3" selection-start="581" selection-end="581" vertical-scroll-proportion="0.40425533">
               <folding />
             </state>
           </provider>
@@ -101,16 +101,16 @@
       <file leaf-file-name="bootstrap.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="690" column="388" selection-start="20624" selection-end="20624" vertical-scroll-proportion="0.018645732">
+            <state line="693" column="63" selection-start="20819" selection-end="20819" vertical-scroll-proportion="0.55937195">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="jasmine.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="333" column="0" selection-start="6862" selection-end="6862" vertical-scroll-proportion="0.76112187">
+            <state line="320" column="0" selection-start="6758" selection-end="6758" vertical-scroll-proportion="0.58531743">
               <folding />
             </state>
           </provider>
@@ -137,7 +137,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="example.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="example.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/example/example.js">
           <provider selected="true" editor-type-id="text-editor">
             <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.11025145">
@@ -534,30 +534,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example/example.js">
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.11025145">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="690" column="388" selection-start="20624" selection-end="20624" vertical-scroll-proportion="0.018645732">
+        <state line="320" column="0" selection-start="6758" selection-end="6758" vertical-scroll-proportion="0.58531743">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+        <state line="22" column="3" selection-start="581" selection-end="581" vertical-scroll-proportion="0.40425533">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
+    <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="333" column="0" selection-start="6862" selection-end="6862" vertical-scroll-proportion="0.76112187">
+        <state line="693" column="63" selection-start="20819" selection-end="20819" vertical-scroll-proportion="0.55937195">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/example/example.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.11025145">
           <folding />
         </state>
       </provider>
