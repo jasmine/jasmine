@@ -129,20 +129,37 @@ Suites are executed in the order in which `describe()` calls are made, usually i
 
 You don't need a DOM to run your tests, but you do need a page on which to load & execute your JS.  Include the `jasmine.js` file in a script tag as well as the JS file with your specs.  You can also use this page for reporting.  More on that in a moment.
 
-// include example.html
+Here's the example HTML file (in `jasmine/example`):
+
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+	    "http://www.w3.org/TR/html4/loose.dtd">
+	<html>
+	<head>
+	  <title>Jasmine Example</title>
+	  <script type="text/javascript" src="../lib/jasmine.js"></script>
+	  <script type="text/javascript" src="example.js"></script>
+	  <link type="text/css" rel="stylesheet" href="../lib/jasmine.css"/>
+	</head>
+	<body>
+	<h1>
+	  Running Jasmine Example Specs
+	</h1>
+	<div id="results"></div>
+	<script type="text/javascript">
+	  jasmine.execute();
+	  setTimeout(function () {
+	    document.getElementById('results').innerHTML = 'It\'s alive! :' +
+	                                                   (jasmine.currentRunner.results.passedCount === 1);
+	  }, 250);
+	</script>
+	</body>
+	</html>
 
 ### Reports
 
-no reporting yet other than Runner.results, which is walkable
+If a reporter exists on the Jasmine instance (named `jasmine`), it will be called when each spec, suite and the overall runner complete. If you're at the single-spec result level, you'll get a spec description, whether it passed or failed, and what the failure message was.  At the suite & runner report level, you'll get the total specs run so far, the passed counts, failed counts, and a description (of the suite or runner). 
 
-#### JSON Reporter
-Coming soon.
-
-#### HTML Reporter
-Coming soon.
-
-#### In-line HTML Reporter
-Coming soon.
+There is a `Jasmine.Reporters` namespace for you to see how to handle reporting. See the file `json_reporter.js`, which takes the results objects and turns them into JSON strings, for two examples of how to make the results callbacks work for you.
 
 ### Custom Matchers
 
@@ -156,6 +173,13 @@ A Matcher has a method name, takes an expected value as it's only parameter, has
 	});
 	
 Feel free to define your own matcher as needed in your code.  If you'd like to add Matchers to Jasmine, please write tests.  
+
+### Limitations
+
+You can only have one instance of Jasmine (which is a container for a runner) running at any given time.  As you can see from `bootstrap.js`, this means you have to wait until a runner is done before defining suites & specs for another runner.  
+
+This is a bit sloppy and will be fixed at some point - but it allows for a nicer syntax when defining your specs.  For now we expect this to be fine as most of the time having multiple suites is sufficient for isolating application-level code.
+
 
 Contributing and Tests
 ----------------------
@@ -171,17 +195,13 @@ Your contributions are welcome.  Please submit tests with your pull request.
 * [Davis W. Frank](dwfrank@pivotallabs.com), Pivotal Labs
 * [Rajan Agaskar](rajan@pivotallabs.com), Pivotal Labs
 
+## Acknowledgments
+A big shout out to the various JavaScript test framework authors, especially TJ for [JSpec](http://github.com/visionmedia/jspec/tree/master) - we played with it a bit before deciding that we really needed to roll our own.
+
 ## TODO List
 
 In no particular order:
 
-* protect the global-ness of some variables & functions
-* Suite beforeAll and afterAll functions
 * add a description to runs()
-* suite.beforeAll and suite.afterAll
-* JSON reporter
-* HTML reporter
-* HTML reporter (callback driven)
-
 
 

@@ -42,19 +42,19 @@ var reporter = function () {
 }();
 
 var testMatchersComparisons = function () {
-  var expected = new Matchers(true);
+  var expected = new Jasmine.Matchers(true);
   reporter.test(expected.should_equal(true),
       'expects_that(true).should_equal(true) returned false');
 
-  expected = new Matchers(false);
+  expected = new Jasmine.Matchers(false);
   reporter.test(!(expected.should_equal(true)),
       'expects_that(true).should_equal(true) returned true');
 
-  expected = new Matchers(true);
+  expected = new Jasmine.Matchers(true);
   reporter.test(expected.should_not_equal(false),
       'expects_that(true).should_not_equal(false) retruned false');
 
-  expected = new Matchers(true);
+  expected = new Jasmine.Matchers(true);
   reporter.test(!(expected.should_not_equal(true)),
       'expects_that(true).should_not_equal(false) retruned true');
 }
@@ -62,7 +62,7 @@ var testMatchersComparisons = function () {
 var testMatchersReporting = function () {
 
   var results = [];
-  var expected = new Matchers(true, results);
+  var expected = new Jasmine.Matchers(true, results);
   expected.should_equal(true);
   expected.should_equal(false);
 
@@ -76,14 +76,14 @@ var testMatchersReporting = function () {
       "Second spec did pass");
 
   results = [];
-  expected = new Matchers(false, results);
+  expected = new Jasmine.Matchers(false, results);
   expected.should_equal(true);
 
   reporter.test((results[0].message == 'Expected true but got false.'),
       "Failed expectation didn't test the failure message");
 
   results = [];
-  expected = new Matchers(true, results);
+  expected = new Jasmine.Matchers(true, results);
   expected.should_equal(true);
 
   reporter.test((results[0].message == 'Passed.'),
@@ -502,7 +502,7 @@ var testRunner = function() {
     it('should be a test');
   });
   reporter.test((runner.suites.length === 1),
-      "Runner expected one suite");
+      "Runner expected one suite, got " + runner.suites.length);
 
   runner = Runner();
   describe('one suite description', function () {
@@ -535,7 +535,7 @@ var testRunner = function() {
 
   setTimeout(function () {
     reporter.test((runner.suites.length === 2),
-        "Runner expected two suites");
+        "Runner expected two suites, got " + runner.suites.length);
     reporter.test((runner.suites[0].specs[0].results.results[0].passed === true),
         "Runner should have run specs in first suite");
     reporter.test((runner.suites[1].specs[0].results.results[0].passed === false),
@@ -649,11 +649,9 @@ var testResults = function () {
 }
 
 var testReporterWithCallbacks = function () {
-  var foo = 0;
-  var bar = 0;
-  var baz = 0;
-
+  jasmine = Jasmine.init();
   var runner = Runner();
+  
   describe('Suite for JSON Reporter with Callbacks', function () {
     it('should be a test', function() {
       runs(function () {
@@ -675,31 +673,24 @@ var testReporterWithCallbacks = function () {
 
   });
 
+  var foo = 0;
+  var bar = 0;
+  var baz = 0;
 
-  var specCallback = function (results) {
-    foo++;
-  }
+  var specCallback   = function (results) { foo++; }
+  var suiteCallback  = function (results) { bar++; }
+  var runnerCallback = function (results) { baz++; }
 
-  var suiteCallback = function (results) {
-    bar++;
-  }
-
-  var runnerCallback = function (results) {
-    baz++;
-  }
-
-  callbackFunctions = {
+  jasmine.reporter = Jasmine.Reporters.reporter({
     specCallback: specCallback,
     suiteCallback: suiteCallback,
     runnerCallback: runnerCallback
-  }
-
-  runner.reporter = JasmineReporters.reporter(callbackFunctions);
+  });
   runner.execute();
 
   setTimeout(function() {
     reporter.test((foo === 3),
-        'foo was expected to be 1, was ' + foo);
+        'foo was expected to be 3, was ' + foo);
     reporter.test((bar === 2),
         'bar was expected to be 2, was ' + bar);
     reporter.test((baz === 1),
@@ -709,7 +700,9 @@ var testReporterWithCallbacks = function () {
 }
 
 var testJSONReporter = function () {
+  jasmine = Jasmine.init();
   var runner = Runner();
+
   describe('Suite for JSON Reporter, NO DOM', function () {
     it('should be a test', function() {
       runs(function () {
@@ -718,7 +711,7 @@ var testJSONReporter = function () {
     });
   });
 
-  runner.reporter = JasmineReporters.JSON();
+  jasmine.reporter = Jasmine.Reporters.JSON();
 
   runner.execute();
 
@@ -727,17 +720,17 @@ var testJSONReporter = function () {
     var expectedSuiteJSON  = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter, NO DOM"}';
     var expectedRunnerJSON = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter, NO DOM"}], "description": "All Jasmine Suites"}';
 
-    specJSON = runner.reporter.specJSON;
+    specJSON = jasmine.reporter.specJSON;
     reporter.test((specJSON === expectedSpecJSON),
         'JSON Reporter does not have the expected Spec results report.<br /> <b>Expected:</b><br /> ' + expectedSpecJSON +
         '<br /><b>Got:</b><br /> ' + specJSON);
 
-    suiteJSON = runner.reporter.suiteJSON;
+    suiteJSON = jasmine.reporter.suiteJSON;
     reporter.test((suiteJSON === expectedSuiteJSON),
         'JSON Reporter does not have the expected Suite results report.<br /> <b>Expected:</b><br /> ' + expectedSuiteJSON +
         '<br /><b>Got:</b><br /> ' + suiteJSON);
 
-    runnerJSON = runner.reporter.runnerJSON;
+    runnerJSON = jasmine.reporter.runnerJSON;
     reporter.test((runnerJSON === expectedRunnerJSON),
         'JSON Reporter does not have the expected Runner results report.<br /> <b>Expected:</b><br /> ' + expectedRunnerJSON +
         '<br /><b>Got:</b><br /> ' + runnerJSON);
@@ -745,7 +738,9 @@ var testJSONReporter = function () {
 }
 
 var testJSONReporterWithDOM = function () {
+  jasmine = Jasmine.init();
   var runner = Runner();
+
   describe('Suite for JSON Reporter/DOM', function () {
     it('should be a test', function() {
       runs(function () {
@@ -754,7 +749,7 @@ var testJSONReporterWithDOM = function () {
     });
   });
 
-  runner.reporter = JasmineReporters.JSONtoDOM('json_reporter_results');
+  jasmine.reporter = Jasmine.Reporters.JSONtoDOM('json_reporter_results');
   runner.execute();
 
   setTimeout(function() {
@@ -787,15 +782,15 @@ var runTests = function () {
   }, 2000);
   setTimeout(function () {
     testJSONReporter();
-  }, 2750);
+  }, 3500);
   setTimeout(function () {
     testJSONReporterWithDOM();
-  }, 3000);
+  }, 5000);
 
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();
-  }, 4500);
+  }, 6000);
 }
 
 

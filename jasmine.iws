@@ -89,10 +89,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="json_reporter.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="json_reporter.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="36" selection-start="284" selection-end="284" vertical-scroll-proportion="0.11025145">
+            <state line="36" column="7" selection-start="1033" selection-end="1033" vertical-scroll-proportion="0.6615087">
               <folding />
             </state>
           </provider>
@@ -101,16 +101,16 @@
       <file leaf-file-name="bootstrap.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="53" column="39" selection-start="1542" selection-end="1542" vertical-scroll-proportion="0.5166163">
+            <state line="751" column="29" selection-start="22512" selection-end="22512" vertical-scroll-proportion="0.44749755">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="jasmine.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="198" column="17" selection-start="4329" selection-end="4329" vertical-scroll-proportion="0.7901354">
+            <state line="155" column="4" selection-start="3291" selection-end="3291" vertical-scroll-proportion="-2.7886906">
               <folding />
             </state>
           </provider>
@@ -119,7 +119,7 @@
       <file leaf-file-name="example.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example/example.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="24" selection-start="145" selection-end="145" vertical-scroll-proportion="0.078756474">
+            <state line="0" column="0" selection-start="0" selection-end="721" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -430,22 +430,22 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21091811" order="0" />
       <window_info id="RDoc" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32841328" order="1" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" order="1" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="14" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
-      <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
+      <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="6" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="11" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="4" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
-      <window_info id="Maven projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="Maven projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="5" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="12" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="2" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="0" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="4" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
-      <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="13" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="9" />
+      <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="10" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="0" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="3" />
@@ -507,6 +507,23 @@
     </GetOptions>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="7" selection-start="500" selection-end="500" vertical-scroll-proportion="0.19689119">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="HtmlPreview">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="751" column="29" selection-start="22512" selection-end="22512" vertical-scroll-proportion="0.44749755">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/jasmine.css">
       <provider selected="true" editor-type-id="text-editor">
         <state line="16" column="8" selection-start="315" selection-end="315" vertical-scroll-proportion="0.29400387">
@@ -521,19 +538,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="7" selection-start="500" selection-end="500" vertical-scroll-proportion="0.19689119">
+        <state line="155" column="4" selection-start="3291" selection-end="3291" vertical-scroll-proportion="-2.7886906">
           <folding />
         </state>
-      </provider>
-      <provider editor-type-id="HtmlPreview">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/example/example.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="24" selection-start="145" selection-end="145" vertical-scroll-proportion="0.078756474">
+        <state line="0" column="0" selection-start="0" selection-end="721" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -543,21 +557,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="36" selection-start="284" selection-end="284" vertical-scroll-proportion="0.11025145">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="39" selection-start="1542" selection-end="1542" vertical-scroll-proportion="0.5166163">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="198" column="17" selection-start="4329" selection-end="4329" vertical-scroll-proportion="0.7901354">
+        <state line="36" column="7" selection-start="1033" selection-end="1033" vertical-scroll-proportion="0.6615087">
           <folding />
         </state>
       </provider>
