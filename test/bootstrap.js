@@ -19,7 +19,7 @@ var reporter = function () {
         var fails_report = $('fails');
         fails_report.show();
 
-        iconElement = $('icons');
+        var iconElement = $('icons');
         iconElement.appendChild(new Element('img', {src: '../images/exclamation.png'}));
 
         var failMessages = $('fail_messages');
@@ -30,11 +30,11 @@ var reporter = function () {
     },
 
     summary: function () {
-      summary = new Element('p', {'class': ((fails > 0) ? 'fail_in_summary' : '') });
-      summary.innerHTML = total + ' expectations, ' + passes + ' passing, ' + fails + ' failed.';
+      var el = new Element('p', {'class': ((fails > 0) ? 'fail_in_summary' : '') });
+      el.innerHTML = total + ' expectations, ' + passes + ' passing, ' + fails + ' failed.';
 
       var summaryElement = $('results_summary');
-      summaryElement.appendChild(summary);
+      summaryElement.appendChild(el);
       summaryElement.show();
     }
   }
@@ -190,6 +190,7 @@ var testAsyncSpecs = function () {
           'Calling waits(): Queued expectation failed');
     }
   };
+
   a_spec.execute();
   waitForDone(a_spec, mockSuite);
 
@@ -450,7 +451,7 @@ var testBeforeAndAfterCallbacks = function () {
 
 var testSpecScope = function () {
 
-  suite = describe('one suite description', function () {
+  var suite = describe('one suite description', function () {
     it('should be a test with queuedFunctions', function() {
       runs(function() {
         this.foo = 0;
@@ -545,7 +546,6 @@ var testRunner = function() {
 var testRunnerFinishCallback = function () {
   var runner = Runner();
   var foo = 0;
-  var s
 
   runner.finish();
 
@@ -644,8 +644,68 @@ var testResults = function () {
         'Expectation Failed count should be 1, but was ' + runner.results.failedCount);
     reporter.test((runner.results.description === 'All Jasmine Suites'),
         'Jasmine Runner does not have the expected description, has: ' + runner.results.description);
-  }, 1000);
+  }, 500);
 
+}
+
+var testReporterWithCallbacks = function () {
+  var foo = 0;
+  var bar = 0;
+  var baz = 0;
+
+  var runner = Runner();
+  describe('Suite for JSON Reporter with Callbacks', function () {
+    it('should be a test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+    it('should be a failing test', function() {
+      runs(function () {
+        this.expects_that(false).should_equal(true);
+      });
+    });
+  });
+  describe('Suite for JSON Reporter with Callbacks 2', function () {
+    it('should be a test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+
+  });
+
+
+  var specCallback = function (results) {
+    foo++;
+  }
+
+  var suiteCallback = function (results) {
+    bar++;
+  }
+
+  var runnerCallback = function (results) {
+    baz++;
+  }
+
+  callbackFunctions = {
+    specCallback: specCallback,
+    suiteCallback: suiteCallback,
+    runnerCallback: runnerCallback
+  }
+
+  runner.reporter = JasmineReporters.reporter(callbackFunctions);
+  runner.execute();
+
+  setTimeout(function() {
+    reporter.test((foo === 3),
+        'foo was expected to be 1, was ' + foo);
+    reporter.test((bar === 2),
+        'bar was expected to be 2, was ' + bar);
+    reporter.test((baz === 1),
+        'baz was expected to be 1, was ' + baz);
+
+  }, 750);
 }
 
 var testJSONReporter = function () {
@@ -660,17 +720,27 @@ var testJSONReporter = function () {
 
   runner.reporter = JasmineReporters.JSON();
 
-  reporter.test((runner.reporter !== undefined),
-      "Runner's reporter is undefined");
-  reporter.test((runner.finishCallback !== undefined),
-      "Runner's finishCallback is undefined");
-
   runner.execute();
 
-  var expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter, NO DOM"}], "description": "All Jasmine Suites"}';
   setTimeout(function() {
-    reporter.test((runner.reporter.output === expectedJSONString),
-        'Jasmine Reporter with No DOM does not have the expected report.<br /> <b>Expected:</b><br /> ' + expectedJSONString + '<br /><b>Got:</b><br /> ' + runner.reporter.output);
+    var expectedSpecJSON   = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}';
+    var expectedSuiteJSON  = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter, NO DOM"}';
+    var expectedRunnerJSON = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter, NO DOM"}], "description": "All Jasmine Suites"}';
+
+    specJSON = runner.reporter.specJSON;
+    reporter.test((specJSON === expectedSpecJSON),
+        'JSON Reporter does not have the expected Spec results report.<br /> <b>Expected:</b><br /> ' + expectedSpecJSON +
+        '<br /><b>Got:</b><br /> ' + specJSON);
+
+    suiteJSON = runner.reporter.suiteJSON;
+    reporter.test((suiteJSON === expectedSuiteJSON),
+        'JSON Reporter does not have the expected Suite results report.<br /> <b>Expected:</b><br /> ' + expectedSuiteJSON +
+        '<br /><b>Got:</b><br /> ' + suiteJSON);
+
+    runnerJSON = runner.reporter.runnerJSON;
+    reporter.test((runnerJSON === expectedRunnerJSON),
+        'JSON Reporter does not have the expected Runner results report.<br /> <b>Expected:</b><br /> ' + expectedRunnerJSON +
+        '<br /><b>Got:</b><br /> ' + runnerJSON);
   }, 500);
 }
 
@@ -684,46 +754,16 @@ var testJSONReporterWithDOM = function () {
     });
   });
 
-  runner.reporter = JasmineReporters.JSON('json_reporter_results');
-
+  runner.reporter = JasmineReporters.JSONtoDOM('json_reporter_results');
   runner.execute();
 
-  var expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter/DOM"}], "description": "All Jasmine Suites"}';
   setTimeout(function() {
+    var expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter/DOM"}], "description": "All Jasmine Suites"}';
+
     reporter.test((document.getElementById('json_reporter_results').innerHTML === expectedJSONString),
-        'Jasmine Reporter did not output the string to the DOM, got:' + document.getElementById('json_reporter_results').innerHTML);
-  }, 500);
+        'JSON Reporter with DOM did not write the expected report to the DOM, got:' + document.getElementById('json_reporter_results').innerHTML);
+  }, 250);
 }
-
-var testJSONReporterWithIncrementalSpecReports = function() {
-    setTimeout( function () {
-    var runner = Runner();
-      describe('Suite for Incremental JSON Reporter/DOM', function () {
-      it('should be a test', function() {
-        runs(function () {
-          this.expects_that(true).should_equal(true);
-        });
-      });
-      it('should be a failing test', function() {
-        runs(function () {
-          this.expects_that(false).should_equal(true);
-        });
-      });
-    });
-
-    runner.reporter = JasmineReporters.IncrementalJSON('json_reporter_results_incremental');
-    runner.execute();
-    var expectedJSONString = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}{"totalCount": 1, "passedCount": 0, "failedCount": 1, "results": [{"passed": false, "message": "Expected true but got false."}], "description": "should be a failing test"}'
-
-    setTimeout(function() {
-      reporter.test((document.getElementById('json_reporter_results_incremental').innerHTML === expectedJSONString),
-          'Jasmine Incremental Reporter did not output the correct string to the DOM, got ' + document.getElementById('json_reporter_results_incremental').innerHTML);
-
-    }, 500);
-    }, 2500);
-
-}
-
 
 var runTests = function () {
   $('spinner').show();
@@ -740,14 +780,22 @@ var runTests = function () {
   testRunnerFinishCallback();
   testNestedResults();
   testResults();
-  testJSONReporter();
-  testJSONReporterWithDOM();
-  testJSONReporterWithIncrementalSpecReports();
+
+  // Timing starts to matter with these tests; ALWAYS use setTimeout()
+  setTimeout(function () {
+    testReporterWithCallbacks();
+  }, 2000);
+  setTimeout(function () {
+    testJSONReporter();
+  }, 2750);
+  setTimeout(function () {
+    testJSONReporterWithDOM();
+  }, 3000);
 
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();
-  }, 3500);
+  }, 4500);
 }
 
 
