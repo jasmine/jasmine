@@ -760,6 +760,93 @@ var testJSONReporterWithDOM = function () {
   }, 250);
 }
 
+var testHandlesBlankSpecs = function () {
+  jasmine = Jasmine.init();
+  var runner = Runner();
+
+  describe('Suite for handles blank specs', function () {
+    it('should be a test with a blank runs block', function() {
+      runs(function () {
+      });
+    });
+    it('should be a blank (empty function) test', function() {
+
+    });
+    
+  });
+  runner.execute();
+
+  setTimeout(function() {
+    reporter.test((runner.results.results[0].results.results.length === 2),
+        'Should have found 2 spec results, got ' + runner.results.results[0].results.results.length );
+    reporter.test((runner.results.results[0].results.passedCount === 2),
+        'Should have found 2 passing specs, got ' + runner.results.results[0].results.passedCount);
+  }, 250);
+}
+
+var testResultsAliasing = function () {
+  jasmine = Jasmine.init();
+  var runner = Runner();
+
+  describe('Suite for result aliasing test', function () {
+
+    it('should be a test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+
+  });
+
+  describe('Suite number two for result aliasing test', function () {
+    it('should be a passing test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+
+    it('should be a passing test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+
+  });
+
+
+  runner.execute();
+
+  setTimeout(function() {
+
+    reporter.test((runner.suiteResults !== undefined),
+        'runner.suiteResults was not defined');
+
+    reporter.test((runner.suiteResults == runner.results.results),
+        'runner.suiteResults should have been ' + Object.toJSON(runner.results.results) +
+        ', but was ' + Object.toJSON(runner.suiteResults));
+
+    reporter.test((runner.suiteResults[1] == runner.results.results[1]),
+        'runner.suiteResults should have been ' + Object.toJSON(runner.results.results[1]) +
+        ', but was ' + Object.toJSON(runner.suiteResults[1]));
+
+    reporter.test((runner.suites[0].specResults !== undefined),
+        'runner.suites[0].specResults was not defined');
+
+    reporter.test((runner.suites[0].specResults == runner.results.results[0].results),
+        'runner.suites[0].specResults should have been ' + Object.toJSON(runner.results.results[0].results) +
+        ', but was ' + Object.toJSON(runner.suites[0].specResults));
+
+    reporter.test((runner.suites[0].specs[0].expectationResults !== undefined),
+        'runner.suites[0].specs[0].expectationResults was not defined');
+
+    reporter.test((runner.suites[0].specs[0].expectationResults == runner.results.results[0].results[0].results),
+        'runner.suites[0].specs[0].expectationResults should have been ' + Object.toJSON(runner.results.results[0].results[0].results) +
+        ', but was ' + Object.toJSON(runner.suites[0].specs[0].expectationResults));
+    
+  }, 250);
+}
+
+
 var runTests = function () {
   $('spinner').show();
 
@@ -775,11 +862,12 @@ var runTests = function () {
   testRunnerFinishCallback();
   testNestedResults();
   testResults();
+//  testHandlesBlankSpecs();
 
   // Timing starts to matter with these tests; ALWAYS use setTimeout()
   setTimeout(function () {
     testReporterWithCallbacks();
-  }, 2000);
+  }, 2500);
   setTimeout(function () {
     testJSONReporter();
   }, 3500);
@@ -787,6 +875,7 @@ var runTests = function () {
     testJSONReporterWithDOM();
   }, 5000);
 
+  testResultsAliasing();
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();
