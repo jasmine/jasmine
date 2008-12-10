@@ -12,7 +12,7 @@ var reporter = function () {
       if (result) {
         passes++;
         iconElement = $('icons');
-        iconElement.appendChild(new Element('img', {src: '../images/accept.png'}));
+        iconElement.appendChild(new Element('img', {src: '../images/go-16.png'}));
       }
       else {
         fails++;
@@ -20,7 +20,7 @@ var reporter = function () {
         fails_report.show();
 
         var iconElement = $('icons');
-        iconElement.appendChild(new Element('img', {src: '../images/exclamation.png'}));
+        iconElement.appendChild(new Element('img', {src: '../images/fail-16.png'}));
 
         var failMessages = $('fail_messages');
         var newFail = new Element('p', {'class': 'fail'});

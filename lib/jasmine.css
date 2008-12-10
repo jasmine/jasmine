@@ -15,7 +15,7 @@ p {
 }
 
 p.fail {
-	background: url( ../images/exclamation.png ) no-repeat;
+	background: url( ../images/fail-16.png ) no-repeat;
 	color: red;
 }
 
