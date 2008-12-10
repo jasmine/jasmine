@@ -766,22 +766,73 @@ var testHandlesBlankSpecs = function () {
 
   describe('Suite for handles blank specs', function () {
     it('should be a test with a blank runs block', function() {
-      runs(function () {
-      });
+      runs(function () {});
     });
-    it('should be a blank (empty function) test', function() {
-
-    });
+    it('should be a blank (empty function) test', function() {});
     
   });
   runner.execute();
 
   setTimeout(function() {
-    reporter.test((runner.results.results[0].results.results.length === 2),
-        'Should have found 2 spec results, got ' + runner.results.results[0].results.results.length );
-    reporter.test((runner.results.results[0].results.passedCount === 2),
-        'Should have found 2 passing specs, got ' + runner.results.results[0].results.passedCount);
+    reporter.test((runner.suites[0].specResults.length === 2),
+        'Should have found 2 spec results, got ' + runner.suites[0].specResults.length);
+    reporter.test((runner.suites[0].results.passedCount === 2),
+        'Should have found 2 passing specs, got ' + runner.suites[0].results.passedCount);
   }, 250);
+}
+
+var testHandlesExceptions = function () {
+  jasmine = Jasmine.init();
+  var runner = Runner();
+
+  describe('Suite for handles exceptions', function () {
+    it('should be a test that fails because it throws an exception', function() {
+      runs(function () {
+        fakeObject.fakeMethod();
+      });
+    });
+
+    it('should be another test that fails because it throws an exception', function() {
+      runs(function () {
+        fakeObject2.fakeMethod2();
+      });
+       runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+
+
+    it('should be a passing test that runs after exceptions are thrown', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
+
+  });
+  runner.execute();
+
+  setTimeout(function() {
+    reporter.test((runner.suites[0].specResults.length === 3),
+        'Should have found 3 spec results, got ' + runner.suites[0].specResults.length);
+
+    reporter.test((runner.suites[0].specs[0].expectationResults[0].passed === false),
+        'First test should have failed, got passed');
+
+    reporter.test((runner.suites[0].specs[0].expectationResults[0].message === 'ReferenceError: fakeObject is not defined in file:///Users/pivotal/workspace/jasmine/test/bootstrap.js (line 791)'),
+        'First test should have shown some exception string, got ' + runner.suites[0].specs[0].expectationResults[0].message);
+
+    reporter.test((runner.suites[0].specs[1].expectationResults[0].passed === false),
+        'Second test should have a failing first result, got passed');
+
+    reporter.test((runner.suites[0].specs[1].expectationResults[0].message === 'ReferenceError: fakeObject2 is not defined in file:///Users/pivotal/workspace/jasmine/test/bootstrap.js (line 797)'),
+        'Second test should have shown an exception message for the first result, got ' + runner.suites[0].specs[1].expectationResults[0].message);
+
+    reporter.test((runner.suites[0].specs[1].expectationResults[1].passed === true),
+           'Second expectation in second test should have still passed');
+
+    reporter.test((runner.suites[0].specs[2].expectationResults[0].passed === true),
+        'Third test should have passed, got failed');
+  }, 2000);
 }
 
 var testResultsAliasing = function () {
@@ -862,9 +913,13 @@ var runTests = function () {
   testRunnerFinishCallback();
   testNestedResults();
   testResults();
-//  testHandlesBlankSpecs();
+//   handle blank specs will work later.
+//    testHandlesBlankSpecs();
+  testHandlesExceptions();
+  testResultsAliasing();
 
-  // Timing starts to matter with these tests; ALWAYS use setTimeout()
+
+//   Timing starts to matter with these tests; ALWAYS use setTimeout()
   setTimeout(function () {
     testReporterWithCallbacks();
   }, 2500);
@@ -875,7 +930,6 @@ var runTests = function () {
     testJSONReporterWithDOM();
   }, 5000);
 
-  testResultsAliasing();
   setTimeout(function() {
     $('spinner').hide();
     reporter.summary();

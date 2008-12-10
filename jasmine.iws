@@ -101,7 +101,7 @@
       <file leaf-file-name="bootstrap.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="841" column="18" selection-start="25839" selection-end="25839" vertical-scroll-proportion="0.61732125">
+            <state line="922" column="5" selection-start="28893" selection-end="28893" vertical-scroll-proportion="0.7703928">
               <folding />
             </state>
           </provider>
@@ -110,7 +110,7 @@
       <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="261" column="49" selection-start="5654" selection-end="5654" vertical-scroll-proportion="0.7172619">
+            <state line="244" column="8" selection-start="5226" selection-end="5226" vertical-scroll-proportion="0.38588008">
               <folding />
             </state>
           </provider>
@@ -427,7 +427,7 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21091811" order="0" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21091811" order="0" />
       <window_info id="RDoc" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32841328" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
@@ -514,14 +514,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
+    <entry file="file://$PROJECT_DIR$/example/example.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="4" selection-start="533" selection-end="533" vertical-scroll-proportion="0.23626943">
+        <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.11025145">
           <folding />
         </state>
       </provider>
-      <provider editor-type-id="HtmlPreview">
-        <state />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="36" selection-start="351" selection-end="351" vertical-scroll-proportion="0.31237912">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/example/example.html">
@@ -534,11 +538,14 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example/example.js">
+    <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.11025145">
+        <state line="12" column="4" selection-start="533" selection-end="533" vertical-scroll-proportion="0.23626943">
           <folding />
         </state>
+      </provider>
+      <provider editor-type-id="HtmlPreview">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
@@ -550,21 +557,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="261" column="49" selection-start="5654" selection-end="5654" vertical-scroll-proportion="0.7172619">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/jasmine.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="36" selection-start="351" selection-end="351" vertical-scroll-proportion="0.31237912">
+        <state line="244" column="8" selection-start="5226" selection-end="5226" vertical-scroll-proportion="0.38588008">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="841" column="18" selection-start="25839" selection-end="25839" vertical-scroll-proportion="0.61732125">
+        <state line="922" column="5" selection-start="28893" selection-end="28893" vertical-scroll-proportion="0.7703928">
           <folding />
         </state>
       </provider>
