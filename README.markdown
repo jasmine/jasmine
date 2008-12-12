@@ -196,12 +196,15 @@ Your contributions are welcome.  Please submit tests with your pull request.
 * [Rajan Agaskar](rajan@pivotallabs.com), Pivotal Labs
 
 ## Acknowledgments
-A big shout out to the various JavaScript test framework authors, especially TJ for [JSpec](http://github.com/visionmedia/jspec/tree/master) - we played with it a bit before deciding that we really needed to roll our own.
+* A big shout out to the various JavaScript test framework authors, especially TJ for [JSpec](http://github.com/visionmedia/jspec/tree/master) - we played with it a bit before deciding that we really needed to roll our own.
+* Thanks to Pivot [Jessica Miller](http://www.jessicamillerworks.com/) for our fancy pass/fail/pending icons
 
 ## TODO List
 
 In no particular order:
 
-* add a description to runs()
-
-
+* Maybe add a description to `runs()` that gets incorporated in the message somehow?
+* Empty specs - calls to `it()` without a function - should be considered Pending specs and have their numbers rolled up for reporting.
+* Exception catching doesn't work after a call to `waits()`
+* Add it `xit()` convention for disabled specs
+* Pending & Disabled counts should be included in results
