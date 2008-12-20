@@ -83,16 +83,7 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="4" selection-start="533" selection-end="533" vertical-scroll-proportion="0.23626943">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="json_reporter.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="0" selection-start="648" selection-end="648" vertical-scroll-proportion="0.21470019">
+            <state line="12" column="4" selection-start="533" selection-end="533" vertical-scroll-proportion="0.41379312">
               <folding />
             </state>
           </provider>
@@ -101,7 +92,7 @@
       <file leaf-file-name="bootstrap.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="906" column="19" selection-start="28503" selection-end="28503" vertical-scroll-proportion="0.296369">
+            <state line="828" column="3" selection-start="25391" selection-end="26216" vertical-scroll-proportion="0.3322314">
               <folding />
             </state>
           </provider>
@@ -110,7 +101,7 @@
       <file leaf-file-name="jasmine.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="244" column="8" selection-start="5226" selection-end="5226" vertical-scroll-proportion="0.018375242">
+            <state line="205" column="3" selection-start="4581" selection-end="4581" vertical-scroll-proportion="1.4096774">
               <folding />
             </state>
           </provider>
@@ -131,7 +122,7 @@
       <file leaf-file-name="jasmine.css" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/jasmine.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="36" selection-start="351" selection-end="351" vertical-scroll-proportion="0.31237912">
+            <state line="17" column="36" selection-start="351" selection-end="351" vertical-scroll-proportion="0.5209677">
               <folding />
             </state>
           </provider>
@@ -140,7 +131,7 @@
       <file leaf-file-name="example.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example/example.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.11025145">
+            <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.18387097">
               <folding />
             </state>
           </provider>
@@ -305,6 +296,33 @@
     <RUBY_DOC NAME="NUMBER" VALUE="0" />
   </component>
   <component name="RunManager">
+    <configuration default="true" type="RubyRunConfigurationType" factoryName="Ruby test">
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TESTS_FOLDER_PATH" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_SCRIPT_PATH" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_CLASS_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_FILE_MASK" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_METHOD_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_TEST_TYPE" VALUE="TEST_SCRIPT" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="RUBY_ARGS" VALUE="-e STDOUT.sync=true;STDERR.sync=true;load($0=ARGV.shift)" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="WORK DIR" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="MODULE_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="SHOULD_USE_SDK" VALUE="false" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="ALTERN_SDK_NAME" VALUE="" />
+      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="INHERITANCE_CHECK_DISABLED" VALUE="false" />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+    </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -335,33 +353,6 @@
         <value defaultName="wholeProject" />
       </option>
       <envs />
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="" />
-      <envs />
-    </configuration>
-    <configuration default="true" type="RubyRunConfigurationType" factoryName="Ruby test">
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TESTS_FOLDER_PATH" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_SCRIPT_PATH" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_CLASS_NAME" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_FILE_MASK" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_METHOD_NAME" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="TEST_TEST_TYPE" VALUE="TEST_SCRIPT" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="RUBY_ARGS" VALUE="-e STDOUT.sync=true;STDERR.sync=true;load($0=ARGV.shift)" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="WORK DIR" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="MODULE_NAME" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="SHOULD_USE_SDK" VALUE="false" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="ALTERN_SDK_NAME" VALUE="" />
-      <RTEST_RUN_CONFIG_SETTINGS_ID NAME="INHERITANCE_CHECK_DISABLED" VALUE="false" />
     </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
@@ -421,7 +412,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="297" y="22" width="1661" height="1178" extended-state="0" />
+    <frame x="7" y="22" width="1872" height="1102" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
@@ -429,7 +420,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21091811" order="0" />
       <window_info id="RDoc" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32841328" order="1" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32837301" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="14" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
@@ -514,57 +505,57 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
+    <entry file="file://$PROJECT_DIR$/example/example.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="721" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
       <provider editor-type-id="HtmlPreview">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="4" selection-start="533" selection-end="533" vertical-scroll-proportion="0.23626943">
+        <state line="17" column="36" selection-start="351" selection-end="351" vertical-scroll-proportion="0.5209677">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/json_reporter.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="0" selection-start="648" selection-end="648" vertical-scroll-proportion="0.21470019">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="244" column="8" selection-start="5226" selection-end="5226" vertical-scroll-proportion="0.018375242">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/example/example.html">
-      <provider editor-type-id="HtmlPreview">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="721" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/jasmine.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="36" selection-start="351" selection-end="351" vertical-scroll-proportion="0.31237912">
+        <state line="20" column="0" selection-start="648" selection-end="648" vertical-scroll-proportion="0.15240084">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/example/example.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.11025145">
+        <state line="6" column="0" selection-start="183" selection-end="183" vertical-scroll-proportion="0.18387097">
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/jasmine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="205" column="3" selection-start="4581" selection-end="4581" vertical-scroll-proportion="1.4096774">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/bootstrap.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="4" selection-start="533" selection-end="533" vertical-scroll-proportion="0.41379312">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="HtmlPreview">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test/bootstrap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="906" column="19" selection-start="28503" selection-end="28503" vertical-scroll-proportion="0.296369">
+        <state line="828" column="3" selection-start="25391" selection-end="26216" vertical-scroll-proportion="0.3322314">
           <folding />
         </state>
       </provider>

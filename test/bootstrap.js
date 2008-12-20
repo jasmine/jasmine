@@ -57,6 +57,14 @@ var testMatchersComparisons = function () {
   expected = new Jasmine.Matchers(true);
   reporter.test(!(expected.should_not_equal(true)),
       'expects_that(true).should_not_equal(false) retruned true');
+
+    expected = new Jasmine.Matchers('foobarbel');
+  reporter.test((expected.should_match(/bar/)),
+      'expects_that(forbarbel).should_match(/bar/) returned false');
+
+  expected = new Jasmine.Matchers('foobazbel');
+  reporter.test(!(expected.should_match(/bar/)),
+      'expects_that(forbazbel).should_match(/bar/) returned true');
 }
 
 var testMatchersReporting = function () {
@@ -818,13 +826,13 @@ var testHandlesExceptions = function () {
     reporter.test((runner.suites[0].specs[0].expectationResults[0].passed === false),
         'First test should have failed, got passed');
 
-    reporter.test((runner.suites[0].specs[0].expectationResults[0].message === 'ReferenceError: fakeObject is not defined in file:///Users/pivotal/workspace/jasmine/test/bootstrap.js (line 791)'),
+    reporter.test((runner.suites[0].specs[0].expectationResults[0].message === 'ReferenceError: fakeObject is not defined in file:///Users/pivotal/workspace/jasmine/test/bootstrap.js (line 799)'),
         'First test should have shown some exception string, got ' + runner.suites[0].specs[0].expectationResults[0].message);
 
     reporter.test((runner.suites[0].specs[1].expectationResults[0].passed === false),
         'Second test should have a failing first result, got passed');
 
-    reporter.test((runner.suites[0].specs[1].expectationResults[0].message === 'ReferenceError: fakeObject2 is not defined in file:///Users/pivotal/workspace/jasmine/test/bootstrap.js (line 797)'),
+    reporter.test((runner.suites[0].specs[1].expectationResults[0].message === 'ReferenceError: fakeObject2 is not defined in file:///Users/pivotal/workspace/jasmine/test/bootstrap.js (line 805)'),
         'Second test should have shown an exception message for the first result, got ' + runner.suites[0].specs[1].expectationResults[0].message);
 
     reporter.test((runner.suites[0].specs[1].expectationResults[1].passed === true),
