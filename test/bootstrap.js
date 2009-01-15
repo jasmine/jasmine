@@ -858,29 +858,29 @@ var testHandlesExceptions = function () {
       });
     });
 
-//    it('should be another test that fails because it throws an exception after a wait', function() {
-    //      runs(function () {
-    //        var foo = 'foo';
-    //      });
-    //      waits(250);
-    //       runs(function () {
-    //      fakeObject2.fakeMethod2();
-    //      });
-    //    });
-    //
-    //    it('should be a passing test that runs after exceptions are thrown from a async test', function() {
-    //      runs(function () {
-    //        this.expects_that(true).should_equal(true);
-    //      });
-    //    });
+    it('should be another test that fails because it throws an exception after a wait', function() {
+      runs(function () {
+        var foo = 'foo';
+      });
+      waits(250);
+      runs(function () {
+        fakeObject3.fakeMethod();
+      });
+    });
+
+    it('should be a passing test that runs after exceptions are thrown from a async test', function() {
+      runs(function () {
+        this.expects_that(true).should_equal(true);
+      });
+    });
 
 
   });
   runner.execute();
 
   setTimeout(function() {
-    reporter.test((runner.suites[0].specResults.length === 3),
-        'Should have found 3 spec results, got ' + runner.suites[0].specResults.length);
+    reporter.test((runner.suites[0].specResults.length === 5),
+        'Should have found 4 spec results, got ' + runner.suites[0].specResults.length);
 
     reporter.test((runner.suites[0].specs[0].expectationResults[0].passed === false),
         'First test should have failed, got passed');
@@ -892,13 +892,19 @@ var testHandlesExceptions = function () {
         'Second test should have a failing first result, got passed');
 
     reporter.test((typeof runner.suites[0].specs[1].expectationResults[0].message.search(/fakeObject2/) !== -1),
-        'First test should have contained /fakeObject/, got ' + runner.suites[0].specs[1].expectationResults[0].message);
+        'Second test should have contained /fakeObject2/, got ' + runner.suites[0].specs[1].expectationResults[0].message);
 
     reporter.test((runner.suites[0].specs[1].expectationResults[1].passed === true),
         'Second expectation in second test should have still passed');
 
     reporter.test((runner.suites[0].specs[2].expectationResults[0].passed === true),
         'Third test should have passed, got failed');
+
+    reporter.test((runner.suites[0].specs[3].expectationResults[0].passed === false),
+        'Fourth test should have a failing first result, got passed');
+
+    reporter.test((typeof runner.suites[0].specs[3].expectationResults[0].message.search(/fakeObject3/) !== -1),
+        'Fourth test should have contained /fakeObject3/, got ' + runner.suites[0].specs[3].expectationResults[0].message);
   }, 2000);
 }
 
