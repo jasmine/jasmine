@@ -667,7 +667,7 @@ var testResults = function () {
 var testReporterWithCallbacks = function () {
   jasmine = Jasmine.init();
   var runner = Runner();
-  
+
   describe('Suite for JSON Reporter with Callbacks', function () {
     it('should be a test', function() {
       runs(function () {
@@ -693,9 +693,15 @@ var testReporterWithCallbacks = function () {
   var bar = 0;
   var baz = 0;
 
-  var specCallback   = function (results) { foo++; }
-  var suiteCallback  = function (results) { bar++; }
-  var runnerCallback = function (results) { baz++; }
+  var specCallback = function (results) {
+    foo++;
+  }
+  var suiteCallback = function (results) {
+    bar++;
+  }
+  var runnerCallback = function (results) {
+    baz++;
+  }
 
   jasmine.reporter = Jasmine.Reporters.reporter({
     specCallback: specCallback,
@@ -732,8 +738,8 @@ var testJSONReporter = function () {
   runner.execute();
 
   setTimeout(function() {
-    var expectedSpecJSON   = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}';
-    var expectedSuiteJSON  = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter, NO DOM"}';
+    var expectedSpecJSON = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}';
+    var expectedSuiteJSON = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter, NO DOM"}';
     var expectedRunnerJSON = '{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"totalCount": 1, "passedCount": 1, "failedCount": 0, "results": [{"passed": true, "message": "Passed."}], "description": "should be a test"}], "description": "Suite for JSON Reporter, NO DOM"}], "description": "All Jasmine Suites"}';
 
     specJSON = jasmine.reporter.specJSON;
@@ -782,10 +788,12 @@ var testHandlesBlankSpecs = function () {
 
   describe('Suite for handles blank specs', function () {
     it('should be a test with a blank runs block', function() {
-      runs(function () {});
+      runs(function () {
+      });
     });
-    it('should be a blank (empty function) test', function() {});
-    
+    it('should be a blank (empty function) test', function() {
+    });
+
   });
   runner.execute();
 
@@ -797,10 +805,36 @@ var testHandlesBlankSpecs = function () {
   }, 250);
 }
 
+var testFormatsExceptionMessages = function () {
+
+  var sampleFirefoxException = {
+    fileName: 'foo.js',
+    line: '1978',
+    message: 'you got your foo in my bar',
+    name: 'A Classic Mistake'
+  }
+
+  var sampleWebkitException = {
+    sourceURL: 'foo.js',
+    lineNumber: '1978',
+    message: 'you got your foo in my bar',
+    name: 'A Classic Mistake'
+  }
+
+  var expected = 'A Classic Mistake: you got your foo in my bar in foo.js (line 1978)'
+
+  reporter.test((Jasmine.Util.formatException(sampleFirefoxException) === expected),
+      'Should have got ' + expected + ' but got: ' + Jasmine.Util.formatException(sampleFirefoxException));
+
+  reporter.test((Jasmine.Util.formatException(sampleWebkitException) === expected),
+      'Should have got ' + expected + ' but got: ' + Jasmine.Util.formatException(sampleWebkitException));
+};
+
 var testHandlesExceptions = function () {
   jasmine = Jasmine.init();
   var runner = Runner();
-
+  
+  //we run two exception tests to make sure we continue after throwing an exception
   describe('Suite for handles exceptions', function () {
     it('should be a test that fails because it throws an exception', function() {
       runs(function () {
@@ -812,7 +846,7 @@ var testHandlesExceptions = function () {
       runs(function () {
         fakeObject2.fakeMethod2();
       });
-       runs(function () {
+      runs(function () {
         this.expects_that(true).should_equal(true);
       });
     });
@@ -824,6 +858,23 @@ var testHandlesExceptions = function () {
       });
     });
 
+//    it('should be another test that fails because it throws an exception after a wait', function() {
+    //      runs(function () {
+    //        var foo = 'foo';
+    //      });
+    //      waits(250);
+    //       runs(function () {
+    //      fakeObject2.fakeMethod2();
+    //      });
+    //    });
+    //
+    //    it('should be a passing test that runs after exceptions are thrown from a async test', function() {
+    //      runs(function () {
+    //        this.expects_that(true).should_equal(true);
+    //      });
+    //    });
+
+
   });
   runner.execute();
 
@@ -834,22 +885,23 @@ var testHandlesExceptions = function () {
     reporter.test((runner.suites[0].specs[0].expectationResults[0].passed === false),
         'First test should have failed, got passed');
 
-    reporter.test((runner.suites[0].specs[0].expectationResults[0].message === 'ReferenceError: fakeObject is not defined in file:///Users/pivotal/workspace/jasmine/test/bootstrap.js (line 807)'),
-        'First test should have shown some exception string, got ' + runner.suites[0].specs[0].expectationResults[0].message);
+    reporter.test((typeof runner.suites[0].specs[0].expectationResults[0].message.search(/fakeObject/) !== -1),
+        'First test should have contained /fakeObject/, got ' + runner.suites[0].specs[0].expectationResults[0].message);
 
     reporter.test((runner.suites[0].specs[1].expectationResults[0].passed === false),
         'Second test should have a failing first result, got passed');
 
-    reporter.test((runner.suites[0].specs[1].expectationResults[0].message === 'ReferenceError: fakeObject2 is not defined in file:///Users/pivotal/workspace/jasmine/test/bootstrap.js (line 813)'),
-        'Second test should have shown an exception message for the first result, got ' + runner.suites[0].specs[1].expectationResults[0].message);
+    reporter.test((typeof runner.suites[0].specs[1].expectationResults[0].message.search(/fakeObject2/) !== -1),
+        'First test should have contained /fakeObject/, got ' + runner.suites[0].specs[1].expectationResults[0].message);
 
     reporter.test((runner.suites[0].specs[1].expectationResults[1].passed === true),
-           'Second expectation in second test should have still passed');
+        'Second expectation in second test should have still passed');
 
     reporter.test((runner.suites[0].specs[2].expectationResults[0].passed === true),
         'Third test should have passed, got failed');
   }, 2000);
 }
+
 
 var testResultsAliasing = function () {
   jasmine = Jasmine.init();
@@ -909,7 +961,7 @@ var testResultsAliasing = function () {
     reporter.test((runner.suites[0].specs[0].expectationResults == runner.results.results[0].results[0].results),
         'runner.suites[0].specs[0].expectationResults should have been ' + Object.toJSON(runner.results.results[0].results[0].results) +
         ', but was ' + Object.toJSON(runner.suites[0].specs[0].expectationResults));
-    
+
   }, 250);
 }
 
@@ -930,7 +982,8 @@ var runTests = function () {
   testNestedResults();
   testResults();
 //   handle blank specs will work later.
-//    testHandlesBlankSpecs();
+  //    testHandlesBlankSpecs();
+  testFormatsExceptionMessages();
   testHandlesExceptions();
   testResultsAliasing();
 
