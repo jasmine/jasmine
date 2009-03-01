@@ -284,6 +284,31 @@ Here are a few examples:
       expect(callback).wasCalledWith('foo');
     });
 
+
+Spies can be very useful for testing AJAX or other asynchronous behaviors that take callbacks by faking the method firing an async call.
+
+    var Klass = function () {
+    };
+
+    var Klass.prototype.asyncMethod = function (callback) {
+      someAsyncCall(callback);
+    };
+
+    ...
+
+    it('should test async call') {
+      spyOn(Klass, 'asyncMethod');
+      var callback = Jasmine.createSpy();
+
+      Klass.asyncMethod(callback);
+      expect(callback).wasNotCalled();
+
+      var someResponseData = 'foo';
+      Klass.asyncMethod.mostRecentCall.args[0](someResponseData);
+      expect(callback).wasCalledWith(someResponseData);
+
+    });
+
 There are spy-specfic matchers that are very handy.
 
 `wasCalled()` returns true if the object is a spy and was called
