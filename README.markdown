@@ -23,17 +23,15 @@ How To
 
 There is a nice example of how to use Jasmine in the /example directory.  But here's more information.
 
+Exciting changes are afoot and many syntax changes have been made to make Jasmine more usable. Please read the examples below for updates.
+
 ### Specs
 
 Each spec is, naturally, a JavaScript function.  You tell Jasmine about this spec with a call to `it()` with a name and the function.  The string is a description that will be helpful to you when reading a report.
 
-Your spec needs to call `runs()` with another function that is the actual spec.  More on why in a moment.  Here's an example:
-
     it('should be a test', function () {
-	  runs(function () {
 	    var foo = 0
 	    foo++;
-	  });
     });
 
 ### Expectations
@@ -41,44 +39,84 @@ Your spec needs to call `runs()` with another function that is the actual spec. 
 Within your spec you will want/need to make expectations.  These are made like this:
 
     it('should be a test', function () {
-      runs(function () {
 	    var foo = 0
 	    foo++;
 	
-	    this.expects_that(foo).should_equal(1);
-      });
+	    expect(foo).toEqual(1);
     });
 
 Results of the expectations are logged for later for reporting.
 
-### Multiple Calls to `runs()` & Scope in Your Spec
-
-Your spec can call `runs()` multiple times if you need to break your spec up for any reason.  Say, for async support (see next section).  To allow you to share variables across your `runs()` functions, `this` is set to the spec itself.  For example:
-
-	it('should be a test', function () {
-	  runs(function () {
-	    this.foo = 0
-	    this.foo++;
-
-	    this.expects_that(this.foo).should_equal(1);
-	  });
-
-	  runs(function () {
-	    this.foo++;
-
-	    this.expects_that(this.foo).should_equal(2);
-	  })
-	});
-
-Functions defined with `runs()` are called in the order in which they are defined.
-
 ### Asynchronous Specs
 
-You may be asking yourself, "Self, why would I ever need to break up my tests into pieces like this?"  The answer is when dealing with asynchronous function calls.
+You may be asking yourself, "Self, how do I make asynchronous tests?"
 
-Say you need to make a call that is asynchronous - an AJAX API, or some other JavaScript library.  That is, the call returns immediately, yet you want to make expectations 'at some point in the future' after some magic happens in the background.
+Well, say you need to make a call that is asynchronous - an AJAX API, or some other JavaScript library.  That is, the call returns immediately, yet you want to make expectations 'at some point in the future' after some magic happens in the background.
 
-Jasmine allows you to do this by chaining calls to `runs()` with calls to `waits()`. You supply a time to wait before the next `runs()` function is executed.  Such as:
+Jasmine allows you to do this with `runs()` and `waits()` blocks.
+
+    `runs()` blocks by themselves simply run as if they were called directly. The following snippets of code should provide similar results:
+
+
+    it('should be a test', function () {
+	    var foo = 0
+	    foo++;
+
+	    expect(foo).toEqual(1);
+    });
+
+    and
+
+    it('should be a test', function () {
+      runs( function () {
+	      var foo = 0
+	      foo++;
+
+	      expect(foo).toEqual(1);
+      });
+    });
+
+    multiple `runs()` blocks in a spec will run serially. For example,
+
+    it('should be a test', function () {
+      runs( function () {
+	      var foo = 0
+	      foo++;
+
+	      expect(foo).toEqual(1);
+      });
+      runs( function () {
+	      var bar = 0
+	      bar++;
+
+	      expect(bar).toEqual(1);
+      });
+    });
+
+    `runs()` blocks share functional scope -- `this` properties will be common to all blocks, but simple vars will not!
+
+     it('should be a test', function () {
+      runs( function () {
+	      this.foo = 0
+	      this.foo++;
+        var bar = 0;
+        bar++;
+
+	      expect(this.foo).toEqual(1);
+	      expect(bar).toEqual(1);
+      });
+      runs( function () {
+        this.foo++;
+	      var bar = 0
+	      bar++;
+
+	      expect(foo).toEqual(2);
+	      expect(bar).toEqual(1);
+      });
+    });
+
+    `runs()` blocks exist so you can test asynchronous processes. The function `waits()` works with `runs()` to provide a naive
+    timeout before the next block is run. You supply a time to wait before the next `runs()` function is executed.  For example:
 
 	it('should be a test', function () {
 	  runs(function () {
@@ -106,6 +144,7 @@ What's happening here?
 * The second `runs()` is executed immediately and then verifies that `this.foo` was indeed initialized to zero in the previous `runs()`. 
 * Then we wait for half a second.  
 * Then the last call to `runs()` expects that `this.foo` was incremented by the `setTimeout`.
+
 
 ### Suites
 
@@ -163,23 +202,119 @@ There is a `Jasmine.Reporters` namespace for you to see how to handle reporting.
 
 ### Custom Matchers
 
-Jasmine has a simple set of matchers - currently just should\_equal and should\_not\_equal.  But Matchers can be extended simply to add new expectations.  We use Douglas Crockford's Function.method() helper to define new Matchers.
+Jasmine has several matchers:
 
+`toEqual` compares objects or primitives and returns true if they are equal
+`toNotEqual` compares objects or primitives and returns true if they are not equal
+`toMatch` takes a regex or a string and returns true if it matches
+`toNotMatch` takes a regex or a string and returns true if it does not match
+`toBeDefined` returns true if the object or primitive is not `undefined`
+`toBeNull` returns true if the object or primitive is not `null`
+`toBeTruthy` returns true if the object or primitive evaluates to true
+`toBeFalsy` returns true if the object or primitive evaluates to false
+`wasCalled` returns true if the object is a spy and was called
+`wasNotCalled` returns true if the object is a spy and was not called
+`wasNotCalledWith` returns true if the object is a spy and was called with the passed arguments
+`toContain` returns true if an array or string contains the passed variable.
+`toNotContain` returns true if an array or string does not contain the passed variable.
+
+### Writing new Matchers
 A Matcher has a method name, takes an expected value as it's only parameter, has access to the actual value in this, and then makes a call to this.report with true/false with a failure message.  Here's the definition of should\_equal():
 
-	Matchers.method('should_equal', function (expected) {
+	Jasmine.Matchers.prototype.shouldEqual = function (expected) {
 	  return this.report((this.actual === expected),
 	      'Expected ' + expected + ' but got ' + this.actual + '.');
 	});
 	
-Feel free to define your own matcher as needed in your code.  If you'd like to add Matchers to Jasmine, please write tests.  
+Feel free to define your own matcher as needed in your code.  If you'd like to add Matchers to Jasmine, please write tests.
 
-### Limitations
+### Disabling Tests & Suites
 
-You can only have one instance of Jasmine (which is a container for a runner) running at any given time.  As you can see from `bootstrap.js`, this means you have to wait until a runner is done before defining suites & specs for another runner.  
+specs may be disabled by calling `xit()` instead of `it()`.
+suites may be disabled by calling `xdescribe()` instead of `describe()`
 
-This is a bit sloppy and will be fixed at some point - but it allows for a nicer syntax when defining your specs.  For now we expect this to be fine as most of the time having multiple suites is sufficient for isolating application-level code.
+### beforeEach
 
+beforeEach takes a function that is run before each spec. For example:
+
+describe('some suite', function () {
+
+  var suiteWideFoo;
+  beforeEach(function () {
+    suiteWideFoo = 1;
+  }
+
+  it('should equal bar', function () {
+    expect(suiteWideFoo).toEqual(1);
+  };
+});
+
+### afterEach
+
+afterEach takes a function that is run after each spec. For example:
+
+describe('some suite', function () {
+
+  var suiteWideFoo;
+  afterEach(function () {
+    suiteWideFoo = 0;
+  }
+
+  it('should equal 1', function () {
+    expect(suiteWideFoo).toEqual(1);
+  };
+
+  it('should equal 0 after', function () {
+    expect(suiteWideFoo).toEqual(0);
+  };
+});
+
+
+### Spies
+
+Jasmine integrates 'spies' that permit many spying, mocking, and faking behaviors.
+
+Here is an few examples:
+
+var Klass = function () {
+}
+
+var Klass.prototype.method = function (arg) {
+    return arg;
+}
+
+var Klass.prototype.methodWithCallback = function (callback) {
+    return callback('foo');
+}
+
+
+...
+
+it('should spy on Klass#method') {
+    spyOn(Klass, 'method');
+    Klass.method('foo argument');
+    expect(Klass.method).wasCalledWith('foo argument');
+}
+
+it('should spy on Klass#methodWithCallback') {
+    var callback = Jasmine.createSpy();
+    Klass.method(callback);
+    expect(callback).wasCalledWith('foo');
+}
+
+Many other options are available for spies:
+
+`andCallThrough()`: spies on AND calls the original function spied on
+`andReturn()`: returns passed arguments when spy is called
+`andThrow()`: throws passed exception when spy is called
+`andCallFake()`: calls passed function when spy is called
+`callCount`: returns number of times spy was called
+`mostRecentCall.args`: returns argument array from last call to spy.
+`argsForCall[i]` returns arguments array for call `i` to spy.
+
+Spies are automatically removed after each spec. They may be set in the beforeEach function.
+
+Big thanks to [Christian Williams](xian@pivotallabs.com) are due for his addition of spy code.
 
 Contributing and Tests
 ----------------------
@@ -198,13 +333,8 @@ Your contributions are welcome.  Please submit tests with your pull request.
 ## Acknowledgments
 * A big shout out to the various JavaScript test framework authors, especially TJ for [JSpec](http://github.com/visionmedia/jspec/tree/master) - we played with it a bit before deciding that we really needed to roll our own.
 * Thanks to Pivot [Jessica Miller](http://www.jessicamillerworks.com/) for our fancy pass/fail/pending icons
+* Huge contributions have been made by [Christian Williams](xian@pivotallabs.com), [Erik Hanson](erik@pivotallabs.com), [Adam Abrons](adam@pivotallabs.com) and [Carl Jackson](carl@pivotallabs.com), and many other Pivots.
 
 ## TODO List
 
-In no particular order:
-
-* Maybe add a description to `runs()` that gets incorporated in the message somehow?
-* Empty specs - calls to `it()` without a function - should be considered Pending specs and have their numbers rolled up for reporting.
-* Exception catching doesn't work after a call to `waits()`
-* Add it `xit()` convention for disabled specs
 * Pending & Disabled counts should be included in results

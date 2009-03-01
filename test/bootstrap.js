@@ -21,7 +21,7 @@ Reporter.prototype.toJSON = function(object) {
 Reporter.prototype.test = function (result, message) {
   this.total++;
 
-  if (result) {
+  if (result) {       
     this.passes++;
     iconElement = document.getElementById('icons');
     iconElement.appendChild(createElement('img', {src: '../images/go-16.png'}));
