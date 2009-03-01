@@ -21,7 +21,7 @@ Reporter.prototype.toJSON = function(object) {
 Reporter.prototype.test = function (result, message) {
   this.total++;
 
-  if (result) {       
+  if (result) {
     this.passes++;
     iconElement = document.getElementById('icons');
     iconElement.appendChild(createElement('img', {src: '../images/go-16.png'}));
@@ -62,8 +62,12 @@ var testMatchersComparisons = function () {
   reporter.test(!expected.toEqual(null),
       'expect({foo:\'bar\'}).toEqual(null) returned true');
 
-  var functionA = function () { return 'hi'; };
-  var functionB = function () { return 'hi'; };
+  var functionA = function () {
+    return 'hi';
+  };
+  var functionB = function () {
+    return 'hi';
+  };
   expected = new Jasmine.Matchers({foo:functionA});
   reporter.test(expected.toEqual({foo:functionB}),
       'expect({foo: function () { return \'hi\' };})' +
@@ -78,11 +82,11 @@ var testMatchersComparisons = function () {
   var nodeB = document.createElement('div');
   expected = new Jasmine.Matchers(nodeA);
   reporter.test((expected.toEqual(nodeA)),
-    'expect(nodeA).toEqual(nodeA) returned false');
+      'expect(nodeA).toEqual(nodeA) returned false');
 
   expected = new Jasmine.Matchers(nodeA);
   reporter.test(!(expected.toEqual(nodeB)),
-    'expect(nodeA).toEqual(nodeB) returned true');
+      'expect(nodeA).toEqual(nodeB) returned true');
 
 
   expected = new Jasmine.Matchers(true);
@@ -233,10 +237,10 @@ var testMatchersComparisons = function () {
   reporter.test(expected.toEqual(["foo", Jasmine.any(String)]),
       'expect(["foo", "goo"]).toEqual(["foo", Jasmine.any(String)]) should return true');
 
-  expected = new Jasmine.Matchers(function () {});
+  expected = new Jasmine.Matchers(function () {
+  });
   reporter.test(expected.toEqual(Jasmine.any(Function)),
       'expect(function () {}).toEqual(Jasmine.any(Function)) should return true');
-
 
 
   expected = new Jasmine.Matchers({foo: "bar", baz: undefined});
@@ -1257,7 +1261,8 @@ var testSpecSpy = function () {
     });
 
     it('should be able to reset a spy', function() {
-      var TestClass = { someFunction: function() {} };
+      var TestClass = { someFunction: function() {
+      } };
       this.spyOn(TestClass, 'someFunction');
 
       expect(TestClass.someFunction).wasNotCalled();
@@ -1628,11 +1633,13 @@ var testJSONReporterWithDOM = function () {
   Jasmine.getEnv().reporter = Jasmine.Reporters.JSONtoDOM('json_reporter_results');
   runner.execute();
 
-  var expectedJSONString = '{"totalCount":1,"passedCount":1,"failedCount":0,"results":[{"totalCount":1,"passedCount":1,"failedCount":0,"results":[{"totalCount":1,"passedCount":1,"failedCount":0,"results":[{"passed":true,"message":"Passed."}],"description":"should be a test"}],"description":"Suite for JSON Reporter/DOM"}],"description":"All Jasmine Suites"}';
-  //innerText not supported in firefox.
-  reporter.test((document.getElementById('json_reporter_results').innerHTML == expectedJSONString),
-      'JSON Reporter with DOM did not write the expected report to the DOM, got:' + document.getElementById('json_reporter_results').innerHTML);
+  var expectedJsonString = '{"totalCount":1,"passedCount":1,"failedCount":0,"results":[{"totalCount":1,"passedCount":1,"failedCount":0,"results":[{"totalCount":1,"passedCount":1,"failedCount":0,"results":[{"passed":true,"message":"Passed."}],"description":"should be a test"}],"description":"Suite for JSON Reporter/DOM"}],"description":"All Jasmine Suites"}';
+  //this statement makes sure we have a string that is the same across different DOM implementations.
+  var actualJsonString = document.getElementById('json_reporter_results').innerHTML.replace(/&quot;/g, '"');
+  reporter.test((actualJsonString == expectedJsonString),
+      'JSON Reporter with DOM did not write the expected report to the DOM, got:<br /><br />' + actualJsonString + '<br /><br />expected<br /><br />' + expectedJsonString);
 };
+
 
 var testHandlesBlankSpecs = function () {
   Jasmine.currentEnv_ = new Jasmine.Env();
