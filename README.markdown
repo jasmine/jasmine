@@ -181,14 +181,20 @@ You can only have one instance of Jasmine (which is a container for a runner) ru
 This is a bit sloppy and will be fixed at some point - but it allows for a nicer syntax when defining your specs.  For now we expect this to be fine as most of the time having multiple suites is sufficient for isolating application-level code.
 
 
-Contributing and Tests
-----------------------
+## Contributing and Tests
 
 Sometimes it's hard to test a framework with the framework itself.  Either the framework isn't mature enough or it just hurts your head.  Jasmine is affected by both.
 
 So we made a little bootstrappy test reporter that lets us test Jasmine's pieces in isolation.  See test/bootstrap.js.  Feel free to use the bootstrap test suite to test your custom Matchers or extensions/changes to Jasmine.
 
 Your contributions are welcome.  Please submit tests with your pull request.
+
+### Mailing List
+http://groups.google.com/group/pivotallabsopensource
+  
+### Pivotal Tracker Bug/Feature Tracker
+http://www.pivotaltracker.com/projects/10606
+
 
 ## Maintainers
 
