@@ -190,10 +190,10 @@ So we made a little bootstrappy test reporter that lets us test Jasmine's pieces
 Your contributions are welcome.  Please submit tests with your pull request.
 
 ### Mailing List
-http://groups.google.com/group/pivotallabsopensource
+[http://groups.google.com/group/pivotallabsopensource](http://groups.google.com/group/pivotallabsopensource)
   
 ### Pivotal Tracker Bug/Feature Tracker
-http://www.pivotaltracker.com/projects/10606
+[http://www.pivotaltracker.com/projects/10606](http://www.pivotaltracker.com/projects/10606)
 
 
 ## Maintainers
