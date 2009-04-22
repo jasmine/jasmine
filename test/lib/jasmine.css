@@ -1,0 +1,24 @@
+body {
+  font: 14px "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
+  padding-left: 40px;
+}
+
+h1 {
+  padding-top: 20px;
+  font-weight: bold;
+  font: 24px; /* "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif; */
+}
+
+p {
+	margin-top: 5px;
+	padding-left: 20px;
+}
+
+p.fail {
+	background: url( ../images/fail-16.png ) no-repeat;
+	color: red;
+}
+
+p.fail_in_summary {
+  color: red;
+}
