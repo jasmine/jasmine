@@ -251,6 +251,36 @@ Similarly, there is an afterEach declaration.  It takes a function that is run a
       };
     });
 
+### Nested Describes
+Jasmine now supports nested describes. An example: 
+
+    describe('some suite', function () {
+
+      var suiteWideFoo;
+
+      beforeEach(function () {
+        suiteWideFoo = 0;
+      });
+
+      describe('some nested suite', function() {
+        var nestedSuiteBar;
+        beforeEach(function() {
+          nestedSuiteBar=1;
+        });        
+
+        it('nested expectation', function () {
+          expect(suiteWideFoo).toEqual(0);
+          expect(nestedSuiteBar).toEqual(1);
+        };
+      
+      });
+
+      it('top-level describe', function () {
+        expect(suiteWideFoo).toEqual(0);
+        expect(nestedSuiteBar).toEqual(undefined);
+      };
+    });
+
 ### Spies
 
 Jasmine integrates 'spies' that permit many spying, mocking, and faking behaviors.
