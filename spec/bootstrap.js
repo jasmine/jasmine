@@ -284,7 +284,6 @@ var runTests = function () {
   runSuite('JsonReporterTest.js');
   runSuite('SpyTest.js');
   
-  testRunnerFinishCallback();
   testFormatsExceptionMessages();
   testHandlesExceptions();
   testResultsAliasing();
