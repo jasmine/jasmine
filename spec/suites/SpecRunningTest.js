@@ -700,7 +700,7 @@ describe("jasmine spec running", function () {
   it('shouldn\'t execute specs in disabled suites', function() {
     var spy = jasmine.createSpy();
     var disabledSuite = env.xdescribe('a disabled suite', function() {
-      it('enabled spec, but should not be run', function() {
+      env.it('enabled spec, but should not be run', function() {
         spy();
       });
     });
@@ -712,10 +712,10 @@ describe("jasmine spec running", function () {
 
   it('#explodes should throw an exception when it is called inside a spec', function() {
     var exceptionMessage = false;
-    var suite = env.describe('Spec', function () {
-      it('plodes', function() {
+    var anotherSuite = env.describe('Spec', function () {
+      env.it('plodes', function() {
         try {
-          jasmine.explodes();
+          this.explodes();
         }
         catch (e) {
           exceptionMessage = e;
@@ -723,7 +723,8 @@ describe("jasmine spec running", function () {
         expect(exceptionMessage).toNotEqual(false);
       });
     });
-    suite.execute();
+
+    anotherSuite.execute();
 
     expect(exceptionMessage).toEqual('explodes function should not have been called');
   });
