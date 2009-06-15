@@ -672,6 +672,7 @@ describe("jasmine spec running", function () {
 
     suite.execute();
     fakeTimer.tick(600);
+
     expect(suite.specs[0].foo).toEqual(2); // "Spec does not maintain scope in between functions");
     expect(suite.specs[0].results.getItems().length).toEqual(2); // "Spec did not get results for all expectations");
     expect(suite.specs[0].results.getItems()[0].passed).toEqual(false); // "Spec did not return false for a failed expectation");
@@ -698,7 +699,7 @@ describe("jasmine spec running", function () {
 
   it('shouldn\'t execute specs in disabled suites', function() {
     var spy = jasmine.createSpy();
-    var disabledSuite = xdescribe('a disabled suite', function() {
+    var disabledSuite = env.xdescribe('a disabled suite', function() {
       it('enabled spec, but should not be run', function() {
         spy();
       });
@@ -709,4 +710,21 @@ describe("jasmine spec running", function () {
     expect(spy).wasNotCalled();
   });
 
+  it('#explodes should throw an exception when it is called inside a spec', function() {
+    var exceptionMessage = false;
+    var suite = env.describe('Spec', function () {
+      it('plodes', function() {
+        try {
+          jasmine.explodes();
+        }
+        catch (e) {
+          exceptionMessage = e;
+        }
+        expect(exceptionMessage).toNotEqual(false);
+      });
+    });
+    suite.execute();
+
+    expect(exceptionMessage).toEqual('explodes function should not have been called');
+  });
 });

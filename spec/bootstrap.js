@@ -278,24 +278,20 @@ var runTests = function () {
   runSuite('PrettyPrintTest.js');
   runSuite('MatchersTest.js');
   runSuite('SpecRunningTest.js');
-  testRunnerFinishCallback();
   runSuite('NestedResultsTest.js');
-  testFormatsExceptionMessages();
-  testHandlesExceptions();
-  testResultsAliasing();
   runSuite('ReporterTest.js');
   runSuite('RunnerTest.js');
   runSuite('JsonReporterTest.js');
   runSuite('SpyTest.js');
-  testExplodes();
-
+  
+  testRunnerFinishCallback();
+  testFormatsExceptionMessages();
+  testHandlesExceptions();
+  testResultsAliasing();
 
   //   handle blank specs will work later.
   //      testHandlesBlankSpecs();
 
-
   reporter.summary();
   document.getElementById('spinner').style.display = "none";
-
 };
-
