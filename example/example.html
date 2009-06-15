@@ -13,10 +13,10 @@
 </h1>
 <div id="results"></div>
 <script type="text/javascript">
-  jasmine.getEnv().execute();
+  Jasmine.getEnv().execute();
   setTimeout(function () {
     document.getElementById('results').innerHTML = 'It\'s alive! :' +
-                                                   (jasmine.getEnv().currentRunner.getResults().passedCount === 1);
+                                                   (Jasmine.getEnv().currentRunner.results.passedCount === 1);
   }, 250);
 </script>
 </body>
