@@ -95,4 +95,23 @@ describe('RunnerTest', function() {
     expect(results.failedCount).toEqual(1);
   });
 
+  it('should set the finished flag when #finished is called', function(){
+    env.currentRunner.finish();
+
+    expect(env.currentRunner.finished).toEqual(true);
+  });
+
+  it('should call the finish callback when the runner is finished', function() {
+    var foo = 0;
+
+    env.currentRunner.finishCallback = function() {
+      foo++;
+    };
+
+    env.currentRunner.finish();
+
+    expect(env.currentRunner.finished).toEqual(true);
+    expect(foo).toEqual(1);
+  });
+
 });

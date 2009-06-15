@@ -60,7 +60,7 @@ jasmine.Matchers.prototype.toEqual = function(expected) {
 jasmine.Matchers.prototype.should_equal = jasmine.Matchers.prototype.toEqual;
 
 jasmine.Matchers.prototype.toNotEqual = function(expected) {
-  return this.report((this.actual !== expected),
+  return this.report(!this.env.equals_(this.actual, expected),
     'Expected ' + jasmine.Matchers.pp(expected) + ' to not equal ' + jasmine.Matchers.pp(this.actual) + ', but it does.');
 };
 /** @deprecated */

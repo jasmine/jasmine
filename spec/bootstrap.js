@@ -148,114 +148,6 @@ var testHandlesBlankSpecs = function () {
       'Should have found 2 passing specs, got ' + runner.suites[0].results.passedCount);
 };
 
-var testFormatsExceptionMessages = function () {
-
-  var sampleFirefoxException = {
-    fileName: 'foo.js',
-    line: '1978',
-    message: 'you got your foo in my bar',
-    name: 'A Classic Mistake'
-  };
-
-  var sampleWebkitException = {
-    sourceURL: 'foo.js',
-    lineNumber: '1978',
-    message: 'you got your foo in my bar',
-    name: 'A Classic Mistake'
-  };
-
-  var expected = 'A Classic Mistake: you got your foo in my bar in foo.js (line 1978)';
-
-  reporter.test((jasmine.util.formatException(sampleFirefoxException) === expected),
-      'Should have got ' + expected + ' but got: ' + jasmine.util.formatException(sampleFirefoxException));
-
-  reporter.test((jasmine.util.formatException(sampleWebkitException) === expected),
-      'Should have got ' + expected + ' but got: ' + jasmine.util.formatException(sampleWebkitException));
-};
-
-var testHandlesExceptions = function () {
-  var env = newJasmineEnv();
-
-  //we run two exception tests to make sure we continue after throwing an exception
-  var suite = env.describe('Suite for handles exceptions', function () {
-    env.it('should be a test that fails because it throws an exception', function() {
-      this.runs(function () {
-        throw new Error('fake error 1');
-      });
-    });
-
-    env.it('should be another test that fails because it throws an exception', function() {
-      this.runs(function () {
-        throw new Error('fake error 2');
-      });
-      this.runs(function () {
-        this.expect(true).toEqual(true);
-      });
-    });
-
-
-    env.it('should be a passing test that runs after exceptions are thrown', function() {
-      this.runs(function () {
-        this.expect(true).toEqual(true);
-      });
-    });
-
-    env.it('should be another test that fails because it throws an exception after a wait', function() {
-      this.runs(function () {
-        var foo = 'foo';
-      });
-      this.waits(250);
-      this.runs(function () {
-        throw new Error('fake error 3');
-      });
-    });
-
-    env.it('should be a passing test that runs after exceptions are thrown from a async test', function() {
-      this.runs(function () {
-        this.expect(true).toEqual(true);
-      });
-    });
-  });
-
-
-  var runner = env.currentRunner;
-  runner.execute();
-  Clock.tick(400); //TODO: setting this to a large number causes failures, but shouldn't
-
-  var resultsForSpec0 = suite.specs[0].getResults();
-  var resultsForSpec1 = suite.specs[1].getResults();
-  var resultsForSpec2 = suite.specs[2].getResults();
-  var resultsForSpec3 = suite.specs[3].getResults();
-
-  reporter.test((suite.getResults().totalCount == 6),
-      'Should have found 5 spec results, got ' + suite.getResults().totalCount);
-
-  reporter.test((resultsForSpec0.getItems()[0].passed === false),
-      'Spec1 test, expectation 0 should have failed, got passed');
-
-  reporter.test((resultsForSpec0.getItems()[0].message.match(/fake error 1/)),
-      'Spec1 test, expectation 0 should have a message that contained /fake error 1/, got ' + resultsForSpec0.getItems()[0].message);
-
-  reporter.test((resultsForSpec1.getItems()[0].passed === false),
-      'Spec2 test, expectation 0 should have failed, got passed');
-
-  reporter.test((resultsForSpec1.getItems()[0].message.match(/fake error 2/)),
-      'Spec2 test, expectation 0 should have a message that contained /fake error 2/, got ' + resultsForSpec1.getItems()[0].message);
-
-  reporter.test((resultsForSpec1.getItems()[1].passed === true),
-      'Spec2 test should have had a passing 2nd expectation');
-
-  reporter.test((resultsForSpec2.getItems()[0].passed === true),
-      'Spec3 test should have passed, got failed');
-
-  reporter.test((resultsForSpec3.getItems()[0].passed === false),
-      'Spec3 test should have a failing first expectation, got passed');
-
-  reporter.test((resultsForSpec3.getItems()[0].message.match(/fake error 3/)),
-      'Spec3 test should have an error message that contained /fake error 3/, got ' + resultsForSpec3.getItems()[0].message);
-};
-
-
 var testResultsAliasing = function () {
   var env = newJasmineEnv();
 
@@ -278,24 +170,18 @@ var runTests = function () {
   runSuite('PrettyPrintTest.js');
   runSuite('MatchersTest.js');
   runSuite('SpecRunningTest.js');
-  testRunnerFinishCallback();
   runSuite('NestedResultsTest.js');
-  testFormatsExceptionMessages();
-  testHandlesExceptions();
-  testResultsAliasing();
   runSuite('ReporterTest.js');
   runSuite('RunnerTest.js');
   runSuite('JsonReporterTest.js');
   runSuite('SpyTest.js');
-  testExplodes();
+  runSuite('ExceptionsTest.js');
 
+//  testResultsAliasing();  // this appears to do nothing.
 
   //   handle blank specs will work later.
   //      testHandlesBlankSpecs();
 
-
   reporter.summary();
   document.getElementById('spinner').style.display = "none";
-
 };
-

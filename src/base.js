@@ -5,9 +5,6 @@
 /** @namespace */
 var jasmine = {};
 
-/** @deprecated use jasmine (lowercase because it's a package name) instead */
-var Jasmine = jasmine;
-
 jasmine.unimplementedMethod_ = function() {
   throw new Error("unimplemented method");
 };
@@ -63,7 +60,6 @@ jasmine.isDomNode = function(obj) {
 jasmine.any = function(clazz) {
   return new jasmine.Matchers.Any(clazz);
 };
-
 
 jasmine.createSpy = function(name) {
   var spyObj = function() {
@@ -135,7 +131,6 @@ var it = function(desc, func) {
   return jasmine.getEnv().it(desc, func);
 };
 
-//this mirrors the spec syntax so you can define a spec description that will not run.
 var xit = function(desc, func) {
   return jasmine.getEnv().xit(desc, func);
 };
