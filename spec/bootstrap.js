@@ -54,6 +54,7 @@ Reporter.prototype.summary = function () {
 var reporter = new Reporter();
 
 function runSuite(filename) {
+  console.log(filename);
   var suite = jasmine.include(filename);
   suite.execute();
   emitSuiteResults(filename, suite);
@@ -167,15 +168,15 @@ var testResultsAliasing = function () {
 var runTests = function () {
   document.getElementById('spinner').style.display = "";
 
-  runSuite('PrettyPrintTest.js');
-  runSuite('MatchersTest.js');
-  runSuite('SpecRunningTest.js');
-  runSuite('NestedResultsTest.js');
-  runSuite('ReporterTest.js');
-  runSuite('RunnerTest.js');
-  runSuite('JsonReporterTest.js');
-  runSuite('SpyTest.js');
-  runSuite('ExceptionsTest.js');
+  runSuite('suites/PrettyPrintTest.js');
+  runSuite('suites/MatchersTest.js');
+  runSuite('suites/SpecRunningTest.js');
+  runSuite('suites/NestedResultsTest.js');
+  runSuite('suites/ReporterTest.js');
+  runSuite('suites/RunnerTest.js');
+  runSuite('suites/JsonReporterTest.js');
+  runSuite('suites/SpyTest.js');
+  runSuite('suites/ExceptionsTest.js');
 
 //  testResultsAliasing();  // this appears to do nothing.
 
