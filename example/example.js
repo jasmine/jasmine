@@ -1,7 +1,11 @@
-describe('one suite description', function () {
-  it('should be a test', function() {
-    runs(function () {
+describe('ExampleSuite', function () {
+  it('should have a passing test', function() {
       expect(true).toEqual(true);
-    });
+  });
+
+  describe('Nested Describe', function () {
+     it('should also have a passing test', function () {
+        expect(true).toEqual(true);
+     });
   });
 });

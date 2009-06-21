@@ -1,24 +1,49 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-    "http://www.w3.org/TR/html4/loose.dtd">
+  "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <title>Jasmine Example</title>
-  <script type="text/javascript" src="../lib/jasmine.js"></script>
-  <script type="text/javascript" src="example.js"></script>
-  <link type="text/css" rel="stylesheet" href="../lib/jasmine.css"/>
+  <title>Jasmine Test Runner</title>
 </head>
-<body>
-<h1>
-  Running Jasmine Example Specs
-</h1>
-<div id="results"></div>
+<script type="text/javascript" src="../spec/lib/json2.js"></script>
+<script type="text/javascript" src="../lib/jasmine.js"></script>
+<script type="text/javascript" src="../lib/TrivialReporter.js"></script>
+
 <script type="text/javascript">
-  jasmine.getEnv().execute();
-  setTimeout(function () {
-    document.getElementById('results').innerHTML = 'It\'s alive! :' +
-                                                   (jasmine.getEnv().currentRunner.getResults().passedCount === 1);
-  }, 250);
+  jasmine.include('example.js', true);
 </script>
+
+<style type="text/css">
+  .spec {
+    margin: 5px;
+  }
+
+  .passed {
+    background-color: lightgreen;
+  }
+
+  .failed {
+    background-color: pink;
+  }
+
+  .resultMessage {
+    white-space: pre;
+  }
+
+  .stackTrace {
+    white-space: pre;
+    font-size: .8em;
+    margin-left: 10px;
+  }
+</style>
+
+<body>
+
+<script type="text/javascript">
+  var jasmineEnv = jasmine.getEnv();
+  jasmineEnv.reporter = new jasmine.TrivialReporter();
+  jasmineEnv.execute();
+</script>
+
 </body>
 </html>
 
