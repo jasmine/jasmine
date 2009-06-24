@@ -129,42 +129,6 @@ var testRunnerFinishCallback = function () {
       "Runner finish callback was not called");
 };
 
-var testHandlesBlankSpecs = function () {
-  var env = newJasmineEnv();
-  env.describe('Suite for handles blank specs', function () {
-    env.it('should be a test with a blank runs block', function() {
-      this.runs(function () {
-      });
-    });
-    env.it('should be a blank (empty function) test', function() {
-    });
-
-  });
-  var runner = env.currentRunner;
-  runner.execute();
-
-  reporter.test((runner.suites[0].results.getItems().length === 2),
-      'Should have found 2 spec results, got ' + runner.suites[0].results.getItems().length);
-  reporter.test((runner.suites[0].results.passedCount === 2),
-      'Should have found 2 passing specs, got ' + runner.suites[0].results.passedCount);
-};
-
-var testResultsAliasing = function () {
-  var env = newJasmineEnv();
-
-  env.describe('Suite for result aliasing test', function () {
-
-    env.it('should be a test', function() {
-      this.runs(function () {
-        this.expect(true).toEqual(true);
-      });
-    });
-
-  });
-
-};
-
-
 var runTests = function () {
   document.getElementById('spinner').style.display = "";
 
@@ -174,14 +138,8 @@ var runTests = function () {
   runSuite('suites/NestedResultsTest.js');
   runSuite('suites/ReporterTest.js');
   runSuite('suites/RunnerTest.js');
-  runSuite('suites/JsonReporterTest.js');
   runSuite('suites/SpyTest.js');
   runSuite('suites/ExceptionsTest.js');
-
-//  testResultsAliasing();  // this appears to do nothing.
-
-  //   handle blank specs will work later.
-  //      testHandlesBlankSpecs();
 
   reporter.summary();
   document.getElementById('spinner').style.display = "none";
