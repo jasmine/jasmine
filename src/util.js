@@ -1,6 +1,15 @@
-/** @namespace */
+/**
+ * @namespace
+ */
 jasmine.util = {};
 
+/**
+ * Declare that a child class inherite it's prototype from the parent class.
+ *
+ * @private
+ * @param {Function} childClass
+ * @param {Function} parentClass
+ */
 jasmine.util.inherit = function(childClass, parentClass) {
   var subclass = function() {
   };

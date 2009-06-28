@@ -1,8 +1,3 @@
-/**
- * Env
- *
- * @constructor
- */
 jasmine.Env = function() {
   this.currentSpec = null;
   this.currentSuite = null;

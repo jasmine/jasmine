@@ -1,8 +1,9 @@
 /**
- * Spec
- *
- * @constructor
+ * Internal representation of a Jasmine specification, or test.
+ * @private
+ * @constructs
  * @param {jasmine.Env} env
+ * @param {jasmine.Suite} suite
  * @param {String} description
  */
 jasmine.Spec = function(env, suite, description) {
@@ -45,21 +46,36 @@ jasmine.Spec.prototype.addToQueue = function(func) {
   return this;
 };
 
-/** @deprecated */
+/**
+ * @private
+ * @deprecated
+ */
 jasmine.Spec.prototype.expects_that = function(actual) {
   return this.expect(actual);
 };
 
+/**
+ * @private
+ * @deprecated
+ */
 jasmine.Spec.prototype.expect = function(actual) {
   return new jasmine.Matchers(this.env, actual, this.results);
 };
 
+/**
+ * @private
+ * @deprecated
+ */
 jasmine.Spec.prototype.waits = function(timeout) {
   this.currentTimeout = timeout;
   this.currentLatchFunction = undefined;
   return this;
 };
 
+/**
+ * @private
+ * @deprecated
+ */
 jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, message) {
   this.currentTimeout = timeout;
   this.currentLatchFunction = latchFunction;

@@ -67,8 +67,6 @@ Jasmine has several built-in matchers.  Here are a few:
 
 `toBeFalsy()` returns true if the object or primitive evaluates to false
 
-`wasNotCalledWith()` returns true if the object is a spy and was called with the passed arguments
-
 `toContain()` returns true if an array or string contains the passed variable.
 
 `toNotContain()` returns true if an array or string does not contain the passed variable.
@@ -164,13 +162,13 @@ timeout before the next block is run. You supply a time to wait before the next 
     });
 
     runs(function () {
-      this.expects_that(this.foo).should_equal(0);
+      this.expects(this.foo).toEqual(0);
     });
 
     waits(500);
 
     runs(function () {
-      this.expects_that(this.foo).should_equal(1);
+      this.expects(this.foo).toEqual(1);
     });
 	});
 
@@ -252,7 +250,7 @@ Similarly, there is an afterEach declaration.  It takes a function that is run a
     });
 
 ### Nested Describes
-Jasmine now supports nested describes. An example: 
+Jasmine supports nested describes. An example:
 
     describe('some suite', function () {
 

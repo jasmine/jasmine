@@ -13,6 +13,9 @@ jasmine.ActionCollection = function(env) {
   this.finished = false;
 };
 
+/**
+ * Marks the collection as done & calls the finish callback, if there is one
+ */
 jasmine.ActionCollection.prototype.finish = function() {
   if (this.finishCallback) {
     this.finishCallback();
@@ -20,16 +23,25 @@ jasmine.ActionCollection.prototype.finish = function() {
   this.finished = true;
 };
 
+/**
+ * Starts executing the queue of functions/actions.
+ */
 jasmine.ActionCollection.prototype.execute = function() {
   if (this.actions.length > 0) {
     this.next();
   }
 };
 
+/**
+ * Gets the current action.
+ */
 jasmine.ActionCollection.prototype.getCurrentAction = function() {
   return this.actions[this.index];
 };
 
+/**
+ * Executes the next queued function/action. If there are no more in the queue, calls #finish.
+ */
 jasmine.ActionCollection.prototype.next = function() {
   if (this.index >= this.actions.length) {
     this.finish();

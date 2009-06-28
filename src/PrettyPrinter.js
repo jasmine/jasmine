@@ -1,7 +1,16 @@
+/**
+ * Base class for pretty printing for expectation results.
+ */
 jasmine.PrettyPrinter = function() {
   this.ppNestLevel_ = 0;
 };
 
+/**
+ * Formats a value in a nice, human-readable string.
+ *
+ * @param value
+ * @returns {String}
+ */
 jasmine.PrettyPrinter.prototype.format = function(value) {
   if (this.ppNestLevel_ > 40) {
     //    return '(jasmine.pp nested too deeply!)';
