@@ -81,7 +81,7 @@ jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, message) {
   return this;
 };
 
-jasmine.Spec.prototype.getMatchersClass_ = function(matcherPrototype) {
+jasmine.Spec.prototype.getMatchersClass_ = function() {
   return this.matchersClass || jasmine.Matchers;
 };
 
