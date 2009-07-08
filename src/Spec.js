@@ -21,6 +21,7 @@ jasmine.Spec = function(env, suite, description) {
   this.results = new jasmine.NestedResults();
   this.results.description = description;
   this.runs = this.addToQueue;
+  this.matchersClass = null;
 };
 
 jasmine.Spec.prototype.getFullName = function() {
@@ -58,7 +59,7 @@ jasmine.Spec.prototype.expects_that = function(actual) {
  * @private
  */
 jasmine.Spec.prototype.expect = function(actual) {
-  return new jasmine.Matchers(this.env, actual, this.results);
+  return new (this.getMatchersClass_())(this.env, actual, this.results);
 };
 
 /**
@@ -78,6 +79,22 @@ jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, message) {
   this.currentLatchFunction = latchFunction;
   this.currentLatchFunction.description = message;
   return this;
+};
+
+jasmine.Spec.prototype.getMatchersClass_ = function(matcherPrototype) {
+  return this.matchersClass || jasmine.Matchers;
+};
+
+jasmine.Spec.prototype.addMatchers = function(matchersPrototype) {
+  var parent = this.getMatchersClass_();
+  var newMatchersClass = function() {
+    parent.apply(this, arguments);
+  };
+  jasmine.util.inherit(newMatchersClass, parent);
+  for (var method in matchersPrototype) {
+    newMatchersClass.prototype[method] = matchersPrototype[method];
+  }
+  this.matchersClass = newMatchersClass;
 };
 
 jasmine.Spec.prototype.resetTimeout = function() {
