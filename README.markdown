@@ -347,6 +347,8 @@ There are spy-specfic matchers that are very handy.
 
 `wasNotCalledWith(arguments)` returns true if the object is a spy and was not called with the passed arguments
 
+Spies can be trained to respond in a variety of ways when invoked:
+
 `andCallThrough()`: spies on AND calls the original function spied on
 
 `andReturn(arguments)`: returns passed arguments when spy is called
@@ -354,6 +356,8 @@ There are spy-specfic matchers that are very handy.
 `andThrow(exception)`: throws passed exception when spy is called
 
 `andCallFake(function)`: calls passed function when spy is called
+
+Spies have some useful properties:
 
 `callCount`: returns number of times spy was called
 
