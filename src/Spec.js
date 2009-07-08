@@ -56,7 +56,6 @@ jasmine.Spec.prototype.expects_that = function(actual) {
 
 /**
  * @private
- * @deprecated
  */
 jasmine.Spec.prototype.expect = function(actual) {
   return new jasmine.Matchers(this.env, actual, this.results);
@@ -64,7 +63,6 @@ jasmine.Spec.prototype.expect = function(actual) {
 
 /**
  * @private
- * @deprecated
  */
 jasmine.Spec.prototype.waits = function(timeout) {
   this.currentTimeout = timeout;
@@ -74,7 +72,6 @@ jasmine.Spec.prototype.waits = function(timeout) {
 
 /**
  * @private
- * @deprecated
  */
 jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, message) {
   this.currentTimeout = timeout;
