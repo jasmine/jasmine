@@ -4,6 +4,7 @@
 jasmine.MultiReporter = function() {
   this.subReporters_ = [];
 };
+jasmine.util.inherit(jasmine.MultiReporter, jasmine.Reporter);
 
 jasmine.MultiReporter.prototype.addReporter = function(reporter) {
   this.subReporters_.push(reporter);

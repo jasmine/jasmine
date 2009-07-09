@@ -1,4 +1,4 @@
-describe("MultiReporter", function() {
+describe("jasmine.MultiReporter", function() {
   it("should delegate to any and all subreporters", function() {
     var multiReporter = new jasmine.MultiReporter();
     var fakeReporter1 = jasmine.createSpyObj("fakeReporter1", ["reportSpecResults"]);

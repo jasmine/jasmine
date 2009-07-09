@@ -1,6 +1,7 @@
 /**
  * Environment for Jasmine
- * @
+ *
+ * @constructor
  */
 jasmine.Env = function() {
   this.currentSpec = null;
@@ -28,7 +29,7 @@ jasmine.Env.prototype.clearInterval = jasmine.clearInterval;
 
 /**
  * Register a reporter to receive status updates from Jasmine.
- * @param {Object} reporter An object which will receive status updates.
+ * @param {jasmine.Reporter} reporter An object which will receive status updates.
  */
 jasmine.Env.prototype.addReporter = function(reporter) {
   this.reporter.addReporter(reporter);
