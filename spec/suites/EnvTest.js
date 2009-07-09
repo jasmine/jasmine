@@ -13,9 +13,5 @@ describe("jasmine.Env", function() {
       env.reporter.log("message");
       expect(fakeReporter.log).wasCalledWith("message");
     });
-
-    xit("should report when the tests start running", function() {
-      
-    });
   });
 });

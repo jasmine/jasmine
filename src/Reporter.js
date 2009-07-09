@@ -6,6 +6,10 @@ jasmine.Reporter = function() {
 };
 
 //noinspection JSUnusedLocalSymbols
+jasmine.Reporter.prototype.reportRunnerStarting = function(runner) {
+};
+
+//noinspection JSUnusedLocalSymbols
 jasmine.Reporter.prototype.reportRunnerResults = function(runner) {
 };
 

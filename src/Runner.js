@@ -11,6 +11,13 @@ jasmine.Runner = function(env) {
 };
 jasmine.util.inherit(jasmine.Runner, jasmine.ActionCollection);
 
+jasmine.Runner.prototype.execute = function() {
+  if (this.env.reporter.reportRunnerStarting) {
+    this.env.reporter.reportRunnerStarting(this);
+  }
+  jasmine.ActionCollection.prototype.execute.call(this);
+};
+
 jasmine.Runner.prototype.finishCallback = function() {
   this.env.reporter.reportRunnerResults(this);
 };
