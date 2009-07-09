@@ -1,5 +1,5 @@
 /**
- * For storing & executing a Jasmine suite.
+ * Internal representation of a Jasmine suite.
  *
  * @constructor
  * @param {jasmine.Env} env

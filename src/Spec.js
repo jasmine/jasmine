@@ -1,7 +1,7 @@
 /**
  * Internal representation of a Jasmine specification, or test.
- * @private
- * @constructs
+ *
+ * @constructor
  * @param {jasmine.Env} env
  * @param {jasmine.Suite} suite
  * @param {String} description
