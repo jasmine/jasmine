@@ -12,9 +12,7 @@ jasmine.Runner = function(env) {
 jasmine.util.inherit(jasmine.Runner, jasmine.ActionCollection);
 
 jasmine.Runner.prototype.finishCallback = function() {
-  if (this.env.reporter) {
-    this.env.reporter.reportRunnerResults(this);
-  }
+  this.env.reporter.reportRunnerResults(this);
 };
 
 jasmine.Runner.prototype.getResults = function() {

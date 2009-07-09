@@ -103,9 +103,7 @@ jasmine.Spec.prototype.resetTimeout = function() {
 };
 
 jasmine.Spec.prototype.finishCallback = function() {
-  if (this.env.reporter) {
-    this.env.reporter.reportSpecResults(this);
-  }
+  this.env.reporter.reportSpecResults(this);
 };
 
 jasmine.Spec.prototype.finish = function() {
