@@ -1,6 +1,14 @@
+require 'socket'
 require 'erb'
 
 module Jasmine
+  def self.find_unused_port
+    socket = TCPserver.open(0)
+    port = socket.addr[1]
+    socket.close
+    port
+  end
+
   class RunAdapter
     def initialize(spec_files)
       p "spec_files: #{spec_files}"
@@ -20,7 +28,7 @@ module Jasmine
   end
 
   class SimpleServer
-    def self.start(spec_dir, mappings)
+    def self.start(port, spec_dir, mappings)
       require "thin"
 
       config = {
@@ -32,7 +40,8 @@ module Jasmine
 
       app = Rack::URLMap.new(config)
 
-      Thin::Server.start('0.0.0.0', 8080, app)
+      server_port = Jasmine::find_unused_port
+      Thin::Server.start('0.0.0.0', port, app)
     end
   end
 
@@ -54,7 +63,7 @@ module Jasmine
 
     def run()
       @driver.start
-      @driver.open(@http_address)
+      @driver.open("/run.html")
 
       until tests_have_finished? do
         sleep 0.1
@@ -77,21 +86,24 @@ module Jasmine
       selenium_pid = nil
       jasmine_server_pid = nil
       begin
+        jasmine_server_port = Jasmine::find_unused_port
+        selenium_server_port = Jasmine::find_unused_port
+
         selenium_pid = fork do
-          exec "java -jar #{@selenium_jar_path}"
+          exec "java -jar #{@selenium_jar_path} -port #{selenium_server_port}"
         end
         puts "selenium started.  pid is #{selenium_pid}"
 
         jasmine_server_pid = fork do
-          Jasmine::SimpleServer.start(@spec_files, @dir_mappings)
+          Jasmine::SimpleServer.start(jasmine_server_port, @spec_files, @dir_mappings)
         end
         puts "jasmine server started.  pid is #{jasmine_server_pid}"
 
-        wait_for_listener(4444, "selenium server")
-        wait_for_listener(8080, "jasmine server")
+        wait_for_listener(selenium_server_port, "selenium server")
+        wait_for_listener(jasmine_server_port, "jasmine server")
 
         puts "servers are listening on their ports -- running the test script..."
-        tests_passed = Jasmine::SimpleClient.new("localhost", 4444, "*firefox", "http://localhost:8080/run.html").run
+        tests_passed = Jasmine::SimpleClient.new("localhost", selenium_server_port, "*firefox", "http://localhost:#{jasmine_server_port}/").run
       ensure
         puts "shutting down the servers..."
         Process.kill 15, selenium_pid if selenium_pid
