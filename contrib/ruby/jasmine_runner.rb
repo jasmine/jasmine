@@ -65,4 +65,39 @@ module Jasmine
       failed_count == 0
     end
   end
+
+  class Runner
+    def initialize(selenium_jar_path, spec_files, dir_mappings)
+      @selenium_jar_path = selenium_jar_path
+      @spec_files = spec_files
+      @dir_mappings = dir_mappings
+    end
+
+    def run
+      selenium_pid = nil
+      jasmine_server_pid = nil
+      begin
+        selenium_pid = fork do
+          exec "java -jar #{@selenium_jar_path}"
+        end
+        puts "selenium started.  pid is #{selenium_pid}"
+
+        jasmine_server_pid = fork do
+          Jasmine::SimpleServer.start(@spec_files, @dir_mappings)
+        end
+        puts "jasmine server started.  pid is #{jasmine_server_pid}"
+
+        wait_for_listener(4444, "selenium server")
+        wait_for_listener(8080, "jasmine server")
+
+        puts "servers are listening on their ports -- running the test script..."
+        tests_passed = Jasmine::SimpleClient.new("localhost", 4444, "*firefox", "http://localhost:8080/run.html").run
+      ensure
+        puts "shutting down the servers..."
+        Process.kill 15, selenium_pid if selenium_pid
+        Process.kill 15, jasmine_server_pid if jasmine_server_pid
+      end
+      return tests_passed
+    end
+  end
 end
