@@ -143,7 +143,7 @@ describe('Spies', function () {
   });
 
   it('calls removeAllSpies during spec finish', function() {
-    var test = new jasmine.Spec({}, {}, 'sample test');
+    var test = new jasmine.Spec(new jasmine.Env(), {}, 'sample test');
 
     this.spyOn(test, 'removeAllSpies');
 

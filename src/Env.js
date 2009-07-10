@@ -1,8 +1,15 @@
+/**
+ * Environment for Jasmine
+ *
+ * @constructor
+ */
 jasmine.Env = function() {
   this.currentSpec = null;
   this.currentSuite = null;
   this.currentRunner = new jasmine.Runner(this);
   this.currentlyRunningTests = false;
+
+  this.reporter = new jasmine.MultiReporter();
 
   this.updateInterval = 0;
   this.lastUpdate = 0;
@@ -19,6 +26,14 @@ jasmine.Env.prototype.setTimeout = jasmine.setTimeout;
 jasmine.Env.prototype.clearTimeout = jasmine.clearTimeout;
 jasmine.Env.prototype.setInterval = jasmine.setInterval;
 jasmine.Env.prototype.clearInterval = jasmine.clearInterval;
+
+/**
+ * Register a reporter to receive status updates from Jasmine.
+ * @param {jasmine.Reporter} reporter An object which will receive status updates.
+ */
+jasmine.Env.prototype.addReporter = function(reporter) {
+  this.reporter.addReporter(reporter);
+};
 
 jasmine.Env.prototype.execute = function() {
   this.currentRunner.execute();

@@ -1,7 +1,7 @@
 /**
  * Internal representation of a Jasmine specification, or test.
- * @private
- * @constructs
+ *
+ * @constructor
  * @param {jasmine.Env} env
  * @param {jasmine.Suite} suite
  * @param {String} description
@@ -21,6 +21,7 @@ jasmine.Spec = function(env, suite, description) {
   this.results = new jasmine.NestedResults();
   this.results.description = description;
   this.runs = this.addToQueue;
+  this.matchersClass = null;
 };
 
 jasmine.Spec.prototype.getFullName = function() {
@@ -56,15 +57,13 @@ jasmine.Spec.prototype.expects_that = function(actual) {
 
 /**
  * @private
- * @deprecated
  */
 jasmine.Spec.prototype.expect = function(actual) {
-  return new jasmine.Matchers(this.env, actual, this.results);
+  return new (this.getMatchersClass_())(this.env, actual, this.results);
 };
 
 /**
  * @private
- * @deprecated
  */
 jasmine.Spec.prototype.waits = function(timeout) {
   this.currentTimeout = timeout;
@@ -74,7 +73,6 @@ jasmine.Spec.prototype.waits = function(timeout) {
 
 /**
  * @private
- * @deprecated
  */
 jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, message) {
   this.currentTimeout = timeout;
@@ -83,15 +81,29 @@ jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, message) {
   return this;
 };
 
+jasmine.Spec.prototype.getMatchersClass_ = function() {
+  return this.matchersClass || jasmine.Matchers;
+};
+
+jasmine.Spec.prototype.addMatchers = function(matchersPrototype) {
+  var parent = this.getMatchersClass_();
+  var newMatchersClass = function() {
+    parent.apply(this, arguments);
+  };
+  jasmine.util.inherit(newMatchersClass, parent);
+  for (var method in matchersPrototype) {
+    newMatchersClass.prototype[method] = matchersPrototype[method];
+  }
+  this.matchersClass = newMatchersClass;
+};
+
 jasmine.Spec.prototype.resetTimeout = function() {
   this.currentTimeout = 0;
   this.currentLatchFunction = undefined;
 };
 
 jasmine.Spec.prototype.finishCallback = function() {
-  if (this.env.reporter) {
-    this.env.reporter.reportSpecResults(this);
-  }
+  this.env.reporter.reportSpecResults(this);
 };
 
 jasmine.Spec.prototype.finish = function() {

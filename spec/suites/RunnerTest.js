@@ -114,4 +114,13 @@ describe('RunnerTest', function() {
     expect(foo).toEqual(1);
   });
 
+  it("should report when the tests start running", function() {
+    var fakeReporter = jasmine.createSpyObj("fakeReporter", ["log", "reportRunnerStarting"]);
+    env.addReporter(fakeReporter);
+
+    var runner = new jasmine.Runner(env);
+    runner.execute();
+    expect(fakeReporter.reportRunnerStarting).wasCalledWith(env.currentRunner);
+  });
+
 });

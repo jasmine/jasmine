@@ -195,11 +195,19 @@ ul.inheritsList
 	
 	<li><a href="../symbols/jasmine.ActionCollection.html">jasmine.ActionCollection</a></li>
 	
+	<li><a href="../symbols/jasmine.Env.html">jasmine.Env</a></li>
+	
+	<li><a href="../symbols/jasmine.MultiReporter.html">jasmine.MultiReporter</a></li>
+	
 	<li><a href="../symbols/jasmine.NestedResults.html">jasmine.NestedResults</a></li>
 	
 	<li><a href="../symbols/jasmine.QueuedFunction.html">jasmine.QueuedFunction</a></li>
 	
+	<li><a href="../symbols/jasmine.Reporter.html">jasmine.Reporter</a></li>
+	
 	<li><a href="../symbols/jasmine.Runner.html">jasmine.Runner</a></li>
+	
+	<li><a href="../symbols/jasmine.Spec.html">jasmine.Spec</a></li>
 	
 	<li><a href="../symbols/jasmine.Spy.html">jasmine.Spy</a></li>
 	
@@ -226,7 +234,7 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/src_base.js.html">base.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/lib_jasmine.js.html">jasmine.js</a>.
 				
 			</p>
 
@@ -288,45 +296,9 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.createSpy">createSpy</a></b>(name)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
 								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.createSpyObj">createSpyObj</a></b>(baseName, methodNames)
 								</div>
 								<div class="description">Creates a more complicated spy: an Object that has every property a function that is a spy.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.Env">Env</a></b>()
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.ExpectationResult">ExpectationResult</a></b>(passed, message, details)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.FakeTimer">FakeTimer</a></b>()
-								</div>
-								<div class="description"></div>
 							</td>
 						</tr>
 					
@@ -361,33 +333,6 @@ Jasmine environment.</div>
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.log">log</a></b>(message)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.Matchers">Matchers</a></b>(env, actual, results)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.MessageResult">MessageResult</a></b>(text)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
 								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.pp">pp</a></b>(value)
 								</div>
 								<div class="description">Pretty printer for expecations.</div>
@@ -400,33 +345,6 @@ Jasmine environment.</div>
 								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.PrettyPrinter">PrettyPrinter</a></b>()
 								</div>
 								<div class="description">Base class for pretty printing for expectation results.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.specFilter">specFilter</a></b>()
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.StringPrettyPrinter">StringPrettyPrinter</a></b>()
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.XmlHttpRequest">XmlHttpRequest</a></b>()
-								</div>
-								<div class="description"></div>
 							</td>
 						</tr>
 					
@@ -526,42 +444,6 @@ expect(mySpy).wasCalledWith(jasmine.any(Function));</pre>
 
 					<hr />
 				
-					<a name=".createSpy"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>createSpy</b>(name)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>name</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
 					<a name=".createSpyObj"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
@@ -595,110 +477,6 @@ large in one call.
 								<dd>array of names of methods to make spies</dd>
 							
 							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".Env"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>Env</b>()
-					
-					</div>
-					<div class="description">
-						
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/src_Env.js.html">Env.js</a>.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".ExpectationResult"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>ExpectationResult</b>(passed, message, details)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>passed</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<b>message</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<b>details</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".FakeTimer"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>FakeTimer</b>()
-					
-					</div>
-					<div class="description">
-						
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/src_mock-timeout.js.html">mock-timeout.js</a>.
-						
-						
-					</div>
-					
-					
-					
 						
 						
 						
@@ -820,129 +598,6 @@ Jasmine environment.
 
 					<hr />
 				
-					<a name=".log"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>log</b>(message)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>message</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".Matchers"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>Matchers</b>(env, actual, results)
-					
-					</div>
-					<div class="description">
-						
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/src_Matchers.js.html">Matchers.js</a>.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>env</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<b>actual</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<b>results</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".MessageResult"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>MessageResult</b>(text)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>text</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
 					<a name=".pp"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
@@ -996,90 +651,6 @@ Jasmine environment.
 					<div class="description">
 						Base class for pretty printing for expectation results.
 						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/src_PrettyPrinter.js.html">PrettyPrinter.js</a>.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".specFilter"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>specFilter</b>()
-					
-					</div>
-					<div class="description">
-						
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/src_Env.js.html">Env.js</a>.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".StringPrettyPrinter"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>StringPrettyPrinter</b>()
-					
-					</div>
-					<div class="description">
-						
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/src_PrettyPrinter.js.html">PrettyPrinter.js</a>.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".XmlHttpRequest"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>XmlHttpRequest</b>()
-					
-					</div>
-					<div class="description">
-						
-						
 						
 					</div>
 					
@@ -1107,7 +678,7 @@ Jasmine environment.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.3.0 on Sun Jun 28 2009 13:34:05 GMT-0700 (PDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.3.0 on Thu Jul 09 2009 21:42:18 GMT-0700 (PDT)
 		</div>
 	</body>
 </html>

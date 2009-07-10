@@ -24,9 +24,7 @@ jasmine.QueuedFunction.prototype.next = function() {
 };
 
 jasmine.QueuedFunction.prototype.safeExecute = function() {
-  if (this.env.reporter) {
-    this.env.reporter.log('>> Jasmine Running ' + this.spec.suite.description + ' ' + this.spec.description + '...');
-  }
+  this.env.reporter.log('>> Jasmine Running ' + this.spec.suite.description + ' ' + this.spec.description + '...');
 
   try {
     this.func.apply(this.spec);

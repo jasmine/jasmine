@@ -10,7 +10,9 @@
 <script type="text/javascript" src="../src/util.js"></script>
 <script type="text/javascript" src="../src/Env.js"></script>
 <script type="text/javascript" src="../src/ActionCollection.js"></script>
+<script type="text/javascript" src="../src/Reporter.js"></script>
 <script type="text/javascript" src="../src/Matchers.js"></script>
+<script type="text/javascript" src="../src/MultiReporter.js"></script>
 <script type="text/javascript" src="../src/NestedResults.js"></script>
 <script type="text/javascript" src="../src/PrettyPrinter.js"></script>
 <script type="text/javascript" src="../src/QueuedFunction.js"></script>
@@ -21,13 +23,14 @@
 <script type="text/javascript" src="../src/mock-timeout.js"></script>
 
 <script type="text/javascript" src="../lib/TrivialReporter.js"></script>
-<script type="text/javascript" src="../lib/json_reporter.js"></script>
 
 
 <script type="text/javascript">
   jasmine.include('suites/ExceptionsTest.js', true);
+  jasmine.include('suites/EnvTest.js', true);
   jasmine.include('suites/JsonReporterTest.js', true);
   jasmine.include('suites/MatchersTest.js', true);
+  jasmine.include('suites/MultiReporterTest.js', true);
   jasmine.include('suites/NestedResultsTest.js', true);
   jasmine.include('suites/PrettyPrintTest.js', true);
   jasmine.include('suites/ReporterTest.js', true);
@@ -66,9 +69,8 @@
 
 
   var jasmineEnv = jasmine.getEnv();
-  jasmineEnv.reporter = new jasmine.TrivialReporter();
+  jasmineEnv.addReporter(new jasmine.TrivialReporter());
   jasmineEnv.execute();
-  console.log('env', jasmineEnv);
 </script>
 
 </body>

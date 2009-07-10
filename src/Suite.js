@@ -1,5 +1,5 @@
 /**
- * For storing & executing a Jasmine suite.
+ * Internal representation of a Jasmine suite.
  *
  * @constructor
  * @param {jasmine.Env} env
@@ -28,9 +28,7 @@ jasmine.Suite.prototype.getFullName = function() {
 };
 
 jasmine.Suite.prototype.finishCallback = function() {
-  if (this.env.reporter) {
-    this.env.reporter.reportSuiteResults(this);
-  }
+  this.env.reporter.reportSuiteResults(this);
 };
 
 jasmine.Suite.prototype.beforeEach = function(beforeEachFunction) {
