@@ -61,10 +61,16 @@ module Jasmine
       @driver.get_eval("window.jasmine.getEnv().currentRunner.finished") == "true"
     end
 
-    def run()
+    def connect
       @driver.start
       @driver.open("/run.html")
+    end
 
+    def disconnect
+      @driver.stop
+    end
+
+    def run
       until tests_have_finished? do
         sleep 0.1
       end
@@ -73,6 +79,12 @@ module Jasmine
       failed_count = @driver.get_eval("window.jasmine.getEnv().currentRunner.getResults().failedCount").to_i
       failed_count == 0
     end
+
+    def eval_js(script)
+      escaped_script = "'" + script.gsub(/(['\\])/) { '\\' + $1 } + "'"
+
+      @driver.get_eval("window.eval(#{escaped_script})")
+    end
   end
 
   class Runner
@@ -80,36 +92,79 @@ module Jasmine
       @selenium_jar_path = selenium_jar_path
       @spec_files = spec_files
       @dir_mappings = dir_mappings
+
+      @selenium_pid = nil
+      @jasmine_server_pid = nil
+    end
+
+    def start
+      start_servers
+      @client = Jasmine::SimpleClient.new("localhost", @selenium_server_port, "*firefox", "http://localhost:#{@jasmine_server_port}/")
+      @client.connect
+    end
+
+    def stop
+      @client.disconnect
+      stop_servers
+    end
+
+    def server_is_listening_on(hostname, port)
+      require 'socket'
+      begin
+        socket = TCPSocket.open(hostname, port)
+      rescue Errno::ECONNREFUSED
+        return false
+      end
+      socket.close
+      true
+    end
+
+    def wait_for_listener(port, name = "required process", seconds_to_wait = 10)
+      seconds_waited = 0
+      until server_is_listening_on "localhost", port
+        sleep 1
+        puts "Waiting for #{name} on #{port}..."
+        raise "#{name} didn't show up on port #{port} after #{seconds_to_wait} seconds." if (seconds_waited += 1) >= seconds_to_wait
+      end
+    end
+
+    def start_servers
+      @jasmine_server_port = Jasmine::find_unused_port
+      @selenium_server_port = Jasmine::find_unused_port
+
+      @selenium_pid = fork do
+        exec "java -jar #{@selenium_jar_path} -port #{@selenium_server_port}"
+      end
+      puts "selenium started.  pid is #{@selenium_pid}"
+
+      @jasmine_server_pid = fork do
+        Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings)
+      end
+      puts "jasmine server started.  pid is #{@jasmine_server_pid}"
+
+      wait_for_listener(@selenium_server_port, "selenium server")
+      wait_for_listener(@jasmine_server_port, "jasmine server")
+    end
+
+    def stop_servers
+      puts "shutting down the servers..."
+      Process.kill 15, @selenium_pid if @selenium_pid
+      Process.kill 15, @jasmine_server_pid if @jasmine_server_pid
     end
 
     def run
-      selenium_pid = nil
-      jasmine_server_pid = nil
       begin
-        jasmine_server_port = Jasmine::find_unused_port
-        selenium_server_port = Jasmine::find_unused_port
-
-        selenium_pid = fork do
-          exec "java -jar #{@selenium_jar_path} -port #{selenium_server_port}"
-        end
-        puts "selenium started.  pid is #{selenium_pid}"
-
-        jasmine_server_pid = fork do
-          Jasmine::SimpleServer.start(jasmine_server_port, @spec_files, @dir_mappings)
-        end
-        puts "jasmine server started.  pid is #{jasmine_server_pid}"
-
-        wait_for_listener(selenium_server_port, "selenium server")
-        wait_for_listener(jasmine_server_port, "jasmine server")
-
+        start
         puts "servers are listening on their ports -- running the test script..."
-        tests_passed = Jasmine::SimpleClient.new("localhost", selenium_server_port, "*firefox", "http://localhost:#{jasmine_server_port}/").run
+        tests_passed = @client.run
       ensure
-        puts "shutting down the servers..."
-        Process.kill 15, selenium_pid if selenium_pid
-        Process.kill 15, jasmine_server_pid if jasmine_server_pid
+        stop
       end
       return tests_passed
+    end
+
+    def eval_js(script)
+      @client.eval_js(script)
     end
   end
 end

@@ -5,11 +5,16 @@ module Jasmine
   class RemoteResults
     attr_accessor :suites
 
-    def initialize(spec_files)
+    def initialize(spec_files, runner)
       @spec_files = spec_files
+      @runner = runner
+      
       guess_example_locations
+
+      @runner.start
       load_suite_info
       @spec_results = {}
+
     end
 
     def script_path
@@ -41,21 +46,21 @@ module Jasmine
     end
 
     def load_suite_info
-      while eval('typeof reportingBridge == "undefined" || !!!reportingBridge.suiteInfoReady') do
+      while eval_js('typeof reportingBridge == "undefined" || !!!reportingBridge.suiteInfoReady') do
         sleep 0.1
       end
 
-      @suites = eval('Object.toJSON(reportingBridge.suiteInfo)')
+      @suites = eval_js('Object.toJSON(reportingBridge.suiteInfo)')
     end
 
     def results_for(spec_id)
       spec_id = spec_id.to_s
       return @spec_results[spec_id] if @spec_results[spec_id]
 
-      @spec_results[spec_id] = eval("Object.toJSON(reportingBridge.specResults[#{spec_id}])")
+      @spec_results[spec_id] = eval_js("Object.toJSON(reportingBridge.specResults[#{spec_id}])")
       while @spec_results[spec_id].nil? do
         sleep 0.1
-        @spec_results[spec_id] = eval("Object.toJSON(reportingBridge.specResults[#{spec_id}])")
+        @spec_results[spec_id] = eval_js("Object.toJSON(reportingBridge.specResults[#{spec_id}])")
       end
 
       @spec_results[spec_id]
@@ -104,8 +109,8 @@ module Jasmine
 
     private
 
-    def eval(js)
-      @runner.eval(js)
+    def eval_js(js)
+      @runner.eval_js(js)
     end
   end
 end
