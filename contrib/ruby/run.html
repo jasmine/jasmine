@@ -4,13 +4,16 @@
   <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
   <title>Jasmine suite</title>
   <script src="/specs/javascripts/jasmine/lib/jasmine.js"></script>
+  <script src="/specs/javascripts/jasmine/lib/json2.js"></script><!-- todo: don't load JSON in the test runner! [20090710 xw] -->
   <script src="/specs/javascripts/jasmine/lib/TrivialReporter.js"></script>
   <script src="/specs/javascripts/screw-jasmine-compat.js"></script>
   <script type="text/javascript"></script>
   <link href="/core/jasmine.css" rel="stylesheet"/>
   <script type="text/javascript">
     var jasmineEnv = jasmine.getEnv();
-    jasmineEnv.reporter = new jasmine.TrivialReporter();
+    var jsApiReporter = new jasmine.JsApiReporter();
+    jasmineEnv.addReporter(jsApiReporter);
+    jasmineEnv.addReporter(new jasmine.TrivialReporter());
     window.onload = function() {
       jasmineEnv.execute();
     };

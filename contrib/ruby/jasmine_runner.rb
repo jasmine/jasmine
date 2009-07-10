@@ -29,7 +29,7 @@ module Jasmine
 
   class SimpleServer
     def self.start(port, spec_dir, mappings)
-      require "thin"
+      require 'thin'
 
       config = {
         '/run.html' => Jasmine::RunAdapter.new(spec_dir)
@@ -83,7 +83,8 @@ module Jasmine
     def eval_js(script)
       escaped_script = "'" + script.gsub(/(['\\])/) { '\\' + $1 } + "'"
 
-      @driver.get_eval("window.eval(#{escaped_script})")
+      result = @driver.get_eval("window.eval(#{escaped_script})")
+      JSON.parse("[#{result}]")[0]
     end
   end
 

@@ -8,13 +8,18 @@ module Jasmine
     def initialize(spec_files, runner)
       @spec_files = spec_files
       @runner = runner
-      
+    end
+
+    def start
       guess_example_locations
 
       @runner.start
       load_suite_info
       @spec_results = {}
+    end
 
+    def stop
+      @runner.stop
     end
 
     def script_path
@@ -46,21 +51,21 @@ module Jasmine
     end
 
     def load_suite_info
-      while !eval_js('jasmine.getEnv().currentRunner.finished') do
+      while !eval_js('jsApiReporter.started') do
         sleep 0.1
       end
 
-      @suites = eval_js('Object.toJSON(reportingBridge.suiteInfo)')
+      @suites = eval_js('JSON.stringify(jsApiReporter.suites)')
     end
 
     def results_for(spec_id)
       spec_id = spec_id.to_s
       return @spec_results[spec_id] if @spec_results[spec_id]
 
-      @spec_results[spec_id] = eval_js("Object.toJSON(reportingBridge.specResults[#{spec_id}])")
+      @spec_results[spec_id] = eval_js("JSON.stringify(jsApiReporter.results[#{spec_id}])")
       while @spec_results[spec_id].nil? do
         sleep 0.1
-        @spec_results[spec_id] = eval_js("Object.toJSON(reportingBridge.specResults[#{spec_id}])")
+        @spec_results[spec_id] = eval_js("JSON.stringify(jsApiReporter.results[#{spec_id}])")
       end
 
       @spec_results[spec_id]
@@ -83,7 +88,7 @@ module Jasmine
           elsif type == "spec"
             me.declare_spec(self, suite_or_spec)
           else
-            raise "unknown type #{type}"
+            raise "unknown type #{type} for #{suite_or_spec.inspect}"
           end
         end
       end
@@ -102,9 +107,20 @@ module Jasmine
     def report_spec(spec_id)
       spec_results = results_for(spec_id)
 
-      messages = spec_results['messages'].join "\n---\n"
-      puts messages
-      fail messages if (spec_results['result'] != 'passed')
+      out = ""
+      messages = spec_results['messages'].each do |message|
+        out << message["message"]
+        out << "\n"
+
+        unless message["passed"]
+          stack_trace = message["trace"]["stack"]
+          out << stack_trace.gsub(/\(.*\)@http:\/\/localhost:[0-9]+\/specs\//, "/spec/")
+          out << "\n"
+        end
+
+      end
+      fail out unless spec_results['result'] == 'passed'
+      puts out
     end
 
     private
