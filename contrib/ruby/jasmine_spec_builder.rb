@@ -46,7 +46,7 @@ module Jasmine
     end
 
     def load_suite_info
-      while eval_js('typeof reportingBridge == "undefined" || !!!reportingBridge.suiteInfoReady') do
+      while !eval_js('jasmine.getEnv().currentRunner.finished') do
         sleep 0.1
       end
 
