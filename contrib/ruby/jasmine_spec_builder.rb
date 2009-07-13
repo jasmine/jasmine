@@ -2,7 +2,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "jasmine_runner.rb"))
 
 module Jasmine
 
-  class RemoteResults
+  class SpecBuilder
     attr_accessor :suites
 
     def initialize(spec_files, runner)
