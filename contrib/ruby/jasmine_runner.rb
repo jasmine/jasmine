@@ -134,7 +134,7 @@ module Jasmine
       @selenium_server_port = Jasmine::find_unused_port
 
       @selenium_pid = fork do
-        exec "java -jar #{@selenium_jar_path} -port #{@selenium_server_port}"
+        exec "java -jar #{@selenium_jar_path} -port #{@selenium_server_port} >/dev/null"
       end
       puts "selenium started.  pid is #{@selenium_pid}"
 
