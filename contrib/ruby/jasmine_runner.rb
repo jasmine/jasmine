@@ -2,8 +2,18 @@ require 'socket'
 require 'erb'
 
 module Jasmine
+  # this seemingly-over-complex method is necessary to get it to work on at least some machines
+  def self.open_socket_on_unused_port
+    infos = Socket::getaddrinfo("localhost", nil, Socket::AF_UNSPEC, Socket::SOCK_STREAM, 0, Socket::AI_PASSIVE)
+    families = Hash[*infos.collect { |af, *_| af }.uniq.zip([]).flatten]
+
+    return TCPServer.open('0.0.0.0', 0) if families.has_key?('AF_INET')
+    return TCPServer.open('::', 0) if families.has_key?('AF_INET6')
+    return TCPServer.open(0)
+  end
+
   def self.find_unused_port
-    socket = TCPserver.open(0)
+    socket = open_socket_on_unused_port
     port = socket.addr[1]
     socket.close
     port
