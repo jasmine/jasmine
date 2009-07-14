@@ -144,13 +144,15 @@ module Jasmine
       @selenium_server_port = Jasmine::find_unused_port
 
       @selenium_pid = fork do
-        exec "java -jar #{@selenium_jar_path} -port #{@selenium_server_port}"
+        Process.setpgrp
+        exec "java -jar #{@selenium_jar_path} -port #{@selenium_server_port} &> /dev/null"
       end
       puts "selenium started.  pid is #{@selenium_pid}"
 
       @jasmine_server_pid = fork do
+        Process.setpgrp
         Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings)
-        sleep(100000)
+        exit! 0
       end
       puts "jasmine server started.  pid is #{@jasmine_server_pid}"
 
@@ -158,10 +160,14 @@ module Jasmine
       wait_for_listener(@jasmine_server_port, "jasmine server")
     end
 
+    def kill_process_group(process_group_id, signal="TERM")
+      Process.kill signal, -process_group_id # negative pid means kill process group. (see man 2 kill)
+    end
+
     def stop_servers
       puts "shutting down the servers..."
-      Process.kill 15, @selenium_pid if @selenium_pid
-      Process.kill 15, @jasmine_server_pid if @jasmine_server_pid
+      kill_process_group(@selenium_pid) if @selenium_pid
+      kill_process_group(@jasmine_server_pid) if @jasmine_server_pid
     end
 
     def run
