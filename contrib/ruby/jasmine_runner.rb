@@ -150,6 +150,7 @@ module Jasmine
 
       @jasmine_server_pid = fork do
         Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings)
+        sleep(100000)
       end
       puts "jasmine server started.  pid is #{@jasmine_server_pid}"
 
