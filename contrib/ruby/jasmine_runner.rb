@@ -145,7 +145,7 @@ module Jasmine
 
       @selenium_pid = fork do
         Process.setpgrp
-        exec "java -jar #{@selenium_jar_path} -port #{@selenium_server_port} &> /dev/null"
+        exec "java -jar #{@selenium_jar_path} -port #{@selenium_server_port} > /dev/null 2>&1"
       end
       puts "selenium started.  pid is #{@selenium_pid}"
 
