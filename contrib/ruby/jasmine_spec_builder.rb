@@ -109,13 +109,22 @@ module Jasmine
 
       out = ""
       messages = spec_results['messages'].each do |message|
-        out << message["message"]
-        out << "\n"
+        case
+          when message["type"] == "MessageResult"
+            puts message["text"]
+            puts "\n"
+          else
+            STDERR << message["message"]
+            STDERR << "\n"
 
-        unless message["passed"]
-          stack_trace = message["trace"]["stack"]
-          out << stack_trace.gsub(/\(.*\)@http:\/\/localhost:[0-9]+\/specs\//, "/spec/")
-          out << "\n"
+            out << message["message"]
+            out << "\n"
+
+            unless message["passed"]
+              stack_trace = message["trace"]["stack"]
+              STDERR << stack_trace.gsub(/\(.*\)@http:\/\/localhost:[0-9]+\/specs\//, "/spec/")
+              STDERR << "\n"
+            end
         end
 
       end
