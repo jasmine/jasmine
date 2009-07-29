@@ -75,6 +75,6 @@ jasmine.NestedResults.prototype.addResult = function(result) {
 /**
  * @returns {Boolean} True if <b>everything</b> below passed
  */
-jasmine.NestedResults.prototype.passed = function() {
+jasmine.NestedResults.prototype.__defineGetter__('passed', function() {
   return this.passedCount === this.totalCount;
-};
+});

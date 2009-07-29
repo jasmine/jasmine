@@ -18,6 +18,7 @@ jasmine.Env = function() {
   };
 
   this.nextSpecId_ = 0;
+  this.nextSuiteId_ = 0;
   this.equalityTesters_ = [];
 };
 
