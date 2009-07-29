@@ -3,65 +3,62 @@
 <html>
 <head>
   <title>Jasmine Test Runner</title>
+  <script type="text/javascript" src="../src/base.js"></script>
+  <script type="text/javascript" src="../src/util.js"></script>
+  <script type="text/javascript" src="../src/Env.js"></script>
+  <script type="text/javascript" src="../src/ActionCollection.js"></script>
+  <script type="text/javascript" src="../src/Reporter.js"></script>
+  <script type="text/javascript" src="../src/Matchers.js"></script>
+  <script type="text/javascript" src="../src/MultiReporter.js"></script>
+  <script type="text/javascript" src="../src/NestedResults.js"></script>
+  <script type="text/javascript" src="../src/PrettyPrinter.js"></script>
+  <script type="text/javascript" src="../src/QueuedFunction.js"></script>
+  <script type="text/javascript" src="../src/Reporters.js"></script>
+  <script type="text/javascript" src="../src/Runner.js"></script>
+  <script type="text/javascript" src="../src/Spec.js"></script>
+  <script type="text/javascript" src="../src/Suite.js"></script>
+  <script type="text/javascript" src="../src/mock-timeout.js"></script>
+
+  <script type="text/javascript" src="../lib/TrivialReporter.js"></script>
+
+
+  <script type="text/javascript">
+    jasmine.include('suites/EnvTest.js', true);
+    jasmine.include('suites/ExceptionsTest.js', true);
+    jasmine.include('suites/MatchersTest.js', true);
+    jasmine.include('suites/MultiReporterTest.js', true);
+    jasmine.include('suites/NestedResultsTest.js', true);
+    jasmine.include('suites/PrettyPrintTest.js', true);
+    jasmine.include('suites/ReporterTest.js', true);
+    jasmine.include('suites/RunnerTest.js', true);
+    jasmine.include('suites/SpecRunningTest.js', true);
+    jasmine.include('suites/SpyTest.js', true);
+  </script>
+
+  <style type="text/css">
+    .spec {
+      margin: 5px;
+    }
+
+    .passed {
+      background-color: lightgreen;
+    }
+
+    .failed {
+      background-color: pink;
+    }
+
+    .resultMessage {
+      white-space: pre;
+    }
+
+    .stackTrace {
+      white-space: pre;
+      font-size: .8em;
+      margin-left: 10px;
+    }
+  </style>
 </head>
-<script type="text/javascript" src="lib/json2.js"></script>
-
-<script type="text/javascript" src="../src/base.js"></script>
-<script type="text/javascript" src="../src/util.js"></script>
-<script type="text/javascript" src="../src/Env.js"></script>
-<script type="text/javascript" src="../src/ActionCollection.js"></script>
-<script type="text/javascript" src="../src/Reporter.js"></script>
-<script type="text/javascript" src="../src/Matchers.js"></script>
-<script type="text/javascript" src="../src/MultiReporter.js"></script>
-<script type="text/javascript" src="../src/NestedResults.js"></script>
-<script type="text/javascript" src="../src/PrettyPrinter.js"></script>
-<script type="text/javascript" src="../src/QueuedFunction.js"></script>
-<script type="text/javascript" src="../src/Reporters.js"></script>
-<script type="text/javascript" src="../src/Runner.js"></script>
-<script type="text/javascript" src="../src/Spec.js"></script>
-<script type="text/javascript" src="../src/Suite.js"></script>
-<script type="text/javascript" src="../src/mock-timeout.js"></script>
-
-<script type="text/javascript" src="../lib/TrivialReporter.js"></script>
-
-
-<script type="text/javascript">
-  jasmine.include('suites/ExceptionsTest.js', true);
-  jasmine.include('suites/EnvTest.js', true);
-  jasmine.include('suites/JsonReporterTest.js', true);
-  jasmine.include('suites/MatchersTest.js', true);
-  jasmine.include('suites/MultiReporterTest.js', true);
-  jasmine.include('suites/NestedResultsTest.js', true);
-  jasmine.include('suites/PrettyPrintTest.js', true);
-  jasmine.include('suites/ReporterTest.js', true);
-  jasmine.include('suites/RunnerTest.js', true);
-  jasmine.include('suites/SpecRunningTest.js', true);
-  jasmine.include('suites/SpyTest.js', true);
-</script>
-
-<style type="text/css">
-  .spec {
-    margin: 5px;
-  }
-
-  .passed {
-    background-color: lightgreen;
-  }
-
-  .failed {
-    background-color: pink;
-  }
-
-  .resultMessage {
-    white-space: pre;
-  }
-
-  .stackTrace {
-    white-space: pre;
-    font-size: .8em;
-    margin-left: 10px;
-  }
-</style>
 
 <body>
 
