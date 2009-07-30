@@ -28,7 +28,7 @@ jasmine.PrettyPrinter.prototype.format = function(value) {
     } else if (value instanceof jasmine.Matchers.Any) {
       this.emitScalar(value.toString());
     } else if (typeof value === 'string') {
-      this.emitScalar("'" + value + "'");
+      this.emitString(value);
     } else if (typeof value === 'function') {
       this.emitScalar('Function');
     } else if (typeof value.nodeType === 'number') {
@@ -63,6 +63,7 @@ jasmine.PrettyPrinter.prototype.iterateObject = function(obj, fn) {
 jasmine.PrettyPrinter.prototype.emitArray = jasmine.unimplementedMethod_;
 jasmine.PrettyPrinter.prototype.emitObject = jasmine.unimplementedMethod_;
 jasmine.PrettyPrinter.prototype.emitScalar = jasmine.unimplementedMethod_;
+jasmine.PrettyPrinter.prototype.emitString = jasmine.unimplementedMethod_;
 
 jasmine.StringPrettyPrinter = function() {
   jasmine.PrettyPrinter.call(this);
@@ -73,6 +74,10 @@ jasmine.util.inherit(jasmine.StringPrettyPrinter, jasmine.PrettyPrinter);
 
 jasmine.StringPrettyPrinter.prototype.emitScalar = function(value) {
   this.append(value);
+};
+
+jasmine.StringPrettyPrinter.prototype.emitString = function(value) {
+  this.append("'" + value + "'");
 };
 
 jasmine.StringPrettyPrinter.prototype.emitArray = function(array) {

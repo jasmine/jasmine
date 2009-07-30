@@ -9,7 +9,8 @@
  */
 jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
   jasmine.ActionCollection.call(this, env);
-
+  
+  this.id = env.nextSuiteId_++;
   this.description = description;
   this.specs = this.actions;
   this.parentSuite = parentSuite;
@@ -43,6 +44,9 @@ jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
 
 jasmine.Suite.prototype.getResults = function() {
   var results = new jasmine.NestedResults();
+  results.description = this.description;
+  results.id = this.id;
+  
   for (var i = 0; i < this.specs.length; i++) {
     results.rollupCounts(this.specs[i].getResults());
   }

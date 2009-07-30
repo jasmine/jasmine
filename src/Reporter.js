@@ -22,6 +22,6 @@ jasmine.Reporter.prototype.reportSpecResults = function(spec) {
 };
 
 //noinspection JSUnusedLocalSymbols
-jasmine.Reporter.prototype.log = function (str) {
+jasmine.Reporter.prototype.log = function(str) {
 };
 
