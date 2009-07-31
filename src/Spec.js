@@ -18,7 +18,6 @@ jasmine.Spec = function(env, suite, description) {
 
   this.results = new jasmine.NestedResults();
   this.results.description = description;
-  this.runs = this.addToQueue;
   this.matchersClass = null;
 };
 
@@ -30,14 +29,15 @@ jasmine.Spec.prototype.getResults = function() {
   return this.results;
 };
 
-jasmine.Spec.prototype.addToQueue = function(func) {
+jasmine.Spec.prototype.runs = function (func) {
   var block = new jasmine.Block(this.env, func, this);
-
-  this.setNextOnLastInQueue(block);
-
-  this.queue.push(block);
-
+  this.addToQueue(block);
   return this;
+};
+
+jasmine.Spec.prototype.addToQueue = function(block) {
+  this.setNextOnLastInQueue(block);
+  this.queue.push(block);
 };
 
 /**
@@ -72,8 +72,7 @@ jasmine.Spec.prototype.setNextOnLastInQueue = function (block) {
  */
 jasmine.Spec.prototype.waits = function(timeout) {
   var waitsFunc = new jasmine.WaitsBlock(this.env, timeout, this);
-  this.setNextOnLastInQueue(waitsFunc);
-  this.queue.push(waitsFunc);
+  this.addToQueue(waitsFunc);
   return this;
 };
 
@@ -82,8 +81,7 @@ jasmine.Spec.prototype.waits = function(timeout) {
  */
 jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, timeoutMessage) {
   var waitsForFunc = new jasmine.WaitsForBlock(this.env, timeout, latchFunction, timeoutMessage, this);
-  this.setNextOnLastInQueue(waitsForFunc);
-  this.queue.push(waitsForFunc);
+  this.addToQueue(waitsForFunc);
   return this;
 };
 

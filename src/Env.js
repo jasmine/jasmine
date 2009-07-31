@@ -80,7 +80,7 @@ jasmine.Env.prototype.it = function(description, func) {
   this.currentSpec = spec;
 
   if (func) {
-    spec.addToQueue(func);
+    spec.runs(func);
   }
 
   return spec;
