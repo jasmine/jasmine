@@ -18,19 +18,19 @@ jasmine.WaitsForBlock.prototype.execute = function () {
     latchFunctionResult = self.latchFunction.apply(self.spec);
   } catch (e) {
     self.fail(e);
-    self.next();
+    self._next();
     return;
   }
 
   if (latchFunctionResult) {
-    self.next();
+    self._next();
   } else if (self.totalTimeSpentWaitingForLatch >= self.timeout) {
     var message = 'timed out after ' + self.timeout + ' msec waiting for ' + (self.message || 'something to happen');
     self.fail({
       name: 'timeout',
       message: message
     });
-    self.spec.next();
+    self.spec._next();
   } else {
     self.totalTimeSpentWaitingForLatch += jasmine.WaitsForBlock.TIMEOUT_INCREMENT;
     self.env.setTimeout(function () { self.execute(); }, jasmine.WaitsForBlock.TIMEOUT_INCREMENT);

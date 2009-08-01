@@ -88,5 +88,5 @@ jasmine.ActionCollection.prototype.waitForDone = function(action) {
       self.env.clearInterval(id);
       afterExecute();
     }
-  }, 150);
+  }, 15000);
 };

@@ -8,17 +8,16 @@
  * @param {jasmine.Suite} parentSuite
  */
 jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
-  jasmine.ActionCollection.call(this, env);
-  
-  this.id = env.nextSuiteId_++;
-  this.description = description;
-  this.specs = this.actions;
-  this.parentSuite = parentSuite;
-
-  this.beforeQueue = [];
-  this.afterQueue = [];
+  var self = this;  
+  self.id = env.nextSuiteId_++;
+  self.description = description;
+  self.queue = new jasmine.Queue(function () { self.finish(); });
+  self.parentSuite = parentSuite;
+  self.env = env;
+  self.beforeQueue = [];
+  self.afterQueue = [];
 };
-jasmine.util.inherit(jasmine.Suite, jasmine.ActionCollection);
+
 
 jasmine.Suite.prototype.getFullName = function() {
   var fullName = this.description;
@@ -28,8 +27,12 @@ jasmine.Suite.prototype.getFullName = function() {
   return fullName;
 };
 
-jasmine.Suite.prototype.finishCallback = function() {
+jasmine.Suite.prototype.finish = function() {
   this.env.reporter.reportSuiteResults(this);
+  this.finished = true;
+  if (this.parentSuite) {
+    this.parentSuite.next();
+  }
 };
 
 jasmine.Suite.prototype.beforeEach = function(beforeEachFunction) {
@@ -43,13 +46,25 @@ jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
 };
 
 jasmine.Suite.prototype.getResults = function() {
-  var results = new jasmine.NestedResults();
-  results.description = this.description;
-  results.id = this.id;
-  
-  for (var i = 0; i < this.specs.length; i++) {
-    results.rollupCounts(this.specs[i].getResults());
-  }
-  return results;
+  return this.queue.getResults();
 };
 
+jasmine.Suite.prototype.add = function(block) {
+  this.queue.add(block);
+};
+
+jasmine.Suite.prototype.execute = function() {
+  this.queue.start();
+};
+
+jasmine.Suite.prototype._next = function () {
+  this.next();
+};
+
+jasmine.Suite.prototype.next = function() {
+  if (this.queue.isComplete()) {
+    this.finish();
+  } else {
+    this.queue._next();
+  }
+};

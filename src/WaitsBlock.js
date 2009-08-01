@@ -9,6 +9,6 @@ jasmine.WaitsBlock.prototype.execute = function () {
   var self = this;
   self.env.reporter.log('>> Jasmine waiting for ' + this.timeout + ' ms...');
   self.env.setTimeout(function () {
-    self.next();
+    self._next();
   }, self.timeout);
 };

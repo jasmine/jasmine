@@ -12,7 +12,7 @@ jasmine.Block = function(env, func, spec) {
   this.spec = spec;
 };
 
-jasmine.Block.prototype.next = function() {
+jasmine.Block.prototype._next = function() {
   this.spec.finish(); // default value is to be done after one function
 };
 
@@ -23,7 +23,7 @@ jasmine.Block.prototype.execute = function() {
   } catch (e) {
     this.fail(e);
   }
-  this.next();
+  this._next();
 };
 
 jasmine.Block.prototype.fail = function(e) {

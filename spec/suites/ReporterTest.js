@@ -5,7 +5,7 @@ describe('jasmine.Reporter', function() {
     env = new jasmine.Env();
   });
 
-  it('should ', function() {
+  it('should get called from the test runner', function() {
     env.describe('Suite for JSON Reporter with Callbacks', function () {
       env.it('should be a test', function() {
         this.runs(function () {

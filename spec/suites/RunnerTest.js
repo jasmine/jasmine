@@ -41,8 +41,8 @@ describe('RunnerTest', function() {
     env.currentRunner.execute();
 
     expect(env.currentRunner.suites.length).toEqual(2); // "Runner expected two suites, got " + env.currentRunner.suites.length);
-    expect(env.currentRunner.suites[0].specs[0].results.getItems()[0].passed).toEqual(true); //"Runner should have run specs in first suite");
-    expect(env.currentRunner.suites[1].specs[0].results.getItems()[0].passed).toEqual(false); //"Runner should have run specs in second suite");
+    expect(env.currentRunner.suites[0].getResults()[0].passed()).toEqual(true); //"Runner should have run specs in first suite");
+    expect(env.currentRunner.suites[1].getResults()[0].passed()).toEqual(false); //"Runner should have run specs in second suite");
   });
 
   it('should ignore suites that have been x\'d', function() {
@@ -65,7 +65,7 @@ describe('RunnerTest', function() {
     env.currentRunner.execute();
 
     expect(env.currentRunner.suites.length).toEqual(1); // "Runner expected 1 suite, got " + env.currentRunner.suites.length);
-    expect(env.currentRunner.suites[0].specs[0].results.getItems()[0].passed).toEqual(false); // "Runner should have run specs in first suite");
+    expect(env.currentRunner.suites[0].getResults()[0].passed()).toEqual(false); // "Runner should have run specs in first suite");
     expect(env.currentRunner.suites[1]).toEqual(undefined); // "Second suite should be undefined, but was " + reporter.toJSON(env.currentRunner.suites[1]));
   });
 

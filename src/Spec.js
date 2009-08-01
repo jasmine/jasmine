@@ -7,18 +7,22 @@
  * @param {String} description
  */
 jasmine.Spec = function(env, suite, description) {
-  this.id = env.nextSpecId_++;
-  this.env = env;
-  this.suite = suite;
-  this.description = description;
-  this.queue = new jasmine.Queue();
-  this.finished = false;
-  this.afterCallbacks = [];
-  this.spies_ = [];
+  var spec = this;
+  spec.id = env.nextSpecId_++;
+  spec.env = env;
+  spec.suite = suite;
+  spec.description = description;
+  spec.queue = new jasmine.Queue(function () {
+    spec.finish();
+  });
 
-  this.results = new jasmine.NestedResults();
-  this.results.description = description;
-  this.matchersClass = null;
+  spec.finished = false;
+  spec.afterCallbacks = [];
+  spec.spies_ = [];
+
+  spec.results = new jasmine.NestedResults();
+  spec.results.description = description;
+  spec.matchersClass = null;
 };
 
 jasmine.Spec.prototype.getFullName = function() {
@@ -44,7 +48,7 @@ jasmine.Spec.prototype.expects_that = function(actual) {
 };
 
 /**
-* @private
+ * @private
  */
 jasmine.Spec.prototype.expect = function(actual) {
   return new (this.getMatchersClass_())(this.env, actual, this.results);
@@ -87,16 +91,22 @@ jasmine.Spec.prototype.finishCallback = function() {
 };
 
 jasmine.Spec.prototype.finish = function() {
+  for (var i = 0; i < this.afterCallbacks.length; i++) {
+    this.afterCallbacks[i]();
+  }
   this.safeExecuteAfters();
-
   this.removeAllSpies();
   this.finishCallback();
   this.finished = true;
+  if (this.suite.next) {
+    this.suite.next();
+  }
 };
 
 jasmine.Spec.prototype.after = function(doAfter) {
   this.afterCallbacks.unshift(doAfter);
 };
+
 
 jasmine.Spec.prototype.execute = function() {
   var spec = this;
@@ -112,7 +122,7 @@ jasmine.Spec.prototype.execute = function() {
 
   spec.safeExecuteBefores();
 
-  spec.queue.start(function () { spec.finish(); });
+  spec.queue.start();
   spec.env.currentlyRunningTests = false;
 };
 
@@ -121,7 +131,7 @@ jasmine.Spec.prototype.safeExecuteBefores = function() {
   for (var suite = this.suite; suite; suite = suite.parentSuite) {
     if (suite.beforeQueue) {
       for (var i = 0; i < suite.beforeQueue.length; i++)
-      befores.push(suite.beforeQueue[i]);
+        befores.push(suite.beforeQueue[i]);
     }
   }
 
@@ -135,7 +145,7 @@ jasmine.Spec.prototype.safeExecuteAfters = function() {
   for (var suite = this.suite; suite; suite = suite.parentSuite) {
     if (suite.afterQueue) {
       for (var i = 0; i < suite.afterQueue.length; i++)
-      afters.unshift(suite.afterQueue[i]);
+        afters.unshift(suite.afterQueue[i]);
     }
   }
   while (afters.length) {

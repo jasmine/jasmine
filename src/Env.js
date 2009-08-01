@@ -45,7 +45,7 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
 
   var parentSuite = this.currentSuite;
   if (parentSuite) {
-    parentSuite.specs.push(suite);
+    parentSuite.add(suite);
   } else {
     this.currentRunner.suites.push(suite);
   }
@@ -76,7 +76,7 @@ jasmine.Env.prototype.xdescribe = function(desc, specDefinitions) {
 
 jasmine.Env.prototype.it = function(description, func) {
   var spec = new jasmine.Spec(this, this.currentSuite, description);
-  this.currentSuite.specs.push(spec);
+  this.currentSuite.add(spec);
   this.currentSpec = spec;
 
   if (func) {
