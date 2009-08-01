@@ -145,7 +145,10 @@ jasmine.Spec.prototype.execute = function() {
 jasmine.Spec.prototype.safeExecuteBefores = function() {
   var befores = [];
   for (var suite = this.suite; suite; suite = suite.parentSuite) {
-    if (suite.beforeEachFunction) befores.push(suite.beforeEachFunction);
+    if (suite.beforeQueue) {
+      for (var i = 0; i < suite.beforeQueue.length; i++)
+      befores.push(suite.beforeQueue[i]);
+    }
   }
 
   while (befores.length) {
@@ -154,8 +157,15 @@ jasmine.Spec.prototype.safeExecuteBefores = function() {
 };
 
 jasmine.Spec.prototype.safeExecuteAfters = function() {
+  var afters = [];
   for (var suite = this.suite; suite; suite = suite.parentSuite) {
-    if (suite.afterEachFunction) this.safeExecuteBeforeOrAfter(suite.afterEachFunction);
+    if (suite.afterQueue) {
+      for (var i = 0; i < suite.afterQueue.length; i++)
+      afters.unshift(suite.afterQueue[i]);
+    }
+  }
+  while (afters.length) {
+    this.safeExecuteBeforeOrAfter(afters.pop());
   }
 };
 

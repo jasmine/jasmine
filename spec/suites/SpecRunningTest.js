@@ -587,7 +587,6 @@ describe("jasmine spec running", function () {
   });
 
   xit("#beforeEach should be able to eval runs and waits blocks", function () {
-
     var foo = 0;
     var bar = 0;
     var suiteWithBefore = env.describe('one suite with a before', function () {
@@ -609,17 +608,20 @@ describe("jasmine spec running", function () {
 
     });
 
-    //expect(foo).toEqual(0);
+    expect(foo).toEqual(0);
     expect(bar).toEqual(0);
     suiteWithBefore.execute();
+
+
     expect(bar).toEqual(0);
-    //expect(foo).toEqual(1);
+    expect(foo).toEqual(1);
     fakeTimer.tick(500);
+
     expect(bar).toEqual(0);
-    //expect(foo).toEqual(2);
+    expect(foo).toEqual(2);
     fakeTimer.tick(500);
     expect(bar).toEqual(1);
-    //expect(foo).toEqual(3);
+    expect(foo).toEqual(3);
   });
 
   it("testBeforeExecutesSafely", function() {
@@ -773,7 +775,9 @@ describe("jasmine spec running", function () {
       "inner 2 afterEach",
       "outer afterEach"
     ];
-    expect(env.equals_(actions, expected)).toEqual(true); // "nested describes order failed: <blockquote>" + jasmine.pp(actions) + "</blockquote> wanted <blockquote>" + jasmine.pp(expected) + "</blockquote");
+    console.log(actions);
+    console.log(expected);
+    expect(env.equals_(actions, expected)).toEqual(true);
   });
 
   it("builds up nested names", function() {

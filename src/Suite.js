@@ -15,8 +15,8 @@ jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
   this.specs = this.actions;
   this.parentSuite = parentSuite;
 
-  this.beforeEachFunction = null;
-  this.afterEachFunction = null;
+  this.beforeQueue = [];
+  this.afterQueue = [];
 };
 jasmine.util.inherit(jasmine.Suite, jasmine.ActionCollection);
 
@@ -34,12 +34,12 @@ jasmine.Suite.prototype.finishCallback = function() {
 
 jasmine.Suite.prototype.beforeEach = function(beforeEachFunction) {
   beforeEachFunction.typeName = 'beforeEach';
-  this.beforeEachFunction = beforeEachFunction;
+  this.beforeQueue.push(beforeEachFunction);
 };
 
 jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
   afterEachFunction.typeName = 'afterEach';
-  this.afterEachFunction = afterEachFunction;
+  this.afterQueue.push(afterEachFunction);
 };
 
 jasmine.Suite.prototype.getResults = function() {
