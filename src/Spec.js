@@ -11,7 +11,7 @@ jasmine.Spec = function(env, suite, description) {
   this.env = env;
   this.suite = suite;
   this.description = description;
-  this.queue = [];
+  this.queue = new jasmine.Queue();
   this.finished = false;
   this.afterCallbacks = [];
   this.spies_ = [];
@@ -31,13 +31,8 @@ jasmine.Spec.prototype.getResults = function() {
 
 jasmine.Spec.prototype.runs = function (func) {
   var block = new jasmine.Block(this.env, func, this);
-  this.addToQueue(block);
+  this.queue.add(block);
   return this;
-};
-
-jasmine.Spec.prototype.addToQueue = function(block) {
-  this.setNextOnLastInQueue(block);
-  this.queue.push(block);
 };
 
 /**
@@ -55,33 +50,15 @@ jasmine.Spec.prototype.expect = function(actual) {
   return new (this.getMatchersClass_())(this.env, actual, this.results);
 };
 
-/**
- * @private
- */
-jasmine.Spec.prototype.setNextOnLastInQueue = function (block) {
-  if (this.queue.length > 0) {
-    var previousBlock = this.queue[this.queue.length - 1];
-    previousBlock.next = function() {
-      block.execute();
-    };
-  }
-};
-
-/**
- * @private
- */
 jasmine.Spec.prototype.waits = function(timeout) {
   var waitsFunc = new jasmine.WaitsBlock(this.env, timeout, this);
-  this.addToQueue(waitsFunc);
+  this.queue.add(waitsFunc);
   return this;
 };
 
-/**
- * @private
- */
 jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, timeoutMessage) {
   var waitsForFunc = new jasmine.WaitsForBlock(this.env, timeout, latchFunction, timeoutMessage, this);
-  this.addToQueue(waitsForFunc);
+  this.queue.add(waitsForFunc);
   return this;
 };
 
@@ -122,24 +99,21 @@ jasmine.Spec.prototype.after = function(doAfter) {
 };
 
 jasmine.Spec.prototype.execute = function() {
-  if (!this.env.specFilter(this)) {
-    this.results.skipped = true;
-    this.finishCallback();
-    this.finished = true;
+  var spec = this;
+  if (!spec.env.specFilter(spec)) {
+    spec.results.skipped = true;
+    spec.finishCallback();
+    spec.finished = true;
     return;
   }
 
-  this.env.currentSpec = this;
-  this.env.currentlyRunningTests = true;
+  spec.env.currentSpec = spec;
+  spec.env.currentlyRunningTests = true;
 
-  this.safeExecuteBefores();
+  spec.safeExecuteBefores();
 
-  if (this.queue[0]) {
-    this.queue[0].execute();
-  } else {
-    this.finish();
-  }
-  this.env.currentlyRunningTests = false;
+  spec.queue.start(function () { spec.finish(); });
+  spec.env.currentlyRunningTests = false;
 };
 
 jasmine.Spec.prototype.safeExecuteBefores = function() {

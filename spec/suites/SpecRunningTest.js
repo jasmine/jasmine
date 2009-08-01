@@ -96,51 +96,36 @@ describe("jasmine spec running", function () {
 
   it('should queue waits and runs that it encounters while executing specs', function() {
     var specWithRunsAndWaits;
+    var foo = 0;
     env.describe('test async spec', function() {
       specWithRunsAndWaits = env.it('spec w/ queued statments', function () {
         this.runs(function () {
-
+          foo++;
         });
         this.waits(500);
         this.runs(function () {
-
+          foo++;
         });
         this.waits(500);
         this.runs(function () {
+          foo++;
         });
       });
     });
 
-    expect(specWithRunsAndWaits.queue.length).toEqual(1);
-
+    expect(foo).toEqual(0);
     specWithRunsAndWaits.execute();
-
-    expect(specWithRunsAndWaits.queue.length).toEqual(6);
+    expect(foo).toEqual(1);
+    fakeTimer.tick(500);
+    expect(foo).toEqual(2);
+    fakeTimer.tick(500);
+    expect(foo).toEqual(3);
   });
 
   it("should run asynchronous tests", function () {
     var foo = 0;
 
     var a_spec;
-    env.describe('test async spec', function() {
-      a_spec = env.it('simple queue test', function () {
-        this.runs(function () {
-          foo++;
-        });
-        this.runs(function () {
-          this.expect(foo).toEqual(1);
-        });
-      });
-    });
-
-    expect(a_spec.queue.length).toEqual(1,
-        'Expected spec queue length to be 1, was ' + a_spec.queue.length);
-
-    a_spec.execute();
-    expect(a_spec.queue.length).toEqual(3,
-        'Expected spec queue length to be 3, was ' + a_spec.queue.length);
-
-    foo = 0;
     env.describe('test async spec', function() {
       a_spec = env.it('spec w/ queued statments', function () {
         this.runs(function () {
@@ -206,15 +191,12 @@ describe("jasmine spec running", function () {
       });
     });
 
-    expect(another_spec.queue.length).toEqual(1);
 
     another_spec.execute();
 
     fakeTimer.tick(1000);
-    expect(another_spec.queue.length).toEqual(6);
 
     expect(another_spec.results.getItems().length).toEqual(1);
-
     expect(another_spec.results.getItems()[0].passed).toEqual(true);
 
     var baz = 0;
@@ -237,7 +219,6 @@ describe("jasmine spec running", function () {
     yet_another_spec.execute();
     fakeTimer.tick(250);
 
-    expect(yet_another_spec.queue.length).toEqual(4);
     expect(yet_another_spec.results.getItems().length).toEqual(1);
     expect(yet_another_spec.results.getItems()[0].passed).toEqual(false);
   });
@@ -267,7 +248,6 @@ describe("jasmine spec running", function () {
 
     another_spec.execute();
     fakeTimer.tick(2000);
-    expect(another_spec.queue.length).toEqual(6);
     expect(another_spec.results.getItems().length).toEqual(1);
     expect(another_spec.results.getItems()[0].passed).toEqual(true);
   });
@@ -385,28 +365,6 @@ describe("jasmine spec running", function () {
       expect(suite.description).toEqual('one suite description');
     });
 
-    it('should add tests to suites declared by the passed function', function() {
-      suite = env.describe('one suite description', function () {
-        env.it('should be a test');
-      });
-
-      expect(suite.specs.length).toEqual(1);
-      expect(suite.specs[0].queue.length).toEqual(0);
-    });
-
-    it('should enqueue functions for multipart tests', function() {
-      suite = env.describe('one suite description', function () {
-        env.it('should be a test with queuedFunctions', function() {
-          this.runs(function() {
-            var foo = 0;
-            foo++;
-          });
-        });
-      });
-
-      expect(suite.specs[0].queue.length).toEqual(1);
-    });
-
     it('should enqueue functions for multipart tests and support waits, and run any ready runs() blocks', function() {
       var foo = 0;
       var bar = 0;
@@ -423,9 +381,7 @@ describe("jasmine spec running", function () {
         });
       });
 
-      expect(suite.specs[0].queue.length).toEqual(1);
       suite.execute();
-      expect(suite.specs[0].queue.length).toEqual(4);
       expect(foo).toEqual(1);
       expect(bar).toEqual(0);
 
