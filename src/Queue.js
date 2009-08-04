@@ -1,49 +1,44 @@
-jasmine.Queue = function(onComplete) {
+jasmine.Queue = function() {
   this.blocks = [];
-  this.onComplete = function () {
-    onComplete();
-  };
+  this.running = false;
   this.index = 0;
 };
 
 jasmine.Queue.prototype.add = function(block) {
-  this.setNextOnLastInQueue(block);
   this.blocks.push(block);
 };
 
-jasmine.Queue.prototype.start = function() {
-  if (this.blocks[0]) {
-    this.blocks[0].execute();
+jasmine.Queue.prototype.start = function(onComplete) {
+  var self = this;
+  self.onComplete = onComplete;
+  if (self.blocks[0]) {
+    self.blocks[0].execute(function () {
+      self._next();
+    });
   } else {
-    this.onComplete();
+    self.finish();
   }
+};
+
+jasmine.Queue.prototype.isRunning = function () {
+  return this.running;
 };
 
 jasmine.Queue.prototype._next = function () {
-  this.index++;
-  if (this.index < this.blocks.length) {
-    this.blocks[this.index].execute();
-  }
-};
-
-/**
- * @private
- */
-jasmine.Queue.prototype.setNextOnLastInQueue = function (block) {
   var self = this;
-  block._next = function () {
-    self.onComplete();
-  };
-  if (self.blocks.length > 0) {
-    var previousBlock = self.blocks[self.blocks.length - 1];
-    previousBlock._next = function() {
-      block.execute();
-    };
+  self.index++;
+  if (self.index < self.blocks.length) {
+    self.blocks[self.index].execute(function () {self._next();});
+  } else {
+    self.finish();
   }
 };
 
-jasmine.Queue.prototype.isComplete = function () {
-  return this.index >= (this.blocks.length - 1);
+jasmine.Queue.prototype.finish = function () {
+  if (this.onComplete) {
+    this.onComplete();
+  }
+  this.running = false;
 };
 
 jasmine.Queue.prototype.getResults = function () {

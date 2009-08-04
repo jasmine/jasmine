@@ -5,10 +5,9 @@ jasmine.WaitsBlock = function(env, timeout, spec) {
 
 jasmine.util.inherit(jasmine.WaitsBlock, jasmine.Block);
 
-jasmine.WaitsBlock.prototype.execute = function () {
-  var self = this;
-  self.env.reporter.log('>> Jasmine waiting for ' + this.timeout + ' ms...');
-  self.env.setTimeout(function () {
-    self._next();
-  }, self.timeout);
+jasmine.WaitsBlock.prototype.execute = function (onComplete) {
+  this.env.reporter.log('>> Jasmine waiting for ' + this.timeout + ' ms...');
+  this.env.setTimeout(function () {
+    onComplete();
+  }, this.timeout);
 };

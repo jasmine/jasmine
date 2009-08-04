@@ -479,24 +479,20 @@ describe("jasmine spec running", function () {
     var nested = env.describe('suite', function () {
       env.describe('nested', function () {
         env.it('should run nested suites', function () {
-          console.log('first')
           foo++;
         });
         env.it('should run nested suites', function () {
-          console.log('second')
           bar++;
         });
       });
 
       env.describe('nested 2', function () {
         env.it('should run suites following nested suites', function () {
-          console.log('third')
           baz++;
         });
       });
 
       env.it('should run tests following nested suites', function () {
-        console.log('fourth')
           quux++;
         });
     });

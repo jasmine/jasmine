@@ -90,16 +90,15 @@ jasmine.Spec.prototype.finishCallback = function() {
   this.env.reporter.reportSpecResults(this);
 };
 
-jasmine.Spec.prototype.finish = function() {
+jasmine.Spec.prototype.finish = function(onComplete) {
   for (var i = 0; i < this.afterCallbacks.length; i++) {
     this.afterCallbacks[i]();
   }
   this.safeExecuteAfters();
   this.removeAllSpies();
   this.finishCallback();
-  this.finished = true;
-  if (this.suite.next) {
-    this.suite.next();
+  if (onComplete) {
+    onComplete();
   }
 };
 
@@ -108,7 +107,7 @@ jasmine.Spec.prototype.after = function(doAfter) {
 };
 
 
-jasmine.Spec.prototype.execute = function() {
+jasmine.Spec.prototype.execute = function(onComplete) {
   var spec = this;
   if (!spec.env.specFilter(spec)) {
     spec.results.skipped = true;
@@ -122,7 +121,7 @@ jasmine.Spec.prototype.execute = function() {
 
   spec.safeExecuteBefores();
 
-  spec.queue.start();
+  spec.queue.start(function () { spec.finish(onComplete); });
   spec.env.currentlyRunningTests = false;
 };
 

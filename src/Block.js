@@ -12,18 +12,14 @@ jasmine.Block = function(env, func, spec) {
   this.spec = spec;
 };
 
-jasmine.Block.prototype._next = function() {
-  this.spec.finish(); // default value is to be done after one function
-};
-
-jasmine.Block.prototype.execute = function() {
+jasmine.Block.prototype.execute = function(onComplete) {
   this.env.reporter.log('>> Jasmine Running ' + this.spec.suite.description + ' ' + this.spec.description + '...');
   try {
     this.func.apply(this.spec);
   } catch (e) {
     this.fail(e);
   }
-  this._next();
+  onComplete();
 };
 
 jasmine.Block.prototype.fail = function(e) {

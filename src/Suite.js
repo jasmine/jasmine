@@ -27,11 +27,11 @@ jasmine.Suite.prototype.getFullName = function() {
   return fullName;
 };
 
-jasmine.Suite.prototype.finish = function() {
+jasmine.Suite.prototype.finish = function(onComplete) {
   this.env.reporter.reportSuiteResults(this);
   this.finished = true;
-  if (this.parentSuite) {
-    this.parentSuite.next();
+  if (typeof(onComplete) == 'function') {
+    onComplete();
   }
 };
 
@@ -53,18 +53,8 @@ jasmine.Suite.prototype.add = function(block) {
   this.queue.add(block);
 };
 
-jasmine.Suite.prototype.execute = function() {
-  this.queue.start();
+jasmine.Suite.prototype.execute = function(onComplete) {
+  var self = this;
+  this.queue.start(function () { self.finish(onComplete); });
 };
 
-jasmine.Suite.prototype._next = function () {
-  this.next();
-};
-
-jasmine.Suite.prototype.next = function() {
-  if (this.queue.isComplete()) {
-    this.finish();
-  } else {
-    this.queue._next();
-  }
-};
