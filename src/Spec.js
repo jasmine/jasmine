@@ -12,9 +12,7 @@ jasmine.Spec = function(env, suite, description) {
   spec.env = env;
   spec.suite = suite;
   spec.description = description;
-  spec.queue = new jasmine.Queue(function () {
-    spec.finish();
-  });
+  spec.queue = new jasmine.Queue();
 
   spec.finished = false;
   spec.afterCallbacks = [];
@@ -35,8 +33,16 @@ jasmine.Spec.prototype.getResults = function() {
 
 jasmine.Spec.prototype.runs = function (func) {
   var block = new jasmine.Block(this.env, func, this);
-  this.queue.add(block);
+  this.addToQueue(block);
   return this;
+};
+
+jasmine.Spec.prototype.addToQueue = function (block) {
+  if (this.queue.isRunning()) {
+    this.queue.insertNext(block);
+  } else {
+    this.queue.add(block);
+  }
 };
 
 /**
@@ -56,13 +62,13 @@ jasmine.Spec.prototype.expect = function(actual) {
 
 jasmine.Spec.prototype.waits = function(timeout) {
   var waitsFunc = new jasmine.WaitsBlock(this.env, timeout, this);
-  this.queue.add(waitsFunc);
+  this.addToQueue(waitsFunc);
   return this;
 };
 
 jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, timeoutMessage) {
   var waitsForFunc = new jasmine.WaitsForBlock(this.env, timeout, latchFunction, timeoutMessage, this);
-  this.queue.add(waitsForFunc);
+  this.addToQueue(waitsForFunc);
   return this;
 };
 
@@ -121,21 +127,18 @@ jasmine.Spec.prototype.execute = function(onComplete) {
 
   spec.safeExecuteBefores();
 
-  spec.queue.start(function () { spec.finish(onComplete); });
+  spec.queue.start(function () {
+    spec.finish(onComplete);
+  });
   spec.env.currentlyRunningTests = false;
 };
 
 jasmine.Spec.prototype.safeExecuteBefores = function() {
-  var befores = [];
   for (var suite = this.suite; suite; suite = suite.parentSuite) {
     if (suite.beforeQueue) {
       for (var i = 0; i < suite.beforeQueue.length; i++)
-        befores.push(suite.beforeQueue[i]);
+        this.queue.addBefore(new jasmine.Block(this.env, suite.beforeQueue[i], this));
     }
-  }
-
-  while (befores.length) {
-    this.safeExecuteBeforeOrAfter(befores.pop());
   }
 };
 

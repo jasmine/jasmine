@@ -593,14 +593,12 @@ describe("jasmine spec running", function () {
     });
   });
 
-  xit("#beforeEach should be able to eval runs and waits blocks", function () {
+  it("#beforeEach should be able to eval runs and waits blocks", function () {
     var foo = 0;
     var bar = 0;
     var suiteWithBefore = env.describe('one suite with a before', function () {
       this.beforeEach(function () {
-        console.error('in beforeEach')
         this.runs(function () {
-          console.error('in beforeEach runs')
           foo++;
         });
         this.waits(500);
@@ -611,7 +609,6 @@ describe("jasmine spec running", function () {
       });
 
       env.it('should be a spec', function () {
-        console.error('in spec ')
         bar = 1;
         foo++;
       });
@@ -621,12 +618,10 @@ describe("jasmine spec running", function () {
     expect(foo).toEqual(0);
     expect(bar).toEqual(0);
     suiteWithBefore.execute();
-    console.error('before tick');
 
     expect(bar).toEqual(0);
     expect(foo).toEqual(1);
     fakeTimer.tick(500);
-    console.error('after tick')
 
     expect(bar).toEqual(0);
     expect(foo).toEqual(2);
@@ -764,6 +759,7 @@ describe("jasmine spec running", function () {
     });
 
     env.execute();
+
 
     var expected = [
       "outer beforeEach",
