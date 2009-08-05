@@ -97,9 +97,6 @@ jasmine.Spec.prototype.finishCallback = function() {
 };
 
 jasmine.Spec.prototype.finish = function(onComplete) {
-  for (var i = 0; i < this.afterCallbacks.length; i++) {
-    this.afterCallbacks[i]();
-  }
   this.removeAllSpies();
   this.finishCallback();
   if (onComplete) {
@@ -107,8 +104,13 @@ jasmine.Spec.prototype.finish = function(onComplete) {
   }
 };
 
-jasmine.Spec.prototype.after = function(doAfter) {
+jasmine.Spec.prototype.after = function(doAfter, test) {
+
+ if (this.queue.isRunning()) {
+    this.queue.add(new jasmine.Block(this.env, doAfter, this));
+  } else {
   this.afterCallbacks.unshift(doAfter);
+  }
 };
 
 jasmine.Spec.prototype.execute = function(onComplete) {
@@ -137,7 +139,12 @@ jasmine.Spec.prototype.addBeforesAndAftersToQueue = function() {
       for (var i = 0; i < suite.beforeQueue.length; i++)
         this.queue.addBefore(new jasmine.Block(this.env, suite.beforeQueue[i], this));
     }
-    if (suite.afterQueue) {
+  }
+  for (i = 0; i < this.afterCallbacks.length; i++) {
+    this.queue.add(new jasmine.Block(this.env, this.afterCallbacks[i], this));
+  }
+  for (suite = this.suite; suite; suite = suite.parentSuite) {
+  if (suite.afterQueue) {
       for (var j = 0; j < suite.afterQueue.length; j++)
         this.queue.add(new jasmine.Block(this.env, suite.afterQueue[j], this));
     }

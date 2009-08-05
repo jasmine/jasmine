@@ -675,6 +675,100 @@ describe("jasmine spec running", function () {
 
   });
 
+  it("Spec#after should be able to eval runs and waits blocks", function () {
+    var runsBeforeAfter = false;
+    var firstSpecHasRun = false;
+    var secondSpecHasRun = false;
+    var afterHasRun = false;
+    var suiteWithAfter = env.describe('one suite with a before', function () {
+
+      env.it('should be the first spec', function () {
+        firstSpecHasRun = true;
+        this.after(function () {
+          this.waits(500);
+          this.runs(function () {
+          afterHasRun = true;
+          });
+          this.waits(500);
+        }, true);
+        this.waits(500);
+        this.runs(function () {
+          runsBeforeAfter = true;
+        });
+      });
+
+      env.it('should be a spec', function () {
+        secondSpecHasRun = true;
+      });
+
+    });
+
+    expect(firstSpecHasRun).toEqual(false);
+    expect(runsBeforeAfter).toEqual(false);
+    expect(afterHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+
+    suiteWithAfter.execute();
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(runsBeforeAfter).toEqual(false);
+    expect(afterHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+
+    fakeTimer.tick(500);
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(runsBeforeAfter).toEqual(true);
+    expect(afterHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+
+    fakeTimer.tick(500);
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(runsBeforeAfter).toEqual(true);
+    expect(afterHasRun).toEqual(true);
+    expect(secondSpecHasRun).toEqual(false);
+
+    fakeTimer.tick(500);
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(runsBeforeAfter).toEqual(true);
+    expect(afterHasRun).toEqual(true);
+    expect(secondSpecHasRun).toEqual(true);
+  });
+
+  it("handles waits", function () {
+    var firstSpecHasRun = false;
+    var secondSpecHasRun = false;
+    var suiteWithAfter = env.describe('one suite with a before', function () {
+
+      env.it('should be the first spec', function () {
+        this.waits(500);
+        this.runs(function () {
+          firstSpecHasRun = true;
+        });
+      });
+
+      env.it('should be a spec', function () {
+        secondSpecHasRun = true;
+      });
+
+    });
+
+    expect(firstSpecHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+
+    suiteWithAfter.execute();
+
+    expect(firstSpecHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+
+    fakeTimer.tick(500);
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(secondSpecHasRun).toEqual(true);
+});
+
   it("testBeforeExecutesSafely", function() {
     var report = "";
     var suite = env.describe('before fails on first test, passes on second', function() {
