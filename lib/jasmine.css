@@ -14,11 +14,11 @@ p {
 	padding-left: 20px;
 }
 
-p.fail {
+.fail {
 	background: url( ../images/fail-16.png ) no-repeat;
 	color: red;
 }
 
-p.fail_in_summary {
+.fail_in_summary {
   color: red;
 }
