@@ -77,4 +77,4 @@ jasmine.NestedResults.prototype.addResult = function(result) {
  */
 jasmine.NestedResults.prototype.passed = function() {
   return this.passedCount === this.totalCount;
-}
+};

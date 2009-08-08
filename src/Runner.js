@@ -25,7 +25,6 @@ jasmine.Runner.prototype.finishCallback = function() {
 jasmine.Runner.prototype.getResults = function() {
   var results = new jasmine.NestedResults();
   for (var i = 0; i < this.suites.length; i++) {
-    //TODO: FIX
     results.rollupCounts(this.suites[i].getResults()[0]);
   }
   return results;

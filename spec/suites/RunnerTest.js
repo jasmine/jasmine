@@ -40,10 +40,14 @@ describe('RunnerTest', function() {
 
     env.currentRunner.execute();
 
-    expect(env.currentRunner.suites.length).toEqual(2); // "Runner expected two suites, got " + env.currentRunner.suites.length);
-    expect(env.currentRunner.suites[0].getResults()[0].passed()).toEqual(true); //"Runner should have run specs in first suite");
-    expect(env.currentRunner.suites[1].getResults()[0].passed()).toEqual(false); //"Runner should have run specs in second suite");
+    var runnerResults = env.currentRunner.getResults();
+    console.error('runnerResults', runnerResults)
+    expect(runnerResults.totalCount).toEqual(2);
+    expect(runnerResults.passedCount).toEqual(1);
+    expect(runnerResults.failedCount).toEqual(1);
+
   });
+
 
   it('should ignore suites that have been x\'d', function() {
     env.xdescribe('one suite description', function () {
