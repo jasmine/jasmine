@@ -42,7 +42,7 @@ Reporter.prototype.test = function (result, message) {
 };
 
 Reporter.prototype.summary = function () {
-  var el = createElement('p', {'class': ((this.fails > 0) ? 'fail_in_summary' : '') });
+  var el = createElement('p', {'class': ((this.fails > 0) ? 'failInSummary' : '') });
   el.innerHTML = this.total + ' expectations, ' + this.passes + ' passing, ' + this.fails + ' failed in ' + (new Date().getTime() - this.start.getTime()) + "ms.";
 
   var summaryElement = document.getElementById('results_summary');

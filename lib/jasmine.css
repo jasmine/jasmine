@@ -20,12 +20,13 @@ p {
 	color: red;
 }
 
-.fail_in_summary {
+.failInSummary {
   color: red;
 }
 
 .spec {
   margin: 5px;
+  clear: both;
 }
 
 .passed {
@@ -34,6 +35,11 @@ p {
 
 .failed {
   background-color: pink;
+}
+
+.skipped {
+  color: #777;
+  background-color: #eee;
 }
 
 .resultMessage {
@@ -48,4 +54,9 @@ p {
   overflow: auto;
   border-left: 1px solid red;
   padding-left: 5em;
+}
+
+.runSpec {
+  margin-left: 5px;
+  float: right;
 }
