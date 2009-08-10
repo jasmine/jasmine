@@ -14,11 +14,38 @@ p {
 	padding-left: 20px;
 }
 
-p.fail {
+.fail {
 	background: url( ../images/fail-16.png ) no-repeat;
+  padding-left: 20px;
 	color: red;
 }
 
-p.fail_in_summary {
+.fail_in_summary {
   color: red;
+}
+
+.spec {
+  margin: 5px;
+}
+
+.passed {
+  background-color: lightgreen;
+}
+
+.failed {
+  background-color: pink;
+}
+
+.resultMessage {
+  white-space: pre;
+}
+
+.stackTrace {
+  white-space: pre;
+  font-size: .8em;
+  margin-left: 10px;
+  height: 5em;
+  overflow: auto;
+  border-left: 1px solid red;
+  padding-left: 5em;
 }

@@ -19,15 +19,39 @@ module Jasmine
     port
   end
 
-  class RunAdapter
-    def initialize(spec_files)
-      p "spec_files: #{spec_files}"
+  def self.server_is_listening_on(hostname, port)
+    require 'socket'
+    begin
+      socket = TCPSocket.open(hostname, port)
+    rescue Errno::ECONNREFUSED
+      return false
+    end
+    socket.close
+    true
+  end
 
-      @spec_files = spec_files
+  def self.wait_for_listener(port, name = "required process", seconds_to_wait = 10)
+    time_out_at = Time.now + seconds_to_wait
+    until server_is_listening_on "localhost", port
+      sleep 0.1
+      puts "Waiting for #{name} on #{port}..."
+      raise "#{name} didn't show up on port #{port} after #{seconds_to_wait} seconds." if Time.now > time_out_at
+    end
+  end
+
+  def self.kill_process_group(process_group_id, signal="TERM")
+    Process.kill signal, -process_group_id # negative pid means kill process group. (see man 2 kill)
+  end
+
+  class RunAdapter
+    def initialize(spec_files_or_proc)
+      @spec_files_or_proc = spec_files_or_proc
     end
 
     def call(env)
-      spec_files = @spec_files
+      spec_files = @spec_files_or_proc
+      spec_files = spec_files.call if spec_files.respond_to?(:call)
+
       body = ERB.new(File.read(File.join(File.dirname(__FILE__), "run.html"))).result(binding)
       [
         200,
@@ -38,11 +62,11 @@ module Jasmine
   end
 
   class SimpleServer
-    def self.start(port, spec_dir, mappings)
+    def self.start(port, spec_files_or_proc, mappings)
       require 'thin'
 
       config = {
-        '/run.html' => Jasmine::RunAdapter.new(spec_dir)
+        '/run.html' => Jasmine::RunAdapter.new(spec_files_or_proc)
       }
       mappings.each do |from, to|
         config[from] = Rack::File.new(to)
@@ -50,7 +74,6 @@ module Jasmine
 
       app = Rack::URLMap.new(config)
 
-      server_port = Jasmine::find_unused_port
       Thin::Server.start('0.0.0.0', port, app)
     end
   end
@@ -119,26 +142,6 @@ module Jasmine
       stop_servers
     end
 
-    def server_is_listening_on(hostname, port)
-      require 'socket'
-      begin
-        socket = TCPSocket.open(hostname, port)
-      rescue Errno::ECONNREFUSED
-        return false
-      end
-      socket.close
-      true
-    end
-
-    def wait_for_listener(port, name = "required process", seconds_to_wait = 10)
-      seconds_waited = 0
-      until server_is_listening_on "localhost", port
-        sleep 1
-        puts "Waiting for #{name} on #{port}..."
-        raise "#{name} didn't show up on port #{port} after #{seconds_to_wait} seconds." if (seconds_waited += 1) >= seconds_to_wait
-      end
-    end
-
     def start_servers
       @jasmine_server_port = Jasmine::find_unused_port
       @selenium_server_port = Jasmine::find_unused_port
@@ -156,18 +159,14 @@ module Jasmine
       end
       puts "jasmine server started.  pid is #{@jasmine_server_pid}"
 
-      wait_for_listener(@selenium_server_port, "selenium server")
-      wait_for_listener(@jasmine_server_port, "jasmine server")
-    end
-
-    def kill_process_group(process_group_id, signal="TERM")
-      Process.kill signal, -process_group_id # negative pid means kill process group. (see man 2 kill)
+      Jasmine::wait_for_listener(@selenium_server_port, "selenium server")
+      Jasmine::wait_for_listener(@jasmine_server_port, "jasmine server")
     end
 
     def stop_servers
       puts "shutting down the servers..."
-      kill_process_group(@selenium_pid) if @selenium_pid
-      kill_process_group(@jasmine_server_pid) if @jasmine_server_pid
+      Jasmine::kill_process_group(@selenium_pid) if @selenium_pid
+      Jasmine::kill_process_group(@jasmine_server_pid) if @jasmine_server_pid
     end
 
     def run
