@@ -10,25 +10,23 @@
   <script type="text/javascript"></script>
   <link href="/jasmine/lib/jasmine.css" rel="stylesheet"/>
   <script type="text/javascript">
-    var jasmineEnv = jasmine.getEnv();
-    var jsApiReporter = new jasmine.JsApiReporter();
-    jasmineEnv.specFilter = function(spec) {
-      var paramMap = {};
-      var params = document.location.search.substring(1).split('&');
-      for (var i = 0; i < params.length; i++) {
-        var p = params[i].split('=');
-        paramMap[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
-      }
+    var jsApiReporter;
+    (function() {
+      var jasmineEnv = jasmine.getEnv();
+      jsApiReporter = new jasmine.JsApiReporter();
+      var trivialReporter = new jasmine.TrivialReporter();
 
-      if (!paramMap["spec"]) return true;
-      return spec.getFullName().indexOf(paramMap["spec"]) > -1;
-    };
+      jasmineEnv.addReporter(jsApiReporter);
+      jasmineEnv.addReporter(trivialReporter);
 
-    jasmineEnv.addReporter(jsApiReporter);
-    jasmineEnv.addReporter(new jasmine.TrivialReporter());
-    window.onload = function() {
-      jasmineEnv.execute();
-    };
+      jasmineEnv.specFilter = function(spec) {
+        return trivialReporter.specFilter(spec);
+      };
+
+      window.onload = function() {
+        jasmineEnv.execute();
+      };
+    })();
   </script>
 
   <% spec_files.each do |spec_file| %>
