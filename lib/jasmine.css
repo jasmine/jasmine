@@ -16,9 +16,32 @@ p {
 
 .fail {
 	background: url( ../images/fail-16.png ) no-repeat;
+  padding-left: 20px;
 	color: red;
 }
 
 .fail_in_summary {
   color: red;
+}
+
+.spec {
+  margin: 5px;
+}
+
+.passed {
+  background-color: lightgreen;
+}
+
+.failed {
+  background-color: pink;
+}
+
+.resultMessage {
+  white-space: pre;
+}
+
+.stackTrace {
+  white-space: pre;
+  font-size: .8em;
+  margin-left: 10px;
 }
