@@ -20,14 +20,14 @@ module Jasmine
   end
 
   class RunAdapter
-    def initialize(spec_files)
-      p "spec_files: #{spec_files}"
-
-      @spec_files = spec_files
+    def initialize(spec_files_or_proc)
+      @spec_files_or_proc = spec_files_or_proc
     end
 
     def call(env)
-      spec_files = @spec_files
+      spec_files = @spec_files_or_proc
+      spec_files = spec_files.call if spec_files.respond_to?(:call)
+
       body = ERB.new(File.read(File.join(File.dirname(__FILE__), "run.html"))).result(binding)
       [
         200,
@@ -38,11 +38,11 @@ module Jasmine
   end
 
   class SimpleServer
-    def self.start(port, spec_dir, mappings)
+    def self.start(port, spec_files_or_proc, mappings)
       require 'thin'
 
       config = {
-        '/run.html' => Jasmine::RunAdapter.new(spec_dir)
+        '/run.html' => Jasmine::RunAdapter.new(spec_files_or_proc)
       }
       mappings.each do |from, to|
         config[from] = Rack::File.new(to)
@@ -50,7 +50,6 @@ module Jasmine
 
       app = Rack::URLMap.new(config)
 
-      server_port = Jasmine::find_unused_port
       Thin::Server.start('0.0.0.0', port, app)
     end
   end
