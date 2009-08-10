@@ -8,7 +8,7 @@ describe Jasmine::SimpleServer do
   end
   
   after do
-    Process.kill "TERM", -@jasmine_server_pid if @jasmine_server_pid
+    Jasmine::kill_process_group(@jasmine_server_pid) if @jasmine_server_pid
   end
 
   it "should start and print script tags" do
@@ -18,7 +18,7 @@ describe Jasmine::SimpleServer do
       exit! 0
     end
 
-    Jasmine::Runner.new(nil, nil, nil).wait_for_listener(@port)
+    Jasmine::wait_for_listener(@port)
 
     run_html = open("http://localhost:#{@port}/run.html").read
     run_html.should =~ /<script src="file1"/
@@ -37,7 +37,7 @@ describe Jasmine::SimpleServer do
       exit! 0
     end
 
-    Jasmine::Runner.new(nil, nil, nil).wait_for_listener(@port)
+    Jasmine::wait_for_listener(@port)
 
     run_html = open("http://localhost:#{@port}/run.html").read
     run_html.should =~ /<script src="file1"/
