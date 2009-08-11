@@ -24,6 +24,12 @@ p {
   color: red;
 }
 
+.suite {
+  border: 1px outset gray;
+  margin: 2px;
+  padding-left: 1em;
+}
+
 .spec {
   margin: 5px;
   clear: both;

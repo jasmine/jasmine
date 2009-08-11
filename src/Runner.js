@@ -22,6 +22,28 @@ jasmine.Runner.prototype.finishCallback = function() {
   this.env.reporter.reportRunnerResults(this);
 };
 
+jasmine.Runner.prototype.getAllSuites = function() {
+  var suitesToReturn = [];
+
+  function addSuite(suite) {
+    suitesToReturn.push(suite);
+
+    for (var j = 0; j < suite.specs.length; j++) {
+      var spec = suite.specs[j];
+      if (spec instanceof jasmine.Suite) {
+        addSuite(spec);
+      }
+    }
+  }
+
+  for (var i = 0; i < this.suites.length; i++) {
+    var suite = this.suites[i];
+    addSuite(suite);
+  }
+
+  return suitesToReturn;
+};
+
 jasmine.Runner.prototype.getResults = function() {
   var results = new jasmine.NestedResults();
   for (var i = 0; i < this.suites.length; i++) {

@@ -123,4 +123,17 @@ describe('RunnerTest', function() {
     expect(fakeReporter.reportRunnerStarting).wasCalledWith(env.currentRunner);
   });
 
+  it("should return a flat array of all suites, including nested suites", function() {
+    var suite1, suite2;
+    suite1 = env.describe("spec 1", function() {
+      suite2 = env.describe("nested spec", function() {});
+    });
+
+    console.log("runner:", env.currentRunner);
+    document.runner = env.currentRunner;
+
+    var suites = env.currentRunner.getAllSuites();
+    expect(suites).toEqual([suite1, suite2]);
+  });
+
 });

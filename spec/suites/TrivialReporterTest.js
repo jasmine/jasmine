@@ -1,19 +1,34 @@
 describe("TrivialReporter", function() {
+  var trivialReporter;
+  var body;
+
+  beforeEach(function() {
+    body = document.createElement("body");
+  });
+
   function fakeSpec(name) {
     return {
       getFullName: function() { return name; }
     };
   }
 
-  it("should allow for focused spec running", function() {
-    var trivialReporter = new jasmine.TrivialReporter();
-    spyOn(trivialReporter, 'getLocation').andReturn({search: "?spec=run%20this"});
+  it("should run only specs beginning with spec parameter", function() {
+    trivialReporter = new jasmine.TrivialReporter({ location: {search: "?spec=run%20this"} });
     expect(trivialReporter.specFilter(fakeSpec("run this"))).toBeTruthy();
+    expect(trivialReporter.specFilter(fakeSpec("not the right spec"))).toBeFalsy();
+    expect(trivialReporter.specFilter(fakeSpec("not run this"))).toBeFalsy();
   });
 
-  it("should not run specs that don't match the filter", function() {
-    var trivialReporter = new jasmine.TrivialReporter();
-    spyOn(trivialReporter, 'getLocation').andReturn({search: "?spec=run%20this"});
-    expect(trivialReporter.specFilter(fakeSpec("not the right spec"))).toBeFalsy();
+  it("should display empty divs for every suite when the runner is starting", function() {
+    trivialReporter = new jasmine.TrivialReporter({ body: body });
+    trivialReporter.reportRunnerStarting({
+      getAllSuites: function() {
+        return [ new jasmine.Suite(null, "suite 1", null, null) ];
+      }
+    });
+
+    var divs = body.getElementsByTagName("div");
+    expect(divs.length).toEqual(1);
+    expect(divs[0].innerHTML).toContain("suite 1");
   });
 });
