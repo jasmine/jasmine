@@ -28,7 +28,7 @@ describe("TrivialReporter", function() {
     });
 
     var divs = body.getElementsByTagName("div");
-    expect(divs.length).toEqual(1);
-    expect(divs[0].innerHTML).toContain("suite 1");
+    expect(divs.length).toEqual(2);
+    expect(divs[1].innerHTML).toContain("suite 1");
   });
 });

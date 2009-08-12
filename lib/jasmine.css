@@ -23,6 +23,16 @@ p {
   color: red;
 }
 
+.runner {
+  border: 1px outset gray;
+  margin: 5px;
+  padding-left: 1em;
+}
+
+.runner.running {
+  background-color: yellow;
+}
+
 .suite {
   border: 1px outset gray;
   margin: 5px;
