@@ -5,27 +5,35 @@
  * @param {jasmine.Env} env
  */
 jasmine.Runner = function(env) {
-  jasmine.ActionCollection.call(this, env);
-
-  this.suites = this.actions;
+  var self = this;
+  self.env = env;
+  self.queue = new jasmine.Queue();
 };
-jasmine.util.inherit(jasmine.Runner, jasmine.ActionCollection);
 
 jasmine.Runner.prototype.execute = function() {
-  if (this.env.reporter.reportRunnerStarting) {
-    this.env.reporter.reportRunnerStarting(this);
+  var self = this;
+  if (self.env.reporter.reportRunnerStarting) {
+    self.env.reporter.reportRunnerStarting(this);
   }
-  jasmine.ActionCollection.prototype.execute.call(this);
+  self.queue.start(function () { self.finishCallback(); });
 };
 
 jasmine.Runner.prototype.finishCallback = function() {
   this.env.reporter.reportRunnerResults(this);
 };
 
+jasmine.Runner.prototype.add = function(block) {
+  this.queue.add(block);
+};
+
 jasmine.Runner.prototype.getResults = function() {
   var results = new jasmine.NestedResults();
-  for (var i = 0; i < this.suites.length; i++) {
-    results.rollupCounts(this.suites[i].getResults()[0]);
+  var runnerResults = this.queue.getResults();
+  for (var i=0; i < runnerResults.length; i++) {
+    var suiteResults = runnerResults[i];
+    for (var j=0; j < suiteResults.length; j++) {
+      results.rollupCounts(suiteResults[j]);
+    }
   }
   return results;
 };

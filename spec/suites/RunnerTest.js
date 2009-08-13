@@ -1,24 +1,15 @@
 describe('RunnerTest', function() {
+  var fakeTimer;
   var env;
-  beforeEach(function () {
+
+  beforeEach(function() {
     env = new jasmine.Env();
-  });
 
-  it('should be able to add a suite', function() {
-    env.describe('one suite description', function () {
-      env.it('should be a test');
-    });
-    expect(env.currentRunner.suites.length).toEqual(1); // "Runner expected one suite, got " + env.currentRunner.suites.length);
-  });
-
-  it('should be able to push multiple suites', function() {
-    env.describe('one suite description', function () {
-      env.it('should be a test');
-    });
-    env.describe('another suite description', function () {
-      env.it('should be a test');
-    });
-    expect(env.currentRunner.suites.length).toEqual(2); //"Runner expected two suites, but got " + env.currentRunner.suites.length);
+    fakeTimer = new jasmine.FakeTimer();
+    env.setTimeout = fakeTimer.setTimeout;
+    env.clearTimeout = fakeTimer.clearTimeout;
+    env.setInterval = fakeTimer.setInterval;
+    env.clearInterval = fakeTimer.clearInterval;
   });
 
   it('should run child suites and specs and generate results when execute is called', function() {
@@ -41,11 +32,9 @@ describe('RunnerTest', function() {
     env.currentRunner.execute();
 
     var runnerResults = env.currentRunner.getResults();
-    console.error('runnerResults', runnerResults)
     expect(runnerResults.totalCount).toEqual(2);
     expect(runnerResults.passedCount).toEqual(1);
     expect(runnerResults.failedCount).toEqual(1);
-
   });
 
 
@@ -68,9 +57,10 @@ describe('RunnerTest', function() {
 
     env.currentRunner.execute();
 
-    expect(env.currentRunner.suites.length).toEqual(1); // "Runner expected 1 suite, got " + env.currentRunner.suites.length);
-    expect(env.currentRunner.suites[0].getResults()[0].passed()).toEqual(false); // "Runner should have run specs in first suite");
-    expect(env.currentRunner.suites[1]).toEqual(undefined); // "Second suite should be undefined, but was " + reporter.toJSON(env.currentRunner.suites[1]));
+    var runnerResults = env.currentRunner.getResults();
+    expect(runnerResults.totalCount).toEqual(1);
+    expect(runnerResults.passedCount).toEqual(0);
+    expect(runnerResults.failedCount).toEqual(1);
   });
 
   it('should roll up results from all specs', function() {
@@ -99,32 +89,42 @@ describe('RunnerTest', function() {
     expect(results.failedCount).toEqual(1);
   });
 
-  it('should set the finished flag when #finished is called', function(){
-    env.currentRunner.finish();
+  describe('reporting', function () {
+    var fakeReporter;
+    beforeEach(function () {
+      fakeReporter = jasmine.createSpyObj("fakeReporter", ["log", "reportRunnerStarting", "reportRunnerResults"]);
+      env.addReporter(fakeReporter);
+    });
 
-    expect(env.currentRunner.finished).toEqual(true);
+    it('should report runner results when the runner has completed running', function() {
+      env.describe('one suite description', function () {
+        env.it('should be a test', function() {
+          this.runs(function () {
+            this.expect(true).toEqual(true);
+          });
+        });
+      });
+
+      env.describe('another suite description', function () {
+        env.it('should be another test', function() {
+          this.waits(200);
+          this.runs(function () {
+            this.expect(true).toEqual(false);
+          });
+        });
+      });
+
+      env.currentRunner.execute();
+      expect(fakeReporter.reportRunnerResults).wasNotCalled();
+      fakeTimer.tick(200);
+      expect(fakeReporter.reportRunnerResults).wasCalledWith(env.currentRunner);
+    });
+
+    it("should report when the tests start running", function() {
+      expect(fakeReporter.reportRunnerStarting).wasNotCalled();
+      env.currentRunner.execute();
+      expect(fakeReporter.reportRunnerStarting).wasCalledWith(env.currentRunner);
+    });
+
   });
-
-  it('should call the finish callback when the runner is finished', function() {
-    var foo = 0;
-
-    env.currentRunner.finishCallback = function() {
-      foo++;
-    };
-
-    env.currentRunner.finish();
-
-    expect(env.currentRunner.finished).toEqual(true);
-    expect(foo).toEqual(1);
-  });
-
-  it("should report when the tests start running", function() {
-    var fakeReporter = jasmine.createSpyObj("fakeReporter", ["log", "reportRunnerStarting"]);
-    env.addReporter(fakeReporter);
-
-    var runner = new jasmine.Runner(env);
-    runner.execute();
-    expect(fakeReporter.reportRunnerStarting).wasCalledWith(env.currentRunner);
-  });
-
 });

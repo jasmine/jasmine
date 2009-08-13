@@ -47,7 +47,7 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
   if (parentSuite) {
     parentSuite.add(suite);
   } else {
-    this.currentRunner.suites.push(suite);
+    this.currentRunner.add(suite);
   }
 
   this.currentSuite = suite;
