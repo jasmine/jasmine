@@ -12,7 +12,7 @@ jasmine.Spec = function(env, suite, description) {
   spec.env = env;
   spec.suite = suite;
   spec.description = description;
-  spec.queue = new jasmine.Queue();
+  spec.queue = new jasmine.Queue(env);
 
   spec.finished = false;
   spec.afterCallbacks = [];

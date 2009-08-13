@@ -30,6 +30,7 @@ describe('RunnerTest', function() {
     });
 
     env.currentRunner.execute();
+    fakeTimer.tick(0);
 
     var runnerResults = env.currentRunner.getResults();
     expect(runnerResults.totalCount).toEqual(2);
@@ -56,7 +57,8 @@ describe('RunnerTest', function() {
     });
 
     env.currentRunner.execute();
-
+    fakeTimer.tick(0);
+    
     var runnerResults = env.currentRunner.getResults();
     expect(runnerResults.totalCount).toEqual(1);
     expect(runnerResults.passedCount).toEqual(0);
@@ -64,7 +66,6 @@ describe('RunnerTest', function() {
   });
 
   it('should roll up results from all specs', function() {
-    var env = new jasmine.Env();
     env.describe('one suite description', function () {
       env.it('should be a test', function() {
         this.runs(function () {
@@ -82,7 +83,8 @@ describe('RunnerTest', function() {
     });
 
     env.currentRunner.execute();
-
+    fakeTimer.tick(0);
+    
     var results = env.currentRunner.getResults();
     expect(results.totalCount).toEqual(2);
     expect(results.passedCount).toEqual(1);

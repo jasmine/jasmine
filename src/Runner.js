@@ -7,7 +7,7 @@
 jasmine.Runner = function(env) {
   var self = this;
   self.env = env;
-  self.queue = new jasmine.Queue();
+  self.queue = new jasmine.Queue(env);
 };
 
 jasmine.Runner.prototype.execute = function() {

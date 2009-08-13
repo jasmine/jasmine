@@ -1,4 +1,5 @@
-jasmine.Queue = function() {
+jasmine.Queue = function(env) {
+  this.env = env;
   this.blocks = [];
   this.running = false;
   this.index = 0;
@@ -37,13 +38,17 @@ jasmine.Queue.prototype.isRunning = function () {
 
 jasmine.Queue.prototype._next = function () {
   var self = this;
-  self.offset = 0;
-  self.index++;
-  if (self.index < self.blocks.length) {
-    self.blocks[self.index].execute(function () {self._next();});
-  } else {
-    self.finish();
-  }
+  self.env.setTimeout(function () {
+    self.offset = 0;
+    self.index++;
+    if (self.index < self.blocks.length) {
+      self.blocks[self.index].execute(function () {
+        self._next();
+      });
+    } else {
+      self.finish();
+    }
+  }, 0);
 };
 
 jasmine.Queue.prototype.finish = function () {
