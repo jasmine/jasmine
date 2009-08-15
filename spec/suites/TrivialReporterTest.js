@@ -23,7 +23,7 @@ describe("TrivialReporter", function() {
     trivialReporter = new jasmine.TrivialReporter({ body: body });
     trivialReporter.reportRunnerStarting({
       getAllSuites: function() {
-        return [ new jasmine.Suite(null, "suite 1", null, null) ];
+        return [ new jasmine.Suite({}, "suite 1", null, null) ];
       }
     });
 
