@@ -1,6 +1,5 @@
 body {
   font: 14px "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
-  padding-left: 40px;
 }
 
 h1 {
@@ -20,12 +19,37 @@ p {
 	color: red;
 }
 
-.fail_in_summary {
+.failInSummary {
   color: red;
+}
+
+.runner {
+  border: 1px outset gray;
+  margin: 5px;
+  padding-left: 1em;
+}
+
+.runner.running {
+  background-color: yellow;
+}
+
+.suite {
+  border: 1px outset gray;
+  margin: 5px;
+  padding-left: 1em;
+}
+
+.suite.passed {
+  background-color: #cfc;
+}
+
+.suite.failed {
+  background-color: #fdd;
 }
 
 .spec {
   margin: 5px;
+  clear: both;
 }
 
 .passed {
@@ -34,6 +58,11 @@ p {
 
 .failed {
   background-color: pink;
+}
+
+.skipped {
+  color: #777;
+  background-color: #eee;
 }
 
 .resultMessage {
@@ -46,6 +75,12 @@ p {
   margin-left: 10px;
   height: 5em;
   overflow: auto;
-  border-left: 1px solid red;
-  padding-left: 5em;
+  border: 1px inset red;
+  padding: 1em;
+  background: #eef;
+}
+
+.runSpec {
+  margin-left: 5px;
+  float: right;
 }

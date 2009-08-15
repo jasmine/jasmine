@@ -167,6 +167,18 @@ describe("jasmine.Matchers", function() {
     });
   });
 
+  it("toBeLessThan should pass if actual is less than expected", function() {
+    expect(match(37).toBeLessThan(42)).toEqual(true);
+    expect(match(37).toBeLessThan(-42)).toEqual(false);
+    expect(match(37).toBeLessThan(37)).toEqual(false);
+  });
+
+  it("toBeGreaterThan should pass if actual is greater than expected", function() {
+    expect(match(37).toBeGreaterThan(42)).toEqual(false);
+    expect(match(37).toBeGreaterThan(-42)).toEqual(true);
+    expect(match(37).toBeGreaterThan(37)).toEqual(false);
+  });
+
   it("toThrow", function() {
     var expected = new jasmine.Matchers(env, function() {
       throw new Error("Fake Error");

@@ -3,6 +3,7 @@
 <html>
 <head>
   <title>Jasmine Test Runner</title>
+  
   <script type="text/javascript" src="../src/base.js"></script>
   <script type="text/javascript" src="../src/util.js"></script>
   <script type="text/javascript" src="../src/Env.js"></script>
@@ -19,9 +20,6 @@
   <script type="text/javascript" src="../src/Suite.js"></script>
   <script type="text/javascript" src="../src/mock-timeout.js"></script>
 
-  <script type="text/javascript" src="../lib/TrivialReporter.js"></script>
-
-
   <script type="text/javascript">
     jasmine.include('suites/EnvTest.js', true);
     jasmine.include('suites/ExceptionsTest.js', true);
@@ -35,31 +33,9 @@
     jasmine.include('suites/SpyTest.js', true);
   </script>
 
-  <style type="text/css">
-    .spec {
-      margin: 5px;
-    }
-
-    .passed {
-      background-color: lightgreen;
-    }
-
-    .failed {
-      background-color: pink;
-    }
-
-    .resultMessage {
-      white-space: pre;
-    }
-
-    .stackTrace {
-      white-space: pre;
-      font-size: .8em;
-      margin-left: 10px;
-    }
-  </style>
+  <link href="../lib/jasmine.css" rel="stylesheet"/>
 </head>
-
+  
 <body>
 
 <script type="text/javascript">
