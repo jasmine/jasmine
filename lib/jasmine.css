@@ -27,6 +27,7 @@ p {
   border: 1px outset gray;
   margin: 5px;
   padding-left: 1em;
+  padding-right: 1em;
 }
 
 .runner.running {
