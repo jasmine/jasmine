@@ -14,7 +14,6 @@ jasmine.Spec = function(env, suite, description) {
   spec.description = description;
   spec.queue = new jasmine.Queue(env);
 
-  spec.finished = false;
   spec.afterCallbacks = [];
   spec.spies_ = [];
 
@@ -117,8 +116,7 @@ jasmine.Spec.prototype.execute = function(onComplete) {
   var spec = this;
   if (!spec.env.specFilter(spec)) {
     spec.results.skipped = true;
-    spec.finishCallback();
-    spec.finished = true;
+    spec.finish(onComplete);
     return;
   }
 

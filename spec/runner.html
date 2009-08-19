@@ -3,7 +3,7 @@
 <html>
 <head>
   <title>Jasmine Test Runner</title>
-  
+
   <script type="text/javascript" src="../src/base.js"></script>
   <script type="text/javascript" src="../src/util.js"></script>
   <script type="text/javascript" src="../src/Env.js"></script>
@@ -41,15 +41,21 @@
 
   <link href="../lib/jasmine.css" rel="stylesheet"/>
 </head>
-  
+
 <body>
 
 <script type="text/javascript">
 
 
   var jasmineEnv = jasmine.getEnv();
-  jasmineEnv.addReporter(new jasmine.TrivialReporter());
-  jasmineEnv.execute();
+  var trivialReporter = new jasmine.TrivialReporter();
+  jasmineEnv.addReporter(trivialReporter);
+  jasmineEnv.specFilter = function(spec) {
+    return trivialReporter.specFilter(spec);
+  };
+  window.onload = function() {
+    jasmineEnv.execute();
+  };
 </script>
 
 </body>
