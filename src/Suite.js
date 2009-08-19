@@ -50,6 +50,9 @@ jasmine.Suite.prototype.getResults = function() {
 };
 
 jasmine.Suite.prototype.add = function(block) {
+  if (block instanceof jasmine.Suite) {
+      this.env.currentRunner.addSuite(block);
+    }
   this.queue.add(block);
 };
 

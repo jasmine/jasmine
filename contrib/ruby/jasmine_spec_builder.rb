@@ -121,7 +121,7 @@ module Jasmine
             out << "\n"
 
             unless message["passed"]
-              stack_trace = message["trace"]["stack"]
+              stack_trace = message["trace"]["stack"].gsub(/<br \/>/, "\n").gsub(/<\/?b>/, " ")
               STDERR << stack_trace.gsub(/\(.*\)@http:\/\/localhost:[0-9]+\/specs\//, "/spec/")
               STDERR << "\n"
             end

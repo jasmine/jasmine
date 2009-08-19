@@ -167,6 +167,18 @@ describe("jasmine.Matchers", function() {
     });
   });
 
+  it("toBeLessThan should pass if actual is less than expected", function() {
+    expect(match(37).toBeLessThan(42)).toEqual(true);
+    expect(match(37).toBeLessThan(-42)).toEqual(false);
+    expect(match(37).toBeLessThan(37)).toEqual(false);
+  });
+
+  it("toBeGreaterThan should pass if actual is greater than expected", function() {
+    expect(match(37).toBeGreaterThan(42)).toEqual(false);
+    expect(match(37).toBeGreaterThan(-42)).toEqual(true);
+    expect(match(37).toBeGreaterThan(37)).toEqual(false);
+  });
+
   it("toThrow", function() {
     var expected = new jasmine.Matchers(env, function() {
       throw new Error("Fake Error");
@@ -210,7 +222,7 @@ describe("jasmine.Matchers", function() {
 
     expected = match(TestClass.someFunction);
     expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
-    expect(expected.getResults().getItems()[0].passed).toEqual(false);
+    expect(expected.getResults().getItems()[0].passed()).toEqual(false);
 
     TestClass.someFunction.reset();
     TestClass.someFunction('a', 'b', 'c');
@@ -233,9 +245,9 @@ describe("jasmine.Matchers", function() {
 
     expect(results.getItems().length).toEqual(2);
 
-    expect(results.getItems()[0].passed).toEqual(true);
+    expect(results.getItems()[0].passed()).toEqual(true);
 
-    expect(results.getItems()[1].passed).toEqual(false);
+    expect(results.getItems()[1].passed()).toEqual(false);
 
     results = new jasmine.NestedResults();
     expected = new jasmine.Matchers(env, false, results);
@@ -285,17 +297,17 @@ describe("jasmine.Matchers", function() {
     expected = new jasmine.Matchers(env, [1, 2, 3], results);
     results.getItems().length = 0;
     expected.toEqual([1, 2, 3]);
-    expect(results.getItems()[0].passed).toEqual(true);
+    expect(results.getItems()[0].passed()).toEqual(true);
 
     expected = new jasmine.Matchers(env, [1, 2, 3], results);
     results.getItems().length = 0;
     expected.toEqual([{}, {}, {}]);
-    expect(results.getItems()[0].passed).toEqual(false);
+    expect(results.getItems()[0].passed()).toEqual(false);
 
     expected = new jasmine.Matchers(env, [{}, {}, {}], results);
     results.getItems().length = 0;
     expected.toEqual([1, 2, 3]);
-    expect(results.getItems()[0].passed).toEqual(false);
+    expect(results.getItems()[0].passed()).toEqual(false);
   });
 
 });

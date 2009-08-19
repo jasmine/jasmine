@@ -122,11 +122,32 @@ describe('RunnerTest', function() {
       expect(fakeReporter.reportRunnerResults).wasCalledWith(env.currentRunner);
     });
 
-    it("should report when the tests start running", function() {
-      expect(fakeReporter.reportRunnerStarting).wasNotCalled();
-      env.currentRunner.execute();
-      expect(fakeReporter.reportRunnerStarting).wasCalledWith(env.currentRunner);
+    
+  });
+
+  it("should report when the tests start running", function() {
+    var fakeReporter = jasmine.createSpyObj("fakeReporter", ["log", "reportRunnerStarting"]);
+    env.addReporter(fakeReporter);
+
+
+    var runner = new jasmine.Runner(env);
+    spyOn(runner.queue, 'start');
+    runner.execute();
+    expect(fakeReporter.reportRunnerStarting).wasCalledWith(runner);
+    expect(runner.queue.start).wasCalled();
+    
+  });
+
+  it("should return a flat array of all suites, including nested suites", function() {
+    var suite1, suite2;
+    suite1 = env.describe("spec 1", function() {
+      suite2 = env.describe("nested spec", function() {});
     });
 
+    document.runner = env.currentRunner;
+
+    var suites = env.currentRunner.getAllSuites();
+    expect(suites).toEqual([suite1, suite2]);
   });
+
 });

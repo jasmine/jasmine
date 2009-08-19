@@ -59,9 +59,11 @@ jasmine.Queue.prototype.finish = function () {
 };
 
 jasmine.Queue.prototype.getResults = function () {
-  var results = [];
+  var results = new jasmine.NestedResults();
   for (var i = 0; i < this.blocks.length; i++) {
-    results.push(this.blocks[i].getResults());
+    if (this.blocks[i].getResults) {
+      results.addResult(this.blocks[i].getResults());
+    }
   }
   return results;
 };

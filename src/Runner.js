@@ -8,6 +8,7 @@ jasmine.Runner = function(env) {
   var self = this;
   self.env = env;
   self.queue = new jasmine.Queue(env);
+  self.suites = [];
 };
 
 jasmine.Runner.prototype.execute = function() {
@@ -15,25 +16,31 @@ jasmine.Runner.prototype.execute = function() {
   if (self.env.reporter.reportRunnerStarting) {
     self.env.reporter.reportRunnerStarting(this);
   }
-  self.queue.start(function () { self.finishCallback(); });
+  self.queue.start(function () {
+    self.finishCallback();
+  });
 };
 
 jasmine.Runner.prototype.finishCallback = function() {
   this.env.reporter.reportRunnerResults(this);
 };
 
+jasmine.Runner.prototype.addSuite = function(suite) {
+  this.suites.push(suite);
+};
+
 jasmine.Runner.prototype.add = function(block) {
+  if (block instanceof jasmine.Suite) {
+    this.addSuite(block);
+  }
   this.queue.add(block);
 };
 
+
+jasmine.Runner.prototype.getAllSuites = function() {
+  return this.suites;
+};
+
 jasmine.Runner.prototype.getResults = function() {
-  var results = new jasmine.NestedResults();
-  var runnerResults = this.queue.getResults();
-  for (var i=0; i < runnerResults.length; i++) {
-    var suiteResults = runnerResults[i];
-    for (var j=0; j < suiteResults.length; j++) {
-      results.rollupCounts(suiteResults[j]);
-    }
-  }
-  return results;
+  return this.queue.getResults();
 };
