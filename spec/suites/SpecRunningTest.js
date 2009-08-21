@@ -65,7 +65,7 @@ describe("jasmine spec running", function () {
 
     suite.execute();
     fakeTimer.tick(0);
-    
+
     expect(specWithNoBody.description).toEqual('new spec');
 
     expect(specWithExpectation.results.getItems().length).toEqual(1); // "Results aren't there after a spec was executed"
@@ -118,7 +118,7 @@ describe("jasmine spec running", function () {
     expect(foo).toEqual(0);
     specWithRunsAndWaits.execute();
     fakeTimer.tick(0);
-        
+
     expect(foo).toEqual(1);
     fakeTimer.tick(500);
     expect(foo).toEqual(2);
@@ -164,7 +164,7 @@ describe("jasmine spec running", function () {
 
     a_spec.execute();
     fakeTimer.tick(0);
-        
+
     expect(a_spec.results.getItems().length).toEqual(0);
 
     fakeTimer.tick(500);
@@ -341,7 +341,7 @@ describe("jasmine spec running", function () {
     var actual = spec.results.getItems()[0].message;
     var expected = 'timeout: timed out after 500 msec waiting for something to happen';
     expect(actual).toEqual(expected,
-        'expected "' + expected + '" but found "' + actual + '"');
+      'expected "' + expected + '" but found "' + actual + '"');
   });
 
   it("testSpecAfter", function() {
@@ -363,7 +363,7 @@ describe("jasmine spec running", function () {
 
     suite.execute();
     fakeTimer.tick(0);
-        
+
     expect(log).toEqual("specafter2after1");
   });
 
@@ -395,7 +395,7 @@ describe("jasmine spec running", function () {
 
       suite.execute();
       fakeTimer.tick(0);
-          
+
       expect(foo).toEqual(1);
       expect(bar).toEqual(0);
 
@@ -458,7 +458,7 @@ describe("jasmine spec running", function () {
 
     suiteWithAfter.execute();
     fakeTimer.tick(0);
-        
+
     suite = suiteWithAfter;
     expect(suite.afterEach.length).toEqual(1);
     expect(suite.getResults().getItems()[0].passed()).toEqual(true);
@@ -510,8 +510,8 @@ describe("jasmine spec running", function () {
       });
 
       env.it('should run tests following nested suites', function () {
-          quux++;
-        });
+        quux++;
+      });
     });
 
     expect(foo).toEqual(0);
@@ -520,7 +520,7 @@ describe("jasmine spec running", function () {
     expect(quux).toEqual(0);
     nested.execute();
     fakeTimer.tick(0);
-        
+
     expect(foo).toEqual(1);
     expect(bar).toEqual(1);
     expect(baz).toEqual(1);
@@ -556,7 +556,7 @@ describe("jasmine spec running", function () {
       expect(reachedFirstWaitsFor).toEqual(false);
       waitsSuite.execute();
       fakeTimer.tick(0);
-          
+
       expect(reachedFirstWaitsFor).toEqual(true);
       expect(foo).toEqual(0);
       expect(reachedSecondWaitsFor).toEqual(false);
@@ -711,7 +711,7 @@ describe("jasmine spec running", function () {
         this.after(function () {
           this.waits(500);
           this.runs(function () {
-          afterHasRun = true;
+            afterHasRun = true;
           });
           this.waits(500);
         }, true);
@@ -791,7 +791,7 @@ describe("jasmine spec running", function () {
 
     expect(firstSpecHasRun).toEqual(true);
     expect(secondSpecHasRun).toEqual(true);
-});
+  });
 
   it("testBeforeExecutesSafely", function() {
     var report = "";
@@ -925,7 +925,7 @@ describe("jasmine spec running", function () {
 
     env.execute();
     fakeTimer.tick(0);
-    
+
 
     var expected = [
       "outer beforeEach",
@@ -963,6 +963,35 @@ describe("jasmine spec running", function () {
     });
 
     expect(nestedSpec.getFullName()).toEqual('Test Subject when under circumstance A and circumstance B behaves thusly.'); //, "Spec.fullName was incorrect: " + nestedSpec.getFullName());
+  });
+
+  it("should skip empty suites", function () {
+    env.describe('NonEmptySuite1', function() {
+      env.it('should pass', function() {
+        this.expect(true).toEqual(true);
+      });
+      env.describe('NestedEmptySuite', function() {
+      });
+      env.it('should pass', function() {
+        this.expect(true).toEqual(true);
+      });
+    });
+
+    env.describe('EmptySuite', function() {});
+
+    env.describe('NonEmptySuite2', function() {
+      env.it('should pass', function() {
+        this.expect(true).toEqual(true);
+      });
+    });
+
+    env.execute();
+    fakeTimer.tick(0);
+
+    var runnerResults = env.currentRunner.getResults();
+    expect(runnerResults.totalCount).toEqual(3);
+    expect(runnerResults.passedCount).toEqual(3);
+    expect(runnerResults.failedCount).toEqual(0);
   });
 
   it("should bind 'this' to the running spec within the spec body", function() {
