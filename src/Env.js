@@ -30,12 +30,9 @@ jasmine.Env.prototype.clearInterval = jasmine.clearInterval;
 
 jasmine.Env.prototype.version = function () {
   if (jasmine.version_) {
-    return parseInt(jasmine.version_.major + "" +
-           jasmine.version_.minor + "" +
-           jasmine.version_.build + "" +
-           jasmine.version_.revision + "");
+    return jasmine.version_;
   } else {
-    return 0;
+    throw new Error('Version not set');
   }
 };
 
