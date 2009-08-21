@@ -28,6 +28,17 @@ jasmine.Env.prototype.clearTimeout = jasmine.clearTimeout;
 jasmine.Env.prototype.setInterval = jasmine.setInterval;
 jasmine.Env.prototype.clearInterval = jasmine.clearInterval;
 
+jasmine.Env.prototype.version = function () {
+  if (jasmine.version_) {
+    return parseInt(jasmine.version_.major + "" +
+           jasmine.version_.minor + "" +
+           jasmine.version_.build + "" +
+           jasmine.version_.revision + "");
+  } else {
+    return 0;
+  }
+};
+
 /**
  * Register a reporter to receive status updates from Jasmine.
  * @param {jasmine.Reporter} reporter An object which will receive status updates.
