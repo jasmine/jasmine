@@ -12,8 +12,7 @@ jasmine.Block = function(env, func, spec) {
   this.spec = spec;
 };
 
-jasmine.Block.prototype.execute = function(onComplete) {
-  this.env.reporter.log('>> Jasmine Running ' + this.spec.suite.description + ' ' + this.spec.description + '...');
+jasmine.Block.prototype.execute = function(onComplete) {  
   try {
     this.func.apply(this.spec);
   } catch (e) {
