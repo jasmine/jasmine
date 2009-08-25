@@ -1,3 +1,9 @@
+task :default => :noop
+
+task :noop do
+  puts "doing nothing"
+end
+
 desc 'Builds lib/jasmine from source'
 task :build do
 
