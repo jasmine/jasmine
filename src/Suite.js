@@ -16,6 +16,7 @@ jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
   self.env = env;
   self.beforeQueue = [];
   self.afterQueue = [];
+  self.specs = [];
 };
 
 
@@ -53,6 +54,7 @@ jasmine.Suite.prototype.add = function(block) {
   if (block instanceof jasmine.Suite) {
       this.env.currentRunner.addSuite(block);
     }
+  this.specs.push(block);
   this.queue.add(block);
 };
 
