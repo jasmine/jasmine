@@ -43,6 +43,18 @@ module Jasmine
     Process.kill signal, -process_group_id # negative pid means kill process group. (see man 2 kill)
   end
 
+  def self.cachebust(files, root_dir="", replace=nil, replace_with=nil)
+    files.collect do |file_name|
+      real_file_name = replace && replace_with ? file_name.sub(replace, replace_with) : file_name
+      begin
+        digest = Digest::MD5.hexdigest(File.read("#{root_dir}#{real_file_name}"))
+      rescue
+        digest = "MISSING-FILE"
+      end
+      "#{file_name}?cachebust=#{digest}"
+    end
+  end
+
   class RunAdapter
     def initialize(spec_files_or_proc)
       @spec_files_or_proc = spec_files_or_proc
