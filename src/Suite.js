@@ -8,7 +8,7 @@
  * @param {jasmine.Suite} parentSuite
  */
 jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
-  var self = this;  
+  var self = this;
   self.id = env.nextSuiteId_++;
   self.description = description;
   self.queue = new jasmine.Queue(env);
@@ -18,7 +18,6 @@ jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
   self.afterQueue = [];
   self.specs = [];
 };
-
 
 jasmine.Suite.prototype.getFullName = function() {
   var fullName = this.description;
@@ -52,14 +51,19 @@ jasmine.Suite.prototype.getResults = function() {
 
 jasmine.Suite.prototype.add = function(block) {
   if (block instanceof jasmine.Suite) {
-      this.env.currentRunner.addSuite(block);
-    }
+    this.env.currentRunner.addSuite(block);
+  }
   this.specs.push(block);
   this.queue.add(block);
 };
 
-jasmine.Suite.prototype.execute = function(onComplete) {
-  var self = this;
-  this.queue.start(function () { self.finish(onComplete); });
+jasmine.Suite.prototype.specCount = function(block) {
+  return this.specs.length;
 };
 
+jasmine.Suite.prototype.execute = function(onComplete) {
+  var self = this;
+  this.queue.start(function () {
+    self.finish(onComplete);
+  });
+};
