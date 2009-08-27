@@ -41,29 +41,31 @@ namespace :test do
   require "spec"
   require 'spec/rake/spectask'
 
-  Spec::Rake::SpecTask.new(:ci) do |t|
-    Rake::Task['build'].invoke
+  task :ci => :build do
+  Spec::Rake::SpecTask.new(:lambda_ci) do |t|
     t.spec_opts = ["--color", "--format", "specdoc"]
     t.spec_files = ["spec/jasmine_spec.rb"]
   end
-
-  desc "Run jasmine tests via server"
-
-  task :jasmine_server do
-    require File.expand_path(File.join(File.dirname(__FILE__), "contrib/ruby/jasmine_spec_builder"))
-
-    includes = jasmine_sources + ['lib/TrivialReporter.js']
-    spec_files = Dir.glob("spec/**/*.js")
-
-    dir_mappings = {
-      "/spec" => "spec",
-      "/lib" => "lib",
-      "/src" => 'src'
-    }
-
-    puts "your tests are here:"
-    puts "  http://localhost:8888/run.html"
-
-    Jasmine::SimpleServer.start(8888, includes + spec_files, dir_mappings)
+    Rake::Task[:lambda_ci].invoke
   end
+
+end
+
+desc "Run jasmine tests via server"
+task :jasmine_server do
+  require File.expand_path(File.join(File.dirname(__FILE__), "contrib/ruby/jasmine_spec_builder"))
+
+  includes = jasmine_sources + ['lib/TrivialReporter.js']
+  spec_files = Dir.glob("spec/**/*.js")
+
+  dir_mappings = {
+    "/spec" => "spec",
+    "/lib" => "lib",
+    "/src" => 'src'
+  }
+
+  puts "your tests are here:"
+  puts "  http://localhost:8888/run.html"
+
+  Jasmine::SimpleServer.start(8888, includes + spec_files, dir_mappings)
 end
