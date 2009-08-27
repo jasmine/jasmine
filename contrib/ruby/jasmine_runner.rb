@@ -87,6 +87,7 @@ module Jasmine
       mappings.each do |from, to|
         config[from] = Rack::File.new(to)
       end
+      p mappings
 
       app = Rack::URLMap.new(config)
 

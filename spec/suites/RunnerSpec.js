@@ -119,7 +119,10 @@ describe('RunnerTest', function() {
       env.currentRunner.execute();
       expect(fakeReporter.reportRunnerResults).wasNotCalled();
       fakeTimer.tick(200);
-      expect(fakeReporter.reportRunnerResults).wasCalledWith(env.currentRunner);
+      //This blows up the JSApiReporter.
+      //expect(fakeReporter.reportRunnerResults).wasCalledWith(env.currentRunner);
+      expect(fakeReporter.reportRunnerResults).wasCalled();
+      expect(fakeReporter.reportRunnerResults.mostRecentCall.args[0].getResults()).toEqual(env.currentRunner.getResults());
     });
 
     
@@ -131,9 +134,13 @@ describe('RunnerTest', function() {
 
 
     var runner = new jasmine.Runner(env);
+    runner.arbitraryVariable = 'foo';
     spyOn(runner.queue, 'start');
+    expect(fakeReporter.reportRunnerStarting).wasNotCalled();
     runner.execute();
-    expect(fakeReporter.reportRunnerStarting).wasCalledWith(runner);
+    expect(fakeReporter.reportRunnerStarting).wasCalled();
+    var reportedRunner = fakeReporter.reportRunnerStarting.mostRecentCall.args[0];
+    expect(reportedRunner.arbitraryVariable).toEqual('foo');
     expect(runner.queue.start).wasCalled();
     
   });
@@ -147,7 +154,11 @@ describe('RunnerTest', function() {
     document.runner = env.currentRunner;
 
     var suites = env.currentRunner.getAllSuites();
-    expect(suites).toEqual([suite1, suite2]);
+    var suiteDescriptions = [];
+    for (var i = 0; i < suites.length; i++) {
+      suiteDescriptions.push(suites[i].getFullName());
+    }
+    expect(suiteDescriptions).toEqual([suite1.getFullName(), suite2.getFullName()]);
   });
 
 });

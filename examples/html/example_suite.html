@@ -4,36 +4,13 @@
 <head>
   <title>Jasmine Test Runner</title>
 </head>
-<script type="text/javascript" src="jasmine.js"></script>
-<script type="text/javascript" src="TrivialReporter.js"></script>
+<script type="text/javascript" src="../../lib/jasmine-0.9.0.js"></script>
+<script type="text/javascript" src="../../lib/TrivialReporter.js"></script>
+<link rel="stylesheet" type="text/css" href="../../lib/jasmine.css">
 
 <script type="text/javascript">
   jasmine.include('example_suite.js', true);
 </script>
-
-<style type="text/css">
-  .spec {
-    margin: 5px;
-  }
-
-  .passed {
-    background-color: lightgreen;
-  }
-
-  .failed {
-    background-color: pink;
-  }
-
-  .resultMessage {
-    white-space: pre;
-  }
-
-  .stackTrace {
-    white-space: pre;
-    font-size: .8em;
-    margin-left: 10px;
-  }
-</style>
 
 <body>
 
