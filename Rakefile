@@ -1,15 +1,16 @@
 desc 'Builds lib/jasmine from source'
-task :build do
-  require 'json'
-  sources = jasmine_sources
-  version = version_hash
-  old_jasmine_files = Dir.glob('lib/jasmine*.js')
-  old_jasmine_files.each do |file|
-    File.delete(file)
-  end
-  jasmine = File.new("lib/#{jasmine_filename version}", 'w')
-  jasmine.puts(File.read(sources.shift))
-  jasmine.puts %{
+namespace :build do
+  task :jasmine => 'build:doc' do
+    require 'json'
+    sources = jasmine_sources
+    version = version_hash
+    old_jasmine_files = Dir.glob('lib/jasmine*.js')
+    old_jasmine_files.each do |file|
+      File.delete(file)
+    end
+    jasmine = File.new("lib/#{jasmine_filename version}", 'w')
+    jasmine.puts(File.read(sources.shift))
+    jasmine.puts %{
 jasmine.version_= {
   "major": #{version['major']},
   "minor": #{version['minor']},
@@ -17,9 +18,22 @@ jasmine.version_= {
   "revision": #{version['revision']}
   };
 }
-  sources.each do |source_filename|
-    jasmine.puts(File.read(source_filename))
+    sources.each do |source_filename|
+      jasmine.puts(File.read(source_filename))
+    end
   end
+
+  desc "Build jasmine documentation"
+  task :doc do
+    require 'rubygems'
+    #sudo gem install ragaskar-jsdoc_helper
+    require 'jsdoc_helper'
+
+
+    JsdocHelper::Rake::Task.new(:lambda_jsdoc)
+    Rake::Task[:lambda_jsdoc].invoke
+  end
+
 end
 
 def jasmine_sources
@@ -38,14 +52,13 @@ end
 
 namespace :test do
   desc "Run continuous integration tests"
-  require "spec"
-  require 'spec/rake/spectask'
-
-  task :ci => :build do
-  Spec::Rake::SpecTask.new(:lambda_ci) do |t|
-    t.spec_opts = ["--color", "--format", "specdoc"]
-    t.spec_files = ["spec/jasmine_spec.rb"]
-  end
+  task :ci => 'build:jasmine' do
+    require "spec"
+    require 'spec/rake/spectask'
+    Spec::Rake::SpecTask.new(:lambda_ci) do |t|
+      t.spec_opts = ["--color", "--format", "specdoc"]
+      t.spec_files = ["spec/jasmine_spec.rb"]
+    end
     Rake::Task[:lambda_ci].invoke
   end
 

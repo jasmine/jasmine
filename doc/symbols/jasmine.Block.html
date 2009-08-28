@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - jasmine.ActionCollection</title>
+		<title>JsDoc Reference - jasmine.Block</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -193,15 +193,15 @@ ul.inheritsList
 	
 	<li><a href="../symbols/jasmine.html">jasmine</a></li>
 	
-	<li><a href="../symbols/jasmine.ActionCollection.html">jasmine.ActionCollection</a></li>
+	<li><a href="../symbols/jasmine.Block.html">jasmine.Block</a></li>
 	
 	<li><a href="../symbols/jasmine.Env.html">jasmine.Env</a></li>
+	
+	<li><a href="../symbols/jasmine.JsApiReporter.html">jasmine.JsApiReporter</a></li>
 	
 	<li><a href="../symbols/jasmine.MultiReporter.html">jasmine.MultiReporter</a></li>
 	
 	<li><a href="../symbols/jasmine.NestedResults.html">jasmine.NestedResults</a></li>
-	
-	<li><a href="../symbols/jasmine.QueuedFunction.html">jasmine.QueuedFunction</a></li>
 	
 	<li><a href="../symbols/jasmine.Reporter.html">jasmine.Reporter</a></li>
 	
@@ -224,7 +224,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class jasmine.ActionCollection
+				Class jasmine.Block
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -234,13 +234,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/lib_jasmine.js.html">jasmine.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.9.0.js.html">jasmine-0.9.0.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class jasmine.ActionCollection.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class jasmine.Block.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -253,11 +253,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/jasmine.ActionCollection.html#constructor">jasmine.ActionCollection</a></b>(env)
+								<b><a href="../symbols/jasmine.Block.html">jasmine.Block</a></b>(env, func, spec)
 							</div>
-							<div class="description">base for Runner & Suite: allows for a queue of functions to get executed, allowing for
-  any one action to complete, including asynchronous calls, before going to the next
-  action.</div>
+							<div class="description">Blocks are functions with executable code that make up a spec.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -268,60 +266,6 @@ ul.inheritsList
 			
 
 <!-- ============================== methods summary ======================== -->
-			
-				
-				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class jasmine.ActionCollection.">
-					<caption>Method Summary</caption>
-					<thead>
-						<tr>
-							<th scope="col">Method Attributes</th>
-							<th scope="col">Method Name and Description</th>
-						</tr>
-					</thead>
-					<tbody>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.ActionCollection.html#execute">execute</a></b>()
-								</div>
-								<div class="description">Starts executing the queue of functions/actions.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.ActionCollection.html#finish">finish</a></b>()
-								</div>
-								<div class="description">Marks the collection as done & calls the finish callback, if there is one</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.ActionCollection.html#getCurrentAction">getCurrentAction</a></b>()
-								</div>
-								<div class="description">Gets the current action.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.ActionCollection.html#next">next</a></b>()
-								</div>
-								<div class="description">Executes the next queued function/action.</div>
-							</td>
-						</tr>
-					
-					</tbody>
-				</table>
-				
-				
-				
 			
 <!-- ============================== events summary ======================== -->
 			
@@ -334,13 +278,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>jasmine.ActionCollection</b>(env)
+						<b>jasmine.Block</b>(env, func, spec)
 				</div>
 				
 				<div class="description">
-					base for Runner & Suite: allows for a queue of functions to get executed, allowing for
-  any one action to complete, including asynchronous calls, before going to the next
-  action.
+					Blocks are functions with executable code that make up a spec.
 					
 				</div>
 				
@@ -353,6 +295,18 @@ ul.inheritsList
 						
 							<dt>
 								<span class="light fixedFont">{<a href="../symbols/jasmine.Env.html">jasmine.Env</a>}</span>  <b>env</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								<span class="light fixedFont">{Function}</span>  <b>func</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								<span class="light fixedFont">{<a href="../symbols/jasmine.Spec.html">jasmine.Spec</a>}</span>  <b>spec</b>
 								
 							</dt>
 								<dd></dd>
@@ -374,111 +328,6 @@ ul.inheritsList
 
 <!-- ============================== method details ========================= -->		
 			
-				<div class="sectionTitle">
-					Method Detail
-				</div>
-				
-					<a name="execute"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>execute</b>()
-					
-					</div>
-					<div class="description">
-						Starts executing the queue of functions/actions.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="finish"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>finish</b>()
-					
-					</div>
-					<div class="description">
-						Marks the collection as done & calls the finish callback, if there is one
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="getCurrentAction"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>getCurrentAction</b>()
-					
-					</div>
-					<div class="description">
-						Gets the current action.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="next"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>next</b>()
-					
-					</div>
-					<div class="description">
-						Executes the next queued function/action. If there are no more in the queue, calls #finish.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					
-				
-			
 			
 <!-- ============================== event details ========================= -->		
 			
@@ -490,7 +339,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.3.0 on Thu Jul 09 2009 21:42:18 GMT-0700 (PDT)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Thu Aug 27 2009 22:13:15 GMT-0700 (PDT)
 		</div>
 	</body>
 </html>
