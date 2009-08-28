@@ -15,7 +15,7 @@ jasmine.version_= {
   "major": #{version['major']},
   "minor": #{version['minor']},
   "build": #{version['build']},
-  "revision": #{version['revision']}
+  "revision": #{Time.now.to_i}
   };
 }
     sources.each do |source_filename|
