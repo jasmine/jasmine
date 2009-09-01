@@ -1,7 +1,12 @@
 task :default => :noop
 
 task :noop do
-  puts "doing nothing"
+  puts "** NO-OP task to support 'git submodule' rake comaptibility in jasmine"
+end
+
+namespace :test do
+  task :unit => :noop
+  task :integration => :noop
 end
 
 desc 'Builds lib/jasmine from source'
