@@ -3,6 +3,10 @@ require 'erb'
 require 'json'
 
 module Jasmine
+  def self.root
+    File.expand_path(File.join(File.dirname(__FILE__), '../..'))
+  end
+
   # this seemingly-over-complex method is necessary to get an open port on at least some of our Macs
   def self.open_socket_on_unused_port
     infos = Socket::getaddrinfo("localhost", nil, Socket::AF_UNSPEC, Socket::SOCK_STREAM, 0, Socket::AI_PASSIVE)
@@ -65,6 +69,13 @@ module Jasmine
       spec_files = @spec_files_or_proc
       spec_files = spec_files.call if spec_files.respond_to?(:call)
 
+      css_files = ["/__JASMINE_ROOT__/lib/jasmine.css"]
+      jasmine_files = [
+          "/__JASMINE_ROOT__/lib/" + File.basename(Dir.glob("#{Jasmine.root}/lib/jasmine*.js").first),
+          "/__JASMINE_ROOT__/lib/TrivialReporter.js",
+          "/__JASMINE_ROOT__/lib/json2.js"
+      ]
+
       body = ERB.new(File.read(File.join(File.dirname(__FILE__), "run.html"))).result(binding)
       [
         200,
@@ -88,6 +99,16 @@ module Jasmine
     end
   end
 
+  class JsAlert
+    def call(env)
+      [
+        200,
+        { 'Content-Type' => 'application/javascript' },
+        "document.write('<p>Couldn\\'t load #{env["PATH_INFO"]}!</p>');"
+      ]
+    end
+  end
+
   class SimpleServer
     def self.start(port, spec_files_or_proc, mappings)
       require 'thin'
@@ -98,9 +119,14 @@ module Jasmine
       }
       mappings.each do |from, to|
         config[from] = Rack::File.new(to)
-      end   
+      end
 
-      app = Rack::URLMap.new(config)
+      config["/__JASMINE_ROOT__"] = Rack::File.new(Jasmine.root)
+
+      app = Rack::Cascade.new([
+          Rack::URLMap.new(config),
+          JsAlert.new
+      ])
 
       Thin::Server.start('0.0.0.0', port, app)
     end

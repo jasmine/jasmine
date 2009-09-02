@@ -13,20 +13,14 @@ desc "Run specs via server"
 task :jasmine_server do
   require File.expand_path(File.join(File.dirname(__FILE__), "../../contrib/ruby/jasmine_spec_builder"))
 
-  JASMINE_LIB = File.expand_path(File.join(File.dirname(__FILE__), '../../lib'))
   dir_mappings = {
-    "/spec" => 'spec',
-    "/lib" => JASMINE_LIB
+    "/spec" => 'spec'
   }
-
-  includes = ['lib/' + File.basename(Dir.glob("#{JASMINE_LIB}/jasmine*.js").first),
-              'lib/json2.js',
-              'lib/TrivialReporter.js']
 
   spec_files = Dir.glob("spec/**/*[Ss]pec.js")
 
   puts "your tests are here:"
   puts "  http://localhost:8888/run.html"
 
-  Jasmine::SimpleServer.start(8888, includes + spec_files, dir_mappings)
+  Jasmine::SimpleServer.start(8888, spec_files, dir_mappings)
 end

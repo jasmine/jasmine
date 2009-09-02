@@ -3,10 +3,14 @@
 <head>
   <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
   <title>Jasmine suite</title>
-  <link rel="stylesheet" href="lib/jasmine.css" type="text/css" media="screen" />
-  <% spec_files.each do |spec_file| %>
-      <script src="<%= spec_file %>" type="text/javascript"></script>
+  <% css_files.each do |css_file| %>
+  <link rel="stylesheet" href="<%= css_file %>" type="text/css" media="screen" />
   <% end %>
+
+  <% jasmine_files.each do |jasmine_file| %>
+  <script src="<%= jasmine_file %>" type="text/javascript"></script>
+  <% end %>
+
   <script type="text/javascript">
     var jsApiReporter;
     (function() {
@@ -29,6 +33,9 @@
     })();
   </script>
 
+  <% spec_files.each do |spec_file| %>
+  <script src="<%= spec_file %>" type="text/javascript"></script>
+  <% end %>
 
 </head>
 <body>
