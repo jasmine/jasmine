@@ -51,7 +51,9 @@ module Jasmine
     end
 
     def load_suite_info
-      while !eval_js('jsApiReporter.started') do
+      started = Time.now
+      while !eval_js('jsApiReporter && jsApiReporter.started') do
+        raise "couldn't connect to Jasmine after 60 seconds" if (started + 60 < Time.now)
         sleep 0.1
       end
 
