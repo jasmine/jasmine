@@ -74,25 +74,33 @@ describe('Exceptions:', function() {
 
     var runner = env.currentRunner;
     suite.execute();
-    fakeTimer.tick(300); //TODO: setting this to a large number causes failures, but shouldn't
+    fakeTimer.tick(2500);
 
-    var resultsForSpec0 = suite.specs[0].getResults();
-    var resultsForSpec1 = suite.specs[1].getResults();
-    var resultsForSpec2 = suite.specs[2].getResults();
-    var resultsForSpec3 = suite.specs[3].getResults();
-    
-    expect(suite.getResults().totalCount).toEqual(6);
-    expect(resultsForSpec0.getItems()[0].passed).toEqual(false);
-    expect(resultsForSpec0.getItems()[0].message).toMatch(/fake error 1/);
+    var suiteResults = suite.getResults();
+    var specResults = suiteResults.getItems();
 
-    expect(resultsForSpec1.getItems()[0].passed).toEqual(false),
-    expect(resultsForSpec1.getItems()[0].message).toMatch(/fake error 2/),
-    expect(resultsForSpec1.getItems()[1].passed).toEqual(true);
+    expect(suiteResults.passed()).toEqual(false);
 
-    expect(resultsForSpec2.getItems()[0].passed).toEqual(true);
+    expect(specResults.length).toEqual(5);
+    expect(specResults[0].passed()).toMatch(false);
+    var blockResults = specResults[0].getItems();
+    expect(blockResults[0].passed()).toEqual(false);
+    expect(blockResults[0].message).toMatch(/fake error 1/);
 
-    expect(resultsForSpec3.getItems()[0].passed).toEqual(false);
-    expect(resultsForSpec3.getItems()[0].message).toMatch(/fake error 3/);
+    expect(specResults[1].passed()).toEqual(false);
+    var blockResults = specResults[1].getItems();
+    expect(blockResults[0].passed()).toEqual(false);
+    expect(blockResults[0].message).toMatch(/fake error 2/),
+    expect(blockResults[1].passed()).toEqual(true);
+
+    expect(specResults[2].passed()).toEqual(true);
+
+    expect(specResults[3].passed()).toEqual(false);
+    blockResults = specResults[3].getItems();
+    expect(blockResults[0].message).toMatch(/fake error 3/);
+
+    expect(specResults[4].passed()).toEqual(true);
+
   });
 
 });

@@ -3,12 +3,10 @@
 <head>
   <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
   <title>Jasmine suite</title>
-  <script src="/jasmine/lib/jasmine.js"></script>
-  <script src="/jasmine/lib/json2.js"></script><!-- todo: don't load JSON in the test runner! [20090710 xw] -->
-  <script src="/jasmine/lib/TrivialReporter.js"></script>
-  <script src="/specs/javascripts/screw-jasmine-compat.js"></script>
-  <script type="text/javascript"></script>
-  <link href="/jasmine/lib/jasmine.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="lib/jasmine.css" type="text/css" media="screen" />
+  <% spec_files.each do |spec_file| %>
+      <script src="<%= spec_file %>" type="text/javascript"></script>
+  <% end %>
   <script type="text/javascript">
     var jsApiReporter;
     (function() {
@@ -31,9 +29,7 @@
     })();
   </script>
 
-  <% spec_files.each do |spec_file| %>
-    <script src="<%= spec_file %>" type="text/javascript"></script>
-  <% end %>
+
 </head>
 <body>
 <div id="jasmine_content"></div>

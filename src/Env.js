@@ -18,6 +18,7 @@ jasmine.Env = function() {
   };
 
   this.nextSpecId_ = 0;
+  this.nextSuiteId_ = 0;
   this.equalityTesters_ = [];
 };
 
@@ -26,6 +27,14 @@ jasmine.Env.prototype.setTimeout = jasmine.setTimeout;
 jasmine.Env.prototype.clearTimeout = jasmine.clearTimeout;
 jasmine.Env.prototype.setInterval = jasmine.setInterval;
 jasmine.Env.prototype.clearInterval = jasmine.clearInterval;
+
+jasmine.Env.prototype.version = function () {
+  if (jasmine.version_) {
+    return jasmine.version_;
+  } else {
+    throw new Error('Version not set');
+  }
+};
 
 /**
  * Register a reporter to receive status updates from Jasmine.
@@ -44,9 +53,9 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
 
   var parentSuite = this.currentSuite;
   if (parentSuite) {
-    parentSuite.specs.push(suite);
+    parentSuite.add(suite);
   } else {
-    this.currentRunner.suites.push(suite);
+    this.currentRunner.add(suite);
   }
 
   this.currentSuite = suite;
@@ -75,11 +84,11 @@ jasmine.Env.prototype.xdescribe = function(desc, specDefinitions) {
 
 jasmine.Env.prototype.it = function(description, func) {
   var spec = new jasmine.Spec(this, this.currentSuite, description);
-  this.currentSuite.specs.push(spec);
+  this.currentSuite.add(spec);
   this.currentSpec = spec;
 
   if (func) {
-    spec.addToQueue(func);
+    spec.runs(func);
   }
 
   return spec;

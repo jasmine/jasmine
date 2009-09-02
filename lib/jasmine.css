@@ -85,3 +85,8 @@ p {
   margin-left: 5px;
   float: right;
 }
+
+#jasmine_content {
+  position:fixed;
+  left: 100%;
+}

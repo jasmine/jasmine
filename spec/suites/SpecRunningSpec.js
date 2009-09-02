@@ -38,6 +38,7 @@ describe("jasmine spec running", function () {
 
 
   it("should build up some objects with results we can inspect", function() {
+
     var specWithNoBody, specWithExpectation, specWithFailingExpectations, specWithMultipleExpectations;
 
     var suite = env.describe('default current suite', function() {
@@ -63,21 +64,22 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
+    fakeTimer.tick(0);
 
     expect(specWithNoBody.description).toEqual('new spec');
 
     expect(specWithExpectation.results.getItems().length).toEqual(1); // "Results aren't there after a spec was executed"
-    expect(specWithExpectation.results.getItems()[0].passed).toEqual(true); // "Results has a result, but it's true"
+    expect(specWithExpectation.results.getItems()[0].passed()).toEqual(true); // "Results has a result, but it's true"
     expect(specWithExpectation.results.description).toEqual('spec with an expectation'); // "Spec's results did not get the spec's description"
 
-    expect(specWithFailingExpectations.results.getItems()[0].passed).toEqual(false); // "Expectation that failed, passed"
+    expect(specWithFailingExpectations.results.getItems()[0].passed()).toEqual(false); // "Expectation that failed, passed"
 
     expect(specWithMultipleExpectations.results.getItems().length).toEqual(2); // "Spec doesn't support multiple expectations"
   });
 
   it("should work without a runs block", function() {
     var another_spec;
-    var currentSuite = env.describe('default current suite', function() {
+    env.describe('default current suite', function() {
       another_spec = env.it('spec with an expectation', function () {
         var foo = 'bar';
         this.expect(foo).toEqual('bar');
@@ -89,37 +91,45 @@ describe("jasmine spec running", function () {
     another_spec.done = true;
 
     expect(another_spec.results.getItems().length).toEqual(2);
-    expect(another_spec.results.getItems()[0].passed).toEqual(true); // "In a spec without a run block, expected first expectation result to be true but was false"
-    expect(another_spec.results.getItems()[1].passed).toEqual(false); // "In a spec without a run block, expected second expectation result to be false but was true";
+    expect(another_spec.results.getItems()[0].passed()).toEqual(true); // "In a spec without a run block, expected first expectation result to be true but was false"
+    expect(another_spec.results.getItems()[1].passed()).toEqual(false); // "In a spec without a run block, expected second expectation result to be false but was true";
     expect(another_spec.results.description).toEqual('spec with an expectation'); // "In a spec without a run block, results did not include the spec's description";
+  });
+
+  it('should queue waits and runs that it encounters while executing specs', function() {
+    var specWithRunsAndWaits;
+    var foo = 0;
+    env.describe('test async spec', function() {
+      specWithRunsAndWaits = env.it('spec w/ queued statments', function () {
+        this.runs(function () {
+          foo++;
+        });
+        this.waits(500);
+        this.runs(function () {
+          foo++;
+        });
+        this.waits(500);
+        this.runs(function () {
+          foo++;
+        });
+      });
+    });
+
+    expect(foo).toEqual(0);
+    specWithRunsAndWaits.execute();
+    fakeTimer.tick(0);
+
+    expect(foo).toEqual(1);
+    fakeTimer.tick(500);
+    expect(foo).toEqual(2);
+    fakeTimer.tick(500);
+    expect(foo).toEqual(3);
   });
 
   it("should run asynchronous tests", function () {
     var foo = 0;
 
-    //set a bogus suite for the spec to attach to
-    //    jasmine.getEnv().currentSuite = {specs: []};
-
     var a_spec;
-    env.describe('test async spec', function() {
-      a_spec = env.it('simple queue test', function () {
-        this.runs(function () {
-          foo++;
-        });
-        this.runs(function () {
-          this.expect(foo).toEqual(1);
-        });
-      });
-    });
-
-    expect(a_spec.queue.length).toEqual(1,
-      'Expected spec queue length to be 1, was ' + a_spec.queue.length);
-
-    a_spec.execute();
-    expect(a_spec.queue.length).toEqual(3,
-      'Expected spec queue length to be 3, was ' + a_spec.queue.length);
-
-    foo = 0;
     env.describe('test async spec', function() {
       a_spec = env.it('spec w/ queued statments', function () {
         this.runs(function () {
@@ -132,9 +142,10 @@ describe("jasmine spec running", function () {
     });
 
     a_spec.execute();
+    fakeTimer.tick(0);
 
     expect(a_spec.results.getItems().length).toEqual(1); // 'No call to waits(): Spec queue did not run all functions';
-    expect(a_spec.results.getItems()[0].passed).toEqual(true); // 'No call to waits(): Queued expectation failed';
+    expect(a_spec.results.getItems()[0].passed()).toEqual(true); // 'No call to waits(): Queued expectation failed';
 
     foo = 0;
     env.describe('test async spec', function() {
@@ -152,6 +163,8 @@ describe("jasmine spec running", function () {
     });
 
     a_spec.execute();
+    fakeTimer.tick(0);
+
     expect(a_spec.results.getItems().length).toEqual(0);
 
     fakeTimer.tick(500);
@@ -160,7 +173,7 @@ describe("jasmine spec running", function () {
     fakeTimer.tick(500);
     expect(a_spec.results.getItems().length).toEqual(1); // 'Calling waits(): Spec queue did not run all functions';
 
-    expect(a_spec.results.getItems()[0].passed).toEqual(true); // 'Calling waits(): Queued expectation failed';
+    expect(a_spec.results.getItems()[0].passed()).toEqual(true); // 'Calling waits(): Queued expectation failed';
 
     var bar = 0;
     var another_spec;
@@ -185,16 +198,13 @@ describe("jasmine spec running", function () {
       });
     });
 
-    expect(another_spec.queue.length).toEqual(1); // 'Calling 2 waits(): Expected queue length to be 1, got ' + another_spec.queue.length;
 
     another_spec.execute();
 
     fakeTimer.tick(1000);
-    expect(another_spec.queue.length).toEqual(4); // 'Calling 2 waits(): Expected queue length to be 4, got ' + another_spec.queue.length;
 
-    expect(another_spec.results.getItems().length).toEqual(1); // 'Calling 2 waits(): Spec queue did not run all functions';
-
-    expect(another_spec.results.getItems()[0].passed).toEqual(true); // 'Calling 2 waits(): Queued expectation failed';
+    expect(another_spec.results.getItems().length).toEqual(1);
+    expect(another_spec.results.getItems()[0].passed()).toEqual(true);
 
     var baz = 0;
     var yet_another_spec;
@@ -214,11 +224,13 @@ describe("jasmine spec running", function () {
 
 
     yet_another_spec.execute();
-    fakeTimer.tick(250);
+    //tick twice so that second runs gets eval'd first: mockClock bug?
+    fakeTimer.tick(100);
+    fakeTimer.tick(150);
 
-    expect(yet_another_spec.queue.length).toEqual(3); // 'Calling 2 waits(): Expected queue length to be 3, got ' + another_spec.queue.length);
-    expect(yet_another_spec.results.getItems().length).toEqual(1); // 'Calling 2 waits(): Spec queue did not run all functions');
-    expect(yet_another_spec.results.getItems()[0].passed).toEqual(false); // 'Calling 2 waits(): Queued expectation failed');
+
+    expect(yet_another_spec.results.getItems().length).toEqual(1);
+    expect(yet_another_spec.results.getItems()[0].passed()).toEqual(false);
   });
 
   it("testAsyncSpecsWithMockSuite", function () {
@@ -246,9 +258,8 @@ describe("jasmine spec running", function () {
 
     another_spec.execute();
     fakeTimer.tick(2000);
-    expect(another_spec.queue.length).toEqual(4); // 'Calling 2 waits(): Expected queue length to be 4, got ' + another_spec.queue.length);
-    expect(another_spec.results.getItems().length).toEqual(1); // 'Calling 2 waits(): Spec queue did not run all functions');
-    expect(another_spec.results.getItems()[0].passed).toEqual(true); // 'Calling 2 waits(): Queued expectation failed');
+    expect(another_spec.results.getItems().length).toEqual(1);
+    expect(another_spec.results.getItems()[0].passed()).toEqual(true);
   });
 
   it("testWaitsFor", function() {
@@ -302,7 +313,7 @@ describe("jasmine spec running", function () {
     expect(actual).toEqual(expected);
   });
 
-  it("testWaitsForFailsIfTimeout", function() {
+  it("waitsFor fails and skips the rest of the spec if timeout is reached and the latch function is still false", function() {
     var runsBlockExecuted = false;
 
     var spec;
@@ -312,7 +323,7 @@ describe("jasmine spec running", function () {
         });
 
         this.waitsFor(500, function() {
-          return false; // force a timeout
+          return false;
         });
 
         this.runs(function() {
@@ -322,15 +333,15 @@ describe("jasmine spec running", function () {
     });
 
     spec.execute();
-    expect(runsBlockExecuted).toEqual(false, 'should not have executed runs block yet');
+    expect(runsBlockExecuted).toEqual(false);
     fakeTimer.tick(100);
-    expect(runsBlockExecuted).toEqual(false, 'should not have executed runs block yet');
+    expect(runsBlockExecuted).toEqual(false);
     fakeTimer.tick(400);
-    expect(runsBlockExecuted).toEqual(false, 'should have timed out, so the second runs block should not have been called');
+    expect(runsBlockExecuted).toEqual(false);
     var actual = spec.results.getItems()[0].message;
     var expected = 'timeout: timed out after 500 msec waiting for something to happen';
     expect(actual).toEqual(expected,
-        'expected "' + expected + '" but found "' + actual + '"');
+      'expected "' + expected + '" but found "' + actual + '"');
   });
 
   it("testSpecAfter", function() {
@@ -351,38 +362,19 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
-    expect(log).toEqual("specafter2after1"); // "after function should be executed in reverse order after spec runs");
+    fakeTimer.tick(0);
+
+    expect(log).toEqual("specafter2after1");
   });
 
   describe('test suite declaration', function() {
     var suite;
-    var dummyFunction = function() {};
+    var dummyFunction = function() {
+    };
 
     it('should give the suite a description', function() {
       suite = env.describe('one suite description', dummyFunction);
-      expect(suite.description).toEqual('one suite description'); // 'Suite did not get a description');
-    });
-
-    it('should add tests to suites declared by the passed function', function() {
-      suite = env.describe('one suite description', function () {
-        env.it('should be a test');
-      });
-
-      expect(suite.specs.length).toEqual(1); // 'Suite did not get a spec pushed');
-      expect(suite.specs[0].queue.length).toEqual(0); // "Suite's Spec should not have queuedFunctions");
-    });
-
-    it('should enqueue functions for multipart tests', function() {
-      suite = env.describe('one suite description', function () {
-        env.it('should be a test with queuedFunctions', function() {
-          this.runs(function() {
-            var foo = 0;
-            foo++;
-          });
-        });
-      });
-
-      expect(suite.specs[0].queue.length).toEqual(1); // "Suite's spec did not get a function pushed");
+      expect(suite.description).toEqual('one suite description');
     });
 
     it('should enqueue functions for multipart tests and support waits, and run any ready runs() blocks', function() {
@@ -401,9 +393,9 @@ describe("jasmine spec running", function () {
         });
       });
 
-      expect(suite.specs[0].queue.length).toEqual(1); // "Suite's spec length should have been 1, was " + suite.specs[0].queue.length);
       suite.execute();
-      expect(suite.specs[0].queue.length).toEqual(3); // "Suite's spec length should have been 3, was " + suite.specs[0].queue.length);
+      fakeTimer.tick(0);
+
       expect(foo).toEqual(1);
       expect(bar).toEqual(0);
 
@@ -414,7 +406,6 @@ describe("jasmine spec running", function () {
   });
 
   it("testBeforeAndAfterCallbacks", function () {
-
     var suiteWithBefore = env.describe('one suite with a before', function () {
 
       this.beforeEach(function () {
@@ -437,42 +428,370 @@ describe("jasmine spec running", function () {
     });
 
     suiteWithBefore.execute();
-    var suite = suiteWithBefore;
-    expect(suite.beforeEachFunction); // "testBeforeAndAfterCallbacks: Suite's beforeEach was not defined");
-    expect(suite.specs[0].results.getItems()[0].passed).toEqual(true); // "testBeforeAndAfterCallbacks: the first spec's foo should have been 2");
-    expect(suite.specs[1].results.getItems()[0].passed).toEqual(true); // "testBeforeAndAfterCallbacks: the second spec's this.foo should have been 2");
+    fakeTimer.tick(0);
 
+    var suite = suiteWithBefore;
+
+    expect(suite.getResults().getItems()[0].passed()).toEqual(true); // "testBeforeAndAfterCallbacks: the first spec's foo should have been 2");
+    expect(suite.getResults().getItems()[1].passed()).toEqual(true); // "testBeforeAndAfterCallbacks: the second spec's this.foo should have been 2");
+
+
+    var foo = 1;
     var suiteWithAfter = env.describe('one suite with an after_each', function () {
 
       env.it('should be a spec with an after_each', function () {
-        this.runs(function() {
-          this.foo = 0;
-          this.foo++;
-          this.expect(this.foo).toEqual(1);
-        });
+        this.expect(foo).toEqual(1);
+        foo++;
+        this.expect(foo).toEqual(2);
       });
 
       env.it('should be another spec with an after_each', function () {
-        this.runs(function() {
-          this.foo = 0;
-          this.foo++;
-          this.expect(this.foo).toEqual(1);
-        });
+        this.expect(foo).toEqual(0);
+        foo++;
+        this.expect(foo).toEqual(1);
       });
 
       this.afterEach(function () {
-        this.foo = 0;
+        foo = 0;
       });
     });
 
     suiteWithAfter.execute();
-    var suite = suiteWithAfter;
-    expect(suite.afterEachFunction); // "testBeforeAndAfterCallbacks: Suite's afterEach was not defined");
-    expect(suite.specs[0].results.getItems()[0].passed).toEqual(true); // "testBeforeAndAfterCallbacks: afterEach failure: " + suite.results.getItems()[0].results[0].message);
-    expect(suite.specs[0].foo).toEqual(0); // "testBeforeAndAfterCallbacks: afterEach failure: foo was not reset to 0");
-    expect(suite.specs[1].results.getItems()[0].passed).toEqual(true); // "testBeforeAndAfterCallbacks: afterEach failure: " + suite.results.getItems()[0].results[0].message);
-    expect(suite.specs[1].foo).toEqual(0); // "testBeforeAndAfterCallbacks: afterEach failure: foo was not reset to 0");
+    fakeTimer.tick(0);
 
+    suite = suiteWithAfter;
+    expect(suite.afterEach.length).toEqual(1);
+    expect(suite.getResults().getItems()[0].passed()).toEqual(true);
+    expect(suite.getResults().getItems()[1].passed()).toEqual(true);
+    expect(foo).toEqual(0);
+
+  });
+
+  it('#waits should allow consecutive waits calls', function () {
+    var foo = 0;
+    var waitsSuite = env.describe('suite that waits', function () {
+      env.it('should wait', function() {
+        this.waits(500);
+        this.waits(500);
+        this.runs(function () {
+          foo++;
+        });
+      });
+    });
+
+    waitsSuite.execute();
+    expect(foo).toEqual(0);
+    fakeTimer.tick(500);
+    expect(foo).toEqual(0);
+    fakeTimer.tick(500);
+
+    expect(foo).toEqual(1);
+  });
+
+  it('nested suites', function () {
+
+    var foo = 0;
+    var bar = 0;
+    var baz = 0;
+    var quux = 0;
+    var nested = env.describe('suite', function () {
+      env.describe('nested', function () {
+        env.it('should run nested suites', function () {
+          foo++;
+        });
+        env.it('should run nested suites', function () {
+          bar++;
+        });
+      });
+
+      env.describe('nested 2', function () {
+        env.it('should run suites following nested suites', function () {
+          baz++;
+        });
+      });
+
+      env.it('should run tests following nested suites', function () {
+        quux++;
+      });
+    });
+
+    expect(foo).toEqual(0);
+    expect(bar).toEqual(0);
+    expect(baz).toEqual(0);
+    expect(quux).toEqual(0);
+    nested.execute();
+    fakeTimer.tick(0);
+
+    expect(foo).toEqual(1);
+    expect(bar).toEqual(1);
+    expect(baz).toEqual(1);
+    expect(quux).toEqual(1);
+  });
+
+  describe('#waitsFor should allow consecutive calls', function () {
+
+    var foo;
+    beforeEach(function () {
+
+      foo = 0;
+    });
+
+    it('exits immediately (does not stack) if the latchFunction times out', function () {
+      var reachedFirstWaitsFor = false;
+      var reachedSecondWaitsFor = false;
+      var waitsSuite = env.describe('suite that waits', function () {
+        env.it('should stack timeouts', function() {
+          this.waitsFor(500, function () {
+            reachedFirstWaitsFor = true;
+            return false;
+          });
+          this.waitsFor(500, function () {
+            reachedSecondWaitsFor = true;
+          });
+          this.runs(function () {
+            foo++;
+          });
+        });
+      });
+
+      expect(reachedFirstWaitsFor).toEqual(false);
+      waitsSuite.execute();
+      fakeTimer.tick(0);
+
+      expect(reachedFirstWaitsFor).toEqual(true);
+      expect(foo).toEqual(0);
+      expect(reachedSecondWaitsFor).toEqual(false);
+      fakeTimer.tick(500);
+      expect(reachedSecondWaitsFor).toEqual(false);
+      expect(foo).toEqual(0);
+      fakeTimer.tick(500);
+      expect(reachedSecondWaitsFor).toEqual(false);
+      expect(foo).toEqual(0);
+    });
+
+    it('stacks latchFunctions', function () {
+      var firstWaitsResult = false;
+      var secondWaitsResult = false;
+      var waitsSuite = env.describe('suite that waits', function () {
+        env.it('spec with waitsFors', function() {
+          this.waitsFor(600, function () {
+            fakeTimer.setTimeout(function () {
+              firstWaitsResult = true;
+            }, 300);
+            return firstWaitsResult;
+          });
+          this.waitsFor(600, function () {
+            fakeTimer.setTimeout(function () {
+              secondWaitsResult = true;
+            }, 300);
+            return secondWaitsResult;
+          });
+          this.runs(function () {
+            foo++;
+          });
+        });
+      });
+
+      expect(firstWaitsResult).toEqual(false);
+      expect(secondWaitsResult).toEqual(false);
+      waitsSuite.execute();
+
+      expect(firstWaitsResult).toEqual(false);
+      expect(secondWaitsResult).toEqual(false);
+      expect(foo).toEqual(0);
+
+      fakeTimer.tick(300);
+
+      expect(firstWaitsResult).toEqual(true);
+      expect(secondWaitsResult).toEqual(false);
+      expect(foo).toEqual(0);
+
+      fakeTimer.tick(300);
+
+      expect(firstWaitsResult).toEqual(true);
+      expect(secondWaitsResult).toEqual(true);
+      expect(foo).toEqual(1);
+
+    });
+  });
+
+  it("#beforeEach should be able to eval runs and waits blocks", function () {
+    var foo = 0;
+    var bar = 0;
+    var suiteWithBefore = env.describe('one suite with a before', function () {
+      this.beforeEach(function () {
+        this.runs(function () {
+          foo++;
+        });
+        this.waits(500);
+        this.runs(function () {
+          foo++;
+        });
+        this.waits(500);
+      });
+
+      env.it('should be a spec', function () {
+        bar = 1;
+        foo++;
+      });
+
+    });
+
+    expect(foo).toEqual(0);
+    expect(bar).toEqual(0);
+    suiteWithBefore.execute();
+    fakeTimer.tick(0);
+
+    expect(bar).toEqual(0);
+    expect(foo).toEqual(1);
+    fakeTimer.tick(500);
+
+    expect(bar).toEqual(0);
+    expect(foo).toEqual(2);
+    fakeTimer.tick(500);
+    expect(bar).toEqual(1);
+    expect(foo).toEqual(3);
+  });
+
+  it("#afterEach should be able to eval runs and waits blocks", function () {
+    var foo = 0;
+    var firstSpecHasRun = false;
+    var secondSpecHasRun = false;
+    var suiteWithAfter = env.describe('one suite with a before', function () {
+      this.afterEach(function () {
+        this.waits(500);
+        this.runs(function () {
+          foo++;
+        });
+        this.waits(500);
+      });
+
+      env.it('should be the first spec', function () {
+        firstSpecHasRun = true;
+      });
+
+      env.it('should be a spec', function () {
+        secondSpecHasRun = true;
+        foo++;
+      });
+
+    });
+
+    expect(firstSpecHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+    expect(foo).toEqual(0);
+
+    suiteWithAfter.execute();
+    fakeTimer.tick(0);
+
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(secondSpecHasRun).toEqual(false);
+    expect(foo).toEqual(0);
+
+    fakeTimer.tick(500);
+
+    expect(foo).toEqual(1);
+    expect(secondSpecHasRun).toEqual(false);
+    fakeTimer.tick(500);
+
+    expect(foo).toEqual(2);
+    expect(secondSpecHasRun).toEqual(true);
+
+  });
+
+  it("Spec#after should be able to eval runs and waits blocks", function () {
+    var runsBeforeAfter = false;
+    var firstSpecHasRun = false;
+    var secondSpecHasRun = false;
+    var afterHasRun = false;
+    var suiteWithAfter = env.describe('one suite with a before', function () {
+
+      env.it('should be the first spec', function () {
+        firstSpecHasRun = true;
+        this.after(function () {
+          this.waits(500);
+          this.runs(function () {
+            afterHasRun = true;
+          });
+          this.waits(500);
+        }, true);
+        this.waits(500);
+        this.runs(function () {
+          runsBeforeAfter = true;
+        });
+      });
+
+      env.it('should be a spec', function () {
+        secondSpecHasRun = true;
+      });
+
+    });
+
+    expect(firstSpecHasRun).toEqual(false);
+    expect(runsBeforeAfter).toEqual(false);
+    expect(afterHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+
+    suiteWithAfter.execute();
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(runsBeforeAfter).toEqual(false);
+    expect(afterHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+
+    fakeTimer.tick(500);
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(runsBeforeAfter).toEqual(true);
+    expect(afterHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+
+    fakeTimer.tick(500);
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(runsBeforeAfter).toEqual(true);
+    expect(afterHasRun).toEqual(true);
+    expect(secondSpecHasRun).toEqual(false);
+
+    fakeTimer.tick(500);
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(runsBeforeAfter).toEqual(true);
+    expect(afterHasRun).toEqual(true);
+    expect(secondSpecHasRun).toEqual(true);
+  });
+
+  it("handles waits", function () {
+    var firstSpecHasRun = false;
+    var secondSpecHasRun = false;
+    var suiteWithAfter = env.describe('one suite with a before', function () {
+
+      env.it('should be the first spec', function () {
+        this.waits(500);
+        this.runs(function () {
+          firstSpecHasRun = true;
+        });
+      });
+
+      env.it('should be a spec', function () {
+        secondSpecHasRun = true;
+      });
+
+    });
+
+    expect(firstSpecHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+
+    suiteWithAfter.execute();
+
+    expect(firstSpecHasRun).toEqual(false);
+    expect(secondSpecHasRun).toEqual(false);
+
+    fakeTimer.tick(500);
+
+    expect(firstSpecHasRun).toEqual(true);
+    expect(secondSpecHasRun).toEqual(true);
   });
 
   it("testBeforeExecutesSafely", function() {
@@ -500,13 +819,12 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
+    fakeTimer.tick(0);
 
-    expect(report).toEqual("firstsecond"); // "both tests should run");
-    expect(suite.specs[0].results.getItems()[0].passed).toEqual(false); // "1st spec should fail");
-    expect(suite.specs[1].results.getItems()[0].passed).toEqual(true); // "2nd spec should pass");
-
-    expect(suite.specs[0].results.getItems()[0].passed).toEqual(false); // "1st spec should fail");
-    expect(suite.specs[1].results.getItems()[0].passed).toEqual(true); // "2nd spec should pass");
+    expect(report).toEqual("firstsecond");
+    var suiteResults = suite.getResults();
+    expect(suiteResults.getItems()[0].getItems()[0].passed()).toEqual(false);
+    expect(suiteResults.getItems()[1].getItems()[0].passed()).toEqual(true);
   });
 
   it("testAfterExecutesSafely", function() {
@@ -540,18 +858,21 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
+    fakeTimer.tick(0);
 
     expect(report).toEqual("firstsecondthird"); // "all tests should run");
     //After each errors should not go in spec results because it confuses the count.
-    expect(suite.specs.length).toEqual(3, 'testAfterExecutesSafely should have results for three specs');
-    expect(suite.specs[0].results.getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 1st spec should pass");
-    expect(suite.specs[1].results.getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 2nd spec should pass");
-    expect(suite.specs[2].results.getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 3rd spec should pass");
+    var suiteResults = suite.getResults();
+    expect(suiteResults.getItems().length).toEqual(3, 'testAfterExecutesSafely should have results for three specs');
 
-    expect(suite.specs[0].results.getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 1st result for 1st suite spec should pass");
-    expect(suite.specs[0].results.getItems()[1].passed).toEqual(false, "testAfterExecutesSafely 2nd result for 1st suite spec should fail because afterEach failed");
-    expect(suite.specs[1].results.getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 2nd suite spec should pass");
-    expect(suite.specs[2].results.getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 3rd suite spec should pass");
+    expect(suiteResults.getItems()[0].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 1st spec should pass");
+    expect(suiteResults.getItems()[1].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 2nd spec should pass");
+    expect(suiteResults.getItems()[2].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 3rd spec should pass");
+
+    expect(suiteResults.getItems()[0].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 1st result for 1st suite spec should pass");
+    expect(suiteResults.getItems()[0].getItems()[1].passed()).toEqual(false, "testAfterExecutesSafely 2nd result for 1st suite spec should fail because afterEach failed");
+    expect(suiteResults.getItems()[1].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 2nd suite spec should pass");
+    expect(suiteResults.getItems()[2].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 3rd suite spec should pass");
   });
 
   it("testNestedDescribes", function() {
@@ -604,6 +925,8 @@ describe("jasmine spec running", function () {
     });
 
     env.execute();
+    fakeTimer.tick(0);
+
 
     var expected = [
       "outer beforeEach",
@@ -626,7 +949,7 @@ describe("jasmine spec running", function () {
       "inner 2 afterEach",
       "outer afterEach"
     ];
-    expect(env.equals_(actions, expected)).toEqual(true); // "nested describes order failed: <blockquote>" + jasmine.pp(actions) + "</blockquote> wanted <blockquote>" + jasmine.pp(expected) + "</blockquote");
+    expect(env.equals_(actions, expected)).toEqual(true);
   });
 
   it("builds up nested names", function() {
@@ -634,7 +957,8 @@ describe("jasmine spec running", function () {
     env.describe('Test Subject', function() {
       env.describe('when under circumstance A', function() {
         env.describe('and circumstance B', function() {
-          nestedSpec = env.it('behaves thusly', function() {});
+          nestedSpec = env.it('behaves thusly', function() {
+          });
         });
       });
     });
@@ -642,10 +966,40 @@ describe("jasmine spec running", function () {
     expect(nestedSpec.getFullName()).toEqual('Test Subject when under circumstance A and circumstance B behaves thusly.'); //, "Spec.fullName was incorrect: " + nestedSpec.getFullName());
   });
 
+  it("should skip empty suites", function () {
+    env.describe('NonEmptySuite1', function() {
+      env.it('should pass', function() {
+        this.expect(true).toEqual(true);
+      });
+      env.describe('NestedEmptySuite', function() {
+      });
+      env.it('should pass', function() {
+        this.expect(true).toEqual(true);
+      });
+    });
+
+    env.describe('EmptySuite', function() {});
+
+    env.describe('NonEmptySuite2', function() {
+      env.it('should pass', function() {
+        this.expect(true).toEqual(true);
+      });
+    });
+
+    env.execute();
+    fakeTimer.tick(0);
+
+    var runnerResults = env.currentRunner.getResults();
+    expect(runnerResults.totalCount).toEqual(3);
+    expect(runnerResults.passedCount).toEqual(3);
+    expect(runnerResults.failedCount).toEqual(0);
+  });
+
   it("should bind 'this' to the running spec within the spec body", function() {
+    var spec;
     var suite = env.describe('one suite description', function () {
       env.it('should be a test with queuedFunctions', function() {
-        this.runs(function() {
+        spec = this.runs(function() {
           this.foo = 0;
           this.foo++;
         });
@@ -672,11 +1026,11 @@ describe("jasmine spec running", function () {
 
     suite.execute();
     fakeTimer.tick(600);
-
-    expect(suite.specs[0].foo).toEqual(2); // "Spec does not maintain scope in between functions");
-    expect(suite.specs[0].results.getItems().length).toEqual(2); // "Spec did not get results for all expectations");
-    expect(suite.specs[0].results.getItems()[0].passed).toEqual(false); // "Spec did not return false for a failed expectation");
-    expect(suite.specs[0].results.getItems()[1].passed).toEqual(true); // "Spec did not return true for a passing expectation");
+    expect(spec.foo).toEqual(2);
+    var suiteResults = suite.getResults();
+    expect(suiteResults.getItems()[0].getItems().length).toEqual(2);
+    expect(suiteResults.getItems()[0].getItems()[0].passed()).toEqual(false);
+    expect(suiteResults.getItems()[0].getItems()[1].passed()).toEqual(true);
   });
 
   it("shouldn't run disabled tests", function() {
@@ -693,7 +1047,6 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
-    expect(suite.specs.length).toEqual(1);
     expect(xitSpecWasRun).toEqual(false);
   });
 
@@ -740,7 +1093,7 @@ describe("jasmine spec running", function () {
       });
 
       spec1 = env.it('spec with an expectation').runs(function () {
-        this.addMatchers( { matcherForSpec: function(expected) {
+        this.addMatchers({ matcherForSpec: function(expected) {
           return "matcherForSpec: actual: " + this.actual + "; expected: " + expected;
         } });
         spec1Matcher = this.expect("xxx");
@@ -752,6 +1105,7 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
+    fakeTimer.tick(0);
 
     expect(spec1Matcher.matcherForSuite("expected")).toEqual("matcherForSuite: actual: xxx; expected: expected");
     expect(spec1Matcher.matcherForSpec("expected")).toEqual("matcherForSpec: actual: xxx; expected: expected");

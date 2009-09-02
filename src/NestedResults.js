@@ -62,7 +62,7 @@ jasmine.NestedResults.prototype.addResult = function(result) {
       this.rollupCounts(result);
     } else {
       this.totalCount++;
-      if (result.passed) {
+      if (result.passed()) {
         this.passedCount++;
       } else {
         this.failedCount++;

@@ -3,14 +3,14 @@ describe('jasmine.NestedResults', function() {
     // Leaf case
     var results = new jasmine.NestedResults();
 
-    results.addResult({passed: true, message: 'Passed.'});
+    results.addResult(new jasmine.ExpectationResult(true,'Passed.'));
 
     expect(results.getItems().length).toEqual(1);
     expect(results.totalCount).toEqual(1);
     expect(results.passedCount).toEqual(1);
     expect(results.failedCount).toEqual(0);
 
-    results.addResult({passed: false, message: 'FAIL.'});
+    results.addResult(new jasmine.ExpectationResult(false, 'FAIL.'));
 
     expect(results.getItems().length).toEqual(2);
     expect(results.totalCount).toEqual(2);
@@ -21,12 +21,12 @@ describe('jasmine.NestedResults', function() {
   it('should roll up counts for nested results', function() {
     // Branch case
     var leafResultsOne = new jasmine.NestedResults();
-    leafResultsOne.addResult({passed: true, message: ''});
-    leafResultsOne.addResult({passed: false, message: ''});
+    leafResultsOne.addResult(new jasmine.ExpectationResult( true, ''));
+    leafResultsOne.addResult(new jasmine.ExpectationResult( false, ''));
 
     var leafResultsTwo = new jasmine.NestedResults();
-    leafResultsTwo.addResult({passed: true, message: ''});
-    leafResultsTwo.addResult({passed: false, message: ''});
+    leafResultsTwo.addResult(new jasmine.ExpectationResult( true, ''));
+    leafResultsTwo.addResult(new jasmine.ExpectationResult( false, ''));
 
     var branchResults = new jasmine.NestedResults();
     branchResults.addResult(leafResultsOne);

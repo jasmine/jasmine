@@ -1,5 +1,6 @@
 require 'socket'
 require 'erb'
+require 'json'
 
 module Jasmine
   # this seemingly-over-complex method is necessary to get an open port on at least some of our Macs
@@ -73,16 +74,31 @@ module Jasmine
     end
   end
 
+  class Redirect
+    def initialize(url)
+      @url = url
+    end
+
+    def call(env)
+      [
+        302,
+        { 'Location' => @url },
+        []
+      ]
+    end
+  end
+
   class SimpleServer
     def self.start(port, spec_files_or_proc, mappings)
       require 'thin'
 
       config = {
+        '/' => Jasmine::Redirect.new('/run.html'),
         '/run.html' => Jasmine::RunAdapter.new(spec_files_or_proc)
       }
       mappings.each do |from, to|
         config[from] = Rack::File.new(to)
-      end
+      end   
 
       app = Rack::URLMap.new(config)
 
@@ -128,7 +144,7 @@ module Jasmine
     def eval_js(script)
       escaped_script = "'" + script.gsub(/(['\\])/) { '\\' + $1 } + "'"
 
-      result = @driver.get_eval("window.eval(#{escaped_script})")
+      result = @driver.get_eval("eval(#{escaped_script}, window)")
       JSON.parse("[#{result}]")[0]
     end
   end

@@ -5,49 +5,47 @@
  * @param {jasmine.Env} env
  */
 jasmine.Runner = function(env) {
-  jasmine.ActionCollection.call(this, env);
-
-  this.suites = this.actions;
+  var self = this;
+  self.env = env;
+  self.queue = new jasmine.Queue(env);
+  self.suites_ = [];
 };
-jasmine.util.inherit(jasmine.Runner, jasmine.ActionCollection);
 
 jasmine.Runner.prototype.execute = function() {
-  if (this.env.reporter.reportRunnerStarting) {
-    this.env.reporter.reportRunnerStarting(this);
+  var self = this;
+  if (self.env.reporter.reportRunnerStarting) {
+    self.env.reporter.reportRunnerStarting(this);
   }
-  jasmine.ActionCollection.prototype.execute.call(this);
+  self.queue.start(function () {
+    self.finishCallback();
+  });
 };
 
 jasmine.Runner.prototype.finishCallback = function() {
   this.env.reporter.reportRunnerResults(this);
 };
 
+jasmine.Runner.prototype.addSuite = function(suite) {
+  this.suites_.push(suite);
+};
+
+jasmine.Runner.prototype.add = function(block) {
+  if (block instanceof jasmine.Suite) {
+    this.addSuite(block);
+  }
+  this.queue.add(block);
+};
+
+/** @deprecated */
 jasmine.Runner.prototype.getAllSuites = function() {
-  var suitesToReturn = [];
+  return this.suites_;
+};
 
-  function addSuite(suite) {
-    suitesToReturn.push(suite);
 
-    for (var j = 0; j < suite.specs.length; j++) {
-      var spec = suite.specs[j];
-      if (spec instanceof jasmine.Suite) {
-        addSuite(spec);
-      }
-    }
-  }
-
-  for (var i = 0; i < this.suites.length; i++) {
-    var suite = this.suites[i];
-    addSuite(suite);
-  }
-
-  return suitesToReturn;
+jasmine.Runner.prototype.suites = function() {
+  return this.suites_;
 };
 
 jasmine.Runner.prototype.getResults = function() {
-  var results = new jasmine.NestedResults();
-  for (var i = 0; i < this.suites.length; i++) {
-    results.rollupCounts(this.suites[i].getResults());
-  }
-  return results;
+  return this.queue.getResults();
 };

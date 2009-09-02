@@ -3,45 +3,45 @@
 <html>
 <head>
   <title>Jasmine Test Runner</title>
+
+  <script type="text/javascript" src="../src/base.js"></script>
+  <script type="text/javascript" src="../src/util.js"></script>
+  <script type="text/javascript" src="../src/Env.js"></script>
+  <script type="text/javascript" src="../src/Reporter.js"></script>
+  <script type="text/javascript" src="../src/Matchers.js"></script>
+  <script type="text/javascript" src="../src/MultiReporter.js"></script>
+  <script type="text/javascript" src="../src/NestedResults.js"></script>
+  <script type="text/javascript" src="../src/PrettyPrinter.js"></script>
+  <script type="text/javascript" src="../src/Block.js"></script>
+  <script type="text/javascript" src="../src/WaitsBlock.js"></script>
+  <script type="text/javascript" src="../src/WaitsForBlock.js"></script>
+  <script type="text/javascript" src="../src/Reporters.js"></script>
+  <script type="text/javascript" src="../src/Runner.js"></script>
+  <script type="text/javascript" src="../src/Spec.js"></script>
+  <script type="text/javascript" src="../src/Queue.js"></script>
+  <script type="text/javascript" src="../src/Suite.js"></script>
+  <script type="text/javascript" src="../src/mock-timeout.js"></script>
+
+  <script type="text/javascript" src="../lib/TrivialReporter.js"></script>
+
+
+  <script type="text/javascript">
+    jasmine.include('suites/EnvSpec.js', true);
+    jasmine.include('suites/ExceptionsSpec.js', true);
+    jasmine.include('suites/MatchersSpec.js', true);
+    jasmine.include('suites/MultiReporterSpec.js', true);
+    jasmine.include('suites/NestedResultsSpec.js', true);
+    jasmine.include('suites/PrettyPrintSpec.js', true);
+    jasmine.include('suites/ReporterSpec.js', true);
+    jasmine.include('suites/RunnerSpec.js', true);
+    jasmine.include('suites/SpecRunningSpec.js', true);
+    jasmine.include('suites/SpySpec.js', true);
+    jasmine.include('suites/SuiteSpec.js', true);
+    jasmine.include('suites/TrivialReporterSpec.js', true);
+  </script>
+
+  <link href="../lib/jasmine.css" rel="stylesheet"/>
 </head>
-<script type="text/javascript" src="lib/json2.js"></script>
-
-<script type="text/javascript" src="../src/base.js"></script>
-<script type="text/javascript" src="../src/util.js"></script>
-<script type="text/javascript" src="../src/Env.js"></script>
-<script type="text/javascript" src="../src/ActionCollection.js"></script>
-<script type="text/javascript" src="../src/Reporter.js"></script>
-<script type="text/javascript" src="../src/Matchers.js"></script>
-<script type="text/javascript" src="../src/MultiReporter.js"></script>
-<script type="text/javascript" src="../src/NestedResults.js"></script>
-<script type="text/javascript" src="../src/PrettyPrinter.js"></script>
-<script type="text/javascript" src="../src/QueuedFunction.js"></script>
-<script type="text/javascript" src="../src/Reporters.js"></script>
-<script type="text/javascript" src="../src/Runner.js"></script>
-<script type="text/javascript" src="../src/Spec.js"></script>
-<script type="text/javascript" src="../src/Suite.js"></script>
-<script type="text/javascript" src="../src/mock-timeout.js"></script>
-
-<script type="text/javascript" src="../lib/TrivialReporter.js"></script>
-
-
-<script type="text/javascript">
-  jasmine.include('suites/ExceptionsTest.js', true);
-  jasmine.include('suites/EnvTest.js', true);
-  jasmine.include('suites/JsonReporterTest.js', true);
-  jasmine.include('suites/MatchersTest.js', true);
-  jasmine.include('suites/MultiReporterTest.js', true);
-  jasmine.include('suites/NestedResultsTest.js', true);
-  jasmine.include('suites/PrettyPrintTest.js', true);
-  jasmine.include('suites/ReporterTest.js', true);
-  jasmine.include('suites/RunnerTest.js', true);
-  jasmine.include('suites/SpecRunningTest.js', true);
-  jasmine.include('suites/SpyTest.js', true);
-  jasmine.include('suites/TrivialReporterTest.js', true);
-</script>
-
-
-<link href="../lib/jasmine.css" rel="stylesheet"/>
 
 <body>
 
@@ -49,8 +49,14 @@
 
 
   var jasmineEnv = jasmine.getEnv();
-  jasmineEnv.addReporter(new jasmine.TrivialReporter());
-  jasmineEnv.execute();
+  var trivialReporter = new jasmine.TrivialReporter();
+  jasmineEnv.addReporter(trivialReporter);
+  jasmineEnv.specFilter = function(spec) {
+    return trivialReporter.specFilter(spec);
+  };
+  window.onload = function() {
+    jasmineEnv.execute();
+  };
 </script>
 
 </body>

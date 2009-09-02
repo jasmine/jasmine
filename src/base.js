@@ -40,10 +40,14 @@ jasmine.MessageResult = function(text) {
 
 jasmine.ExpectationResult = function(passed, message, details) {
   this.type = 'ExpectationResult';
-  this.passed = passed;
+  this.passed_ = passed;
   this.message = message;
   this.details = details;
   this.trace = new Error(message); // todo: test better
+};
+
+jasmine.ExpectationResult.prototype.passed = function () {
+  return this.passed_;
 };
 
 /**

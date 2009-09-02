@@ -7,21 +7,19 @@
  * @param {String} description
  */
 jasmine.Spec = function(env, suite, description) {
-  this.id = env.nextSpecId_++;
-  this.env = env;
-  this.suite = suite;
-  this.description = description;
-  this.queue = [];
-  this.currentTimeout = 0;
-  this.currentLatchFunction = undefined;
-  this.finished = false;
-  this.afterCallbacks = [];
-  this.spies_ = [];
+  var spec = this;
+  spec.id = env.nextSpecId_++;
+  spec.env = env;
+  spec.suite = suite;
+  spec.description = description;
+  spec.queue = new jasmine.Queue(env);
 
-  this.results = new jasmine.NestedResults();
-  this.results.description = description;
-  this.runs = this.addToQueue;
-  this.matchersClass = null;
+  spec.afterCallbacks = [];
+  spec.spies_ = [];
+
+  spec.results = new jasmine.NestedResults();
+  spec.results.description = description;
+  spec.matchersClass = null;
 };
 
 jasmine.Spec.prototype.getFullName = function() {
@@ -32,19 +30,18 @@ jasmine.Spec.prototype.getResults = function() {
   return this.results;
 };
 
-jasmine.Spec.prototype.addToQueue = function(func) {
-  var queuedFunction = new jasmine.QueuedFunction(this.env, func, this.currentTimeout, this.currentLatchFunction, this);
-  this.queue.push(queuedFunction);
-
-  if (this.queue.length > 1) {
-    var previousQueuedFunction = this.queue[this.queue.length - 2];
-    previousQueuedFunction.next = function() {
-      queuedFunction.execute();
-    };
-  }
-
-  this.resetTimeout();
+jasmine.Spec.prototype.runs = function (func) {
+  var block = new jasmine.Block(this.env, func, this);
+  this.addToQueue(block);
   return this;
+};
+
+jasmine.Spec.prototype.addToQueue = function (block) {
+  if (this.queue.isRunning()) {
+    this.queue.insertNext(block);
+  } else {
+    this.queue.add(block);
+  }
 };
 
 /**
@@ -62,23 +59,20 @@ jasmine.Spec.prototype.expect = function(actual) {
   return new (this.getMatchersClass_())(this.env, actual, this.results);
 };
 
-/**
- * @private
- */
 jasmine.Spec.prototype.waits = function(timeout) {
-  this.currentTimeout = timeout;
-  this.currentLatchFunction = undefined;
+  var waitsFunc = new jasmine.WaitsBlock(this.env, timeout, this);
+  this.addToQueue(waitsFunc);
   return this;
 };
 
-/**
- * @private
- */
-jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, message) {
-  this.currentTimeout = timeout;
-  this.currentLatchFunction = latchFunction;
-  this.currentLatchFunction.description = message;
+jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, timeoutMessage) {
+  var waitsForFunc = new jasmine.WaitsForBlock(this.env, timeout, latchFunction, timeoutMessage, this);
+  this.addToQueue(waitsForFunc);
   return this;
+};
+
+jasmine.Spec.prototype.failWithException = function (e) {
+  this.results.addResult(new jasmine.ExpectationResult(false, jasmine.util.formatException(e), null));
 };
 
 jasmine.Spec.prototype.getMatchersClass_ = function() {
@@ -97,70 +91,62 @@ jasmine.Spec.prototype.addMatchers = function(matchersPrototype) {
   this.matchersClass = newMatchersClass;
 };
 
-jasmine.Spec.prototype.resetTimeout = function() {
-  this.currentTimeout = 0;
-  this.currentLatchFunction = undefined;
-};
-
 jasmine.Spec.prototype.finishCallback = function() {
   this.env.reporter.reportSpecResults(this);
 };
 
-jasmine.Spec.prototype.finish = function() {
-  this.safeExecuteAfters();
-
+jasmine.Spec.prototype.finish = function(onComplete) {
   this.removeAllSpies();
   this.finishCallback();
-  this.finished = true;
+  if (onComplete) {
+    onComplete();
+  }
 };
 
-jasmine.Spec.prototype.after = function(doAfter) {
+jasmine.Spec.prototype.after = function(doAfter, test) {
+
+ if (this.queue.isRunning()) {
+    this.queue.add(new jasmine.Block(this.env, doAfter, this));
+  } else {
   this.afterCallbacks.unshift(doAfter);
+  }
 };
 
-jasmine.Spec.prototype.execute = function() {
-  if (!this.env.specFilter(this)) {
-    this.results.skipped = true;
-    this.finishCallback();
-    this.finished = true;
+jasmine.Spec.prototype.execute = function(onComplete) {
+  var spec = this;
+  if (!spec.env.specFilter(spec)) {
+    spec.results.skipped = true;
+    spec.finish(onComplete);
     return;
   }
+  this.env.reporter.log('>> Jasmine Running ' + this.suite.description + ' ' + this.description + '...');
 
-  this.env.currentSpec = this;
-  this.env.currentlyRunningTests = true;
+  spec.env.currentSpec = spec;
+  spec.env.currentlyRunningTests = true;
 
-  this.safeExecuteBefores();
+  spec.addBeforesAndAftersToQueue();
 
-  if (this.queue[0]) {
-    this.queue[0].execute();
-  } else {
-    this.finish();
-  }
-  this.env.currentlyRunningTests = false;
+  spec.queue.start(function () {
+    spec.finish(onComplete);
+  });
+  spec.env.currentlyRunningTests = false;
 };
 
-jasmine.Spec.prototype.safeExecuteBefores = function() {
-  var befores = [];
+jasmine.Spec.prototype.addBeforesAndAftersToQueue = function() {
   for (var suite = this.suite; suite; suite = suite.parentSuite) {
-    if (suite.beforeEachFunction) befores.push(suite.beforeEachFunction);
+    if (suite.beforeQueue) {
+      for (var i = 0; i < suite.beforeQueue.length; i++)
+        this.queue.addBefore(new jasmine.Block(this.env, suite.beforeQueue[i], this));
+    }
   }
-
-  while (befores.length) {
-    this.safeExecuteBeforeOrAfter(befores.pop());
+  for (i = 0; i < this.afterCallbacks.length; i++) {
+    this.queue.add(new jasmine.Block(this.env, this.afterCallbacks[i], this));
   }
-};
-
-jasmine.Spec.prototype.safeExecuteAfters = function() {
-  for (var suite = this.suite; suite; suite = suite.parentSuite) {
-    if (suite.afterEachFunction) this.safeExecuteBeforeOrAfter(suite.afterEachFunction);
-  }
-};
-
-jasmine.Spec.prototype.safeExecuteBeforeOrAfter = function(func) {
-  try {
-    func.apply(this);
-  } catch (e) {
-    this.results.addResult(new jasmine.ExpectationResult(false, func.typeName + '() fail: ' + jasmine.util.formatException(e), null));
+  for (suite = this.suite; suite; suite = suite.parentSuite) {
+  if (suite.afterQueue) {
+      for (var j = 0; j < suite.afterQueue.length; j++)
+        this.queue.add(new jasmine.Block(this.env, suite.afterQueue[j], this));
+    }
   }
 };
 

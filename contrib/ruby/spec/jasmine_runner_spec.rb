@@ -1,6 +1,6 @@
 require 'spec'
 require 'open-uri'
-require File.dirname(__FILE__) + '/jasmine_runner'
+require File.dirname(__FILE__) + '/../jasmine_runner'
 
 describe Jasmine::SimpleServer do
   before do
