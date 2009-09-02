@@ -89,7 +89,7 @@ task :jasmine_server do
   }
 
   puts "your tests are here:"
-  puts "  http://localhost:8888/run.html"
+  puts "  http://localhost:8888/"
 
   Jasmine::SimpleServer.start(8888, includes + spec_files, dir_mappings)
 end

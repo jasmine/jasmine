@@ -20,7 +20,7 @@ describe Jasmine::SimpleServer do
 
     Jasmine::wait_for_listener(@port)
 
-    run_html = open("http://localhost:#{@port}/run.html").read
+    run_html = open("http://localhost:#{@port}/").read
     run_html.should =~ /<script src="file1"/
     run_html.should =~ /<script src="file2"/
   end
@@ -39,11 +39,11 @@ describe Jasmine::SimpleServer do
 
     Jasmine::wait_for_listener(@port)
 
-    run_html = open("http://localhost:#{@port}/run.html").read
+    run_html = open("http://localhost:#{@port}/").read
     run_html.should =~ /<script src="file1"/
     run_html.should =~ /<script src="file2"/
 
-    run_html = open("http://localhost:#{@port}/run.html").read
+    run_html = open("http://localhost:#{@port}/").read
     run_html.should =~ /<script src="file1"/
     run_html.should =~ /<script src="file2"/
     run_html.should =~ /<script src="file3"/

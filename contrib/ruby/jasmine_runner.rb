@@ -114,8 +114,8 @@ module Jasmine
       require 'thin'
 
       config = {
-        '/' => Jasmine::Redirect.new('/run.html'),
-        '/run.html' => Jasmine::RunAdapter.new(spec_files_or_proc)
+          '/run.html' => Jasmine::Redirect.new('/'),
+          '/' => Jasmine::RunAdapter.new(spec_files_or_proc)
       }
       mappings.each do |from, to|
         config[from] = Rack::File.new(to)
@@ -150,7 +150,7 @@ module Jasmine
 
     def connect
       @driver.start
-      @driver.open("/run.html")
+      @driver.open("/")
     end
 
     def disconnect
