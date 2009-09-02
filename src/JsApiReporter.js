@@ -27,7 +27,7 @@ jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
     children: []
   };
   if (isSuite) {
-    var specs = suiteOrSpec.getSpecs();
+    var specs = suiteOrSpec.specs();
     for (var i = 0; i < specs.length; i++) {
       summary.children.push(this.summarize_(specs[i]));
     }

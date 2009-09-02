@@ -16,7 +16,7 @@ jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
   self.env = env;
   self.beforeQueue = [];
   self.afterQueue = [];
-  self.specs = [];
+  self.specs_ = [];
 };
 
 jasmine.Suite.prototype.getFullName = function() {
@@ -53,17 +53,17 @@ jasmine.Suite.prototype.add = function(block) {
   if (block instanceof jasmine.Suite) {
     this.env.currentRunner.addSuite(block);
   } else {
-    this.specs.push(block);
+    this.specs_.push(block);
   }
   this.queue.add(block);
 };
 
 jasmine.Suite.prototype.specCount = function() {
-  return this.specs.length;
+  return this.specs_.length;
 };
 
-jasmine.Suite.prototype.getSpecs = function() {
-  return this.specs;
+jasmine.Suite.prototype.specs = function() {
+  return this.specs_;
 };
 
 jasmine.Suite.prototype.execute = function(onComplete) {
