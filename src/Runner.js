@@ -8,7 +8,7 @@ jasmine.Runner = function(env) {
   var self = this;
   self.env = env;
   self.queue = new jasmine.Queue(env);
-  self.suites = [];
+  self.suites_ = [];
 };
 
 jasmine.Runner.prototype.execute = function() {
@@ -26,7 +26,7 @@ jasmine.Runner.prototype.finishCallback = function() {
 };
 
 jasmine.Runner.prototype.addSuite = function(suite) {
-  this.suites.push(suite);
+  this.suites_.push(suite);
 };
 
 jasmine.Runner.prototype.add = function(block) {
@@ -36,9 +36,14 @@ jasmine.Runner.prototype.add = function(block) {
   this.queue.add(block);
 };
 
-
+/** @deprecated */
 jasmine.Runner.prototype.getAllSuites = function() {
-  return this.suites;
+  return this.suites_;
+};
+
+
+jasmine.Runner.prototype.suites = function() {
+  return this.suites_;
 };
 
 jasmine.Runner.prototype.getResults = function() {

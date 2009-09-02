@@ -524,7 +524,7 @@
 <span class='line'>517</span> </span><span class="WHIT">  </span><span class="STRN">"major"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'>518</span> </span><span class="WHIT">  </span><span class="STRN">"minor"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">9</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'>519</span> </span><span class="WHIT">  </span><span class="STRN">"build"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>520</span> </span><span class="WHIT">  </span><span class="STRN">"revision"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1251901364</span><span class="WHIT">
+<span class='line'>520</span> </span><span class="WHIT">  </span><span class="STRN">"revision"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1251901478</span><span class="WHIT">
 <span class='line'>521</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>522</span> </span><span class="COMM">/**
 <span class='line'>523</span>  * @namespace
@@ -1758,7 +1758,7 @@
 <span class='line'>1751</span> </span><span class="WHIT">  </span><span class="NAME">self.env</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">env</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1752</span> </span><span class="WHIT">  </span><span class="NAME">self.beforeQueue</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1753</span> </span><span class="WHIT">  </span><span class="NAME">self.afterQueue</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1754</span> </span><span class="WHIT">  </span><span class="NAME">self.specs</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1754</span> </span><span class="WHIT">  </span><span class="NAME">self.specs_</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1755</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1756</span> 
 <span class='line'>1757</span> </span><span class="NAME">jasmine.Suite.prototype.getFullName</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
@@ -1795,17 +1795,17 @@
 <span class='line'>1788</span> </span><span class="WHIT">  </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">block</span><span class="WHIT"> </span><span class="KEYW">instanceof</span><span class="WHIT"> </span><span class="NAME">jasmine.Suite</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>1789</span> </span><span class="WHIT">    </span><span class="NAME">this.env.currentRunner.addSuite</span><span class="PUNC">(</span><span class="NAME">block</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1790</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1791</span> </span><span class="WHIT">    </span><span class="NAME">this.specs.push</span><span class="PUNC">(</span><span class="NAME">block</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1791</span> </span><span class="WHIT">    </span><span class="NAME">this.specs_.push</span><span class="PUNC">(</span><span class="NAME">block</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1792</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>1793</span> </span><span class="WHIT">  </span><span class="NAME">this.queue.add</span><span class="PUNC">(</span><span class="NAME">block</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1794</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1795</span> 
 <span class='line'>1796</span> </span><span class="NAME">jasmine.Suite.prototype.specCount</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1797</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.specs.length</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1797</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.specs_.length</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1798</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1799</span> 
 <span class='line'>1800</span> </span><span class="NAME">jasmine.Suite.prototype.specs</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1801</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.specs</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1801</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.specs_</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1802</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>1803</span> 
 <span class='line'>1804</span> </span><span class="NAME">jasmine.Suite.prototype.execute</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">onComplete</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">

@@ -153,7 +153,7 @@ describe('RunnerTest', function() {
 
     document.runner = env.currentRunner;
 
-    var suites = env.currentRunner.getAllSuites();
+    var suites = env.currentRunner.suites();
     var suiteDescriptions = [];
     for (var i = 0; i < suites.length; i++) {
       suiteDescriptions.push(suites[i].getFullName());

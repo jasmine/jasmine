@@ -11,7 +11,7 @@ jasmine.JsApiReporter = function() {
 
 jasmine.JsApiReporter.prototype.reportRunnerStarting = function(runner) {
   this.started = true;
-  var suites = runner.getAllSuites();
+  var suites = runner.suites();
   for (var i = 0; i < suites.length; i++) {
     var suite = suites[i];
     this.suites.push(this.summarize_(suite));

@@ -58,6 +58,7 @@ jasmine.Suite.prototype.add = function(block) {
   this.queue.add(block);
 };
 
+/** @deprecated */
 jasmine.Suite.prototype.specCount = function() {
   return this.specs_.length;
 };

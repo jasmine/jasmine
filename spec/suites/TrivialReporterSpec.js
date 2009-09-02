@@ -22,7 +22,7 @@ describe("TrivialReporter", function() {
   it("should display empty divs for every suite when the runner is starting", function() {
     trivialReporter = new jasmine.TrivialReporter({ body: body });
     trivialReporter.reportRunnerStarting({
-      getAllSuites: function() {
+      suites: function() {
         return [ new jasmine.Suite({}, "suite 1", null, null) ];
       }
     });
