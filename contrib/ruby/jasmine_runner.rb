@@ -170,7 +170,7 @@ module Jasmine
     def eval_js(script)
       escaped_script = "'" + script.gsub(/(['\\])/) { '\\' + $1 } + "'"
 
-      result = @driver.get_eval("eval(#{escaped_script}, window)")
+      result = @driver.get_eval("window.eval(#{escaped_script})")
       JSON.parse("[#{result}]")[0]
     end
   end
