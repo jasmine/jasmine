@@ -52,13 +52,18 @@ jasmine.Suite.prototype.getResults = function() {
 jasmine.Suite.prototype.add = function(block) {
   if (block instanceof jasmine.Suite) {
     this.env.currentRunner.addSuite(block);
+  } else {
+    this.specs.push(block);
   }
-  this.specs.push(block);
   this.queue.add(block);
 };
 
-jasmine.Suite.prototype.specCount = function(block) {
+jasmine.Suite.prototype.specCount = function() {
   return this.specs.length;
+};
+
+jasmine.Suite.prototype.getSpecs = function() {
+  return this.specs;
 };
 
 jasmine.Suite.prototype.execute = function(onComplete) {

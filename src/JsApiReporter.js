@@ -11,27 +11,27 @@ jasmine.JsApiReporter = function() {
 
 jasmine.JsApiReporter.prototype.reportRunnerStarting = function(runner) {
   this.started = true;
-
-  for (var i = 0; i < runner.suites.length; i++) {
-    var suite = runner.suites[i];
+  var suites = runner.getAllSuites();
+  for (var i = 0; i < suites.length; i++) {
+    var suite = suites[i];
     this.suites.push(this.summarize_(suite));
   }
 };
 
 jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
+  var isSuite = suiteOrSpec instanceof jasmine.Suite
   var summary = {
     id: suiteOrSpec.id,
     name: suiteOrSpec.description,
-    type: suiteOrSpec instanceof jasmine.Suite ? 'suite' : 'spec',
+    type: isSuite ? 'suite' : 'spec',
     children: []
   };
-
-  if (suiteOrSpec.specs) {
-    for (var i = 0; i < suiteOrSpec.specs.length; i++) {
-      summary.children.push(this.summarize_(suiteOrSpec.specs[i]));
+  if (isSuite) {
+    var specs = suiteOrSpec.getSpecs();
+    for (var i = 0; i < specs.length; i++) {
+      summary.children.push(this.summarize_(specs[i]));
     }
   }
-
   return summary;
 };
 

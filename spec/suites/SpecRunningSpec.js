@@ -489,6 +489,7 @@ describe("jasmine spec running", function () {
   });
 
   it('nested suites', function () {
+
     var foo = 0;
     var bar = 0;
     var baz = 0;
