@@ -38,7 +38,7 @@ jasmine.Queue.prototype.isRunning = function () {
 
 jasmine.Queue.prototype._next = function () {
   var self = this;
-  self.env.setTimeout(function () {
+  var doNext = function () {
     self.offset = 0;
     self.index++;
     if (self.index < self.blocks.length) {
@@ -48,7 +48,15 @@ jasmine.Queue.prototype._next = function () {
     } else {
       self.finish();
     }
-  }, 0);
+  };
+
+  var now = new Date().getTime();
+  if (this.env.updateInterval && now - this.env.lastUpdate > this.env.updateInterval) {
+    this.env.lastUpdate = now;
+    this.env.setTimeout(doNext, 0);
+  } else {
+    doNext();
+  }
 };
 
 jasmine.Queue.prototype.finish = function () {
