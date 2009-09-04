@@ -30,7 +30,6 @@ describe('RunnerTest', function() {
     });
 
     env.currentRunner.execute();
-    fakeTimer.tick(0);
 
     var runnerResults = env.currentRunner.getResults();
     expect(runnerResults.totalCount).toEqual(2);
@@ -57,8 +56,7 @@ describe('RunnerTest', function() {
     });
 
     env.currentRunner.execute();
-    fakeTimer.tick(0);
-    
+
     var runnerResults = env.currentRunner.getResults();
     expect(runnerResults.totalCount).toEqual(1);
     expect(runnerResults.passedCount).toEqual(0);
@@ -83,7 +81,6 @@ describe('RunnerTest', function() {
     });
 
     env.currentRunner.execute();
-    fakeTimer.tick(0);
     
     var results = env.currentRunner.getResults();
     expect(results.totalCount).toEqual(2);

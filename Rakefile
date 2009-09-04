@@ -68,8 +68,9 @@ desc "Run jasmine tests via server"
 task :jasmine_server do
   require File.expand_path(File.join(File.dirname(__FILE__), "contrib/ruby/jasmine_spec_builder"))
 
-  includes = jasmine_sources + ['lib/TrivialReporter.js']
-  spec_files = Dir.glob("spec/**/*.js")
+  includes = lambda do
+    jasmine_sources + ['lib/TrivialReporter.js'] + Dir.glob("spec/**/*.js")
+  end
 
   dir_mappings = {
     "/spec" => "spec",
@@ -80,5 +81,5 @@ task :jasmine_server do
   puts "your tests are here:"
   puts "  http://localhost:8888/run.html"
 
-  Jasmine::SimpleServer.start(8888, includes + spec_files, dir_mappings)
+  Jasmine::SimpleServer.start(8888, includes, dir_mappings)
 end
