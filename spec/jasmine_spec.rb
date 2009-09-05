@@ -1,23 +1,13 @@
 require 'rubygems'
-require File.expand_path(File.join(File.dirname(__FILE__), "../contrib/ruby/jasmine_spec_builder"))
 require "selenium_rc"
+require File.expand_path(File.join(File.dirname(__FILE__), "jasmine_helper.rb"))
+require File.expand_path(File.join(JasmineHelper.jasmine_root, "contrib/ruby/jasmine_spec_builder"))
 
-dir_mappings = {
-  "/spec" => 'spec',
-  "/lib" => 'lib',
-  "/src" => 'src'
-}
+jasmine_runner = Jasmine::Runner.new(SeleniumRC::Server.new.jar_path,
+                                     JasmineHelper.jasmine + JasmineHelper.spec_file_urls,
+                                     JasmineHelper.dir_mappings)
 
-def jasmine_sources
-  sources  = ["src/base.js", "src/util.js", "src/Env.js", "src/Reporter.js", "src/Block.js"]
-
-  sources += Dir.glob('src/*.js').reject{|f| f == 'src/base.js' || sources.include?(f)}.sort
-end
-
-includes = jasmine_sources + ['lib/json2.js', 'lib/TrivialReporter.js']
-spec_files = Dir.glob("spec/**/*[Ss]pec.js")
-jasmine_runner = Jasmine::Runner.new(SeleniumRC::Server.new.jar_path, includes + spec_files, dir_mappings)
-spec_builder = Jasmine::SpecBuilder.new(spec_files, jasmine_runner)
+spec_builder = Jasmine::SpecBuilder.new(JasmineHelper.raw_spec_files, jasmine_runner)
 
 should_stop = false
 

@@ -1,6 +1,37 @@
-desc 'Builds lib/jasmine from source'
-namespace :build do
-  task :jasmine => 'build:doc' do
+require File.expand_path(File.join(File.dirname(__FILE__), "spec/jasmine_helper.rb"))
+
+def jasmine_sources
+  sources  = ["src/base.js", "src/util.js", "src/Env.js", "src/Reporter.js", "src/Block.js"]
+  sources += Dir.glob('src/*.js').reject{|f| f == 'src/base.js' || sources.include?(f)}.sort
+end
+
+def jasmine_filename(version)
+  "jasmine-#{version['major']}.#{version['minor']}.#{version['build']}.js"
+end
+
+def version_hash
+  JSON.parse(File.new("src/version.json").read);
+end
+
+def start_jasmine_server(jasmine_includes)
+  require File.expand_path(File.join(JasmineHelper.jasmine_root, "contrib/ruby/jasmine_spec_builder"))
+
+  includes = jasmine_includes +
+    ['/lib/json2.js',
+     '/lib/TrivialReporter.js']
+
+  puts "your tests are here:"
+  puts "  http://localhost:8888/run.html"
+
+  Jasmine::SimpleServer.start(8888,
+                              lambda { includes + JasmineHelper.spec_file_urls },
+                              JasmineHelper.dir_mappings)
+end
+
+namespace :jasmine do
+  desc 'Builds lib/jasmine from source'
+  task :build => 'jasmine:doc' do
+    puts 'Building Jasmine from source'
     require 'json'
     sources = jasmine_sources
     version = version_hash
@@ -21,10 +52,12 @@ jasmine.version_= {
     sources.each do |source_filename|
       jasmine.puts(File.read(source_filename))
     end
+    jasmine.close
   end
 
   desc "Build jasmine documentation"
   task :doc do
+    puts 'Creating Jasmine Documentation'
     require 'rubygems'
     #sudo gem install ragaskar-jsdoc_helper
     require 'jsdoc_helper'
@@ -34,52 +67,32 @@ jasmine.version_= {
     Rake::Task[:lambda_jsdoc].invoke
   end
 
-end
 
-def jasmine_sources
-  sources  = ["src/base.js", "src/util.js", "src/Env.js", "src/Reporter.js", "src/Block.js"]
+  desc "Run jasmine tests of source via server"
+  task :server do
+    jasmine_includes = jasmine_sources
+    start_jasmine_server(jasmine_includes)
+  end
 
-  sources += Dir.glob('src/*.js').reject{|f| f == 'src/base.js' || sources.include?(f)}.sort
-end
+  desc "Build jasmine and run tests via server"
+  task :server_build => 'jasmine:build' do
 
-def jasmine_filename(version)
-  "jasmine-#{version['major']}.#{version['minor']}.#{version['build']}.js"
-end
+    jasmine_includes = ['/lib/' + File.basename(Dir.glob("#{JasmineHelper.jasmine_lib_dir}/jasmine*.js").first)]
+    start_jasmine_server(jasmine_includes)
+  end
 
-def version_hash
-  JSON.parse(File.new("src/version.json").read);
-end
-
-namespace :test do
-  desc "Run continuous integration tests"
-  task :ci => 'build:jasmine' do
-    require "spec"
-    require 'spec/rake/spectask'
-    Spec::Rake::SpecTask.new(:lambda_ci) do |t|
-      t.spec_opts = ["--color", "--format", "specdoc"]
-      t.spec_files = ["spec/jasmine_spec.rb"]
+  namespace :test do
+    desc "Run continuous integration tests"
+    task :ci => 'jasmine:build' do
+      require "spec"
+      require 'spec/rake/spectask'
+      Spec::Rake::SpecTask.new(:lambda_ci) do |t|
+        t.spec_opts = ["--color", "--format", "specdoc"]
+        t.spec_files = ["spec/jasmine_spec.rb"]
+      end
+      Rake::Task[:lambda_ci].invoke
     end
-    Rake::Task[:lambda_ci].invoke
+
   end
 
-end
-
-desc "Run jasmine tests via server"
-task :jasmine_server do
-  require File.expand_path(File.join(File.dirname(__FILE__), "contrib/ruby/jasmine_spec_builder"))
-
-  includes = lambda do
-    jasmine_sources + ['lib/TrivialReporter.js'] + Dir.glob("spec/**/*.js")
-  end
-
-  dir_mappings = {
-    "/spec" => "spec",
-    "/lib" => "lib",
-    "/src" => 'src'
-  }
-
-  puts "your tests are here:"
-  puts "  http://localhost:8888/run.html"
-
-  Jasmine::SimpleServer.start(8888, includes, dir_mappings)
 end
