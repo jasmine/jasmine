@@ -96,7 +96,7 @@ module Jasmine
 
   class SimpleClient
     def initialize(selenium_host, selenium_port, selenium_browser_start_command, http_address)
-      require 'selenium'
+      require 'selenium/client'
       @driver = Selenium::Client::Driver.new(
         selenium_host,
         selenium_port,
