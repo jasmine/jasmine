@@ -49,7 +49,6 @@ jasmine.Queue.prototype._next = function () {
       self.finish();
     }
   };
-
   var now = new Date().getTime();
   if (this.env.updateInterval && now - this.env.lastUpdate > this.env.updateInterval) {
     this.env.lastUpdate = now;
@@ -57,6 +56,7 @@ jasmine.Queue.prototype._next = function () {
   } else {
     doNext();
   }
+
 };
 
 jasmine.Queue.prototype.finish = function () {

@@ -64,7 +64,6 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
-    fakeTimer.tick(0);
 
     expect(specWithNoBody.description).toEqual('new spec');
 
@@ -117,7 +116,6 @@ describe("jasmine spec running", function () {
 
     expect(foo).toEqual(0);
     specWithRunsAndWaits.execute();
-    fakeTimer.tick(0);
 
     expect(foo).toEqual(1);
     fakeTimer.tick(500);
@@ -142,7 +140,6 @@ describe("jasmine spec running", function () {
     });
 
     a_spec.execute();
-    fakeTimer.tick(0);
 
     expect(a_spec.results.getItems().length).toEqual(1); // 'No call to waits(): Spec queue did not run all functions';
     expect(a_spec.results.getItems()[0].passed()).toEqual(true); // 'No call to waits(): Queued expectation failed';
@@ -163,7 +160,6 @@ describe("jasmine spec running", function () {
     });
 
     a_spec.execute();
-    fakeTimer.tick(0);
 
     expect(a_spec.results.getItems().length).toEqual(0);
 
@@ -362,7 +358,6 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
-    fakeTimer.tick(0);
 
     expect(log).toEqual("specafter2after1");
   });
@@ -394,7 +389,6 @@ describe("jasmine spec running", function () {
       });
 
       suite.execute();
-      fakeTimer.tick(0);
 
       expect(foo).toEqual(1);
       expect(bar).toEqual(0);
@@ -428,7 +422,6 @@ describe("jasmine spec running", function () {
     });
 
     suiteWithBefore.execute();
-    fakeTimer.tick(0);
 
     var suite = suiteWithBefore;
 
@@ -457,7 +450,6 @@ describe("jasmine spec running", function () {
     });
 
     suiteWithAfter.execute();
-    fakeTimer.tick(0);
 
     suite = suiteWithAfter;
     expect(suite.afterEach.length).toEqual(1);
@@ -520,7 +512,6 @@ describe("jasmine spec running", function () {
     expect(baz).toEqual(0);
     expect(quux).toEqual(0);
     nested.execute();
-    fakeTimer.tick(0);
 
     expect(foo).toEqual(1);
     expect(bar).toEqual(1);
@@ -556,7 +547,6 @@ describe("jasmine spec running", function () {
 
       expect(reachedFirstWaitsFor).toEqual(false);
       waitsSuite.execute();
-      fakeTimer.tick(0);
 
       expect(reachedFirstWaitsFor).toEqual(true);
       expect(foo).toEqual(0);
@@ -640,7 +630,6 @@ describe("jasmine spec running", function () {
     expect(foo).toEqual(0);
     expect(bar).toEqual(0);
     suiteWithBefore.execute();
-    fakeTimer.tick(0);
 
     expect(bar).toEqual(0);
     expect(foo).toEqual(1);
@@ -682,7 +671,6 @@ describe("jasmine spec running", function () {
     expect(foo).toEqual(0);
 
     suiteWithAfter.execute();
-    fakeTimer.tick(0);
 
 
     expect(firstSpecHasRun).toEqual(true);
@@ -819,7 +807,6 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
-    fakeTimer.tick(0);
 
     expect(report).toEqual("firstsecond");
     var suiteResults = suite.getResults();
@@ -858,7 +845,6 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
-    fakeTimer.tick(0);
 
     expect(report).toEqual("firstsecondthird"); // "all tests should run");
     //After each errors should not go in spec results because it confuses the count.
@@ -925,7 +911,6 @@ describe("jasmine spec running", function () {
     });
 
     env.execute();
-    fakeTimer.tick(0);
 
 
     var expected = [
@@ -987,7 +972,6 @@ describe("jasmine spec running", function () {
     });
 
     env.execute();
-    fakeTimer.tick(0);
 
     var runnerResults = env.currentRunner.getResults();
     expect(runnerResults.totalCount).toEqual(3);
@@ -1105,7 +1089,6 @@ describe("jasmine spec running", function () {
     });
 
     suite.execute();
-    fakeTimer.tick(0);
 
     expect(spec1Matcher.matcherForSuite("expected")).toEqual("matcherForSuite: actual: xxx; expected: expected");
     expect(spec1Matcher.matcherForSpec("expected")).toEqual("matcherForSpec: actual: xxx; expected: expected");

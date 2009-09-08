@@ -1,16 +1,10 @@
 describe('jasmine.Reporter', function() {
   var env;
 
-  var fakeTimer;
 
   beforeEach(function() {
     env = new jasmine.Env();
 
-    fakeTimer = new jasmine.FakeTimer();
-    env.setTimeout = fakeTimer.setTimeout;
-    env.clearTimeout = fakeTimer.clearTimeout;
-    env.setInterval = fakeTimer.setInterval;
-    env.clearInterval = fakeTimer.clearInterval;
   });
 
   it('should get called from the test runner', function() {
@@ -57,7 +51,6 @@ describe('jasmine.Reporter', function() {
 
     var runner = env.currentRunner;
     runner.execute();
-    fakeTimer.tick(0);
 
     expect(foo).toEqual(3); // 'foo was expected to be 3, was ' + foo);
     expect(bar).toEqual(2); // 'bar was expected to be 2, was ' + bar);
