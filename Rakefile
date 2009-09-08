@@ -1,9 +1,3 @@
-task :default => :noop
-
-task :noop do
-  puts "doing nothing"
-end
-
 desc 'Builds lib/jasmine from source'
 namespace :build do
   task :jasmine => 'build:doc' do
