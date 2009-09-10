@@ -61,20 +61,23 @@ module Jasmine
   end
 
   class RunAdapter
-    def initialize(spec_files_or_proc)
+    def initialize(spec_files_or_proc, jasmine_files = nil)
       @spec_files_or_proc = spec_files_or_proc
+      @jasmine_files = jasmine_files || [
+        "/__JASMINE_ROOT__/lib/" + File.basename(Dir.glob("#{Jasmine.root}/lib/jasmine*.js").first),
+        "/__JASMINE_ROOT__/lib/TrivialReporter.js",
+        "/__JASMINE_ROOT__/lib/json2.js"
+      ]
     end
 
     def call(env)
       spec_files = @spec_files_or_proc
       spec_files = spec_files.call if spec_files.respond_to?(:call)
 
+      jasmine_files = @jasmine_files
+      jasmine_files = jasmine_files.call if jasmine_files.respond_to?(:call)
+
       css_files = ["/__JASMINE_ROOT__/lib/jasmine.css"]
-      jasmine_files = [
-          "/__JASMINE_ROOT__/lib/" + File.basename(Dir.glob("#{Jasmine.root}/lib/jasmine*.js").first),
-          "/__JASMINE_ROOT__/lib/TrivialReporter.js",
-          "/__JASMINE_ROOT__/lib/json2.js"
-      ]
 
       body = ERB.new(File.read(File.join(File.dirname(__FILE__), "run.html"))).result(binding)
       [
@@ -110,12 +113,12 @@ module Jasmine
   end
 
   class SimpleServer
-    def self.start(port, spec_files_or_proc, mappings)
+    def self.start(port, spec_files_or_proc, mappings, jasmine_files = nil)
       require 'thin'
 
       config = {
-          '/run.html' => Jasmine::Redirect.new('/'),
-          '/' => Jasmine::RunAdapter.new(spec_files_or_proc)
+        '/run.html' => Jasmine::Redirect.new('/'),
+        '/' => Jasmine::RunAdapter.new(spec_files_or_proc, jasmine_files)
       }
       mappings.each do |from, to|
         config[from] = Rack::File.new(to)
@@ -124,8 +127,8 @@ module Jasmine
       config["/__JASMINE_ROOT__"] = Rack::File.new(Jasmine.root)
 
       app = Rack::Cascade.new([
-          Rack::URLMap.new(config),
-          JsAlert.new
+        Rack::URLMap.new(config),
+        JsAlert.new
       ])
 
       Thin::Server.start('0.0.0.0', port, app)
@@ -170,16 +173,21 @@ module Jasmine
     def eval_js(script)
       escaped_script = "'" + script.gsub(/(['\\])/) { '\\' + $1 } + "'"
 
-      result = @driver.get_eval("window.eval(#{escaped_script})")
+      begin
+        result = @driver.get_eval("window.eval(#{escaped_script})")
+      rescue Selenium::CommandError
+        result = @driver.get_eval("eval(#{escaped_script}, window)")
+      end
       JSON.parse("[#{result}]")[0]
     end
   end
 
   class Runner
-    def initialize(selenium_jar_path, spec_files, dir_mappings)
+    def initialize(selenium_jar_path, spec_files, dir_mappings, jasmine_files = nil)
       @selenium_jar_path = selenium_jar_path
       @spec_files = spec_files
       @dir_mappings = dir_mappings
+      @jasmine_files = jasmine_files
 
       @selenium_pid = nil
       @jasmine_server_pid = nil
@@ -208,7 +216,7 @@ module Jasmine
 
       @jasmine_server_pid = fork do
         Process.setpgrp
-        Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings)
+        Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings, @jasmine_files)
         exit! 0
       end
       puts "jasmine server started.  pid is #{@jasmine_server_pid}"

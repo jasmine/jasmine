@@ -13,19 +13,16 @@ def version_hash
   JSON.parse(File.new("src/version.json").read);
 end
 
-def start_jasmine_server(jasmine_includes)
+def start_jasmine_server(jasmine_includes = nil)
   require File.expand_path(File.join(JasmineHelper.jasmine_root, "contrib/ruby/jasmine_spec_builder"))
-
-  includes = jasmine_includes +
-    ['/lib/json2.js',
-     '/lib/TrivialReporter.js']
 
   puts "your tests are here:"
   puts "  http://localhost:8888/run.html"
 
   Jasmine::SimpleServer.start(8888,
-                              lambda { includes + JasmineHelper.spec_file_urls },
-                              JasmineHelper.dir_mappings)
+                              lambda { JasmineHelper.spec_file_urls },
+                              JasmineHelper.dir_mappings,
+                              jasmine_includes)
 end
 
 namespace :jasmine do
@@ -70,15 +67,14 @@ jasmine.version_= {
 
   desc "Run jasmine tests of source via server"
   task :server do
-    jasmine_includes = jasmine_sources
+    jasmine_includes = lambda { jasmine_sources + ['lib/TrivialReporter.js'] }
     start_jasmine_server(jasmine_includes)
   end
 
   desc "Build jasmine and run tests via server"
   task :server_build => 'jasmine:build' do
 
-    jasmine_includes = ['/lib/' + File.basename(Dir.glob("#{JasmineHelper.jasmine_lib_dir}/jasmine*.js").first)]
-    start_jasmine_server(jasmine_includes)
+    start_jasmine_server
   end
 
   namespace :test do
@@ -95,23 +91,4 @@ jasmine.version_= {
 
   end
 
-end
-
-desc "Run jasmine tests via server"
-task :jasmine_server do
-  require File.expand_path(File.join(File.dirname(__FILE__), "contrib/ruby/jasmine_spec_builder"))
-
-  includes = jasmine_sources + ['lib/TrivialReporter.js']
-  spec_files = Dir.glob("spec/**/*.js")
-
-  dir_mappings = {
-    "/spec" => "spec",
-    "/lib" => "lib",
-    "/src" => 'src'
-  }
-
-  puts "your tests are here:"
-  puts "  http://localhost:8888/run.html"
-
-  Jasmine::SimpleServer.start(8888, includes + spec_files, dir_mappings)
 end
