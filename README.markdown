@@ -2,6 +2,45 @@ Jasmine
 =======
 **YET ANOTHER JavaScript testing framework**
 
+Quick Start
+----------
+
+### Ruby Suite Running
+
+    sudo gem sources -a http://gems.github.com
+    sudo gem install json thin
+    git clone git://github.com/pivotal/jasmine.git
+    cd jasmine/examples/ruby
+    rake jasmine_server
+
+open `http://localhost:8888/` in your favorite browser.
+
+### HTML Suite Running
+
+    git clone git://github.com/pivotal/jasmine.git
+
+open `examples/test/html/example_suite.html` in your favorite browser.
+
+### Automatic Suite Running (w/ Selenium)
+
+    sudo gem sources -a http://gems.github.com
+    sudo gem install json thin pivotal-selenium-rc selenium-client
+    git clone git://github.com/pivotal/jasmine.git
+    cd jasmine/examples/ruby
+    rake test:ci
+
+Releases
+----------
+0.9.0 beta [[download]](http://github.com/pivotal/jasmine/zipball/master)
+`git clone git://github.com/pivotal/jasmine.git`
+
+0.8.0 [[download]](http://github.com/pivotal/jasmine/zipball/0.8.0)
+
+### Which Release Should I Use?
+
+Please use the latest version unless you have a good reason not to. Some of this documentation may not be applicable to older versions.
+
+
 Why Another Frickin' JS TDD/BDD Framework?
 -----------
 
@@ -427,15 +466,14 @@ We now have a Google Group for support & discussion.
 
 ## Maintainers
 
-* [Davis W. Frank](dwfrank@pivotallabs.com), Pivotal Labs
-* [Rajan Agaskar](rajan@pivotallabs.com), Pivotal Labs
+* [Davis W. Frank](mailto:dwfrank@pivotallabs.com), Pivotal Labs
+* [Rajan Agaskar](mailto:rajan@pivotallabs.com), Pivotal Labs
 
 ## Acknowledgments
 * A big shout out to the various JavaScript test framework authors, especially TJ for [JSpec](http://github.com/visionmedia/jspec/tree/master) - we played with it a bit before deciding that we really needed to roll our own.
 * Thanks to Pivot [Jessica Miller](http://www.jessicamillerworks.com/) for our fancy pass/fail/pending icons
-* Huge contributions have been made by [Christian Williams](xian@pivotallabs.com) (the master "spy" coder), [Erik Hanson](erik@pivotallabs.com), [Adam Abrons](adam@pivotallabs.com) and [Carl Jackson](carl@pivotallabs.com), and many other Pivots.
+* Huge contributions have been made by [Christian Williams](mailto:xian@pivotallabs.com) (the master "spy" coder), [Erik Hanson](mailto:erik@pivotallabs.com), [Adam Abrons](mailto:adam@pivotallabs.com) and [Carl Jackson](mailto:carl@pivotallabs.com), and many other Pivots.
 
 ## TODO List
 
 * Pending & Disabled counts should be included in results
-* BUG: describe blocks can't be empty - specs will stall
