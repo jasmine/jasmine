@@ -72,7 +72,7 @@ describe('Exceptions:', function() {
       });
     });
 
-    var runner = env.currentRunner;
+    var runner = env.currentRunner();
     suite.execute();
     fakeTimer.tick(2500);
 

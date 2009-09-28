@@ -864,6 +864,14 @@ describe("jasmine spec running", function () {
   it("testNestedDescribes", function() {
     var actions = [];
 
+    env.beforeEach(function () {
+      actions.push('runner beforeEach');
+    });
+
+    env.afterEach(function () {
+      actions.push('runner afterEach');
+    });
+
     env.describe('Something', function() {
       env.beforeEach(function() {
         actions.push('outer beforeEach');
@@ -914,27 +922,35 @@ describe("jasmine spec running", function () {
 
 
     var expected = [
+      "runner beforeEach",
       "outer beforeEach",
       "outer it 1",
       "outer afterEach",
+      "runner afterEach",
 
+      "runner beforeEach",
       "outer beforeEach",
       "inner 1 beforeEach",
       "inner 1 it",
       "inner 1 afterEach",
       "outer afterEach",
+      "runner afterEach",
 
+      "runner beforeEach",
       "outer beforeEach",
       "outer it 2",
       "outer afterEach",
+      "runner afterEach",
 
+      "runner beforeEach",
       "outer beforeEach",
       "inner 2 beforeEach",
       "inner 2 it",
       "inner 2 afterEach",
-      "outer afterEach"
+      "outer afterEach",
+      "runner afterEach"
     ];
-    expect(env.equals_(actions, expected)).toEqual(true);
+    expect(actions).toEqual(expected);
   });
 
   it("builds up nested names", function() {
@@ -963,7 +979,8 @@ describe("jasmine spec running", function () {
       });
     });
 
-    env.describe('EmptySuite', function() {});
+    env.describe('EmptySuite', function() {
+    });
 
     env.describe('NonEmptySuite2', function() {
       env.it('should pass', function() {
@@ -973,7 +990,7 @@ describe("jasmine spec running", function () {
 
     env.execute();
 
-    var runnerResults = env.currentRunner.results();
+    var runnerResults = env.currentRunner_.results();
     expect(runnerResults.totalCount).toEqual(3);
     expect(runnerResults.passedCount).toEqual(3);
     expect(runnerResults.failedCount).toEqual(0);

@@ -9,10 +9,12 @@
 jasmine.Spec = function(env, suite, description) {
   if (!env) {
     throw new Error('jasmine.Env() required');
-  };
+  }
+  ;
   if (!suite) {
     throw new Error('jasmine.Suite() required');
-  };
+  }
+  ;
   var spec = this;
   spec.id = env.nextSpecId ? env.nextSpecId() : null;
   spec.env = env;
@@ -118,10 +120,10 @@ jasmine.Spec.prototype.finish = function(onComplete) {
 
 jasmine.Spec.prototype.after = function(doAfter, test) {
 
- if (this.queue.isRunning()) {
+  if (this.queue.isRunning()) {
     this.queue.add(new jasmine.Block(this.env, doAfter, this));
   } else {
-  this.afterCallbacks.unshift(doAfter);
+    this.afterCallbacks.unshift(doAfter);
   }
 };
 
@@ -146,20 +148,25 @@ jasmine.Spec.prototype.execute = function(onComplete) {
 };
 
 jasmine.Spec.prototype.addBeforesAndAftersToQueue = function() {
+  var runner = this.env.currentRunner();
   for (var suite = this.suite; suite; suite = suite.parentSuite) {
-    if (suite.beforeQueue) {
-      for (var i = 0; i < suite.beforeQueue.length; i++)
-        this.queue.addBefore(new jasmine.Block(this.env, suite.beforeQueue[i], this));
+    for (var i = 0; i < suite.before_.length; i++) {
+      this.queue.addBefore(new jasmine.Block(this.env, suite.before_[i], this));
     }
+  }
+  for (var i = 0; i < runner.before_.length; i++) {
+    this.queue.addBefore(new jasmine.Block(this.env, runner.before_[i], this));
   }
   for (i = 0; i < this.afterCallbacks.length; i++) {
     this.queue.add(new jasmine.Block(this.env, this.afterCallbacks[i], this));
   }
   for (suite = this.suite; suite; suite = suite.parentSuite) {
-  if (suite.afterQueue) {
-      for (var j = 0; j < suite.afterQueue.length; j++)
-        this.queue.add(new jasmine.Block(this.env, suite.afterQueue[j], this));
+    for (var i = 0; i < suite.after_.length; i++) {
+      this.queue.add(new jasmine.Block(this.env, suite.after_[i], this));
     }
+  }
+  for (var i = 0; i < runner.after_.length; i++) {
+    this.queue.add(new jasmine.Block(this.env, runner.after_[i], this));
   }
 };
 

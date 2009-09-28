@@ -49,7 +49,7 @@ describe('jasmine.Reporter', function() {
       runnerCallback: runnerCallback
     });
 
-    var runner = env.currentRunner;
+    var runner = env.currentRunner();
     runner.execute();
 
     expect(foo).toEqual(3); // 'foo was expected to be 3, was ' + foo);

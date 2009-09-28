@@ -12,6 +12,70 @@ describe('RunnerTest', function() {
     env.clearInterval = fakeTimer.clearInterval;
   });
 
+  describe('beforeEach', function() {
+    it('should run before each spec for all suites', function () {
+      var foo;
+      env.beforeEach(function () {
+        foo = 0;
+      });
+
+      env.describe('suite 1', function () {
+        env.it('test 1-1', function() {
+          foo++;
+          this.expect(foo).toEqual(1);
+        });
+        env.it('test 1-2', function() {
+          foo++;
+          this.expect(foo).toEqual(1);
+        });
+      });
+
+      env.describe('suite 2', function () {
+        env.it('test 2-1', function() {
+            foo++;
+            this.expect(foo).toEqual(1);
+        });
+      });
+
+      env.currentRunner().execute();
+
+      var runnerResults = env.currentRunner().results();
+      expect(runnerResults.totalCount).toEqual(3);
+      expect(runnerResults.passedCount).toEqual(3);
+    });
+  });
+
+    describe('afterEach', function() {
+    it('should run after each spec for all suites', function () {
+      var foo = 3;
+      env.afterEach(function () {
+        foo = foo - 1;
+      });
+
+      env.describe('suite 1', function () {
+        env.it('test 1-1', function() {
+          this.expect(foo).toEqual(3);
+        });
+        env.it('test 1-2', function() {
+          this.expect(foo).toEqual(2);
+        });
+      });
+
+      env.describe('suite 2', function () {
+        env.it('test 2-1', function() {
+            this.expect(foo).toEqual(1);
+        });
+      });
+
+      env.currentRunner().execute();
+
+      var runnerResults = env.currentRunner().results();
+      expect(runnerResults.totalCount).toEqual(3);
+      expect(runnerResults.passedCount).toEqual(3);
+    });
+  });
+
+
   it('should run child suites and specs and generate results when execute is called', function() {
     env.describe('one suite description', function () {
       env.it('should be a test', function() {
@@ -29,9 +93,9 @@ describe('RunnerTest', function() {
       });
     });
 
-    env.currentRunner.execute();
+    env.currentRunner().execute();
 
-    var runnerResults = env.currentRunner.results();
+    var runnerResults = env.currentRunner().results();
     expect(runnerResults.totalCount).toEqual(2);
     expect(runnerResults.passedCount).toEqual(1);
     expect(runnerResults.failedCount).toEqual(1);
@@ -55,9 +119,9 @@ describe('RunnerTest', function() {
       });
     });
 
-    env.currentRunner.execute();
+    env.currentRunner().execute();
 
-    var runnerResults = env.currentRunner.results();
+    var runnerResults = env.currentRunner().results();
     expect(runnerResults.totalCount).toEqual(1);
     expect(runnerResults.passedCount).toEqual(0);
     expect(runnerResults.failedCount).toEqual(1);
@@ -80,9 +144,9 @@ describe('RunnerTest', function() {
       });
     });
 
-    env.currentRunner.execute();
-    
-    var results = env.currentRunner.results();
+    env.currentRunner().execute();
+
+    var results = env.currentRunner().results();
     expect(results.totalCount).toEqual(2);
     expect(results.passedCount).toEqual(1);
     expect(results.failedCount).toEqual(1);
@@ -113,16 +177,16 @@ describe('RunnerTest', function() {
         });
       });
 
-      env.currentRunner.execute();
+      env.currentRunner().execute();
       expect(fakeReporter.reportRunnerResults).wasNotCalled();
       fakeTimer.tick(200);
       //This blows up the JSApiReporter.
       //expect(fakeReporter.reportRunnerResults).wasCalledWith(env.currentRunner);
       expect(fakeReporter.reportRunnerResults).wasCalled();
-      expect(fakeReporter.reportRunnerResults.mostRecentCall.args[0].results()).toEqual(env.currentRunner.results());
+      expect(fakeReporter.reportRunnerResults.mostRecentCall.args[0].results()).toEqual(env.currentRunner().results());
     });
 
-    
+
   });
 
   it("should report when the tests start running", function() {
@@ -139,18 +203,19 @@ describe('RunnerTest', function() {
     var reportedRunner = fakeReporter.reportRunnerStarting.mostRecentCall.args[0];
     expect(reportedRunner.arbitraryVariable).toEqual('foo');
     expect(runner.queue.start).wasCalled();
-    
+
   });
 
   it("should return a flat array of all suites, including nested suites", function() {
     var suite1, suite2;
     suite1 = env.describe("spec 1", function() {
-      suite2 = env.describe("nested spec", function() {});
+      suite2 = env.describe("nested spec", function() {
+      });
     });
 
-    document.runner = env.currentRunner;
+    document.runner = env.currentRunner();
 
-    var suites = env.currentRunner.suites();
+    var suites = env.currentRunner().suites();
     var suiteDescriptions = [];
     for (var i = 0; i < suites.length; i++) {
       suiteDescriptions.push(suites[i].getFullName());

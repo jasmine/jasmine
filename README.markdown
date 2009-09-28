@@ -268,6 +268,25 @@ A suite can have a beforeEach declaration. It takes a function that is run befor
       };
     });
 
+A runner can also have beforeEach declarations. Runner beforeEach functions are executed before every spec in all suites, and execute BEFORE suite beforeEach functions. For example:
+
+    var runnerWideFoo = [];
+
+    beforeEach(function () {
+      runnerWideFoo.push('runner');
+    });
+
+    describe('some suite', function () {
+
+      beforeEach(function () {
+        runnerWideFoo.push('suite');
+      }
+
+      it('should equal bar', function () {
+        expect(runnerWideFoo).toEqual(['runner', 'suite']);
+      };
+    });
+
 #### afterEach
 
 Similarly, there is an afterEach declaration.  It takes a function that is run after each spec. For example:
@@ -284,7 +303,30 @@ Similarly, there is an afterEach declaration.  It takes a function that is run a
       };
 
       it('should equal 0 after', function () {
-      expect(suiteWideFoo).toEqual(0);
+        expect(suiteWideFoo).toEqual(0);
+      };
+    });
+
+A runner can also have an afterEach declarations. Runner afterEach functions are executed after every spec in all suites, and execute AFTER suite afterEach functions. For example:
+
+    var runnerWideFoo = [];
+
+    afterEach(function () {
+      runnerWideFoo.push('runner');
+    });
+
+    describe('some suite', function () {
+
+      afterEach(function () {
+        runnerWideFoo.push('suite');
+      }
+
+      it('should be empty', function () {
+        expect(runnerWideFoo).toEqual([]);
+      };
+
+      it('should be populated after', function () {
+        expect(runnerWideFoo).toEqual(['suite', 'runner']);
       };
     });
 

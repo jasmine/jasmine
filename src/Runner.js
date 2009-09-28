@@ -8,6 +8,8 @@ jasmine.Runner = function(env) {
   var self = this;
   self.env = env;
   self.queue = new jasmine.Queue(env);
+  self.before_ = [];
+  self.after_ = [];
   self.suites_ = [];
 };
 
@@ -20,6 +22,17 @@ jasmine.Runner.prototype.execute = function() {
     self.finishCallback();
   });
 };
+
+jasmine.Runner.prototype.beforeEach = function(beforeEachFunction) {
+  beforeEachFunction.typeName = 'beforeEach';
+  this.before_.push(beforeEachFunction);
+};
+
+jasmine.Runner.prototype.afterEach = function(afterEachFunction) {
+  afterEachFunction.typeName = 'afterEach';
+  this.after_.push(afterEachFunction);
+};
+
 
 jasmine.Runner.prototype.finishCallback = function() {
   this.env.reporter.reportRunnerResults(this);

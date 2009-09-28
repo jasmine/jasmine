@@ -6,7 +6,7 @@
 jasmine.Env = function() {
   this.currentSpec = null;
   this.currentSuite = null;
-  this.currentRunner = new jasmine.Runner(this);
+  this.currentRunner_ = new jasmine.Runner(this);
   this.currentlyRunningTests = false;
 
   this.reporter = new jasmine.MultiReporter();
@@ -64,7 +64,7 @@ jasmine.Env.prototype.addReporter = function(reporter) {
 };
 
 jasmine.Env.prototype.execute = function() {
-  this.currentRunner.execute();
+  this.currentRunner_.execute();
 };
 
 jasmine.Env.prototype.describe = function(description, specDefinitions) {
@@ -74,7 +74,7 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
   if (parentSuite) {
     parentSuite.add(suite);
   } else {
-    this.currentRunner.add(suite);
+    this.currentRunner_.add(suite);
   }
 
   this.currentSuite = suite;
@@ -87,11 +87,24 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
 };
 
 jasmine.Env.prototype.beforeEach = function(beforeEachFunction) {
-  this.currentSuite.beforeEach(beforeEachFunction);
+  if (this.currentSuite) {
+    this.currentSuite.beforeEach(beforeEachFunction);
+  } else {
+    this.currentRunner_.beforeEach(beforeEachFunction);
+  }
+};
+
+jasmine.Env.prototype.currentRunner = function () {
+  return this.currentRunner_;
 };
 
 jasmine.Env.prototype.afterEach = function(afterEachFunction) {
-  this.currentSuite.afterEach(afterEachFunction);
+  if (this.currentSuite) {
+    this.currentSuite.afterEach(afterEachFunction);
+  } else {
+    this.currentRunner_.afterEach(afterEachFunction);
+  }
+
 };
 
 jasmine.Env.prototype.xdescribe = function(desc, specDefinitions) {

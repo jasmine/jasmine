@@ -14,8 +14,8 @@ jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
   self.queue = new jasmine.Queue(env);
   self.parentSuite = parentSuite;
   self.env = env;
-  self.beforeQueue = [];
-  self.afterQueue = [];
+  self.before_ = [];
+  self.after_ = [];
   self.specs_ = [];
 };
 
@@ -37,12 +37,12 @@ jasmine.Suite.prototype.finish = function(onComplete) {
 
 jasmine.Suite.prototype.beforeEach = function(beforeEachFunction) {
   beforeEachFunction.typeName = 'beforeEach';
-  this.beforeQueue.push(beforeEachFunction);
+  this.before_.push(beforeEachFunction);
 };
 
 jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
   afterEachFunction.typeName = 'afterEach';
-  this.afterQueue.push(afterEachFunction);
+  this.after_.push(afterEachFunction);
 };
 
 /** @deprecated */
@@ -56,7 +56,7 @@ jasmine.Suite.prototype.results = function() {
 
 jasmine.Suite.prototype.add = function(block) {
   if (block instanceof jasmine.Suite) {
-    this.env.currentRunner.addSuite(block);
+    this.env.currentRunner().addSuite(block);
   } else {
     this.specs_.push(block);
   }
