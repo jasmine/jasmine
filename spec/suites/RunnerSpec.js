@@ -31,7 +31,7 @@ describe('RunnerTest', function() {
 
     env.currentRunner.execute();
 
-    var runnerResults = env.currentRunner.getResults();
+    var runnerResults = env.currentRunner.results();
     expect(runnerResults.totalCount).toEqual(2);
     expect(runnerResults.passedCount).toEqual(1);
     expect(runnerResults.failedCount).toEqual(1);
@@ -57,7 +57,7 @@ describe('RunnerTest', function() {
 
     env.currentRunner.execute();
 
-    var runnerResults = env.currentRunner.getResults();
+    var runnerResults = env.currentRunner.results();
     expect(runnerResults.totalCount).toEqual(1);
     expect(runnerResults.passedCount).toEqual(0);
     expect(runnerResults.failedCount).toEqual(1);
@@ -82,7 +82,7 @@ describe('RunnerTest', function() {
 
     env.currentRunner.execute();
     
-    var results = env.currentRunner.getResults();
+    var results = env.currentRunner.results();
     expect(results.totalCount).toEqual(2);
     expect(results.passedCount).toEqual(1);
     expect(results.failedCount).toEqual(1);
@@ -119,7 +119,7 @@ describe('RunnerTest', function() {
       //This blows up the JSApiReporter.
       //expect(fakeReporter.reportRunnerResults).wasCalledWith(env.currentRunner);
       expect(fakeReporter.reportRunnerResults).wasCalled();
-      expect(fakeReporter.reportRunnerResults.mostRecentCall.args[0].getResults()).toEqual(env.currentRunner.getResults());
+      expect(fakeReporter.reportRunnerResults.mostRecentCall.args[0].results()).toEqual(env.currentRunner.results());
     });
 
     

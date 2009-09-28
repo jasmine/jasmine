@@ -16,11 +16,7 @@ jasmine.Block.prototype.execute = function(onComplete) {
   try {
     this.func.apply(this.spec);
   } catch (e) {
-    this.fail(e);
+    this.spec.fail(e);
   }
   onComplete();
-};
-
-jasmine.Block.prototype.fail = function(e) {
-  this.spec.results.addResult(new jasmine.ExpectationResult(false, jasmine.util.formatException(e), null));
 };

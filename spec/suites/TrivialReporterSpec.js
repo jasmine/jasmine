@@ -31,4 +31,5 @@ describe("TrivialReporter", function() {
     expect(divs.length).toEqual(2);
     expect(divs[1].innerHTML).toContain("suite 1");
   });
+  
 });

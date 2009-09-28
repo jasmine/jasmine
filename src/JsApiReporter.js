@@ -5,8 +5,8 @@
 jasmine.JsApiReporter = function() {
   this.started = false;
   this.finished = false;
-  this.suites = [];
-  this.results = {};
+  this.suites_ = [];
+  this.results_ = {};
 };
 
 jasmine.JsApiReporter.prototype.reportRunnerStarting = function(runner) {
@@ -14,8 +14,12 @@ jasmine.JsApiReporter.prototype.reportRunnerStarting = function(runner) {
   var suites = runner.suites();
   for (var i = 0; i < suites.length; i++) {
     var suite = suites[i];
-    this.suites.push(this.summarize_(suite));
+    this.suites_.push(this.summarize_(suite));
   }
+};
+
+jasmine.JsApiReporter.prototype.suites = function() {
+  return this.suites_;
 };
 
 jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
@@ -35,6 +39,14 @@ jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
   return summary;
 };
 
+jasmine.JsApiReporter.prototype.results = function() {
+  return this.results_;
+};
+
+jasmine.JsApiReporter.prototype.resultsForSpec = function(specId) {
+  return this.results_[specId];
+};
+
 //noinspection JSUnusedLocalSymbols
 jasmine.JsApiReporter.prototype.reportRunnerResults = function(runner) {
   this.finished = true;
@@ -46,9 +58,9 @@ jasmine.JsApiReporter.prototype.reportSuiteResults = function(suite) {
 
 //noinspection JSUnusedLocalSymbols
 jasmine.JsApiReporter.prototype.reportSpecResults = function(spec) {
-  this.results[spec.id] = {
-    messages: spec.results.getItems(),
-    result: spec.results.failedCount > 0 ? "failed" : "passed"
+  this.results_[spec.id] = {
+    messages: spec.results().getItems(),
+    result: spec.results().failedCount > 0 ? "failed" : "passed"
   };
 };
 

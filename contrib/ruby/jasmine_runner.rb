@@ -165,8 +165,8 @@ module Jasmine
         sleep 0.1
       end
 
-      puts @driver.get_eval("window.getResults()")
-      failed_count = @driver.get_eval("window.jasmine.getEnv().currentRunner.getResults().failedCount").to_i
+      puts @driver.get_eval("window.results()")
+      failed_count = @driver.get_eval("window.jasmine.getEnv().currentRunner.results().failedCount").to_i
       failed_count == 0
     end
 

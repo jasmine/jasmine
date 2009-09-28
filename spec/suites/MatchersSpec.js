@@ -12,8 +12,8 @@ describe("jasmine.Matchers", function() {
   function detailsFor(actual, matcherName, matcherArgs) {
     var matcher = match(actual);
     matcher[matcherName].apply(matcher, matcherArgs);
-    expect(matcher.getResults().getItems().length).toEqual(1);
-    return matcher.getResults().getItems()[0].details;
+    expect(matcher.results().getItems().length).toEqual(1);
+    return matcher.results().getItems()[0].details;
   }
 
   it("toEqual with primitives, objects, dates, html nodes, etc.", function() {
@@ -222,7 +222,7 @@ describe("jasmine.Matchers", function() {
 
     expected = match(TestClass.someFunction);
     expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
-    expect(expected.getResults().getItems()[0].passed()).toEqual(false);
+    expect(expected.results().getItems()[0].passed()).toEqual(false);
 
     TestClass.someFunction.reset();
     TestClass.someFunction('a', 'b', 'c');

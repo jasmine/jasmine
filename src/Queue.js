@@ -66,11 +66,11 @@ jasmine.Queue.prototype.finish = function () {
   }
 };
 
-jasmine.Queue.prototype.getResults = function () {
+jasmine.Queue.prototype.results = function () {
   var results = new jasmine.NestedResults();
   for (var i = 0; i < this.blocks.length; i++) {
-    if (this.blocks[i].getResults) {
-      results.addResult(this.blocks[i].getResults());
+    if (this.blocks[i].results) {
+      results.addResult(this.blocks[i].results());
     }
   }
   return results;

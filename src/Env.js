@@ -30,12 +30,29 @@ jasmine.Env.prototype.clearTimeout = jasmine.clearTimeout;
 jasmine.Env.prototype.setInterval = jasmine.setInterval;
 jasmine.Env.prototype.clearInterval = jasmine.clearInterval;
 
+/**
+ * @returns an object containing jasmine version build info, if set.
+ */
 jasmine.Env.prototype.version = function () {
   if (jasmine.version_) {
     return jasmine.version_;
   } else {
     throw new Error('Version not set');
   }
+};
+
+/**
+ * @returns a sequential integer starting at 0
+ */
+jasmine.Env.prototype.nextSpecId = function () {
+  return this.nextSpecId_++;
+};
+
+/**
+ * @returns a sequential integer starting at 0
+ */
+jasmine.Env.prototype.nextSuiteId = function () {
+  return this.nextSuiteId_++;
 };
 
 /**
@@ -98,7 +115,7 @@ jasmine.Env.prototype.it = function(description, func) {
 
 jasmine.Env.prototype.xit = function(desc, func) {
   return {
-    id: this.nextSpecId_++,
+    id: this.nextSpecId(),
     runs: function() {
     }
   };

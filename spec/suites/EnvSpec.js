@@ -1,4 +1,22 @@
 describe("jasmine.Env", function() {
+
+  describe('ids', function () {
+    var env;
+    beforeEach(function() {
+      env = new jasmine.Env();
+    });
+    it('nextSpecId should return consecutive integers, starting at 0', function () {
+      expect(env.nextSpecId()).toEqual(0);
+      expect(env.nextSpecId()).toEqual(1);
+      expect(env.nextSpecId()).toEqual(2);
+    });
+
+    it('nextSuiteId should return consecutive integers, starting at 0', function () {
+      expect(env.nextSuiteId()).toEqual(0);
+      expect(env.nextSuiteId()).toEqual(1);
+      expect(env.nextSuiteId()).toEqual(2);
+    });
+  });
   describe("reporting", function() {
     var env;
     var fakeReporter;

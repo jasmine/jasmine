@@ -76,7 +76,7 @@ describe('Exceptions:', function() {
     suite.execute();
     fakeTimer.tick(2500);
 
-    var suiteResults = suite.getResults();
+    var suiteResults = suite.results();
     var specResults = suiteResults.getItems();
 
     expect(suiteResults.passed()).toEqual(false);

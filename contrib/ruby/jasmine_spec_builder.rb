@@ -57,17 +57,17 @@ module Jasmine
         sleep 0.1
       end
 
-      @suites = eval_js('JSON.stringify(jsApiReporter.suites)')
+      @suites = eval_js('JSON.stringify(jsApiReporter.suites())')
     end
 
     def results_for(spec_id)
       spec_id = spec_id.to_s
       return @spec_results[spec_id] if @spec_results[spec_id]
 
-      @spec_results[spec_id] = eval_js("JSON.stringify(jsApiReporter.results[#{spec_id}])")
+      @spec_results[spec_id] = eval_js("JSON.stringify(jsApiReporter.resultsForSpec(#{spec_id}))")
       while @spec_results[spec_id].nil? do
         sleep 0.1
-        @spec_results[spec_id] = eval_js("JSON.stringify(jsApiReporter.results[#{spec_id}])")
+        @spec_results[spec_id] = eval_js("JSON.stringify(jsApiReporter.resultsForSpec(#{spec_id}))")
       end
 
       @spec_results[spec_id]

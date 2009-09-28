@@ -9,7 +9,7 @@
  */
 jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
   var self = this;
-  self.id = env.nextSuiteId_++;
+  self.id = env.nextSuiteId ? env.nextSuiteId() : null;
   self.description = description;
   self.queue = new jasmine.Queue(env);
   self.parentSuite = parentSuite;
@@ -45,8 +45,13 @@ jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
   this.afterQueue.push(afterEachFunction);
 };
 
+/** @deprecated */
 jasmine.Suite.prototype.getResults = function() {
-  return this.queue.getResults();
+  return this.queue.results();
+};
+
+jasmine.Suite.prototype.results = function() {
+  return this.queue.results();
 };
 
 jasmine.Suite.prototype.add = function(block) {

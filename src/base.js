@@ -323,7 +323,7 @@ jasmine.createSpyObj = function(baseName, methodNames) {
 };
 
 jasmine.log = function(message) {
-  jasmine.getEnv().currentSpec.getResults().log(message);
+  jasmine.getEnv().currentSpec.log(message);
 };
 
 /**

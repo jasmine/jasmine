@@ -17,7 +17,7 @@ jasmine.WaitsForBlock.prototype.execute = function (onComplete) {
   try {
     latchFunctionResult = self.latchFunction.apply(self.spec);
   } catch (e) {
-    self.fail(e);
+    self.spec.fail(e);
     onComplete();
     return;
   }
@@ -26,7 +26,7 @@ jasmine.WaitsForBlock.prototype.execute = function (onComplete) {
     onComplete();
   } else if (self.totalTimeSpentWaitingForLatch >= self.timeout) {
     var message = 'timed out after ' + self.timeout + ' msec waiting for ' + (self.message || 'something to happen');
-    self.fail({
+    self.spec.fail({
       name: 'timeout',
       message: message
     });

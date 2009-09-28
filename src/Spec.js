@@ -7,8 +7,14 @@
  * @param {String} description
  */
 jasmine.Spec = function(env, suite, description) {
+  if (!env) {
+    throw new Error('jasmine.Env() required');
+  };
+  if (!suite) {
+    throw new Error('jasmine.Suite() required');
+  };
   var spec = this;
-  spec.id = env.nextSpecId_++;
+  spec.id = env.nextSpecId ? env.nextSpecId() : null;
   spec.env = env;
   spec.suite = suite;
   spec.description = description;
@@ -17,8 +23,8 @@ jasmine.Spec = function(env, suite, description) {
   spec.afterCallbacks = [];
   spec.spies_ = [];
 
-  spec.results = new jasmine.NestedResults();
-  spec.results.description = description;
+  spec.results_ = new jasmine.NestedResults();
+  spec.results_.description = description;
   spec.matchersClass = null;
 };
 
@@ -26,8 +32,18 @@ jasmine.Spec.prototype.getFullName = function() {
   return this.suite.getFullName() + ' ' + this.description + '.';
 };
 
+
+jasmine.Spec.prototype.results = function() {
+  return this.results_;
+};
+
+jasmine.Spec.prototype.log = function(message) {
+  return this.results_.log(message);
+};
+
+/** @deprecated */
 jasmine.Spec.prototype.getResults = function() {
-  return this.results;
+  return this.results_;
 };
 
 jasmine.Spec.prototype.runs = function (func) {
@@ -52,11 +68,8 @@ jasmine.Spec.prototype.expects_that = function(actual) {
   return this.expect(actual);
 };
 
-/**
- * @private
- */
 jasmine.Spec.prototype.expect = function(actual) {
-  return new (this.getMatchersClass_())(this.env, actual, this.results);
+  return new (this.getMatchersClass_())(this.env, actual, this.results_);
 };
 
 jasmine.Spec.prototype.waits = function(timeout) {
@@ -71,8 +84,8 @@ jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, timeoutMessag
   return this;
 };
 
-jasmine.Spec.prototype.failWithException = function (e) {
-  this.results.addResult(new jasmine.ExpectationResult(false, jasmine.util.formatException(e), null));
+jasmine.Spec.prototype.fail = function (e) {
+  this.results_.addResult(new jasmine.ExpectationResult(false, e ? jasmine.util.formatException(e) : null, null));
 };
 
 jasmine.Spec.prototype.getMatchersClass_ = function() {
@@ -115,7 +128,7 @@ jasmine.Spec.prototype.after = function(doAfter, test) {
 jasmine.Spec.prototype.execute = function(onComplete) {
   var spec = this;
   if (!spec.env.specFilter(spec)) {
-    spec.results.skipped = true;
+    spec.results_.skipped = true;
     spec.finish(onComplete);
     return;
   }

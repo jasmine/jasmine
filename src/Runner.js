@@ -46,6 +46,11 @@ jasmine.Runner.prototype.suites = function() {
   return this.suites_;
 };
 
+jasmine.Runner.prototype.results = function() {
+  return this.queue.results();
+};
+
+/** @deprecated */
 jasmine.Runner.prototype.getResults = function() {
-  return this.queue.getResults();
+  return this.queue.results();
 };

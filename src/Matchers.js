@@ -2,19 +2,24 @@ jasmine.Matchers = function(env, actual, results) {
   this.env = env;
   this.actual = actual;
   this.passing_message = 'Passed.';
-  this.results = results || new jasmine.NestedResults();
+  this.results_ = results || new jasmine.NestedResults();
 };
 
 jasmine.Matchers.pp = function(str) {
   return jasmine.util.htmlEscape(jasmine.pp(str));
 };
 
+/** @deprecated */
 jasmine.Matchers.prototype.getResults = function() {
-  return this.results;
+  return this.results_;
+};
+
+jasmine.Matchers.prototype.results = function() {
+  return this.results_;
 };
 
 jasmine.Matchers.prototype.report = function(result, failing_message, details) {
-  this.results.addResult(new jasmine.ExpectationResult(result, result ? this.passing_message : failing_message, details));
+  this.results_.addResult(new jasmine.ExpectationResult(result, result ? this.passing_message : failing_message, details));
   return result;
 };
 
