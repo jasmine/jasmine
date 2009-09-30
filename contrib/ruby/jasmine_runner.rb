@@ -173,21 +173,18 @@ module Jasmine
     def eval_js(script)
       escaped_script = "'" + script.gsub(/(['\\])/) { '\\' + $1 } + "'"
 
-      begin
-        result = @driver.get_eval("window.eval(#{escaped_script})")
-      rescue Selenium::CommandError
-        result = @driver.get_eval("eval(#{escaped_script}, window)")
-      end
+      result = @driver.get_eval(" try { eval(#{escaped_script}, window); } catch(err) { window.eval(#{escaped_script}); }")
       JSON.parse("[#{result}]")[0]
     end
   end
 
   class Runner
-    def initialize(selenium_jar_path, spec_files, dir_mappings, jasmine_files = nil)
+    def initialize(selenium_jar_path, spec_files, dir_mappings, jasmine_files = nil, options={})
       @selenium_jar_path = selenium_jar_path
       @spec_files = spec_files
       @dir_mappings = dir_mappings
       @jasmine_files = jasmine_files
+      @browser = options[:browser] || 'firefox'
 
       @selenium_pid = nil
       @jasmine_server_pid = nil
@@ -195,7 +192,7 @@ module Jasmine
 
     def start
       start_servers
-      @client = Jasmine::SimpleClient.new("localhost", @selenium_server_port, "*firefox", "http://localhost:#{@jasmine_server_port}/")
+      @client = Jasmine::SimpleClient.new("localhost", @selenium_server_port, "*#{@browser}", "http://localhost:#{@jasmine_server_port}/")
       @client.connect
     end
 

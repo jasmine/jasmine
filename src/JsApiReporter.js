@@ -68,3 +68,35 @@ jasmine.JsApiReporter.prototype.reportSpecResults = function(spec) {
 jasmine.JsApiReporter.prototype.log = function(str) {
 };
 
+jasmine.JsApiReporter.prototype.resultsForSpecs = function(specIds){
+  var results = {};
+  for (var i = 0; i < specIds.length; i++) {
+    var specId = specIds[i];
+    results[specId] = this.summarizeResult_(this.results_[specId]);
+  }
+  return results;
+};
+
+jasmine.JsApiReporter.prototype.summarizeResult_ = function(result){
+  var summaryMessages = [];
+  for (var messageIndex in result.messages) {
+    var resultMessage = result.messages[messageIndex];
+    summaryMessages.push({
+      text: resultMessage.text,
+      passed: resultMessage.passed ? resultMessage.passed() : true,
+      type: resultMessage.type,
+      message: resultMessage.message,
+      trace: {
+        stack: resultMessage.passed && !resultMessage.passed() ? resultMessage.trace.stack : undefined
+      }
+    });
+  };
+
+  var summaryResult = {
+    result : result.result,
+    messages : summaryMessages
+  };
+
+  return summaryResult;
+};
+

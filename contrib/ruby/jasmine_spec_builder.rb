@@ -1,5 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "jasmine_runner.rb"))
-
+require 'enumerator'
 module Jasmine
 
   class SpecBuilder
@@ -8,6 +8,7 @@ module Jasmine
     def initialize(spec_files, runner)
       @spec_files = spec_files
       @runner = runner
+      @spec_ids = []
     end
 
     def start
@@ -15,7 +16,7 @@ module Jasmine
 
       @runner.start
       load_suite_info
-      @spec_results = {}
+      wait_for_suites_to_finish_running
     end
 
     def stop
@@ -61,16 +62,23 @@ module Jasmine
     end
 
     def results_for(spec_id)
-      spec_id = spec_id.to_s
-      return @spec_results[spec_id] if @spec_results[spec_id]
+      @spec_results ||= load_results
+      @spec_results[spec_id.to_s]
+    end
 
-      @spec_results[spec_id] = eval_js("JSON.stringify(jsApiReporter.resultsForSpec(#{spec_id}))")
-      while @spec_results[spec_id].nil? do
-        sleep 0.1
-        @spec_results[spec_id] = eval_js("JSON.stringify(jsApiReporter.resultsForSpec(#{spec_id}))")
+    def load_results
+      @spec_results = {}
+      @spec_ids.each_slice(50) do |slice|
+        @spec_results.merge!(eval_js("JSON.stringify(jsApiReporter.resultsForSpecs(#{JSON.generate(slice)}))"))
       end
+      @spec_results
+    end
 
-      @spec_results[spec_id]
+    def wait_for_suites_to_finish_running
+      puts "Waiting for suite to finish in browser ..."
+      while !eval_js('jsApiReporter.finished') do
+        sleep 0.1
+      end
     end
 
     def declare_suites
@@ -99,7 +107,7 @@ module Jasmine
     def declare_spec(parent, spec)
       me = self
       example_name = spec["name"]
-
+      @spec_ids << spec["id"]
       backtrace = @example_locations[parent.description + " " + example_name]
       parent.it example_name, {}, backtrace do
         me.report_spec(spec["id"])
@@ -124,7 +132,7 @@ module Jasmine
               out << "\n"
             end
 
-            unless message["passed_"]
+            if !message["passed"] && message["trace"]["stack"]
               stack_trace = message["trace"]["stack"].gsub(/<br \/>/, "\n").gsub(/<\/?b>/, " ")
               STDERR << stack_trace.gsub(/\(.*\)@http:\/\/localhost:[0-9]+\/specs\//, "/spec/")
               STDERR << "\n"
@@ -143,4 +151,3 @@ module Jasmine
     end
   end
 end
-  
