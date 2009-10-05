@@ -89,6 +89,12 @@ jasmine.version_= {
       Rake::Task[:lambda_ci].invoke
     end
 
+    task :unit do
+      # for EMI build
+    end
+    task :integration do
+      # for EMI build
+    end
   end
 
 end
