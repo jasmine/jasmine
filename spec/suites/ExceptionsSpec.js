@@ -3,6 +3,7 @@ describe('Exceptions:', function() {
 
   beforeEach(function() {
     env = new jasmine.Env();
+      env.updateInterval = 0;
   });
 
   it('jasmine.formatException formats Firefox exception maessages as expected', function() {

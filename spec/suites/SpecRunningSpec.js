@@ -4,6 +4,7 @@ describe("jasmine spec running", function () {
 
   beforeEach(function() {
     env = new jasmine.Env();
+    env.updateInterval = 0;
 
     fakeTimer = new jasmine.FakeTimer();
     env.setTimeout = fakeTimer.setTimeout;

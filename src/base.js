@@ -13,6 +13,12 @@ jasmine.unimplementedMethod_ = function() {
 };
 
 /**
+ * Large or small values here may result in slow test running & "Too much recursion" errors
+ * 
+ */
+jasmine.UPDATE_INTERVAL = 250;
+
+/**
  * Allows for bound functions to be comapred.  Internal use only.
  *
  * @ignore

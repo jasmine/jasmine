@@ -4,7 +4,7 @@ describe('jasmine.Reporter', function() {
 
   beforeEach(function() {
     env = new jasmine.Env();
-
+    env.updateInterval = 0;
   });
 
   it('should get called from the test runner', function() {
