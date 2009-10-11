@@ -1,0 +1,92 @@
+body {
+  font: 14px "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
+}
+
+h1 {
+  padding-top: 20px;
+  font-weight: bold;
+  font: 24px; /* "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif; */
+}
+
+p {
+	margin-top: 5px;
+	padding-left: 20px;
+}
+
+.fail {
+	background: url( ../images/fail-16.png ) no-repeat;
+  padding-left: 20px;
+	color: red;
+}
+
+.failInSummary {
+  color: red;
+}
+
+.runner {
+  border: 1px outset gray;
+  margin: 5px;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.runner.running {
+  background-color: yellow;
+}
+
+.suite {
+  border: 1px outset gray;
+  margin: 5px;
+  padding-left: 1em;
+}
+
+.suite.passed {
+  background-color: #cfc;
+}
+
+.suite.failed {
+  background-color: #fdd;
+}
+
+.spec {
+  margin: 5px;
+  clear: both;
+}
+
+.passed {
+  background-color: lightgreen;
+}
+
+.failed {
+  background-color: pink;
+}
+
+.skipped {
+  color: #777;
+  background-color: #eee;
+}
+
+.resultMessage {
+  white-space: pre;
+}
+
+.stackTrace {
+  white-space: pre;
+  font-size: .8em;
+  margin-left: 10px;
+  height: 5em;
+  overflow: auto;
+  border: 1px inset red;
+  padding: 1em;
+  background: #eef;
+}
+
+.runSpec {
+  margin-left: 5px;
+  float: right;
+}
+
+#jasmine_content {
+  position:fixed;
+  left: 100%;
+}

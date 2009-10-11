@@ -1,0 +1,12 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0" is_locked="false">
+    <option name="myName" value="Project Default" />
+    <option name="myLocal" value="false" />
+    <inspection_tool class="CheckXmlFileWithXercesValidator" level="ERROR" enabled="false" />
+    <inspection_tool class="XmlUnboundNsPrefix" level="WARNING" enabled="false" />
+    <inspection_tool class="CheckDtdRefs" level="ERROR" enabled="false" />
+    <inspection_tool class="XmlDuplicatedId" level="ERROR" enabled="false" />
+    <inspection_tool class="XmlWrongRootElement" level="ERROR" enabled="false" />
+    <inspection_tool class="CheckTagEmptyBody" level="WARNING" enabled="false" />
+  </profile>
+</component>
