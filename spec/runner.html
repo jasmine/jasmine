@@ -71,20 +71,5 @@
 </head>
 
 <body>
-
-<script type="text/javascript">
-
-
-  var jasmineEnv = jasmine.getEnv();
-  var trivialReporter = new jasmine.TrivialReporter();
-  jasmineEnv.addReporter(trivialReporter);
-  jasmineEnv.specFilter = function(spec) {
-    return trivialReporter.specFilter(spec);
-  };
-  window.onload = function() {
-    jasmineEnv.execute();
-  };
-</script>
-
 </body>
 </html>
