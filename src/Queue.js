@@ -29,12 +29,20 @@ jasmine.Queue.prototype.isRunning = function() {
   return this.running;
 };
 
-var nestLevel = 0;
+jasmine.Queue.UNROLL = true;
 
 jasmine.Queue.prototype.next_ = function() {
   var self = this;
   if (self.index < self.blocks.length) {
-    self.blocks[self.index].execute(function () {
+    var calledSynchronously = true;
+    var completedSynchronously = false;
+
+    var onComplete = function () {
+      if (jasmine.Queue.UNROLL && calledSynchronously) {
+        completedSynchronously = true;
+        return;
+      }
+
       self.offset = 0;
       self.index++;
 
@@ -47,7 +55,13 @@ jasmine.Queue.prototype.next_ = function() {
       } else {
         self.next_();
       }
-    });
+    };
+    self.blocks[self.index].execute(onComplete);
+
+    calledSynchronously = false;
+    if (completedSynchronously) {
+      onComplete();
+    }
   } else {
     self.running = false;
     if (self.onComplete) {
