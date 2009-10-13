@@ -6,7 +6,7 @@ jasmine.Queue = function(env) {
   this.offset = 0;
 };
 
-jasmine.Queue.prototype.addBefore = function (block) {
+jasmine.Queue.prototype.addBefore = function(block) {
   this.blocks.unshift(block);
 };
 
@@ -14,7 +14,7 @@ jasmine.Queue.prototype.add = function(block) {
   this.blocks.push(block);
 };
 
-jasmine.Queue.prototype.insertNext = function (block) {
+jasmine.Queue.prototype.insertNext = function(block) {
   this.blocks.splice((this.index + this.offset + 1), 0, block);
   this.offset++;
 };
@@ -25,28 +25,27 @@ jasmine.Queue.prototype.start = function(onComplete) {
   this.next_();
 };
 
-jasmine.Queue.prototype.isRunning = function () {
+jasmine.Queue.prototype.isRunning = function() {
   return this.running;
 };
 
 var nestLevel = 0;
 
-jasmine.Queue.prototype.next_ = function () {
+jasmine.Queue.prototype.next_ = function() {
   var self = this;
   if (self.index < self.blocks.length) {
     self.blocks[self.index].execute(function () {
-      var doNext = function () {
-        self.offset = 0;
-        self.index++;
-        self.next_();
-      };
+      self.offset = 0;
+      self.index++;
 
       var now = new Date().getTime();
       if (self.env.updateInterval && now - self.env.lastUpdate > self.env.updateInterval) {
         self.env.lastUpdate = now;
-        self.env.setTimeout(doNext, 0);
+        self.env.setTimeout(function() {
+          self.next_();
+        }, 0);
       } else {
-        doNext();
+        self.next_();
       }
     });
   } else {
@@ -57,7 +56,7 @@ jasmine.Queue.prototype.next_ = function () {
   }
 };
 
-jasmine.Queue.prototype.results = function () {
+jasmine.Queue.prototype.results = function() {
   var results = new jasmine.NestedResults();
   for (var i = 0; i < this.blocks.length; i++) {
     if (this.blocks[i].results) {
