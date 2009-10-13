@@ -6,6 +6,7 @@ describe('jasmine.jsApiReporter', function() {
 
     beforeEach(function() {
       var env = new jasmine.Env();
+      env.updateInterval = 0;
       var suite = new jasmine.Suite(env);
       spec1 = new jasmine.Spec(env, suite, 'spec 1');
       spec1.runs(function () {

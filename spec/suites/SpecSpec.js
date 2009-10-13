@@ -2,6 +2,7 @@ describe('Spec', function () {
   var env, suite;
   beforeEach(function() {
     env = new jasmine.Env();
+    env.updateInterval = 0;
     suite = new jasmine.Suite(env, 'suite 1');
   });
 
@@ -76,34 +77,34 @@ describe('Spec', function () {
     });
 
     describe('results.passed', function () {
-    it('is true if all spec expectations pass', function () {
-      spec.runs(function () {
-        this.expect(true).toEqual(true);
+      it('is true if all spec expectations pass', function () {
+        spec.runs(function () {
+          this.expect(true).toEqual(true);
+        });
+        spec.execute();
+        expect(results.passed()).toEqual(true);
       });
-      spec.execute();
-      expect(results.passed()).toEqual(true);
-    });
 
       it('is false if one spec expectation fails', function () {
-      spec.runs(function () {
-        this.expect(true).toEqual(false);
+        spec.runs(function () {
+          this.expect(true).toEqual(false);
+        });
+        spec.execute();
+        expect(results.passed()).toEqual(false);
       });
-      spec.execute();
-      expect(results.passed()).toEqual(false);      
-    });
 
-    it('a spec with no expectations will return true', function () {
-      var specWithoutExpectations = new jasmine.Spec(env, suite);
-      specWithoutExpectations.runs(function() {
+      it('a spec with no expectations will return true', function () {
+        var specWithoutExpectations = new jasmine.Spec(env, suite);
+        specWithoutExpectations.runs(function() {
 
+        });
+        specWithoutExpectations.execute();
+        expect(results.passed()).toEqual(true);
       });
-      specWithoutExpectations.execute();
-      expect(results.passed()).toEqual(true);
-    });
 
-    it('an unexecuted spec will return true', function () {
-      expect(results.passed()).toEqual(true);
-    });
+      it('an unexecuted spec will return true', function () {
+        expect(results.passed()).toEqual(true);
+      });
     });
   });
 });

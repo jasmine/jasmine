@@ -3,6 +3,7 @@ describe("jasmine.Matchers", function() {
   
   beforeEach(function() {
     env = new jasmine.Env();
+    env.updateInterval = 0;
   });
   
   function match(value) {

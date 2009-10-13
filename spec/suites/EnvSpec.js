@@ -1,10 +1,12 @@
 describe("jasmine.Env", function() {
+  var env;
+  beforeEach(function() {
+    env = new jasmine.Env();
+    env.updateInterval = 0;
+  });
 
   describe('ids', function () {
-    var env;
-    beforeEach(function() {
-      env = new jasmine.Env();
-    });
+
     it('nextSpecId should return consecutive integers, starting at 0', function () {
       expect(env.nextSpecId()).toEqual(0);
       expect(env.nextSpecId()).toEqual(1);
@@ -18,11 +20,9 @@ describe("jasmine.Env", function() {
     });
   });
   describe("reporting", function() {
-    var env;
     var fakeReporter;
 
     beforeEach(function() {
-      env = new jasmine.Env();
       fakeReporter = jasmine.createSpyObj("fakeReporter", ["log"]);
     });
 
@@ -36,7 +36,7 @@ describe("jasmine.Env", function() {
       afterEach(function () {
         jasmine.version_ = oldVersion;
       });
-      
+
       it('should raise an error if version is not set', function () {
         jasmine.version_ = null;
         var exception;

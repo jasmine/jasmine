@@ -61,13 +61,14 @@ module Jasmine
   end
 
   class RunAdapter
-    def initialize(spec_files_or_proc, jasmine_files = nil)
+    def initialize(spec_files_or_proc, jasmine_files = nil, stylesheets = [])
       @spec_files_or_proc = spec_files_or_proc
       @jasmine_files = jasmine_files || [
         "/__JASMINE_ROOT__/lib/" + File.basename(Dir.glob("#{Jasmine.root}/lib/jasmine*.js").first),
         "/__JASMINE_ROOT__/lib/TrivialReporter.js",
         "/__JASMINE_ROOT__/lib/json2.js"
       ]
+      @stylesheets = ["/__JASMINE_ROOT__/lib/jasmine.css"] + stylesheets
     end
 
     def call(env)
@@ -77,7 +78,7 @@ module Jasmine
       jasmine_files = @jasmine_files
       jasmine_files = jasmine_files.call if jasmine_files.respond_to?(:call)
 
-      css_files = ["/__JASMINE_ROOT__/lib/jasmine.css"]
+      css_files = @stylesheets
 
       body = ERB.new(File.read(File.join(File.dirname(__FILE__), "run.html"))).result(binding)
       [
@@ -113,12 +114,12 @@ module Jasmine
   end
 
   class SimpleServer
-    def self.start(port, spec_files_or_proc, mappings, jasmine_files = nil)
+    def self.start(port, spec_files_or_proc, mappings, jasmine_files = nil, stylesheets = [])
       require 'thin'
 
       config = {
         '/run.html' => Jasmine::Redirect.new('/'),
-        '/' => Jasmine::RunAdapter.new(spec_files_or_proc, jasmine_files)
+        '/' => Jasmine::RunAdapter.new(spec_files_or_proc, jasmine_files, stylesheets)
       }
       mappings.each do |from, to|
         config[from] = Rack::File.new(to)

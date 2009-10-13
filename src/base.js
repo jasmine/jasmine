@@ -13,6 +13,12 @@ jasmine.unimplementedMethod_ = function() {
 };
 
 /**
+ * Large or small values here may result in slow test running & "Too much recursion" errors
+ * 
+ */
+jasmine.UPDATE_INTERVAL = 250;
+
+/**
  * Allows for bound functions to be comapred.  Internal use only.
  *
  * @ignore
@@ -183,6 +189,7 @@ jasmine.Spy = function(name) {
    * mySpy.argsForCall[1] = [7, 8];
    */
   this.argsForCall = [];
+  this.calls = [];
 };
 
 /**
@@ -277,6 +284,7 @@ jasmine.Spy.prototype.reset = function() {
   this.wasCalled = false;
   this.callCount = 0;
   this.argsForCall = [];
+  this.calls = [];
   this.mostRecentCall = {};
 };
 
@@ -286,13 +294,10 @@ jasmine.createSpy = function(name) {
     spyObj.wasCalled = true;
     spyObj.callCount++;
     var args = jasmine.util.argsToArray(arguments);
-    //spyObj.mostRecentCall = {
-    //  object: this,
-    //  args: args
-    //};
     spyObj.mostRecentCall.object = this;
     spyObj.mostRecentCall.args = args;
     spyObj.argsForCall.push(args);
+    spyObj.calls.push({object: this, args: args});
     return spyObj.plan.apply(this, arguments);
   };
 
