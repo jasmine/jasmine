@@ -186,6 +186,8 @@ module Jasmine
       @dir_mappings = dir_mappings
       @jasmine_files = jasmine_files
       @browser = options[:browser] || 'firefox'
+      @stylesheets = options[:stylesheets] || []
+
 
       @selenium_pid = nil
       @jasmine_server_pid = nil
@@ -214,7 +216,7 @@ module Jasmine
 
       @jasmine_server_pid = fork do
         Process.setpgrp
-        Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings, @jasmine_files)
+        Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings, @jasmine_files, @stylesheets)
         exit! 0
       end
       puts "jasmine server started.  pid is #{@jasmine_server_pid}"
