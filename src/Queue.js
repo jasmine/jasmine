@@ -29,43 +29,54 @@ jasmine.Queue.prototype.isRunning = function() {
   return this.running;
 };
 
-jasmine.Queue.UNROLL = true;
+jasmine.Queue.LOOP_DONT_RECURSE = true;
 
 jasmine.Queue.prototype.next_ = function() {
   var self = this;
-  if (self.index < self.blocks.length) {
-    var calledSynchronously = true;
-    var completedSynchronously = false;
+  var goAgain = true;
 
-    var onComplete = function () {
-      if (jasmine.Queue.UNROLL && calledSynchronously) {
-        completedSynchronously = true;
-        return;
+  while (goAgain) {
+    goAgain = false;
+    
+    if (self.index < self.blocks.length) {
+      var calledSynchronously = true;
+      var completedSynchronously = false;
+
+      var onComplete = function () {
+        if (jasmine.Queue.LOOP_DONT_RECURSE && calledSynchronously) {
+          completedSynchronously = true;
+          return;
+        }
+
+        self.offset = 0;
+        self.index++;
+
+        var now = new Date().getTime();
+        if (self.env.updateInterval && now - self.env.lastUpdate > self.env.updateInterval) {
+          self.env.lastUpdate = now;
+          self.env.setTimeout(function() {
+            self.next_();
+          }, 0);
+        } else {
+          if (jasmine.Queue.LOOP_DONT_RECURSE && completedSynchronously) {
+            goAgain = true;
+          } else {
+            self.next_();
+          }
+        }
+      };
+      self.blocks[self.index].execute(onComplete);
+
+      calledSynchronously = false;
+      if (completedSynchronously) {
+        onComplete();
       }
-
-      self.offset = 0;
-      self.index++;
-
-      var now = new Date().getTime();
-      if (self.env.updateInterval && now - self.env.lastUpdate > self.env.updateInterval) {
-        self.env.lastUpdate = now;
-        self.env.setTimeout(function() {
-          self.next_();
-        }, 0);
-      } else {
-        self.next_();
+      
+    } else {
+      self.running = false;
+      if (self.onComplete) {
+        self.onComplete();
       }
-    };
-    self.blocks[self.index].execute(onComplete);
-
-    calledSynchronously = false;
-    if (completedSynchronously) {
-      onComplete();
-    }
-  } else {
-    self.running = false;
-    if (self.onComplete) {
-      self.onComplete();
     }
   }
 };
