@@ -16,22 +16,3 @@ if ARGV[0] == 'server'
                               lambda { JasmineHelper.specs },
                               JasmineHelper.dir_mappings)
 end
-#
-#namespace :jasmine do
-#  desc "Start jasmine server"
-#  task :server do
-#    start_jasmine_server
-#  end
-#
-#  desc "Run continuous integration tests"
-#  task :ci do
-#    require "spec"
-#    require 'spec/rake/spectask'
-#    ENV["RAILS_ROOT"] = RAILS_ROOT
-#    Spec::Rake::SpecTask.new(:lambda_ci) do |t|
-#      t.spec_opts = ["--color", "--format", "specdoc"]
-#      t.spec_files = [File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "jasmine_spec.rb"))]
-#    end
-#    Rake::Task[:lambda_ci].invoke
-#  end
-#end
