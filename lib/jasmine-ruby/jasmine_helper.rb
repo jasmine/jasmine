@@ -29,12 +29,12 @@ class JasmineHelper
     end
   end
 
-  def self.raw_spec_files
+  def self.spec_files
     Dir.glob(File.join(jasmine_spec_dir, "**/*[Ss]pec.js"))
   end
 
-  def self.spec_file_urls
-    raw_spec_files.collect {|f| f.sub(jasmine_spec_dir, "/spec")}
+  def self.specs
+    spec_files.collect {|f| f.sub(jasmine_spec_dir, "/spec")}
   end
 
   def self.dir_mappings
