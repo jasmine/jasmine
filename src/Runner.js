@@ -54,6 +54,15 @@ jasmine.Runner.prototype.getAllSuites = function() {
   return this.suites_;
 };
 
+jasmine.Runner.prototype.specs = function () {
+  var suites = this.suites();
+  var specs = [];
+  for (var i = 0; i < suites.length; i++) {
+    specs = specs.concat(suites[i].specs());
+  }
+  return specs;
+};
+
 
 jasmine.Runner.prototype.suites = function() {
   return this.suites_;
