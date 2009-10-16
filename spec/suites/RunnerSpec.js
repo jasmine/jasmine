@@ -33,8 +33,8 @@ describe('RunnerTest', function() {
 
       env.describe('suite 2', function () {
         env.it('test 2-1', function() {
-            foo++;
-            this.expect(foo).toEqual(1);
+          foo++;
+          this.expect(foo).toEqual(1);
         });
       });
 
@@ -44,9 +44,40 @@ describe('RunnerTest', function() {
       expect(runnerResults.totalCount).toEqual(3);
       expect(runnerResults.passedCount).toEqual(3);
     });
+
+
+    it('should provide all specs', function () {
+      var foo;
+      env.beforeEach(function () {
+        foo = 0;
+      });
+
+      env.describe('suite 1', function () {
+        env.it('test 1-1', function() {
+          foo++;
+          this.expect(foo).toEqual(1);
+        });
+        env.it('test 1-2', function() {
+          foo++;
+          this.expect(foo).toEqual(1);
+        });
+      });
+
+      env.describe('suite 2', function () {
+        env.it('test 2-1', function() {
+          foo++;
+          this.expect(foo).toEqual(1);
+        });
+      });
+
+      env.currentRunner().execute();
+
+
+      expect(env.currentRunner().specs().length).toEqual(3);
+    });
   });
 
-    describe('afterEach', function() {
+  describe('afterEach', function() {
     it('should run after each spec for all suites', function () {
       var foo = 3;
       env.afterEach(function () {
@@ -64,7 +95,7 @@ describe('RunnerTest', function() {
 
       env.describe('suite 2', function () {
         env.it('test 2-1', function() {
-            this.expect(foo).toEqual(1);
+          this.expect(foo).toEqual(1);
         });
       });
 
