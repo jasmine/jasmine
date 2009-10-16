@@ -31,8 +31,10 @@ open `examples/test/html/example_suite.html` in your favorite browser.
 
 Releases
 ----------
-0.9.0 beta [[download]](http://github.com/pivotal/jasmine/zipball/master)
+0.10.0 [[download]](http://github.com/pivotal/jasmine/zipball/master)
 `git clone git://github.com/pivotal/jasmine.git`
+
+0.9.0 [[download]](http://github.com/pivotal/jasmine/zipball/0.9.0)
 
 0.8.0 [[download]](http://github.com/pivotal/jasmine/zipball/0.8.0)
 
