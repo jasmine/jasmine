@@ -28,7 +28,8 @@ describe("jasmine.pp", function () {
   it("should stringify objects properly", function() {
     expect(jasmine.pp({foo: 'bar'})).toEqual("{ foo : 'bar' }");
     expect(jasmine.pp({foo:'bar', baz:3, nullValue: null, undefinedValue: undefined})).toEqual("{ foo : 'bar', baz : 3, nullValue : null, undefinedValue : undefined }");
-    expect(jasmine.pp({foo: function () { }, bar: [1, 2, 3]})).toEqual("{ foo : Function, bar : [ 1, 2, 3 ] }");
+    expect(jasmine.pp({foo: function () {
+    }, bar: [1, 2, 3]})).toEqual("{ foo : Function, bar : [ 1, 2, 3 ] }");
   });
 
   it("should indicate circular object references", function() {
@@ -39,8 +40,18 @@ describe("jasmine.pp", function () {
 
   it("should indicate getters on objects as such", function() {
     var sampleValue = {id: 1};
-    sampleValue.__defineGetter__('calculatedValue', function() { throw new Error("don't call me!"); });
-    expect(jasmine.pp(sampleValue)).toEqual("{ id : 1, calculatedValue : <getter> }");
+    if (sampleValue.__defineGetter__) {
+      //not supported in IE!
+      sampleValue.__defineGetter__('calculatedValue', function() {
+        throw new Error("don't call me!");
+      });
+    }
+    if (sampleValue.__defineGetter__) {
+      expect(jasmine.pp(sampleValue)).toEqual("{ id : 1, calculatedValue : <getter> }");
+    }
+    else {
+      expect(jasmine.pp(sampleValue)).toEqual("{ id : 1 }");
+    }
   });
 
   it("should stringify HTML nodes properly", function() {

@@ -134,25 +134,42 @@ jasmine.Clock = {
     if (jasmine.Clock.installed != jasmine.Clock.defaultFakeTimer) {
       throw new Error("Mock clock is not installed, use jasmine.Clock.useMock()");
     }
-  },  
+  },
 
   installed: null
 };
 jasmine.Clock.installed = jasmine.Clock.real;
 
+//else for IE support
 window.setTimeout = function(funcToCall, millis) {
-  return jasmine.Clock.installed.setTimeout.apply(this, arguments);
+  if (jasmine.Clock.installed.setTimeout.apply) {
+    return jasmine.Clock.installed.setTimeout.apply(this, arguments);
+  } else {
+    return jasmine.Clock.installed.setTimeout(funcToCall, millis);
+  }
 };
 
 window.setInterval = function(funcToCall, millis) {
-  return jasmine.Clock.installed.setInterval.apply(this, arguments);
+  if (jasmine.Clock.installed.setInterval.apply) {
+    return jasmine.Clock.installed.setInterval.apply(this, arguments);
+  } else {
+    return jasmine.Clock.installed.setInterval(funcToCall, millis);
+  }
 };
 
 window.clearTimeout = function(timeoutKey) {
-  return jasmine.Clock.installed.clearTimeout.apply(this, arguments);
+  if (jasmine.Clock.installed.clearTimeout.apply) {
+    return jasmine.Clock.installed.clearTimeout.apply(this, arguments);
+  } else {
+    return jasmine.Clock.installed.clearTimeout(timeoutKey);
+  }
 };
 
 window.clearInterval = function(timeoutKey) {
-  return jasmine.Clock.installed.clearInterval.apply(this, arguments);
+  if (jasmine.Clock.installed.clearTimeout.apply) {
+    return jasmine.Clock.installed.clearInterval.apply(this, arguments);
+  } else {
+  return jasmine.Clock.installed.clearInterval(timeoutKey);
+  }
 };
 

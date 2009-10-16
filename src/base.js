@@ -1,6 +1,6 @@
 /**
  * Top level namespace for Jasmine, a lightweight JavaScript BDD/spec/testing framework.
- * 
+ *
  * @namespace
  */
 var jasmine = {};
@@ -14,7 +14,7 @@ jasmine.unimplementedMethod_ = function() {
 
 /**
  * Large or small values here may result in slow test running & "Too much recursion" errors
- * 
+ *
  */
 jasmine.UPDATE_INTERVAL = 250;
 
@@ -29,7 +29,14 @@ jasmine.UPDATE_INTERVAL = 250;
 jasmine.bindOriginal_ = function(base, name) {
   var original = base[name];
   return function() {
-    return original.apply(base, arguments);
+    if (original.apply) {
+      return original.apply(base, arguments);
+    } else {
+      //IE support
+      if (base == window) {
+        return window[name].apply(window, arguments);
+      }
+    }
   };
 };
 
@@ -71,10 +78,10 @@ jasmine.getEnv = function() {
  */
 jasmine.isArray_ = function(value) {
   return value &&
-  typeof value === 'object' &&
-  typeof value.length === 'number' &&
-  typeof value.splice === 'function' &&
-  !(value.propertyIsEnumerable('length'));
+         typeof value === 'object' &&
+         typeof value.length === 'number' &&
+         typeof value.splice === 'function' &&
+         !(value.propertyIsEnumerable('length'));
 };
 
 /**
@@ -123,7 +130,7 @@ jasmine.any = function(clazz) {
  * Spies are torn down at the end of every spec.
  *
  * Note: Do <b>not</b> call new jasmine.Spy() directly - a spy must be created using spyOn, jasmine.createSpy or jasmine.createSpyObj.
- * 
+ *
  * @example
  * // a stub
  * var myStub = jasmine.createSpy('myStub');  // can be used anywhere
@@ -168,7 +175,8 @@ jasmine.Spy = function(name) {
   /**
    * The acutal function this spy stubs.
    */
-  this.plan = function() {};
+  this.plan = function() {
+  };
   /**
    * Tracking of the most recent call to the spy.
    * @example
@@ -199,7 +207,7 @@ jasmine.Spy = function(name) {
  * var foo = {
  *   bar: function() { // do some stuff }
  * }
- * 
+ *
  * // defining a spy on an existing property: foo.bar
  * spyOn(foo, 'bar').andCallThrough();
  */
@@ -302,11 +310,11 @@ jasmine.createSpy = function(name) {
   };
 
   var spy = new jasmine.Spy(name);
-  
-  for(var prop in spy) {
+
+  for (var prop in spy) {
     spyObj[prop] = spy[prop];
   }
-  
+
   spyObj.reset();
 
   return spyObj;
@@ -410,7 +418,7 @@ var waits = function(timeout) {
 
 /**
  * Waits for the latchFunction to return true before proceeding to the next runs()-defined block.
- *  
+ *
  * @param {Number} timeout
  * @param {Function} latchFunction
  * @param {String} message
