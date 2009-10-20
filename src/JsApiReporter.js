@@ -23,7 +23,7 @@ jasmine.JsApiReporter.prototype.suites = function() {
 };
 
 jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
-  var isSuite = suiteOrSpec instanceof jasmine.Suite
+  var isSuite = suiteOrSpec instanceof jasmine.Suite;
   var summary = {
     id: suiteOrSpec.id,
     name: suiteOrSpec.description,
