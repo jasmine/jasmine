@@ -4,7 +4,7 @@
   <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
   <title>Jasmine suite</title>
   <% css_files.each do |css_file| %>
-  <link rel="stylesheet" href="<%= css_file %>" type="text/css" media="screen" />
+  <link rel="stylesheet" href="<%= css_file %>" type="text/css" media="screen"/>
   <% end %>
 
   <% jasmine_files.each do |jasmine_file| %>
@@ -15,7 +15,7 @@
     var jsApiReporter;
     (function() {
       var jasmineEnv = jasmine.getEnv();
-      
+
       jsApiReporter = new jasmine.JsApiReporter();
       var trivialReporter = new jasmine.TrivialReporter();
 

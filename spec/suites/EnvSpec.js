@@ -13,11 +13,6 @@ describe("jasmine.Env", function() {
       expect(env.nextSpecId()).toEqual(2);
     });
 
-    it('nextSuiteId should return consecutive integers, starting at 0', function () {
-      expect(env.nextSuiteId()).toEqual(0);
-      expect(env.nextSuiteId()).toEqual(1);
-      expect(env.nextSuiteId()).toEqual(2);
-    });
   });
   describe("reporting", function() {
     var fakeReporter;

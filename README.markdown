@@ -31,8 +31,10 @@ open `examples/test/html/example_suite.html` in your favorite browser.
 
 Releases
 ----------
-0.9.0 beta [[download]](http://github.com/pivotal/jasmine/zipball/master)
+0.10.0 [[download]](http://github.com/pivotal/jasmine/zipball/master)
 `git clone git://github.com/pivotal/jasmine.git`
+
+0.9.0 [[download]](http://github.com/pivotal/jasmine/zipball/0.9.0)
 
 0.8.0 [[download]](http://github.com/pivotal/jasmine/zipball/0.8.0)
 
@@ -261,11 +263,11 @@ A suite can have a beforeEach declaration. It takes a function that is run befor
 
       beforeEach(function () {
         suiteWideFoo = 1;
-      }
+      });
 
       it('should equal bar', function () {
         expect(suiteWideFoo).toEqual(1);
-      };
+      });
     });
 
 A runner can also have beforeEach declarations. Runner beforeEach functions are executed before every spec in all suites, and execute BEFORE suite beforeEach functions. For example:
@@ -280,11 +282,11 @@ A runner can also have beforeEach declarations. Runner beforeEach functions are 
 
       beforeEach(function () {
         runnerWideFoo.push('suite');
-      }
+      });
 
       it('should equal bar', function () {
         expect(runnerWideFoo).toEqual(['runner', 'suite']);
-      };
+      });
     });
 
 #### afterEach
@@ -296,11 +298,11 @@ Similarly, there is an afterEach declaration.  It takes a function that is run a
       var suiteWideFoo;
       afterEach(function () {
         suiteWideFoo = 0;
-      }
+      });
 
       it('should equal 1', function () {
         expect(suiteWideFoo).toEqual(1);
-      };
+      });
 
       it('should equal 0 after', function () {
         expect(suiteWideFoo).toEqual(0);
@@ -319,11 +321,11 @@ A runner can also have an afterEach declarations. Runner afterEach functions are
 
       afterEach(function () {
         runnerWideFoo.push('suite');
-      }
+      });
 
       it('should be empty', function () {
         expect(runnerWideFoo).toEqual([]);
-      };
+      });
 
       it('should be populated after', function () {
         expect(runnerWideFoo).toEqual(['suite', 'runner']);
@@ -350,14 +352,14 @@ Jasmine supports nested describes. An example:
         it('nested expectation', function () {
           expect(suiteWideFoo).toEqual(0);
           expect(nestedSuiteBar).toEqual(1);
-        };
+        });
       
       });
 
       it('top-level describe', function () {
         expect(suiteWideFoo).toEqual(0);
         expect(nestedSuiteBar).toEqual(undefined);
-      };
+      });
     });
 
 ### Spies
@@ -367,15 +369,15 @@ Jasmine integrates 'spies' that permit many spying, mocking, and faking behavior
 Here are a few examples:
 
     var Klass = function () {
-    }
+    };
 
     var Klass.prototype.method = function (arg) {
       return arg;
-    }
+    };
 
     var Klass.prototype.methodWithCallback = function (callback) {
       return callback('foo');
-    }
+    };
     
     ...
 

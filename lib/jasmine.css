@@ -1,38 +1,26 @@
 body {
-  font: 14px "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
+  font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
 }
 
-h1 {
-  padding-top: 20px;
-  font-weight: bold;
-  font: 24px; /* "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif; */
-}
 
-p {
-	margin-top: 5px;
-	padding-left: 20px;
-}
-
-.fail {
-	background: url( ../images/fail-16.png ) no-repeat;
-  padding-left: 20px;
-	color: red;
-}
-
-.failInSummary {
-  color: red;
-}
-
-.runner {
-  border: 1px outset gray;
-  margin: 5px;
-  padding-left: 1em;
-  padding-right: 1em;
+body .run_spec {
+  float:right; 
 }
 
 .runner.running {
   background-color: yellow;
 }
+
+
+
+.runner {
+  border: 1px solid gray;
+  margin: 5px;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+
 
 .suite {
   border: 1px outset gray;
@@ -54,11 +42,11 @@ p {
 }
 
 .passed {
-  background-color: lightgreen;
+  background-color: #cfc;
 }
 
 .failed {
-  background-color: pink;
+  background-color: #fdd;
 }
 
 .skipped {
@@ -66,9 +54,9 @@ p {
   background-color: #eee;
 }
 
-.resultMessage {
-  white-space: pre;
-}
+/*.resultMessage {*/
+  /*white-space: pre;*/
+/*}*/
 
 .stackTrace {
   white-space: pre;
@@ -81,10 +69,6 @@ p {
   background: #eef;
 }
 
-.runSpec {
-  margin-left: 5px;
-  float: right;
-}
 
 #jasmine_content {
   position:fixed;
