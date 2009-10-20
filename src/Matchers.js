@@ -9,11 +9,6 @@ jasmine.Matchers.pp = function(str) {
   return jasmine.util.htmlEscape(jasmine.pp(str));
 };
 
-/** @deprecated */
-jasmine.Matchers.prototype.getResults = function() {
-  return this.results_;
-};
-
 jasmine.Matchers.prototype.results = function() {
   return this.results_;
 };
@@ -70,8 +65,6 @@ jasmine.Matchers.prototype.toEqual = function(expected) {
     matcherName: 'toEqual', expected: expected, actual: this.actual
   });
 };
-/** @deprecated */
-jasmine.Matchers.prototype.should_equal = jasmine.Matchers.prototype.toEqual;
 
 /**
  * Matcher that compares the actual to the expected using the ! of jasmine.Matchers.toEqual
@@ -81,8 +74,6 @@ jasmine.Matchers.prototype.toNotEqual = function(expected) {
   return this.report(!this.env.equals_(this.actual, expected),
     'Expected ' + jasmine.Matchers.pp(expected) + ' to not equal ' + jasmine.Matchers.pp(this.actual) + ', but it does.');
 };
-/** @deprecated */
-jasmine.Matchers.prototype.should_not_equal = jasmine.Matchers.prototype.toNotEqual;
 
 /**
  * Matcher that compares the actual to the expected using a regular expression.  Constructs a RegExp, so takes
@@ -94,8 +85,6 @@ jasmine.Matchers.prototype.toMatch = function(reg_exp) {
   return this.report((new RegExp(reg_exp).test(this.actual)),
     'Expected ' + jasmine.Matchers.pp(this.actual) + ' to match ' + reg_exp + '.');
 };
-/** @deprecated */
-jasmine.Matchers.prototype.should_match = jasmine.Matchers.prototype.toMatch;
 
 /**
  * Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch
@@ -105,8 +94,6 @@ jasmine.Matchers.prototype.toNotMatch = function(reg_exp) {
   return this.report((!new RegExp(reg_exp).test(this.actual)),
     'Expected ' + jasmine.Matchers.pp(this.actual) + ' to not match ' + reg_exp + '.');
 };
-/** @deprecated */
-jasmine.Matchers.prototype.should_not_match = jasmine.Matchers.prototype.toNotMatch;
 
 /**
  * Matcher that compares the acutal to undefined.
@@ -115,8 +102,6 @@ jasmine.Matchers.prototype.toBeDefined = function() {
   return this.report((this.actual !== undefined),
     'Expected a value to be defined but it was undefined.');
 };
-/** @deprecated */
-jasmine.Matchers.prototype.should_be_defined = jasmine.Matchers.prototype.toBeDefined;
 
 /**
  * Matcher that compares the actual to null.
@@ -126,8 +111,6 @@ jasmine.Matchers.prototype.toBeNull = function() {
   return this.report((this.actual === null),
     'Expected a value to be null but it was ' + jasmine.Matchers.pp(this.actual) + '.');
 };
-/** @deprecated */
-jasmine.Matchers.prototype.should_be_null = jasmine.Matchers.prototype.toBeNull;
 
 /**
  * Matcher that boolean not-nots the actual.
@@ -136,8 +119,6 @@ jasmine.Matchers.prototype.toBeTruthy = function() {
   return this.report(!!this.actual,
     'Expected a value to be truthy but it was ' + jasmine.Matchers.pp(this.actual) + '.');
 };
-/** @deprecated */
-jasmine.Matchers.prototype.should_be_truthy = jasmine.Matchers.prototype.toBeTruthy;
 
 /**
  * Matcher that boolean nots the actual.
@@ -146,8 +127,6 @@ jasmine.Matchers.prototype.toBeFalsy = function() {
   return this.report(!this.actual,
     'Expected a value to be falsy but it was ' + jasmine.Matchers.pp(this.actual) + '.');
 };
-/** @deprecated */
-jasmine.Matchers.prototype.should_be_falsy = jasmine.Matchers.prototype.toBeFalsy;
 
 /**
  * Matcher that checks to see if the acutal, a Jasmine spy, was called.
@@ -162,8 +141,6 @@ jasmine.Matchers.prototype.wasCalled = function() {
   return this.report((this.actual.wasCalled),
     'Expected spy "' + this.actual.identity + '" to have been called, but it was not.');
 };
-/** @deprecated */
-jasmine.Matchers.prototype.was_called = jasmine.Matchers.prototype.wasCalled;
 
 /**
  * Matcher that checks to see if the acutal, a Jasmine spy, was not called.
@@ -175,8 +152,6 @@ jasmine.Matchers.prototype.wasNotCalled = function() {
   return this.report((!this.actual.wasCalled),
     'Expected spy "' + this.actual.identity + '" to not have been called, but it was.');
 };
-/** @deprecated */
-jasmine.Matchers.prototype.was_not_called = jasmine.Matchers.prototype.wasNotCalled;
 
 /**
  * Matcher that checks to see if the acutal, a Jasmine spy, was called with a set of parameters.

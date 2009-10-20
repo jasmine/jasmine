@@ -49,11 +49,6 @@ jasmine.Runner.prototype.add = function(block) {
   this.queue.add(block);
 };
 
-/** @deprecated */
-jasmine.Runner.prototype.getAllSuites = function() {
-  return this.suites_;
-};
-
 jasmine.Runner.prototype.specs = function () {
   var suites = this.suites();
   var specs = [];
@@ -69,10 +64,5 @@ jasmine.Runner.prototype.suites = function() {
 };
 
 jasmine.Runner.prototype.results = function() {
-  return this.queue.results();
-};
-
-/** @deprecated */
-jasmine.Runner.prototype.getResults = function() {
   return this.queue.results();
 };
