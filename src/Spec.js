@@ -43,11 +43,6 @@ jasmine.Spec.prototype.log = function(message) {
   return this.results_.log(message);
 };
 
-/** @deprecated */
-jasmine.Spec.prototype.getResults = function() {
-  return this.results_;
-};
-
 jasmine.Spec.prototype.runs = function (func) {
   var block = new jasmine.Block(this.env, func, this);
   this.addToQueue(block);
@@ -60,14 +55,6 @@ jasmine.Spec.prototype.addToQueue = function (block) {
   } else {
     this.queue.add(block);
   }
-};
-
-/**
- * @private
- * @deprecated
- */
-jasmine.Spec.prototype.expects_that = function(actual) {
-  return this.expect(actual);
 };
 
 jasmine.Spec.prototype.expect = function(actual) {

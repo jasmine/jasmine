@@ -68,7 +68,7 @@ describe('Suite', function() {
           });
         });
 
-        expect(suite.specCount()).toEqual(3);
+        expect(suite.specs().length).toEqual(3);
       });
 
       it('specCount should be correct even with runs/waits blocks', function() {
@@ -94,7 +94,7 @@ describe('Suite', function() {
           });
         });
 
-        expect(suite.specCount()).toEqual(3);
+        expect(suite.specs().length).toEqual(3);
       });
     });
   });
