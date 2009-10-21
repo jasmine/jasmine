@@ -45,11 +45,6 @@ jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
   this.after_.push(afterEachFunction);
 };
 
-/** @deprecated */
-jasmine.Suite.prototype.getResults = function() {
-  return this.queue.results();
-};
-
 jasmine.Suite.prototype.results = function() {
   return this.queue.results();
 };
@@ -61,11 +56,6 @@ jasmine.Suite.prototype.add = function(block) {
     this.specs_.push(block);
   }
   this.queue.add(block);
-};
-
-/** @deprecated */
-jasmine.Suite.prototype.specCount = function() {
-  return this.specs_.length;
 };
 
 jasmine.Suite.prototype.specs = function() {
