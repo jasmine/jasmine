@@ -412,46 +412,15 @@ ul.inheritsList
 				</div>
 				
 				<div class="description">
-					Jasmine Spies are test doubles that can act as stubs, spies, fakes or when used in an expecation, mocks.
-
-Spies should be created in test setup, before expectations.  They can then be checked, using the standard Jasmine
-expectation syntax. Spies can be checked if they were called or not and what the calling params were.
-
-A Spy has the following mehtod: wasCalled, callCount, mostRecentCall, and argsForCall (see docs)
-Spies are torn down at the end of every spec.
-
-Note: Do <b>not</b> call new jasmine.Spy() directly - a spy must be created using spyOn, jasmine.createSpy or jasmine.createSpyObj.
+					Jasmine Spies are test doubles that can act as stubs, spies, fakes or when used in an expecation, mocks.Spies should be created in test setup, before expectations.  They can then be checked, using the standard Jasmineexpectation syntax. Spies can be checked if they were called or not and what the calling params were.A Spy has the following mehtod: wasCalled, callCount, mostRecentCall, and argsForCall (see docs)Spies are torn down at the end of every spec.Note: Do <b>not</b> call new jasmine.Spy() directly - a spy must be created using spyOn, jasmine.createSpy or jasmine.createSpyObj.
 					
 				</div>
 				
 				
 				
-				<pre class="code">// a stub
-var myStub = jasmine.createSpy('myStub');  // can be used anywhere
+				<pre class="code">// a stubvar myStub = jasmine.createSpy('myStub');  // can be used anywhere// spy examplevar foo = {  not: function(bool) { return !bool; }}// actual foo.not will not be called, execution stopsspyOn(foo, 'not');
 
-// spy example
-var foo = {
-  not: function(bool) { return !bool; }
-}
-
-// actual foo.not will not be called, execution stops
-spyOn(foo, 'not');
-
- // foo.not spied upon, execution will continue to implementation
-spyOn(foo, 'not').andCallThrough();
-
-// fake example
-var foo = {
-  not: function(bool) { return !bool; }
-}
-
-// foo.not(val) will return val
-spyOn(foo, 'not').andCallFake(function(value) {return value;});
-
-// mock example
-foo.not(7 == 7);
-expect(foo.not).wasCalled();
-expect(foo.not).wasCalledWith(true);</pre>
+ // foo.not spied upon, execution will continue to implementationspyOn(foo, 'not').andCallThrough();// fake examplevar foo = {  not: function(bool) { return !bool; }}// foo.not(val) will return valspyOn(foo, 'not').andCallFake(function(value) {return value;});// mock examplefoo.not(7 == 7);expect(foo.not).wasCalled();expect(foo.not).wasCalledWith(true);</pre>
 				
 				
 				
@@ -506,12 +475,7 @@ expect(foo.not).wasCalledWith(true);</pre>
 					
 					
 					
-					<pre class="code">var mySpy = jasmine.createSpy('foo');
-mySpy(1, 2);
-mySpy(7, 8);
-mySpy.mostRecentCall.args = [7, 8];
-mySpy.argsForCall[0] = [1, 2];
-mySpy.argsForCall[1] = [7, 8];</pre>
+					<pre class="code">var mySpy = jasmine.createSpy('foo');mySpy(1, 2);mySpy(7, 8);mySpy.mostRecentCall.args = [7, 8];mySpy.argsForCall[0] = [1, 2];mySpy.argsForCall[1] = [7, 8];</pre>
 					
 					
 
@@ -581,9 +545,7 @@ mySpy.argsForCall[1] = [7, 8];</pre>
 					
 					
 					
-					<pre class="code">var mySpy = jasmine.createSpy('foo');
-mySpy(1, 2);
-mySpy.mostRecentCall.args = [1, 2];</pre>
+					<pre class="code">var mySpy = jasmine.createSpy('foo');mySpy(1, 2);mySpy.mostRecentCall.args = [1, 2];</pre>
 					
 					
 
@@ -617,14 +579,7 @@ mySpy.mostRecentCall.args = [1, 2];</pre>
 					
 					
 					
-					<pre class="code">var baz = function() {
-  // do some stuff, return something
-}
-// defining a spy from scratch: foo() calls the function baz
-var foo = jasmine.createSpy('spy on foo').andCall(baz);
-
-// defining a spy on an existing property: foo.bar() calls an anonymnous function
-spyOn(foo, 'bar').andCall(function() { return 'baz';} );</pre>
+					<pre class="code">var baz = function() {  // do some stuff, return something}// defining a spy from scratch: foo() calls the function bazvar foo = jasmine.createSpy('spy on foo').andCall(baz);// defining a spy on an existing property: foo.bar() calls an anonymnous functionspyOn(foo, 'bar').andCall(function() { return 'baz';} );</pre>
 					
 					
 					
@@ -664,12 +619,7 @@ spyOn(foo, 'bar').andCall(function() { return 'baz';} );</pre>
 					
 					
 					
-					<pre class="code">var foo = {
-  bar: function() { // do some stuff }
-}
-
-// defining a spy on an existing property: foo.bar
-spyOn(foo, 'bar').andCallThrough();</pre>
+					<pre class="code">var foo = {  bar: function() { // do some stuff }}// defining a spy on an existing property: foo.barspyOn(foo, 'bar').andCallThrough();</pre>
 					
 					
 					
@@ -698,11 +648,7 @@ spyOn(foo, 'bar').andCallThrough();</pre>
 					
 					
 					
-					<pre class="code">// defining a spy from scratch: foo() returns 'baz'
-var foo = jasmine.createSpy('spy on foo').andReturn('baz');
-
-// defining a spy on an existing property: foo.bar() returns 'baz'
-spyOn(foo, 'bar').andReturn('baz');</pre>
+					<pre class="code">// defining a spy from scratch: foo() returns 'baz'var foo = jasmine.createSpy('spy on foo').andReturn('baz');// defining a spy on an existing property: foo.bar() returns 'baz'spyOn(foo, 'bar').andReturn('baz');</pre>
 					
 					
 					
@@ -742,11 +688,7 @@ spyOn(foo, 'bar').andReturn('baz');</pre>
 					
 					
 					
-					<pre class="code">// defining a spy from scratch: foo() throws an exception w/ message 'ouch'
-var foo = jasmine.createSpy('spy on foo').andThrow('baz');
-
-// defining a spy on an existing property: foo.bar() throws an exception w/ message 'ouch'
-spyOn(foo, 'bar').andThrow('baz');</pre>
+					<pre class="code">// defining a spy from scratch: foo() throws an exception w/ message 'ouch'var foo = jasmine.createSpy('spy on foo').andThrow('baz');// defining a spy on an existing property: foo.bar() throws an exception w/ message 'ouch'spyOn(foo, 'bar').andThrow('baz');</pre>
 					
 					
 					
@@ -811,15 +753,7 @@ spyOn(foo, 'bar').andThrow('baz');</pre>
 					
 					
 					
-					<pre class="code">spyOn(foo, 'bar');
-
-foo.bar();
-
-expect(foo.bar.callCount).toEqual(1);
-
-foo.bar.reset();
-
-expect(foo.bar.callCount).toEqual(0);</pre>
+					<pre class="code">spyOn(foo, 'bar');foo.bar();expect(foo.bar.callCount).toEqual(1);foo.bar.reset();expect(foo.bar.callCount).toEqual(0);</pre>
 					
 					
 					
@@ -845,7 +779,7 @@ expect(foo.bar.callCount).toEqual(0);</pre>
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Wed Oct 21 2009 09:25:31 GMT-0700 (PDT)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Wed Oct 21 2009 09:32:58 GMT-0700 (PDT)
 		</div>
 	</body>
 </html>
