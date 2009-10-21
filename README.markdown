@@ -8,9 +8,11 @@ Quick Start
 ### Ruby Suite Running
 
     sudo gem sources -a http://gems.github.com
-    sudo gem install json thin
+    sudo gem install geminstaller 
     git clone git://github.com/pivotal/jasmine.git
-    cd jasmine/examples/ruby
+    cd jasmine
+    sudo geminstaller	
+    cd examples/ruby
     rake jasmine_server
 
 open `http://localhost:8888/` in your favorite browser.
@@ -24,9 +26,11 @@ open `examples/test/html/example_suite.html` in your favorite browser.
 ### Automatic Suite Running (w/ Selenium)
 
     sudo gem sources -a http://gems.github.com
-    sudo gem install json thin pivotal-selenium-rc selenium-client
+    sudo gem install geminstaller 
     git clone git://github.com/pivotal/jasmine.git
-    cd jasmine/examples/ruby
+    cd jasmine
+    sudo geminstaller
+    cd examples/ruby
     rake test:ci
 
 Releases

@@ -1,0 +1,20 @@
+---
+gems:
+- name: rake
+  version: 0.8.7
+- name: ragaskar-jsdoc_helper
+  version: 0.0.2.1
+- name: json
+  version: 1.1.9
+- name: pivotal-selenium-rc
+  version: 1.11.20090610
+- name: rack
+  version: 1.0.0
+- name: thin
+  version: 1.2.4
+- name: eventmachine
+  version: 0.12.8
+- name: rspec
+  version: 1.2.9
+- name: selenium-client
+  version: 1.2.17
