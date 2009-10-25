@@ -46,6 +46,10 @@ Releases
 
 Please use the latest version unless you have a good reason not to. Some of this documentation may not be applicable to older versions.
 
+Pull Requests
+----------
+We welcome your contributions! Jasmine is currently maintained by Davis Frank ([infews](http://github.com/infews)), Rajan Agaskar ([ragaskar](http://github.com/ragaskar)), and Christian Williams ([Xian](http://github.com/Xian)). You can help us by removing all other recipients from your pull request.
+
 
 Why Another Frickin' JS TDD/BDD Framework?
 -----------
