@@ -16,7 +16,6 @@ jasmine.Runner = function(env) {
 jasmine.Runner.prototype.execute = function() {
   var self = this;
   if (self.env.reporter.reportRunnerStarting) {
-    self.env.currentlyRunningTests = true;
     self.env.reporter.reportRunnerStarting(this);
   }
   self.queue.start(function () {
@@ -36,7 +35,6 @@ jasmine.Runner.prototype.afterEach = function(afterEachFunction) {
 
 
 jasmine.Runner.prototype.finishCallback = function() {
-  this.env.currentlyRunningTests = true;
   this.env.reporter.reportRunnerResults(this);
 };
 

@@ -124,14 +124,12 @@ jasmine.Spec.prototype.execute = function(onComplete) {
   this.env.reporter.log('>> Jasmine Running ' + this.suite.description + ' ' + this.description + '...');
 
   spec.env.currentSpec = spec;
-  spec.env.currentlyRunningTests = true;
 
   spec.addBeforesAndAftersToQueue();
 
   spec.queue.start(function () {
     spec.finish(onComplete);
   });
-  spec.env.currentlyRunningTests = false;
 };
 
 jasmine.Spec.prototype.addBeforesAndAftersToQueue = function() {

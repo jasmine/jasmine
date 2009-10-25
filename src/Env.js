@@ -7,7 +7,6 @@ jasmine.Env = function() {
   this.currentSpec = null;
   this.currentSuite = null;
   this.currentRunner_ = new jasmine.Runner(this);
-  this.currentlyRunningTests = false;
 
   this.reporter = new jasmine.MultiReporter();
 
