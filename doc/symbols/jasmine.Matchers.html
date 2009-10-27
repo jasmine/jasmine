@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - _global_</title>
+		<title>JsDoc Reference - jasmine.Matchers</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -226,7 +226,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Built-In Namespace _global_
+				Class jasmine.Matchers
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -236,9 +236,32 @@ ul.inheritsList
 				
 				
 				
+					<br /><i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
+				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
+			
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class jasmine.Matchers.">
+				<caption>Class Summary</caption>
+				<thead>
+					<tr>
+						<th scope="col">Constructor Attributes</th>
+						<th scope="col">Constructor Name and Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="attributes">&nbsp;</td>
+						<td class="nameDescription" >
+							<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html">jasmine.Matchers</a></b>(env, actual, results)
+							</div>
+							<div class="description"></div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 			
 
 <!-- ============================== properties summary ===================== -->
@@ -248,7 +271,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class _global_.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class jasmine.Matchers.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -261,99 +284,144 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#afterEach">afterEach</a></b>(afterEachFunction)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBe">toBe</a></b>(expected)
 								</div>
-								<div class="description">A function that is called after each spec in a suite.</div>
+								<div class="description">Matcher that compares the actual to the expected using ===.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#beforeEach">beforeEach</a></b>(beforeEachFunction)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeDefined">toBeDefined</a></b>()
 								</div>
-								<div class="description">A function that is called before each spec in a suite.</div>
+								<div class="description">Matcher that compares the acutal to undefined.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#describe">describe</a></b>(description, specDefinitions)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeFalsy">toBeFalsy</a></b>()
 								</div>
-								<div class="description">Defines a suite of specifications.</div>
+								<div class="description">Matcher that boolean nots the actual.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#expect">expect</a></b>(actual)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeNull">toBeNull</a></b>()
 								</div>
-								<div class="description">Starts a chain for a Jasmine expectation.</div>
+								<div class="description">Matcher that compares the actual to null.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#it">it</a></b>(desc, func)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeTruthy">toBeTruthy</a></b>()
 								</div>
-								<div class="description">Creates a Jasmine spec that will be added to the current suite.</div>
+								<div class="description">Matcher that boolean not-nots the actual.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#runs">runs</a></b>(func)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toContain">toContain</a></b>(item)
 								</div>
-								<div class="description">Defines part of a jasmine spec.</div>
+								<div class="description">Matcher that checks that the expected item is an element in the actual Array.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#spyOn">spyOn</a></b>(obj, methodName)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toEqual">toEqual</a></b>(expected)
 								</div>
-								<div class="description">Function that installs a spy on an existing object's method name.</div>
+								<div class="description">Matcher that compares the actual to the expected using common sense equality.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#waits">waits</a></b>(timeout)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toMatch">toMatch</a></b>(reg_exp)
 								</div>
-								<div class="description">Waits for a timeout before moving to the next runs()-defined block.</div>
+								<div class="description">Matcher that compares the actual to the expected using a regular expression.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#waitsFor">waitsFor</a></b>(timeout, latchFunction, message)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotBe">toNotBe</a></b>(expected)
 								</div>
-								<div class="description">Waits for the latchFunction to return true before proceeding to the next runs()-defined block.</div>
+								<div class="description">Matcher that compares the actual to the expected using !==</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#xdescribe">xdescribe</a></b>(description, specDefinitions)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotContain">toNotContain</a></b>(item)
 								</div>
-								<div class="description">Disables a suite of specifications.</div>
+								<div class="description">Matcher that checks that the expected item is NOT an element in the actual Array.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/_global_.html#xit">xit</a></b>(desc, func)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotEqual">toNotEqual</a></b>(expected)
 								</div>
-								<div class="description">Creates a <em>disabled</em> Jasmine spec.</div>
+								<div class="description">Matcher that compares the actual to the expected using the ! of jasmine.Matchers.toEqual</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotMatch">toNotMatch</a></b>(reg_exp)
+								</div>
+								<div class="description">Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toThrow">toThrow</a></b>(expectedException)
+								</div>
+								<div class="description">Matcher that checks that the expected exception was thrown by the actual.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#wasCalled">wasCalled</a></b>()
+								</div>
+								<div class="description">Matcher that checks to see if the acutal, a Jasmine spy, was called.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#wasCalledWith">wasCalledWith</a></b>()
+								</div>
+								<div class="description">Matcher that checks to see if the acutal, a Jasmine spy, was called with a set of parameters.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#wasNotCalled">wasNotCalled</a></b>()
+								</div>
+								<div class="description">Matcher that checks to see if the acutal, a Jasmine spy, was not called.</div>
 							</td>
 						</tr>
 					
@@ -368,6 +436,56 @@ ul.inheritsList
 
 <!-- ============================== constructor details ==================== -->		
 			
+			<div class="details"><a name="constructor"> </a>
+				<div class="sectionTitle">
+					Class Detail
+				</div>
+				
+				<div class="fixedFont">
+						<b>jasmine.Matchers</b>(env, actual, results)
+				</div>
+				
+				<div class="description">
+					
+					
+				</div>
+				
+				
+				
+				
+					
+						<dl class="detailList">
+						<dt class="heading">Parameters:</dt>
+						
+							<dt>
+								<span class="light fixedFont">{<a href="../symbols/jasmine.Env.html">jasmine.Env</a>}</span>  <b>env</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								 <b>actual</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								<span class="light fixedFont">{<a href="../symbols/jasmine.NestedResults.html">jasmine.NestedResults</a>}</span>  <b>results</b>
+								
+							</dt>
+								<dd></dd>
+						
+						</dl>
+					
+					
+					
+					
+					
+					
+					
+
+			</div>
+			
 
 <!-- ============================== field details ========================== -->		
 			
@@ -378,20 +496,15 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="afterEach"> </a>
+					<a name="toBe"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>afterEach</b>(afterEachFunction)
+					<b>toBe</b>(expected)
 					
 					</div>
 					<div class="description">
-						A function that is called after each spec in a suite.
-
-Used for restoring any state that is hijacked during spec execution.
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
+						Matcher that compares the actual to the expected using ===.
 						
 						
 					</div>
@@ -403,7 +516,7 @@ Used for restoring any state that is hijacked during spec execution.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{Function}</span> <b>afterEachFunction</b>
+									<b>expected</b>
 									
 								</dt>
 								<dd></dd>
@@ -419,20 +532,115 @@ Used for restoring any state that is hijacked during spec execution.
 
 					<hr />
 				
-					<a name="beforeEach"> </a>
+					<a name="toBeDefined"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>beforeEach</b>(beforeEachFunction)
+					<b>toBeDefined</b>()
 					
 					</div>
 					<div class="description">
-						A function that is called before each spec in a suite.
-
-Used for spec setup, including validating assumptions.
+						Matcher that compares the acutal to undefined.
 						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeFalsy"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeFalsy</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that boolean nots the actual.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeNull"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeNull</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to null.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeTruthy"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeTruthy</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that boolean not-nots the actual.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toContain"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toContain</b>(item)
+					
+					</div>
+					<div class="description">
+						Matcher that checks that the expected item is an element in the actual Array.
 						
 						
 					</div>
@@ -444,7 +652,7 @@ Used for spec setup, including validating assumptions.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{Function}</span> <b>beforeEachFunction</b>
+									<span class="light fixedFont">{Object}</span> <b>item</b>
 									
 								</dt>
 								<dd></dd>
@@ -460,76 +668,15 @@ Used for spec setup, including validating assumptions.
 
 					<hr />
 				
-					<a name="describe"> </a>
+					<a name="toEqual"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>describe</b>(description, specDefinitions)
+					<b>toEqual</b>(expected)
 					
 					</div>
 					<div class="description">
-						Defines a suite of specifications.
-
-Stores the description and all defined specs in the Jasmine environment as one suite of specs. Variables declared
-are accessible by calls to beforeEach, it, and afterEach. Describe blocks can be nested, allowing for specialization
-of setup in some tests.
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
-						
-						
-					</div>
-					
-					
-					
-					<pre class="code">// TODO: a simple suite
-
-// TODO: a simple suite with a nested describe block</pre>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>description</b>
-									
-								</dt>
-								<dd>A string, usually the class under test.</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>specDefinitions</b>
-									
-								</dt>
-								<dd>function that defines several specs.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="expect"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>expect</b>(actual)
-					
-					</div>
-					<div class="description">
-						Starts a chain for a Jasmine expectation.
-
-It is passed an Object that is the actual value and should chain to one of the many
-jasmine.Matchers functions.
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
+						Matcher that compares the actual to the expected using common sense equality. Handles Objects, Arrays, etc.
 						
 						
 					</div>
@@ -541,205 +688,7 @@ jasmine.Matchers functions.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{Object}</span> <b>actual</b>
-									
-								</dt>
-								<dd>Actual value to test against and expected value</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="it"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>it</b>(desc, func)
-					
-					</div>
-					<div class="description">
-						Creates a Jasmine spec that will be added to the current suite.
-
-// TODO: pending tests
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
-						
-						
-					</div>
-					
-					
-					
-					<pre class="code">it('should be true', function() {
-  expect(true).toEqual(true);
-});</pre>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>desc</b>
-									
-								</dt>
-								<dd>description of this specification</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>func</b>
-									
-								</dt>
-								<dd>defines the preconditions and expectations of the spec</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="runs"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>runs</b>(func)
-					
-					</div>
-					<div class="description">
-						Defines part of a jasmine spec.  Used in cominbination with waits or waitsFor in asynchrnous specs.
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>func</b>
-									
-								</dt>
-								<dd>Function that defines part of a jasmine spec.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="spyOn"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>spyOn</b>(obj, methodName)
-					
-					</div>
-					<div class="description">
-						Function that installs a spy on an existing object's method name.  Used within a Spec to create a spy.
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
-						
-						
-					</div>
-					
-					
-					
-					<pre class="code">// spy example
-var foo = {
-  not: function(bool) { return !bool; }
-}
-spyOn(foo, 'not'); // actual foo.not will not be called, execution stops</pre>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>obj</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<b>methodName</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd>a Jasmine spy that can be chained with all spy methods</dd>
-							
-							</dl>
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">See:</dt>
-							
-								<dd>jasmine.createSpy</dd>
-							
-							</dl>
-						
-
-					<hr />
-				
-					<a name="waits"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>waits</b>(timeout)
-					
-					</div>
-					<div class="description">
-						Waits for a timeout before moving to the next runs()-defined block.
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Number}</span> <b>timeout</b>
+									<b>expected</b>
 									
 								</dt>
 								<dd></dd>
@@ -755,18 +704,16 @@ spyOn(foo, 'not'); // actual foo.not will not be called, execution stops</pre>
 
 					<hr />
 				
-					<a name="waitsFor"> </a>
+					<a name="toMatch"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>waitsFor</b>(timeout, latchFunction, message)
+					<b>toMatch</b>(reg_exp)
 					
 					</div>
 					<div class="description">
-						Waits for the latchFunction to return true before proceeding to the next runs()-defined block.
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
+						Matcher that compares the actual to the expected using a regular expression.  Constructs a RegExp, so takes
+a pattern or a String.
 						
 						
 					</div>
@@ -778,19 +725,7 @@ spyOn(foo, 'not'); // actual foo.not will not be called, execution stops</pre>
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{Number}</span> <b>timeout</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>latchFunction</b>
-									
-								</dt>
-								<dd></dd>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>message</b>
+									<b>reg_exp</b>
 									
 								</dt>
 								<dd></dd>
@@ -806,18 +741,15 @@ spyOn(foo, 'not'); // actual foo.not will not be called, execution stops</pre>
 
 					<hr />
 				
-					<a name="xdescribe"> </a>
+					<a name="toNotBe"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>xdescribe</b>(description, specDefinitions)
+					<b>toNotBe</b>(expected)
 					
 					</div>
 					<div class="description">
-						Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
+						Matcher that compares the actual to the expected using !==
 						
 						
 					</div>
@@ -829,16 +761,10 @@ spyOn(foo, 'not'); // actual foo.not will not be called, execution stops</pre>
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>description</b>
+									<b>expected</b>
 									
 								</dt>
-								<dd>A string, usually the class under test.</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>specDefinitions</b>
-									
-								</dt>
-								<dd>function that defines several specs.</dd>
+								<dd></dd>
 							
 							</dl>
 						
@@ -851,20 +777,15 @@ spyOn(foo, 'not'); // actual foo.not will not be called, execution stops</pre>
 
 					<hr />
 				
-					<a name="xit"> </a>
+					<a name="toNotContain"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>xit</b>(desc, func)
+					<b>toNotContain</b>(item)
 					
 					</div>
 					<div class="description">
-						Creates a <em>disabled</em> Jasmine spec.
-
-A convenience method that allows existing specs to be disabled temporarily during development.
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/lib_jasmine-0.10.0.js.html">jasmine-0.10.0.js</a>.
+						Matcher that checks that the expected item is NOT an element in the actual Array.
 						
 						
 					</div>
@@ -876,18 +797,199 @@ A convenience method that allows existing specs to be disabled temporarily durin
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>desc</b>
+									<span class="light fixedFont">{Object}</span> <b>item</b>
 									
 								</dt>
-								<dd>description of this specification</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>func</b>
-									
-								</dt>
-								<dd>defines the preconditions and expectations of the spec</dd>
+								<dd></dd>
 							
 							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toNotEqual"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toNotEqual</b>(expected)
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to the expected using the ! of jasmine.Matchers.toEqual
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toNotMatch"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toNotMatch</b>(reg_exp)
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>reg_exp</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toThrow"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toThrow</b>(expectedException)
+					
+					</div>
+					<div class="description">
+						Matcher that checks that the expected exception was thrown by the actual.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>expectedException</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="wasCalled"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>wasCalled</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that checks to see if the acutal, a Jasmine spy, was called.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="wasCalledWith"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>wasCalledWith</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that checks to see if the acutal, a Jasmine spy, was called with a set of parameters.
+						
+						
+					</div>
+					
+					
+					
+					<pre class="code"></pre>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="wasNotCalled"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>wasNotCalled</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that checks to see if the acutal, a Jasmine spy, was not called.
+						
+						
+					</div>
+					
+					
+					
 						
 						
 						
