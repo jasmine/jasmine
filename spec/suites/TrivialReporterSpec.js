@@ -76,4 +76,52 @@ describe("TrivialReporter", function() {
     });
   });
 
+
+  describe("failure messages (integration)", function () {
+    var spec, results, expectationResult;
+
+    beforeEach(function() {
+      results = {
+        passed: function() {
+          return false;
+        },
+        getItems: function() {
+        }};
+
+      spec = {
+        suite: {
+          getFullName: function() {
+            return "suite 1";
+          }
+        },
+        getFullName: function() {
+          return "foo";
+        },
+        results: function() {
+          return results;
+        }
+      };
+
+      trivialReporter = new jasmine.TrivialReporter({ body: body });
+      trivialReporter.reportRunnerStarting({
+        suites: function() {
+          return [ new jasmine.Suite({}, "suite 1", null, null) ];
+        }
+      });
+    });
+
+    it("should add the failure message to the DOM (non-toEquals matchers)", function() {
+      expectationResult = new jasmine.ExpectationResult({
+        matcherName: "toBeNull", passed: false, message: "Expected 'a' to be null, but it was not"
+      });
+    
+      spyOn(results, 'getItems').andReturn([expectationResult]);
+
+      trivialReporter.reportSpecResults(spec);
+
+      var divs = body.getElementsByTagName("div");
+      expect(divs[3].innerHTML).toEqual("Expected 'a' to be null, but it was not");
+    });
+  });
+
 });

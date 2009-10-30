@@ -51,12 +51,18 @@ jasmine.MessageResult = function(text) {
   this.trace = new Error(); // todo: test better
 };
 
-jasmine.ExpectationResult = function(passed, message, details) {
+jasmine.ExpectationResult = function(params) {
   this.type = 'ExpectationResult';
-  this.passed_ = passed;
-  this.message = message;
-  this.details = details;
-  this.trace = new Error(message); // todo: test better
+  this.matcherName = params.matcherName;
+  this.passed_ = params.passed;
+  this.expected = params.expected;
+  this.actual = params.actual;
+
+  /** @deprecated */
+  this.details = params.details;
+  
+  this.message = this.passed_ ? 'Passed.' : params.message;
+  this.trace = this.passed_ ? '' : new Error(this.message);
 };
 
 jasmine.ExpectationResult.prototype.passed = function () {

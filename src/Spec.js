@@ -57,8 +57,12 @@ jasmine.Spec.prototype.addToQueue = function (block) {
   }
 };
 
+jasmine.Spec.prototype.addMatcherResult = function(result) {
+  this.results_.addResult(result);
+};
+
 jasmine.Spec.prototype.expect = function(actual) {
-  return new (this.getMatchersClass_())(this.env, actual, this.results_);
+  return new (this.getMatchersClass_())(this.env, actual, this);
 };
 
 jasmine.Spec.prototype.waits = function(timeout) {
@@ -74,7 +78,11 @@ jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, timeoutMessag
 };
 
 jasmine.Spec.prototype.fail = function (e) {
-  this.results_.addResult(new jasmine.ExpectationResult(false, e ? jasmine.util.formatException(e) : null, null));
+  var expectationResult = new jasmine.ExpectationResult({
+    passed: false,
+    message: e ? jasmine.util.formatException(e) : 'Exception'
+  });
+  this.results_.addResult(expectationResult);
 };
 
 jasmine.Spec.prototype.getMatchersClass_ = function() {
