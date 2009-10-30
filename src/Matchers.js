@@ -24,18 +24,11 @@ jasmine.Matchers.prototype.report = function(result, failing_message, details) {
   return result;
 };
 
-/**
- * Matcher that compares the actual to the expected using ===.
- *
- * @param expected
- */
-
-
 jasmine.Matchers.addMatcher = function(matcherName, options) {
   jasmine.Matchers.prototype[matcherName] = function () {
     jasmine.util.extend(this, options);
-    var expected = jasmine.util.argsToArray(arguments);
-    var args = [this.actual].concat(expected);
+    var matcherArgs = jasmine.util.argsToArray(arguments);
+    var args = [this.actual].concat(matcherArgs);
     var result = options.test.apply(this, args);
     var message;
     if (!result) {
@@ -44,7 +37,7 @@ jasmine.Matchers.addMatcher = function(matcherName, options) {
     var expectationResult = new jasmine.ExpectationResult({
       matcherName: matcherName,
       passed: result,
-      expected: expected,
+      expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
       actual: this.actual,
       message: message
     });
@@ -120,7 +113,7 @@ jasmine.Matchers.addMatcher('toMatch', {
     return new RegExp(expected).test(actual);
   },
   message: function(actual, expected) {
-    return actual + " does not match the regular expression " + new RegExp(expected).toString();
+    return jasmine.pp(actual) + " does not match the regular expression " + new RegExp(expected).toString();
   }
 });
 
@@ -134,7 +127,7 @@ jasmine.Matchers.addMatcher('toNotMatch', {
     return !(new RegExp(expected).test(actual));
   },
   message: function(actual, expected) {
-    return actual + " should not match " + new RegExp(expected).toString();
+    return jasmine.pp(actual) + " should not match " + new RegExp(expected).toString();
   }
 });
 
