@@ -66,7 +66,8 @@ module Jasmine
       @jasmine_files = jasmine_files || [
         "/__JASMINE_ROOT__/lib/" + File.basename(Dir.glob("#{Jasmine.root}/lib/jasmine*.js").first),
         "/__JASMINE_ROOT__/lib/TrivialReporter.js",
-        "/__JASMINE_ROOT__/lib/json2.js"
+        "/__JASMINE_ROOT__/lib/json2.js",
+        "/__JASMINE_ROOT__/lib/consolex.js",
       ]
       @stylesheets = ["/__JASMINE_ROOT__/lib/jasmine.css"] + stylesheets
     end

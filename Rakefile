@@ -67,7 +67,7 @@ jasmine.version_= {
 
   desc "Run jasmine tests of source via server"
   task :server do
-    jasmine_includes = lambda { jasmine_sources + ['lib/TrivialReporter.js'] }
+    jasmine_includes = lambda { jasmine_sources + ['lib/TrivialReporter.js', 'lib/consolex.js'] }
     start_jasmine_server(jasmine_includes)
   end
 
