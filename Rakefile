@@ -2,6 +2,7 @@ namespace :jeweler do
 
   begin
     require 'jeweler'
+    require 'rake'
     Jeweler::Tasks.new do |gemspec|
       gemspec.name = "jasmine-ruby"
       gemspec.summary = "Jasmine Ruby"
@@ -10,6 +11,7 @@ namespace :jeweler do
       gemspec.homepage = "http://github.com/ragaskar/jasmine-ruby"
       gemspec.description = "Jasmine Ruby"
       gemspec.authors = ["Rajan Agaskar"]
+      gemspec.files = FileList.new('bin/*', 'lib/**/**', 'jasmine/lib/**', 'jasmine/contrib/ruby/**', 'tasks/**', 'templates/**') 
     end
     Jeweler::GemcutterTasks.new
   rescue LoadError

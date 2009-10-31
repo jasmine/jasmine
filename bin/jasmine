@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 cwd = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-p cwd
 require File.expand_path(File.join(cwd, "lib", "jasmine-ruby", "jasmine_helper.rb"))
 
 #to load JasmineHelper overrides

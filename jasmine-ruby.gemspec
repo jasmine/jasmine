@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rajan Agaskar"]
-  s.date = %q{2009-10-15}
+  s.date = %q{2009-10-30}
   s.default_executable = %q{jasmine}
   s.description = %q{Jasmine Ruby}
   s.email = %q{ragaskar@gmail.com}
@@ -18,17 +18,18 @@ Gem::Specification.new do |s|
     "README.markdown"
   ]
   s.files = [
-    ".gitignore",
-     ".gitmodules",
-     "MIT.LICENSE",
-     "README.markdown",
-     "Rakefile",
-     "VERSION.yml",
-     "bin/jasmine",
-     "jasmine-ruby.gemspec",
+    "bin/jasmine",
+     "jasmine/contrib/ruby/jasmine_runner.rb",
+     "jasmine/contrib/ruby/jasmine_spec_builder.rb",
+     "jasmine/contrib/ruby/run.html",
+     "jasmine/lib/TrivialReporter.js",
+     "jasmine/lib/consolex.js",
+     "jasmine/lib/jasmine-0.10.0.js",
+     "jasmine/lib/jasmine.css",
+     "jasmine/lib/json2.js",
      "lib/jasmine-ruby/jasmine_helper.rb",
-     "spec/jasmine_spec.rb",
-     "tasks/jasmine.rake"
+     "tasks/jasmine.rake",
+     "templates/example_spec.js"
   ]
   s.homepage = %q{http://github.com/ragaskar/jasmine-ruby}
   s.rdoc_options = ["--charset=UTF-8"]

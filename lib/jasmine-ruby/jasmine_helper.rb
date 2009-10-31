@@ -22,7 +22,7 @@ class JasmineHelper
   end
 
   def self.jasmine_spec_dir
-    if defined? rails_root
+    if rails_root
       File.expand_path(File.join(rails_root, "spec", "javascript"))
     else
       File.expand_path('spec')
