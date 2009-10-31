@@ -24,8 +24,8 @@ jasmine.Matchers.prototype.report = function(result, failing_message, details) {
   return result;
 };
 
-jasmine.Matchers.addMatcher = function(matcherName, options) {
-  jasmine.Matchers.prototype[matcherName] = function () {
+jasmine.Matchers.matcherFn_ = function(matcherName, options) {
+  return function () {
     jasmine.util.extend(this, options);
     var matcherArgs = jasmine.util.argsToArray(arguments);
     var args = [this.actual].concat(matcherArgs);
@@ -47,12 +47,14 @@ jasmine.Matchers.addMatcher = function(matcherName, options) {
 };
 
 
+
+
 /**
  * toBe: compares the actual to the expected using ===
  * @param expected
  */
 
-jasmine.Matchers.addMatcher('toBe', {
+jasmine.Matchers.prototype.toBe = jasmine.Matchers.matcherFn_('toBe', {
   test: function (actual, expected) {
     return actual === expected;
   },
@@ -65,7 +67,7 @@ jasmine.Matchers.addMatcher('toBe', {
  * toNotBe: compares the actual to the expected using !==
  * @param expected
  */
-jasmine.Matchers.addMatcher('toNotBe', {
+jasmine.Matchers.prototype.toNotBe = jasmine.Matchers.matcherFn_('toNotBe', {
   test: function (actual, expected) {
     return actual !== expected;
   },
@@ -80,7 +82,7 @@ jasmine.Matchers.addMatcher('toNotBe', {
  * @param expected
  */
 
-jasmine.Matchers.addMatcher('toEqual', {
+jasmine.Matchers.prototype.toEqual = jasmine.Matchers.matcherFn_('toEqual', {
   test: function (actual, expected) {
     return this.env.equals_(actual, expected);
   },
@@ -93,7 +95,7 @@ jasmine.Matchers.addMatcher('toEqual', {
  * toNotEqual: compares the actual to the expected using the ! of jasmine.Matchers.toEqual
  * @param expected
  */
-jasmine.Matchers.addMatcher('toNotEqual', {
+jasmine.Matchers.prototype.toNotEqual = jasmine.Matchers.matcherFn_('toNotEqual', {
   test: function (actual, expected) {
     return !this.env.equals_(actual, expected);
   },
@@ -108,7 +110,7 @@ jasmine.Matchers.addMatcher('toNotEqual', {
  *
  * @param reg_exp
  */
-jasmine.Matchers.addMatcher('toMatch', {
+jasmine.Matchers.prototype.toMatch = jasmine.Matchers.matcherFn_('toMatch', {
   test: function(actual, expected) {
     return new RegExp(expected).test(actual);
   },
@@ -122,7 +124,7 @@ jasmine.Matchers.addMatcher('toMatch', {
  * @param reg_exp
  */
 
-jasmine.Matchers.addMatcher('toNotMatch', {
+jasmine.Matchers.prototype.toNotMatch = jasmine.Matchers.matcherFn_('toNotMatch', {
   test: function(actual, expected) {
     return !(new RegExp(expected).test(actual));
   },
@@ -135,7 +137,7 @@ jasmine.Matchers.addMatcher('toNotMatch', {
  * Matcher that compares the acutal to undefined.
  */
 
-jasmine.Matchers.addMatcher('toBeDefined', {
+jasmine.Matchers.prototype.toBeDefined = jasmine.Matchers.matcherFn_('toBeDefined', {
   test: function(actual) {
     return (actual !== undefined);
   },
@@ -148,7 +150,7 @@ jasmine.Matchers.addMatcher('toBeDefined', {
  * Matcher that compares the acutal to undefined.
  */
 
-jasmine.Matchers.addMatcher('toBeUndefined', {
+jasmine.Matchers.prototype.toBeUndefined = jasmine.Matchers.matcherFn_('toBeUndefined', {
   test: function(actual) {
     return (actual === undefined);
   },
@@ -161,7 +163,7 @@ jasmine.Matchers.addMatcher('toBeUndefined', {
  * Matcher that compares the actual to null.
  *
  */
-jasmine.Matchers.addMatcher('toBeNull', {
+jasmine.Matchers.prototype.toBeNull = jasmine.Matchers.matcherFn_('toBeNull', {
   test: function(actual) {
     return (actual === null);
   },
@@ -173,7 +175,7 @@ jasmine.Matchers.addMatcher('toBeNull', {
 /**
  * Matcher that boolean not-nots the actual.
  */
-jasmine.Matchers.addMatcher('toBeTruthy', {
+jasmine.Matchers.prototype.toBeTruthy = jasmine.Matchers.matcherFn_('toBeTruthy', {
   test: function(actual) {
     return !!actual;
   },
@@ -186,7 +188,7 @@ jasmine.Matchers.addMatcher('toBeTruthy', {
 /**
  * Matcher that boolean nots the actual.
  */
-jasmine.Matchers.addMatcher('toBeFalsy', {
+jasmine.Matchers.prototype.toBeFalsy = jasmine.Matchers.matcherFn_('toBeFalsy', {
   test: function(actual) {
     return !actual;
   },
@@ -199,7 +201,7 @@ jasmine.Matchers.addMatcher('toBeFalsy', {
  * Matcher that checks to see if the acutal, a Jasmine spy, was called.
  */
 
-jasmine.Matchers.addMatcher('wasCalled', {
+jasmine.Matchers.prototype.wasCalled = jasmine.Matchers.matcherFn_('wasCalled', {
   getActual_: function() {
     var args = jasmine.util.argsToArray(arguments);
     if (args.length > 1) {
@@ -226,7 +228,7 @@ jasmine.Matchers.addMatcher('wasCalled', {
 /**
  * Matcher that checks to see if the acutal, a Jasmine spy, was not called.
  */
-jasmine.Matchers.addMatcher('wasNotCalled', {
+jasmine.Matchers.prototype.wasNotCalled = jasmine.Matchers.matcherFn_('wasNotCalled', {
   getActual_: function() {
     var args = jasmine.util.argsToArray(arguments);
     return args.splice(0, 1)[0];
@@ -247,7 +249,7 @@ jasmine.Matchers.addMatcher('wasNotCalled', {
   }
 });
 
-jasmine.Matchers.addMatcher('wasCalledWith', {
+jasmine.Matchers.prototype.wasCalledWith = jasmine.Matchers.matcherFn_('wasCalledWith', {
   test: function() {
     var args = jasmine.util.argsToArray(arguments);
     var actual = args.splice(0, 1)[0];
@@ -282,7 +284,7 @@ jasmine.Matchers.addMatcher('wasCalledWith', {
  * @param {Object} item
  */
 
-jasmine.Matchers.addMatcher('toContain', {
+jasmine.Matchers.prototype.toContain = jasmine.Matchers.matcherFn_('toContain', {
   test: function(actual, expected) {
     return this.env.contains_(actual, expected);
   },
@@ -296,7 +298,7 @@ jasmine.Matchers.addMatcher('toContain', {
  *
  * @param {Object} item
  */
-jasmine.Matchers.addMatcher('toNotContain', {
+jasmine.Matchers.prototype.toNotContain = jasmine.Matchers.matcherFn_('toNotContain', {
   test: function(actual, expected) {
     return !this.env.contains_(actual, expected);
   },
@@ -305,7 +307,7 @@ jasmine.Matchers.addMatcher('toNotContain', {
   }
 });
 
-jasmine.Matchers.addMatcher('toBeLessThan', {
+jasmine.Matchers.prototype.toBeLessThan = jasmine.Matchers.matcherFn_('toBeLessThan', {
   test: function(actual, expected) {
     return actual < expected;
   },
@@ -314,7 +316,7 @@ jasmine.Matchers.addMatcher('toBeLessThan', {
   }
 });
 
-jasmine.Matchers.addMatcher('toBeGreaterThan', {
+jasmine.Matchers.prototype.toBeGreaterThan = jasmine.Matchers.matcherFn_('toBeGreaterThan', {
   test: function(actual, expected) {
     return actual > expected;
   },
@@ -328,7 +330,7 @@ jasmine.Matchers.addMatcher('toBeGreaterThan', {
  *
  * @param {String} expectedException
  */
-jasmine.Matchers.addMatcher('toThrow', {
+jasmine.Matchers.prototype.toThrow = jasmine.Matchers.matcherFn_('toThrow', {
   getException_: function(actual, expected) {
     var exception;
     if (typeof actual != 'function') {
