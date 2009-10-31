@@ -133,7 +133,12 @@ module Jasmine
         JsAlert.new
       ])
 
-      Thin::Server.start('0.0.0.0', port, app)
+      begin
+        Thin::Server.start('0.0.0.0', port, app)
+      rescue RuntimeError => e
+        raise e unless e.message == 'no acceptor'
+        raise RuntimeError.new("A server is already running on port #{port}")
+      end
     end
   end
 
