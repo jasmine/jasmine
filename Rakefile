@@ -19,10 +19,11 @@ def start_jasmine_server(jasmine_includes = nil)
   puts "your tests are here:"
   puts "  http://localhost:8888/run.html"
 
-  Jasmine::SimpleServer.start(8888,
-                              lambda { JasmineHelper.spec_file_urls },
-                              JasmineHelper.dir_mappings,
-                              jasmine_includes)
+  Jasmine::SimpleServer.start(
+    8888,
+    lambda { JasmineHelper.specs },
+    JasmineHelper.dir_mappings,
+    :jasmine_files => jasmine_includes)
 end
 
 namespace :jasmine do
@@ -67,7 +68,11 @@ jasmine.version_= {
 
   desc "Run jasmine tests of source via server"
   task :server do
-    jasmine_includes = lambda { jasmine_sources + ['lib/TrivialReporter.js', 'lib/consolex.js'] }
+    files = jasmine_sources + ['lib/TrivialReporter.js', 'lib/consolex.js']
+    jasmine_includes = lambda {
+      raw_jasmine_includes = files.collect { |f| File.expand_path(File.join(JasmineHelper.jasmine_root, f)) }
+      Jasmine.cachebust(raw_jasmine_includes).collect {|f| f.sub(JasmineHelper.jasmine_src_dir, "/src").sub(JasmineHelper.jasmine_lib_dir, "/lib") }
+    }
     start_jasmine_server(jasmine_includes)
   end
 

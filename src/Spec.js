@@ -43,6 +43,11 @@ jasmine.Spec.prototype.log = function(message) {
   return this.results_.log(message);
 };
 
+/** @deprecated */
+jasmine.Spec.prototype.getResults = function() {
+  return this.results_;
+};
+
 jasmine.Spec.prototype.runs = function (func) {
   var block = new jasmine.Block(this.env, func, this);
   this.addToQueue(block);
