@@ -8,7 +8,8 @@ def start_jasmine_server
 
   Jasmine::SimpleServer.start(8888,
                               lambda { JasmineHelper.spec_file_urls },
-                              JasmineHelper.dir_mappings)
+                              JasmineHelper.dir_mappings,
+                              :spec_helpers => lambda { JasmineHelper.spec_helpers })
 end
 
 namespace :jasmine do
@@ -22,7 +23,7 @@ namespace :jasmine do
     require "spec"
     require 'spec/rake/spectask'
     ENV["RAILS_ROOT"] = RAILS_ROOT
-    Spec::Rake::SpecTask.new(:lambda_ci) do |t|   
+    Spec::Rake::SpecTask.new(:lambda_ci) do |t|
       t.spec_opts = ["--color", "--format", "specdoc"]
       t.spec_files = [File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "jasmine_spec.rb"))]
     end

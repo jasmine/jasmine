@@ -8,7 +8,8 @@ require File.expand_path(File.join(JasmineHelper.jasmine_root, "contrib/ruby/jas
 
 jasmine_runner = Jasmine::Runner.new(SeleniumRC::Server.new.jar_path,
                                      JasmineHelper.spec_file_urls,
-                                     JasmineHelper.dir_mappings)
+                                     JasmineHelper.dir_mappings,
+                                     :spec_helpers => JasmineHelper.spec_helpers)
 
 spec_builder = Jasmine::SpecBuilder.new(JasmineHelper.raw_spec_files, jasmine_runner)
 

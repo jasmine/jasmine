@@ -14,7 +14,8 @@ if ARGV[0] == 'server'
   puts "  http://localhost:8888/run.html"
   Jasmine::SimpleServer.start(8888,
                               lambda { JasmineHelper.specs },
-                              JasmineHelper.dir_mappings)
+                              JasmineHelper.dir_mappings,
+                              :spec_helpers => JasmineHelper.spec_helpers)
 end
 
 if ARGV[0] == 'init'

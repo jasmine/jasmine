@@ -37,6 +37,14 @@ class JasmineHelper
     spec_files.collect {|f| f.sub(jasmine_spec_dir, "/spec")}
   end
 
+  def self.spec_helpers_files
+    Dir.glob(File.join(jasmine_spec_dir, "helpers/**/*.js"))
+  end
+
+  def self.spec_helpers
+      spec_helpers_files.collect {|f| f.sub(jasmine_spec_dir, "/spec")}
+  end
+
   def self.dir_mappings
     {
       "/spec" => jasmine_spec_dir,
