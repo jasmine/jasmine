@@ -124,10 +124,10 @@ Jasmine has several built-in matchers.  Here are a few:
 
 A Matcher has a method name, takes an expected value as it's only parameter, has access to the actual value in this, and then makes a call to this.report with true/false with a failure message.  Here's the definition of `toEqual()`:
 
-	Jasmine.Matchers.prototype.toEqual = function (expected) {
+	jasmine.Matchers.prototype.toEqual = function (expected) {
 	  return this.report((this.actual === expected),
 	      'Expected ' + expected + ' but got ' + this.actual + '.');
-	});
+	};
 
 Feel free to define your own matcher as needed in your code.  If you'd like to add Matchers to Jasmine, please write tests.
 
