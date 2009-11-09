@@ -49,6 +49,7 @@ module Jasmine
   end
 
   def self.cachebust(files, root_dir="", replace=nil, replace_with=nil)
+    require 'digest/md5'
     files.collect do |file_name|
       real_file_name = replace && replace_with ? file_name.sub(replace, replace_with) : file_name
       begin
@@ -61,24 +62,32 @@ module Jasmine
   end
 
   class RunAdapter
-    def initialize(spec_files_or_proc, jasmine_files = nil, stylesheets = [])
-      @spec_files_or_proc = spec_files_or_proc
-      @jasmine_files = jasmine_files || [
+    def initialize(spec_files_or_proc, options = {})
+      @spec_files_or_proc = Jasmine.files(spec_files_or_proc) || []
+      @jasmine_files = Jasmine.files(options[:jasmine_files]) || [
         "/__JASMINE_ROOT__/lib/" + File.basename(Dir.glob("#{Jasmine.root}/lib/jasmine*.js").first),
         "/__JASMINE_ROOT__/lib/TrivialReporter.js",
-        "/__JASMINE_ROOT__/lib/json2.js"
+        "/__JASMINE_ROOT__/lib/json2.js",
+        "/__JASMINE_ROOT__/lib/consolex.js",
       ]
-      @stylesheets = ["/__JASMINE_ROOT__/lib/jasmine.css"] + stylesheets
+      @stylesheets = ["/__JASMINE_ROOT__/lib/jasmine.css"] + (Jasmine.files(options[:stylesheets]) || [])
+      @spec_helpers = Jasmine.files(options[:spec_helpers]) || []
     end
 
     def call(env)
+      run
+    end
+
+    def run
+      stylesheets = @stylesheets
+      spec_helpers = @spec_helpers
       spec_files = @spec_files_or_proc
-      spec_files = spec_files.call if spec_files.respond_to?(:call)
 
       jasmine_files = @jasmine_files
       jasmine_files = jasmine_files.call if jasmine_files.respond_to?(:call)
 
       css_files = @stylesheets
+
 
       body = ERB.new(File.read(File.join(File.dirname(__FILE__), "run.html"))).result(binding)
       [
@@ -87,6 +96,8 @@ module Jasmine
         body
       ]
     end
+
+
   end
 
   class Redirect
@@ -113,13 +124,36 @@ module Jasmine
     end
   end
 
-  class SimpleServer
-    def self.start(port, spec_files_or_proc, mappings, jasmine_files = nil, stylesheets = [])
-      require 'thin'
+  class FocusedSuite
+    def initialize(spec_files_or_proc, options)
+      @spec_files_or_proc = Jasmine.files(spec_files_or_proc) || []
+      @options = options
+    end
 
+    def call(env)
+      spec_files = @spec_files_or_proc
+      matching_specs = spec_files.select {|spec_file| spec_file =~ /#{Regexp.escape(env["PATH_INFO"])}/ }.compact
+      if !matching_specs.empty?
+        run_adapter = Jasmine::RunAdapter.new(matching_specs, @options)
+        run_adapter.run
+      else
+        [
+          200,
+          { 'Content-Type' => 'application/javascript' },
+          "document.write('<p>Couldn\\'t find any specs matching #{env["PATH_INFO"]}!</p>');"
+        ]
+      end
+    end
+
+  end
+
+  class SimpleServer
+    def self.start(port, spec_files_or_proc, mappings, options = {})
+      require 'thin'
       config = {
+        '/__suite__' => Jasmine::FocusedSuite.new(spec_files_or_proc, options),
         '/run.html' => Jasmine::Redirect.new('/'),
-        '/' => Jasmine::RunAdapter.new(spec_files_or_proc, jasmine_files, stylesheets)
+        '/' => Jasmine::RunAdapter.new(spec_files_or_proc, options)
       }
       mappings.each do |from, to|
         config[from] = Rack::File.new(to)
@@ -132,7 +166,12 @@ module Jasmine
         JsAlert.new
       ])
 
-      Thin::Server.start('0.0.0.0', port, app)
+      begin
+        Thin::Server.start('0.0.0.0', port, app)
+      rescue RuntimeError => e
+        raise e unless e.message == 'no acceptor'
+        raise RuntimeError.new("A server is already running on port #{port}")
+      end
     end
   end
 
@@ -180,15 +219,13 @@ module Jasmine
   end
 
   class Runner
-    def initialize(selenium_jar_path, spec_files, dir_mappings, jasmine_files = nil, options={})
+    def initialize(selenium_jar_path, spec_files, dir_mappings, options={})
       @selenium_jar_path = selenium_jar_path
       @spec_files = spec_files
       @dir_mappings = dir_mappings
-      @jasmine_files = jasmine_files
-      @browser = options[:browser] || 'firefox'
-      @stylesheets = options[:stylesheets] || []
+      @options = options
 
-
+      @browser = options[:browser] ? options[:browser].delete(:browser) : 'firefox'
       @selenium_pid = nil
       @jasmine_server_pid = nil
     end
@@ -216,7 +253,7 @@ module Jasmine
 
       @jasmine_server_pid = fork do
         Process.setpgrp
-        Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings, @jasmine_files, @stylesheets)
+        Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings, @options)
         exit! 0
       end
       puts "jasmine server started.  pid is #{@jasmine_server_pid}"
@@ -246,4 +283,11 @@ module Jasmine
       @client.eval_js(script)
     end
   end
+
+  def self.files(f)
+    result = f
+    result = result.call if result.respond_to?(:call)
+    result
+  end
+
 end

@@ -19,6 +19,6 @@ task :jasmine_server do
   puts "  http://localhost:8888/run.html"
 
   Jasmine::SimpleServer.start(8888,
-                              lambda { JasmineHelper.spec_file_urls },
+                              lambda { JasmineHelper.specs },
                               JasmineHelper.dir_mappings)
 end

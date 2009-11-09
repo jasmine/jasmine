@@ -28,16 +28,14 @@ jasmine.UPDATE_INTERVAL = 250;
  */
 jasmine.bindOriginal_ = function(base, name) {
   var original = base[name];
-  return function() {
-    if (original.apply) {
+  if (original.apply) {
+    return function() {
       return original.apply(base, arguments);
-    } else {
-      //IE support
-      if (base == window) {
-        return window[name].apply(window, arguments);
-      }
-    }
-  };
+    };
+  } else {
+    // IE support
+    return window[name];
+  }
 };
 
 jasmine.setTimeout = jasmine.bindOriginal_(window, 'setTimeout');
@@ -51,12 +49,18 @@ jasmine.MessageResult = function(text) {
   this.trace = new Error(); // todo: test better
 };
 
-jasmine.ExpectationResult = function(passed, message, details) {
+jasmine.ExpectationResult = function(params) {
   this.type = 'ExpectationResult';
-  this.passed_ = passed;
-  this.message = message;
-  this.details = details;
-  this.trace = new Error(message); // todo: test better
+  this.matcherName = params.matcherName;
+  this.passed_ = params.passed;
+  this.expected = params.expected;
+  this.actual = params.actual;
+
+  /** @deprecated */
+  this.details = params.details;
+  
+  this.message = this.passed_ ? 'Passed.' : params.message;
+  this.trace = this.passed_ ? '' : new Error(this.message);
 };
 
 jasmine.ExpectationResult.prototype.passed = function () {

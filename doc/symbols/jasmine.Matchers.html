@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - jasmine.Spy</title>
+		<title>JsDoc Reference - jasmine.Matchers</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -226,7 +226,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class jasmine.Spy
+				Class jasmine.Matchers
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -242,7 +242,7 @@ ul.inheritsList
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class jasmine.Spy.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class jasmine.Matchers.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -255,9 +255,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/jasmine.Spy.html">jasmine.Spy</a></b>(name)
+								<b><a href="../symbols/jasmine.Matchers.html">jasmine.Matchers</a></b>(env, actual, results)
 							</div>
-							<div class="description">Jasmine Spies are test doubles that can act as stubs, spies, fakes or when used in an expecation, mocks.</div>
+							<div class="description"></div>
 						</td>
 					</tr>
 				</tbody>
@@ -268,7 +268,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class jasmine.Spy.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class jasmine.Matchers.">
 					<caption>Field Summary</caption>
 					<thead>
 						<tr>
@@ -282,9 +282,9 @@ ul.inheritsList
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
-								<b><a href="../symbols/jasmine.Spy.html#argsForCall">argsForCall</a></b>
+								<b><a href="../symbols/jasmine.Matchers.html#toBe">toBe</a></b>
 								</div>
-								<div class="description">Holds arguments for each call to the spy, indexed by call count</div>
+								<div class="description">toBe: compares the actual to the expected using ===</div>
 							</td>
 						</tr>
 					
@@ -292,9 +292,9 @@ ul.inheritsList
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
-								<b><a href="../symbols/jasmine.Spy.html#identity">identity</a></b>
+								<b><a href="../symbols/jasmine.Matchers.html#toBeDefined">toBeDefined</a></b>
 								</div>
-								<div class="description">The name of the spy, if provided.</div>
+								<div class="description">Matcher that compares the acutal to undefined.</div>
 							</td>
 						</tr>
 					
@@ -302,9 +302,9 @@ ul.inheritsList
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
-								<b><a href="../symbols/jasmine.Spy.html#isSpy">isSpy</a></b>
+								<b><a href="../symbols/jasmine.Matchers.html#toBeFalsy">toBeFalsy</a></b>
 								</div>
-								<div class="description">Is this Object a spy?</div>
+								<div class="description">Matcher that boolean nots the actual.</div>
 							</td>
 						</tr>
 					
@@ -312,9 +312,129 @@ ul.inheritsList
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
-								<b><a href="../symbols/jasmine.Spy.html#mostRecentCall">mostRecentCall</a></b>
+								<b><a href="../symbols/jasmine.Matchers.html#toBeNull">toBeNull</a></b>
 								</div>
-								<div class="description">Tracking of the most recent call to the spy.</div>
+								<div class="description">Matcher that compares the actual to null.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#toBeTruthy">toBeTruthy</a></b>
+								</div>
+								<div class="description">Matcher that boolean not-nots the actual.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#toBeUndefined">toBeUndefined</a></b>
+								</div>
+								<div class="description">Matcher that compares the acutal to undefined.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#toContain">toContain</a></b>
+								</div>
+								<div class="description">Matcher that checks that the expected item is an element in the actual Array.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#toEqual">toEqual</a></b>
+								</div>
+								<div class="description">toEqual: compares the actual to the expected using common sense equality.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#toMatch">toMatch</a></b>
+								</div>
+								<div class="description">Matcher that compares the actual to the expected using a regular expression.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#toNotBe">toNotBe</a></b>
+								</div>
+								<div class="description">toNotBe: compares the actual to the expected using !==</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#toNotContain">toNotContain</a></b>
+								</div>
+								<div class="description">Matcher that checks that the expected item is NOT an element in the actual Array.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#toNotEqual">toNotEqual</a></b>
+								</div>
+								<div class="description">toNotEqual: compares the actual to the expected using the ! of jasmine.Matchers.toEqual</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#toNotMatch">toNotMatch</a></b>
+								</div>
+								<div class="description">Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#toThrow">toThrow</a></b>
+								</div>
+								<div class="description">Matcher that checks that the expected exception was thrown by the actual.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#wasCalled">wasCalled</a></b>
+								</div>
+								<div class="description">Matcher that checks to see if the acutal, a Jasmine spy, was called.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#wasNotCalled">wasNotCalled</a></b>
+								</div>
+								<div class="description">Matcher that checks to see if the acutal, a Jasmine spy, was not called.</div>
 							</td>
 						</tr>
 					
@@ -327,78 +447,6 @@ ul.inheritsList
 
 <!-- ============================== methods summary ======================== -->
 			
-				
-				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class jasmine.Spy.">
-					<caption>Method Summary</caption>
-					<thead>
-						<tr>
-							<th scope="col">Method Attributes</th>
-							<th scope="col">Method Name and Description</th>
-						</tr>
-					</thead>
-					<tbody>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Spy.html#andCallFake">andCallFake</a></b>(fakeFunc)
-								</div>
-								<div class="description">Calls an alternate implementation when a spy is called.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Spy.html#andCallThrough">andCallThrough</a></b>()
-								</div>
-								<div class="description">Tells a spy to call through to the actual implemenatation.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Spy.html#andReturn">andReturn</a></b>(value)
-								</div>
-								<div class="description">For setting the return value of a spy.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Spy.html#andThrow">andThrow</a></b>(exceptionMsg)
-								</div>
-								<div class="description">For throwing an exception when a spy is called.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Spy.html#plan">plan</a></b>()
-								</div>
-								<div class="description">The acutal function this spy stubs.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Spy.html#reset">reset</a></b>()
-								</div>
-								<div class="description">Resets all of a spy's the tracking variables so that it can be used again.</div>
-							</td>
-						</tr>
-					
-					</tbody>
-				</table>
-				
-				
-				
-			
 <!-- ============================== events summary ======================== -->
 			
 
@@ -410,50 +458,13 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>jasmine.Spy</b>(name)
+						<b>jasmine.Matchers</b>(env, actual, results)
 				</div>
 				
 				<div class="description">
-					Jasmine Spies are test doubles that can act as stubs, spies, fakes or when used in an expecation, mocks.
-
-Spies should be created in test setup, before expectations.  They can then be checked, using the standard Jasmine
-expectation syntax. Spies can be checked if they were called or not and what the calling params were.
-
-A Spy has the following mehtod: wasCalled, callCount, mostRecentCall, and argsForCall (see docs)
-Spies are torn down at the end of every spec.
-
-Note: Do <b>not</b> call new jasmine.Spy() directly - a spy must be created using spyOn, jasmine.createSpy or jasmine.createSpyObj.
+					
 					
 				</div>
-				
-				
-				
-				<pre class="code">// a stub
-var myStub = jasmine.createSpy('myStub');  // can be used anywhere
-
-// spy example
-var foo = {
-  not: function(bool) { return !bool; }
-}
-
-// actual foo.not will not be called, execution stops
-spyOn(foo, 'not');
-
- // foo.not spied upon, execution will continue to implementation
-spyOn(foo, 'not').andCallThrough();
-
-// fake example
-var foo = {
-  not: function(bool) { return !bool; }
-}
-
-// foo.not(val) will return val
-spyOn(foo, 'not').andCallFake(function(value) {return value;});
-
-// mock example
-foo.not(7 == 7);
-expect(foo.not).wasCalled();
-expect(foo.not).wasCalledWith(true);</pre>
 				
 				
 				
@@ -463,7 +474,19 @@ expect(foo.not).wasCalledWith(true);</pre>
 						<dt class="heading">Parameters:</dt>
 						
 							<dt>
-								<span class="light fixedFont">{String}</span>  <b>name</b>
+								<span class="light fixedFont">{<a href="../symbols/jasmine.Env.html">jasmine.Env</a>}</span>  <b>env</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								 <b>actual</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								<span class="light fixedFont">{<a href="../symbols/jasmine.NestedResults.html">jasmine.NestedResults</a>}</span>  <b>results</b>
 								
 							</dt>
 								<dd></dd>
@@ -476,13 +499,6 @@ expect(foo.not).wasCalledWith(true);</pre>
 					
 					
 					
-						<dl class="detailList">
-						<dt class="heading">See:</dt>
-						
-							<dd><a href="../symbols/_global_.html#spyOn">spyOn</a>, jasmine.createSpy, jasmine.createSpyObj</dd>
-						
-						</dl>
-					
 
 			</div>
 			
@@ -493,46 +509,15 @@ expect(foo.not).wasCalledWith(true);</pre>
 					Field Detail
 				</div>
 				
-					<a name="argsForCall"> </a>
+					<a name="toBe"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>argsForCall</b>
+					<b>toBe</b>
 					
 					</div>
 					<div class="description">
-						Holds arguments for each call to the spy, indexed by call count
-						
-						
-					</div>
-					
-					
-					
-					<pre class="code">var mySpy = jasmine.createSpy('foo');
-mySpy(1, 2);
-mySpy(7, 8);
-mySpy.mostRecentCall.args = [7, 8];
-mySpy.argsForCall[0] = [1, 2];
-mySpy.argsForCall[1] = [7, 8];</pre>
-					
-					
-
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="identity"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>identity</b>
-					
-					</div>
-					<div class="description">
-						The name of the spy, if provided.
+						toBe: compares the actual to the expected using ===
 						
 						
 					</div>
@@ -546,15 +531,15 @@ mySpy.argsForCall[1] = [7, 8];</pre>
 
 					<hr />
 				
-					<a name="isSpy"> </a>
+					<a name="toBeDefined"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>isSpy</b>
+					<b>toBeDefined</b>
 					
 					</div>
 					<div class="description">
-						Is this Object a spy?
+						Matcher that compares the acutal to undefined.
 						
 						
 					</div>
@@ -568,24 +553,305 @@ mySpy.argsForCall[1] = [7, 8];</pre>
 
 					<hr />
 				
-					<a name="mostRecentCall"> </a>
+					<a name="toBeFalsy"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>mostRecentCall</b>
+					<b>toBeFalsy</b>
 					
 					</div>
 					<div class="description">
-						Tracking of the most recent call to the spy.
+						Matcher that boolean nots the actual.
 						
 						
 					</div>
 					
 					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeNull"> </a>
+					<div class="fixedFont">
 					
-					<pre class="code">var mySpy = jasmine.createSpy('foo');
-mySpy(1, 2);
-mySpy.mostRecentCall.args = [1, 2];</pre>
+					
+					<b>toBeNull</b>
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to null.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeTruthy"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeTruthy</b>
+					
+					</div>
+					<div class="description">
+						Matcher that boolean not-nots the actual.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeUndefined"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeUndefined</b>
+					
+					</div>
+					<div class="description">
+						Matcher that compares the acutal to undefined.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toContain"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toContain</b>
+					
+					</div>
+					<div class="description">
+						Matcher that checks that the expected item is an element in the actual Array.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toEqual"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toEqual</b>
+					
+					</div>
+					<div class="description">
+						toEqual: compares the actual to the expected using common sense equality. Handles Objects, Arrays, etc.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toMatch"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toMatch</b>
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to the expected using a regular expression.  Constructs a RegExp, so takes
+a pattern or a String.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toNotBe"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toNotBe</b>
+					
+					</div>
+					<div class="description">
+						toNotBe: compares the actual to the expected using !==
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toNotContain"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toNotContain</b>
+					
+					</div>
+					<div class="description">
+						Matcher that checks that the expected item is NOT an element in the actual Array.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toNotEqual"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toNotEqual</b>
+					
+					</div>
+					<div class="description">
+						toNotEqual: compares the actual to the expected using the ! of jasmine.Matchers.toEqual
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toNotMatch"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toNotMatch</b>
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toThrow"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toThrow</b>
+					
+					</div>
+					<div class="description">
+						Matcher that checks that the expected exception was thrown by the actual.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="wasCalled"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>wasCalled</b>
+					
+					</div>
+					<div class="description">
+						Matcher that checks to see if the acutal, a Jasmine spy, was called.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="wasNotCalled"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>wasNotCalled</b>
+					
+					</div>
+					<div class="description">
+						Matcher that checks to see if the acutal, a Jasmine spy, was not called.
+						
+						
+					</div>
 					
 					
 
@@ -600,242 +866,6 @@ mySpy.mostRecentCall.args = [1, 2];</pre>
 
 <!-- ============================== method details ========================= -->		
 			
-				<div class="sectionTitle">
-					Method Detail
-				</div>
-				
-					<a name="andCallFake"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>andCallFake</b>(fakeFunc)
-					
-					</div>
-					<div class="description">
-						Calls an alternate implementation when a spy is called.
-						
-						
-					</div>
-					
-					
-					
-					<pre class="code">var baz = function() {
-  // do some stuff, return something
-}
-// defining a spy from scratch: foo() calls the function baz
-var foo = jasmine.createSpy('spy on foo').andCall(baz);
-
-// defining a spy on an existing property: foo.bar() calls an anonymnous function
-spyOn(foo, 'bar').andCall(function() { return 'baz';} );</pre>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>fakeFunc</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="andCallThrough"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>andCallThrough</b>()
-					
-					</div>
-					<div class="description">
-						Tells a spy to call through to the actual implemenatation.
-						
-						
-					</div>
-					
-					
-					
-					<pre class="code">var foo = {
-  bar: function() { // do some stuff }
-}
-
-// defining a spy on an existing property: foo.bar
-spyOn(foo, 'bar').andCallThrough();</pre>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="andReturn"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>andReturn</b>(value)
-					
-					</div>
-					<div class="description">
-						For setting the return value of a spy.
-						
-						
-					</div>
-					
-					
-					
-					<pre class="code">// defining a spy from scratch: foo() returns 'baz'
-var foo = jasmine.createSpy('spy on foo').andReturn('baz');
-
-// defining a spy on an existing property: foo.bar() returns 'baz'
-spyOn(foo, 'bar').andReturn('baz');</pre>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Object}</span> <b>value</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="andThrow"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>andThrow</b>(exceptionMsg)
-					
-					</div>
-					<div class="description">
-						For throwing an exception when a spy is called.
-						
-						
-					</div>
-					
-					
-					
-					<pre class="code">// defining a spy from scratch: foo() throws an exception w/ message 'ouch'
-var foo = jasmine.createSpy('spy on foo').andThrow('baz');
-
-// defining a spy on an existing property: foo.bar() throws an exception w/ message 'ouch'
-spyOn(foo, 'bar').andThrow('baz');</pre>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>exceptionMsg</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="plan"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>plan</b>()
-					
-					</div>
-					<div class="description">
-						The acutal function this spy stubs.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="reset"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>reset</b>()
-					
-					</div>
-					<div class="description">
-						Resets all of a spy's the tracking variables so that it can be used again.
-						
-						
-					</div>
-					
-					
-					
-					<pre class="code">spyOn(foo, 'bar');
-
-foo.bar();
-
-expect(foo.bar.callCount).toEqual(1);
-
-foo.bar.reset();
-
-expect(foo.bar.callCount).toEqual(0);</pre>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					
-				
-			
 			
 <!-- ============================== event details ========================= -->		
 			
@@ -847,7 +877,7 @@ expect(foo.bar.callCount).toEqual(0);</pre>
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Sat Oct 31 2009 21:44:39 GMT-0700 (PDT)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Sat Oct 31 2009 21:44:38 GMT-0700 (PDT)
 		</div>
 	</body>
 </html>

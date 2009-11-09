@@ -6,7 +6,7 @@ describe('Exceptions:', function() {
       env.updateInterval = 0;
   });
 
-  it('jasmine.formatException formats Firefox exception maessages as expected', function() {
+  it('jasmine.formatException formats Firefox exception messages as expected', function() {
     var sampleFirefoxException = {
       fileName: 'foo.js',
       line: '1978',
@@ -19,7 +19,7 @@ describe('Exceptions:', function() {
     expect(jasmine.util.formatException(sampleFirefoxException)).toEqual(expected);
   });
 
-  it('jasmine.formatException formats Webkit exception maessages as expected', function() {
+  it('jasmine.formatException formats Webkit exception messages as expected', function() {
     var sampleWebkitException = {
       sourceURL: 'foo.js',
       lineNumber: '1978',
@@ -81,7 +81,7 @@ describe('Exceptions:', function() {
     var specResults = suiteResults.getItems();
 
     expect(suiteResults.passed()).toEqual(false);
-
+    //
     expect(specResults.length).toEqual(5);
     expect(specResults[0].passed()).toMatch(false);
     var blockResults = specResults[0].getItems();

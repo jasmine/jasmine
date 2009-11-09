@@ -7,7 +7,6 @@ jasmine.Env = function() {
   this.currentSpec = null;
   this.currentSuite = null;
   this.currentRunner_ = new jasmine.Runner(this);
-  this.currentlyRunningTests = false;
 
   this.reporter = new jasmine.MultiReporter();
 
@@ -146,18 +145,18 @@ jasmine.Env.prototype.compareObjects_ = function(a, b, mismatchKeys, mismatchVal
 
   for (var property in b) {
     if (!hasKey(a, property) && hasKey(b, property)) {
-      mismatchKeys.push("expected has key '" + property + "', but missing from <b>actual</b>.");
+      mismatchKeys.push("expected has key '" + property + "', but missing from actual.");
     }
   }
   for (property in a) {
     if (!hasKey(b, property) && hasKey(a, property)) {
-      mismatchKeys.push("<b>expected</b> missing key '" + property + "', but present in actual.");
+      mismatchKeys.push("expected missing key '" + property + "', but present in actual.");
     }
   }
   for (property in b) {
     if (property == '__Jasmine_been_here_before__') continue;
     if (!this.equals_(a[property], b[property], mismatchKeys, mismatchValues)) {
-      mismatchValues.push("'" + property + "' was<br /><br />'" + (b[property] ? jasmine.util.htmlEscape(b[property].toString()) : b[property]) + "'<br /><br />in expected, but was<br /><br />'" + (a[property] ? jasmine.util.htmlEscape(a[property].toString()) : a[property]) + "'<br /><br />in actual.<br />");
+      mismatchValues.push("'" + property + "' was '" + (b[property] ? jasmine.util.htmlEscape(b[property].toString()) : b[property]) + "' in expected, but was '" + (a[property] ? jasmine.util.htmlEscape(a[property].toString()) : a[property]) + "' in actual.");
     }
   }
 

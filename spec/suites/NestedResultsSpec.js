@@ -3,14 +3,18 @@ describe('jasmine.NestedResults', function() {
     // Leaf case
     var results = new jasmine.NestedResults();
 
-    results.addResult(new jasmine.ExpectationResult(true,'Passed.'));
+    results.addResult(new jasmine.ExpectationResult({
+      matcherName: "foo", passed: true, message: 'Passed.', actual: 'bar', expected: 'bar'}
+    ));
 
     expect(results.getItems().length).toEqual(1);
     expect(results.totalCount).toEqual(1);
     expect(results.passedCount).toEqual(1);
     expect(results.failedCount).toEqual(0);
 
-    results.addResult(new jasmine.ExpectationResult(false, 'FAIL.'));
+    results.addResult(new jasmine.ExpectationResult({
+      matcherName: "baz", passed: false, message: 'FAIL.', actual: "corge", expected: "quux"
+    }));
 
     expect(results.getItems().length).toEqual(2);
     expect(results.totalCount).toEqual(2);
@@ -21,12 +25,21 @@ describe('jasmine.NestedResults', function() {
   it('should roll up counts for nested results', function() {
     // Branch case
     var leafResultsOne = new jasmine.NestedResults();
-    leafResultsOne.addResult(new jasmine.ExpectationResult( true, ''));
-    leafResultsOne.addResult(new jasmine.ExpectationResult( false, ''));
+    leafResultsOne.addResult(new jasmine.ExpectationResult({
+      matcherName: "toSomething", passed: true, message: 'message', actual: '', expected:''
+    }));
+
+    leafResultsOne.addResult(new jasmine.ExpectationResult({
+      matcherName: "toSomethingElse", passed: false, message: 'message', actual: 'a', expected: 'b'
+    }));
 
     var leafResultsTwo = new jasmine.NestedResults();
-    leafResultsTwo.addResult(new jasmine.ExpectationResult( true, ''));
-    leafResultsTwo.addResult(new jasmine.ExpectationResult( false, ''));
+    leafResultsTwo.addResult(new jasmine.ExpectationResult({
+      matcherName: "toSomething", passed: true, message: 'message', actual: '', expected: ''
+    }));
+    leafResultsTwo.addResult(new jasmine.ExpectationResult({
+      matcherName: "toSomethineElse", passed: false, message: 'message', actual: 'c', expected: 'd'
+    }));
 
     var branchResults = new jasmine.NestedResults();
     branchResults.addResult(leafResultsOne);

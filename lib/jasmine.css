@@ -58,6 +58,16 @@ body .run_spec {
   /*white-space: pre;*/
 /*}*/
 
+.resultMessage span.result {
+  display: block;
+  line-height: 2em;
+  color: black;
+}
+
+.resultMessage .mismatch {
+  color: black;
+}
+
 .stackTrace {
   white-space: pre;
   font-size: .8em;
