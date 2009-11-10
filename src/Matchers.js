@@ -2,7 +2,7 @@
  * @constructor
  * @param {jasmine.Env} env
  * @param actual
- * @param {jasmine.NestedResults} results
+ * @param {jasmine.Spec} spec
  */
 jasmine.Matchers = function(env, actual, spec) {
   this.env = env;
