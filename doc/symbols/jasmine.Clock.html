@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - jasmine.JsApiReporter</title>
+		<title>JsDoc Reference - jasmine.Clock</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -228,7 +228,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class jasmine.JsApiReporter
+				Namespace jasmine.Clock
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -238,14 +238,14 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/src_JsApiReporter.js.html">JsApiReporter.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/src_mock-timeout.js.html">mock-timeout.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class jasmine.JsApiReporter.">
-				<caption>Class Summary</caption>
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class jasmine.Clock.">
+				<caption>Namespace Summary</caption>
 				<thead>
 					<tr>
 						<th scope="col">Constructor Attributes</th>
@@ -257,9 +257,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/jasmine.JsApiReporter.html">jasmine.JsApiReporter</a></b>()
+								<b><a href="../symbols/jasmine.Clock.html">jasmine.Clock</a></b>
 							</div>
-							<div class="description">JavaScript API reporter.</div>
+							<div class="description"></div>
 						</td>
 					</tr>
 				</tbody>
@@ -273,7 +273,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class jasmine.JsApiReporter.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class jasmine.Clock.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -284,99 +284,72 @@ ul.inheritsList
 					<tbody>
 					
 						<tr>
-							<td class="attributes">&nbsp;</td>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#log">log</a></b>(str)
+								<div class="fixedFont">jasmine.Clock.<b><a href="../symbols/jasmine.Clock.html#.assertInstalled">assertInstalled</a></b>()
 								</div>
 								<div class="description"></div>
 							</td>
 						</tr>
 					
 						<tr>
-							<td class="attributes">&nbsp;</td>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#reportRunnerResults">reportRunnerResults</a></b>(runner)
+								<div class="fixedFont">jasmine.Clock.<b><a href="../symbols/jasmine.Clock.html#.installMock">installMock</a></b>()
 								</div>
 								<div class="description"></div>
 							</td>
 						</tr>
 					
 						<tr>
-							<td class="attributes">&nbsp;</td>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#reportRunnerStarting">reportRunnerStarting</a></b>(runner)
+								<div class="fixedFont">jasmine.Clock.<b><a href="../symbols/jasmine.Clock.html#.reset">reset</a></b>()
 								</div>
 								<div class="description"></div>
 							</td>
 						</tr>
 					
 						<tr>
-							<td class="attributes">&nbsp;</td>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#reportSpecResults">reportSpecResults</a></b>(spec)
+								<div class="fixedFont">jasmine.Clock.<b><a href="../symbols/jasmine.Clock.html#.runFunctionsWithinRange">runFunctionsWithinRange</a></b>(oldMillis, nowMillis)
 								</div>
 								<div class="description"></div>
 							</td>
 						</tr>
 					
 						<tr>
-							<td class="attributes">&nbsp;</td>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#reportSuiteResults">reportSuiteResults</a></b>(suite)
+								<div class="fixedFont">jasmine.Clock.<b><a href="../symbols/jasmine.Clock.html#.scheduleFunction">scheduleFunction</a></b>(timeoutKey, funcToCall, millis, recurring)
 								</div>
 								<div class="description"></div>
 							</td>
 						</tr>
 					
 						<tr>
-							<td class="attributes">&nbsp;</td>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#results">results</a></b>()
+								<div class="fixedFont">jasmine.Clock.<b><a href="../symbols/jasmine.Clock.html#.tick">tick</a></b>(millis)
 								</div>
 								<div class="description"></div>
 							</td>
 						</tr>
 					
 						<tr>
-							<td class="attributes">&nbsp;</td>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#resultsForSpec">resultsForSpec</a></b>(specId)
+								<div class="fixedFont">jasmine.Clock.<b><a href="../symbols/jasmine.Clock.html#.uninstallMock">uninstallMock</a></b>()
 								</div>
 								<div class="description"></div>
 							</td>
 						</tr>
 					
 						<tr>
-							<td class="attributes">&nbsp;</td>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#resultsForSpecs">resultsForSpecs</a></b>(specIds)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#suites">suites</a></b>()
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#summarize_">summarize_</a></b>(suiteOrSpec)
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.JsApiReporter.html#summarizeResult_">summarizeResult_</a></b>(result)
+								<div class="fixedFont">jasmine.Clock.<b><a href="../symbols/jasmine.Clock.html#.useMock">useMock</a></b>()
 								</div>
 								<div class="description"></div>
 							</td>
@@ -395,15 +368,15 @@ ul.inheritsList
 			
 			<div class="details"><a name="constructor"> </a>
 				<div class="sectionTitle">
-					Class Detail
+					Namespace Detail
 				</div>
 				
 				<div class="fixedFont">
-						<b>jasmine.JsApiReporter</b>()
+						<b>jasmine.Clock</b>
 				</div>
 				
 				<div class="description">
-					JavaScript API reporter.
+					
 					
 				</div>
 				
@@ -430,11 +403,86 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="log"> </a>
-					<div class="fixedFont">
+					<a name=".assertInstalled"> </a>
+					<div class="fixedFont">&lt;static&gt; 
 					
 					
-					<b>log</b>(str)
+					<span class="light">jasmine.Clock.</span><b>assertInstalled</b>()
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".installMock"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">jasmine.Clock.</span><b>installMock</b>()
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".reset"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">jasmine.Clock.</span><b>reset</b>()
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".runFunctionsWithinRange"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">jasmine.Clock.</span><b>runFunctionsWithinRange</b>(oldMillis, nowMillis)
 					
 					</div>
 					<div class="description">
@@ -450,7 +498,13 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>str</b>
+									<b>oldMillis</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>nowMillis</b>
 									
 								</dt>
 								<dd></dd>
@@ -466,11 +520,11 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="reportRunnerResults"> </a>
-					<div class="fixedFont">
+					<a name=".scheduleFunction"> </a>
+					<div class="fixedFont">&lt;static&gt; 
 					
 					
-					<b>reportRunnerResults</b>(runner)
+					<span class="light">jasmine.Clock.</span><b>scheduleFunction</b>(timeoutKey, funcToCall, millis, recurring)
 					
 					</div>
 					<div class="description">
@@ -486,7 +540,25 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>runner</b>
+									<b>timeoutKey</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>funcToCall</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>millis</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>recurring</b>
 									
 								</dt>
 								<dd></dd>
@@ -502,11 +574,11 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="reportRunnerStarting"> </a>
-					<div class="fixedFont">
+					<a name=".tick"> </a>
+					<div class="fixedFont">&lt;static&gt; 
 					
 					
-					<b>reportRunnerStarting</b>(runner)
+					<span class="light">jasmine.Clock.</span><b>tick</b>(millis)
 					
 					</div>
 					<div class="description">
@@ -522,7 +594,7 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>runner</b>
+									<b>millis</b>
 									
 								</dt>
 								<dd></dd>
@@ -538,83 +610,11 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="reportSpecResults"> </a>
-					<div class="fixedFont">
+					<a name=".uninstallMock"> </a>
+					<div class="fixedFont">&lt;static&gt; 
 					
 					
-					<b>reportSpecResults</b>(spec)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>spec</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="reportSuiteResults"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>reportSuiteResults</b>(suite)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>suite</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="results"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>results</b>()
+					<span class="light">jasmine.Clock.</span><b>uninstallMock</b>()
 					
 					</div>
 					<div class="description">
@@ -635,47 +635,11 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="resultsForSpec"> </a>
-					<div class="fixedFont">
+					<a name=".useMock"> </a>
+					<div class="fixedFont">&lt;static&gt; 
 					
 					
-					<b>resultsForSpec</b>(specId)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>specId</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="resultsForSpecs"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>resultsForSpecs</b>(specIds)
+					<span class="light">jasmine.Clock.</span><b>useMock</b>()
 					
 					</div>
 					<div class="description">
@@ -686,114 +650,6 @@ ul.inheritsList
 					
 					
 					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>specIds</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="suites"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>suites</b>()
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="summarize_"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>summarize_</b>(suiteOrSpec)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>suiteOrSpec</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="summarizeResult_"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>summarizeResult_</b>(result)
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>result</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
 						
 						
 						
@@ -816,7 +672,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Tue Nov 10 2009 17:31:30 GMT-0500 (EST)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Tue Nov 10 2009 17:31:29 GMT-0500 (EST)
 		</div>
 	</body>
 </html>

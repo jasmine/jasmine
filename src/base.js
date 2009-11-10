@@ -177,7 +177,7 @@ jasmine.Spy = function(name) {
    */
   this.isSpy = true;
   /**
-   * The acutal function this spy stubs.
+   * The actual function this spy stubs.
    */
   this.plan = function() {
   };

@@ -1,10 +1,20 @@
-/* JasmineReporters.reporter
+/** JasmineReporters.reporter
  *    Base object that will get called whenever a Spec, Suite, or Runner is done.  It is up to
  *    descendants of this object to do something with the results (see json_reporter.js)
+ *
+ * @deprecated
  */
 jasmine.Reporters = {};
 
+/**
+ * @deprecated
+ * @param callbacks
+ */
 jasmine.Reporters.reporter = function(callbacks) {
+  /**
+   * @deprecated
+   * @param callbacks
+   */
   var that = {
     callbacks: callbacks || {},
 

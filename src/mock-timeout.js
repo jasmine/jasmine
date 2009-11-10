@@ -85,7 +85,9 @@ jasmine.FakeTimer.prototype.scheduleFunction = function(timeoutKey, funcToCall, 
   };
 };
 
-
+/**
+ * @namespace
+ */
 jasmine.Clock = {
   defaultFakeTimer: new jasmine.FakeTimer(),
 
