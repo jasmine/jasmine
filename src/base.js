@@ -19,7 +19,7 @@ jasmine.unimplementedMethod_ = function() {
 jasmine.DEFAULT_UPDATE_INTERVAL = 250;
 
 /**
- * Allows for bound functions to be comapred.  Internal use only.
+ * Allows for bound functions to be compared.  Internal use only.
  *
  * @ignore
  * @private

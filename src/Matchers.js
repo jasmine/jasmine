@@ -31,7 +31,19 @@ jasmine.Matchers.matcherFn_ = function(matcherName, options) {
     var result = options.test.apply(this, arguments);
     var message;
     if (!result) {
-      message = options.message.apply(this, arguments);
+      if (options.message) {
+        message = options.message.apply(this, arguments);
+      } else {
+        var englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
+        message = "Expected " + jasmine.pp(this.actual) + " " + englishyPredicate;
+        if (matcherArgs.length > 0) {
+          for (var i = 0; i < matcherArgs.length; i++) {
+            if (i > 0) message += ",";
+            message += " " + jasmine.pp(matcherArgs[i]);
+          }
+        }
+        message += ".";
+      }
     }
     var expectationResult = new jasmine.ExpectationResult({
       matcherName: matcherName,
@@ -56,9 +68,6 @@ jasmine.Matchers.matcherFn_ = function(matcherName, options) {
 jasmine.Matchers.prototype.toBe = jasmine.Matchers.matcherFn_('toBe', {
   test: function(expected) {
     return this.actual === expected;
-  },
-  message: function(expected) {
-    return "Expected " + jasmine.pp(this.actual) + " to be " + jasmine.pp(expected);
   }
 });
 
@@ -69,9 +78,6 @@ jasmine.Matchers.prototype.toBe = jasmine.Matchers.matcherFn_('toBe', {
 jasmine.Matchers.prototype.toNotBe = jasmine.Matchers.matcherFn_('toNotBe', {
   test: function(expected) {
     return this.actual !== expected;
-  },
-  message: function(expected) {
-    return "Expected " + jasmine.pp(this.actual) + " to not be " + jasmine.pp(expected);
   }
 });
 
@@ -84,9 +90,6 @@ jasmine.Matchers.prototype.toNotBe = jasmine.Matchers.matcherFn_('toNotBe', {
 jasmine.Matchers.prototype.toEqual = jasmine.Matchers.matcherFn_('toEqual', {
   test: function(expected) {
     return this.env.equals_(this.actual, expected);
-  },
-  message: function(expected) {
-    return "Expected " + jasmine.pp(this.actual) + " to equal " + jasmine.pp(expected);
   }
 });
 
@@ -97,9 +100,6 @@ jasmine.Matchers.prototype.toEqual = jasmine.Matchers.matcherFn_('toEqual', {
 jasmine.Matchers.prototype.toNotEqual = jasmine.Matchers.matcherFn_('toNotEqual', {
   test: function(expected) {
     return !this.env.equals_(this.actual, expected);
-  },
-  message: function(expected) {
-    return "Expected " + jasmine.pp(this.actual) + " to not equal " + jasmine.pp(expected);
   }
 });
 
@@ -122,7 +122,6 @@ jasmine.Matchers.prototype.toMatch = jasmine.Matchers.matcherFn_('toMatch', {
  * Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch
  * @param reg_exp
  */
-
 jasmine.Matchers.prototype.toNotMatch = jasmine.Matchers.matcherFn_('toNotMatch', {
   test: function(expected) {
     return !(new RegExp(expected).test(this.actual));
@@ -135,39 +134,27 @@ jasmine.Matchers.prototype.toNotMatch = jasmine.Matchers.matcherFn_('toNotMatch'
 /**
  * Matcher that compares the actual to undefined.
  */
-
 jasmine.Matchers.prototype.toBeDefined = jasmine.Matchers.matcherFn_('toBeDefined', {
   test: function() {
     return (this.actual !== undefined);
-  },
-  message: function() {
-    return 'Expected actual to not be undefined.';
   }
 });
 
 /**
  * Matcher that compares the actual to undefined.
  */
-
 jasmine.Matchers.prototype.toBeUndefined = jasmine.Matchers.matcherFn_('toBeUndefined', {
   test: function() {
     return (this.actual === undefined);
-  },
-  message: function() {
-    return 'Expected ' + jasmine.pp(this.actual) + ' to be undefined.';
   }
 });
 
 /**
  * Matcher that compares the actual to null.
- *
  */
 jasmine.Matchers.prototype.toBeNull = jasmine.Matchers.matcherFn_('toBeNull', {
   test: function() {
     return (this.actual === null);
-  },
-  message: function() {
-    return 'Expected ' + jasmine.pp(this.actual) + ' to be null.';
   }
 });
 
@@ -177,9 +164,6 @@ jasmine.Matchers.prototype.toBeNull = jasmine.Matchers.matcherFn_('toBeNull', {
 jasmine.Matchers.prototype.toBeTruthy = jasmine.Matchers.matcherFn_('toBeTruthy', {
   test: function() {
     return !!this.actual;
-  },
-  message: function() {
-    return 'Expected actual to be truthy';
   }
 });
 
@@ -190,9 +174,6 @@ jasmine.Matchers.prototype.toBeTruthy = jasmine.Matchers.matcherFn_('toBeTruthy'
 jasmine.Matchers.prototype.toBeFalsy = jasmine.Matchers.matcherFn_('toBeFalsy', {
   test: function() {
     return !this.actual;
-  },
-  message: function() {
-    return 'Expected ' + jasmine.pp(this.actual) + ' to be falsy';
   }
 });
 
@@ -266,9 +247,6 @@ jasmine.Matchers.prototype.wasCalledWith = jasmine.Matchers.matcherFn_('wasCalle
 jasmine.Matchers.prototype.toContain = jasmine.Matchers.matcherFn_('toContain', {
   test: function(expected) {
     return this.env.contains_(this.actual, expected);
-  },
-  message: function(expected) {
-    return 'Expected ' + jasmine.pp(this.actual) + ' to contain ' + jasmine.pp(expected);
   }
 });
 
@@ -280,27 +258,18 @@ jasmine.Matchers.prototype.toContain = jasmine.Matchers.matcherFn_('toContain', 
 jasmine.Matchers.prototype.toNotContain = jasmine.Matchers.matcherFn_('toNotContain', {
   test: function(expected) {
     return !this.env.contains_(this.actual, expected);
-  },
-  message: function(expected) {
-    return 'Expected ' + jasmine.pp(this.actual) + ' to not contain ' + jasmine.pp(expected);
   }
 });
 
 jasmine.Matchers.prototype.toBeLessThan = jasmine.Matchers.matcherFn_('toBeLessThan', {
   test: function(expected) {
     return this.actual < expected;
-  },
-  message: function(expected) {
-    return 'Expected ' + jasmine.pp(this.actual) + ' to be less than ' + jasmine.pp(expected);
   }
 });
 
 jasmine.Matchers.prototype.toBeGreaterThan = jasmine.Matchers.matcherFn_('toBeGreaterThan', {
   test: function(expected) {
     return this.actual > expected;
-  },
-  message: function(expected) {
-    return 'Expected ' + jasmine.pp(this.actual) + ' to be greater than ' + jasmine.pp(expected);
   }
 });
 

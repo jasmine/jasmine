@@ -213,7 +213,7 @@ describe("jasmine.Matchers", function() {
 
     expect(result.matcherName).toEqual("toBeDefined");
     expect(result.passed()).toEqual(false);
-    expect(result.message).toEqual('Expected actual to not be undefined.');
+    expect(result.message).toEqual('Expected undefined to be defined.');
     expect(result.actual).toEqual(undefined);
   });
 
@@ -297,7 +297,7 @@ describe("jasmine.Matchers", function() {
 
     expect(result.matcherName).toEqual("toBeTruthy");
     expect(result.passed()).toEqual(false);
-    expect(result.message).toEqual("Expected actual to be truthy");
+    expect(result.message).toEqual("Expected false to be truthy.");
     expect(result.actual).toEqual(false);
   });
 
