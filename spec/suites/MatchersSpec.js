@@ -161,8 +161,7 @@ describe("jasmine.Matchers", function() {
 
     expect(result.matcherName).toEqual("toMatch");
     expect(result.passed()).toEqual(false);
-    expect(result.message).toMatch(jasmine.pp(actual));
-    expect(result.message).toMatch(new RegExp(expected).toString());
+    expect(result.message).toEqual("Expected 'a' to match 'b'.");
     expect(result.expected).toEqual(expected);
     expect(result.actual).toEqual(actual);
   });
@@ -177,9 +176,7 @@ describe("jasmine.Matchers", function() {
 
     expect(result.matcherName).toEqual("toNotMatch");
     expect(result.passed()).toEqual(false);
-    expect(result.message).toMatch(expected.toString());
-    expect(result.message).toMatch(jasmine.pp(actual));
-    expect(result.message).toMatch("not");
+    expect(result.message).toEqual("Expected 'a' to not match /a/.");
     expect(result.expected).toEqual(expected);
     expect(result.actual).toEqual(actual);
   });
@@ -193,9 +190,7 @@ describe("jasmine.Matchers", function() {
 
     expect(result.matcherName).toEqual("toNotMatch");
     expect(result.passed()).toEqual(false);
-    expect(result.message).toMatch(jasmine.pp(str));
-    expect(result.message).toMatch(new RegExp(str).toString());
-    expect(result.message).toMatch("not");
+    expect(result.message).toEqual("Expected 'a' to not match 'a'.");
     expect(result.expected).toEqual(str);
     expect(result.actual).toEqual(str);
   });

@@ -112,9 +112,6 @@ jasmine.Matchers.prototype.toNotEqual = jasmine.Matchers.matcherFn_('toNotEqual'
 jasmine.Matchers.prototype.toMatch = jasmine.Matchers.matcherFn_('toMatch', {
   test: function(expected) {
     return new RegExp(expected).test(this.actual);
-  },
-  message: function(expected) {
-    return jasmine.pp(this.actual) + " does not match the regular expression " + new RegExp(expected).toString();
   }
 });
 
@@ -125,9 +122,6 @@ jasmine.Matchers.prototype.toMatch = jasmine.Matchers.matcherFn_('toMatch', {
 jasmine.Matchers.prototype.toNotMatch = jasmine.Matchers.matcherFn_('toNotMatch', {
   test: function(expected) {
     return !(new RegExp(expected).test(this.actual));
-  },
-  message: function(expected) {
-    return jasmine.pp(this.actual) + " should not match " + new RegExp(expected).toString();
   }
 });
 
