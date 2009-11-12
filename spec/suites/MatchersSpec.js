@@ -463,7 +463,7 @@ describe("jasmine.Matchers", function() {
     } catch (e) {
       exception = e;
     }
-    ;
+
     expect(exception).toBeDefined();
     expect(exception.message).toEqual('Actual is not a function');
 
@@ -476,21 +476,44 @@ describe("jasmine.Matchers", function() {
 
   });
 
-  describe("wasCalled, wasNotCalled, wasCalledWith", function() {
+  describe("spy matchers (wasCalled, wasNotCalled, wasCalledWith)", function() {
     var TestClass;
     beforeEach(function() {
       TestClass = { someFunction: function() {
       } };
     });
-    describe('without spies', function() {
-      it('should always show an error', function () {
-        expect(match(TestClass.someFunction).wasCalled()).toEqual(false);
-        var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
-        expect(result.message).toEqual("Actual is not a spy.");
 
-        expect(match(TestClass.someFunction).wasNotCalled()).toEqual(false);
-        result = mockSpec.addMatcherResult.mostRecentCall.args[0];
-        expect(result.message).toEqual("Actual is not a spy.");
+    it("should throw an exception when wasCalled and wasNotCalled are invoked with the wrong number of arguments", function() {
+      expect(function() {
+        match(TestClass.someFunction).wasCalled("unwanted argument");
+      }).toThrow('wasCalled does not take arguments, use wasCalledWith');
+
+      expect(function() {
+        match(TestClass.someFunction).wasNotCalled("unwanted argument");
+      }).toThrow('wasNotCalled does not take arguments');
+    });
+
+    describe('with non-spies', function() {
+      it('should always show an error', function () {
+        expect(function() {
+          match(TestClass.someFunction).wasCalled();
+        }).toThrow('Expected a spy, but got Function.');
+
+        expect(function() {
+          match(TestClass.someFunction).wasNotCalled();
+        }).toThrow('Expected a spy, but got Function.');
+
+        expect(function() {
+          match(TestClass.someFunction).wasCalledWith();
+        }).toThrow('Expected a spy, but got Function.');
+
+        expect(function() {
+          match(undefined).wasCalled();
+        }).toThrow('Expected a spy, but got undefined.');
+
+        expect(function() {
+          match({some:'object'}).wasCalled();
+        }).toThrow('Expected a spy, but got { some : \'object\' }.');
       });
     });
 
@@ -538,7 +561,6 @@ describe("jasmine.Matchers", function() {
     });
   });
 
-
   describe("wasCalledWith to build an ExpectationResult", function () {
     var TestClass;
     beforeEach(function() {
@@ -550,30 +572,6 @@ describe("jasmine.Matchers", function() {
       TestClass = { someFunction: function(a, b) {
       } };
       spec.spyOn(TestClass, 'someFunction');
-    });
-
-    it("should handle case of actual not being a spy", function() {
-      var matcher = match();
-      matcher.wasCalledWith('a', 'b');
-
-      var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
-
-      expect(result.matcherName).toEqual("wasCalledWith");
-      expect(result.passed()).toEqual(false);
-      expect(result.message).toEqual("Actual is not a spy");
-      expect(result.actual).toEqual(undefined);
-      expect(result.expected).toEqual(['a','b']);
-
-      matcher = match('foo');
-      matcher.wasCalledWith('a', 'b');
-
-      result = mockSpec.addMatcherResult.mostRecentCall.args[0];
-
-      expect(result.matcherName).toEqual("wasCalledWith");
-      expect(result.passed()).toEqual(false);
-      expect(result.message).toEqual("Actual is not a spy");
-      expect(result.actual).toEqual('foo');
-      expect(result.expected).toEqual(['a','b']);
     });
 
     it("should should handle the case of a spy", function() {
@@ -590,5 +588,4 @@ describe("jasmine.Matchers", function() {
       expect(result.expected).toEqual(['a','b']);
     });
   });
-})
-  ;
+});

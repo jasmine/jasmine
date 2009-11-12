@@ -325,6 +325,16 @@ jasmine.createSpy = function(name) {
 };
 
 /**
+ * Determines whether an object is a spy.
+ *
+ * @param {jasmine.Spy|Object} putativeSpy
+ * @returns {Boolean}
+ */
+jasmine.isSpy = function(putativeSpy) {
+  return putativeSpy && putativeSpy.isSpy;
+};
+
+/**
  * Creates a more complicated spy: an Object that has every property a function that is a spy.  Used for stubbing something
  * large in one call.
  *
