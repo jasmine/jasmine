@@ -224,7 +224,7 @@ jasmine.Matchers.prototype.wasCalledWith = jasmine.Matchers.matcherFn_('wasCalle
       throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
     }
 
-    return this.env.contains_(this.actual.argsForCall, arguments);
+    return this.env.contains_(this.actual.argsForCall, jasmine.util.argsToArray(arguments));
   },
   message: function() {
     return "Expected spy to have been called with " + jasmine.pp(arguments) + " but was called with " + this.actual.argsForCall;

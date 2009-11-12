@@ -535,28 +535,30 @@ describe("jasmine.Matchers", function() {
         expect(match(TestClass.someFunction).wasNotCalled()).toEqual(false);
       });
 
-      it('should return true if it was called with the expected args', function() {
-        TestClass.someFunction('a', 'b', 'c');
-        expect(match(TestClass.someFunction).wasCalledWith('a', 'b', 'c')).toEqual(true);
-      });
+      describe("wasCalledWith", function() {
+        it('wasCalledWith should return true if it was called with the expected args', function() {
+          TestClass.someFunction('a', 'b', 'c');
+          expect(match(TestClass.someFunction).wasCalledWith('a', 'b', 'c')).toEqual(true);
+        });
 
-      it('should return false if it was not called with the expected args', function() {
-        TestClass.someFunction('a', 'b', 'c');
-        var expected = match(TestClass.someFunction);
-        expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
-        var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
-        expect(result.passed()).toEqual(false);
-        expect(result.expected).toEqual(['c', 'b', 'a']);
-        expect(result.actual.mostRecentCall.args).toEqual(['a', 'b', 'c']);
-      });
+        it('should return false if it was not called with the expected args', function() {
+          TestClass.someFunction('a', 'b', 'c');
+          var expected = match(TestClass.someFunction);
+          expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
+          var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+          expect(result.passed()).toEqual(false);
+          expect(result.expected).toEqual(['c', 'b', 'a']);
+          expect(result.actual.mostRecentCall.args).toEqual(['a', 'b', 'c']);
+        });
 
-      it('should allow matches across multiple calls', function() {
-        var expected = match(TestClass.someFunction);
-        TestClass.someFunction('a', 'b', 'c');
-        TestClass.someFunction('d', 'e', 'f');
-        expect(expected.wasCalledWith('a', 'b', 'c')).toEqual(true);
-        expect(expected.wasCalledWith('d', 'e', 'f')).toEqual(true);
-        expect(expected.wasCalledWith('x', 'y', 'z')).toEqual(false);
+        it('should allow matches across multiple calls', function() {
+          var expected = match(TestClass.someFunction);
+          TestClass.someFunction('a', 'b', 'c');
+          TestClass.someFunction('d', 'e', 'f');
+          expect(expected.wasCalledWith('a', 'b', 'c')).toEqual(true);
+          expect(expected.wasCalledWith('d', 'e', 'f')).toEqual(true);
+          expect(expected.wasCalledWith('x', 'y', 'z')).toEqual(false);
+        });
       });
     });
   });
