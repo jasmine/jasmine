@@ -27,6 +27,8 @@ jasmine.PrettyPrinter.prototype.format = function(value) {
       this.emitScalar(value.toString());
     } else if (typeof value === 'string') {
       this.emitString(value);
+    } else if (jasmine.isSpy(value)) {
+      this.emitScalar("spy on " + value.identity);
     } else if (typeof value === 'function') {
       this.emitScalar('Function');
     } else if (typeof value.nodeType === 'number') {

@@ -73,5 +73,21 @@ describe("jasmine.pp", function () {
     expect(jasmine.pp(window)).toEqual("<window>");
   });
 
+  it("should stringify Date objects properly", function() {
+    var now = new Date();
+    expect(jasmine.pp(now)).toEqual("Date(" + now.toString() + ")");
+  });
+
+  it("should stringify spy objects properly", function() {
+    var TestObject = {
+      someFunction: function() {
+      }
+    };
+    spyOn(TestObject, 'someFunction');
+    expect(jasmine.pp(TestObject.someFunction)).toEqual("spy on someFunction");
+
+    expect(jasmine.pp(jasmine.createSpy("something"))).toEqual("spy on something");
+  });
+
 });
 
