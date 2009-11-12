@@ -9,11 +9,9 @@ jasmine.PrettyPrinter = function() {
  * Formats a value in a nice, human-readable string.
  *
  * @param value
- * @returns {String}
  */
 jasmine.PrettyPrinter.prototype.format = function(value) {
   if (this.ppNestLevel_ > 40) {
-    //    return '(jasmine.pp nested too deeply!)';
     throw new Error('jasmine.PrettyPrinter: format() nested too deeply!');
   }
 
@@ -35,6 +33,8 @@ jasmine.PrettyPrinter.prototype.format = function(value) {
       this.emitScalar('HTMLNode');
     } else if (value instanceof Date) {
       this.emitScalar('Date(' + value + ')');
+    } else if (value instanceof RegExp) {
+      this.emitScalar(value.toString());
     } else if (value.__Jasmine_been_here_before__) {
       this.emitScalar('<circular reference: ' + (jasmine.isArray_(value) ? 'Array' : 'Object') + '>');
     } else if (jasmine.isArray_(value) || typeof value == 'object') {

@@ -32,6 +32,10 @@ describe("jasmine.pp", function () {
     }, bar: [1, 2, 3]})).toEqual("{ foo : Function, bar : [ 1, 2, 3 ] }");
   });
 
+  it("should stringify RegExp objects properly", function() {
+    expect(jasmine.pp(/x|y|z/)).toEqual("/x|y|z/");
+  });
+
   it("should indicate circular object references", function() {
     var sampleValue = {foo: 'hello'};
     sampleValue.nested = sampleValue;
