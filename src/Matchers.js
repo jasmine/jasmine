@@ -31,8 +31,8 @@ jasmine.Matchers.matcherFn_ = function(matcherName, options) {
     var result = options.test.apply(this, arguments);
     var message;
     if (!result) {
-      if (options.message) {
-        message = options.message.apply(this, arguments);
+      if (this.message) {
+        message = this.message.apply(this, arguments);
       } else {
         var englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
         message = "Expected " + jasmine.pp(this.actual) + " " + englishyPredicate;
@@ -185,10 +185,11 @@ jasmine.Matchers.prototype.wasCalled = jasmine.Matchers.matcherFn_('wasCalled', 
       throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
     }
 
+    this.message = function() {
+      return "Expected spy " + this.actual.identity + " to have been called.";
+    };
+
     return this.actual.wasCalled;
-  },
-  message: function() {
-    return "Expected spy " + this.actual.identity + " to have been called.";
   }
 });
 
@@ -205,10 +206,11 @@ jasmine.Matchers.prototype.wasNotCalled = jasmine.Matchers.matcherFn_('wasNotCal
       throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
     }
 
+    this.message = function() {
+      return "Expected spy " + this.actual.identity + " to not have been called.";
+    };
+
     return !this.actual.wasCalled;
-  },
-  message: function() {
-    return "Expected spy " + this.actual.identity + " to not have been called.";
   }
 });
 
@@ -218,10 +220,11 @@ jasmine.Matchers.prototype.wasCalledWith = jasmine.Matchers.matcherFn_('wasCalle
       throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
     }
 
+    this.message = function() {
+      return "Expected spy to have been called with " + jasmine.pp(arguments) + " but was called with " + jasmine.pp(this.actual.argsForCall);
+    };
+
     return this.env.contains_(this.actual.argsForCall, jasmine.util.argsToArray(arguments));
-  },
-  message: function() {
-    return "Expected spy to have been called with " + jasmine.pp(arguments) + " but was called with " + this.actual.argsForCall;
   }
 });
 
@@ -291,15 +294,17 @@ jasmine.Matchers.prototype.toThrow = jasmine.Matchers.matcherFn_('toThrow', {
     if (exception) {
       result = (expected === undefined || this.env.equals_(exception.message || exception, expected.message || expected));
     }
+
+    this.message = function(expected) {
+      var exception = this.getException_(this.actual, expected);
+      if (exception && (expected === undefined || !this.env.equals_(exception.message || exception, expected.message || expected))) {
+        return ["Expected function to throw", expected.message || expected, ", but it threw", exception.message || exception  ].join(' ');
+      } else {
+        return "Expected function to throw an exception.";
+      }
+    };
+
     return result;
-  },
-  message: function(expected) {
-    var exception = this.getException_(this.actual, expected);
-    if (exception && (expected === undefined || !this.env.equals_(exception.message || exception, expected.message || expected))) {
-      return ["Expected function to throw", expected.message || expected, ", but it threw", exception.message || exception  ].join(' ');
-    } else {
-      return "Expected function to throw an exception.";
-    }
   }
 });
 
