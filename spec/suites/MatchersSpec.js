@@ -471,7 +471,7 @@ describe("jasmine.Matchers", function() {
 
   });
 
-  describe("spy matchers (wasCalled, wasNotCalled, wasCalledWith)", function() {
+  describe("spy matchers È", function() {
     var TestClass;
     beforeEach(function() {
       TestClass = {
@@ -481,28 +481,23 @@ describe("jasmine.Matchers", function() {
       };
     });
 
-    it("should throw an exception when wasCalled and wasNotCalled are invoked with the wrong number of arguments", function() {
-      expect(function() {
-        match(TestClass.normalFunction).wasCalled("unwanted argument");
-      }).toThrow('wasCalled does not take arguments, use wasCalledWith');
+    describe("wasCalled", function() {
+      it("should pass iff the spy was called", function() {
+        expect(match(TestClass.spyFunction).wasCalled()).toEqual(false);
 
-      expect(function() {
-        match(TestClass.normalFunction).wasNotCalled("unwanted argument");
-      }).toThrow('wasNotCalled does not take arguments');
-    });
+        TestClass.spyFunction();
+        expect(match(TestClass.spyFunction).wasCalled()).toEqual(true);
+      });
 
-    describe('with non-spies', function() {
-      it('should always show an error', function () {
+      it("should throw an exception when invoked with any arguments", function() {
+        expect(function() {
+          match(TestClass.normalFunction).wasCalled("unwanted argument");
+        }).toThrow('wasCalled does not take arguments, use wasCalledWith');
+      });
+
+      it('should throw an exception when invoked on a non-spy', function () {
         expect(function() {
           match(TestClass.normalFunction).wasCalled();
-        }).toThrow('Expected a spy, but got Function.');
-
-        expect(function() {
-          match(TestClass.normalFunction).wasNotCalled();
-        }).toThrow('Expected a spy, but got Function.');
-
-        expect(function() {
-          match(TestClass.normalFunction).wasCalledWith();
         }).toThrow('Expected a spy, but got Function.');
 
         expect(function() {
@@ -515,80 +510,84 @@ describe("jasmine.Matchers", function() {
       });
     });
 
-    describe('with spies', function () {
-      describe("wasCalled", function() {
-        it("should pass iff the spy was called", function() {
-          expect(match(TestClass.spyFunction).wasCalled()).toEqual(false);
+    describe("wasNotCalled", function() {
+      it("should pass iff the spy was not called", function() {
+        expect(match(TestClass.spyFunction).wasNotCalled()).toEqual(true);
 
-          TestClass.spyFunction();
-          expect(match(TestClass.spyFunction).wasCalled()).toEqual(true);
-        });
-
+        TestClass.spyFunction();
+        expect(match(TestClass.spyFunction).wasNotCalled()).toEqual(false);
       });
 
-      describe("wasNotCalled", function() {
-        it("should pass iff the spy was not called", function() {
-          expect(match(TestClass.spyFunction).wasNotCalled()).toEqual(true);
-
-          TestClass.spyFunction();
-          expect(match(TestClass.spyFunction).wasNotCalled()).toEqual(false);
-        });
-
+      it("should throw an exception when invoked with any arguments", function() {
+        expect(function() {
+          match(TestClass.normalFunction).wasNotCalled("unwanted argument");
+        }).toThrow('wasNotCalled does not take arguments');
       });
 
-      describe("wasCalledWith", function() {
-        it('wasCalledWith should return true if it was called with the expected args', function() {
-          TestClass.spyFunction('a', 'b', 'c');
-          expect(match(TestClass.spyFunction).wasCalledWith('a', 'b', 'c')).toEqual(true);
+      it('should throw an exception when invoked on a non-spy', function () {
+        expect(function() {
+          match(TestClass.normalFunction).wasNotCalled();
+        }).toThrow('Expected a spy, but got Function.');
+      });
+    });
+
+    describe("wasCalledWith", function() {
+      it('wasCalledWith should return true if it was called with the expected args', function() {
+        TestClass.spyFunction('a', 'b', 'c');
+        expect(match(TestClass.spyFunction).wasCalledWith('a', 'b', 'c')).toEqual(true);
+      });
+
+      it('should return false if it was not called with the expected args', function() {
+        TestClass.spyFunction('a', 'b', 'c');
+        var expected = match(TestClass.spyFunction);
+        expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
+        var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+        expect(result.passed()).toEqual(false);
+        expect(result.expected).toEqual(['c', 'b', 'a']);
+        expect(result.actual.mostRecentCall.args).toEqual(['a', 'b', 'c']);
+      });
+
+      it('should allow matches across multiple calls', function() {
+        var expected = match(TestClass.spyFunction);
+        TestClass.spyFunction('a', 'b', 'c');
+        TestClass.spyFunction('d', 'e', 'f');
+        expect(expected.wasCalledWith('a', 'b', 'c')).toEqual(true);
+        expect(expected.wasCalledWith('d', 'e', 'f')).toEqual(true);
+        expect(expected.wasCalledWith('x', 'y', 'z')).toEqual(false);
+      });
+
+      it('should throw an exception when invoked on a non-spy', function () {
+        expect(function() {
+          match(TestClass.normalFunction).wasCalledWith();
+        }).toThrow('Expected a spy, but got Function.');
+      });
+
+      describe("to build an ExpectationResult", function () {
+        beforeEach(function() {
+          var currentSuite;
+          var spec;
+          currentSuite = env.describe('default current suite', function() {
+            spec = env.it();
+          }, spec);
+          TestClass = { someFunction: function(a, b) {
+          } };
+          spec.spyOn(TestClass, 'someFunction');
         });
 
-        it('should return false if it was not called with the expected args', function() {
-          TestClass.spyFunction('a', 'b', 'c');
-          var expected = match(TestClass.spyFunction);
-          expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
+        it("should should handle the case of a spy", function() {
+          TestClass.someFunction('a', 'c');
+          var matcher = match(TestClass.someFunction);
+          matcher.wasCalledWith('a', 'b');
+
           var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+          expect(result.matcherName).toEqual("wasCalledWith");
           expect(result.passed()).toEqual(false);
-          expect(result.expected).toEqual(['c', 'b', 'a']);
-          expect(result.actual.mostRecentCall.args).toEqual(['a', 'b', 'c']);
-        });
-
-        it('should allow matches across multiple calls', function() {
-          var expected = match(TestClass.spyFunction);
-          TestClass.spyFunction('a', 'b', 'c');
-          TestClass.spyFunction('d', 'e', 'f');
-          expect(expected.wasCalledWith('a', 'b', 'c')).toEqual(true);
-          expect(expected.wasCalledWith('d', 'e', 'f')).toEqual(true);
-          expect(expected.wasCalledWith('x', 'y', 'z')).toEqual(false);
+          expect(result.message).toMatch("['a', 'b']");
+          expect(result.message).toMatch("['a', 'c']");
+          expect(result.actual).toEqual(TestClass.someFunction);
+          expect(result.expected).toEqual(['a','b']);
         });
       });
-    });
-  });
-
-  describe("wasCalledWith to build an ExpectationResult", function () {
-    var TestClass;
-    beforeEach(function() {
-      var currentSuite;
-      var spec;
-      currentSuite = env.describe('default current suite', function() {
-        spec = env.it();
-      }, spec);
-      TestClass = { someFunction: function(a, b) {
-      } };
-      spec.spyOn(TestClass, 'someFunction');
-    });
-
-    it("should should handle the case of a spy", function() {
-      TestClass.someFunction('a', 'c');
-      var matcher = match(TestClass.someFunction);
-      matcher.wasCalledWith('a', 'b');
-
-      var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
-      expect(result.matcherName).toEqual("wasCalledWith");
-      expect(result.passed()).toEqual(false);
-      expect(result.message).toMatch("['a', 'b']");
-      expect(result.message).toMatch("['a', 'c']");
-      expect(result.actual).toEqual(TestClass.someFunction);
-      expect(result.expected).toEqual(['a','b']);
     });
   });
 });
