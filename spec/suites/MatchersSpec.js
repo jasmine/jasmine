@@ -8,7 +8,7 @@ describe("jasmine.Matchers", function() {
   });
 
   function match(value) {
-    return new jasmine.Matchers(env, value, mockSpec);
+    return new env.matchersClass(env, value, mockSpec);
   }
 
   it("toEqual with primitives, objects, dates, html nodes, etc.", function() {
@@ -435,9 +435,9 @@ describe("jasmine.Matchers", function() {
   });
 
   it("toThrow", function() {
-    var expected = new jasmine.Matchers(env, function() {
+    var expected = match(function() {
       throw new Error("Fake Error");
-    }, mockSpec);
+    });
     expect(expected.toThrow()).toEqual(true);
     expect(expected.toThrow("Fake Error")).toEqual(true);
     expect(expected.toThrow(new Error("Fake Error"))).toEqual(true);

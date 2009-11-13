@@ -24,11 +24,10 @@ jasmine.Matchers.prototype.report = function(result, failing_message, details) {
   return result;
 };
 
-jasmine.Matchers.matcherFn_ = function(matcherName, options) {
-  return function () {
-    jasmine.util.extend(this, options);
+jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
+  return function() {
     var matcherArgs = jasmine.util.argsToArray(arguments);
-    var result = options.test.apply(this, arguments);
+    var result = matcherFunction.apply(this, arguments);
     var message;
     if (!result) {
       if (this.message) {
@@ -65,21 +64,17 @@ jasmine.Matchers.matcherFn_ = function(matcherName, options) {
  * @param expected
  */
 
-jasmine.Matchers.prototype.toBe = jasmine.Matchers.matcherFn_('toBe', {
-  test: function(expected) {
-    return this.actual === expected;
-  }
-});
+jasmine.Matchers.prototype.toBe = function(expected) {
+  return this.actual === expected;
+};
 
 /**
  * toNotBe: compares the actual to the expected using !==
  * @param expected
  */
-jasmine.Matchers.prototype.toNotBe = jasmine.Matchers.matcherFn_('toNotBe', {
-  test: function(expected) {
-    return this.actual !== expected;
-  }
-});
+jasmine.Matchers.prototype.toNotBe = function(expected) {
+  return this.actual !== expected;
+};
 
 /**
  * toEqual: compares the actual to the expected using common sense equality. Handles Objects, Arrays, etc.
@@ -87,21 +82,17 @@ jasmine.Matchers.prototype.toNotBe = jasmine.Matchers.matcherFn_('toNotBe', {
  * @param expected
  */
 
-jasmine.Matchers.prototype.toEqual = jasmine.Matchers.matcherFn_('toEqual', {
-  test: function(expected) {
-    return this.env.equals_(this.actual, expected);
-  }
-});
+jasmine.Matchers.prototype.toEqual = function(expected) {
+  return this.env.equals_(this.actual, expected);
+};
 
 /**
  * toNotEqual: compares the actual to the expected using the ! of jasmine.Matchers.toEqual
  * @param expected
  */
-jasmine.Matchers.prototype.toNotEqual = jasmine.Matchers.matcherFn_('toNotEqual', {
-  test: function(expected) {
-    return !this.env.equals_(this.actual, expected);
-  }
-});
+jasmine.Matchers.prototype.toNotEqual = function(expected) {
+  return !this.env.equals_(this.actual, expected);
+};
 
 /**
  * Matcher that compares the actual to the expected using a regular expression.  Constructs a RegExp, so takes
@@ -109,124 +100,91 @@ jasmine.Matchers.prototype.toNotEqual = jasmine.Matchers.matcherFn_('toNotEqual'
  *
  * @param reg_exp
  */
-jasmine.Matchers.prototype.toMatch = jasmine.Matchers.matcherFn_('toMatch', {
-  test: function(expected) {
-    return new RegExp(expected).test(this.actual);
-  }
-});
+jasmine.Matchers.prototype.toMatch = function(expected) {
+  return new RegExp(expected).test(this.actual);
+};
 
 /**
  * Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch
  * @param reg_exp
  */
-jasmine.Matchers.prototype.toNotMatch = jasmine.Matchers.matcherFn_('toNotMatch', {
-  test: function(expected) {
-    return !(new RegExp(expected).test(this.actual));
-  }
-});
+jasmine.Matchers.prototype.toNotMatch = function(expected) {
+  return !(new RegExp(expected).test(this.actual));
+};
 
 /**
  * Matcher that compares the actual to undefined.
  */
-jasmine.Matchers.prototype.toBeDefined = jasmine.Matchers.matcherFn_('toBeDefined', {
-  test: function() {
-    return (this.actual !== undefined);
-  }
-});
+jasmine.Matchers.prototype.toBeDefined = function() {
+  return (this.actual !== undefined);
+};
 
 /**
  * Matcher that compares the actual to undefined.
  */
-jasmine.Matchers.prototype.toBeUndefined = jasmine.Matchers.matcherFn_('toBeUndefined', {
-  test: function() {
-    return (this.actual === undefined);
-  }
-});
+jasmine.Matchers.prototype.toBeUndefined = function() {
+  return (this.actual === undefined);
+};
 
 /**
  * Matcher that compares the actual to null.
  */
-jasmine.Matchers.prototype.toBeNull = jasmine.Matchers.matcherFn_('toBeNull', {
-  test: function() {
-    return (this.actual === null);
-  }
-});
+jasmine.Matchers.prototype.toBeNull = function() {
+  return (this.actual === null);
+};
 
 /**
  * Matcher that boolean not-nots the actual.
  */
-jasmine.Matchers.prototype.toBeTruthy = jasmine.Matchers.matcherFn_('toBeTruthy', {
-  test: function() {
-    return !!this.actual;
-  }
-});
+jasmine.Matchers.prototype.toBeTruthy = function() {
+  return !!this.actual;
+};
 
 
 /**
  * Matcher that boolean nots the actual.
  */
-jasmine.Matchers.prototype.toBeFalsy = jasmine.Matchers.matcherFn_('toBeFalsy', {
-  test: function() {
-    return !this.actual;
-  }
-});
+jasmine.Matchers.prototype.toBeFalsy = function() {
+  return !this.actual;
+};
 
 /**
  * Matcher that checks to see if the actual, a Jasmine spy, was called.
  */
-
-jasmine.Matchers.prototype.wasCalled = jasmine.Matchers.matcherFn_('wasCalled', {
-  test: function() {
-    if (arguments.length > 0) {
-      throw new Error('wasCalled does not take arguments, use wasCalledWith');
-    }
-
-    if (!jasmine.isSpy(this.actual)) {
-      throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
-    }
-
-    this.message = function() {
-      return "Expected spy " + this.actual.identity + " to have been called.";
-    };
-
-    return this.actual.wasCalled;
+jasmine.Matchers.prototype.wasCalled = function() {
+  if (arguments.length > 0) {
+    throw new Error('wasCalled does not take arguments, use wasCalledWith');
   }
-});
+
+  if (!jasmine.isSpy(this.actual)) {
+    throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
+  }
+
+  this.message = function() {
+    return "Expected spy " + this.actual.identity + " to have been called.";
+  };
+
+  return this.actual.wasCalled;
+};
 
 /**
  * Matcher that checks to see if the actual, a Jasmine spy, was not called.
  */
-jasmine.Matchers.prototype.wasNotCalled = jasmine.Matchers.matcherFn_('wasNotCalled', {
-  test: function() {
-    if (arguments.length > 0) {
-      throw new Error('wasNotCalled does not take arguments');
-    }
-
-    if (!jasmine.isSpy(this.actual)) {
-      throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
-    }
-
-    this.message = function() {
-      return "Expected spy " + this.actual.identity + " to not have been called.";
-    };
-
-    return !this.actual.wasCalled;
+jasmine.Matchers.prototype.wasNotCalled = function() {
+  if (arguments.length > 0) {
+    throw new Error('wasNotCalled does not take arguments');
   }
-});
 
-jasmine.Matchers.prototype.wasCalledWith = jasmine.Matchers.matcherFn_('wasCalledWith', {
-  test: function() {
-    if (!jasmine.isSpy(this.actual)) {
-      throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
-    }
-
-    this.message = function() {
-      return "Expected spy to have been called with " + jasmine.pp(arguments) + " but was called with " + jasmine.pp(this.actual.argsForCall);
-    };
-
-    return this.env.contains_(this.actual.argsForCall, jasmine.util.argsToArray(arguments));
+  if (!jasmine.isSpy(this.actual)) {
+    throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
   }
-});
+
+  this.message = function() {
+    return "Expected spy " + this.actual.identity + " to not have been called.";
+  };
+
+  return !this.actual.wasCalled;
+};
 
 /**
  * Matcher that checks to see if the actual, a Jasmine spy, was called with a set of parameters.
@@ -234,49 +192,51 @@ jasmine.Matchers.prototype.wasCalledWith = jasmine.Matchers.matcherFn_('wasCalle
  * @example
  *
  */
+jasmine.Matchers.prototype.wasCalledWith = function() {
+  if (!jasmine.isSpy(this.actual)) {
+    throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
+  }
+
+  this.message = function() {
+    return "Expected spy to have been called with " + jasmine.pp(arguments) + " but was called with " + jasmine.pp(this.actual.argsForCall);
+  };
+
+  return this.env.contains_(this.actual.argsForCall, jasmine.util.argsToArray(arguments));
+};
 
 /**
  * Matcher that checks that the expected item is an element in the actual Array.
  *
  * @param {Object} item
  */
-
-jasmine.Matchers.prototype.toContain = jasmine.Matchers.matcherFn_('toContain', {
-  test: function(expected) {
-    return this.env.contains_(this.actual, expected);
-  }
-});
+jasmine.Matchers.prototype.toContain = function(expected) {
+  return this.env.contains_(this.actual, expected);
+};
 
 /**
  * Matcher that checks that the expected item is NOT an element in the actual Array.
  *
  * @param {Object} item
  */
-jasmine.Matchers.prototype.toNotContain = jasmine.Matchers.matcherFn_('toNotContain', {
-  test: function(expected) {
-    return !this.env.contains_(this.actual, expected);
-  }
-});
+jasmine.Matchers.prototype.toNotContain = function(expected) {
+  return !this.env.contains_(this.actual, expected);
+};
 
-jasmine.Matchers.prototype.toBeLessThan = jasmine.Matchers.matcherFn_('toBeLessThan', {
-  test: function(expected) {
-    return this.actual < expected;
-  }
-});
+jasmine.Matchers.prototype.toBeLessThan = function(expected) {
+  return this.actual < expected;
+};
 
-jasmine.Matchers.prototype.toBeGreaterThan = jasmine.Matchers.matcherFn_('toBeGreaterThan', {
-  test: function(expected) {
-    return this.actual > expected;
-  }
-});
+jasmine.Matchers.prototype.toBeGreaterThan = function(expected) {
+  return this.actual > expected;
+};
 
 /**
  * Matcher that checks that the expected exception was thrown by the actual.
  *
  * @param {String} expectedException
  */
-jasmine.Matchers.prototype.toThrow = jasmine.Matchers.matcherFn_('toThrow', {
-  getException_: function(actual, expected) {
+jasmine.Matchers.prototype.toThrow = function(expected) {
+  function getException_(actual, expected) {
     var exception;
     if (typeof actual != 'function') {
       throw new Error('Actual is not a function');
@@ -287,26 +247,25 @@ jasmine.Matchers.prototype.toThrow = jasmine.Matchers.matcherFn_('toThrow', {
       exception = e;
     }
     return exception;
-  },
-  test: function(expected) {
-    var result = false;
-    var exception = this.getException_(this.actual, expected);
-    if (exception) {
-      result = (expected === undefined || this.env.equals_(exception.message || exception, expected.message || expected));
-    }
-
-    this.message = function(expected) {
-      var exception = this.getException_(this.actual, expected);
-      if (exception && (expected === undefined || !this.env.equals_(exception.message || exception, expected.message || expected))) {
-        return ["Expected function to throw", expected.message || expected, ", but it threw", exception.message || exception  ].join(' ');
-      } else {
-        return "Expected function to throw an exception.";
-      }
-    };
-
-    return result;
   }
-});
+
+  var result = false;
+  var exception = getException_(this.actual, expected);
+  if (exception) {
+    result = (expected === undefined || this.env.equals_(exception.message || exception, expected.message || expected));
+  }
+
+  this.message = function(expected) {
+    var exception = getException_(this.actual, expected);
+    if (exception && (expected === undefined || !this.env.equals_(exception.message || exception, expected.message || expected))) {
+      return ["Expected function to throw", expected.message || expected, ", but it threw", exception.message || exception  ].join(' ');
+    } else {
+      return "Expected function to throw an exception.";
+    }
+  };
+
+  return result;
+};
 
 jasmine.Matchers.Any = function(expectedClass) {
   this.expectedClass = expectedClass;
