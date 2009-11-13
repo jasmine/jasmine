@@ -474,32 +474,35 @@ describe("jasmine.Matchers", function() {
   describe("spy matchers (wasCalled, wasNotCalled, wasCalledWith)", function() {
     var TestClass;
     beforeEach(function() {
-      TestClass = { someFunction: function() {
-      } };
+      TestClass = {
+        normalFunction: function() {
+        },
+        spyFunction: jasmine.createSpy("My spy")
+      };
     });
 
     it("should throw an exception when wasCalled and wasNotCalled are invoked with the wrong number of arguments", function() {
       expect(function() {
-        match(TestClass.someFunction).wasCalled("unwanted argument");
+        match(TestClass.normalFunction).wasCalled("unwanted argument");
       }).toThrow('wasCalled does not take arguments, use wasCalledWith');
 
       expect(function() {
-        match(TestClass.someFunction).wasNotCalled("unwanted argument");
+        match(TestClass.normalFunction).wasNotCalled("unwanted argument");
       }).toThrow('wasNotCalled does not take arguments');
     });
 
     describe('with non-spies', function() {
       it('should always show an error', function () {
         expect(function() {
-          match(TestClass.someFunction).wasCalled();
+          match(TestClass.normalFunction).wasCalled();
         }).toThrow('Expected a spy, but got Function.');
 
         expect(function() {
-          match(TestClass.someFunction).wasNotCalled();
+          match(TestClass.normalFunction).wasNotCalled();
         }).toThrow('Expected a spy, but got Function.');
 
         expect(function() {
-          match(TestClass.someFunction).wasCalledWith();
+          match(TestClass.normalFunction).wasCalledWith();
         }).toThrow('Expected a spy, but got Function.');
 
         expect(function() {
@@ -513,32 +516,35 @@ describe("jasmine.Matchers", function() {
     });
 
     describe('with spies', function () {
+      describe("wasCalled", function() {
+        it("should pass iff the spy was called", function() {
+          expect(match(TestClass.spyFunction).wasCalled()).toEqual(false);
 
-      beforeEach(function () {
-        TestClass.someFunction = jasmine.createSpy("My spy");
+          TestClass.spyFunction();
+          expect(match(TestClass.spyFunction).wasCalled()).toEqual(true);
+        });
+
       });
 
-      it("should track if it was called", function() {
-        expect(match(TestClass.someFunction).wasCalled()).toEqual(false);
-        expect(match(TestClass.someFunction).wasNotCalled()).toEqual(true);
+      describe("wasNotCalled", function() {
+        it("should pass iff the spy was not called", function() {
+          expect(match(TestClass.spyFunction).wasNotCalled()).toEqual(true);
 
-        TestClass.someFunction();
-        expect(match(TestClass.someFunction).wasCalled()).toEqual(true);
-        expect(function () {
-          match(TestClass.someFunction).wasCalled('some arg');
-        }).toThrow('wasCalled does not take arguments, use wasCalledWith');
-        expect(match(TestClass.someFunction).wasNotCalled()).toEqual(false);
+          TestClass.spyFunction();
+          expect(match(TestClass.spyFunction).wasNotCalled()).toEqual(false);
+        });
+
       });
 
       describe("wasCalledWith", function() {
         it('wasCalledWith should return true if it was called with the expected args', function() {
-          TestClass.someFunction('a', 'b', 'c');
-          expect(match(TestClass.someFunction).wasCalledWith('a', 'b', 'c')).toEqual(true);
+          TestClass.spyFunction('a', 'b', 'c');
+          expect(match(TestClass.spyFunction).wasCalledWith('a', 'b', 'c')).toEqual(true);
         });
 
         it('should return false if it was not called with the expected args', function() {
-          TestClass.someFunction('a', 'b', 'c');
-          var expected = match(TestClass.someFunction);
+          TestClass.spyFunction('a', 'b', 'c');
+          var expected = match(TestClass.spyFunction);
           expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
           var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
           expect(result.passed()).toEqual(false);
@@ -547,9 +553,9 @@ describe("jasmine.Matchers", function() {
         });
 
         it('should allow matches across multiple calls', function() {
-          var expected = match(TestClass.someFunction);
-          TestClass.someFunction('a', 'b', 'c');
-          TestClass.someFunction('d', 'e', 'f');
+          var expected = match(TestClass.spyFunction);
+          TestClass.spyFunction('a', 'b', 'c');
+          TestClass.spyFunction('d', 'e', 'f');
           expect(expected.wasCalledWith('a', 'b', 'c')).toEqual(true);
           expect(expected.wasCalledWith('d', 'e', 'f')).toEqual(true);
           expect(expected.wasCalledWith('x', 'y', 'z')).toEqual(false);
