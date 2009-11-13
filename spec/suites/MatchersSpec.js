@@ -471,7 +471,7 @@ describe("jasmine.Matchers", function() {
 
   });
 
-  describe("spy matchers È", function() {
+  describe("spy matchers >>", function() {
     var TestClass;
     beforeEach(function() {
       TestClass = {
@@ -480,6 +480,22 @@ describe("jasmine.Matchers", function() {
         spyFunction: jasmine.createSpy("My spy")
       };
     });
+
+    function shouldThrowAnExceptionWhenInvokedOnANonSpy(methodName) {
+      return function() {
+        expect(function() {
+          match(TestClass.normalFunction)[methodName]();
+        }).toThrow('Expected a spy, but got Function.');
+
+        expect(function() {
+          match(undefined)[methodName]();
+        }).toThrow('Expected a spy, but got undefined.');
+
+        expect(function() {
+          match({some:'object'})[methodName]();
+        }).toThrow('Expected a spy, but got { some : \'object\' }.');
+      };
+    }
 
     describe("wasCalled", function() {
       it("should pass iff the spy was called", function() {
@@ -495,19 +511,7 @@ describe("jasmine.Matchers", function() {
         }).toThrow('wasCalled does not take arguments, use wasCalledWith');
       });
 
-      it('should throw an exception when invoked on a non-spy', function () {
-        expect(function() {
-          match(TestClass.normalFunction).wasCalled();
-        }).toThrow('Expected a spy, but got Function.');
-
-        expect(function() {
-          match(undefined).wasCalled();
-        }).toThrow('Expected a spy, but got undefined.');
-
-        expect(function() {
-          match({some:'object'}).wasCalled();
-        }).toThrow('Expected a spy, but got { some : \'object\' }.');
-      });
+      it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasCalled'));
     });
 
     describe("wasNotCalled", function() {
@@ -524,11 +528,7 @@ describe("jasmine.Matchers", function() {
         }).toThrow('wasNotCalled does not take arguments');
       });
 
-      it('should throw an exception when invoked on a non-spy', function () {
-        expect(function() {
-          match(TestClass.normalFunction).wasNotCalled();
-        }).toThrow('Expected a spy, but got Function.');
-      });
+      it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasNotCalled'));
     });
 
     describe("wasCalledWith", function() {
@@ -556,11 +556,7 @@ describe("jasmine.Matchers", function() {
         expect(expected.wasCalledWith('x', 'y', 'z')).toEqual(false);
       });
 
-      it('should throw an exception when invoked on a non-spy', function () {
-        expect(function() {
-          match(TestClass.normalFunction).wasCalledWith();
-        }).toThrow('Expected a spy, but got Function.');
-      });
+      it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasCalledWith'));
 
       describe("to build an ExpectationResult", function () {
         beforeEach(function() {
