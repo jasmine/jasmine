@@ -122,6 +122,19 @@ describe("TrivialReporter", function() {
       var divs = body.getElementsByTagName("div");
       expect(divs[3].innerHTML).toEqual("Expected 'a' to be null, but it was not");
     });
+
+    it("should add the failure message to the DOM (non-toEquals matchers)", function() {
+      expectationResult = new jasmine.ExpectationResult({
+        matcherName: "toBeNull", passed: false, message: "Expected '1 < 2' to <b>e null, & it was not"
+      });
+
+      spyOn(results, 'getItems').andReturn([expectationResult]);
+
+      trivialReporter.reportSpecResults(spec);
+
+      var divs = body.getElementsByTagName("div");
+      expect(divs[3].innerHTML).toEqual("Expected '1 &lt; 2' to &lt;b&gt;e null, &amp; it was not");
+    });
   });
 
 });

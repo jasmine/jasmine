@@ -19,7 +19,7 @@ jasmine.unimplementedMethod_ = function() {
 jasmine.DEFAULT_UPDATE_INTERVAL = 250;
 
 /**
- * Allows for bound functions to be comapred.  Internal use only.
+ * Allows for bound functions to be compared.  Internal use only.
  *
  * @ignore
  * @private
@@ -322,6 +322,16 @@ jasmine.createSpy = function(name) {
   spyObj.reset();
 
   return spyObj;
+};
+
+/**
+ * Determines whether an object is a spy.
+ *
+ * @param {jasmine.Spy|Object} putativeSpy
+ * @returns {Boolean}
+ */
+jasmine.isSpy = function(putativeSpy) {
+  return putativeSpy && putativeSpy.isSpy;
 };
 
 /**

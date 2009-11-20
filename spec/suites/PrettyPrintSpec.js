@@ -32,6 +32,10 @@ describe("jasmine.pp", function () {
     }, bar: [1, 2, 3]})).toEqual("{ foo : Function, bar : [ 1, 2, 3 ] }");
   });
 
+  it("should stringify RegExp objects properly", function() {
+    expect(jasmine.pp(/x|y|z/)).toEqual("/x|y|z/");
+  });
+
   it("should indicate circular object references", function() {
     var sampleValue = {foo: 'hello'};
     sampleValue.nested = sampleValue;
@@ -67,6 +71,22 @@ describe("jasmine.pp", function () {
 
   it("should abbreviate window objects", function() {
     expect(jasmine.pp(window)).toEqual("<window>");
+  });
+
+  it("should stringify Date objects properly", function() {
+    var now = new Date();
+    expect(jasmine.pp(now)).toEqual("Date(" + now.toString() + ")");
+  });
+
+  it("should stringify spy objects properly", function() {
+    var TestObject = {
+      someFunction: function() {
+      }
+    };
+    spyOn(TestObject, 'someFunction');
+    expect(jasmine.pp(TestObject.someFunction)).toEqual("spy on someFunction");
+
+    expect(jasmine.pp(jasmine.createSpy("something"))).toEqual("spy on something");
   });
 
 });

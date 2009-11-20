@@ -10,7 +10,7 @@ jasmine.Env = function() {
 
   this.reporter = new jasmine.MultiReporter();
 
-  this.updateInterval = jasmine.DEFAULT_UPDATE_INTERVAL
+  this.updateInterval = jasmine.DEFAULT_UPDATE_INTERVAL;
   this.lastUpdate = 0;
   this.specFilter = function() {
     return true;
@@ -19,6 +19,17 @@ jasmine.Env = function() {
   this.nextSpecId_ = 0;
   this.nextSuiteId_ = 0;
   this.equalityTesters_ = [];
+
+  // wrap matchers
+  this.matchersClass = function() {
+    jasmine.Matchers.apply(this, arguments);
+  };
+  jasmine.util.inherit(this.matchersClass, jasmine.Matchers);
+
+  for (var methodName in jasmine.Matchers.prototype) {
+    var orig = jasmine.Matchers.prototype[methodName];
+    this.matchersClass.prototype[methodName] = jasmine.Matchers.matcherFn_(methodName, orig);
+  }
 };
 
 
