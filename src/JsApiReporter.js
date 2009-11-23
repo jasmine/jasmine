@@ -79,7 +79,8 @@ jasmine.JsApiReporter.prototype.resultsForSpecs = function(specIds){
 
 jasmine.JsApiReporter.prototype.summarizeResult_ = function(result){
   var summaryMessages = [];
-  for (var messageIndex in result.messages) {
+  var messagesLength = result.messages.length
+  for (var messageIndex = 0; messageIndex < messagesLength; messageIndex++) {
     var resultMessage = result.messages[messageIndex];
     summaryMessages.push({
       text: resultMessage.text,
