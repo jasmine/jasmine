@@ -14,11 +14,11 @@ class JasmineHelper
   end
 
   def self.spec_dir
-    File.expand_path('spec/javascripts')
+    File.expand_path('spec')
   end
 
   def self.spec_files
-    Dir.glob(File.join(spec_dir, "**/*[Ss]pec.js"))
+    Dir.glob(File.join(spec_dir, "javascripts/**/*[Ss]pec.js"))
   end
 
   def self.specs
@@ -41,7 +41,15 @@ class JasmineHelper
   end
 
   def self.meta_spec_path
-    File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'lib', 'jasmine-ruby', 'jasmine_meta_spec.rb'))    
+    File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'lib', 'jasmine-ruby', 'jasmine_meta_spec.rb'))
+  end
+
+  def self.files
+    []
+  end
+
+  def self.stylesheets
+    []
   end
 
 end

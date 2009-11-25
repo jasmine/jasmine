@@ -32,6 +32,8 @@ Gem::Specification.new do |s|
      "lib/jasmine-ruby.rb",
      "tasks/jasmine.rake",
      "templates/example_spec.js",
+     "templates/spec_helper.js",
+     "templates/jasmine_helper.rb",
      "templates/Rakefile"
   ]
   s.homepage = %q{http://github.com/ragaskar/jasmine-ruby}

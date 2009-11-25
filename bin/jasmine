@@ -17,11 +17,24 @@ end
 if ARGV[0] == 'init'
   require 'ftools'
   File.makedirs('spec/javascripts')
-  dest_root = expand(Dir.pwd, 'spec')
-  dest_spec = expand(Dir.pwd, 'spec/javascripts')
-  File.copy(expand(cwd, 'templates/example_spec.js'), dest_spec)
-  if File.exist?(expand(Dir.pwd, 'Rakefile'))
-    existing_rakefile = expand(Dir.pwd, 'Rakefile')
+  File.makedirs('spec/helpers')
+
+  dest_root = File.expand_path(Dir.pwd)
+  dest_spec = expand(dest_root, 'spec')
+  dest_spec_javascripts = expand(dest_root, 'spec/javascripts')
+  dest_spec_helpers = expand(dest_root, 'spec/helpers')
+
+  unless File.exist?(expand(dest_spec_helpers, 'spec_helper.js'))
+    File.copy(expand(cwd, 'templates/spec_helper.js'), dest_spec_helpers)
+    end
+  unless File.exist?(expand(dest_spec_helpers, 'jasmine_helper.rb'))
+    File.copy(expand(cwd, 'templates/jasmine_helper.rb'), dest_spec_helpers)
+  end
+
+  File.copy(expand(cwd, 'templates/example_spec.js'), dest_spec_javascripts)
+
+  if File.exist?(expand(dest_root, 'Rakefile'))
+    existing_rakefile = expand(dest_root, 'Rakefile')
     load existing_rakefile
     unless Rake::Task.task_defined?('jasmine')
       open(existing_rakefile, 'a') do |f|
@@ -29,7 +42,7 @@ if ARGV[0] == 'init'
       end
     end
   else
-    File.copy(rakefile_path, Dir.pwd)
+    File.copy(rakefile_path, dest_root)
   end
 end
 
