@@ -1,10 +1,21 @@
 jasmine-ruby
 ============
 
-    sudo gem sources -a http://gemcutter.org
-    sudo gem install jasmine-ruby
-    cd ./my_dir
-    jasmine server (or, jasmine server ./my_jasmine_helper.rb)
+    git clone git://github.com/ragaskar/jasmine-ruby.git
+    cd jasmine-ruby
+    rake jeweler:build
+    rake jeweler:install
+    cd ..
+    mkdir test-jasmine
+    cd test-jasmine
+    jasmine init
+    rake jasmine
+
+then
+
     http://localhost:8888
 
-    and go!
+and go!
+
+After a few more touch-ups, I'll update the gemcutter.org gem ...
+
