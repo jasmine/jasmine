@@ -1,7 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "jasmine_helper.rb"))
 
 def start_jasmine_server
-  require File.expand_path(File.join(JasmineHelper.jasmine_root, "contrib/ruby/jasmine_spec_builder"))
+  require File.expand_path(File.join(JasmineHelper.root, "contrib/ruby/jasmine_spec_builder"))
 
   puts "your tests are here:"
   puts "  http://localhost:8888/run.html"

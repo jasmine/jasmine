@@ -1,0 +1,1 @@
+require 'jasmine-ruby/jasmine_helper'
