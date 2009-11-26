@@ -3,6 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "spec/jasmine_helper.
 def jasmine_sources
   sources  = ["src/base.js", "src/util.js", "src/Env.js", "src/Reporter.js", "src/Block.js"]
   sources += Dir.glob('src/*.js').reject{|f| f == 'src/base.js' || sources.include?(f)}.sort
+  sources
 end
 
 def jasmine_filename(version)
@@ -26,19 +27,32 @@ def start_jasmine_server(jasmine_includes = nil)
     :jasmine_files => jasmine_includes)
 end
 
+task :default => 'jasmine:dist'
+
 namespace :jasmine do
+
+  desc 'Prepares for distribution'
+  task :dist => ['jasmine:build', 'jasmine:doc']
+
   desc 'Builds lib/jasmine from source'
-  task :build => 'jasmine:doc' do
+  task :build do
     puts 'Building Jasmine from source'
     require 'json'
+    
     sources = jasmine_sources
     version = version_hash
+
     old_jasmine_files = Dir.glob('lib/jasmine*.js')
     old_jasmine_files.each do |file|
       File.delete(file)
     end
+
     jasmine = File.new("lib/#{jasmine_filename version}", 'w')
-    jasmine.puts(File.read(sources.shift))
+
+    sources.each do |source_filename|
+      jasmine.puts(File.read(source_filename))
+    end
+
     jasmine.puts %{
 jasmine.version_= {
   "major": #{version['major']},
@@ -47,9 +61,7 @@ jasmine.version_= {
   "revision": #{Time.now.to_i}
   };
 }
-    sources.each do |source_filename|
-      jasmine.puts(File.read(source_filename))
-    end
+
     jasmine.close
   end
 
