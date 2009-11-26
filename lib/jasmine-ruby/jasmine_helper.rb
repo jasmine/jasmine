@@ -32,14 +32,7 @@ class JasmineHelper
   def self.spec_helpers
     spec_helpers_files.collect {|f| f.sub(spec_dir, "/spec")}
   end
-
-  def self.dir_mappings
-    {
-      "/spec" => spec_dir,
-      "/lib" => lib_dir
-    }
-  end
-
+ 
   def self.meta_spec_path
     File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'lib', 'jasmine-ruby', 'jasmine_meta_spec.rb'))
   end

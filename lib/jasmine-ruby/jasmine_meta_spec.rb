@@ -1,11 +1,12 @@
 require 'rubygems'
 require "selenium_rc"
 require File.expand_path(File.join(File.dirname(__FILE__), "jasmine_helper.rb"))
-require File.expand_path(File.join(JasmineHelper.root, "contrib/ruby/jasmine_spec_builder"))
+require File.expand_path(File.join(File.dirname(__FILE__), "jasmine_runner.rb"))
+require File.expand_path(File.join(File.dirname(__FILE__), "jasmine_spec_builder"))
 
 jasmine_runner = Jasmine::Runner.new(SeleniumRC::Server.new.jar_path,
+                                     Dir.pwd,
                                      JasmineHelper.specs,
-                                     JasmineHelper.dir_mappings,
                                      { :spec_helpers => JasmineHelper.files + JasmineHelper.spec_helpers,
                                        :stylesheets => JasmineHelper.stylesheets 
                                        })

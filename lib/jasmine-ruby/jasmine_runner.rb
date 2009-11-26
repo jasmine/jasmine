@@ -148,20 +148,27 @@ module Jasmine
   end
 
   class SimpleServer
-    def self.start(port, spec_files_or_proc, mappings, options = {})
+    def self.start(port, root_path, spec_files_or_proc, options = {})
       require 'thin'
       config = {
         '/__suite__' => Jasmine::FocusedSuite.new(spec_files_or_proc, options),
         '/run.html' => Jasmine::Redirect.new('/'),
         '/' => Jasmine::RunAdapter.new(spec_files_or_proc, options)
       }
-      mappings.each do |from, to|
-        config[from] = Rack::File.new(to)
+      if (options[:mappings])
+        options[:mappings].each do |from, to|
+          config[from] = Rack::File.new(to)
+        end
       end
 
       config["/__JASMINE_ROOT__"] = Rack::File.new(Jasmine.root)
 
+      file_serve_config = {
+        '/' => Rack::File.new(root_path)
+      }
+
       app = Rack::Cascade.new([
+        Rack::URLMap.new(file_serve_config),
         Rack::URLMap.new(config),
         JsAlert.new
       ])
@@ -219,10 +226,10 @@ module Jasmine
   end
 
   class Runner
-    def initialize(selenium_jar_path, spec_files, dir_mappings, options={})
+    def initialize(selenium_jar_path, root_path, spec_files, options={})
+      @root_path = root_path
       @selenium_jar_path = selenium_jar_path
       @spec_files = spec_files
-      @dir_mappings = dir_mappings
       @options = options
 
       @browser = options[:browser] ? options[:browser].delete(:browser) : 'firefox'
@@ -253,7 +260,7 @@ module Jasmine
 
       @jasmine_server_pid = fork do
         Process.setpgrp
-        Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings, @options)
+        Jasmine::SimpleServer.start(@jasmine_server_port, @root_path, @spec_files, @options)
         exit! 0
       end
       puts "jasmine server started.  pid is #{@jasmine_server_pid}"
