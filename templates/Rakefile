@@ -10,7 +10,6 @@ namespace :jasmine do
   require 'spec/rake/spectask'
   Spec::Rake::SpecTask.new(:ci) do |t|
     t.spec_opts = ["--color", "--format", "specdoc"]
-    t.ruby_opts = ["MY_ROOT=foo"]
     t.verbose = true
     t.spec_files = [JasmineHelper.meta_spec_path]
   end
@@ -19,7 +18,7 @@ namespace :jasmine do
     puts "  http://localhost:8888/run.html"
 
     Jasmine::SimpleServer.start(8888,
-                                File.expand_path(File.join(File.dirname(__FILE__))),
+                                File.expand_path(Dir.pwd),
                                 lambda { JasmineHelper.specs },
                                 { :spec_helpers => JasmineHelper.files + JasmineHelper.spec_helpers,
                                   :stylesheets => JasmineHelper.stylesheets

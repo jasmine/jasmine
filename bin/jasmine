@@ -26,23 +26,29 @@ if ARGV[0] == 'init'
 
   unless File.exist?(expand(dest_spec_helpers, 'spec_helper.js'))
     File.copy(expand(cwd, 'templates/spec_helper.js'), dest_spec_helpers)
-    end
+  end
   unless File.exist?(expand(dest_spec_helpers, 'jasmine_helper.rb'))
     File.copy(expand(cwd, 'templates/jasmine_helper.rb'), dest_spec_helpers)
   end
 
   File.copy(expand(cwd, 'templates/example_spec.js'), dest_spec_javascripts)
 
-  if File.exist?(expand(dest_root, 'Rakefile'))
-    existing_rakefile = expand(dest_root, 'Rakefile')
-    load existing_rakefile
-    unless Rake::Task.task_defined?('jasmine')
-      open(existing_rakefile, 'a') do |f|
-        f.write(File.read(rakefile_path))
-      end
-    end
+  rails_tasks_dir = expand(dest_root, 'lib', 'tasks')
+  if File.exist?(rails_tasks_dir)
+    File.makedirs('lib/tasks/jasmine')
+    File.copy(rakefile_path, File.join(rails_tasks_dir, 'jasmine/jasmine.rake'))
   else
-    File.copy(rakefile_path, dest_root)
+    if File.exist?(expand(dest_root, 'Rakefile'))
+      existing_rakefile = expand(dest_root, 'Rakefile')
+      load existing_rakefile
+      unless Rake::Task.task_defined?('jasmine')
+        open(existing_rakefile, 'a') do |f|
+          f.write(File.read(rakefile_path))
+        end
+      end
+    else
+      File.copy(rakefile_path, dest_root)
+    end
   end
 end
 
