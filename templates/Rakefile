@@ -4,7 +4,6 @@ namespace :jasmine do
   if File.exist?(helper_overrides)
     require helper_overrides
   end
-  require File.expand_path(File.join(JasmineHelper.root, "contrib/ruby/jasmine_spec_builder"))
 
   desc "Run continuous integration tests"
   require "spec"

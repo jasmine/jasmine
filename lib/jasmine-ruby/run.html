@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+  <title>Jasmine suite</title>
+  <% css_files.each do |css_file| %>
+  <link rel="stylesheet" href="<%= css_file %>" type="text/css" media="screen"/>
+  <% end %>
+
+  <% jasmine_files.each do |jasmine_file| %>
+  <script src="<%= jasmine_file %>" type="text/javascript"></script>
+  <% end %>
+
+  <% spec_helpers.each do |spec_helper| %>
+  <script src="<%= spec_helper %>" type="text/javascript"></script>
+  <% end %>
+
+  <script type="text/javascript">
+    var jsApiReporter;
+    (function() {
+      var jasmineEnv = jasmine.getEnv();
+
+      jsApiReporter = new jasmine.JsApiReporter();
+      var trivialReporter = new jasmine.TrivialReporter();
+
+      jasmineEnv.addReporter(jsApiReporter);
+      jasmineEnv.addReporter(trivialReporter);
+
+      jasmineEnv.specFilter = function(spec) {
+        return trivialReporter.specFilter(spec);
+      };
+
+      window.onload = function() {
+        jasmineEnv.execute();
+      };
+    })();
+  </script>
+
+  <% spec_files.each do |spec_file| %>
+  <script src="<%= spec_file %>" type="text/javascript"></script>
+  <% end %>
+
+</head>
+<body>
+<div id="jasmine_content"></div>
+</body>
+</html>
