@@ -8,14 +8,14 @@ describe("jasmine.pp", function () {
     expect(jasmine.pp(true)).toEqual("true");
     expect(jasmine.pp(false)).toEqual("false");
     expect(jasmine.pp(null)).toEqual("null");
-    expect(jasmine.pp(undefined)).toEqual("undefined");
+    expect(jasmine.pp(jasmine.undefined)).toEqual("undefined");
     expect(jasmine.pp(3)).toEqual("3");
     expect(jasmine.pp(-3.14)).toEqual("-3.14");
   });
 
   it("should stringify arrays properly", function() {
     expect(jasmine.pp([1, 2])).toEqual("[ 1, 2 ]");
-    expect(jasmine.pp([1, 'foo', {}, undefined, null])).toEqual("[ 1, 'foo', {  }, undefined, null ]");
+    expect(jasmine.pp([1, 'foo', {}, jasmine.undefined, null])).toEqual("[ 1, 'foo', {  }, undefined, null ]");
   });
 
   it("should indicate circular array references", function() {
@@ -27,7 +27,7 @@ describe("jasmine.pp", function () {
 
   it("should stringify objects properly", function() {
     expect(jasmine.pp({foo: 'bar'})).toEqual("{ foo : 'bar' }");
-    expect(jasmine.pp({foo:'bar', baz:3, nullValue: null, undefinedValue: undefined})).toEqual("{ foo : 'bar', baz : 3, nullValue : null, undefinedValue : undefined }");
+    expect(jasmine.pp({foo:'bar', baz:3, nullValue: null, undefinedValue: jasmine.undefined})).toEqual("{ foo : 'bar', baz : 3, nullValue : null, undefinedValue : undefined }");
     expect(jasmine.pp({foo: function () {
     }, bar: [1, 2, 3]})).toEqual("{ foo : Function, bar : [ 1, 2, 3 ] }");
   });

@@ -34,8 +34,29 @@ namespace :jasmine do
   desc 'Prepares for distribution'
   task :dist => ['jasmine:build', 'jasmine:doc']
 
+  desc 'Check jasmine sources for coding problems'
+  task :lint do
+    passed = true
+    jasmine_sources.each do |src|
+      lines = File.read(src).split(/\n/)
+      lines.each_index do |i|
+        line = lines[i]
+        undefineds = line.scan(/.?undefined/)
+        if undefineds.include?(" undefined") || undefineds.include?("\tundefined")
+          puts "Dangerous undefined at #{src}:#{i}:\n > #{line}"
+          passed = false
+        end
+      end
+    end
+
+    unless passed
+      puts "Lint failed!"
+      exit 1
+    end
+  end
+
   desc 'Builds lib/jasmine from source'
-  task :build do
+  task :build => :lint do
     puts 'Building Jasmine from source'
     require 'json'
     

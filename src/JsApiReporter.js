@@ -88,7 +88,7 @@ jasmine.JsApiReporter.prototype.summarizeResult_ = function(result){
       type: resultMessage.type,
       message: resultMessage.message,
       trace: {
-        stack: resultMessage.passed && !resultMessage.passed() ? resultMessage.trace.stack : undefined
+        stack: resultMessage.passed && !resultMessage.passed() ? resultMessage.trace.stack : jasmine.undefined
       }
     });
   };

@@ -60,8 +60,8 @@ describe('jasmine.jsApiReporter', function() {
         expect(summarizedResult.messages[0].message).toEqual(result.messages[0].message);
         expect(summarizedResult.messages[0].passed).toBeTruthy();
         expect(summarizedResult.messages[0].type).toEqual('ExpectationResult');
-        expect(summarizedResult.messages[0].text).toEqual(undefined);
-        expect(summarizedResult.messages[0].trace.stack).toEqual(undefined);
+        expect(summarizedResult.messages[0].text).toEqual(jasmine.undefined);
+        expect(summarizedResult.messages[0].trace.stack).toEqual(jasmine.undefined);
       });
 
       it("should have a stack trace for failing specs", function() {

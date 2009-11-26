@@ -1111,7 +1111,7 @@ describe("jasmine spec running", function () {
     expect(spec1Matcher.matcherForSpec("expected")).toEqual("matcherForSpec: actual: xxx; expected: expected");
 
     expect(spec2Matcher.matcherForSuite("expected")).toEqual("matcherForSuite: actual: yyy; expected: expected");
-    expect(spec2Matcher.matcherForSpec).toBe(undefined);
+    expect(spec2Matcher.matcherForSpec).toBe(jasmine.undefined);
   });
 
 });

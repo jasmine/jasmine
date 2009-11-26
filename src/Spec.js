@@ -171,11 +171,11 @@ jasmine.Spec.prototype.explodes = function() {
 };
 
 jasmine.Spec.prototype.spyOn = function(obj, methodName, ignoreMethodDoesntExist) {
-  if (obj == undefined) {
+  if (obj == jasmine.undefined) {
     throw "spyOn could not find an object to spy upon for " + methodName + "()";
   }
 
-  if (!ignoreMethodDoesntExist && obj[methodName] === undefined) {
+  if (!ignoreMethodDoesntExist && obj[methodName] === jasmine.undefined) {
     throw methodName + '() method does not exist';
   }
 
