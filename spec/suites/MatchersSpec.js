@@ -43,8 +43,8 @@ describe("jasmine.Matchers", function() {
     expect(match(true).toNotEqual(false)).toEqual(true);
     expect((match(true).toNotEqual(true))).toEqual(false);
 
-    expect((match(['a', 'b']).toEqual(['a', undefined]))).toEqual(false);
-    expect((match(['a', 'b']).toEqual(['a', 'b', undefined]))).toEqual(false);
+    expect((match(['a', 'b']).toEqual(['a', jasmine.undefined]))).toEqual(false);
+    expect((match(['a', 'b']).toEqual(['a', 'b', jasmine.undefined]))).toEqual(false);
   });
 
   it("toEqual to build an Expectation Result", function() {
@@ -197,11 +197,11 @@ describe("jasmine.Matchers", function() {
 
   it("toBeDefined", function() {
     expect(match('foo').toBeDefined()).toEqual(true);
-    expect(match(undefined).toBeDefined()).toEqual(false);
+    expect(match(jasmine.undefined).toBeDefined()).toEqual(false);
   });
 
   it("toBeDefined to build an ExpectationResult", function() {
-    var matcher = match(undefined);
+    var matcher = match(jasmine.undefined);
     matcher.toBeDefined();
 
     var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
@@ -209,17 +209,17 @@ describe("jasmine.Matchers", function() {
     expect(result.matcherName).toEqual("toBeDefined");
     expect(result.passed()).toEqual(false);
     expect(result.message).toEqual('Expected undefined to be defined.');
-    expect(result.actual).toEqual(undefined);
+    expect(result.actual).toEqual(jasmine.undefined);
   });
 
   it("toBeUndefined", function() {
     expect(match('foo').toBeUndefined()).toEqual(false);
-    expect(match(undefined).toBeUndefined()).toEqual(true);
+    expect(match(jasmine.undefined).toBeUndefined()).toEqual(true);
   });
 
   it("toBeNull", function() {
     expect(match(null).toBeNull()).toEqual(true);
-    expect(match(undefined).toBeNull()).toEqual(false);
+    expect(match(jasmine.undefined).toBeNull()).toEqual(false);
     expect(match("foo").toBeNull()).toEqual(false);
   });
 
@@ -254,7 +254,7 @@ describe("jasmine.Matchers", function() {
   it("toBeFalsy", function() {
     expect(match(false).toBeFalsy()).toEqual(true);
     expect(match(true).toBeFalsy()).toEqual(false);
-    expect(match(undefined).toBeFalsy()).toEqual(true);
+    expect(match(jasmine.undefined).toBeFalsy()).toEqual(true);
     expect(match(0).toBeFalsy()).toEqual(true);
     expect(match("").toBeFalsy()).toEqual(true);
   });
@@ -276,7 +276,7 @@ describe("jasmine.Matchers", function() {
   it("toBeTruthy", function() {
     expect(match(false).toBeTruthy()).toEqual(false);
     expect(match(true).toBeTruthy()).toEqual(true);
-    expect(match(undefined).toBeTruthy()).toEqual(false);
+    expect(match(jasmine.undefined).toBeTruthy()).toEqual(false);
     expect(match(0).toBeTruthy()).toEqual(false);
     expect(match("").toBeTruthy()).toEqual(false);
     expect(match("hi").toBeTruthy()).toEqual(true);
@@ -297,11 +297,11 @@ describe("jasmine.Matchers", function() {
   });
 
   it("toEqual", function() {
-    expect(match(undefined).toEqual(undefined)).toEqual(true);
+    expect(match(jasmine.undefined).toEqual(jasmine.undefined)).toEqual(true);
     expect(match({foo:'bar'}).toEqual({foo:'bar'})).toEqual(true);
-    expect(match("foo").toEqual({bar: undefined})).toEqual(false);
-    expect(match({foo: undefined}).toEqual("goo")).toEqual(false);
-    expect(match({foo: {bar :undefined}}).toEqual("goo")).toEqual(false);
+    expect(match("foo").toEqual({bar: jasmine.undefined})).toEqual(false);
+    expect(match({foo: jasmine.undefined}).toEqual("goo")).toEqual(false);
+    expect(match({foo: {bar :jasmine.undefined}}).toEqual("goo")).toEqual(false);
   });
 
   it("toEqual with jasmine.any()", function() {
@@ -321,7 +321,7 @@ describe("jasmine.Matchers", function() {
   });
 
   it("toEqual handles circular objects ok", function() {
-    expect(match({foo: "bar", baz: undefined}).toEqual({foo: "bar", baz: undefined})).toEqual(true);
+    expect(match({foo: "bar", baz: jasmine.undefined}).toEqual({foo: "bar", baz: jasmine.undefined})).toEqual(true);
     expect(match({foo:['bar','baz','quux']}).toEqual({foo:['bar','baz','quux']})).toEqual(true);
     expect(match({foo: {bar:'baz'}, quux:'corge'}).toEqual({foo:{bar:'baz'}, quux:'corge'})).toEqual(true);
 
@@ -488,7 +488,7 @@ describe("jasmine.Matchers", function() {
         }).toThrow('Expected a spy, but got Function.');
 
         expect(function() {
-          match(undefined)[methodName]();
+          match(jasmine.undefined)[methodName]();
         }).toThrow('Expected a spy, but got undefined.');
 
         expect(function() {

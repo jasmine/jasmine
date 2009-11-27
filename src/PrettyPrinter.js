@@ -17,7 +17,7 @@ jasmine.PrettyPrinter.prototype.format = function(value) {
 
   this.ppNestLevel_++;
   try {
-    if (value === undefined) {
+    if (value === jasmine.undefined) {
       this.emitScalar('undefined');
     } else if (value === null) {
       this.emitScalar('null');

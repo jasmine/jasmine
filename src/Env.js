@@ -151,7 +151,7 @@ jasmine.Env.prototype.compareObjects_ = function(a, b, mismatchKeys, mismatchVal
   b.__Jasmine_been_here_before__ = a;
 
   var hasKey = function(obj, keyName) {
-    return obj != null && obj[keyName] !== undefined;
+    return obj != null && obj[keyName] !== jasmine.undefined;
   };
 
   for (var property in b) {
@@ -186,8 +186,8 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
 
   if (a === b) return true;
 
-  if (a === undefined || a === null || b === undefined || b === null) {
-    return (a == undefined && b == undefined);
+  if (a === jasmine.undefined || a === null || b === jasmine.undefined || b === null) {
+    return (a == jasmine.undefined && b == jasmine.undefined);
   }
 
   if (jasmine.isDomNode(a) && jasmine.isDomNode(b)) {
@@ -213,7 +213,7 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
   for (var i = 0; i < this.equalityTesters_.length; i++) {
     var equalityTester = this.equalityTesters_[i];
     var result = equalityTester(a, b, this, mismatchKeys, mismatchValues);
-    if (result !== undefined) return result;
+    if (result !== jasmine.undefined) return result;
   }
 
   //Straight check

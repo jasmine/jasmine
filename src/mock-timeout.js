@@ -18,11 +18,11 @@ jasmine.FakeTimer = function() {
   };
 
   self.clearTimeout = function(timeoutKey) {
-    self.scheduledFunctions[timeoutKey] = undefined;
+    self.scheduledFunctions[timeoutKey] = jasmine.undefined;
   };
 
   self.clearInterval = function(timeoutKey) {
-    self.scheduledFunctions[timeoutKey] = undefined;
+    self.scheduledFunctions[timeoutKey] = jasmine.undefined;
   };
 
 };
@@ -45,11 +45,11 @@ jasmine.FakeTimer.prototype.runFunctionsWithinRange = function(oldMillis, nowMil
   var funcsToRun = [];
   for (var timeoutKey in this.scheduledFunctions) {
     scheduledFunc = this.scheduledFunctions[timeoutKey];
-    if (scheduledFunc != undefined &&
+    if (scheduledFunc != jasmine.undefined &&
         scheduledFunc.runAtMillis >= oldMillis &&
         scheduledFunc.runAtMillis <= nowMillis) {
       funcsToRun.push(scheduledFunc);
-      this.scheduledFunctions[timeoutKey] = undefined;
+      this.scheduledFunctions[timeoutKey] = jasmine.undefined;
     }
   }
 
