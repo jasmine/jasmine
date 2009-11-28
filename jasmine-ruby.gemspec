@@ -33,7 +33,6 @@ Gem::Specification.new do |s|
      "lib/jasmine-ruby/jasmine_spec_builder.rb",
      "lib/jasmine-ruby/run.html",
      "lib/jasmine-ruby.rb",
-     "tasks/jasmine.rake",
      "templates/example_spec.js",
      "templates/spec_helper.js",
      "templates/jasmine_helper.rb",
