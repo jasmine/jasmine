@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rajan Agaskar"]
-  s.date = %q{2009-11-26}
+  s.date = %q{2009-12-05}
   s.default_executable = %q{jasmine}
   s.description = %q{Jasmine Ruby}
   s.email = %q{ragaskar@gmail.com}
@@ -19,9 +19,6 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "bin/jasmine",
-     "jasmine/contrib/ruby/jasmine_runner.rb",
-     "jasmine/contrib/ruby/jasmine_spec_builder.rb",
-     "jasmine/contrib/ruby/run.html",
      "jasmine/lib/TrivialReporter.js",
      "jasmine/lib/consolex.js",
      "jasmine/lib/jasmine-0.10.0.js",
@@ -33,7 +30,7 @@ Gem::Specification.new do |s|
      "lib/jasmine-ruby/jasmine_runner.rb",
      "lib/jasmine-ruby/jasmine_spec_builder.rb",
      "lib/jasmine-ruby/run.html",
-     "lib/jasmine-ruby.rb",
+     "templates/Rakefile",
      "templates/example_spec.js",
      "templates/jasmine_helper.rb",
      "templates/spec_helper.js"
@@ -54,16 +51,25 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rspec>, [">= 1.1.5"])
       s.add_runtime_dependency(%q<rack>, [">= 1.0.0"])
-      s.add_runtime_dependency(%q<thin>, [">= 1.2.4"])
+      s.add_runtime_dependency(%q<json>, [">= 1.1.9"])
+      s.add_runtime_dependency(%q<pivotal-selenium-rc>, [">= 1.11.20090610"])
+      s.add_runtime_dependency(%q<selenium-client>, [">= 1.2.17"])
+      s.add_runtime_dependency(%q<thin>, ["= 1.2.4"])
     else
       s.add_dependency(%q<rspec>, [">= 1.1.5"])
       s.add_dependency(%q<rack>, [">= 1.0.0"])
-      s.add_dependency(%q<thin>, [">= 1.2.4"])
+      s.add_dependency(%q<json>, [">= 1.1.9"])
+      s.add_dependency(%q<pivotal-selenium-rc>, [">= 1.11.20090610"])
+      s.add_dependency(%q<selenium-client>, [">= 1.2.17"])
+      s.add_dependency(%q<thin>, ["= 1.2.4"])
     end
   else
     s.add_dependency(%q<rspec>, [">= 1.1.5"])
     s.add_dependency(%q<rack>, [">= 1.0.0"])
-    s.add_dependency(%q<thin>, [">= 1.2.4"])
+    s.add_dependency(%q<json>, [">= 1.1.9"])
+    s.add_dependency(%q<pivotal-selenium-rc>, [">= 1.11.20090610"])
+    s.add_dependency(%q<selenium-client>, [">= 1.2.17"])
+    s.add_dependency(%q<thin>, ["= 1.2.4"])
   end
 end
 
