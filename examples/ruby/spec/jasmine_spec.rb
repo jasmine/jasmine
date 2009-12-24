@@ -11,7 +11,7 @@ jasmine_runner = if ENV['SAUCELABS'] == 'true'
     :saucelabs_config_file => File.expand_path(File.join(File.dirname(__FILE__), "saucelabs.yml")))
 else
   require "selenium_rc"
-  Jasmine::Runner.new(SeleniumRC::Server.new.jar_path,
+  Jasmine::Runner.new(SeleniumRC::Server.new('localhost').jar_path,
     JasmineHelper.specs,
     JasmineHelper.dir_mappings)
 end

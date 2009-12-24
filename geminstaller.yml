@@ -6,8 +6,8 @@ gems:
   version: 0.0.2.1
 - name: json
   version: 1.1.9
-- name: pivotal-selenium-rc
-  version: 1.11.20090610
+- name: selenium-rc
+  version: 2.1.0
 - name: rack
   version: 1.0.0
 - name: thin
