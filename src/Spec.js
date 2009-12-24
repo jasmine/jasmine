@@ -98,9 +98,7 @@ jasmine.Spec.prototype.addMatchers = function(matchersPrototype) {
     parent.apply(this, arguments);
   };
   jasmine.util.inherit(newMatchersClass, parent);
-  for (var method in matchersPrototype) {
-    newMatchersClass.prototype[method] = matchersPrototype[method];
-  }
+  jasmine.Matchers.wrapInto_(matchersPrototype, newMatchersClass);
   this.matchersClass = newMatchersClass;
 };
 

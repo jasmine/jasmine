@@ -26,10 +26,7 @@ jasmine.Env = function() {
   };
   jasmine.util.inherit(this.matchersClass, jasmine.Matchers);
 
-  for (var methodName in jasmine.Matchers.prototype) {
-    var orig = jasmine.Matchers.prototype[methodName];
-    this.matchersClass.prototype[methodName] = jasmine.Matchers.matcherFn_(methodName, orig);
-  }
+  jasmine.Matchers.wrapInto_(jasmine.Matchers.prototype, this.matchersClass);
 };
 
 

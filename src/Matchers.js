@@ -8,13 +8,18 @@ jasmine.Matchers = function(env, actual, spec) {
   this.env = env;
   this.actual = actual;
   this.spec = spec;
+  this.reportWasCalled_ = false;
 };
 
 jasmine.Matchers.pp = function(str) {
   return jasmine.util.htmlEscape(jasmine.pp(str));
 };
 
+/** @deprecated */
 jasmine.Matchers.prototype.report = function(result, failing_message, details) {
+//  todo first: report deprecation warning [xw]
+//  todo later: throw new Error("As of jasmine 0.xx, custom matchers must be implemented differently -- please see jasmine docs");
+  this.reportWasCalled_ = true;
   var expectationResult = new jasmine.ExpectationResult({
     passed: result,
     message: failing_message,
@@ -24,10 +29,20 @@ jasmine.Matchers.prototype.report = function(result, failing_message, details) {
   return result;
 };
 
+jasmine.Matchers.wrapInto_ = function(prototype, matchersClass) {
+  for (var methodName in prototype) {
+    if (methodName == 'report') continue;
+    var orig = prototype[methodName];
+    matchersClass.prototype[methodName] = jasmine.Matchers.matcherFn_(methodName, orig);
+  }
+};
+
 jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
   return function() {
     var matcherArgs = jasmine.util.argsToArray(arguments);
     var result = matcherFunction.apply(this, arguments);
+    if (this.reportWasCalled_) return result;
+    
     var message;
     if (!result) {
       if (this.message) {
