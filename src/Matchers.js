@@ -4,10 +4,11 @@
  * @param actual
  * @param {jasmine.Spec} spec
  */
-jasmine.Matchers = function(env, actual, spec) {
+jasmine.Matchers = function(env, actual, spec, opt_isNot) {
   this.env = env;
   this.actual = actual;
   this.spec = spec;
+  this.isNot = opt_isNot || false;
   this.reportWasCalled_ = false;
 };
 
@@ -41,15 +42,23 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
   return function() {
     var matcherArgs = jasmine.util.argsToArray(arguments);
     var result = matcherFunction.apply(this, arguments);
+
+    if (this.isNot) {
+      result = !result;
+    }
+
     if (this.reportWasCalled_) return result;
     
     var message;
     if (!result) {
       if (this.message) {
         message = this.message.apply(this, arguments);
+        if (jasmine.isArray_(message)) {
+          message = message[this.isNot ? 1 : 0];
+        }
       } else {
         var englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
-        message = "Expected " + jasmine.pp(this.actual) + " " + englishyPredicate;
+        message = "Expected " + jasmine.pp(this.actual) + (this.isNot ? " not " : " ") + englishyPredicate;
         if (matcherArgs.length > 0) {
           for (var i = 0; i < matcherArgs.length; i++) {
             if (i > 0) message += ",";

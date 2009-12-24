@@ -1,14 +1,23 @@
 describe("jasmine.Matchers", function() {
-  var env, mockSpec;
+  var env, spec;
 
   beforeEach(function() {
     env = new jasmine.Env();
     env.updateInterval = 0;
-    mockSpec = jasmine.createSpyObj('spec', ['addMatcherResult']);
+
+    var suite = env.describe("suite", function() {
+      spec = env.it("spec", function() {
+      });
+    });
+    spyOn(spec, 'addMatcherResult');
   });
 
   function match(value) {
-    return new env.matchersClass(env, value, mockSpec);
+    return spec.expect(value);
+  }
+  
+  function lastResult() {
+    return spec.addMatcherResult.mostRecentCall.args[0];
   }
 
   it("toEqual with primitives, objects, dates, html nodes, etc.", function() {
@@ -53,7 +62,7 @@ describe("jasmine.Matchers", function() {
     var expected = 'b';
     matcher.toEqual(expected);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toEqual");
     expect(result.passed()).toEqual(false);
@@ -68,7 +77,7 @@ describe("jasmine.Matchers", function() {
     var matcher = match(str);
     matcher.toNotEqual(str);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toNotEqual");
     expect(result.passed()).toEqual(false);
@@ -97,7 +106,7 @@ describe("jasmine.Matchers", function() {
     var matcher = match(actual);
     matcher.toBe(expected);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toBe");
     expect(result.passed()).toEqual(false);
@@ -112,7 +121,7 @@ describe("jasmine.Matchers", function() {
     var matcher = match(str);
     matcher.toNotBe(str);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toNotBe");
     expect(result.passed()).toEqual(false);
@@ -141,7 +150,7 @@ describe("jasmine.Matchers", function() {
     var expected = /b/;
     matcher.toMatch(expected);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toMatch");
     expect(result.passed()).toEqual(false);
@@ -157,7 +166,7 @@ describe("jasmine.Matchers", function() {
     var expected = 'b';
     matcher.toMatch(expected);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toMatch");
     expect(result.passed()).toEqual(false);
@@ -172,7 +181,7 @@ describe("jasmine.Matchers", function() {
     var expected = /a/;
     matcher.toNotMatch(expected);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toNotMatch");
     expect(result.passed()).toEqual(false);
@@ -186,7 +195,7 @@ describe("jasmine.Matchers", function() {
     var matcher = match(str);
     matcher.toNotMatch(str);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toNotMatch");
     expect(result.passed()).toEqual(false);
@@ -204,7 +213,7 @@ describe("jasmine.Matchers", function() {
     var matcher = match(jasmine.undefined);
     matcher.toBeDefined();
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeDefined");
     expect(result.passed()).toEqual(false);
@@ -228,7 +237,7 @@ describe("jasmine.Matchers", function() {
     var matcher = match(actual);
     matcher.toBeNull();
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeNull");
     expect(result.passed()).toEqual(false);
@@ -242,7 +251,7 @@ describe("jasmine.Matchers", function() {
     var matcher = match(actual);
     matcher.toBeNull();
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeNull");
     expect(result.passed()).toEqual(false);
@@ -264,7 +273,7 @@ describe("jasmine.Matchers", function() {
     var matcher = match(actual);
     matcher.toBeFalsy();
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeFalsy");
     expect(result.passed()).toEqual(false);
@@ -288,7 +297,7 @@ describe("jasmine.Matchers", function() {
     var matcher = match(false);
     matcher.toBeTruthy();
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeTruthy");
     expect(result.passed()).toEqual(false);
@@ -362,7 +371,7 @@ describe("jasmine.Matchers", function() {
     var expected = 'x';
     matcher.toContain(expected);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toContain");
     expect(result.passed()).toEqual(false);
@@ -379,7 +388,7 @@ describe("jasmine.Matchers", function() {
     var expected = 'b';
     matcher.toNotContain(expected);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toNotContain");
     expect(result.passed()).toEqual(false);
@@ -402,7 +411,7 @@ describe("jasmine.Matchers", function() {
     var expected = 1;
     matcher.toBeLessThan(expected);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeLessThan");
     expect(result.passed()).toEqual(false);
@@ -424,7 +433,7 @@ describe("jasmine.Matchers", function() {
     var expected = 3;
     matcher.toBeGreaterThan(expected);
 
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeGreaterThan");
     expect(result.passed()).toEqual(false);
@@ -443,17 +452,17 @@ describe("jasmine.Matchers", function() {
     expect(expected.toThrow(new Error("Fake Error"))).toEqual(true);
 
     expect(expected.toThrow("Other Error")).toEqual(false);
-    var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    var result = lastResult();
     expect(result.message).toMatch("Other Error");
 
     expect(expected.toThrow(new Error("Other Error"))).toEqual(false);
-    result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    result = lastResult();
     expect(result.message).toMatch("Other Error");
 
     var exception;
     try {
       (function () {
-        new jasmine.Matchers(env, 'not-a-function', mockSpec).toThrow();
+        new jasmine.Matchers(env, 'not-a-function', spec).toThrow();
       })();
     } catch (e) {
       exception = e;
@@ -465,10 +474,45 @@ describe("jasmine.Matchers", function() {
 
     expect(match(function() {
     }).toThrow()).toEqual(false);
-    result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+    result = lastResult();
     expect(result.message).toEqual('Expected function to throw an exception.');
+  });
 
+  describe(".not.matcher", function() {
+    it("should invert the sense of any matcher", function() {
+      expect(match(37).not.toBeGreaterThan(42)).toEqual(true);
+      expect(match(42).not.toBeGreaterThan(37)).toEqual(false);
+      expect(match("abc").not.toEqual("def")).toEqual(true);
+      expect(match("abc").not.toEqual("abc")).toEqual(false);
+    });
 
+    it("should provide an inverted default message", function() {
+      match(37).not.toBeGreaterThan(42);
+      expect(lastResult().message).toEqual("Passed.");
+
+      match(42).not.toBeGreaterThan(37);
+      expect(lastResult().message).toEqual("Expected 42 not to be greater than 37.");
+    });
+
+    it("should use the second message when the matcher sets an array of custom messages", function() {
+      spec.addMatchers({
+        custom: function() {
+          this.message = function() {
+            return ['Expected it was called.', 'Expected it wasn\'t called.'];
+          };
+          return this.actual;
+        }
+      });
+
+      match(true).custom();
+      expect(lastResult().message).toEqual("Passed.");
+      match(false).custom();
+      expect(lastResult().message).toEqual("Expected it was called.");
+      match(true).not.custom();
+      expect(lastResult().message).toEqual("Expected it wasn't called.");
+      match(false).not.custom();
+      expect(lastResult().message).toEqual("Passed.");
+    });
   });
 
   describe("spy matchers >>", function() {
@@ -541,7 +585,7 @@ describe("jasmine.Matchers", function() {
         TestClass.spyFunction('a', 'b', 'c');
         var expected = match(TestClass.spyFunction);
         expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
-        var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+        var result = lastResult();
         expect(result.passed()).toEqual(false);
         expect(result.expected).toEqual(['c', 'b', 'a']);
         expect(result.actual.mostRecentCall.args).toEqual(['a', 'b', 'c']);
@@ -575,7 +619,7 @@ describe("jasmine.Matchers", function() {
           var matcher = match(TestClass.someFunction);
           matcher.wasCalledWith('a', 'b');
 
-          var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+          var result = lastResult();
           expect(result.matcherName).toEqual("wasCalledWith");
           expect(result.passed()).toEqual(false);
           expect(result.message).toMatch("['a', 'b']");

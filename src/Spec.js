@@ -65,7 +65,9 @@ jasmine.Spec.prototype.addMatcherResult = function(result) {
 };
 
 jasmine.Spec.prototype.expect = function(actual) {
-  return new (this.getMatchersClass_())(this.env, actual, this);
+  var positive = new (this.getMatchersClass_())(this.env, actual, this);
+  positive.not = new (this.getMatchersClass_())(this.env, actual, this, true);
+  return positive;
 };
 
 jasmine.Spec.prototype.waits = function(timeout) {
