@@ -78,7 +78,6 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
  * toBe: compares the actual to the expected using ===
  * @param expected
  */
-
 jasmine.Matchers.prototype.toBe = function(expected) {
   return this.actual === expected;
 };
@@ -96,7 +95,6 @@ jasmine.Matchers.prototype.toNotBe = function(expected) {
  *
  * @param expected
  */
-
 jasmine.Matchers.prototype.toEqual = function(expected) {
   return this.env.equals_(this.actual, expected);
 };
@@ -113,7 +111,7 @@ jasmine.Matchers.prototype.toNotEqual = function(expected) {
  * Matcher that compares the actual to the expected using a regular expression.  Constructs a RegExp, so takes
  * a pattern or a String.
  *
- * @param reg_exp
+ * @param expected
  */
 jasmine.Matchers.prototype.toMatch = function(expected) {
   return new RegExp(expected).test(this.actual);
@@ -121,7 +119,7 @@ jasmine.Matchers.prototype.toMatch = function(expected) {
 
 /**
  * Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch
- * @param reg_exp
+ * @param expected
  */
 jasmine.Matchers.prototype.toNotMatch = function(expected) {
   return !(new RegExp(expected).test(this.actual));
@@ -222,7 +220,7 @@ jasmine.Matchers.prototype.wasCalledWith = function() {
 /**
  * Matcher that checks that the expected item is an element in the actual Array.
  *
- * @param {Object} item
+ * @param {Object} expected
  */
 jasmine.Matchers.prototype.toContain = function(expected) {
   return this.env.contains_(this.actual, expected);
@@ -231,7 +229,7 @@ jasmine.Matchers.prototype.toContain = function(expected) {
 /**
  * Matcher that checks that the expected item is NOT an element in the actual Array.
  *
- * @param {Object} item
+ * @param {Object} expected
  */
 jasmine.Matchers.prototype.toNotContain = function(expected) {
   return !this.env.contains_(this.actual, expected);
@@ -248,32 +246,26 @@ jasmine.Matchers.prototype.toBeGreaterThan = function(expected) {
 /**
  * Matcher that checks that the expected exception was thrown by the actual.
  *
- * @param {String} expectedException
+ * @param {String} expected
  */
 jasmine.Matchers.prototype.toThrow = function(expected) {
-  function getException_(actual, expected) {
-    var exception;
-    if (typeof actual != 'function') {
-      throw new Error('Actual is not a function');
-    }
-    try {
-      actual();
-    } catch (e) {
-      exception = e;
-    }
-    return exception;
-  }
-
   var result = false;
-  var exception = getException_(this.actual, expected);
+  var exception;
+  if (typeof this.actual != 'function') {
+    throw new Error('Actual is not a function');
+  }
+  try {
+    this.actual();
+  } catch (e) {
+    exception = e;
+  }
   if (exception) {
     result = (expected === jasmine.undefined || this.env.equals_(exception.message || exception, expected.message || expected));
   }
 
-  this.message = function(expected) {
-    var exception = getException_(this.actual, expected);
+  this.message = function() {
     if (exception && (expected === jasmine.undefined || !this.env.equals_(exception.message || exception, expected.message || expected))) {
-      return ["Expected function to throw", expected.message || expected, ", but it threw", exception.message || exception  ].join(' ');
+      return ["Expected function to throw", expected.message || expected, ", but it threw", exception.message || exception].join(' ');
     } else {
       return "Expected function to throw an exception.";
     }
