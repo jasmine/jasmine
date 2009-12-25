@@ -304,7 +304,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#message">message</a></b>(expected)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#message">message</a></b>()
 								</div>
 								<div class="description"></div>
 							</td>
@@ -403,7 +403,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toContain">toContain</a></b>(item)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toContain">toContain</a></b>(expected)
 								</div>
 								<div class="description">Matcher that checks that the expected item is an element in the actual Array.</div>
 							</td>
@@ -421,7 +421,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toMatch">toMatch</a></b>(reg_exp)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toMatch">toMatch</a></b>(expected)
 								</div>
 								<div class="description">Matcher that compares the actual to the expected using a regular expression.</div>
 							</td>
@@ -439,7 +439,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotContain">toNotContain</a></b>(item)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotContain">toNotContain</a></b>(expected)
 								</div>
 								<div class="description">Matcher that checks that the expected item is NOT an element in the actual Array.</div>
 							</td>
@@ -457,7 +457,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotMatch">toNotMatch</a></b>(reg_exp)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotMatch">toNotMatch</a></b>(expected)
 								</div>
 								<div class="description">Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch</div>
 							</td>
@@ -466,7 +466,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toThrow">toThrow</a></b>(expectedException)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toThrow">toThrow</a></b>(expected)
 								</div>
 								<div class="description">Matcher that checks that the expected exception was thrown by the actual.</div>
 							</td>
@@ -503,6 +503,15 @@ ul.inheritsList
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#wasNotCalledWith">wasNotCalledWith</a></b>()
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">jasmine.Matchers.<b><a href="../symbols/jasmine.Matchers.html#.wrapInto_">wrapInto_</a></b>(prototype, matchersClass)
 								</div>
 								<div class="description"></div>
 							</td>
@@ -661,7 +670,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>message</b>(expected)
+					<b>message</b>()
 					
 					</div>
 					<div class="description">
@@ -672,17 +681,6 @@ ul.inheritsList
 					
 					
 					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>expected</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
 						
 						
 						
@@ -1014,7 +1012,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>toContain</b>(item)
+					<b>toContain</b>(expected)
 					
 					</div>
 					<div class="description">
@@ -1030,7 +1028,7 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{Object}</span> <b>item</b>
+									<span class="light fixedFont">{Object}</span> <b>expected</b>
 									
 								</dt>
 								<dd></dd>
@@ -1086,7 +1084,7 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>toMatch</b>(reg_exp)
+					<b>toMatch</b>(expected)
 					
 					</div>
 					<div class="description">
@@ -1103,7 +1101,7 @@ a pattern or a String.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>reg_exp</b>
+									<b>expected</b>
 									
 								</dt>
 								<dd></dd>
@@ -1159,7 +1157,7 @@ a pattern or a String.
 					<div class="fixedFont">
 					
 					
-					<b>toNotContain</b>(item)
+					<b>toNotContain</b>(expected)
 					
 					</div>
 					<div class="description">
@@ -1175,7 +1173,7 @@ a pattern or a String.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{Object}</span> <b>item</b>
+									<span class="light fixedFont">{Object}</span> <b>expected</b>
 									
 								</dt>
 								<dd></dd>
@@ -1231,7 +1229,7 @@ a pattern or a String.
 					<div class="fixedFont">
 					
 					
-					<b>toNotMatch</b>(reg_exp)
+					<b>toNotMatch</b>(expected)
 					
 					</div>
 					<div class="description">
@@ -1247,7 +1245,7 @@ a pattern or a String.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>reg_exp</b>
+									<b>expected</b>
 									
 								</dt>
 								<dd></dd>
@@ -1267,7 +1265,7 @@ a pattern or a String.
 					<div class="fixedFont">
 					
 					
-					<b>toThrow</b>(expectedException)
+					<b>toThrow</b>(expected)
 					
 					</div>
 					<div class="description">
@@ -1283,7 +1281,7 @@ a pattern or a String.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>expectedException</b>
+									<span class="light fixedFont">{String}</span> <b>expected</b>
 									
 								</dt>
 								<dd></dd>
@@ -1401,6 +1399,48 @@ a pattern or a String.
 						
 						
 
+					<hr />
+				
+					<a name=".wrapInto_"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">jasmine.Matchers.</span><b>wrapInto_</b>(prototype, matchersClass)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>prototype</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>matchersClass</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
 					
 				
 			
@@ -1415,7 +1455,7 @@ a pattern or a String.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Wed Dec 23 2009 21:27:32 GMT-0800 (PST)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Fri Dec 25 2009 14:19:05 GMT-0500 (EST)
 		</div>
 	</body>
 </html>
