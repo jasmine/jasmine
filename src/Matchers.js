@@ -211,10 +211,26 @@ jasmine.Matchers.prototype.wasCalledWith = function() {
   }
 
   this.message = function() {
-    return "Expected spy to have been called with " + jasmine.pp(arguments) + " but was called with " + jasmine.pp(this.actual.argsForCall);
+    if (this.actual.callCount == 0) {
+      return "Expected spy to have been called with " + jasmine.pp(arguments) + " but it was never called.";
+    } else {
+      return "Expected spy to have been called with " + jasmine.pp(arguments) + " but was called with " + jasmine.pp(this.actual.argsForCall);
+    }
   };
 
   return this.env.contains_(this.actual.argsForCall, jasmine.util.argsToArray(arguments));
+};
+
+jasmine.Matchers.prototype.wasNotCalledWith = function() {
+  if (!jasmine.isSpy(this.actual)) {
+    throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
+  }
+
+  this.message = function() {
+    return "Expected spy not to have been called with " + jasmine.pp(arguments) + " but it was";
+  };
+
+  return !this.env.contains_(this.actual.argsForCall, jasmine.util.argsToArray(arguments));
 };
 
 /**

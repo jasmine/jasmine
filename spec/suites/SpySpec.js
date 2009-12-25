@@ -33,8 +33,8 @@ describe('Spies', function () {
 
     TestClass.someFunction('foo');
     TestClass.someFunction('bar');
-    expect(TestClass.someFunction.argsForCall[0]).toEqual(['foo']);
-    expect(TestClass.someFunction.argsForCall[1]).toEqual(['bar']);
+    expect(TestClass.someFunction.calls[0].args).toEqual(['foo']);
+    expect(TestClass.someFunction.calls[1].args).toEqual(['bar']);
     expect(TestClass.someFunction.mostRecentCall.args).toEqual(['bar']);
   });
 
