@@ -1,15 +1,14 @@
 module Jasmine
   class RunAdapter
-    def initialize(spec_files_or_proc, options = {})
-      @spec_files_or_proc = Jasmine.files(spec_files_or_proc) || []
-      @jasmine_files = Jasmine.files(options[:jasmine_files]) || [
+    def initialize(config)
+      @config = config
+      @jasmine_files = [
         "/__JASMINE_ROOT__/lib/" + File.basename(Dir.glob("#{Jasmine.root}/lib/jasmine*.js").first),
         "/__JASMINE_ROOT__/lib/TrivialReporter.js",
         "/__JASMINE_ROOT__/lib/json2.js",
         "/__JASMINE_ROOT__/lib/consolex.js",
       ]
-      @stylesheets = ["/__JASMINE_ROOT__/lib/jasmine.css"] + (Jasmine.files(options[:stylesheets]) || [])
-      @spec_helpers = Jasmine.files(options[:spec_helpers]) || []
+      @jasmine_stylesheets = ["/__JASMINE_ROOT__/lib/jasmine.css"]
     end
 
     def call(env)
@@ -17,15 +16,9 @@ module Jasmine
     end
 
     def run
-      stylesheets = @stylesheets
-      spec_helpers = @spec_helpers
-      spec_files = @spec_files_or_proc
-
       jasmine_files = @jasmine_files
-      jasmine_files = jasmine_files.call if jasmine_files.respond_to?(:call)
-
-      css_files = @stylesheets
-
+      css_files = @jasmine_stylesheets + (Jasmine.files(@config.stylesheets) || [])
+      js_files = Jasmine.files(@config.js_files)
 
       body = ERB.new(File.read(File.join(File.dirname(__FILE__), "run.html"))).result(binding)
       [

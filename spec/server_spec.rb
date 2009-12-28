@@ -15,6 +15,8 @@ describe Jasmine::Server do
         "/spec" => File.join(Jasmine.root, "spec")
     })
 
+    config.stub!(:js_files).and_return(["/src/file1.js", "/spec/file2.js"])
+
     @server = Jasmine::Server.new(0, config)
     @thin_app = @server.thin.app
   end
@@ -45,7 +47,10 @@ describe Jasmine::Server do
 
   it "should serve /" do
     code, headers, body = @thin_app.call("PATH_INFO" => "/", "SCRIPT_NAME" => "xxx")
+    code.should == 200
     body = read(body)
-    p body
+    body.should include("\"/src/file1.js")
+    body.should include("\"/spec/file2.js")
+    body.should satisfy {|s| s.index("/src/file1.js") < s.index("/spec/file2.js") }
   end
 end

@@ -70,5 +70,21 @@ module Jasmine
     def mappings
       raise "You need to declare a mappings method in #{self.class}!"
     end
+
+    def stylesheets
+      []
+    end
+
+    def src_files
+      []
+    end
+
+    def spec_files
+      raise "You need to declare a spec_files method in #{self.class}!"
+    end
+
+    def js_files
+      src_files + spec_files
+    end
   end
 end
