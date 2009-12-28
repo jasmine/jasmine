@@ -29,6 +29,8 @@ module Jasmine
       @jasmine_server_port = Jasmine::find_unused_port
       @selenium_server_port = Jasmine::find_unused_port
 
+      server = Jasmine::Server.new(@jasmine_server_port, self)
+
       @selenium_pid = fork do
         Process.setpgrp
         exec "java -jar #{@selenium_jar_path} -port #{@selenium_server_port} > /dev/null 2>&1"
@@ -37,7 +39,7 @@ module Jasmine
 
       @jasmine_server_pid = fork do
         Process.setpgrp
-        Jasmine::Server.start(@jasmine_server_port, spec_files, @options)
+        server.start
         exit! 0
       end
       puts "jasmine server started.  pid is #{@jasmine_server_pid}"
