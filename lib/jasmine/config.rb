@@ -16,7 +16,7 @@ module Jasmine
 
     def start
       start_servers
-      @client = Jasmine::SimpleClient.new("localhost", @selenium_server_port, "*#{@browser}", "http://localhost:#{@jasmine_server_port}/")
+      @client = Jasmine::SeleniumDriver.new("localhost", @selenium_server_port, "*#{@browser}", "http://localhost:#{@jasmine_server_port}/")
       @client.connect
     end
 
@@ -83,8 +83,40 @@ module Jasmine
       raise "You need to declare a spec_files method in #{self.class}!"
     end
 
+    def match_files(dir, pattern)
+      dir = File.expand_path(dir)
+      Dir.glob(File.join(dir, pattern)).collect {|f| f.sub("#{dir}/", "")}.sort
+    end
+
+    def src_files
+      match_files(src_dir, "**/*.js")
+    end
+
+    def src_path
+      "src"
+    end
+
+    def spec_path
+      "spec"
+    end
+
+    def spec_files
+      match_files(spec_dir, "**/*.js")
+    end
+
+    def mappings
+      {
+          "/" + src_path => src_dir,
+          "/" + spec_path => spec_dir
+      }
+    end
+
     def js_files
-      src_files + spec_files
+      src_files.collect {|f| File.join(src_path, f) } + spec_files.collect {|f| File.join(spec_path, f) }
+    end
+
+    def spec_files_full_paths
+      spec_files.collect {|spec_file| File.join(spec_dir, spec_file) }
     end
   end
 end

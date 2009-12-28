@@ -1,6 +1,8 @@
+require File.expand_path(File.join(File.dirname(__FILE__), "spec_helper"))
+
 require 'jasmine_self_test_config'
 
-jasmine_runner = JasmineSelfTestRunner.new
+jasmine_runner = JasmineSelfTestConfig.new
 spec_builder = Jasmine::SpecBuilder.new(jasmine_runner)
 
 should_stop = false

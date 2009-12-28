@@ -28,12 +28,12 @@ Gem::Specification.new do |s|
      "lib/jasmine/jasmine_helper.rb",
      "lib/jasmine/jasmine_meta_spec.rb",
      "lib/jasmine/jasmine_runner.rb",
-     "lib/jasmine/jasmine_spec_builder.rb",
+     "lib/jasmine/spec_builder.rb",
      "lib/jasmine/run.html",
      "templates/Rakefile",
-     "templates/example_spec.js",
+     "templates/ExampleSpec.js",
      "templates/jasmine_helper.rb",
-     "templates/spec_helper.js"
+     "templates/SpecHelper.js"
   ]
   s.homepage = %q{http://github.com/ragaskar/jasmine}
   s.rdoc_options = ["--charset=UTF-8"]

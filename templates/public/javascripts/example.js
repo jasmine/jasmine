@@ -1,0 +1,2 @@
+ExampleClass = function() {
+};
