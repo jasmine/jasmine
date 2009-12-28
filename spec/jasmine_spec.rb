@@ -1,4 +1,4 @@
-require 'jasmine_self_test_runner'
+require 'jasmine_self_test_config'
 
 jasmine_runner = JasmineSelfTestRunner.new
 spec_builder = Jasmine::SpecBuilder.new(jasmine_runner)

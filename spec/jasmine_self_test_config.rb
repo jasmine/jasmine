@@ -1,6 +1,6 @@
 require 'jasmine'
 
-class JasmineSelfTestRunner < Jasmine::Runner
+class JasmineSelfTestConfig < Jasmine::Config
   def proj_root
     File.expand_path(File.join(File.dirname(__FILE__), ".."))
   end
@@ -19,6 +19,12 @@ class JasmineSelfTestRunner < Jasmine::Runner
 
   def spec_files
     Dir.glob(File.join(spec_dir, "**/*[Ss]pec.js")).collect { |f| f.sub("#{spec_dir}/", "") }
+  end
+
+  def mappings
+    {
+        "/spec" => spec_dir
+    }
   end
 #
 #  def specs

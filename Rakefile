@@ -13,7 +13,7 @@ end
 
 namespace :jasmine do
 #  require 'jasmine'
-  require 'spec/jasmine_self_test_runner'
+  require 'spec/jasmine_self_test_config'
 
 #  desc "Run continuous integration tests"
 #  require "spec"
@@ -28,7 +28,7 @@ namespace :jasmine do
     puts "your tests are here:"
     puts "  http://localhost:8888/run.html"
 
-    JasmineSelfTestRunner.new.start_server
+    JasmineSelfTestConfig.new.start_server
   end
 end
 
