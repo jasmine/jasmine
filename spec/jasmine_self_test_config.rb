@@ -18,11 +18,12 @@ class JasmineSelfTestConfig < Jasmine::Config
   end
 
   def spec_files
-    Dir.glob(File.join(spec_dir, "**/*[Ss]pec.js")).collect { |f| f.sub("#{spec_dir}/", "") }
+    Dir.glob(File.join(spec_dir, "**/*[Ss]pec.js")).collect { |f| f.sub("#{spec_dir}/", "spec/") }
   end
 
   def mappings
     {
+        "/src" => src_dir,
         "/spec" => spec_dir
     }
   end
