@@ -135,6 +135,7 @@ jasmine.version_= {
 
       desc "Run continuous integration tests using Sauce Labs 'Selenium in the Cloud'"
       task :saucelabs => 'jasmine:build' do
+        `cp ../saucelabs.yml ./spec`
         ENV['SAUCELABS'] = 'true'
         Rake::Task['jasmine:test:ci:local'].invoke
       end
