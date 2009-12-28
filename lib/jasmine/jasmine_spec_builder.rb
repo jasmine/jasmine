@@ -4,8 +4,8 @@ module Jasmine
   class SpecBuilder
     attr_accessor :suites
 
-    def initialize(spec_files, runner)
-      @spec_files = spec_files
+    def initialize(runner)
+      @spec_files = runner.spec_files
       @runner = runner
       @spec_ids = []
     end

@@ -1,17 +1,7 @@
-require 'rubygems'
-require "selenium_rc"
+require 'jasmine_self_test_runner'
 
-JASMINE_SPEC_DIR = File.join(File.dirname(__FILE__), "..", "jasmine", "spec")
-
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "jasmine-ruby", "jasmine_helper.rb"))
-require File.expand_path(File.join(JasmineHelper.root, "contrib/ruby/jasmine_spec_builder"))
-
-jasmine_runner = Jasmine::Runner.new(SeleniumRC::Server.new.jar_path,
-                                     JasmineHelper.spec_file_urls,
-                                     JasmineHelper.dir_mappings,
-                                     :spec_helpers => JasmineHelper.spec_helpers)
-
-spec_builder = Jasmine::SpecBuilder.new(JasmineHelper.raw_spec_files, jasmine_runner)
+jasmine_runner = JasmineSelfTestRunner.new
+spec_builder = Jasmine::SpecBuilder.new(jasmine_runner)
 
 should_stop = false
 

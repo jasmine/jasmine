@@ -1,5 +1,5 @@
 namespace :jasmine do
-  require 'jasmine-ruby'
+  require 'jasmine'
   helper_overrides = File.expand_path(File.join(File.dirname(__FILE__), "spec/helpers/jasmine_helper.rb"))
   if File.exist?(helper_overrides)
     require helper_overrides

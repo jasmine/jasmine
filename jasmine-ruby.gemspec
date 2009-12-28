@@ -4,12 +4,12 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{jasmine-ruby}
+  s.name = %q{jasmine}
   s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rajan Agaskar"]
-  s.date = %q{2009-11-26}
+  s.date = %q{2009-12-27}
   s.default_executable = %q{jasmine}
   s.description = %q{Jasmine Ruby}
   s.email = %q{ragaskar@gmail.com}
@@ -19,26 +19,23 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "bin/jasmine",
-     "jasmine/contrib/ruby/jasmine_runner.rb",
-     "jasmine/contrib/ruby/jasmine_spec_builder.rb",
-     "jasmine/contrib/ruby/run.html",
      "jasmine/lib/TrivialReporter.js",
      "jasmine/lib/consolex.js",
      "jasmine/lib/jasmine-0.10.0.js",
      "jasmine/lib/jasmine.css",
      "jasmine/lib/json2.js",
-     "lib/jasmine-ruby.rb",
-     "lib/jasmine-ruby/jasmine_helper.rb",
-     "lib/jasmine-ruby/jasmine_meta_spec.rb",
-     "lib/jasmine-ruby/jasmine_runner.rb",
-     "lib/jasmine-ruby/jasmine_spec_builder.rb",
-     "lib/jasmine-ruby/run.html",
+     "lib/jasmine.rb",
+     "lib/jasmine/jasmine_helper.rb",
+     "lib/jasmine/jasmine_meta_spec.rb",
+     "lib/jasmine/jasmine_runner.rb",
+     "lib/jasmine/jasmine_spec_builder.rb",
+     "lib/jasmine/run.html",
      "templates/Rakefile",
      "templates/example_spec.js",
      "templates/jasmine_helper.rb",
      "templates/spec_helper.js"
   ]
-  s.homepage = %q{http://github.com/ragaskar/jasmine-ruby}
+  s.homepage = %q{http://github.com/ragaskar/jasmine}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}

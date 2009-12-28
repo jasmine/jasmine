@@ -34,7 +34,7 @@ class JasmineHelper
   end
  
   def self.meta_spec_path
-    File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'lib', 'jasmine-ruby', 'jasmine_meta_spec.rb'))
+    File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'lib', 'jasmine', 'jasmine_meta_spec.rb'))
   end
 
   def self.files
