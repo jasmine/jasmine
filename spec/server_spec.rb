@@ -45,12 +45,14 @@ describe Jasmine::Server do
     headers["Location"].should == "/"
   end
 
-  it "should serve /" do
-    code, headers, body = @thin_app.call("PATH_INFO" => "/", "SCRIPT_NAME" => "xxx")
-    code.should == 200
-    body = read(body)
-    body.should include("\"/src/file1.js")
-    body.should include("\"/spec/file2.js")
-    body.should satisfy {|s| s.index("/src/file1.js") < s.index("/spec/file2.js") }
+  describe "/ page" do
+    it "should load each js file in order" do
+      code, headers, body = @thin_app.call("PATH_INFO" => "/", "SCRIPT_NAME" => "xxx")
+      code.should == 200
+      body = read(body)
+      body.should include("\"/src/file1.js")
+      body.should include("\"/spec/file2.js")
+      body.should satisfy {|s| s.index("/src/file1.js") < s.index("/spec/file2.js") }
+    end
   end
 end

@@ -15,12 +15,13 @@ module Jasmine
       run
     end
 
+    #noinspection RubyUnusedLocalVariable
     def run
       jasmine_files = @jasmine_files
       css_files = @jasmine_stylesheets + (Jasmine.files(@config.stylesheets) || [])
       js_files = Jasmine.files(@config.js_files)
 
-      body = ERB.new(File.read(File.join(File.dirname(__FILE__), "run.html"))).result(binding)
+      body = ERB.new(File.read(File.join(File.dirname(__FILE__), "run.html.erb"))).result(binding)
       [
         200,
         { 'Content-Type' => 'text/html' },
