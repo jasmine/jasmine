@@ -55,4 +55,11 @@ describe Jasmine::Server do
       body.should satisfy {|s| s.index("/src/file1.js") < s.index("/spec/file2.js") }
     end
   end
+
+  it "should display an error using JS for 404's" do
+    code, headers, body = @thin_app.call("PATH_INFO" => "/spec/NonExistantFile.js", "SCRIPT_NAME" => "xxx")
+    code.should == 200 # todo: shouldn't this be 404?  will that work with all browsers?
+    headers["Content-Type"].should == "application/javascript"
+    read(body).should == "document.write('<p>Couldn\\'t load /spec/NonExistantFile.js!</p>');"
+  end
 end

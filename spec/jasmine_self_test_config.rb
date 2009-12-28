@@ -27,8 +27,4 @@ class JasmineSelfTestConfig < Jasmine::Config
         "/spec" => spec_dir
     }
   end
-#
-#  def specs
-#    Jasmine.cachebust(spec_files).collect {|f| f.sub(spec_dir, "/spec")}
-#  end
 end
