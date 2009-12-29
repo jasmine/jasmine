@@ -56,7 +56,7 @@ namespace :jasmine do
   end
 
   desc 'Builds lib/jasmine from source'
-  task :build => :lint do
+  task :build => [:lint, 'gems:geminstaller'] do
     puts 'Building Jasmine from source'
     require 'json'
 
@@ -142,4 +142,11 @@ jasmine.version_= {
     end
   end
 
+end
+
+namespace :gems do
+  desc "Run geminstaller."
+  task :geminstaller do
+    `geminstaller --sudo -c config/geminstaller.yml`
+  end
 end
