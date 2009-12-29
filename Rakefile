@@ -134,13 +134,17 @@ jasmine.version_= {
       end
 
       desc "Run continuous integration tests using Sauce Labs 'Selenium in the Cloud'"
-      task :saucelabs => 'jasmine:build' do
+      task :saucelabs => ['jasmine:copy_saucelabs_config', 'jasmine:build'] do
         ENV['SAUCELABS'] = 'true'
         Rake::Task['jasmine:test:ci:local'].invoke
       end
     end
   end
 
+  desc 'Copy saucelabs.yml to work directory'
+  task 'copy_saucelabs_config' do
+    FileUtils.cp '../saucelabs.yml', 'spec'
+  end
 end
 
 namespace :gems do
