@@ -147,6 +147,6 @@ end
 namespace :gems do
   desc "Run geminstaller."
   task :geminstaller do
-    `geminstaller --sudo -c config/geminstaller.yml`
+    `geminstaller --sudo`
   end
 end
