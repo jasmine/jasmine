@@ -47,13 +47,12 @@ namespace :jeweler do
   
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "xian-test-jasmine"
-    gemspec.summary = "Jasmine Ruby"
-    gemspec.description = "Javascript BDD testings"
+    gemspec.summary = "Jasmine for Ruby"
+    gemspec.description = "Javascript BDD test framework"
     gemspec.email = "ragaskar@gmail.com"
     gemspec.homepage = "http://github.com/ragaskar/jasmine-ruby"
-    gemspec.description = "Jasmine Ruby"
-    gemspec.authors = ["Rajan Agaskar"]
-    gemspec.files = FileList.new('bin/*', 'lib/**/**', 'jasmine/lib/**', 'jasmine/contrib/ruby/**', 'tasks/**', 'templates/**')
+    gemspec.authors = ["Rajan Agaskar", "Christian Williams"]
+    gemspec.files = FileList.new('bin/jasmine', 'lib/**/**', 'jasmine/lib/**', 'jasmine/contrib/ruby/**', 'tasks/**', 'templates/**')
 
     gemspec.add_dependency('rspec', '>= 1.1.5')
     gemspec.add_dependency('rack', '>= 1.0.0')

@@ -18,8 +18,8 @@ module Jasmine
     #noinspection RubyUnusedLocalVariable
     def run
       jasmine_files = @jasmine_files
-      css_files = @jasmine_stylesheets + (Jasmine.files(@config.stylesheets) || [])
-      js_files = Jasmine.files(@config.js_files)
+      css_files = @jasmine_stylesheets + (@config.stylesheets || [])
+      js_files = @config.js_files
 
       body = ERB.new(File.read(File.join(File.dirname(__FILE__), "run.html.erb"))).result(binding)
       [
@@ -59,12 +59,12 @@ module Jasmine
   class FocusedSuite
     def initialize(config)
       @config = config
-#      @spec_files_or_proc = Jasmine.files(spec_files_or_proc) || []
+#      @spec_files_or_proc = spec_files_or_proc || []
 #      @options = options
     end
 
     def call(env)
-      spec_files = Jasmine.files(@config.spec_files_or_proc)
+      spec_files = @config.spec_files_or_proc
       matching_specs = spec_files.select {|spec_file| spec_file =~ /#{Regexp.escape(env["PATH_INFO"])}/ }.compact
       if !matching_specs.empty?
         run_adapter = Jasmine::RunAdapter.new(matching_specs, @options)
@@ -78,12 +78,6 @@ module Jasmine
       end
     end
 
-  end
-
-  def self.files(f)
-    result = f
-    result = result.call if result.respond_to?(:call)
-    result
   end
 
   class Server

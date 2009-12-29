@@ -22,9 +22,9 @@ describe Jasmine::Config do
 
   it "should provide a list of all js files" do
     @config.js_files.should == [
-        'src/javascripts/Example.js',
-        'spec/javascript/ExampleSpec.js',
-        'spec/javascript/SpecHelper.js',
+        '/src/javascripts/Example.js',
+        '/spec/javascript/ExampleSpec.js',
+        '/spec/javascript/SpecHelper.js',
     ]
   end
 
@@ -40,9 +40,9 @@ describe Jasmine::Config do
     @config.stub!(:spec_path).and_return("spekz")
 
     @config.js_files.should == [
-        'public/javascripts/Example.js',
-        'spekz/javascript/ExampleSpec.js',
-        'spekz/javascript/SpecHelper.js',
+        '/public/javascripts/Example.js',
+        '/spekz/javascript/ExampleSpec.js',
+        '/spekz/javascript/SpecHelper.js',
     ]
 
     @config.mappings.should == {

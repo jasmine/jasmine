@@ -69,10 +69,6 @@ module Jasmine
       @client.eval_js(script)
     end
 
-    def mappings
-      raise "You need to declare a mappings method in #{self.class}!"
-    end
-
     def stylesheets
       []
     end
@@ -114,7 +110,7 @@ module Jasmine
     end
 
     def js_files
-      src_files.collect {|f| File.join(src_path, f) } + spec_files.collect {|f| File.join(spec_path, f) }
+      src_files.collect {|f| "/" + File.join(src_path, f) } + spec_files.collect {|f| "/" + File.join(spec_path, f) }
     end
 
     def spec_files_full_paths
