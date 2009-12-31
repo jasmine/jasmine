@@ -1,2 +1,5 @@
-.idea/
-pkg/
+.idea
+pkg
+vendor
+bin
+!bin/jasmine
