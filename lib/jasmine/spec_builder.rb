@@ -1,12 +1,13 @@
 require 'enumerator'
-module Jasmine
 
+module Jasmine
   class SpecBuilder
     attr_accessor :suites
 
-    def initialize(spec_files, runner)
-      @spec_files = spec_files
-      @runner = runner
+    def initialize(config)
+      @config = config
+      @spec_files = config.spec_files
+      @runner = config
       @spec_ids = []
     end
 
@@ -31,7 +32,7 @@ module Jasmine
 
       example_name_parts = []
       previous_indent_level = 0
-      @spec_files.each do |filename|
+      @config.spec_files_full_paths.each do |filename|
         line_number = 1
         File.open(filename, "r") do |file|
           file.readlines.each do |line|

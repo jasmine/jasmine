@@ -1,6 +1,0 @@
----
-gems:
-- name: rake
-  version: 0.8.7
-- name: jeweler
-  version: 1.4.0

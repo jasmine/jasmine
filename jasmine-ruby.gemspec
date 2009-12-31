@@ -4,12 +4,12 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{jasmine-ruby}
+  s.name = %q{jasmine}
   s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rajan Agaskar"]
-  s.date = %q{2009-12-05}
+  s.date = %q{2009-12-27}
   s.default_executable = %q{jasmine}
   s.description = %q{Jasmine Ruby}
   s.email = %q{ragaskar@gmail.com}
@@ -24,18 +24,18 @@ Gem::Specification.new do |s|
      "jasmine/lib/jasmine-0.10.0.js",
      "jasmine/lib/jasmine.css",
      "jasmine/lib/json2.js",
-     "lib/jasmine-ruby.rb",
-     "lib/jasmine-ruby/jasmine_helper.rb",
-     "lib/jasmine-ruby/jasmine_meta_spec.rb",
-     "lib/jasmine-ruby/jasmine_runner.rb",
-     "lib/jasmine-ruby/jasmine_spec_builder.rb",
-     "lib/jasmine-ruby/run.html",
+     "lib/jasmine.rb",
+     "lib/jasmine/jasmine_helper.rb",
+     "lib/jasmine/jasmine_meta_spec.rb",
+     "lib/jasmine/jasmine_runner.rb",
+     "lib/jasmine/spec_builder.rb",
+     "lib/jasmine/run.html",
      "templates/Rakefile",
-     "templates/example_spec.js",
+     "templates/ExampleSpec.js",
      "templates/jasmine_helper.rb",
-     "templates/spec_helper.js"
+     "templates/SpecHelper.js"
   ]
-  s.homepage = %q{http://github.com/ragaskar/jasmine-ruby}
+  s.homepage = %q{http://github.com/ragaskar/jasmine}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
@@ -51,25 +51,16 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rspec>, [">= 1.1.5"])
       s.add_runtime_dependency(%q<rack>, [">= 1.0.0"])
-      s.add_runtime_dependency(%q<json>, [">= 1.1.9"])
-      s.add_runtime_dependency(%q<pivotal-selenium-rc>, [">= 1.11.20090610"])
-      s.add_runtime_dependency(%q<selenium-client>, [">= 1.2.17"])
-      s.add_runtime_dependency(%q<thin>, ["= 1.2.4"])
+      s.add_runtime_dependency(%q<thin>, [">= 1.2.4"])
     else
       s.add_dependency(%q<rspec>, [">= 1.1.5"])
       s.add_dependency(%q<rack>, [">= 1.0.0"])
-      s.add_dependency(%q<json>, [">= 1.1.9"])
-      s.add_dependency(%q<pivotal-selenium-rc>, [">= 1.11.20090610"])
-      s.add_dependency(%q<selenium-client>, [">= 1.2.17"])
-      s.add_dependency(%q<thin>, ["= 1.2.4"])
+      s.add_dependency(%q<thin>, [">= 1.2.4"])
     end
   else
     s.add_dependency(%q<rspec>, [">= 1.1.5"])
     s.add_dependency(%q<rack>, [">= 1.0.0"])
-    s.add_dependency(%q<json>, [">= 1.1.9"])
-    s.add_dependency(%q<pivotal-selenium-rc>, [">= 1.11.20090610"])
-    s.add_dependency(%q<selenium-client>, [">= 1.2.17"])
-    s.add_dependency(%q<thin>, ["= 1.2.4"])
+    s.add_dependency(%q<thin>, [">= 1.2.4"])
   end
 end
 

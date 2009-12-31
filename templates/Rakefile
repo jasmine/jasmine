@@ -1,5 +1,5 @@
 namespace :jasmine do
-  require 'jasmine-ruby'
+  require 'jasmine'
   helper_overrides = File.expand_path(File.join(File.dirname(__FILE__), "spec/helpers/jasmine_helper.rb"))
   if File.exist?(helper_overrides)
     require helper_overrides
@@ -17,7 +17,7 @@ namespace :jasmine do
     puts "your tests are here:"
     puts "  http://localhost:8888/run.html"
 
-    Jasmine::SimpleServer.start(8888,
+    Jasmine::Server.start(8888,
                                 File.expand_path(Dir.pwd),
                                 lambda { JasmineHelper.specs },
                                 { :spec_helpers => JasmineHelper.files + JasmineHelper.spec_helpers,

@@ -6,7 +6,7 @@ if File.exist?(helper_overrides)
   require helper_overrides
 end
 require File.expand_path(File.join(File.dirname(__FILE__), "jasmine_runner.rb"))
-require File.expand_path(File.join(File.dirname(__FILE__), "jasmine_spec_builder"))
+require File.expand_path(File.join(File.dirname(__FILE__), "spec_builder"))
 
 jasmine_runner = Jasmine::Runner.new(SeleniumRC::Server.new.jar_path,
                                      Dir.pwd,

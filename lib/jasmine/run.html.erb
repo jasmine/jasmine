@@ -11,10 +11,6 @@
   <script src="<%= jasmine_file %>" type="text/javascript"></script>
   <% end %>
 
-  <% spec_helpers.each do |spec_helper| %>
-  <script src="<%= spec_helper %>" type="text/javascript"></script>
-  <% end %>
-
   <script type="text/javascript">
     var jsApiReporter;
     (function() {
@@ -36,8 +32,8 @@
     })();
   </script>
 
-  <% spec_files.each do |spec_file| %>
-  <script src="<%= spec_file %>" type="text/javascript"></script>
+  <% js_files.each do |js_file| %>
+  <script src="<%= js_file %>" type="text/javascript"></script>
   <% end %>
 
 </head>
