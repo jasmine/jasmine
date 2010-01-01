@@ -39,7 +39,7 @@ task :jasmine => ['jasmine:server']
 namespace :jeweler do
 
   unless File.exists?('jasmine/lib')
-    raise "Jasmine submodule isn't present.  Run git submodule init && git submodule update."
+    raise "Jasmine submodule isn't present.  Run git submodule update --init"
   end
 
   begin
@@ -52,7 +52,8 @@ namespace :jeweler do
       gemspec.email = "ragaskar@gmail.com"
       gemspec.homepage = "http://github.com/pivotal/jasmine-ruby"
       gemspec.authors = ["Rajan Agaskar", "Christian Williams"]
-      gemspec.files = FileList.new('bin/jasmine', 'lib/**/**', 'jasmine/lib/**', 'jasmine/contrib/ruby/**', 'tasks/**', 'templates/**')
+      gemspec.executables = ["jasmine"]
+      gemspec.files = FileList.new('generators/**/**', 'lib/**/**', 'jasmine/lib/**', 'jasmine/contrib/ruby/**', 'tasks/**', 'templates/**')
       gemspec.add_dependency('rspec', '>= 1.1.5')
       gemspec.add_dependency('json', '>= 1.1.9')
       gemspec.add_dependency('rack', '>= 1.0.0')
