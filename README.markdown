@@ -18,10 +18,9 @@ Quick Start
 open `http://localhost:8888/` in your favorite browser.
 
 ### HTML Suite Running
+   [Get the latest release from the downloads page](http://github.com/pivotal/jasmine/downloads)
 
-    git clone git://github.com/pivotal/jasmine.git
-
-open `examples/test/html/example_suite.html` in your favorite browser.
+open `example/example_runner.html` in your favorite browser 
 
 ### Automatic Suite Running (w/ Selenium)
 
@@ -35,8 +34,7 @@ open `examples/test/html/example_suite.html` in your favorite browser.
 
 Releases
 ----------
-0.10.0 [[download]](http://github.com/pivotal/jasmine/zipball/master)
-`git clone git://github.com/pivotal/jasmine.git`
+0.10.0 [[download]](http://cloud.github.com/downloads/pivotal/jasmine/jasmine-0.10.0.zip)
 
 0.9.0 [[download]](http://github.com/pivotal/jasmine/zipball/0.9.0)
 
@@ -467,6 +465,7 @@ We now have a Google Group for support & discussion.
 
 * Homepage:  [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js)
 * Group email: [jasmine-js@googlegroups.com](jasmine-js@googlegroups.com)
+* Current build status of Jasmine is visible at [ci.pivotallabs.com](http://ci.pivotallabs.com)
 
 ## Maintainers
 
