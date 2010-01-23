@@ -58,7 +58,7 @@ module Jasmine
         sleep 0.1
       end
 
-      @suites = eval_js('JSON.stringify(jsApiReporter.suites())')
+      @suites = eval_js("var result = jsApiReporter.suites(); if (window.Prototype && result && result.toJSON) { result.toJSON()} else { JSON.stringify(result) }")
     end
 
     def results_for(spec_id)
@@ -69,7 +69,7 @@ module Jasmine
     def load_results
       @spec_results = {}
       @spec_ids.each_slice(50) do |slice|
-        @spec_results.merge!(eval_js("JSON.stringify(jsApiReporter.resultsForSpecs(#{JSON.generate(slice)}))"))
+        @spec_results.merge!(eval_js("var result = jsApiReporter.resultsForSpecs(#{JSON.generate(slice)}); if (window.Prototype && result && result.toJSON) { result.toJSON()} else { JSON.stringify(result) }"))        
       end
       @spec_results
     end
