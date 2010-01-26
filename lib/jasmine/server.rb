@@ -82,7 +82,7 @@ module Jasmine
 
   class Server
     attr_reader :thin
-    
+
     def initialize(port, config)
       @port = port
       @config = config
@@ -101,6 +101,7 @@ module Jasmine
       thin_config["/__JASMINE_ROOT__"] = Rack::File.new(Jasmine.root)
 
       app = Rack::Cascade.new([
+        Rack::URLMap.new({'/' => Rack::File.new(@config.src_dir)}),
         Rack::URLMap.new(thin_config),
         JsAlert.new
       ])

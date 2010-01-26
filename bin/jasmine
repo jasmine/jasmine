@@ -10,45 +10,46 @@ def expand(*paths)
   File.expand_path(File.join(*paths))
 end
 
-def rakefile_path
-  expand(cwd, 'templates/Rakefile')
+def template_path(filepath)
+  expand(cwd, File.join("generators/jasmine/templates", filepath))
+end
+
+def dest_path(filepath)
+  expand(Dir.pwd, filepath)
+end
+
+def copy_unless_exists(relative_path, dest_path = nil)
+  unless File.exist?(dest_path(relative_path))
+      File.copy(template_path(relative_path), dest_path(dest_path || relative_path))
+   end
 end
 
 if ARGV[0] == 'init'
   require 'ftools'
   File.makedirs('spec/javascripts')
-  File.makedirs('spec/helpers')
+  File.makedirs('spec/javascripts/support')
 
-  dest_root = File.expand_path(Dir.pwd)
-  dest_spec = expand(dest_root, 'spec')
-  dest_spec_javascripts = expand(dest_root, 'spec/javascripts')
-  dest_spec_helpers = expand(dest_root, 'spec/helpers')
+  copy_unless_exists('spec/javascripts/SpecHelper.js')
+  copy_unless_exists('spec/javascripts/ExampleSpec.js')
+  copy_unless_exists('spec/javascripts/support/jasmine_config.rb')
+  copy_unless_exists('spec/javascripts/support/jasmine_spec.rb')
 
-  unless File.exist?(expand(dest_spec_helpers, 'spec_helper.js'))
-    File.copy(expand(cwd, 'templates/spec_helper.js'), dest_spec_helpers)
-  end
-  unless File.exist?(expand(dest_spec_helpers, 'jasmine_helper.rb'))
-    File.copy(expand(cwd, 'templates/jasmine_helper.rb'), dest_spec_helpers)
-  end
-
-  File.copy(expand(cwd, 'templates/example_spec.js'), dest_spec_javascripts)
-
-  rails_tasks_dir = expand(dest_root, 'lib', 'tasks')
+  rails_tasks_dir = dest_path('lib/tasks')
   if File.exist?(rails_tasks_dir)
-    File.makedirs('lib/tasks/jasmine')
-    File.copy(rakefile_path, File.join(rails_tasks_dir, 'jasmine/jasmine.rake'))
+    copy_unless_exists('lib/tasks/jasmine.rake')
+    copy_unless_exists('spec/javascripts/support/sources-rails.yaml', 'spec/javascripts/support/sources.yaml')
   else
-    if File.exist?(expand(dest_root, 'Rakefile'))
-      existing_rakefile = expand(dest_root, 'Rakefile')
-      load existing_rakefile
-      unless Rake::Task.task_defined?('jasmine')
-        open(existing_rakefile, 'a') do |f|
-          f.write(File.read(rakefile_path))
-        end
-      end
-    else
-      File.copy(rakefile_path, dest_root)
+    copy_unless_exists('spec/javascripts/support/sources.yaml')
+    if File.exist?(dest_path('Rakefile'))
+      load dest_path('Rakefile')
     end
+    write_mode = Rake::Task.task_defined?('jasmine') ? 'a' : 'w'
+        File.open(dest_path('Rakefile'), write_mode) do |f|
+          f.write(File.read(template_path('lib/tasks/jasmine.rake')))
+        end
+  end
+  File.open(template_path('INSTALL'), 'r').each_line do |line|
+    puts line
   end
 end
 

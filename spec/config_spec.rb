@@ -2,52 +2,76 @@ require File.expand_path(File.join(File.dirname(__FILE__), "spec_helper"))
 
 describe Jasmine::Config do
   before(:each) do
-    @template_dir = File.expand_path(File.join(File.dirname(__FILE__), "../templates"))
+    @template_dir = File.expand_path(File.join(File.dirname(__FILE__), "../generators/jasmine/templates"))
     @config = Jasmine::Config.new
     @config.stub!(:src_dir).and_return(File.join(@template_dir, "public"))
     @config.stub!(:spec_dir).and_return(File.join(@template_dir, "spec"))
   end
 
-  it "should provide a list of all src and spec files" do
-    @config.src_files.should == ['javascripts/Example.js']
-    @config.spec_files.should == ['javascript/ExampleSpec.js', 'javascript/SpecHelper.js']
+  describe "simple_config" do
+    it "if sources.yaml not found" do
+      File.stub!(:exist?).and_return(false)
+      @config.src_files.should == []
+      @config.spec_files.should == ['javascripts/ExampleSpec.js', 'javascripts/SpecHelper.js']
+      @config.mappings.should == {
+        '/__root__' => @config.project_root,
+        '/__spec__' => @config.spec_dir
+      }
+    end
+
+    it "if sources.yaml is empty" do
+      YAML.stub!(:load).and_return(false)
+      @config.src_files.should == []
+      @config.spec_files.should == ['javascripts/ExampleSpec.js', 'javascripts/SpecHelper.js']
+      @config.mappings.should == {
+        '/__root__' => @config.project_root,
+        '/__spec__' => @config.spec_dir
+      }
+    end
+
+    it "using default sources.yaml" do
+      @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/sources.yaml'))
+      @config.src_files.should == []
+      @config.spec_files.should == ['javascripts/ExampleSpec.js', 'javascripts/SpecHelper.js']
+      @config.mappings.should == {
+        '/__root__' => @config.project_root,
+        '/__spec__' => @config.spec_dir
+      }
+    end
+
+    it "using rails sources.yaml" do
+      @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/sources-rails.yaml'))
+      @config.src_files.should == ['javascripts/prototype.js',
+                                   'javascripts/effects.js',
+                                   'javascripts/controls.js',
+                                   'javascripts/dragdrop.js',
+                                   'javascripts/application.js']
+      @config.spec_files.should == ['javascripts/ExampleSpec.js', 'javascripts/SpecHelper.js']
+      @config.js_files.should == [
+        '/javascripts/prototype.js',
+        '/javascripts/effects.js',
+        '/javascripts/controls.js',
+        '/javascripts/dragdrop.js',
+        '/javascripts/application.js',
+        '/__spec__/javascripts/ExampleSpec.js',
+        '/__spec__/javascripts/SpecHelper.js',
+      ]
+    end
+  end
+
+
+  it "should provide dir mappings" do
+    @config.mappings.should == {
+      '/__root__' => @config.project_root,
+      '/__spec__' => @config.spec_dir
+    }
   end
 
   it "should provide a list of all spec files with full paths" do
     @config.spec_files_full_paths.should == [
-        File.join(@template_dir, 'spec/javascript/ExampleSpec.js'),
-        File.join(@template_dir, 'spec/javascript/SpecHelper.js')
+      File.join(@template_dir, 'spec/javascripts/ExampleSpec.js'),
+      File.join(@template_dir, 'spec/javascripts/SpecHelper.js')
     ]
   end
 
-  it "should provide a list of all js files" do
-    @config.js_files.should == [
-        '/src/javascripts/Example.js',
-        '/spec/javascript/ExampleSpec.js',
-        '/spec/javascript/SpecHelper.js',
-    ]
-  end
-
-  it "should provide dir mappings" do
-    @config.mappings.should == {
-        '/src' => @config.src_dir,
-        '/spec' => @config.spec_dir
-    }
-  end
-  
-  it "should allow overriding src and spec paths" do
-    @config.stub!(:src_path).and_return("public")
-    @config.stub!(:spec_path).and_return("spekz")
-
-    @config.js_files.should == [
-        '/public/javascripts/Example.js',
-        '/spekz/javascript/ExampleSpec.js',
-        '/spekz/javascript/SpecHelper.js',
-    ]
-
-    @config.mappings.should == {
-        '/public' => @config.src_dir,
-        '/spekz' => @config.spec_dir
-    }
-  end
 end

@@ -1,0 +1,5 @@
+#sources:
+#  - lib/source1.js
+#  - lib/source2.js
+#src_dir:
+#spec_dir: spec/javascripts

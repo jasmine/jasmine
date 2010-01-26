@@ -1,0 +1,9 @@
+Jasmine has been installed with example specs.
+
+To run the server:
+
+rake jasmine
+
+To run the automated CI task with Selenium:
+
+rake jasmine:ci

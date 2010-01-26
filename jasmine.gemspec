@@ -5,19 +5,28 @@
 
 Gem::Specification.new do |s|
   s.name = %q{jasmine}
-  s.version = "0.1.3"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rajan Agaskar", "Christian Williams"]
-  s.date = %q{2009-12-31}
+  s.date = %q{2010-01-26}
+  s.default_executable = %q{jasmine}
   s.description = %q{Javascript BDD test framework}
   s.email = %q{ragaskar@gmail.com}
-  s.executables = ["autospec", "edit_json.rb", "jasmine", "jeweler", "prettify_json.rb", "rackup", "rake", "rubyforge", "selenium-rc", "spec", "thin"]
+  s.executables = ["jasmine"]
   s.extra_rdoc_files = [
     "README.markdown"
   ]
   s.files = [
-    "bin/jasmine",
+    "generators/jasmine/jasmine_generator.rb",
+     "generators/jasmine/templates/INSTALL",
+     "generators/jasmine/templates/lib/tasks/jasmine.rake",
+     "generators/jasmine/templates/spec/javascripts/ExampleSpec.js",
+     "generators/jasmine/templates/spec/javascripts/SpecHelper.js",
+     "generators/jasmine/templates/spec/javascripts/support/jasmine_config.rb",
+     "generators/jasmine/templates/spec/javascripts/support/jasmine_spec.rb",
+     "generators/jasmine/templates/spec/javascripts/support/sources-rails.yaml",
+     "generators/jasmine/templates/spec/javascripts/support/sources.yaml",
      "jasmine/contrib/ruby/jasmine_runner.rb",
      "jasmine/contrib/ruby/jasmine_spec_builder.rb",
      "jasmine/contrib/ruby/run.html",
@@ -29,13 +38,10 @@ Gem::Specification.new do |s|
      "lib/jasmine.rb",
      "lib/jasmine/base.rb",
      "lib/jasmine/config.rb",
-     "lib/jasmine/jasmine_helper.rb",
-     "lib/jasmine/jasmine_meta_spec.rb",
      "lib/jasmine/run.html.erb",
      "lib/jasmine/selenium_driver.rb",
      "lib/jasmine/server.rb",
-     "lib/jasmine/spec_builder.rb",
-     "templates/Rakefile"
+     "lib/jasmine/spec_builder.rb"
   ]
   s.homepage = %q{http://github.com/pivotal/jasmine-ruby}
   s.rdoc_options = ["--charset=UTF-8"]

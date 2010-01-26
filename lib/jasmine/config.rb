@@ -1,5 +1,7 @@
 module Jasmine
   class Config
+    require 'yaml'
+
     def initialize(options = {})
       require 'selenium_rc'
       @selenium_jar_path = SeleniumRC::Server.allocate.jar_path
@@ -86,31 +88,60 @@ module Jasmine
       Dir.glob(File.join(dir, pattern)).collect {|f| f.sub("#{dir}/", "")}.sort
     end
 
+    def project_root
+      Dir.pwd
+    end
+
+    def src_dir
+      if simple_config['src_dir']
+        File.join(project_root, simple_config['src_dir'])
+      else
+        project_root
+      end
+    end
+
+    def simple_config_file
+      File.join(project_root, 'spec/javascripts/support/sources.yaml')
+    end
+
+    def simple_config
+      config = File.exist?(simple_config_file) ? File.open(simple_config_file) { |yf| YAML::load( yf ) } : false
+      config || {}
+    end
+
     def src_files
-      match_files(src_dir, "**/*.js")
+      simple_config['sources'] || []
     end
 
-    def src_path
-      "src"
-    end
-
-    def spec_path
-      "spec"
+    def spec_dir
+      if simple_config['spec_dir']
+        File.join(project_root, simple_config['spec_dir'])
+      else
+        File.join(project_root, 'spec/javascripts')
+      end
     end
 
     def spec_files
       match_files(spec_dir, "**/*.js")
     end
 
+    def spec_path
+      "/__spec__"
+    end
+
+    def root_path
+      "/__root__"
+    end
+
     def mappings
       {
-          "/" + src_path => src_dir,
-          "/" + spec_path => spec_dir
+        spec_path => spec_dir,
+        root_path => project_root
       }
     end
 
     def js_files
-      src_files.collect {|f| "/" + File.join(src_path, f) } + spec_files.collect {|f| "/" + File.join(spec_path, f) }
+      src_files.collect {|f| "/" + f } + spec_files.collect {|f| File.join(spec_path, f) }
     end
 
     def spec_files_full_paths

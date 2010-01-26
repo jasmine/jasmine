@@ -1,0 +1,8 @@
+sources:
+  - javascripts/prototype.js
+  - javascripts/effects.js
+  - javascripts/controls.js
+  - javascripts/dragdrop.js
+  - javascripts/application.js
+src_dir: public
+spec_dir: spec/javascripts
