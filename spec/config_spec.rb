@@ -12,6 +12,7 @@ describe Jasmine::Config do
     it "if sources.yaml not found" do
       File.stub!(:exist?).and_return(false)
       @config.src_files.should == []
+      @config.stylesheets.should == []
       @config.spec_files.should == ['javascripts/ExampleSpec.js', 'javascripts/SpecHelper.js']
       @config.mappings.should == {
         '/__root__' => @config.project_root,
@@ -20,8 +21,10 @@ describe Jasmine::Config do
     end
 
     it "if sources.yaml is empty" do
+      @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/jasmine.yaml'))
       YAML.stub!(:load).and_return(false)
       @config.src_files.should == []
+      @config.stylesheets.should == []
       @config.spec_files.should == ['javascripts/ExampleSpec.js', 'javascripts/SpecHelper.js']
       @config.mappings.should == {
         '/__root__' => @config.project_root,
@@ -29,8 +32,8 @@ describe Jasmine::Config do
       }
     end
 
-    it "using default sources.yaml" do
-      @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/sources.yaml'))
+    it "using default jasmine.yaml" do
+      @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/jasmine.yaml'))
       @config.src_files.should == []
       @config.spec_files.should == ['javascripts/ExampleSpec.js', 'javascripts/SpecHelper.js']
       @config.mappings.should == {
@@ -39,14 +42,31 @@ describe Jasmine::Config do
       }
     end
 
-    it "using rails sources.yaml" do
-      @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/sources-rails.yaml'))
+    it "simple_config stylesheets" do
+      @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/jasmine.yaml'))
+      YAML.stub!(:load).and_return({'stylesheets' => ['foo.css', 'bar.css']})
+      Dir.stub!(:glob).and_return do |glob_string|
+        glob_string
+      end
+      @config.stylesheets.should == ['foo.css', 'bar.css']
+    end
+
+    it "using rails jasmine.yaml" do
+      original_glob = Dir.method(:glob)
+      Dir.stub!(:glob).and_return do |glob_string|
+        if glob_string =~ /public/
+          glob_string
+        else
+          original_glob.call(glob_string)
+        end
+      end
+      @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/jasmine-rails.yaml'))
+      @config.spec_files.should == ['javascripts/ExampleSpec.js', 'javascripts/SpecHelper.js']
       @config.src_files.should == ['javascripts/prototype.js',
                                    'javascripts/effects.js',
                                    'javascripts/controls.js',
                                    'javascripts/dragdrop.js',
                                    'javascripts/application.js']
-      @config.spec_files.should == ['javascripts/ExampleSpec.js', 'javascripts/SpecHelper.js']
       @config.js_files.should == [
         '/javascripts/prototype.js',
         '/javascripts/effects.js',

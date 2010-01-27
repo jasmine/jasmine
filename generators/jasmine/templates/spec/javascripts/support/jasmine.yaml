@@ -1,0 +1,10 @@
+#src_files:
+#  - lib/source1.js
+#  - lib/source2.js
+#  - dist/**/*.js
+#stylesheets:
+#  - css/style.css
+#spec_files:
+#  -
+#src_dir:
+#spec_dir: spec/javascripts

@@ -37,9 +37,9 @@ if ARGV[0] == 'init'
   rails_tasks_dir = dest_path('lib/tasks')
   if File.exist?(rails_tasks_dir)
     copy_unless_exists('lib/tasks/jasmine.rake')
-    copy_unless_exists('spec/javascripts/support/sources-rails.yaml', 'spec/javascripts/support/sources.yaml')
+    copy_unless_exists('spec/javascripts/support/jasmine-rails.yaml', 'spec/javascripts/support/jasmine.yaml')
   else
-    copy_unless_exists('spec/javascripts/support/sources.yaml')
+    copy_unless_exists('spec/javascripts/support/jasmine.yaml')
     write_mode = 'w'
     if File.exist?(dest_path('Rakefile'))
       load dest_path('Rakefile')

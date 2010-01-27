@@ -71,37 +71,11 @@ module Jasmine
       @client.eval_js(script)
     end
 
-    def stylesheets
-      []
-    end
-
-    def src_files
-      []
-    end
-
-    def spec_files
-      raise "You need to declare a spec_files method in #{self.class}!"
-    end
-
-    def match_files(dir, pattern)
+    def match_files(dir, patterns)
       dir = File.expand_path(dir)
-      Dir.glob(File.join(dir, pattern)).collect {|f| f.sub("#{dir}/", "")}.sort
-    end
-
-    def project_root
-      Dir.pwd
-    end
-
-    def src_dir
-      if simple_config['src_dir']
-        File.join(project_root, simple_config['src_dir'])
-      else
-        project_root
-      end
-    end
-
-    def simple_config_file
-      File.join(project_root, 'spec/javascripts/support/sources.yaml')
+      patterns.collect do |pattern|
+        Dir.glob(File.join(dir, pattern)).collect {|f| f.sub("#{dir}/", "")}.sort
+      end.flatten
     end
 
     def simple_config
@@ -109,21 +83,6 @@ module Jasmine
       config || {}
     end
 
-    def src_files
-      simple_config['sources'] || []
-    end
-
-    def spec_dir
-      if simple_config['spec_dir']
-        File.join(project_root, simple_config['spec_dir'])
-      else
-        File.join(project_root, 'spec/javascripts')
-      end
-    end
-
-    def spec_files
-      match_files(spec_dir, "**/*.js")
-    end
 
     def spec_path
       "/__spec__"
@@ -144,8 +103,61 @@ module Jasmine
       src_files.collect {|f| "/" + f } + spec_files.collect {|f| File.join(spec_path, f) }
     end
 
+    def css_files
+      stylesheets.collect {|f| "/" + f }
+    end
+
     def spec_files_full_paths
       spec_files.collect {|spec_file| File.join(spec_dir, spec_file) }
     end
+
+    def project_root
+      Dir.pwd
+    end
+
+    def simple_config_file
+      File.join(project_root, 'spec/javascripts/support/jasmine.yaml')
+    end
+
+    def src_dir
+      if simple_config['src_dir']
+        File.join(project_root, simple_config['src_dir'])
+      else
+        project_root
+      end
+    end
+
+    def spec_dir
+      if simple_config['spec_dir']
+        File.join(project_root, simple_config['spec_dir'])
+      else
+        File.join(project_root, 'spec/javascripts')
+      end
+    end
+
+    def src_files
+      files = []
+      if simple_config['src_files']
+        files = match_files(src_dir, simple_config['src_files'])
+      end
+      files
+    end
+
+    def spec_files
+      files = match_files(spec_dir, "**/*.js")
+      if simple_config['spec_files']
+        files = match_files(spec_dir, simple_config['spec_files'])
+      end
+      files
+    end
+
+    def stylesheets
+      files = []
+      if simple_config['stylesheets']
+        files = match_files(src_dir, simple_config['stylesheets'])
+      end
+      files
+    end
+
   end
 end
