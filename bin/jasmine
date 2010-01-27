@@ -20,8 +20,8 @@ end
 
 def copy_unless_exists(relative_path, dest_path = nil)
   unless File.exist?(dest_path(relative_path))
-      File.copy(template_path(relative_path), dest_path(dest_path || relative_path))
-   end
+    File.copy(template_path(relative_path), dest_path(dest_path || relative_path))
+  end
 end
 
 if ARGV[0] == 'init'
@@ -40,13 +40,16 @@ if ARGV[0] == 'init'
     copy_unless_exists('spec/javascripts/support/sources-rails.yaml', 'spec/javascripts/support/sources.yaml')
   else
     copy_unless_exists('spec/javascripts/support/sources.yaml')
+    write_mode = 'w'
     if File.exist?(dest_path('Rakefile'))
       load dest_path('Rakefile')
+      write_mode = 'a'
     end
-    write_mode = Rake::Task.task_defined?('jasmine') ? 'a' : 'w'
-        File.open(dest_path('Rakefile'), write_mode) do |f|
-          f.write(File.read(template_path('lib/tasks/jasmine.rake')))
-        end
+    unless Rake::Task.task_defined?('jasmine')
+      File.open(dest_path('Rakefile'), write_mode) do |f|
+        f.write(File.read(template_path('lib/tasks/jasmine.rake')))
+      end
+    end
   end
   File.open(template_path('INSTALL'), 'r').each_line do |line|
     puts line
