@@ -32,7 +32,7 @@ if ARGV[0] == 'init'
   copy_unless_exists('spec/javascripts/SpecHelper.js')
   copy_unless_exists('spec/javascripts/ExampleSpec.js')
   copy_unless_exists('spec/javascripts/support/jasmine_config.rb')
-  copy_unless_exists('spec/javascripts/support/jasmine_spec.rb')
+  copy_unless_exists('spec/javascripts/support/jasmine_runner.rb')
 
   rails_tasks_dir = dest_path('lib/tasks')
   if File.exist?(rails_tasks_dir)

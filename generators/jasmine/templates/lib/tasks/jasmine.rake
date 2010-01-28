@@ -7,7 +7,7 @@ namespace :jasmine do
   Spec::Rake::SpecTask.new(:ci) do |t|
     t.spec_opts = ["--color", "--format", "specdoc"]
     t.verbose = true
-    t.spec_files = ['spec/javascripts/support/jasmine_spec.rb']
+    t.spec_files = ['spec/javascripts/support/jasmine_runner.rb']
   end
     task :server do
       require 'spec/javascripts/support/jasmine_config'

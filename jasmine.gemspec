@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
      "generators/jasmine/templates/spec/javascripts/support/jasmine-rails.yml",
      "generators/jasmine/templates/spec/javascripts/support/jasmine.yml",
      "generators/jasmine/templates/spec/javascripts/support/jasmine_config.rb",
-     "generators/jasmine/templates/spec/javascripts/support/jasmine_spec.rb",
+     "generators/jasmine/templates/spec/javascripts/support/jasmine_runner.rb",
      "jasmine/contrib/ruby/jasmine_runner.rb",
      "jasmine/contrib/ruby/jasmine_spec_builder.rb",
      "jasmine/contrib/ruby/run.html",
