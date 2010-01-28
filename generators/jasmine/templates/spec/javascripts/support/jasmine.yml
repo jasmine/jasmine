@@ -1,0 +1,20 @@
+#  Return an array of filepaths relative to src_dir to include before jasmine specs.
+#src_files:
+#  - lib/source1.js
+#  - lib/source2.js
+#  - dist/**/*.js
+
+#  Return an array of stylesheet filepaths relative to src_dir to include before jasmine specs.
+#stylesheets:
+#  - css/style.css
+#  - stylesheets/*.css
+
+#  Return an array of filepaths relative to spec_dir to include before jasmine specs.
+#spec_files:
+#  - **/*.js
+
+#  Source directory path. Your src_files must be returned relative to this path. Will use root if left blank.
+#src_dir:
+
+#  Spec directory path. Your spec_files must be returned relative to this path.
+#spec_dir: spec/javascripts

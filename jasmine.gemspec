@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Rajan Agaskar", "Christian Williams"]
-  s.date = %q{2010-01-26}
+  s.date = %q{2010-01-27}
   s.default_executable = %q{jasmine}
   s.description = %q{Javascript BDD test framework}
   s.email = %q{ragaskar@gmail.com}
@@ -23,8 +23,8 @@ Gem::Specification.new do |s|
      "generators/jasmine/templates/lib/tasks/jasmine.rake",
      "generators/jasmine/templates/spec/javascripts/ExampleSpec.js",
      "generators/jasmine/templates/spec/javascripts/SpecHelper.js",
-     "generators/jasmine/templates/spec/javascripts/support/jasmine-rails.yaml",
-     "generators/jasmine/templates/spec/javascripts/support/jasmine.yaml",
+     "generators/jasmine/templates/spec/javascripts/support/jasmine-rails.yml",
+     "generators/jasmine/templates/spec/javascripts/support/jasmine.yml",
      "generators/jasmine/templates/spec/javascripts/support/jasmine_config.rb",
      "generators/jasmine/templates/spec/javascripts/support/jasmine_spec.rb",
      "jasmine/contrib/ruby/jasmine_runner.rb",
