@@ -24,7 +24,7 @@ describe Jasmine::Config do
     end
 
     it "if jasmine.yml is empty" do
-      @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/jasmine.yaml'))
+      @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/jasmine.yml'))
       YAML.stub!(:load).and_return(false)
       @config.src_files.should == []
       @config.stylesheets.should == []
@@ -54,7 +54,7 @@ describe Jasmine::Config do
       @config.stylesheets.should == ['foo.css', 'bar.css']
     end
 
-    it "using rails jasmine.yaml" do
+    it "using rails jasmine.yml" do
       original_glob = Dir.method(:glob)
       Dir.stub!(:glob).and_return do |glob_string|
         if glob_string =~ /public/
@@ -95,6 +95,11 @@ describe Jasmine::Config do
     @config.stub!(:simple_config_file).and_return(File.join(@template_dir, 'spec/javascripts/support/jasmine.yml'))
     YAML.stub!(:load).and_return({'src_dir' => nil})
     @config.src_dir.should == 'some_project_root'
+  end
+
+  it "should use correct default yaml config" do
+    @config.stub!(:project_root).and_return('some_project_root')
+    @config.simple_config_file.should == (File.join('some_project_root', 'spec/javascripts/support/jasmine.yml'))
   end
 
 

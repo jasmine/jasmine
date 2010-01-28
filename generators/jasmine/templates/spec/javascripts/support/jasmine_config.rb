@@ -2,13 +2,15 @@ require 'jasmine'
 
 class Jasmine::Config
 
+# Override these methods if necessary
+
 #  def project_root
 #    Dir.pwd
 #  end
 
-#  Path to your jasmine.yaml
+#  Path to your jasmine.yml
 #  def simple_config_file
-#    File.join(project_root, 'spec/javascripts/support/jasmine.yaml')
+#    File.join(project_root, 'spec/javascripts/support/jasmine.yml')
 #  end
 
 #  Source directory path. Your src_files must be returned relative to this path.

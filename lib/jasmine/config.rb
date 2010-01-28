@@ -116,7 +116,7 @@ module Jasmine
     end
 
     def simple_config_file
-      File.join(project_root, 'spec/javascripts/support/jasmine.yaml')
+      File.join(project_root, 'spec/javascripts/support/jasmine.yml')
     end
 
     def src_dir
