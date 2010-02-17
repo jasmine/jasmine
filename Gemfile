@@ -1,3 +1,4 @@
+#jasmine-ruby is currently designed for use with bundler 0.8.0
 gem "rake", "0.8.7"
 gem "jeweler", "1.4.0"
 gem "gemcutter", "0.2.1"

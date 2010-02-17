@@ -47,7 +47,7 @@ describe Jasmine::Server do
 
   describe "/ page" do
     it "should load each js file in order" do
-      code, headers, body = @thin_app.call("PATH_INFO" => "/", "SCRIPT_NAME" => "xxx")
+      code, headers, body = @thin_app.call("PATH_INFO" => "/", "SCRIPT_NAME" => "xxx", "REQUEST_METHOD" => 'GET')
       code.should == 200
       body = read(body)
       body.should include("\"/src/file1.js")
@@ -56,10 +56,4 @@ describe Jasmine::Server do
     end
   end
 
-  it "should display an error using JS for 404's" do
-    code, headers, body = @thin_app.call("PATH_INFO" => "/spec/NonExistantFile.js", "SCRIPT_NAME" => "xxx")
-    code.should == 200 # todo: shouldn't this be 404?  will that work with all browsers?
-    headers["Content-Type"].should == "application/javascript"
-    read(body).should == "document.write('<p>Couldn\\'t load /spec/NonExistantFile.js!</p>');"
-  end
 end

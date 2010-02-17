@@ -12,7 +12,17 @@ module Jasmine
     end
 
     def call(env)
-      run
+      return not_found if env["PATH_INFO"] != "/"
+      return [200,{ 'Content-Type' => 'text/html' }, ''] if (env['REQUEST_METHOD'] == 'HEAD')
+      run if env['REQUEST_METHOD'] == 'GET'
+    end
+
+    def not_found
+      body = "File not found: #{@path_info}\n"
+      [404, {"Content-Type" => "text/plain",
+         "Content-Length" => body.size.to_s,
+         "X-Cascade" => "pass"},
+       [body]]
     end
 
     #noinspection RubyUnusedLocalVariable
@@ -59,8 +69,6 @@ module Jasmine
   class FocusedSuite
     def initialize(config)
       @config = config
-#      @spec_files_or_proc = spec_files_or_proc || []
-#      @options = options
     end
 
     def call(env)
@@ -102,10 +110,10 @@ module Jasmine
 
       app = Rack::Cascade.new([
         Rack::URLMap.new({'/' => Rack::File.new(@config.src_dir)}),
-        Rack::URLMap.new(thin_config),
-        JsAlert.new
+        Rack::URLMap.new(thin_config)
+#        JsAlert.new
       ])
-
+#      Thin::Logging.trace = true
       @thin = Thin::Server.new('0.0.0.0', @port, app)
     end
 
