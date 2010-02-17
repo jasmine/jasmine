@@ -45,6 +45,12 @@ describe Jasmine::Server do
     headers["Location"].should == "/"
   end
 
+  it "should 404 non-existent files" do
+    code, headers, body = @thin_app.call("PATH_INFO" => "/some-non-existent-file", "SCRIPT_NAME" => "xxx")
+    code.should == 404
+
+  end
+
   describe "/ page" do
     it "should load each js file in order" do
       code, headers, body = @thin_app.call("PATH_INFO" => "/", "SCRIPT_NAME" => "xxx", "REQUEST_METHOD" => 'GET')
@@ -54,6 +60,14 @@ describe Jasmine::Server do
       body.should include("\"/spec/file2.js")
       body.should satisfy {|s| s.index("/src/file1.js") < s.index("/spec/file2.js") }
     end
+
+    it "should return an empty 200 for HEAD requests to /" do
+      code, headers, body = @thin_app.call("PATH_INFO" => "/", "SCRIPT_NAME" => "xxx", "REQUEST_METHOD" => 'HEAD')
+      code.should == 200
+      headers.should == { 'Content-Type' => 'text/html' }
+      body.should == ''
+    end
+
   end
 
 end
