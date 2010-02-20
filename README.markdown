@@ -98,36 +98,33 @@ Results of the expectations are logged for later for reporting.
 
 Jasmine has several built-in matchers.  Here are a few:
 
-`toEqual()` compares objects or primitives and returns true if they are equal
-
-`toNotEqual()` compares objects or primitives and returns true if they are not equal
-
-`toMatch()` takes a regex or a string and returns true if it matches
-
-`toNotMatch()` takes a regex or a string and returns true if it does not match
-
-`toBeDefined()` returns true if the object or primitive is not `undefined`
-
-`toBeNull()` returns true if the object or primitive is not `null`
-
-`toBeTruthy()` returns true if the object or primitive evaluates to true
-
-`toBeFalsy()` returns true if the object or primitive evaluates to false
-
-`toContain()` returns true if an array or string contains the passed variable.
-
-`toNotContain()` returns true if an array or string does not contain the passed variable.
+>`expect(x).toEqual(y);` compares objects or primitives `x` and `y` and passes if they are equivalent
+>`expect(x).toMatch(pattern);` compares `x` to string or regular expression `pattern` and passes if they match
+>`expect(x).toBeDefined();` passes if `x` is not `undefined`
+>`expect(x).toBeNull();` passes if `x` is not `null`
+>`expect(x).toBeTruthy();` passes if `x` evaluates to true
+>`expect(x).toBeFalsy();` passes if `x` evaluates to false
+>`expect(x).toContain(y);` passes if array or string `x` contains `y`
 
 #### Writing New Matchers
 
-A Matcher has a method name, takes an expected value as it's only parameter, has access to the actual value in this, and then makes a call to this.report with true/false with a failure message.  Here's the definition of `toEqual()`:
+We've provided a small set of matchers that cover many common situations. However, we recommend that you write custom matchers when you want to assert a more specific sort of expectation. Custom matchers help to document the intent of your specs, and can help to remove code duplication in your specs.
 
-  jasmine.Matchers.prototype.toEqual = function (expected) {
-    return this.report((this.actual === expected),
-        'Expected ' + expected + ' but got ' + this.actual + '.');
+It's extremely easy to create new matchers for your app. A matcher function receives the actual value as `this.actual`, and zero or more arguments may be passed in the function call. The function should return `true` if the actual value passes the matcher's requirements, and `false` if it does not.
+
+Here's the definition of `toBeLessThan()`:
+
+  toBeLessThan: function(expected) {
+    return this.actual < expected;
   };
 
-Feel free to define your own matcher as needed in your code.  If you'd like to add Matchers to Jasmine, please write tests.
+To add the matcher to your suite, call `this.addMatchers()` from within a `before` or `it` block. Call it with an object mapping matcher name to function:
+
+  beforeEach(function() {
+    this.addMatchers({
+      toBeVisible: function() { return this.actual.isVisible(); }
+    });
+  });
 
 ### Asynchronous Specs
 
