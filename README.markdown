@@ -8,10 +8,10 @@ Quick Start
 ### Ruby Suite Running
 
     sudo gem sources -a http://gems.github.com
-    sudo gem install geminstaller 
+    sudo gem install geminstaller
     git clone git://github.com/pivotal/jasmine.git
     cd jasmine
-    sudo geminstaller	
+    sudo geminstaller
     cd examples/ruby
     rake jasmine_server
 
@@ -20,12 +20,12 @@ open `http://localhost:8888/` in your favorite browser.
 ### HTML Suite Running
    [Get the latest release from the downloads page](http://github.com/pivotal/jasmine/downloads)
 
-open `example/example_runner.html` in your favorite browser 
+open `example/example_runner.html` in your favorite browser
 
 ### Automatic Suite Running (w/ Selenium)
 
     sudo gem sources -a http://gems.github.com
-    sudo gem install geminstaller 
+    sudo gem install geminstaller
     git clone git://github.com/pivotal/jasmine.git
     cd jasmine
     sudo geminstaller
@@ -77,7 +77,7 @@ Exciting changes are afoot and many syntax changes have been made to make Jasmin
 Each spec is, naturally, a JavaScript function.  You tell Jasmine about this spec with a call to `it()` with a string and the function.  The string is a description that will be helpful to you when reading a report.
 
     it('should be a test', function () {
-	    var foo = 0
+      var foo = 0
       foo++;
     });
 
@@ -122,10 +122,10 @@ Jasmine has several built-in matchers.  Here are a few:
 
 A Matcher has a method name, takes an expected value as it's only parameter, has access to the actual value in this, and then makes a call to this.report with true/false with a failure message.  Here's the definition of `toEqual()`:
 
-	jasmine.Matchers.prototype.toEqual = function (expected) {
-	  return this.report((this.actual === expected),
-	      'Expected ' + expected + ' but got ' + this.actual + '.');
-	};
+  jasmine.Matchers.prototype.toEqual = function (expected) {
+    return this.report((this.actual === expected),
+        'Expected ' + expected + ' but got ' + this.actual + '.');
+  };
 
 Feel free to define your own matcher as needed in your code.  If you'd like to add Matchers to Jasmine, please write tests.
 
@@ -199,7 +199,7 @@ multiple `runs()` blocks in a spec will run serially. For example,
 `runs()` blocks exist so you can test asynchronous processes. The function `waits()` works with `runs()` to provide a naive
 timeout before the next block is run. You supply a time to wait before the next `runs()` function is executed.  For example:
 
-	it('should be a test', function () {
+  it('should be a test', function () {
     runs(function () {
       this.foo = 0;
       var that = this;
@@ -217,7 +217,7 @@ timeout before the next block is run. You supply a time to wait before the next 
     runs(function () {
       this.expects(this.foo).toEqual(1);
     });
-	});
+  });
 
 What's happening here?
 
@@ -231,33 +231,33 @@ What's happening here?
 
 Specs are grouped in Suites.  Suites are defined using the global `describe()` function:
 
-	describe('One suite', function () {
-	  it('has a test', function () {
-	    ...
-	  });
+  describe('One suite', function () {
+    it('has a test', function () {
+      ...
+    });
 
-	  it('has another test', function () {
-	    ...
-	  });
-	});
+    it('has another test', function () {
+      ...
+    });
+  });
 
 The Suite name is so that reporting is more descriptive.
 
 Suites are executed in the order in which `describe()` calls are made, usually in the order in which their script files are included.  Additionally, specs within a suite share a functional scope.  So you may declare variables inside a describe block and they are accessible from within your specs.  For example:
 
-	describe('A suite with some variables', function () {
+  describe('A suite with some variables', function () {
     var bar = 0
-	  
-    it('has a test', function () {
-	    bar++;
-      expect(bar).toEqual(1);
-	  });
 
-	  it('has another test', function () {
-	    bar++;
+    it('has a test', function () {
+      bar++;
+      expect(bar).toEqual(1);
+    });
+
+    it('has another test', function () {
+      bar++;
       expect(bar).toEqual(2);
-	  });
-	});
+    });
+  });
 
 #### beforeEach
 
@@ -353,13 +353,13 @@ Jasmine supports nested describes. An example:
         var nestedSuiteBar;
         beforeEach(function() {
           nestedSuiteBar=1;
-        });        
+        });
 
         it('nested expectation', function () {
           expect(suiteWideFoo).toEqual(0);
           expect(nestedSuiteBar).toEqual(1);
         });
-      
+
       });
 
       it('top-level describe', function () {
@@ -384,7 +384,7 @@ Here are a few examples:
     var Klass.prototype.methodWithCallback = function (callback) {
       return callback('foo');
     };
-    
+
     ...
 
     it('should spy on Klass#method') {
