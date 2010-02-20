@@ -99,11 +99,17 @@ Results of the expectations are logged for later for reporting.
 Jasmine has several built-in matchers.  Here are a few:
 
 >`expect(x).toEqual(y);` compares objects or primitives `x` and `y` and passes if they are equivalent
+>
 >`expect(x).toMatch(pattern);` compares `x` to string or regular expression `pattern` and passes if they match
+>
 >`expect(x).toBeDefined();` passes if `x` is not `undefined`
+>
 >`expect(x).toBeNull();` passes if `x` is not `null`
+>
 >`expect(x).toBeTruthy();` passes if `x` evaluates to true
+>
 >`expect(x).toBeFalsy();` passes if `x` evaluates to false
+>
 >`expect(x).toContain(y);` passes if array or string `x` contains `y`
 
 #### Writing New Matchers
