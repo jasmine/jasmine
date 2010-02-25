@@ -7,7 +7,7 @@ Quick Start
 
 ### Ruby Suite Running
 
-    Please use the [jasmine-ruby gem](http://github.com/pivotal/jasmine-ruby) to run suites in a ruby environment. 
+Please use the [jasmine-ruby gem](http://github.com/pivotal/jasmine-ruby) to run suites in a ruby environment. 
 
 open `http://localhost:8888/` in your favorite browser.
 
