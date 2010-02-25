@@ -177,11 +177,25 @@ describe('Spies', function () {
     expect(TestClass.someFunction.callCount).toEqual(0);
   });
 
-  it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
-    var spyObj = jasmine.createSpyObj('BaseName', ['method1', 'method2']);
-    expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
-    expect(spyObj.method1.identity).toEqual('BaseName.method1');
-    expect(spyObj.method2.identity).toEqual('BaseName.method2');
+  describe("createSpyObj", function() {
+    it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
+      var spyObj = jasmine.createSpyObj('BaseName', ['method1', 'method2']);
+      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
+      expect(spyObj.method1.identity).toEqual('BaseName.method1');
+      expect(spyObj.method2.identity).toEqual('BaseName.method2');
+    });
+
+    it("should throw if you do not pass an array argument", function() {
+      expect(function() {
+        jasmine.createSpyObj('BaseName');
+      }).toThrow('createSpyObj requires a non-empty array of method names to create spies for');
+    });
+
+    it("should throw if you pass an empty array argument", function() {
+      expect(function() {
+        jasmine.createSpyObj('BaseName');
+      }).toThrow('createSpyObj requires a non-empty array of method names to create spies for');
+    });
   });
 
 });

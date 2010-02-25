@@ -15,7 +15,7 @@ jasmine.unimplementedMethod_ = function() {
 /**
  * Use <code>jasmine.undefined</code> instead of <code>undefined</code>, since <code>undefined</code is just
  * a plain old variable and may be redefined by somebody else.
- * 
+ *
  * @private
  */
 jasmine.undefined = jasmine.___undefined___;
@@ -66,7 +66,7 @@ jasmine.ExpectationResult = function(params) {
 
   /** @deprecated */
   this.details = params.details;
-  
+
   this.message = this.passed_ ? 'Passed.' : params.message;
   this.trace = this.passed_ ? '' : new Error(this.message);
 };
@@ -350,6 +350,9 @@ jasmine.isSpy = function(putativeSpy) {
  * @param {Array} methodNames array of names of methods to make spies
  */
 jasmine.createSpyObj = function(baseName, methodNames) {
+  if (!jasmine.isArray_(methodNames) || methodNames.length == 0) {
+    throw new Error('createSpyObj requires a non-empty array of method names to create spies for');
+  }
   var obj = {};
   for (var i = 0; i < methodNames.length; i++) {
     obj[methodNames[i]] = jasmine.createSpy(baseName + '.' + methodNames[i]);
