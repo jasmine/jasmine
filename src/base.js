@@ -89,11 +89,7 @@ jasmine.getEnv = function() {
  * @returns {Boolean}
  */
 jasmine.isArray_ = function(value) {
-  return value &&
-         typeof value === 'object' &&
-         typeof value.length === 'number' &&
-         typeof value.splice === 'function' &&
-         !(value.propertyIsEnumerable('length'));
+  return Object.prototype.toString.apply(value) === '[object Array]';
 };
 
 /**
