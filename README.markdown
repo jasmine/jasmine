@@ -7,13 +7,7 @@ Quick Start
 
 ### Ruby Suite Running
 
-    sudo gem sources -a http://gems.github.com
-    sudo gem install geminstaller
-    git clone git://github.com/pivotal/jasmine.git
-    cd jasmine
-    sudo geminstaller
-    cd examples/ruby
-    rake jasmine_server
+    Please use the [jasmine-ruby gem](http://github.com/pivotal/jasmine-ruby) to run suites in a ruby environment. 
 
 open `http://localhost:8888/` in your favorite browser.
 
