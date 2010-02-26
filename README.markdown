@@ -335,23 +335,23 @@ Spies can be very useful for testing AJAX or other asynchronous behaviors that t
 
 There are spy-specfic matchers that are very handy.
 
-`wasCalled()` passes if the object is a spy and was called
+`expect(x).wasCalled()` passes if `x` is a spy and was called
 
-`wasCalledWith(arguments)` passes if the object is a spy and was called with the passed arguments
+`expect(x).wasCalledWith(arguments)` passes if `x` is a spy and was called with the specified arguments
 
-`wasNotCalled()` passes if the object is a spy and was not called
+`expect(x).wasNotCalled()` passes if `x` is a spy and was not called
 
-`wasNotCalledWith(arguments)` passes if the object is a spy and was not called with the passed arguments
+`expect(x).wasNotCalledWith(arguments)` passes if `x` is a spy and was not called with the specified arguments
 
 Spies can be trained to respond in a variety of ways when invoked:
 
-`andCallThrough()`: spies on AND calls the original function spied on
+`spyOn(x, 'method').andCallThrough()`: spies on AND calls the original function spied on
 
-`andReturn(arguments)`: returns passed arguments when spy is called
+`spyOn(x, 'method').andReturn(arguments)`: returns passed arguments when spy is called
 
-`andThrow(exception)`: throws passed exception when spy is called
+`spyOn(x, 'method').andThrow(exception)`: throws passed exception when spy is called
 
-`andCallFake(function)`: calls passed function when spy is called
+`spyOn(x, 'method').andCallFake(function)`: calls passed function when spy is called
 
 Spies have some useful properties:
 
