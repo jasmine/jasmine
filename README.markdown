@@ -56,6 +56,7 @@ Enter Jasmine
 Jasmine is our dream JavaScript testing framework. It's heavily influenced by, and borrows the best parts of, ScrewUnit, JSSpec, [JSpec](http://github.com/visionmedia/jspec/tree/master), and of course RSpec.
 
 Jasmine was designed with a few principles in mind. We believe that a good JavaScript testing framework:
+
 * should not be tied to any browser, framework, platform, or host language.
 * should have idiomatic and unsurprising syntax.
 * should work anywhere JavaScript can run, including browsers, servers, phones, etc.
@@ -63,6 +64,7 @@ Jasmine was designed with a few principles in mind. We believe that a good JavaS
 * should play well with IDEs (e.g. test code should pass static analysis).
 
 Some of our goals while writing Jasmine:
+
 * it should encourage good testing practices.
 * it should integrate easily with continuous build systems.
 * it should be simple to get started with.
@@ -138,33 +140,33 @@ To add the matcher to your suite, call `this.addMatchers()` from within a `befor
 
 Specs are grouped in Suites.  Suites are defined using the global `describe()` function:
 
-  describe('One suite', function () {
-    it('has a test', function () {
-      ...
+    describe('One suite', function () {
+      it('has a test', function () {
+        ...
+      });
+  
+      it('has another test', function () {
+        ...
+      });
     });
-
-    it('has another test', function () {
-      ...
-    });
-  });
 
 The Suite name is so that reporting is more descriptive.
 
 Suites are executed in the order in which `describe()` calls are made, usually in the order in which their script files are included.  Additionally, specs within a suite share a functional scope.  So you may declare variables inside a describe block and they are accessible from within your specs.  For example:
 
-  describe('A suite with some variables', function () {
-    var bar = 0
-
-    it('has a test', function () {
-      bar++;
-      expect(bar).toEqual(1);
+    describe('A suite with some variables', function () {
+      var bar = 0
+  
+      it('has a test', function () {
+        bar++;
+        expect(bar).toEqual(1);
+      });
+  
+      it('has another test', function () {
+        bar++;
+        expect(bar).toEqual(2);
+      });
     });
-
-    it('has another test', function () {
-      bar++;
-      expect(bar).toEqual(2);
-    });
-  });
 
 #### beforeEach
 
@@ -249,26 +251,26 @@ A runner can also have an afterEach declarations. Runner afterEach functions are
 Jasmine supports nested describes. An example:
 
     describe('some suite', function () {
-
+    
       var suiteWideFoo;
-
+    
       beforeEach(function () {
         suiteWideFoo = 0;
       });
-
+    
       describe('some nested suite', function() {
         var nestedSuiteBar;
         beforeEach(function() {
           nestedSuiteBar=1;
         });
-
+    
         it('nested expectation', function () {
           expect(suiteWideFoo).toEqual(0);
           expect(nestedSuiteBar).toEqual(1);
         });
-
+    
       });
-
+    
       it('top-level describe', function () {
         expect(suiteWideFoo).toEqual(0);
         expect(nestedSuiteBar).toEqual(undefined);
@@ -414,7 +416,7 @@ multiple `runs()` blocks in a spec will run serially. For example,
 
 `runs()` blocks share functional scope -- `this` properties will be common to all blocks, but declared `var`'s will not!
 
-     it('should be a test', function () {
+    it('should be a test', function () {
       runs( function () {
         this.foo = 0
         this.foo++;
@@ -437,25 +439,25 @@ multiple `runs()` blocks in a spec will run serially. For example,
 `runs()` blocks exist so you can test asynchronous processes. The function `waits()` works with `runs()` to provide a naive
 timeout before the next block is run. You supply a time to wait before the next `runs()` function is executed.  For example:
 
-  it('should be a test', function () {
-    runs(function () {
-      this.foo = 0;
-      var that = this;
-      setTimeout(function () {
-        that.foo++;
-      }, 250);
+    it('should be a test', function () {
+      runs(function () {
+        this.foo = 0;
+        var that = this;
+        setTimeout(function () {
+          that.foo++;
+        }, 250);
+      });
+    
+      runs(function () {
+        this.expects(this.foo).toEqual(0);
+      });
+    
+      waits(500);
+    
+      runs(function () {
+        this.expects(this.foo).toEqual(1);
+      });
     });
-
-    runs(function () {
-      this.expects(this.foo).toEqual(0);
-    });
-
-    waits(500);
-
-    runs(function () {
-      this.expects(this.foo).toEqual(1);
-    });
-  });
 
 What's happening here?
 
