@@ -53,7 +53,7 @@ So we decided to start from scratch.
 Enter Jasmine
 ------------
 
-Jasmine is our dream JavaScript testing framework. It's heavily influenced by, and borrows the best parts of, JSSpec, ScrewUnit & [JSpec](http://github.com/visionmedia/jspec/tree/master), and of course RSpec.
+Jasmine is our dream JavaScript testing framework. It's heavily influenced by, and borrows the best parts of, ScrewUnit, JSSpec, [JSpec](http://github.com/visionmedia/jspec/tree/master), and of course RSpec.
 
 Jasmine was designed with a few principles in mind. We believe that a good JavaScript testing framework:
 * should not be tied to any browser, framework, platform, or host language.
