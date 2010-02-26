@@ -1,6 +1,6 @@
 Jasmine
 =======
-**YET ANOTHER JavaScript testing framework**
+**A JavaScript Testing Framework**
 
 Quick Start
 ----------
@@ -9,12 +9,10 @@ Quick Start
 
 Please use the [jasmine-ruby gem](http://github.com/pivotal/jasmine-ruby) to run suites in a ruby environment. 
 
-open `http://localhost:8888/` in your favorite browser.
-
 ### HTML Suite Running
    [Get the latest release from the downloads page](http://github.com/pivotal/jasmine/downloads)
 
-open `example/example_runner.html` in your favorite browser
+Open `example/example_runner.html` in your favorite browser.
 
 ### Automatic Suite Running (w/ Selenium)
 
@@ -43,47 +41,57 @@ Pull Requests
 We welcome your contributions! Jasmine is currently maintained by Davis Frank ([infews](http://github.com/infews)), Rajan Agaskar ([ragaskar](http://github.com/ragaskar)), and Christian Williams ([Xian](http://github.com/Xian)). You can help us by removing all other recipients from your pull request.
 
 
-Why Another Frickin' JS TDD/BDD Framework?
+Why Another JavaScript TDD/BDD Framework?
 -----------
 
-There are some situations when you want to test-drive JavaScript, but you don't want to be bothered with or even have an explicit document.  You have no DOM to work with and thus lack HTML elements on which to hang event handlers.  You may need to make asynchronous calls (say, to an AJAX API) and cannot mock/stub them.
+There are some great JavaScript testing frameworks out there already, so why did we write another?
 
-But you still need to write tests.
+None of the existing frameworks quite worked the way we wanted. Many only work from within a browser. Most don't support testing asynchronous code like event callbacks. Some have syntax that's hard for JS developers or IDEs to understand.
 
-What's an Agile Engineer to do?
+So we decided to start from scratch.
 
 Enter Jasmine
 ------------
 
-Jasmine is yet another JavaScript testing framework.  It's *heavily* influenced by JSSpec, ScrewUnit & [JSpec](http://github.com/visionmedia/jspec/tree/master), which are all influenced by RSpec.  But each of those was lacking in some way: JSSpec & ScrewUnit require a DOM.  JSpec's DOM-less assumption was a great start, but it needed asynchronous support.
+Jasmine is our dream JavaScript testing framework. It's heavily influenced by, and borrows the best parts of, JSSpec, ScrewUnit & [JSpec](http://github.com/visionmedia/jspec/tree/master), and of course RSpec.
 
-So we started over.  And TDD'd a whole new framework.  Enjoy.
+Jasmine was designed with a few principles in mind. We believe that a good JavaScript testing framework:
+* should not be tied to any browser, framework, platform, or host language.
+* should have idiomatic and unsurprising syntax.
+* should work anywhere JavaScript can run, including browsers, servers, phones, etc.
+* shouldn't intrude in your application's territory (e.g. by cluttering the global namespace).
+* should play well with IDEs (e.g. test code should pass static analysis).
+
+Some of our goals while writing Jasmine:
+* it should encourage good testing practices.
+* it should integrate easily with continuous build systems.
+* it should be simple to get started with.
+
+The result is Jasmine, and we love test-driving our code with it. Enjoy.
 
 How To
 ------
 
-There is a nice example of how to use Jasmine in the /example directory.  But here's more information.
-
-Exciting changes are afoot and many syntax changes have been made to make Jasmine more usable. Please read the examples below for updates.
+There is a simple example of how to use Jasmine in the /example directory.  But here's more information.
 
 ### Specs
 
 Each spec is, naturally, a JavaScript function.  You tell Jasmine about this spec with a call to `it()` with a string and the function.  The string is a description that will be helpful to you when reading a report.
 
     it('should be a test', function () {
-      var foo = 0
+      var foo = 0;
       foo++;
     });
 
 ### Expectations
 
-Within your spec you will want/need to make expectations.  These are made with the `expect()` funciton and expectation matchers.  like this:
+Within your spec you will want to express expectations about the behavior of your application code.  These are made with the `expect()` function and expectation matchers, like this:
 
     it('should be a test', function () {
-      var foo = 0
-      foo++;
+      var foo = 0;            // set up the world
+      foo++;                  // call your application code
 
-      expect(foo).toEqual(1);
+      expect(foo).toEqual(1); // passes because foo == 1
     });
 
 Results of the expectations are logged for later for reporting.
@@ -125,104 +133,6 @@ To add the matcher to your suite, call `this.addMatchers()` from within a `befor
         toBeVisible: function() { return this.actual.isVisible(); }
       });
     });
-
-### Asynchronous Specs
-
-You may be thinking, "That's all well and good, but you mentioned something about asynchronous tests."
-
-Well, say you need to make a call that is asynchronous - an AJAX API, or some other JavaScript library.  That is, the call returns immediately, yet you want to make expectations 'at some point in the future' after some magic happens in the background.
-
-Jasmine allows you to do this with `runs()` and `waits()` blocks.
-
-`runs()` blocks by themselves simply run as if they were called directly. The following snippets of code should provide similar results:
-
-    it('should be a test', function () {
-      var foo = 0
-      foo++;
-
-      expect(foo).toEqual(1);
-    });
-
-and
-
-    it('should be a test', function () {
-      runs( function () {
-        var foo = 0
-        foo++;
-
-        expect(foo).toEqual(1);
-      });
-    });
-
-multiple `runs()` blocks in a spec will run serially. For example,
-
-    it('should be a test', function () {
-      runs( function () {
-        var foo = 0
-        foo++;
-
-        expect(foo).toEqual(1);
-      });
-      runs( function () {
-        var bar = 0
-        bar++;
-
-        expect(bar).toEqual(1);
-      });
-    });
-
-`runs()` blocks share functional scope -- `this` properties will be common to all blocks, but declared `var`'s will not!
-
-     it('should be a test', function () {
-      runs( function () {
-        this.foo = 0
-        this.foo++;
-        var bar = 0;
-        bar++;
-
-        expect(this.foo).toEqual(1);
-        expect(bar).toEqual(1);
-      });
-      runs( function () {
-        this.foo++;
-        var bar = 0
-        bar++;
-
-        expect(foo).toEqual(2);
-        expect(bar).toEqual(1);
-      });
-    });
-
-`runs()` blocks exist so you can test asynchronous processes. The function `waits()` works with `runs()` to provide a naive
-timeout before the next block is run. You supply a time to wait before the next `runs()` function is executed.  For example:
-
-  it('should be a test', function () {
-    runs(function () {
-      this.foo = 0;
-      var that = this;
-      setTimeout(function () {
-        that.foo++;
-      }, 250);
-    });
-
-    runs(function () {
-      this.expects(this.foo).toEqual(0);
-    });
-
-    waits(500);
-
-    runs(function () {
-      this.expects(this.foo).toEqual(1);
-    });
-  });
-
-What's happening here?
-
-* The first call to `runs()` sets call for 1/4 of a second in the future that increments `this.foo`.
-* The second `runs()` is executed immediately and then verifies that `this.foo` was indeed initialized to zero in the previous `runs()`.
-* Then we wait for half a second.
-* Then the last call to `runs()` expects that `this.foo` was incremented by the `setTimeout`.
-
 
 ### Suites
 
@@ -425,13 +335,13 @@ Spies can be very useful for testing AJAX or other asynchronous behaviors that t
 
 There are spy-specfic matchers that are very handy.
 
-`wasCalled()` returns true if the object is a spy and was called
+`wasCalled()` passes if the object is a spy and was called
 
-`wasCalledWith(arguments)` returns true if the object is a spy and was called with the passed arguments
+`wasCalledWith(arguments)` passes if the object is a spy and was called with the passed arguments
 
-`wasNotCalled()` returns true if the object is a spy and was not called
+`wasNotCalled()` passes if the object is a spy and was not called
 
-`wasNotCalledWith(arguments)` returns true if the object is a spy and was not called with the passed arguments
+`wasNotCalledWith(arguments)` passes if the object is a spy and was not called with the passed arguments
 
 Spies can be trained to respond in a variety of ways when invoked:
 
@@ -456,6 +366,103 @@ Spies are automatically removed after each spec. They may be set in the beforeEa
 ### Disabling Tests & Suites
 
 Specs may be disabled by calling `xit()` instead of `it()`.  Suites may be disabled by calling `xdescribe()` instead of `describe()`.  A simple find/replace in your editor of choice will allow you to run a subset of your specs.
+
+### Asynchronous Specs
+
+You may be thinking, "That's all very nice, but what's this about asynchronous tests?"
+
+Well, say you need to make a call that is asynchronous - an AJAX API, event callback, or some other JavaScript library.  That is, the call returns immediately, yet you want to make expectations 'at some point in the future' after some magic happens in the background.
+
+Jasmine allows you to do this with `runs()` and `waits()` blocks.
+
+`runs()` blocks by themselves simply run as if they were called directly. The following snippets of code should provide similar results:
+
+    it('should be a test', function () {
+      var foo = 0
+      foo++;
+
+      expect(foo).toEqual(1);
+    });
+
+and
+
+    it('should be a test', function () {
+      runs( function () {
+        var foo = 0
+        foo++;
+
+        expect(foo).toEqual(1);
+      });
+    });
+
+multiple `runs()` blocks in a spec will run serially. For example,
+
+    it('should be a test', function () {
+      runs( function () {
+        var foo = 0
+        foo++;
+
+        expect(foo).toEqual(1);
+      });
+      runs( function () {
+        var bar = 0
+        bar++;
+
+        expect(bar).toEqual(1);
+      });
+    });
+
+`runs()` blocks share functional scope -- `this` properties will be common to all blocks, but declared `var`'s will not!
+
+     it('should be a test', function () {
+      runs( function () {
+        this.foo = 0
+        this.foo++;
+        var bar = 0;
+        bar++;
+
+        expect(this.foo).toEqual(1);
+        expect(bar).toEqual(1);
+      });
+      runs( function () {
+        this.foo++;
+        var bar = 0
+        bar++;
+
+        expect(foo).toEqual(2);
+        expect(bar).toEqual(1);
+      });
+    });
+
+`runs()` blocks exist so you can test asynchronous processes. The function `waits()` works with `runs()` to provide a naive
+timeout before the next block is run. You supply a time to wait before the next `runs()` function is executed.  For example:
+
+  it('should be a test', function () {
+    runs(function () {
+      this.foo = 0;
+      var that = this;
+      setTimeout(function () {
+        that.foo++;
+      }, 250);
+    });
+
+    runs(function () {
+      this.expects(this.foo).toEqual(0);
+    });
+
+    waits(500);
+
+    runs(function () {
+      this.expects(this.foo).toEqual(1);
+    });
+  });
+
+What's happening here?
+
+* The first call to `runs()` sets call for 1/4 of a second in the future that increments `this.foo`.
+* The second `runs()` is executed immediately and then verifies that `this.foo` was indeed initialized to zero in the previous `runs()`.
+* Then we wait for half a second.
+* Then the last call to `runs()` expects that `this.foo` was incremented by the `setTimeout`.
 
 ## Support
 We now have a Google Group for support & discussion.
