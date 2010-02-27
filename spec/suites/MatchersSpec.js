@@ -596,7 +596,7 @@ describe("jasmine.Matchers", function() {
       it('should return false if it was not called', function() {
         var expected = match(TestClass.spyFunction);
         expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
-        var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+        var result = lastResult();
         expect(result.passed()).toEqual(false);
         expect(result.expected).toEqual(['c', 'b', 'a']);
         expect(result.actual.argsForCall).toEqual([]);
@@ -652,7 +652,7 @@ describe("jasmine.Matchers", function() {
         TestClass.spyFunction('a', 'b', 'c');
         var expected = match(TestClass.spyFunction);
         expect(expected.wasNotCalledWith('a', 'b', 'c')).toEqual(false);
-        var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+        var result = lastResult();
         expect(result.passed()).toEqual(false);
         expect(result.expected).toEqual(['a', 'b', 'c']);
         expect(result.actual.mostRecentCall.args).toEqual(['a', 'b', 'c']);
