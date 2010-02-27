@@ -56,10 +56,10 @@ namespace :jasmine do
   end
 
   desc 'Builds lib/jasmine from source'
-  task :build => :lint do
+  task :build => [:lint, 'gems:geminstaller'] do
     puts 'Building Jasmine from source'
     require 'json'
-    
+
     sources = jasmine_sources
     version = version_hash
 
@@ -119,17 +119,37 @@ jasmine.version_= {
   end
 
   namespace :test do
-    desc "Run continuous integration tests"
-    task :ci => 'jasmine:build' do
-      require "spec"
-      require 'spec/rake/spectask'
-      Spec::Rake::SpecTask.new(:lambda_ci) do |t|
-        t.spec_opts = ["--color", "--format", "specdoc"]
-        t.spec_files = ["spec/jasmine_spec.rb"]
-      end
-      Rake::Task[:lambda_ci].invoke
-    end
+    desc "Run continuous integration tests using a local Selenium runner"
+    task :ci => :'ci:local'
+    namespace :ci do
 
+      task :local => 'jasmine:build' do
+        require "spec"
+        require 'spec/rake/spectask'
+        Spec::Rake::SpecTask.new(:lambda_ci) do |t|
+          t.spec_opts = ["--color", "--format", "specdoc"]
+          t.spec_files = ["spec/jasmine_spec.rb"]
+        end
+        Rake::Task[:lambda_ci].invoke
+      end
+
+      desc "Run continuous integration tests using Sauce Labs 'Selenium in the Cloud'"
+      task :saucelabs => ['jasmine:copy_saucelabs_config', 'jasmine:build'] do
+        ENV['SAUCELABS'] = 'true'
+        Rake::Task['jasmine:test:ci:local'].invoke
+      end
+    end
   end
 
+  desc 'Copy saucelabs.yml to work directory'
+  task 'copy_saucelabs_config' do
+    FileUtils.cp '../saucelabs.yml', 'spec'
+  end
+end
+
+namespace :gems do
+  desc "Run geminstaller."
+  task :geminstaller do
+    `geminstaller --sudo`
+  end
 end

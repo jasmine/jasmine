@@ -217,8 +217,6 @@ describe('RunnerTest', function() {
       expect(fakeReporter.reportRunnerResults).wasCalled();
       expect(fakeReporter.reportRunnerResults.mostRecentCall.args[0].results()).toEqual(env.currentRunner().results());
     });
-
-
   });
 
   it("should report when the tests start running", function() {
@@ -235,7 +233,6 @@ describe('RunnerTest', function() {
     var reportedRunner = fakeReporter.reportRunnerStarting.mostRecentCall.args[0];
     expect(reportedRunner.arbitraryVariable).toEqual('foo');
     expect(runner.queue.start).wasCalled();
-
   });
 
   it("should return a flat array of all suites, including nested suites", function() {
@@ -245,8 +242,6 @@ describe('RunnerTest', function() {
       });
     });
 
-    document.runner = env.currentRunner();
-
     var suites = env.currentRunner().suites();
     var suiteDescriptions = [];
     for (var i = 0; i < suites.length; i++) {
@@ -254,5 +249,4 @@ describe('RunnerTest', function() {
     }
     expect(suiteDescriptions).toEqual([suite1.getFullName(), suite2.getFullName()]);
   });
-
 });

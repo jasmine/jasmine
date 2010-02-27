@@ -589,6 +589,18 @@ describe("jasmine.Matchers", function() {
         expect(result.passed()).toEqual(false);
         expect(result.expected).toEqual(['c', 'b', 'a']);
         expect(result.actual.mostRecentCall.args).toEqual(['a', 'b', 'c']);
+        expect(result.message).toContain(jasmine.pp(result.expected));
+        expect(result.message).toContain(jasmine.pp(result.actual.mostRecentCall.args));
+      });
+
+      it('should return false if it was not called', function() {
+        var expected = match(TestClass.spyFunction);
+        expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
+        var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+        expect(result.passed()).toEqual(false);
+        expect(result.expected).toEqual(['c', 'b', 'a']);
+        expect(result.actual.argsForCall).toEqual([]);
+        expect(result.message).toContain(jasmine.pp(result.expected));
       });
 
       it('should allow matches across multiple calls', function() {
@@ -622,12 +634,48 @@ describe("jasmine.Matchers", function() {
           var result = lastResult();
           expect(result.matcherName).toEqual("wasCalledWith");
           expect(result.passed()).toEqual(false);
-          expect(result.message).toMatch("['a', 'b']");
-          expect(result.message).toMatch("['a', 'c']");
+          expect(result.message).toContain(jasmine.pp(['a', 'b']));
+          expect(result.message).toContain(jasmine.pp(['a', 'c']));
           expect(result.actual).toEqual(TestClass.someFunction);
           expect(result.expected).toEqual(['a','b']);
         });
       });
     });
+
+    describe("wasNotCalledWith", function() {
+      it('should return true if the spy was NOT called with the expected args', function() {
+        TestClass.spyFunction('a', 'b', 'c');
+        expect(match(TestClass.spyFunction).wasNotCalledWith('c', 'b', 'a')).toEqual(true);
+      });
+
+      it('should return false if it WAS called with the expected args', function() {
+        TestClass.spyFunction('a', 'b', 'c');
+        var expected = match(TestClass.spyFunction);
+        expect(expected.wasNotCalledWith('a', 'b', 'c')).toEqual(false);
+        var result = mockSpec.addMatcherResult.mostRecentCall.args[0];
+        expect(result.passed()).toEqual(false);
+        expect(result.expected).toEqual(['a', 'b', 'c']);
+        expect(result.actual.mostRecentCall.args).toEqual(['a', 'b', 'c']);
+        expect(result.message).toContain(jasmine.pp(result.expected));
+      });
+
+      it('should return true if it was not called', function() {
+        var expected = match(TestClass.spyFunction);
+        expect(expected.wasNotCalledWith('c', 'b', 'a')).toEqual(true);
+       });
+
+      it('should allow matches across multiple calls', function() {
+        var expected = match(TestClass.spyFunction);
+        TestClass.spyFunction('a', 'b', 'c');
+        TestClass.spyFunction('d', 'e', 'f');
+        expect(expected.wasNotCalledWith('a', 'b', 'c')).toEqual(false);
+        expect(expected.wasNotCalledWith('d', 'e', 'f')).toEqual(false);
+        expect(expected.wasNotCalledWith('x', 'y', 'z')).toEqual(true);
+      });
+
+      it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasNotCalledWith'));
+
+    });
+
   });
 });

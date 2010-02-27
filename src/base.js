@@ -15,7 +15,7 @@ jasmine.unimplementedMethod_ = function() {
 /**
  * Use <code>jasmine.undefined</code> instead of <code>undefined</code>, since <code>undefined</code is just
  * a plain old variable and may be redefined by somebody else.
- * 
+ *
  * @private
  */
 jasmine.undefined = jasmine.___undefined___;
@@ -66,7 +66,7 @@ jasmine.ExpectationResult = function(params) {
 
   /** @deprecated */
   this.details = params.details;
-  
+
   this.message = this.passed_ ? 'Passed.' : params.message;
   this.trace = this.passed_ ? '' : new Error(this.message);
 };
@@ -89,11 +89,7 @@ jasmine.getEnv = function() {
  * @returns {Boolean}
  */
 jasmine.isArray_ = function(value) {
-  return value &&
-         typeof value === 'object' &&
-         typeof value.length === 'number' &&
-         typeof value.splice === 'function' &&
-         !(value.propertyIsEnumerable('length'));
+  return Object.prototype.toString.apply(value) === '[object Array]';
 };
 
 /**
@@ -350,6 +346,9 @@ jasmine.isSpy = function(putativeSpy) {
  * @param {Array} methodNames array of names of methods to make spies
  */
 jasmine.createSpyObj = function(baseName, methodNames) {
+  if (!jasmine.isArray_(methodNames) || methodNames.length == 0) {
+    throw new Error('createSpyObj requires a non-empty array of method names to create spies for');
+  }
   var obj = {};
   for (var i = 0; i < methodNames.length; i++) {
     obj[methodNames[i]] = jasmine.createSpy(baseName + '.' + methodNames[i]);
@@ -501,10 +500,8 @@ var xdescribe = function(description, specDefinitions) {
 };
 
 
-jasmine.XmlHttpRequest = XMLHttpRequest;
-
 // Provide the XMLHttpRequest class for IE 5.x-6.x:
-if (typeof XMLHttpRequest == "undefined") jasmine.XmlHttpRequest = function() {
+jasmine.XmlHttpRequest = (typeof XMLHttpRequest == "undefined") ? function() {
   try {
     return new ActiveXObject("Msxml2.XMLHTTP.6.0");
   } catch(e) {
@@ -522,7 +519,7 @@ if (typeof XMLHttpRequest == "undefined") jasmine.XmlHttpRequest = function() {
   } catch(e) {
   }
   throw new Error("This browser does not support XMLHttpRequest.");
-};
+} : XMLHttpRequest;
 
 /**
  * Adds suite files to an HTML document so that they are executed, thus adding them to the current

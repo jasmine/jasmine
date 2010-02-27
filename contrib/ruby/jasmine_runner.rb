@@ -228,44 +228,51 @@ module Jasmine
       @browser = options[:browser] ? options[:browser].delete(:browser) : 'firefox'
       @selenium_pid = nil
       @jasmine_server_pid = nil
+      @selenium_host = 'localhost'
+      @jasmine_server_port = Jasmine::find_unused_port
+      @selenium_server_port = Jasmine::find_unused_port
     end
 
     def start
-      start_servers
-      @client = Jasmine::SimpleClient.new("localhost", @selenium_server_port, "*#{@browser}", "http://localhost:#{@jasmine_server_port}/")
+      start_jasmine_server
+      start_selenium_server
+      @client = Jasmine::SimpleClient.new(@selenium_host, @selenium_server_port, "*#{@browser}", "http://localhost:#{@jasmine_server_port}/")
       @client.connect
     end
 
     def stop
       @client.disconnect
-      stop_servers
+      stop_selenium_server
+      stop_jasmine_server
     end
 
-    def start_servers
-      @jasmine_server_port = Jasmine::find_unused_port
-      @selenium_server_port = Jasmine::find_unused_port
-
-      @selenium_pid = fork do
-        Process.setpgrp
-        exec "java -jar #{@selenium_jar_path} -port #{@selenium_server_port} > /dev/null 2>&1"
-      end
-      puts "selenium started.  pid is #{@selenium_pid}"
-
+    def start_jasmine_server
       @jasmine_server_pid = fork do
         Process.setpgrp
         Jasmine::SimpleServer.start(@jasmine_server_port, @spec_files, @dir_mappings, @options)
         exit! 0
       end
       puts "jasmine server started.  pid is #{@jasmine_server_pid}"
-
-      Jasmine::wait_for_listener(@selenium_server_port, "selenium server")
       Jasmine::wait_for_listener(@jasmine_server_port, "jasmine server")
     end
 
-    def stop_servers
-      puts "shutting down the servers..."
-      Jasmine::kill_process_group(@selenium_pid) if @selenium_pid
+    def start_selenium_server
+      @selenium_pid = fork do
+        Process.setpgrp
+        exec "java -jar #{@selenium_jar_path} -port #{@selenium_server_port} > /dev/null 2>&1"
+      end
+      puts "selenium started.  pid is #{@selenium_pid}"
+      Jasmine::wait_for_listener(@selenium_server_port, "selenium server")
+    end
+
+    def stop_jasmine_server
+      puts "shutting down Jasmine server..."
       Jasmine::kill_process_group(@jasmine_server_pid) if @jasmine_server_pid
+    end
+
+    def stop_selenium_server
+      puts "shutting down Selenium server..."
+      Jasmine::kill_process_group(@selenium_pid) if @selenium_pid
     end
 
     def run
@@ -282,6 +289,40 @@ module Jasmine
     def eval_js(script)
       @client.eval_js(script)
     end
+  end
+
+  class SauceLabsRunner < Runner
+    def initialize(spec_files, dir_mappings, options={})
+      @spec_files = spec_files
+      @dir_mappings = dir_mappings
+      @options = options
+
+      @browser = options[:browser] ? options[:browser].delete(:browser) : 'firefox'
+      @jasmine_server_pid = nil
+      @jasmine_server_port = Jasmine::find_unused_port
+      @saucelabs_config = SeleniumConfig.new(options[:saucelabs_config], options[:saucelabs_config_file], @jasmine_server_port)
+    end
+
+    def start_selenium_server
+      @sauce_tunnel = SauceTunnel.new(@saucelabs_config)
+    end
+
+    def start
+      start_jasmine_server
+      start_selenium_server
+      @client = Jasmine::SimpleClient.new(@saucelabs_config['selenium_server_address'],
+                  4444,
+                  @saucelabs_config['selenium_browser_key'],
+                  "http://#{@saucelabs_config['application_address']}")
+      @client.connect
+    end
+
+    def stop
+      @client.disconnect
+      @sauce_tunnel.shutdown
+      stop_jasmine_server
+    end
+
   end
 
   def self.files(f)

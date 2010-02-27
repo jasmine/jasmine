@@ -48,7 +48,7 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
     }
 
     if (this.reportWasCalled_) return result;
-    
+
     var message;
     if (!result) {
       if (this.message) {
@@ -215,15 +215,32 @@ jasmine.Matchers.prototype.wasNotCalled = function() {
  *
  */
 jasmine.Matchers.prototype.wasCalledWith = function() {
+  var expectedArgs = jasmine.util.argsToArray(arguments);
+  if (!jasmine.isSpy(this.actual)) {
+    throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
+  }
+  this.message = function() {
+    if (this.actual.callCount == 0) {
+      return "Expected spy to have been called with " + jasmine.pp(expectedArgs) + " but it was never called.";
+    } else {
+      return "Expected spy to have been called with " + jasmine.pp(expectedArgs) + " but was called with " + jasmine.pp(this.actual.argsForCall);
+    }
+  };
+
+  return this.env.contains_(this.actual.argsForCall, expectedArgs);
+};
+
+jasmine.Matchers.prototype.wasNotCalledWith = function() {
+  var expectedArgs = jasmine.util.argsToArray(arguments);
   if (!jasmine.isSpy(this.actual)) {
     throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
   }
 
   this.message = function() {
-    return "Expected spy to have been called with " + jasmine.pp(arguments) + " but was called with " + jasmine.pp(this.actual.argsForCall);
+    return "Expected spy not to have been called with " + jasmine.pp(expectedArgs) + " but it was";
   };
 
-  return this.env.contains_(this.actual.argsForCall, jasmine.util.argsToArray(arguments));
+  return !this.env.contains_(this.actual.argsForCall, expectedArgs);
 };
 
 /**
