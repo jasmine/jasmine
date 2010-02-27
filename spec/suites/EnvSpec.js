@@ -6,14 +6,13 @@ describe("jasmine.Env", function() {
   });
 
   describe('ids', function () {
-
     it('nextSpecId should return consecutive integers, starting at 0', function () {
       expect(env.nextSpecId()).toEqual(0);
       expect(env.nextSpecId()).toEqual(1);
       expect(env.nextSpecId()).toEqual(2);
     });
-
   });
+
   describe("reporting", function() {
     var fakeReporter;
 
@@ -42,7 +41,6 @@ describe("jasmine.Env", function() {
           exception = e;
         }
         expect(exception.message).toEqual('Version not set');
-
       });
 
       it("version should return the current version as an int", function() {
@@ -58,7 +56,6 @@ describe("jasmine.Env", function() {
           "build": 7,
           "revision": 8
         });
-
       });
     });
 
