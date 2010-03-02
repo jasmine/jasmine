@@ -18,8 +18,12 @@ jasmine.Matchers.pp = function(str) {
 
 /** @deprecated */
 jasmine.Matchers.prototype.report = function(result, failing_message, details) {
-//  todo first: report deprecation warning [xw]
-//  todo later: throw new Error("As of jasmine 0.xx, custom matchers must be implemented differently -- please see jasmine docs");
+  // todo: report a deprecation warning [xw]
+
+  if (this.isNot) {
+    throw new Error("As of jasmine 0.11, custom matchers must be implemented differently -- please see jasmine docs");
+  }
+  
   this.reportWasCalled_ = true;
   var expectationResult = new jasmine.ExpectationResult({
     passed: result,
