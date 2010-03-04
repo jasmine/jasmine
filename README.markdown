@@ -118,7 +118,7 @@ Jasmine has several built-in matchers.  Here are a few:
 
 Every matcher's criteria can be inverted by prepending `.not`:
 
->`expect(x).not.toEqual(y);` compares objets or primitives `x` and `y` and passes if they are *not* equivalent
+>`expect(x).not.toEqual(y);` compares objects or primitives `x` and `y` and passes if they are *not* equivalent
 
 #### Writing New Matchers
 
