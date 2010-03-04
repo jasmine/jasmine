@@ -116,6 +116,10 @@ Jasmine has several built-in matchers.  Here are a few:
 >
 >`expect(x).toContain(y);` passes if array or string `x` contains `y`
 
+Every matcher's criteria can be inverted by prepending `.not`:
+
+>`expect(x).not.toEqual(y);` compares objets or primitives `x` and `y` and passes if they are *not* equivalent
+
 #### Writing New Matchers
 
 We've provided a small set of matchers that cover many common situations. However, we recommend that you write custom matchers when you want to assert a more specific sort of expectation. Custom matchers help to document the intent of your specs, and can help to remove code duplication in your specs.
