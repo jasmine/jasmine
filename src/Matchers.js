@@ -12,6 +12,10 @@ jasmine.Matchers = function(env, actual, spec, opt_isNot) {
   this.reportWasCalled_ = false;
 };
 
+jasmine.Matchers.pp = function(str) {
+  throw new Error("jasmine.Matchers.pp() is no longer supported, please use jasmine.pp() instead!");
+};
+
 /** @deprecated */
 jasmine.Matchers.prototype.report = function(result, failing_message, details) {
   // todo: report a deprecation warning [xw]
