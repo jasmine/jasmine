@@ -554,6 +554,10 @@ describe("jasmine.Matchers", function() {
         expect(function() {
           match({some:'object'})[methodName]();
         }).toThrow('Expected a spy, but got { some : \'object\' }.');
+
+        expect(function() {
+          match("<b>")[methodName]();
+        }).toThrow('Expected a spy, but got \'<b>\'.');
       };
     }
 

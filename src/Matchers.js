@@ -12,10 +12,6 @@ jasmine.Matchers = function(env, actual, spec, opt_isNot) {
   this.reportWasCalled_ = false;
 };
 
-jasmine.Matchers.pp = function(str) {
-  return jasmine.util.htmlEscape(jasmine.pp(str));
-};
-
 /** @deprecated */
 jasmine.Matchers.prototype.report = function(result, failing_message, details) {
   // todo: report a deprecation warning [xw]
@@ -183,7 +179,7 @@ jasmine.Matchers.prototype.wasCalled = function() {
   }
 
   if (!jasmine.isSpy(this.actual)) {
-    throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
+    throw new Error('Expected a spy, but got ' + jasmine.pp(this.actual) + '.');
   }
 
   this.message = function() {
@@ -202,7 +198,7 @@ jasmine.Matchers.prototype.wasNotCalled = function() {
   }
 
   if (!jasmine.isSpy(this.actual)) {
-    throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
+    throw new Error('Expected a spy, but got ' + jasmine.pp(this.actual) + '.');
   }
 
   this.message = function() {
@@ -221,7 +217,7 @@ jasmine.Matchers.prototype.wasNotCalled = function() {
 jasmine.Matchers.prototype.wasCalledWith = function() {
   var expectedArgs = jasmine.util.argsToArray(arguments);
   if (!jasmine.isSpy(this.actual)) {
-    throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
+    throw new Error('Expected a spy, but got ' + jasmine.pp(this.actual) + '.');
   }
   this.message = function() {
     if (this.actual.callCount == 0) {
@@ -237,7 +233,7 @@ jasmine.Matchers.prototype.wasCalledWith = function() {
 jasmine.Matchers.prototype.wasNotCalledWith = function() {
   var expectedArgs = jasmine.util.argsToArray(arguments);
   if (!jasmine.isSpy(this.actual)) {
-    throw new Error('Expected a spy, but got ' + jasmine.Matchers.pp(this.actual) + '.');
+    throw new Error('Expected a spy, but got ' + jasmine.pp(this.actual) + '.');
   }
 
   this.message = function() {
