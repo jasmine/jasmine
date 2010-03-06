@@ -251,6 +251,19 @@ A runner can also have an afterEach declarations. Runner afterEach functions are
       };
     });
 
+### Single-spec After functions
+
+A spec may ask Jasmine to execute some code after the spec has finished running; the code will run whether the spec finishes successfully or not. Multiple after functions may be given.
+
+    describe('some suite', function () {
+      it(function () {
+        var originalTitle = window.title;
+        this.after(function() { window.title = originalTitle; });
+        MyWindow.setTitle("new value");
+        expect(window.title).toEqual("new value");
+      });
+
+
 ### Nested Describes
 Jasmine supports nested describes. An example:
 
