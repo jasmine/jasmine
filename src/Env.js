@@ -181,6 +181,12 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
   mismatchKeys = mismatchKeys || [];
   mismatchValues = mismatchValues || [];
 
+  for (var i = 0; i < this.equalityTesters_.length; i++) {
+    var equalityTester = this.equalityTesters_[i];
+    var result = equalityTester(a, b, this, mismatchKeys, mismatchValues);
+    if (result !== jasmine.undefined) return result;
+  }
+
   if (a === b) return true;
 
   if (a === jasmine.undefined || a === null || b === jasmine.undefined || b === null) {
@@ -205,12 +211,6 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
 
   if (typeof a === "object" && typeof b === "object") {
     return this.compareObjects_(a, b, mismatchKeys, mismatchValues);
-  }
-
-  for (var i = 0; i < this.equalityTesters_.length; i++) {
-    var equalityTester = this.equalityTesters_[i];
-    var result = equalityTester(a, b, this, mismatchKeys, mismatchValues);
-    if (result !== jasmine.undefined) return result;
   }
 
   //Straight check
