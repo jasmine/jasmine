@@ -87,7 +87,7 @@ describe("Custom Matchers", function() {
   });
 
   describe("in the old style", function() {
-    it("should report deprecation a warning", function() {
+    it("should report a deprecation error", function() {
       var spec;
       var suite = env.describe('some suite', function() {
         spec = env.it('spec with an expectation').runs(function () {
