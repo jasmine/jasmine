@@ -5,9 +5,8 @@ module Jasmine
     def initialize(options = {})
       require 'selenium_rc'
       @selenium_jar_path = SeleniumRC::Server.allocate.jar_path
-      @options = options
 
-      @browser = options[:browser] ? options.delete(:browser) : 'firefox'
+      @browser = ENV["JASMINE_BROWSER"] || 'firefox'
       @selenium_pid = nil
       @jasmine_server_pid = nil
     end
