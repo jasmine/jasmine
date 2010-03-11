@@ -128,7 +128,7 @@ describe Jasmine::Config do
         with(anything(), anything(), "*firefox", anything()).
         and_return(mock(Jasmine::SeleniumDriver, :connect => true))
       config.start
-      end
+    end
 
     it "should use ENV['JASMINE_BROWSER'] if set" do
       ENV.should_receive(:[], "JASMINE_BROWSER").and_return("mosaic")
@@ -138,6 +138,15 @@ describe Jasmine::Config do
         with(anything(), anything(), "*mosaic", anything()).
         and_return(mock(Jasmine::SeleniumDriver, :connect => true))
       config.start
+    end
+  end
+
+  describe "#start_selenium_server" do
+   it "should use an existing selenium server if SELENIUM_SERVER_PORT is set" do
+      config = Jasmine::Config.new
+      ENV.stub!(:[], "SELENIUM_SERVER_PORT").and_return(1234)
+      Jasmine.should_receive(:wait_for_listener).with(1234, "selenium server")
+      config.start_selenium_server
     end
   end
 
