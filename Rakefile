@@ -147,6 +147,9 @@ jasmine.version_= {
   end
 end
 
+desc "Run specs via server"
+task :jasmine => ['jasmine:server']
+
 namespace :gems do
   desc "Run geminstaller."
   task :geminstaller do
