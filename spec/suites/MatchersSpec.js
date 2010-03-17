@@ -54,6 +54,9 @@ describe("jasmine.Matchers", function() {
 
     expect((match(['a', 'b']).toEqual(['a', jasmine.undefined]))).toEqual(false);
     expect((match(['a', 'b']).toEqual(['a', 'b', jasmine.undefined]))).toEqual(false);
+
+    expect((match(new String("cat")).toEqual("cat"))).toBe(true);
+    expect((match(new String("cat")).toNotEqual("cat"))).toBe(false);
   });
 
   it("toEqual to build an Expectation Result", function() {

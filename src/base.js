@@ -93,6 +93,16 @@ jasmine.isArray_ = function(value) {
 };
 
 /**
+ * @ignore
+ * @private
+ * @param value
+ * @returns {Boolean}
+ */
+jasmine.isString_ = function(value) {
+  return Object.prototype.toString.apply(value) === '[object String]';
+};
+
+/**
  * Pretty printer for expecations.  Takes any object and turns it into a human-readable string.
  *
  * @param value {Object} an object to be outputted
