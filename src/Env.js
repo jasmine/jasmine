@@ -213,6 +213,10 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
     return (a == b);
   }
 
+  if (jasmine.isNumber_(a) && jasmine.isNumber_(b)) {
+    return (a == b);
+  }
+
   if (typeof a === "object" && typeof b === "object") {
     return this.compareObjects_(a, b, mismatchKeys, mismatchValues);
   }

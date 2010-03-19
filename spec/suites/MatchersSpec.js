@@ -57,6 +57,11 @@ describe("jasmine.Matchers", function() {
 
     expect((match(new String("cat")).toEqual("cat"))).toBe(true);
     expect((match(new String("cat")).toNotEqual("cat"))).toBe(false);
+
+    expect((match(new Number(5)).toEqual(5))).toBe(true);
+    expect((match(new Number('5')).toEqual(5))).toBe(true);
+    expect((match(new Number(5)).toNotEqual(5))).toBe(false);
+    expect((match(new Number('5')).toNotEqual(5))).toBe(false);
   });
 
   it("toEqual to build an Expectation Result", function() {

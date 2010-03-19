@@ -89,7 +89,7 @@ jasmine.getEnv = function() {
  * @returns {Boolean}
  */
 jasmine.isArray_ = function(value) {
-  return Object.prototype.toString.apply(value) === '[object Array]';
+  return jasmine.isA_("Array", value);  
 };
 
 /**
@@ -99,7 +99,28 @@ jasmine.isArray_ = function(value) {
  * @returns {Boolean}
  */
 jasmine.isString_ = function(value) {
-  return Object.prototype.toString.apply(value) === '[object String]';
+  return jasmine.isA_("String", value);
+};
+
+/**
+ * @ignore
+ * @private
+ * @param value
+ * @returns {Boolean}
+ */
+jasmine.isNumber_ = function(value) {
+  return jasmine.isA_("Number", value);
+};
+
+/**
+ * @ignore
+ * @private
+ * @param {String} typeName
+ * @param value
+ * @returns {Boolean}
+ */
+jasmine.isA_ = function(typeName, value) {
+  return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 };
 
 /**
