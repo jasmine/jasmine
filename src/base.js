@@ -13,7 +13,7 @@ jasmine.unimplementedMethod_ = function() {
 };
 
 /**
- * Use <code>jasmine.undefined</code> instead of <code>undefined</code>, since <code>undefined</code is just
+ * Use <code>jasmine.undefined</code> instead of <code>undefined</code>, since <code>undefined</code> is just
  * a plain old variable and may be redefined by somebody else.
  *
  * @private
