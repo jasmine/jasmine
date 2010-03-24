@@ -33,30 +33,27 @@
   <script type="text/javascript" src="../lib/consolex.js"></script>
 
 
-  <script type="text/javascript">
-    (function () {
-      var suites = [
-        'suites/CustomMatchersSpec.js',
-        'suites/EnvSpec.js',
-        'suites/ExceptionsSpec.js',
-        'suites/JsApiReporterSpec.js',
-        'suites/MatchersSpec.js',
-        'suites/MultiReporterSpec.js',
-        'suites/NestedResultsSpec.js',
-        'suites/PrettyPrintSpec.js',
-        'suites/ReporterSpec.js',
-        'suites/RunnerSpec.js',
-        'suites/QueueSpec.js',
-        'suites/SpecSpec.js',
-        'suites/SpecRunningSpec.js',
-        'suites/SpySpec.js',
-        'suites/SuiteSpec.js',
-        'suites/TrivialReporterSpec.js',
-      ];
-      for (var i = 0; i < suites.length; i++) {
-        jasmine.include(suites[i], true);
-      }
 
+  <script type="text/javascript" src="suites/CustomMatchersSpec.js"></script>
+  <script type="text/javascript" src="suites/EnvSpec.js"></script>
+  <script type="text/javascript" src="suites/ExceptionsSpec.js"></script>
+  <script type="text/javascript" src="suites/JsApiReporterSpec.js"></script>
+  <script type="text/javascript" src="suites/MatchersSpec.js"></script>
+  <script type="text/javascript" src="suites/MultiReporterSpec.js"></script>
+  <script type="text/javascript" src="suites/NestedResultsSpec.js"></script>
+  <script type="text/javascript" src="suites/PrettyPrintSpec.js"></script>
+  <script type="text/javascript" src="suites/ReporterSpec.js"></script>
+  <script type="text/javascript" src="suites/RunnerSpec.js"></script>
+  <script type="text/javascript" src="suites/QueueSpec.js"></script>
+  <script type="text/javascript" src="suites/SpecSpec.js"></script>
+  <script type="text/javascript" src="suites/SpecRunningSpec.js"></script>
+  <script type="text/javascript" src="suites/SpySpec.js"></script>
+  <script type="text/javascript" src="suites/SuiteSpec.js"></script>
+  <script type="text/javascript" src="suites/TrivialReporterSpec.js"></script>
+  
+
+  <script type="text/javascript">
+    (function() {
       var jasmineEnv = jasmine.getEnv();
       jasmineEnv.updateInterval = 1000;
 

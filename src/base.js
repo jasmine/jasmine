@@ -558,6 +558,7 @@ jasmine.XmlHttpRequest = (typeof XMLHttpRequest == "undefined") ? function() {
  *
  * @param {String} url path to the file to include
  * @param {Boolean} opt_global
+ * @deprecated We suggest you use a different method of including JS source files. <code>jasmine.include</code> will be removed soon.
  */
 jasmine.include = function(url, opt_global) {
   if (opt_global) {
