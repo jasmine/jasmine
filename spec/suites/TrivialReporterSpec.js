@@ -14,6 +14,20 @@ describe("TrivialReporter", function() {
     };
   }
 
+  function findElements(divs, withClass) {
+    var els = [];
+    for (var i = 0; i < divs.length; i++) {
+      if (divs[i].className == withClass) els.push(divs[i]);
+    }
+    return els;
+  }
+
+  function findElement(divs, withClass) {
+    var els = findElements(divs, withClass);
+    if (els.length > 0) return els[0];
+    throw new Error("couldn't find div with class " + withClass);
+  }
+
   it("should run only specs beginning with spec parameter", function() {
     var trivialReporter = new jasmine.TrivialReporter({ location: {search: "?spec=run%20this"} });
     expect(trivialReporter.specFilter(fakeSpec("run this"))).toBeTruthy();
@@ -24,14 +38,15 @@ describe("TrivialReporter", function() {
   it("should display empty divs for every suite when the runner is starting", function() {
     var trivialReporter = new jasmine.TrivialReporter({ body: body });
     trivialReporter.reportRunnerStarting({
+      env: new jasmine.Env(),
       suites: function() {
         return [ new jasmine.Suite({}, "suite 1", null, null) ];
       }
     });
 
-    var divs = body.getElementsByTagName("div");
-    expect(divs.length).toEqual(2);
-    expect(divs[1].innerHTML).toContain("suite 1");
+    var divs = findElements(body.getElementsByTagName("div"), "suite");
+    expect(divs.length).toEqual(1);
+    expect(divs[0].innerHTML).toContain("suite 1");
   });
 
   describe('Matcher reporting', function () {
@@ -104,6 +119,7 @@ describe("TrivialReporter", function() {
 
       trivialReporter = new jasmine.TrivialReporter({ body: body });
       trivialReporter.reportRunnerStarting({
+        env: new jasmine.Env(),
         suites: function() {
           return [ new jasmine.Suite({}, "suite 1", null, null) ];
         }
@@ -120,10 +136,11 @@ describe("TrivialReporter", function() {
       trivialReporter.reportSpecResults(spec);
 
       var divs = body.getElementsByTagName("div");
-      expect(divs[3].innerHTML).toEqual("Expected 'a' to be null, but it was not");
+      var errorDiv = findElement(divs, 'resultMessage fail');
+      expect(errorDiv.innerHTML).toEqual("Expected 'a' to be null, but it was not");
     });
 
-    it("should add the failure message to the DOM (non-toEquals matchers)", function() {
+    it("should add the failure message to the DOM (non-toEquals matchers) html escaping", function() {
       expectationResult = new jasmine.ExpectationResult({
         matcherName: "toBeNull", passed: false, message: "Expected '1 < 2' to <b>e null, & it was not"
       });
@@ -133,7 +150,8 @@ describe("TrivialReporter", function() {
       trivialReporter.reportSpecResults(spec);
 
       var divs = body.getElementsByTagName("div");
-      expect(divs[3].innerHTML).toEqual("Expected '1 &lt; 2' to &lt;b&gt;e null, &amp; it was not");
+      var errorDiv = findElement(divs, 'resultMessage fail');
+      expect(errorDiv.innerHTML).toEqual("Expected '1 &lt; 2' to &lt;b&gt;e null, &amp; it was not");
     });
   });
 
