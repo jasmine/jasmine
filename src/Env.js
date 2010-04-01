@@ -47,6 +47,18 @@ jasmine.Env.prototype.version = function () {
 };
 
 /**
+ * @returns string containing jasmine version build info, if set.
+ */
+jasmine.Env.prototype.versionString = function() {
+  if (jasmine.version_) {
+    var version = this.version();
+    return version.major + "." + version.minor + "." + version.build + " revision " + version.revision;
+  } else {
+    return "version unknown";
+  }
+};
+
+/**
  * @returns a sequential integer starting at 0
  */
 jasmine.Env.prototype.nextSpecId = function () {

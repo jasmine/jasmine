@@ -57,6 +57,23 @@ describe("jasmine.Env", function() {
           "revision": 8
         });
       });
+
+      describe("versionString", function() {
+        it("should return a stringified version number", function() {
+          jasmine.version_ = {
+            "major": 1,
+            "minor": 9,
+            "build": 7,
+            "revision": 8
+          };
+          expect(env.versionString()).toEqual("1.9.7 revision 8");
+        });
+
+        it("should return a nice string when version is unknown", function() {
+          jasmine.version_ = null;
+          expect(env.versionString()).toEqual("version unknown");
+        });
+      });
     });
 
     it("should allow reporters to be registered", function() {
