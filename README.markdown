@@ -5,24 +5,11 @@ Jasmine
 Quick Start
 ----------
 
-### Ruby Suite Running
+1. Get the latest release from the [downloads page](http://github.com/pivotal/jasmine/downloads).
+2. Open `example/example_runner.html` in your favorite browser.
 
-Please use the [jasmine-ruby gem](http://github.com/pivotal/jasmine-ruby) to run suites in a ruby environment. 
-
-### HTML Suite Running
-   [Get the latest release from the downloads page](http://github.com/pivotal/jasmine/downloads)
-
-Open `example/example_runner.html` in your favorite browser.
-
-### Automatic Suite Running (w/ Selenium)
-
-    sudo gem sources -a http://gems.github.com
-    sudo gem install geminstaller
-    git clone git://github.com/pivotal/jasmine.git
-    cd jasmine
-    sudo geminstaller
-    cd examples/ruby
-    rake test:ci
+For running within a Ruby environment, including automated execution with Selenium, please use
+the [jasmine-ruby gem](http://github.com/pivotal/jasmine-ruby).
 
 Releases
 ----------
