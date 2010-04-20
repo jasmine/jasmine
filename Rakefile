@@ -102,7 +102,6 @@ jasmine.version_= {
   end
 
 
-  desc "Run jasmine tests of source via server"
   task :server do
     files = jasmine_sources + ['lib/TrivialReporter.js', 'lib/consolex.js']
     jasmine_includes = lambda {
@@ -112,14 +111,12 @@ jasmine.version_= {
     start_jasmine_server(jasmine_includes)
   end
 
-  desc "Build jasmine and run tests via server"
   task :server_build => 'jasmine:build' do
 
     start_jasmine_server
   end
 
   namespace :test do
-    desc "Run continuous integration tests using a local Selenium runner"
     task :ci => :'ci:local'
     namespace :ci do
 
@@ -133,7 +130,6 @@ jasmine.version_= {
         Rake::Task[:lambda_ci].invoke
       end
 
-      desc "Run continuous integration tests using Sauce Labs 'Selenium in the Cloud'"
       task :saucelabs => ['jasmine:copy_saucelabs_config', 'jasmine:build'] do
         ENV['SAUCELABS'] = 'true'
         Rake::Task['jasmine:test:ci:local'].invoke
@@ -147,7 +143,6 @@ jasmine.version_= {
   end
 end
 
-desc "Run specs via server"
 task :jasmine => ['jasmine:server']
 
 namespace :gems do
