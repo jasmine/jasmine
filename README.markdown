@@ -95,7 +95,7 @@ Jasmine has several built-in matchers.  Here are a few:
 >
 >`expect(x).toBeDefined();` passes if `x` is not `undefined`
 >
->`expect(x).toBeNull();` passes if `x` is not `null`
+>`expect(x).toBeNull();` passes if `x` is `null`
 >
 >`expect(x).toBeTruthy();` passes if `x` evaluates to true
 >
