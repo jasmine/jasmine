@@ -1083,4 +1083,55 @@ describe("jasmine spec running", function () {
     expect(exceptionMessage).toEqual('explodes function should not have been called');
   });
 
+  it("should recover gracefully when there are errors in describe functions", function() {
+    var specs = [];
+    var superSimpleReporter = new jasmine.Reporter();
+    superSimpleReporter.reportSpecResults = function(spec) {
+      specs.push("Spec: " + spec.getFullName());
+      var results = spec.results().getItems();
+      for (var i = 0; i < results.length; i++) {
+        var result = results[i];
+        specs.push("Result: " + result);
+      }
+    };
+
+    try {
+      env.describe("outer1", function() {
+        env.describe("inner1", function() {
+          env.it("should thingy", function() {
+            this.expect(true).toEqual(true);
+          });
+
+          throw new Error("fake error");
+        });
+
+        env.describe("inner2", function() {
+          env.it("should other thingy", function() {
+            this.expect(true).toEqual(true);
+          });
+        });
+      });
+    } catch(e) {}
+
+    env.describe("outer2", function() {
+      env.it("should xxx", function() {
+        this.expect(true).toEqual(true);
+      });
+    });
+
+    env.addReporter(superSimpleReporter);
+    env.execute();
+
+    expect(specs).toEqual([
+      'Spec: outer1 inner1 should thingy.',
+      'Result: Passed.',
+      'Spec: outer1 encountered a declaration exception.',
+      'Result: Error: fake error',
+      'Spec: outer1 inner2 should other thingy.',
+      'Result: Passed.',
+      'Spec: outer2 should xxx.',
+      'Result: Passed.'
+    ]);
+  });
+
 });

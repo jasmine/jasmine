@@ -57,6 +57,10 @@ jasmine.MessageResult = function(text) {
   this.trace = new Error(); // todo: test better
 };
 
+jasmine.MessageResult.prototype.toString = function() {
+  return this.text;
+};
+
 jasmine.ExpectationResult = function(params) {
   this.type = 'ExpectationResult';
   this.matcherName = params.matcherName;
@@ -69,6 +73,10 @@ jasmine.ExpectationResult = function(params) {
 
   this.message = this.passed_ ? 'Passed.' : params.message;
   this.trace = this.passed_ ? '' : new Error(this.message);
+};
+
+jasmine.ExpectationResult.prototype.toString = function () {
+  return this.message;
 };
 
 jasmine.ExpectationResult.prototype.passed = function () {

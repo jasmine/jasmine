@@ -96,9 +96,20 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
 
   this.currentSuite = suite;
 
-  specDefinitions.call(suite);
+  var declarationError = null;
+  try {
+    specDefinitions.call(suite);
+  } catch(e) {
+    declarationError = e;
+  }
 
   this.currentSuite = parentSuite;
+
+  if (declarationError) {
+    this.it("encountered a declaration exception", function() {
+      throw declarationError;
+    });
+  }
 
   return suite;
 };
