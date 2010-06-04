@@ -37,12 +37,12 @@ jasmine.Suite.prototype.finish = function(onComplete) {
 
 jasmine.Suite.prototype.beforeEach = function(beforeEachFunction) {
   beforeEachFunction.typeName = 'beforeEach';
-  this.before_.push(beforeEachFunction);
+  this.before_.unshift(beforeEachFunction);
 };
 
 jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
   afterEachFunction.typeName = 'afterEach';
-  this.after_.push(afterEachFunction);
+  this.after_.unshift(afterEachFunction);
 };
 
 jasmine.Suite.prototype.results = function() {
