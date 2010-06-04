@@ -30,7 +30,6 @@ jasmine.WaitsForBlock.prototype.execute = function (onComplete) {
       name: 'timeout',
       message: message
     });
-    onComplete();
   } else {
     self.totalTimeSpentWaitingForLatch += jasmine.WaitsForBlock.TIMEOUT_INCREMENT;
     self.env.setTimeout(function () { self.execute(onComplete); }, jasmine.WaitsForBlock.TIMEOUT_INCREMENT);
