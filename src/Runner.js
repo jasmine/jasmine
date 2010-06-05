@@ -25,12 +25,12 @@ jasmine.Runner.prototype.execute = function() {
 
 jasmine.Runner.prototype.beforeEach = function(beforeEachFunction) {
   beforeEachFunction.typeName = 'beforeEach';
-  this.before_.unshift(beforeEachFunction);
+  this.before_.splice(0,0,beforeEachFunction);
 };
 
 jasmine.Runner.prototype.afterEach = function(afterEachFunction) {
   afterEachFunction.typeName = 'afterEach';
-  this.after_.unshift(afterEachFunction);
+  this.after_.splice(0,0,afterEachFunction);
 };
 
 
