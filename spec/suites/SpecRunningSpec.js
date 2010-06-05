@@ -1168,7 +1168,8 @@ describe("jasmine spec running", function () {
           });
         });
       });
-    } catch(e) {}
+    } catch(e) {
+    }
 
     env.describe("outer2", function() {
       env.it("should xxx", function() {
@@ -1179,16 +1180,16 @@ describe("jasmine spec running", function () {
     env.addReporter(superSimpleReporter);
     env.execute();
 
-    expect(specs).toEqual([
-      'Spec: outer1 inner1 should thingy.',
-      'Result: Passed.',
-      'Spec: outer1 encountered a declaration exception.',
-      'Result: Error: fake error',
-      'Spec: outer1 inner2 should other thingy.',
-      'Result: Passed.',
-      'Spec: outer2 should xxx.',
+    expect(specs.join('')).toMatch(new RegExp(
+      'Spec: outer1 inner1 should thingy.' +
+      'Result: Passed.' +
+      'Spec: outer1 encountered a declaration exception.' +
+      'Result: Error: fake error.*' +
+      'Spec: outer1 inner2 should other thingy.' +
+      'Result: Passed.' +
+      'Spec: outer2 should xxx.' +
       'Result: Passed.'
-    ]);
+    ));
   });
 
 });
