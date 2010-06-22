@@ -51,15 +51,15 @@ jasmine.Suite.prototype.results = function() {
   return this.queue.results();
 };
 
-jasmine.Suite.prototype.add = function(block) {
-  this.children_.push(block);
-  if (block instanceof jasmine.Suite) {
-    this.suites_.push(block);
-    this.env.currentRunner().addSuite(block);
+jasmine.Suite.prototype.add = function(suiteOrSpec) {
+  this.children_.push(suiteOrSpec);
+  if (suiteOrSpec instanceof jasmine.Suite) {
+    this.suites_.push(suiteOrSpec);
+    this.env.currentRunner().addSuite(suiteOrSpec);
   } else {
-    this.specs_.push(block);
+    this.specs_.push(suiteOrSpec);
   }
-  this.queue.add(block);
+  this.queue.add(suiteOrSpec);
 };
 
 jasmine.Suite.prototype.specs = function() {
