@@ -24,7 +24,6 @@ describe("TrivialReporter", function() {
   function findElements(divs, withClass) {
     var els = [];
     for (var i = 0; i < divs.length; i++) {
-      console.log(divs[i], divs[i].className);
       if (divs[i].className == withClass) els.push(divs[i]);
     }
     return els;

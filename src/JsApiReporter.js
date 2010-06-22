@@ -84,7 +84,7 @@ jasmine.JsApiReporter.prototype.summarizeResult_ = function(result){
   for (var messageIndex = 0; messageIndex < messagesLength; messageIndex++) {
     var resultMessage = result.messages[messageIndex];
     summaryMessages.push({
-      text: resultMessage.type == 'MessageResult' ? resultMessage.toString() : jasmine.undefined,
+      text: resultMessage.type == 'log' ? resultMessage.toString() : jasmine.undefined,
       passed: resultMessage.passed ? resultMessage.passed() : true,
       type: resultMessage.type,
       message: resultMessage.message,

@@ -79,7 +79,7 @@ describe('jasmine.jsApiReporter', function() {
         expect(summarizedResult.messages.length).toEqual(1);
         expect(summarizedResult.messages[0].message).toEqual(result.messages[0].message);
         expect(summarizedResult.messages[0].passed).toBeTruthy();
-        expect(summarizedResult.messages[0].type).toEqual('ExpectationResult');
+        expect(summarizedResult.messages[0].type).toEqual('expect');
         expect(summarizedResult.messages[0].text).toBeUndefined();
         expect(summarizedResult.messages[0].trace.stack).toBeUndefined();
       });
@@ -95,7 +95,7 @@ describe('jasmine.jsApiReporter', function() {
         var result = reporter.results()[spec3.id];
         var summarizedResult = reporter.summarizeResult_(result);
         expect(summarizedResult.result).toEqual('passed');
-        expect(summarizedResult.messages[0].type).toEqual('MessageResult');
+        expect(summarizedResult.messages[0].type).toEqual('log');
         expect(summarizedResult.messages[0].text).toEqual('some debug message');
       });
     });

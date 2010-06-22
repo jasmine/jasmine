@@ -52,7 +52,7 @@ jasmine.setInterval = jasmine.bindOriginal_(window, 'setInterval');
 jasmine.clearInterval = jasmine.bindOriginal_(window, 'clearInterval');
 
 jasmine.MessageResult = function(values) {
-  this.type = 'MessageResult';
+  this.type = 'log';
   this.values = values;
   this.trace = new Error(); // todo: test better
 };
@@ -71,7 +71,7 @@ jasmine.MessageResult.prototype.toString = function() {
 };
 
 jasmine.ExpectationResult = function(params) {
-  this.type = 'ExpectationResult';
+  this.type = 'expect';
   this.matcherName = params.matcherName;
   this.passed_ = params.passed;
   this.expected = params.expected;

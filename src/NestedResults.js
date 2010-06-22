@@ -57,7 +57,7 @@ jasmine.NestedResults.prototype.getItems = function() {
  * @param {jasmine.ExpectationResult|jasmine.NestedResults} result
  */
 jasmine.NestedResults.prototype.addResult = function(result) {
-  if (result.type != 'MessageResult') {
+  if (result.type != 'log') {
     if (result.items_) {
       this.rollupCounts(result);
     } else {

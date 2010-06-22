@@ -60,6 +60,9 @@ jasmine.Spec.prototype.addToQueue = function (block) {
   }
 };
 
+/**
+ * @param {jasmine.ExpectationResult} result
+ */
 jasmine.Spec.prototype.addMatcherResult = function(result) {
   this.results_.addResult(result);
 };
