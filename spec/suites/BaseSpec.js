@@ -13,3 +13,13 @@ describe("jasmine.log", function() {
     expect(jasmine.getEnv().currentSpec.log).wasCalledWith(1, 2, 3);
   });
 });
+
+describe("jasmine.getGlobal", function() {
+  it("should return the global object", function() {
+    var globalObject = (function() {
+      return this;
+    })();
+
+    expect(jasmine.getGlobal()).toBe(globalObject);
+  });
+});

@@ -69,8 +69,8 @@ describe("jasmine.pp", function () {
     expect(jasmine.pp('some <b>html string</b> &', false)).toEqual('\'some <b>html string</b> &\'');
   });
 
-  it("should abbreviate window objects", function() {
-    expect(jasmine.pp(window)).toEqual("<window>");
+  it("should abbreviate the global (usually window) object", function() {
+    expect(jasmine.pp(jasmine.getGlobal())).toEqual("<global>");
   });
 
   it("should stringify Date objects properly", function() {

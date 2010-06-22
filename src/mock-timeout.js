@@ -126,10 +126,10 @@ jasmine.Clock = {
   },
 
   real: {
-    setTimeout: window.setTimeout,
-    clearTimeout: window.clearTimeout,
-    setInterval: window.setInterval,
-    clearInterval: window.clearInterval
+    setTimeout: jasmine.getGlobal().setTimeout,
+    clearTimeout: jasmine.getGlobal().clearTimeout,
+    setInterval: jasmine.getGlobal().setInterval,
+    clearInterval: jasmine.getGlobal().clearInterval
   },
 
   assertInstalled: function() {
@@ -143,7 +143,7 @@ jasmine.Clock = {
 jasmine.Clock.installed = jasmine.Clock.real;
 
 //else for IE support
-window.setTimeout = function(funcToCall, millis) {
+jasmine.getGlobal().setTimeout = function(funcToCall, millis) {
   if (jasmine.Clock.installed.setTimeout.apply) {
     return jasmine.Clock.installed.setTimeout.apply(this, arguments);
   } else {
@@ -151,7 +151,7 @@ window.setTimeout = function(funcToCall, millis) {
   }
 };
 
-window.setInterval = function(funcToCall, millis) {
+jasmine.getGlobal().setInterval = function(funcToCall, millis) {
   if (jasmine.Clock.installed.setInterval.apply) {
     return jasmine.Clock.installed.setInterval.apply(this, arguments);
   } else {
@@ -159,7 +159,7 @@ window.setInterval = function(funcToCall, millis) {
   }
 };
 
-window.clearTimeout = function(timeoutKey) {
+jasmine.getGlobal().clearTimeout = function(timeoutKey) {
   if (jasmine.Clock.installed.clearTimeout.apply) {
     return jasmine.Clock.installed.clearTimeout.apply(this, arguments);
   } else {
@@ -167,7 +167,7 @@ window.clearTimeout = function(timeoutKey) {
   }
 };
 
-window.clearInterval = function(timeoutKey) {
+jasmine.getGlobal().clearInterval = function(timeoutKey) {
   if (jasmine.Clock.installed.clearTimeout.apply) {
     return jasmine.Clock.installed.clearInterval.apply(this, arguments);
   } else {

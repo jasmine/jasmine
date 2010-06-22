@@ -20,7 +20,7 @@ describe("jasmine.Matchers", function() {
     return spec.addMatcherResult.mostRecentCall.args[0];
   }
 
-  it("toEqual with primitives, objects, dates, html nodes, etc.", function() {
+  it("toEqual with primitives, objects, dates, etc.", function() {
     expect(match(true).toEqual(true)).toEqual(true);
 
     expect(match({foo:'bar'}).toEqual(null)).toEqual(false);
@@ -40,11 +40,6 @@ describe("jasmine.Matchers", function() {
     circularGraph.referenceToSelf = circularGraph;
     expect((match(circularGraph).toEqual(circularGraph))).toEqual(true);
 
-    var nodeA = document.createElement('div');
-    var nodeB = document.createElement('div');
-    expect((match(nodeA).toEqual(nodeA))).toEqual(true);
-    expect((match(nodeA).toEqual(nodeB))).toEqual(false);
-
     expect((match(new Date(2008, 1, 3, 15, 17, 19, 1234)).toEqual(new Date(2009, 1, 3, 15, 17, 19, 1234)))).toEqual(false);
     expect((match(new Date(2008, 1, 3, 15, 17, 19, 1234)).toEqual(new Date(2008, 1, 3, 15, 17, 19, 1234)))).toEqual(true);
 
@@ -62,6 +57,13 @@ describe("jasmine.Matchers", function() {
     expect((match(new Number('5')).toEqual(5))).toBe(true);
     expect((match(new Number(5)).toNotEqual(5))).toBe(false);
     expect((match(new Number('5')).toNotEqual(5))).toBe(false);
+  });
+
+  it("toEqual with DOM nodes", function() {
+    var nodeA = document.createElement('div');
+    var nodeB = document.createElement('div');
+    expect((match(nodeA).toEqual(nodeA))).toEqual(true);
+    expect((match(nodeA).toEqual(nodeB))).toEqual(false);
   });
 
   it("toEqual to build an Expectation Result", function() {

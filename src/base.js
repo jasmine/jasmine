@@ -26,6 +26,14 @@ jasmine.undefined = jasmine.___undefined___;
  */
 jasmine.DEFAULT_UPDATE_INTERVAL = 250;
 
+jasmine.getGlobal = function() {
+  function getGlobal() {
+    return this;
+  }
+
+  return getGlobal();
+};
+
 /**
  * Allows for bound functions to be compared.  Internal use only.
  *
@@ -46,10 +54,10 @@ jasmine.bindOriginal_ = function(base, name) {
   }
 };
 
-jasmine.setTimeout = jasmine.bindOriginal_(window, 'setTimeout');
-jasmine.clearTimeout = jasmine.bindOriginal_(window, 'clearTimeout');
-jasmine.setInterval = jasmine.bindOriginal_(window, 'setInterval');
-jasmine.clearInterval = jasmine.bindOriginal_(window, 'clearInterval');
+jasmine.setTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'setTimeout');
+jasmine.clearTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearTimeout');
+jasmine.setInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'setInterval');
+jasmine.clearInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearInterval');
 
 jasmine.MessageResult = function(values) {
   this.type = 'log';

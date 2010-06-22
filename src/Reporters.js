@@ -34,6 +34,7 @@ jasmine.Reporters.reporter = function(callbacks) {
       that.doCallback(that.callbacks.specCallback, spec);
     },
     log: function (str) {
+      var console = jasmine.getGlobal().console;
       if (console && console.log) console.log(str);
     }
   };
