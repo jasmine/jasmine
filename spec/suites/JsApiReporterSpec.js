@@ -35,15 +35,23 @@ describe('jasmine.jsApiReporter', function() {
       env.addReporter(reporter);
 
       env.execute();
+
+      expectedSpec1Results = {
+        messages: spec1.results().getItems(),
+        result: "passed"
+      };
+      expectedSpec2Results = {
+        messages: spec2.results().getItems(),
+        result: "failed"
+      };
     });
 
-    xit('resultForSpec() should return the result for the given spec', function () {
+    it('resultForSpec() should return the result for the given spec', function () {
       expect(reporter.resultsForSpec(spec1.id)).toEqual(expectedSpec1Results);
       expect(reporter.resultsForSpec(spec2.id)).toEqual(expectedSpec2Results);
-
     });
 
-    xit('results() should return a hash of all results, indexed by spec id', function () {
+    it('results() should return a hash of all results, indexed by spec id', function () {
       expect(reporter.results()[spec1.id]).toEqual(expectedSpec1Results);
       expect(reporter.results()[spec2.id]).toEqual(expectedSpec2Results);
     });
@@ -65,7 +73,7 @@ describe('jasmine.jsApiReporter', function() {
       ]);
     });
 
-    xdescribe("#summarizeResult_", function() {
+    describe("#summarizeResult_", function() {
       it("should summarize a passing result", function() {
         var result = reporter.results()[spec1.id];
         var summarizedResult = reporter.summarizeResult_(result);
