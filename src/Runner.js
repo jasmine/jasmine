@@ -58,9 +58,18 @@ jasmine.Runner.prototype.specs = function () {
   return specs;
 };
 
-
 jasmine.Runner.prototype.suites = function() {
   return this.suites_;
+};
+
+jasmine.Runner.prototype.topLevelSuites = function() {
+  var topLevelSuites = [];
+  for (var i = 0; i < this.suites_.length; i++) {
+    if (!this.suites_[i].parentSuite) {
+      topLevelSuites.push(this.suites_[i]);
+    }
+  }
+  return topLevelSuites;
 };
 
 jasmine.Runner.prototype.results = function() {

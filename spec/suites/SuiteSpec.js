@@ -14,8 +14,10 @@ describe('Suite', function() {
   });
 
   describe('Specs', function () {
-    it('#specs should return all immediate children that are specs.', function () {
-      var suite =env.describe('Suite 1', function () {
+    var suite;
+
+    beforeEach(function() {
+      suite = env.describe('Suite 1', function () {
         env.it('Spec 1', function() {
           this.runs(function () {
             this.expect(true).toEqual(true);
@@ -39,7 +41,9 @@ describe('Suite', function() {
           });
         });
       });
-
+    });
+    
+    it('#specs should return all immediate children that are specs.', function () {
       var suiteSpecs = suite.specs();
       expect(suiteSpecs.length).toEqual(3);
       expect(suiteSpecs[0].description).toEqual('Spec 1');
@@ -47,55 +51,70 @@ describe('Suite', function() {
       expect(suiteSpecs[2].description).toEqual('Spec 4');
     });
 
-    describe('SpecCount', function () {
+    it("#suites should return all immediate children that are suites.", function() {
+      var nestedSuites = suite.suites();
+      expect(nestedSuites.length).toEqual(1);
+      expect(nestedSuites[0].description).toEqual('Suite 2');
+    });
 
-      it('should keep a count of the number of specs that are run', function() {
-       var suite = env.describe('one suite description', function () {
-          env.it('should be a test', function() {
-            this.runs(function () {
-              this.expect(true).toEqual(true);
-            });
-          });
-          env.it('should be another test', function() {
-            this.runs(function () {
-              this.expect(true).toEqual(true);
-            });
-          });
-          env.it('should be a third test', function() {
-            this.runs(function () {
-              this.expect(true).toEqual(true);
-            });
+    it("#children should return all immediate children including suites and specs.", function() {
+      var children = suite.children();
+      expect(children.length).toEqual(4);
+      expect(children[0].description).toEqual('Spec 1');
+      expect(children[1].description).toEqual('Spec 2');
+      expect(children[2].description).toEqual('Suite 2');
+      expect(children[3].description).toEqual('Spec 4');
+    });
+  });
+
+  describe('SpecCount', function () {
+
+    it('should keep a count of the number of specs that are run', function() {
+      var suite = env.describe('one suite description', function () {
+        env.it('should be a test', function() {
+          this.runs(function () {
+            this.expect(true).toEqual(true);
           });
         });
-
-        expect(suite.specs().length).toEqual(3);
-      });
-
-      it('specCount should be correct even with runs/waits blocks', function() {
-       var suite = env.describe('one suite description', function () {
-          env.it('should be a test', function() {
-            this.runs(function () {
-              this.expect(true).toEqual(true);
-            });
-          });
-          env.it('should be another test', function() {
-            this.runs(function () {
-              this.expect(true).toEqual(true);
-            });
-            this.waits(10);
-            this.runs(function () {
-              this.expect(true).toEqual(true);
-            });
-          });
-          env.it('should be a third test', function() {
-            this.runs(function () {
-              this.expect(true).toEqual(true);
-            });
+        env.it('should be another test', function() {
+          this.runs(function () {
+            this.expect(true).toEqual(true);
           });
         });
-
-        expect(suite.specs().length).toEqual(3);
+        env.it('should be a third test', function() {
+          this.runs(function () {
+            this.expect(true).toEqual(true);
+          });
+        });
       });
+
+      expect(suite.specs().length).toEqual(3);
+    });
+
+    it('specCount should be correct even with runs/waits blocks', function() {
+      var suite = env.describe('one suite description', function () {
+        env.it('should be a test', function() {
+          this.runs(function () {
+            this.expect(true).toEqual(true);
+          });
+        });
+        env.it('should be another test', function() {
+          this.runs(function () {
+            this.expect(true).toEqual(true);
+          });
+          this.waits(10);
+          this.runs(function () {
+            this.expect(true).toEqual(true);
+          });
+        });
+        env.it('should be a third test', function() {
+          this.runs(function () {
+            this.expect(true).toEqual(true);
+          });
+        });
+      });
+
+      expect(suite.specs().length).toEqual(3);
     });
   });
 });

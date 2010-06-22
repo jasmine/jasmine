@@ -11,7 +11,7 @@ jasmine.JsApiReporter = function() {
 
 jasmine.JsApiReporter.prototype.reportRunnerStarting = function(runner) {
   this.started = true;
-  var suites = runner.suites();
+  var suites = runner.topLevelSuites();
   for (var i = 0; i < suites.length; i++) {
     var suite = suites[i];
     this.suites_.push(this.summarize_(suite));
@@ -30,10 +30,11 @@ jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
     type: isSuite ? 'suite' : 'spec',
     children: []
   };
+  
   if (isSuite) {
-    var specs = suiteOrSpec.specs();
-    for (var i = 0; i < specs.length; i++) {
-      summary.children.push(this.summarize_(specs[i]));
+    var children = suiteOrSpec.children();
+    for (var i = 0; i < children.length; i++) {
+      summary.children.push(this.summarize_(children[i]));
     }
   }
   return summary;

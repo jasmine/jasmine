@@ -16,6 +16,8 @@ jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
   self.env = env;
   self.before_ = [];
   self.after_ = [];
+  self.children_ = [];
+  self.suites_ = [];
   self.specs_ = [];
 };
 
@@ -50,7 +52,9 @@ jasmine.Suite.prototype.results = function() {
 };
 
 jasmine.Suite.prototype.add = function(block) {
+  this.children_.push(block);
   if (block instanceof jasmine.Suite) {
+    this.suites_.push(block);
     this.env.currentRunner().addSuite(block);
   } else {
     this.specs_.push(block);
@@ -60,6 +64,14 @@ jasmine.Suite.prototype.add = function(block) {
 
 jasmine.Suite.prototype.specs = function() {
   return this.specs_;
+};
+
+jasmine.Suite.prototype.suites = function() {
+  return this.suites_;
+};
+
+jasmine.Suite.prototype.children = function() {
+  return this.children_;
 };
 
 jasmine.Suite.prototype.execute = function(onComplete) {

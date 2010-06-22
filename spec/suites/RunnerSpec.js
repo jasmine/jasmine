@@ -235,18 +235,33 @@ describe('RunnerTest', function() {
     expect(runner.queue.start).wasCalled();
   });
 
-  it("should return a flat array of all suites, including nested suites", function() {
-    var suite1, suite2;
-    suite1 = env.describe("spec 1", function() {
-      suite2 = env.describe("nested spec", function() {
+  describe("when suites are nested", function() {
+    var suite1, suite2, suite3;
+
+    function suiteNames(suites) {
+      var suiteDescriptions = [];
+      for (var i = 0; i < suites.length; i++) {
+        suiteDescriptions.push(suites[i].getFullName());
+      }
+      return suiteDescriptions;
+    }
+
+    beforeEach(function() {
+      suite1 = env.describe("suite 1", function() {
+        suite2 = env.describe("suite 2", function() {
+        });
       });
+      suite3 = env.describe("suite 3", function() {});
     });
 
-    var suites = env.currentRunner().suites();
-    var suiteDescriptions = [];
-    for (var i = 0; i < suites.length; i++) {
-      suiteDescriptions.push(suites[i].getFullName());
-    }
-    expect(suiteDescriptions).toEqual([suite1.getFullName(), suite2.getFullName()]);
+    it("#suites should return a flat array of all suites, including nested suites", function() {
+      var suites = env.currentRunner().suites();
+      expect(suiteNames(suites)).toEqual([suite1.getFullName(), suite2.getFullName(), suite3.getFullName()]);
+    });
+
+    it("#topLevelSuites should return a flat array of all top-level suites only", function() {
+      var suites = env.currentRunner().topLevelSuites();
+      expect(suiteNames(suites)).toEqual([suite1.getFullName(), suite3.getFullName()]);
+    });
   });
 });
