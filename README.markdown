@@ -309,7 +309,7 @@ Here are a few examples:
 
     it('should spy on Klass#methodWithCallback') {
       var callback = Jasmine.createSpy();
-      Klass.method(callback);
+      Klass.methodWithCallback(callback);
 
       expect(callback).wasCalledWith('foo');
     });
