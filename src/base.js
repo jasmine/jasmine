@@ -51,14 +51,23 @@ jasmine.clearTimeout = jasmine.bindOriginal_(window, 'clearTimeout');
 jasmine.setInterval = jasmine.bindOriginal_(window, 'setInterval');
 jasmine.clearInterval = jasmine.bindOriginal_(window, 'clearInterval');
 
-jasmine.MessageResult = function(text) {
+jasmine.MessageResult = function(values) {
   this.type = 'MessageResult';
-  this.text = text;
+  this.values = values;
   this.trace = new Error(); // todo: test better
 };
 
 jasmine.MessageResult.prototype.toString = function() {
-  return this.text;
+  var text = "";
+  for(var i = 0; i < this.values.length; i++) {
+    if (i > 0) text += " ";
+    if (jasmine.isString_(this.values[i])) {
+      text += this.values[i];
+    } else {
+      text += jasmine.pp(this.values[i]);
+    }
+  }
+  return text;
 };
 
 jasmine.ExpectationResult = function(params) {
@@ -395,8 +404,9 @@ jasmine.createSpyObj = function(baseName, methodNames) {
   return obj;
 };
 
-jasmine.log = function(message) {
-  jasmine.getEnv().currentSpec.log(message);
+jasmine.log = function() {
+  var spec = jasmine.getEnv().currentSpec;
+  spec.log.apply(spec, arguments);
 };
 
 /**

@@ -80,11 +80,11 @@ jasmine.JsApiReporter.prototype.resultsForSpecs = function(specIds){
 
 jasmine.JsApiReporter.prototype.summarizeResult_ = function(result){
   var summaryMessages = [];
-  var messagesLength = result.messages.length
+  var messagesLength = result.messages.length;
   for (var messageIndex = 0; messageIndex < messagesLength; messageIndex++) {
     var resultMessage = result.messages[messageIndex];
     summaryMessages.push({
-      text: resultMessage.text,
+      text: resultMessage.type == 'MessageResult' ? resultMessage.toString() : jasmine.undefined,
       passed: resultMessage.passed ? resultMessage.passed() : true,
       type: resultMessage.type,
       message: resultMessage.message,
@@ -92,13 +92,11 @@ jasmine.JsApiReporter.prototype.summarizeResult_ = function(result){
         stack: resultMessage.passed && !resultMessage.passed() ? resultMessage.trace.stack : jasmine.undefined
       }
     });
-  };
+  }
 
-  var summaryResult = {
+  return {
     result : result.result,
     messages : summaryMessages
   };
-
-  return summaryResult;
 };
 

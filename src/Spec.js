@@ -37,8 +37,8 @@ jasmine.Spec.prototype.results = function() {
   return this.results_;
 };
 
-jasmine.Spec.prototype.log = function(message) {
-  return this.results_.log(message);
+jasmine.Spec.prototype.log = function() {
+  return this.results_.log(arguments);
 };
 
 /** @deprecated */

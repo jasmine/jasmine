@@ -34,7 +34,6 @@ describe('Spec', function () {
       expect(spec2.id).toEqual(1);
       expect(spec3.id).toEqual(2);
     });
-
   });
 
   it('getFullName returns suite & spec description', function () {
@@ -105,6 +104,21 @@ describe('Spec', function () {
       it('an unexecuted spec will return true', function () {
         expect(results.passed()).toEqual(true);
       });
+    });
+
+    it("includes log messages, which may contain arbitary objects", function() {
+      spec.runs(function() {
+        this.log("here's some log message", {key: 'value'}, 123);
+      });
+      spec.execute();
+      var items = results.getItems();
+      expect(items).toEqual([
+          jasmine.any(jasmine.ExpectationResult),
+          jasmine.any(jasmine.ExpectationResult),
+          jasmine.any(jasmine.MessageResult)
+      ]);
+      var logResult = items[2];
+      expect(logResult.values).toEqual(["here's some log message", {key: 'value'}, 123]);
     });
   });
 });

@@ -1,9 +1,16 @@
 describe("TrivialReporter", function() {
+  var env;
   var trivialReporter;
   var body;
+  var fakeDocument;
 
   beforeEach(function() {
+    env = new jasmine.Env();
+    env.updateInterval = 0;
+
     body = document.createElement("body");
+    fakeDocument = { body: body, location: { search: "" } };
+    trivialReporter = new jasmine.TrivialReporter(fakeDocument);
   });
 
   function fakeSpec(name) {
@@ -17,6 +24,7 @@ describe("TrivialReporter", function() {
   function findElements(divs, withClass) {
     var els = [];
     for (var i = 0; i < divs.length; i++) {
+      console.log(divs[i], divs[i].className);
       if (divs[i].className == withClass) els.push(divs[i]);
     }
     return els;
@@ -29,16 +37,15 @@ describe("TrivialReporter", function() {
   }
 
   it("should run only specs beginning with spec parameter", function() {
-    var trivialReporter = new jasmine.TrivialReporter({ location: {search: "?spec=run%20this"} });
+    fakeDocument.location.search = "?spec=run%20this";
     expect(trivialReporter.specFilter(fakeSpec("run this"))).toBeTruthy();
     expect(trivialReporter.specFilter(fakeSpec("not the right spec"))).toBeFalsy();
     expect(trivialReporter.specFilter(fakeSpec("not run this"))).toBeFalsy();
   });
 
   it("should display empty divs for every suite when the runner is starting", function() {
-    var trivialReporter = new jasmine.TrivialReporter({ body: body });
     trivialReporter.reportRunnerStarting({
-      env: new jasmine.Env(),
+      env: env,
       suites: function() {
         return [ new jasmine.Suite({}, "suite 1", null, null) ];
       }
@@ -61,7 +68,6 @@ describe("TrivialReporter", function() {
 
     var runner, spec, fakeTimer;
     beforeEach(function () {
-      var env = new jasmine.Env();
       fakeTimer = new jasmine.FakeTimer();
       env.setTimeout = fakeTimer.setTimeout;
       env.clearTimeout = fakeTimer.clearTimeout;
@@ -72,7 +78,7 @@ describe("TrivialReporter", function() {
       runner.add(suite);
       spec = new jasmine.Spec(env, suite, 'some spec');
       suite.add(spec);
-      var trivialReporter = new jasmine.TrivialReporter({ body: body, location: {search: "?"} });
+      fakeDocument.location.search = "?";
       env.addReporter(trivialReporter);
     });
 
@@ -117,9 +123,8 @@ describe("TrivialReporter", function() {
         }
       };
 
-      trivialReporter = new jasmine.TrivialReporter({ body: body });
       trivialReporter.reportRunnerStarting({
-        env: new jasmine.Env(),
+        env: env,
         suites: function() {
           return [ new jasmine.Suite({}, "suite 1", null, null) ];
         }
@@ -155,4 +160,20 @@ describe("TrivialReporter", function() {
     });
   });
 
+  describe("log messages", function() {
+    it("should appear in the report", function() {
+      env.describe("suite", function() {
+        env.it("will have log messages", function() {
+          this.log("this is a", "multipart log message");
+        });
+      });
+
+      env.addReporter(trivialReporter);
+      env.execute();
+
+      var divs = body.getElementsByTagName("div");
+      var errorDiv = findElement(divs, 'resultMessage log');
+      expect(errorDiv.innerHTML).toEqual("this is a multipart log message");
+    });
+  });
 });

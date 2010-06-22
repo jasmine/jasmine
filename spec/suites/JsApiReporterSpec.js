@@ -1,6 +1,4 @@
 describe('jasmine.jsApiReporter', function() {
-
-
   describe('results', function () {
     var reporter, spec1, spec2, spec3, expectedSpec1Results, expectedSpec2Results;
     var env;
@@ -82,8 +80,8 @@ describe('jasmine.jsApiReporter', function() {
         expect(summarizedResult.messages[0].message).toEqual(result.messages[0].message);
         expect(summarizedResult.messages[0].passed).toBeTruthy();
         expect(summarizedResult.messages[0].type).toEqual('ExpectationResult');
-        expect(summarizedResult.messages[0].text).toEqual(jasmine.undefined);
-        expect(summarizedResult.messages[0].trace.stack).toEqual(jasmine.undefined);
+        expect(summarizedResult.messages[0].text).toBeUndefined();
+        expect(summarizedResult.messages[0].trace.stack).toBeUndefined();
       });
 
       it("should have a stack trace for failing specs", function() {
@@ -97,6 +95,7 @@ describe('jasmine.jsApiReporter', function() {
         var result = reporter.results()[spec3.id];
         var summarizedResult = reporter.summarizeResult_(result);
         expect(summarizedResult.result).toEqual('passed');
+        expect(summarizedResult.messages[0].type).toEqual('MessageResult');
         expect(summarizedResult.messages[0].text).toEqual('some debug message');
       });
     });
