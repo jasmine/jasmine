@@ -50,7 +50,7 @@ jasmine.bindOriginal_ = function(base, name) {
     };
   } else {
     // IE support
-    return window[name];
+    return jasmine.getGlobal()[name];
   }
 };
 

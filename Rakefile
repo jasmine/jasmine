@@ -46,6 +46,11 @@ namespace :jasmine do
           puts "Dangerous undefined at #{src}:#{i}:\n > #{line}"
           passed = false
         end
+
+        if line.scan(/window/).length > 0
+          puts "Dangerous window at #{src}:#{i}:\n > #{line}"
+          passed = false
+        end
       end
     end
 
@@ -64,11 +69,9 @@ namespace :jasmine do
     version = version_hash
 
     old_jasmine_files = Dir.glob('lib/jasmine*.js')
-    old_jasmine_files.each do |file|
-      File.delete(file)
-    end
+    old_jasmine_files.each { |file| File.delete(file) }
 
-    jasmine = File.new("lib/#{jasmine_filename version}", 'w')
+    jasmine = File.new("lib/jasmine.js", 'w')
 
     sources.each do |source_filename|
       jasmine.puts(File.read(source_filename))
@@ -84,6 +87,8 @@ jasmine.version_= {
 }
 
     jasmine.close
+
+    FileUtils.cp("lib/jasmine.js", "lib/#{jasmine_filename version}")
   end
 
   desc "Build jasmine documentation"
