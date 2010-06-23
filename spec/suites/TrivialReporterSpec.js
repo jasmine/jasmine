@@ -108,12 +108,10 @@ describe("TrivialReporter", function() {
         getItems: function() {
         }};
 
+      var suite1 = new jasmine.Suite(env, "suite 1", null, null);
+
       spec = {
-        suite: {
-          getFullName: function() {
-            return "suite 1";
-          }
-        },
+        suite: suite1,
         getFullName: function() {
           return "foo";
         },
@@ -125,7 +123,7 @@ describe("TrivialReporter", function() {
       trivialReporter.reportRunnerStarting({
         env: env,
         suites: function() {
-          return [ new jasmine.Suite({}, "suite 1", null, null) ];
+          return [ suite1 ];
         }
       });
     });
@@ -134,7 +132,7 @@ describe("TrivialReporter", function() {
       expectationResult = new jasmine.ExpectationResult({
         matcherName: "toBeNull", passed: false, message: "Expected 'a' to be null, but it was not"
       });
-    
+
       spyOn(results, 'getItems').andReturn([expectationResult]);
 
       trivialReporter.reportSpecResults(spec);
@@ -173,6 +171,38 @@ describe("TrivialReporter", function() {
       var divs = body.getElementsByTagName("div");
       var errorDiv = findElement(divs, 'resultMessage log');
       expect(errorDiv.innerHTML).toEqual("this is a multipart log message");
+    });
+  });
+
+  describe("duplicate example names", function() {
+    it("should report failures correctly", function() {
+      var suite1 = env.describe("suite", function() {
+        env.it("will have log messages", function() {
+          this.log("this one fails!");
+          this.expect(true).toBeFalsy();
+        });
+      });
+
+      var suite2 = env.describe("suite", function() {
+        env.it("will have log messages", function() {
+          this.log("this one passes!");
+          this.expect(true).toBeTruthy();
+        });
+      });
+
+      env.addReporter(trivialReporter);
+      env.execute();
+
+      var divs = body.getElementsByTagName("div");
+      var passedSpecDiv = findElement(divs, 'suite passed');
+      expect(passedSpecDiv.className).toEqual('suite passed');
+      expect(passedSpecDiv.innerHTML).toContain("this one passes!");
+      expect(passedSpecDiv.innerHTML).not.toContain("this one fails!");
+
+      var failedSpecDiv = findElement(divs, 'suite failed');
+      expect(failedSpecDiv.className).toEqual('suite failed');
+      expect(failedSpecDiv.innerHTML).toContain("this one fails!");
+      expect(failedSpecDiv.innerHTML).not.toContain("this one passes!");
     });
   });
 });
