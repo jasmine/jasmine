@@ -15,25 +15,11 @@ jasmine.Matchers = function(env, actual, spec, opt_isNot) {
 // todo: @deprecated as of Jasmine 0.11, remove soon [xw]
 jasmine.Matchers.pp = function(str) {
   throw new Error("jasmine.Matchers.pp() is no longer supported, please use jasmine.pp() instead!");
-  this.report();
 };
 
-/** @deprecated Deprecated as of Jasmine 0.10. Rewrite your custom matchers to return true or false. */
+// todo: @deprecated Deprecated as of Jasmine 0.10. Rewrite your custom matchers to return true or false. [xw]
 jasmine.Matchers.prototype.report = function(result, failing_message, details) {
-  // todo: report a deprecation warning [xw]
-
-  if (this.isNot) {
-    throw new Error("As of jasmine 0.11, custom matchers must be implemented differently -- please see jasmine docs");
-  }
-  
-  this.reportWasCalled_ = true;
-  var expectationResult = new jasmine.ExpectationResult({
-    passed: result,
-    message: failing_message,
-    details: details
-  });
-  this.spec.addMatcherResult(expectationResult);
-  return result;
+  throw new Error("As of jasmine 0.11, custom matchers must be implemented differently -- please see jasmine docs");
 };
 
 jasmine.Matchers.wrapInto_ = function(prototype, matchersClass) {

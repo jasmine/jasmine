@@ -33,20 +33,16 @@ describe('jasmine.Reporter', function() {
     var bar = 0;
     var baz = 0;
 
-    var specCallback = function (results) {
-      foo++;
-    };
-    var suiteCallback = function (results) {
-      bar++;
-    };
-    var runnerCallback = function (results) {
-      baz++;
-    };
-
-    env.reporter = jasmine.Reporters.reporter({
-      specCallback: specCallback,
-      suiteCallback: suiteCallback,
-      runnerCallback: runnerCallback
+    env.addReporter({
+      reportSpecResults: function() {
+        foo++;
+      },
+      reportSuiteResults: function() {
+        bar++;
+      },
+      reportRunnerResults: function() {
+        baz++;
+      }
     });
 
     var runner = env.currentRunner();

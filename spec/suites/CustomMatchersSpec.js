@@ -85,28 +85,4 @@ describe("Custom Matchers", function() {
 
     expect(matcherCallArgs).toEqual([[], ['arg'], ['arg1', 'arg2']]);
   });
-
-  describe("in the old style", function() {
-    it("should report a deprecation error", function() {
-      var spec;
-      var suite = env.describe('some suite', function() {
-        spec = env.it('spec with an expectation').runs(function () {
-          this.addMatchers({
-            toBeTrue: function() {
-              this.report(this.actual === true, this.actual + " was not true.", "details");
-            }
-          });
-          this.expect(true).toBeTrue();
-          this.expect(false).toBeTrue();
-        });
-      });
-
-      suite.execute();
-      var passResult = new jasmine.ExpectationResult({passed: true, message: "Passed.", details: "details"});
-      var failResult = new jasmine.ExpectationResult({passed: false, message: "false was not true.", details: "details"});
-      failResult.trace = jasmine.any(Object);
-      expect(spec.results().getItems()).toEqual([passResult, failResult]);
-    });
-  });
-
 });

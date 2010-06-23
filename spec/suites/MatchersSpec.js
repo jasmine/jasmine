@@ -523,22 +523,6 @@ describe("jasmine.Matchers", function() {
       match(false).not.custom();
       expect(lastResult().message).toEqual("Passed.");
     });
-
-    it("should make old-style custom matchers blow up, but only when negated", function() {
-      spec.addMatchers({
-        custom: function() {
-          this.report();
-        }
-      });
-
-      expect(function() {
-        match(true).custom();
-      }).not.toThrow();
-
-      expect(function() {
-        match(true).not.custom();
-      }).toThrow();
-    });
   });
 
   describe("spy matchers >>", function() {
