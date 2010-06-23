@@ -9,24 +9,11 @@ Quick Start
 2. Open `example/example_runner.html` in your favorite browser.
 
 For running within a Ruby environment, including automated execution with Selenium, please use
-the [jasmine-ruby gem](http://github.com/pivotal/jasmine-ruby).
-
-Releases
-----------
-0.10.0 [[download]](http://cloud.github.com/downloads/pivotal/jasmine/jasmine-0.10.0.zip)
-
-0.9.0 [[download]](http://github.com/pivotal/jasmine/zipball/0.9.0)
-
-0.8.0 [[download]](http://github.com/pivotal/jasmine/zipball/0.8.0)
+the [jasmine gem](http://github.com/pivotal/jasmine-gem).
 
 ### Which Release Should I Use?
 
-Please use the latest version unless you have a good reason not to. Some of this documentation may not be applicable to older versions.
-
-Pull Requests
-----------
-We welcome your contributions! Jasmine is currently maintained by Davis Frank ([infews](http://github.com/infews)), Rajan Agaskar ([ragaskar](http://github.com/ragaskar)), and Christian Williams ([Xian](http://github.com/Xian)). You can help us by removing all other recipients from your pull request.
-
+Please use the latest version unless you have a good reason not to. Some of this documentation may not be applicable to older versions. Please see [[Release Notes]](http://wiki.github.com/pivotal/jasmine/release-notes) for change information.
 
 Why Another JavaScript TDD/BDD Framework?
 -----------
@@ -476,12 +463,16 @@ We now have a Google Group for support & discussion.
 * Homepage:  [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js)
 * Group email: [jasmine-js@googlegroups.com](jasmine-js@googlegroups.com)
 * Current build status of Jasmine is visible at [ci.pivotallabs.com](http://ci.pivotallabs.com)
+* Pivotal Tracker project: [http://www.pivotaltracker.com/projects/10606](http://www.pivotaltracker.com/projects/10606)
+* Twitter: [@JasmineBDD](http://twitter.com/JasmineBDD)
 
 ## Maintainers
-
 * [Davis W. Frank](mailto:dwfrank@pivotallabs.com), Pivotal Labs
 * [Rajan Agaskar](mailto:rajan@pivotallabs.com), Pivotal Labs
 * [Christian Williams](mailto:xian@pivotallabs.com), Pivotal Labs
+
+## Developers
+We welcome your contributions! Jasmine is currently maintained by Davis Frank ([infews](http://github.com/infews)), Rajan Agaskar ([ragaskar](http://github.com/ragaskar)), and Christian Williams ([Xian](http://github.com/Xian)). You can help us by removing all other recipients from your pull request.
 
 ## Acknowledgments
 * A big shout out to the various JavaScript test framework authors, especially TJ for [JSpec](http://github.com/visionmedia/jspec/tree/master) - we played with it a bit before deciding that we really needed to roll our own.
