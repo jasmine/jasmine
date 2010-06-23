@@ -57,7 +57,7 @@
 <span class='line'> 50</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 51</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 52</span> </span><span class="WHIT">    </span><span class="COMM">// IE support</span><span class="WHIT">
-<span class='line'> 53</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">window</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getGlobal</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">[</span><span class="NAME">name</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 54</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'> 55</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 56</span> 
@@ -416,169 +416,174 @@
 <span class='line'>409</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">obj</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>410</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>411</span> 
-<span class='line'>412</span> </span><span class="NAME">jasmine.log</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>413</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spec</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>414</span> </span><span class="WHIT">  </span><span class="NAME">spec.log.apply</span><span class="PUNC">(</span><span class="NAME">spec</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>415</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>416</span> 
-<span class='line'>417</span> </span><span class="COMM">/**
-<span class='line'>418</span>  * Function that installs a spy on an existing object's method name.  Used within a Spec to create a spy.
-<span class='line'>419</span>  *
-<span class='line'>420</span>  * @example
-<span class='line'>421</span>  * // spy example
-<span class='line'>422</span>  * var foo = {
-<span class='line'>423</span>  *   not: function(bool) { return !bool; }
-<span class='line'>424</span>  * }
-<span class='line'>425</span>  * spyOn(foo, 'not'); // actual foo.not will not be called, execution stops
-<span class='line'>426</span>  *
-<span class='line'>427</span>  * @see jasmine.createSpy
-<span class='line'>428</span>  * @param obj
-<span class='line'>429</span>  * @param methodName
-<span class='line'>430</span>  * @returns a Jasmine spy that can be chained with all spy methods
-<span class='line'>431</span>  */</span><span class="WHIT">
-<span class='line'>432</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spyOn</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">obj</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">methodName</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>433</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.spyOn</span><span class="PUNC">(</span><span class="NAME">obj</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">methodName</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>434</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>435</span> 
-<span class='line'>436</span> </span><span class="COMM">/**
-<span class='line'>437</span>  * Creates a Jasmine spec that will be added to the current suite.
-<span class='line'>438</span>  *
-<span class='line'>439</span>  * // TODO: pending tests
-<span class='line'>440</span>  *
-<span class='line'>441</span>  * @example
-<span class='line'>442</span>  * it('should be true', function() {
-<span class='line'>443</span>  *   expect(true).toEqual(true);
-<span class='line'>444</span>  * });
+<span class='line'>412</span> </span><span class="COMM">/**
+<span class='line'>413</span>  * All parameters are pretty-printed and concatenated together, then written to the current spec's output.
+<span class='line'>414</span>  *
+<span class='line'>415</span>  * Be careful not to leave calls to &lt;code>jasmine.log&lt;/code> in production code.
+<span class='line'>416</span>  */</span><span class="WHIT">
+<span class='line'>417</span> </span><span class="NAME">jasmine.log</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>418</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spec</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>419</span> </span><span class="WHIT">  </span><span class="NAME">spec.log.apply</span><span class="PUNC">(</span><span class="NAME">spec</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>420</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>421</span> 
+<span class='line'>422</span> </span><span class="COMM">/**
+<span class='line'>423</span>  * Function that installs a spy on an existing object's method name.  Used within a Spec to create a spy.
+<span class='line'>424</span>  *
+<span class='line'>425</span>  * @example
+<span class='line'>426</span>  * // spy example
+<span class='line'>427</span>  * var foo = {
+<span class='line'>428</span>  *   not: function(bool) { return !bool; }
+<span class='line'>429</span>  * }
+<span class='line'>430</span>  * spyOn(foo, 'not'); // actual foo.not will not be called, execution stops
+<span class='line'>431</span>  *
+<span class='line'>432</span>  * @see jasmine.createSpy
+<span class='line'>433</span>  * @param obj
+<span class='line'>434</span>  * @param methodName
+<span class='line'>435</span>  * @returns a Jasmine spy that can be chained with all spy methods
+<span class='line'>436</span>  */</span><span class="WHIT">
+<span class='line'>437</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spyOn</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">obj</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">methodName</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>438</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.spyOn</span><span class="PUNC">(</span><span class="NAME">obj</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">methodName</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>439</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>440</span> 
+<span class='line'>441</span> </span><span class="COMM">/**
+<span class='line'>442</span>  * Creates a Jasmine spec that will be added to the current suite.
+<span class='line'>443</span>  *
+<span class='line'>444</span>  * // TODO: pending tests
 <span class='line'>445</span>  *
-<span class='line'>446</span>  * @param {String} desc description of this specification
-<span class='line'>447</span>  * @param {Function} func defines the preconditions and expectations of the spec
-<span class='line'>448</span>  */</span><span class="WHIT">
-<span class='line'>449</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">it</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>450</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">it</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>451</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>452</span> 
-<span class='line'>453</span> </span><span class="COMM">/**
-<span class='line'>454</span>  * Creates a &lt;em>disabled&lt;/em> Jasmine spec.
-<span class='line'>455</span>  *
-<span class='line'>456</span>  * A convenience method that allows existing specs to be disabled temporarily during development.
-<span class='line'>457</span>  *
-<span class='line'>458</span>  * @param {String} desc description of this specification
-<span class='line'>459</span>  * @param {Function} func defines the preconditions and expectations of the spec
-<span class='line'>460</span>  */</span><span class="WHIT">
-<span class='line'>461</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">xit</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>462</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">xit</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>463</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>464</span> 
-<span class='line'>465</span> </span><span class="COMM">/**
-<span class='line'>466</span>  * Starts a chain for a Jasmine expectation.
-<span class='line'>467</span>  *
-<span class='line'>468</span>  * It is passed an Object that is the actual value and should chain to one of the many
-<span class='line'>469</span>  * jasmine.Matchers functions.
-<span class='line'>470</span>  *
-<span class='line'>471</span>  * @param {Object} actual Actual value to test against and expected value
-<span class='line'>472</span>  */</span><span class="WHIT">
-<span class='line'>473</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">expect</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">actual</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>474</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.expect</span><span class="PUNC">(</span><span class="NAME">actual</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>475</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>476</span> 
-<span class='line'>477</span> </span><span class="COMM">/**
-<span class='line'>478</span>  * Defines part of a jasmine spec.  Used in cominbination with waits or waitsFor in asynchrnous specs.
-<span class='line'>479</span>  *
-<span class='line'>480</span>  * @param {Function} func Function that defines part of a jasmine spec.
-<span class='line'>481</span>  */</span><span class="WHIT">
-<span class='line'>482</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">runs</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>483</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.runs</span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>484</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>485</span> 
-<span class='line'>486</span> </span><span class="COMM">/**
-<span class='line'>487</span>  * Waits for a timeout before moving to the next runs()-defined block.
-<span class='line'>488</span>  * @param {Number} timeout
-<span class='line'>489</span>  */</span><span class="WHIT">
-<span class='line'>490</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">waits</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>491</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.waits</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>492</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>493</span> 
-<span class='line'>494</span> </span><span class="COMM">/**
-<span class='line'>495</span>  * Waits for the latchFunction to return true before proceeding to the next runs()-defined block.
-<span class='line'>496</span>  *
-<span class='line'>497</span>  * @param {Number} timeout
-<span class='line'>498</span>  * @param {Function} latchFunction
-<span class='line'>499</span>  * @param {String} message
-<span class='line'>500</span>  */</span><span class="WHIT">
-<span class='line'>501</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">waitsFor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">latchFunction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">message</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>502</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.waitsFor</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">latchFunction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">message</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>503</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>504</span> 
-<span class='line'>505</span> </span><span class="COMM">/**
-<span class='line'>506</span>  * A function that is called before each spec in a suite.
-<span class='line'>507</span>  *
-<span class='line'>508</span>  * Used for spec setup, including validating assumptions.
-<span class='line'>509</span>  *
-<span class='line'>510</span>  * @param {Function} beforeEachFunction
-<span class='line'>511</span>  */</span><span class="WHIT">
-<span class='line'>512</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">beforeEach</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">beforeEachFunction</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>513</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">beforeEach</span><span class="PUNC">(</span><span class="NAME">beforeEachFunction</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>514</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>515</span> 
-<span class='line'>516</span> </span><span class="COMM">/**
-<span class='line'>517</span>  * A function that is called after each spec in a suite.
-<span class='line'>518</span>  *
-<span class='line'>519</span>  * Used for restoring any state that is hijacked during spec execution.
-<span class='line'>520</span>  *
-<span class='line'>521</span>  * @param {Function} afterEachFunction
-<span class='line'>522</span>  */</span><span class="WHIT">
-<span class='line'>523</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">afterEach</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">afterEachFunction</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>524</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">afterEach</span><span class="PUNC">(</span><span class="NAME">afterEachFunction</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>525</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>526</span> 
-<span class='line'>527</span> </span><span class="COMM">/**
-<span class='line'>528</span>  * Defines a suite of specifications.
-<span class='line'>529</span>  *
-<span class='line'>530</span>  * Stores the description and all defined specs in the Jasmine environment as one suite of specs. Variables declared
-<span class='line'>531</span>  * are accessible by calls to beforeEach, it, and afterEach. Describe blocks can be nested, allowing for specialization
-<span class='line'>532</span>  * of setup in some tests.
-<span class='line'>533</span>  *
-<span class='line'>534</span>  * @example
-<span class='line'>535</span>  * // TODO: a simple suite
-<span class='line'>536</span>  *
-<span class='line'>537</span>  * // TODO: a simple suite with a nested describe block
+<span class='line'>446</span>  * @example
+<span class='line'>447</span>  * it('should be true', function() {
+<span class='line'>448</span>  *   expect(true).toEqual(true);
+<span class='line'>449</span>  * });
+<span class='line'>450</span>  *
+<span class='line'>451</span>  * @param {String} desc description of this specification
+<span class='line'>452</span>  * @param {Function} func defines the preconditions and expectations of the spec
+<span class='line'>453</span>  */</span><span class="WHIT">
+<span class='line'>454</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">it</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>455</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">it</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>456</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>457</span> 
+<span class='line'>458</span> </span><span class="COMM">/**
+<span class='line'>459</span>  * Creates a &lt;em>disabled&lt;/em> Jasmine spec.
+<span class='line'>460</span>  *
+<span class='line'>461</span>  * A convenience method that allows existing specs to be disabled temporarily during development.
+<span class='line'>462</span>  *
+<span class='line'>463</span>  * @param {String} desc description of this specification
+<span class='line'>464</span>  * @param {Function} func defines the preconditions and expectations of the spec
+<span class='line'>465</span>  */</span><span class="WHIT">
+<span class='line'>466</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">xit</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>467</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">xit</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>468</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>469</span> 
+<span class='line'>470</span> </span><span class="COMM">/**
+<span class='line'>471</span>  * Starts a chain for a Jasmine expectation.
+<span class='line'>472</span>  *
+<span class='line'>473</span>  * It is passed an Object that is the actual value and should chain to one of the many
+<span class='line'>474</span>  * jasmine.Matchers functions.
+<span class='line'>475</span>  *
+<span class='line'>476</span>  * @param {Object} actual Actual value to test against and expected value
+<span class='line'>477</span>  */</span><span class="WHIT">
+<span class='line'>478</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">expect</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">actual</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>479</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.expect</span><span class="PUNC">(</span><span class="NAME">actual</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>480</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>481</span> 
+<span class='line'>482</span> </span><span class="COMM">/**
+<span class='line'>483</span>  * Defines part of a jasmine spec.  Used in cominbination with waits or waitsFor in asynchrnous specs.
+<span class='line'>484</span>  *
+<span class='line'>485</span>  * @param {Function} func Function that defines part of a jasmine spec.
+<span class='line'>486</span>  */</span><span class="WHIT">
+<span class='line'>487</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">runs</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>488</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.runs</span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>489</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>490</span> 
+<span class='line'>491</span> </span><span class="COMM">/**
+<span class='line'>492</span>  * Waits for a timeout before moving to the next runs()-defined block.
+<span class='line'>493</span>  * @param {Number} timeout
+<span class='line'>494</span>  */</span><span class="WHIT">
+<span class='line'>495</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">waits</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>496</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.waits</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>497</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>498</span> 
+<span class='line'>499</span> </span><span class="COMM">/**
+<span class='line'>500</span>  * Waits for the latchFunction to return true before proceeding to the next runs()-defined block.
+<span class='line'>501</span>  *
+<span class='line'>502</span>  * @param {Number} timeout
+<span class='line'>503</span>  * @param {Function} latchFunction
+<span class='line'>504</span>  * @param {String} message
+<span class='line'>505</span>  */</span><span class="WHIT">
+<span class='line'>506</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">waitsFor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">latchFunction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">message</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>507</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.waitsFor</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">latchFunction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">message</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>508</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>509</span> 
+<span class='line'>510</span> </span><span class="COMM">/**
+<span class='line'>511</span>  * A function that is called before each spec in a suite.
+<span class='line'>512</span>  *
+<span class='line'>513</span>  * Used for spec setup, including validating assumptions.
+<span class='line'>514</span>  *
+<span class='line'>515</span>  * @param {Function} beforeEachFunction
+<span class='line'>516</span>  */</span><span class="WHIT">
+<span class='line'>517</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">beforeEach</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">beforeEachFunction</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>518</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">beforeEach</span><span class="PUNC">(</span><span class="NAME">beforeEachFunction</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>519</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>520</span> 
+<span class='line'>521</span> </span><span class="COMM">/**
+<span class='line'>522</span>  * A function that is called after each spec in a suite.
+<span class='line'>523</span>  *
+<span class='line'>524</span>  * Used for restoring any state that is hijacked during spec execution.
+<span class='line'>525</span>  *
+<span class='line'>526</span>  * @param {Function} afterEachFunction
+<span class='line'>527</span>  */</span><span class="WHIT">
+<span class='line'>528</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">afterEach</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">afterEachFunction</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>529</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">afterEach</span><span class="PUNC">(</span><span class="NAME">afterEachFunction</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>530</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>531</span> 
+<span class='line'>532</span> </span><span class="COMM">/**
+<span class='line'>533</span>  * Defines a suite of specifications.
+<span class='line'>534</span>  *
+<span class='line'>535</span>  * Stores the description and all defined specs in the Jasmine environment as one suite of specs. Variables declared
+<span class='line'>536</span>  * are accessible by calls to beforeEach, it, and afterEach. Describe blocks can be nested, allowing for specialization
+<span class='line'>537</span>  * of setup in some tests.
 <span class='line'>538</span>  *
-<span class='line'>539</span>  * @param {String} description A string, usually the class under test.
-<span class='line'>540</span>  * @param {Function} specDefinitions function that defines several specs.
-<span class='line'>541</span>  */</span><span class="WHIT">
-<span class='line'>542</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">describe</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>543</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">describe</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>544</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>545</span> 
-<span class='line'>546</span> </span><span class="COMM">/**
-<span class='line'>547</span>  * Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
-<span class='line'>548</span>  *
-<span class='line'>549</span>  * @param {String} description A string, usually the class under test.
-<span class='line'>550</span>  * @param {Function} specDefinitions function that defines several specs.
-<span class='line'>551</span>  */</span><span class="WHIT">
-<span class='line'>552</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">xdescribe</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>553</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">xdescribe</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>554</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>555</span> 
-<span class='line'>556</span> 
-<span class='line'>557</span> </span><span class="COMM">// Provide the XMLHttpRequest class for IE 5.x-6.x:</span><span class="WHIT">
-<span class='line'>558</span> </span><span class="NAME">jasmine.XmlHttpRequest</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">XMLHttpRequest</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>559</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>560</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP.6.0"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>561</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>562</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>563</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>564</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP.3.0"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>565</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>566</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>567</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>568</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>569</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>570</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>571</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>572</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Microsoft.XMLHTTP"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>573</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>574</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>575</span> </span><span class="WHIT">  </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">"This browser does not support XMLHttpRequest."</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>576</span> </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">XMLHttpRequest</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>577</span> </span></pre></body></html>
+<span class='line'>539</span>  * @example
+<span class='line'>540</span>  * // TODO: a simple suite
+<span class='line'>541</span>  *
+<span class='line'>542</span>  * // TODO: a simple suite with a nested describe block
+<span class='line'>543</span>  *
+<span class='line'>544</span>  * @param {String} description A string, usually the class under test.
+<span class='line'>545</span>  * @param {Function} specDefinitions function that defines several specs.
+<span class='line'>546</span>  */</span><span class="WHIT">
+<span class='line'>547</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">describe</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>548</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">describe</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>549</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>550</span> 
+<span class='line'>551</span> </span><span class="COMM">/**
+<span class='line'>552</span>  * Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
+<span class='line'>553</span>  *
+<span class='line'>554</span>  * @param {String} description A string, usually the class under test.
+<span class='line'>555</span>  * @param {Function} specDefinitions function that defines several specs.
+<span class='line'>556</span>  */</span><span class="WHIT">
+<span class='line'>557</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">xdescribe</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>558</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">xdescribe</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>559</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>560</span> 
+<span class='line'>561</span> 
+<span class='line'>562</span> </span><span class="COMM">// Provide the XMLHttpRequest class for IE 5.x-6.x:</span><span class="WHIT">
+<span class='line'>563</span> </span><span class="NAME">jasmine.XmlHttpRequest</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">XMLHttpRequest</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>564</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>565</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP.6.0"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>566</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>567</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>568</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>569</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP.3.0"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>570</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>571</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>572</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>573</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>574</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>575</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>576</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>577</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Microsoft.XMLHTTP"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>578</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>579</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>580</span> </span><span class="WHIT">  </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">"This browser does not support XMLHttpRequest."</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>581</span> </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">XMLHttpRequest</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>582</span> </span></pre></body></html>
