@@ -85,9 +85,6 @@ jasmine.ExpectationResult = function(params) {
   this.expected = params.expected;
   this.actual = params.actual;
 
-  /** @deprecated */
-  this.details = params.details;
-
   this.message = this.passed_ ? 'Passed.' : params.message;
   this.trace = this.passed_ ? '' : new Error(this.message);
 };
@@ -577,28 +574,3 @@ jasmine.XmlHttpRequest = (typeof XMLHttpRequest == "undefined") ? function() {
   }
   throw new Error("This browser does not support XMLHttpRequest.");
 } : XMLHttpRequest;
-
-/**
- * Adds suite files to an HTML document so that they are executed, thus adding them to the current
- * Jasmine environment.
- *
- * @param {String} url path to the file to include
- * @param {Boolean} opt_global
- * @deprecated We suggest you use a different method of including JS source files. <code>jasmine.include</code> will be removed soon.
- */
-jasmine.include = function(url, opt_global) {
-  if (opt_global) {
-    document.write('<script type="text/javascript" src="' + url + '"></' + 'script>');
-  } else {
-    var xhr;
-    try {
-      xhr = new jasmine.XmlHttpRequest();
-      xhr.open("GET", url, false);
-      xhr.send(null);
-    } catch(e) {
-      throw new Error("couldn't fetch " + url + ": " + e);
-    }
-
-    return eval(xhr.responseText);
-  }
-};
