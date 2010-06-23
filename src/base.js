@@ -409,6 +409,11 @@ jasmine.createSpyObj = function(baseName, methodNames) {
   return obj;
 };
 
+/**
+ * All parameters are pretty-printed and concatenated together, then written to the current spec's output.
+ *
+ * Be careful not to leave calls to <code>jasmine.log</code> in production code.
+ */
 jasmine.log = function() {
   var spec = jasmine.getEnv().currentSpec;
   spec.log.apply(spec, arguments);

@@ -37,6 +37,11 @@ jasmine.Spec.prototype.results = function() {
   return this.results_;
 };
 
+/**
+ * All parameters are pretty-printed and concatenated together, then written to the spec's output.
+ *
+ * Be careful not to leave calls to <code>jasmine.log</code> in production code.
+ */
 jasmine.Spec.prototype.log = function() {
   return this.results_.log(arguments);
 };
