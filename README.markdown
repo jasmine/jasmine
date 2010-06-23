@@ -460,7 +460,7 @@ What's happening here?
 ## Support
 We now have a Google Group for support & discussion.
 
-* Homepage:  [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js)
+* Discussion: [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js)
 * Group email: [jasmine-js@googlegroups.com](jasmine-js@googlegroups.com)
 * Current build status of Jasmine is visible at [ci.pivotallabs.com](http://ci.pivotallabs.com)
 * Pivotal Tracker project: [http://www.pivotaltracker.com/projects/10606](http://www.pivotaltracker.com/projects/10606)
