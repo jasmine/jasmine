@@ -290,27 +290,6 @@ ul.inheritsList
 							</td>
 						</tr>
 					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">
-								jasmine.<b><a href="../symbols/jasmine.html#.details">details</a></b>
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">
-								jasmine.<b><a href="../symbols/jasmine.html#.Reporters">Reporters</a></b>
-								</div>
-								<div class="description">JasmineReporters.reporter
-   Base object that will get called whenever a Spec, Suite, or Runner is done.</div>
-							</td>
-						</tr>
-					
 					</tbody>
 				</table>
 				
@@ -389,10 +368,9 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.include">include</a></b>(url, opt_global)
+								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.getGlobal">getGlobal</a></b>()
 								</div>
-								<div class="description">Adds suite files to an HTML document so that they are executed, thus adding them to the current
-Jasmine environment.</div>
+								<div class="description"></div>
 							</td>
 						</tr>
 					
@@ -417,7 +395,7 @@ Jasmine environment.</div>
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.log">log</a></b>(message)
+								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.log">log</a></b>()
 								</div>
 								<div class="description"></div>
 							</td>
@@ -426,7 +404,7 @@ Jasmine environment.</div>
 						<tr>
 							<td class="attributes">&lt;static&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.MessageResult">MessageResult</a></b>(text)
+								<div class="fixedFont">jasmine.<b><a href="../symbols/jasmine.html#.MessageResult">MessageResult</a></b>(values)
 								</div>
 								<div class="description"></div>
 							</td>
@@ -549,55 +527,6 @@ Jasmine environment.</div>
 					</div>
 					<div class="description">
 						Default interval for event loop yields. Small values here may result in slow test running. Zero means no updates until all tests have completed.
-						
-						
-					</div>
-					
-					
-
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".details"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>details</b>
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".Reporters"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">jasmine.</span><b>Reporters</b>
-					
-					</div>
-					<div class="description">
-						JasmineReporters.reporter
-   Base object that will get called whenever a Spec, Suite, or Runner is done.  It is up to
-   descendants of this object to do something with the results (see json_reporter.js)
-						
-							<br />
-							<i>Defined in: </i> <a href="../symbols/src/src_Reporters.js.html">Reporters.js</a>.
 						
 						
 					</div>
@@ -835,39 +764,21 @@ large in one call.
 
 					<hr />
 				
-					<a name=".include"> </a>
+					<a name=".getGlobal"> </a>
 					<div class="fixedFont">&lt;static&gt; 
 					
 					
-					<span class="light">jasmine.</span><b>include</b>(url, opt_global)
+					<span class="light">jasmine.</span><b>getGlobal</b>()
 					
 					</div>
 					<div class="description">
-						Adds suite files to an HTML document so that they are executed, thus adding them to the current
-Jasmine environment.
+						
 						
 						
 					</div>
 					
 					
 					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>url</b>
-									
-								</dt>
-								<dd>path to the file to include</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Boolean}</span> <b>opt_global</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
 						
 						
 						
@@ -968,7 +879,7 @@ Jasmine environment.
 					<div class="fixedFont">&lt;static&gt; 
 					
 					
-					<span class="light">jasmine.</span><b>log</b>(message)
+					<span class="light">jasmine.</span><b>log</b>()
 					
 					</div>
 					<div class="description">
@@ -979,17 +890,6 @@ Jasmine environment.
 					
 					
 					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>message</b>
-									
-								</dt>
-								<dd></dd>
-							
-							</dl>
 						
 						
 						
@@ -1004,7 +904,7 @@ Jasmine environment.
 					<div class="fixedFont">&lt;static&gt; 
 					
 					
-					<span class="light">jasmine.</span><b>MessageResult</b>(text)
+					<span class="light">jasmine.</span><b>MessageResult</b>(values)
 					
 					</div>
 					<div class="description">
@@ -1020,7 +920,7 @@ Jasmine environment.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>text</b>
+									<b>values</b>
 									
 								</dt>
 								<dd></dd>
@@ -1339,7 +1239,7 @@ Jasmine environment.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Thu Mar 18 2010 20:35:00 GMT-0700 (PDT)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Tue Jun 22 2010 17:46:46 GMT-0700 (PDT)
 		</div>
 	</body>
 </html>
