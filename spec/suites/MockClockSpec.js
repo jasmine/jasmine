@@ -31,4 +31,8 @@ describe("MockClock", function () {
       expect(interval).toEqual(2);
     });
   });
+
+  it("shouldn't complain if you call jasmine.Clock.useMock() more than once", function() {
+    jasmine.Clock.useMock();
+  });
 });
