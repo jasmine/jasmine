@@ -82,7 +82,6 @@ describe('WaitsForBlock', function () {
       var failMessage = spec.fail.mostRecentCall.args[0].message;
       expect(failMessage).toMatch(message);
       expect(onComplete).wasNotCalled();
-
     });
   });
 });

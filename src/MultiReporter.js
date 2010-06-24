@@ -11,7 +11,14 @@ jasmine.MultiReporter.prototype.addReporter = function(reporter) {
 };
 
 (function() {
-  var functionNames = ["reportRunnerStarting", "reportRunnerResults", "reportSuiteResults", "reportSpecResults", "log"];
+  var functionNames = [
+    "reportRunnerStarting",
+    "reportRunnerResults",
+    "reportSuiteResults",
+    "reportSpecStarting",
+    "reportSpecResults",
+    "log"
+  ];
   for (var i = 0; i < functionNames.length; i++) {
     var functionName = functionNames[i];
     jasmine.MultiReporter.prototype[functionName] = (function(functionName) {

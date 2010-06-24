@@ -134,7 +134,8 @@ jasmine.Spec.prototype.execute = function(onComplete) {
     spec.finish(onComplete);
     return;
   }
-  this.env.reporter.log('>> Jasmine Running ' + this.suite.description + ' ' + this.description + '...');
+
+  this.env.reporter.reportSpecStarting(this);
 
   spec.env.currentSpec = spec;
 
