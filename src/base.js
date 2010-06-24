@@ -172,7 +172,7 @@ jasmine.isDomNode = function(obj) {
  *
  * @example
  * // don't care about which function is passed in, as long as it's a function
- * expect(mySpy).wasCalledWith(jasmine.any(Function));
+ * expect(mySpy).toHaveBeenCalledWith(jasmine.any(Function));
  *
  * @param {Class} clazz
  * @returns matchable object of the type clazz
@@ -187,7 +187,8 @@ jasmine.any = function(clazz) {
  * Spies should be created in test setup, before expectations.  They can then be checked, using the standard Jasmine
  * expectation syntax. Spies can be checked if they were called or not and what the calling params were.
  *
- * A Spy has the following mehtod: wasCalled, callCount, mostRecentCall, and argsForCall (see docs)
+ * A Spy has the following fields: wasCalled, callCount, mostRecentCall, and argsForCall (see docs).
+ *
  * Spies are torn down at the end of every spec.
  *
  * Note: Do <b>not</b> call new jasmine.Spy() directly - a spy must be created using spyOn, jasmine.createSpy or jasmine.createSpyObj.
@@ -217,8 +218,8 @@ jasmine.any = function(clazz) {
  *
  * // mock example
  * foo.not(7 == 7);
- * expect(foo.not).wasCalled();
- * expect(foo.not).wasCalledWith(true);
+ * expect(foo.not).toHaveBeenCalled();
+ * expect(foo.not).toHaveBeenCalledWith(true);
  *
  * @constructor
  * @see spyOn, jasmine.createSpy, jasmine.createSpyObj

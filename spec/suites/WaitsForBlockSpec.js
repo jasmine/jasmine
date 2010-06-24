@@ -17,7 +17,7 @@ describe('WaitsForBlock', function () {
     var block = new jasmine.WaitsForBlock(env, timeout, latchFunction, message, spec);
     expect(onComplete).wasNotCalled();
     block.execute(onComplete);
-    expect(onComplete).wasCalled();
+    expect(onComplete).toHaveBeenCalled();
   });
 
   it('latchFunction should run in same scope as spec', function () {
@@ -36,8 +36,8 @@ describe('WaitsForBlock', function () {
     spyOn(spec, 'fail');
     var block = new jasmine.WaitsForBlock(env, timeout, latchFunction, message, spec);
     block.execute(onComplete);
-    expect(spec.fail).wasCalledWith('some error');
-    expect(onComplete).wasCalled();
+    expect(spec.fail).toHaveBeenCalledWith('some error');
+    expect(onComplete).toHaveBeenCalled();
   });
 
   describe("if latchFunction returns false", function() {
@@ -69,7 +69,7 @@ describe('WaitsForBlock', function () {
       expect(onComplete).wasNotCalled();
       latchFunction.andReturn(true);
       fakeTimer.tick(100);
-      expect(onComplete).wasCalled();
+      expect(onComplete).toHaveBeenCalled();
     });
 
     it('spec should fail with the passed message if the timeout is reached (and not call onComplete)', function () {
@@ -78,7 +78,7 @@ describe('WaitsForBlock', function () {
       block.execute(onComplete);
       expect(spec.fail).wasNotCalled();
       fakeTimer.tick(timeout);
-      expect(spec.fail).wasCalled();
+      expect(spec.fail).toHaveBeenCalled();
       var failMessage = spec.fail.mostRecentCall.args[0].message;
       expect(failMessage).toMatch(message);
       expect(onComplete).wasNotCalled();

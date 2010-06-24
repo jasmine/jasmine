@@ -162,12 +162,18 @@ jasmine.Matchers.prototype.toBeFalsy = function() {
   return !this.actual;
 };
 
+
+/** @deprecated Use expect(xxx).toHaveBeenCalled() instead */
+jasmine.Matchers.prototype.wasCalled = function() {
+  return this.toHaveBeenCalled();
+};
+
 /**
  * Matcher that checks to see if the actual, a Jasmine spy, was called.
  */
-jasmine.Matchers.prototype.wasCalled = function() {
+jasmine.Matchers.prototype.toHaveBeenCalled = function() {
   if (arguments.length > 0) {
-    throw new Error('wasCalled does not take arguments, use wasCalledWith');
+    throw new Error('toHaveBeenCalled does not take arguments, use toHaveBeenCalledWith');
   }
 
   if (!jasmine.isSpy(this.actual)) {
@@ -183,6 +189,8 @@ jasmine.Matchers.prototype.wasCalled = function() {
 
 /**
  * Matcher that checks to see if the actual, a Jasmine spy, was not called.
+ *
+ * @deprecated Use expect(xxx).not.toHaveBeenCalled() instead
  */
 jasmine.Matchers.prototype.wasNotCalled = function() {
   if (arguments.length > 0) {
@@ -200,13 +208,18 @@ jasmine.Matchers.prototype.wasNotCalled = function() {
   return !this.actual.wasCalled;
 };
 
+/** @deprecated Use expect(xxx).toHaveBeenCalledWith() instead */
+jasmine.Matchers.prototype.wasCalledWith = function() {
+  return this.toHaveBeenCalledWith.apply(this, arguments);
+};
+
 /**
  * Matcher that checks to see if the actual, a Jasmine spy, was called with a set of parameters.
  *
  * @example
  *
  */
-jasmine.Matchers.prototype.wasCalledWith = function() {
+jasmine.Matchers.prototype.toHaveBeenCalledWith = function() {
   var expectedArgs = jasmine.util.argsToArray(arguments);
   if (!jasmine.isSpy(this.actual)) {
     throw new Error('Expected a spy, but got ' + jasmine.pp(this.actual) + '.');
@@ -222,6 +235,7 @@ jasmine.Matchers.prototype.wasCalledWith = function() {
   return this.env.contains_(this.actual.argsForCall, expectedArgs);
 };
 
+/** @deprecated Use expect(xxx).not.toHaveBeenCalledWith() instead */
 jasmine.Matchers.prototype.wasNotCalledWith = function() {
   var expectedArgs = jasmine.util.argsToArray(arguments);
   if (!jasmine.isSpy(this.actual)) {

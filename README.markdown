@@ -291,14 +291,14 @@ Here are a few examples:
       spyOn(Klass, 'method');
       Klass.method('foo argument');
 
-      expect(Klass.method).wasCalledWith('foo argument');
+      expect(Klass.method).toHaveBeenCalledWith('foo argument');
     });
 
     it('should spy on Klass#methodWithCallback') {
       var callback = Jasmine.createSpy();
       Klass.methodWithCallback(callback);
 
-      expect(callback).wasCalledWith('foo');
+      expect(callback).toHaveBeenCalledWith('foo');
     });
 
 
@@ -318,23 +318,25 @@ Spies can be very useful for testing AJAX or other asynchronous behaviors that t
       var callback = Jasmine.createSpy();
 
       Klass.asyncMethod(callback);
-      expect(callback).wasNotCalled();
+      expect(callback).not.toHaveBeenCalled();
 
       var someResponseData = 'foo';
       Klass.asyncMethod.mostRecentCall.args[0](someResponseData);
-      expect(callback).wasCalledWith(someResponseData);
+      expect(callback).toHaveBeenCalledWith(someResponseData);
 
     });
 
 There are spy-specfic matchers that are very handy.
 
-`expect(x).wasCalled()` passes if `x` is a spy and was called
+`expect(x).toHaveBeenCalled()` passes if `x` is a spy and was called
 
-`expect(x).wasCalledWith(arguments)` passes if `x` is a spy and was called with the specified arguments
+`expect(x).toHaveBeenCalledWith(arguments)` passes if `x` is a spy and was called with the specified arguments
 
-`expect(x).wasNotCalled()` passes if `x` is a spy and was not called
+`expect(x).not.toHaveBeenCalled()` passes if `x` is a spy and was not called
 
-`expect(x).wasNotCalledWith(arguments)` passes if `x` is a spy and was not called with the specified arguments
+`expect(x).not.toHaveBeenCalledWith(arguments)` passes if `x` is a spy and was not called with the specified arguments
+
+The old matchers `wasCalled`, `wasNotCalled`, `wasCalledWith`, and `wasNotCalledWith` have been deprecated and will be removed in a future release. Please change your specs to use `toHaveBeenCalled`, `not.toHaveBeenCalled`, `toHaveBeenCalledWith`, and `not.toHaveBeenCalledWith` respectively.
 
 Spies can be trained to respond in a variety of ways when invoked:
 

@@ -210,11 +210,11 @@ describe('RunnerTest', function() {
       });
 
       env.currentRunner().execute();
-      expect(fakeReporter.reportRunnerResults).wasNotCalled();
+      expect(fakeReporter.reportRunnerResults).not.toHaveBeenCalled();
       fakeTimer.tick(200);
       //This blows up the JSApiReporter.
-      //expect(fakeReporter.reportRunnerResults).wasCalledWith(env.currentRunner);
-      expect(fakeReporter.reportRunnerResults).wasCalled();
+      //expect(fakeReporter.reportRunnerResults).toHaveBeenCalledWith(env.currentRunner);
+      expect(fakeReporter.reportRunnerResults).toHaveBeenCalled();
       expect(fakeReporter.reportRunnerResults.mostRecentCall.args[0].results()).toEqual(env.currentRunner().results());
     });
   });
@@ -227,12 +227,12 @@ describe('RunnerTest', function() {
     var runner = new jasmine.Runner(env);
     runner.arbitraryVariable = 'foo';
     spyOn(runner.queue, 'start');
-    expect(fakeReporter.reportRunnerStarting).wasNotCalled();
+    expect(fakeReporter.reportRunnerStarting).not.toHaveBeenCalled();
     runner.execute();
-    expect(fakeReporter.reportRunnerStarting).wasCalled();
+    expect(fakeReporter.reportRunnerStarting).toHaveBeenCalled();
     var reportedRunner = fakeReporter.reportRunnerStarting.mostRecentCall.args[0];
     expect(reportedRunner.arbitraryVariable).toEqual('foo');
-    expect(runner.queue.start).wasCalled();
+    expect(runner.queue.start).toHaveBeenCalled();
   });
 
   describe("when suites are nested", function() {

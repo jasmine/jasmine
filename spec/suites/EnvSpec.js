@@ -79,7 +79,7 @@ describe("jasmine.Env", function() {
     it("should allow reporters to be registered", function() {
       env.addReporter(fakeReporter);
       env.reporter.log("message");
-      expect(fakeReporter.log).wasCalledWith("message");
+      expect(fakeReporter.log).toHaveBeenCalledWith("message");
     });
   });
 

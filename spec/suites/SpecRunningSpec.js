@@ -1118,7 +1118,7 @@ describe("jasmine spec running", function () {
 
     disabledSuite.execute();
 
-    expect(spy).wasNotCalled();
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it('#explodes should throw an exception when it is called inside a spec', function() {

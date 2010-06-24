@@ -15,7 +15,7 @@ describe("jasmine.Matchers", function() {
   function match(value) {
     return spec.expect(value);
   }
-  
+
   function lastResult() {
     return spec.addMatcherResult.mostRecentCall.args[0];
   }
@@ -555,22 +555,33 @@ describe("jasmine.Matchers", function() {
       };
     }
 
-    describe("wasCalled", function() {
-      it("should pass iff the spy was called", function() {
-        expect(match(TestClass.spyFunction).wasCalled()).toEqual(false);
+    describe("toHaveBeenCalled", function() {
+      it("should pass if the spy was called", function() {
+        expect(match(TestClass.spyFunction).toHaveBeenCalled()).toEqual(false);
 
         TestClass.spyFunction();
-        expect(match(TestClass.spyFunction).wasCalled()).toEqual(true);
+        expect(match(TestClass.spyFunction).toHaveBeenCalled()).toEqual(true);
       });
 
       it("should throw an exception when invoked with any arguments", function() {
         expect(function() {
-          match(TestClass.normalFunction).wasCalled("unwanted argument");
-        }).toThrow('wasCalled does not take arguments, use wasCalledWith');
+          match(TestClass.normalFunction).toHaveBeenCalled("unwanted argument");
+        }).toThrow('toHaveBeenCalled does not take arguments, use toHaveBeenCalledWith');
       });
 
-      it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasCalled'));
+      it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('toHaveBeenCalled'));
     });
+
+    describe("wasCalled", function() {
+      it("should alias toHaveBeenCalled", function() {
+        spyOn(TestClass, 'normalFunction');
+
+        TestClass.normalFunction();
+
+        expect(TestClass.normalFunction).wasCalled();
+      });
+    });
+
 
     describe("wasNotCalled", function() {
       it("should pass iff the spy was not called", function() {
@@ -589,16 +600,16 @@ describe("jasmine.Matchers", function() {
       it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasNotCalled'));
     });
 
-    describe("wasCalledWith", function() {
-      it('wasCalledWith should return true if it was called with the expected args', function() {
+    describe("toHaveBeenCalledWith", function() {
+      it('toHaveBeenCalledWith should return true if it was called with the expected args', function() {
         TestClass.spyFunction('a', 'b', 'c');
-        expect(match(TestClass.spyFunction).wasCalledWith('a', 'b', 'c')).toEqual(true);
+        expect(match(TestClass.spyFunction).toHaveBeenCalledWith('a', 'b', 'c')).toEqual(true);
       });
 
       it('should return false if it was not called with the expected args', function() {
         TestClass.spyFunction('a', 'b', 'c');
         var expected = match(TestClass.spyFunction);
-        expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
+        expect(expected.toHaveBeenCalledWith('c', 'b', 'a')).toEqual(false);
         var result = lastResult();
         expect(result.passed()).toEqual(false);
         expect(result.expected).toEqual(['c', 'b', 'a']);
@@ -609,7 +620,7 @@ describe("jasmine.Matchers", function() {
 
       it('should return false if it was not called', function() {
         var expected = match(TestClass.spyFunction);
-        expect(expected.wasCalledWith('c', 'b', 'a')).toEqual(false);
+        expect(expected.toHaveBeenCalledWith('c', 'b', 'a')).toEqual(false);
         var result = lastResult();
         expect(result.passed()).toEqual(false);
         expect(result.expected).toEqual(['c', 'b', 'a']);
@@ -621,12 +632,12 @@ describe("jasmine.Matchers", function() {
         var expected = match(TestClass.spyFunction);
         TestClass.spyFunction('a', 'b', 'c');
         TestClass.spyFunction('d', 'e', 'f');
-        expect(expected.wasCalledWith('a', 'b', 'c')).toEqual(true);
-        expect(expected.wasCalledWith('d', 'e', 'f')).toEqual(true);
-        expect(expected.wasCalledWith('x', 'y', 'z')).toEqual(false);
+        expect(expected.toHaveBeenCalledWith('a', 'b', 'c')).toEqual(true);
+        expect(expected.toHaveBeenCalledWith('d', 'e', 'f')).toEqual(true);
+        expect(expected.toHaveBeenCalledWith('x', 'y', 'z')).toEqual(false);
       });
 
-      it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasCalledWith'));
+      it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('toHaveBeenCalledWith'));
 
       describe("to build an ExpectationResult", function () {
         beforeEach(function() {
@@ -643,16 +654,26 @@ describe("jasmine.Matchers", function() {
         it("should should handle the case of a spy", function() {
           TestClass.someFunction('a', 'c');
           var matcher = match(TestClass.someFunction);
-          matcher.wasCalledWith('a', 'b');
+          matcher.toHaveBeenCalledWith('a', 'b');
 
           var result = lastResult();
-          expect(result.matcherName).toEqual("wasCalledWith");
+          expect(result.matcherName).toEqual("toHaveBeenCalledWith");
           expect(result.passed()).toEqual(false);
           expect(result.message).toContain(jasmine.pp(['a', 'b']));
           expect(result.message).toContain(jasmine.pp(['a', 'c']));
           expect(result.actual).toEqual(TestClass.someFunction);
           expect(result.expected).toEqual(['a','b']);
         });
+      });
+    });
+
+    describe("wasCalledWith", function() {
+      it("should alias toHaveBeenCalledWith", function() {
+        spyOn(TestClass, 'normalFunction');
+
+        TestClass.normalFunction(123);
+
+        expect(TestClass.normalFunction).wasCalledWith(123);
       });
     });
 
@@ -676,7 +697,7 @@ describe("jasmine.Matchers", function() {
       it('should return true if it was not called', function() {
         var expected = match(TestClass.spyFunction);
         expect(expected.wasNotCalledWith('c', 'b', 'a')).toEqual(true);
-       });
+      });
 
       it('should allow matches across multiple calls', function() {
         var expected = match(TestClass.spyFunction);

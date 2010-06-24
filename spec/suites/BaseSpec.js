@@ -11,7 +11,7 @@ describe("base.js", function() {
     it("should accept n arguments", function() {
       spyOn(jasmine.getEnv().currentSpec, 'log');
       jasmine.log(1, 2, 3);
-      expect(jasmine.getEnv().currentSpec.log).wasCalledWith(1, 2, 3);
+      expect(jasmine.getEnv().currentSpec.log).toHaveBeenCalledWith(1, 2, 3);
     });
   });
 

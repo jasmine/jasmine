@@ -169,11 +169,11 @@ describe('Spies', function () {
     var TestClass = { someFunction: function() {} };
     this.spyOn(TestClass, 'someFunction');
 
-    expect(TestClass.someFunction).wasNotCalled();
+    expect(TestClass.someFunction).not.toHaveBeenCalled();
     TestClass.someFunction();
-    expect(TestClass.someFunction).wasCalled();
+    expect(TestClass.someFunction).toHaveBeenCalled();
     TestClass.someFunction.reset();
-    expect(TestClass.someFunction).wasNotCalled();
+    expect(TestClass.someFunction).not.toHaveBeenCalled();
     expect(TestClass.someFunction.callCount).toEqual(0);
   });
 

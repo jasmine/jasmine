@@ -19,12 +19,12 @@ describe("jasmine.MultiReporter", function() {
 
   it("should delegate to any and all subreporters", function() {
     multiReporter.reportSpecResults('blah', 'foo');
-    expect(fakeReporter1.reportSpecResults).wasCalledWith('blah', 'foo');
-    expect(fakeReporter2.reportSpecResults).wasCalledWith('blah', 'foo');
+    expect(fakeReporter1.reportSpecResults).toHaveBeenCalledWith('blah', 'foo');
+    expect(fakeReporter2.reportSpecResults).toHaveBeenCalledWith('blah', 'foo');
   });
 
   it("should quietly skip delegating to any subreporters which lack the given method", function() {
     multiReporter.reportRunnerStarting('blah', 'foo');
-    expect(fakeReporter2.reportRunnerStarting).wasCalledWith('blah', 'foo');
+    expect(fakeReporter2.reportRunnerStarting).toHaveBeenCalledWith('blah', 'foo');
   });
 });
