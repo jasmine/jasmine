@@ -123,7 +123,6 @@ jasmine.Clock = {
   },
 
   uninstallMock: function() {
-    jasmine.log("uninstall")
     jasmine.Clock.assertInstalled();
     jasmine.Clock.installed = jasmine.Clock.real;
   },
