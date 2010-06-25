@@ -6,6 +6,10 @@ def jasmine_sources
   sources
 end
 
+def jasmine_html_sources
+  ["src/html/TrivialReporter.js"]
+end
+
 def jasmine_filename
   "jasmine-#{jasmine_version}.js"
 end
@@ -81,24 +85,28 @@ namespace :jasmine do
     old_jasmine_files = Dir.glob('lib/jasmine*.js')
     old_jasmine_files.each { |file| File.delete(file) }
 
-    jasmine = File.new("lib/jasmine.js", 'w')
+    File.open("lib/jasmine.js", 'w') do |jasmine|
+      sources.each do |source_filename|
+        jasmine.puts(File.read(source_filename))
+      end
 
-    sources.each do |source_filename|
-      jasmine.puts(File.read(source_filename))
-    end
-
-    jasmine.puts %{
+      jasmine.puts %{
 jasmine.version_= {
   "major": #{version['major']},
   "minor": #{version['minor']},
   "build": #{version['build']},
   "revision": #{Time.now.to_i}
-  };
+};
 }
+    end
 
-    jasmine.close
+    File.open("lib/jasmine-html.js", 'w') do |jasmine_html|
+      jasmine_html_sources.each do |source_filename|
+        jasmine_html.puts(File.read(source_filename))
+      end
+    end
 
-    FileUtils.cp("lib/jasmine.js", "lib/#{jasmine_filename version}")
+    FileUtils.cp("src/html/jasmine.css", "lib/jasmine.css")
   end
 
   desc "Build jasmine documentation"
@@ -110,7 +118,7 @@ jasmine.version_= {
 
 
     JsdocHelper::Rake::Task.new(:lambda_jsdoc) do |t|
-      t[:files] = jasmine_sources << 'lib/TrivialReporter.js'
+      t[:files] = jasmine_sources << jasmine_html_sources
       t[:options] = "-a"
     end
     Rake::Task[:lambda_jsdoc].invoke
@@ -131,12 +139,12 @@ jasmine.version_= {
 
     lib_dir = File.join(temp_dir, "lib/jasmine-#{jasmine_version}")
     FileUtils.mkdir_p(lib_dir)
-    [
-        "jasmine.js",
-        "TrivialReporter.js",
-        "jasmine.css"
-    ].each do |f|
-      FileUtils.cp(File.join(root, 'lib', f), File.join(lib_dir, f))
+    {
+        "lib/jasmine.js" => "jasmine.js",
+        "lib/jasmine-html.js" => "jasmine-html.js",
+        "src/html/jasmine.css" => "jasmine.css"
+    }.each_pair do |src, dest|
+      FileUtils.cp(File.join(root, src), File.join(lib_dir, dest))
     end
 
     dist = File.join(root, 'dist')
@@ -147,7 +155,7 @@ jasmine.version_= {
 
 
   task :server do
-    files = jasmine_sources + ['lib/TrivialReporter.js', 'lib/consolex.js']
+    files = jasmine_sources + jasmine_html_sources
     jasmine_includes = lambda {
       raw_jasmine_includes = files.collect { |f| File.expand_path(File.join(JasmineHelper.jasmine_root, f)) }
       Jasmine.cachebust(raw_jasmine_includes).collect { |f| f.sub(JasmineHelper.jasmine_src_dir, "/src").sub(JasmineHelper.jasmine_lib_dir, "/lib") }
