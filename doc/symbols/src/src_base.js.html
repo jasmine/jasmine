@@ -179,7 +179,7 @@
 <span class='line'>172</span>  *
 <span class='line'>173</span>  * @example
 <span class='line'>174</span>  * // don't care about which function is passed in, as long as it's a function
-<span class='line'>175</span>  * expect(mySpy).wasCalledWith(jasmine.any(Function));
+<span class='line'>175</span>  * expect(mySpy).toHaveBeenCalledWith(jasmine.any(Function));
 <span class='line'>176</span>  *
 <span class='line'>177</span>  * @param {Class} clazz
 <span class='line'>178</span>  * @returns matchable object of the type clazz
@@ -194,396 +194,397 @@
 <span class='line'>187</span>  * Spies should be created in test setup, before expectations.  They can then be checked, using the standard Jasmine
 <span class='line'>188</span>  * expectation syntax. Spies can be checked if they were called or not and what the calling params were.
 <span class='line'>189</span>  *
-<span class='line'>190</span>  * A Spy has the following mehtod: wasCalled, callCount, mostRecentCall, and argsForCall (see docs)
-<span class='line'>191</span>  * Spies are torn down at the end of every spec.
-<span class='line'>192</span>  *
-<span class='line'>193</span>  * Note: Do &lt;b>not&lt;/b> call new jasmine.Spy() directly - a spy must be created using spyOn, jasmine.createSpy or jasmine.createSpyObj.
-<span class='line'>194</span>  *
-<span class='line'>195</span>  * @example
-<span class='line'>196</span>  * // a stub
-<span class='line'>197</span>  * var myStub = jasmine.createSpy('myStub');  // can be used anywhere
-<span class='line'>198</span>  *
-<span class='line'>199</span>  * // spy example
-<span class='line'>200</span>  * var foo = {
-<span class='line'>201</span>  *   not: function(bool) { return !bool; }
-<span class='line'>202</span>  * }
-<span class='line'>203</span>  *
-<span class='line'>204</span>  * // actual foo.not will not be called, execution stops
-<span class='line'>205</span>  * spyOn(foo, 'not');
-<span class='line'>206</span> 
-<span class='line'>207</span>  // foo.not spied upon, execution will continue to implementation
-<span class='line'>208</span>  * spyOn(foo, 'not').andCallThrough();
-<span class='line'>209</span>  *
-<span class='line'>210</span>  * // fake example
-<span class='line'>211</span>  * var foo = {
-<span class='line'>212</span>  *   not: function(bool) { return !bool; }
-<span class='line'>213</span>  * }
-<span class='line'>214</span>  *
-<span class='line'>215</span>  * // foo.not(val) will return val
-<span class='line'>216</span>  * spyOn(foo, 'not').andCallFake(function(value) {return value;});
-<span class='line'>217</span>  *
-<span class='line'>218</span>  * // mock example
-<span class='line'>219</span>  * foo.not(7 == 7);
-<span class='line'>220</span>  * expect(foo.not).wasCalled();
-<span class='line'>221</span>  * expect(foo.not).wasCalledWith(true);
-<span class='line'>222</span>  *
-<span class='line'>223</span>  * @constructor
-<span class='line'>224</span>  * @see spyOn, jasmine.createSpy, jasmine.createSpyObj
-<span class='line'>225</span>  * @param {String} name
-<span class='line'>226</span>  */</span><span class="WHIT">
-<span class='line'>227</span> </span><span class="NAME">jasmine.Spy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>228</span> </span><span class="WHIT">  </span><span class="COMM">/**
-<span class='line'>229</span>    * The name of the spy, if provided.
-<span class='line'>230</span>    */</span><span class="WHIT">
-<span class='line'>231</span> </span><span class="WHIT">  </span><span class="NAME">this.identity</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">name</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="STRN">'unknown'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>232</span> </span><span class="WHIT">  </span><span class="COMM">/**
-<span class='line'>233</span>    *  Is this Object a spy?
-<span class='line'>234</span>    */</span><span class="WHIT">
-<span class='line'>235</span> </span><span class="WHIT">  </span><span class="NAME">this.isSpy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>236</span> </span><span class="WHIT">  </span><span class="COMM">/**
-<span class='line'>237</span>    * The actual function this spy stubs.
-<span class='line'>238</span>    */</span><span class="WHIT">
-<span class='line'>239</span> </span><span class="WHIT">  </span><span class="NAME">this.plan</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>240</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>241</span> </span><span class="WHIT">  </span><span class="COMM">/**
-<span class='line'>242</span>    * Tracking of the most recent call to the spy.
-<span class='line'>243</span>    * @example
-<span class='line'>244</span>    * var mySpy = jasmine.createSpy('foo');
-<span class='line'>245</span>    * mySpy(1, 2);
-<span class='line'>246</span>    * mySpy.mostRecentCall.args = [1, 2];
-<span class='line'>247</span>    */</span><span class="WHIT">
-<span class='line'>248</span> </span><span class="WHIT">  </span><span class="NAME">this.mostRecentCall</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>249</span> 
-<span class='line'>250</span> </span><span class="WHIT">  </span><span class="COMM">/**
-<span class='line'>251</span>    * Holds arguments for each call to the spy, indexed by call count
-<span class='line'>252</span>    * @example
-<span class='line'>253</span>    * var mySpy = jasmine.createSpy('foo');
-<span class='line'>254</span>    * mySpy(1, 2);
-<span class='line'>255</span>    * mySpy(7, 8);
-<span class='line'>256</span>    * mySpy.mostRecentCall.args = [7, 8];
-<span class='line'>257</span>    * mySpy.argsForCall[0] = [1, 2];
-<span class='line'>258</span>    * mySpy.argsForCall[1] = [7, 8];
-<span class='line'>259</span>    */</span><span class="WHIT">
-<span class='line'>260</span> </span><span class="WHIT">  </span><span class="NAME">this.argsForCall</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>261</span> </span><span class="WHIT">  </span><span class="NAME">this.calls</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>262</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>263</span> 
-<span class='line'>264</span> </span><span class="COMM">/**
-<span class='line'>265</span>  * Tells a spy to call through to the actual implemenatation.
-<span class='line'>266</span>  *
-<span class='line'>267</span>  * @example
-<span class='line'>268</span>  * var foo = {
-<span class='line'>269</span>  *   bar: function() { // do some stuff }
-<span class='line'>270</span>  * }
-<span class='line'>271</span>  *
-<span class='line'>272</span>  * // defining a spy on an existing property: foo.bar
-<span class='line'>273</span>  * spyOn(foo, 'bar').andCallThrough();
-<span class='line'>274</span>  */</span><span class="WHIT">
-<span class='line'>275</span> </span><span class="NAME">jasmine.Spy.prototype.andCallThrough</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>276</span> </span><span class="WHIT">  </span><span class="NAME">this.plan</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.originalValue</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>277</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>278</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>279</span> 
-<span class='line'>280</span> </span><span class="COMM">/**
-<span class='line'>281</span>  * For setting the return value of a spy.
-<span class='line'>282</span>  *
-<span class='line'>283</span>  * @example
-<span class='line'>284</span>  * // defining a spy from scratch: foo() returns 'baz'
-<span class='line'>285</span>  * var foo = jasmine.createSpy('spy on foo').andReturn('baz');
-<span class='line'>286</span>  *
-<span class='line'>287</span>  * // defining a spy on an existing property: foo.bar() returns 'baz'
-<span class='line'>288</span>  * spyOn(foo, 'bar').andReturn('baz');
-<span class='line'>289</span>  *
-<span class='line'>290</span>  * @param {Object} value
-<span class='line'>291</span>  */</span><span class="WHIT">
-<span class='line'>292</span> </span><span class="NAME">jasmine.Spy.prototype.andReturn</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">value</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>293</span> </span><span class="WHIT">  </span><span class="NAME">this.plan</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>294</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>295</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>296</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>297</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>298</span> 
-<span class='line'>299</span> </span><span class="COMM">/**
-<span class='line'>300</span>  * For throwing an exception when a spy is called.
-<span class='line'>301</span>  *
-<span class='line'>302</span>  * @example
-<span class='line'>303</span>  * // defining a spy from scratch: foo() throws an exception w/ message 'ouch'
-<span class='line'>304</span>  * var foo = jasmine.createSpy('spy on foo').andThrow('baz');
-<span class='line'>305</span>  *
-<span class='line'>306</span>  * // defining a spy on an existing property: foo.bar() throws an exception w/ message 'ouch'
-<span class='line'>307</span>  * spyOn(foo, 'bar').andThrow('baz');
-<span class='line'>308</span>  *
-<span class='line'>309</span>  * @param {String} exceptionMsg
-<span class='line'>310</span>  */</span><span class="WHIT">
-<span class='line'>311</span> </span><span class="NAME">jasmine.Spy.prototype.andThrow</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">exceptionMsg</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>312</span> </span><span class="WHIT">  </span><span class="NAME">this.plan</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>313</span> </span><span class="WHIT">    </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="NAME">exceptionMsg</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>314</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>315</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>316</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>317</span> 
-<span class='line'>318</span> </span><span class="COMM">/**
-<span class='line'>319</span>  * Calls an alternate implementation when a spy is called.
-<span class='line'>320</span>  *
-<span class='line'>321</span>  * @example
-<span class='line'>322</span>  * var baz = function() {
-<span class='line'>323</span>  *   // do some stuff, return something
-<span class='line'>324</span>  * }
-<span class='line'>325</span>  * // defining a spy from scratch: foo() calls the function baz
-<span class='line'>326</span>  * var foo = jasmine.createSpy('spy on foo').andCall(baz);
-<span class='line'>327</span>  *
-<span class='line'>328</span>  * // defining a spy on an existing property: foo.bar() calls an anonymnous function
-<span class='line'>329</span>  * spyOn(foo, 'bar').andCall(function() { return 'baz';} );
-<span class='line'>330</span>  *
-<span class='line'>331</span>  * @param {Function} fakeFunc
-<span class='line'>332</span>  */</span><span class="WHIT">
-<span class='line'>333</span> </span><span class="NAME">jasmine.Spy.prototype.andCallFake</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">fakeFunc</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>334</span> </span><span class="WHIT">  </span><span class="NAME">this.plan</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">fakeFunc</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>335</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>336</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>337</span> 
-<span class='line'>338</span> </span><span class="COMM">/**
-<span class='line'>339</span>  * Resets all of a spy's the tracking variables so that it can be used again.
-<span class='line'>340</span>  *
-<span class='line'>341</span>  * @example
-<span class='line'>342</span>  * spyOn(foo, 'bar');
-<span class='line'>343</span>  *
-<span class='line'>344</span>  * foo.bar();
-<span class='line'>345</span>  *
-<span class='line'>346</span>  * expect(foo.bar.callCount).toEqual(1);
-<span class='line'>347</span>  *
-<span class='line'>348</span>  * foo.bar.reset();
-<span class='line'>349</span>  *
-<span class='line'>350</span>  * expect(foo.bar.callCount).toEqual(0);
-<span class='line'>351</span>  */</span><span class="WHIT">
-<span class='line'>352</span> </span><span class="NAME">jasmine.Spy.prototype.reset</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>353</span> </span><span class="WHIT">  </span><span class="NAME">this.wasCalled</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>354</span> </span><span class="WHIT">  </span><span class="NAME">this.callCount</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>355</span> </span><span class="WHIT">  </span><span class="NAME">this.argsForCall</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>356</span> </span><span class="WHIT">  </span><span class="NAME">this.calls</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>357</span> </span><span class="WHIT">  </span><span class="NAME">this.mostRecentCall</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>358</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>359</span> 
-<span class='line'>360</span> </span><span class="NAME">jasmine.createSpy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>361</span> 
-<span class='line'>362</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spyObj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>363</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.wasCalled</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>364</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.callCount</span><span class="PUNC">++</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>365</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jasmine.util.argsToArray</span><span class="PUNC">(</span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>366</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.mostRecentCall.object</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>367</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.mostRecentCall.args</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>368</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.argsForCall.push</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>369</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.calls.push</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">object</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>370</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">spyObj.plan.apply</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>371</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>372</span> 
-<span class='line'>373</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">jasmine.Spy</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>374</span> 
-<span class='line'>375</span> </span><span class="WHIT">  </span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">prop</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">spy</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>376</span> </span><span class="WHIT">    </span><span class="NAME">spyObj</span><span class="PUNC">[</span><span class="NAME">prop</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">spy</span><span class="PUNC">[</span><span class="NAME">prop</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>377</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>378</span> 
-<span class='line'>379</span> </span><span class="WHIT">  </span><span class="NAME">spyObj.reset</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>380</span> 
-<span class='line'>381</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">spyObj</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>382</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>383</span> 
-<span class='line'>384</span> </span><span class="COMM">/**
-<span class='line'>385</span>  * Determines whether an object is a spy.
-<span class='line'>386</span>  *
-<span class='line'>387</span>  * @param {jasmine.Spy|Object} putativeSpy
-<span class='line'>388</span>  * @returns {Boolean}
-<span class='line'>389</span>  */</span><span class="WHIT">
-<span class='line'>390</span> </span><span class="NAME">jasmine.isSpy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">putativeSpy</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>391</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">putativeSpy</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">putativeSpy.isSpy</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>392</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>393</span> 
-<span class='line'>394</span> </span><span class="COMM">/**
-<span class='line'>395</span>  * Creates a more complicated spy: an Object that has every property a function that is a spy.  Used for stubbing something
-<span class='line'>396</span>  * large in one call.
-<span class='line'>397</span>  *
-<span class='line'>398</span>  * @param {String} baseName name of spy class
-<span class='line'>399</span>  * @param {Array} methodNames array of names of methods to make spies
-<span class='line'>400</span>  */</span><span class="WHIT">
-<span class='line'>401</span> </span><span class="NAME">jasmine.createSpyObj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">baseName</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">methodNames</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>402</span> </span><span class="WHIT">  </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">jasmine.isArray_</span><span class="PUNC">(</span><span class="NAME">methodNames</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">methodNames.length</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>403</span> </span><span class="WHIT">    </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">'createSpyObj requires a non-empty array of method names to create spies for'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>404</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>405</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">obj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>406</span> </span><span class="WHIT">  </span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NAME">methodNames.length</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>407</span> </span><span class="WHIT">    </span><span class="NAME">obj</span><span class="PUNC">[</span><span class="NAME">methodNames</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jasmine.createSpy</span><span class="PUNC">(</span><span class="NAME">baseName</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'.'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">methodNames</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>408</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>409</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">obj</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>410</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>411</span> 
-<span class='line'>412</span> </span><span class="COMM">/**
-<span class='line'>413</span>  * All parameters are pretty-printed and concatenated together, then written to the current spec's output.
-<span class='line'>414</span>  *
-<span class='line'>415</span>  * Be careful not to leave calls to &lt;code>jasmine.log&lt;/code> in production code.
-<span class='line'>416</span>  */</span><span class="WHIT">
-<span class='line'>417</span> </span><span class="NAME">jasmine.log</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>418</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spec</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>419</span> </span><span class="WHIT">  </span><span class="NAME">spec.log.apply</span><span class="PUNC">(</span><span class="NAME">spec</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>420</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>421</span> 
-<span class='line'>422</span> </span><span class="COMM">/**
-<span class='line'>423</span>  * Function that installs a spy on an existing object's method name.  Used within a Spec to create a spy.
-<span class='line'>424</span>  *
-<span class='line'>425</span>  * @example
-<span class='line'>426</span>  * // spy example
-<span class='line'>427</span>  * var foo = {
-<span class='line'>428</span>  *   not: function(bool) { return !bool; }
-<span class='line'>429</span>  * }
-<span class='line'>430</span>  * spyOn(foo, 'not'); // actual foo.not will not be called, execution stops
-<span class='line'>431</span>  *
-<span class='line'>432</span>  * @see jasmine.createSpy
-<span class='line'>433</span>  * @param obj
-<span class='line'>434</span>  * @param methodName
-<span class='line'>435</span>  * @returns a Jasmine spy that can be chained with all spy methods
-<span class='line'>436</span>  */</span><span class="WHIT">
-<span class='line'>437</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spyOn</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">obj</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">methodName</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>438</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.spyOn</span><span class="PUNC">(</span><span class="NAME">obj</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">methodName</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>439</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>440</span> 
-<span class='line'>441</span> </span><span class="COMM">/**
-<span class='line'>442</span>  * Creates a Jasmine spec that will be added to the current suite.
-<span class='line'>443</span>  *
-<span class='line'>444</span>  * // TODO: pending tests
-<span class='line'>445</span>  *
-<span class='line'>446</span>  * @example
-<span class='line'>447</span>  * it('should be true', function() {
-<span class='line'>448</span>  *   expect(true).toEqual(true);
-<span class='line'>449</span>  * });
-<span class='line'>450</span>  *
-<span class='line'>451</span>  * @param {String} desc description of this specification
-<span class='line'>452</span>  * @param {Function} func defines the preconditions and expectations of the spec
-<span class='line'>453</span>  */</span><span class="WHIT">
-<span class='line'>454</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">it</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>455</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">it</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>456</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>457</span> 
-<span class='line'>458</span> </span><span class="COMM">/**
-<span class='line'>459</span>  * Creates a &lt;em>disabled&lt;/em> Jasmine spec.
-<span class='line'>460</span>  *
-<span class='line'>461</span>  * A convenience method that allows existing specs to be disabled temporarily during development.
-<span class='line'>462</span>  *
-<span class='line'>463</span>  * @param {String} desc description of this specification
-<span class='line'>464</span>  * @param {Function} func defines the preconditions and expectations of the spec
-<span class='line'>465</span>  */</span><span class="WHIT">
-<span class='line'>466</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">xit</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>467</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">xit</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>468</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>469</span> 
-<span class='line'>470</span> </span><span class="COMM">/**
-<span class='line'>471</span>  * Starts a chain for a Jasmine expectation.
-<span class='line'>472</span>  *
-<span class='line'>473</span>  * It is passed an Object that is the actual value and should chain to one of the many
-<span class='line'>474</span>  * jasmine.Matchers functions.
-<span class='line'>475</span>  *
-<span class='line'>476</span>  * @param {Object} actual Actual value to test against and expected value
-<span class='line'>477</span>  */</span><span class="WHIT">
-<span class='line'>478</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">expect</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">actual</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>479</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.expect</span><span class="PUNC">(</span><span class="NAME">actual</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>480</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>481</span> 
-<span class='line'>482</span> </span><span class="COMM">/**
-<span class='line'>483</span>  * Defines part of a jasmine spec.  Used in cominbination with waits or waitsFor in asynchrnous specs.
-<span class='line'>484</span>  *
-<span class='line'>485</span>  * @param {Function} func Function that defines part of a jasmine spec.
-<span class='line'>486</span>  */</span><span class="WHIT">
-<span class='line'>487</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">runs</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>488</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.runs</span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>489</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>490</span> 
-<span class='line'>491</span> </span><span class="COMM">/**
-<span class='line'>492</span>  * Waits for a timeout before moving to the next runs()-defined block.
-<span class='line'>493</span>  * @param {Number} timeout
-<span class='line'>494</span>  */</span><span class="WHIT">
-<span class='line'>495</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">waits</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>496</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.waits</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>497</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>498</span> 
-<span class='line'>499</span> </span><span class="COMM">/**
-<span class='line'>500</span>  * Waits for the latchFunction to return true before proceeding to the next runs()-defined block.
-<span class='line'>501</span>  *
-<span class='line'>502</span>  * @param {Number} timeout
-<span class='line'>503</span>  * @param {Function} latchFunction
-<span class='line'>504</span>  * @param {String} message
-<span class='line'>505</span>  */</span><span class="WHIT">
-<span class='line'>506</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">waitsFor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">latchFunction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">message</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>507</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.waitsFor</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">latchFunction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">message</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>508</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>509</span> 
-<span class='line'>510</span> </span><span class="COMM">/**
-<span class='line'>511</span>  * A function that is called before each spec in a suite.
-<span class='line'>512</span>  *
-<span class='line'>513</span>  * Used for spec setup, including validating assumptions.
-<span class='line'>514</span>  *
-<span class='line'>515</span>  * @param {Function} beforeEachFunction
-<span class='line'>516</span>  */</span><span class="WHIT">
-<span class='line'>517</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">beforeEach</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">beforeEachFunction</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>518</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">beforeEach</span><span class="PUNC">(</span><span class="NAME">beforeEachFunction</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>519</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>520</span> 
-<span class='line'>521</span> </span><span class="COMM">/**
-<span class='line'>522</span>  * A function that is called after each spec in a suite.
-<span class='line'>523</span>  *
-<span class='line'>524</span>  * Used for restoring any state that is hijacked during spec execution.
-<span class='line'>525</span>  *
-<span class='line'>526</span>  * @param {Function} afterEachFunction
-<span class='line'>527</span>  */</span><span class="WHIT">
-<span class='line'>528</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">afterEach</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">afterEachFunction</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>529</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">afterEach</span><span class="PUNC">(</span><span class="NAME">afterEachFunction</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>530</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>531</span> 
-<span class='line'>532</span> </span><span class="COMM">/**
-<span class='line'>533</span>  * Defines a suite of specifications.
-<span class='line'>534</span>  *
-<span class='line'>535</span>  * Stores the description and all defined specs in the Jasmine environment as one suite of specs. Variables declared
-<span class='line'>536</span>  * are accessible by calls to beforeEach, it, and afterEach. Describe blocks can be nested, allowing for specialization
-<span class='line'>537</span>  * of setup in some tests.
-<span class='line'>538</span>  *
-<span class='line'>539</span>  * @example
-<span class='line'>540</span>  * // TODO: a simple suite
-<span class='line'>541</span>  *
-<span class='line'>542</span>  * // TODO: a simple suite with a nested describe block
-<span class='line'>543</span>  *
-<span class='line'>544</span>  * @param {String} description A string, usually the class under test.
-<span class='line'>545</span>  * @param {Function} specDefinitions function that defines several specs.
-<span class='line'>546</span>  */</span><span class="WHIT">
-<span class='line'>547</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">describe</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>548</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">describe</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>549</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>550</span> 
-<span class='line'>551</span> </span><span class="COMM">/**
-<span class='line'>552</span>  * Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
-<span class='line'>553</span>  *
-<span class='line'>554</span>  * @param {String} description A string, usually the class under test.
-<span class='line'>555</span>  * @param {Function} specDefinitions function that defines several specs.
-<span class='line'>556</span>  */</span><span class="WHIT">
-<span class='line'>557</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">xdescribe</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>558</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">xdescribe</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>559</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>560</span> 
+<span class='line'>190</span>  * A Spy has the following fields: wasCalled, callCount, mostRecentCall, and argsForCall (see docs).
+<span class='line'>191</span>  *
+<span class='line'>192</span>  * Spies are torn down at the end of every spec.
+<span class='line'>193</span>  *
+<span class='line'>194</span>  * Note: Do &lt;b>not&lt;/b> call new jasmine.Spy() directly - a spy must be created using spyOn, jasmine.createSpy or jasmine.createSpyObj.
+<span class='line'>195</span>  *
+<span class='line'>196</span>  * @example
+<span class='line'>197</span>  * // a stub
+<span class='line'>198</span>  * var myStub = jasmine.createSpy('myStub');  // can be used anywhere
+<span class='line'>199</span>  *
+<span class='line'>200</span>  * // spy example
+<span class='line'>201</span>  * var foo = {
+<span class='line'>202</span>  *   not: function(bool) { return !bool; }
+<span class='line'>203</span>  * }
+<span class='line'>204</span>  *
+<span class='line'>205</span>  * // actual foo.not will not be called, execution stops
+<span class='line'>206</span>  * spyOn(foo, 'not');
+<span class='line'>207</span> 
+<span class='line'>208</span>  // foo.not spied upon, execution will continue to implementation
+<span class='line'>209</span>  * spyOn(foo, 'not').andCallThrough();
+<span class='line'>210</span>  *
+<span class='line'>211</span>  * // fake example
+<span class='line'>212</span>  * var foo = {
+<span class='line'>213</span>  *   not: function(bool) { return !bool; }
+<span class='line'>214</span>  * }
+<span class='line'>215</span>  *
+<span class='line'>216</span>  * // foo.not(val) will return val
+<span class='line'>217</span>  * spyOn(foo, 'not').andCallFake(function(value) {return value;});
+<span class='line'>218</span>  *
+<span class='line'>219</span>  * // mock example
+<span class='line'>220</span>  * foo.not(7 == 7);
+<span class='line'>221</span>  * expect(foo.not).toHaveBeenCalled();
+<span class='line'>222</span>  * expect(foo.not).toHaveBeenCalledWith(true);
+<span class='line'>223</span>  *
+<span class='line'>224</span>  * @constructor
+<span class='line'>225</span>  * @see spyOn, jasmine.createSpy, jasmine.createSpyObj
+<span class='line'>226</span>  * @param {String} name
+<span class='line'>227</span>  */</span><span class="WHIT">
+<span class='line'>228</span> </span><span class="NAME">jasmine.Spy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>229</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>230</span>    * The name of the spy, if provided.
+<span class='line'>231</span>    */</span><span class="WHIT">
+<span class='line'>232</span> </span><span class="WHIT">  </span><span class="NAME">this.identity</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">name</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="STRN">'unknown'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>233</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>234</span>    *  Is this Object a spy?
+<span class='line'>235</span>    */</span><span class="WHIT">
+<span class='line'>236</span> </span><span class="WHIT">  </span><span class="NAME">this.isSpy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>237</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>238</span>    * The actual function this spy stubs.
+<span class='line'>239</span>    */</span><span class="WHIT">
+<span class='line'>240</span> </span><span class="WHIT">  </span><span class="NAME">this.plan</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>241</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>242</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>243</span>    * Tracking of the most recent call to the spy.
+<span class='line'>244</span>    * @example
+<span class='line'>245</span>    * var mySpy = jasmine.createSpy('foo');
+<span class='line'>246</span>    * mySpy(1, 2);
+<span class='line'>247</span>    * mySpy.mostRecentCall.args = [1, 2];
+<span class='line'>248</span>    */</span><span class="WHIT">
+<span class='line'>249</span> </span><span class="WHIT">  </span><span class="NAME">this.mostRecentCall</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>250</span> 
+<span class='line'>251</span> </span><span class="WHIT">  </span><span class="COMM">/**
+<span class='line'>252</span>    * Holds arguments for each call to the spy, indexed by call count
+<span class='line'>253</span>    * @example
+<span class='line'>254</span>    * var mySpy = jasmine.createSpy('foo');
+<span class='line'>255</span>    * mySpy(1, 2);
+<span class='line'>256</span>    * mySpy(7, 8);
+<span class='line'>257</span>    * mySpy.mostRecentCall.args = [7, 8];
+<span class='line'>258</span>    * mySpy.argsForCall[0] = [1, 2];
+<span class='line'>259</span>    * mySpy.argsForCall[1] = [7, 8];
+<span class='line'>260</span>    */</span><span class="WHIT">
+<span class='line'>261</span> </span><span class="WHIT">  </span><span class="NAME">this.argsForCall</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>262</span> </span><span class="WHIT">  </span><span class="NAME">this.calls</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>263</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>264</span> 
+<span class='line'>265</span> </span><span class="COMM">/**
+<span class='line'>266</span>  * Tells a spy to call through to the actual implemenatation.
+<span class='line'>267</span>  *
+<span class='line'>268</span>  * @example
+<span class='line'>269</span>  * var foo = {
+<span class='line'>270</span>  *   bar: function() { // do some stuff }
+<span class='line'>271</span>  * }
+<span class='line'>272</span>  *
+<span class='line'>273</span>  * // defining a spy on an existing property: foo.bar
+<span class='line'>274</span>  * spyOn(foo, 'bar').andCallThrough();
+<span class='line'>275</span>  */</span><span class="WHIT">
+<span class='line'>276</span> </span><span class="NAME">jasmine.Spy.prototype.andCallThrough</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>277</span> </span><span class="WHIT">  </span><span class="NAME">this.plan</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.originalValue</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>278</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>279</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>280</span> 
+<span class='line'>281</span> </span><span class="COMM">/**
+<span class='line'>282</span>  * For setting the return value of a spy.
+<span class='line'>283</span>  *
+<span class='line'>284</span>  * @example
+<span class='line'>285</span>  * // defining a spy from scratch: foo() returns 'baz'
+<span class='line'>286</span>  * var foo = jasmine.createSpy('spy on foo').andReturn('baz');
+<span class='line'>287</span>  *
+<span class='line'>288</span>  * // defining a spy on an existing property: foo.bar() returns 'baz'
+<span class='line'>289</span>  * spyOn(foo, 'bar').andReturn('baz');
+<span class='line'>290</span>  *
+<span class='line'>291</span>  * @param {Object} value
+<span class='line'>292</span>  */</span><span class="WHIT">
+<span class='line'>293</span> </span><span class="NAME">jasmine.Spy.prototype.andReturn</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">value</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>294</span> </span><span class="WHIT">  </span><span class="NAME">this.plan</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>295</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">value</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>296</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>297</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>298</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>299</span> 
+<span class='line'>300</span> </span><span class="COMM">/**
+<span class='line'>301</span>  * For throwing an exception when a spy is called.
+<span class='line'>302</span>  *
+<span class='line'>303</span>  * @example
+<span class='line'>304</span>  * // defining a spy from scratch: foo() throws an exception w/ message 'ouch'
+<span class='line'>305</span>  * var foo = jasmine.createSpy('spy on foo').andThrow('baz');
+<span class='line'>306</span>  *
+<span class='line'>307</span>  * // defining a spy on an existing property: foo.bar() throws an exception w/ message 'ouch'
+<span class='line'>308</span>  * spyOn(foo, 'bar').andThrow('baz');
+<span class='line'>309</span>  *
+<span class='line'>310</span>  * @param {String} exceptionMsg
+<span class='line'>311</span>  */</span><span class="WHIT">
+<span class='line'>312</span> </span><span class="NAME">jasmine.Spy.prototype.andThrow</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">exceptionMsg</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>313</span> </span><span class="WHIT">  </span><span class="NAME">this.plan</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>314</span> </span><span class="WHIT">    </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="NAME">exceptionMsg</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>315</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>316</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>317</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>318</span> 
+<span class='line'>319</span> </span><span class="COMM">/**
+<span class='line'>320</span>  * Calls an alternate implementation when a spy is called.
+<span class='line'>321</span>  *
+<span class='line'>322</span>  * @example
+<span class='line'>323</span>  * var baz = function() {
+<span class='line'>324</span>  *   // do some stuff, return something
+<span class='line'>325</span>  * }
+<span class='line'>326</span>  * // defining a spy from scratch: foo() calls the function baz
+<span class='line'>327</span>  * var foo = jasmine.createSpy('spy on foo').andCall(baz);
+<span class='line'>328</span>  *
+<span class='line'>329</span>  * // defining a spy on an existing property: foo.bar() calls an anonymnous function
+<span class='line'>330</span>  * spyOn(foo, 'bar').andCall(function() { return 'baz';} );
+<span class='line'>331</span>  *
+<span class='line'>332</span>  * @param {Function} fakeFunc
+<span class='line'>333</span>  */</span><span class="WHIT">
+<span class='line'>334</span> </span><span class="NAME">jasmine.Spy.prototype.andCallFake</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">fakeFunc</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>335</span> </span><span class="WHIT">  </span><span class="NAME">this.plan</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">fakeFunc</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>336</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>337</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>338</span> 
+<span class='line'>339</span> </span><span class="COMM">/**
+<span class='line'>340</span>  * Resets all of a spy's the tracking variables so that it can be used again.
+<span class='line'>341</span>  *
+<span class='line'>342</span>  * @example
+<span class='line'>343</span>  * spyOn(foo, 'bar');
+<span class='line'>344</span>  *
+<span class='line'>345</span>  * foo.bar();
+<span class='line'>346</span>  *
+<span class='line'>347</span>  * expect(foo.bar.callCount).toEqual(1);
+<span class='line'>348</span>  *
+<span class='line'>349</span>  * foo.bar.reset();
+<span class='line'>350</span>  *
+<span class='line'>351</span>  * expect(foo.bar.callCount).toEqual(0);
+<span class='line'>352</span>  */</span><span class="WHIT">
+<span class='line'>353</span> </span><span class="NAME">jasmine.Spy.prototype.reset</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>354</span> </span><span class="WHIT">  </span><span class="NAME">this.wasCalled</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>355</span> </span><span class="WHIT">  </span><span class="NAME">this.callCount</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>356</span> </span><span class="WHIT">  </span><span class="NAME">this.argsForCall</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>357</span> </span><span class="WHIT">  </span><span class="NAME">this.calls</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>358</span> </span><span class="WHIT">  </span><span class="NAME">this.mostRecentCall</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>359</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>360</span> 
+<span class='line'>361</span> </span><span class="NAME">jasmine.createSpy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>362</span> 
+<span class='line'>363</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spyObj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>364</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.wasCalled</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>365</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.callCount</span><span class="PUNC">++</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>366</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">args</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jasmine.util.argsToArray</span><span class="PUNC">(</span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>367</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.mostRecentCall.object</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>368</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.mostRecentCall.args</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>369</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.argsForCall.push</span><span class="PUNC">(</span><span class="NAME">args</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>370</span> </span><span class="WHIT">    </span><span class="NAME">spyObj.calls.push</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="NAME">object</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">args</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>371</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">spyObj.plan.apply</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>372</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>373</span> 
+<span class='line'>374</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">jasmine.Spy</span><span class="PUNC">(</span><span class="NAME">name</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>375</span> 
+<span class='line'>376</span> </span><span class="WHIT">  </span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">prop</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">spy</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>377</span> </span><span class="WHIT">    </span><span class="NAME">spyObj</span><span class="PUNC">[</span><span class="NAME">prop</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">spy</span><span class="PUNC">[</span><span class="NAME">prop</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>378</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>379</span> 
+<span class='line'>380</span> </span><span class="WHIT">  </span><span class="NAME">spyObj.reset</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>381</span> 
+<span class='line'>382</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">spyObj</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>383</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>384</span> 
+<span class='line'>385</span> </span><span class="COMM">/**
+<span class='line'>386</span>  * Determines whether an object is a spy.
+<span class='line'>387</span>  *
+<span class='line'>388</span>  * @param {jasmine.Spy|Object} putativeSpy
+<span class='line'>389</span>  * @returns {Boolean}
+<span class='line'>390</span>  */</span><span class="WHIT">
+<span class='line'>391</span> </span><span class="NAME">jasmine.isSpy</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">putativeSpy</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>392</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">putativeSpy</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">putativeSpy.isSpy</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>393</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>394</span> 
+<span class='line'>395</span> </span><span class="COMM">/**
+<span class='line'>396</span>  * Creates a more complicated spy: an Object that has every property a function that is a spy.  Used for stubbing something
+<span class='line'>397</span>  * large in one call.
+<span class='line'>398</span>  *
+<span class='line'>399</span>  * @param {String} baseName name of spy class
+<span class='line'>400</span>  * @param {Array} methodNames array of names of methods to make spies
+<span class='line'>401</span>  */</span><span class="WHIT">
+<span class='line'>402</span> </span><span class="NAME">jasmine.createSpyObj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">baseName</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">methodNames</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>403</span> </span><span class="WHIT">  </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">jasmine.isArray_</span><span class="PUNC">(</span><span class="NAME">methodNames</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">methodNames.length</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>404</span> </span><span class="WHIT">    </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">'createSpyObj requires a non-empty array of method names to create spies for'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>405</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>406</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">obj</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>407</span> </span><span class="WHIT">  </span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="PUNC">&lt;</span><span class="WHIT"> </span><span class="NAME">methodNames.length</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">i</span><span class="PUNC">++</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>408</span> </span><span class="WHIT">    </span><span class="NAME">obj</span><span class="PUNC">[</span><span class="NAME">methodNames</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jasmine.createSpy</span><span class="PUNC">(</span><span class="NAME">baseName</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">'.'</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">methodNames</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>409</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>410</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">obj</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>411</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>412</span> 
+<span class='line'>413</span> </span><span class="COMM">/**
+<span class='line'>414</span>  * All parameters are pretty-printed and concatenated together, then written to the current spec's output.
+<span class='line'>415</span>  *
+<span class='line'>416</span>  * Be careful not to leave calls to &lt;code>jasmine.log&lt;/code> in production code.
+<span class='line'>417</span>  */</span><span class="WHIT">
+<span class='line'>418</span> </span><span class="NAME">jasmine.log</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>419</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spec</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>420</span> </span><span class="WHIT">  </span><span class="NAME">spec.log.apply</span><span class="PUNC">(</span><span class="NAME">spec</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>421</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>422</span> 
+<span class='line'>423</span> </span><span class="COMM">/**
+<span class='line'>424</span>  * Function that installs a spy on an existing object's method name.  Used within a Spec to create a spy.
+<span class='line'>425</span>  *
+<span class='line'>426</span>  * @example
+<span class='line'>427</span>  * // spy example
+<span class='line'>428</span>  * var foo = {
+<span class='line'>429</span>  *   not: function(bool) { return !bool; }
+<span class='line'>430</span>  * }
+<span class='line'>431</span>  * spyOn(foo, 'not'); // actual foo.not will not be called, execution stops
+<span class='line'>432</span>  *
+<span class='line'>433</span>  * @see jasmine.createSpy
+<span class='line'>434</span>  * @param obj
+<span class='line'>435</span>  * @param methodName
+<span class='line'>436</span>  * @returns a Jasmine spy that can be chained with all spy methods
+<span class='line'>437</span>  */</span><span class="WHIT">
+<span class='line'>438</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spyOn</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">obj</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">methodName</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>439</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.spyOn</span><span class="PUNC">(</span><span class="NAME">obj</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">methodName</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>440</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>441</span> 
+<span class='line'>442</span> </span><span class="COMM">/**
+<span class='line'>443</span>  * Creates a Jasmine spec that will be added to the current suite.
+<span class='line'>444</span>  *
+<span class='line'>445</span>  * // TODO: pending tests
+<span class='line'>446</span>  *
+<span class='line'>447</span>  * @example
+<span class='line'>448</span>  * it('should be true', function() {
+<span class='line'>449</span>  *   expect(true).toEqual(true);
+<span class='line'>450</span>  * });
+<span class='line'>451</span>  *
+<span class='line'>452</span>  * @param {String} desc description of this specification
+<span class='line'>453</span>  * @param {Function} func defines the preconditions and expectations of the spec
+<span class='line'>454</span>  */</span><span class="WHIT">
+<span class='line'>455</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">it</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>456</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">it</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>457</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>458</span> 
+<span class='line'>459</span> </span><span class="COMM">/**
+<span class='line'>460</span>  * Creates a &lt;em>disabled&lt;/em> Jasmine spec.
+<span class='line'>461</span>  *
+<span class='line'>462</span>  * A convenience method that allows existing specs to be disabled temporarily during development.
+<span class='line'>463</span>  *
+<span class='line'>464</span>  * @param {String} desc description of this specification
+<span class='line'>465</span>  * @param {Function} func defines the preconditions and expectations of the spec
+<span class='line'>466</span>  */</span><span class="WHIT">
+<span class='line'>467</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">xit</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>468</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">xit</span><span class="PUNC">(</span><span class="NAME">desc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>469</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>470</span> 
+<span class='line'>471</span> </span><span class="COMM">/**
+<span class='line'>472</span>  * Starts a chain for a Jasmine expectation.
+<span class='line'>473</span>  *
+<span class='line'>474</span>  * It is passed an Object that is the actual value and should chain to one of the many
+<span class='line'>475</span>  * jasmine.Matchers functions.
+<span class='line'>476</span>  *
+<span class='line'>477</span>  * @param {Object} actual Actual value to test against and expected value
+<span class='line'>478</span>  */</span><span class="WHIT">
+<span class='line'>479</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">expect</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">actual</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>480</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.expect</span><span class="PUNC">(</span><span class="NAME">actual</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>481</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>482</span> 
+<span class='line'>483</span> </span><span class="COMM">/**
+<span class='line'>484</span>  * Defines part of a jasmine spec.  Used in cominbination with waits or waitsFor in asynchrnous specs.
+<span class='line'>485</span>  *
+<span class='line'>486</span>  * @param {Function} func Function that defines part of a jasmine spec.
+<span class='line'>487</span>  */</span><span class="WHIT">
+<span class='line'>488</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">runs</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>489</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.runs</span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>490</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>491</span> 
+<span class='line'>492</span> </span><span class="COMM">/**
+<span class='line'>493</span>  * Waits for a timeout before moving to the next runs()-defined block.
+<span class='line'>494</span>  * @param {Number} timeout
+<span class='line'>495</span>  */</span><span class="WHIT">
+<span class='line'>496</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">waits</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>497</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.waits</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>498</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>499</span> 
+<span class='line'>500</span> </span><span class="COMM">/**
+<span class='line'>501</span>  * Waits for the latchFunction to return true before proceeding to the next runs()-defined block.
+<span class='line'>502</span>  *
+<span class='line'>503</span>  * @param {Number} timeout
+<span class='line'>504</span>  * @param {Function} latchFunction
+<span class='line'>505</span>  * @param {String} message
+<span class='line'>506</span>  */</span><span class="WHIT">
+<span class='line'>507</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">waitsFor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">latchFunction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">message</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>508</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">currentSpec.waitsFor</span><span class="PUNC">(</span><span class="NAME">timeout</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">latchFunction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">message</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>509</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>510</span> 
+<span class='line'>511</span> </span><span class="COMM">/**
+<span class='line'>512</span>  * A function that is called before each spec in a suite.
+<span class='line'>513</span>  *
+<span class='line'>514</span>  * Used for spec setup, including validating assumptions.
+<span class='line'>515</span>  *
+<span class='line'>516</span>  * @param {Function} beforeEachFunction
+<span class='line'>517</span>  */</span><span class="WHIT">
+<span class='line'>518</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">beforeEach</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">beforeEachFunction</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>519</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">beforeEach</span><span class="PUNC">(</span><span class="NAME">beforeEachFunction</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>520</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>521</span> 
+<span class='line'>522</span> </span><span class="COMM">/**
+<span class='line'>523</span>  * A function that is called after each spec in a suite.
+<span class='line'>524</span>  *
+<span class='line'>525</span>  * Used for restoring any state that is hijacked during spec execution.
+<span class='line'>526</span>  *
+<span class='line'>527</span>  * @param {Function} afterEachFunction
+<span class='line'>528</span>  */</span><span class="WHIT">
+<span class='line'>529</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">afterEach</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">afterEachFunction</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>530</span> </span><span class="WHIT">  </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">afterEach</span><span class="PUNC">(</span><span class="NAME">afterEachFunction</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>531</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>532</span> 
+<span class='line'>533</span> </span><span class="COMM">/**
+<span class='line'>534</span>  * Defines a suite of specifications.
+<span class='line'>535</span>  *
+<span class='line'>536</span>  * Stores the description and all defined specs in the Jasmine environment as one suite of specs. Variables declared
+<span class='line'>537</span>  * are accessible by calls to beforeEach, it, and afterEach. Describe blocks can be nested, allowing for specialization
+<span class='line'>538</span>  * of setup in some tests.
+<span class='line'>539</span>  *
+<span class='line'>540</span>  * @example
+<span class='line'>541</span>  * // TODO: a simple suite
+<span class='line'>542</span>  *
+<span class='line'>543</span>  * // TODO: a simple suite with a nested describe block
+<span class='line'>544</span>  *
+<span class='line'>545</span>  * @param {String} description A string, usually the class under test.
+<span class='line'>546</span>  * @param {Function} specDefinitions function that defines several specs.
+<span class='line'>547</span>  */</span><span class="WHIT">
+<span class='line'>548</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">describe</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>549</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">describe</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>550</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>551</span> 
+<span class='line'>552</span> </span><span class="COMM">/**
+<span class='line'>553</span>  * Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
+<span class='line'>554</span>  *
+<span class='line'>555</span>  * @param {String} description A string, usually the class under test.
+<span class='line'>556</span>  * @param {Function} specDefinitions function that defines several specs.
+<span class='line'>557</span>  */</span><span class="WHIT">
+<span class='line'>558</span> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">xdescribe</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>559</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">jasmine.getEnv</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">xdescribe</span><span class="PUNC">(</span><span class="NAME">description</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">specDefinitions</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>560</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>561</span> 
-<span class='line'>562</span> </span><span class="COMM">// Provide the XMLHttpRequest class for IE 5.x-6.x:</span><span class="WHIT">
-<span class='line'>563</span> </span><span class="NAME">jasmine.XmlHttpRequest</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">XMLHttpRequest</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>564</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>565</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP.6.0"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>566</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>567</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>568</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>569</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP.3.0"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>570</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>571</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>572</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>573</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>574</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>575</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>576</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>577</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Microsoft.XMLHTTP"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>578</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>579</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>580</span> </span><span class="WHIT">  </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">"This browser does not support XMLHttpRequest."</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>581</span> </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">XMLHttpRequest</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>582</span> </span></pre></body></html>
+<span class='line'>562</span> 
+<span class='line'>563</span> </span><span class="COMM">// Provide the XMLHttpRequest class for IE 5.x-6.x:</span><span class="WHIT">
+<span class='line'>564</span> </span><span class="NAME">jasmine.XmlHttpRequest</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">XMLHttpRequest</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">?</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>565</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>566</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP.6.0"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>567</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>568</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>569</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>570</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP.3.0"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>571</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>572</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>573</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>574</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Msxml2.XMLHTTP"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>575</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>576</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>577</span> </span><span class="WHIT">  </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>578</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ActiveXObject</span><span class="PUNC">(</span><span class="STRN">"Microsoft.XMLHTTP"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>579</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>580</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>581</span> </span><span class="WHIT">  </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">"This browser does not support XMLHttpRequest."</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>582</span> </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">XMLHttpRequest</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>583</span> </span></pre></body></html>
