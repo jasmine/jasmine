@@ -2,16 +2,21 @@ require File.expand_path(File.join(File.dirname(__FILE__), "spec/jasmine_helper.
 
 def jasmine_sources
   sources  = ["src/base.js", "src/util.js", "src/Env.js", "src/Reporter.js", "src/Block.js"]
-  sources += Dir.glob('src/*.js').reject{|f| f == 'src/base.js' || sources.include?(f)}.sort
+  sources += Dir.glob('src/*.js').reject { |f| f == 'src/base.js' || sources.include?(f) }.sort
   sources
 end
 
-def jasmine_filename(version)
-  "jasmine-#{version['major']}.#{version['minor']}.#{version['build']}.js"
+def jasmine_filename
+  "jasmine-#{jasmine_version}.js"
+end
+
+def jasmine_version
+  "#{version_hash['major']}.#{version_hash['minor']}.#{version_hash['build']}"
 end
 
 def version_hash
-  JSON.parse(File.new("src/version.json").read);
+  require 'json'
+  @version ||= JSON.parse(File.new("src/version.json").read);
 end
 
 def start_jasmine_server(jasmine_includes = nil)
@@ -21,18 +26,24 @@ def start_jasmine_server(jasmine_includes = nil)
   puts "  http://localhost:8888/run.html"
 
   Jasmine::SimpleServer.start(
-    8888,
-    lambda { JasmineHelper.specs },
-    JasmineHelper.dir_mappings,
-    :jasmine_files => jasmine_includes)
+      8888,
+      lambda { JasmineHelper.specs },
+      JasmineHelper.dir_mappings,
+      :jasmine_files => jasmine_includes)
 end
 
 task :default => 'jasmine:dist'
 
+def substitute_jasmine_version(filename)
+  contents = File.read(filename)
+  contents = contents.gsub(/##JASMINE_VERSION##/, (jasmine_version))
+  File.open(filename, 'w') { |f| f.write(contents) }
+end
+
 namespace :jasmine do
 
   desc 'Prepares for distribution'
-  task :dist => ['jasmine:build', 'jasmine:doc']
+  task :dist => ['jasmine:build', 'jasmine:doc', 'jasmine:build_example_project']
 
   desc 'Check jasmine sources for coding problems'
   task :lint do
@@ -63,7 +74,6 @@ namespace :jasmine do
   desc 'Builds lib/jasmine from source'
   task :build => :lint do
     puts 'Building Jasmine from source'
-    require 'json'
 
     sources = jasmine_sources
     version = version_hash
@@ -106,12 +116,41 @@ jasmine.version_= {
     Rake::Task[:lambda_jsdoc].invoke
   end
 
+  desc "Build example project"
+  task :build_example_project do
+    require 'tmpdir'
+
+    temp_dir = File.join(Dir.tmpdir, 'jasmine-standalone-project')
+    puts "Building Example Project in #{temp_dir}"
+    FileUtils.rm_r temp_dir if File.exists?(temp_dir)
+    Dir.mkdir(temp_dir)
+
+    root = JasmineHelper.jasmine_root
+    FileUtils.cp_r File.join(root, 'example/.'), File.join(temp_dir)
+    substitute_jasmine_version(File.join(temp_dir, "SpecRunner.html"))
+
+    lib_dir = File.join(temp_dir, "lib/jasmine-#{jasmine_version}")
+    FileUtils.mkdir_p(lib_dir)
+    [
+        "jasmine.js",
+        "TrivialReporter.js",
+        "jasmine.css"
+    ].each do |f|
+      FileUtils.cp(File.join(root, 'lib', f), File.join(lib_dir, f))
+    end
+
+    dist = File.join(root, 'dist')
+    FileUtils.rm_r dist if File.exists?(dist)
+    Dir.mkdir(dist)
+    exec "cd #{temp_dir} && zip -r #{File.join(dist, "jasmine-standalone-#{jasmine_version}.zip")} ."
+  end
+
 
   task :server do
     files = jasmine_sources + ['lib/TrivialReporter.js', 'lib/consolex.js']
     jasmine_includes = lambda {
       raw_jasmine_includes = files.collect { |f| File.expand_path(File.join(JasmineHelper.jasmine_root, f)) }
-      Jasmine.cachebust(raw_jasmine_includes).collect {|f| f.sub(JasmineHelper.jasmine_src_dir, "/src").sub(JasmineHelper.jasmine_lib_dir, "/lib") }
+      Jasmine.cachebust(raw_jasmine_includes).collect { |f| f.sub(JasmineHelper.jasmine_src_dir, "/src").sub(JasmineHelper.jasmine_lib_dir, "/lib") }
     }
     start_jasmine_server(jasmine_includes)
   end
