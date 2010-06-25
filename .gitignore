@@ -1,3 +1,4 @@
 .idea/
 .svn/
 lib/jasmine-*.js
+dist/

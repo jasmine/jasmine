@@ -147,10 +147,12 @@ jasmine.version_= {
       FileUtils.cp(File.join(root, src), File.join(lib_dir, dest))
     end
 
-    dist = File.join(root, 'dist')
-    FileUtils.rm_r dist if File.exists?(dist)
-    Dir.mkdir(dist)
-    exec "cd #{temp_dir} && zip -r #{File.join(dist, "jasmine-standalone-#{jasmine_version}.zip")} ."
+    dist_dir = File.join(root, 'dist')
+    zip_file_name = File.join(dist_dir, "jasmine-standalone-#{jasmine_version}.zip")
+    puts "Zipping Example Project and moving to #{zip_file_name}"
+    FileUtils.rm_r dist_dir if File.exists?(dist_dir)
+    Dir.mkdir(dist_dir)
+    exec "cd #{temp_dir} && zip -r #{zip_file_name} . -x .[a-zA-Z0-9]*"
   end
 
 
