@@ -28,7 +28,7 @@ end
 namespace :jasmine do
 
   desc 'Prepares for distribution'
-  task :dist => ['jasmine:build', 'jasmine:doc', 'jasmine:build_example_project']
+  task :dist => ['jasmine:build', 'jasmine:doc', 'jasmine:build_example_project', 'jasmine:fill_index_downloads']
 
   desc 'Check jasmine sources for coding problems'
   task :lint do
@@ -90,23 +90,31 @@ jasmine.version_= {
     FileUtils.cp("src/html/jasmine.css", "lib/jasmine.css")
   end
 
+  task :need_pages_submodule do
+    unless File.exists?('pages/index.html')
+      raise "Jasmine pages submodule isn't present.  Run git submodule update --init"
+    end
+  end
+
   desc "Build jasmine documentation"
-  task :doc do
+  task :doc => :need_pages_submodule do
     puts 'Creating Jasmine Documentation'
     require 'rubygems'
     #sudo gem install ragaskar-jsdoc_helper
     require 'jsdoc_helper'
 
+    FileUtils.rm_r "pages/jsdoc", :force => true
 
     JsdocHelper::Rake::Task.new(:lambda_jsdoc) do |t|
       t[:files] = jasmine_sources << jasmine_html_sources
       t[:options] = "-a"
+      t[:out] = "pages/jsdoc"
     end
     Rake::Task[:lambda_jsdoc].invoke
   end
 
   desc "Build example project"
-  task :build_example_project do
+  task :build_example_project => :need_pages_submodule do
     require 'tmpdir'
 
     temp_dir = File.join(Dir.tmpdir, 'jasmine-standalone-project')
@@ -128,12 +136,40 @@ jasmine.version_= {
       FileUtils.cp(File.join(root, src), File.join(lib_dir, dest))
     end
 
-    dist_dir = File.join(root, 'dist')
+    dist_dir = File.join(root, 'pages/downloads')
     zip_file_name = File.join(dist_dir, "jasmine-standalone-#{jasmine_version}.zip")
     puts "Zipping Example Project and moving to #{zip_file_name}"
-    FileUtils.rm_r dist_dir if File.exists?(dist_dir)
-    Dir.mkdir(dist_dir)
+    FileUtils.mkdir(dist_dir) unless File.exist?(dist_dir)
+    if File.exist?(zip_file_name)
+      puts "WARNING!!! #{zip_file_name} already exists!"
+      FileUtils.rm(zip_file_name)
+    end
     exec "cd #{temp_dir} && zip -r #{zip_file_name} . -x .[a-zA-Z0-9]*"
+  end
+
+  task :fill_index_downloads do
+    require 'digest/sha1'
+
+    download_html = "<!-- START_DOWNLOADS -->\n"
+    download_html += "<table>\n<tr><th/><th>Version</th><th>Size</th><th>Date</th><th>SHA1</th></tr>\n"
+    Dir.glob('pages/downloads/*.zip').sort.reverse.each do |f|
+      sha1 = Digest::SHA1.hexdigest File.read(f)
+
+      fn = f.sub(/^pages\//, '')
+      version = /jasmine-standalone-(.*).zip/.match(f)[1]
+      download_html += "<td><a href='#{fn}'>#{fn.sub(/downloads\//, '')}</a></td>"
+      download_html += "<td>#{version}</td>\n"
+      download_html += "<td>#{File.size(f) / 1024}k</td>\n"
+      download_html += "<td>#{File.mtime(f).strftime("%Y/%m/%d %H:%M:%S")}</td>\n"
+      download_html += "<td>#{sha1}</td>\n"
+    end
+    download_html += "</table>\n<!-- END_DOWNLOADS -->"
+
+    index_page = File.read('pages/index.html')
+    matcher = /<!-- START_DOWNLOADS -->.*<!-- END_DOWNLOADS -->/m
+    index_page = index_page.sub(matcher, download_html)
+    File.open('pages/index.html', 'w') {|f| f.write(index_page)}
+    puts "rewrote that file"
   end
 end
 

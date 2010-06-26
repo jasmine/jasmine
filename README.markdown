@@ -1,4 +1,4 @@
-Jasmine
+[Jasmine](http://pivotal.github.com/jasmine)
 =======
 **A JavaScript Testing Framework**
 
@@ -479,4 +479,4 @@ We welcome your contributions! Jasmine is currently maintained by Davis Frank ([
 ## Acknowledgments
 * A big shout out to the various JavaScript test framework authors, especially TJ for [JSpec](http://github.com/visionmedia/jspec/tree/master) - we played with it a bit before deciding that we really needed to roll our own.
 * Thanks to Pivot [Jessica Miller](http://www.jessicamillerworks.com/) for our fancy pass/fail/pending icons
-* Huge contributions have been made by [Erik Hanson](mailto:erik@pivotallabs.com), [Adam Abrons](mailto:adam@pivotallabs.com) and [Carl Jackson](mailto:carl@pivotallabs.com), and many other Pivots.
+* Huge contributions have been made by [Adam Abrons](mailto:adam@pivotallabs.com), [Lee Byrd](mailto:lee@pivotallabs.com), [Erik Hanson](mailto:erik@pivotallabs.com), and [Carl Jackson](mailto:carl@pivotallabs.com), and many other Pivots.
