@@ -1,78 +1,106 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-	<title>pivotal/jasmine @ GitHub</title>
-	
-	<style type="text/css">
-		body {
-  		margin-top: 1.0em;
-  		background-color: #ffffff;
-		  font-family: "Helvetica,Arial,FreeSans";
-  		color: #000000;
+  <title>pivotal/jasmine @ GitHub</title>
+
+  <style type="text/css">
+    body {
+      margin-top: 1.0em;
+      background-color: #ffffff;
+      font-family: "Helvetica,Arial,FreeSans";
+      color: #000000;
     }
     #container {
       margin: 0 auto;
-      width: 700px;
+      width: 800px;
     }
-		h1 { font-size: 3.8em; color: #000000; margin-bottom: 3px; }
-		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #000000; }
+    h1 { font-size: 3.8em; color: #000000; margin-bottom: 3px; }
+    h1 .small { font-size: 0.4em; }
+    h1 a { text-decoration: none }
+    h2 { font-size: 1.5em; color: #000000; }
     h3 { text-align: center; color: #000000; }
     a { color: #000000; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+    .description { font-size: 1.2em; margin-top: 50px; font-style: italic; float: right; text-align: right; }
     .download { float: right; }
-		pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    pre { background: #eff3e3; border: 3px solid black; color: #000; padding: 15px;}
+    hr { border: 15px solid #7ac142 }
     .footer { text-align:center; padding-top:30px; font-style: italic; }
-	</style>
-	
+    table { border-collapse: collapse; width: 100% }
+    table th, table td { border: 1px solid #aaa; padding: .2em; }
+    table td { white-space:nowrap; }
+  </style>
+
 </head>
 
 <body>
-  <a href="http://github.com/pivotal/jasmine"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+<a href="http://github.com/pivotal/jasmine"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
-  <div id="container">
+<div id="container">
 
-    <div class="download">
-      <a href="http://github.com/pivotal/jasmine/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/pivotal/jasmine/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
-
-    <h1><a href="http://github.com/pivotal/jasmine">jasmine</a>
-      <span class="small">by <a href="http://github.com/pivotal">pivotal</a></span></h1>
-
-    <div class="description">
-      DOM-less simple JavaScript testing framework
-    </div>
-
-    <h2>Authors</h2>
-<p>Rajan Agaskar<br/>Davis W. Frank<br/>Christian Williams</p>
-
-
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/pivotal/jasmine/zipball/master">zip</a> or
-      <a href="http://github.com/pivotal/jasmine/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/pivotal/jasmine</pre>
-    </p>
-
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/pivotal/jasmine">pivotal/jasmine</a>
-    </div>
-
+  <div class="description">
+    Simple DOM-less
+    <br/>JavaScript testing framework
   </div>
 
-  
+  <h1><a href="http://github.com/pivotal/jasmine"><img src="images/jasmine_logo.png" alt="Jasmine"/></a></h1>
+
+  <hr/>
+
+  <pre>
+describe("Jasmine", function() {
+  it("makes testing JavaScript awesome!", function() {
+    expect(yourCode).toBeLotsBetter();
+  });
+});</pre>
+
+  <h2>Documentation</h2>
+  <p>
+    <a href="jsdoc/index.html">JSDoc</a>
+    <br/><a href="http://github.com/pivotal/jasmine">README</a>
+  </p>
+
+  <h2>Download</h2>
+  <p>
+  <!-- START_DOWNLOADS -->
+<table>
+<tr><th/><th>Version</th><th>Size</th><th>Date</th><th>SHA1</th></tr>
+<td><a href='downloads/jasmine-standalone-0.11.0.zip'>jasmine-standalone-0.11.0.zip</a></td><td>0.11.0</td>
+<td>18k</td>
+<td>2010/06/25 16:05:30</td>
+<td>584357ae89baa56e60937ff4b6027bd48c8d3a54</td>
+</table>
+<!-- END_DOWNLOADS -->
+  </p>
+  <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+    by running:
+  <pre>$ git clone git://github.com/pivotal/jasmine</pre>
+  </p>
+
+  <h2>Support</h2>
+  <p>
+    Discussion: <a href="http://groups.google.com/group/jasmine-js">http://groups.google.com/group/jasmine-js</a>
+    <br/>Group email: <a href="mailto:jasmine-js@googlegroups.com">jasmine-js@googlegroups.com</a>
+    <br/>Current build status of Jasmine is visible at <a href="http://ci.pivotallabs.com/">ci.pivotallabs.com</a>
+    <br/>Pivotal Tracker project: <a href="http://www.pivotaltracker.com/projects/10606">http://www.pivotaltracker.com/projects/10606</a>
+    <br/>Twitter: <a href="http://twitter.com/JasmineBDD">@JasmineBDD</a>
+  </p>
+
+  <p>
+    <span class="small">Powered by &nbsp; <a href="http://pivotallabs.com/"><img src="images/pivotal_logo.gif" alt="Pivotal Labs" style="vertical-align: middle;"></a></span>
+  </p>
+
+  <hr/>
+
+  <div class="footer">
+    get the source code on GitHub : <a href="http://github.com/pivotal/jasmine">pivotal/jasmine</a>
+  </div>
+
+</div>
+
+
 </body>
 </html>
