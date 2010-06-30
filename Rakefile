@@ -157,11 +157,11 @@ jasmine.version_= {
 
       fn = f.sub(/^pages\//, '')
       version = /jasmine-standalone-(.*).zip/.match(f)[1]
-      download_html += "<td><a href='#{fn}'>#{fn.sub(/downloads\//, '')}</a></td>"
-      download_html += "<td>#{version}</td>\n"
-      download_html += "<td>#{File.size(f) / 1024}k</td>\n"
-      download_html += "<td>#{File.mtime(f).strftime("%Y/%m/%d %H:%M:%S")}</td>\n"
-      download_html += "<td>#{sha1}</td>\n"
+      download_html += "<td class=\"link\"><a href='#{fn}'>#{fn.sub(/downloads\//, '')}</a></td>\n"
+      download_html += "<td class=\"version\">#{version}</td>\n"
+      download_html += "<td class=\"size\">#{File.size(f) / 1024}k</td>\n"
+      download_html += "<td class=\"date\">#{File.mtime(f).strftime("%Y/%m/%d %H:%M:%S %Z")}</td>\n"
+      download_html += "<td class=\"sha\">#{sha1}</td>\n"
     end
     download_html += "</table>\n<!-- END_DOWNLOADS -->"
 
