@@ -5,7 +5,7 @@
 Quick Start
 ----------
 
-1. Get the latest release from the [downloads page](http://github.com/pivotal/jasmine/downloads).
+1. Get the latest release from the [downloads page](http://pivotal.github.com/jasmine/).
 2. Open `SpecRunner.html` in your favorite browser.
 
 For running within a Ruby environment, including automated execution with Selenium, please use
