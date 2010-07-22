@@ -296,7 +296,7 @@ Here are a few examples:
     });
 
     it('should spy on Klass#methodWithCallback') {
-      var callback = Jasmine.createSpy();
+      var callback = jasmine.createSpy();
       Klass.methodWithCallback(callback);
 
       expect(callback).toHaveBeenCalledWith('foo');
@@ -316,7 +316,7 @@ Spies can be very useful for testing AJAX or other asynchronous behaviors that t
 
     it('should test async call') {
       spyOn(Klass, 'asyncMethod');
-      var callback = Jasmine.createSpy();
+      var callback = jasmine.createSpy();
 
       Klass.asyncMethod(callback);
       expect(callback).not.toHaveBeenCalled();
