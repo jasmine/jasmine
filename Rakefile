@@ -100,7 +100,6 @@ jasmine.version_= {
   task :doc => :need_pages_submodule do
     puts 'Creating Jasmine Documentation'
     require 'rubygems'
-    #sudo gem install ragaskar-jsdoc_helper
     require 'jsdoc_helper'
 
     FileUtils.rm_r "pages/jsdoc", :force => true
