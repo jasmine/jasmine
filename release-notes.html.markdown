@@ -1,42 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-  <title>pivotal/jasmine @ GitHub</title>
-
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #ffffff;
-      font-family: "Helvetica,Arial,FreeSans";
-      color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 800px;
-    }
-    h1 { font-size: 3.8em; color: #000000; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #000000; }
-    h3 { text-align: center; color: #000000; }
-    a { color: #000000; }
-    .description { font-size: 1.2em; margin-top: 50px; font-style: italic; float: right; text-align: right; }
-    .download { float: right; }
-    pre { background: #eff3e3; border: 3px solid black; color: #000; padding: 15px;}
-    hr { border: 15px solid #7ac142; clear: both; }
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-    table { border-collapse: collapse; width: 100% }
-    table th, table td { border: 1px solid #aaa; padding: .2em; }
-    table td { white-space:nowrap; }
-  </style>
-
-</head>
-
-<body>
+---
+layout: default
+title: Jasmine Javascript Testing Framework
+---
 <h1>Release Notes</h1>
 
 <div class="wikistyle">
@@ -74,5 +39,3 @@
     <li>If you turn on the mock clock, you&#8217;ll get a spurious log message at the end of your spec.</li>
   </ul>
 </div>
-</body>
-</html>

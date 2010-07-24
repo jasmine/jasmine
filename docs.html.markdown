@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Blogging Like a Hacker
+title: Jasmine User Guide
 ---
 =======
 
@@ -16,7 +16,7 @@ Quick Start
 
 ### Which Release Should I Use?
 
-Please use the latest version unless you have a good reason not to. Some of this documentation may not be applicable to older versions. Please see [Release Notes](http://pivotal.github.com/jasmine/release-notes) for change information.
+Please use the latest version unless you have a good reason not to. Some of this documentation may not be applicable to older versions. Please see [Release Notes](release-notes.html) for change information.
 
 Why Another JavaScript TDD/BDD Framework?
 -----------
