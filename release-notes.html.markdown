@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Jasmine Javascript Testing Framework
+title: Jasmine Release Notes
 ---
 <h1>Release Notes</h1>
 

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Jasmine Release Notes
+title: Jasmine User Guide
 ---
 =======
 
@@ -125,7 +125,7 @@ Specs are grouped in Suites.  Suites are defined using the global `describe()` f
       it('has a test', function () {
         ...
       });
-  
+
       it('has another test', function () {
         ...
       });
@@ -137,12 +137,12 @@ Suites are executed in the order in which `describe()` calls are made, usually i
 
     describe('A suite with some variables', function () {
       var bar = 0
-  
+
       it('has a test', function () {
         bar++;
         expect(bar).toEqual(1);
       });
-  
+
       it('has another test', function () {
         bar++;
         expect(bar).toEqual(2);
@@ -245,26 +245,26 @@ A spec may ask Jasmine to execute some code after the spec has finished running;
 Jasmine supports nested describes. An example:
 
     describe('some suite', function () {
-    
+
       var suiteWideFoo;
-    
+
       beforeEach(function () {
         suiteWideFoo = 0;
       });
-    
+
       describe('some nested suite', function() {
         var nestedSuiteBar;
         beforeEach(function() {
           nestedSuiteBar=1;
         });
-    
+
         it('nested expectation', function () {
           expect(suiteWideFoo).toEqual(0);
           expect(nestedSuiteBar).toEqual(1);
         });
-    
+
       });
-    
+
       it('top-level describe', function () {
         expect(suiteWideFoo).toEqual(0);
         expect(nestedSuiteBar).toEqual(undefined);
@@ -443,13 +443,13 @@ timeout before the next block is run. You supply a time to wait before the next 
           that.foo++;
         }, 250);
       });
-    
+
       runs(function () {
         this.expects(this.foo).toEqual(0);
       });
-    
+
       waits(500);
-    
+
       runs(function () {
         this.expects(this.foo).toEqual(1);
       });
