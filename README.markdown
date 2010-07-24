@@ -1,12 +1,12 @@
-<a name="README">[Jasmine](http://pivotal.github.com/jasmine)</a>
+<a name="README">[Jasmine](http://pivotal.github.com/jasmine/)</a>
 =======
 **A JavaScript Testing Framework**
 
-Want to use Jasmine in a project? Go HERE: http://pivotal.github.com/jasmine/
+Want to use Jasmine in a project? Go HERE: [http://pivotal.github.com/jasmine/](http://pivotal.github.com/jasmine/)
 
 Want to contribute to Jasmine? Read on...
 
-(More developer docs to come...)
+<i>(More developer docs to come...)</i>
 
 ## Support
 We now have a Google Group for support & discussion.
