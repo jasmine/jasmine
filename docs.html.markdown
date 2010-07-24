@@ -8,7 +8,7 @@ Quick Start
 ----------
 
 #### For JavaScript-only projects:
-1. Get the latest release from the [downloads page](/index.html).
+1. Get the latest release from the [downloads page](index.html).
 2. Open `SpecRunner.html` in your favorite browser.
 
 #### Other distributions:
