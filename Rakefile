@@ -22,6 +22,7 @@ task :default => 'jasmine:dist'
 def substitute_jasmine_version(filename)
   contents = File.read(filename)
   contents = contents.gsub(/##JASMINE_VERSION##/, (jasmine_version))
+  contents = contents.gsub(/[^\n]*REMOVE_THIS_LINE_FROM_BUILD[^\n]*/, '')
   File.open(filename, 'w') { |f| f.write(contents) }
 end
 
