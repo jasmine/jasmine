@@ -30,7 +30,7 @@ We welcome your contributions! Jasmine is currently maintained by Davis Frank ([
 * Thanks to Pivot [Jessica Miller](http://www.jessicamillerworks.com/) for our logo and fancy pass/fail/pending icons
 * Huge contributions have been made by [Adam Abrons](mailto:adam@pivotallabs.com), [Lee Byrd](mailto:lee@pivotallabs.com), [Erik Hanson](mailto:erik@pivotallabs.com), [Carl Jackson](mailto:carl@pivotallabs.com), and many other Pivots.
 
-Copyright (c) 2010 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2008-2010 Pivotal Labs. This software is licensed under the MIT License.
 
 <script type="text/javascript">
 
