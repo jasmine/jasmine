@@ -457,7 +457,10 @@ describe("jasmine.Matchers", function() {
     var expected = match(function() {
       throw new Error("Fake Error");
     });
+
     expect(expected.toThrow()).toEqual(true);
+    expect(expected.not.toThrow()).toEqual(false);
+
     expect(expected.toThrow("Fake Error")).toEqual(true);
     expect(expected.toThrow(new Error("Fake Error"))).toEqual(true);
 
