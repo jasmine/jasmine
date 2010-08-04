@@ -11,15 +11,21 @@ describe("Custom Matchers", function() {
     var spec1, spec2, spec1Matcher, spec2Matcher;
     var suite = env.describe('some suite', function() {
       env.beforeEach(function() {
-        this.addMatchers({ matcherForSuite: function(expected) {
-          return "matcherForSuite: actual: " + this.actual + "; expected: " + expected;
-        } });
+        this.addMatchers({
+          matcherForSuite: function(expected) {
+            this.message = "matcherForSuite: actual: " + this.actual + "; expected: " + expected;
+            return true;
+          }
+        });
       });
 
       spec1 = env.it('spec with an expectation').runs(function () {
-        this.addMatchers({ matcherForSpec: function(expected) {
-          return "matcherForSpec: actual: " + this.actual + "; expected: " + expected;
-        } });
+        this.addMatchers({
+          matcherForSpec: function(expected) {
+            this.message = "matcherForSpec: actual: " + this.actual + "; expected: " + expected;
+            return true;
+          }
+        });
         spec1Matcher = this.expect("xxx");
       });
 
@@ -30,10 +36,13 @@ describe("Custom Matchers", function() {
 
     suite.execute();
 
-    expect(spec1Matcher.matcherForSuite("expected")).toEqual("matcherForSuite: actual: xxx; expected: expected");
-    expect(spec1Matcher.matcherForSpec("expected")).toEqual("matcherForSpec: actual: xxx; expected: expected");
+    spec1Matcher.matcherForSuite("expected");
+    expect(spec1Matcher.message).toEqual("matcherForSuite: actual: xxx; expected: expected");
+    spec1Matcher.matcherForSpec("expected");
+    expect(spec1Matcher.message).toEqual("matcherForSpec: actual: xxx; expected: expected");
 
-    expect(spec2Matcher.matcherForSuite("expected")).toEqual("matcherForSuite: actual: yyy; expected: expected");
+    spec2Matcher.matcherForSuite("expected");
+    expect(spec2Matcher.message).toEqual("matcherForSuite: actual: yyy; expected: expected");
     expect(spec2Matcher.matcherForSpec).toBe(jasmine.undefined);
   });
 

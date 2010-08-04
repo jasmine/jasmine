@@ -10,6 +10,15 @@ describe("jasmine.Matchers", function() {
       });
     });
     spyOn(spec, 'addMatcherResult');
+
+    this.addMatchers({
+      toPass: function() {
+        return lastResult().passed();
+      },
+      toFail: function() {
+        return !lastResult().passed();
+      }
+    })
   });
 
   function match(value) {
@@ -30,9 +39,9 @@ describe("jasmine.Matchers", function() {
   }
 
   it("toEqual with primitives, objects, dates, etc.", function() {
-    expect(match(true).toEqual(true)).toEqual(true);
+    expect(match(true).toEqual(true)).toPass();
 
-    expect(match({foo:'bar'}).toEqual(null)).toEqual(false);
+    expect(match({foo:'bar'}).toEqual(null)).toFail();
 
     var functionA = function() {
       return 'hi';
@@ -40,39 +49,39 @@ describe("jasmine.Matchers", function() {
     var functionB = function() {
       return 'hi';
     };
-    expect(match({foo:functionA}).toEqual({foo:functionB})).toEqual(false);
-    expect(match({foo:functionA}).toEqual({foo:functionA})).toEqual(true);
+    expect(match({foo:functionA}).toEqual({foo:functionB})).toFail();
+    expect(match({foo:functionA}).toEqual({foo:functionA})).toPass();
 
-    expect((match(false).toEqual(true))).toEqual(false);
+    expect((match(false).toEqual(true))).toFail();
 
     var circularGraph = {};
     circularGraph.referenceToSelf = circularGraph;
-    expect((match(circularGraph).toEqual(circularGraph))).toEqual(true);
+    expect((match(circularGraph).toEqual(circularGraph))).toPass();
 
-    expect((match(new Date(2008, 1, 3, 15, 17, 19, 1234)).toEqual(new Date(2009, 1, 3, 15, 17, 19, 1234)))).toEqual(false);
-    expect((match(new Date(2008, 1, 3, 15, 17, 19, 1234)).toEqual(new Date(2008, 1, 3, 15, 17, 19, 1234)))).toEqual(true);
+    expect((match(new Date(2008, 1, 3, 15, 17, 19, 1234)).toEqual(new Date(2009, 1, 3, 15, 17, 19, 1234)))).toFail();
+    expect((match(new Date(2008, 1, 3, 15, 17, 19, 1234)).toEqual(new Date(2008, 1, 3, 15, 17, 19, 1234)))).toPass();
 
 
-    expect(match(true).toNotEqual(false)).toEqual(true);
-    expect((match(true).toNotEqual(true))).toEqual(false);
+    expect(match(true).toNotEqual(false)).toPass();
+    expect((match(true).toNotEqual(true))).toFail();
 
-    expect((match(['a', 'b']).toEqual(['a', jasmine.undefined]))).toEqual(false);
-    expect((match(['a', 'b']).toEqual(['a', 'b', jasmine.undefined]))).toEqual(false);
+    expect((match(['a', 'b']).toEqual(['a', jasmine.undefined]))).toFail();
+    expect((match(['a', 'b']).toEqual(['a', 'b', jasmine.undefined]))).toFail();
 
-    expect((match(new String("cat")).toEqual("cat"))).toBe(true);
-    expect((match(new String("cat")).toNotEqual("cat"))).toBe(false);
+    expect((match(new String("cat")).toEqual("cat"))).toPass();
+    expect((match(new String("cat")).toNotEqual("cat"))).toFail();
 
-    expect((match(new Number(5)).toEqual(5))).toBe(true);
-    expect((match(new Number('5')).toEqual(5))).toBe(true);
-    expect((match(new Number(5)).toNotEqual(5))).toBe(false);
-    expect((match(new Number('5')).toNotEqual(5))).toBe(false);
+    expect((match(new Number(5)).toEqual(5))).toPass();
+    expect((match(new Number('5')).toEqual(5))).toPass();
+    expect((match(new Number(5)).toNotEqual(5))).toFail();
+    expect((match(new Number('5')).toNotEqual(5))).toFail();
   });
 
   it("toEqual with DOM nodes", function() {
     var nodeA = document.createElement('div');
     var nodeB = document.createElement('div');
-    expect((match(nodeA).toEqual(nodeA))).toEqual(true);
-    expect((match(nodeA).toEqual(nodeB))).toEqual(false);
+    expect((match(nodeA).toEqual(nodeA))).toPass();
+    expect((match(nodeA).toEqual(nodeB))).toFail();
   });
 
   it("toEqual to build an Expectation Result", function() {
@@ -84,7 +93,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toEqual");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(actual));
     expect(result.message).toMatch(jasmine.pp(expected));
     expect(result.expected).toEqual(expected);
@@ -99,7 +108,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toNotEqual");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(str));
     expect(result.message).toMatch('not');
     expect(result.expected).toEqual(str);
@@ -111,12 +120,12 @@ describe("jasmine.Matchers", function() {
     var b = {};
     //noinspection UnnecessaryLocalVariableJS
     var c = a;
-    expect((match(a).toBe(b))).toEqual(false);
-    expect((match(a).toBe(a))).toEqual(true);
-    expect((match(a).toBe(c))).toEqual(true);
-    expect((match(a).toNotBe(b))).toEqual(true);
-    expect((match(a).toNotBe(a))).toEqual(false);
-    expect((match(a).toNotBe(c))).toEqual(false);
+    expect((match(a).toBe(b))).toFail();
+    expect((match(a).toBe(a))).toPass();
+    expect((match(a).toBe(c))).toPass();
+    expect((match(a).toNotBe(b))).toPass();
+    expect((match(a).toNotBe(a))).toFail();
+    expect((match(a).toNotBe(c))).toFail();
   });
 
   it("toBe to build an ExpectationResult", function() {
@@ -128,7 +137,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toBe");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(actual));
     expect(result.message).toMatch(jasmine.pp(expected));
     expect(result.expected).toEqual(expected);
@@ -143,24 +152,24 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toNotBe");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(str);
     expect(result.expected).toEqual(str);
     expect(result.actual).toEqual(str);
   });
 
   it("toMatch and #toNotMatch should perform regular expression matching on strings", function() {
-    expect((match('foobarbel').toMatch(/bar/))).toEqual(true);
-    expect((match('foobazbel').toMatch(/bar/))).toEqual(false);
+    expect((match('foobarbel').toMatch(/bar/))).toPass();
+    expect((match('foobazbel').toMatch(/bar/))).toFail();
 
-    expect((match('foobarbel').toMatch("bar"))).toEqual(true);
-    expect((match('foobazbel').toMatch("bar"))).toEqual(false);
+    expect((match('foobarbel').toMatch("bar"))).toPass();
+    expect((match('foobazbel').toMatch("bar"))).toFail();
 
-    expect((match('foobarbel').toNotMatch(/bar/))).toEqual(false);
-    expect((match('foobazbel').toNotMatch(/bar/))).toEqual(true);
+    expect((match('foobarbel').toNotMatch(/bar/))).toFail();
+    expect((match('foobazbel').toNotMatch(/bar/))).toPass();
 
-    expect((match('foobarbel').toNotMatch("bar"))).toEqual(false);
-    expect((match('foobazbel').toNotMatch("bar"))).toEqual(true);
+    expect((match('foobarbel').toNotMatch("bar"))).toFail();
+    expect((match('foobazbel').toNotMatch("bar"))).toPass();
   });
 
   it("toMatch w/ RegExp to build an ExpectationResult", function() {
@@ -172,7 +181,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toMatch");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(actual));
     expect(result.message).toMatch(expected.toString());
     expect(result.expected).toEqual(expected);
@@ -188,7 +197,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toMatch");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toEqual("Expected 'a' to match 'b'.");
     expect(result.expected).toEqual(expected);
     expect(result.actual).toEqual(actual);
@@ -203,7 +212,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toNotMatch");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toEqual("Expected 'a' to not match /a/.");
     expect(result.expected).toEqual(expected);
     expect(result.actual).toEqual(actual);
@@ -217,15 +226,15 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toNotMatch");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toEqual("Expected 'a' to not match 'a'.");
     expect(result.expected).toEqual(str);
     expect(result.actual).toEqual(str);
   });
 
   it("toBeDefined", function() {
-    expect(match('foo').toBeDefined()).toEqual(true);
-    expect(match(jasmine.undefined).toBeDefined()).toEqual(false);
+    expect(match('foo').toBeDefined()).toPass();
+    expect(match(jasmine.undefined).toBeDefined()).toFail();
   });
 
   it("toBeDefined to build an ExpectationResult", function() {
@@ -235,20 +244,20 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeDefined");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toEqual('Expected undefined to be defined.');
     expect(result.actual).toEqual(jasmine.undefined);
   });
 
   it("toBeUndefined", function() {
-    expect(match('foo').toBeUndefined()).toEqual(false);
-    expect(match(jasmine.undefined).toBeUndefined()).toEqual(true);
+    expect(match('foo').toBeUndefined()).toFail();
+    expect(match(jasmine.undefined).toBeUndefined()).toPass();
   });
 
   it("toBeNull", function() {
-    expect(match(null).toBeNull()).toEqual(true);
-    expect(match(jasmine.undefined).toBeNull()).toEqual(false);
-    expect(match("foo").toBeNull()).toEqual(false);
+    expect(match(null).toBeNull()).toPass();
+    expect(match(jasmine.undefined).toBeNull()).toFail();
+    expect(match("foo").toBeNull()).toFail();
   });
 
   it("toBeNull w/ String to build an ExpectationResult", function() {
@@ -259,7 +268,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeNull");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(actual));
     expect(result.message).toMatch('null');
     expect(result.actual).toEqual(actual);
@@ -273,18 +282,18 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeNull");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(actual));
     expect(result.message).toMatch('null');
     expect(result.actual).toEqual(actual);
   });
 
   it("toBeFalsy", function() {
-    expect(match(false).toBeFalsy()).toEqual(true);
-    expect(match(true).toBeFalsy()).toEqual(false);
-    expect(match(jasmine.undefined).toBeFalsy()).toEqual(true);
-    expect(match(0).toBeFalsy()).toEqual(true);
-    expect(match("").toBeFalsy()).toEqual(true);
+    expect(match(false).toBeFalsy()).toPass();
+    expect(match(true).toBeFalsy()).toFail();
+    expect(match(jasmine.undefined).toBeFalsy()).toPass();
+    expect(match(0).toBeFalsy()).toPass();
+    expect(match("").toBeFalsy()).toPass();
   });
 
   it("toBeFalsy to build an ExpectationResult", function() {
@@ -295,21 +304,21 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeFalsy");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(actual));
     expect(result.message).toMatch('falsy');
     expect(result.actual).toEqual(actual);
   });
 
   it("toBeTruthy", function() {
-    expect(match(false).toBeTruthy()).toEqual(false);
-    expect(match(true).toBeTruthy()).toEqual(true);
-    expect(match(jasmine.undefined).toBeTruthy()).toEqual(false);
-    expect(match(0).toBeTruthy()).toEqual(false);
-    expect(match("").toBeTruthy()).toEqual(false);
-    expect(match("hi").toBeTruthy()).toEqual(true);
-    expect(match(5).toBeTruthy()).toEqual(true);
-    expect(match({foo: 1}).toBeTruthy()).toEqual(true);
+    expect(match(false).toBeTruthy()).toFail();
+    expect(match(true).toBeTruthy()).toPass();
+    expect(match(jasmine.undefined).toBeTruthy()).toFail();
+    expect(match(0).toBeTruthy()).toFail();
+    expect(match("").toBeTruthy()).toFail();
+    expect(match("hi").toBeTruthy()).toPass();
+    expect(match(5).toBeTruthy()).toPass();
+    expect(match({foo: 1}).toBeTruthy()).toPass();
   });
 
   it("toBeTruthy to build an ExpectationResult", function() {
@@ -319,69 +328,69 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeTruthy");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toEqual("Expected false to be truthy.");
-    expect(result.actual).toEqual(false);
+    expect(result.actual).toFail();
   });
 
   it("toEqual", function() {
-    expect(match(jasmine.undefined).toEqual(jasmine.undefined)).toEqual(true);
-    expect(match({foo:'bar'}).toEqual({foo:'bar'})).toEqual(true);
-    expect(match("foo").toEqual({bar: jasmine.undefined})).toEqual(false);
-    expect(match({foo: jasmine.undefined}).toEqual("goo")).toEqual(false);
-    expect(match({foo: {bar :jasmine.undefined}}).toEqual("goo")).toEqual(false);
+    expect(match(jasmine.undefined).toEqual(jasmine.undefined)).toPass();
+    expect(match({foo:'bar'}).toEqual({foo:'bar'})).toPass();
+    expect(match("foo").toEqual({bar: jasmine.undefined})).toFail();
+    expect(match({foo: jasmine.undefined}).toEqual("goo")).toFail();
+    expect(match({foo: {bar :jasmine.undefined}}).toEqual("goo")).toFail();
   });
 
   it("toEqual with jasmine.any()", function() {
-    expect(match("foo").toEqual(jasmine.any(String))).toEqual(true);
-    expect(match(3).toEqual(jasmine.any(Number))).toEqual(true);
-    expect(match("foo").toEqual(jasmine.any(Function))).toEqual(false);
-    expect(match("foo").toEqual(jasmine.any(Object))).toEqual(false);
-    expect(match({someObj:'foo'}).toEqual(jasmine.any(Object))).toEqual(true);
-    expect(match({someObj:'foo'}).toEqual(jasmine.any(Function))).toEqual(false);
+    expect(match("foo").toEqual(jasmine.any(String))).toPass();
+    expect(match(3).toEqual(jasmine.any(Number))).toPass();
+    expect(match("foo").toEqual(jasmine.any(Function))).toFail();
+    expect(match("foo").toEqual(jasmine.any(Object))).toFail();
+    expect(match({someObj:'foo'}).toEqual(jasmine.any(Object))).toPass();
+    expect(match({someObj:'foo'}).toEqual(jasmine.any(Function))).toFail();
     expect(match(function() {
-    }).toEqual(jasmine.any(Object))).toEqual(false);
-    expect(match(["foo", "goo"]).toEqual(["foo", jasmine.any(String)])).toEqual(true);
+    }).toEqual(jasmine.any(Object))).toFail();
+    expect(match(["foo", "goo"]).toEqual(["foo", jasmine.any(String)])).toPass();
     expect(match(function() {
-    }).toEqual(jasmine.any(Function))).toEqual(true);
+    }).toEqual(jasmine.any(Function))).toPass();
     expect(match(["a", function() {
-    }]).toEqual(["a", jasmine.any(Function)])).toEqual(true);
+    }]).toEqual(["a", jasmine.any(Function)])).toPass();
   });
 
   it("toEqual handles circular objects ok", function() {
-    expect(match({foo: "bar", baz: jasmine.undefined}).toEqual({foo: "bar", baz: jasmine.undefined})).toEqual(true);
-    expect(match({foo:['bar','baz','quux']}).toEqual({foo:['bar','baz','quux']})).toEqual(true);
-    expect(match({foo: {bar:'baz'}, quux:'corge'}).toEqual({foo:{bar:'baz'}, quux:'corge'})).toEqual(true);
+    expect(match({foo: "bar", baz: jasmine.undefined}).toEqual({foo: "bar", baz: jasmine.undefined})).toPass();
+    expect(match({foo:['bar','baz','quux']}).toEqual({foo:['bar','baz','quux']})).toPass();
+    expect(match({foo: {bar:'baz'}, quux:'corge'}).toEqual({foo:{bar:'baz'}, quux:'corge'})).toPass();
 
     var circularObject = {};
     var secondCircularObject = {};
     circularObject.field = circularObject;
     secondCircularObject.field = secondCircularObject;
-    expect(match(circularObject).toEqual(secondCircularObject)).toEqual(true);
+    expect(match(circularObject).toEqual(secondCircularObject)).toPass();
   });
 
   it("toNotEqual as slightly surprising behavior, but is it intentional?", function() {
-    expect(match({x:"x", y:"y", z:"w"}).toNotEqual({x:"x", y:"y", z:"z"})).toEqual(true);
-    expect(match({x:"x", y:"y", w:"z"}).toNotEqual({x:"x", y:"y", z:"z"})).toEqual(true);
-    expect(match({x:"x", y:"y", z:"z"}).toNotEqual({w: "w", x:"x", y:"y", z:"z"})).toEqual(true);
-    expect(match({w: "w", x:"x", y:"y", z:"z"}).toNotEqual({x:"x", y:"y", z:"z"})).toEqual(true);
+    expect(match({x:"x", y:"y", z:"w"}).toNotEqual({x:"x", y:"y", z:"z"})).toPass();
+    expect(match({x:"x", y:"y", w:"z"}).toNotEqual({x:"x", y:"y", z:"z"})).toPass();
+    expect(match({x:"x", y:"y", z:"z"}).toNotEqual({w: "w", x:"x", y:"y", z:"z"})).toPass();
+    expect(match({w: "w", x:"x", y:"y", z:"z"}).toNotEqual({x:"x", y:"y", z:"z"})).toPass();
   });
 
   it("toEqual handles arrays", function() {
-    expect(match([1, "A"]).toEqual([1, "A"])).toEqual(true);
+    expect(match([1, "A"]).toEqual([1, "A"])).toPass();
   });
 
   it("toContain and toNotContain", function() {
-    expect(match('ABC').toContain('A')).toEqual(true);
-    expect(match('ABC').toContain('X')).toEqual(false);
+    expect(match('ABC').toContain('A')).toPass();
+    expect(match('ABC').toContain('X')).toFail();
 
-    expect(match(['A', 'B', 'C']).toContain('A')).toEqual(true);
-    expect(match(['A', 'B', 'C']).toContain('F')).toEqual(false);
-    expect(match(['A', 'B', 'C']).toNotContain('F')).toEqual(true);
-    expect(match(['A', 'B', 'C']).toNotContain('A')).toEqual(false);
+    expect(match(['A', 'B', 'C']).toContain('A')).toPass();
+    expect(match(['A', 'B', 'C']).toContain('F')).toFail();
+    expect(match(['A', 'B', 'C']).toNotContain('F')).toPass();
+    expect(match(['A', 'B', 'C']).toNotContain('A')).toFail();
 
-    expect(match(['A', {some:'object'}, 'C']).toContain({some:'object'})).toEqual(true);
-    expect(match(['A', {some:'object'}, 'C']).toContain({some:'other object'})).toEqual(false);
+    expect(match(['A', {some:'object'}, 'C']).toContain({some:'object'})).toPass();
+    expect(match(['A', {some:'object'}, 'C']).toContain({some:'other object'})).toFail();
   });
 
   it("toContain to build an ExpectationResult", function() {
@@ -393,7 +402,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toContain");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(actual));
     expect(result.message).toMatch('contain');
     expect(result.message).toMatch(jasmine.pp(expected));
@@ -410,7 +419,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toNotContain");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(actual));
     expect(result.message).toMatch('not contain');
     expect(result.message).toMatch(jasmine.pp(expected));
@@ -419,9 +428,9 @@ describe("jasmine.Matchers", function() {
   });
 
   it("toBeLessThan should pass if actual is less than expected", function() {
-    expect(match(37).toBeLessThan(42)).toEqual(true);
-    expect(match(37).toBeLessThan(-42)).toEqual(false);
-    expect(match(37).toBeLessThan(37)).toEqual(false);
+    expect(match(37).toBeLessThan(42)).toPass();
+    expect(match(37).toBeLessThan(-42)).toFail();
+    expect(match(37).toBeLessThan(37)).toFail();
   });
 
   it("toBeLessThan to build an ExpectationResult", function() {
@@ -433,7 +442,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeLessThan");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(actual) + ' to be less than');
     expect(result.message).toMatch(jasmine.pp(expected));
     expect(result.actual).toEqual(actual);
@@ -441,9 +450,9 @@ describe("jasmine.Matchers", function() {
   });
 
   it("toBeGreaterThan should pass if actual is greater than expected", function() {
-    expect(match(37).toBeGreaterThan(42)).toEqual(false);
-    expect(match(37).toBeGreaterThan(-42)).toEqual(true);
-    expect(match(37).toBeGreaterThan(37)).toEqual(false);
+    expect(match(37).toBeGreaterThan(42)).toFail();
+    expect(match(37).toBeGreaterThan(-42)).toPass();
+    expect(match(37).toBeGreaterThan(37)).toFail();
   });
 
   it("toBeGreaterThan to build an ExpectationResult", function() {
@@ -455,7 +464,7 @@ describe("jasmine.Matchers", function() {
     var result = lastResult();
 
     expect(result.matcherName).toEqual("toBeGreaterThan");
-    expect(result.passed()).toEqual(false);
+    expect(result.passed()).toFail();
     expect(result.message).toMatch(jasmine.pp(actual) + ' to be greater than');
     expect(result.message).toMatch(jasmine.pp(expected));
     expect(result.actual).toEqual(actual);
@@ -473,36 +482,36 @@ describe("jasmine.Matchers", function() {
       });
 
       it("should match any exception", function() {
-        expect(match(throwingFn).toThrow()).toEqual(true);
+        expect(match(throwingFn).toThrow()).toPass();
       });
 
       it("should match exceptions specified by message", function() {
-        expect(match(throwingFn).toThrow("Fake Error")).toEqual(true);
-        expect(match(throwingFn).toThrow("Other Error")).toEqual(false);
+        expect(match(throwingFn).toThrow("Fake Error")).toPass();
+        expect(match(throwingFn).toThrow("Other Error")).toFail();
         expect(lastResult().message).toMatch("Other Error");
       });
 
       it("should match exceptions specified by Error", function() {
-        expect(match(throwingFn).toThrow(new Error("Fake Error"))).toEqual(true);
-        expect(match(throwingFn).toThrow(new Error("Other Error"))).toEqual(false);
+        expect(match(throwingFn).toThrow(new Error("Fake Error"))).toPass();
+        expect(match(throwingFn).toThrow(new Error("Other Error"))).toFail();
         expect(lastResult().message).toMatch("Other Error");
       });
 
       describe("and matcher is inverted with .not", function() {
         it("should match any exception", function() {
-          expect(match(throwingFn).not.toThrow()).toEqual(false);
+          expect(match(throwingFn).not.toThrow()).toFail();
         });
 
         it("should match exceptions specified by message", function() {
-          expect(match(throwingFn).not.toThrow("Fake Error")).toEqual(false);
+          expect(match(throwingFn).not.toThrow("Fake Error")).toFail();
 //          expect(lastResult().message).toMatch(/Expected function not to throw Fake Error./);
-          expect(match(throwingFn).not.toThrow("Other Error")).toEqual(true);
+          expect(match(throwingFn).not.toThrow("Other Error")).toPass();
         });
 
         it("should match exceptions specified by Error", function() {
-          expect(match(throwingFn).not.toThrow(new Error("Fake Error"))).toEqual(false);
+          expect(match(throwingFn).not.toThrow(new Error("Fake Error"))).toFail();
 //          expect(lastResult().message).toMatch("Other Error");
-          expect(match(throwingFn).not.toThrow(new Error("Other Error"))).toEqual(true);
+          expect(match(throwingFn).not.toThrow(new Error("Other Error"))).toPass();
         });
       });
     });
@@ -531,7 +540,7 @@ describe("jasmine.Matchers", function() {
     describe("when code block doesn not throw an exception", function() {
       it("should fail (or pass when inverted with .not)", function() {
         expect(match(function() {
-        }).toThrow()).toEqual(false);
+        }).toThrow()).toFail();
         expect(lastResult().message).toEqual('Expected function to throw an exception.');
       });
     });
@@ -539,10 +548,10 @@ describe("jasmine.Matchers", function() {
 
   describe(".not.matcher", function() {
     it("should invert the sense of any matcher", function() {
-      expect(match(37).not.toBeGreaterThan(42)).toEqual(true);
-      expect(match(42).not.toBeGreaterThan(37)).toEqual(false);
-      expect(match("abc").not.toEqual("def")).toEqual(true);
-      expect(match("abc").not.toEqual("abc")).toEqual(false);
+      expect(match(37).not.toBeGreaterThan(42)).toPass();
+      expect(match(42).not.toBeGreaterThan(37)).toFail();
+      expect(match("abc").not.toEqual("def")).toPass();
+      expect(match("abc").not.toEqual("abc")).toFail();
     });
 
     it("should provide an inverted default message", function() {
@@ -606,10 +615,10 @@ describe("jasmine.Matchers", function() {
 
     describe("toHaveBeenCalled", function() {
       it("should pass if the spy was called", function() {
-        expect(match(TestClass.spyFunction).toHaveBeenCalled()).toEqual(false);
+        expect(match(TestClass.spyFunction).toHaveBeenCalled()).toFail();
 
         TestClass.spyFunction();
-        expect(match(TestClass.spyFunction).toHaveBeenCalled()).toEqual(true);
+        expect(match(TestClass.spyFunction).toHaveBeenCalled()).toPass();
       });
 
       it("should throw an exception when invoked with any arguments", function() {
@@ -634,10 +643,10 @@ describe("jasmine.Matchers", function() {
 
     describe("wasNotCalled", function() {
       it("should pass iff the spy was not called", function() {
-        expect(match(TestClass.spyFunction).wasNotCalled()).toEqual(true);
+        expect(match(TestClass.spyFunction).wasNotCalled()).toPass();
 
         TestClass.spyFunction();
-        expect(match(TestClass.spyFunction).wasNotCalled()).toEqual(false);
+        expect(match(TestClass.spyFunction).wasNotCalled()).toFail();
       });
 
       it("should throw an exception when invoked with any arguments", function() {
@@ -652,15 +661,15 @@ describe("jasmine.Matchers", function() {
     describe("toHaveBeenCalledWith", function() {
       it('toHaveBeenCalledWith should return true if it was called with the expected args', function() {
         TestClass.spyFunction('a', 'b', 'c');
-        expect(match(TestClass.spyFunction).toHaveBeenCalledWith('a', 'b', 'c')).toEqual(true);
+        expect(match(TestClass.spyFunction).toHaveBeenCalledWith('a', 'b', 'c')).toPass();
       });
 
       it('should return false if it was not called with the expected args', function() {
         TestClass.spyFunction('a', 'b', 'c');
         var expected = match(TestClass.spyFunction);
-        expect(expected.toHaveBeenCalledWith('c', 'b', 'a')).toEqual(false);
+        expect(expected.toHaveBeenCalledWith('c', 'b', 'a')).toFail();
         var result = lastResult();
-        expect(result.passed()).toEqual(false);
+        expect(result.passed()).toFail();
         expect(result.expected).toEqual(['c', 'b', 'a']);
         expect(result.actual.mostRecentCall.args).toEqual(['a', 'b', 'c']);
         expect(result.message).toContain(jasmine.pp(result.expected));
@@ -669,9 +678,9 @@ describe("jasmine.Matchers", function() {
 
       it('should return false if it was not called', function() {
         var expected = match(TestClass.spyFunction);
-        expect(expected.toHaveBeenCalledWith('c', 'b', 'a')).toEqual(false);
+        expect(expected.toHaveBeenCalledWith('c', 'b', 'a')).toFail();
         var result = lastResult();
-        expect(result.passed()).toEqual(false);
+        expect(result.passed()).toFail();
         expect(result.expected).toEqual(['c', 'b', 'a']);
         expect(result.actual.argsForCall).toEqual([]);
         expect(result.message).toContain(jasmine.pp(result.expected));
@@ -681,9 +690,9 @@ describe("jasmine.Matchers", function() {
         var expected = match(TestClass.spyFunction);
         TestClass.spyFunction('a', 'b', 'c');
         TestClass.spyFunction('d', 'e', 'f');
-        expect(expected.toHaveBeenCalledWith('a', 'b', 'c')).toEqual(true);
-        expect(expected.toHaveBeenCalledWith('d', 'e', 'f')).toEqual(true);
-        expect(expected.toHaveBeenCalledWith('x', 'y', 'z')).toEqual(false);
+        expect(expected.toHaveBeenCalledWith('a', 'b', 'c')).toPass();
+        expect(expected.toHaveBeenCalledWith('d', 'e', 'f')).toPass();
+        expect(expected.toHaveBeenCalledWith('x', 'y', 'z')).toFail();
       });
 
       it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('toHaveBeenCalledWith'));
@@ -707,7 +716,7 @@ describe("jasmine.Matchers", function() {
 
           var result = lastResult();
           expect(result.matcherName).toEqual("toHaveBeenCalledWith");
-          expect(result.passed()).toEqual(false);
+          expect(result.passed()).toFail();
           expect(result.message).toContain(jasmine.pp(['a', 'b']));
           expect(result.message).toContain(jasmine.pp(['a', 'c']));
           expect(result.actual).toEqual(TestClass.someFunction);
@@ -729,15 +738,15 @@ describe("jasmine.Matchers", function() {
     describe("wasNotCalledWith", function() {
       it('should return true if the spy was NOT called with the expected args', function() {
         TestClass.spyFunction('a', 'b', 'c');
-        expect(match(TestClass.spyFunction).wasNotCalledWith('c', 'b', 'a')).toEqual(true);
+        expect(match(TestClass.spyFunction).wasNotCalledWith('c', 'b', 'a')).toPass();
       });
 
       it('should return false if it WAS called with the expected args', function() {
         TestClass.spyFunction('a', 'b', 'c');
         var expected = match(TestClass.spyFunction);
-        expect(expected.wasNotCalledWith('a', 'b', 'c')).toEqual(false);
+        expect(expected.wasNotCalledWith('a', 'b', 'c')).toFail();
         var result = lastResult();
-        expect(result.passed()).toEqual(false);
+        expect(result.passed()).toFail();
         expect(result.expected).toEqual(['a', 'b', 'c']);
         expect(result.actual.mostRecentCall.args).toEqual(['a', 'b', 'c']);
         expect(result.message).toContain(jasmine.pp(result.expected));
@@ -745,16 +754,16 @@ describe("jasmine.Matchers", function() {
 
       it('should return true if it was not called', function() {
         var expected = match(TestClass.spyFunction);
-        expect(expected.wasNotCalledWith('c', 'b', 'a')).toEqual(true);
+        expect(expected.wasNotCalledWith('c', 'b', 'a')).toPass();
       });
 
       it('should allow matches across multiple calls', function() {
         var expected = match(TestClass.spyFunction);
         TestClass.spyFunction('a', 'b', 'c');
         TestClass.spyFunction('d', 'e', 'f');
-        expect(expected.wasNotCalledWith('a', 'b', 'c')).toEqual(false);
-        expect(expected.wasNotCalledWith('d', 'e', 'f')).toEqual(false);
-        expect(expected.wasNotCalledWith('x', 'y', 'z')).toEqual(true);
+        expect(expected.wasNotCalledWith('a', 'b', 'c')).toFail();
+        expect(expected.wasNotCalledWith('d', 'e', 'f')).toFail();
+        expect(expected.wasNotCalledWith('x', 'y', 'z')).toPass();
       });
 
       it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasNotCalledWith'));
@@ -762,4 +771,10 @@ describe("jasmine.Matchers", function() {
     });
 
   });
+
+  describe("all matchers", function() {
+    it("should return null, for futureproofing, since we might eventually allow matcher chaining", function() {
+      expect(match(true).toBe(true)).toBeUndefined();
+    })
+  })
 });
