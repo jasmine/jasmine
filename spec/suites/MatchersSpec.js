@@ -20,6 +20,15 @@ describe("jasmine.Matchers", function() {
     return spec.addMatcherResult.mostRecentCall.args[0];
   }
 
+  function catchException(fn) {
+    try {
+      fn.call();
+    } catch (e) {
+      return e;
+    }
+    throw new Error("expected function to throw an exception");
+  }
+
   it("toEqual with primitives, objects, dates, etc.", function() {
     expect(match(true).toEqual(true)).toEqual(true);
 
@@ -453,42 +462,79 @@ describe("jasmine.Matchers", function() {
     expect(result.expected).toEqual(expected);
   });
 
-  it("toThrow", function() {
-    var expected = match(function() {
-      throw new Error("Fake Error");
+  describe("toThrow", function() {
+    describe("when code block throws an exception", function() {
+      var throwingFn;
+
+      beforeEach(function() {
+        throwingFn = function() {
+          throw new Error("Fake Error");
+        };
+      });
+
+      it("should match any exception", function() {
+        expect(match(throwingFn).toThrow()).toEqual(true);
+      });
+
+      it("should match exceptions specified by message", function() {
+        expect(match(throwingFn).toThrow("Fake Error")).toEqual(true);
+        expect(match(throwingFn).toThrow("Other Error")).toEqual(false);
+        expect(lastResult().message).toMatch("Other Error");
+      });
+
+      it("should match exceptions specified by Error", function() {
+        expect(match(throwingFn).toThrow(new Error("Fake Error"))).toEqual(true);
+        expect(match(throwingFn).toThrow(new Error("Other Error"))).toEqual(false);
+        expect(lastResult().message).toMatch("Other Error");
+      });
+
+      describe("and matcher is inverted with .not", function() {
+        it("should match any exception", function() {
+          expect(match(throwingFn).not.toThrow()).toEqual(false);
+        });
+
+        it("should match exceptions specified by message", function() {
+          expect(match(throwingFn).not.toThrow("Fake Error")).toEqual(false);
+//          expect(lastResult().message).toMatch(/Expected function not to throw Fake Error./);
+          expect(match(throwingFn).not.toThrow("Other Error")).toEqual(true);
+        });
+
+        it("should match exceptions specified by Error", function() {
+          expect(match(throwingFn).not.toThrow(new Error("Fake Error"))).toEqual(false);
+//          expect(lastResult().message).toMatch("Other Error");
+          expect(match(throwingFn).not.toThrow(new Error("Other Error"))).toEqual(true);
+        });
+      });
     });
 
-    expect(expected.toThrow()).toEqual(true);
-    expect(expected.not.toThrow()).toEqual(false);
+    describe("when actual is not a function", function() {
+      it("should fail with an exception", function() {
+        var exception = catchException(function() {
+          match('not-a-function').toThrow();
+        });
+        expect(exception).toBeDefined();
+        expect(exception.message).toEqual('Actual is not a function');
+      });
 
-    expect(expected.toThrow("Fake Error")).toEqual(true);
-    expect(expected.toThrow(new Error("Fake Error"))).toEqual(true);
-
-    expect(expected.toThrow("Other Error")).toEqual(false);
-    var result = lastResult();
-    expect(result.message).toMatch("Other Error");
-
-    expect(expected.toThrow(new Error("Other Error"))).toEqual(false);
-    result = lastResult();
-    expect(result.message).toMatch("Other Error");
-
-    var exception;
-    try {
-      (function () {
-        new jasmine.Matchers(env, 'not-a-function', spec).toThrow();
-      })();
-    } catch (e) {
-      exception = e;
-    }
-
-    expect(exception).toBeDefined();
-    expect(exception.message).toEqual('Actual is not a function');
+      describe("and matcher is inverted with .not", function() {
+        it("should fail with an exception", function() {
+          var exception = catchException(function() {
+            match('not-a-function').not.toThrow();
+          });
+          expect(exception).toBeDefined();
+          expect(exception.message).toEqual('Actual is not a function');
+        });
+      });
+    });
 
 
-    expect(match(function() {
-    }).toThrow()).toEqual(false);
-    result = lastResult();
-    expect(result.message).toEqual('Expected function to throw an exception.');
+    describe("when code block doesn not throw an exception", function() {
+      it("should fail (or pass when inverted with .not)", function() {
+        expect(match(function() {
+        }).toThrow()).toEqual(false);
+        expect(lastResult().message).toEqual('Expected function to throw an exception.');
+      });
+    });
   });
 
   describe(".not.matcher", function() {
