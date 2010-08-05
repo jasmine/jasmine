@@ -86,6 +86,7 @@ jasmine.Matchers.prototype.toBe = function(expected) {
 /**
  * toNotBe: compares the actual to the expected using !==
  * @param expected
+ * @deprecated as of 1.0. Use not.toBe() instead.
  */
 jasmine.Matchers.prototype.toNotBe = function(expected) {
   return this.actual !== expected;
@@ -103,6 +104,7 @@ jasmine.Matchers.prototype.toEqual = function(expected) {
 /**
  * toNotEqual: compares the actual to the expected using the ! of jasmine.Matchers.toEqual
  * @param expected
+ * @deprecated as of 1.0. Use not.toNotEqual() instead.
  */
 jasmine.Matchers.prototype.toNotEqual = function(expected) {
   return !this.env.equals_(this.actual, expected);
@@ -121,6 +123,7 @@ jasmine.Matchers.prototype.toMatch = function(expected) {
 /**
  * Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch
  * @param expected
+ * @deprecated as of 1.0. Use not.toMatch() instead.
  */
 jasmine.Matchers.prototype.toNotMatch = function(expected) {
   return !(new RegExp(expected).test(this.actual));
@@ -258,6 +261,7 @@ jasmine.Matchers.prototype.toContain = function(expected) {
  * Matcher that checks that the expected item is NOT an element in the actual Array.
  *
  * @param {Object} expected
+ * @deprecated as of 1.0. Use not.toNotContain() instead.
  */
 jasmine.Matchers.prototype.toNotContain = function(expected) {
   return !this.env.contains_(this.actual, expected);
