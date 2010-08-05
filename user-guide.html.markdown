@@ -51,35 +51,37 @@ The result is Jasmine, and we love test-driving our code with it. Enjoy.
 How To
 ------
 
-There is a simple example of how to use Jasmine in the /example directory.  But here's more information.
+There is a simple example of how to use Jasmine in the /example directory, but here's more information.
 
 ### Specs
 
-Each spec is, naturally, a JavaScript function.  You tell Jasmine about this spec with a call to `it()` with a string and the function.  The string is a description that will be helpful to you when reading a report.
+Each spec is, naturally, a JavaScript function.  You tell Jasmine about a spec with a call to `it()` with a description string and the function.  The string is a description of a behavior that you want your production code to exhibit; it should be meaningful to you when reading a report.
 
-    it('should be a test', function () {
+    it('should increment a variable', function () {
       var foo = 0;
       foo++;
     });
 
 ### Expectations
 
-Within your spec you will want to express expectations about the behavior of your application code.  These are made with the `expect()` function and expectation matchers, like this:
+Within your spec you will express expectations about the behavior of your application code.  This is done using the `expect()` function and any of various expectation matchers, like this:
 
-    it('should be a test', function () {
+    it('should increment a variable', function () {
       var foo = 0;            // set up the world
       foo++;                  // call your application code
 
       expect(foo).toEqual(1); // passes because foo == 1
     });
 
-Results of the expectations are logged for later for reporting.
+Results of the expectations will be reported to you when the spec is run.
 
 #### Expectation Matchers
 
 Jasmine has several built-in matchers.  Here are a few:
 
 >`expect(x).toEqual(y);` compares objects or primitives `x` and `y` and passes if they are equivalent
+>
+>`expect(x).toBe(y);` compares objects or primitives `x` and `y` and passes if they are the same object
 >
 >`expect(x).toMatch(pattern);` compares `x` to string or regular expression `pattern` and passes if they match
 >
@@ -92,6 +94,12 @@ Jasmine has several built-in matchers.  Here are a few:
 >`expect(x).toBeFalsy();` passes if `x` evaluates to false
 >
 >`expect(x).toContain(y);` passes if array or string `x` contains `y`
+>
+>`expect(x).toBeLessThan(y);` passes if `x` is less than `y`
+>
+>`expect(x).toBeGreaterThan(y);` passes if `x` is greater than `y`
+>
+>`expect(fn).toThrow(e);` passes if function `fn` throws exception `e` when executed
 
 Every matcher's criteria can be inverted by prepending `.not`:
 
@@ -121,37 +129,39 @@ To add the matcher to your suite, call `this.addMatchers()` from within a `befor
 
 Specs are grouped in Suites.  Suites are defined using the global `describe()` function:
 
-    describe('One suite', function () {
-      it('has a test', function () {
+    describe('Calculator', function () {
+      it('can add a number', function () {
         ...
       });
 
-      it('has another test', function () {
+      it('has multiply some numbers', function () {
         ...
       });
     });
 
-The Suite name is so that reporting is more descriptive.
+The Suite name is typically the name of a class or other applicaton component, and will be reported with results when your specs are run.
 
 Suites are executed in the order in which `describe()` calls are made, usually in the order in which their script files are included.  Additionally, specs within a suite share a functional scope.  So you may declare variables inside a describe block and they are accessible from within your specs.  For example:
 
-    describe('A suite with some variables', function () {
-      var bar = 0
+    describe('Calculator', function () {
+      var counter = 0
 
-      it('has a test', function () {
-        bar++;
-        expect(bar).toEqual(1);
+      it('can add a number', function () {
+        counter = counter + 2;   // counter was 0 before
+        expect(bar).toEqual(2);
       });
 
-      it('has another test', function () {
-        bar++;
-        expect(bar).toEqual(2);
+      it('can multiply a number', function () {
+        counter = counter * 5;   // counter was 2 before
+        expect(bar).toEqual(10);
       });
     });
 
+Be aware that code directly inside the `describe()` function is only executed once, which is why `counter` in the above example is not reset to `0` for the second spec. If you want to initialize variables before each spec, use a `beforeEach()` function.
+
 #### beforeEach
 
-A suite can have a beforeEach declaration. It takes a function that is run before each spec. For example:
+A suite can have a `beforeEach()` declaration. It takes a function that is run before each spec. For example:
 
     describe('some suite', function () {
 
@@ -166,7 +176,7 @@ A suite can have a beforeEach declaration. It takes a function that is run befor
       });
     });
 
-A runner can also have beforeEach declarations. Runner beforeEach functions are executed before every spec in all suites, and execute BEFORE suite beforeEach functions. For example:
+A runner can also have `beforeEach()` declarations. Runner `beforeEach()` functions are executed before every spec in all suites, and execute BEFORE suite `beforeEach()` functions. For example:
 
     var runnerWideFoo = [];
 
@@ -187,7 +197,7 @@ A runner can also have beforeEach declarations. Runner beforeEach functions are 
 
 #### afterEach
 
-Similarly, there is an afterEach declaration.  It takes a function that is run after each spec. For example:
+Similarly, there is an `afterEach()` declaration.  It takes a function that is run after each spec. For example:
 
     describe('some suite', function () {
 
@@ -205,7 +215,7 @@ Similarly, there is an afterEach declaration.  It takes a function that is run a
       };
     });
 
-A runner can also have an afterEach declarations. Runner afterEach functions are executed after every spec in all suites, and execute AFTER suite afterEach functions. For example:
+A runner can also have an `afterEach()` declarations. Runner `afterEach()` functions are executed after every spec in all suites, and execute AFTER suite `afterEach()` functions. For example:
 
     var runnerWideFoo = [];
 
@@ -242,6 +252,7 @@ A spec may ask Jasmine to execute some code after the spec has finished running;
 
 
 ### Nested Describes
+
 Jasmine supports nested describes. An example:
 
     describe('some suite', function () {
@@ -363,7 +374,7 @@ Spies are automatically removed after each spec. They may be set in the beforeEa
 
 ### Disabling Tests & Suites
 
-Specs may be disabled by calling `xit()` instead of `it()`.  Suites may be disabled by calling `xdescribe()` instead of `describe()`.  A simple find/replace in your editor of choice will allow you to run a subset of your specs.
+Specs may be disabled by calling `xit()` instead of `it()`.  Suites may be disabled by calling `xdescribe()` instead of `describe()`.
 
 ### Asynchronous Specs
 
@@ -481,5 +492,5 @@ We welcome your contributions! Jasmine is currently maintained by Davis Frank ([
 
 ## Acknowledgments
 * A big shout out to the various JavaScript test framework authors, especially TJ for [JSpec](http://github.com/visionmedia/jspec/tree/master) - we played with it a bit before deciding that we really needed to roll our own.
-* Thanks to Pivot [Jessica Miller](http://www.jessicamillerworks.com/) for our fancy pass/fail/pending icons
+* Thanks to Pivot [Jessica Miller](http://www.jessicamillerworks.com/) for our logo and fancy pass/fail/pending icons
 * Huge contributions have been made by [Adam Abrons](mailto:adam@pivotallabs.com), [Lee Byrd](mailto:lee@pivotallabs.com), [Erik Hanson](mailto:erik@pivotallabs.com), [Carl Jackson](mailto:carl@pivotallabs.com), and many other Pivots.
