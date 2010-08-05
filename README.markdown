@@ -25,23 +25,4 @@ We now have a Google Group for support & discussion.
 ## Developers
 We welcome your contributions! Jasmine is currently maintained by Davis Frank ([infews](http://github.com/infews)), Rajan Agaskar ([ragaskar](http://github.com/ragaskar)), and Christian Williams ([Xian](http://github.com/Xian)). You can help us by removing all other recipients from your pull request.
 
-## Acknowledgments
-* A big shout out to the various JavaScript test framework authors, especially TJ for [JSpec](http://github.com/visionmedia/jspec/tree/master) - we played with it a bit before deciding that we really needed to roll our own.
-* Thanks to Pivot [Jessica Miller](http://www.jessicamillerworks.com/) for our logo and fancy pass/fail/pending icons
-* Huge contributions have been made by [Adam Abrons](mailto:adam@pivotallabs.com), [Lee Byrd](mailto:lee@pivotallabs.com), [Erik Hanson](mailto:erik@pivotallabs.com), [Carl Jackson](mailto:carl@pivotallabs.com), and many other Pivots.
-
 Copyright (c) 2008-2010 Pivotal Labs. This software is licensed under the MIT License.
-
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-17547473-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
