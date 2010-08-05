@@ -101,6 +101,8 @@ Jasmine has several built-in matchers.  Here are a few:
 >
 >`expect(fn).toThrow(e);` passes if function `fn` throws exception `e` when executed
 
+<small>The old matchers `toNotEqual`, `toNotBe`, `toNotMatch`, and `toNotContain` have been deprecated and will be removed in a future release. Please change your specs to use `not.toEqual`, `not.toBe`, `not.toMatch`, and `not.toContain` respectively.</small>
+
 Every matcher's criteria can be inverted by prepending `.not`:
 
 >`expect(x).not.toEqual(y);` compares objects or primitives `x` and `y` and passes if they are *not* equivalent
@@ -350,7 +352,7 @@ There are spy-specfic matchers that are very handy.
 
 `expect(x).not.toHaveBeenCalledWith(arguments)` passes if `x` is a spy and was not called with the specified arguments
 
-The old matchers `wasCalled`, `wasNotCalled`, `wasCalledWith`, and `wasNotCalledWith` have been deprecated and will be removed in a future release. Please change your specs to use `toHaveBeenCalled`, `not.toHaveBeenCalled`, `toHaveBeenCalledWith`, and `not.toHaveBeenCalledWith` respectively.
+<small>The old matchers `wasCalled`, `wasNotCalled`, `wasCalledWith`, and `wasNotCalledWith` have been deprecated and will be removed in a future release. Please change your specs to use `toHaveBeenCalled`, `not.toHaveBeenCalled`, `toHaveBeenCalledWith`, and `not.toHaveBeenCalledWith` respectively.</small>
 
 Spies can be trained to respond in a variety of ways when invoked:
 
