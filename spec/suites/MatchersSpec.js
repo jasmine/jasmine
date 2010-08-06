@@ -767,14 +767,12 @@ describe("jasmine.Matchers", function() {
       });
 
       it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasNotCalledWith'));
-
     });
-
   });
 
   describe("all matchers", function() {
     it("should return null, for futureproofing, since we might eventually allow matcher chaining", function() {
       expect(match(true).toBe(true)).toBeUndefined();
-    })
-  })
+    });
+  });
 });
