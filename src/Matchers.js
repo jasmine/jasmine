@@ -179,7 +179,10 @@ jasmine.Matchers.prototype.toHaveBeenCalled = function() {
   }
 
   this.message = function() {
-    return "Expected spy " + this.actual.identity + " to have been called.";
+    return [
+      "Expected spy " + this.actual.identity + " to have been called.",
+      "Expected spy " + this.actual.identity + " not to have been called."
+    ];
   };
 
   return this.actual.wasCalled;
@@ -203,7 +206,10 @@ jasmine.Matchers.prototype.wasNotCalled = function() {
   }
 
   this.message = function() {
-    return "Expected spy " + this.actual.identity + " to not have been called.";
+    return [
+      "Expected spy " + this.actual.identity + " to not have been called.",
+      "Expected spy " + this.actual.identity + " to have been called."
+    ];
   };
 
   return !this.actual.wasCalled;
@@ -222,9 +228,16 @@ jasmine.Matchers.prototype.toHaveBeenCalledWith = function() {
   }
   this.message = function() {
     if (this.actual.callCount == 0) {
-      return "Expected spy to have been called with " + jasmine.pp(expectedArgs) + " but it was never called.";
+      // todo: what should the failure message for .not.toHaveBeenCalledWith() be? is this right? test better. [xw]
+      return [
+        "Expected spy to have been called with " + jasmine.pp(expectedArgs) + " but it was never called.",
+        "Expected spy not to have been called with " + jasmine.pp(expectedArgs) + " but it was."
+      ];
     } else {
-      return "Expected spy to have been called with " + jasmine.pp(expectedArgs) + " but was called with " + jasmine.pp(this.actual.argsForCall);
+      return [
+        "Expected spy to have been called with " + jasmine.pp(expectedArgs) + " but was called with " + jasmine.pp(this.actual.argsForCall),
+        "Expected spy not to have been called with " + jasmine.pp(expectedArgs) + " but was called with " + jasmine.pp(this.actual.argsForCall)
+      ];
     }
   };
 
@@ -242,7 +255,10 @@ jasmine.Matchers.prototype.wasNotCalledWith = function() {
   }
 
   this.message = function() {
-    return "Expected spy not to have been called with " + jasmine.pp(expectedArgs) + " but it was";
+    return [
+      "Expected spy not to have been called with " + jasmine.pp(expectedArgs) + " but it was",
+      "Expected spy to have been called with " + jasmine.pp(expectedArgs) + " but it was"
+    ]
   };
 
   return !this.env.contains_(this.actual.argsForCall, expectedArgs);
