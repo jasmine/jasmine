@@ -15,7 +15,7 @@ describe('WaitsForBlock', function () {
       return true;
     };
     var block = new jasmine.WaitsForBlock(env, timeout, latchFunction, message, spec);
-    expect(onComplete).wasNotCalled();
+    expect(onComplete).not.toHaveBeenCalled();
     block.execute(onComplete);
     expect(onComplete).toHaveBeenCalled();
   });
@@ -51,22 +51,22 @@ describe('WaitsForBlock', function () {
       env.clearInterval = fakeTimer.clearInterval;
     });
 
-    it('latchFunction should be retried after 100 ms', function () {
+    it('latchFunction should be retried after 10 ms', function () {
       var block = new jasmine.WaitsForBlock(env, timeout, latchFunction, message, spec);
-      expect(latchFunction).wasNotCalled();
+      expect(latchFunction).not.toHaveBeenCalled();
       block.execute(onComplete);
       expect(latchFunction.callCount).toEqual(1);
-      fakeTimer.tick(50);
+      fakeTimer.tick(5);
       expect(latchFunction.callCount).toEqual(1);
-      fakeTimer.tick(50);
+      fakeTimer.tick(5);
       expect(latchFunction.callCount).toEqual(2);
     });
 
     it('onComplete should be called if latchFunction returns true before timeout', function () {
       var block = new jasmine.WaitsForBlock(env, timeout, latchFunction, message, spec);
-      expect(onComplete).wasNotCalled();
+      expect(onComplete).not.toHaveBeenCalled();
       block.execute(onComplete);
-      expect(onComplete).wasNotCalled();
+      expect(onComplete).not.toHaveBeenCalled();
       latchFunction.andReturn(true);
       fakeTimer.tick(100);
       expect(onComplete).toHaveBeenCalled();
@@ -76,12 +76,12 @@ describe('WaitsForBlock', function () {
       spyOn(spec, 'fail');
       var block = new jasmine.WaitsForBlock(env, timeout, latchFunction, message, spec);
       block.execute(onComplete);
-      expect(spec.fail).wasNotCalled();
+      expect(spec.fail).not.toHaveBeenCalled();
       fakeTimer.tick(timeout);
       expect(spec.fail).toHaveBeenCalled();
       var failMessage = spec.fail.mostRecentCall.args[0].message;
       expect(failMessage).toMatch(message);
-      expect(onComplete).wasNotCalled();
+      expect(onComplete).not.toHaveBeenCalled(); // todo: this is an issue... [xw 20100819]
     });
   });
 });

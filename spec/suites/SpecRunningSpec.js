@@ -258,86 +258,89 @@ describe("jasmine spec running", function () {
     expect(another_spec.results().getItems()[0].passed()).toEqual(true);
   });
 
-  it("testWaitsFor", function() {
-    var doneWaiting = false;
-    var runsBlockExecuted = false;
+  describe("waitsFor", function() {
+    it("testWaitsFor", function() {
+      var doneWaiting = false;
+      var runsBlockExecuted = false;
 
-    var spec;
-    env.describe('foo', function() {
-      spec = env.it('has a waits for', function() {
-        this.runs(function() {
-        });
+      var spec;
+      env.describe('foo', function() {
+        spec = env.it('has a waits for', function() {
+          this.runs(function() {
+          });
 
-        this.waitsFor(500, function() {
-          return doneWaiting;
-        });
+          this.waitsFor(500, function() {
+            return doneWaiting;
+          });
 
-        this.runs(function() {
-          runsBlockExecuted = true;
-        });
-      });
-    });
-
-    spec.execute();
-    expect(runsBlockExecuted).toEqual(false); //, 'should not have executed runs block yet');
-    fakeTimer.tick(100);
-    doneWaiting = true;
-    fakeTimer.tick(100);
-    expect(runsBlockExecuted).toEqual(true); //, 'should have executed runs block');
-  });
-
-  it("testWaitsForFailsWithMessage", function() {
-    var spec;
-    env.describe('foo', function() {
-      spec = env.it('has a waits for', function() {
-        this.runs(function() {
-        });
-
-        this.waitsFor(500, function() {
-          return false; // force a timeout
-        }, 'my awesome condition');
-
-        this.runs(function() {
+          this.runs(function() {
+            runsBlockExecuted = true;
+          });
         });
       });
+
+      spec.execute();
+      expect(runsBlockExecuted).toEqual(false); //, 'should not have executed runs block yet');
+      fakeTimer.tick(100);
+      doneWaiting = true;
+      fakeTimer.tick(100);
+      expect(runsBlockExecuted).toEqual(true); //, 'should have executed runs block');
     });
 
-    spec.execute();
-    fakeTimer.tick(1000);
-    var actual = spec.results().getItems()[0].message;
-    var expected = 'timeout: timed out after 500 msec waiting for my awesome condition';
-    expect(actual).toEqual(expected);
-  });
+    it("fails with message", function() {
+      var spec;
+      env.describe('foo', function() {
+        spec = env.it('has a waits for', function() {
+          this.runs(function() {
+          });
 
-  it("waitsFor fails and skips the rest of the spec if timeout is reached and the latch function is still false", function() {
-    var runsBlockExecuted = false;
+          this.waitsFor(500, function() {
+            return false; // force a timeout
+          }, 'my awesome condition');
 
-    var spec;
-    env.describe('foo', function() {
-      spec = env.it('has a waits for', function() {
-        this.runs(function() {
-        });
-
-        this.waitsFor(500, function() {
-          return false;
-        });
-
-        this.runs(function() {
-          runsBlockExecuted = true;
+          this.runs(function() {
+          });
         });
       });
+
+      spec.execute();
+      fakeTimer.tick(1000);
+      expect(spec.results().getItems()[0].message).toEqual('timeout: timed out after 500 msec waiting for my awesome condition');
     });
 
-    spec.execute();
-    expect(runsBlockExecuted).toEqual(false);
-    fakeTimer.tick(100);
-    expect(runsBlockExecuted).toEqual(false);
-    fakeTimer.tick(400);
-    expect(runsBlockExecuted).toEqual(false);
-    var actual = spec.results().getItems()[0].message;
-    var expected = 'timeout: timed out after 500 msec waiting for something to happen';
-    expect(actual).toEqual(expected,
-      'expected "' + expected + '" but found "' + actual + '"');
+    it("fails and skips the rest of the spec if timeout is reached and the latch function hasn't returned true", function() {
+      var runsBlockExecuted = false;
+      var subsequentSpecRan = false;
+
+      var timeoutSpec, subsequentSpec;
+      var suite = env.describe('foo', function() {
+        timeoutSpec = env.it('has a waits for', function() {
+          this.runs(function() {
+          });
+
+          this.waitsFor(500, function() {
+            return false;
+          });
+
+          this.runs(function() {
+            runsBlockExecuted = true;
+          });
+        });
+
+        subsequentSpec = env.it('then carries on to the next test', function() {
+          subsequentSpecRan = true;
+        });
+      });
+
+      env.execute();
+      expect(runsBlockExecuted).toEqual(false);
+      fakeTimer.tick(100);
+      expect(runsBlockExecuted).toEqual(false);
+      fakeTimer.tick(400);
+      expect(runsBlockExecuted).toEqual(false);
+      expect(timeoutSpec.results().getItems()[0].message).toEqual('timeout: timed out after 500 msec waiting for something to happen');
+// todo: expect(subsequentSpecRan).toEqual(true); [xw 20100819]
+    });
   });
 
   it("testSpecAfter", function() {
@@ -520,17 +523,15 @@ describe("jasmine spec running", function () {
   });
 
   describe('#waitsFor should allow consecutive calls', function () {
-
     var foo;
     beforeEach(function () {
-
       foo = 0;
     });
 
     it('exits immediately (does not stack) if the latchFunction times out', function () {
       var reachedFirstWaitsFor = false;
       var reachedSecondWaitsFor = false;
-      var waitsSuite = env.describe('suite that waits', function () {
+      env.describe('suite that waits', function () {
         env.it('should stack timeouts', function() {
           this.waitsFor(500, function () {
             reachedFirstWaitsFor = true;
@@ -546,7 +547,7 @@ describe("jasmine spec running", function () {
       });
 
       expect(reachedFirstWaitsFor).toEqual(false);
-      waitsSuite.execute();
+      env.execute();
 
       expect(reachedFirstWaitsFor).toEqual(true);
       expect(foo).toEqual(0);
