@@ -151,17 +151,19 @@ jasmine.version_= {
     require 'digest/sha1'
 
     download_html = "<!-- START_DOWNLOADS -->\n"
-    download_html += "<table>\n<tr><th/><th>Version</th><th>Size</th><th>Date</th><th>SHA1</th></tr>\n"
+    download_html += "<table>\n<tr><th></th><th>Version</th><th>Size</th><th>Date</th><th>SHA1</th></tr>\n"
     Dir.glob('pages/downloads/*.zip').sort.reverse.each do |f|
       sha1 = Digest::SHA1.hexdigest File.read(f)
 
       fn = f.sub(/^pages\//, '')
       version = /jasmine-standalone-(.*).zip/.match(f)[1]
+      download_html += "<tr>\n"
       download_html += "<td class=\"link\"><a href='#{fn}'>#{fn.sub(/downloads\//, '')}</a></td>\n"
       download_html += "<td class=\"version\">#{version}</td>\n"
       download_html += "<td class=\"size\">#{File.size(f) / 1024}k</td>\n"
       download_html += "<td class=\"date\">#{File.mtime(f).strftime("%Y/%m/%d %H:%M:%S %Z")}</td>\n"
       download_html += "<td class=\"sha\">#{sha1}</td>\n"
+      download_html += "</tr>\n"
     end
     download_html += "</table>\n<!-- END_DOWNLOADS -->"
 
