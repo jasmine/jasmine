@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - jasmine.Block</title>
+		<title>JsDoc Reference - jasmine.WaitsForBlock</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -230,23 +230,25 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class jasmine.Block
+				Class jasmine.WaitsForBlock
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
+				<br />Extends
+					<a href="../symbols/jasmine.Block.html">jasmine.Block</a>.<br />
 				
 			
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/src_Block.js.html">Block.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/src_WaitsForBlock.js.html">WaitsForBlock.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class jasmine.Block.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class jasmine.WaitsForBlock.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -259,9 +261,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/jasmine.Block.html">jasmine.Block</a></b>(env, func, spec)
+								<b><a href="../symbols/jasmine.WaitsForBlock.html">jasmine.WaitsForBlock</a></b>(env, timeout, latchFunction, message, spec)
 							</div>
-							<div class="description">Blocks are functions with executable code that make up a spec.</div>
+							<div class="description">A block which waits for some condition to become true, with timeout.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -275,7 +277,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class jasmine.Block.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class jasmine.WaitsForBlock.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -288,7 +290,7 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/jasmine.Block.html#execute">execute</a></b>(onComplete)
+								<div class="fixedFont"><b><a href="../symbols/jasmine.WaitsForBlock.html#execute">execute</a></b>(onComplete)
 								</div>
 								<div class="description"></div>
 							</td>
@@ -298,6 +300,10 @@ ul.inheritsList
 				</table>
 				
 				
+				
+				<dl class="inheritsList">
+				
+				</dl>
 				
 			
 <!-- ============================== events summary ======================== -->
@@ -311,11 +317,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>jasmine.Block</b>(env, func, spec)
+						<b>jasmine.WaitsForBlock</b>(env, timeout, latchFunction, message, spec)
 				</div>
 				
 				<div class="description">
-					Blocks are functions with executable code that make up a spec.
+					A block which waits for some condition to become true, with timeout.
 					
 				</div>
 				
@@ -330,19 +336,31 @@ ul.inheritsList
 								<span class="light fixedFont">{<a href="../symbols/jasmine.Env.html">jasmine.Env</a>}</span>  <b>env</b>
 								
 							</dt>
-								<dd></dd>
+								<dd>The Jasmine environment.</dd>
 						
 							<dt>
-								<span class="light fixedFont">{Function}</span>  <b>func</b>
+								<span class="light fixedFont">{Number}</span>  <b>timeout</b>
 								
 							</dt>
-								<dd></dd>
+								<dd>The maximum time in milliseconds to wait for the condition to become true.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{Function}</span>  <b>latchFunction</b>
+								
+							</dt>
+								<dd>A function which returns true when the desired condition has been met.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{String}</span>  <b>message</b>
+								
+							</dt>
+								<dd>The message to display if the desired condition hasn't been met within the given time period.</dd>
 						
 							<dt>
 								<span class="light fixedFont">{<a href="../symbols/jasmine.Spec.html">jasmine.Spec</a>}</span>  <b>spec</b>
 								
 							</dt>
-								<dd></dd>
+								<dd>The Jasmine spec.</dd>
 						
 						</dl>
 					
