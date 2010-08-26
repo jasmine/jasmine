@@ -4,6 +4,7 @@ jasmine.Queue = function(env) {
   this.running = false;
   this.index = 0;
   this.offset = 0;
+  this.abort = false;
 };
 
 jasmine.Queue.prototype.addBefore = function(block) {
@@ -38,7 +39,7 @@ jasmine.Queue.prototype.next_ = function() {
   while (goAgain) {
     goAgain = false;
     
-    if (self.index < self.blocks.length) {
+    if (self.index < self.blocks.length && !this.abort) {
       var calledSynchronously = true;
       var completedSynchronously = false;
 
@@ -46,6 +47,10 @@ jasmine.Queue.prototype.next_ = function() {
         if (jasmine.Queue.LOOP_DONT_RECURSE && calledSynchronously) {
           completedSynchronously = true;
           return;
+        }
+
+        if (self.blocks[self.index].abort) {
+          self.abort = true;
         }
 
         self.offset = 0;

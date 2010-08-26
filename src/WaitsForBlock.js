@@ -39,7 +39,9 @@ jasmine.WaitsForBlock.prototype.execute = function(onComplete) {
       name: 'timeout',
       message: message
     });
-    // todo: need to prevent additional blocks in this spec from running... [xw 20100819]
+
+    this.abort = true;
+    onComplete();
   } else {
     this.totalTimeSpentWaitingForLatch += jasmine.WaitsForBlock.TIMEOUT_INCREMENT;
     var self = this;

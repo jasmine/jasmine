@@ -339,7 +339,7 @@ describe("jasmine spec running", function () {
       fakeTimer.tick(400);
       expect(runsBlockExecuted).toEqual(false);
       expect(timeoutSpec.results().getItems()[0].message).toEqual('timeout: timed out after 500 msec waiting for something to happen');
-// todo: expect(subsequentSpecRan).toEqual(true); [xw 20100819]
+      expect(subsequentSpecRan).toEqual(true);
     });
   });
 

@@ -81,7 +81,7 @@ describe('WaitsForBlock', function () {
       expect(spec.fail).toHaveBeenCalled();
       var failMessage = spec.fail.mostRecentCall.args[0].message;
       expect(failMessage).toMatch(message);
-      expect(onComplete).not.toHaveBeenCalled(); // todo: this is an issue... [xw 20100819]
+      expect(onComplete).toHaveBeenCalled();
     });
   });
 });
