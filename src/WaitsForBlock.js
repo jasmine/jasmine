@@ -10,7 +10,7 @@
  * @param {jasmine.Spec} spec The Jasmine spec.
  */
 jasmine.WaitsForBlock = function(env, timeout, latchFunction, message, spec) {
-  this.timeout = timeout;
+  this.timeout = timeout || env.defaultTimeoutInterval;
   this.latchFunction = latchFunction;
   this.message = message;
   this.totalTimeSpentWaitingForLatch = 0;

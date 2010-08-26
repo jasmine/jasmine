@@ -11,6 +11,7 @@ jasmine.Env = function() {
   this.reporter = new jasmine.MultiReporter();
 
   this.updateInterval = jasmine.DEFAULT_UPDATE_INTERVAL;
+  this.defaultTimeoutInterval = jasmine.DEFAULT_TIMEOUT_INTERVAL;
   this.lastUpdate = 0;
   this.specFilter = function() {
     return true;

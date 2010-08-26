@@ -259,6 +259,63 @@ describe("jasmine spec running", function () {
   });
 
   describe("waitsFor", function() {
+    var latchFunction = function() {
+      return true;
+    };
+    var spec;
+
+    function makeWaitsForSpec() {
+      var args = jasmine.util.argsToArray(arguments);
+      env.describe('suite', function() {
+        spec = env.it('spec', function() {
+          this.waitsFor.apply(this, args);
+        });
+      });
+      env.execute();
+    }
+
+    it("should accept args (latchFunction, timeoutMessage, timeout)", function() {
+      makeWaitsForSpec(latchFunction, "message", 123);
+      var block = spec.queue.blocks[1];
+      expect(block.latchFunction).toBe(latchFunction);
+      expect(block.timeout).toEqual(123);
+      expect(block.message).toEqual('message');
+    });
+
+    it("should accept args (latchFunction, timeout)", function() {
+      makeWaitsForSpec(latchFunction, 123);
+      var block = spec.queue.blocks[1];
+      expect(block.latchFunction).toBe(latchFunction);
+      expect(block.timeout).toEqual(123);
+      expect(block.message).toEqual(null);
+    });
+
+    it("should accept args (latchFunction, timeoutMessage)", function() {
+      env.defaultTimeoutInterval = 4321;
+      makeWaitsForSpec(latchFunction, "message");
+      var block = spec.queue.blocks[1];
+      expect(block.latchFunction).toBe(latchFunction);
+      expect(block.timeout).toEqual(4321);
+      expect(block.message).toEqual('message');
+    });
+
+    it("should accept args (latchFunction)", function() {
+      env.defaultTimeoutInterval = 4321;
+      makeWaitsForSpec(latchFunction);
+      var block = spec.queue.blocks[1];
+      expect(block.latchFunction).toBe(latchFunction);
+      expect(block.timeout).toEqual(4321);
+      expect(block.message).toEqual(null);
+    });
+
+    it("should accept deprecated args order (timeout, latchFunction, timeoutMessage)", function() {
+      makeWaitsForSpec(123, latchFunction, "message");
+      var block = spec.queue.blocks[1];
+      expect(block.latchFunction).toBe(latchFunction);
+      expect(block.timeout).toEqual(123);
+      expect(block.message).toEqual('message');
+    });
+
     it("testWaitsFor", function() {
       var doneWaiting = false;
       var runsBlockExecuted = false;

@@ -73,14 +73,46 @@ jasmine.Spec.prototype.expect = function(actual) {
   return positive;
 };
 
+/**
+ * Waits a fixed time period before moving to the next block.
+ *
+ * @deprecated Use waitsFor() instead
+ * @param {Number} timeout milliseconds to wait
+ */
 jasmine.Spec.prototype.waits = function(timeout) {
   var waitsFunc = new jasmine.WaitsBlock(this.env, timeout, this);
   this.addToQueue(waitsFunc);
   return this;
 };
 
-jasmine.Spec.prototype.waitsFor = function(timeout, latchFunction, timeoutMessage) {
-  var waitsForFunc = new jasmine.WaitsForBlock(this.env, timeout, latchFunction, timeoutMessage, this);
+/**
+ * Waits for the latchFunction to return true before proceeding to the next block.
+ *
+ * @param {Function} latchFunction
+ * @param {String} optional_timeoutMessage
+ * @param {Number} optional_timeout
+ */
+jasmine.Spec.prototype.waitsFor = function(latchFunction, optional_timeoutMessage, optional_timeout) {
+  var latchFunction_ = null;
+  var optional_timeoutMessage_ = null;
+  var optional_timeout_ = null;
+
+  for (var i = 0; i < arguments.length; i++) {
+    var arg = arguments[i];
+    switch (typeof arg) {
+      case 'function':
+        latchFunction_ = arg;
+        break;
+      case 'string':
+        optional_timeoutMessage_ = arg;
+        break;
+      case 'number':
+        optional_timeout_ = arg;
+        break;
+    }
+  }
+
+  var waitsForFunc = new jasmine.WaitsForBlock(this.env, optional_timeout_, latchFunction_, optional_timeoutMessage_, this);
   this.addToQueue(waitsForFunc);
   return this;
 };

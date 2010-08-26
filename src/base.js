@@ -21,10 +21,15 @@ jasmine.unimplementedMethod_ = function() {
 jasmine.undefined = jasmine.___undefined___;
 
 /**
- * Default interval for event loop yields. Small values here may result in slow test running. Zero means no updates until all tests have completed.
+ * Default interval in milliseconds for event loop yields (e.g. to allow network activity or to refresh the screen with the HTML-based runner). Small values here may result in slow test running. Zero means no updates until all tests have completed.
  *
  */
 jasmine.DEFAULT_UPDATE_INTERVAL = 250;
+
+/**
+ * Default timeout interval in milliseconds for waitsFor() blocks.
+ */
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
 jasmine.getGlobal = function() {
   function getGlobal() {
@@ -490,22 +495,24 @@ var runs = function(func) {
 };
 
 /**
- * Waits for a timeout before moving to the next runs()-defined block.
- * @param {Number} timeout
+ * Waits a fixed time period before moving to the next block.
+ *
+ * @deprecated Use waitsFor() instead
+ * @param {Number} timeout milliseconds to wait
  */
 var waits = function(timeout) {
   jasmine.getEnv().currentSpec.waits(timeout);
 };
 
 /**
- * Waits for the latchFunction to return true before proceeding to the next runs()-defined block.
+ * Waits for the latchFunction to return true before proceeding to the next block.
  *
- * @param {Number} timeout
  * @param {Function} latchFunction
- * @param {String} message
+ * @param {String} optional_timeoutMessage
+ * @param {Number} optional_timeout
  */
-var waitsFor = function(timeout, latchFunction, message) {
-  jasmine.getEnv().currentSpec.waitsFor(timeout, latchFunction, message);
+var waitsFor = function(latchFunction, optional_timeoutMessage, optional_timeout) {
+  jasmine.getEnv().currentSpec.waitsFor.apply(jasmine.getEnv().currentSpec, arguments);
 };
 
 /**
