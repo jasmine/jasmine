@@ -500,6 +500,7 @@ describe("jasmine.Matchers", function() {
       describe("and matcher is inverted with .not", function() {
         it("should match any exception", function() {
           expect(match(throwingFn).not.toThrow()).toFail();
+          expect(lastResult().message).toMatch(/Expected function not to throw  an exception/);
         });
 
         it("should match exceptions specified by message", function() {
@@ -537,7 +538,7 @@ describe("jasmine.Matchers", function() {
     });
 
 
-    describe("when code block doesn not throw an exception", function() {
+    describe("when code block does not throw an exception", function() {
       it("should fail (or pass when inverted with .not)", function() {
         expect(match(function() {
         }).toThrow()).toFail();
@@ -787,7 +788,7 @@ describe("jasmine.Matchers", function() {
   });
 
   describe("all matchers", function() {
-    it("should return null, for futureproofing, since we might eventually allow matcher chaining", function() {
+    it("should return null, for future-proofing, since we might eventually allow matcher chaining", function() {
       expect(match(true).toBe(true)).toBeUndefined();
     });
   });

@@ -311,9 +311,11 @@ jasmine.Matchers.prototype.toThrow = function(expected) {
     result = (expected === jasmine.undefined || this.env.equals_(exception.message || exception, expected.message || expected));
   }
 
+  var not = this.isNot ? "not " : "";
+
   this.message = function() {
     if (exception && (expected === jasmine.undefined || !this.env.equals_(exception.message || exception, expected.message || expected))) {
-      return ["Expected function to throw", expected ? expected.message || expected : " an exception", ", but it threw", exception.message || exception].join(' ');
+      return ["Expected function " + not + "to throw", expected ? expected.message || expected : " an exception", ", but it threw", exception.message || exception].join(' ');
     } else {
       return "Expected function to throw an exception.";
     }
