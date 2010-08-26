@@ -74,9 +74,9 @@ namespace :jasmine do
 
       jasmine.puts %{
 jasmine.version_= {
-  "major": #{version['major']},
-  "minor": #{version['minor']},
-  "build": #{version['build']},
+  "major": #{version['major'].to_json},
+  "minor": #{version['minor'].to_json},
+  "build": #{version['build'].to_json},
   "revision": #{Time.now.to_i}
 };
 }
