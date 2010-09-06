@@ -304,10 +304,10 @@ Here are a few examples:
     ...
 
     it('should spy on Klass#method') {
-      spyOn(Klass, 'method');
-      Klass.method('foo argument');
+      spyOn(Klass.prototype, 'method');
+      Klass.prototype.method('foo argument');
 
-      expect(Klass.method).toHaveBeenCalledWith('foo argument');
+      expect(Klass.prototype.method).toHaveBeenCalledWith('foo argument');
     });
 
     it('should spy on Klass#methodWithCallback') {
@@ -330,14 +330,14 @@ Spies can be very useful for testing AJAX or other asynchronous behaviors that t
     ...
 
     it('should test async call') {
-      spyOn(Klass, 'asyncMethod');
+      spyOn(Klass.prototype, 'asyncMethod');
       var callback = jasmine.createSpy();
 
-      Klass.asyncMethod(callback);
+      Klass.prototype.asyncMethod(callback);
       expect(callback).not.toHaveBeenCalled();
 
       var someResponseData = 'foo';
-      Klass.asyncMethod.mostRecentCall.args[0](someResponseData);
+      Klass.prototype.asyncMethod.mostRecentCall.args[0](someResponseData);
       expect(callback).toHaveBeenCalledWith(someResponseData);
 
     });
