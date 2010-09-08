@@ -131,7 +131,8 @@ jasmine.version_= {
     {
         "lib/jasmine.js" => "jasmine.js",
         "lib/jasmine-html.js" => "jasmine-html.js",
-        "src/html/jasmine.css" => "jasmine.css"
+        "src/html/jasmine.css" => "jasmine.css",
+        "MIT.LICENSE"  => "MIT.LICENSE"
     }.each_pair do |src, dest|
       FileUtils.cp(File.join(root, src), File.join(lib_dir, dest))
     end
