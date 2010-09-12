@@ -293,30 +293,47 @@ Here are a few examples:
     var Klass = function () {
     };
 
-    var Klass.prototype.method = function (arg) {
+    Klass.staticMethod = function (arg) {
       return arg;
     };
 
-    var Klass.prototype.methodWithCallback = function (callback) {
+    Klass.prototype.method = function (arg) {
+      return arg;
+    };
+
+    Klass.prototype.methodWithCallback = function (callback) {
       return callback('foo');
     };
 
     ...
 
-    it('should spy on Klass#method') {
-      spyOn(Klass, 'method');
-      Klass.method('foo argument');
+    describe("spy behavior", function() {
+      it('should spy on a static method of Klass', function() {
+        spyOn(Klass, 'staticMethod');
+        Klass.staticMethod('foo argument');
 
-      expect(Klass.method).toHaveBeenCalledWith('foo argument');
+        expect(Klass.staticMethod).toHaveBeenCalledWith('foo argument');
+      });
+
+      it('should spy on an instance method of a Klass', function() {
+        var obj = new Klass();
+        spyOn(obj, 'method');
+        obj.method('foo argument');
+
+        expect(obj.method).toHaveBeenCalledWith('foo argument');
+
+        var obj2 = new Klass();
+        spyOn(obj2, 'method');
+        expect(obj2.method).not.toHaveBeenCalled();
+      });
+
+      it('should spy on Klass#methodWithCallback', function() {
+        var callback = jasmine.createSpy();
+        new Klass().methodWithCallback(callback);
+
+        expect(callback).toHaveBeenCalledWith('foo');
+      });
     });
-
-    it('should spy on Klass#methodWithCallback') {
-      var callback = jasmine.createSpy();
-      Klass.methodWithCallback(callback);
-
-      expect(callback).toHaveBeenCalledWith('foo');
-    });
-
 
 Spies can be very useful for testing AJAX or other asynchronous behaviors that take callbacks by faking the method firing an async call.
 
