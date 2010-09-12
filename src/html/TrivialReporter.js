@@ -34,7 +34,7 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
   this.outerDiv = this.createDom('div', { className: 'jasmine_reporter' },
       this.createDom('div', { className: 'banner' },
         this.createDom('div', { className: 'logo' },
-            "Jasmine",
+            this.createDom('a', { href: 'http://pivotal.github.com/jasmine/', target: "_blank" }, "Jasmine"),
             this.createDom('span', { className: 'version' }, runner.env.versionString())),
         this.createDom('div', { className: 'options' },
             "Show ",
