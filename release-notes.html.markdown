@@ -7,7 +7,7 @@ title: Jasmine Release Notes
 <div class="wikistyle">
 
   <div class="release" style="display: none">
-    <h2>Release 1.0 — ??? ??, 2010</h2>
+    <h2>Release 1.0 — September 14, 2010</h2>
     <h3>Jasmine Core</h3>
 
     <h4>Features</h4>
