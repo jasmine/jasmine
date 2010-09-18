@@ -2,24 +2,21 @@
 layout: default
 title: Jasmine User Guide
 ---
-=======
 
-Quick Start
-----------
+# Quick Start
 
-#### For JavaScript-only projects:
+## For JavaScript-only projects:
 1. Get the latest standalone release from the [downloads page](index.html).
 2. Open `SpecRunner.html` in your favorite browser.
 
-#### Other distributions:
+## Other distributions:
 * For integration with the Ruby environment, including automated execution with Selenium, please use the [jasmine gem](http://github.com/pivotal/jasmine-gem).
 
-### Which Release Should I Use?
+# Which Release Should I Use?
 
 Please use the latest version unless you have a good reason not to. Some of this documentation may not be applicable to older versions. Please see [Release Notes](release-notes.html) for change information.
 
-Why Another JavaScript TDD/BDD Framework?
------------
+# Why Another JavaScript TDD/BDD Framework?
 
 There are some great JavaScript testing frameworks out there already, so why did we write another?
 
@@ -27,33 +24,31 @@ None of the existing frameworks quite worked the way we wanted. Many only work f
 
 So we decided to start from scratch.
 
-Enter Jasmine
-------------
+# Enter Jasmine
 
 Jasmine is our dream JavaScript testing framework. It's heavily influenced by, and borrows the best parts of, ScrewUnit, JSSpec, [JSpec](http://github.com/visionmedia/jspec/tree/master), and of course RSpec.
 
 Jasmine was designed with a few principles in mind. We believe that a good JavaScript testing framework:
 
-* should not be tied to any browser, framework, platform, or host language.
-* should have idiomatic and unsurprising syntax.
-* should work anywhere JavaScript can run, including browsers, servers, phones, etc.
-* shouldn't intrude in your application's territory (e.g. by cluttering the global namespace).
-* should play well with IDEs (e.g. test code should pass static analysis).
+  * should not be tied to any browser, framework, platform, or host language.
+  * should have idiomatic and unsurprising syntax.
+  * should work anywhere JavaScript can run, including browsers, servers, phones, etc.
+  * shouldn't intrude in your application's territory (e.g. by cluttering the global namespace).
+  * should play well with IDEs (e.g. test code should pass static analysis).
 
 Some of our goals while writing Jasmine:
 
-* it should encourage good testing practices.
-* it should integrate easily with continuous build systems.
-* it should be simple to get started with.
+  * it should encourage good testing practices.
+  * it should integrate easily with continuous build systems.
+  * it should be simple to get started with.
 
 The result is Jasmine, and we love test-driving our code with it. Enjoy.
 
-How To
-------
+# How To
 
 There is a simple example of how to use Jasmine in the /example directory, but here's more information.
 
-### Specs
+## Specs
 
 Each spec is, naturally, a JavaScript function.  You tell Jasmine about a spec with a call to `it()` with a description string and the function.  The string is a description of a behavior that you want your production code to exhibit; it should be meaningful to you when reading a report.
 
@@ -62,7 +57,7 @@ Each spec is, naturally, a JavaScript function.  You tell Jasmine about a spec w
       foo++;
     });
 
-### Expectations
+## Expectations
 
 Within your spec you will express expectations about the behavior of your application code.  This is done using the `expect()` function and any of various expectation matchers, like this:
 
@@ -75,7 +70,7 @@ Within your spec you will express expectations about the behavior of your applic
 
 Results of the expectations will be reported to you when the spec is run.
 
-#### Expectation Matchers
+### Expectation Matchers
 
 Jasmine has several built-in matchers.  Here are a few:
 

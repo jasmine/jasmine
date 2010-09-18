@@ -1,87 +1,50 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <meta name="google-site-verification" content="TbQkaged6NgckZSPt_kq6JyBx9URJS7GQQjZrqHJjwU" />
-
-  <title>{{ page.title }}</title>
-
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #ffffff;
-      font-family: Helvetica, Arial, FreeSans, sans-serif;
-      color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 800px;
-    }
-    h1 { font-size: 3.8em; color: #000000; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 {
-        font-size: 1.5em;
-        padding-top: 1em;
-        color: #000000;
-        border-top: 4px solid #E0E0E0;
-    }
-    h3 { color: #000000; }
-    a { color: #000000; }
-    .description { font-size: 1.2em; margin-top: 50px; font-style: italic; float: right; text-align: right; }
-    .download { float: right; }
-    pre { background: #eff3e3; border: 3px solid black; color: #000; padding: 15px; }
-    hr { border: 15px solid #7ac142; clear: both; }
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-    table { border-collapse: collapse; width: 100% }
-    table th, table td { border: 1px solid #aaa; padding: .2em; }
-    table td { white-space:nowrap; }
-    #standalone-downloads td { font-family: monospace; }
-    #standalone-downloads td.sha { font-size: 0.8em; }
-    #standalone-downloads .rc td { background-color: #ddd; }
-  </style>
-
+  <meta charset="utf-8">
+  <title>{% if page.title %} {{ page.title }} | {% endif %} {{site.title}}</title>
+  <!--[if IE]>
+  <script type="text/javascript" src="js/html5.js"/>
+  <![endif]-->
+  <script src="http://widgets.twimg.com/j/2/widget.js"></script>
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+  <link rel="stylesheet" type="text/css" media="screen, projection" href="css/screen.css"/>
+  <link rel="stylesheet" type="text/css" media="screen, projection" href="css/pygments.css"/>
 </head>
-
 <body>
 <a href="http://github.com/pivotal/jasmine"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-
-<div id="container">
-
-  <div class="description">
-    Simple DOM-less
-    <br/>JavaScript testing framework
-  </div>
-
-  <h1><a href="http://pivotal.github.com/jasmine"><img src="images/jasmine_logo.png" alt="Jasmine"/></a></h1>
-
-  <hr style="clear: both;"/>
-
-{{ content }}
-
-  <hr/>
-
-  <div class="footer">
-    get the source code on GitHub : <a href="http://github.com/pivotal/jasmine">pivotal/jasmine</a>
-  </div>
-
+<div id="wrap" class="container_12">
+  <header class="grid_12 alpha omega">
+    <h1><a href="http://pivotal.github.com/jasmine"><img src="images/jasmine_logo.png" alt="Jasmine"/></a></h1>
+  </header>
+  <div class="clear"></div>
+  <section class="grid_4 alpha">
+    {% capture toc %} {% include toc.html %} {% endcapture %}
+    {{ toc | textilize }}
+  </section>
+  <section class="grid_8 omega">
+    {{ content }}
+  </section>
+  <div class="clear"></div>
+  <footer>
+    <div class="grid_12 alpha omega">
+      <span class="small">Powered by &nbsp;
+        <a href="http://pivotallabs.com/">
+          <img src="images/pivotal_logo.gif" alt="Pivotal Labs, Inc."/>
+        </a>
+      </span>
+    </div>
+    <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+      var pageTracker = _gat._getTracker("{{site.analytics_id}}");
+      pageTracker._trackPageview();
+    </script>
+  </footer>
+  <div class="clear"></div>
 </div>
-
-
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-17547473-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
+<!-- .container_12 -->
 </body>
 </html>
