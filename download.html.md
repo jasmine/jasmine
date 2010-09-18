@@ -10,7 +10,7 @@ These files are for the standalone release, meant for inclusion on a static HTML
 For a using Jasmine with Ruby on Rails, other Ruby frameworks, within Continuous Integration environments, or to gain
 more dynamic source and test file loading, see [Using the Jasmine Gem](gem.html).
 
-<table>
+<table id="standalone-downloads">
 <tr>
   <th></th>
   <th>Version</th>
@@ -18,6 +18,7 @@ more dynamic source and test file loading, see [Using the Jasmine Gem](gem.html)
   <th>Date</th>
   <th>SHA1</th>
 </tr>
+<!-- START_DOWNLOADS -->
 <tr>
   <td class="link"><a href='downloads/jasmine-standalone-1.0.0.zip'>jasmine-standalone-1.0.0.zip</a></td>
   <td class="version">1.0.0</td>
@@ -39,4 +40,5 @@ more dynamic source and test file loading, see [Using the Jasmine Gem](gem.html)
   <td class="date">2010/06/25 16:05:30 PDT</td>
   <td class="sha">26998c7ca047e47f84c382a4efeb1dc5cb8661a6</td>
 </tr>
+<!-- END_DOWNLOADS -->
 </table>
