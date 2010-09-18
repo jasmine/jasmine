@@ -138,3 +138,10 @@ ul.posts
 nav {
   margin-bottom: 25px;
 }
+
+table { border-collapse: collapse; width: 100% }
+table th, table td { border: 1px solid #aaa; padding: .2em; }
+table td { white-space:nowrap; }
+#standalone-downloads td { font-family: monospace; }
+#standalone-downloads td.sha { font-size: 0.8em; }
+#standalone-downloads .rc td { background-color: #ddd; }
