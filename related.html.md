@@ -11,7 +11,7 @@ title: Related Projects
 
 [jasmine-node](http://github.com/mhevery/jasmine-node)
 
-jasmine-reports
+[jasmine-reporters](http://github.com/larrymyers/jasmine-reporters)
 
 [jasmine-webos](http://pivotal.github.com/jasmine-webos/)
 
