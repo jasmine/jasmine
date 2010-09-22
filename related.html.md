@@ -26,7 +26,7 @@ title: Related Projects
 > A collection of jasmine.Reporter classes that can be used with Jasmine.
 
 [jasmine-webos](http://pivotal.github.com/jasmine-webos/)
-> Jasmine webOS allows you to use Jasmine to test-drive Palm¨ webOSª applications.
+> Jasmine webOS allows you to use Jasmine to test-drive Palm&reg; webOS&trade; applications.
 
 [jazz_money](http://github.com/pivotalexperimental/jazz_money)
 > Run your Jasmine specs without a browser.
