@@ -9,74 +9,78 @@ Jasmine integrates 'spies' that permit many spying, mocking, and faking behavior
 
 Here are a few examples:
 
-    var Klass = function () {
-    };
+{% highlight javascript %}
+var Klass = function () {
+};
 
-    Klass.staticMethod = function (arg) {
-      return arg;
-    };
+Klass.staticMethod = function (arg) {
+  return arg;
+};
 
-    Klass.prototype.method = function (arg) {
-      return arg;
-    };
+Klass.prototype.method = function (arg) {
+  return arg;
+};
 
-    Klass.prototype.methodWithCallback = function (callback) {
-      return callback('foo');
-    };
+Klass.prototype.methodWithCallback = function (callback) {
+  return callback('foo');
+};
 
-    ...
+...
 
-    describe("spy behavior", function() {
-      it('should spy on a static method of Klass', function() {
-        spyOn(Klass, 'staticMethod');
-        Klass.staticMethod('foo argument');
+describe("spy behavior", function() {
+  it('should spy on a static method of Klass', function() {
+    spyOn(Klass, 'staticMethod');
+    Klass.staticMethod('foo argument');
 
-        expect(Klass.staticMethod).toHaveBeenCalledWith('foo argument');
-      });
+    expect(Klass.staticMethod).toHaveBeenCalledWith('foo argument');
+  });
 
-      it('should spy on an instance method of a Klass', function() {
-        var obj = new Klass();
-        spyOn(obj, 'method');
-        obj.method('foo argument');
+  it('should spy on an instance method of a Klass', function() {
+    var obj = new Klass();
+    spyOn(obj, 'method');
+    obj.method('foo argument');
 
-        expect(obj.method).toHaveBeenCalledWith('foo argument');
+    expect(obj.method).toHaveBeenCalledWith('foo argument');
 
-        var obj2 = new Klass();
-        spyOn(obj2, 'method');
-        expect(obj2.method).not.toHaveBeenCalled();
-      });
+    var obj2 = new Klass();
+    spyOn(obj2, 'method');
+    expect(obj2.method).not.toHaveBeenCalled();
+  });
 
-      it('should spy on Klass#methodWithCallback', function() {
-        var callback = jasmine.createSpy();
-        new Klass().methodWithCallback(callback);
+  it('should spy on Klass#methodWithCallback', function() {
+    var callback = jasmine.createSpy();
+    new Klass().methodWithCallback(callback);
 
-        expect(callback).toHaveBeenCalledWith('foo');
-      });
-    });
+    expect(callback).toHaveBeenCalledWith('foo');
+  });
+});
+{% endhighlight %}
 
 Spies can be very useful for testing AJAX or other asynchronous behaviors that take callbacks by faking the method firing an async call.
 
-    var Klass = function () {
-    };
+{% highlight javascript %}
+var Klass = function () {
+};
 
-    var Klass.prototype.asyncMethod = function (callback) {
-      someAsyncCall(callback);
-    };
+var Klass.prototype.asyncMethod = function (callback) {
+  someAsyncCall(callback);
+};
 
-    ...
+...
 
-    it('should test async call') {
-      spyOn(Klass, 'asyncMethod');
-      var callback = jasmine.createSpy();
+it('should test async call') {
+  spyOn(Klass, 'asyncMethod');
+  var callback = jasmine.createSpy();
 
-      Klass.asyncMethod(callback);
-      expect(callback).not.toHaveBeenCalled();
+  Klass.asyncMethod(callback);
+  expect(callback).not.toHaveBeenCalled();
 
-      var someResponseData = 'foo';
-      Klass.asyncMethod.mostRecentCall.args[0](someResponseData);
-      expect(callback).toHaveBeenCalledWith(someResponseData);
+  var someResponseData = 'foo';
+  Klass.asyncMethod.mostRecentCall.args[0](someResponseData);
+  expect(callback).toHaveBeenCalledWith(someResponseData);
 
-    });
+});
+{% endhighlight %}
 
 There are spy-specfic matchers that are very handy.
 

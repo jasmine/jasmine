@@ -81,6 +81,11 @@ pre,code
     /* font-size: 1.142em; */
 }
 
+pre {
+  border-left: 2px solid #55862e;
+  padding-left: 1em;
+}
+
 .noul
 {
   border-bottom: 0;

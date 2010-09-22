@@ -43,15 +43,18 @@ It's extremely easy to create new matchers for your app. A matcher function rece
 
 Here's the definition of `toBeLessThan()`:
 
-    toBeLessThan: function(expected) {
-      return this.actual < expected;
-    };
+{% highlight javascript %}
+toBeLessThan: function(expected) {
+  return this.actual < expected;
+};
+{% endhighlight %}
 
 To add the matcher to your suite, call `this.addMatchers()` from within a `before` or `it` block. Call it with an object mapping matcher name to function:
 
-    beforeEach(function() {
-      this.addMatchers({
-        toBeVisible: function() { return this.actual.isVisible(); }
-      });
-    });
-
+{% highlight javascript %}
+beforeEach(function() {
+  this.addMatchers({
+    toBeVisible: function() { return this.actual.isVisible(); }
+  });
+});
+{% endhighlight %}

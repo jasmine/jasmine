@@ -19,9 +19,9 @@ describe("Jasmine", function() {
 ## Adding Jasmine to your Rails project
 
 {% highlight sh %}
-  $ gem install jasmine
-  $ script/generate jasmine
-  $ rake spec
+$ gem install jasmine
+$ script/generate jasmine
+$ rake spec
 {% endhighlight %}
 
 Jasmine can be run by on a static web page, on your Continuous Integration environment, or with [node.js](http://nodejs.org).
