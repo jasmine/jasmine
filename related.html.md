@@ -10,6 +10,9 @@ title: Related Projects
 [jasmine-ajax](http://github.com/pivotal/jasmine-ajax)
 > AJAX mocking for Jasmine.
 
+[jasmine-iphone](http://github.com/pivotal/jasmine-iphone)
+> Use Jasmine to drive your iPhone UI Automation tests.
+
 [jasmine-jstd-adapter](http://github.com/ibolmo/jasmine-jstd-adapter)
 > Jasmine adapter for JsTestDriver.
 
@@ -24,6 +27,9 @@ title: Related Projects
 
 [jasmine-reporters](http://github.com/larrymyers/jasmine-reporters)
 > A collection of jasmine.Reporter classes that can be used with Jasmine.
+
+[jasmine-tmbundle](http://github.com/pivotal/jasmine-tmbundle)
+> A TextMate bundle for the Jasmine JavaScript BDD Framework.
 
 [jasmine-webos](http://pivotal.github.com/jasmine-webos/)
 > Jasmine webOS allows you to use Jasmine to test-drive Palm&reg; webOS&trade; applications.
