@@ -92,7 +92,7 @@ jasmine.version_= {
   end
 
   task :need_pages_submodule do
-    unless File.exists?('pages/index.html')
+    unless File.exists?('pages/index.html.md')
       raise "Jasmine pages submodule isn't present.  Run git submodule update --init"
     end
   end
@@ -109,6 +109,8 @@ jasmine.version_= {
       t[:files] = jasmine_sources << jasmine_html_sources
       t[:options] = "-a"
       t[:out] = "pages/jsdoc"
+      # JsdocHelper bug: template must be relative to the JsdocHelper gem, ick
+      t[:template] = File.join("../".*(100), Dir::getwd, "jsdoc-template")
     end
     Rake::Task[:lambda_jsdoc].invoke
   end
