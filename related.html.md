@@ -37,6 +37,9 @@ title: Related Projects
 [jazz_money](http://github.com/pivotalexperimental/jazz_money)
 > Run your Jasmine specs without a browser.
 
+[vim snippets](http://www.vim.org/scripts/script.php?script_id=3249)
+> A set of Vim snipMate snippets for Jasmine
+
 ----
 
 If you'd like your project added, email <a href="mailto:jasmine-js@googlegroups.com">jasmine-js@googlegroups.com</a>.
