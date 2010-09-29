@@ -399,6 +399,39 @@ describe("jasmine spec running", function () {
       expect(subsequentSpecRan).toEqual(true);
     });
 
+    it("runs afterEach after timing out", function() {
+      var afterEach = jasmine.createSpy('afterEach');
+
+      env.describe('foo', function () {
+        env.afterEach(afterEach);
+
+        env.it('waitsFor', function () {
+          this.waitsFor(100, function() {
+            return false;
+          });
+        });
+      }).execute();
+
+      fakeTimer.tick(500);
+      expect(afterEach).toHaveBeenCalled();
+    });
+
+    it("runs single-spec after functions after timing out", function() {
+      var after = jasmine.createSpy('after');
+
+      env.describe('foo', function () {
+        env.it('waitsFor', function () {
+          this.after(after);
+          this.waitsFor(100, function() {
+            return false;
+          });
+        });
+      }).execute();
+
+      fakeTimer.tick(500);
+      expect(after).toHaveBeenCalled();
+    });
+
     describe('with consecutive calls', function () {
       var foo;
       beforeEach(function () {
