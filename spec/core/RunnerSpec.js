@@ -105,6 +105,19 @@ describe('RunnerTest', function() {
       expect(runnerResults.totalCount).toEqual(3);
       expect(runnerResults.passedCount).toEqual(3);
     });
+
+    it('should run after a failing spec', function () {
+      var afterEach = jasmine.createSpy();
+      env.afterEach(afterEach);
+
+      env.describe('suite', function () {
+        env.it('fails', function () {
+          this.explodes();
+        });
+      }).execute();
+
+      expect(afterEach).toHaveBeenCalled();
+    });
   });
 
 
