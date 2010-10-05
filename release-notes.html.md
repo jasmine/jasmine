@@ -6,6 +6,24 @@ title: Jasmine Release Notes
 # Release Notes
 
 -----
+## Release 1.0.1 — October 5, 2010
+-----
+
+### Jasmine Core
+
+#### Bugs fixed
+<ul>
+  <li>Bug fixes for Internet Explorer (thanks fabiomcosta and jfirebaugh).</li>
+</ul>
+
+### Jasmine Gem
+
+#### Bugs fixed
+<ul>
+  <li>Bug fix for Windows (thanks jfirebaugh).</li>
+</ul>
+
+-----
 ## Release 1.0 — September 14, 2010
 -----
 
