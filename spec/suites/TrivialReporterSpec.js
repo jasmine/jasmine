@@ -172,6 +172,9 @@ describe("TrivialReporter", function() {
       var errorDiv = findElement(divs, 'resultMessage log');
       expect(errorDiv.innerHTML).toEqual("this is a multipart log message");
     });
+
+    xit("should work on IE without console.log.apply", function() {
+    });
   });
 
   describe("duplicate example names", function() {
