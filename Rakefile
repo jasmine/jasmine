@@ -91,8 +91,9 @@ jasmine.version_= {
     FileUtils.cp("src/html/jasmine.css", "lib/jasmine.css")
   end
 
+  downloads_file = 'pages/download.html.md'
   task :need_pages_submodule do
-    unless File.exists?('pages/index.html.md')
+    unless File.exists?(downloads_file)
       raise "Jasmine pages submodule isn't present.  Run git submodule update --init"
     end
   end
@@ -154,7 +155,6 @@ jasmine.version_= {
     require 'digest/sha1'
 
     download_html = "<!-- START_DOWNLOADS -->\n"
-    download_html += "<table id=\"standalone-downloads\">\n<tr><th></th><th>Version</th><th>Size</th><th>Date</th><th>SHA1</th></tr>\n"
     Dir.glob('pages/downloads/*.zip').sort.reverse.each do |f|
       sha1 = Digest::SHA1.hexdigest File.read(f)
 
@@ -162,19 +162,19 @@ jasmine.version_= {
       version = /jasmine-standalone-(.*).zip/.match(f)[1]
       prerelease = /\.rc/.match(f)
       download_html += prerelease ? "<tr class=\"rc\">\n" : "<tr>\n"
-      download_html += "<td class=\"link\"><a href='#{fn}'>#{fn.sub(/downloads\//, '')}</a></td>\n"
-      download_html += "<td class=\"version\">#{version}</td>\n"
-      download_html += "<td class=\"size\">#{File.size(f) / 1024}k</td>\n"
-      download_html += "<td class=\"date\">#{File.mtime(f).strftime("%Y/%m/%d %H:%M:%S %Z")}</td>\n"
-      download_html += "<td class=\"sha\">#{sha1}</td>\n"
+      download_html += "  <td class=\"link\"><a href=\"#{fn}\">#{fn.sub(/downloads\//, '')}</a></td>\n"
+      download_html += "  <td class=\"version\">#{version}</td>\n"
+      download_html += "  <td class=\"size\">#{File.size(f) / 1024}k</td>\n"
+      download_html += "  <td class=\"date\">#{File.mtime(f).strftime("%Y/%m/%d %H:%M:%S %Z")}</td>\n"
+      download_html += "  <td class=\"sha\">#{sha1}</td>\n"
       download_html += "</tr>\n"
     end
-    download_html += "</table>\n<!-- END_DOWNLOADS -->"
+    download_html += "<!-- END_DOWNLOADS -->"
 
-    index_page = File.read('pages/index.html')
+    downloads_page = File.read(downloads_file)
     matcher = /<!-- START_DOWNLOADS -->.*<!-- END_DOWNLOADS -->/m
-    index_page = index_page.sub(matcher, download_html)
-    File.open('pages/index.html', 'w') {|f| f.write(index_page)}
+    downloads_page = downloads_page.sub(matcher, download_html)
+    File.open(downloads_file, 'w') {|f| f.write(downloads_page)}
     puts "rewrote that file"
   end
 end
