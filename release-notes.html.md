@@ -13,7 +13,7 @@ title: Jasmine Release Notes
 
 #### Bugs fixed
 <ul>
-  <li>Bug fixes for Internet Explorer (thanks fabiomcosta and jfirebaugh).</li>
+  <li>Bug fixes for Internet Explorer (thanks fschwiet, fabiomcosta, and jfirebaugh).</li>
 </ul>
 
 ### Jasmine Gem
