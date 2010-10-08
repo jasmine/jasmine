@@ -7,7 +7,7 @@
 
 These files are for the standalone release, meant for inclusion on a static HTML page and manual management of files.
 
-For a using Jasmine with Ruby on Rails, other Ruby frameworks, within Continuous Integration environments, or to gain
+For a using Jasmine with Ruby on Rails, other Ruby frameworks, within continuous integration environments, or to gain
 more dynamic source and test file loading, see [Using the Jasmine Gem](gem.html).
 
 <table id="standalone-downloads">
