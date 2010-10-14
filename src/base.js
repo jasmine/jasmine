@@ -106,10 +106,7 @@ jasmine.ExpectationResult.prototype.passed = function () {
  * Getter for the Jasmine environment. Ensures one gets created
  */
 jasmine.getEnv = function() {
-  if(jasmine.currentEnv_ == null) {
-    jasmine.currentEnv_ = new jasmine.Env(); 
-  };
-  return jasmine.currentEnv_;
+  return (jasmine.currentEnv_ = jasmine.currentEnv_ || new jasmine.Env());
 };
 
 /**
