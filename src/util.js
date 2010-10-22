@@ -44,7 +44,38 @@ jasmine.util.formatException = function(e) {
     message += ' in ' + file + ' (line ' + lineNumber + ')';
   }
 
+  if (!file && !lineNumber) {
+    message += ' in ' + e.stack.match(/\(file\:.*\)/)[0];
+  }
+  
   return message;
+};
+
+jasmine.util.formatTrace = function(e) {
+  var lineNumber;
+  if (e.line) {
+    lineNumber = e.line;
+  }
+  else if (e.lineNumber) {
+    lineNumber = e.lineNumber;
+  }
+
+  var file;
+
+  if (e.sourceURL) {
+    file = e.sourceURL;
+  }
+  else if (e.fileName) {
+    file = e.fileName;
+  }
+
+  var trace;
+  
+  if (!file && !lineNumber) {
+    trace = e.stack;
+  }
+  
+  return trace;
 };
 
 jasmine.util.htmlEscape = function(str) {
