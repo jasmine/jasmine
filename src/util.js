@@ -44,7 +44,7 @@ jasmine.util.formatException = function(e) {
     message += ' in ' + file + ' (line ' + lineNumber + ')';
   }
 
-  if (!file && !lineNumber && e.stack) {
+  if (!file && !lineNumber && typeof e.stack === "string") {
     message += ' in ' + e.stack.match(/\(file\:.*\)/)[0];
   }
   
