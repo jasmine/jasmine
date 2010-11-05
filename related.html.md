@@ -49,3 +49,4 @@ title: Related Projects
 ----
 
 If you'd like your project added, email <a href="mailto:jasmine-js@googlegroups.com">jasmine-js@googlegroups.com</a>.
+Please include your project's name, a brief description, and web site/repository urls. We reserve the right to edit.
