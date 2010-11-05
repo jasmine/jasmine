@@ -1,6 +1,6 @@
 ---
   layout: default
-  title: Jasmine Spies
+  title: Spies
 ---
 
 ### Spies

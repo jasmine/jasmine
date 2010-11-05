@@ -1,6 +1,6 @@
 ---
   layout: default
-  title: Jasmine Downloads
+  title: Downloads
 ---
 
 ## Downloads

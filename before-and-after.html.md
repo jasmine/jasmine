@@ -1,6 +1,6 @@
 ---
   layout: default
-  title: Before and After a Jasmine Spec
+  title: Before and After a Spec
 ---
 
 #### beforeEach

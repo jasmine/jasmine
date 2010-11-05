@@ -1,6 +1,6 @@
 ---
   layout: default
-  title: Jasmine Suites & Specs
+  title: Suites & Specs
 ---
 
 ## Specs

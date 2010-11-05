@@ -1,6 +1,6 @@
 ---
   layout: default
-  title: Jasmine Matchers
+  title: Matchers
 ---
 
 ### Expectation Matchers

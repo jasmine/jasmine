@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Jasmine User Guide
+title: User Guide
 ---
 
 # Quick Start

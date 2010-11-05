@@ -1,6 +1,6 @@
 ---
   layout: default
-  title: Asynchronous Specs with Jasmine
+  title: Asynchronous Specs
 ---
 
 ### Asynchronous Specs

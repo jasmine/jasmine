@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Jasmine Release Notes
+title: Release Notes
 ---
 
 # Release Notes

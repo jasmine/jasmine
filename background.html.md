@@ -1,6 +1,6 @@
 ---
   layout: default
-  title: Jasmine Background & History
+  title: Background & History
 ---
 
 # Why Another JavaScript TDD/BDD Framework?
