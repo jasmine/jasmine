@@ -37,6 +37,9 @@ title: Related Projects
 [jazz_money](http://github.com/pivotalexperimental/jazz_money)
 > Run your Jasmine specs without a browser.
 
+[mootools-runner](http://github.com/mootools/mootools-runner)
+> The MooTools Specs runner uses Jasmine as a UnitTest-Library; it is possible to run specs via the browser, via JSTestDriver and via NodeJS.
+
 [vim snippets](http://www.vim.org/scripts/script.php?script_id=3249)
 > A set of Vim snipMate snippets for Jasmine
 
