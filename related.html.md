@@ -10,6 +10,9 @@ title: Related Projects
 [jasmine-ajax](http://github.com/pivotal/jasmine-ajax)
 > AJAX mocking for Jasmine.
 
+[jasmine-dom](https://github.com/jeffwatkins/jasmine-dom)
+> This add-on provides a set of custom matchers for working with DOM nodes and an API for handling HTML fixtures in your spec.
+
 [jasmine-iphone](http://github.com/pivotal/jasmine-iphone)
 > Use Jasmine to drive your iPhone UI Automation tests.
 
