@@ -23,6 +23,33 @@ Without Jasmine double checking all of my renaming, I would have gone insane.
 **web**: [http://10k.aneventapart.com/Entry/165](http://10k.aneventapart.com/Entry/165)
 | **source**: [http://github.com/roykolak/count-it-down](http://github.com/roykolak/count-it-down)
 
+----
+
+## Diaspora
+
+The privacy aware, personally controlled, do-it-all, open source social network.
+
+We're currently backfilling specs for existing js (which has been an educational process) and will be TDDing it
+moving forward.
+
+-- Sarah Mei
+
+**web**: [http://www.joindiaspora.com/](http://www.joindiaspora.com/)
+| **source**: [https://github.com/diaspora/diaspora](https://github.com/diaspora/diaspora)
+
+----
+
+## Maptini
+
+Real time collaborative mind mapping for Web, iPhone, & iPad.  The web version is all html5 + javascript.
+
+**web**: [http://maptini.com/](http://maptini.com/)
+
+----
+
+## VerticalResponse
+
+**web**: [http://www.verticalresponse.com/](http://www.verticalresponse.com/)
 
 ----
 
