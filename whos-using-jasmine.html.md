@@ -39,6 +39,14 @@ moving forward.
 
 ----
 
+## EaselTV
+
+We're using Jasmine at EaselTV for some JS/HTML based TV apps.
+
+**web**: [http://easeltv.com/](http://easeltv.com/)
+
+----
+
 ## Maptini
 
 Real time collaborative mind mapping for Web, iPhone, & iPad.  The web version is all html5 + javascript.
@@ -77,6 +85,15 @@ A recent contribution to our Weplay fork of jasmine is the ability to specify Sp
 <br/>
 <small>While our parent project repository is privately hosted, we currently incorporate and contribute to 63 (yikes!)
 public repositories, including jasmine and jasmine-gem.</small>
+
+----
+
+## Wikimedia Foundation Multimedia Usability Project
+
+Improved uploader tool for Wikimedia Commons.
+
+**web**: [http://wikimedia.org/](http://wikimedia.org/)
+| **source**: [http://svn.wikimedia.org/svnroot/mediawiki/trunk/extensions/UploadWizard/test/](http://svn.wikimedia.org/svnroot/mediawiki/trunk/extensions/UploadWizard/test/)
 
 ----
 
