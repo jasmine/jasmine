@@ -93,7 +93,7 @@ jasmine.version_= {
 
   downloads_file = 'pages/download.html.md'
   task :need_pages_submodule do
-    unless File.exists?(downloads_file)
+    unless File.exist?(downloads_file)
       raise "Jasmine pages submodule isn't present.  Run git submodule update --init"
     end
   end
@@ -122,7 +122,7 @@ jasmine.version_= {
 
     temp_dir = File.join(Dir.tmpdir, 'jasmine-standalone-project')
     puts "Building Example Project in #{temp_dir}"
-    FileUtils.rm_r temp_dir if File.exists?(temp_dir)
+    FileUtils.rm_r temp_dir if File.exist?(temp_dir)
     Dir.mkdir(temp_dir)
 
     root = File.expand_path(File.dirname(__FILE__))
