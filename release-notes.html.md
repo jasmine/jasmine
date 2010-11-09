@@ -6,6 +6,22 @@ title: Release Notes
 # Release Notes
 
 -----
+## Release 1.0.1.1 — November 9, 2010
+-----
+
+### Jasmine Gem
+
+#### Bugs fixed
+<ul>
+  <li>Rails 3.0 and RSpec 2.0 are now supported.</li>
+</ul>
+
+#### Known issues
+<ul>
+  <li>Rails 3 generators are not yet implemented -- coming soon!</li>
+</ul>
+
+-----
 ## Release 1.0.1 — October 5, 2010
 -----
 
