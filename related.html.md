@@ -31,6 +31,9 @@ title: Related Projects
 [jasmine-reporters](http://github.com/larrymyers/jasmine-reporters)
 > A collection of jasmine.Reporter classes that can be used with Jasmine.
 
+[Jasmine Species](http://rudylattae.github.com/jasmine-species/) [[repo](https://github.com/rudylattae/jasmine-species)]
+> Provides extended BDD grammar and reporting for Jasmine. It allows for constructs like "Feature -> Scenario",  "Given -> When -> Then" and other useful BDD styles.
+
 [jasmine-tmbundle](http://github.com/pivotal/jasmine-tmbundle)
 > A TextMate bundle for the Jasmine JavaScript BDD Framework.
 
