@@ -515,6 +515,26 @@ describe("jasmine.Matchers", function() {
           expect(match(throwingFn).not.toThrow(new Error("Other Error"))).toPass();
         });
       });
+
+      describe("when function only throws based on provided arguments",function(){
+        beforeEach(function(){
+          throwingFn = function(fruit,vegetable) {
+            if(fruit === "Banana") {
+              throw new Error("Banana Error");
+            } else if(vegetable === "Tomato") {
+              throw new Error("Tomato Error");
+            }
+          };
+        });
+
+        it("should match when thrown because of argument",function(){
+          expect(match(throwingFn).toThrow(new Error("Banana Error"),"Banana")).toPass();
+        });
+
+        it("should match when thrown because of subsequent argument",function() {
+          expect(match(throwingFn).toThrow(new Error("Tomato Error"),"Apple","Tomato")).toPass();
+        });
+      });
     });
 
     describe("when actual is not a function", function() {

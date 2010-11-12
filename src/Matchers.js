@@ -303,7 +303,9 @@ jasmine.Matchers.prototype.toThrow = function(expected) {
     throw new Error('Actual is not a function');
   }
   try {
-    this.actual();
+    var args = [];
+    for(var i=1;i<arguments.length;i++) { args.push(arguments[i]); }
+    this.actual.apply(this,args);
   } catch (e) {
     exception = e;
   }
