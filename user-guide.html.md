@@ -6,7 +6,7 @@ title: User Guide
 # Quick Start
 
 ## For JavaScript-only projects:
-1. Get the latest standalone release from the [downloads page](index.html).
+1. Get the latest standalone release from the [downloads page](download.html).
 2. Open `SpecRunner.html` in your favorite browser.
 
 ## Other distributions:
