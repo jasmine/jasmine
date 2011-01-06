@@ -24,4 +24,28 @@ describe("base.js", function() {
       expect(jasmine.getGlobal()).toBe(globalObject);
     });
   });
+
+  describe("helper functions", function() {
+    var env, helperFunction;
+
+    beforeEach(function() {
+      env = jasmine.getEnv();
+      helperFunction = jasmine.createSpy();
+      spyOn(env, "beforeEach");
+    });
+
+    describe("beforeEach", function() {
+      it("should call env beforeEach", function() {
+        beforeEach(helperFunction);
+        expect(env.beforeEach).toHaveBeenCalledWith(helperFunction);
+      });
+    });
+    describe("before", function() {
+      it("should alias beforeEach", function() {
+        before(helperFunction);
+        expect(env.beforeEach).toHaveBeenCalledWith(helperFunction);
+      });
+    });
+  });
+
 });

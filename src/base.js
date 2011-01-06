@@ -527,6 +527,13 @@ var beforeEach = function(beforeEachFunction) {
 };
 
 /**
+ * Alias for beforeEach.
+ *
+ * @param {Function} beforeEachFunction
+ */
+var before = beforeEach;
+
+/**
  * A function that is called after each spec in a suite.
  *
  * Used for restoring any state that is hijacked during spec execution.
