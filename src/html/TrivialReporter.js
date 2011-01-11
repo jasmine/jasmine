@@ -89,6 +89,9 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
 
 jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
   var results = runner.results();
+  if(jasmine.TrivialReporter.hasConsole()) {
+    jasmine.TrivialReporter.reportToConsole(runner.suites());
+  }
   var className = (results.failedCount > 0) ? "runner failed" : "runner passed";
   this.runnerDiv.setAttribute("class", className);
   //do it twice for IE
@@ -105,6 +108,43 @@ jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
   this.runnerMessageSpan.replaceChild(this.createDom('a', { className: 'description', href: '?'}, message), this.runnerMessageSpan.firstChild);
 
   this.finishedAtSpan.appendChild(document.createTextNode("Finished at " + new Date().toString()));
+};
+
+jasmine.TrivialReporter.hasConsole = function() {
+  return window['console'] && console.info && console.warn && console.group && console.groupEnd && console.groupCollapsed
+};
+
+jasmine.TrivialReporter.reportToConsole = function (suites) {
+  for (var i in suites) {
+	var suite = suites[i]
+    console.group(suite.description)
+	var specs = suite.specs();
+    for (var j in specs) {
+      var spec = specs[j]
+      var results = spec.results();
+      res = results
+      var passedSpecs = results.passed()
+      var groupFunc = results.passed() ? console.groupCollapsed : console.group
+      if(results.passed() && console.groupCollapsed) {
+	    console.groupCollapsed(spec.description)
+      } else {
+	    console.group(spec.description)
+      }
+      var items = results.getItems()
+      for (var k in items) {
+	    var item = items[k]
+        if(item.passed && !item.passed()) {
+          console.warn({actual:item.actual,expected: item.expected});
+          item.trace.message = item.matcherName
+          console.error(item.trace)
+        } else {
+          console.info('Passed')
+        }
+      }
+      console.groupEnd()
+    }
+    console.groupEnd()
+  }
 };
 
 jasmine.TrivialReporter.prototype.reportSuiteResults = function(suite) {
