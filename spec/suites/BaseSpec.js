@@ -31,21 +31,35 @@ describe("base.js", function() {
     beforeEach(function() {
       env = jasmine.getEnv();
       helperFunction = jasmine.createSpy();
-      spyOn(env, "beforeEach");
     });
 
     describe("beforeEach", function() {
+      beforeEach(function() {
+        spyOn(env, "beforeEach");
+      });
       it("should call env beforeEach", function() {
         beforeEach(helperFunction);
         expect(env.beforeEach).toHaveBeenCalledWith(helperFunction);
       });
-    });
-    describe("before", function() {
-      it("should alias beforeEach", function() {
+      it("should have alias 'before'", function() {
         before(helperFunction);
         expect(env.beforeEach).toHaveBeenCalledWith(helperFunction);
       });
     });
+    describe("afterEach", function() {
+      beforeEach(function() {
+        spyOn(env, "afterEach");
+      });
+      it("should call env afterEach", function() {
+        afterEach(helperFunction);
+        expect(env.afterEach).toHaveBeenCalledWith(helperFunction);
+      });
+      it("should have alias 'after'", function() {
+        after(helperFunction);
+        expect(env.afterEach).toHaveBeenCalledWith(helperFunction);
+      });
+    });
+
   });
 
 });

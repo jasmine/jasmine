@@ -116,7 +116,7 @@ jasmine.getEnv = function() {
  * @returns {Boolean}
  */
 jasmine.isArray_ = function(value) {
-  return jasmine.isA_("Array", value);  
+  return jasmine.isA_("Array", value);
 };
 
 /**
@@ -543,6 +543,13 @@ var before = beforeEach;
 var afterEach = function(afterEachFunction) {
   jasmine.getEnv().afterEach(afterEachFunction);
 };
+
+/**
+ * Alias for afterEach.
+ *
+ * @param {Function} afterEachFunction
+ */
+var after = afterEach;
 
 /**
  * Defines a suite of specifications.
