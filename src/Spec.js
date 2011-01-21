@@ -205,16 +205,16 @@ jasmine.Spec.prototype.addBeforesAndAftersToQueue = function() {
 };
 
 jasmine.Spec.prototype.explodes = function() {
-  throw 'explodes function should not have been called';
+  throw new Error('explodes function should not have been called');
 };
 
 jasmine.Spec.prototype.spyOn = function(obj, methodName, ignoreMethodDoesntExist) {
   if (obj == jasmine.undefined) {
-    throw "spyOn could not find an object to spy upon for " + methodName + "()";
+    throw new Error("spyOn could not find an object to spy upon for " + methodName + "()");
   }
 
   if (!ignoreMethodDoesntExist && obj[methodName] === jasmine.undefined) {
-    throw methodName + '() method does not exist';
+    throw new Error(methodName + '() method does not exist');
   }
 
   if (!ignoreMethodDoesntExist && obj[methodName] && obj[methodName].isSpy) {

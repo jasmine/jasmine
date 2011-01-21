@@ -91,7 +91,7 @@ jasmine.ExpectationResult = function(params) {
   this.actual = params.actual;
 
   this.message = this.passed_ ? 'Passed.' : params.message;
-  if (params.trace) {
+  if (typeof params.trace == 'object') {
     this.trace = params.trace
   } else {
     this.trace = this.passed_ ? '' : new Error(this.message);
