@@ -1,7 +1,7 @@
 .idea/
 .svn/
 .DS_Store
-_site/
+site/
 .bundle/
 .pairs
 Gemfile.lock
