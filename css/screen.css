@@ -24,6 +24,15 @@ body
   font-size:87.5%;   /* 16px * 0.875 = 14px */
   line-height: 137.5%; /* 16px * 1.375  = 22px */
 }
+
+.content {
+  margin: 32px;
+}
+
+.copy {
+  margin-top: 24px;
+}
+
 a
 {
 	color: #55862e;
