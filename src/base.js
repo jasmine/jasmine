@@ -94,11 +94,11 @@ jasmine.ExpectationResult = function(params) {
   this.trace = this.passed_ ? '' : new Error(this.message);
 };
 
-jasmine.ExpectationResult.prototype.toString = function () {
+jasmine.ExpectationResult.prototype.toString = function() {
   return this.message;
 };
 
-jasmine.ExpectationResult.prototype.passed = function () {
+jasmine.ExpectationResult.prototype.passed = function() {
   return this.passed_;
 };
 
@@ -409,7 +409,7 @@ jasmine.createSpyObj = function(baseName, methodNames) {
     throw new Error('createSpyObj requires a non-empty array of method names to create spies for');
   }
   var obj = {};
-  for (var i = 0; i < methodNames.length; i++) {
+  for (var i = methodNames.length; i--;) {
     obj[methodNames[i]] = jasmine.createSpy(baseName + '.' + methodNames[i]);
   }
   return obj;

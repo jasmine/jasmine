@@ -56,12 +56,16 @@ jasmine.util.htmlEscape = function(str) {
 
 jasmine.util.argsToArray = function(args) {
   var arrayOfArgs = [];
-  for (var i = 0; i < args.length; i++) arrayOfArgs.push(args[i]);
+  for (var i = 0, l = args.length; i < l; i++) {
+    arrayOfArgs.push(args[i]);
+  }
   return arrayOfArgs;
 };
 
 jasmine.util.extend = function(destination, source) {
-  for (var property in source) destination[property] = source[property];
+  for (var property in source) {
+    destination[property] = source[property];
+  }
   return destination;
 };
 

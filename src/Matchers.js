@@ -52,7 +52,7 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
         var englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
         message = "Expected " + jasmine.pp(this.actual) + (this.isNot ? " not " : " ") + englishyPredicate;
         if (matcherArgs.length > 0) {
-          for (var i = 0; i < matcherArgs.length; i++) {
+          for (var i = 0, l = matcherArgs.length; i < l; i++) {
             if (i > 0) message += ",";
             message += " " + jasmine.pp(matcherArgs[i]);
           }

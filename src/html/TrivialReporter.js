@@ -7,7 +7,7 @@ jasmine.TrivialReporter = function(doc) {
 jasmine.TrivialReporter.prototype.createDom = function(type, attrs, childrenVarArgs) {
   var el = document.createElement(type);
 
-  for (var i = 2; i < arguments.length; i++) {
+  for (var i = 2, l = arguments.length; i < l; i++) {
     var child = arguments[i];
 
     if (typeof child === 'string') {
@@ -54,7 +54,7 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
   this.document.body.appendChild(this.outerDiv);
 
   var suites = runner.suites();
-  for (var i = 0; i < suites.length; i++) {
+  for (var i = 0, l = suites.length; i < l; i++) {
     var suite = suites[i];
     var suiteDiv = this.createDom('div', { className: 'suite' },
         this.createDom('a', { className: 'run_spec', href: '?spec=' + encodeURIComponent(suite.getFullName()) }, "run"),
@@ -95,7 +95,7 @@ jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
   this.runnerDiv.setAttribute("className", className);
   var specs = runner.specs();
   var specCount = 0;
-  for (var i = 0; i < specs.length; i++) {
+  for (var i = 0, l = specs.length; i < l; i++) {
     if (this.specFilter(specs[i])) {
       specCount++;
     }
@@ -139,7 +139,7 @@ jasmine.TrivialReporter.prototype.reportSpecResults = function(spec) {
 
   var resultItems = results.getItems();
   var messagesDiv = this.createDom('div', { className: 'messages' });
-  for (var i = 0; i < resultItems.length; i++) {
+  for (var i = 0, l = resultItems.length; i < l; i++) {
     var result = resultItems[i];
 
     if (result.type == 'log') {
@@ -178,7 +178,7 @@ jasmine.TrivialReporter.prototype.getLocation = function() {
 jasmine.TrivialReporter.prototype.specFilter = function(spec) {
   var paramMap = {};
   var params = this.getLocation().search.substring(1).split('&');
-  for (var i = 0; i < params.length; i++) {
+  for (var i = 0, l = params.length; i < l; i++) {
     var p = params[i].split('=');
     paramMap[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
   }

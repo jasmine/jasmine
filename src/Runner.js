@@ -18,19 +18,19 @@ jasmine.Runner.prototype.execute = function() {
   if (self.env.reporter.reportRunnerStarting) {
     self.env.reporter.reportRunnerStarting(this);
   }
-  self.queue.start(function () {
+  self.queue.start(function() {
     self.finishCallback();
   });
 };
 
 jasmine.Runner.prototype.beforeEach = function(beforeEachFunction) {
   beforeEachFunction.typeName = 'beforeEach';
-  this.before_.splice(0,0,beforeEachFunction);
+  this.before_.unshift(beforeEachFunction);
 };
 
 jasmine.Runner.prototype.afterEach = function(afterEachFunction) {
   afterEachFunction.typeName = 'afterEach';
-  this.after_.splice(0,0,afterEachFunction);
+  this.after_.unshift(afterEachFunction);
 };
 
 
@@ -49,10 +49,10 @@ jasmine.Runner.prototype.add = function(block) {
   this.queue.add(block);
 };
 
-jasmine.Runner.prototype.specs = function () {
+jasmine.Runner.prototype.specs = function() {
   var suites = this.suites();
   var specs = [];
-  for (var i = 0; i < suites.length; i++) {
+  for (var i = 0, l = suites.length; i < l; i++) {
     specs = specs.concat(suites[i].specs());
   }
   return specs;
@@ -64,7 +64,7 @@ jasmine.Runner.prototype.suites = function() {
 
 jasmine.Runner.prototype.topLevelSuites = function() {
   var topLevelSuites = [];
-  for (var i = 0; i < this.suites_.length; i++) {
+  for (var i = 0, l = this.suites_.length; i < l; i++) {
     if (!this.suites_[i].parentSuite) {
       topLevelSuites.push(this.suites_[i]);
     }

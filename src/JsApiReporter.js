@@ -12,7 +12,7 @@ jasmine.JsApiReporter = function() {
 jasmine.JsApiReporter.prototype.reportRunnerStarting = function(runner) {
   this.started = true;
   var suites = runner.topLevelSuites();
-  for (var i = 0; i < suites.length; i++) {
+  for (var i = suites.length; i--;) {
     var suite = suites[i];
     this.suites_.push(this.summarize_(suite));
   }
@@ -33,7 +33,7 @@ jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
   
   if (isSuite) {
     var children = suiteOrSpec.children();
-    for (var i = 0; i < children.length; i++) {
+    for (var i = 0, l = children.length; i < l; i++) {
       summary.children.push(this.summarize_(children[i]));
     }
   }
@@ -71,7 +71,7 @@ jasmine.JsApiReporter.prototype.log = function(str) {
 
 jasmine.JsApiReporter.prototype.resultsForSpecs = function(specIds){
   var results = {};
-  for (var i = 0; i < specIds.length; i++) {
+  for (var i = specIds.length; i--;) {
     var specId = specIds[i];
     results[specId] = this.summarizeResult_(this.results_[specId]);
   }

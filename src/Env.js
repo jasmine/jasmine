@@ -39,7 +39,7 @@ jasmine.Env.prototype.clearInterval = jasmine.clearInterval;
 /**
  * @returns an object containing jasmine version build info, if set.
  */
-jasmine.Env.prototype.version = function () {
+jasmine.Env.prototype.version = function() {
   if (jasmine.version_) {
     return jasmine.version_;
   } else {
@@ -62,14 +62,14 @@ jasmine.Env.prototype.versionString = function() {
 /**
  * @returns a sequential integer starting at 0
  */
-jasmine.Env.prototype.nextSpecId = function () {
+jasmine.Env.prototype.nextSpecId = function() {
   return this.nextSpecId_++;
 };
 
 /**
  * @returns a sequential integer starting at 0
  */
-jasmine.Env.prototype.nextSuiteId = function () {
+jasmine.Env.prototype.nextSuiteId = function() {
   return this.nextSuiteId_++;
 };
 
@@ -123,7 +123,7 @@ jasmine.Env.prototype.beforeEach = function(beforeEachFunction) {
   }
 };
 
-jasmine.Env.prototype.currentRunner = function () {
+jasmine.Env.prototype.currentRunner = function() {
   return this.currentRunner_;
 };
 
@@ -205,7 +205,7 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
   mismatchKeys = mismatchKeys || [];
   mismatchValues = mismatchValues || [];
 
-  for (var i = 0; i < this.equalityTesters_.length; i++) {
+  for (var i = 0, l = this.equalityTesters_.length; i < l; i++) {
     var equalityTester = this.equalityTesters_[i];
     var result = equalityTester(a, b, this, mismatchKeys, mismatchValues);
     if (result !== jasmine.undefined) return result;
@@ -251,7 +251,7 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
 
 jasmine.Env.prototype.contains_ = function(haystack, needle) {
   if (jasmine.isArray_(haystack)) {
-    for (var i = 0; i < haystack.length; i++) {
+    for (var i = haystack.length; i--;) {
       if (this.equals_(haystack[i], needle)) return true;
     }
     return false;
