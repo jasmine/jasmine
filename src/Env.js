@@ -115,6 +115,22 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
   return suite;
 };
 
+jasmine.Env.prototype.beforeAll = function(beforeAllFunction) {
+  if (this.currentSuite) {
+    this.currentSuite.beforeAll(beforeAllFunction);
+  } else {
+    this.currentRunner_.beforeAll(beforeAllFunction);
+  }
+};
+
+jasmine.Env.prototype.afterAll = function(afterAllFunction) {
+  if (this.currentSuite) {
+    this.currentSuite.afterAll(afterAllFunction);
+  } else {
+    this.currentRunner_.afterAll(afterAllFunction);
+  }
+};
+
 jasmine.Env.prototype.beforeEach = function(beforeEachFunction) {
   if (this.currentSuite) {
     this.currentSuite.beforeEach(beforeEachFunction);
