@@ -201,6 +201,27 @@ jasmine.Spec.prototype.addBeforesAndAftersToQueue = function() {
   for (i = 0; i < runner.after_.length; i++) {
     this.queue.add(new jasmine.Block(this.env, runner.after_[i], this));
   }
+
+  if (!this.suite.queue.index) {
+    for (i = 0, l = this.suite.beforeAll_.length; i < l; i++) {
+      this.queue.addBefore(new jasmine.Block(this.env, this.suite.beforeAll_[i], this));
+    }
+    if (!runner.queue.index) {
+      for (i = 0, l = runner.beforeAll_.length; i < l; i++) {
+        this.queue.addBefore(new jasmine.Block(this.env, runner.beforeAll_[i], this));
+      }
+    }
+  }
+  if (this.suite.queue.index == this.suite.queue.blocks.length - 1) {
+    for (i = 0, l = this.suite.afterAll_.length; i < l; i++) {
+      this.queue.add(new jasmine.Block(this.env, this.suite.afterAll_[i], this));
+    }
+    if (runner.queue.index == runner.queue.blocks.length - 1) {
+      for (i = 0, l = runner.afterAll_.length; i < l; i++) {
+        this.queue.add(new jasmine.Block(this.env, runner.afterAll_[i], this));
+      }
+    }
+  }
 };
 
 jasmine.Spec.prototype.explodes = function() {

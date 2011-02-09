@@ -516,6 +516,28 @@ var waitsFor = function(latchFunction, optional_timeoutMessage, optional_timeout
 };
 
 /**
+ * A function that is called before all spec in a suite.
+ *
+ * Used for suite setup, including validating assumptions.
+ *
+ * @param {Function} beforeAllFunction
+ */
+var beforeAll = function(beforeAllFunction) {
+  jasmine.getEnv().beforeAll(beforeAllFunction);
+};
+
+/**
+ * A function that is called after all spec in a suite.
+ *
+ * Used for suite setup, including validating assumptions.
+ *
+ * @param {Function} afterAllFunction
+ */
+var afterAll = function(afterAllFunction) {
+  jasmine.getEnv().afterAll(afterAllFunction);
+};
+
+/**
  * A function that is called before each spec in a suite.
  *
  * Used for spec setup, including validating assumptions.
@@ -541,7 +563,7 @@ var afterEach = function(afterEachFunction) {
  * Defines a suite of specifications.
  *
  * Stores the description and all defined specs in the Jasmine environment as one suite of specs. Variables declared
- * are accessible by calls to beforeEach, it, and afterEach. Describe blocks can be nested, allowing for specialization
+ * are accessible by calls to beforeAll, afterAll, beforeEach, it, and afterEach. Describe blocks can be nested, allowing for specialization
  * of setup in some tests.
  *
  * @example

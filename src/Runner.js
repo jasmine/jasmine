@@ -8,6 +8,8 @@ jasmine.Runner = function(env) {
   var self = this;
   self.env = env;
   self.queue = new jasmine.Queue(env);
+  self.beforeAll_ = [];
+  self.afterAll_ = [];
   self.before_ = [];
   self.after_ = [];
   self.suites_ = [];
@@ -23,6 +25,16 @@ jasmine.Runner.prototype.execute = function() {
   });
 };
 
+jasmine.Runner.prototype.beforeAll = function(beforeAllFunction) {
+  beforeAllFunction.typeName = 'beforeAll';
+  this.beforeAll_.unshift(beforeAllFunction);
+};
+
+jasmine.Runner.prototype.afterAll = function(afterAllFunction) {
+  afterAllFunction.typeName = 'afterAll';
+  this.afterAll_.unshift(afterAllFunction);
+};
+
 jasmine.Runner.prototype.beforeEach = function(beforeEachFunction) {
   beforeEachFunction.typeName = 'beforeEach';
   this.before_.splice(0,0,beforeEachFunction);
@@ -32,7 +44,6 @@ jasmine.Runner.prototype.afterEach = function(afterEachFunction) {
   afterEachFunction.typeName = 'afterEach';
   this.after_.splice(0,0,afterEachFunction);
 };
-
 
 jasmine.Runner.prototype.finishCallback = function() {
   this.env.reporter.reportRunnerResults(this);

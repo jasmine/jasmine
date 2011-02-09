@@ -13,6 +13,94 @@ describe('RunnerTest', function() {
     env.clearInterval = fakeTimer.clearInterval;
   });
 
+  describe('beforeAll', function(){
+    it('should run before all specs for a given suite', function(){
+      var foo = -1;
+      var bar = function(){
+        foo++;
+      };
+      var spy1 = jasmine.createSpy().andCallFake(bar);
+      var spy2 = jasmine.createSpy().andCallFake(bar);
+      var spy3 = jasmine.createSpy().andCallFake(bar);
+
+      env.beforeAll(spy1);
+
+      env.describe('suite 1', function () {
+        env.it('test 1-1', function() {
+          foo++;
+          this.expect(foo).toEqual(2);
+        });
+        env.it('test 1-2', function() {
+          foo++;
+          this.expect(foo).toEqual(3);
+        });
+        env.beforeAll(spy2);
+      });
+
+      env.describe('suite 2', function () {
+        env.beforeAll(spy3);
+        env.it('test 2-1', function() {
+          foo++;
+          this.expect(foo).toEqual(5);
+        });
+      });
+
+      env.currentRunner().execute();
+
+      var runnerResults = env.currentRunner().results();
+      expect(runnerResults.totalCount).toEqual(3);
+      expect(runnerResults.passedCount).toEqual(3);
+
+      expect(spy1.callCount).toEqual(1);
+      expect(spy2.callCount).toEqual(1);
+      expect(spy3.callCount).toEqual(1);
+    });
+  });
+
+  describe('afterAll', function(){
+    it('should run after all specs for a given suite', function(){
+      var foo = -1;
+      var bar = function(){
+        foo++;
+      };
+      var spy1 = jasmine.createSpy().andCallFake(bar);
+      var spy2 = jasmine.createSpy().andCallFake(bar);
+      var spy3 = jasmine.createSpy().andCallFake(bar);
+
+      env.afterAll(spy1);
+
+      env.describe('suite 1', function () {
+        env.it('test 1-1', function() {
+          foo++;
+          this.expect(foo).toEqual(0);
+        });
+        env.it('test 1-2', function() {
+          foo++;
+          this.expect(foo).toEqual(1);
+        });
+        env.afterAll(spy2);
+      });
+
+      env.describe('suite 2', function () {
+        env.afterAll(spy3);
+        env.it('test 2-1', function() {
+          foo++;
+          this.expect(foo).toEqual(3);
+        });
+      });
+
+      env.currentRunner().execute();
+
+      var runnerResults = env.currentRunner().results();
+      expect(runnerResults.totalCount).toEqual(3);
+      expect(runnerResults.passedCount).toEqual(3);
+
+      expect(spy1.callCount).toEqual(1);
+      expect(spy2.callCount).toEqual(1);
+      expect(spy3.callCount).toEqual(1);
+    });
+  });
+
   describe('beforeEach', function() {
     it('should run before each spec for all suites', function () {
       var foo;
