@@ -57,7 +57,7 @@ jasmine.FakeTimer.prototype.runFunctionsWithinRange = function(oldMillis, nowMil
     funcsToRun.sort(function(a, b) {
       return a.runAtMillis - b.runAtMillis;
     });
-    for (var i = 0; i < funcsToRun.length; ++i) {
+    for (var i = 0, l = funcsToRun.length; i < l; i++) {
       try {
         var funcToRun = funcsToRun[i];
         this.nowMillis = funcToRun.runAtMillis;

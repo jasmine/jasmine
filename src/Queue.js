@@ -43,7 +43,7 @@ jasmine.Queue.prototype.next_ = function() {
       var calledSynchronously = true;
       var completedSynchronously = false;
 
-      var onComplete = function () {
+      var onComplete = function() {
         if (jasmine.Queue.LOOP_DONT_RECURSE && calledSynchronously) {
           completedSynchronously = true;
           return;
@@ -88,7 +88,7 @@ jasmine.Queue.prototype.next_ = function() {
 
 jasmine.Queue.prototype.results = function() {
   var results = new jasmine.NestedResults();
-  for (var i = 0; i < this.blocks.length; i++) {
+  for (var i = 0, l = this.blocks.length; i < l; i++) {
     if (this.blocks[i].results) {
       results.addResult(this.blocks[i].results());
     }

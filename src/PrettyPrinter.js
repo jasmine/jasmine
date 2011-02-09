@@ -84,7 +84,7 @@ jasmine.StringPrettyPrinter.prototype.emitString = function(value) {
 
 jasmine.StringPrettyPrinter.prototype.emitArray = function(array) {
   this.append('[ ');
-  for (var i = 0; i < array.length; i++) {
+  for (var i = 0, l = array.length; i < l; i++) {
     if (i > 0) {
       this.append(', ');
     }
