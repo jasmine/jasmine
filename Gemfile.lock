@@ -22,7 +22,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  jekyll (= 0.6.2)
+  jekyll (~> 0.6.2)
   json_pure (~> 1.4.3)
   ragaskar-jsdoc_helper
-  rake (= 0.8.7)
+  rake (~> 0.8.7)
