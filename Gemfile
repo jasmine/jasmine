@@ -1,4 +1,4 @@
-source :gemcutter
+source "http://rubygems.org"
 
 gem "jekyll", "0.6.2"
 gem "json_pure", "~>1.4.3"
