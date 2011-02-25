@@ -1,0 +1,14 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    json_pure (1.4.6)
+    ragaskar-jsdoc_helper (0.0.2.1)
+    rake (0.8.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  json_pure (~> 1.4.3)
+  ragaskar-jsdoc_helper
+  rake (= 0.8.7)
