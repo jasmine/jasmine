@@ -1,0 +1,28 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    classifier (1.3.3)
+      fast-stemmer (>= 1.0.0)
+    directory_watcher (1.3.2)
+    fast-stemmer (1.0.0)
+    jekyll (0.6.2)
+      classifier (>= 1.3.1)
+      directory_watcher (>= 1.1.1)
+      liquid (>= 1.9.0)
+      maruku (>= 0.5.9)
+    json_pure (1.4.6)
+    liquid (2.2.2)
+    maruku (0.6.0)
+      syntax (>= 1.0.0)
+    ragaskar-jsdoc_helper (0.0.2.1)
+    rake (0.8.7)
+    syntax (1.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  jekyll (= 0.6.2)
+  json_pure (~> 1.4.3)
+  ragaskar-jsdoc_helper
+  rake (= 0.8.7)
