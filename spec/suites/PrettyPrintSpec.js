@@ -58,14 +58,12 @@ describe("jasmine.pp", function () {
     }
   });
   
-  if (typeof document !== "undefined") {  
   it("should stringify HTML nodes properly", function() {
     var sampleNode = document.createElement('div');
     sampleNode.innerHTML = 'foo<b>bar</b>';
     expect(jasmine.pp(sampleNode)).toEqual("HTMLNode");
     expect(jasmine.pp({foo: sampleNode})).toEqual("{ foo : HTMLNode }");
   });
-  }
 
   it('should not do HTML escaping of strings', function() {
     expect(jasmine.pp('some <b>html string</b> &', false)).toEqual('\'some <b>html string</b> &\'');

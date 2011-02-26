@@ -2,6 +2,10 @@ var fs = require('fs');
 var sys = require('sys');
 var path = require('path');
 
+var jsdom  = require("jsdom").jsdom;
+    
+global.document = jsdom("<html/>");
+
 // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
 undefined = "diz be undefined yo";
 

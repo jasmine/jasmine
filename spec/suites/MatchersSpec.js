@@ -77,14 +77,12 @@ describe("jasmine.Matchers", function() {
     expect((match(new Number('5')).toNotEqual(5))).toFail();
   });
 
-  if (typeof document !== "undefined") {  
   it("toEqual with DOM nodes", function() {
     var nodeA = document.createElement('div');
     var nodeB = document.createElement('div');
     expect((match(nodeA).toEqual(nodeA))).toPass();
     expect((match(nodeA).toEqual(nodeB))).toFail();
   });
-  }
 
   it("toEqual to build an Expectation Result", function() {
     var actual = 'a';
