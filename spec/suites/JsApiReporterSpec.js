@@ -21,7 +21,7 @@ describe('jasmine.jsApiReporter', function() {
         nestedSuite = env.describe("nested suite", function() {
           nestedSpec = env.it("nested spec", function() {
             expect(true).toEqual(true);
-          })
+          });
         });
 
         spec3 = env.it("spec 3", function() {

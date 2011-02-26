@@ -89,9 +89,9 @@ describe('Exceptions:', function() {
     expect(blockResults[0].message).toMatch(/fake error 1/);
 
     expect(specResults[1].passed()).toEqual(false);
-    var blockResults = specResults[1].getItems();
+    blockResults = specResults[1].getItems();
     expect(blockResults[0].passed()).toEqual(false);
-    expect(blockResults[0].message).toMatch(/fake error 2/),
+    expect(blockResults[0].message).toMatch(/fake error 2/);
     expect(blockResults[1].passed()).toEqual(true);
 
     expect(specResults[2].passed()).toEqual(true);

@@ -108,7 +108,7 @@ describe("jasmine.Env", function() {
 
         it("should give custom equality testers precedence", function() {
           expect(env.equals_('abc', 'abc')).toBeFalsy();
-          var o = new Object();
+          var o = {};
           expect(env.equals_(o, o)).toBeFalsy();
         });
       });

@@ -18,9 +18,9 @@ describe("jasmine.MultiReporter", function() {
         delegate[methodName] = jasmine.createSpy(methodName);
         this.actual[methodName]("whatever argument");
 
-        return delegate[methodName].wasCalled
-            && delegate[methodName].mostRecentCall.args.length == 1
-            && delegate[methodName].mostRecentCall.args[0] == "whatever argument";
+        return delegate[methodName].wasCalled && 
+               delegate[methodName].mostRecentCall.args.length == 1 && 
+               delegate[methodName].mostRecentCall.args[0] == "whatever argument";
       }
     });
 

@@ -44,7 +44,7 @@ namespace :jasmine do
           passed = false
         end
 
-        if line.scan(/window/).length > 0
+        if line.scan(/window/).length > 0 && !line.include?("typeof")
           puts "Dangerous window at #{src}:#{i}:\n > #{line}"
           passed = false
         end
@@ -55,6 +55,8 @@ namespace :jasmine do
       puts "Lint failed!"
       exit 1
     end
+    
+    system("node jshint/run.js") || exit(1)
   end
 
   desc 'Builds lib/jasmine from source'

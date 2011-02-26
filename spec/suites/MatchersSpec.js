@@ -18,7 +18,7 @@ describe("jasmine.Matchers", function() {
       toFail: function() {
         return !lastResult().passed();
       }
-    })
+    });
   });
 
   function match(value) {
@@ -68,15 +68,15 @@ describe("jasmine.Matchers", function() {
     expect((match(['a', 'b']).toEqual(['a', jasmine.undefined]))).toFail();
     expect((match(['a', 'b']).toEqual(['a', 'b', jasmine.undefined]))).toFail();
 
-    expect((match(new String("cat")).toEqual("cat"))).toPass();
-    expect((match(new String("cat")).toNotEqual("cat"))).toFail();
+    expect((match("cat").toEqual("cat"))).toPass();
+    expect((match("cat").toNotEqual("cat"))).toFail();
 
-    expect((match(new Number(5)).toEqual(5))).toPass();
-    expect((match(new Number('5')).toEqual(5))).toPass();
-    expect((match(new Number(5)).toNotEqual(5))).toFail();
-    expect((match(new Number('5')).toNotEqual(5))).toFail();
+    expect((match(5).toEqual(5))).toPass();
+    expect((match(parseInt('5', 10)).toEqual(5))).toPass();
+    expect((match(5).toNotEqual(5))).toFail();
+    expect((match(parseInt('5', 10)).toNotEqual(5))).toFail();
   });
-
+  
   it("toEqual with DOM nodes", function() {
     var nodeA = document.createElement('div');
     var nodeB = document.createElement('div');
@@ -500,7 +500,7 @@ describe("jasmine.Matchers", function() {
       describe("and matcher is inverted with .not", function() {
         it("should match any exception", function() {
           expect(match(throwingFn).not.toThrow()).toFail();
-          expect(lastResult().message).toMatch(/Expected function not to throw  an exception/);
+          expect(lastResult().message).toMatch(/Expected function not to throw an exception/);
         });
 
         it("should match exceptions specified by message", function() {

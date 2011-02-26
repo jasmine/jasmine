@@ -108,7 +108,8 @@ jasmine.ExpectationResult.prototype.passed = function () {
  * Getter for the Jasmine environment. Ensures one gets created
  */
 jasmine.getEnv = function() {
-  return jasmine.currentEnv_ = jasmine.currentEnv_ || new jasmine.Env();
+  var env = jasmine.currentEnv_ = jasmine.currentEnv_ || new jasmine.Env();
+  return env;
 };
 
 /**
@@ -171,7 +172,7 @@ jasmine.pp = function(value) {
  * @returns {Boolean}
  */
 jasmine.isDomNode = function(obj) {
-  return obj['nodeType'] > 0;
+  return obj.nodeType > 0;
 };
 
 /**
@@ -407,7 +408,7 @@ jasmine.isSpy = function(putativeSpy) {
  * @param {Array} methodNames array of names of methods to make spies
  */
 jasmine.createSpyObj = function(baseName, methodNames) {
-  if (!jasmine.isArray_(methodNames) || methodNames.length == 0) {
+  if (!jasmine.isArray_(methodNames) || methodNames.length === 0) {
     throw new Error('createSpyObj requires a non-empty array of method names to create spies for');
   }
   var obj = {};
@@ -582,21 +583,20 @@ if (isCommonJS) exports.xdescribe = xdescribe;
 
 // Provide the XMLHttpRequest class for IE 5.x-6.x:
 jasmine.XmlHttpRequest = (typeof XMLHttpRequest == "undefined") ? function() {
-  try {
-    return new ActiveXObject("Msxml2.XMLHTTP.6.0");
-  } catch(e) {
+  function tryIt(f) {
+    try {
+      return f();
+    } catch(e) {
+    }    
+    return null;
   }
-  try {
-    return new ActiveXObject("Msxml2.XMLHTTP.3.0");
-  } catch(e) {
-  }
-  try {
-    return new ActiveXObject("Msxml2.XMLHTTP");
-  } catch(e) {
-  }
-  try {
-    return new ActiveXObject("Microsoft.XMLHTTP");
-  } catch(e) {
-  }
-  throw new Error("This browser does not support XMLHttpRequest.");
+  
+  var xhr = tryIt(function(){return new ActiveXObject("Msxml2.XMLHTTP.6.0");}) ||
+            tryIt(function(){return new ActiveXObject("Msxml2.XMLHTTP.3.0");}) ||
+            tryIt(function(){return new ActiveXObject("Msxml2.XMLHTTP");}) ||
+            tryIt(function(){return new ActiveXObject("Microsoft.XMLHTTP");});
+
+  if (!xhr) throw new Error("This browser does not support XMLHttpRequest.");
+  
+  return xhr;
 } : XMLHttpRequest;

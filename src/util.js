@@ -17,7 +17,7 @@ jasmine.util.inherit = function(childClass, parentClass) {
   var subclass = function() {
   };
   subclass.prototype = parentClass.prototype;
-  childClass.prototype = new subclass;
+  childClass.prototype = new subclass();
 };
 
 jasmine.util.formatException = function(e) {

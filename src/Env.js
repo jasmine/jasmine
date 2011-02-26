@@ -172,7 +172,7 @@ jasmine.Env.prototype.compareObjects_ = function(a, b, mismatchKeys, mismatchVal
   b.__Jasmine_been_here_before__ = a;
 
   var hasKey = function(obj, keyName) {
-    return obj != null && obj[keyName] !== jasmine.undefined;
+    return obj !== null && obj[keyName] !== jasmine.undefined;
   };
 
   for (var property in b) {
@@ -198,7 +198,7 @@ jasmine.Env.prototype.compareObjects_ = function(a, b, mismatchKeys, mismatchVal
 
   delete a.__Jasmine_been_here_before__;
   delete b.__Jasmine_been_here_before__;
-  return (mismatchKeys.length == 0 && mismatchValues.length == 0);
+  return (mismatchKeys.length === 0 && mismatchValues.length === 0);
 };
 
 jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {

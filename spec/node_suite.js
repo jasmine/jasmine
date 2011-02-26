@@ -3,10 +3,10 @@ var sys = require('sys');
 var path = require('path');
 
 // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
-undefined = "diz be undefined yo";
+// undefined = "diz be undefined yo";
 
 var jasmineGlobals = require("../src/base");
-for(var k in jasmineGlobals) {global[k] = jasmineGlobals[k]};
+for(var k in jasmineGlobals) {global[k] = jasmineGlobals[k];}
 
 //load jasmine src files based on the order in runner.html
 var srcFilesInProperRequireOrder = [];
@@ -15,7 +15,7 @@ var srcFileLines = [];
 for (var i=0; i<runnerHtmlLines.length; i++) 
   if (runnerHtmlLines[i].match(/script(.*?)\/src\//)) 
     srcFileLines.push(runnerHtmlLines[i]);
-for (i=0; i<srcFileLines.length; i++) srcFilesInProperRequireOrder.push(/src=\"(.*?)\"/(srcFileLines[i])[1]);
+for (i=0; i<srcFileLines.length; i++) srcFilesInProperRequireOrder.push(srcFileLines[i].match(/src=\"(.*?)\"/)[1]);
 for (i=0; i<srcFilesInProperRequireOrder.length; i++) require(srcFilesInProperRequireOrder[i]);
 
 
@@ -66,7 +66,7 @@ jasmine.executeSpecs = function(specs, done, isVerbose, showColors){
     
     reportRunnerStarting: function(runner) {
       sys.puts('Started');
-      start = Number(new Date);
+      start = new Date().getTime();
     },
 
     reportSuiteResults: function(suite) {
@@ -112,7 +112,7 @@ jasmine.executeSpecs = function(specs, done, isVerbose, showColors){
 
 
     reportRunnerResults: function(runner) {
-      elapsed = (Number(new Date) - start) / 1000;
+      elapsed = (new Date().getTime() - start) / 1000;
       sys.puts('\n');
       log.forEach(function(log){
         sys.puts(log);
@@ -216,16 +216,16 @@ process.argv.forEach(function(arg){
   }
 });
 
-var specs = jasmine.getAllSpecFiles(__dirname + '/suites', new RegExp("^.+\.(js|coffee)$"));
+var specs = jasmine.getAllSpecFiles(__dirname + '/suites', new RegExp(".js$"));
 var domIndependentSpecs = [];
 for(var i=0; i<specs.length; i++) { 
   if (fs.readFileSync(specs[i], "utf8").indexOf("document.createElement")<0) {
     domIndependentSpecs.push(specs[i]);
-  }; 
-};
+  }
+}
 
 jasmine.executeSpecs(domIndependentSpecs, function(runner, log){
-  if (runner.results().failedCount == 0) {
+  if (runner.results().failedCount === 0) {
     process.exit(0);
   } else {
     process.exit(1);

@@ -25,7 +25,6 @@ describe("jasmine.util", function() {
     it("should return true if the argument is an array", function() {
       expect(jasmine.isArray_([])).toBe(true);
       expect(jasmine.isArray_(['a'])).toBe(true);
-      expect(jasmine.isArray_(new Array())).toBe(true);
     });
 
     it("should return false if the argument is not an array", function() {
