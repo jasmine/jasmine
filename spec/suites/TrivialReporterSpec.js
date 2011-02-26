@@ -1,3 +1,4 @@
+if (typeof document !== "undefined") {  
 describe("TrivialReporter", function() {
   var env;
   var trivialReporter;
@@ -236,3 +237,4 @@ describe("TrivialReporter", function() {
     });
   });
 });
+}
