@@ -5,8 +5,8 @@ var path = require('path');
 // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
 undefined = "diz be undefined yo";
 
-var jasmineGlobals = require("../src/base")
-for(var k in jasmineGlobals) {global[k] = jasmineGlobals[k]}
+var jasmineGlobals = require("../src/base");
+for(var k in jasmineGlobals) {global[k] = jasmineGlobals[k]};
 
 //load jasmine src files based on the order in runner.html
 var srcFilesInProperRequireOrder = [];
@@ -217,12 +217,12 @@ process.argv.forEach(function(arg){
 });
 
 var specs = jasmine.getAllSpecFiles(__dirname + '/suites', new RegExp("^.+\.(js|coffee)$"));
-var domIndependentSpecs = []
+var domIndependentSpecs = [];
 for(var i=0; i<specs.length; i++) { 
   if (fs.readFileSync(specs[i], "utf8").indexOf("document.createElement")<0) {
-    domIndependentSpecs.push(specs[i])
+    domIndependentSpecs.push(specs[i]);
   }; 
-}
+};
 
 jasmine.executeSpecs(domIndependentSpecs, function(runner, log){
   if (runner.results().failedCount == 0) {
