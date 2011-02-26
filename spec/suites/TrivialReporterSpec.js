@@ -153,7 +153,13 @@ describe("TrivialReporter", function() {
 
       var divs = body.getElementsByTagName("div");
       var errorDiv = findElement(divs, 'resultMessage fail');
-      expect(errorDiv.innerHTML).toEqual("Expected '1 &lt; 2' to &lt;b&gt;e null, &amp; it was not");
+      
+      if (errorDiv.innerHTML.indexOf("&lt")>=0) { //the one concession for jsdom support.  hey not bad!
+        expect(errorDiv.innerHTML).toEqual("Expected '1 &lt; 2' to &lt;b&gt;e null, &amp; it was not");
+      } else {
+        expect(errorDiv.innerHTML).toEqual("Expected '1 < 2' to <b>e null, & it was not");
+      }
+      
     });
   });
 

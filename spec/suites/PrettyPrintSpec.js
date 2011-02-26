@@ -57,7 +57,7 @@ describe("jasmine.pp", function () {
       expect(jasmine.pp(sampleValue)).toEqual("{ id : 1 }");
     }
   });
-
+  
   it("should stringify HTML nodes properly", function() {
     var sampleNode = document.createElement('div');
     sampleNode.innerHTML = 'foo<b>bar</b>';

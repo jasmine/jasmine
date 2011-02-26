@@ -2,6 +2,10 @@ var fs = require('fs');
 var sys = require('sys');
 var path = require('path');
 
+var jsdom  = require("jsdom").jsdom;
+    
+global.document = jsdom("<html/>");
+
 // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
 // undefined = "diz be undefined yo";
 
@@ -216,16 +220,10 @@ process.argv.forEach(function(arg){
   }
 });
 
-var specs = jasmine.getAllSpecFiles(__dirname + '/suites', new RegExp(".js$"));
-var domIndependentSpecs = [];
-for(var i=0; i<specs.length; i++) { 
-  if (fs.readFileSync(specs[i], "utf8").indexOf("document.createElement")<0) {
-    domIndependentSpecs.push(specs[i]);
-  }
-}
+var specs = jasmine.getAllSpecFiles(__dirname + '/suites', new RegExp("^.+\.(js|coffee)$"));
 
-jasmine.executeSpecs(domIndependentSpecs, function(runner, log){
-  if (runner.results().failedCount === 0) {
+jasmine.executeSpecs(specs, function(runner, log){
+  if (runner.results().failedCount == 0) {
     process.exit(0);
   } else {
     process.exit(1);
