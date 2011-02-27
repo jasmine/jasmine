@@ -7,4 +7,19 @@ module FrankHelpers
 <span class='p'>});</span>"
   end
 
+  def downloads
+    require 'digest/sha1'
+
+    Dir.glob('pages/downloads/*.zip').sort.reverse.collect do |f|
+      item            = {}
+      item[:filename] = f.sub(/^pages\//, '')
+      item[:version]  = /jasmine-standalone-(.*).zip/.match(f)[1]
+      item[:rc]       = /\.rc/.match(f) ? 'rc' : ''
+      item[:size]     = "#{File.size(f) / 1024}k"
+      item[:date]     = File.mtime(f).strftime("%Y/%m/%d %H:%M:%S %Z")
+      item[:sha]      = Digest::SHA1.hexdigest File.read(f)
+      item
+    end
+  end
+
 end
