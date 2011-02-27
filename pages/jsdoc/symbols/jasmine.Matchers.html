@@ -1,0 +1,1612 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="generator" content="JsDoc Toolkit" />
+		
+		<title>JsDoc Reference - jasmine.Matchers</title>
+
+		<style type="text/css">
+			/* default.css */
+body
+{
+	font: 12px "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
+	width: 800px;
+}
+
+.header
+{
+	clear: both;
+	background-color: #ccc;
+	padding: 8px;
+}
+
+h1
+{
+	font-size: 150%;
+	font-weight: bold;
+	padding: 0;
+	margin: 1em 0 0 .3em;
+}
+
+hr
+{
+	border: none 0;
+	border-top: 1px solid #7F8FB1;
+	height: 1px;
+}
+
+pre.code
+{
+	display: block;
+	padding: 8px;
+	border: 1px dashed #ccc;
+}
+
+#index
+{
+	margin-top: 24px;
+	float: left;
+	width: 160px;
+	position: absolute;
+	left: 8px;
+	background-color: #F3F3F3;
+	padding: 8px;
+}
+
+#content
+{
+	margin-left: 190px;
+	width: 600px;
+}
+
+.classList
+{
+	list-style-type: none;
+	padding: 0;
+	margin: 0 0 0 8px;
+	font-family: arial, sans-serif;
+	font-size: 1em;
+	overflow: auto;
+}
+
+.classList li
+{
+	padding: 0;
+	margin: 0 0 8px 0;
+}
+
+.summaryTable { width: 100%; }
+
+h1.classTitle
+{
+	font-size:170%;
+	line-height:130%;
+}
+
+h2 { font-size: 110%; }
+caption, div.sectionTitle
+{
+	background-color: #7F8FB1;
+	color: #fff;
+	font-size:130%;
+	text-align: left;
+	padding: 2px 6px 2px 6px;
+	border: 1px #7F8FB1 solid;
+}
+
+div.sectionTitle { margin-bottom: 8px; }
+.summaryTable thead { display: none; }
+
+.summaryTable td
+{
+	vertical-align: top;
+	padding: 4px;
+	border-bottom: 1px #7F8FB1 solid;
+	border-right: 1px #7F8FB1 solid;
+}
+
+/*col#summaryAttributes {}*/
+.summaryTable td.attributes
+{
+	border-left: 1px #7F8FB1 solid;
+	width: 140px;
+	text-align: right;
+}
+
+td.attributes, .fixedFont
+{
+	line-height: 15px;
+	color: #002EBE;
+	font-family: "Courier New",Courier,monospace;
+	font-size: 13px;
+}
+
+.summaryTable td.nameDescription
+{
+	text-align: left;
+	font-size: 13px;
+	line-height: 15px;
+}
+
+.summaryTable td.nameDescription, .description
+{
+	line-height: 15px;
+	padding: 4px;
+	padding-left: 4px;
+}
+
+.summaryTable { margin-bottom: 8px; }
+
+ul.inheritsList
+{
+	list-style: square;
+	margin-left: 20px;
+	padding-left: 0;
+}
+
+.detailList {
+	margin-left: 20px; 
+	line-height: 15px;
+}
+.detailList dt { margin-left: 20px; }
+
+.detailList .heading
+{
+	font-weight: bold;
+	padding-bottom: 6px;
+	margin-left: 0;
+}
+
+.light, td.attributes, .light a:link, .light a:visited
+{
+	color: #777;
+	font-style: italic;
+}
+
+.fineprint
+{
+	text-align: right;
+	font-size: 10px;
+}
+		</style>
+	</head>
+
+	<body>
+<!-- ============================== header ================================= -->	
+		<!-- begin static/header.html -->
+		<div id="header">
+</div>
+		<!-- end static/header.html -->
+
+<!-- ============================== classes index ============================ -->
+		<div id="index">
+			<!-- begin publish.classesIndex -->
+			<div align="center"><a href="../index.html">Class Index</a>
+| <a href="../files.html">File Index</a></div>
+<hr />
+<h2>Classes</h2>
+<ul class="classList">
+	
+	<li><i><a href="../symbols/_global_.html">_global_</a></i></li>
+	
+	<li><a href="../symbols/jasmine.html">jasmine</a></li>
+	
+	<li><a href="../symbols/jasmine.Block.html">jasmine.Block</a></li>
+	
+	<li><a href="../symbols/jasmine.Clock.html">jasmine.Clock</a></li>
+	
+	<li><a href="../symbols/jasmine.Env.html">jasmine.Env</a></li>
+	
+	<li><a href="../symbols/jasmine.JsApiReporter.html">jasmine.JsApiReporter</a></li>
+	
+	<li><a href="../symbols/jasmine.Matchers.html">jasmine.Matchers</a></li>
+	
+	<li><a href="../symbols/jasmine.MultiReporter.html">jasmine.MultiReporter</a></li>
+	
+	<li><a href="../symbols/jasmine.NestedResults.html">jasmine.NestedResults</a></li>
+	
+	<li><a href="../symbols/jasmine.Reporter.html">jasmine.Reporter</a></li>
+	
+	<li><a href="../symbols/jasmine.Runner.html">jasmine.Runner</a></li>
+	
+	<li><a href="../symbols/jasmine.Spec.html">jasmine.Spec</a></li>
+	
+	<li><a href="../symbols/jasmine.Spy.html">jasmine.Spy</a></li>
+	
+	<li><a href="../symbols/jasmine.Suite.html">jasmine.Suite</a></li>
+	
+	<li><a href="../symbols/jasmine.util.html">jasmine.util</a></li>
+	
+	<li><a href="../symbols/jasmine.WaitsForBlock.html">jasmine.WaitsForBlock</a></li>
+	
+</ul>
+<hr />
+			<!-- end publish.classesIndex -->
+		</div>
+		
+		<div id="content">
+<!-- ============================== class title ============================ -->
+			<h1 class="classTitle">
+				
+				Class jasmine.Matchers
+			</h1>
+
+<!-- ============================== class summary ========================== -->			
+			<p class="description">
+				
+			
+				
+				
+				
+					<br /><i>Defined in: </i> <a href="../symbols/src/src_Matchers.js.html">Matchers.js</a>.
+				
+			</p>
+
+<!-- ============================== constructor summary ==================== -->			
+			
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class jasmine.Matchers.">
+				<caption>Class Summary</caption>
+				<thead>
+					<tr>
+						<th scope="col">Constructor Attributes</th>
+						<th scope="col">Constructor Name and Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="attributes">&nbsp;</td>
+						<td class="nameDescription" >
+							<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html">jasmine.Matchers</a></b>(env, actual, spec, opt_isNot)
+							</div>
+							<div class="description"></div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+
+<!-- ============================== properties summary ===================== -->
+			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class jasmine.Matchers.">
+					<caption>Field Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Field Attributes</th>
+							<th scope="col">Field Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#wasCalled">wasCalled</a></b>
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/jasmine.Matchers.html#wasCalledWith">wasCalledWith</a></b>
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
+			
+
+<!-- ============================== methods summary ======================== -->
+			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class jasmine.Matchers.">
+					<caption>Method Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Method Attributes</th>
+							<th scope="col">Method Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">jasmine.Matchers.<b><a href="../symbols/jasmine.Matchers.html#.Any">Any</a></b>(expectedClass)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">jasmine.Matchers.<b><a href="../symbols/jasmine.Matchers.html#.matcherFn_">matcherFn_</a></b>(matcherName, matcherFunction)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#message">message</a></b>()
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">jasmine.Matchers.<b><a href="../symbols/jasmine.Matchers.html#.pp">pp</a></b>(str)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#report">report</a></b>(result, failing_message, details)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBe">toBe</a></b>(expected)
+								</div>
+								<div class="description">toBe: compares the actual to the expected using ===</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeDefined">toBeDefined</a></b>()
+								</div>
+								<div class="description">Matcher that compares the actual to jasmine.undefined.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeFalsy">toBeFalsy</a></b>()
+								</div>
+								<div class="description">Matcher that boolean nots the actual.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeGreaterThan">toBeGreaterThan</a></b>(expected)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeLessThan">toBeLessThan</a></b>(expected)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeNull">toBeNull</a></b>()
+								</div>
+								<div class="description">Matcher that compares the actual to null.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeTruthy">toBeTruthy</a></b>()
+								</div>
+								<div class="description">Matcher that boolean not-nots the actual.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toBeUndefined">toBeUndefined</a></b>()
+								</div>
+								<div class="description">Matcher that compares the actual to jasmine.undefined.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toContain">toContain</a></b>(expected)
+								</div>
+								<div class="description">Matcher that checks that the expected item is an element in the actual Array.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toEqual">toEqual</a></b>(expected)
+								</div>
+								<div class="description">toEqual: compares the actual to the expected using common sense equality.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toHaveBeenCalled">toHaveBeenCalled</a></b>()
+								</div>
+								<div class="description">Matcher that checks to see if the actual, a Jasmine spy, was called.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toHaveBeenCalledWith">toHaveBeenCalledWith</a></b>()
+								</div>
+								<div class="description">Matcher that checks to see if the actual, a Jasmine spy, was called with a set of parameters.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toMatch">toMatch</a></b>(expected)
+								</div>
+								<div class="description">Matcher that compares the actual to the expected using a regular expression.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotBe">toNotBe</a></b>(expected)
+								</div>
+								<div class="description">toNotBe: compares the actual to the expected using !==</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotContain">toNotContain</a></b>(expected)
+								</div>
+								<div class="description">Matcher that checks that the expected item is NOT an element in the actual Array.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotEqual">toNotEqual</a></b>(expected)
+								</div>
+								<div class="description">toNotEqual: compares the actual to the expected using the ! of jasmine.Matchers.toEqual</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toNotMatch">toNotMatch</a></b>(expected)
+								</div>
+								<div class="description">Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#toThrow">toThrow</a></b>(expected)
+								</div>
+								<div class="description">Matcher that checks that the expected exception was thrown by the actual.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#wasNotCalled">wasNotCalled</a></b>()
+								</div>
+								<div class="description">Matcher that checks to see if the actual, a Jasmine spy, was not called.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/jasmine.Matchers.html#wasNotCalledWith">wasNotCalledWith</a></b>()
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">jasmine.Matchers.<b><a href="../symbols/jasmine.Matchers.html#.wrapInto_">wrapInto_</a></b>(prototype, matchersClass)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
+			
+<!-- ============================== events summary ======================== -->
+			
+
+<!-- ============================== constructor details ==================== -->		
+			
+			<div class="details"><a name="constructor"> </a>
+				<div class="sectionTitle">
+					Class Detail
+				</div>
+				
+				<div class="fixedFont">
+						<b>jasmine.Matchers</b>(env, actual, spec, opt_isNot)
+				</div>
+				
+				<div class="description">
+					
+					
+				</div>
+				
+				
+				
+				
+					
+						<dl class="detailList">
+						<dt class="heading">Parameters:</dt>
+						
+							<dt>
+								<span class="light fixedFont">{<a href="../symbols/jasmine.Env.html">jasmine.Env</a>}</span>  <b>env</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								 <b>actual</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								<span class="light fixedFont">{<a href="../symbols/jasmine.Spec.html">jasmine.Spec</a>}</span>  <b>spec</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								 <b>opt_isNot</b>
+								
+							</dt>
+								<dd></dd>
+						
+						</dl>
+					
+					
+					
+					
+					
+					
+					
+
+			</div>
+			
+
+<!-- ============================== field details ========================== -->		
+			
+				<div class="sectionTitle">
+					Field Detail
+				</div>
+				
+					<a name="wasCalled"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>wasCalled</b>
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+
+						
+							<dl class="detailList">
+							<dt class="heading">Deprecated:</dt>
+							<dt>
+								Use expect(xxx).toHaveBeenCalled() instead
+							</dt>
+							</dl>
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="wasCalledWith"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>wasCalledWith</b>
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+
+						
+							<dl class="detailList">
+							<dt class="heading">Deprecated:</dt>
+							<dt>
+								Use expect(xxx).toHaveBeenCalledWith() instead
+							</dt>
+							</dl>
+						
+						
+						
+						
+
+					
+				
+			
+
+<!-- ============================== method details ========================= -->		
+			
+				<div class="sectionTitle">
+					Method Detail
+				</div>
+				
+					<a name=".Any"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">jasmine.Matchers.</span><b>Any</b>(expectedClass)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>expectedClass</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".matcherFn_"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">jasmine.Matchers.</span><b>matcherFn_</b>(matcherName, matcherFunction)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>matcherName</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>matcherFunction</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="message"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>message</b>()
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".pp"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">jasmine.Matchers.</span><b>pp</b>(str)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>str</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="report"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>report</b>(result, failing_message, details)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>result</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>failing_message</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>details</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBe"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBe</b>(expected)
+					
+					</div>
+					<div class="description">
+						toBe: compares the actual to the expected using ===
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeDefined"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeDefined</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to jasmine.undefined.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeFalsy"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeFalsy</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that boolean nots the actual.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeGreaterThan"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeGreaterThan</b>(expected)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeLessThan"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeLessThan</b>(expected)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeNull"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeNull</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to null.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeTruthy"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeTruthy</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that boolean not-nots the actual.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toBeUndefined"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toBeUndefined</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to jasmine.undefined.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toContain"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toContain</b>(expected)
+					
+					</div>
+					<div class="description">
+						Matcher that checks that the expected item is an element in the actual Array.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{Object}</span> <b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toEqual"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toEqual</b>(expected)
+					
+					</div>
+					<div class="description">
+						toEqual: compares the actual to the expected using common sense equality. Handles Objects, Arrays, etc.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toHaveBeenCalled"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toHaveBeenCalled</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that checks to see if the actual, a Jasmine spy, was called.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toHaveBeenCalledWith"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toHaveBeenCalledWith</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that checks to see if the actual, a Jasmine spy, was called with a set of parameters.
+						
+						
+					</div>
+					
+					
+					
+					<pre class="code"></pre>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toMatch"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toMatch</b>(expected)
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to the expected using a regular expression.  Constructs a RegExp, so takes
+a pattern or a String.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toNotBe"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toNotBe</b>(expected)
+					
+					</div>
+					<div class="description">
+						toNotBe: compares the actual to the expected using !==
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Deprecated:</dt>
+							<dt>
+								as of 1.0. Use not.toBe() instead.
+							</dt>
+							</dl>
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toNotContain"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toNotContain</b>(expected)
+					
+					</div>
+					<div class="description">
+						Matcher that checks that the expected item is NOT an element in the actual Array.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{Object}</span> <b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Deprecated:</dt>
+							<dt>
+								as of 1.0. Use not.toNotContain() instead.
+							</dt>
+							</dl>
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toNotEqual"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toNotEqual</b>(expected)
+					
+					</div>
+					<div class="description">
+						toNotEqual: compares the actual to the expected using the ! of jasmine.Matchers.toEqual
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Deprecated:</dt>
+							<dt>
+								as of 1.0. Use not.toNotEqual() instead.
+							</dt>
+							</dl>
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toNotMatch"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toNotMatch</b>(expected)
+					
+					</div>
+					<div class="description">
+						Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Deprecated:</dt>
+							<dt>
+								as of 1.0. Use not.toMatch() instead.
+							</dt>
+							</dl>
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="toThrow"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toThrow</b>(expected)
+					
+					</div>
+					<div class="description">
+						Matcher that checks that the expected exception was thrown by the actual.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{String}</span> <b>expected</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="wasNotCalled"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>wasNotCalled</b>()
+					
+					</div>
+					<div class="description">
+						Matcher that checks to see if the actual, a Jasmine spy, was not called.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Deprecated:</dt>
+							<dt>
+								Use expect(xxx).not.toHaveBeenCalled() instead
+							</dt>
+							</dl>
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="wasNotCalledWith"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>wasNotCalledWith</b>()
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Deprecated:</dt>
+							<dt>
+								Use expect(xxx).not.toHaveBeenCalledWith() instead
+							</dt>
+							</dl>
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".wrapInto_"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">jasmine.Matchers.</span><b>wrapInto_</b>(prototype, matchersClass)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>prototype</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>matchersClass</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					
+				
+			
+			
+<!-- ============================== event details ========================= -->		
+			
+			
+			<hr />
+		</div>
+
+		
+<!-- ============================== footer ================================= -->
+		<div class="fineprint" style="clear:both">
+			
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Sun Feb 27 2011 12:17:45 GMT-0800 (PST)
+		</div>
+	</body>
+</html>
