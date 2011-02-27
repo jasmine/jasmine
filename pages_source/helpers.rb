@@ -10,9 +10,9 @@ module FrankHelpers
   def downloads
     require 'digest/sha1'
 
-    Dir.glob('pages/downloads/*.zip').sort.reverse.collect do |f|
+    Dir.glob('../downloads/*.zip').sort.reverse.collect do |f|
       item            = {}
-      item[:filename] = f.sub(/^pages\//, '')
+      item[:filename] = File.basename(f)
       item[:version]  = /jasmine-standalone-(.*).zip/.match(f)[1]
       item[:rc]       = /\.rc/.match(f) ? 'rc' : ''
       item[:size]     = "#{File.size(f) / 1024}k"

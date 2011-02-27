@@ -3,7 +3,6 @@
   %meta{:charset => "utf-8"}
   %title
     = "Jasmine: BDD for your JavaScript"
-    = "| #{title}" if title
   %link{ :rel => "shortcut icon", :type => "image/x-icon", :href =>"favicon.ico" }
   %link{ :rel => "stylesheet", :type => "text/css", :media => "screen, projection", :href => "/jasmine/css/screen.css" }
   %link{ :rel => "stylesheet",  :type => "text/css", :media => "screen, projection", :href => "/jasmine/css/pygments.css" }
@@ -17,5 +16,3 @@
   %span.small Powered by &nbsp;
   %a{ :href => "http://pivotallabs.com" , :target => '_blank' }
     %img{ :src => "/jasmine/images/pivotal_logo.gif", :alt => "Pivotal Labs, Inc." }
-
-  .content= yield
