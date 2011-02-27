@@ -29,7 +29,11 @@ end
 namespace :jasmine do
 
   desc 'Prepares for distribution'
-  task :dist => ['jasmine:build', 'jasmine:doc', 'jasmine:build_example_project', 'jasmine:fill_index_downloads']
+  task :dist => ['jasmine:build',
+                 'jasmine:doc',
+                 'jasmine:build_pages',
+                 'jasmine:build_example_project',
+                 'jasmine:fill_index_downloads']
 
   desc 'Check jasmine sources for coding problems'
   task :lint do
@@ -98,6 +102,18 @@ jasmine.version_= {
     end
   end
 
+  desc "Build the Github pages HTML"
+  task :build_pages => :need_pages_submodule do
+    Dir.chdir("pages") do
+      FileUtils.rm_r('pages_output') if File.exist?('pages_output')
+      Dir.chdir('pages_source') do
+        system("frank export ../pages_output")
+      end
+      puts "\nCopying Frank output to the root of the gh-pages branch\n\n"
+      system("cp -r pages_output/* .")
+    end
+  end
+
   desc "Build jasmine documentation"
   task :doc => :need_pages_submodule do
     puts 'Creating Jasmine Documentation'
@@ -151,32 +167,6 @@ jasmine.version_= {
     exec "cd #{temp_dir} && zip -r #{zip_file_name} . -x .[a-zA-Z0-9]*"
   end
 
-  task :fill_index_downloads do
-    require 'digest/sha1'
-
-    download_html = "<!-- START_DOWNLOADS -->\n"
-    Dir.glob('pages/downloads/*.zip').sort.reverse.each do |f|
-      sha1 = Digest::SHA1.hexdigest File.read(f)
-
-      fn = f.sub(/^pages\//, '')
-      version = /jasmine-standalone-(.*).zip/.match(f)[1]
-      prerelease = /\.rc/.match(f)
-      download_html += prerelease ? "<tr class=\"rc\">\n" : "<tr>\n"
-      download_html += "  <td class=\"link\"><a href=\"#{fn}\">#{fn.sub(/downloads\//, '')}</a></td>\n"
-      download_html += "  <td class=\"version\">#{version}</td>\n"
-      download_html += "  <td class=\"size\">#{File.size(f) / 1024}k</td>\n"
-      download_html += "  <td class=\"date\">#{File.mtime(f).strftime("%Y/%m/%d %H:%M:%S %Z")}</td>\n"
-      download_html += "  <td class=\"sha\">#{sha1}</td>\n"
-      download_html += "</tr>\n"
-    end
-    download_html += "<!-- END_DOWNLOADS -->"
-
-    downloads_page = File.read(downloads_file)
-    matcher = /<!-- START_DOWNLOADS -->.*<!-- END_DOWNLOADS -->/m
-    downloads_page = downloads_page.sub(matcher, download_html)
-    File.open(downloads_file, 'w') {|f| f.write(downloads_page)}
-    puts "rewrote that file"
-  end
 end
 
 task :jasmine => ['jasmine:dist']
