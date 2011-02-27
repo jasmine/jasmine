@@ -91,7 +91,7 @@ jasmine.version_= {
     FileUtils.cp("src/html/jasmine.css", "lib/jasmine.css")
   end
 
-  downloads_file = 'pages/download.html.md'
+  downloads_file = 'pages/download.html'
   task :need_pages_submodule do
     unless File.exist?(downloads_file)
       raise "Jasmine pages submodule isn't present.  Run git submodule update --init"
