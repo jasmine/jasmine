@@ -1,3 +1,4 @@
 source :rubygems
 
-gem "staticmatic"
+gem "frank"
+gem "haml"
