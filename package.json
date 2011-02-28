@@ -1,0 +1,12 @@
+{ "name": "jasmine-real-temporary-npm-name", 
+  "version": "1.0.2", 
+  "description": "A JavaScript Testing Framework.", 
+  "main": "index.js",
+  "keywords": ["tdd", "test", "driven", "xunit", "unit", "expect", "assert", "bdd"],
+  "homepage": "https://github.com/pivotal/jasmine",
+  "author": {"name": "Christian Williams", "email": "xian@pivotallabs.com", "url": "https://github.com/Xian"},
+  "contributors": [
+    {"name": "Davis W. Frank", "email": "dwfrank@pivotallabs.com"},
+    {"name": "Rajan Agaskar", "email": "rajan@pivotallabs.com", "url": "https://github.com/ragaskar"}
+  ],
+  "repository": { "type": "git", "url": "https://github.com/pivotal/jasmine.git" } }
