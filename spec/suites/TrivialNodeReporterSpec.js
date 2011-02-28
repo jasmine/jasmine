@@ -34,7 +34,8 @@ describe("TrivialNodeReporter", function() {
       return {
         puts:function(str) {output += str + "\n";},
         print:function(str) {output += str;},
-        getOutput:function(){return output;}
+        getOutput:function(){return output;},
+        clear: function(){output = "";}
       };
     })();
 
@@ -122,6 +123,48 @@ describe("TrivialNodeReporter", function() {
           newline + prefixRed("Finished")
         );
       });
+      
+      it("prints the elapsed time in the summary message", function(){
+        this.reporter.now = function(){return 1000}
+        this.reporter.reportRunnerStarting();
+        this.reporter.now = function(){return 1777}
+        this.reporter.reportRunnerResults(passingRun);
+        expect(this.fakeSys.getOutput()).toContain("0.777 seconds");
+      });
+      
+      it("prints round time numbers correctly", function(){
+        var self = this;
+        function run(startTime, endTime) {
+          self.fakeSys.clear();
+          self.reporter.runnerStartTime = startTime;
+          self.reporter.now = function(){return endTime}
+          self.reporter.reportRunnerResults(passingRun);          
+        }
+        
+        run(1000, 11000);
+        expect(this.fakeSys.getOutput()).toContain("10 seconds");
+        
+        run(1000, 2000);
+        expect(this.fakeSys.getOutput()).toContain("1 seconds");
+        
+        run(1000, 1100);
+        expect(this.fakeSys.getOutput()).toContain("0.1 seconds");
+
+        run(1000, 1010);
+        expect(this.fakeSys.getOutput()).toContain("0.01 seconds");
+
+        run(1000, 1001);        
+        expect(this.fakeSys.getOutput()).toContain("0.001 seconds");
+      });
+
+      it("altogether now", function(){
+        this.reporter.now = function(){return 1000}
+        this.reporter.reportRunnerStarting();
+        this.reporter.now = function(){return 1777}
+        this.reporter.reportRunnerResults(failingRun);
+        expect(this.fakeSys.getOutput()).toContain(red("Finished in 0.777 seconds"));
+      });
+      
     });
 
   });

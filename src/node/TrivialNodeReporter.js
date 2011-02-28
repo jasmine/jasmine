@@ -22,9 +22,9 @@ jasmine.TrivialNodeReporter = function(sys) {
   function redF()            { sys.print(redStr("F")); }
   function yellowStar()      { sys.print(yellowStr("*")); }
 
-  function finished(colorF)  { newline(); sys.print(colorF("Finished")); }
-  function greenFinished()   { finished(greenStr); }
-  function redFinished()     { finished(redStr); }
+  function finished(colorF, elapsed)  { newline(); sys.print(colorF("Finished in " + elapsed/1000 + " seconds")); }
+  function greenFinished(elapsed)     { finished(greenStr, elapsed); }
+  function redFinished(elapsed)       { finished(redStr, elapsed); }
   
   
   
@@ -42,7 +42,10 @@ jasmine.TrivialNodeReporter = function(sys) {
   
   var startNewLineIfNecessary = lineEnder(defaultColumnsPerLine);
   
+  this.now = function() { return new Date().getTime(); }
+  
   this.reportRunnerStarting = function() {
+    this.runnerStartTime = this.now();
     started();
   };
   
@@ -59,10 +62,12 @@ jasmine.TrivialNodeReporter = function(sys) {
   };
   
   this.reportRunnerResults = function(runner) {
+    var elapsed = this.now() - this.runnerStartTime;
+    
     if (runner.results().failedCount === 0) {
-      greenFinished();
+      greenFinished(elapsed);
     } else {
-      redFinished();
+      redFinished(elapsed);
     }
   };
 };
