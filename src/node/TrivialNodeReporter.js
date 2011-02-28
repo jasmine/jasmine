@@ -1,11 +1,28 @@
 jasmine.TrivialNodeReporter = function(sys) {
-  this.sys = sys;
 
-  this.ansi = {
+  var ansi = {
     green: '\033[32m',
     red: '\033[31m',
     yellow: '\033[33m',
     none: '\033[0m'
+  };
+  
+  function coloredStr(color, str) { return ansi[color] + str + ansi.none; }
+  
+  function greenStr(str)  { return coloredStr("green", str); }
+  function redStr(str)    { return coloredStr("red", str); }
+  function yellowStr(str) { return coloredStr("yellow", str); }
+  
+  function greenDot(str)  { sys.print(greenStr(".")); }
+  function redF(str)      { sys.print(redStr("F")); }
+  function newline(str)   { sys.print("\n"); }
+  
+  this.reportSpecResults = function(spec) {
+    if (spec.results().passed()) {
+      greenDot();
+    } else {
+      redF();
+    }    
   };
 };
 
@@ -25,27 +42,3 @@ jasmine.TrivialNodeReporter = function(sys) {
 //       columnCounter = 0;
 //       sys.print('\n');
 //     },
-
-
-jasmine.TrivialNodeReporter.prototype._coloredStr = function(color, str) {
-  return this.ansi[color] + str + this.ansi.none;
-};
-
-jasmine.TrivialNodeReporter.prototype._greenStr = function(str) { return this._coloredStr("green", str); };
-jasmine.TrivialNodeReporter.prototype._redStr = function(str) { return this._coloredStr("red", str); };
-jasmine.TrivialNodeReporter.prototype._yellowStr = function(str) { return this._coloredStr("yellow", str); };
-
-
-jasmine.TrivialNodeReporter.prototype._greenDot = function(str) { return this.sys.print(this._greenStr(".")); };
-jasmine.TrivialNodeReporter.prototype._redF = function(str) { return this.sys.print(this._redStr("F")); };
-jasmine.TrivialNodeReporter.prototype._newLine = function(str) { return this.sys.print("\n"); };
-
-jasmine.TrivialNodeReporter.prototype.reportSpecResults = function(spec) {
-  if (spec.results().passed()) {
-    this._greenDot();
-  } else {
-    this._redF();
-  }
-};  
-
-
