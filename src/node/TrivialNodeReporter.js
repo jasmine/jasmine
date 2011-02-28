@@ -7,22 +7,39 @@ jasmine.TrivialNodeReporter = function(sys) {
     none: '\033[0m'
   };
   
+  var defaultColumnsPerLine = 50;
+  
   function coloredStr(color, str) { return ansi[color] + str + ansi.none; }
   
   function greenStr(str)  { return coloredStr("green", str); }
   function redStr(str)    { return coloredStr("red", str); }
   function yellowStr(str) { return coloredStr("yellow", str); }
   
-  function greenDot(str)  { sys.print(greenStr(".")); }
-  function redF(str)      { sys.print(redStr("F")); }
-  function newline(str)   { sys.print("\n"); }
+  function greenDot()  { sys.print(greenStr(".")); }
+  function redF()      { sys.print(redStr("F")); }
+  function newline()   { sys.print("\n"); }
+  
+  
+  function lineEnder(columnsPerLine) {
+    var columnsSoFar = 0;
+    return function() {
+      columnsSoFar += 1;
+      if (columnsSoFar == columnsPerLine) {
+        newline();
+        columnsSoFar = 0;
+      }
+    };
+  }
+  
+  var startNewLineIfNecessary = lineEnder(defaultColumnsPerLine);
   
   this.reportSpecResults = function(spec) {
     if (spec.results().passed()) {
       greenDot();
     } else {
       redF();
-    }    
+    } 
+    startNewLineIfNecessary();   
   };
 };
 
