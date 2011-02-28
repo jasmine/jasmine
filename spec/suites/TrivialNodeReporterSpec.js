@@ -6,11 +6,16 @@ describe("TrivialNodeReporter", function() {
   function red(str)    { return '\033[31m' + str + '\033[0m'; }
   function yellow(str) { return '\033[33m' + str + '\033[0m'; }
   
+  function prefixGreen(str)  { return '\033[32m' + str; }
+  function prefixRed(str)    { return '\033[31m' + str; }
+  
   var newline = "\n";
   
   var passingSpec = { results: function(){ return {passed:function(){return true;}}; } },
       failingSpec = { results: function(){ return {passed:function(){return false;}}; } },
-      skippedSpec = { results: function(){ return {skipped:true}; } };
+      skippedSpec = { results: function(){ return {skipped:true}; } },
+      passingRun =  { results: function(){ return {failedCount: 0}; } },
+      failingRun =  { results: function(){ return {failedCount: 7}; } };
   
   function repeatedlyInvoke(f, times) { for(var i=0; i<times; i++) f(times+1); }
   
@@ -98,6 +103,25 @@ describe("TrivialNodeReporter", function() {
                   fiftyRedFs + newline + 
                   green(".") + green("."));
       });      
+    });
+    
+    
+    describe('Finishes', function(){
+      it("prints Finished in green if the test run succeeded", function(){
+        this.reporter.reportRunnerResults(passingRun);
+
+        expect(this.fakeSys.getOutput()).toContain(
+          newline + prefixGreen("Finished")
+        );
+      });
+
+      it("prints Finished in red if the test run failed", function(){
+        this.reporter.reportRunnerResults(failingRun);
+
+        expect(this.fakeSys.getOutput()).toContain(
+          newline + prefixRed("Finished")
+        );
+      });
     });
 
   });

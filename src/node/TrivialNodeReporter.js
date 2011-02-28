@@ -15,11 +15,16 @@ jasmine.TrivialNodeReporter = function(sys) {
   function redStr(str)    { return coloredStr("red", str); }
   function yellowStr(str) { return coloredStr("yellow", str); }
   
-  function newline()    { sys.print("\n"); }
-  function started()    { sys.print("Started"); newline(); }
-  function greenDot()   { sys.print(greenStr(".")); }
-  function redF()       { sys.print(redStr("F")); }
-  function yellowStar() { sys.print(yellowStr("*")); }
+  function newline()         { sys.print("\n"); }
+  function started()         { sys.print("Started"); newline(); }
+
+  function greenDot()        { sys.print(greenStr(".")); }
+  function redF()            { sys.print(redStr("F")); }
+  function yellowStar()      { sys.print(yellowStr("*")); }
+
+  function finished(colorF)  { newline(); sys.print(colorF("Finished")); }
+  function greenFinished()   { finished(greenStr); }
+  function redFinished()     { finished(redStr); }
   
   
   
@@ -51,5 +56,13 @@ jasmine.TrivialNodeReporter = function(sys) {
       redF();
     } 
     startNewLineIfNecessary();   
+  };
+  
+  this.reportRunnerResults = function(runner) {
+    if (runner.results().failedCount === 0) {
+      greenFinished();
+    } else {
+      redFinished();
+    }
   };
 };
