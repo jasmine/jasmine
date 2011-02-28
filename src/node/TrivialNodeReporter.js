@@ -15,10 +15,13 @@ jasmine.TrivialNodeReporter = function(sys) {
   function redStr(str)    { return coloredStr("red", str); }
   function yellowStr(str) { return coloredStr("yellow", str); }
   
+  function newline()    { sys.print("\n"); }
+  function started()    { sys.print("Started"); newline(); }
   function greenDot()   { sys.print(greenStr(".")); }
   function redF()       { sys.print(redStr("F")); }
   function yellowStar() { sys.print(yellowStr("*")); }
-  function newline()    { sys.print("\n"); }
+  
+  
   
   
   function lineEnder(columnsPerLine) {
@@ -34,6 +37,10 @@ jasmine.TrivialNodeReporter = function(sys) {
   
   var startNewLineIfNecessary = lineEnder(defaultColumnsPerLine);
   
+  this.reportRunnerStarting = function() {
+    started();
+  };
+  
   this.reportSpecResults = function(spec) {
     var results = spec.results();
     if (results.skipped) {
@@ -46,20 +53,3 @@ jasmine.TrivialNodeReporter = function(sys) {
     startNewLineIfNecessary();   
   };
 };
-
-//     reportSpecResults: function(spec) {
-//       var result = spec.results();
-//       var msg = '';
-//       if (result.passed())
-//       {
-//         msg = (colors) ? (ansi.green + '.' + ansi.none) : '.';
-// //      } else if (result.skipped) {  TODO: Research why "result.skipped" returns false when "xit" is called on a spec?
-// //        msg = (colors) ? (ansi.yellow + '*' + ansi.none) : '*';
-//       } else {
-//         msg = (colors) ? (ansi.red + 'F' + ansi.none) : 'F';
-//       }
-//       sys.print(msg);
-//       if (columnCounter++ < 50) return;
-//       columnCounter = 0;
-//       sys.print('\n');
-//     },

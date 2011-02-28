@@ -38,6 +38,16 @@ describe("TrivialNodeReporter", function() {
   
   
   describe('A Test Run', function(){
+
+    describe('Starts', function(){
+      it("prints Started", function(){
+        this.reporter.reportRunnerStarting();
+
+        expect(this.fakeSys.getOutput()).toEqual(
+          "Started" + newline
+        );
+      });
+    });
     
     describe('A spec runs', function(){
       it("prints a green dot if the spec passes", function(){
@@ -66,7 +76,7 @@ describe("TrivialNodeReporter", function() {
     });
     
     
-    describe('many specs run', function(){
+    describe('Many specs run', function(){
       it("starts a new line every 50 specs", function(){
         var self = this;
         repeatedlyInvoke(function(){self.reporter.reportSpecResults(failingSpec);}, 49);
