@@ -42,7 +42,7 @@ jasmine.TrivialNodeReporter = function(sys) {
   
   var startNewLineIfNecessary = lineEnder(defaultColumnsPerLine);
   
-  this.now = function() { return new Date().getTime(); }
+  this.now = function() { return new Date().getTime(); };
   
   this.reportRunnerStarting = function() {
     this.runnerStartTime = this.now();

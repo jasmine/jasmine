@@ -125,9 +125,9 @@ describe("TrivialNodeReporter", function() {
       });
       
       it("prints the elapsed time in the summary message", function(){
-        this.reporter.now = function(){return 1000}
+        this.reporter.now = function(){return 1000;};
         this.reporter.reportRunnerStarting();
-        this.reporter.now = function(){return 1777}
+        this.reporter.now = function(){return 1777;};
         this.reporter.reportRunnerResults(passingRun);
         expect(this.fakeSys.getOutput()).toContain("0.777 seconds");
       });
@@ -137,7 +137,7 @@ describe("TrivialNodeReporter", function() {
         function run(startTime, endTime) {
           self.fakeSys.clear();
           self.reporter.runnerStartTime = startTime;
-          self.reporter.now = function(){return endTime}
+          self.reporter.now = function(){return endTime;};
           self.reporter.reportRunnerResults(passingRun);          
         }
         
@@ -158,9 +158,9 @@ describe("TrivialNodeReporter", function() {
       });
 
       it("altogether now", function(){
-        this.reporter.now = function(){return 1000}
+        this.reporter.now = function(){return 1000;};
         this.reporter.reportRunnerStarting();
-        this.reporter.now = function(){return 1777}
+        this.reporter.now = function(){return 1777;};
         this.reporter.reportRunnerResults(failingRun);
         expect(this.fakeSys.getOutput()).toContain(red("Finished in 0.777 seconds"));
       });
