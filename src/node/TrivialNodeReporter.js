@@ -15,9 +15,10 @@ jasmine.TrivialNodeReporter = function(sys) {
   function redStr(str)    { return coloredStr("red", str); }
   function yellowStr(str) { return coloredStr("yellow", str); }
   
-  function greenDot()  { sys.print(greenStr(".")); }
-  function redF()      { sys.print(redStr("F")); }
-  function newline()   { sys.print("\n"); }
+  function greenDot()   { sys.print(greenStr(".")); }
+  function redF()       { sys.print(redStr("F")); }
+  function yellowStar() { sys.print(yellowStr("*")); }
+  function newline()    { sys.print("\n"); }
   
   
   function lineEnder(columnsPerLine) {
@@ -34,7 +35,10 @@ jasmine.TrivialNodeReporter = function(sys) {
   var startNewLineIfNecessary = lineEnder(defaultColumnsPerLine);
   
   this.reportSpecResults = function(spec) {
-    if (spec.results().passed()) {
+    var results = spec.results();
+    if (results.skipped) {
+      yellowStar();
+    } else if (results.passed()) {
       greenDot();
     } else {
       redF();

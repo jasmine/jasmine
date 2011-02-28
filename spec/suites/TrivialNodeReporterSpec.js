@@ -1,31 +1,18 @@
 describe("TrivialNodeReporter", function() {
   
 
-  function green(str) {
-    return '\033[32m' + str + '\033[0m';   //keep these literal.  otherwise the test loses value as a test.
-  }
-  
-  function red(str) {
-    return '\033[31m' + str + '\033[0m';
-  }
+  //keep these literal.  otherwise the test loses value as a test.
+  function green(str)  { return '\033[32m' + str + '\033[0m'; }
+  function red(str)    { return '\033[31m' + str + '\033[0m'; }
+  function yellow(str) { return '\033[33m' + str + '\033[0m'; }
   
   var newline = "\n";
   
-  var passingSpec = {
-    results: function(){
-      return {passed:function(){return true;}};
-    }
-  };
+  var passingSpec = { results: function(){ return {passed:function(){return true;}}; } },
+      failingSpec = { results: function(){ return {passed:function(){return false;}}; } },
+      skippedSpec = { results: function(){ return {skipped:true}; } };
   
-  var failingSpec = {
-    results: function(){
-      return {passed:function(){return false;}};
-    }
-  };
-  
-  function repeatedlyInvoke(f, times) {
-    for(var i=0; i<times; i++) f(times+1);
-  }
+  function repeatedlyInvoke(f, times) { for(var i=0; i<times; i++) f(times+1); }
   
   function repeat(thing, times) {
     var arr = [];
@@ -33,8 +20,8 @@ describe("TrivialNodeReporter", function() {
     return arr;
   }
   
-  var fiftyRedFs = repeat(red("F"), 50).join("");
-  var fiftyGreenDots = repeat(green("."), 50).join("");
+  var fiftyRedFs = repeat(red("F"), 50).join(""),
+      fiftyGreenDots = repeat(green("."), 50).join("");
   
   beforeEach(function() {
     this.fakeSys = (function(){
@@ -45,32 +32,11 @@ describe("TrivialNodeReporter", function() {
         getOutput:function(){return output;}
       };
     })();
-    
-    this.env = new jasmine.Env();
-    this.env.updateInterval = 0;
 
     this.reporter = new jasmine.TrivialNodeReporter(this.fakeSys);
   });
   
-  //     reportSpecResults: function(spec) {
-  //       var result = spec.results();
-  //       var msg = '';
-  //       if (result.passed())
-  //       {
-  //         msg = (colors) ? (ansi.green + '.' + ansi.none) : '.';
-  // //      } else if (result.skipped) {  TODO: Research why "result.skipped" returns false when "xit" is called on a spec?
-  // //        msg = (colors) ? (ansi.yellow + '*' + ansi.none) : '*';
-  //       } else {
-  //         msg = (colors) ? (ansi.red + 'F' + ansi.none) : 'F';
-  //       }
-  //       sys.print(msg);
-  //       if (columnCounter++ < 50) return;
-  //       columnCounter = 0;
-  //       sys.print('\n');
-  //     },
-
-
-
+  
   describe('A Test Run', function(){
     
     describe('A spec runs', function(){
@@ -83,15 +49,18 @@ describe("TrivialNodeReporter", function() {
       });
     
       it("prints a red dot if the spec fails", function(){
-        var failingSpec = {
-          results: function(){
-            return {passed:function(){return false;}};
-          }
-        };
         this.reporter.reportSpecResults(failingSpec);
 
         expect(this.fakeSys.getOutput()).toEqual(
           red("F")
+        );
+      });
+
+      it("prints a yellow star if the spec was skipped", function(){
+        this.reporter.reportSpecResults(skippedSpec);
+
+        expect(this.fakeSys.getOutput()).toEqual(
+          yellow("*")
         );
       });
     });
@@ -113,6 +82,7 @@ describe("TrivialNodeReporter", function() {
           
         repeatedlyInvoke(function(){self.reporter.reportSpecResults(failingSpec);}, 48);
         repeatedlyInvoke(function(){self.reporter.reportSpecResults(passingSpec);}, 2);
+        
         expect(this.fakeSys.getOutput()).
           toEqual(fiftyRedFs + newline + 
                   fiftyRedFs + newline + 
