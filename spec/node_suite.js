@@ -9,8 +9,8 @@ global.document = jsdom("<html/>");
 // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
 // undefined = "diz be undefined yo";
 
-var jasmineGlobals = require("../src/base");
-for(var k in jasmineGlobals) {global[k] = jasmineGlobals[k];}
+var jasmine = require("../src/base");
+jasmine.install(global);
 
 //load jasmine src files based on the order in runner.html
 var srcFilesInProperRequireOrder = [];

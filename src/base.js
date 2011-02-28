@@ -1,12 +1,10 @@
-var isCommonJS = typeof exports !== "undefined";
-
 /**
  * Top level namespace for Jasmine, a lightweight JavaScript BDD/spec/testing framework.
  *
  * @namespace
  */
 var jasmine = {};
-if (isCommonJS) exports.jasmine = jasmine;
+
 /**
  * @private
  */
@@ -428,157 +426,172 @@ jasmine.log = function() {
   spec.log.apply(spec, arguments);
 };
 
-/**
- * Function that installs a spy on an existing object's method name.  Used within a Spec to create a spy.
- *
- * @example
- * // spy example
- * var foo = {
- *   not: function(bool) { return !bool; }
- * }
- * spyOn(foo, 'not'); // actual foo.not will not be called, execution stops
- *
- * @see jasmine.createSpy
- * @param obj
- * @param methodName
- * @returns a Jasmine spy that can be chained with all spy methods
- */
-var spyOn = function(obj, methodName) {
-  return jasmine.getEnv().currentSpec.spyOn(obj, methodName);
-};
-if (isCommonJS) exports.spyOn = spyOn;
 
-/**
- * Creates a Jasmine spec that will be added to the current suite.
- *
- * // TODO: pending tests
- *
- * @example
- * it('should be true', function() {
- *   expect(true).toEqual(true);
- * });
- *
- * @param {String} desc description of this specification
- * @param {Function} func defines the preconditions and expectations of the spec
- */
-var it = function(desc, func) {
-  return jasmine.getEnv().it(desc, func);
-};
-if (isCommonJS) exports.it = it;
 
-/**
- * Creates a <em>disabled</em> Jasmine spec.
- *
- * A convenience method that allows existing specs to be disabled temporarily during development.
- *
- * @param {String} desc description of this specification
- * @param {Function} func defines the preconditions and expectations of the spec
- */
-var xit = function(desc, func) {
-  return jasmine.getEnv().xit(desc, func);
-};
-if (isCommonJS) exports.xit = xit;
+jasmine.install = function(target) {
 
-/**
- * Starts a chain for a Jasmine expectation.
- *
- * It is passed an Object that is the actual value and should chain to one of the many
- * jasmine.Matchers functions.
- *
- * @param {Object} actual Actual value to test against and expected value
- */
-var expect = function(actual) {
-  return jasmine.getEnv().currentSpec.expect(actual);
-};
-if (isCommonJS) exports.expect = expect;
+  /**
+   * Defines a suite of specifications.
+   *
+   * Stores the description and all defined specs in the Jasmine environment as one suite of specs. Variables declared
+   * are accessible by calls to beforeEach, it, and afterEach. Describe blocks can be nested, allowing for specialization
+   * of setup in some tests.
+   *
+   * @example
+   * // TODO: a simple suite
+   *
+   * // TODO: a simple suite with a nested describe block
+   *
+   * @param {String} description A string, usually the class under test.
+   * @param {Function} specDefinitions function that defines several specs.
+   */
+  function describe(description, specDefinitions) {
+    return jasmine.getEnv().describe(description, specDefinitions);
+  }
 
-/**
- * Defines part of a jasmine spec.  Used in cominbination with waits or waitsFor in asynchrnous specs.
- *
- * @param {Function} func Function that defines part of a jasmine spec.
- */
-var runs = function(func) {
-  jasmine.getEnv().currentSpec.runs(func);
-};
-if (isCommonJS) exports.runs = runs;
+  /**
+   * Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
+   *
+   * @param {String} description A string, usually the class under test.
+   * @param {Function} specDefinitions function that defines several specs.
+   */
+  function xdescribe(description, specDefinitions) {
+    return jasmine.getEnv().xdescribe(description, specDefinitions);
+  }
 
-/**
- * Waits a fixed time period before moving to the next block.
- *
- * @deprecated Use waitsFor() instead
- * @param {Number} timeout milliseconds to wait
- */
-var waits = function(timeout) {
-  jasmine.getEnv().currentSpec.waits(timeout);
-};
-if (isCommonJS) exports.waits = waits;
+  /**
+   * Creates a Jasmine spec that will be added to the current suite.
+   *
+   * // TODO: pending tests
+   *
+   * @example
+   * it('should be true', function() {
+   *   expect(true).toEqual(true);
+   * });
+   *
+   * @param {String} desc description of this specification
+   * @param {Function} func defines the preconditions and expectations of the spec
+   */
+  function it(desc, func) {
+    return jasmine.getEnv().it(desc, func);
+  }
 
-/**
- * Waits for the latchFunction to return true before proceeding to the next block.
- *
- * @param {Function} latchFunction
- * @param {String} optional_timeoutMessage
- * @param {Number} optional_timeout
- */
-var waitsFor = function(latchFunction, optional_timeoutMessage, optional_timeout) {
-  jasmine.getEnv().currentSpec.waitsFor.apply(jasmine.getEnv().currentSpec, arguments);
-};
-if (isCommonJS) exports.waitsFor = waitsFor;
+  /**
+   * Creates a <em>disabled</em> Jasmine spec.
+   *
+   * A convenience method that allows existing specs to be disabled temporarily during development.
+   *
+   * @param {String} desc description of this specification
+   * @param {Function} func defines the preconditions and expectations of the spec
+   */
+  function xit(desc, func) {
+    return jasmine.getEnv().xit(desc, func);
+  }
+  
+  /**
+   * A function that is called before each spec in a suite.
+   *
+   * Used for spec setup, including validating assumptions.
+   *
+   * @param {Function} beforeEachFunction
+   */
+  function beforeEach(beforeEachFunction) {
+    jasmine.getEnv().beforeEach(beforeEachFunction);
+  }
 
-/**
- * A function that is called before each spec in a suite.
- *
- * Used for spec setup, including validating assumptions.
- *
- * @param {Function} beforeEachFunction
- */
-var beforeEach = function(beforeEachFunction) {
-  jasmine.getEnv().beforeEach(beforeEachFunction);
-};
-if (isCommonJS) exports.beforeEach = beforeEach;
+  /**
+   * A function that is called after each spec in a suite.
+   *
+   * Used for restoring any state that is hijacked during spec execution.
+   *
+   * @param {Function} afterEachFunction
+   */
+  function afterEach(afterEachFunction) {
+    jasmine.getEnv().afterEach(afterEachFunction);
+  }
+  
+  /**
+   * Starts a chain for a Jasmine expectation.
+   *
+   * It is passed an Object that is the actual value and should chain to one of the many
+   * jasmine.Matchers functions.
+   *
+   * @param {Object} actual Actual value to test against and expected value
+   */
+  function expect(actual) {
+    return jasmine.getEnv().currentSpec.expect(actual);
+  }
 
-/**
- * A function that is called after each spec in a suite.
- *
- * Used for restoring any state that is hijacked during spec execution.
- *
- * @param {Function} afterEachFunction
- */
-var afterEach = function(afterEachFunction) {
-  jasmine.getEnv().afterEach(afterEachFunction);
-};
-if (isCommonJS) exports.afterEach = afterEach;
 
-/**
- * Defines a suite of specifications.
- *
- * Stores the description and all defined specs in the Jasmine environment as one suite of specs. Variables declared
- * are accessible by calls to beforeEach, it, and afterEach. Describe blocks can be nested, allowing for specialization
- * of setup in some tests.
- *
- * @example
- * // TODO: a simple suite
- *
- * // TODO: a simple suite with a nested describe block
- *
- * @param {String} description A string, usually the class under test.
- * @param {Function} specDefinitions function that defines several specs.
- */
-var describe = function(description, specDefinitions) {
-  return jasmine.getEnv().describe(description, specDefinitions);
-};
-if (isCommonJS) exports.describe = describe;
+  /**
+   * Function that installs a spy on an existing object's method name.  Used within a Spec to create a spy.
+   *
+   * @example
+   * // spy example
+   * var foo = {
+   *   not: function(bool) { return !bool; }
+   * }
+   * spyOn(foo, 'not'); // actual foo.not will not be called, execution stops
+   *
+   * @see jasmine.createSpy
+   * @param obj
+   * @param methodName
+   * @returns a Jasmine spy that can be chained with all spy methods
+   */
+  function spyOn(obj, methodName) {
+    return jasmine.getEnv().currentSpec.spyOn(obj, methodName);
+  }
 
-/**
- * Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
- *
- * @param {String} description A string, usually the class under test.
- * @param {Function} specDefinitions function that defines several specs.
- */
-var xdescribe = function(description, specDefinitions) {
-  return jasmine.getEnv().xdescribe(description, specDefinitions);
+  /**
+   * Defines part of a jasmine spec.  Used in cominbination with waits or waitsFor in asynchrnous specs.
+   *
+   * @param {Function} func Function that defines part of a jasmine spec.
+   */
+  function runs(func) {
+    jasmine.getEnv().currentSpec.runs(func);
+  }
+
+  /**
+   * Waits a fixed time period before moving to the next block.
+   *
+   * @deprecated Use waitsFor() instead
+   * @param {Number} timeout milliseconds to wait
+   */
+  function waits(timeout) {
+    jasmine.getEnv().currentSpec.waits(timeout);
+  }
+
+  /**
+   * Waits for the latchFunction to return true before proceeding to the next block.
+   *
+   * @param {Function} latchFunction
+   * @param {String} optional_timeoutMessage
+   * @param {Number} optional_timeout
+   */
+  function waitsFor(latchFunction, optional_timeoutMessage, optional_timeout) {
+    jasmine.getEnv().currentSpec.waitsFor.apply(jasmine.getEnv().currentSpec, arguments);
+  }
+
+  target = target || global;
+  
+  target.jasmine = jasmine;
+  target.describe = describe;
+  target.xdescribe = xdescribe;
+  target.it = it;
+  target.xit = xit;
+  target.beforeEach = beforeEach;
+  target.afterEach = afterEach;
+  target.expect = expect;
+  target.spyOn = spyOn;
+  target.runs = runs;
+  target.waits = waits;
+  target.waitsFor = waitsFor;
+  
+  return jasmine;
 };
-if (isCommonJS) exports.xdescribe = xdescribe;
+
+if (typeof module !== "undefined" && module.exports) module.exports = jasmine;
+if (typeof window !== "undefined") jasmine.install(window);
 
 
 // Provide the XMLHttpRequest class for IE 5.x-6.x:
