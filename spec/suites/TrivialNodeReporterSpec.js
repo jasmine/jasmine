@@ -72,7 +72,7 @@ describe("TrivialNodeReporter", function() {
         this.reporter.reportSpecResults(failingSpec);
 
         expect(this.fakeSys.getOutput()).toEqual(
-          red(".")
+          red("F")
         );
       });
     

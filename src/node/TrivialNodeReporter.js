@@ -35,15 +35,16 @@ jasmine.TrivialNodeReporter.prototype._greenStr = function(str) { return this._c
 jasmine.TrivialNodeReporter.prototype._redStr = function(str) { return this._coloredStr("red", str); };
 jasmine.TrivialNodeReporter.prototype._yellowStr = function(str) { return this._coloredStr("yellow", str); };
 
-jasmine.TrivialNodeReporter.prototype._redDot = function(str) { return this.sys.print(this._redStr(".")); };
+
 jasmine.TrivialNodeReporter.prototype._greenDot = function(str) { return this.sys.print(this._greenStr(".")); };
+jasmine.TrivialNodeReporter.prototype._redF = function(str) { return this.sys.print(this._redStr("F")); };
 jasmine.TrivialNodeReporter.prototype._newLine = function(str) { return this.sys.print("\n"); };
 
 jasmine.TrivialNodeReporter.prototype.reportSpecResults = function(spec) {
   if (spec.results().passed()) {
     this._greenDot();
   } else {
-    this._redDot();
+    this._redF();
   }
 };  
 
