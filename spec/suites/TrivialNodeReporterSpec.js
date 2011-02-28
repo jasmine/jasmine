@@ -1,13 +1,13 @@
 describe("TrivialNodeReporter", function() {
   
 
-  var green = function(str) {
+  function green(str) {
     return '\033[32m' + str + '\033[0m';   //keep these literal.  otherwise the test loses value as a test.
-  };
+  }
   
-  var red = function(str) {
+  function red(str) {
     return '\033[31m' + str + '\033[0m';
-  };
+  }
   
   var newline = "\n";
   
@@ -60,6 +60,19 @@ describe("TrivialNodeReporter", function() {
 
         expect(this.fakeSys.getOutput()).toEqual(
           green(".")
+        );
+      });
+    
+      it("prints a red dot if the spec fails", function(){
+        var failingSpec = {
+          results: function(){
+            return {passed:function(){return false;}};
+          }
+        };
+        this.reporter.reportSpecResults(failingSpec);
+
+        expect(this.fakeSys.getOutput()).toEqual(
+          red(".")
         );
       });
     
