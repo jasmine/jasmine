@@ -39,6 +39,12 @@ jasmine.TrivialNodeReporter = function(sys) {
       }
     };
   }
+
+  function fullSuiteDescription(suite) {
+    var fullDescription = suite.description
+    if (suite.parentSuite) fullDescription = fullSuiteDescription(suite.parentSuite) + " " + fullDescription 
+    return fullDescription
+  }
   
   var startNewLineIfNecessary = lineEnder(defaultColumnsPerLine);
   
@@ -59,6 +65,21 @@ jasmine.TrivialNodeReporter = function(sys) {
       redF();
     } 
     startNewLineIfNecessary();   
+  };
+  
+  this.suiteResults = [];
+  
+  this.reportSuiteResults = function(suite) {
+    var suiteResult = {
+      description: fullSuiteDescription(suite),
+      failedSpecResults: []
+    };
+    
+    suite.results().items_.forEach(function(spec){
+      if (spec.failedCount > 0 && spec.description) suiteResult.failedSpecResults.push(spec)
+    });
+    
+    this.suiteResults.push(suiteResult)
   };
   
   this.reportRunnerResults = function(runner) {

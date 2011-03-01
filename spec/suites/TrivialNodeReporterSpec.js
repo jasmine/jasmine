@@ -106,6 +106,51 @@ describe("TrivialNodeReporter", function() {
       });      
     });
     
+    describe('A suite runs', function(){
+      it("remembers suite results", function(){
+        var emptyResults = function(){return {items_:[]};};
+        this.reporter.reportSuiteResults({description:"Oven", results:emptyResults})
+        this.reporter.reportSuiteResults({description:"Mixer", results:emptyResults})
+        
+        var self = this
+        var descriptions = []
+        for(var i=0; i<self.reporter.suiteResults.length; i++) 
+          descriptions.push(self.reporter.suiteResults[i].description)
+        
+        expect(descriptions).toEqual(["Oven", "Mixer"])
+      });      
+
+      it("creates a description out of the current suite and any parent suites", function(){
+        var emptyResults = function(){return {items_:[]};};
+        var grandparentSuite = {description:"My house", results:emptyResults}
+        var parentSuite = {description:"kitchen", parentSuite: grandparentSuite, results:emptyResults}
+        this.reporter.reportSuiteResults({description:"oven", parentSuite: parentSuite, results:emptyResults})
+        
+        expect(this.reporter.suiteResults[0].description).toEqual("My house kitchen oven")
+      });
+
+      it("gathers failing spec results from the suite.  the spec must have a description.", function(){
+        this.reporter.reportSuiteResults({description:"Oven", 
+                                          results:function(){
+                                            return {
+                                              items_:[
+                                                {failedCount:0, description:"specOne"},
+                                                {failedCount:99, description:"specTwo"},
+                                                {failedCount:0, description:"specThree"},
+                                                {failedCount:88, description:"specFour"},
+                                                {failedCount:3}
+                                              ]
+                                            }
+                                          }})
+
+        expect(this.reporter.suiteResults[0].failedSpecResults).
+          toEqual([
+            {failedCount:99, description:"specTwo"},
+            {failedCount:88, description:"specFour"}
+          ])
+      });      
+      
+    });
     
     describe('Finishes', function(){
       it("prints Finished in green if the test run succeeded", function(){
