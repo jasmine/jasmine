@@ -1,4 +1,4 @@
-describe("TrivialNodeReporter", function() {
+describe("TrivialConsoleReporter", function() {
   
 
   //keep these literal.  otherwise the test loses value as a test.
@@ -47,7 +47,7 @@ describe("TrivialNodeReporter", function() {
       };
     })();
 
-    this.reporter = new jasmine.TrivialNodeReporter(this.out.print);
+    this.reporter = new jasmine.TrivialConsoleReporter(this.out.print);
   });
   
   

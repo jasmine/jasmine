@@ -1,4 +1,4 @@
-jasmine.TrivialNodeReporter = function(print) {
+jasmine.TrivialConsoleReporter = function(print) {
 
   var ansi = {
     green: '\033[32m',
