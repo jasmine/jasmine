@@ -28,6 +28,15 @@ describe("TrivialNodeReporter", function() {
   var fiftyRedFs = repeat(red("F"), 50).join(""),
       fiftyGreenDots = repeat(green("."), 50).join("");
   
+  function simulateRun(reporter, specResults, suiteResults, finalRunner, startTime, endTime) {
+    reporter.reportRunnerStarting();
+    for(var i=0; i<specResults.length; i++) reporter.reportSpecResults(specResults[i]);
+    for(i=0; i<suiteResults.length; i++) reporter.reportSuiteResults(suiteResults[i]);
+    reporter.runnerStartTime = startTime;
+    reporter.now = function(){return endTime;};
+    reporter.reportRunnerResults(finalRunner);
+  }
+  
   beforeEach(function() {
     this.fakeSys = (function(){
       var output = "";
@@ -42,6 +51,75 @@ describe("TrivialNodeReporter", function() {
     this.reporter = new jasmine.TrivialNodeReporter(this.fakeSys);
   });
   
+  
+  describe('Integration test', function(){
+    it("prints the proper output under a pass scenario.  small numbers.", function(){
+      simulateRun(this.reporter,
+                  repeat(passingSpec, 3),
+                  [],
+                  { 
+                    results:function(){
+                      return {
+                        specs: function(){return [null, null, null];}, 
+                        totalCount: 7, 
+                        failedCount: 0
+                      };
+                    }
+                  },
+                  1000,
+                  1777);
+                  
+      expect(this.fakeSys.getOutput()).toEqual(
+        [
+         "Started",
+         green(".") + green(".") + green("."),
+         "",
+         "Finished in 0.777 seconds",
+         green("3 specs, 7 assertions, 0 failures"),
+         ""
+        ].join("\n") + "\n"
+      );      
+    });
+
+    it("prints the proper output under a pass scenario.  large numbers.", function(){
+      simulateRun(this.reporter,
+                  repeat(passingSpec, 57),
+                  [],
+                  { 
+                    results:function(){
+                      return {
+                        specs: function(){return [null, null, null];}, 
+                        totalCount: 7, 
+                        failedCount: 0
+                      };
+                    }
+                  },
+                  1000,
+                  1777);
+                       
+      expect(this.fakeSys.getOutput()).toEqual(
+        [
+         "Started",
+         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green(".") + green(".") + green(".") + green(".") + "\n" +
+         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green("."),
+         "",
+         "Finished in 0.777 seconds",
+         green("3 specs, 7 assertions, 0 failures"),
+         ""
+        ].join("\n") + "\n"
+      );      
+    });
+  });
   
   describe('A Test Run', function(){
 

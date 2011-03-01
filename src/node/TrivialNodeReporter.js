@@ -39,11 +39,14 @@ jasmine.TrivialNodeReporter = function(sys) {
                                  newline();
                                }
                              }
-  function finished(elapsed)  { newline(); sys.print("Finished in " + elapsed/1000 + " seconds"); }
+  function finished(elapsed)  { newline(); 
+                                newline(); 
+                                sys.print("Finished in " + elapsed/1000 + " seconds"); }
   function summary(colorF, specs, assertions, failed)  { newline(); 
-                                                         colorF(sys.print(specs + " " + plural(language.spec, specs) + ", " +
+                                                         sys.print(colorF(specs + " " + plural(language.spec, specs) + ", " +
                                                                           assertions + " " + plural(language.assertion, assertions) + ", " +
                                                                           failed + " " + plural(language.failure, failed))); 
+                                                         newline();
                                                          newline(); }
   function greenSummary(specs, assertions, failed){ summary(greenStr, specs, assertions, failed); }
   function redSummary(specs, assertions, failed){ summary(redStr, specs, assertions, failed); }
