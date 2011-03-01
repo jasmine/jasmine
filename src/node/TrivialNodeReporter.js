@@ -1,4 +1,4 @@
-jasmine.TrivialNodeReporter = function(sys) {
+jasmine.TrivialNodeReporter = function(print) {
 
   var ansi = {
     green: '\033[32m',
@@ -21,31 +21,31 @@ jasmine.TrivialNodeReporter = function(sys) {
   function redStr(str)    { return coloredStr("red", str); }
   function yellowStr(str) { return coloredStr("yellow", str); }
   
-  function newline()         { sys.print("\n"); }
-  function started()         { sys.print("Started"); newline(); }
+  function newline()         { print("\n"); }
+  function started()         { print("Started"); newline(); }
 
-  function greenDot()        { sys.print(greenStr(".")); }
-  function redF()            { sys.print(redStr("F")); }
-  function yellowStar()      { sys.print(yellowStr("*")); }
+  function greenDot()        { print(greenStr(".")); }
+  function redF()            { print(redStr("F")); }
+  function yellowStar()      { print(yellowStr("*")); }
   
   function plural(str, count) { return count == 1 ? str : str + "s"; }
   
   function specFailureDetails(suiteDescription, specDescription, stackTraces)  { 
                                newline(); 
-                               sys.print(suiteDescription + " " + specDescription); 
+                               print(suiteDescription + " " + specDescription); 
                                newline();
                                for(var i=0; i<stackTraces.length; i++) {
-                                 sys.print(stackTraces[i]);
+                                 print(stackTraces[i]);
                                  newline();
                                }
                              }
   function finished(elapsed)  { newline(); 
                                 newline(); 
-                                sys.print("Finished in " + elapsed/1000 + " seconds"); }
+                                print("Finished in " + elapsed/1000 + " seconds"); }
   function summary(colorF, specs, assertions, failed)  { newline(); 
-                                                         sys.print(colorF(specs + " " + plural(language.spec, specs) + ", " +
-                                                                          assertions + " " + plural(language.assertion, assertions) + ", " +
-                                                                          failed + " " + plural(language.failure, failed))); 
+                                                         print(colorF(specs + " " + plural(language.spec, specs) + ", " +
+                                                                      assertions + " " + plural(language.assertion, assertions) + ", " +
+                                                                      failed + " " + plural(language.failure, failed))); 
                                                          newline();
                                                          newline(); }
   function greenSummary(specs, assertions, failed){ summary(greenStr, specs, assertions, failed); }

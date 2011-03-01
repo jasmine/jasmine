@@ -38,17 +38,16 @@ describe("TrivialNodeReporter", function() {
   }
   
   beforeEach(function() {
-    this.fakeSys = (function(){
+    this.out = (function(){
       var output = "";
       return {
-        puts:function(str) {output += str + "\n";},
         print:function(str) {output += str;},
         getOutput:function(){return output;},
         clear: function(){output = "";}
       };
     })();
 
-    this.reporter = new jasmine.TrivialNodeReporter(this.fakeSys);
+    this.reporter = new jasmine.TrivialNodeReporter(this.out.print);
   });
   
   
@@ -69,7 +68,7 @@ describe("TrivialNodeReporter", function() {
                   1000,
                   1777);
                   
-      expect(this.fakeSys.getOutput()).toEqual(
+      expect(this.out.getOutput()).toEqual(
         [
          "Started",
          green(".") + green(".") + green("."),
@@ -97,9 +96,11 @@ describe("TrivialNodeReporter", function() {
                   1000,
                   1777);
                        
-      expect(this.fakeSys.getOutput()).toEqual(
+      expect(this.out.getOutput()).toEqual(
         [
          "Started",
+         
+         green(".") + green(".") + green(".") + green(".") + green(".") + //50 green dots
          green(".") + green(".") + green(".") + green(".") + green(".") + 
          green(".") + green(".") + green(".") + green(".") + green(".") + 
          green(".") + green(".") + green(".") + green(".") + green(".") + 
@@ -108,10 +109,11 @@ describe("TrivialNodeReporter", function() {
          green(".") + green(".") + green(".") + green(".") + green(".") + 
          green(".") + green(".") + green(".") + green(".") + green(".") + 
          green(".") + green(".") + green(".") + green(".") + green(".") + 
-         green(".") + green(".") + green(".") + green(".") + green(".") + 
-         green(".") + green(".") + green(".") + green(".") + green(".") + "\n" +
-         green(".") + green(".") + green(".") + green(".") + green(".") + 
+         green(".") + green(".") + green(".") + green(".") + green(".") + newline +
+         
+         green(".") + green(".") + green(".") + green(".") + green(".") + //7 green dots
          green(".") + green("."),
+         
          "",
          "Finished in 0.777 seconds",
          green("3 specs, 7 assertions, 0 failures"),
@@ -127,7 +129,7 @@ describe("TrivialNodeReporter", function() {
       it("prints Started", function(){
         this.reporter.reportRunnerStarting();
 
-        expect(this.fakeSys.getOutput()).toEqual(
+        expect(this.out.getOutput()).toEqual(
           "Started" + newline
         );
       });
@@ -137,7 +139,7 @@ describe("TrivialNodeReporter", function() {
       it("prints a green dot if the spec passes", function(){
         this.reporter.reportSpecResults(passingSpec);
 
-        expect(this.fakeSys.getOutput()).toEqual(
+        expect(this.out.getOutput()).toEqual(
           green(".")
         );
       });
@@ -145,7 +147,7 @@ describe("TrivialNodeReporter", function() {
       it("prints a red dot if the spec fails", function(){
         this.reporter.reportSpecResults(failingSpec);
 
-        expect(this.fakeSys.getOutput()).toEqual(
+        expect(this.out.getOutput()).toEqual(
           red("F")
         );
       });
@@ -153,7 +155,7 @@ describe("TrivialNodeReporter", function() {
       it("prints a yellow star if the spec was skipped", function(){
         this.reporter.reportSpecResults(skippedSpec);
 
-        expect(this.fakeSys.getOutput()).toEqual(
+        expect(this.out.getOutput()).toEqual(
           yellow("*")
         );
       });
@@ -165,19 +167,19 @@ describe("TrivialNodeReporter", function() {
         var self = this;
         repeatedlyInvoke(function(){self.reporter.reportSpecResults(failingSpec);}, 49);
 
-        expect(this.fakeSys.getOutput()).
+        expect(this.out.getOutput()).
           toEqual(repeat(red("F"), 49).join(""));
         
         repeatedlyInvoke(function(){self.reporter.reportSpecResults(failingSpec);}, 3);
         
-        expect(this.fakeSys.getOutput()).
+        expect(this.out.getOutput()).
           toEqual(fiftyRedFs + newline + 
                   red("F") + red("F"));
           
         repeatedlyInvoke(function(){self.reporter.reportSpecResults(failingSpec);}, 48);
         repeatedlyInvoke(function(){self.reporter.reportSpecResults(passingSpec);}, 2);
         
-        expect(this.fakeSys.getOutput()).
+        expect(this.out.getOutput()).
           toEqual(fiftyRedFs + newline + 
                   fiftyRedFs + newline + 
                   green(".") + green("."));
@@ -247,9 +249,9 @@ describe("TrivialNodeReporter", function() {
           
           this.reporter.reportRunnerResults(failingRun);
 
-          expect(this.fakeSys.getOutput()).toContain("The oven heats up");
-          expect(this.fakeSys.getOutput()).toContain("The oven cleans itself");
-          expect(this.fakeSys.getOutput()).toContain("The mixer blends things together");
+          expect(this.out.getOutput()).toContain("The oven heats up");
+          expect(this.out.getOutput()).toContain("The oven cleans itself");
+          expect(this.out.getOutput()).toContain("The mixer blends things together");
         });
 
         it("prints stack trace of spec failure", function(){
@@ -265,9 +267,9 @@ describe("TrivialNodeReporter", function() {
           
           this.reporter.reportRunnerResults(failingRun);
 
-          expect(this.fakeSys.getOutput()).toContain("The oven heats up");
-          expect(this.fakeSys.getOutput()).toContain("stack trace one");
-          expect(this.fakeSys.getOutput()).toContain("stack trace two");
+          expect(this.out.getOutput()).toContain("The oven heats up");
+          expect(this.out.getOutput()).toContain("stack trace one");
+          expect(this.out.getOutput()).toContain("stack trace two");
         });
 
       });
@@ -279,32 +281,32 @@ describe("TrivialNodeReporter", function() {
           this.reporter.reportRunnerStarting();
           this.reporter.now = function(){return 1777;};
           this.reporter.reportRunnerResults(passingRun);
-          expect(this.fakeSys.getOutput()).toContain("0.777 seconds");
+          expect(this.out.getOutput()).toContain("0.777 seconds");
         });
       
         it("prints round time numbers correctly", function(){
           var self = this;
           function run(startTime, endTime) {
-            self.fakeSys.clear();
+            self.out.clear();
             self.reporter.runnerStartTime = startTime;
             self.reporter.now = function(){return endTime;};
             self.reporter.reportRunnerResults(passingRun);          
           }
         
           run(1000, 11000);
-          expect(this.fakeSys.getOutput()).toContain("10 seconds");
+          expect(this.out.getOutput()).toContain("10 seconds");
         
           run(1000, 2000);
-          expect(this.fakeSys.getOutput()).toContain("1 seconds");
+          expect(this.out.getOutput()).toContain("1 seconds");
         
           run(1000, 1100);
-          expect(this.fakeSys.getOutput()).toContain("0.1 seconds");
+          expect(this.out.getOutput()).toContain("0.1 seconds");
 
           run(1000, 1010);
-          expect(this.fakeSys.getOutput()).toContain("0.01 seconds");
+          expect(this.out.getOutput()).toContain("0.01 seconds");
 
           run(1000, 1001);        
-          expect(this.fakeSys.getOutput()).toContain("0.001 seconds");
+          expect(this.out.getOutput()).toContain("0.001 seconds");
         });
 
         it("prints the full finished message", function(){
@@ -312,7 +314,7 @@ describe("TrivialNodeReporter", function() {
           this.reporter.reportRunnerStarting();
           this.reporter.now = function(){return 1777;};
           this.reporter.reportRunnerResults(failingRun);
-          expect(this.fakeSys.getOutput()).toContain("Finished in 0.777 seconds");
+          expect(this.out.getOutput()).toContain("Finished in 0.777 seconds");
         });
       });
 
@@ -321,7 +323,7 @@ describe("TrivialNodeReporter", function() {
           this.reporter.reportRunnerResults({ 
             results:function(){return {specs: function(){return [null, null, null];}, totalCount: 7, failedCount: 0};}
           });
-          expect(this.fakeSys.getOutput()).
+          expect(this.out.getOutput()).
             toContain("3 specs, 7 assertions, 0 failures");
         });
 
@@ -329,7 +331,7 @@ describe("TrivialNodeReporter", function() {
           this.reporter.reportRunnerResults({ 
             results:function(){return {specs: function(){return [null, null, null];}, totalCount: 7, failedCount: 3};}
           });
-          expect(this.fakeSys.getOutput()).
+          expect(this.out.getOutput()).
             toContain("3 specs, 7 assertions, 3 failures");
         });
 
@@ -337,7 +339,7 @@ describe("TrivialNodeReporter", function() {
           this.reporter.reportRunnerResults({ 
             results:function(){return {specs: function(){return [null];}, totalCount: 1, failedCount: 1};}
           });
-          expect(this.fakeSys.getOutput()).
+          expect(this.out.getOutput()).
             toContain("1 spec, 1 assertion, 1 failure");
         });
       });
