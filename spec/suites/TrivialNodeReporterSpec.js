@@ -11,11 +11,11 @@ describe("TrivialNodeReporter", function() {
   
   var newline = "\n";
   
-  var passingSpec = { results: function(){ return {passed:function(){return true;}}; } },
-      failingSpec = { results: function(){ return {passed:function(){return false;}}; } },
-      skippedSpec = { results: function(){ return {skipped:true}; } },
-      passingRun =  { results: function(){ return {failedCount: 0}; } },
-      failingRun =  { results: function(){ return {failedCount: 7}; } };
+  var passingSpec = { results: function(){ return {passed: function(){return true;}}; } },
+      failingSpec = { results: function(){ return {passed: function(){return false;}}; } },
+      skippedSpec = { results: function(){ return {skipped: true}; } },
+      passingRun =  { results: function(){ return {failedCount: 0, specs: function(){return [null, null, null];}}; } },
+      failingRun =  { results: function(){ return {failedCount: 7, specs: function(){return [null, null, null];}}; } };
   
   function repeatedlyInvoke(f, times) { for(var i=0; i<times; i++) f(times+1); }
   
@@ -109,24 +109,24 @@ describe("TrivialNodeReporter", function() {
     describe('A suite runs', function(){
       it("remembers suite results", function(){
         var emptyResults = function(){return {items_:[]};};
-        this.reporter.reportSuiteResults({description:"Oven", results:emptyResults})
-        this.reporter.reportSuiteResults({description:"Mixer", results:emptyResults})
+        this.reporter.reportSuiteResults({description:"Oven", results:emptyResults});
+        this.reporter.reportSuiteResults({description:"Mixer", results:emptyResults});
         
-        var self = this
-        var descriptions = []
+        var self = this;
+        var descriptions = [];
         for(var i=0; i<self.reporter.suiteResults.length; i++) 
-          descriptions.push(self.reporter.suiteResults[i].description)
+          descriptions.push(self.reporter.suiteResults[i].description);
         
-        expect(descriptions).toEqual(["Oven", "Mixer"])
+        expect(descriptions).toEqual(["Oven", "Mixer"]);
       });      
 
       it("creates a description out of the current suite and any parent suites", function(){
         var emptyResults = function(){return {items_:[]};};
-        var grandparentSuite = {description:"My house", results:emptyResults}
-        var parentSuite = {description:"kitchen", parentSuite: grandparentSuite, results:emptyResults}
-        this.reporter.reportSuiteResults({description:"oven", parentSuite: parentSuite, results:emptyResults})
+        var grandparentSuite = {description:"My house", results:emptyResults};
+        var parentSuite = {description:"kitchen", parentSuite: grandparentSuite, results:emptyResults};
+        this.reporter.reportSuiteResults({description:"oven", parentSuite: parentSuite, results:emptyResults});
         
-        expect(this.reporter.suiteResults[0].description).toEqual("My house kitchen oven")
+        expect(this.reporter.suiteResults[0].description).toEqual("My house kitchen oven");
       });
 
       it("gathers failing spec results from the suite.  the spec must have a description.", function(){
@@ -140,74 +140,87 @@ describe("TrivialNodeReporter", function() {
                                                 {failedCount:88, description:"specFour"},
                                                 {failedCount:3}
                                               ]
-                                            }
-                                          }})
+                                            };
+                                          }});
 
         expect(this.reporter.suiteResults[0].failedSpecResults).
           toEqual([
             {failedCount:99, description:"specTwo"},
             {failedCount:88, description:"specFour"}
-          ])
+          ]);
       });      
       
     });
     
     describe('Finishes', function(){
-      it("prints Finished in green if the test run succeeded", function(){
-        this.reporter.reportRunnerResults(passingRun);
-
-        expect(this.fakeSys.getOutput()).toContain(
-          newline + prefixGreen("Finished")
-        );
-      });
-
-      it("prints Finished in red if the test run failed", function(){
-        this.reporter.reportRunnerResults(failingRun);
-
-        expect(this.fakeSys.getOutput()).toContain(
-          newline + prefixRed("Finished")
-        );
-      });
+      describe('Finished line', function(){
       
-      it("prints the elapsed time in the summary message", function(){
-        this.reporter.now = function(){return 1000;};
-        this.reporter.reportRunnerStarting();
-        this.reporter.now = function(){return 1777;};
-        this.reporter.reportRunnerResults(passingRun);
-        expect(this.fakeSys.getOutput()).toContain("0.777 seconds");
-      });
+        it("prints the elapsed time in the summary message", function(){
+          this.reporter.now = function(){return 1000;};
+          this.reporter.reportRunnerStarting();
+          this.reporter.now = function(){return 1777;};
+          this.reporter.reportRunnerResults(passingRun);
+          expect(this.fakeSys.getOutput()).toContain("0.777 seconds");
+        });
       
-      it("prints round time numbers correctly", function(){
-        var self = this;
-        function run(startTime, endTime) {
-          self.fakeSys.clear();
-          self.reporter.runnerStartTime = startTime;
-          self.reporter.now = function(){return endTime;};
-          self.reporter.reportRunnerResults(passingRun);          
-        }
+        it("prints round time numbers correctly", function(){
+          var self = this;
+          function run(startTime, endTime) {
+            self.fakeSys.clear();
+            self.reporter.runnerStartTime = startTime;
+            self.reporter.now = function(){return endTime;};
+            self.reporter.reportRunnerResults(passingRun);          
+          }
         
-        run(1000, 11000);
-        expect(this.fakeSys.getOutput()).toContain("10 seconds");
+          run(1000, 11000);
+          expect(this.fakeSys.getOutput()).toContain("10 seconds");
         
-        run(1000, 2000);
-        expect(this.fakeSys.getOutput()).toContain("1 seconds");
+          run(1000, 2000);
+          expect(this.fakeSys.getOutput()).toContain("1 seconds");
         
-        run(1000, 1100);
-        expect(this.fakeSys.getOutput()).toContain("0.1 seconds");
+          run(1000, 1100);
+          expect(this.fakeSys.getOutput()).toContain("0.1 seconds");
 
-        run(1000, 1010);
-        expect(this.fakeSys.getOutput()).toContain("0.01 seconds");
+          run(1000, 1010);
+          expect(this.fakeSys.getOutput()).toContain("0.01 seconds");
 
-        run(1000, 1001);        
-        expect(this.fakeSys.getOutput()).toContain("0.001 seconds");
+          run(1000, 1001);        
+          expect(this.fakeSys.getOutput()).toContain("0.001 seconds");
+        });
+
+        it("prints the full finished message", function(){
+          this.reporter.now = function(){return 1000;};
+          this.reporter.reportRunnerStarting();
+          this.reporter.now = function(){return 1777;};
+          this.reporter.reportRunnerResults(failingRun);
+          expect(this.fakeSys.getOutput()).toContain("Finished in 0.777 seconds");
+        });
       });
 
-      it("altogether now", function(){
-        this.reporter.now = function(){return 1000;};
-        this.reporter.reportRunnerStarting();
-        this.reporter.now = function(){return 1777;};
-        this.reporter.reportRunnerResults(failingRun);
-        expect(this.fakeSys.getOutput()).toContain(red("Finished in 0.777 seconds"));
+      describe("specs/assertions/failures summary", function(){
+        it("prints statistics in green if there were no failures", function() {
+          this.reporter.reportRunnerResults({ 
+            results:function(){return {specs: function(){return [null, null, null];}, totalCount: 7, failedCount: 0};}
+          });
+          expect(this.fakeSys.getOutput()).
+            toContain("3 specs, 7 assertions, 0 failures");
+        });
+
+        it("prints statistics in red if there was a failure", function() {
+          this.reporter.reportRunnerResults({ 
+            results:function(){return {specs: function(){return [null, null, null];}, totalCount: 7, failedCount: 3};}
+          });
+          expect(this.fakeSys.getOutput()).
+            toContain("3 specs, 7 assertions, 3 failures");
+        });
+
+        it("handles pluralization with 1's ones appropriately", function() {
+          this.reporter.reportRunnerResults({ 
+            results:function(){return {specs: function(){return [null];}, totalCount: 1, failedCount: 1};}
+          });
+          expect(this.fakeSys.getOutput()).
+            toContain("1 spec, 1 assertion, 1 failure");
+        });
       });
       
     });

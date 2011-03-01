@@ -21,10 +21,16 @@ jasmine.TrivialNodeReporter = function(sys) {
   function greenDot()        { sys.print(greenStr(".")); }
   function redF()            { sys.print(redStr("F")); }
   function yellowStar()      { sys.print(yellowStr("*")); }
-
-  function finished(colorF, elapsed)  { newline(); sys.print(colorF("Finished in " + elapsed/1000 + " seconds")); }
-  function greenFinished(elapsed)     { finished(greenStr, elapsed); }
-  function redFinished(elapsed)       { finished(redStr, elapsed); }
+  
+  function plural(str, count) { return count == 1 ? str : str + "s"; }
+  
+  function finished(elapsed)  { newline(); sys.print("Finished in " + elapsed/1000 + " seconds"); }
+  function summary(colorF, specs, assertions, failed)  { newline(); 
+                                                         colorF(sys.print(specs + " " + plural("spec", specs) + ", " +
+                                                                          assertions + " " + plural("assertion", assertions) + ", " +
+                                                                          failed + " " + plural("failure", failed))); }
+  function greenSummary(specs, assertions, failed){ summary(greenStr, specs, assertions, failed); }
+  function redSummary(specs, assertions, failed){ summary(redStr, specs, assertions, failed); }
   
   
   
@@ -41,9 +47,9 @@ jasmine.TrivialNodeReporter = function(sys) {
   }
 
   function fullSuiteDescription(suite) {
-    var fullDescription = suite.description
-    if (suite.parentSuite) fullDescription = fullSuiteDescription(suite.parentSuite) + " " + fullDescription 
-    return fullDescription
+    var fullDescription = suite.description;
+    if (suite.parentSuite) fullDescription = fullSuiteDescription(suite.parentSuite) + " " + fullDescription ;
+    return fullDescription;
   }
   
   var startNewLineIfNecessary = lineEnder(defaultColumnsPerLine);
@@ -76,19 +82,20 @@ jasmine.TrivialNodeReporter = function(sys) {
     };
     
     suite.results().items_.forEach(function(spec){
-      if (spec.failedCount > 0 && spec.description) suiteResult.failedSpecResults.push(spec)
+      if (spec.failedCount > 0 && spec.description) suiteResult.failedSpecResults.push(spec);
     });
     
-    this.suiteResults.push(suiteResult)
+    this.suiteResults.push(suiteResult);
   };
   
   this.reportRunnerResults = function(runner) {
-    var elapsed = this.now() - this.runnerStartTime;
+    finished(this.now() - this.runnerStartTime);
     
-    if (runner.results().failedCount === 0) {
-      greenFinished(elapsed);
+    var results = runner.results();
+    if (results.failedCount === 0) {
+      greenSummary(results.specs().length, results.totalCount, results.failedCount);
     } else {
-      redFinished(elapsed);
+      redSummary(results.specs().length, results.totalCount, results.failedCount);
     }
   };
 };
