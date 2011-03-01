@@ -30,10 +30,14 @@ jasmine.TrivialNodeReporter = function(sys) {
   
   function plural(str, count) { return count == 1 ? str : str + "s"; }
   
-  function specFailureDetails(suiteDescription, specDescription)  { 
+  function specFailureDetails(suiteDescription, specDescription, stackTraces)  { 
                                newline(); 
                                sys.print(suiteDescription + " " + specDescription); 
                                newline();
+                               for(var i=0; i<stackTraces.length; i++) {
+                                 sys.print(stackTraces[i]);
+                                 newline();
+                               }
                              }
   function finished(elapsed)  { newline(); sys.print("Finished in " + elapsed/1000 + " seconds"); }
   function summary(colorF, specs, assertions, failed)  { newline(); 
@@ -105,15 +109,17 @@ jasmine.TrivialNodeReporter = function(sys) {
       var suiteResult = suiteResults[i];
       for(var j=0; j<suiteResult.failedSpecResults.length; j++) {
         var failedSpecResult = suiteResult.failedSpecResults[j];
-        callback(suiteResult.description, failedSpecResult.description);
+        var stackTraces = [];
+        for(var k=0; k<failedSpecResult.items_.length; k++) stackTraces.push(failedSpecResult.items_[k].trace.stack);
+        callback(suiteResult.description, failedSpecResult.description, stackTraces);
       }
     }
   }
   
   this.reportRunnerResults = function(runner) {
-    eachSpecFailure(this.suiteResults, function(suiteDescription, specDescription) {
-      specFailureDetails(suiteDescription, specDescription);
-    })
+    eachSpecFailure(this.suiteResults, function(suiteDescription, specDescription, stackTraces) {
+      specFailureDetails(suiteDescription, specDescription, stackTraces);
+    });
     
     finished(this.now() - this.runnerStartTime);
     

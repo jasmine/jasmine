@@ -159,13 +159,13 @@ describe("TrivialNodeReporter", function() {
         it("prints suite and spec descriptions together as a sentence", function(){
           this.reporter.suiteResults = [
             {description:"The oven", failedSpecResults:[
-                                       {description:"heats up"},
-                                       {description:"cleans itself"}
+                                       {description:"heats up", items_:[]},
+                                       {description:"cleans itself", items_:[]}
                                      ]},
             {description:"The mixer", failedSpecResults:[
-                                        {description:"blends things together"}
+                                        {description:"blends things together", items_:[]}
                                       ]}
-          ]
+          ];
           
           this.reporter.reportRunnerResults(failingRun);
 
@@ -174,7 +174,25 @@ describe("TrivialNodeReporter", function() {
           expect(this.fakeSys.getOutput()).toContain("The mixer blends things together");
         });
 
-      })
+        it("prints stack trace of spec failure", function(){
+          this.reporter.suiteResults = [
+            {description:"The oven", failedSpecResults:[
+                                       {description:"heats up",
+                                        items_:[
+                                          {trace:{stack:"stack trace one"}},
+                                          {trace:{stack:"stack trace two"}}
+                                        ]}
+                                     ]}
+          ];
+          
+          this.reporter.reportRunnerResults(failingRun);
+
+          expect(this.fakeSys.getOutput()).toContain("The oven heats up");
+          expect(this.fakeSys.getOutput()).toContain("stack trace one");
+          expect(this.fakeSys.getOutput()).toContain("stack trace two");
+        });
+
+      });
 
       describe('Finished line', function(){
       
