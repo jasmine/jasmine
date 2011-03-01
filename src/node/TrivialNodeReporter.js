@@ -9,6 +9,12 @@ jasmine.TrivialNodeReporter = function(sys) {
   
   var defaultColumnsPerLine = 50;
   
+  var language = {
+    spec:"spec",
+    assertion:"assertion",
+    failure:"failure"
+  };
+  
   function coloredStr(color, str) { return ansi[color] + str + ansi.none; }
   
   function greenStr(str)  { return coloredStr("green", str); }
@@ -26,9 +32,9 @@ jasmine.TrivialNodeReporter = function(sys) {
   
   function finished(elapsed)  { newline(); sys.print("Finished in " + elapsed/1000 + " seconds"); }
   function summary(colorF, specs, assertions, failed)  { newline(); 
-                                                         colorF(sys.print(specs + " " + plural("spec", specs) + ", " +
-                                                                          assertions + " " + plural("assertion", assertions) + ", " +
-                                                                          failed + " " + plural("failure", failed))); }
+                                                         colorF(sys.print(specs + " " + plural(language.spec, specs) + ", " +
+                                                                          assertions + " " + plural(language.assertion, assertions) + ", " +
+                                                                          failed + " " + plural(language.failure, failed))); }
   function greenSummary(specs, assertions, failed){ summary(greenStr, specs, assertions, failed); }
   function redSummary(specs, assertions, failed){ summary(redStr, specs, assertions, failed); }
   
@@ -92,10 +98,7 @@ jasmine.TrivialNodeReporter = function(sys) {
     finished(this.now() - this.runnerStartTime);
     
     var results = runner.results();
-    if (results.failedCount === 0) {
-      greenSummary(results.specs().length, results.totalCount, results.failedCount);
-    } else {
-      redSummary(results.specs().length, results.totalCount, results.failedCount);
-    }
+    var summaryFunction = results.failedCount === 0 ? greenSummary : redSummary;
+    summaryFunction(results.specs().length, results.totalCount, results.failedCount);
   };
 };
