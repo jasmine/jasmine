@@ -14,7 +14,8 @@ jasmine.TrivialConsoleReporter = function(print) {
   function yellowStr(str) { return coloredStr("yellow", str); }
   
   function newline()         { print("\n"); }
-  function started()         { print("Started"); newline(); }
+  function started()         { print("Started"); 
+                               newline(); }
 
   function greenDot()        { print(greenStr(".")); }
   function redF()            { print(redStr("F")); }
