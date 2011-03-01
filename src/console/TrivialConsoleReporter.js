@@ -85,6 +85,8 @@ jasmine.TrivialConsoleReporter = function(print) {
     started();
   };
   
+  this.reportSpecStarting = function() { /* do nothing */ };
+  
   this.reportSpecResults = function(spec) {
     var results = spec.results();
     if (results.skipped) {
@@ -135,6 +137,6 @@ jasmine.TrivialConsoleReporter = function(print) {
     
     var results = runner.results();
     var summaryFunction = results.failedCount === 0 ? greenSummary : redSummary;
-    summaryFunction(results.specs().length, results.totalCount, results.failedCount);
+    summaryFunction(results.items_.length, results.totalCount, results.failedCount);
   };
 };

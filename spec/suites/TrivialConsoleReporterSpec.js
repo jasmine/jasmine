@@ -14,8 +14,8 @@ describe("TrivialConsoleReporter", function() {
   var passingSpec = { results: function(){ return {passed: function(){return true;}}; } },
       failingSpec = { results: function(){ return {passed: function(){return false;}}; } },
       skippedSpec = { results: function(){ return {skipped: true}; } },
-      passingRun =  { results: function(){ return {failedCount: 0, specs: function(){return [null, null, null];}}; } },
-      failingRun =  { results: function(){ return {failedCount: 7, specs: function(){return [null, null, null];}}; } };
+      passingRun =  { results: function(){ return {failedCount: 0, items_: [null, null, null]}; } },
+      failingRun =  { results: function(){ return {failedCount: 7, items_: [null, null, null]}; } };
   
   function repeatedlyInvoke(f, times) { for(var i=0; i<times; i++) f(times+1); }
   
@@ -59,7 +59,7 @@ describe("TrivialConsoleReporter", function() {
                   { 
                     results:function(){
                       return {
-                        specs: function(){return [null, null, null];}, 
+                        items_: [null, null, null], 
                         totalCount: 7, 
                         failedCount: 0
                       };
@@ -87,7 +87,7 @@ describe("TrivialConsoleReporter", function() {
                   { 
                     results:function(){
                       return {
-                        specs: function(){return [null, null, null];}, 
+                        items_: [null, null, null], 
                         totalCount: 7, 
                         failedCount: 0
                       };
@@ -155,7 +155,7 @@ describe("TrivialConsoleReporter", function() {
                   { 
                     results:function(){
                       return {
-                        specs: function(){return [null, null, null];}, 
+                        items_: [null, null, null], 
                         totalCount: 7, 
                         failedCount: 2
                       };
@@ -385,7 +385,7 @@ describe("TrivialConsoleReporter", function() {
       describe("specs/assertions/failures summary", function(){
         it("prints statistics in green if there were no failures", function() {
           this.reporter.reportRunnerResults({ 
-            results:function(){return {specs: function(){return [null, null, null];}, totalCount: 7, failedCount: 0};}
+            results:function(){return {items_: [null, null, null], totalCount: 7, failedCount: 0};}
           });
           expect(this.out.getOutput()).
             toContain("3 specs, 7 assertions, 0 failures");
@@ -393,7 +393,7 @@ describe("TrivialConsoleReporter", function() {
 
         it("prints statistics in red if there was a failure", function() {
           this.reporter.reportRunnerResults({ 
-            results:function(){return {specs: function(){return [null, null, null];}, totalCount: 7, failedCount: 3};}
+            results:function(){return {items_: [null, null, null], totalCount: 7, failedCount: 3};}
           });
           expect(this.out.getOutput()).
             toContain("3 specs, 7 assertions, 3 failures");
@@ -401,7 +401,7 @@ describe("TrivialConsoleReporter", function() {
 
         it("handles pluralization with 1's ones appropriately", function() {
           this.reporter.reportRunnerResults({ 
-            results:function(){return {specs: function(){return [null];}, totalCount: 1, failedCount: 1};}
+            results:function(){return {items_: [null], totalCount: 1, failedCount: 1};}
           });
           expect(this.out.getOutput()).
             toContain("1 spec, 1 assertion, 1 failure");
