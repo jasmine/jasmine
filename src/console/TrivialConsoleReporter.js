@@ -29,11 +29,11 @@ jasmine.TrivialConsoleReporter = function(print) {
                                 }
   
   function indent(str, spaces) { var lines = str.split("\n");
-                                 var newArr = []
+                                 var newArr = [];
                                  for(var i=0; i<lines.length; i++) {
-                                   newArr.push(repeat(" ", spaces).join("") + lines[i])
+                                   newArr.push(repeat(" ", spaces).join("") + lines[i]);
                                  }
-                                 return newArr.join("\n")
+                                 return newArr.join("\n");
                                }
   
   function specFailureDetails(suiteDescription, specDescription, stackTraces)  { 
