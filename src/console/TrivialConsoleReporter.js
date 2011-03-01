@@ -1,19 +1,11 @@
 jasmine.TrivialConsoleReporter = function(print) {
-
-  var ansi = {
-    green: '\033[32m',
-    red: '\033[31m',
-    yellow: '\033[33m',
-    none: '\033[0m'
-  };
   
-  var defaultColumnsPerLine = 50;
+  //inspired by mhevery's jasmine-node reporter
+  //https://github.com/mhevery/jasmine-node
   
-  var language = {
-    spec:"spec",
-    assertion:"assertion",
-    failure:"failure"
-  };
+  var defaultColumnsPerLine = 50,
+      ansi = { green: '\033[32m', red: '\033[31m', yellow: '\033[33m', none: '\033[0m' },
+      language = { spec:"spec", assertion:"assertion", failure:"failure" };
   
   function coloredStr(color, str) { return ansi[color] + str + ansi.none; }
   
@@ -34,7 +26,6 @@ jasmine.TrivialConsoleReporter = function(print) {
                                   for(var i=0; i<times; i++) arr.push(thing);
                                   return arr;
                                 }
-  
   
   function indent(str, spaces) { var lines = str.split("\n");
                                  var newArr = []
