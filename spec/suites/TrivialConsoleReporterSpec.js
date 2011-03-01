@@ -51,7 +51,7 @@ describe("TrivialConsoleReporter", function() {
   });
   
   
-  describe('Integration test', function(){
+  describe('Integration', function(){
     it("prints the proper output under a pass scenario.  small numbers.", function(){
       simulateRun(this.reporter,
                   repeat(passingSpec, 3),
@@ -121,6 +121,70 @@ describe("TrivialConsoleReporter", function() {
         ].join("\n") + "\n"
       );      
     });
+    
+    
+    it("prints the proper output under a failure scenario.", function(){
+      simulateRun(this.reporter,
+                  [failingSpec, passingSpec, failingSpec],
+                  [{description:"The oven", 
+                    results:function(){
+                      return {
+                        items_:[
+                          {failedCount:2, 
+                           description:"heats up",
+                           items_:[
+                             {trace:{stack:"stack trace one\n  second line"}},
+                             {trace:{stack:"stack trace two"}}
+                           ]}
+                        ]
+                      };
+                    }},
+                    {description:"The washing machine", 
+                     results:function(){
+                       return {
+                         items_:[
+                           {failedCount:2, 
+                            description:"washes clothes",
+                            items_:[
+                              {trace:{stack:"stack trace one"}}
+                            ]}
+                         ]
+                       };
+                    }}
+                  ],
+                  { 
+                    results:function(){
+                      return {
+                        specs: function(){return [null, null, null];}, 
+                        totalCount: 7, 
+                        failedCount: 2
+                      };
+                    }
+                  },
+                  1000,
+                  1777);
+
+      expect(this.out.getOutput()).toEqual(
+        [
+         "Started",
+         red("F") + green(".") + red("F"),
+         "",
+         "The oven heats up",
+         "  stack trace one",
+         "    second line",
+         "  stack trace two",
+         "",
+         "The washing machine washes clothes",
+         "  stack trace one",
+         "",
+         "Finished in 0.777 seconds",
+         red("3 specs, 7 assertions, 2 failures"),
+         ""
+        ].join("\n") + "\n"
+      );      
+    });
+    
+    
   });
   
   describe('A Test Run', function(){

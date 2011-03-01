@@ -30,17 +30,30 @@ jasmine.TrivialConsoleReporter = function(print) {
   
   function plural(str, count) { return count == 1 ? str : str + "s"; }
   
+  function repeat(thing, times) { var arr = [];
+                                  for(var i=0; i<times; i++) arr.push(thing);
+                                  return arr;
+                                }
+  
+  
+  function indent(str, spaces) { var lines = str.split("\n");
+                                 var newArr = []
+                                 for(var i=0; i<lines.length; i++) {
+                                   newArr.push(repeat(" ", spaces).join("") + lines[i])
+                                 }
+                                 return newArr.join("\n")
+                               }
+  
   function specFailureDetails(suiteDescription, specDescription, stackTraces)  { 
                                newline(); 
                                print(suiteDescription + " " + specDescription); 
                                newline();
                                for(var i=0; i<stackTraces.length; i++) {
-                                 print(stackTraces[i]);
+                                 print(indent(stackTraces[i], 2));
                                  newline();
                                }
                              }
   function finished(elapsed)  { newline(); 
-                                newline(); 
                                 print("Finished in " + elapsed/1000 + " seconds"); }
   function summary(colorF, specs, assertions, failed)  { newline(); 
                                                          print(colorF(specs + " " + plural(language.spec, specs) + ", " +
@@ -120,6 +133,8 @@ jasmine.TrivialConsoleReporter = function(print) {
   }
   
   this.reportRunnerResults = function(runner) {
+    newline();
+    
     eachSpecFailure(this.suiteResults, function(suiteDescription, specDescription, stackTraces) {
       specFailureDetails(suiteDescription, specDescription, stackTraces);
     });
