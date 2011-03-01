@@ -1,7 +1,8 @@
-jasmine.TrivialConsoleReporter = function(print) {
-  
+jasmine.TrivialConsoleReporter = function(print, doneCallback) {
   //inspired by mhevery's jasmine-node reporter
   //https://github.com/mhevery/jasmine-node
+  
+  doneCallback = doneCallback || function(){};
   
   var defaultColumnsPerLine = 50,
       ansi = { green: '\033[32m', red: '\033[31m', yellow: '\033[33m', none: '\033[0m' },
@@ -138,5 +139,6 @@ jasmine.TrivialConsoleReporter = function(print) {
     var results = runner.results();
     var summaryFunction = results.failedCount === 0 ? greenSummary : redSummary;
     summaryFunction(results.items_.length, results.totalCount, results.failedCount);
+    doneCallback(runner);
   };
 };

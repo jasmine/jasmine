@@ -47,7 +47,11 @@ describe("TrivialConsoleReporter", function() {
       };
     })();
 
-    this.reporter = new jasmine.TrivialConsoleReporter(this.out.print);
+    this.done = false
+    var self = this
+    this.reporter = new jasmine.TrivialConsoleReporter(this.out.print, function(runner){
+      self.done = true
+    });
   });
   
   
@@ -406,6 +410,16 @@ describe("TrivialConsoleReporter", function() {
           expect(this.out.getOutput()).
             toContain("1 spec, 1 assertion, 1 failure");
         });
+      });
+      
+      describe("done callback", function(){
+        it("calls back when done", function() {
+          expect(this.done).toBeFalsy();
+          this.reporter.reportRunnerResults({ 
+            results:function(){return {items_: [null, null, null], totalCount: 7, failedCount: 0};}
+          });
+          expect(this.done).toBeTruthy();
+        });        
       });
       
     });
