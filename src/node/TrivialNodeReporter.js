@@ -30,11 +30,17 @@ jasmine.TrivialNodeReporter = function(sys) {
   
   function plural(str, count) { return count == 1 ? str : str + "s"; }
   
+  function specFailureDetails(suiteDescription, specDescription)  { 
+                               newline(); 
+                               sys.print(suiteDescription + " " + specDescription); 
+                               newline();
+                             }
   function finished(elapsed)  { newline(); sys.print("Finished in " + elapsed/1000 + " seconds"); }
   function summary(colorF, specs, assertions, failed)  { newline(); 
                                                          colorF(sys.print(specs + " " + plural(language.spec, specs) + ", " +
                                                                           assertions + " " + plural(language.assertion, assertions) + ", " +
-                                                                          failed + " " + plural(language.failure, failed))); }
+                                                                          failed + " " + plural(language.failure, failed))); 
+                                                         newline(); }
   function greenSummary(specs, assertions, failed){ summary(greenStr, specs, assertions, failed); }
   function redSummary(specs, assertions, failed){ summary(redStr, specs, assertions, failed); }
   
@@ -94,7 +100,21 @@ jasmine.TrivialNodeReporter = function(sys) {
     this.suiteResults.push(suiteResult);
   };
   
+  function eachSpecFailure(suiteResults, callback) {
+    for(var i=0; i<suiteResults.length; i++) {
+      var suiteResult = suiteResults[i];
+      for(var j=0; j<suiteResult.failedSpecResults.length; j++) {
+        var failedSpecResult = suiteResult.failedSpecResults[j];
+        callback(suiteResult.description, failedSpecResult.description);
+      }
+    }
+  }
+  
   this.reportRunnerResults = function(runner) {
+    eachSpecFailure(this.suiteResults, function(suiteDescription, specDescription) {
+      specFailureDetails(suiteDescription, specDescription);
+    })
+    
     finished(this.now() - this.runnerStartTime);
     
     var results = runner.results();

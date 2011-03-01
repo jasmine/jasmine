@@ -153,6 +153,29 @@ describe("TrivialNodeReporter", function() {
     });
     
     describe('Finishes', function(){
+
+      describe('Spec failure information', function(){
+
+        it("prints suite and spec descriptions together as a sentence", function(){
+          this.reporter.suiteResults = [
+            {description:"The oven", failedSpecResults:[
+                                       {description:"heats up"},
+                                       {description:"cleans itself"}
+                                     ]},
+            {description:"The mixer", failedSpecResults:[
+                                        {description:"blends things together"}
+                                      ]}
+          ]
+          
+          this.reporter.reportRunnerResults(failingRun);
+
+          expect(this.fakeSys.getOutput()).toContain("The oven heats up");
+          expect(this.fakeSys.getOutput()).toContain("The oven cleans itself");
+          expect(this.fakeSys.getOutput()).toContain("The mixer blends things together");
+        });
+
+      })
+
       describe('Finished line', function(){
       
         it("prints the elapsed time in the summary message", function(){
