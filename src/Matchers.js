@@ -292,6 +292,24 @@ jasmine.Matchers.prototype.toBeGreaterThan = function(expected) {
 };
 
 /**
+ * Matcher that checks that the expected item is equal to the actual item
+ * up to a given level of decimal precision (default 2).
+ *
+ * @param {Number} expected
+ * @param {Number} precision
+ */
+jasmine.Matchers.prototype.toBeCloseTo = function(expected, precision) {
+  if (!(precision === 0)) {
+    precision = precision || 2;
+  }
+  var multiplier = Math.pow(10, precision);
+  var actual = Math.round(this.actual * multiplier);
+  expected = Math.round(expected * multiplier);
+  return expected == actual;
+};
+
+
+/**
  * Matcher that checks that the expected exception was thrown by the actual.
  *
  * @param {String} expected

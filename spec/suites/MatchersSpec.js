@@ -471,6 +471,47 @@ describe("jasmine.Matchers", function() {
     expect(result.expected).toEqual(expected);
   });
 
+  describe("toBeCloseTo", function() {
+    it("returns 'true' iff actual and expected are equal within 2 decimal points of precision", function() {
+      expect(0).toBeCloseTo(0);
+      expect(1).toBeCloseTo(1);
+      expect(1).not.toBeCloseTo(1.1);
+      expect(1).not.toBeCloseTo(1.01);
+      expect(1).toBeCloseTo(1.001);
+
+      expect(1.23).toBeCloseTo(1.234);
+      expect(1.23).toBeCloseTo(1.233);
+      expect(1.23).toBeCloseTo(1.232);
+      expect(1.23).not.toBeCloseTo(1.24);
+
+      expect(-1.23).toBeCloseTo(-1.234);
+      expect(-1.23).not.toBeCloseTo(-1.24);
+    });
+
+    it("accepts an optional precision argument", function() {
+      expect(1).toBeCloseTo(1.1, 0);
+      expect(1.2).toBeCloseTo(1.23, 1);
+
+      expect(1.234).toBeCloseTo(1.2343, 3);
+      expect(1.234).not.toBeCloseTo(1.233, 3);
+    });
+
+    it("rounds", function() {
+      expect(1.23).toBeCloseTo(1.229);
+      expect(1.23).toBeCloseTo(1.226);
+      expect(1.23).toBeCloseTo(1.225);
+      expect(1.23).not.toBeCloseTo(1.2249999);
+
+      expect(1.23).toBeCloseTo(1.234);
+      expect(1.23).toBeCloseTo(1.2349999);
+      expect(1.23).not.toBeCloseTo(1.235);
+
+      expect(-1.23).toBeCloseTo(-1.234);
+      expect(-1.23).not.toBeCloseTo(-1.235);
+      expect(-1.23).not.toBeCloseTo(-1.236);
+    });
+  });
+
   describe("toThrow", function() {
     describe("when code block throws an exception", function() {
       var throwingFn;
