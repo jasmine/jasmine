@@ -471,7 +471,40 @@ describe("jasmine.Matchers", function() {
     expect(result.expected).toEqual(expected);
   });
 
-  describe("toThrow", function() {
+	describe("toBeInstanceOf", function(){
+		AClass = function(){};
+		BClass = function(){};
+
+		it("should build an ExpectationResult", function() {
+			var actual = new AClass();
+			var matcher = match(actual);
+			var expected = BClass;
+			matcher.toBeInstanceOf(expected);
+
+			var result = lastResult();
+
+			expect(result.matcherName).toEqual("toBeInstanceOf");
+			expect(result.passed()).toFail();
+			expect(result.message).toMatch(jasmine.pp(actual) + ' to be instance of');
+			expect(result.message).toMatch(jasmine.pp(expected));
+			expect(result.actual).toEqual(actual);
+			expect(result.expected).toEqual(expected);
+		});
+
+		it("should match when object is of same instance", function(){
+			expect(match(new AClass()).toBeInstanceOf(AClass)).toPass();
+		});
+
+		it("should not match when object of another instance", function(){
+			expect(match(new AClass()).toBeInstanceOf(BClass)).toFail();
+		});
+
+		it("should not match undefined", function(){
+			expect(match(undefined).toBeInstanceOf(AClass)).toFail();
+		});
+	});
+
+	describe("toThrow", function() {
     describe("when code block throws an exception", function() {
       var throwingFn;
 
