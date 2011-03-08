@@ -37,29 +37,12 @@ namespace :jasmine do
 
   desc 'Check jasmine sources for coding problems'
   task :lint do
-    passed = true
-    jasmine_sources.each do |src|
-      lines = File.read(src).split(/\n/)
-      lines.each_index do |i|
-        line = lines[i]
-        undefineds = line.scan(/.?undefined/)
-        if undefineds.include?(" undefined") || undefineds.include?("\tundefined")
-          puts "Dangerous undefined at #{src}:#{i}:\n > #{line}"
-          passed = false
-        end
-
-        if line.scan(/window/).length > 0
-          puts "Dangerous window at #{src}:#{i}:\n > #{line}"
-          passed = false
-        end
-      end
-    end
-
-    unless passed
-      puts "Lint failed!"
-      exit 1
-    end
+    puts "Running JSHint via Node.js"
+    system("node jshint/run.js") || exit(1)
   end
+
+  desc "Alias to JSHint"
+  task :hint => :lint
 
   desc 'Builds lib/jasmine from source'
   task :build => :lint do

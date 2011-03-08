@@ -227,7 +227,7 @@ jasmine.Matchers.prototype.toHaveBeenCalledWith = function() {
     throw new Error('Expected a spy, but got ' + jasmine.pp(this.actual) + '.');
   }
   this.message = function() {
-    if (this.actual.callCount == 0) {
+    if (this.actual.callCount === 0) {
       // todo: what should the failure message for .not.toHaveBeenCalledWith() be? is this right? test better. [xw]
       return [
         "Expected spy to have been called with " + jasmine.pp(expectedArgs) + " but it was never called.",
@@ -258,7 +258,7 @@ jasmine.Matchers.prototype.wasNotCalledWith = function() {
     return [
       "Expected spy not to have been called with " + jasmine.pp(expectedArgs) + " but it was",
       "Expected spy to have been called with " + jasmine.pp(expectedArgs) + " but it was"
-    ]
+    ];
   };
 
   return !this.env.contains_(this.actual.argsForCall, expectedArgs);
@@ -315,7 +315,7 @@ jasmine.Matchers.prototype.toThrow = function(expected) {
 
   this.message = function() {
     if (exception && (expected === jasmine.undefined || !this.env.equals_(exception.message || exception, expected.message || expected))) {
-      return ["Expected function " + not + "to throw", expected ? expected.message || expected : " an exception", ", but it threw", exception.message || exception].join(' ');
+      return ["Expected function " + not + "to throw", expected ? expected.message || expected : "an exception", ", but it threw", exception.message || exception].join(' ');
     } else {
       return "Expected function to throw an exception.";
     }

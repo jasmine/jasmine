@@ -1,10 +1,12 @@
+var isCommonJS = typeof window == "undefined";
+
 /**
  * Top level namespace for Jasmine, a lightweight JavaScript BDD/spec/testing framework.
  *
  * @namespace
  */
 var jasmine = {};
-
+if (isCommonJS) exports.jasmine = jasmine;
 /**
  * @private
  */
@@ -106,7 +108,8 @@ jasmine.ExpectationResult.prototype.passed = function () {
  * Getter for the Jasmine environment. Ensures one gets created
  */
 jasmine.getEnv = function() {
-  return jasmine.currentEnv_ = jasmine.currentEnv_ || new jasmine.Env();
+  var env = jasmine.currentEnv_ = jasmine.currentEnv_ || new jasmine.Env();
+  return env;
 };
 
 /**
@@ -169,7 +172,7 @@ jasmine.pp = function(value) {
  * @returns {Boolean}
  */
 jasmine.isDomNode = function(obj) {
-  return obj['nodeType'] > 0;
+  return obj.nodeType > 0;
 };
 
 /**
@@ -405,7 +408,7 @@ jasmine.isSpy = function(putativeSpy) {
  * @param {Array} methodNames array of names of methods to make spies
  */
 jasmine.createSpyObj = function(baseName, methodNames) {
-  if (!jasmine.isArray_(methodNames) || methodNames.length == 0) {
+  if (!jasmine.isArray_(methodNames) || methodNames.length === 0) {
     throw new Error('createSpyObj requires a non-empty array of method names to create spies for');
   }
   var obj = {};
@@ -443,6 +446,7 @@ jasmine.log = function() {
 var spyOn = function(obj, methodName) {
   return jasmine.getEnv().currentSpec.spyOn(obj, methodName);
 };
+if (isCommonJS) exports.spyOn = spyOn;
 
 /**
  * Creates a Jasmine spec that will be added to the current suite.
@@ -460,6 +464,7 @@ var spyOn = function(obj, methodName) {
 var it = function(desc, func) {
   return jasmine.getEnv().it(desc, func);
 };
+if (isCommonJS) exports.it = it;
 
 /**
  * Creates a <em>disabled</em> Jasmine spec.
@@ -472,6 +477,7 @@ var it = function(desc, func) {
 var xit = function(desc, func) {
   return jasmine.getEnv().xit(desc, func);
 };
+if (isCommonJS) exports.xit = xit;
 
 /**
  * Starts a chain for a Jasmine expectation.
@@ -484,6 +490,7 @@ var xit = function(desc, func) {
 var expect = function(actual) {
   return jasmine.getEnv().currentSpec.expect(actual);
 };
+if (isCommonJS) exports.expect = expect;
 
 /**
  * Defines part of a jasmine spec.  Used in cominbination with waits or waitsFor in asynchrnous specs.
@@ -493,6 +500,7 @@ var expect = function(actual) {
 var runs = function(func) {
   jasmine.getEnv().currentSpec.runs(func);
 };
+if (isCommonJS) exports.runs = runs;
 
 /**
  * Waits a fixed time period before moving to the next block.
@@ -503,6 +511,7 @@ var runs = function(func) {
 var waits = function(timeout) {
   jasmine.getEnv().currentSpec.waits(timeout);
 };
+if (isCommonJS) exports.waits = waits;
 
 /**
  * Waits for the latchFunction to return true before proceeding to the next block.
@@ -514,6 +523,7 @@ var waits = function(timeout) {
 var waitsFor = function(latchFunction, optional_timeoutMessage, optional_timeout) {
   jasmine.getEnv().currentSpec.waitsFor.apply(jasmine.getEnv().currentSpec, arguments);
 };
+if (isCommonJS) exports.waitsFor = waitsFor;
 
 /**
  * A function that is called before each spec in a suite.
@@ -525,6 +535,7 @@ var waitsFor = function(latchFunction, optional_timeoutMessage, optional_timeout
 var beforeEach = function(beforeEachFunction) {
   jasmine.getEnv().beforeEach(beforeEachFunction);
 };
+if (isCommonJS) exports.beforeEach = beforeEach;
 
 /**
  * A function that is called after each spec in a suite.
@@ -536,6 +547,7 @@ var beforeEach = function(beforeEachFunction) {
 var afterEach = function(afterEachFunction) {
   jasmine.getEnv().afterEach(afterEachFunction);
 };
+if (isCommonJS) exports.afterEach = afterEach;
 
 /**
  * Defines a suite of specifications.
@@ -555,6 +567,7 @@ var afterEach = function(afterEachFunction) {
 var describe = function(description, specDefinitions) {
   return jasmine.getEnv().describe(description, specDefinitions);
 };
+if (isCommonJS) exports.describe = describe;
 
 /**
  * Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
@@ -565,25 +578,25 @@ var describe = function(description, specDefinitions) {
 var xdescribe = function(description, specDefinitions) {
   return jasmine.getEnv().xdescribe(description, specDefinitions);
 };
+if (isCommonJS) exports.xdescribe = xdescribe;
 
 
 // Provide the XMLHttpRequest class for IE 5.x-6.x:
 jasmine.XmlHttpRequest = (typeof XMLHttpRequest == "undefined") ? function() {
-  try {
-    return new ActiveXObject("Msxml2.XMLHTTP.6.0");
-  } catch(e) {
+  function tryIt(f) {
+    try {
+      return f();
+    } catch(e) {
+    }    
+    return null;
   }
-  try {
-    return new ActiveXObject("Msxml2.XMLHTTP.3.0");
-  } catch(e) {
-  }
-  try {
-    return new ActiveXObject("Msxml2.XMLHTTP");
-  } catch(e) {
-  }
-  try {
-    return new ActiveXObject("Microsoft.XMLHTTP");
-  } catch(e) {
-  }
-  throw new Error("This browser does not support XMLHttpRequest.");
+  
+  var xhr = tryIt(function(){return new ActiveXObject("Msxml2.XMLHTTP.6.0");}) ||
+            tryIt(function(){return new ActiveXObject("Msxml2.XMLHTTP.3.0");}) ||
+            tryIt(function(){return new ActiveXObject("Msxml2.XMLHTTP");}) ||
+            tryIt(function(){return new ActiveXObject("Microsoft.XMLHTTP");});
+
+  if (!xhr) throw new Error("This browser does not support XMLHttpRequest.");
+  
+  return xhr;
 } : XMLHttpRequest;
