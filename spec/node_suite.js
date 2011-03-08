@@ -162,8 +162,8 @@ jasmine.printRunnerResults = function(runner){
   var results = runner.results();
   var suites = runner.suites();
   var msg = '';
-  msg += suites.length + ' test' + ((suites.length === 1) ? '' : 's') + ', ';
-  msg += results.totalCount + ' assertion' + ((results.totalCount === 1) ? '' : 's') + ', ';
+  msg += suites.length + ' spec' + ((suites.length === 1) ? '' : 's') + ', ';
+  msg += results.totalCount + ' expectation' + ((results.totalCount === 1) ? '' : 's') + ', ';
   msg += results.failedCount + ' failure' + ((results.failedCount === 1) ? '' : 's') + '\n';
   return msg;
 };
