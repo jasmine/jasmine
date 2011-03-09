@@ -25,9 +25,14 @@ Jasmine Core relies on Ruby for executing the test suite and building the projec
 ### How to Develop for Jasmine Core
 
 * Write specs
-* Make them pass in a browser (or three): open `spec/runner.html`
-* Make them pass in Node: `node spec/node_suite.js`
+* Make them pass in a browser (or three):
+  * open `spec/runner.html` in your browsers
+  * `rake spec:browser` will run in the default browser on MacOS
+* Make them pass in Node: `rake spec:node`
 * Fix any warnings or errors from JSHint: `rake jasmine:lint`
+
+Running `rake spec` will run the browser tests, then run specs in Node, then run JSHint. But this will only run in the default browser and only on MacOS (for now).
+
 
 ### Making a Successful Pull Request
 
