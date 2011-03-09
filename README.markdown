@@ -16,11 +16,11 @@ Documentation & guides live here: [http://pivotal.github.com/jasmine/](http://pi
 
 ## How to Contribute
 
-We welcome your contributions - Thanks for helping make Jasmine a better project for everyone. Please review the backlog and discussion lists (the main group and the developer's list at [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js)) before starting work - what you're looking for may already have been done. If it hasn't, the community can help make your contribution better.
+We welcome your contributions - Thanks for helping make Jasmine a better project for everyone. Please review the backlog and discussion lists (the main group - [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js) and the developer's list - [http://groups.google.com/group/jasmine-js-dev](http://groups.google.com/group/jasmine-js-dev)) before starting work - what you're looking for may already have been done. If it hasn't, the community can help make your contribution better.
 
 ### Development Environment
 
-Jasmine Core relies on Ruby for executing the test suite and building the project for release. The spec suite runs in any major, modern browser (Firefox, Safari, Chrome, and yes various IE's) and in Node.js.
+Jasmine Core relies on Ruby for executing the test suite and building the project for release. The spec suite runs in any major, modern browser (Firefox, Safari, Chrome, and yes various IE's) and in [Node.js](http://nodejs.org). While you probably have browsers installed, you want to make sure that Ruby and Node are present.
 
 ### How to Develop for Jasmine Core
 
