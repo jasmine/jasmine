@@ -54,7 +54,7 @@ describe("jasmine spec running", function () {
         this.expect(foo).toEqual('baz');
       });
 
-      specWithMultipleExpectations = env.it('spec with multiple assertions').runs(function () {
+      specWithMultipleExpectations = env.it('spec with multiple expectations').runs(function () {
         var foo = 'bar';
         var baz = 'quux';
 

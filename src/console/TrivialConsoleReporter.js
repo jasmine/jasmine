@@ -6,7 +6,7 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
   
   var defaultColumnsPerLine = 50,
       ansi = { green: '\033[32m', red: '\033[31m', yellow: '\033[33m', none: '\033[0m' },
-      language = { spec:"spec", assertion:"assertion", failure:"failure" };
+      language = { spec:"spec", expectation:"expectation", failure:"failure" };
   
   function coloredStr(color, str) { return ansi[color] + str + ansi.none; }
   
@@ -48,14 +48,14 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
                              }
   function finished(elapsed)  { newline(); 
                                 print("Finished in " + elapsed/1000 + " seconds"); }
-  function summary(colorF, specs, assertions, failed)  { newline(); 
+  function summary(colorF, specs, expectations, failed)  { newline();
                                                          print(colorF(specs + " " + plural(language.spec, specs) + ", " +
-                                                                      assertions + " " + plural(language.assertion, assertions) + ", " +
+                                                                      expectations + " " + plural(language.expectation, expectations) + ", " +
                                                                       failed + " " + plural(language.failure, failed))); 
                                                          newline();
                                                          newline(); }
-  function greenSummary(specs, assertions, failed){ summary(greenStr, specs, assertions, failed); }
-  function redSummary(specs, assertions, failed){ summary(redStr, specs, assertions, failed); }
+  function greenSummary(specs, expectations, failed){ summary(greenStr, specs, expectations, failed); }
+  function redSummary(specs, expectations, failed){ summary(redStr, specs, expectations, failed); }
   
   
   
