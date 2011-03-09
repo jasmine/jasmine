@@ -17,13 +17,29 @@ def version_hash
   @version ||= JSON.parse(File.new("src/version.json").read);
 end
 
-task :default => 'jasmine:dist'
 
 def substitute_jasmine_version(filename)
   contents = File.read(filename)
   contents = contents.gsub(/##JASMINE_VERSION##/, (jasmine_version))
   contents = contents.gsub(/[^\n]*REMOVE_THIS_LINE_FROM_BUILD[^\n]*/, '')
   File.open(filename, 'w') { |f| f.write(contents) }
+end
+
+task :default => :spec
+
+desc "Run spec suite: Browser, Node, JSHint"
+task :spec => ["spec:node", "spec:browser", "jasmine:hint"]
+
+namespace :spec do
+  desc 'Run specs in Node.js'
+  task :node do
+    system("node spec/node_suite.js")
+  end
+
+  desc "Run specs in the default browser (MacOS only)"
+  task :browser do
+    system("open spec/runner.html")
+  end
 end
 
 namespace :jasmine do
@@ -50,9 +66,6 @@ namespace :jasmine do
 
     sources = jasmine_sources
     version = version_hash
-
-    old_jasmine_files = Dir.glob('lib/jasmine*.js')
-    old_jasmine_files.each { |file| File.delete(file) }
 
     File.open("lib/jasmine.js", 'w') do |jasmine|
       sources.each do |source_filename|
@@ -151,5 +164,3 @@ jasmine.version_= {
   end
 
 end
-
-task :jasmine => ['jasmine:dist']
