@@ -24,4 +24,10 @@ describe("base.js", function() {
       expect(jasmine.getGlobal()).toBe(globalObject);
     });
   });
+
+  describe("context", function() {
+    it("should eql describe", function() {
+      expect(context).toEqual(describe);
+    });
+  });
 });
