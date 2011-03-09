@@ -14,15 +14,32 @@ Documentation & guides live here: [http://pivotal.github.com/jasmine/](http://pi
 * View the project backlog at Pivotal Tracker: [http://www.pivotaltracker.com/projects/10606](http://www.pivotaltracker.com/projects/10606)
 * Follow us on Twitter: [@JasmineBDD](http://twitter.com/JasmineBDD)
 
+## How to Contribute
+
+We welcome your contributions - Thanks for helping make Jasmine a better project for everyone. Please review the backlog and discussion lists (the main group and the developer's list at [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js)) before starting work - what you're looking for may already have been done. If it hasn't, the community can help make your contribution better.
+
+### Development Environment
+
+Jasmine Core relies on Ruby for executing the test suite and building the project for release. The spec suite runs in any major, modern browser (Firefox, Safari, Chrome, and yes various IE's) and in Node.js.
+
+### How to Develop for Jasmine Core
+
+* Write specs
+* Make them pass in a browser (or three): open `spec/runner.html`
+* Make them pass in Node: `node spec/node_suite.js`
+* Fix any warnings or errors from JSHint: `rake jasmine:lint`
+
+### Making a Successful Pull Request
+
+* __Include specs for your work__ - it helps us understand your intent and makes sure that future development doesn't break your work
+* __Ensure the full test suite is green__ in all the big browsers, Node, and JSHint - your contribution shouldn't break Jasmine for other users
+
+Do these things and we'll take a look.
+
 ## Maintainers
+
 * [Davis W. Frank](mailto:dwfrank@pivotallabs.com), Pivotal Labs
 * [Rajan Agaskar](mailto:rajan@pivotallabs.com), Pivotal Labs
 * [Christian Williams](mailto:antixian666@gmail.com), Square
-
-## Developers
-
-We welcome your contributions. Please review the backlog and discussion lists (the main group and the developer's list at [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js)) before starting work - what you're looking for may already have been done.
-
-Please read the contributor's guide before starting work and before sending your pull request.
 
 Copyright (c) 2008-2011 Pivotal Labs. This software is licensed under the MIT License.
