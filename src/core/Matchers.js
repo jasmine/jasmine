@@ -369,11 +369,11 @@ jasmine.Matchers.Any.prototype.toString = function() {
   return '<jasmine.any(' + this.expectedClass + ')>';
 };
 
-jasmine.Matchers.HashContaining = function (sample) {
+jasmine.Matchers.ObjectContaining = function (sample) {
   this.sample = sample;
 };
 
-jasmine.Matchers.HashContaining.prototype.matches = function(other, mismatchKeys, mismatchValues) {
+jasmine.Matchers.ObjectContaining.prototype.matches = function(other, mismatchKeys, mismatchValues) {
   mismatchKeys = mismatchKeys || [];
   mismatchValues = mismatchValues || [];
 
@@ -395,6 +395,6 @@ jasmine.Matchers.HashContaining.prototype.matches = function(other, mismatchKeys
   return (mismatchKeys.length === 0 && mismatchValues.length === 0);
 };
 
-jasmine.Matchers.HashContaining.prototype.toString = function () {
-  return "<jasmine.hashContaining(" + jasmine.pp(this.sample) + ")>";
+jasmine.Matchers.ObjectContaining.prototype.toString = function () {
+  return "<jasmine.objectContaining(" + jasmine.pp(this.sample) + ")>";
 };

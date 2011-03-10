@@ -238,11 +238,11 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
     return b.matches(a);
   }
 
-  if (a instanceof jasmine.Matchers.HashContaining) {
+  if (a instanceof jasmine.Matchers.ObjectContaining) {
     return a.matches(b);
   }
 
-  if (b instanceof jasmine.Matchers.HashContaining) {
+  if (b instanceof jasmine.Matchers.ObjectContaining) {
     return b.matches(a);
   }
 

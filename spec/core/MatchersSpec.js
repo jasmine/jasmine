@@ -834,14 +834,14 @@ describe("jasmine.Matchers", function() {
     describe("with an empty hash", function () {
       var containing;
       beforeEach(function () {
-        containing = new jasmine.Matchers.HashContaining({});
+        containing = new jasmine.Matchers.ObjectContaining({});
       });
       it("matches everything", function () {
          expect(containing.matches("foo", [], [])).toBe(true);
       });
 
       it("says it didn't expect to contain anything", function () {
-        expect(containing.toString()).toEqual("<jasmine.hashContaining({  })>");
+        expect(containing.toString()).toEqual("<jasmine.objectContaining({  })>");
       });
     });
 
@@ -850,7 +850,7 @@ describe("jasmine.Matchers", function() {
       beforeEach(function () {
         mismatchKeys = [];
         mismatchValues = [];
-        containing = new jasmine.Matchers.HashContaining({foo: "fooVal", bar: "barVal"});
+        containing = new jasmine.Matchers.ObjectContaining({foo: "fooVal", bar: "barVal"});
       });
 
       it("doesn't match an empty object", function () {
@@ -894,7 +894,7 @@ describe("jasmine.Matchers", function() {
       });
 
       it("says what it expects to contain", function () {
-        expect(containing.toString()).toEqual("<jasmine.hashContaining(" + jasmine.pp({foo:"fooVal", bar:"barVal"}) + ")>");
+        expect(containing.toString()).toEqual("<jasmine.objectContaining(" + jasmine.pp({foo:"fooVal", bar:"barVal"}) + ")>");
       });
     });
 
@@ -905,11 +905,11 @@ describe("jasmine.Matchers", function() {
         method({a:"b", c:"d"});
       });
       it("works correctly for positive matches", function () {
-        expect(method).toHaveBeenCalledWith(jasmine.hashContaining({a:"b"}));
+        expect(method).toHaveBeenCalledWith(jasmine.objectContaining({a:"b"}));
       });
 
       it("works correctly for negative matches", function () {
-        expect(method).not.toHaveBeenCalledWith(jasmine.hashContaining({z:"x"}));
+        expect(method).not.toHaveBeenCalledWith(jasmine.objectContaining({z:"x"}));
       });
     });
   });

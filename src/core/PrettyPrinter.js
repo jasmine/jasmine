@@ -25,6 +25,8 @@ jasmine.PrettyPrinter.prototype.format = function(value) {
       this.emitScalar('<global>');
     } else if (value instanceof jasmine.Matchers.Any) {
       this.emitScalar(value.toString());
+    } else if (value instanceof jasmine.Matchers.ObjectContaining) {
+      this.emitScalar(value.toString());
     } else if (typeof value === 'string') {
       this.emitString(value);
     } else if (jasmine.isSpy(value)) {

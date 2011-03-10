@@ -197,18 +197,18 @@ jasmine.any = function(clazz) {
 };
 
 /**
- * Returns a matchable subset of a hash/JSON object. For use in expectations when you don't care about all of the
+ * Returns a matchable subset of a JSON object. For use in expectations when you don't care about all of the
  * attributes on the object.
  *
  * @example
  * // don't care about any other attributes than foo.
- * expect(mySpy).toHaveBeenCalledWith(jasmine.hashContaining({foo: "bar"});
+ * expect(mySpy).toHaveBeenCalledWith(jasmine.objectContaining({foo: "bar"});
  *
  * @param sample {Object} sample
  * @returns matchable object for the sample
  */
-jasmine.hashContaining = function (sample) {
-    return new jasmine.Matchers.HashContaining(sample);
+jasmine.objectContaining = function (sample) {
+    return new jasmine.Matchers.ObjectContaining(sample);
 };
 
 /**
