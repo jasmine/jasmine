@@ -238,6 +238,14 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
     return b.matches(a);
   }
 
+  if (a instanceof jasmine.Matchers.HashContaining) {
+    return a.matches(b);
+  }
+
+  if (b instanceof jasmine.Matchers.HashContaining) {
+    return b.matches(a);
+  }
+
   if (jasmine.isString_(a) && jasmine.isString_(b)) {
     return (a == b);
   }

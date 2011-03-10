@@ -830,6 +830,90 @@ describe("jasmine.Matchers", function() {
     });
   });
 
+  describe("HashContaining", function () {
+    describe("with an empty hash", function () {
+      var containing;
+      beforeEach(function () {
+        containing = new jasmine.Matchers.HashContaining({});
+      });
+      it("matches everything", function () {
+         expect(containing.matches("foo", [], [])).toBe(true);
+      });
+
+      it("says it didn't expect to contain anything", function () {
+        expect(containing.toString()).toEqual("<jasmine.hashContaining({  })>");
+      });
+    });
+
+    describe("with a hash with items in it", function () {
+      var containing, mismatchKeys, mismatchValues;
+      beforeEach(function () {
+        mismatchKeys = [];
+        mismatchValues = [];
+        containing = new jasmine.Matchers.HashContaining({foo: "fooVal", bar: "barVal"});
+      });
+
+      it("doesn't match an empty object", function () {
+        expect(containing.matches({}, mismatchKeys, mismatchValues)).toBe(false);
+      });
+
+      it("doesn't match an object with none of the specified options", function () {
+        expect(containing.matches({baz:"stuff"}, mismatchKeys, mismatchValues)).toBe(false);
+      });
+
+      it("adds a message for each missing key", function () {
+        containing.matches({foo: "fooVal"}, mismatchKeys, mismatchValues);
+        expect(mismatchKeys.length).toEqual(1);
+      });
+
+      it("doesn't match an object when the values are different", function () {
+        expect(containing.matches({foo:"notFoo", bar:"notBar"}, mismatchKeys, mismatchValues)).toBe(false);
+      });
+
+      it("adds a message when values don't match", function () {
+        containing.matches({foo: "fooVal", bar: "notBar"}, mismatchKeys, mismatchValues);
+        expect(mismatchValues.length).toEqual(1);
+      });
+
+      it("doesn't match an object with only one of the values matching", function () {
+        expect(containing.matches({foo:"notFoo", bar:"barVal"}, mismatchKeys, mismatchValues)).toBe(false);
+      });
+
+      it("matches when all the values are the same", function () {
+        expect(containing.matches({foo: "fooVal", bar: "barVal"}, mismatchKeys, mismatchValues)).toBe(true);
+      });
+
+      it("matches when there are additional values", function () {
+        expect(containing.matches({foo: "fooVal", bar: "barVal", baz: "bazVal"}, mismatchKeys, mismatchValues)).toBe(true);
+      });
+
+      it("doesn't modify missingKeys or missingValues when match is successful", function () {
+        containing.matches({foo: "fooVal", bar: "barVal"}, mismatchKeys, mismatchValues);
+        expect(mismatchKeys.length).toEqual(0);
+        expect(mismatchValues.length).toEqual(0);
+      });
+
+      it("says what it expects to contain", function () {
+        expect(containing.toString()).toEqual("<jasmine.hashContaining(" + jasmine.pp({foo:"fooVal", bar:"barVal"}) + ")>");
+      });
+    });
+
+    describe("in real life", function () {
+      var method;
+      beforeEach(function () {
+        method = jasmine.createSpy("method");
+        method({a:"b", c:"d"});
+      });
+      it("works correctly for positive matches", function () {
+        expect(method).toHaveBeenCalledWith(jasmine.hashContaining({a:"b"}));
+      });
+
+      it("works correctly for negative matches", function () {
+        expect(method).not.toHaveBeenCalledWith(jasmine.hashContaining({z:"x"}));
+      });
+    });
+  });
+
   describe("all matchers", function() {
     it("should return null, for future-proofing, since we might eventually allow matcher chaining", function() {
       expect(match(true).toBe(true)).toBeUndefined();

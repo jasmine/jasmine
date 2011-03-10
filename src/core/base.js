@@ -197,6 +197,21 @@ jasmine.any = function(clazz) {
 };
 
 /**
+ * Returns a matchable subset of a hash/JSON object. For use in expectations when you don't care about all of the
+ * attributes on the object.
+ *
+ * @example
+ * // don't care about any other attributes than foo.
+ * expect(mySpy).toHaveBeenCalledWith(jasmine.hashContaining({foo: "bar"});
+ *
+ * @param sample {Object} sample
+ * @returns matchable object for the sample
+ */
+jasmine.hashContaining = function (sample) {
+    return new jasmine.Matchers.HashContaining(sample);
+};
+
+/**
  * Jasmine Spies are test doubles that can act as stubs, spies, fakes or when used in an expecation, mocks.
  *
  * Spies should be created in test setup, before expectations.  They can then be checked, using the standard Jasmine
