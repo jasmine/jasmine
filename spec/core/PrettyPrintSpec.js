@@ -83,12 +83,12 @@ describe("jasmine.pp", function () {
     expect(jasmine.pp(jasmine.createSpy("something"))).toEqual("spy on something");
   });
 
-  it("calls toString for ObjectContaining objects", function () {
-    var containing = new jasmine.Matchers.ObjectContaining({});
-    spyOn(containing, "toString").andReturn("stringified!");
+  it("should stringify objects that implement jasmineToString", function () {
+    var obj = {
+      jasmineToString: function () { return "strung"; }
+    };
 
-    expect(jasmine.pp(containing)).toEqual("stringified!");
-    expect(containing.toString).toHaveBeenCalled();
+    expect(jasmine.pp(obj)).toEqual("strung");
   });
 });
 

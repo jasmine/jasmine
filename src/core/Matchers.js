@@ -365,7 +365,7 @@ jasmine.Matchers.Any.prototype.matches = function(other) {
   return other instanceof this.expectedClass;
 };
 
-jasmine.Matchers.Any.prototype.toString = function() {
+jasmine.Matchers.Any.prototype.jasmineToString = function() {
   return '<jasmine.any(' + this.expectedClass + ')>';
 };
 
