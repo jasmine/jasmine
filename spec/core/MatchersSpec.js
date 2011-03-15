@@ -352,6 +352,33 @@ describe("jasmine.Matchers", function() {
     }]).toEqual(["a", jasmine.any(Function)])).toPass();
   });
 
+  describe("toEqual with an object implementing jasmineMatches", function () {
+    var matcher;
+    beforeEach(function () {
+      matcher = {
+        jasmineMatches: jasmine.createSpy("jasmineMatches")
+      };
+    });
+
+    describe("on the left side", function () {
+      it("uses the jasmineMatches function", function () {
+        matcher.jasmineMatches.andReturn(false);
+        expect(match(matcher).toEqual("foo")).toFail();
+        matcher.jasmineMatches.andReturn(true);
+        expect(match(matcher).toEqual("foo")).toPass();
+      });
+    });
+
+    describe("on the right side", function () {
+      it("uses the jasmineMatches function", function () {
+        matcher.jasmineMatches.andReturn(false);
+        expect(match("foo").toEqual(matcher)).toFail();
+        matcher.jasmineMatches.andReturn(true);
+        expect(match("foo").toEqual(matcher)).toPass();
+      });
+    });
+  });
+
   it("toEqual handles circular objects ok", function() {
     expect(match({foo: "bar", baz: jasmine.undefined}).toEqual({foo: "bar", baz: jasmine.undefined})).toPass();
     expect(match({foo:['bar','baz','quux']}).toEqual({foo:['bar','baz','quux']})).toPass();
@@ -950,6 +977,127 @@ describe("jasmine.Matchers", function() {
           function MyClass () {}
           any = jasmine.any(MyClass);
           expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function MyClass.*\)>/);
+        });
+      });
+    });
+
+    describe(".jasmineMatches", function () {
+      describe("with Object", function () {
+        beforeEach(function () {
+          any = jasmine.any(Object);
+        });
+
+        it("matches an empty object", function () {
+          expect(any.jasmineMatches({})).toEqual(true);
+        });
+
+        it("matches a newed up object", function () {
+          expect(any.jasmineMatches(new Object())).toEqual(true);
+        });
+
+        it("doesn't match a string", function () {
+          expect(any.jasmineMatches("")).toEqual(false);
+        });
+
+        it("doesn't match a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(false);
+        });
+
+        it("doesn't match a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(false);
+        });
+      });
+
+      describe("with Function", function () {
+        beforeEach(function () {
+          any = jasmine.any(Function);
+        });
+
+        it("doesn't match an object", function () {
+          expect(any.jasmineMatches({})).toEqual(false);
+        });
+
+        it("doesn't match a string", function () {
+          expect(any.jasmineMatches("")).toEqual(false);
+        });
+
+        it("doesn't match a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(false);
+        });
+
+        it("matches a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(true);
+        });
+      });
+
+      describe("with Number", function () {
+        beforeEach(function () {
+          any = jasmine.any(Number);
+        });
+
+        it("doesn't match an object", function () {
+          expect(any.jasmineMatches({})).toEqual(false);
+        });
+
+        it("doesn't match a string", function () {
+          expect(any.jasmineMatches("")).toEqual(false);
+        });
+
+        it("matches a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(true);
+        });
+
+        it("doesn't match a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(false);
+        });
+      });
+
+      describe("with String", function () {
+        beforeEach(function () {
+          any = jasmine.any(String);
+        });
+
+        it("doesn't match an object", function () {
+          expect(any.jasmineMatches({})).toEqual(false);
+        });
+
+        it("matches a string", function () {
+          expect(any.jasmineMatches("")).toEqual(true);
+        });
+
+        it("doesn't match a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(false);
+        });
+
+        it("doesn't match a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(false);
+        });
+      });
+
+      describe("with some defined 'class'", function () {
+        function MyClass () {}
+        beforeEach(function () {
+          any = jasmine.any(MyClass);
+        });
+
+        it("doesn't match an object", function () {
+          expect(any.jasmineMatches({})).toEqual(false);
+        });
+
+        it("doesn't match a string", function () {
+          expect(any.jasmineMatches("")).toEqual(false);
+        });
+
+        it("doesn't match a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(false);
+        });
+
+        it("doesn't match a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(false);
+        });
+
+        it("matches an instance of the defined class", function () {
+          expect(any.jasmineMatches(new MyClass())).toEqual(true);
         });
       });
     });

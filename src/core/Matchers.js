@@ -345,7 +345,7 @@ jasmine.Matchers.Any = function(expectedClass) {
   this.expectedClass = expectedClass;
 };
 
-jasmine.Matchers.Any.prototype.matches = function(other) {
+jasmine.Matchers.Any.prototype.jasmineMatches = function(other) {
   if (this.expectedClass == String) {
     return typeof other == 'string' || other instanceof String;
   }

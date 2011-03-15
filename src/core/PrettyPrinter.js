@@ -23,7 +23,7 @@ jasmine.PrettyPrinter.prototype.format = function(value) {
       this.emitScalar('null');
     } else if (value === jasmine.getGlobal()) {
       this.emitScalar('<global>');
-    } else if (value.hasOwnProperty("jasmineToString")) {
+    } else if (value.jasmineToString) {
       this.emitScalar(value.jasmineToString());
     } else if (typeof value === 'string') {
       this.emitString(value);
