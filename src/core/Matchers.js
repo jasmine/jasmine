@@ -373,7 +373,7 @@ jasmine.Matchers.ObjectContaining = function (sample) {
   this.sample = sample;
 };
 
-jasmine.Matchers.ObjectContaining.prototype.matches = function(other, mismatchKeys, mismatchValues) {
+jasmine.Matchers.ObjectContaining.prototype.jasmineMatches = function(other, mismatchKeys, mismatchValues) {
   mismatchKeys = mismatchKeys || [];
   mismatchValues = mismatchValues || [];
 
@@ -395,6 +395,6 @@ jasmine.Matchers.ObjectContaining.prototype.matches = function(other, mismatchKe
   return (mismatchKeys.length === 0 && mismatchValues.length === 0);
 };
 
-jasmine.Matchers.ObjectContaining.prototype.toString = function () {
+jasmine.Matchers.ObjectContaining.prototype.jasmineToString = function () {
   return "<jasmine.objectContaining(" + jasmine.pp(this.sample) + ")>";
 };

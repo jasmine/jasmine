@@ -864,11 +864,11 @@ describe("jasmine.Matchers", function() {
         containing = new jasmine.Matchers.ObjectContaining({});
       });
       it("matches everything", function () {
-         expect(containing.matches("foo", [], [])).toBe(true);
+         expect(containing.jasmineMatches("foo", [], [])).toBe(true);
       });
 
       it("says it didn't expect to contain anything", function () {
-        expect(containing.toString()).toEqual("<jasmine.objectContaining({  })>");
+        expect(containing.jasmineToString()).toEqual("<jasmine.objectContaining({  })>");
       });
     });
 
@@ -881,47 +881,47 @@ describe("jasmine.Matchers", function() {
       });
 
       it("doesn't match an empty object", function () {
-        expect(containing.matches({}, mismatchKeys, mismatchValues)).toBe(false);
+        expect(containing.jasmineMatches({}, mismatchKeys, mismatchValues)).toBe(false);
       });
 
       it("doesn't match an object with none of the specified options", function () {
-        expect(containing.matches({baz:"stuff"}, mismatchKeys, mismatchValues)).toBe(false);
+        expect(containing.jasmineMatches({baz:"stuff"}, mismatchKeys, mismatchValues)).toBe(false);
       });
 
       it("adds a message for each missing key", function () {
-        containing.matches({foo: "fooVal"}, mismatchKeys, mismatchValues);
+        containing.jasmineMatches({foo: "fooVal"}, mismatchKeys, mismatchValues);
         expect(mismatchKeys.length).toEqual(1);
       });
 
       it("doesn't match an object when the values are different", function () {
-        expect(containing.matches({foo:"notFoo", bar:"notBar"}, mismatchKeys, mismatchValues)).toBe(false);
+        expect(containing.jasmineMatches({foo:"notFoo", bar:"notBar"}, mismatchKeys, mismatchValues)).toBe(false);
       });
 
       it("adds a message when values don't match", function () {
-        containing.matches({foo: "fooVal", bar: "notBar"}, mismatchKeys, mismatchValues);
+        containing.jasmineMatches({foo: "fooVal", bar: "notBar"}, mismatchKeys, mismatchValues);
         expect(mismatchValues.length).toEqual(1);
       });
 
       it("doesn't match an object with only one of the values matching", function () {
-        expect(containing.matches({foo:"notFoo", bar:"barVal"}, mismatchKeys, mismatchValues)).toBe(false);
+        expect(containing.jasmineMatches({foo:"notFoo", bar:"barVal"}, mismatchKeys, mismatchValues)).toBe(false);
       });
 
       it("matches when all the values are the same", function () {
-        expect(containing.matches({foo: "fooVal", bar: "barVal"}, mismatchKeys, mismatchValues)).toBe(true);
+        expect(containing.jasmineMatches({foo: "fooVal", bar: "barVal"}, mismatchKeys, mismatchValues)).toBe(true);
       });
 
       it("matches when there are additional values", function () {
-        expect(containing.matches({foo: "fooVal", bar: "barVal", baz: "bazVal"}, mismatchKeys, mismatchValues)).toBe(true);
+        expect(containing.jasmineMatches({foo: "fooVal", bar: "barVal", baz: "bazVal"}, mismatchKeys, mismatchValues)).toBe(true);
       });
 
       it("doesn't modify missingKeys or missingValues when match is successful", function () {
-        containing.matches({foo: "fooVal", bar: "barVal"}, mismatchKeys, mismatchValues);
+        containing.jasmineMatches({foo: "fooVal", bar: "barVal"}, mismatchKeys, mismatchValues);
         expect(mismatchKeys.length).toEqual(0);
         expect(mismatchValues.length).toEqual(0);
       });
 
       it("says what it expects to contain", function () {
-        expect(containing.toString()).toEqual("<jasmine.objectContaining(" + jasmine.pp({foo:"fooVal", bar:"barVal"}) + ")>");
+        expect(containing.jasmineToString()).toEqual("<jasmine.objectContaining(" + jasmine.pp({foo:"fooVal", bar:"barVal"}) + ")>");
       });
     });
 
