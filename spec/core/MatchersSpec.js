@@ -857,8 +857,8 @@ describe("jasmine.Matchers", function() {
     });
   });
 
-  describe("HashContaining", function () {
-    describe("with an empty hash", function () {
+  describe("ObjectContaining", function () {
+    describe("with an empty object", function () {
       var containing;
       beforeEach(function () {
         containing = new jasmine.Matchers.ObjectContaining({});
@@ -872,7 +872,7 @@ describe("jasmine.Matchers", function() {
       });
     });
 
-    describe("with a hash with items in it", function () {
+    describe("with an object with items in it", function () {
       var containing, mismatchKeys, mismatchValues;
       beforeEach(function () {
         mismatchKeys = [];
