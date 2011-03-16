@@ -309,7 +309,7 @@ jasmine.Matchers.prototype.toThrow = function(expected) {
   }
   if (exception) {
     if (typeof expected === 'function') {
-      return expected(exception);
+      result = expected(exception);
     }
     else {
       result = (expected === jasmine.undefined || this.env.equals_(exception.message || exception, expected.message || expected));
