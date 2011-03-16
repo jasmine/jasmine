@@ -308,7 +308,12 @@ jasmine.Matchers.prototype.toThrow = function(expected) {
     exception = e;
   }
   if (exception) {
-    result = (expected === jasmine.undefined || this.env.equals_(exception.message || exception, expected.message || expected));
+    if (typeof expected === 'function') {
+      return expected(exception);
+    }
+    else {
+      result = (expected === jasmine.undefined || this.env.equals_(exception.message || exception, expected.message || expected));
+    }
   }
 
   var not = this.isNot ? "not " : "";

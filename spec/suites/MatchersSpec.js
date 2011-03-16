@@ -497,6 +497,29 @@ describe("jasmine.Matchers", function() {
         expect(lastResult().message).toMatch("Other Error");
       });
 
+      describe("should check exceptions specified by predicate function", function () {
+        it("where the predicate function is passed the thrown exception", function () {
+          expect(match(throwingFn).toThrow(function (e) {
+            expect(e).toBeDefined();
+            expect(e.message).toBe("Fake Error");
+            return true;
+          })).toPass();
+        });
+
+        it("and should match when returns true", function () {
+          expect(match(throwingFn).toThrow(function (e) {
+            return true;
+          })).toPass();
+        });
+
+        it("and should not match when returns false", function () {
+          expect(match(throwingFn).toThrow(function (e) {
+            return false;
+          })).toFail();
+        });
+
+      });
+
       describe("and matcher is inverted with .not", function() {
         it("should match any exception", function() {
           expect(match(throwingFn).not.toThrow()).toFail();
@@ -514,6 +537,12 @@ describe("jasmine.Matchers", function() {
 //          expect(lastResult().message).toMatch("Other Error");
           expect(match(throwingFn).not.toThrow(new Error("Other Error"))).toPass();
         });
+
+        it("should match exceptions specified by predicate", function () {
+          expect(match(throwingFn).not.toThrow(function () { return true; })).toFail();
+          expect(match(throwingFn).not.toThrow(function () { return false; })).toPass();
+        });
+
       });
     });
 
