@@ -288,6 +288,24 @@ describe("jasmine.Matchers", function() {
     expect(result.actual).toEqual(actual);
   });
 
+  it("toBeInstanceOf", function(type) {
+    var a = function(){};
+    var b = function(){};
+    b.prototype = new a();
+
+    expect(match(Function).toBeInstanceOf(Function)).toPass();
+    expect(match(Object).toBeInstanceOf(Function)).toPass();
+    expect(match(new Object()).toBeInstanceOf(Function)).toFail();
+    expect(match(0).toBeInstanceOf(Function)).toFail();
+    expect(match(undefined).toBeInstanceOf(Function)).toFail();
+    expect(match(b).toBeInstanceOf(Function)).toPass();
+    expect(match(new b()).toBeInstanceOf(Function)).toFail();
+    expect(match(new a()).toBeInstanceOf(a)).toPass();
+    expect(match(new b()).toBeInstanceOf(a)).toPass();
+    expect(match(new a()).toBeInstanceOf(b)).toFail();
+    expect(match(b).toBeInstanceOf(a)).toFail();
+  });
+
   it("toBeFalsy", function() {
     expect(match(false).toBeFalsy()).toPass();
     expect(match(true).toBeFalsy()).toFail();

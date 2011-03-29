@@ -165,6 +165,13 @@ jasmine.Matchers.prototype.toBeFalsy = function() {
   return !this.actual;
 };
 
+/**
+ * Matcher that checks instance of actual.
+ */
+jasmine.Matchers.prototype.toBeInstanceOf = function(type) {
+  return this.actual instanceof type;
+};
+
 
 /**
  * Matcher that checks to see if the actual, a Jasmine spy, was called.
