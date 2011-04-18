@@ -1225,6 +1225,9 @@ describe("jasmine spec running", function () {
             this.expect(true).toEqual(true);
           });
         });
+
+        throw new Error("fake error");
+
       });
     } catch(e) {
     }
@@ -1240,14 +1243,16 @@ describe("jasmine spec running", function () {
 
     expect(specs.join('')).toMatch(new RegExp(
       'Spec: outer1 inner1 should thingy.' +
-      'Result: Passed.' +
-      'Spec: outer1 encountered a declaration exception.' +
-      'Result: Error: fake error.*' +
-      'Spec: outer1 inner2 should other thingy.' +
-      'Result: Passed.' +
-      'Spec: outer2 should xxx.' +
-      'Result: Passed.'
-    ));
+        'Result: Passed.' +
+        'Spec: outer1 inner1 encountered a declaration exception.' +
+        'Result: Error: fake error.*' +
+        'Spec: outer1 inner2 should other thingy.' +
+        'Result: Passed.' +
+        'Spec: outer1 encountered a declaration exception.' +
+        'Result: Error: fake error.*' +
+        'Spec: outer2 should xxx.' +
+        'Result: Passed.'
+      ));
   });
 
 });

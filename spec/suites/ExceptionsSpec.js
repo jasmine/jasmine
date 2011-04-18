@@ -3,7 +3,7 @@ describe('Exceptions:', function() {
 
   beforeEach(function() {
     env = new jasmine.Env();
-      env.updateInterval = 0;
+    env.updateInterval = 0;
   });
 
   it('jasmine.formatException formats Firefox exception messages as expected', function() {
@@ -101,7 +101,49 @@ describe('Exceptions:', function() {
     expect(blockResults[0].message).toMatch(/fake error 3/);
 
     expect(specResults[4].passed()).toEqual(true);
-
   });
 
+
+  it("should handle exceptions thrown directly in top-level describe blocks and continue", function () {
+     var suite = env.describe("a top level describe block that throws an exception", function () {
+       env.it("is a test that should pass", function () {
+         this.expect(true).toEqual(true);
+       });
+
+       throw new Error("top level error");
+     });
+
+     suite.execute();
+     var suiteResults = suite.results();
+     var specResults = suiteResults.getItems();
+
+     expect(suiteResults.passed()).toEqual(false);
+     expect(specResults.length).toEqual(2);
+
+     expect(specResults[1].description).toMatch(/encountered a declaration exception/);
+   });
+
+   it("should handle exceptions thrown directly in nested describe blocks and continue", function () {
+     var suite = env.describe("a top level describe", function () {
+       env.describe("a mid-level describe that throws an exception", function () {
+         env.it("is a test that should pass", function () {
+           this.expect(true).toEqual(true);
+         });
+
+         throw new Error("a mid-level error");
+       });
+     });
+
+     suite.execute();
+     var suiteResults = suite.results();
+     var specResults = suiteResults.getItems();
+
+     expect(suiteResults.passed()).toEqual(false);
+     expect(specResults.length).toEqual(1);
+
+     var nestedSpecResults = specResults[0].getItems();
+
+     expect(nestedSpecResults.length).toEqual(2);
+     expect(nestedSpecResults[1].description).toMatch(/encountered a declaration exception/);
+   });
 });
