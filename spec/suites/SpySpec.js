@@ -216,4 +216,16 @@ describe('Spies', function () {
     });
   });
 
+  describe('createSpy deletion', function() {
+    var TestClass = {}; // ie global "window" object
+    it('should create a spy', function() {
+      TestClass.mySpy = jasmine.createSpy('mySpy');
+      expect(TestClass.mySpy).toEqual(jasmine.any(Function));
+    });
+
+    it('should clean up after itself', function() {
+      expect(TestClass.mySpy).toBeUndefined();
+    });
+  });
+
 });
