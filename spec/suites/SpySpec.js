@@ -177,6 +177,24 @@ describe('Spies', function () {
     expect(TestClass.someFunction.callCount).toEqual(0);
   });
 
+  describe('ignoreMethodDoesntExist', function() {
+    var TestClass = {};
+    it('should spy on non-existent properties', function() {
+      // via currentSpec
+      this.spyOn(TestClass, 'someFunction', true);
+      expect(TestClass.someFunction).toEqual(jasmine.any(Function));
+
+      // via global spyOn
+      spyOn(TestClass, 'someOtherFunction', true);
+      expect(TestClass.someOtherFunction).toEqual(jasmine.any(Function));
+    });
+
+    it('should clean up after itself', function() {
+        expect(TestClass.someFunction).toBeUndefined();
+        expect(TestClass.someOtherFunction).toBeUndefined();
+    });
+  });
+
   describe("createSpyObj", function() {
     it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
       var spyObj = jasmine.createSpyObj('BaseName', ['method1', 'method2']);
