@@ -76,7 +76,7 @@ describe("jasmine.Matchers", function() {
     expect((match(5).toNotEqual(5))).toFail();
     expect((match(parseInt('5', 10)).toNotEqual(5))).toFail();
   });
-  
+
   it("toEqual with DOM nodes", function() {
     var nodeA = document.createElement('div');
     var nodeB = document.createElement('div');
@@ -348,11 +348,13 @@ describe("jasmine.Matchers", function() {
     expect(match("foo").toEqual(jasmine.any(Object))).toFail();
     expect(match({someObj:'foo'}).toEqual(jasmine.any(Object))).toPass();
     expect(match({someObj:'foo'}).toEqual(jasmine.any(Function))).toFail();
-    expect(match(function() {
-    }).toEqual(jasmine.any(Object))).toFail();
+    expect(match(
+      function() {
+      }).toEqual(jasmine.any(Object))).toFail();
     expect(match(["foo", "goo"]).toEqual(["foo", jasmine.any(String)])).toPass();
-    expect(match(function() {
-    }).toEqual(jasmine.any(Function))).toPass();
+    expect(match(
+      function() {
+      }).toEqual(jasmine.any(Function))).toPass();
     expect(match(["a", function() {
     }]).toEqual(["a", jasmine.any(Function)])).toPass();
   });
@@ -471,6 +473,47 @@ describe("jasmine.Matchers", function() {
     expect(result.expected).toEqual(expected);
   });
 
+  describe("toBeCloseTo", function() {
+    it("returns 'true' iff actual and expected are equal within 2 decimal points of precision", function() {
+      expect(0).toBeCloseTo(0);
+      expect(1).toBeCloseTo(1);
+      expect(1).not.toBeCloseTo(1.1);
+      expect(1).not.toBeCloseTo(1.01);
+      expect(1).toBeCloseTo(1.001);
+
+      expect(1.23).toBeCloseTo(1.234);
+      expect(1.23).toBeCloseTo(1.233);
+      expect(1.23).toBeCloseTo(1.232);
+      expect(1.23).not.toBeCloseTo(1.24);
+
+      expect(-1.23).toBeCloseTo(-1.234);
+      expect(-1.23).not.toBeCloseTo(-1.24);
+    });
+
+    it("accepts an optional precision argument", function() {
+      expect(1).toBeCloseTo(1.1, 0);
+      expect(1.2).toBeCloseTo(1.23, 1);
+
+      expect(1.234).toBeCloseTo(1.2343, 3);
+      expect(1.234).not.toBeCloseTo(1.233, 3);
+    });
+
+    it("rounds", function() {
+      expect(1.23).toBeCloseTo(1.229);
+      expect(1.23).toBeCloseTo(1.226);
+      expect(1.23).toBeCloseTo(1.225);
+      expect(1.23).not.toBeCloseTo(1.2249999);
+
+      expect(1.23).toBeCloseTo(1.234);
+      expect(1.23).toBeCloseTo(1.2349999);
+      expect(1.23).not.toBeCloseTo(1.235);
+
+      expect(-1.23).toBeCloseTo(-1.234);
+      expect(-1.23).not.toBeCloseTo(-1.235);
+      expect(-1.23).not.toBeCloseTo(-1.236);
+    });
+  });
+
   describe("toThrow", function() {
     describe("when code block throws an exception", function() {
       var throwingFn;
@@ -540,8 +583,9 @@ describe("jasmine.Matchers", function() {
 
     describe("when code block does not throw an exception", function() {
       it("should fail (or pass when inverted with .not)", function() {
-        expect(match(function() {
-        }).toThrow()).toFail();
+        expect(match(
+          function() {
+          }).toThrow()).toFail();
         expect(lastResult().message).toEqual('Expected function to throw an exception.');
       });
     });
@@ -596,21 +640,25 @@ describe("jasmine.Matchers", function() {
 
     function shouldThrowAnExceptionWhenInvokedOnANonSpy(methodName) {
       return function() {
-        expect(function() {
-          match(TestClass.normalFunction)[methodName]();
-        }).toThrow('Expected a spy, but got Function.');
+        expect(
+          function() {
+            match(TestClass.normalFunction)[methodName]();
+          }).toThrow('Expected a spy, but got Function.');
 
-        expect(function() {
-          match(jasmine.undefined)[methodName]();
-        }).toThrow('Expected a spy, but got undefined.');
+        expect(
+          function() {
+            match(jasmine.undefined)[methodName]();
+          }).toThrow('Expected a spy, but got undefined.');
 
-        expect(function() {
-          match({some:'object'})[methodName]();
-        }).toThrow('Expected a spy, but got { some : \'object\' }.');
+        expect(
+          function() {
+            match({some:'object'})[methodName]();
+          }).toThrow('Expected a spy, but got { some : \'object\' }.');
 
-        expect(function() {
-          match("<b>")[methodName]();
-        }).toThrow('Expected a spy, but got \'<b>\'.');
+        expect(
+          function() {
+            match("<b>")[methodName]();
+          }).toThrow('Expected a spy, but got \'<b>\'.');
       };
     }
 
@@ -623,9 +671,10 @@ describe("jasmine.Matchers", function() {
       });
 
       it("should throw an exception when invoked with any arguments", function() {
-        expect(function() {
-          match(TestClass.normalFunction).toHaveBeenCalled("unwanted argument");
-        }).toThrow('toHaveBeenCalled does not take arguments, use toHaveBeenCalledWith');
+        expect(
+          function() {
+            match(TestClass.normalFunction).toHaveBeenCalled("unwanted argument");
+          }).toThrow('toHaveBeenCalled does not take arguments, use toHaveBeenCalledWith');
       });
 
       it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('toHaveBeenCalled'));
@@ -651,9 +700,10 @@ describe("jasmine.Matchers", function() {
       });
 
       it("should throw an exception when invoked with any arguments", function() {
-        expect(function() {
-          match(TestClass.normalFunction).wasNotCalled("unwanted argument");
-        }).toThrow('wasNotCalled does not take arguments');
+        expect(
+          function() {
+            match(TestClass.normalFunction).wasNotCalled("unwanted argument");
+          }).toThrow('wasNotCalled does not take arguments');
       });
 
       it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasNotCalled'));
