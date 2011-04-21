@@ -225,7 +225,13 @@ jasmine.Spec.prototype.spyOn = function(obj, methodName, ignoreMethodDoesntExist
   this.spies_.push(spyObj);
   spyObj.baseObj = obj;
   spyObj.methodName = methodName;
-  spyObj.originalValue = obj[methodName];
+  var original = spyObj.originalValue = obj[methodName];
+
+  for (var propertie in original){
+    if (original.hasOwnProperty(propertie)){
+      spyObj[propertie] = original[propertie];
+    }
+  }
 
   obj[methodName] = spyObj;
 
