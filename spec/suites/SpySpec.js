@@ -1,13 +1,17 @@
 describe('Spies', function () {
   it('should replace the specified function with a spy object', function() {
     var originalFunctionWasCalled = false;
+    var originalFunction = function() {
+      originalFunctionWasCalled = true;
+    };
+    originalFunction.property = true;
+
     var TestClass = {
-      someFunction: function() {
-        originalFunctionWasCalled = true;
-      }
+      someFunction: originalFunction
     };
     this.spyOn(TestClass, 'someFunction');
 
+    expect(TestClass.someFunction.property).toEqual(true);
     expect(TestClass.someFunction.wasCalled).toEqual(false);
     expect(TestClass.someFunction.callCount).toEqual(0);
     TestClass.someFunction('foo');
