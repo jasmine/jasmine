@@ -29,6 +29,9 @@ def substitute_jasmine_version(filename)
   File.open(filename, 'w') { |f| f.write(contents) }
 end
 
+require 'bundler'
+Bundler::GemHelper.install_tasks
+
 task :default => :spec
 
 desc "Run spec suite: Browser, Node, JSHint"
