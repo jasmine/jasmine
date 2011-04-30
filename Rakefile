@@ -1,36 +1,25 @@
-require 'json'
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
-def jasmine_sources
-  first_sources = JSON.parse(File.read('src/SourcesList.json')).collect {|f| "src/core/#{f}"}
-
-  sources = first_sources
-  sources += Dir.glob('src/core/*.js').reject {|f| first_sources.include?(f)}.sort
-  sources
+def sources
+  dependencies = JSON.parse(File.read('src/SourcesList.json')).collect {|f| "src/core/#{f}"}
+  dependencies + Dir.glob('src/core/*.js').reject {|f| dependencies.include?(f)}.sort
 end
 
-def jasmine_html_sources
-  ["src/html/TrivialReporter.js"]
-end
-
-def jasmine_version
-  "#{version_hash['major']}.#{version_hash['minor']}.#{version_hash['build']}"
+def html_sources
+  ["./src/html/TrivialReporter.js"]
 end
 
 def version_hash
-  require 'json'
-  @version ||= JSON.parse(File.new("src/core/version.json").read);
+  @version ||= JSON.parse(File.new("src/core/version.json").read)
 end
 
-
-def substitute_jasmine_version(filename)
+def substitute_version(filename)
   contents = File.read(filename)
   contents = contents.gsub(/##JASMINE_VERSION##/, (jasmine_version))
-  contents = contents.gsub(/[^\n]*REMOVE_THIS_LINE_FROM_BUILD[^\n]*/, '')
+    contents = contents.gsub(/[^\n]*REMOVE_THIS_LINE_FROM_BUILD[^\n]*/, '')
   File.open(filename, 'w') { |f| f.write(contents) }
 end
-
-require 'bundler'
-Bundler::GemHelper.install_tasks
 
 task :default => :spec
 
@@ -53,10 +42,10 @@ namespace :jasmine do
 
   desc 'Prepares for distribution'
   task :dist => ['jasmine:build',
-                 'jasmine:doc',
-                 'jasmine:build_pages',
-                 'jasmine:build_example_project',
-                 'jasmine:fill_index_downloads']
+    'jasmine:doc',
+    'jasmine:build_pages',
+    'jasmine:build_example_project',
+    'jasmine:fill_index_downloads']
 
   desc 'Check jasmine sources for coding problems'
   task :lint do
@@ -71,10 +60,9 @@ namespace :jasmine do
   task :build => :lint do
     puts 'Building Jasmine from source'
 
-    sources = jasmine_sources
-    version = version_hash
+    version = Jasmine::Core::VERSION_HASH
 
-    File.open("lib/jasmine.js", 'w') do |jasmine|
+    File.open("./lib/jasmine-core/jasmine.js", 'w') do |jasmine|
       sources.each do |source_filename|
         jasmine.puts(File.read(source_filename))
       end
@@ -86,16 +74,16 @@ jasmine.version_= {
   "build": #{version['build'].to_json},
   "revision": #{Time.now.to_i}
 };
-}
+      }
     end
 
-    File.open("lib/jasmine-html.js", 'w') do |jasmine_html|
-      jasmine_html_sources.each do |source_filename|
+    File.open("./lib/jasmine-core/jasmine-html.js", 'w') do |jasmine_html|
+      html_sources.each do |source_filename|
         jasmine_html.puts(File.read(source_filename))
       end
     end
 
-    FileUtils.cp("src/html/jasmine.css", "lib/jasmine.css")
+    FileUtils.cp("./src/html/jasmine.css", "lib/jasmine-core/jasmine.css")
   end
 
   downloads_file = 'pages/download.html'
@@ -126,7 +114,7 @@ jasmine.version_= {
     FileUtils.rm_r "pages/jsdoc", :force => true
 
     JsdocHelper::Rake::Task.new(:lambda_jsdoc) do |t|
-      t[:files] = jasmine_sources << jasmine_html_sources
+      t[:files] = jasmine_sources << html_sources
       t[:options] = "-a"
       t[:out] = "pages/jsdoc"
       # JsdocHelper bug: template must be relative to the JsdocHelper gem, ick
@@ -146,15 +134,15 @@ jasmine.version_= {
 
     root = File.expand_path(File.dirname(__FILE__))
     FileUtils.cp_r File.join(root, 'example/.'), File.join(temp_dir)
-    substitute_jasmine_version(File.join(temp_dir, "SpecRunner.html"))
+    substitute_version(File.join(temp_dir, "SpecRunner.html"))
 
     lib_dir = File.join(temp_dir, "lib/jasmine-#{jasmine_version}")
     FileUtils.mkdir_p(lib_dir)
     {
-        "lib/jasmine.js" => "jasmine.js",
-        "lib/jasmine-html.js" => "jasmine-html.js",
-        "src/html/jasmine.css" => "jasmine.css",
-        "MIT.LICENSE"  => "MIT.LICENSE"
+      "lib/jasmine.js" => "jasmine.js",
+      "lib/jasmine-html.js" => "jasmine-html.js",
+      "src/html/jasmine.css" => "jasmine.css",
+      "MIT.LICENSE"  => "MIT.LICENSE"
     }.each_pair do |src, dest|
       FileUtils.cp(File.join(root, src), File.join(lib_dir, dest))
     end
