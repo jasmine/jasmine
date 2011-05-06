@@ -33,7 +33,7 @@ task :spec => ["spec:node", "spec:browser", "jasmine:hint"]
 namespace :spec do
   desc 'Run specs in Node.js'
   task :node do
-    system("node spec/node_suite.js")
+    raise "Node is required to run all jasmine specs" unless system("node spec/node_suite.js")
   end
 
   desc "Run specs in the default browser (MacOS only)"
