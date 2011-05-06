@@ -10,6 +10,37 @@ describe('WaitsForBlock', function () {
     onComplete = jasmine.createSpy("onComplete");
   });
 
+  describe("jasmine.VERBOSE", function() {
+    var jasmineVerboseOriginal;
+    beforeEach(function() {
+      jasmineVerboseOriginal = jasmine.VERBOSE;
+      spyOn(env.reporter, 'log');
+
+    });
+    it('do not show information if jasmine.VERBOSE is set to false', function () {
+        jasmine.VERBOSE = false;
+        var latchFunction = function() {
+          return true;
+        };
+        var block = new jasmine.WaitsForBlock(env, timeout, latchFunction, message, spec);
+        expect(env.reporter.log).not.toHaveBeenCalled();
+        block.execute(onComplete);
+        expect(env.reporter.log).not.toHaveBeenCalled();
+        jasmine.VERBOSE = jasmineVerboseOriginal;
+      });
+    it('show information if jasmine.VERBOSE is set to true', function () {
+        jasmine.VERBOSE = true;
+        var latchFunction = function() {
+          return true;
+        };
+        var block = new jasmine.WaitsForBlock(env, timeout, latchFunction, message, spec);
+        expect(env.reporter.log).not.toHaveBeenCalled();
+        block.execute(onComplete);
+        expect(env.reporter.log).toHaveBeenCalled();
+        jasmine.VERBOSE = jasmineVerboseOriginal;
+      });
+  });
+
   it('onComplete should be called if the latchFunction returns true', function () {
     var latchFunction = function() {
       return true;

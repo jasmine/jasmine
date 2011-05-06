@@ -21,7 +21,9 @@ jasmine.util.inherit(jasmine.WaitsForBlock, jasmine.Block);
 jasmine.WaitsForBlock.TIMEOUT_INCREMENT = 10;
 
 jasmine.WaitsForBlock.prototype.execute = function(onComplete) {
-  this.env.reporter.log('>> Jasmine waiting for ' + (this.message || 'something to happen'));
+  if (jasmine.VERBOSE) {
+    this.env.reporter.log('>> Jasmine waiting for ' + (this.message || 'something to happen'));
+  }
   var latchFunctionResult;
   try {
     latchFunctionResult = this.latchFunction.apply(this.spec);
