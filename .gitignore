@@ -4,3 +4,4 @@
 site/
 .bundle/
 .pairs
+.rvmrc
