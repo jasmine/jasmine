@@ -29,9 +29,9 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
                                   return arr;
                                 }
   
-  function indent(str, spaces) { var lines = str.split("\n");
+  function indent(str, spaces) { var lines = (str || '').split("\n");
                                  var newArr = [];
-                                 for(var i=0; i<lines.length; i++) {
+                                 for(var i = 0; i < lines.length; i++) {
                                    newArr.push(repeat(" ", spaces).join("") + lines[i]);
                                  }
                                  return newArr.join("\n");
@@ -97,7 +97,7 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
     } else {
       redF();
     } 
-    startNewLineIfNecessary();   
+//    startNewLineIfNecessary();
   };
   
   this.suiteResults = [];

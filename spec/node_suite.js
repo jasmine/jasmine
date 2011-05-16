@@ -43,7 +43,7 @@ jasmine.executeSpecs = function(specs, done){
   }
 
   var jasmineEnv = jasmine.getEnv();
-  jasmineEnv.reporter = new jasmine.TrivialConsoleReporter(sys.print, done)
+  jasmineEnv.reporter = new jasmine.TrivialConsoleReporter(sys.print, done);
   jasmineEnv.execute();
 };
 
