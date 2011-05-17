@@ -31,20 +31,37 @@ describe("TrivialConsoleReporter", function() {
       };
     }
   },
-    failingSpec = { results: function() {
-      return {passed: function() {
-        return false;
-      }};
-    } },
-    skippedSpec = { results: function() {
-      return {skipped: true};
-    } },
-    passingRun = { results: function() {
-      return {failedCount: 0, items_: [null, null, null]};
-    } },
-    failingRun = { results: function() {
-      return {failedCount: 7, items_: [null, null, null]};
-    } };
+    failingSpec = {
+      results: function() {
+        return {
+          passed: function() {
+            return false;
+          }
+        };
+      }
+    },
+    skippedSpec = {
+      results: function() {
+        return {skipped: true};
+      }
+    },
+    passingRun = {
+      specs: function() {
+        return [null, null, null];
+      },
+      results: function() {
+        return {failedCount: 0, items_: [null, null, null]};
+      }
+    },
+    failingRun = {
+      specs: function() {
+        return [null, null, null];
+      },
+      results: function() {
+        return {
+          failedCount: 7, items_: [null, null, null]};
+      }
+    };
 
   function repeatedlyInvoke(f, times) {
     for (var i = 0; i < times; i++) f(times + 1);
@@ -101,18 +118,21 @@ describe("TrivialConsoleReporter", function() {
       simulateRun(reporter,
         repeat(passingSpec, 3),
         [],
-        {
-          results:function() {
-            return {
-              items_: [null, null, null],
-              totalCount: 7,
-              failedCount: 0
-            };
-          }
+      {
+        specs: function() {
+          return [null, null, null];
         },
+        results:function() {
+          return {
+            items_: [null, null, null],
+            totalCount: 7,
+            failedCount: 0
+          };
+        }
+      },
         1000,
         1777
-      );
+        );
 
       expect(out.getOutput()).toEqual(
         [
@@ -131,6 +151,9 @@ describe("TrivialConsoleReporter", function() {
         repeat(passingSpec, 57),
         [],
       {
+        specs: function() {
+          return [null, null, null];
+        },
         results:function() {
           return {
             items_: [null, null, null],
@@ -200,6 +223,9 @@ describe("TrivialConsoleReporter", function() {
             }}
         ],
       {
+        specs: function() {
+          return [null, null, null];
+        },
         results:function() {
           return {
             items_: [null, null, null],
@@ -407,6 +433,9 @@ describe("TrivialConsoleReporter", function() {
       describe("when reporting the results summary", function() {
         it("prints statistics in green if there were no failures", function() {
           reporter.reportRunnerResults({
+            specs: function() {
+              return [null, null, null];
+            },
             results:function() {
               return {items_: [null, null, null], totalCount: 7, failedCount: 0};
             }
@@ -417,6 +446,9 @@ describe("TrivialConsoleReporter", function() {
 
         it("prints statistics in red if there was a failure", function() {
           reporter.reportRunnerResults({
+            specs: function() {
+              return [null, null, null];
+            },
             results:function() {
               return {items_: [null, null, null], totalCount: 7, failedCount: 3};
             }
@@ -427,6 +459,9 @@ describe("TrivialConsoleReporter", function() {
 
         it("handles pluralization with 1's ones appropriately", function() {
           reporter.reportRunnerResults({
+            specs: function() {
+              return [null];
+            },
             results:function() {
               return {items_: [null], totalCount: 1, failedCount: 1};
             }
@@ -440,6 +475,9 @@ describe("TrivialConsoleReporter", function() {
         it("calls back when done", function() {
           expect(done).toBeFalsy();
           reporter.reportRunnerResults({
+            specs: function() {
+              return [null, null, null];
+            },
             results:function() {
               return {items_: [null, null, null], totalCount: 7, failedCount: 0};
             }
