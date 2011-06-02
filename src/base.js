@@ -80,7 +80,7 @@ jasmine.MessageResult = function(values) {
 
 jasmine.MessageResult.prototype.toString = function() {
   var text = "";
-  for(var i = 0; i < this.values.length; i++) {
+  for (var i = 0; i < this.values.length; i++) {
     if (i > 0) text += " ";
     if (jasmine.isString_(this.values[i])) {
       text += this.values[i];
@@ -97,9 +97,10 @@ jasmine.ExpectationResult = function(params) {
   this.passed_ = params.passed;
   this.expected = params.expected;
   this.actual = params.actual;
-
   this.message = this.passed_ ? 'Passed.' : params.message;
-  this.trace = this.passed_ ? '' : new Error(this.message);
+
+  var trace = (params.trace || new Error(this.message));
+  this.trace = this.passed_ ? '' : trace;
 };
 
 jasmine.ExpectationResult.prototype.toString = function () {
@@ -125,7 +126,7 @@ jasmine.getEnv = function() {
  * @returns {Boolean}
  */
 jasmine.isArray_ = function(value) {
-  return jasmine.isA_("Array", value);  
+  return jasmine.isA_("Array", value);
 };
 
 /**
@@ -593,16 +594,24 @@ jasmine.XmlHttpRequest = (typeof XMLHttpRequest == "undefined") ? function() {
     try {
       return f();
     } catch(e) {
-    }    
+    }
     return null;
   }
-  
-  var xhr = tryIt(function(){return new ActiveXObject("Msxml2.XMLHTTP.6.0");}) ||
-            tryIt(function(){return new ActiveXObject("Msxml2.XMLHTTP.3.0");}) ||
-            tryIt(function(){return new ActiveXObject("Msxml2.XMLHTTP");}) ||
-            tryIt(function(){return new ActiveXObject("Microsoft.XMLHTTP");});
+
+  var xhr = tryIt(function() {
+    return new ActiveXObject("Msxml2.XMLHTTP.6.0");
+  }) ||
+    tryIt(function() {
+      return new ActiveXObject("Msxml2.XMLHTTP.3.0");
+    }) ||
+    tryIt(function() {
+      return new ActiveXObject("Msxml2.XMLHTTP");
+    }) ||
+    tryIt(function() {
+      return new ActiveXObject("Microsoft.XMLHTTP");
+    });
 
   if (!xhr) throw new Error("This browser does not support XMLHttpRequest.");
-  
+
   return xhr;
 } : XMLHttpRequest;
