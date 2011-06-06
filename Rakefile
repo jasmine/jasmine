@@ -1,6 +1,10 @@
+require 'json'
+
 def jasmine_sources
-  sources  = ["src/core/base.js", "src/core/util.js", "src/core/Env.js", "src/core/Reporter.js", "src/core/Block.js"]
-  sources += Dir.glob('src/core/*.js').reject { |f| f == 'src/core/base.js' || sources.include?(f) }.sort
+  first_sources = JSON.parse(File.read('src/SourcesList.json')).collect {|f| "src/core/#{f}"}
+
+  sources = first_sources
+  sources += Dir.glob('src/core/*.js').reject {|f| first_sources.include?(f)}.sort
   sources
 end
 
