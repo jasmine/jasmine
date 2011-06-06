@@ -1,24 +1,14 @@
 body {
   font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
-  margin: 0;
-  background-color: #f0f0f0;
 }
 
-a {
-  text-decoration: none;
-  color: #777;
+
+.jasmine_reporter a:visited, .jasmine_reporter a {
+  color: #303; 
 }
 
-a:hover {
-  text-decoration: underline;
-}
-
-.description {
-  display: block;
-  padding: .4em 0 .4em 1.5em;
-  font-size: .8em;
-  min-height: 1.2em;
-  line-height: 1.2em;
+.jasmine_reporter a:hover, .jasmine_reporter a:active {
+  color: blue; 
 }
 
 .run_spec {
@@ -26,239 +16,110 @@ a:hover {
   padding-right: 5px;
   font-size: .8em;
   text-decoration: none;
-  display: none;
 }
 
 .jasmine_reporter {
-  margin: 0;
+  margin: 0 5px;
 }
 
 .banner {
   color: #303;
-  padding: 0 1.5em;
-  height: 1.2em;
-  line-height: 1.2em;
+  background-color: #fef;
+  padding: 5px;
 }
 
 .logo {
   float: left;
-  font-size: .8em;
+  font-size: 1.1em;
   padding-left: 5px;
-  font-weight: 700;
 }
 
 .logo .version {
-  font-size: .8em;
-  padding-left: .5em;
-  color: gray;
-  font-weight: 400;
+  font-size: .6em;
+  padding-left: 1em;
 }
+
+.runner.running {
+  background-color: yellow;
+}
+
 
 .options {
   text-align: right;
-  font-size: .6em;
+  font-size: .8em;
 }
 
 
 
 
 .suite {
-  position: relative;
-  margin: 10px 1.5em;
-  padding-bottom: 3px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
-  -moz-box-shadow: 0px 1px 4px #200;
-  -webkit-box-shadow: 0px 1px 4px #200;
-  box-shadow: 0px 1px 4px #200;
-  background-color: #ddd;
+  border: 1px outset gray;
+  margin: 5px 0;
+  padding-left: 1em;
 }
 
 .suite .suite {
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  
-}
-
-.suite > .description {
-  padding-left: 1.2em;
-
-  border-bottom: 1px solid gray;
-  -moz-border-radius-topleft: 6px;
-  -moz-border-radius-topright: 6px;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-  
-  background-image: -webkit-gradient(
-      linear,
-      left bottom,
-      left top,
-      color-stop(0.1, rgb(186,186,186)),
-      color-stop(0.9, rgb(240,240,240))
-  );
-  background-image: -moz-linear-gradient(
-      center bottom,
-      rgb(186,186,186) 10%,
-      rgb(240,240,240) 90%
-  );
-}
-
-.suite .suite>.description {
-  -moz-border-radius-topleft: 3px;
-  -moz-border-radius-topright: 3px;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
+  margin: 5px; 
 }
 
 .suite.passed {
-  border-color: #bbb;
+  background-color: #dfd;
 }
 
 .suite.failed {
-  border-color: #fcc;
-}
-
-.suite > .description {
-  font-weight: 700;
-  font-size: 1em;
-  text-shadow: 0px 1px 0px #eee;
-  color: #777;
-}
-
-.suite.passed > .description {
-  color: rgb(94,125,0);
-  text-shadow: 0px 1px 0px #ddd;
-}
-
-.suite.failed > .description {
-  color: rgb(176,57,17);
+  background-color: #fdd;
 }
 
 .spec {
-  margin: 0;
+  margin: 5px;
+  padding-left: 1em;
   clear: both;
-  position: relative;
-  padding-bottom: 0;
-  border-bottom: 1px solid gray;
 }
 
 .spec.failed, .spec.passed, .spec.skipped {
-
-}
-
-.spec.failed:first-child, .spec.passed:first-child, .spec.skipped:first-child {
+  padding-bottom: 5px;
+  border: 1px solid gray;
 }
 
 .spec.failed {
-  background-color: white;
-}
-
-.spec > .description {
-  color: #666;
-  font-weight: 700;
-}
-
-.spec.failed > .description {
-  color: white;
-
-  background-image: -webkit-gradient(
-      linear,
-      left bottom,
-      left top,
-      color-stop(0.1, rgb(176,57,17)),
-      color-stop(0.94, rgb(237,87,0))
-  );
-  background-image: -moz-linear-gradient(
-      center bottom,
-      rgb(176,57,17) 10%,
-      rgb(237,87,0) 94%
-  );
-}
-
-.spec.failed > .description:before {
-  display: block;
-  position: absolute;
-  left: 5px;
-  top: 8px;
-  width: 8px;
-  height: 8px;
-  content: ".";
-  color: transparent;
-  border: 1px solid #ffffff;
-  
-  -moz-border-radius: 5px;
-  
-  background-image: -webkit-gradient(
-      linear,
-      left bottom,
-      left top,
-      color-stop(0.1, rgb(176,57,17)),
-      color-stop(0.94, rgb(237,87,0))
-  );
-  background-image: -moz-linear-gradient(
-      center bottom,
-      rgb(176,57,17) 10%,
-      rgb(237,87,0) 94%
-  );
+  background-color: #fbb;
+  border-color: red;
 }
 
 .spec.passed {
-  background-color: white;
-  border-color: #bbb;
+  background-color: #bfb;
+  border-color: green;
 }
-
-.spec.passed>.description {
-  background-color: #ddd;
-}
-
-.spec.passed>.description:before {
-  display: block;
-  position: absolute;
-  left: 6px;
-  top: 9px;
-  width: 8px;
-  height: 8px;
-  content: ".";
-  color: transparent;
-  
-  -moz-border-radius: 4px;
-  
-  background-image: -webkit-gradient(
-      linear,
-      left bottom,
-      left top,
-      color-stop(0.1, rgb(94,125,0)),
-      color-stop(0.9, rgb(167,212,21))
-  );
-  background-image: -moz-linear-gradient(
-      center bottom,
-      rgb(94,125,0) 10%,
-      rgb(167,212,21) 90%
-  );
-}
-
 
 .spec.skipped {
   background-color: #bbb;
 }
 
-
 .messages {
-  font-size: .8em;
-  padding: 5px 1.5em 0 1.5em;
-  line-height: 1.2em;
+  border-left: 1px dashed gray;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 .passed {
+  background-color: #cfc;
   display: none;
 }
 
 .failed {
+  background-color: #fbb;
 }
 
 .skipped {
+  color: #777;
+  background-color: #eee;
   display: none;
 }
+
+
+/*.resultMessage {*/
+  /*white-space: pre;*/
+/*}*/
 
 .resultMessage span.result {
   display: block;
@@ -271,22 +132,14 @@ a:hover {
 }
 
 .stackTrace {
-  padding: 5px 1em;
-  margin: 5px 0;
-  max-height: 5em;
-  overflow: hidden;
-  
-  border: 1px solid #baa;
-  background: #eef;
-  
   white-space: pre;
-  font-size: 1.2em;
-  line-height: 1.5em;
-  font-family: monospace;
-}
-
-.stackTrace:hover {
+  font-size: .8em;
+  margin-left: 10px;
+  max-height: 5em;
   overflow: auto;
+  border: 1px inset red;
+  padding: 1em;
+  background: #eef;
 }
 
 .finished-at {
@@ -299,64 +152,15 @@ a:hover {
   display: block;
 }
 
+
 #jasmine_content {
-  position: fixed;
+  position:fixed;
   right: 100%;
 }
 
 .runner {
+  border: 1px solid gray;
   display: block;
-  margin: 5px 0 10px 0;
-  padding: 2px 0 2px 1.5em;
-  
-  border-top: 1px solid gray;
-  -moz-box-shadow: 0px 1px 4px #000;
-  -webkit-box-shadow: 0px 1px 4px #000;
-  box-shadow: 0px 1px 4px #000;
-
-  font-size: .8em;
-}
-
-.runner.failed {
-  background-image: -webkit-gradient(
-      linear,
-      left bottom,
-      left top,
-      color-stop(0.1, rgb(176,57,17)),
-      color-stop(0.94, rgb(237,87,0))
-  );
-  background-image: -moz-linear-gradient(
-      center bottom,
-      rgb(176,57,17) 10%,
-      rgb(237,87,0) 94%
-  );
-}
-
-.runner.passed {
-
-  background-image: -webkit-gradient(
-      linear,
-      left bottom,
-      left top,
-      color-stop(0.1, rgb(94,125,0)),
-      color-stop(0.9, rgb(167,212,21))
-  );
-  background-image: -moz-linear-gradient(
-      center bottom,
-      rgb(94,125,0) 10%,
-      rgb(167,212,21) 90%
-  );
-}
-
-.runner .description {
-  padding-left: .8em;
-  color: white;
-}
-
-.runner.running {
-  background-color: yellow;
-}
-
-.runner>.description {
-  height: 1em;
+  margin: 5px 0;
+  padding: 2px 0 2px 10px;
 }
