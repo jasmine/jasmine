@@ -5,21 +5,12 @@ var path = require('path');
 // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
 // undefined = "diz be undefined yo";
 
-var jasmineGlobals = require("../src/base");
+
+var jasmineGlobals = require('../lib/jasmine.js');
 for (var k in jasmineGlobals) {
   global[k] = jasmineGlobals[k];
 }
-
-//load jasmine src files based on the order in runner.html
-var srcFilesInProperRequireOrder = [];
-var runnerHtmlLines = fs.readFileSync("spec/runner.html", "utf8").split("\n");
-var srcFileLines = [];
-for (var i = 0; i < runnerHtmlLines.length; i++)
-  if (runnerHtmlLines[i].match(/script(.*?)\/src\//))
-    srcFileLines.push(runnerHtmlLines[i]);
-for (i = 0; i < srcFileLines.length; i++) srcFilesInProperRequireOrder.push(srcFileLines[i].match(/src=\"(.*?)\"/)[1]);
-for (i = 0; i < srcFilesInProperRequireOrder.length; i++) require(srcFilesInProperRequireOrder[i]);
-
+require('../src/console/TrivialConsoleReporter.js');
 
 /*
  Pulling in code from jasmine-node.

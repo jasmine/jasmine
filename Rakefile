@@ -1,6 +1,6 @@
 def jasmine_sources
-  sources  = ["src/base.js", "src/util.js", "src/Env.js", "src/Reporter.js", "src/Block.js"]
-  sources += Dir.glob('src/*.js').reject { |f| f == 'src/base.js' || sources.include?(f) }.sort
+  sources  = ["src/core/base.js", "src/core/util.js", "src/core/Env.js", "src/core/Reporter.js", "src/core/Block.js"]
+  sources += Dir.glob('src/core/*.js').reject { |f| f == 'src/core/base.js' || sources.include?(f) }.sort
   sources
 end
 
@@ -14,7 +14,7 @@ end
 
 def version_hash
   require 'json'
-  @version ||= JSON.parse(File.new("src/version.json").read);
+  @version ||= JSON.parse(File.new("src/core/version.json").read);
 end
 
 
@@ -28,7 +28,7 @@ end
 task :default => :spec
 
 desc "Run spec suite: Browser, Node, JSHint"
-task :spec => ["spec:node", "spec:browser", "jasmine:hint"]
+task :spec => ["jasmine:build", "spec:node", "spec:browser"]
 
 namespace :spec do
   desc 'Run specs in Node.js'

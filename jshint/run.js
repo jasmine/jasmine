@@ -3,6 +3,7 @@ var sys = require("sys");
 var path = require("path");
 var JSHINT = require("./jshint").JSHINT;
 
+// DWF TODO: Standardize this?
 function isExcluded(fullPath) {
   var fileName = path.basename(fullPath);
   var excludeFiles = ["json2.js", "jshint.js", "publish.js", "node_suite.js", "jasmine.js", "jasmine-html.js"];
