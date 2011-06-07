@@ -29,7 +29,8 @@ jasmine.Spec = function(env, suite, description) {
 };
 
 jasmine.Spec.prototype.getFullName = function() {
-  return this.suite.getFullName() + ' ' + this.description + '.';
+  var description = (this.description.apply ? this.description.name : this.description);
+  return this.suite.getFullName() + ' ' + description + '.';
 };
 
 
