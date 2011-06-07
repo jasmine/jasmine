@@ -46,6 +46,7 @@ describe('Spec', function () {
 
     describe('with class name', function () {
       function MyClass() {}
+
       it('getFullName returns suite & spec description', function () {
         var spec = new jasmine.Spec(env, suite, MyClass);
         expect(spec.getFullName()).toEqual('suite 1 MyClass.');

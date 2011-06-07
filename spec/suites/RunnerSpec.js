@@ -107,7 +107,6 @@ describe('RunnerTest', function() {
     });
   });
 
-
   it('should run child suites and specs and generate results when execute is called', function() {
     env.describe('one suite description', function () {
       env.it('should be a test', function() {

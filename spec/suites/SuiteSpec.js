@@ -67,6 +67,22 @@ describe('Suite', function() {
     });
   });
 
+  describe('getFullName', function() {
+    describe('with class', function() {
+      function MyClass() {}
+
+      it('should use the name of the class if provided as the description', function() {
+        suite = env.describe(MyClass, function() {
+          env.it('should be something', function() {
+          });
+        });
+
+        expect(suite.getFullName()).toEqual("MyClass");
+        expect(suite.children()[0].getFullName()).toEqual("MyClass should be something.");
+      });
+    });
+  });
+
   describe('SpecCount', function () {
 
     it('should keep a count of the number of specs that are run', function() {

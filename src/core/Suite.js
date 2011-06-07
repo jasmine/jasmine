@@ -22,7 +22,7 @@ jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
 };
 
 jasmine.Suite.prototype.getFullName = function() {
-  var fullName = this.description;
+  var fullName = (this.description.apply ? this.description.name : this.description);
   for (var parentSuite = this.parentSuite; parentSuite; parentSuite = parentSuite.parentSuite) {
     fullName = parentSuite.description + ' ' + fullName;
   }
