@@ -29,7 +29,7 @@ jasmine.Spec = function(env, suite, description) {
 };
 
 jasmine.Spec.prototype.getFullName = function() {
-  var description = (this.description.apply ? this.description.name : this.description);
+  var description = (typeof this.description == 'function' || this.description instanceof Function) ? this.description.name : this.description;
   return this.suite.getFullName() + ' ' + description + '.';
 };
 

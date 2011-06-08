@@ -80,6 +80,18 @@ describe('Suite', function() {
         expect(suite.getFullName()).toEqual("MyClass");
         expect(suite.children()[0].getFullName()).toEqual("MyClass should be something.");
       });
+
+      it('should use the name of the parent suite correctly', function() {
+        suite = env.describe(MyClass, function() {
+          env.describe('nested', function() {
+            env.it('should be something', function() {
+            });
+          });
+        });
+
+        expect(suite.getFullName()).toEqual("MyClass");
+        expect(suite.suites()[0].getFullName()).toEqual("MyClass nested");
+      });
     });
   });
 
