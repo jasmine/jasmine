@@ -2,11 +2,9 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
   //inspired by mhevery's jasmine-node reporter
   //https://github.com/mhevery/jasmine-node
 
-  doneCallback = doneCallback || function() {
-  };
+  doneCallback = doneCallback || function() {};
 
-  var defaultColumnsPerLine = 50,
-    ansi = {
+  var ansi = {
       green: '\033[32m',
       red: '\033[31m',
       yellow: '\033[33m',
@@ -61,7 +59,9 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
 
   function repeat(thing, times) {
     var arr = [];
-    for (var i = 0; i < times; i++) arr.push(thing);
+    for (var i = 0; i < times; i++) {
+      arr.push(thing);
+    }
     return arr;
   }
 
@@ -106,24 +106,11 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
     summary(redStr, specs, expectations, failed);
   }
 
-  function lineEnder(columnsPerLine) {
-    var columnsSoFar = 0;
-    return function() {
-      columnsSoFar += 1;
-      if (columnsSoFar == columnsPerLine) {
-        newline();
-        columnsSoFar = 0;
-      }
-    };
-  }
-
   function fullSuiteDescription(suite) {
     var fullDescription = suite.description;
     if (suite.parentSuite) fullDescription = fullSuiteDescription(suite.parentSuite) + " " + fullDescription;
     return fullDescription;
   }
-
-  var startNewLineIfNecessary = lineEnder(defaultColumnsPerLine);
 
   this.now = function() {
     return new Date().getTime();
@@ -146,7 +133,6 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
     } else {
       redF();
     }
-//    startNewLineIfNecessary();
   };
 
   this.suiteResults = [];
