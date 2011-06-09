@@ -1,5 +1,12 @@
 
 
+1. Ensure all specs are green in browsers & Node.js (via rake tasks)
+1. Ensure CI is green
+1.
+
+
+
+
 ## Development
 
 
