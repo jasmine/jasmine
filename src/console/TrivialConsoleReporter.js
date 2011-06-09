@@ -12,7 +12,6 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
     },
     language = {
       spec: "spec",
-      expectation: "expectation",
       failure: "failure"
     };
 
@@ -89,21 +88,20 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
     print("Finished in " + elapsed / 1000 + " seconds");
   }
 
-  function summary(colorF, specs, expectations, failed) {
+  function summary(colorF, specs, failed) {
     newline();
     print(colorF(specs + " " + plural(language.spec, specs) + ", " +
-      expectations + " " + plural(language.expectation, expectations) + ", " +
       failed + " " + plural(language.failure, failed)));
     newline();
     newline();
   }
 
-  function greenSummary(specs, expectations, failed) {
-    summary(greenStr, specs, expectations, failed);
+  function greenSummary(specs, failed) {
+    summary(greenStr, specs, failed);
   }
 
-  function redSummary(specs, expectations, failed) {
-    summary(redStr, specs, expectations, failed);
+  function redSummary(specs, failed) {
+    summary(redStr, specs, failed);
   }
 
   function fullSuiteDescription(suite) {
@@ -173,7 +171,7 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
 
     var results = runner.results();
     var summaryFunction = results.failedCount === 0 ? greenSummary : redSummary;
-    summaryFunction(runner.specs().length, results.totalCount, results.failedCount);
+    summaryFunction(runner.specs().length, results.failedCount);
     doneCallback(runner);
   };
 };

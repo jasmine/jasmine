@@ -140,7 +140,7 @@ describe("TrivialConsoleReporter", function() {
           green(".") + green(".") + green("."),
           "",
           "Finished in 0.777 seconds",
-          green("3 specs, 7 expectations, 0 failures"),
+          green("3 specs, 0 failures"),
           ""
         ].join("\n") + "\n"
         );
@@ -185,7 +185,7 @@ describe("TrivialConsoleReporter", function() {
 
           "",
           "Finished in 0.777 seconds",
-          green("3 specs, 7 expectations, 0 failures"),
+          green("3 specs, 0 failures"),
           ""
         ].join("\n") + "\n"
         );
@@ -251,7 +251,7 @@ describe("TrivialConsoleReporter", function() {
           "  stack trace one",
           "",
           "Finished in 0.777 seconds",
-          red("3 specs, 7 expectations, 2 failures"),
+          red("3 specs, 2 failures"),
           ""
         ].join("\n") + "\n"
         );
@@ -441,7 +441,7 @@ describe("TrivialConsoleReporter", function() {
             }
           });
           expect(out.getOutput()).
-            toContain("3 specs, 7 expectations, 0 failures");
+            toContain("3 specs, 0 failures");
         });
 
         it("prints statistics in red if there was a failure", function() {
@@ -454,7 +454,7 @@ describe("TrivialConsoleReporter", function() {
             }
           });
           expect(out.getOutput()).
-            toContain("3 specs, 7 expectations, 3 failures");
+            toContain("3 specs, 3 failures");
         });
 
         it("handles pluralization with 1's ones appropriately", function() {
@@ -467,7 +467,7 @@ describe("TrivialConsoleReporter", function() {
             }
           });
           expect(out.getOutput()).
-            toContain("1 spec, 1 expectation, 1 failure");
+            toContain("1 spec, 1 failure");
         });
       });
 
