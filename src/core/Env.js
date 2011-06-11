@@ -53,7 +53,12 @@ jasmine.Env.prototype.version = function () {
 jasmine.Env.prototype.versionString = function() {
   if (jasmine.version_) {
     var version = this.version();
-    return version.major + "." + version.minor + "." + version.build + " revision " + version.revision;
+    var versionString = version.major + "." + version.minor + "." + version.build;
+    if (version.release_candidate) {
+      versionString += ".rc" + version.release_candidate
+    }
+    versionString += " revision " + version.revision
+    return versionString;
   } else {
     return "version unknown";
   }

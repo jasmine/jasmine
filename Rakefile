@@ -2,8 +2,8 @@ require 'bundler'
 Bundler::GemHelper.install_tasks
 
 def sources
-  dependencies = JSON.parse(File.read('src/SourcesList.json')).collect {|f| "src/core/#{f}"}
-  dependencies + Dir.glob('src/core/*.js').reject {|f| dependencies.include?(f)}.sort
+  dependencies = JSON.parse(File.read('./src/SourcesList.json')).collect {|f| "./src/core/#{f}"}
+  dependencies + Dir.glob('./src/core/*.js').reject {|f| dependencies.include?(f)}.sort
 end
 
 def html_sources
@@ -11,7 +11,7 @@ def html_sources
 end
 
 def version_hash
-  @version ||= JSON.parse(File.new("src/core/version.json").read)
+  @version ||= JSON.parse(File.new("./src/core/version.json").read)
 end
 
 def substitute_version(filename)
@@ -28,8 +28,8 @@ task :spec => ["jasmine:build", "spec:node", "spec:browser"]
 
 namespace :spec do
   desc 'Run specs in Node.js'
-  task :node do
-    raise "Node is required to run all jasmine specs" unless system("node spec/node_suite.js")
+  task :node => "jasmine:require_node" do
+    system("node spec/node_suite.js")
   end
 
   desc "Run specs in the default browser (MacOS only)"
@@ -40,6 +40,11 @@ end
 
 namespace :jasmine do
 
+  task :require_node do
+    raise "Node.js is required" if `which node` == ''
+  end
+
+
   desc 'Prepares for distribution'
   task :dist => ['jasmine:build',
     'jasmine:doc',
@@ -48,7 +53,7 @@ namespace :jasmine do
     'jasmine:fill_index_downloads']
 
   desc 'Check jasmine sources for coding problems'
-  task :lint do
+  task :lint => "jasmine:require_node" do
     puts "Running JSHint via Node.js"
     system("node jshint/run.js") || exit(1)
   end
@@ -72,7 +77,8 @@ jasmine.version_= {
   "major": #{version['major'].to_json},
   "minor": #{version['minor'].to_json},
   "build": #{version['build'].to_json},
-  "revision": #{Time.now.to_i}
+  "revision": #{Time.now.to_i},
+  "release_candidate": #{version['release_candidate'].to_json}
 };
       }
     end
@@ -114,7 +120,7 @@ jasmine.version_= {
     FileUtils.rm_r "pages/jsdoc", :force => true
 
     JsdocHelper::Rake::Task.new(:lambda_jsdoc) do |t|
-      t[:files] = jasmine_sources << html_sources
+      t[:files] = sources << html_sources
       t[:options] = "-a"
       t[:out] = "pages/jsdoc"
       # JsdocHelper bug: template must be relative to the JsdocHelper gem, ick
@@ -136,7 +142,7 @@ jasmine.version_= {
     FileUtils.cp_r File.join(root, 'example/.'), File.join(temp_dir)
     substitute_version(File.join(temp_dir, "SpecRunner.html"))
 
-    lib_dir = File.join(temp_dir, "lib/jasmine-#{jasmine_version}")
+    lib_dir = File.join(temp_dir, "lib", "jasmine-#{jasmine_version}")
     FileUtils.mkdir_p(lib_dir)
     {
       "lib/jasmine.js" => "jasmine.js",
@@ -159,3 +165,5 @@ jasmine.version_= {
   end
 
 end
+
+task :build => "jasmine:build"
