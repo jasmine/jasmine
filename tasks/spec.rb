@@ -1,5 +1,5 @@
 desc "Run spec suite: Browser, Node, JSHint"
-task :spec => ["build_jasmine_js", "count_specs", "spec:node", "spec:browser"]
+task :spec => ["build_dist", "count_specs", "spec:node", "spec:browser"]
 
 desc 'Run specs in Node.js'
 task "spec:node" => [:count_specs, :require_node] do
