@@ -32,21 +32,6 @@ def version_string
   "#{version_hash['major']}.#{version_hash['minor']}.#{version_hash['build']}"
 end
 
-def version_source
-<<-JS
-jasmine.version_= {
-  "major": #{version_hash['major'].to_json},
-  "minor": #{version_hash['minor'].to_json},
-  "build": #{version_hash['build'].to_json},
-  "revision": #{Time.now.to_i}
-}
-JS
-end
-
 def version_hash
-  @version ||= JSON.parse(File.new("src/core/version.json").read);
-end
-
-def node_installed?
- `which node` =~ /node/
+  @version ||= JSON.parse(File.new("src/version.json").read);
 end

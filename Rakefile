@@ -5,11 +5,20 @@ Dir["#{File.dirname(__FILE__)}/tasks/**/*.rb"].each do |file|
   require file
 end
 
+task :default => :spec
+
+task :require_pages_submodule do
+  raise "Submodule for Github Pages isn't present. Run git submodule update --init" unless File.exist?('pages/download.html')
+end
+
 task :require_node do
   raise "\nNode.js is required to develop code for Jasmine. Please visit http://nodejs.org to install.\n\n" unless node_installed?
 end
 
-task :default => :spec
+def node_installed?
+ `which node` =~ /node/
+end
+
 
 #namespace :jasmine do
 #
