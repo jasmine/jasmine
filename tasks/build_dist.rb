@@ -2,7 +2,6 @@ desc "Build core jasmine.js"
 task :build_dist => [:lint, :write_version_file] do
   puts 'Building Jasmine distribution from source'
 
-  require 'pp'
   concat_into('lib/jasmine.js') { core_sources + version_source_file }
   concat_into('lib/jasmine-html.js') { html_sources }
 

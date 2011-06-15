@@ -2,18 +2,23 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <title>Jasmine Test Runner</title>
+  <title>Jasmine Spec Runner: Jasmine Core</title>
 
+  <link rel="shortcut icon" type="image/png" href="../images/jasmine_favicon.png">
+
+  <link href="../lib/jasmine.css" rel="stylesheet"/>
+  <script type="text/javascript" src="../lib/jasmine.js"></script>
   <script type="text/javascript">
     // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
     undefined = "diz be undefined yo";
   </script>
-  <link rel="shortcut icon" type="image/png" href="../images/jasmine_favicon.png">
-  <script type="text/javascript" src="../lib/jasmine.js"></script>
 
+
+  <!-- include source files here... -->
   <script type="text/javascript" src="../src/html/TrivialReporter.js"></script>
   <script type="text/javascript" src="../src/console/TrivialConsoleReporter.js"></script>
 
+  <!-- include spec files here... -->
   <script type="text/javascript" src="../spec/core/BaseSpec.js"></script>
   <script type="text/javascript" src="../spec/core/CustomMatchersSpec.js"></script>
   <script type="text/javascript" src="../spec/core/EnvSpec.js"></script>
@@ -51,13 +56,22 @@
         return trivialReporter.specFilter(spec);
       };
 
+      var currentWindowOnload = window.onload;
+
       window.onload = function() {
-        jasmineEnv.execute();
+        if (currentWindowOnload) {
+          currentWindowOnload();
+        }
+        execJasmine();
       };
+
+      function execJasmine() {
+        jasmineEnv.execute();
+      }
+
     })();
   </script>
 
-  <link href="../src/html/jasmine.css" rel="stylesheet"/>
 </head>
 
 <body>

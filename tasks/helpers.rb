@@ -35,3 +35,13 @@ end
 def version_hash
   @version ||= JSON.parse(File.new("src/version.json").read);
 end
+
+def script_tags_for(files)
+  script_tag = Tilt::new('spec/templates/script_tag.html.erb')
+
+  files.inject([]) do |tags, f|
+    scope = OpenStruct.new :file => f
+    tags << script_tag.render(scope)
+    tags
+  end.join("\n  ")
+end
