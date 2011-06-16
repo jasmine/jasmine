@@ -51,12 +51,16 @@ jasmine.Env.prototype.version = function () {
  * @returns string containing jasmine version build info, if set.
  */
 jasmine.Env.prototype.versionString = function() {
-  if (jasmine.version_) {
-    var version = this.version();
-    return version.major + "." + version.minor + "." + version.build + " revision " + version.revision;
-  } else {
+  if (!jasmine.version_) {
     return "version unknown";
   }
+
+  var version = this.version();
+  var dotted_version = version.major + "." + version.minor + "." + version.build;
+  if (version.rc) {
+    dotted_version += ".rc" + version.rc;
+  }
+  return dotted_version + " revision " + version.revision;
 };
 
 /**

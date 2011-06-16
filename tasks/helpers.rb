@@ -29,7 +29,9 @@ def console_specfiles
 end
 
 def version_string
-  "#{version_hash['major']}.#{version_hash['minor']}.#{version_hash['build']}"
+  version = "#{version_hash['major']}.#{version_hash['minor']}.#{version_hash['build']}"
+  version += ".rc#{version_hash['rc']}" if version_hash['rc']
+  version
 end
 
 def version_hash

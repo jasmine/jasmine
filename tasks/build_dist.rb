@@ -30,6 +30,7 @@ task :write_version_file do
   scope = OpenStruct.new(:major => version_hash["major"],
                          :minor => version_hash["minor"],
                          :build => version_hash["build"],
+                         :rc => version_hash["rc"],
                          :revision => Time.now.to_i)
 
   File.open('src/version.js', 'w+') do |f|
