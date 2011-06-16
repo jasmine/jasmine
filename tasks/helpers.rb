@@ -41,7 +41,8 @@ end
 def script_tags_for(files)
   script_tag = Tilt::new('spec/templates/script_tag.html.erb')
 
-  files.inject([]) do |tags, f|
+  srcs = (files.is_a?(String) ? [files] : files)
+  srcs.inject([]) do |tags, f|
     scope = OpenStruct.new :file => f
     tags << script_tag.render(scope)
     tags

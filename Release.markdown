@@ -1,10 +1,7 @@
 ## Release
+__Jasmine Core Maintainers Only__
 
-- ZIP
-- REPO
-- GEM
-- Docs
-- Pages
+The current version lives in the file `src/version.json`. We attempt to stick to Semantic Versioning
 
 ## The Github Pages
 
