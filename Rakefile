@@ -1,5 +1,6 @@
 require 'json'
 require 'tilt'
+require 'term/ansicolor'
 
 Dir["#{File.dirname(__FILE__)}/tasks/**/*.rb"].each do |file|
   require file
@@ -19,6 +20,11 @@ def node_installed?
  `which node` =~ /node/
 end
 
+class String
+  include Term::ANSIColor
+end
+
+Term::ANSIColor.coloring = STDOUT.isatty
 
 #namespace :jasmine do
 #

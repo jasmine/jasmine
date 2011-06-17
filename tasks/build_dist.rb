@@ -1,6 +1,6 @@
 desc "Build core jasmine.js"
 task :build_dist => [:lint, :write_version_file] do
-  puts 'Building Jasmine distribution from source'
+  puts 'Building Jasmine distribution from source'.cyan
 
   concat_into('lib/jasmine.js') { core_sources + version_source_file }
   concat_into('lib/jasmine-html.js') { html_sources }
@@ -19,7 +19,7 @@ end
 
 desc 'Check jasmine sources for coding problems'
 task :lint do
-  puts "Running JSHint via Node.js"
+  puts "Running JSHint via Node.js".cyan
   system("node jshint/run.js") || exit(1)
 end
 

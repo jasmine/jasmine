@@ -30,14 +30,14 @@ delete global.window;
 function noop() {
 }
 
-jasmine.executeSpecs = function(specs, done) {
+jasmine.executeSpecs = function(specs, done, isVerbose, showColors) {
   for (var i = 0, len = specs.length; i < len; ++i) {
     var filename = specs[i];
     require(filename.replace(/\.\w+$/, ""));
   }
 
   var jasmineEnv = jasmine.getEnv();
-  var consoleReporter = new jasmine.TrivialConsoleReporter(sys.print, done);
+  var consoleReporter = new jasmine.TrivialConsoleReporter(sys.print, done, showColors);
 
   jasmineEnv.addReporter(consoleReporter);
   jasmineEnv.execute();

@@ -1,4 +1,4 @@
-jasmine.TrivialConsoleReporter = function(print, doneCallback) {
+jasmine.TrivialConsoleReporter = function(print, doneCallback, showColors) {
   //inspired by mhevery's jasmine-node reporter
   //https://github.com/mhevery/jasmine-node
 
@@ -16,7 +16,7 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
     };
 
   function coloredStr(color, str) {
-    return ansi[color] + str + ansi.none;
+    return showColors ? (ansi[color] + str + ansi.none) : str;
   }
 
   function greenStr(str) {
