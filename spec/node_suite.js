@@ -10,7 +10,7 @@ var jasmineGlobals = require('../lib/jasmine.js');
 for (var k in jasmineGlobals) {
   global[k] = jasmineGlobals[k];
 }
-require('../src/console/TrivialConsoleReporter.js');
+require('../src/console/ConsoleReporter.js');
 
 /*
  Pulling in code from jasmine-node.
@@ -37,7 +37,7 @@ jasmine.executeSpecs = function(specs, done, isVerbose, showColors) {
   }
 
   var jasmineEnv = jasmine.getEnv();
-  var consoleReporter = new jasmine.TrivialConsoleReporter(sys.print, done, showColors);
+  var consoleReporter = new jasmine.ConsoleReporter(sys.print, done, showColors);
 
   jasmineEnv.addReporter(consoleReporter);
   jasmineEnv.execute();

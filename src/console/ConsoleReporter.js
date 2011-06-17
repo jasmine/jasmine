@@ -1,4 +1,4 @@
-jasmine.TrivialConsoleReporter = function(print, doneCallback, showColors) {
+jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
   //inspired by mhevery's jasmine-node reporter
   //https://github.com/mhevery/jasmine-node
 

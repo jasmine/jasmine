@@ -1,4 +1,4 @@
-describe("TrivialConsoleReporter", function() {
+describe("ConsoleReporter", function() {
   //keep these literal.  otherwise the test loses value as a test.
   function green(str) {
     return '\033[32m' + str + '\033[0m';
@@ -107,7 +107,7 @@ describe("TrivialConsoleReporter", function() {
     })();
 
     done = false;
-    reporter = new jasmine.TrivialConsoleReporter(out.print, function(runner) {
+    reporter = new jasmine.ConsoleReporter(out.print, function(runner) {
       done = true
     });
   });
