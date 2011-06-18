@@ -13,8 +13,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://pivotal.github.com/jasmine"
   s.rubyforge_project = "jasmine-core"
 
-  s.files         = Dir.glob("./lib/**/*")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.files         = Dir.glob("./lib/**/*") + Dir.glob("./lib/jasmine-core/spec/**/*.js")
   s.require_paths = ["lib"]
   s.add_development_dependency "term-ansicolor"
   s.add_development_dependency "json_pure", ">= 1.4.3"
