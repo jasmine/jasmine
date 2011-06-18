@@ -2,10 +2,10 @@ desc "Build core jasmine.js"
 task :build_dist => [:lint, :write_version_file] do
   puts 'Building Jasmine distribution from source'.cyan
 
-  concat_into('lib/jasmine.js') { core_sources + version_source_file }
-  concat_into('lib/jasmine-html.js') { html_sources }
+  concat_into('lib/jasmine-core/jasmine.js') { core_sources + version_source_file }
+  concat_into('lib/jasmine-core/jasmine-html.js') { html_sources }
 
-  FileUtils.cp('src/html/jasmine.css', 'lib/jasmine.css')
+  FileUtils.cp('src/html/jasmine.css', 'lib/jasmine-core/jasmine.css')
 end
 
 def concat_into(output_file, &block)
@@ -18,7 +18,7 @@ def concat_into(output_file, &block)
 end
 
 desc 'Check jasmine sources for coding problems'
-task :lint do
+task :lint => :require_node do
   puts "Running JSHint via Node.js".cyan
   system("node jshint/run.js") || exit(1)
 end
@@ -30,7 +30,7 @@ task :write_version_file do
   scope = OpenStruct.new(:major => version_hash["major"],
                          :minor => version_hash["minor"],
                          :build => version_hash["build"],
-                         :rc => version_hash["rc"],
+                         :release_candidate => version_hash["release_candidate"],
                          :revision => Time.now.to_i)
 
   File.open('src/version.js', 'w+') do |f|

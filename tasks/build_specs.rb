@@ -1,14 +1,14 @@
 require 'ostruct'
 
-desc "build the browser spec for Jasmine core based on current tree"
+#build the browser spec for Jasmine core based on current tree
 task :build_runner_html do
   template = Tilt.new('spec/templates/runner.html.erb')
 
   File.open('spec/runner.html', 'w+') do |f|
     scope = OpenStruct.new(:title => "Jasmine Spec Runner: Jasmine Core",
                            :favicon => favicon,
-                           :jasmine_tags => core_jasmine_tags,
-                           :source_tags => other_source_file_tags,
+                           :jasmine_tags => jasmine_tags,
+                           :source_tags => source_tags,
                            :spec_file_tags => spec_file_tags)
     f << template.render(scope)
   end
@@ -20,10 +20,10 @@ def favicon
 HTML
 end
 
-def core_jasmine_tags
-  tags = %Q{<link href="../lib/jasmine.css" rel="stylesheet"/>}
+def jasmine_tags
+  tags = %Q{<link href="../lib/jasmine-core/jasmine.css" rel="stylesheet"/>}
   tags << "\n  "
-  tags << script_tags_for("../lib/jasmine.js")
+  tags << script_tags_for("../lib/jasmine-core/jasmine.js")
   tags << "\n  "
   tags << undefined_catch
   tags
@@ -38,7 +38,7 @@ def undefined_catch
 HTML
 end
 
-def other_source_file_tags
+def source_tags
   other_files = html_sources + console_sources
   script_tags_for other_files.collect { |f| "../#{f}" }
 end

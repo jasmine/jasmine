@@ -15,7 +15,7 @@ task "spec:browser" => [:count_specs, :build_runner_html] do
   system("open spec/runner.html")
 end
 
-desc "Count number of specs in Jasmine core"
+#Count number of specs in Jasmine core
 task :count_specs do
   core_specs_count =  count_specs_in(Dir.glob('spec/core/*.js'))
   console_spec_count = count_specs_in(Dir.glob('spec/console/*.js'))
