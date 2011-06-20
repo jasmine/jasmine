@@ -576,6 +576,11 @@ var describe = function(description, specDefinitions) {
 };
 if (isCommonJS) exports.describe = describe;
 
+var context = function(initial, additions, contextFunction) {
+  return jasmine.getEnv().context(initial, additions, contextFunction);
+}
+if (isCommonJS) exports.context = context;
+
 /**
  * Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
  *

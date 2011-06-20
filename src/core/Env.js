@@ -115,6 +115,44 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
   return suite;
 };
 
+jasmine.Env.prototype.context = function() {
+  var ctxt = {}, starting = {}, additions = {}, lambda, varName;
+  if (arguments[2] !== undefined) {
+    starting = arguments[0];
+    additions = arguments[1];
+    lambda = arguments[2];
+  } else {
+    additions = arguments[0];
+    lambda = arguments[1];
+  }
+
+  var memoizer = function(expr) {
+    var memo = null,
+      evaluator = function() {
+        if (memo === null) {
+	  memo = expr(this);
+	}
+	return memo;
+      };
+    evaluator.original = function() { return expr; };
+
+    return evaluator;
+  };
+
+  for (varName in starting) {
+    if (starting.hasOwnProperty(varName)) {
+      ctxt[varName] = memoizer(starting[varName].original());
+    }
+  }
+  for (varName in additions) {
+    if (additions.hasOwnProperty(varName)) {
+      ctxt[varName] = memoizer(additions[varName]);
+    }
+  }
+
+  lambda(ctxt);  
+};
+
 jasmine.Env.prototype.beforeEach = function(beforeEachFunction) {
   if (this.currentSuite) {
     this.currentSuite.beforeEach(beforeEachFunction);
