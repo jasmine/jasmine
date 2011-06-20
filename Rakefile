@@ -1,6 +1,8 @@
-require 'json'
-require 'tilt'
-require 'term/ansicolor'
+require "bundler"
+Bundler::GemHelper.install_tasks
+require "term/ansicolor"
+require "json"
+require "tilt"
 
 Dir["#{File.dirname(__FILE__)}/tasks/**/*.rb"].each do |file|
   require file
@@ -29,4 +31,3 @@ class String
 end
 
 Term::ANSIColor.coloring = STDOUT.isatty
-

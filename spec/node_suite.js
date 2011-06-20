@@ -6,7 +6,7 @@ var path = require('path');
 // undefined = "diz be undefined yo";
 
 
-var jasmineGlobals = require('../lib/jasmine.js');
+var jasmineGlobals = require('../lib/jasmine-core/jasmine.js');
 for (var k in jasmineGlobals) {
   global[k] = jasmineGlobals[k];
 }

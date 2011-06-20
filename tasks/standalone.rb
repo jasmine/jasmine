@@ -14,15 +14,16 @@ task :standalone => [:require_pages_submodule, :build_spec_runner_html] do
   FileUtils.mkdir_p(temp_dir)
 
   root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-  FileUtils.cp_r File.join(root, 'example/.'), File.join(temp_dir)
+  FileUtils.mkdir_p(File.join(root, "example"))
+  FileUtils.cp_r(File.join(root, 'example/.'), File.join(temp_dir))
 
   lib_dir = File.join(temp_dir, "lib/jasmine-#{version_string}")
   FileUtils.mkdir_p(lib_dir)
   {
     "images/jasmine_favicon.png" => "jasmine_favicon.png",
-    "lib/jasmine.js" => "jasmine.js",
-    "lib/jasmine-html.js" => "jasmine-html.js",
-    "src/html/jasmine.css" => "jasmine.css",
+    "lib/jasmine-core/jasmine.js" => "jasmine.js",
+    "lib/jasmine-core/jasmine-html.js" => "jasmine-html.js",
+    "lib/jasmine-core/jasmine.css" => "jasmine.css",
     "MIT.LICENSE" => "MIT.LICENSE"
   }.each_pair do |src, dest|
     FileUtils.cp(File.join(root, src), File.join(lib_dir, dest))
@@ -35,11 +36,11 @@ task :standalone => [:require_pages_submodule, :build_spec_runner_html] do
   exec "cd #{zip_root} && zip #{zip_file_name} -r . -x .[a-zA-Z0-9]*"
 end
 
-desc "Build SpecRunner.html for standalone dist example project"
+#Build SpecRunner.html for standalone dist example project
 task :build_spec_runner_html do
   template = Tilt.new('spec/templates/runner.html.erb')
 
-  File.open('example/SpecRunner.html', 'w+') do |f|
+  File.open('lib/jasmine-core/example/SpecRunner.html', 'w+') do |f|
     scope = OpenStruct.new(:title => "Jasmine Spec Runner",
                            :favicon => example_favicon,
                            :jasmine_tags => example_jasmine_tags,
