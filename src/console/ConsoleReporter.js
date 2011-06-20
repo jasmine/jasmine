@@ -1,12 +1,10 @@
-jasmine.TrivialConsoleReporter = function(print, doneCallback) {
+jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
   //inspired by mhevery's jasmine-node reporter
   //https://github.com/mhevery/jasmine-node
 
-  doneCallback = doneCallback || function() {
-  };
+  doneCallback = doneCallback || function() {};
 
-  var defaultColumnsPerLine = 50,
-    ansi = {
+  var ansi = {
       green: '\033[32m',
       red: '\033[31m',
       yellow: '\033[33m',
@@ -14,12 +12,11 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
     },
     language = {
       spec: "spec",
-      expectation: "expectation",
       failure: "failure"
     };
 
   function coloredStr(color, str) {
-    return ansi[color] + str + ansi.none;
+    return showColors ? (ansi[color] + str + ansi.none) : str;
   }
 
   function greenStr(str) {
@@ -61,7 +58,9 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
 
   function repeat(thing, times) {
     var arr = [];
-    for (var i = 0; i < times; i++) arr.push(thing);
+    for (var i = 0; i < times; i++) {
+      arr.push(thing);
+    }
     return arr;
   }
 
@@ -89,32 +88,20 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
     print("Finished in " + elapsed / 1000 + " seconds");
   }
 
-  function summary(colorF, specs, expectations, failed) {
+  function summary(colorF, specs, failed) {
     newline();
     print(colorF(specs + " " + plural(language.spec, specs) + ", " +
-      expectations + " " + plural(language.expectation, expectations) + ", " +
       failed + " " + plural(language.failure, failed)));
     newline();
     newline();
   }
 
-  function greenSummary(specs, expectations, failed) {
-    summary(greenStr, specs, expectations, failed);
+  function greenSummary(specs, failed) {
+    summary(greenStr, specs, failed);
   }
 
-  function redSummary(specs, expectations, failed) {
-    summary(redStr, specs, expectations, failed);
-  }
-
-  function lineEnder(columnsPerLine) {
-    var columnsSoFar = 0;
-    return function() {
-      columnsSoFar += 1;
-      if (columnsSoFar == columnsPerLine) {
-        newline();
-        columnsSoFar = 0;
-      }
-    };
+  function redSummary(specs, failed) {
+    summary(redStr, specs, failed);
   }
 
   function fullSuiteDescription(suite) {
@@ -122,8 +109,6 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
     if (suite.parentSuite) fullDescription = fullSuiteDescription(suite.parentSuite) + " " + fullDescription;
     return fullDescription;
   }
-
-  var startNewLineIfNecessary = lineEnder(defaultColumnsPerLine);
 
   this.now = function() {
     return new Date().getTime();
@@ -146,7 +131,6 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
     } else {
       redF();
     }
-//    startNewLineIfNecessary();
   };
 
   this.suiteResults = [];
@@ -187,7 +171,7 @@ jasmine.TrivialConsoleReporter = function(print, doneCallback) {
 
     var results = runner.results();
     var summaryFunction = results.failedCount === 0 ? greenSummary : redSummary;
-    summaryFunction(runner.specs().length, results.totalCount, results.failedCount);
+    summaryFunction(runner.specs().length, results.failedCount);
     doneCallback(runner);
   };
 };

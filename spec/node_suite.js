@@ -6,11 +6,11 @@ var path = require('path');
 // undefined = "diz be undefined yo";
 
 
-var jasmineGlobals = require('../lib/jasmine.js');
+var jasmineGlobals = require('../lib/jasmine-core/jasmine.js');
 for (var k in jasmineGlobals) {
   global[k] = jasmineGlobals[k];
 }
-require('../src/console/TrivialConsoleReporter.js');
+require('../src/console/ConsoleReporter.js');
 
 /*
  Pulling in code from jasmine-node.
@@ -30,14 +30,14 @@ delete global.window;
 function noop() {
 }
 
-jasmine.executeSpecs = function(specs, done) {
+jasmine.executeSpecs = function(specs, done, isVerbose, showColors) {
   for (var i = 0, len = specs.length; i < len; ++i) {
     var filename = specs[i];
     require(filename.replace(/\.\w+$/, ""));
   }
 
   var jasmineEnv = jasmine.getEnv();
-  var consoleReporter = new jasmine.TrivialConsoleReporter(sys.print, done);
+  var consoleReporter = new jasmine.ConsoleReporter(sys.print, done, showColors);
 
   jasmineEnv.addReporter(consoleReporter);
   jasmineEnv.execute();
@@ -110,7 +110,7 @@ process.argv.forEach(function(arg) {
   }
 });
 
-var specs = jasmine.getAllSpecFiles(__dirname + '/suites', new RegExp(".js$"));
+var specs = jasmine.getAllSpecFiles(__dirname, new RegExp(".js$"));
 var domIndependentSpecs = [];
 for (var i = 0; i < specs.length; i++) {
   if (fs.readFileSync(specs[i], "utf8").indexOf("document.createElement") < 0) {

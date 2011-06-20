@@ -31,7 +31,9 @@ describe("TrivialReporter", function() {
 
   function findElement(divs, withClass) {
     var els = findElements(divs, withClass);
-    if (els.length > 0) return els[0];
+    if (els.length > 0) {
+      return els[0];
+    }
     throw new Error("couldn't find div with class " + withClass);
   }
 
@@ -95,7 +97,6 @@ describe("TrivialReporter", function() {
       });
     });
   });
-
 
   describe("failure messages (integration)", function () {
     var spec, results, expectationResult;

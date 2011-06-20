@@ -5,3 +5,7 @@ site/
 .bundle/
 .pairs
 .rvmrc
+*.gem
+.bundle
+Gemfile.lock
+pkg/*
