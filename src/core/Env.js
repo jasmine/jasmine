@@ -115,33 +115,28 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
   return suite;
 };
 
-jasmine.Env.prototype.context = function() {
-  var ctxt = {}, starting = {}, additions = {}, lambda, varName;
-  if (arguments[2] !== undefined) {
-    starting = arguments[0];
-    additions = arguments[1];
-    lambda = arguments[2];
-  } else {
-    additions = arguments[0];
-    lambda = arguments[1];
-  }
-
-  var memoizer = function(expr) {
+jasmine.Env.prototype.context = function(initial, additions, contextFunction) {
+  var ctxt = {}, varName, memoizer = function(func) {
     var memo = null,
       evaluator = function() {
         if (memo === null) {
-	  memo = expr(this);
+	  memo = func(this);
 	}
 	return memo;
       };
-    evaluator.original = function() { return expr; };
+    evaluator.original = function() { return func; };
 
     return evaluator;
   };
+  if (contextFunction === jasmine.undefined) {
+    contextFunction = additions;
+    additions = initial;
+    initial = {};
+  }
 
-  for (varName in starting) {
-    if (starting.hasOwnProperty(varName)) {
-      ctxt[varName] = memoizer(starting[varName].original());
+  for (varName in initial) {
+    if (initial.hasOwnProperty(varName)) {
+      ctxt[varName] = memoizer(initial[varName].original());
     }
   }
   for (varName in additions) {
@@ -150,7 +145,7 @@ jasmine.Env.prototype.context = function() {
     }
   }
 
-  lambda(ctxt);  
+  contextFunction(ctxt);  
 };
 
 jasmine.Env.prototype.beforeEach = function(beforeEachFunction) {
