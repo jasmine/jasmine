@@ -21,6 +21,26 @@ describe("jasmine.util", function() {
     });
   });
 
+  describe("merge", function() {
+    var first, second;
+
+    beforeEach(function() {
+      first = {foo: 'bar'};
+      second = {baz: 'quz'};
+    });
+
+    it("should leave the source objects untouched", function() {
+      var result = jasmine.util.merge(first, second);
+      expect(first.baz).toBeUndefined();
+      expect(second.foo).toBeUndefined();
+    });
+				   
+    it("should override earlier objects with later ones", function() {
+      var result = jasmine.util.merge({foo: "bar"}, {foo: "baz"});
+      expect(result.foo).toEqual("baz");
+    });
+  });
+
   describe("isArray_", function() {
     it("should return true if the argument is an array", function() {
       expect(jasmine.isArray_([])).toBe(true);

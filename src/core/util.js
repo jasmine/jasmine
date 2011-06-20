@@ -65,3 +65,15 @@ jasmine.util.extend = function(destination, source) {
   return destination;
 };
 
+jasmine.util.merge = function(lhs, rhs) {
+  var name, dest = {}, clone = function(dest, src) {
+    for (name in src) {
+      if (src.hasOwnProperty(name)) {
+	dest[name] = src[name];
+      }
+    }
+  };
+  clone(dest, lhs);
+  clone(dest, rhs);
+  return dest;
+};

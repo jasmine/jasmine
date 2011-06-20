@@ -6,6 +6,7 @@
 jasmine.Env = function() {
   this.currentSpec = null;
   this.currentSuite = null;
+  this.currentContext = new jasmine.Context(this, {}, function() {}, null);
   this.currentRunner_ = new jasmine.Runner(this);
 
   this.reporter = new jasmine.MultiReporter();
@@ -118,6 +119,30 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
   this.currentSuite = parentSuite;
 
   return suite;
+};
+
+jasmine.Env.prototype.context = function(dataDefinitions, contextFunction) {
+  var context = new jasmine.Context(this, dataDefinitions, contextFunction, this.currentContext);
+  var parentContext = this.currentContext;
+
+  this.currentContext = context;
+
+  var declarationError = null;
+  try {
+    context.evaluate();
+  } catch (e) {
+    declarationError = e
+  }
+
+  if (declarationError) {
+    this.it("encountered a declaration exception", function() {
+      throw declarationError;
+    });
+  }
+
+  this.currentContext = parentContext;
+
+  return context;
 };
 
 jasmine.Env.prototype.beforeEach = function(beforeEachFunction) {
