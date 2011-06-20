@@ -1,19 +1,20 @@
 describe('Context', function() {
 
-  describe('should nest', function() {
+  describe('nesting', function() {
     context({subject: function(ctxt) { return ctxt.x() * ctxt.y(); },
 	     x: function() { return 5; },
 	     y: function() { return 2; }},  function(ctxt) {
+      jasmine.log(ctxt);
       it("should equal 10", function() {
         expect(ctxt.subject()).toEqual(10);
       });
 
-      context(ctxt, {y: function() { return 4; }}, function(ctxt) {
+      context({y: function() { return 4; }}, function(ctxt) {
         it("should equal 20", function() {
 	  expect(ctxt.subject()).toEqual(20);
 	});
 
-        context(ctxt, {x: function() { return 10; }}, function(ctxt) {
+        context({x: function() { return 10; }}, function(ctxt) {
           it("should display 40", function() {
             expect(ctxt.subject()).toEqual(40);
 	  });
@@ -26,7 +27,7 @@ describe('Context', function() {
     });
   });
 
-  describe('should memoize', function() {
+  describe('memoizing', function() {
     var intermediateValue = 0;
 
     context({subject: function() { return intermediateValue + 1; }}, function(ctxt) {

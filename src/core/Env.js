@@ -6,6 +6,7 @@
 jasmine.Env = function() {
   this.currentSpec = null;
   this.currentSuite = null;
+  this.currentContext = new jasmine.Context(this, {}, function() {}, null);
   this.currentRunner_ = new jasmine.Runner(this);
 
   this.reporter = new jasmine.MultiReporter();
@@ -115,38 +116,62 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
   return suite;
 };
 
-jasmine.Env.prototype.context = function(initial, additions, contextFunction) {
-  var ctxt = {}, varName, memoizer = function(func) {
-    var memo = null,
-      evaluator = function() {
-        if (memo === null) {
-	  memo = func(this);
-	}
-	return memo;
-      };
-    evaluator.original = function() { return func; };
+jasmine.Env.prototype.context = function(dataDefinitions, contextFunction) {
+  var context = new jasmine.Context(this, dataDefinitions, contextFunction, this.currentContext);
+  var parentContext = this.currentContext;
 
-    return evaluator;
-  };
-  if (contextFunction === jasmine.undefined) {
-    contextFunction = additions;
-    additions = initial;
-    initial = {};
+  this.currentContext = context;
+
+  var declarationError = null;
+  try {
+    context.evaluate();
+  } catch (e) {
+    declarationError = e
   }
 
-  for (varName in initial) {
-    if (initial.hasOwnProperty(varName)) {
-      ctxt[varName] = memoizer(initial[varName].original());
-    }
-  }
-  for (varName in additions) {
-    if (additions.hasOwnProperty(varName)) {
-      ctxt[varName] = memoizer(additions[varName]);
-    }
+  if (declarationError) {
+    this.it("encountered a declaration exception", function() {
+      throw declarationError;
+    });
   }
 
-  contextFunction(ctxt);  
+  this.currentContext = parentContext;
+
+  return context;
 };
+
+// jasmine.Env.prototype.context = function(initial, additions, contextFunction) {
+//   var ctxt = {}, varName, memoizer = function(func) {
+//     var memo = null,
+//       evaluator = function() {
+//         if (memo === null) {
+// 	  memo = func(this);
+// 	}
+// 	return memo;
+//       };
+//     evaluator.original = function() { return func; };
+
+//     return evaluator;
+//   };
+//   if (contextFunction === jasmine.undefined) {
+//     contextFunction = additions;
+//     additions = initial;
+//     initial = {};
+//   }
+
+//   for (varName in initial) {
+//     if (initial.hasOwnProperty(varName)) {
+//       ctxt[varName] = memoizer(initial[varName].original());
+//     }
+//   }
+//   for (varName in additions) {
+//     if (additions.hasOwnProperty(varName)) {
+//       ctxt[varName] = memoizer(additions[varName]);
+//     }
+//   }
+
+//   contextFunction(ctxt);  
+// };
 
 jasmine.Env.prototype.beforeEach = function(beforeEachFunction) {
   if (this.currentSuite) {
