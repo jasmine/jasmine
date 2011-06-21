@@ -1,10 +1,7 @@
 require 'ostruct'
 
-desc "Build standalone distribution, block if zip of current version"
-task :standalone_safe => [:require_pages_submodule, :protect_current_dist_zip, :build_spec_runner_html]
-
 desc "Build standalone distribution"
-task :standalone => [:require_pages_submodule, :build_spec_runner_html] do
+task :standalone => [:require_pages_submodule, :protect_current_dist_zip, :build_spec_runner_html] do
   require 'tmpdir'
 
   zip_root = File.join(Dir.tmpdir, "zip_root")
@@ -81,5 +78,14 @@ task :protect_current_dist_zip do
   dist_dir = File.join(root, 'pages/downloads')
   zip_file_name = File.join(dist_dir, "jasmine-standalone-#{version_string}.zip")
 
-  raise "STOPPED: #{zip_file_name} already exists" if File.exist?(zip_file_name)
+  zip_present_message = "\n\n"
+  zip_present_message << "==> STOPPED <==".red
+  zip_present_message << "\n\n"
+  zip_present_message << "The file ".red + "#{zip_file_name}" + " already exists.".red + "\n"
+  zip_present_message << "If you should be building the next version, update src/version.json"
+  zip_present_message << "\n"
+  zip_present_message << "If the version is correct, you must be trying to re-build the standalone ZIP. Delete the ZIP and rebuild."
+  zip_present_message << "\n"
+
+  raise zip_present_message if File.exist?(zip_file_name)
 end
