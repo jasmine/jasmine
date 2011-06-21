@@ -2,5 +2,5 @@ jasmine.version_= {
   "major": <%= major %>,
   "minor": <%= minor %>,
   "build": <%= build %>,
-  "revision": <%= revision %><%= %Q{,\n  "rc": #{release_candidate}} if release_candidate %>
+  "revision": <%= revision %><%= %Q{,\n  "release_candidate": #{release_candidate}} if release_candidate %>
 };
