@@ -7,5 +7,6 @@ site/
 .rvmrc
 *.gem
 .bundle
+tags
 Gemfile.lock
 pkg/*
