@@ -26,7 +26,7 @@ HTML
 
   def link(href)
     attrs = { :href => href }
-    attrs[:target => '_blank' ] unless attrs.match /^mailto/
+    attrs[:target => '_blank' ] unless href.match /^mailto/
     attrs
   end
 
