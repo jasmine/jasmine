@@ -3,13 +3,21 @@
 ## Development
 ___Jasmine Core Maintainers Only___
 
+Follow the instructions in `Contribute.markdown` during development.
+
+### Git Commits
+
+
+### Version
+
 We attempt to stick to [Semantic Versioning](). Most of the time, development should be against a new minor version - fixing bugs and adding new features that are backwards compatible.
 
 The current version lives in the file `src/version.json`. This file should be set to the version that is _currently_ under development. That is, if version 1.0.0 is the current release then version should be incremented say, to 1.1.0.
 
-Follow the instructions in `Contribute.markdown` during development.
-                                                                  
-## Update the Github Pages (as needed)
+This version is used by both `jasmine.js` and the `jasmine-core` Ruby gem.
+
+                 
+### Update the Github Pages (as needed)
 
 Github pages have to exist in a branch called gh-pages in order for their app to serve them. This repo adds that branch as a submodule under the `pages` directory. This is a bit of a hack, but it allows us to work with the pages and the source at the same time and with one set of rake tasks.
 
@@ -27,6 +35,6 @@ When ready to release - specs are all green and the stories are done:
 1. Update any links or top-level landing page for the Github Pages
 1. `rake standalone` - builds the standalone distribution ZIP file
 1. `rake build_pages` - builds the Github Pages
-1. `rake release` - tags the repo with the version, makes the gem, pushes the gem to Rubygems.org
+1. `rake release` - tags the repo with the version, builds the `jasmine-core` gem, pushes the gem to Rubygems.org
 
 There should be a post to Pivotal Labs blog and a tweet to that link.
