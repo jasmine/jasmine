@@ -579,12 +579,12 @@ if (isCommonJS) exports.describe = describe;
 /**
  * Defines a context of data in which to evaluate specifications.
  * 
- * @param {Object} initial Any existing context to extend. Optional.
+ * @param {String} description A string, the situation under test.
  * @param {Object} additions Names to add to the context that is passed downwards.
  * @param {Function} contextFunction function that defines contexts, suites or specs.
  */
-var context = function(initial, additions, contextFunction) {
-  return jasmine.getEnv().context(initial, additions, contextFunction);
+var context = function(description, additions, contextFunction) {
+  return jasmine.getEnv().context(description, additions, contextFunction);
 }
 if (isCommonJS) exports.context = context;
 

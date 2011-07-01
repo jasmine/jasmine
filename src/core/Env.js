@@ -121,10 +121,20 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
   return suite;
 };
 
-jasmine.Env.prototype.context = function(dataDefinitions, contextFunction) {
+jasmine.Env.prototype.context = function(description, dataDefinitions, contextFunction) {
+  var suite = new jasmine.Suite(this, description, function() {}, this.currentSuite);
+  var parentSuite = this.currentSuite;
   var context = new jasmine.Context(this, dataDefinitions, contextFunction, this.currentContext);
   var parentContext = this.currentContext;
 
+  if (!parentSuite) {
+    this.it("a context must be created within a description", function() {
+      expect(parentSuite).toBeTruthy();
+    });
+  }
+  parentSuite.add(suite);
+
+  this.currentSuite = suite;
   this.currentContext = context;
 
   var declarationError = null;
@@ -141,6 +151,7 @@ jasmine.Env.prototype.context = function(dataDefinitions, contextFunction) {
   }
 
   this.currentContext = parentContext;
+  this.currentSuite = parentSuite;
 
   return context;
 };

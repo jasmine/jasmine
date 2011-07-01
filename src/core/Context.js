@@ -26,18 +26,18 @@ jasmine.Context.prototype.evaluate = function() {
     var memo = null,
       evaluator = function() {
         if (memo === null) {
-	  memo = func(this);
-	}
-	return memo;
+          memo = func(this);
+        }
+        return memo;
       };
 
     return evaluator;
-  };  
+  };
   var expandContext = function(ctxt, source) {
     var name;
     for (name in source) {
       if (source.hasOwnProperty(name)) {
-	ctxt[name] = memoizer(source[name]);
+        ctxt[name] = memoizer(source[name]);
       }
     }
   };
