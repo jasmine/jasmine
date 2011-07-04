@@ -1,7 +1,7 @@
 require 'json'
 
 def core_sources
-  first_sources = JSON.parse(File.read('src/SourcesList.json')).collect { |f| "./src/core/#{f}" }
+  first_sources = JSON.parse(File.read('./src/SourcesList.json')).collect { |f| "./src/core/#{f}" }
 
   remaining_sources = Dir.glob('./src/core/*.js').reject { |f| first_sources.include?(f) }.sort
 

@@ -1,13 +1,18 @@
-# Developing for Jasmine Core
+# Developing for Jasmine Core     
 
-This repo is for the core code of Jasmine - `jasmine.js`. This implements the basic spec-defining, -executing, and -results-reporting logic.
+## How to Contribute
 
-## How to write new Jasmine code
+We welcome your contributions - Thanks for helping make Jasmine a better project for everyone. Please review the backlog and discussion lists (the main group - [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js) and the developer's list - [http://groups.google.com/group/jasmine-js-dev](http://groups.google.com/group/jasmine-js-dev)) before starting work - what you're looking for may already have been done. If it hasn't, the community can help make your contribution better.
+
+## How to write new Jasmine code     
+
+Or, How to make a successful pull request
 
 * _Do not change the public interface_. Lots of projects depend on Jasmine and if you aren't careful you'll break them
 * _Be environment agnostic_ - server-side developers are just as important as browser developers
 * _Be browser agnostic_ - if you must rely on browser-specific functionality, please write it in a way that degrades gracefully
 * _Write specs_ - Jasmine's a testing framework; don't add functionality without test-driving it
+* _Ensure the *entire* test suite is green_ in all the big browsers, Node, and JSHint - your contribution shouldn't break Jasmine for other users                                     
 
 Follow these tips and your pull request, patch, or suggestion is much more likely to be integrated.
 

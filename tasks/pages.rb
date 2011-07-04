@@ -6,7 +6,7 @@ task :build_pages => :require_pages_submodule do
       system("frank export ../pages_output")
     end
     puts "\n"
-    puts "Copying built website to the root of the gh-pages branch"
+    puts "Copying built website to the root of the gh-pages branch".cyan
     puts "\n\n"
     system("cp -r pages_output/* .")
   end
