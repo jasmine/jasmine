@@ -473,6 +473,20 @@ var it = function(desc, func) {
 };
 if (isCommonJS) exports.it = it;
 
+
+/**
+ * Creates a  Jasmine spec that will be added to the current suite. This is the same as <code>it</code>,
+ * but it's easier to read through the tests.
+ *
+ * @param {String} desc description of this specification
+ * @param {Function} func defines the preconditions and expectations of the spec
+ */
+var should = function(desc, func) {
+    desc = 'should ' + desc;
+    return jasmine.getEnv().it(desc, func);
+}
+if (isCommonJS) exports.should = should;
+
 /**
  * Creates a <em>disabled</em> Jasmine spec.
  *
