@@ -9,7 +9,7 @@ describe("TrivialReporter", function() {
     env.updateInterval = 0;
 
     body = document.createElement("body");
-    fakeDocument = { body: body, location: { search: "" } };
+    fakeDocument = { body: body, location: { search: "" }, title: "Title"};
     trivialReporter = new jasmine.TrivialReporter(fakeDocument);
   });
 
@@ -156,6 +156,25 @@ describe("TrivialReporter", function() {
       var errorDiv = findElement(divs, 'resultMessage fail');
       expect(errorDiv.innerHTML).toEqual("Expected '1 &lt; 2' to &lt;b&gt;e null, &amp; it was not");
     });
+    
+    it("should add an indicator of failure to the title", function() {
+      var runner = {
+          results: function() { return { failedCount: 23 }; },
+          specs: function() { return []; }
+      };
+      trivialReporter.reportRunnerResults(runner);
+      expect(fakeDocument.title).toContain("✗");
+    });
+    
+    it("should add an indicator of success to the title", function() {
+      var runner = {
+          results: function() { return { failedCount: 0 }; },
+          specs: function() { return []; }
+      };
+      trivialReporter.reportRunnerResults(runner);
+      expect(fakeDocument.title).toContain("✓");
+    });
+    
   });
 
   describe("log messages", function() {
