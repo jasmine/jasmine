@@ -456,6 +456,27 @@ var spyOn = function(obj, methodName) {
 if (isCommonJS) exports.spyOn = spyOn;
 
 /**
+ * Function that installs a spy on an existing object under any name.  Used within a Spec to create a spy.
+ *
+ * @example
+ * // stub example
+ * var foo = {
+ *   not: function(bool) { return !bool; }
+ * }
+ * stub(foo, 'not'); // actual foo.not will not be called, execution stops
+ * stub(foo, 'yet'); // a new method is created that records all calls
+ *
+ * @see jasmine.createSpy
+ * @param obj
+ * @param methodName
+ * @returns a Jasmine spy that can be chained with all spy methods
+ */
+var stub = function(obj, methodName) {
+  return jasmine.getEnv().currentSpec.spyOn(obj, methodName, true);
+};
+if (isCommonJS) exports.stub = stub;
+
+/**
  * Creates a Jasmine spec that will be added to the current suite.
  *
  * // TODO: pending tests
