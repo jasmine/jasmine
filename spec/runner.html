@@ -15,6 +15,12 @@
 
 
   <!-- include source files here... -->
+  <script type="text/javascript" src=".././src/html/HtmlReporterHelpers.js"></script>
+  <script type="text/javascript" src=".././src/html/HtmlReporter.js"></script>
+  <script type="text/javascript" src=".././src/html/HtmlReporterHelpers.js"></script>
+  <script type="text/javascript" src=".././src/html/ReporterView.js"></script>
+  <script type="text/javascript" src=".././src/html/SpecView.js"></script>
+  <script type="text/javascript" src=".././src/html/SuiteView.js"></script>
   <script type="text/javascript" src=".././src/html/TrivialReporter.js"></script>
   <script type="text/javascript" src=".././src/console/ConsoleReporter.js"></script>
 
@@ -38,6 +44,7 @@
   <script type="text/javascript" src=".././spec/core/SuiteSpec.js"></script>
   <script type="text/javascript" src=".././spec/core/UtilSpec.js"></script>
   <script type="text/javascript" src=".././spec/core/WaitsForBlockSpec.js"></script>
+  <script type="text/javascript" src=".././spec/html/HTMLReporterSpec.js"></script>
   <script type="text/javascript" src=".././spec/html/MatchersHtmlSpec.js"></script>
   <script type="text/javascript" src=".././spec/html/PrettyPrintHtmlSpec.js"></script>
   <script type="text/javascript" src=".././spec/html/TrivialReporterSpec.js"></script>
@@ -48,12 +55,12 @@
       var jasmineEnv = jasmine.getEnv();
       jasmineEnv.updateInterval = 1000;
 
-      var trivialReporter = new jasmine.TrivialReporter();
+      var htmlReporter = new jasmine.HtmlReporter();
 
-      jasmineEnv.addReporter(trivialReporter);
+      jasmineEnv.addReporter(htmlReporter);
 
       jasmineEnv.specFilter = function(spec) {
-        return trivialReporter.specFilter(spec);
+        return htmlReporter.specFilter(spec);
       };
 
       var currentWindowOnload = window.onload;
