@@ -58,7 +58,7 @@ jasmine.Env.prototype.versionString = function() {
   var version = this.version();
   var versionString = version.major + "." + version.minor + "." + version.build;
   if (version.release_candidate) {
-    versionString += ".rc" + version.release_candidate
+    versionString += ".rc" + version.release_candidate;
   }
   versionString += " revision " + version.revision;
   return versionString;
