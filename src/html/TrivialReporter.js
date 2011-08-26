@@ -2,6 +2,7 @@ jasmine.TrivialReporter = function(doc) {
   this.document = doc || document;
   this.suiteDivs = {};
   this.logRunningSpecs = false;
+  this.log("DEPRECATION WARNING: jasmine.TrivialReporter is deprecated as of v1.2 and will be removed in version 2.0. Please use (the vastly nicer) jasmine.HtmlReporter.")
 };
 
 jasmine.TrivialReporter.prototype.createDom = function(type, attrs, childrenVarArgs) {
