@@ -1,74 +1,413 @@
-body { font-size: 11px; font-family: Monaco, "Lucida Console", monospace; line-height: 14px; background-color: #eeeeee; color: #333333; overflow-y: scroll; padding: 0; margin: 5px; }
+/* line 25, _HTMLReporter.scss */
+body {
+  background-color: #eeeeee;
+  padding: 0;
+  margin: 5px;
+  overflow-y: scroll;
+}
 
-a { text-decoration: none; }
-a:hover { text-decoration: underline; }
+/* line 32, _HTMLReporter.scss */
+#HTMLReporter {
+  font-size: 11px;
+  font-family: Monaco, "Lucida Console", monospace;
+  line-height: 14px;
+  color: #333333;
+}
+/* line 39, _HTMLReporter.scss */
+#HTMLReporter a {
+  text-decoration: none;
+}
+/* line 42, _HTMLReporter.scss */
+#HTMLReporter a:hover {
+  text-decoration: underline;
+}
+/* line 47, _HTMLReporter.scss */
+#HTMLReporter p, #HTMLReporter h1, #HTMLReporter h2, #HTMLReporter h3, #HTMLReporter h4, #HTMLReporter h5, #HTMLReporter h6 {
+  margin: 0;
+  line-height: 14px;
+}
+/* line 58, _HTMLReporter.scss */
+#HTMLReporter .banner,
+#HTMLReporter .symbolSummary,
+#HTMLReporter .summary,
+#HTMLReporter .resultMessage,
+#HTMLReporter .specDetail .description,
+#HTMLReporter .alert .bar,
+#HTMLReporter .stackTrace {
+  padding-left: 9px;
+  padding-right: 9px;
+}
+/* line 65, _HTMLReporter.scss */
+#HTMLReporter #jasmine_content {
+  position: fixed;
+  right: 100%;
+}
+/* line 70, _HTMLReporter.scss */
+#HTMLReporter .version {
+  color: #aaaaaa;
+}
+/* line 77, _HTMLReporter.scss */
+#HTMLReporter .banner {
+  margin-top: 14px;
+}
+/* line 81, _HTMLReporter.scss */
+#HTMLReporter .duration {
+  color: #aaaaaa;
+  float: right;
+}
+/* line 90, _HTMLReporter.scss */
+#HTMLReporter .symbolSummary {
+  overflow: hidden;
+  *zoom: 1;
+  margin: 14px 0;
+}
+/* line 94, _HTMLReporter.scss */
+#HTMLReporter .symbolSummary li {
+  display: block;
+  float: left;
+  height: 7px;
+  width: 14px;
+  margin-bottom: 7px;
+  font-size: 16px;
+}
+/* line 105, _HTMLReporter.scss */
+#HTMLReporter .symbolSummary li.passed {
+  font-size: 14px;
+}
+/* line 108, _HTMLReporter.scss */
+#HTMLReporter .symbolSummary li.passed:before {
+  color: #5e7d00;
+  content: "\02022";
+}
+/* line 114, _HTMLReporter.scss */
+#HTMLReporter .symbolSummary li.failed {
+  line-height: 9px;
+}
+/* line 117, _HTMLReporter.scss */
+#HTMLReporter .symbolSummary li.failed:before {
+  color: #b03911;
+  content: "x";
+  font-weight: bold;
+  margin-left: -1px;
+}
+/* line 125, _HTMLReporter.scss */
+#HTMLReporter .symbolSummary li.skipped {
+  font-size: 14px;
+}
+/* line 128, _HTMLReporter.scss */
+#HTMLReporter .symbolSummary li.skipped:before {
+  color: #bababa;
+  content: "\02022";
+}
+/* line 134, _HTMLReporter.scss */
+#HTMLReporter .symbolSummary li.pending {
+  line-height: 11px;
+}
+/* line 137, _HTMLReporter.scss */
+#HTMLReporter .symbolSummary li.pending:before {
+  color: #aaaaaa;
+  content: "-";
+}
+/* line 149, _HTMLReporter.scss */
+#HTMLReporter .bar {
+  line-height: 28px;
+  font-size: 14px;
+  display: block;
+  color: #eee;
+}
+/* line 158, _HTMLReporter.scss */
+#HTMLReporter .runningAlert {
+  background-color: #666666;
+}
+/* line 162, _HTMLReporter.scss */
+#HTMLReporter .skippedAlert {
+  background-color: #aaaaaa;
+}
+/* line 165, _HTMLReporter.scss */
+#HTMLReporter .skippedAlert:first-child {
+  background-color: #333333;
+}
+/* line 169, _HTMLReporter.scss */
+#HTMLReporter .skippedAlert:hover {
+  text-decoration: none;
+  color: white;
+  text-decoration: underline;
+}
+/* line 176, _HTMLReporter.scss */
+#HTMLReporter .passingAlert {
+  background-color: #a6b779;
+}
+/* line 179, _HTMLReporter.scss */
+#HTMLReporter .passingAlert:first-child {
+  background-color: #5e7d00;
+}
+/* line 184, _HTMLReporter.scss */
+#HTMLReporter .failingAlert {
+  background-color: #cf867e;
+}
+/* line 187, _HTMLReporter.scss */
+#HTMLReporter .failingAlert:first-child {
+  background-color: #b03911;
+}
+/* line 200, _HTMLReporter.scss */
+#HTMLReporter .results {
+  margin-top: 14px;
+}
+/* line 208, _HTMLReporter.scss */
+#HTMLReporter #details {
+  display: none;
+}
+/* line 213, _HTMLReporter.scss */
+#HTMLReporter .resultsMenu,
+#HTMLReporter .resultsMenu a {
+  background-color: #fff;
+  color: #333333;
+}
+/* line 220, _HTMLReporter.scss */
+#HTMLReporter.showDetails .summaryMenuItem {
+  font-weight: normal;
+  text-decoration: inherit;
+}
+/* line 224, _HTMLReporter.scss */
+#HTMLReporter.showDetails .summaryMenuItem:hover {
+  text-decoration: underline;
+}
+/* line 229, _HTMLReporter.scss */
+#HTMLReporter.showDetails .detailsMenuItem {
+  font-weight: bold;
+  text-decoration: underline;
+}
+/* line 234, _HTMLReporter.scss */
+#HTMLReporter.showDetails .summary {
+  display: none;
+}
+/* line 238, _HTMLReporter.scss */
+#HTMLReporter.showDetails #details {
+  display: block;
+}
+/* line 243, _HTMLReporter.scss */
+#HTMLReporter .summaryMenuItem {
+  font-weight: bold;
+  text-decoration: underline;
+}
+/* line 253, _HTMLReporter.scss */
+#HTMLReporter .summary {
+  margin-top: 14px;
+}
+/* line 256, _HTMLReporter.scss */
+#HTMLReporter .summary .suite .suite, #HTMLReporter .summary .specSummary {
+  margin-left: 14px;
+}
+/* line 261, _HTMLReporter.scss */
+#HTMLReporter .summary .specSummary.passed a {
+  color: #5e7d00;
+}
+/* line 264, _HTMLReporter.scss */
+#HTMLReporter .summary .specSummary.failed a {
+  color: #b03911;
+}
+/* line 270, _HTMLReporter.scss */
+#HTMLReporter .description + .suite {
+  margin-top: 0;
+}
+/* line 274, _HTMLReporter.scss */
+#HTMLReporter .suite {
+  margin-top: 14px;
+}
+/* line 277, _HTMLReporter.scss */
+#HTMLReporter .suite a {
+  color: #333333;
+}
+/* line 288, _HTMLReporter.scss */
+#HTMLReporter #details .specDetail {
+  margin-bottom: 28px;
+}
+/* line 291, _HTMLReporter.scss */
+#HTMLReporter #details .specDetail .description {
+  display: block;
+  color: white;
+  background-color: #b03911;
+}
+/* line 303, _HTMLReporter.scss */
+#HTMLReporter .resultMessage {
+  padding-top: 14px;
+  color: #333333;
+}
+/* line 309, _HTMLReporter.scss */
+#HTMLReporter .resultMessage span.result {
+  display: block;
+}
+/* line 313, _HTMLReporter.scss */
+#HTMLReporter .stackTrace {
+  margin: 5px 0 0 0;
+  max-height: 224px;
+  overflow: auto;
+  line-height: 18px;
+  color: #666666;
+  border: 1px solid #ddd;
+  background: white;
+  white-space: pre;
+}
 
-p, h1, h2, h3, h4, h5, h6 { margin: 0; line-height: 14px; }
-
-.banner, .symbolSummary, .summary, .resultMessage, .specDetail .description, .alert .bar, .stackTrace { padding-left: 9px; padding-right: 9px; }
-
-#jasmine_content { position: fixed; right: 100%; }
-
-.version { color: #aaaaaa; }
-
-.banner { margin-top: 14px; }
-
-.duration { color: #aaaaaa; float: right; }
-
-.symbolSummary { overflow: hidden; *zoom: 1; margin: 14px 0; }
-.symbolSummary li { display: block; float: left; height: 7px; width: 14px; margin-bottom: 7px; font-size: 16px; }
-.symbolSummary li.passed { font-size: 14px; }
-.symbolSummary li.passed:before { color: #5e7d00; content: "\02022"; }
-.symbolSummary li.failed { line-height: 9px; }
-.symbolSummary li.failed:before { color: #b03911; content: "x"; font-weight: bold; margin-left: -1px; }
-.symbolSummary li.skipped { font-size: 14px; }
-.symbolSummary li.skipped:before { color: #bababa; content: "\02022"; }
-.symbolSummary li.pending { line-height: 11px; }
-.symbolSummary li.pending:before { color: #aaaaaa; content: "-"; }
-
-.bar { line-height: 28px; font-size: 14px; display: block; color: #eee; }
-
-.runningAlert { background-color: #666666; }
-
-.skippedAlert { background-color: #aaaaaa; }
-.skippedAlert:first-child { background-color: #333333; }
-.skippedAlert:hover { text-decoration: none; color: white; text-decoration: underline; }
-
-.passingAlert { background-color: #a6b779; }
-.passingAlert:first-child { background-color: #5e7d00; }
-
-.failingAlert { background-color: #cf867e; }
-.failingAlert:first-child { background-color: #b03911; }
-
-.results { margin-top: 14px; }
-
-#details { display: none; }
-
-.resultsMenu, .resultsMenu a { background-color: #fff; color: #333333; }
-
-.showDetails .summaryMenuItem { font-weight: normal; text-decoration: inherit; }
-.showDetails .summaryMenuItem:hover { text-decoration: underline; }
-.showDetails .detailsMenuItem { font-weight: bold; text-decoration: underline; }
-.showDetails .summary { display: none; }
-.showDetails #details { display: block; }
-
-.summaryMenuItem { font-weight: bold; text-decoration: underline; }
-
-.summary { margin-top: 14px; }
-.summary .suite .suite, .summary .specSummary { margin-left: 14px; }
-.summary .specSummary.passed a { color: #5e7d00; }
-.summary .specSummary.failed a { color: #b03911; }
-
-.description + .suite { margin-top: 0; }
-
-.suite { margin-top: 14px; }
-.suite a { color: #333333; }
-
-#details .specDetail { margin-bottom: 28px; }
-#details .specDetail .description { display: block; color: white; background-color: #b03911; }
-
-.resultMessage { padding-top: 14px; color: #333333; }
-
-.resultMessage span.result { display: block; }
-
-.stackTrace { margin: 5px 0 0 0; max-height: 224px; overflow: auto; line-height: 18px; color: #666666; border: 1px solid #ddd; background: white; white-space: pre; }
+/* line 2, _TrivialReporter.scss */
+#TrivialReporter {
+  padding: 8px 13px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: scroll;
+  background-color: white;
+  font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
+  /*.resultMessage {*/
+  /*white-space: pre;*/
+  /*}*/
+}
+/* line 14, _TrivialReporter.scss */
+#TrivialReporter a:visited, #TrivialReporter a {
+  color: #303;
+}
+/* line 18, _TrivialReporter.scss */
+#TrivialReporter a:hover, #TrivialReporter a:active {
+  color: blue;
+}
+/* line 22, _TrivialReporter.scss */
+#TrivialReporter .run_spec {
+  float: right;
+  padding-right: 5px;
+  font-size: .8em;
+  text-decoration: none;
+}
+/* line 29, _TrivialReporter.scss */
+#TrivialReporter .banner {
+  color: #303;
+  background-color: #fef;
+  padding: 5px;
+}
+/* line 35, _TrivialReporter.scss */
+#TrivialReporter .logo {
+  float: left;
+  font-size: 1.1em;
+  padding-left: 5px;
+}
+/* line 41, _TrivialReporter.scss */
+#TrivialReporter .logo .version {
+  font-size: .6em;
+  padding-left: 1em;
+}
+/* line 46, _TrivialReporter.scss */
+#TrivialReporter .runner.running {
+  background-color: yellow;
+}
+/* line 51, _TrivialReporter.scss */
+#TrivialReporter .options {
+  text-align: right;
+  font-size: .8em;
+}
+/* line 59, _TrivialReporter.scss */
+#TrivialReporter .suite {
+  border: 1px outset gray;
+  margin: 5px 0;
+  padding-left: 1em;
+}
+/* line 65, _TrivialReporter.scss */
+#TrivialReporter .suite .suite {
+  margin: 5px;
+}
+/* line 69, _TrivialReporter.scss */
+#TrivialReporter .suite.passed {
+  background-color: #dfd;
+}
+/* line 73, _TrivialReporter.scss */
+#TrivialReporter .suite.failed {
+  background-color: #fdd;
+}
+/* line 77, _TrivialReporter.scss */
+#TrivialReporter .spec {
+  margin: 5px;
+  padding-left: 1em;
+  clear: both;
+}
+/* line 83, _TrivialReporter.scss */
+#TrivialReporter .spec.failed, #TrivialReporter .spec.passed, #TrivialReporter .spec.skipped {
+  padding-bottom: 5px;
+  border: 1px solid gray;
+}
+/* line 88, _TrivialReporter.scss */
+#TrivialReporter .spec.failed {
+  background-color: #fbb;
+  border-color: red;
+}
+/* line 93, _TrivialReporter.scss */
+#TrivialReporter .spec.passed {
+  background-color: #bfb;
+  border-color: green;
+}
+/* line 98, _TrivialReporter.scss */
+#TrivialReporter .spec.skipped {
+  background-color: #bbb;
+}
+/* line 102, _TrivialReporter.scss */
+#TrivialReporter .messages {
+  border-left: 1px dashed gray;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+/* line 108, _TrivialReporter.scss */
+#TrivialReporter .passed {
+  background-color: #cfc;
+  display: none;
+}
+/* line 113, _TrivialReporter.scss */
+#TrivialReporter .failed {
+  background-color: #fbb;
+}
+/* line 117, _TrivialReporter.scss */
+#TrivialReporter .skipped {
+  color: #777;
+  background-color: #eee;
+  display: none;
+}
+/* line 128, _TrivialReporter.scss */
+#TrivialReporter .resultMessage span.result {
+  display: block;
+  line-height: 2em;
+  color: black;
+}
+/* line 134, _TrivialReporter.scss */
+#TrivialReporter .resultMessage .mismatch {
+  color: black;
+}
+/* line 138, _TrivialReporter.scss */
+#TrivialReporter .stackTrace {
+  white-space: pre;
+  font-size: .8em;
+  margin-left: 10px;
+  max-height: 5em;
+  overflow: auto;
+  border: 1px inset red;
+  padding: 1em;
+  background: #eef;
+}
+/* line 149, _TrivialReporter.scss */
+#TrivialReporter .finished-at {
+  padding-left: 1em;
+  font-size: .6em;
+}
+/* line 155, _TrivialReporter.scss */
+#TrivialReporter.show-passed .passed, #TrivialReporter.show-skipped .skipped {
+  display: block;
+}
+/* line 160, _TrivialReporter.scss */
+#TrivialReporter #jasmine_content {
+  position: fixed;
+  right: 100%;
+}
+/* line 165, _TrivialReporter.scss */
+#TrivialReporter .runner {
+  border: 1px solid gray;
+  display: block;
+  margin: 5px 0;
+  padding: 2px 0 2px 10px;
+}
