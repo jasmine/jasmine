@@ -32,7 +32,7 @@ jasmine.TrivialReporter.prototype.createDom = function(type, attrs, childrenVarA
 jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
   var showPassed, showSkipped;
 
-  this.outerDiv = this.createDom('div', { className: 'jasmine_reporter' },
+  this.outerDiv = this.createDom('div', { id: 'TrivialReporter', className: 'jasmine_reporter' },
       this.createDom('div', { className: 'banner' },
         this.createDom('div', { className: 'logo' },
             this.createDom('span', { className: 'title' }, "Jasmine"),
