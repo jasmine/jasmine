@@ -9,7 +9,7 @@ describe("TrivialReporter", function() {
     env.updateInterval = 0;
 
     body = document.createElement("body");
-    fakeDocument = { body: body, location: { search: "" }, title: "Title"};
+    fakeDocument = { body: body, location: { search: "", reload: function(){} }, title: "Title"};
     trivialReporter = new jasmine.TrivialReporter(fakeDocument);
   });
 
@@ -97,7 +97,104 @@ describe("TrivialReporter", function() {
       });
     });
   });
-
+  
+  describe("setSearchParameters", function() {
+    
+    it("should allow to remove all parameters", function() {
+      trivialReporter.setSearchParameters({});
+      expect(fakeDocument.location.search).toEqual('');
+    });
+    
+    it("should serialize one parameters", function() {
+      trivialReporter.setSearchParameters({reload: 3});
+      expect(fakeDocument.location.search).toEqual('?reload=3');
+    });
+    
+    it("should serialize multiple parameters", function() {
+      trivialReporter.setSearchParameters({spec: 'foo', reload: 3});
+      expect(fakeDocument.location.search).toEqual('?spec=foo&reload=3');
+    });
+    
+    it("should uri encode all keys and values", function() {
+      trivialReporter.setSearchParameters({"schöne": 'ßähne'});
+      var parameters = trivialReporter.getSearchParameters();
+      expect(parameters['schöne']).toEqual('ßähne');
+    });
+  });
+  
+  describe("auto rerun", function() {
+    
+    beforeEach(function() {
+    });
+    
+    describe("parameter manipulation", function() {
+      
+      it("should add reload parameter to url", function() {
+        fakeDocument.location.search = '?spec=fnord';
+        trivialReporter.toggleAutoReload();
+        expect(trivialReporter.getSearchParameters()).toEqual({spec: 'fnord', reload: '3'});
+      });
+    
+      it("should remove reload parameter from url", function() {
+        fakeDocument.location.search = '?reload=3';
+        trivialReporter.toggleAutoReload();
+        expect(trivialReporter.getSearchParameters()).toEqual({});
+      
+        fakeDocument.location.search = '?spec=fnord&reload=3';
+        trivialReporter.toggleAutoReload();
+        expect(trivialReporter.getSearchParameters()).toEqual({spec: 'fnord'});
+      });
+    
+      it("should remove other reload timeouts", function() {
+        fakeDocument.location.search = '?reload=7';
+        trivialReporter.toggleAutoReload();
+        expect(fakeDocument.location.search).toEqual('');
+      });
+    
+      it("should treat 0 or absent time as no reload", function() {
+        fakeDocument.location.search = '?reload=0';
+        trivialReporter.toggleAutoReload();
+        expect(trivialReporter.getSearchParameters()).toEqual({reload: '3'});
+      
+        fakeDocument.location.search = '?reload=';
+        trivialReporter.toggleAutoReload();
+        expect(trivialReporter.getSearchParameters()).toEqual({reload: '3'});
+      });
+      
+    });
+    
+    describe("timeout scheduling", function() {
+      
+      it("should schedule reload if reload parameter is set", function() {
+        jasmine.Clock.useMock();
+        spyOn(fakeDocument.location, 'reload');
+        fakeDocument.location.search = '?reload=3';
+        
+        trivialReporter.scheduleReloadIfNeccessary();
+        jasmine.Clock.tick(3 * 1000 - 1);
+        expect(fakeDocument.location.reload).not.toHaveBeenCalled();
+        jasmine.Clock.tick(1);
+        expect(fakeDocument.location.reload).toHaveBeenCalled();
+      });
+      
+      it("should schedule reload after testsuite is done", function() {
+        trivialReporter.reportRunnerStarting({
+          env: env,
+          suites: function() { return []; }
+        });
+        
+        var runner = {
+          results: function() { return { failedCount: 0 }; },
+          specs: function() { return []; }
+        };
+        
+        spyOn(trivialReporter, 'scheduleReloadIfNeccessary');
+        trivialReporter.reportRunnerResults(runner);
+        expect(trivialReporter.scheduleReloadIfNeccessary).toHaveBeenCalled();
+      });
+      
+    });
+    
   describe("failure messages (integration)", function () {
     var spec, results, expectationResult;
 

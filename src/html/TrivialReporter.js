@@ -108,6 +108,7 @@ jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
   this.finishedAtSpan.appendChild(document.createTextNode("Finished at " + new Date().toString()));
   
   this.document.title = (didFail ? "✗" : "✓") + ' - ' + this.document.title;
+  this.scheduleReloadIfNeccessary();
 };
 
 jasmine.TrivialReporter.prototype.reportSuiteResults = function(suite) {
@@ -174,20 +175,56 @@ jasmine.TrivialReporter.prototype.log = function() {
   }
 };
 
+jasmine.TrivialReporter.prototype.specFilter = function(spec) {
+  var paramMap = this.getSearchParameters();
+  if (!paramMap.spec) {
+    return true;
+  }
+  return spec.getFullName().indexOf(paramMap.spec) === 0;
+};
+
 jasmine.TrivialReporter.prototype.getLocation = function() {
   return this.document.location;
 };
 
-jasmine.TrivialReporter.prototype.specFilter = function(spec) {
+jasmine.TrivialReporter.prototype.getSearchParameters = function() {
+  if (0 === this.getLocation().search.length)
+    return {};
+  
   var paramMap = {};
   var params = this.getLocation().search.substring(1).split('&');
   for (var i = 0; i < params.length; i++) {
     var p = params[i].split('=');
     paramMap[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
   }
+  return paramMap;
+};
 
-  if (!paramMap.spec) {
-    return true;
+jasmine.TrivialReporter.prototype.setSearchParameters = function(aParameterMap) {
+  var parameters = [];
+  for (var key in aParameterMap)
+    parameters.push(encodeURIComponent(key) + '=' + encodeURIComponent(aParameterMap[key]));
+  
+  var search = parameters.join('&');
+  if (search)
+    this.getLocation().search = '?' + search;
+  else
+    this.getLocation().search = '';
+};
+
+jasmine.TrivialReporter.prototype.toggleAutoReload = function() {
+  var parameterMap = this.getSearchParameters();
+  if (parameterMap.reload > 0)
+    delete parameterMap.reload;
+  else {
+    parameterMap.reload = 3;
   }
-  return spec.getFullName().indexOf(paramMap.spec) === 0;
+  this.setSearchParameters(parameterMap);
+};
+
+jasmine.TrivialReporter.prototype.scheduleReloadIfNeccessary = function() {
+  if (this.getSearchParameters().reload > 0) {
+    var reporter = this;
+    setTimeout(function() { reporter.getLocation().reload(); }, this.getSearchParameters().reload * 1000)
+  }
 };
