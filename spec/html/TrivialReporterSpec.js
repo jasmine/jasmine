@@ -37,6 +37,28 @@ describe("TrivialReporter", function() {
     throw new Error("couldn't find div with class " + withClass);
   }
 
+  function startTestsuite() {
+    trivialReporter.reportRunnerStarting({
+      env: env,
+      suites: function() { return []; }
+    });
+  }
+  
+  function finishTestsuite() {
+    var runner = {
+      results: function() { return { failedCount: 0 }; },
+      specs: function() { return []; }
+    };
+    trivialReporter.reportRunnerResults(runner);
+  }
+  
+  function expectReloadToBeCalled(shouldBeCalled) {
+    jasmine.Clock.tick(3 * 1000 + 10);
+    if (shouldBeCalled)
+      expect(fakeDocument.location.reload).toHaveBeenCalled();
+    else
+      expect(fakeDocument.location.reload).not.toHaveBeenCalled();
+  }
   it("should run only specs beginning with spec parameter", function() {
     fakeDocument.location.search = "?spec=run%20this";
     expect(trivialReporter.specFilter(fakeSpec("run this"))).toBeTruthy();
@@ -164,13 +186,17 @@ describe("TrivialReporter", function() {
     });
     
     describe("timeout scheduling", function() {
-      
-      it("should schedule reload if reload parameter is set", function() {
+      beforeEach(function() {
         jasmine.Clock.useMock();
         spyOn(fakeDocument.location, 'reload');
+      });
+      
+      it("should schedule reload if reload parameter is set", function() {
+        trivialReporter.didFinishTestsuite = true;
         fakeDocument.location.search = '?reload=3';
         
         trivialReporter.scheduleReloadIfNeccessary();
+        
         jasmine.Clock.tick(3 * 1000 - 1);
         expect(fakeDocument.location.reload).not.toHaveBeenCalled();
         jasmine.Clock.tick(1);
@@ -178,23 +204,45 @@ describe("TrivialReporter", function() {
       });
       
       it("should schedule reload after testsuite is done", function() {
-        trivialReporter.reportRunnerStarting({
-          env: env,
-          suites: function() { return []; }
-        });
-        
-        var runner = {
-          results: function() { return { failedCount: 0 }; },
-          specs: function() { return []; }
-        };
-        
+        startTestsuite();
         spyOn(trivialReporter, 'scheduleReloadIfNeccessary');
-        trivialReporter.reportRunnerResults(runner);
+        finishTestsuite();
         expect(trivialReporter.scheduleReloadIfNeccessary).toHaveBeenCalled();
       });
       
+      it("should unschedule reload", function() {
+        fakeDocument.location.search = '?reload=3';
+        trivialReporter.scheduleReloadIfNeccessary();
+        trivialReporter.unscheduleReloadIfNeccessary();
+        expectReloadToBeCalled(false)
+      });
+      
+      it("should schedule reload when toggling after spec has run through", function() {
+        startTestsuite();
+        finishTestsuite();
+        trivialReporter.toggleAutoReload();
+        expectReloadToBeCalled(true)
+      });
+      
+      it("should not schedule reload if testsuite hasn't yet finished", function() {
+        startTestsuite();
+        trivialReporter.toggleAutoReload();
+        expectReloadToBeCalled(false);
+      });
+      
+      it("should remove timeout when toggling reload off", function() {
+        fakeDocument.location.search = '?reload=3';
+        trivialReporter.scheduleReloadIfNeccessary();
+        trivialReporter.toggleAutoReload();
+        expectReloadToBeCalled(false);
+      });
     });
     
+    describe("adds and connects gui", function() {
+      // how do I test this without jQuery?
+    });
+  });
+  
   describe("failure messages (integration)", function () {
     var spec, results, expectationResult;
 

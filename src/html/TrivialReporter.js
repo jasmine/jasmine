@@ -29,7 +29,7 @@ jasmine.TrivialReporter.prototype.createDom = function(type, attrs, childrenVarA
 };
 
 jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
-  var showPassed, showSkipped;
+  var showPassed, showSkipped, autoRerun;
 
   this.outerDiv = this.createDom('div', { className: 'jasmine_reporter' },
       this.createDom('div', { className: 'banner' },
@@ -41,7 +41,9 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
             showPassed = this.createDom('input', { id: "__jasmine_TrivialReporter_showPassed__", type: 'checkbox' }),
             this.createDom('label', { "for": "__jasmine_TrivialReporter_showPassed__" }, " passed "),
             showSkipped = this.createDom('input', { id: "__jasmine_TrivialReporter_showSkipped__", type: 'checkbox' }),
-            this.createDom('label', { "for": "__jasmine_TrivialReporter_showSkipped__" }, " skipped")
+            this.createDom('label', { "for": "__jasmine_TrivialReporter_showSkipped__" }, " skipped"),
+            autoRerun = this.createDom('input', { id: "__jasmine_TrivialReporter_autoRerun__", type: 'checkbox' }),
+            this.createDom('label', { "for": "__jasmine_TrivialReporter_autoRerun__" }, " auto rerun")
             )
           ),
 
@@ -85,6 +87,11 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
       self.outerDiv.className = self.outerDiv.className.replace(/ show-skipped/, '');
     }
   };
+  
+  autoRerun.checked = this.getSearchParameters().reload > 0;
+  autoRerun.onclick = function(evt) {
+    self.toggleAutoReload();
+  };
 };
 
 jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
@@ -108,6 +115,7 @@ jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
   this.finishedAtSpan.appendChild(document.createTextNode("Finished at " + new Date().toString()));
   
   this.document.title = (didFail ? "✗" : "✓") + ' - ' + this.document.title;
+  this.didFinishTestsuite = true;
   this.scheduleReloadIfNeccessary();
 };
 
@@ -220,11 +228,23 @@ jasmine.TrivialReporter.prototype.toggleAutoReload = function() {
     parameterMap.reload = 3;
   }
   this.setSearchParameters(parameterMap);
+  
+  this.scheduleReloadIfNeccessary();
 };
 
 jasmine.TrivialReporter.prototype.scheduleReloadIfNeccessary = function() {
-  if (this.getSearchParameters().reload > 0) {
+  if (this.didFinishTestsuite && this.getSearchParameters().reload > 0) {
     var reporter = this;
-    setTimeout(function() { reporter.getLocation().reload(); }, this.getSearchParameters().reload * 1000)
+    var reloader = function() { reporter.getLocation().reload(); };
+    this.reloadTimeout = setTimeout(reloader, this.getSearchParameters().reload * 1000);
   }
 };
+
+jasmine.TrivialReporter.prototype.unscheduleReloadIfNeccessary = function() {
+  if (this.reloadTimeout) {
+    clearTimeout(this.reloadTimeout);
+    delete this.reloadTimeout;
+  }
+};
+
+  // use this.autoRerun.checked
