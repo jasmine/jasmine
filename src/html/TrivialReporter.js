@@ -233,18 +233,17 @@ jasmine.TrivialReporter.prototype.toggleAutoReload = function() {
 };
 
 jasmine.TrivialReporter.prototype.scheduleReloadIfNeccessary = function() {
-  if (this.didFinishTestsuite && this.getSearchParameters().reload > 0) {
-    var reporter = this;
-    var reloader = function() { reporter.getLocation().reload(); };
-    this.reloadTimeout = setTimeout(reloader, this.getSearchParameters().reload * 1000);
-  }
+  if ( ! this.didFinishTestsuite
+      || this.reloadTimeout
+      || ! (this.getSearchParameters().reload > 0))
+    return;
+  
+  var reporter = this;
+  var reloader = function() { reporter.doReload(); };
+  this.reloadTimeout = setTimeout(reloader, this.getSearchParameters().reload * 1000);
 };
 
-jasmine.TrivialReporter.prototype.unscheduleReloadIfNeccessary = function() {
-  if (this.reloadTimeout) {
-    clearTimeout(this.reloadTimeout);
-    delete this.reloadTimeout;
-  }
+jasmine.TrivialReporter.prototype.doReload = function() {
+  if (this.getSearchParameters().reload > 0)
+    this.getLocation().reload();
 };
-
-  // use this.autoRerun.checked

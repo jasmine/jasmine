@@ -210,18 +210,11 @@ describe("TrivialReporter", function() {
         expect(trivialReporter.scheduleReloadIfNeccessary).toHaveBeenCalled();
       });
       
-      it("should unschedule reload", function() {
-        fakeDocument.location.search = '?reload=3';
-        trivialReporter.scheduleReloadIfNeccessary();
-        trivialReporter.unscheduleReloadIfNeccessary();
-        expectReloadToBeCalled(false)
-      });
-      
       it("should schedule reload when toggling after spec has run through", function() {
         startTestsuite();
         finishTestsuite();
         trivialReporter.toggleAutoReload();
-        expectReloadToBeCalled(true)
+        expectReloadToBeCalled(true);
       });
       
       it("should not schedule reload if testsuite hasn't yet finished", function() {
@@ -236,6 +229,26 @@ describe("TrivialReporter", function() {
         trivialReporter.toggleAutoReload();
         expectReloadToBeCalled(false);
       });
+      
+      it("should only execute reload if reload parameter is still set", function() {
+        startTestsuite();
+        finishTestsuite();
+        fakeDocument.location.search = '?reload=3';
+        trivialReporter.scheduleReloadIfNeccessary();
+        fakeDocument.location.search = '?';
+        expectReloadToBeCalled(false);
+      });
+      
+      it("should not schedule reloader twice", function() {
+        startTestsuite();
+        finishTestsuite();
+        fakeDocument.location.search = '?reload=3';
+        spyOn(window, 'setTimeout').andCallThrough();
+        trivialReporter.scheduleReloadIfNeccessary();
+        trivialReporter.scheduleReloadIfNeccessary();
+        expect(setTimeout.calls.length).toEqual(1);
+      });
+      
     });
     
     describe("adds and connects gui", function() {
