@@ -92,6 +92,8 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
   autoRerun.onclick = function(evt) {
     self.toggleAutoReload();
   };
+  
+  this.document.title = "… -" + this.document.title;
 };
 
 jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
@@ -114,7 +116,8 @@ jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
 
   this.finishedAtSpan.appendChild(document.createTextNode("Finished at " + new Date().toString()));
   
-  this.document.title = (didFail ? "✗" : "✓") + ' - ' + this.document.title;
+  var cleanedTitle = this.document.title.replace(/^… -/, " -");
+  this.document.title = (didFail ? "✗" : "✓") + cleanedTitle;
   this.didFinishTestsuite = true;
   this.scheduleReloadIfNeccessary();
 };

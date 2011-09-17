@@ -44,9 +44,9 @@ describe("TrivialReporter", function() {
     });
   }
   
-  function finishTestsuite() {
+  function finishTestsuite(optionalFailedCount) {
     var runner = {
-      results: function() { return { failedCount: 0 }; },
+      results: function() { return { failedCount: optionalFailedCount || 0 }; },
       specs: function() { return []; }
     };
     trivialReporter.reportRunnerResults(runner);
@@ -316,22 +316,28 @@ describe("TrivialReporter", function() {
       expect(errorDiv.innerHTML).toEqual("Expected '1 &lt; 2' to &lt;b&gt;e null, &amp; it was not");
     });
     
+  });
+  
+  describe("show status in title", function() {
+    
     it("should add an indicator of failure to the title", function() {
-      var runner = {
-          results: function() { return { failedCount: 23 }; },
-          specs: function() { return []; }
-      };
-      trivialReporter.reportRunnerResults(runner);
+      startTestsuite();
+      finishTestsuite(23);
       expect(fakeDocument.title).toContain("✗");
     });
     
     it("should add an indicator of success to the title", function() {
-      var runner = {
-          results: function() { return { failedCount: 0 }; },
-          specs: function() { return []; }
-      };
-      trivialReporter.reportRunnerResults(runner);
+      startTestsuite();
+      finishTestsuite(0);
       expect(fakeDocument.title).toContain("✓");
+    });
+    
+    it("should add an indicator of the suite running to the title", function() {
+      expect(fakeDocument.title).not.toContain("…");
+      startTestsuite();
+      expect(fakeDocument.title).toContain("…");
+      finishTestsuite();
+      expect(fakeDocument.title).not.toContain("…");
     });
     
   });
