@@ -76,6 +76,7 @@ jasmine.Suite.prototype.children = function() {
 
 jasmine.Suite.prototype.execute = function(onComplete) {
   var self = this;
+  this.env.reporter.reportSuiteStarting(this);
   this.queue.start(function () {
     self.finish(onComplete);
   });

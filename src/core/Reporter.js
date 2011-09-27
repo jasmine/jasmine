@@ -22,6 +22,10 @@ jasmine.Reporter.prototype.reportSpecStarting = function(spec) {
 };
 
 //noinspection JSUnusedLocalSymbols
+jasmine.Reporter.prototype.reportSuiteStarting = function(suite) {
+};
+
+//noinspection JSUnusedLocalSymbols
 jasmine.Reporter.prototype.reportSpecResults = function(spec) {
 };
 

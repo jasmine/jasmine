@@ -28,6 +28,7 @@ describe("jasmine.MultiReporter", function() {
     expect(multiReporter).toDelegateMethod('reportRunnerResults');
     expect(multiReporter).toDelegateMethod('reportSuiteResults');
     expect(multiReporter).toDelegateMethod('reportSpecStarting');
+    expect(multiReporter).toDelegateMethod('reportSuiteStarting');
     expect(multiReporter).toDelegateMethod('reportSpecResults');
     expect(multiReporter).toDelegateMethod('log');
   });

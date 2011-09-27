@@ -236,4 +236,30 @@ describe("TrivialReporter", function() {
       expect(trivialReporter.log).toHaveBeenCalledWith('>> Jasmine Running suite 1 spec 1...');
     });
   });
+
+  describe('#reportSuiteStarting', function() {
+    var suite1;
+    beforeEach(function () {
+      suite1 = env.describe("suite 1", function() {
+      });
+    });
+
+    it('DOES NOT log running suites by default', function() {
+      spyOn(trivialReporter, 'log');
+
+      trivialReporter.reportSuiteStarting(suite1);
+
+      expect(trivialReporter.log).not.toHaveBeenCalled();
+    });
+
+    it('logs running specs when log_running_suites is true', function() {
+      trivialReporter.logRunningSuites = true;
+      spyOn(trivialReporter, 'log');
+                                                    
+      trivialReporter.reportSuiteStarting(suite1);
+
+      expect(trivialReporter.log).toHaveBeenCalledWith('>> Jasmine Running suite 1...');
+    });
+  });
+
 });

@@ -16,6 +16,7 @@ jasmine.MultiReporter.prototype.addReporter = function(reporter) {
     "reportRunnerResults",
     "reportSuiteResults",
     "reportSpecStarting",
+    "reportSuiteStarting",
     "reportSpecResults",
     "log"
   ];
