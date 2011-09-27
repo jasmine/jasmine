@@ -258,6 +258,132 @@ describe("jasmine spec running", function () {
     expect(another_spec.results().getItems()[0].passed()).toEqual(true);
   });
 
+  
+  it("should run asynchronous tests with callbacks", function () {
+    var foo = 0;
+    foo = 0;
+    env.describe('test async spec', function() {
+      a_spec = env.it('spec w/ queued statments', function () {
+        this.runsAsync(function (err, callback) {
+          fakeTimer.setTimeout(function() {
+            foo++;
+            callback()
+          }, 500);
+        });
+        var that = this
+        this.runsAsync(function(err, callback) {
+          fakeTimer.setTimeout(function(){
+            that.expect(foo).toEqual(1);
+            callback()
+          }, 1000);
+        });
+      });
+    });
+
+    a_spec.execute();
+
+    expect(a_spec.results().getItems().length).toEqual(0);
+
+    fakeTimer.tick(500);
+    expect(a_spec.results().getItems().length).toEqual(0);
+
+    fakeTimer.tick(1000);
+    expect(a_spec.results().getItems().length).toEqual(1);
+
+    expect(a_spec.results().getItems()[0].passed()).toEqual(true); // 'Calling waits(): Queued expectation failed';
+
+    fakeTimer.tick(1000);
+
+
+    var baz = 0;
+    var yet_another_spec;
+    env.describe('test async spec', function() {
+      yet_another_spec = env.it('spec w/ async fail on a callback', function () {
+        this.runsAsync(function (err, callback) {
+          fakeTimer.setTimeout(function() {
+            baz++;
+            callback("not null") //("first arg not null")
+          }, 250);
+        });
+        var that = this
+        this.runsAsync(function(err, callback) {
+          fakeTimer.setTimeout(function() {
+            that.expect(baz).toEqual(1);
+            callback()
+          }, 250);
+        });
+      });
+    });
+
+    yet_another_spec.execute();
+    fakeTimer.tick(100);
+    fakeTimer.tick(150);
+    expect(yet_another_spec.results().getItems().length).toEqual(1);
+
+    fakeTimer.tick(250);
+
+    expect(yet_another_spec.results().getItems().length).toEqual(1);
+    expect(yet_another_spec.results().getItems()[0].passed()).toEqual(false);
+
+
+
+    var bazzy = 0;
+    var even_more_spec;
+    env.describe('test async spec', function() {
+      even_more_spec = env.it('spec w/ async fail on last callback', function () {
+        this.runsAsync(function (err, callback) {
+          fakeTimer.setTimeout(function() {
+            that.expect(bazzy).toEqual(0)
+            bazzy++;
+            callback(null) //("first arg not null")
+          }, 250);
+        });
+        var that = this
+        this.runsAsync(function(err, callback) {
+          fakeTimer.setTimeout(function() {
+            that.expect(bazzy).toEqual(1);
+            callback("error")
+          }, 250);
+        });
+      });
+    });
+
+    even_more_spec.execute();
+    fakeTimer.tick(100);
+    fakeTimer.tick(150);
+    fakeTimer.tick(250);
+
+    expect(even_more_spec.results().getItems().length).toEqual(3);
+    expect(even_more_spec.results().getItems()[0].passed()).toEqual(true);
+    expect(even_more_spec.results().getItems()[1].passed()).toEqual(true);
+    expect(even_more_spec.results().getItems()[2].passed()).toEqual(false);
+
+
+    var foozy = 0;
+    var mas_spec;
+    env.describe('test async spec', function() {
+      mas_spec = env.it('spec w/ async fail by timeout', function () {
+        var that = this
+        this.runsAsync(function (err, callback) {
+          fakeTimer.setTimeout(function() {
+            that.expect(foozy).toEqual(0)
+            foozy++;
+            that.expect(foozy).toEqual(1);
+            callback(null) //("first arg not null")
+          }, 6000);
+        }, "timeout to happen", 5000);
+      });
+    });
+
+    mas_spec.execute();
+    fakeTimer.tick(5000);
+
+    expect(mas_spec.results().getItems().length).toEqual(1);
+    expect(mas_spec.results().getItems()[0].passed()).toEqual(false);
+    expect(mas_spec.results().getItems()[0].message).toEqual('timeout: timed out after 5000 msec waiting for timeout to happen');
+  });
+
+
   describe("waitsFor", function() {
     var latchFunction = function() {
       return true;
