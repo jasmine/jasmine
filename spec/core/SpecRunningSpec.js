@@ -264,14 +264,14 @@ describe("jasmine spec running", function () {
     foo = 0;
     env.describe('test async spec', function() {
       a_spec = env.it('spec w/ queued statments', function () {
-        this.runsAsync(function (err, callback) {
+        this.runsAsync(function (callback) {
           fakeTimer.setTimeout(function() {
             foo++;
             callback()
           }, 500);
         });
         var that = this
-        this.runsAsync(function(err, callback) {
+        this.runsAsync(function(callback) {
           fakeTimer.setTimeout(function(){
             that.expect(foo).toEqual(1);
             callback()
@@ -299,14 +299,14 @@ describe("jasmine spec running", function () {
     var yet_another_spec;
     env.describe('test async spec', function() {
       yet_another_spec = env.it('spec w/ async fail on a callback', function () {
-        this.runsAsync(function (err, callback) {
+        this.runsAsync(function (callback) {
           fakeTimer.setTimeout(function() {
             baz++;
             callback("not null") //("first arg not null")
           }, 250);
         });
         var that = this
-        this.runsAsync(function(err, callback) {
+        this.runsAsync(function(callback) {
           fakeTimer.setTimeout(function() {
             that.expect(baz).toEqual(1);
             callback()
@@ -331,7 +331,7 @@ describe("jasmine spec running", function () {
     var even_more_spec;
     env.describe('test async spec', function() {
       even_more_spec = env.it('spec w/ async fail on last callback', function () {
-        this.runsAsync(function (err, callback) {
+        this.runsAsync(function (callback) {
           fakeTimer.setTimeout(function() {
             that.expect(bazzy).toEqual(0)
             bazzy++;
@@ -339,7 +339,7 @@ describe("jasmine spec running", function () {
           }, 250);
         });
         var that = this
-        this.runsAsync(function(err, callback) {
+        this.runsAsync(function(callback) {
           fakeTimer.setTimeout(function() {
             that.expect(bazzy).toEqual(1);
             callback("error")
@@ -364,7 +364,7 @@ describe("jasmine spec running", function () {
     env.describe('test async spec', function() {
       mas_spec = env.it('spec w/ async fail by timeout', function () {
         var that = this
-        this.runsAsync(function (err, callback) {
+        this.runsAsync(function (callback) {
           fakeTimer.setTimeout(function() {
             that.expect(foozy).toEqual(0)
             foozy++;
