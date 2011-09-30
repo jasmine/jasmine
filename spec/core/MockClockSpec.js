@@ -30,6 +30,27 @@ describe("MockClock", function () {
       jasmine.Clock.tick(1);
       expect(interval).toEqual(2);
     });
+
+    describe("#clearInterval", function () {
+      var callCount, intervalId;
+      beforeEach(function() {
+        callCount = 0;
+        intervalId = setInterval(function() {
+          callCount++;
+          if (callCount > 1) { clearInterval(intervalId); }
+        }, 30000);
+      });
+
+      it("should prevent the interval function from being called", function() {
+        expect(callCount).toEqual(0);
+        jasmine.Clock.tick(30000);
+        expect(callCount).toEqual(1);
+        jasmine.Clock.tick(30000);
+        expect(callCount).toEqual(2);
+        jasmine.Clock.tick(30000);
+        expect(callCount).toEqual(2);
+      });
+    });
   });
 
   it("shouldn't complain if you call jasmine.Clock.useMock() more than once", function() {

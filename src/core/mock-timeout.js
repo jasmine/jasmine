@@ -49,7 +49,6 @@ jasmine.FakeTimer.prototype.runFunctionsWithinRange = function(oldMillis, nowMil
         scheduledFunc.runAtMillis >= oldMillis &&
         scheduledFunc.runAtMillis <= nowMillis) {
       funcsToRun.push(scheduledFunc);
-      this.scheduledFunctions[timeoutKey] = jasmine.undefined;
     }
   }
 
@@ -62,11 +61,13 @@ jasmine.FakeTimer.prototype.runFunctionsWithinRange = function(oldMillis, nowMil
         var funcToRun = funcsToRun[i];
         this.nowMillis = funcToRun.runAtMillis;
         funcToRun.funcToCall();
-        if (funcToRun.recurring) {
+        if (funcToRun.recurring && this.scheduledFunctions[funcToRun.timeoutKey] != jasmine.undefined) {
           this.scheduleFunction(funcToRun.timeoutKey,
               funcToRun.funcToCall,
               funcToRun.millis,
               true);
+        } else {
+          this.scheduledFunctions[funcToRun.timeoutKey] = jasmine.undefined;
         }
       } catch(e) {
       }
