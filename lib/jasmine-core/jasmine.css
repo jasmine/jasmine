@@ -1,14 +1,19 @@
 body {
-  font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
+  font-family: "Helvetica Neue", "Calibri", "Arial", sans-serif;
+  font-weight: 300;
+  padding:0; margin:0;
 }
 
+.jasmine_reporter {
+  margin: 0;
+}
 
 .jasmine_reporter a:visited, .jasmine_reporter a {
-  color: #303; 
+  color: #333;
 }
 
 .jasmine_reporter a:hover, .jasmine_reporter a:active {
-  color: blue; 
+  color: #666;
 }
 
 .run_spec {
@@ -18,20 +23,20 @@ body {
   text-decoration: none;
 }
 
-.jasmine_reporter {
-  margin: 0 5px;
-}
-
 .banner {
-  color: #303;
-  background-color: #fef;
-  padding: 5px;
+  background-color: #EEE;
+  background-image: -webkit-linear-gradient(#FFF, #EEE);
+  background-image: -moz-linear-gradient(#FFF, #EEE);
+  background-image: -ms-linear-gradient(#FFF, #EEE);
+  background-image: -o-linear-gradient(#FFF, #EEE);
+  background-image: linear-gradient(#FFF, #EEE);
+  border-bottom: 1px solid #CCC;
+  padding: 10px;
 }
 
 .logo {
   float: left;
-  font-size: 1.1em;
-  padding-left: 5px;
+  font-size: 1.2em;
 }
 
 .logo .version {
@@ -39,10 +44,38 @@ body {
   padding-left: 1em;
 }
 
-.runner.running {
-  background-color: yellow;
+.runner {
+  display: block;
+  margin: 0;
+  padding: 10px;
 }
+.runner.running { background-color: yellow; }
+.runner.passed { border-bottom:8px solid #4c4; border-left: 0; }
+.runner.failed { border-bottom:8px solid #c44; }
 
+.runner a.run_spec {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 4px 20px;
+  text-transform: capitalize;
+  font-weight:bold;
+  font-size:0.75em;
+  color: white;
+  background-color: #333;
+  background-image: -webkit-linear-gradient(#999, #333);
+  background-image: -moz-linear-gradient(#999, #333);
+  background-image: -ms-linear-gradient(#999, #333);
+  background-image: -o-linear-gradient(#999, #333);
+  background-image: linear-gradient(#999, #333);
+}
+.runner a.run_spec:hover {
+  background-color: #555;
+  background-image: -webkit-linear-gradient(#bbb, #555);
+  background-image: -moz-linear-gradient(#bbb, #555);
+  background-image: -ms-linear-gradient(#bbb, #555);
+  background-image: -o-linear-gradient(#bbb, #555);
+  background-image: linear-gradient(#bbb, #555);
+}
 
 .options {
   text-align: right;
@@ -50,12 +83,10 @@ body {
 }
 
 
-
-
 .suite {
-  border: 1px outset gray;
-  margin: 5px 0;
+  margin: 15px 10px;
   padding-left: 1em;
+  padding-top: 0.4em;
 }
 
 .suite .suite {
@@ -63,7 +94,7 @@ body {
 }
 
 .suite.passed {
-  background-color: #dfd;
+  background-color: #EBFFEB;
 }
 
 .suite.failed {
@@ -78,7 +109,6 @@ body {
 
 .spec.failed, .spec.passed, .spec.skipped {
   padding-bottom: 5px;
-  border: 1px solid gray;
 }
 
 .spec.failed {
@@ -87,8 +117,7 @@ body {
 }
 
 .spec.passed {
-  background-color: #bfb;
-  border-color: green;
+  border-color: #4d4;
 }
 
 .spec.skipped {
@@ -96,13 +125,15 @@ body {
 }
 
 .messages {
-  border-left: 1px dashed gray;
-  padding-left: 1em;
   padding-right: 1em;
 }
 
 .passed {
   background-color: #cfc;
+  border-left: 4px solid #C7F5C7;
+}
+
+.spec.passed, .suite.passed {
   display: none;
 }
 
@@ -117,9 +148,9 @@ body {
 }
 
 
-/*.resultMessage {*/
-  /*white-space: pre;*/
-/*}*/
+.resultMessage {
+  margin: 0.5em 0;
+}
 
 .resultMessage span.result {
   display: block;
@@ -134,17 +165,16 @@ body {
 .stackTrace {
   white-space: pre;
   font-size: .8em;
-  margin-left: 10px;
-  max-height: 5em;
+  margin: 5px 0;
+  max-height: 20em;
   overflow: auto;
-  border: 1px inset red;
-  padding: 1em;
-  background: #eef;
+  padding: 0.8em;
+  background: #eee;
 }
 
 .finished-at {
   padding-left: 1em;
-  font-size: .6em;
+  font-size: .8em;
 }
 
 .show-passed .passed,
@@ -156,11 +186,4 @@ body {
 #jasmine_content {
   position:fixed;
   right: 100%;
-}
-
-.runner {
-  border: 1px solid gray;
-  display: block;
-  margin: 5px 0;
-  padding: 2px 0 2px 10px;
 }
