@@ -46,6 +46,7 @@ body {
 }
 .runner.running { background-color: yellow; }
 .runner.passed { border-bottom:8px solid #4c4; border-left: 0; }
+.runner.failed { border-bottom:8px solid #c44; }
 
 .runner a.run_spec {
     display: inline-block;
@@ -70,6 +71,7 @@ body {
 .suite {
   margin: 15px 10px;
   padding-left: 1em;
+  padding-top: 0.4em;
 }
 
 .suite .suite {
@@ -108,8 +110,6 @@ body {
 }
 
 .messages {
-  border-left: 1px dashed gray;
-  padding-left: 1em;
   padding-right: 1em;
 }
 
@@ -133,9 +133,9 @@ body {
 }
 
 
-/*.resultMessage {*/
-  /*white-space: pre;*/
-/*}*/
+.resultMessage {
+  margin: 0.5em 0;
+}
 
 .resultMessage span.result {
   display: block;
@@ -150,12 +150,11 @@ body {
 .stackTrace {
   white-space: pre;
   font-size: .8em;
-  margin-left: 10px;
-  max-height: 5em;
+  margin: 5px 0;
+  max-height: 20em;
   overflow: auto;
-  border: 1px inset red;
-  padding: 1em;
-  background: #eef;
+  padding: 0.8em;
+  background: #eee;
 }
 
 .finished-at {
