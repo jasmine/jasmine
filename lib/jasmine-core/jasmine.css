@@ -24,7 +24,12 @@ body {
 }
 
 .banner {
-  background: -webkit-linear-gradient(#FFF, #EEE);
+  background-color: #EEE;
+  background-image: -webkit-linear-gradient(#FFF, #EEE);
+  background-image: -moz-linear-gradient(#FFF, #EEE);
+  background-image: -ms-linear-gradient(#FFF, #EEE);
+  background-image: -o-linear-gradient(#FFF, #EEE);
+  background-image: linear-gradient(#FFF, #EEE);
   border-bottom: 1px solid #CCC;
   padding: 10px;
 }
@@ -49,17 +54,27 @@ body {
 .runner.failed { border-bottom:8px solid #c44; }
 
 .runner a.run_spec {
-    display: inline-block;
-    border-radius: 5px;
-    padding: 4px 20px;
-    text-transform: capitalize;
-    font-weight:bold;
-    font-size:0.75em;
-    color: white;
-    background: -webkit-linear-gradient(#999, #333);
+  display: inline-block;
+  border-radius: 5px;
+  padding: 4px 20px;
+  text-transform: capitalize;
+  font-weight:bold;
+  font-size:0.75em;
+  color: white;
+  background-color: #333;
+  background-image: -webkit-linear-gradient(#999, #333);
+  background-image: -moz-linear-gradient(#999, #333);
+  background-image: -ms-linear-gradient(#999, #333);
+  background-image: -o-linear-gradient(#999, #333);
+  background-image: linear-gradient(#999, #333);
 }
 .runner a.run_spec:hover {
-    background: -webkit-linear-gradient(#bbb, #555);
+  background-color: #555;
+  background-image: -webkit-linear-gradient(#bbb, #555);
+  background-image: -moz-linear-gradient(#bbb, #555);
+  background-image: -ms-linear-gradient(#bbb, #555);
+  background-image: -o-linear-gradient(#bbb, #555);
+  background-image: linear-gradient(#bbb, #555);
 }
 
 .options {
