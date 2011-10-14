@@ -41,12 +41,25 @@ body {
 
 .runner {
   display: block;
-  margin: 10px;
+  margin: 0;
   padding: 10px;
 }
-
 .runner.running { background-color: yellow; }
-.runner.passed { border-left:8px solid #4c4; }
+.runner.passed { border-bottom:8px solid #4c4; border-left: 0; }
+
+.runner a.run_spec {
+    display: inline-block;
+    border-radius: 5px;
+    padding: 4px 20px;
+    text-transform: capitalize;
+    font-weight:bold;
+    font-size:0.75em;
+    color: white;
+    background: -webkit-linear-gradient(#999, #333);
+}
+.runner a.run_spec:hover {
+    background: -webkit-linear-gradient(#bbb, #555);
+}
 
 .options {
   text-align: right;
