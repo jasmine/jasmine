@@ -1,7 +1,12 @@
 body {
-  font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
+  font-family: "Helvetica Neue", "Calibri", "Arial", sans-serif;
+  font-weight: 300;
+  padding:0; margin:0;
 }
 
+.jasmine_reporter {
+  margin: 0;
+}
 
 .jasmine_reporter a:visited, .jasmine_reporter a {
   color: #303; 
@@ -18,25 +23,27 @@ body {
   text-decoration: none;
 }
 
-.jasmine_reporter {
-  margin: 0 5px;
-}
-
 .banner {
-  color: #303;
-  background-color: #fef;
-  padding: 5px;
+  background: -webkit-linear-gradient(#FFF, #EEE);
+  border-bottom: 1px solid #CCC;
+  padding: 10px;
 }
 
 .logo {
   float: left;
-  font-size: 1.1em;
-  padding-left: 5px;
+  font-size: 1.2em;
 }
 
 .logo .version {
   font-size: .6em;
   padding-left: 1em;
+}
+
+.runner {
+  border: 1px solid gray;
+  display: block;
+  margin: 10px;
+  padding: 10px;
 }
 
 .runner.running {
@@ -54,7 +61,7 @@ body {
 
 .suite {
   border: 1px outset gray;
-  margin: 5px 0;
+  margin: 5px 10px;
   padding-left: 1em;
 }
 
@@ -103,6 +110,9 @@ body {
 
 .passed {
   background-color: #cfc;
+}
+
+.spec.passed, .suite.passed {
   display: none;
 }
 
@@ -144,7 +154,7 @@ body {
 
 .finished-at {
   padding-left: 1em;
-  font-size: .6em;
+  font-size: .8em;
 }
 
 .show-passed .passed,
@@ -156,11 +166,4 @@ body {
 #jasmine_content {
   position:fixed;
   right: 100%;
-}
-
-.runner {
-  border: 1px solid gray;
-  display: block;
-  margin: 5px 0;
-  padding: 2px 0 2px 10px;
 }
