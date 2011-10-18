@@ -38,7 +38,7 @@ jasmine.Queue.prototype.next_ = function() {
 
   while (goAgain) {
     goAgain = false;
-    
+
     if (self.index < self.blocks.length && !this.abort) {
       var calledSynchronously = true;
       var completedSynchronously = false;
@@ -49,7 +49,7 @@ jasmine.Queue.prototype.next_ = function() {
           return;
         }
 
-        if (self.blocks[self.index].abort) {
+        if (self.blocks[self.index] && self.blocks[self.index].abort) {
           self.abort = true;
         }
 
@@ -76,7 +76,7 @@ jasmine.Queue.prototype.next_ = function() {
       if (completedSynchronously) {
         onComplete();
       }
-      
+
     } else {
       self.running = false;
       if (self.onComplete) {
