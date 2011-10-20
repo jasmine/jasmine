@@ -334,7 +334,7 @@ jasmine.Matchers.prototype.toThrow = function(expected) {
     if (exception && (expected === jasmine.undefined || !this.env.equals_(exception.message || exception, expected.message || expected))) {
       return ["Expected function " + not + "to throw", expected ? expected.message || expected : "an exception", ", but it threw", exception.message || exception].join(' ');
     } else {
-      return "Expected function to throw an exception.";
+      return "Expected function " + not + "to throw an exception.";
     }
   };
 
