@@ -31,27 +31,33 @@ jasmine.TrivialReporter.prototype.createDom = function(type, attrs, childrenVarA
 jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
   var showPassed, showSkipped;
 
-  this.outerDiv = this.createDom('div', { className: 'jasmine_reporter' },
-      this.createDom('div', { className: 'banner' },
-        this.createDom('div', { className: 'logo' },
-            this.createDom('span', { className: 'title' }, "Jasmine"),
-            this.createDom('span', { className: 'version' }, runner.env.versionString())),
-        this.createDom('div', { className: 'options' },
-            "Show ",
-            showPassed = this.createDom('input', { id: "__jasmine_TrivialReporter_showPassed__", type: 'checkbox' }),
-            this.createDom('label', { "for": "__jasmine_TrivialReporter_showPassed__" }, " passed "),
-            showSkipped = this.createDom('input', { id: "__jasmine_TrivialReporter_showSkipped__", type: 'checkbox' }),
-            this.createDom('label', { "for": "__jasmine_TrivialReporter_showSkipped__" }, " skipped")
-            )
-          ),
-
-      this.runnerDiv = this.createDom('div', { className: 'runner running' },
-          this.createDom('a', { className: 'run_spec', href: '?' }, "run all"),
-          this.runnerMessageSpan = this.createDom('span', {}, "Running..."),
-          this.finishedAtSpan = this.createDom('span', { className: 'finished-at' }, ""))
+  this.headerDiv = this.createDom('div', { className: 'banner' },
+      this.createDom('div', { className: 'logo' },
+          this.createDom('span', { className: 'title' }, "Jasmine"),
+          this.createDom('span', { className: 'version' }, runner.env.versionString())),
+      this.createDom('div', { className: 'options' },
+          "Show ",
+          showPassed = this.createDom('input', { id: "__jasmine_TrivialReporter_showPassed__", type: 'checkbox' }),
+          this.createDom('label', { "for": "__jasmine_TrivialReporter_showPassed__" }, " passed "),
+          showSkipped = this.createDom('input', { id: "__jasmine_TrivialReporter_showSkipped__", type: 'checkbox' }),
+          this.createDom('label', { "for": "__jasmine_TrivialReporter_showSkipped__" }, " skipped")
+          )
       );
 
-  this.document.body.appendChild(this.outerDiv);
+  this.runnerDiv = this.createDom('div', { className: 'runner running' },
+      this.createDom('a', { className: 'run_spec', href: '?' }, "run all"),
+      this.runnerMessageSpan = this.createDom('span', {}, "Running..."),
+      this.finishedAtSpan = this.createDom('span', { className: 'finished-at' }, "")
+      );
+
+  this.outerDiv = this.document.getElementById("jasmine_reporter");
+  if (this.outerDiv) {
+    this.outerDiv.appendChild(this.headerDiv);
+    this.outerDiv.appendChild(this.runnerDiv);
+  } else {
+    this.outerDiv = this.createDom('div', { className: 'jasmine_reporter' }, this.headerDiv, this.runnerDiv);
+    this.document.body.appendChild(this.outerDiv);
+  }
 
   var suites = runner.suites();
   for (var i = 0; i < suites.length; i++) {
