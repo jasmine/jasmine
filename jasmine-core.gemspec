@@ -18,5 +18,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "term-ansicolor"
   s.add_development_dependency "json_pure", ">= 1.4.3"
   s.add_development_dependency "frank"
+  s.add_development_dependency "sass"
+  s.add_development_dependency "compass"
   s.add_development_dependency "ragaskar-jsdoc_helper"
 end
