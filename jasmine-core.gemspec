@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name = "jasmine-core"
   s.version = Jasmine::Core::VERSION
   s.platform = Gem::Platform::RUBY
-  s.authors = ["Rajan Agaskar", "Davis Frank", "Christian Williams"]
+  s.authors = ["Rajan Agaskar", "Davis W. Frank", "Christian Williams"]
   s.summary = %q{JavaScript BDD framework}
   s.description = %q{Test your JavaScript without any framework dependencies, in any environment, and with a nice descriptive syntax.}
   s.email = %q{jasmine-js@googlegroups.com}
