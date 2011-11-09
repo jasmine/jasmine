@@ -1,3 +1,5 @@
+/* @deprecated Use jasmine.HtmlReporter instead
+ */
 jasmine.TrivialReporter = function(doc) {
   this.document = doc || document;
   this.suiteDivs = {};
@@ -50,12 +52,12 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
       this.finishedAtSpan = this.createDom('span', { className: 'finished-at' }, "")
       );
 
-  this.outerDiv = this.document.getElementById("jasmine_reporter");
+  this.outerDiv = this.document.getElementById("TrivialReporter");
   if (this.outerDiv) {
     this.outerDiv.appendChild(this.headerDiv);
     this.outerDiv.appendChild(this.runnerDiv);
   } else {
-    this.outerDiv = this.createDom('div', { className: 'jasmine_reporter' }, this.headerDiv, this.runnerDiv);
+    this.outerDiv = this.createDom('div', { id: 'TrivialReporter', className: 'jasmine_reporter' }, this.headerDiv, this.runnerDiv);
     this.document.body.appendChild(this.outerDiv);
   }
 

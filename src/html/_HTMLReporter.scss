@@ -1,0 +1,302 @@
+@import "compass";
+
+$line-height: 14px;
+$margin-unit: 14px;
+
+$feint-text-color: #aaa;
+$light-text-color: #666;
+$text-color: #333;
+
+$page-background-color: #eee;
+
+$light-passing-color: #a6b779;
+$passing-color: #5e7d00;
+
+$light-failing-color: #cf867e;
+$failing-color: #b03911;
+
+$neutral-color: #bababa;
+
+$font-size: 11px;
+$large-font-size: 14px;
+
+body {
+  background-color: $page-background-color;
+  padding: 0;
+  margin: 5px;
+  overflow-y: scroll;
+}
+
+#HTMLReporter {
+
+  font-size: $font-size;
+  font-family: Monaco, "Lucida Console", monospace;
+  line-height: $line-height;
+  color: $text-color;
+
+  a {
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  p, h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    line-height: $line-height;
+  }
+  
+  .banner,
+  .symbolSummary,
+  .summary,
+  .resultMessage,
+  .specDetail .description,
+  .alert .bar,
+  .stackTrace {
+    padding-left: $margin-unit - 5px;
+    padding-right: $margin-unit - 5px;
+  }
+  
+  // This div is available for testing elements that must be added to the DOM.
+  // We position it out of view, so it doesn't obstruct the runner.
+  #jasmine_content {
+    position: fixed;
+    right: 100%;
+  }
+  
+  .version {
+    color: $feint-text-color;
+  }
+  
+  //--- Banner ---//
+  
+  .banner {
+    margin-top: $line-height;
+  }
+  
+  .duration {
+    color: $feint-text-color;
+    float: right;
+  }
+  
+  //--- Symbol summary ---//
+  
+  .symbolSummary {
+    @include clearfix;
+    margin: $line-height 0;
+  
+    li {
+      display: block;
+      float: left;
+      height: $line-height / 2;
+      width: $line-height;
+      margin-bottom: $line-height / 2;
+  
+      //opacity: .9;
+      
+      font-size: 16px;
+      
+      &.passed {
+        font-size: 14px;
+  
+        &:before{
+          color: $passing-color;
+          content: "\02022";
+        }
+      }
+      
+      &.failed {
+        line-height: ($line-height / 2) + 2;
+      
+        &:before{
+          color: $failing-color;
+          content: "x";
+          font-weight: bold;
+          margin-left: -1px;
+        }
+      }
+      
+      &.skipped {
+        font-size: 14px;
+        
+        &:before{
+          color: $neutral-color;
+          content: "\02022";
+        }
+      }
+      
+      &.pending{
+        line-height: ($line-height / 2) + 4;
+        
+        &:before {
+          color: $feint-text-color;
+          content: "-";
+        }
+      }
+    }
+  }
+  
+  //--- Alert ---//
+  
+  .bar {
+    line-height: $line-height * 2;
+    font-size: $large-font-size;
+    
+    display: block;
+    color: #eee;
+  }
+  
+  .runningAlert {
+    background-color: $light-text-color;
+  }
+  
+  .skippedAlert {
+    background-color: $feint-text-color;
+  
+    &:first-child {
+      background-color: $text-color;
+    }
+    
+    &:hover {
+      text-decoration: none;
+      color: white;
+      text-decoration: underline;
+    }
+  }
+  
+  .passingAlert {
+    background-color: $light-passing-color;
+    
+    &:first-child {
+      background-color: $passing-color;
+    }
+  }
+  
+  .failingAlert {
+    background-color: $light-failing-color;
+    
+    &:first-child {
+      background-color: $failing-color
+    }
+  }
+
+  //--- Results ---//
+  
+  .results {
+    margin-top: $line-height;
+  }
+
+  //--- Results menu ---//
+  
+  #details {
+    display: none;
+  }
+  
+  .resultsMenu,
+  .resultsMenu a {
+    background-color: #fff;
+    color: $text-color;
+  }
+  
+  &.showDetails {
+    
+    .summaryMenuItem {
+      font-weight: normal;
+      text-decoration: inherit;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    
+    .detailsMenuItem {
+      font-weight: bold;
+      text-decoration: underline;    
+    }
+  
+    .summary {
+      display: none;
+    }
+    
+    #details {
+      display: block;
+    }
+  }
+  
+  .summaryMenuItem {  
+    font-weight: bold;
+    text-decoration: underline;
+  }
+  
+  //--- Results summary ---//
+  
+  .summary {
+    margin-top: $margin-unit;
+    
+    .suite .suite, .specSummary {
+      margin-left: $margin-unit;
+    }
+    
+    .specSummary {
+      &.passed a {
+        color: $passing-color;  
+      }
+      &.failed a {
+        color: $failing-color;
+      }
+    }
+  }
+  
+  .description+.suite {
+    margin-top: 0;
+  }
+  
+  .suite {
+    margin-top: $margin-unit;
+    
+    a {
+      color: $text-color;
+    }
+  }
+  
+  //--- Results details ---//
+  
+  #details {
+    .specDetail {
+      margin-bottom: $line-height * 2;
+      
+      .description {
+        //line-height: $line-height * 2;
+        display: block;
+  
+        color: white;
+        background-color: $failing-color;
+        
+        //font-size: $large-font-size;
+      }
+    }
+  }
+  
+  .resultMessage {
+    padding-top: $line-height;
+    
+    color: $text-color;
+  }
+  
+  .resultMessage span.result {
+    display: block;
+  }
+  
+  .stackTrace {
+    margin: 5px 0 0 0;
+    max-height: $line-height * 16;
+    overflow: auto;
+    line-height: 18px;
+    
+    color: $light-text-color;
+    border: 1px solid #ddd;
+    background: white;
+    white-space: pre;
+  }
+}

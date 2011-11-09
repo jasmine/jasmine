@@ -10,3 +10,5 @@ site/
 tags
 Gemfile.lock
 pkg/*
+.sass-cache/*
+src/html/.sass-cache/*

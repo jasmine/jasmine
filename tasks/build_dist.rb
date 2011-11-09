@@ -2,9 +2,12 @@ desc "Build core jasmine.js"
 task :build_dist => [:lint, :write_version_files] do
   puts 'Building Jasmine distribution from source'.cyan
 
+  puts 'Building JavaScript'.yellow
   concat_into('./lib/jasmine-core/jasmine.js') { core_sources + version_source_file }
   concat_into('./lib/jasmine-core/jasmine-html.js') { html_sources }
 
+  puts 'Buliding CSS'.yellow
+  system("compass compile")
   FileUtils.cp('./src/html/jasmine.css', './lib/jasmine-core/jasmine.css')
 end
 
