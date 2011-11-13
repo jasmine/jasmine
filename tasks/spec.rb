@@ -1,8 +1,8 @@
 desc "Run spec suite: Browser, Node, JSHint"
-task :spec => ["build_dist", "count_specs", "spec:node", "spec:browser"]
+task :spec => ["spec:node", "spec:browser"]
 
 desc 'Run specs in Node.js'
-task "spec:node" => [:count_specs, :require_node] do
+task "spec:node" => [:build_dist, :count_specs, :require_node] do
   puts "Running all appropriate specs via Node.js".cyan
 
   color = Term::ANSIColor.coloring? ? "--color" : "--noColor"
@@ -10,7 +10,7 @@ task "spec:node" => [:count_specs, :require_node] do
 end
 
 desc "Run specs in the default browser (MacOS only)"
-task "spec:browser" => [:count_specs, :build_runner_html] do
+task "spec:browser" => [:build_dist, :count_specs, :build_runner_html] do
   puts "Running all appropriate specs via the default web browser".cyan
   system("open spec/runner.html")
 end
