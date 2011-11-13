@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.email = %q{jasmine-js@googlegroups.com}
   s.homepage = "http://pivotal.github.com/jasmine"
   s.rubyforge_project = "jasmine-core"
+  s.license = "MIT"
 
   s.files         = Dir.glob("./lib/**/*") + Dir.glob("./lib/jasmine-core/spec/**/*.js")
   s.require_paths = ["lib"]
