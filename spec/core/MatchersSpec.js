@@ -945,35 +945,35 @@ describe("jasmine.Matchers", function() {
     var any;
     describe(".jasmineToString", function () {
       describe("with Object", function () {
-        it ("says it's looking for an object", function () {
+        it("says it's looking for an object", function () {
           any = jasmine.any(Object);
           expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function Object.*\)>/);
         });
       });
 
       describe("with Function", function () {
-        it ("says it's looking for a function", function () {
+        it("says it's looking for a function", function () {
           any = jasmine.any(Function);
           expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function Function.*\)>/);
         });
       });
 
       describe("with String", function () {
-        it ("says it's looking for a string", function () {
+        it("says it's looking for a string", function () {
           any = jasmine.any(String);
           expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function String.*\)>/);
         });
       });
 
       describe("with Number", function () {
-        it ("says it's looking for a number", function () {
+        it("says it's looking for a number", function () {
           any = jasmine.any(Number);
           expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function Number.*\)>/);
         });
       });
 
       describe("with some other defined 'class'", function () {
-        it ("says it's looking for an object", function () {
+        it("says it's looking for an object", function () {
           function MyClass () {}
           any = jasmine.any(MyClass);
           expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function MyClass.*\)>/);
