@@ -31,7 +31,7 @@ end
 
 def count_specs_in(files)
   files.inject(0) do |count, file|
-    File.read(file).scan(/\sit\(/) {|s| count += 1}
+    File.read(file).scan(/\sit\s*\(/) {|s| count += 1}
     count
   end
 end

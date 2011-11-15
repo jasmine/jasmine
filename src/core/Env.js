@@ -230,11 +230,19 @@ jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
     return a.getTime() == b.getTime();
   }
 
-  if (a instanceof jasmine.Matchers.Any) {
+  if (a.jasmineMatches) {
+    return a.jasmineMatches(b);
+  }
+
+  if (b.jasmineMatches) {
+    return b.jasmineMatches(a);
+  }
+
+  if (a instanceof jasmine.Matchers.ObjectContaining) {
     return a.matches(b);
   }
 
-  if (b instanceof jasmine.Matchers.Any) {
+  if (b instanceof jasmine.Matchers.ObjectContaining) {
     return b.matches(a);
   }
 
