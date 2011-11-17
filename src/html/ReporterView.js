@@ -152,7 +152,7 @@ jasmine.HtmlReporter.ReporterView = function(dom) {
   function specPluralizedFor(count) {
     var str = count + " spec";
     if (count > 1) {
-      str += "s"
+      str += "s";
     }
     return str;
   }
