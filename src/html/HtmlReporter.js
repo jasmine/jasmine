@@ -17,7 +17,6 @@ jasmine.HtmlReporter = function(_doc) {
     }
 
     createReporterDom(runner.env.versionString());
-    doc.body.appendChild(dom.reporter);
 
     reporterView = new jasmine.HtmlReporter.ReporterView(dom);
     reporterView.addSpecs(specs, self.specFilter);
@@ -85,17 +84,33 @@ jasmine.HtmlReporter = function(_doc) {
   }
 
   function createReporterDom(version) {
-    dom.reporter = self.createDom('div', { id: 'HTMLReporter', className: 'jasmine_reporter' },
-      dom.banner = self.createDom('div', { className: 'banner' },
-        self.createDom('span', { className: 'title' }, "Jasmine "),
-        self.createDom('span', { className: 'version' }, version)),
-
-      dom.symbolSummary = self.createDom('ul', {className: 'symbolSummary'}),
-      dom.alert = self.createDom('div', {className: 'alert'}),
-      dom.results = self.createDom('div', {className: 'results'},
-        dom.summary = self.createDom('div', { className: 'summary' }),
-        dom.details = self.createDom('div', { id: 'details' }))
+    dom.banner = self.createDom('div', { className: 'banner' },
+      self.createDom('span', { className: 'title' }, "Jasmine "),
+      self.createDom('span', { className: 'version' }, version)
     );
+    dom.symbolSummary = self.createDom('ul', { className: 'symbolSummary' });
+    dom.alert = self.createDom('div', { className: 'alert' });
+    dom.results = self.createDom('div', { className: 'results' },
+      dom.summary = self.createDom('div', { className: 'summary' }),
+      dom.details = self.createDom('div', { id: 'details' })
+    );
+
+    var reporterElement = doc.getElementById("HTMLReporter");
+
+    if (reporterElement) {
+      if (reporterElement.className === "") {
+        reporterElement.className = "jasmine_reporter";
+      }
+      reporterElement.appendChild(dom.banner);
+      reporterElement.appendChild(dom.symbolSummary);
+      reporterElement.appendChild(dom.alert);
+      reporterElement.appendChild(dom.results);
+      dom.reporter = reporterElement;
+    } else {
+      dom.reporter = self.createDom('div', { id: 'HTMLReporter', className: 'jasmine_reporter' },
+        dom.banner, dom.symbolSummary, dom.alert, dom.results);
+      doc.body.appendChild(dom.reporter);
+    }
   }
 };
 jasmine.HtmlReporterHelpers.addHelpers(jasmine.HtmlReporter);
