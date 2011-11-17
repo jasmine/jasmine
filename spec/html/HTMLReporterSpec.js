@@ -10,6 +10,15 @@ describe("HtmlReporter", function() {
 
     body = document.createElement("body");
     fakeDocument = { body: body, location: { search: "" } };
+    fakeDocument.getElementById = function(id) {
+      var divs = body.getElementsByTagName("div");
+      for (var i = 0; i < divs.length; i++) {
+        if (divs[i].id === "HTMLReporter") {
+          return divs[i];
+        }
+      }
+      return null;
+    };
     htmlReporter = new jasmine.HtmlReporter(fakeDocument);
   });
 
@@ -189,6 +198,67 @@ describe("HtmlReporter", function() {
       env.execute();
 
       expect(htmlReporter.log).toHaveBeenCalledWith('>> Jasmine Running suite 1 spec 1...');
+    });
+  });
+
+  describe('result report', function() {
+    beforeEach(function () {
+      env.describe("some suite", function() {
+        env.it("some spec", function() {
+          this.log("this one passes!");
+          this.expect(true).toBeTruthy();
+        });
+      });
+
+      env.addReporter(htmlReporter);
+    });
+
+    it('should appear in an div element with id HTMLReporter if it exists', function() {
+      var div1 = document.createElement("div");
+      var div2 = document.createElement("div");
+      var div3 = document.createElement("div");
+
+      div1.setAttribute("id", "some_element");
+      div2.setAttribute("id", "HTMLReporter");
+      div3.setAttribute("id", "another_element");
+
+      div1.appendChild(div2);
+      div1.appendChild(div3);
+      body.appendChild(div1);
+
+      env.execute();
+
+      expect(body.firstChild.id).toEqual("some_element");
+      expect(body.firstChild.childNodes.length).toEqual(2);
+      expect(body.lastChild.id).toEqual("some_element");
+
+      var fc = body.firstChild.firstChild;
+      expect(fc.id).toEqual("HTMLReporter");
+      expect(fc.className).toEqual("jasmine_reporter");
+      expect(fc.childNodes.length).toEqual(4);
+      expect(fc.childNodes[0].className).toEqual("banner");
+      expect(fc.childNodes[1].className).toEqual("symbolSummary");
+      expect(fc.childNodes[2].className).toEqual("alert");
+      expect(fc.childNodes[3].className).toEqual("results");
+
+      var lc = body.firstChild.lastChild;
+      expect(lc.id).toEqual("another_element");
+      expect(lc.childNodes.length).toEqual(0);
+    });
+
+    it('should appear in a new div element in body if none with id HTMLReporter can be found', function() {
+      env.execute();
+
+      var fc = body.firstChild;
+      expect(fc.id).toEqual("HTMLReporter");
+      expect(fc.className).toEqual("jasmine_reporter");
+      expect(fc.childNodes.length).toEqual(4);
+      expect(fc.childNodes[0].className).toEqual("banner");
+      expect(fc.childNodes[1].className).toEqual("symbolSummary");
+      expect(fc.childNodes[2].className).toEqual("alert");
+      expect(fc.childNodes[3].className).toEqual("results");
+
+      expect(body.lastChild.id).toEqual("HTMLReporter");
     });
   });
 });
