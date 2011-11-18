@@ -13,7 +13,7 @@ describe("HtmlReporter", function() {
     fakeDocument.getElementById = function(id) {
       var divs = body.getElementsByTagName("div");
       for (var i = 0; i < divs.length; i++) {
-        if (divs[i].id === "HTMLReporter") {
+        if (divs[i].id === id) {
           return divs[i];
         }
       }
