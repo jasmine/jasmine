@@ -83,5 +83,12 @@ describe("jasmine.pp", function () {
     expect(jasmine.pp(jasmine.createSpy("something"))).toEqual("spy on something");
   });
 
+  it("should stringify objects that implement jasmineToString", function () {
+    var obj = {
+      jasmineToString: function () { return "strung"; }
+    };
+
+    expect(jasmine.pp(obj)).toEqual("strung");
+  });
 });
 

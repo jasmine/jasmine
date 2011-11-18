@@ -352,6 +352,33 @@ describe("jasmine.Matchers", function() {
     }]).toEqual(["a", jasmine.any(Function)])).toPass();
   });
 
+  describe("toEqual with an object implementing jasmineMatches", function () {
+    var matcher;
+    beforeEach(function () {
+      matcher = {
+        jasmineMatches: jasmine.createSpy("jasmineMatches")
+      };
+    });
+
+    describe("on the left side", function () {
+      it("uses the jasmineMatches function", function () {
+        matcher.jasmineMatches.andReturn(false);
+        expect(match(matcher).toEqual("foo")).toFail();
+        matcher.jasmineMatches.andReturn(true);
+        expect(match(matcher).toEqual("foo")).toPass();
+      });
+    });
+
+    describe("on the right side", function () {
+      it("uses the jasmineMatches function", function () {
+        matcher.jasmineMatches.andReturn(false);
+        expect(match("foo").toEqual(matcher)).toFail();
+        matcher.jasmineMatches.andReturn(true);
+        expect(match("foo").toEqual(matcher)).toPass();
+      });
+    });
+  });
+
   it("toEqual handles circular objects ok", function() {
     expect(match({foo: "bar", baz: jasmine.undefined}).toEqual({foo: "bar", baz: jasmine.undefined})).toPass();
     expect(match({foo:['bar','baz','quux']}).toEqual({foo:['bar','baz','quux']})).toPass();
@@ -827,6 +854,252 @@ describe("jasmine.Matchers", function() {
       });
 
       it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasNotCalledWith'));
+    });
+  });
+
+  describe("ObjectContaining", function () {
+    describe("with an empty object", function () {
+      var containing;
+      beforeEach(function () {
+        containing = new jasmine.Matchers.ObjectContaining({});
+      });
+      it("matches everything", function () {
+         expect(containing.jasmineMatches("foo", [], [])).toBe(true);
+      });
+
+      it("says it didn't expect to contain anything", function () {
+        expect(containing.jasmineToString()).toEqual("<jasmine.objectContaining({  })>");
+      });
+    });
+
+    describe("with an object with items in it", function () {
+      var containing, mismatchKeys, mismatchValues;
+      beforeEach(function () {
+        mismatchKeys = [];
+        mismatchValues = [];
+        containing = new jasmine.Matchers.ObjectContaining({foo: "fooVal", bar: "barVal"});
+      });
+
+      it("doesn't match an empty object", function () {
+        expect(containing.jasmineMatches({}, mismatchKeys, mismatchValues)).toBe(false);
+      });
+
+      it("doesn't match an object with none of the specified options", function () {
+        expect(containing.jasmineMatches({baz:"stuff"}, mismatchKeys, mismatchValues)).toBe(false);
+      });
+
+      it("adds a message for each missing key", function () {
+        containing.jasmineMatches({foo: "fooVal"}, mismatchKeys, mismatchValues);
+        expect(mismatchKeys.length).toEqual(1);
+      });
+
+      it("doesn't match an object when the values are different", function () {
+        expect(containing.jasmineMatches({foo:"notFoo", bar:"notBar"}, mismatchKeys, mismatchValues)).toBe(false);
+      });
+
+      it("adds a message when values don't match", function () {
+        containing.jasmineMatches({foo: "fooVal", bar: "notBar"}, mismatchKeys, mismatchValues);
+        expect(mismatchValues.length).toEqual(1);
+      });
+
+      it("doesn't match an object with only one of the values matching", function () {
+        expect(containing.jasmineMatches({foo:"notFoo", bar:"barVal"}, mismatchKeys, mismatchValues)).toBe(false);
+      });
+
+      it("matches when all the values are the same", function () {
+        expect(containing.jasmineMatches({foo: "fooVal", bar: "barVal"}, mismatchKeys, mismatchValues)).toBe(true);
+      });
+
+      it("matches when there are additional values", function () {
+        expect(containing.jasmineMatches({foo: "fooVal", bar: "barVal", baz: "bazVal"}, mismatchKeys, mismatchValues)).toBe(true);
+      });
+
+      it("doesn't modify missingKeys or missingValues when match is successful", function () {
+        containing.jasmineMatches({foo: "fooVal", bar: "barVal"}, mismatchKeys, mismatchValues);
+        expect(mismatchKeys.length).toEqual(0);
+        expect(mismatchValues.length).toEqual(0);
+      });
+
+      it("says what it expects to contain", function () {
+        expect(containing.jasmineToString()).toEqual("<jasmine.objectContaining(" + jasmine.pp({foo:"fooVal", bar:"barVal"}) + ")>");
+      });
+    });
+
+    describe("in real life", function () {
+      var method;
+      beforeEach(function () {
+        method = jasmine.createSpy("method");
+        method({a:"b", c:"d"});
+      });
+      it("works correctly for positive matches", function () {
+        expect(method).toHaveBeenCalledWith(jasmine.objectContaining({a:"b"}));
+      });
+
+      it("works correctly for negative matches", function () {
+        expect(method).not.toHaveBeenCalledWith(jasmine.objectContaining({z:"x"}));
+      });
+    });
+  });
+
+  describe("Matchers.Any", function () {
+    var any;
+    describe(".jasmineToString", function () {
+      describe("with Object", function () {
+        it("says it's looking for an object", function () {
+          any = jasmine.any(Object);
+          expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function Object.*\)>/);
+        });
+      });
+
+      describe("with Function", function () {
+        it("says it's looking for a function", function () {
+          any = jasmine.any(Function);
+          expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function Function.*\)>/);
+        });
+      });
+
+      describe("with String", function () {
+        it("says it's looking for a string", function () {
+          any = jasmine.any(String);
+          expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function String.*\)>/);
+        });
+      });
+
+      describe("with Number", function () {
+        it("says it's looking for a number", function () {
+          any = jasmine.any(Number);
+          expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function Number.*\)>/);
+        });
+      });
+
+      describe("with some other defined 'class'", function () {
+        it("says it's looking for an object", function () {
+          function MyClass () {}
+          any = jasmine.any(MyClass);
+          expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function MyClass.*\)>/);
+        });
+      });
+    });
+
+    describe(".jasmineMatches", function () {
+      describe("with Object", function () {
+        beforeEach(function () {
+          any = jasmine.any(Object);
+        });
+
+        it("matches an empty object", function () {
+          expect(any.jasmineMatches({})).toEqual(true);
+        });
+
+        it("matches a newed up object", function () {
+          expect(any.jasmineMatches(new Object())).toEqual(true);
+        });
+
+        it("doesn't match a string", function () {
+          expect(any.jasmineMatches("")).toEqual(false);
+        });
+
+        it("doesn't match a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(false);
+        });
+
+        it("doesn't match a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(false);
+        });
+      });
+
+      describe("with Function", function () {
+        beforeEach(function () {
+          any = jasmine.any(Function);
+        });
+
+        it("doesn't match an object", function () {
+          expect(any.jasmineMatches({})).toEqual(false);
+        });
+
+        it("doesn't match a string", function () {
+          expect(any.jasmineMatches("")).toEqual(false);
+        });
+
+        it("doesn't match a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(false);
+        });
+
+        it("matches a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(true);
+        });
+      });
+
+      describe("with Number", function () {
+        beforeEach(function () {
+          any = jasmine.any(Number);
+        });
+
+        it("doesn't match an object", function () {
+          expect(any.jasmineMatches({})).toEqual(false);
+        });
+
+        it("doesn't match a string", function () {
+          expect(any.jasmineMatches("")).toEqual(false);
+        });
+
+        it("matches a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(true);
+        });
+
+        it("doesn't match a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(false);
+        });
+      });
+
+      describe("with String", function () {
+        beforeEach(function () {
+          any = jasmine.any(String);
+        });
+
+        it("doesn't match an object", function () {
+          expect(any.jasmineMatches({})).toEqual(false);
+        });
+
+        it("matches a string", function () {
+          expect(any.jasmineMatches("")).toEqual(true);
+        });
+
+        it("doesn't match a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(false);
+        });
+
+        it("doesn't match a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(false);
+        });
+      });
+
+      describe("with some defined 'class'", function () {
+        function MyClass () {}
+        beforeEach(function () {
+          any = jasmine.any(MyClass);
+        });
+
+        it("doesn't match an object", function () {
+          expect(any.jasmineMatches({})).toEqual(false);
+        });
+
+        it("doesn't match a string", function () {
+          expect(any.jasmineMatches("")).toEqual(false);
+        });
+
+        it("doesn't match a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(false);
+        });
+
+        it("doesn't match a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(false);
+        });
+
+        it("matches an instance of the defined class", function () {
+          expect(any.jasmineMatches(new MyClass())).toEqual(true);
+        });
+      });
     });
   });
 

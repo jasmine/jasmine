@@ -345,7 +345,7 @@ jasmine.Matchers.Any = function(expectedClass) {
   this.expectedClass = expectedClass;
 };
 
-jasmine.Matchers.Any.prototype.matches = function(other) {
+jasmine.Matchers.Any.prototype.jasmineMatches = function(other) {
   if (this.expectedClass == String) {
     return typeof other == 'string' || other instanceof String;
   }
@@ -365,7 +365,36 @@ jasmine.Matchers.Any.prototype.matches = function(other) {
   return other instanceof this.expectedClass;
 };
 
-jasmine.Matchers.Any.prototype.toString = function() {
+jasmine.Matchers.Any.prototype.jasmineToString = function() {
   return '<jasmine.any(' + this.expectedClass + ')>';
 };
 
+jasmine.Matchers.ObjectContaining = function (sample) {
+  this.sample = sample;
+};
+
+jasmine.Matchers.ObjectContaining.prototype.jasmineMatches = function(other, mismatchKeys, mismatchValues) {
+  mismatchKeys = mismatchKeys || [];
+  mismatchValues = mismatchValues || [];
+
+  var env = jasmine.getEnv();
+
+  var hasKey = function(obj, keyName) {
+    return obj != null && obj[keyName] !== jasmine.undefined;
+  };
+
+  for (var property in this.sample) {
+    if (!hasKey(other, property) && hasKey(this.sample, property)) {
+      mismatchKeys.push("expected has key '" + property + "', but missing from actual.");
+    }
+    else if (!env.equals_(this.sample[property], other[property], mismatchKeys, mismatchValues)) {
+      mismatchValues.push("'" + property + "' was '" + (other[property] ? jasmine.util.htmlEscape(other[property].toString()) : other[property]) + "' in expected, but was '" + (this.sample[property] ? jasmine.util.htmlEscape(this.sample[property].toString()) : this.sample[property]) + "' in actual.");
+    }
+  }
+
+  return (mismatchKeys.length === 0 && mismatchValues.length === 0);
+};
+
+jasmine.Matchers.ObjectContaining.prototype.jasmineToString = function () {
+  return "<jasmine.objectContaining(" + jasmine.pp(this.sample) + ")>";
+};
