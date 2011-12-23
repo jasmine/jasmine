@@ -13,6 +13,12 @@ describe("jasmine.Env", function() {
     });
   });
 
+  describe('specify()', function() {
+    specify('aliases it()', function() {
+      expect(this.env.specify).toEqual(this.env.it);
+    });
+  });
+
   describe("reporting", function() {
     var fakeReporter;
 

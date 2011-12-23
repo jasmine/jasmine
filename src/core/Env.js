@@ -160,6 +160,8 @@ jasmine.Env.prototype.it = function(description, func) {
   return spec;
 };
 
+jasmine.Env.prototype.specify = jasmine.Env.prototype.it;
+
 jasmine.Env.prototype.xit = function(desc, func) {
   return {
     id: this.nextSpecId(),
