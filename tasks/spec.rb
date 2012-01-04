@@ -9,10 +9,17 @@ task "spec:node" => [:count_specs, :require_node] do
   system("node spec/node_suite.js #{color}")
 end
 
-desc "Run specs in the default browser (MacOS only)"
+desc "Run specs in the default browser (MacOS, Linux)"
 task "spec:browser" => [:count_specs, :build_runner_html] do
   puts "Running all appropriate specs via the default web browser".cyan
-  system("open spec/runner.html")
+
+  require 'rbconfig'
+  case Object.const_get(defined?(RbConfig) ? :RbConfig : :Config)::CONFIG['host_os']
+  when /linux/
+    system("xdg-open spec/runner.html")
+  else
+    system("open spec/runner.html")
+  end
 end
 
 #Count number of specs in Jasmine core
