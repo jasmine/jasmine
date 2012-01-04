@@ -9,7 +9,14 @@ def core_sources
 end
 
 def html_sources
-  ['./src/html/HtmlReporterHelpers.js'] + Dir.glob('./src/html/*.js')
+  [
+    './src/html/HtmlReporterHelpers.js',
+    './src/html/HtmlReporter.js',
+    './src/html/ReporterView.js',
+    './src/html/SpecView.js',
+    './src/html/SuiteView.js',
+    './src/html/TrivialReporter.js',
+  ]
 end
 
 def console_sources
