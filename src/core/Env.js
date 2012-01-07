@@ -168,6 +168,53 @@ jasmine.Env.prototype.xit = function(desc, func) {
   };
 };
 
+jasmine.Env.prototype.sharedExamplesFor = function(description, specDefinitions) {
+  if (!description) {
+    throw new Error("Shared examples must have a description.");
+  }
+
+  var parentSuite = this.currentSuite;
+  if (!parentSuite) {
+    throw new Error("Shared examples must be defined within a suite.")
+  }
+
+  if (this.findSharedExampleGroup(description)) {
+    throw new Error("Shared examples for \"" + description + "\" already defined.");
+  }
+
+  parentSuite.addSharedExampleGroup(new jasmine.SharedExampleGroup(description, specDefinitions));
+  return parentSuite;
+};
+
+jasmine.Env.prototype.findSharedExampleGroup = function(description) {
+  var suite = this.currentSuite;
+  while (suite) {
+    var sharedContexts = suite.sharedExampleGroups();
+    for (var i = 0; i < sharedContexts.length; i++) {
+      if (sharedContexts[i].description === description) {
+        return sharedContexts[i];
+      }
+    }
+    suite = suite.parentSuite;
+  }
+};
+
+jasmine.Env.prototype.itBehavesLike = function(description) {
+  return this.insertSharedExampleGroup(description, this.describe);
+};
+
+jasmine.Env.prototype.insertSharedExampleGroup = function(description, suiteFn) {
+  var sharedContext = this.findSharedExampleGroup(description);
+  if (!sharedContext) {
+      throw new Error("Shared examples for \"" + description + "\" not found.");
+  }
+  return suiteFn.call(this, "it behaves like " + description, sharedContext.specDefinitions);
+};
+
+jasmine.Env.prototype.xitBehavesLike = function(description) {
+  return this.insertSharedExampleGroup(description, this.xdescribe);
+};
+
 jasmine.Env.prototype.compareObjects_ = function(a, b, mismatchKeys, mismatchValues) {
   if (a.__Jasmine_been_here_before__ === b && b.__Jasmine_been_here_before__ === a) {
     return true;

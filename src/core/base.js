@@ -602,6 +602,111 @@ var xdescribe = function(description, specDefinitions) {
 };
 if (isCommonJS) exports.xdescribe = xdescribe;
 
+/**
+ * Defines a shared example group (a shared suite) that can be called via 'itBehavesLike'.
+ *
+ * When declared, a shared example group stores the definition of all its specs in the Jasmine environment.
+ * It's only realized in the context of another suite, which provides any context that the shared group needs to run.
+ *
+ * @example
+ * describe("Shapes", function() {
+ *
+ *   sharedExamplesFor("should have dimensions", function() {
+ *     it("should have width", function(){
+ *       expect(this.subject.width).not.toBeUndefined();
+ *     });
+ *     it("should have height", function(){
+ *       expect(this.subject.height).not.toBeUndefined();
+ *     });
+ *   });
+ *
+ *   describe("Rectangle", function(){
+ *     beforeEach(function(){
+ *       this.subject = new Rectangle(10, 20);
+ *     });
+ *     itBehavesLike("should have dimensions");
+ *   });
+ *
+ *   describe("Square", function(){
+ *     beforeEach(function(){
+ *       this.subject = new Square(10);
+ *     });
+ *     itBehavesLike("should have dimensions");
+ *   });
+ * });
+ *
+ * @param {String} description A string describing the suite.
+ * 'itBehavesLike' uses this description to locate the suite.
+ * This name must be unique across the current suite and all ancestors.
+ * @param {Function} specDefinitions function that defines suite specs.
+ */
+var sharedExamplesFor = function(description, specDefinitions) {
+  return jasmine.getEnv().sharedExamplesFor(description, specDefinitions)
+};
+if (isCommonJS) exports.sharedExamplesFor = sharedExamplesFor;
+
+/**
+ * Realizes a shared example group previously defined via 'sharedExamplesFor' in the context of the caller suite.
+ *
+ * The shared examples group is first looked up in the current suite
+ * and then all the way up the ancestors tree until found.
+ *
+ * @example
+ * describe("Shapes and objects", function(){
+ *
+ *   sharedExamplesFor("should have dimensions", function() {
+ *     it("should have width", function(){
+ *       expect(this.subject.width).not.toBeUndefined();
+ *     });
+ *     it("should have height", function(){
+ *       expect(this.subject.height).not.toBeUndefined();
+ *     });
+ *   });
+ *
+ *   describe("Square", function(){
+ *     beforeEach(function(){
+ *       this.subject = new Square(10);
+ *     });
+ *     itBehavesLike("should have dimensions");
+ *   });
+ *
+ *   describe("Cube", function(){
+ *     beforeEach(function(){
+ *       this.subject = new Cube(10);
+ *     });
+ *
+ *     it("should have six sides", function(){
+ *       expect(this.subject.length).toEqual(6);
+ *     });
+ *
+ *     describe("side", function(){
+ *       beforeEach(function(){
+ *         this.subject = this.subject.sides[0];
+ *       });
+ *       itBehavesLike "should have dimensions";
+ *     });
+ *   });
+ * });
+ *
+ * @param description the description of the shared example group.
+ * It must exactly match the description passed to the corresponding 'sharedExamplesFor'.
+ */
+var itBehavesLike = function(description) {
+  return jasmine.getEnv().itBehavesLike(description);
+};
+if (isCommonJS) exports.itBehavesLike = itBehavesLike;
+
+/**
+ * Disables a shared example group previously defined via 'sharedExamplesFor'.
+ * Used to disable some invocations of shared examples temporarily during development.
+ *
+ * @param description the description of the shared example group.
+ * It must exactly match the description passed to the corresponding 'sharedExamplesFor'.
+ */
+var xitBehavesLike = function(description) {
+  return jasmine.getEnv().xitBehavesLike(description);
+};
+if (isCommonJS) exports.xitBehavesLike = xitBehavesLike;
 
 // Provide the XMLHttpRequest class for IE 5.x-6.x:
 jasmine.XmlHttpRequest = (typeof XMLHttpRequest == "undefined") ? function() {
