@@ -579,6 +579,43 @@ describe("jasmine spec running", function () {
     expect(quux).toEqual(1);
   });
 
+  it('should run shared suites', function () {
+
+    var invocations = [];
+
+    var suite = env.describe('top suite', function () {
+      env.beforeEach(function() {
+        this.context = 'In top suite';
+      });
+
+      env.sharedExamplesFor('shared suite', function() {
+        env.it('should run shared spec 1', function() {
+          invocations.push(this.context + " shared spec 1");
+        });
+        env.it('should run shared spec 2', function() {
+          invocations.push(this.context + " shared spec 2");
+        });
+      });
+
+      env.itBehavesLike('shared suite');
+
+      env.describe('nested suite', function() {
+        env.beforeEach(function() {
+          this.context = 'In nested suite';
+        });
+        env.itBehavesLike('shared suite');
+      });
+    });
+
+    expect(invocations.length).toEqual(0);
+    suite.execute();
+    expect(invocations.length).toEqual(4);
+    expect(invocations[0]).toEqual('In top suite shared spec 1');
+    expect(invocations[1]).toEqual('In top suite shared spec 2');
+    expect(invocations[2]).toEqual('In nested suite shared spec 1');
+    expect(invocations[3]).toEqual('In nested suite shared spec 2');
+  });
+
   describe('#waitsFor should allow consecutive calls', function () {
     var foo;
     beforeEach(function () {
@@ -1177,6 +1214,22 @@ describe("jasmine spec running", function () {
     disabledSuite.execute();
 
     expect(spy).not.toHaveBeenCalled();
+  });
+
+  it("shouldn't run disabled #itBehavesLike", function() {
+    var sharedSpecWasRun = false;
+    var suite = env.describe('suite', function () {
+      env.sharedExamplesFor('shared suite', function () {
+        env.it('should run shared spec 1', function () {
+          sharedSpecWasRun = true;
+        });
+      });
+
+      env.xitBehavesLike('shared suite');
+    });
+
+    suite.execute();
+    expect(sharedSpecWasRun).toEqual(false);
   });
 
   it('#explodes should throw an exception when it is called inside a spec', function() {

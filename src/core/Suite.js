@@ -19,6 +19,7 @@ jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
   self.children_ = [];
   self.suites_ = [];
   self.specs_ = [];
+  self.sharedExampleGroups_ = [];
 };
 
 jasmine.Suite.prototype.getFullName = function() {
@@ -62,12 +63,20 @@ jasmine.Suite.prototype.add = function(suiteOrSpec) {
   this.queue.add(suiteOrSpec);
 };
 
+jasmine.Suite.prototype.addSharedExampleGroup = function(sharedExampleGroup) {
+  this.sharedExampleGroups_.push(sharedExampleGroup);
+};
+
 jasmine.Suite.prototype.specs = function() {
   return this.specs_;
 };
 
 jasmine.Suite.prototype.suites = function() {
   return this.suites_;
+};
+
+jasmine.Suite.prototype.sharedExampleGroups = function() {
+  return this.sharedExampleGroups_;
 };
 
 jasmine.Suite.prototype.children = function() {

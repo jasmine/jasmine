@@ -34,12 +34,28 @@ describe('Suite', function() {
               this.expect(true).toEqual(true);
             });
           });
+          env.sharedExamplesFor('Examples 1', function () {
+            env.it('Spec 6', function () {
+              this.runs(function () {
+                this.expect(true).toEqual(true);
+              });
+            });
+          });
+          env.itBehavesLike('Examples 1');
         });
         env.it('Spec 4', function() {
           this.runs(function () {
             this.expect(true).toEqual(true);
           });
         });
+        env.sharedExamplesFor('Examples 2', function () {
+          env.it('Spec 5', function () {
+            this.runs(function () {
+              this.expect(true).toEqual(true)
+            });
+          });
+        });
+        env.itBehavesLike('Examples 2');
       });
     });
     
@@ -53,17 +69,56 @@ describe('Suite', function() {
 
     it("#suites should return all immediate children that are suites.", function() {
       var nestedSuites = suite.suites();
-      expect(nestedSuites.length).toEqual(1);
+      expect(nestedSuites.length).toEqual(2);
       expect(nestedSuites[0].description).toEqual('Suite 2');
+      expect(nestedSuites[1].description).toEqual('it behaves like Examples 2');
     });
 
     it("#children should return all immediate children including suites and specs.", function() {
       var children = suite.children();
-      expect(children.length).toEqual(4);
+      expect(children.length).toEqual(5);
       expect(children[0].description).toEqual('Spec 1');
       expect(children[1].description).toEqual('Spec 2');
       expect(children[2].description).toEqual('Suite 2');
       expect(children[3].description).toEqual('Spec 4');
+      expect(children[4].description).toEqual('it behaves like Examples 2');
+    });
+
+    it("#sharedContexts should return all immediate children that are shared contexts.", function() {
+      var sharedContexts = suite.sharedExampleGroups();
+      expect(sharedContexts.length).toEqual(1);
+      expect(sharedContexts[0].description).toEqual('Examples 2');
+    });
+  });
+
+  describe('SharedSuite', function() {
+    it("#sharedExamplesFor should throw an Error if the description is missing.", function() {
+      expect(function() {
+        env.sharedExamplesFor("", function() {});
+      }).toThrow(new Error("Shared examples must have a description."));
+    });
+
+    it("#sharedExamplesFor should throw an Error if there is no suite.", function() {
+      expect(function() {
+        env.sharedExamplesFor("Shared Suite", function() {});
+      }).toThrow(new Error("Shared examples must be defined within a suite."));
+    });
+
+    it("#sharedExamplesFor should throw an Error if the description is not unique.", function(){
+      env.describe("Suite", function() {
+        env.sharedExamplesFor("shared suite", function() {});
+        env.describe("Nested suite", function() {
+          expect(function() {
+            env.sharedExamplesFor("shared suite", function() {});
+          }).toThrow("Shared examples for \"shared suite\" already defined.");
+        });
+      });
+    });
+
+    it("#itBehavesLike should throw an Error if the shared suite is missing.", function() {
+      expect(function() {
+        env.itBehavesLike("missing suite");
+      }).toThrow(new Error("Shared examples for \"missing suite\" not found."));
     });
   });
 
