@@ -37,6 +37,7 @@ You will notice that all specs are run against the built `jasmine.js` instead of
 Please ensure all specs are green before committing.
 
 There are rake tasks to help with getting green:
+
 * `rake spec` outputs the expected number of specs that should be run and attempts to run in browser and Node
 * `rake spec:browser` opens `spec/runner.html` in the default browser on MacOS. Please run this in at least Firefox and Chrome before committing
 * `rake spec:node` runs all the Jasmine specs in Node.js - it will complain if Node is not installed
