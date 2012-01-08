@@ -489,6 +489,24 @@ var it = function(desc, func) {
 if (isCommonJS) exports.it = it;
 
 /**
+ * An alias to jasmine's it()
+ *
+ * // TODO: pending tests
+ *
+ * @example
+ * specify('should be true', function() {
+ *   expect(true).toEqual(true);
+ * });
+ *
+ * @param {String} desc description of this specification
+ * @param {Function} func defines the preconditions and expectations of the spec
+ */
+var specify = function(desc, func) {
+  return jasmine.getEnv().specify(desc, func);
+};
+if (isCommonJS) exports.specify = specify;
+
+/**
  * Creates a <em>disabled</em> Jasmine spec.
  *
  * A convenience method that allows existing specs to be disabled temporarily during development.
