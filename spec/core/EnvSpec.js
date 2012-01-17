@@ -156,4 +156,103 @@ describe("jasmine.Env", function() {
       });
     });
   });
+
+  describe("file load errors", function() {
+    function suiteNames(suites) {
+      var suiteDescriptions = [];
+      for (var i = 0; i < suites.length; i++) {
+        suiteDescriptions.push(suites[i].getFullName());
+      }
+      return suiteDescriptions;
+    }
+
+    function messagesFrom(env) {
+      var messages = [];
+      var suites = env.currentRunner().topLevelSuites();
+      for (var i = 0; i < suites.length; i++) {
+        var suite = suites[i];
+        var subsuites = suite.suites();
+        for (var j = 0; j < subsuites.length; j++) {
+          suites.push(subsuites[j]);
+        }
+        var specs = suite.specs();
+        for (j = 0; j < specs.length; j++) {
+          var spec = specs[j];
+          var items = spec.results().getItems();
+          for (var k = 0; k < items.length; k++) {
+            messages.push("[" + spec.getFullName() + "] " + items[k].toString());
+          }
+        }
+      }
+      return messages;
+    }
+
+    it("should create no extra suites or specs if the file loads properly", function () {
+      env.aboutToLoad("some/file.js");
+      env.finishedLoading();
+      env.generateFileLoadErrors();
+
+      env.currentRunner().execute();
+      var runnerResults = env.currentRunner().results();
+      expect(runnerResults.totalCount).toEqual(0);
+      expect(runnerResults.passedCount).toEqual(0);
+    });
+
+    it("should create a failing spec if a file fails to signal that it loaded", function () {
+      env.aboutToLoad("some/file.js");
+      env.describe("Specs in some/file");
+      env.generateFileLoadErrors();
+
+      env.aboutToLoad("some/other/file.js");
+      env.describe("Specs in some/other/file");
+      env.generateFileLoadErrors();
+
+      env.currentRunner().execute();
+      var runnerResults = env.currentRunner().results();
+      expect(runnerResults.totalCount).toEqual(4);
+      expect(runnerResults.passedCount).toEqual(0);
+      var suites = env.currentRunner().topLevelSuites();
+      expect(suiteNames(suites)).toEqual([
+        "Specs in some/file",
+        "File some/file.js",
+        "Specs in some/other/file",
+        "File some/other/file.js"
+      ]);
+    });
+
+    it("should create a failing spec if loading a file generates errors", function () {
+      env.aboutToLoad("some/file.js");
+      env.loadError("syntax error", "some/file.js", 15);
+      env.generateFileLoadErrors();
+
+      env.currentRunner().execute();
+      var runnerResults = env.currentRunner().results();
+      expect(runnerResults.totalCount).toEqual(2);
+      expect(runnerResults.passedCount).toEqual(0);
+      var suites = env.currentRunner().topLevelSuites();
+      expect(suiteNames(suites)).toEqual([ "File some/file.js" ]);
+      expect(messagesFrom(env)).toContain("[File some/file.js should have successfully loaded.] some/file.js: syntax error at some/file.js:15");
+    });
+
+    it("should set and restore an error handler via the provided function", function () {
+      var fakeOnError = "original value";
+      env.aboutToLoad("some/file.js", function(onError) {
+        var old = fakeOnError;
+        fakeOnError = onError;
+        return old;
+      });
+      expect(fakeOnError).not.toEqual("original value");
+      fakeOnError.call(null, "error message", "filename", 123);
+      env.finishedLoading();
+      expect(fakeOnError).toEqual("original value");
+
+      env.generateFileLoadErrors();
+
+      env.currentRunner().execute();
+      var runnerResults = env.currentRunner().results();
+      expect(runnerResults.totalCount).toEqual(1);
+      expect(runnerResults.passedCount).toEqual(0);
+      expect(messagesFrom(env)).toContain("[File some/file.js should have successfully loaded.] some/file.js: error message at filename:123");
+    });
+  });
 });
