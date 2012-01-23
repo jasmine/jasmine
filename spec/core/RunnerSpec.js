@@ -264,4 +264,62 @@ describe('RunnerTest', function() {
       expect(suiteNames(suites)).toEqual([suite1.getFullName(), suite3.getFullName()]);
     });
   });
+
+  describe('ddescribe', function() {
+    it('should run only ddescribe suites when at least one registered', function() {
+      var normal = jasmine.createSpy('normal spec');
+      var exclusive = jasmine.createSpy('exclusive spec');
+
+      env.describe('normal', function() {
+        env.it('not executed 1', normal);
+        env.it('not executed 2', normal);
+      });
+
+      env.ddescribe('exclusive', function() {
+        env.it('executed 1', exclusive);
+        env.it('executed 2', exclusive);
+        env.describe('nested exclusive', function() {
+          env.it('executed 3', exclusive);
+        });
+      });
+
+      env.describe('normal 2', function() {
+        env.it('not executed 3', normal);
+      });
+
+      env.execute();
+      expect(normal).not.toHaveBeenCalled();
+      expect(exclusive).toHaveBeenCalled();
+      expect(exclusive.callCount).toBe(3);
+    });
+  });
+
+  describe('iit', function() {
+    it('should run only iit specs when at least one registered', function() {
+      var normal = jasmine.createSpy('normal spec');
+      var exclusive = jasmine.createSpy('exclusive spec');
+
+      env.describe('normal', function() {
+        env.it('not executed 1', normal);
+        env.iit('executed 1', exclusive);
+      });
+
+      env.ddescribe('exclusive', function() {
+        env.it('not executed 2', normal);
+        env.iit('executed 2', exclusive);
+        env.describe('nested exclusive', function() {
+          env.iit('executed 3', exclusive);
+        });
+      });
+
+      env.ddescribe('normal 2', function() {
+        env.it('not executed 3', normal);
+      });
+
+      env.execute();
+      expect(normal).not.toHaveBeenCalled();
+      expect(exclusive).toHaveBeenCalled();
+      expect(exclusive.callCount).toBe(3);
+    })
+  })
 });

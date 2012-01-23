@@ -13,13 +13,18 @@ jasmine.Env = function() {
   this.updateInterval = jasmine.DEFAULT_UPDATE_INTERVAL;
   this.defaultTimeoutInterval = jasmine.DEFAULT_TIMEOUT_INTERVAL;
   this.lastUpdate = 0;
-  this.specFilter = function() {
-    return true;
+  this.specFilter = function(spec) {
+    return this.exclusive_ <= spec.exclusive_;
   };
 
   this.nextSpecId_ = 0;
   this.nextSuiteId_ = 0;
   this.equalityTesters_ = [];
+
+  // 0 - normal
+  // 1 - contains some ddescribe
+  // 2 - contains some iit
+  this.exclusive_ = 0;
 
   // wrap matchers
   this.matchersClass = function() {
@@ -91,8 +96,11 @@ jasmine.Env.prototype.execute = function() {
 };
 
 jasmine.Env.prototype.describe = function(description, specDefinitions) {
-  var suite = new jasmine.Suite(this, description, specDefinitions, this.currentSuite);
+  var suite = new jasmine.Suite(this, description, null, this.currentSuite);
+  return this.describe_(suite, specDefinitions);
+};
 
+jasmine.Env.prototype.describe_ = function(suite, specDefinitions) {
   var parentSuite = this.currentSuite;
   if (parentSuite) {
     parentSuite.add(suite);
@@ -118,6 +126,14 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
   this.currentSuite = parentSuite;
 
   return suite;
+};
+
+jasmine.Env.prototype.ddescribe = function(description, specDefinitions) {
+  var suite = new jasmine.Suite(this, description, null, this.currentSuite);
+  suite.exclusive_ = 1;
+  this.exclusive_ = Math.max(this.exclusive_, 1);
+
+  return this.describe_(suite, specDefinitions);
 };
 
 jasmine.Env.prototype.beforeEach = function(beforeEachFunction) {
@@ -156,6 +172,14 @@ jasmine.Env.prototype.it = function(description, func) {
   if (func) {
     spec.runs(func);
   }
+
+  return spec;
+};
+
+jasmine.Env.prototype.iit = function(description, func) {
+  var spec = this.it(description, func);
+  spec.exclusive_ = 2;
+  this.exclusive_ = 2;
 
   return spec;
 };
