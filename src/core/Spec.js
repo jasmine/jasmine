@@ -26,6 +26,7 @@ jasmine.Spec = function(env, suite, description) {
   spec.results_ = new jasmine.NestedResults();
   spec.results_.description = description;
   spec.matchersClass = null;
+  spec.chainedMatchersClasses = {};
 };
 
 jasmine.Spec.prototype.getFullName = function() {
@@ -130,14 +131,56 @@ jasmine.Spec.prototype.getMatchersClass_ = function() {
   return this.matchersClass || this.env.matchersClass;
 };
 
-jasmine.Spec.prototype.addMatchers = function(matchersPrototype) {
-  var parent = this.getMatchersClass_();
-  var newMatchersClass = function() {
-    parent.apply(this, arguments);
-  };
-  jasmine.util.inherit(newMatchersClass, parent);
+jasmine.Spec.prototype.makeMatchersClass_ = function(chainName) {
+  if (chainName) {
+    if (!this.chainedMatchersClasses[chainName]) {
+      this.chainedMatchersClasses[chainName] = jasmine.util.subclass(jasmine.ChainedMatchers);
+      this.chainedMatchersClasses[chainName].chainName = chainName;
+    }
+    return this.chainedMatchersClasses[chainName];
+  } else {
+    if (!this.matchersClass) {
+      this.matchersClass = jasmine.util.subclass(this.env.matchersClass);
+    }
+    return this.matchersClass;
+  }
+};
+
+jasmine.Spec.prototype.addMatchers = function(matchers) {
+  var parsedMatchers   = this.parseMatchers_(matchers),
+      topLevelMatchers = parsedMatchers.topLevel,
+      chainedMatchers  = parsedMatchers.chained;
+
+  this.addMatchers_(null, topLevelMatchers);
+  for (var chainName in chainedMatchers) {
+    this.addMatchers_(chainName, chainedMatchers[chainName]);
+  }
+};
+
+jasmine.Spec.prototype.addMatchers_ = function(chainName, matchersPrototype) {
+  var newMatchersClass = this.makeMatchersClass_(chainName);
   jasmine.Matchers.wrapInto_(matchersPrototype, newMatchersClass);
-  this.matchersClass = newMatchersClass;
+};
+
+jasmine.Spec.prototype.parseMatchers_ = function(matcherDefinitions) {
+  var chained = {}, topLevel = {};
+  var names, chainName, methodName, method;
+
+  for (var key in matcherDefinitions) {
+    names      = key.match(/\w+/g);
+    method     = matcherDefinitions[key];
+    chainName  = names.slice(0, names.length - 1).join(" ");
+    methodName = names.slice(names.length - 1)[0];
+
+    if (chainName.length > 0) {
+      chained[chainName] || (chained[chainName] = {});
+      chained[chainName][methodName] = method;
+    } else {
+      topLevel[methodName] = method;
+    }
+  }
+
+  return { topLevel: topLevel, chained: chained };
 };
 
 jasmine.Spec.prototype.finishCallback = function() {
