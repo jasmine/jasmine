@@ -61,12 +61,17 @@ describe("Custom Matchers", function() {
     });
 
     suite.execute();
-    var passResult = new jasmine.ExpectationResult({passed: true, matcherName: 'toBeTrue',
-      actual: true, expected: jasmine.undefined, message: "Passed." });
-    var failResult = new jasmine.ExpectationResult({passed: false, matcherName: 'toBeTrue',
-      actual: false, expected: jasmine.undefined, message: "Expected false to be true." });
-    failResult.trace = jasmine.any(Object);
-    expect(spec.results().getItems()).toEqual([passResult, failResult]);
+    var results = spec.results().getItems();
+
+    expect(results[0].passed()).toBeTruthy();
+    expect(results[0].message).toBe("Passed.");
+    expect(results[0].actual).toBe(true);
+    expect(results[0].matcherName).toBe('toBeTrue');
+
+    expect(results[1].passed()).toBeFalsy();
+    expect(results[1].message).toBe("Expected false to be true.");
+    expect(results[1].actual).toBe(false);
+    expect(results[1].matcherName).toBe('toBeTrue');
   });
 
   it("should pass args", function() {
