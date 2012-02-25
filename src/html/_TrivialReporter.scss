@@ -1,11 +1,11 @@
 #TrivialReporter {
   padding: 8px 13px;
-  position: absolute;
+  position: relative;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   background-color: white;
   font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
