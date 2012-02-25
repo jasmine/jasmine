@@ -24,7 +24,7 @@ jasmine.HtmlReporter = function(_doc) {
   };
 
   self.reportRunnerResults = function(runner) {
-    reporterView.complete();
+    reporterView && reporterView.complete();
   };
 
   self.reportSuiteResults = function(suite) {

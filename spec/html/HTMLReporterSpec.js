@@ -44,8 +44,23 @@ describe("HtmlReporter", function() {
     expect(htmlReporter.specFilter(fakeSpec("not run this"))).toBeFalsy();
   });
 
-  describe('Matcher reporting', function () {
-    var getResultMessageDiv = function (body) {
+  describe("running without any specs", function() {
+    var runner;
+    beforeEach(function() {
+      runner = env.currentRunner();
+      env.addReporter(htmlReporter);
+    });
+
+    it("should not error", function() {
+      var exec = function() {
+        runner.execute();
+      };
+      expect(exec).not.toThrow();
+    });
+  });
+
+  describe('Matcher reporting', function() {
+    var getResultMessageDiv = function(body) {
       var divs = body.getElementsByTagName("div");
       for (var i = 0; i < divs.length; i++) {
         if (divs[i].className.match(/resultMessage/)) {
@@ -55,7 +70,7 @@ describe("HtmlReporter", function() {
     };
 
     var runner, spec, fakeTimer;
-    beforeEach(function () {
+    beforeEach(function() {
       fakeTimer = new jasmine.FakeTimer();
       env.setTimeout = fakeTimer.setTimeout;
       env.clearTimeout = fakeTimer.clearTimeout;
@@ -70,9 +85,9 @@ describe("HtmlReporter", function() {
       env.addReporter(htmlReporter);
     });
 
-    describe('toContain', function () {
-      it('should show actual and expected', function () {
-        spec.runs(function () {
+    describe('toContain', function() {
+      it('should show actual and expected', function() {
+        spec.runs(function() {
           this.expect('foo').toContain('bar');
         });
         runner.execute();
@@ -85,7 +100,7 @@ describe("HtmlReporter", function() {
     });
   });
 
-  describe("failure messages (integration)", function () {
+  describe("failure messages (integration)", function() {
     var spec, results, expectationResult;
 
     it("should add the failure message to the DOM (non-toEquals matchers)", function() {
@@ -168,7 +183,7 @@ describe("HtmlReporter", function() {
   });
 
   describe('#reportSpecStarting', function() {
-    beforeEach(function () {
+    beforeEach(function() {
       env.describe("suite 1", function() {
         env.it("spec 1", function() {
         });
