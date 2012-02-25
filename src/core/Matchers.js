@@ -34,50 +34,71 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
   return function() {
     var matcherArgs = jasmine.util.argsToArray(arguments);
     var result = matcherFunction.apply(this, arguments);
+    var passed = isPassing(this, result);
 
-    if (this.isNot) {
-      result = !result;
-    }
-
-    if (this.reportWasCalled_) return result;
+    if (this.reportWasCalled_) return passed;
 
     var message;
-    if (!result) {
-      if (this.message) {
-        message = this.message.apply(this, arguments);
-        if (jasmine.isArray_(message)) {
-          message = message[this.isNot ? 1 : 0];
-        }
-      } else {
-        var englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
-        message = "Expected " + jasmine.pp(this.actual) + (this.isNot ? " not " : " ") + englishyPredicate;
-        if (matcherArgs.length > 0) {
-          for (var i = 0; i < matcherArgs.length; i++) {
-            if (i > 0) message += ",";
-            message += " " + jasmine.pp(matcherArgs[i]);
-          }
-        }
-        message += ".";
+    if (this.message) {
+      message = this.message.apply(this, arguments);
+      if (jasmine.isArray_(message)) {
+        message = message[this.isNot ? 1 : 0];
       }
+    } else {
+      message = defaultMessage(this, matcherName, matcherArgs);
     }
-    var expectationResult = new jasmine.ExpectationResult({
-      matcherName: matcherName,
-      passed: result,
-      expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
-      actual: this.actual,
-      message: message
-    });
-    this.spec.addMatcherResult(expectationResult);
+
+    var expectationResult;
+    if (this.precedingResult) {
+      expectationResult = this.precedingResult;
+      expectationResult.passed_ = passed;
+    } else {
+      expectationResult = new jasmine.ExpectationResult({
+        matcherName: matcherName,
+        passed: passed,
+        expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
+        actual: this.actual
+      });
+      this.spec.addMatcherResult(expectationResult);
+    }
+    expectationResult.setMessage(message);
 
     var chainName = this.constructor.chainName;
     var nextChainName = chainName ? [chainName, matcherName].join(" ") : matcherName;
     var chainedMatchersClass = this.spec.chainedMatchersClasses[nextChainName];
     if (chainedMatchersClass) {
-      return new chainedMatchersClass(this);
+      return new chainedMatchersClass(this, expectationResult);
     } else {
       return jasmine.undefined;
     }
   };
+
+  function defaultMessage(self, matcherName, matcherArgs) {
+    var message;
+    if (self.precedingResult) {
+      message = self.precedingResult.defaultMessage.replace(/\.$/, " ");
+    } else {
+      message = "Expected " + jasmine.pp(self.actual) + (self.isNot ? " not " : " ");
+    }
+    message += matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
+    for (var i = 0; i < matcherArgs.length; i++) {
+      if (i > 0) message += ",";
+      message += " " + jasmine.pp(matcherArgs[i]);
+    }
+    message += ".";
+    return message;
+  }
+
+  function isPassing(self, result) {
+    var wasPassing = self.precedingResult && self.precedingResult.passed();
+    if (self.isNot) {
+      return wasPassing || !result;
+    } else if (self.precedingResult) {
+      return wasPassing && result;
+    } else {
+      return result;
+    }
+  }
 };
 
 

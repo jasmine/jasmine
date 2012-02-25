@@ -99,4 +99,97 @@ describe("Chained matchers", function() {
       });
     });
   });
+
+  describe("when matchers are chained without a 'not'", function() {
+    var results;
+
+    describe("when any of the matchers in the chain do *not* match", function() {
+      beforeEach(function() {
+        results = resultsOfSpec(function() {
+          this.expect({ height: 3 }).toHaveA("width").ofExactly(3);
+          this.expect({ height: 3 }).toHaveA("height").ofExactly(5);
+          this.expect({ height: 3 }).toHaveA("height").between(1).and(2);
+        });
+      });
+
+      it("adds one failure to the spec's results", function() {
+        expect(results.length).toBe(3);
+        expect(results[0].passed()).toBeFalsy();
+        expect(results[1].passed()).toBeFalsy();
+        expect(results[2].passed()).toBeFalsy();
+      });
+
+      it("builds a failure message from the complete chain of matchers", function() {
+        expect(results[0].message).toBe("Expected { height : 3 } to have a 'width' of exactly 3.");
+        expect(results[1].message).toBe("Expected { height : 3 } to have a 'height' of exactly 5.");
+        expect(results[2].message).toBe("Expected { height : 3 } to have a 'height' between 1 and 2.");
+      });
+    });
+
+    describe("when all of the matchers match", function() {
+      it("adds one success to the spec's results", function() {
+        results = resultsOfSpec(function() {
+          this.expect({ height: 3 }).toHaveA("height").ofExactly(3);
+          this.expect({ height: 3 }).toHaveA("height").between(2).and(5);
+        });
+
+        expect(results.length).toBe(2);
+        expect(results[0].passed()).toBeTruthy();
+        expect(results[1].passed()).toBeTruthy();
+        expect(results[0].message).toBe("Passed.");
+        expect(results[1].message).toBe("Passed.");
+      });
+    });
+  });
+
+  describe("when matchers are chained, starting with a 'not'", function() {
+    var results;
+
+    describe("when any of the matchers in the chain do *not* match", function() {
+      it("adds a single success to the spec's results", function() {
+        results = resultsOfSpec(function() {
+          this.expect({ height: 3 }).not.toHaveA("width").ofExactly(3);
+          this.expect({ height: 3 }).not.toHaveA("height").ofExactly(5);
+          this.expect({ height: 3 }).not.toHaveA("height").between(5).and(10);
+          this.expect({ height: 3 }).not.toHaveA("height").between(10).and(20);
+        });
+
+        expect(results.length).toBe(4);
+        expect(results[0].passed()).toBeTruthy();
+        expect(results[1].passed()).toBeTruthy();
+        expect(results[2].passed()).toBeTruthy();
+        expect(results[3].passed()).toBeTruthy();
+        expect(results[0].message).toBe("Passed.");
+        expect(results[1].message).toBe("Passed.");
+        expect(results[2].message).toBe("Passed.");
+        expect(results[3].message).toBe("Passed.");
+      });
+    });
+
+    describe("when all of the matchers match", function() {
+      beforeEach(function() {
+        results = resultsOfSpec(function() {
+          this.expect({ height: 3 }).not.toHaveA("height").ofExactly(3);
+          this.expect({ height: 3 }).not.toHaveA("height").between(2).and(4);
+        });
+      });
+
+      it("adds a single failure to the spec's results", function() {
+        expect(results.length).toBe(2);
+        expect(results[0].passed()).toBeFalsy();
+        expect(results[1].passed()).toBeFalsy();
+      });
+
+      it("builds a failure message from the complete chain of matchers", function() {
+        expect(results[0].message).toBe("Expected { height : 3 } not to have a 'height' of exactly 3.");
+        expect(results[1].message).toBe("Expected { height : 3 } not to have a 'height' between 2 and 4.");
+      });
+    });
+  });
+
+  function resultsOfSpec(specFunction) {
+    var spec = env.it("spec", specFunction);
+    suite.execute();
+    return spec.results().getItems();
+  }
 });

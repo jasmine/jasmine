@@ -97,7 +97,7 @@ jasmine.ExpectationResult = function(params) {
   this.passed_ = params.passed;
   this.expected = params.expected;
   this.actual = params.actual;
-  this.message = this.passed_ ? 'Passed.' : params.message;
+  this.setMessage(params.message);
 
   var trace = (params.trace || new Error(this.message));
   this.trace = this.passed_ ? '' : trace;
@@ -109,6 +109,11 @@ jasmine.ExpectationResult.prototype.toString = function () {
 
 jasmine.ExpectationResult.prototype.passed = function () {
   return this.passed_;
+};
+
+jasmine.ExpectationResult.prototype.setMessage = function(message) {
+  this.defaultMessage = message;
+  this.message = this.passed_ ? 'Passed.' : this.defaultMessage;
 };
 
 /**
