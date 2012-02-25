@@ -146,14 +146,28 @@ jasmine.Spec.prototype.makeMatchersClass_ = function(chainName) {
   }
 };
 
-jasmine.Spec.prototype.addMatchers = function(matchers) {
+jasmine.Spec.prototype.addMatchers = function(arg1, arg2) {
+  var matchers, chainPrefixes;
+  if (arg2) {
+    chainPrefixes = jasmine.isArray_(arg1) ? arg1 : [arg1];
+    matchers = arg2;
+  } else {
+    chainPrefixes = [null];
+    matchers = arg1;
+  }
+
   var parsedMatchers   = this.parseMatchers_(matchers),
       topLevelMatchers = parsedMatchers.topLevel,
       chainedMatchers  = parsedMatchers.chained;
 
-  this.addMatchers_(null, topLevelMatchers);
-  for (var chainName in chainedMatchers) {
-    this.addMatchers_(chainName, chainedMatchers[chainName]);
+  var chainPrefix, fullChainName;
+  for (var i = 0; i < chainPrefixes.length; i++) {
+    chainPrefix = chainPrefixes[i];
+    this.addMatchers_(chainPrefix, topLevelMatchers);
+    for (var chainName in chainedMatchers) {
+      fullChainName = chainPrefix ? [chainPrefix, chainName].join(" ") : chainName;
+      this.addMatchers_(fullChainName, chainedMatchers[chainName]);
+    }
   }
 };
 
