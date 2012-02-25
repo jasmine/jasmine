@@ -947,28 +947,28 @@ describe("jasmine.Matchers", function() {
       describe("with Object", function () {
         it("says it's looking for an object", function () {
           any = jasmine.any(Object);
-          expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function Object.*\)>/);
+          expect(any.jasmineToString()).toMatch(/<jasmine\.any\([\s]*function Object[\S\s]*\)>/);
         });
       });
 
       describe("with Function", function () {
         it("says it's looking for a function", function () {
           any = jasmine.any(Function);
-          expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function Function.*\)>/);
+          expect(any.jasmineToString()).toMatch(/<jasmine\.any\([\s]*function Function[\S\s]*\)>/);
         });
       });
 
       describe("with String", function () {
         it("says it's looking for a string", function () {
           any = jasmine.any(String);
-          expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function String.*\)>/);
+          expect(any.jasmineToString()).toMatch(/<jasmine\.any\([\s]*function String[\S\s]*\)>/);
         });
       });
 
       describe("with Number", function () {
         it("says it's looking for a number", function () {
           any = jasmine.any(Number);
-          expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function Number.*\)>/);
+          expect(any.jasmineToString()).toMatch(/<jasmine\.any\([\s]*function Number[\S\s]*\)>/);
         });
       });
 
@@ -976,7 +976,7 @@ describe("jasmine.Matchers", function() {
         it("says it's looking for an object", function () {
           function MyClass () {}
           any = jasmine.any(MyClass);
-          expect(any.jasmineToString()).toMatch(/<jasmine\.any\(function MyClass.*\)>/);
+          expect(any.jasmineToString()).toMatch(/<jasmine\.any\([\s]*function MyClass[\S\s]*\)>/);
         });
       });
     });
