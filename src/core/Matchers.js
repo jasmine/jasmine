@@ -38,16 +38,6 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
 
     if (this.reportWasCalled_) return passed;
 
-    var message;
-    if (this.message) {
-      message = this.message.apply(this, arguments);
-      if (jasmine.isArray_(message)) {
-        message = message[this.isNot ? 1 : 0];
-      }
-    } else {
-      message = defaultMessage(this, matcherName, matcherArgs);
-    }
-
     var expectationResult;
     if (this.precedingResult) {
       expectationResult = this.precedingResult;
@@ -61,7 +51,17 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
       });
       this.spec.addMatcherResult(expectationResult);
     }
-    expectationResult.setMessage(message);
+
+    var message = defaultMessage(this, matcherName, matcherArgs);
+    expectationResult.setDefaultMessage(message);
+
+    if (this.message) {
+      var customMessage = this.message.apply(this, arguments);
+      if (jasmine.isArray_(customMessage)) customMessage = customMessage[this.isNot ? 1 : 0];
+      expectationResult.setCustomMessage(customMessage);
+    } else {
+      expectationResult.setCustomMessage(null);
+    }
 
     var chainName = this.constructor.chainName;
     var nextChainName = chainName ? [chainName, matcherName].join(" ") : matcherName;

@@ -144,6 +144,83 @@ describe("Chained matchers", function() {
     });
   });
 
+  describe("when some of the matchers define custom messages", function() {
+    beforeEach(function() {
+      env.beforeEach(function() {
+        this.addMatchers({
+          toHaveA: function(key) {
+            this.valueToCompare = this.actual[key];
+            return !!this.valueToCompare;
+          },
+
+          toHaveASpecial: function(key) {
+            this.message = function() { return ["message for toHaveASpecial", "message for not toHaveASpecial"]; };
+            this.valueToCompare = this.actual[key];
+            return !!this.valueToCompare;
+          }
+        });
+
+        this.addMatchers(["toHaveA", "toHaveASpecial"], {
+          withA: function(key) {
+            this.valueToCompare = this.valueToCompare[key];
+            return !!this.valueToCompare;
+          },
+
+          withASpecial: function(key) {
+            this.message = function() { return ["message for withASpecial", "message for not withASpecial"]; };
+            this.valueToCompare = this.valueToCompare[key];
+            return !!this.valueToCompare;
+          }
+        });
+
+        this.addMatchers([ "toHaveA withA", "toHaveA withASpecial", "toHaveASpecial withA", "toHaveASpecial withASpecial" ], {
+          thatIs: function(value) {
+            return this.valueToCompare === value;
+          },
+
+          thatIsEspecially: function(value) {
+            this.message = function() { return ["message for thatIsEspecially", "message for not thatIsEspecially"]; };
+            return this.valueToCompare === value;
+          }
+        });
+      });
+    });
+
+    describe("when the last matcher in a chain has a custom message", function() {
+      it("uses the custom message", function() {
+        var results = resultsOfSpec(function() {
+          this.expect({ song: { melody: 'sad' } }).toHaveA("song").withASpecial('harmony');
+          this.expect({ song: { melody: 'sad' } }).not.toHaveA("song").withASpecial('melody');
+          this.expect({ song: { melody: 'sad' } }).toHaveA("song").withA('melody').thatIsEspecially('happy');
+          this.expect({ song: { melody: 'sad' } }).not.toHaveA("song").withA('melody').thatIsEspecially('sad');
+        });
+
+        expect(results.length).toBe(4);
+        expect(results[0].message).toBe("message for withASpecial");
+        expect(results[1].message).toBe("message for not withASpecial");
+        expect(results[2].message).toBe("message for thatIsEspecially");
+        expect(results[3].message).toBe("message for not thatIsEspecially");
+      });
+    });
+
+    describe("when the last matcher in the chain does not have a custom message", function() {
+      it("uses a message based on the chain of matcher names", function() {
+        var results = resultsOfSpec(function() {
+          this.expect({ song: { melody: 'sad' } }).toHaveASpecial("song").withA('harmony');
+          this.expect({ song: { melody: 'sad' } }).not.toHaveASpecial("song").withA('melody');
+          this.expect({ song: { melody: 'sad' } }).toHaveASpecial("song").withASpecial('melody').thatIs("happy");
+          this.expect({ song: { melody: 'sad' } }).not.toHaveASpecial("song").withASpecial('melody').thatIs("sad");
+        });
+
+        expect(results.length).toBe(4);
+        expect(results[0].message).toBe("Expected { song : { melody : 'sad' } } to have a special 'song' with a 'harmony'.");
+        expect(results[1].message).toBe("Expected { song : { melody : 'sad' } } not to have a special 'song' with a 'melody'.");
+        expect(results[2].message).toBe("Expected { song : { melody : 'sad' } } to have a special 'song' with a special 'melody' that is 'happy'.");
+        expect(results[3].message).toBe("Expected { song : { melody : 'sad' } } not to have a special 'song' with a special 'melody' that is 'sad'.");
+      });
+    });
+  });
+
   function itCreatesMatcherMethodsCorrectly() {
     describe("the return value of a matcher function", function() {
       describe("when no further chained matchers have been added", function() {
