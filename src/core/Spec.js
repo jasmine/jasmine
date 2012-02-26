@@ -68,6 +68,18 @@ jasmine.Spec.prototype.addMatcherResult = function(result) {
   this.results_.addResult(result);
 };
 
+jasmine.Spec.prototype.updateMatcherResult = function(result, isPassing) {
+  var wasPassing = result.passed_;
+  if (wasPassing && !isPassing) {
+    this.results_.passedCount--;
+    this.results_.failedCount++;
+  } else if (isPassing && !wasPassing) {
+    this.results_.passedCount++;
+    this.results_.failedCount--;
+  }
+  result.passed_ = isPassing;
+};
+
 jasmine.Spec.prototype.expect = function(actual) {
   var positive = new (this.getMatchersClass_())(this.env, actual, this);
   positive.not = new (this.getMatchersClass_())(this.env, actual, this, true);

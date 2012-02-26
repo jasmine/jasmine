@@ -41,7 +41,7 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
     var expectationResult;
     if (this.precedingResult) {
       expectationResult = this.precedingResult;
-      expectationResult.passed_ = passed;
+      this.spec.updateMatcherResult(expectationResult, passed);
     } else {
       expectationResult = new jasmine.ExpectationResult({
         matcherName: matcherName,
