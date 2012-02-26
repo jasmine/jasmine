@@ -98,6 +98,9 @@ jasmine.ExpectationResult = function(params) {
   this.expected = params.expected;
   this.actual = params.actual;
   this.setCustomMessage(params.message);
+
+  var trace = (params.trace || new Error(this.message));
+  this.trace = this.passed_ ? "" : trace;
 };
 
 jasmine.ExpectationResult.prototype.toString = function () {
