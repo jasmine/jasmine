@@ -941,6 +941,79 @@ describe("jasmine.Matchers", function() {
     });
   });
 
+  describe("ArrayContaining", function () {
+    describe("with an empty array", function () {
+      var containing;
+      beforeEach(function () {
+        containing = new jasmine.Matchers.ArrayContaining([]);
+      });
+
+      it("matches everything", function () {
+         expect(containing.jasmineMatches("foo", [], [])).toBe(true);
+      });
+
+      it("says it didn't expect to contain anything", function () {
+        expect(containing.jasmineToString()).toEqual("<jasmine.arrayContaining([  ])>");
+      });
+    });
+
+    describe("with an array with items in it", function () {
+      var containing, mismatchKeys, mismatchValues;
+      beforeEach(function () {
+        mismatchKeys = [];
+        mismatchValues = [];
+        containing = new jasmine.Matchers.ArrayContaining(["foo", "bar"]);
+      });
+
+      it("doesn't match an empty array", function () {
+        expect(containing.jasmineMatches([], mismatchKeys, mismatchValues)).toBe(false);
+      });
+
+      it("doesn't match an array with none of the specified options", function () {
+        expect(containing.jasmineMatches(['baz'], mismatchKeys, mismatchValues)).toBe(false);
+      });
+
+      it("adds a single message for all missing values", function () {
+        containing.jasmineMatches([], mismatchKeys, mismatchValues);
+        expect(mismatchValues.length).toEqual(1);
+      });
+
+      it("matches when all the values are the same", function () {
+        expect(containing.jasmineMatches(['foo', 'bar'], mismatchKeys, mismatchValues)).toBe(true);
+      });
+
+      it("matches when there are additional values", function () {
+        expect(containing.jasmineMatches(['foo', 'bar', 'baz'], mismatchKeys, mismatchValues)).toBe(true);
+      });
+
+      it("doesn't modify missingKeys or missingValues when match is successful", function () {
+        containing.jasmineMatches(['foo', 'bar'], mismatchKeys, mismatchValues);
+        expect(mismatchKeys.length).toEqual(0);
+        expect(mismatchValues.length).toEqual(0);
+      });
+
+      it("says what it expects to contain", function () {
+        expect(containing.jasmineToString()).toEqual("<jasmine.arrayContaining(" + jasmine.pp(['foo', 'bar']) + ")>");
+      });
+    });
+
+    describe("in real life", function () {
+      var method;
+      beforeEach(function () {
+        method = jasmine.createSpy("method");
+        method(['a', 'b']);
+      });
+
+      it("works correctly for positive matches", function () {
+        expect(method).toHaveBeenCalledWith(jasmine.arrayContaining(['a']));
+      });
+
+      it("works correctly for negative matches", function () {
+        expect(method).not.toHaveBeenCalledWith(jasmine.arrayContaining(['z']));
+      });
+    });
+  });
+
   describe("Matchers.Any", function () {
     var any;
     describe(".jasmineToString", function () {

@@ -398,3 +398,31 @@ jasmine.Matchers.ObjectContaining.prototype.jasmineMatches = function(other, mis
 jasmine.Matchers.ObjectContaining.prototype.jasmineToString = function () {
   return "<jasmine.objectContaining(" + jasmine.pp(this.sample) + ")>";
 };
+
+jasmine.Matchers.ArrayContaining = function (sample) {
+  this.sample = sample;
+};
+
+jasmine.Matchers.ArrayContaining.prototype.jasmineMatches = function(other, mismatchKeys, mismatchValues) {
+  mismatchValues = mismatchValues || [];
+  var env = jasmine.getEnv();
+
+  var missingItems = [];
+  for (var i = 0; i < this.sample.length; i++) {
+    var item = this.sample[i];
+    if (!env.contains_(other, item)) {
+      missingItems.push(item);
+    }
+  }
+
+  if (missingItems.length > 0) {
+    mismatchValues.push("expected have values ['" + missingItems.join("','") + "']");
+    return false;
+  } else {
+    return true;
+  }
+};
+
+jasmine.Matchers.ArrayContaining.prototype.jasmineToString = function () {
+  return "<jasmine.arrayContaining(" + jasmine.pp(this.sample) +")>";
+};
