@@ -165,7 +165,7 @@ jasmine.Spec.prototype.addMatchers = function(arg1, arg2) {
     chainPrefix = chainPrefixes[i];
     this.addMatchers_(chainPrefix, topLevelMatchers);
     for (var chainName in chainedMatchers) {
-      fullChainName = chainPrefix ? [chainPrefix, chainName].join(" ") : chainName;
+      fullChainName = jasmine.ChainedMatchers.makeChainName(chainPrefix, chainName);
       this.addMatchers_(fullChainName, chainedMatchers[chainName]);
     }
   }
