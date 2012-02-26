@@ -63,8 +63,7 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
       expectationResult.setCustomMessage(null);
     }
 
-    var chainName = this.constructor.chainName;
-    var nextChainName = chainName ? [chainName, matcherName].join(" ") : matcherName;
+    var nextChainName = jasmine.ChainedMatchers.makeChainName(this.constructor.chainName, matcherName);
     var chainedMatchersClass = this.spec.chainedMatchersClasses[nextChainName];
     if (chainedMatchersClass) {
       return new chainedMatchersClass(this, expectationResult);

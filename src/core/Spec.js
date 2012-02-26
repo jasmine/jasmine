@@ -178,19 +178,15 @@ jasmine.Spec.prototype.addMatchers_ = function(chainName, matchersPrototype) {
 
 jasmine.Spec.prototype.parseMatchers_ = function(matcherDefinitions) {
   var chained = {}, topLevel = {};
-  var names, chainName, methodName, method;
-
+  var chain, method;
   for (var key in matcherDefinitions) {
-    names      = key.match(/\w+/g);
-    method     = matcherDefinitions[key];
-    chainName  = names.slice(0, names.length - 1).join(" ");
-    methodName = names.slice(names.length - 1)[0];
-
-    if (chainName.length > 0) {
-      chained[chainName] || (chained[chainName] = {});
-      chained[chainName][methodName] = method;
+    method = matcherDefinitions[key];
+    chain = jasmine.ChainedMatchers.parseChainName(key);
+    if (chain.prefix.length > 0) {
+      chained[chain.prefix] || (chained[chain.prefix] = {});
+      chained[chain.prefix][chain.matcherName] = method;
     } else {
-      topLevel[methodName] = method;
+      topLevel[chain.matcherName] = method;
     }
   }
 

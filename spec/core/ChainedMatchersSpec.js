@@ -8,6 +8,46 @@ describe("Chained matchers", function() {
     env.currentSuite = suite;
   });
 
+  describe("ChainedMatchers.makeChainName(prefix, matcherName)", function() {
+    describe("when there is no prefix", function() {
+      it("returns the matcher name", function() {
+        var chainName1 = jasmine.ChainedMatchers.makeChainName("", "toBeCool");
+        var chainName2 = jasmine.ChainedMatchers.makeChainName(null, "toBeGrand");
+        expect(chainName1).toBe("toBeCool");
+        expect(chainName2).toBe("toBeGrand");
+      });
+    });
+
+    describe("when there is a prefix", function() {
+      it("adds the matcherName to the prefix, separated by a space", function() {
+        var chainName1 = jasmine.ChainedMatchers.makeChainName("toBeBetween", "and");
+        var chainName2 = jasmine.ChainedMatchers.makeChainName("toHaveA between", "and");
+        expect(chainName1).toBe("toBeBetween and");
+        expect(chainName2).toBe("toHaveA between and");
+      });
+    });
+  });
+
+  describe("ChainedMatchers.parseChainName(chainName)", function() {
+    it("returns an object with 2 keys: 'prefix' and 'matcherName'", function() {
+      var chain1 = jasmine.ChainedMatchers.parseChainName("toHaveA between and");
+      var chain2 = jasmine.ChainedMatchers.parseChainName("toHaveA");
+
+      expect(chain1).toEqual({ prefix: "toHaveA between", matcherName: "and" });
+      expect(chain2).toEqual({ prefix: "", matcherName: "toHaveA" });
+    });
+
+    it("handles strings with matcher names separated by any number of non-word characters", function() {
+      var chain1 = jasmine.ChainedMatchers.parseChainName("toHaveA    between   and");
+      var chain2 = jasmine.ChainedMatchers.parseChainName("toHaveA.between.and");
+      var chain3 = jasmine.ChainedMatchers.parseChainName("toHaveA/between/and");
+
+      expect(chain1).toEqual({ prefix: "toHaveA between", matcherName: "and" });
+      expect(chain2).toEqual({ prefix: "toHaveA between", matcherName: "and" });
+      expect(chain3).toEqual({ prefix: "toHaveA between", matcherName: "and" });
+    });
+  });
+
   describe("calling #addMatchers with a matchers object whose keys contain multiple matcher names", function() {
     beforeEach(function() {
       env.beforeEach(function() {
