@@ -357,6 +357,16 @@ describe("Chained matchers", function() {
           expect(results[1].message).toBe("Expected { height : 3 } to have a 'height' of exactly 5.");
           expect(results[2].message).toBe("Expected { height : 3 } to have a 'height' between 1 and 2.");
         });
+
+        it("builds a trace with the right message", function() {
+          expect(results[0].trace instanceof Error).toBeTruthy();
+          expect(results[1].trace instanceof Error).toBeTruthy();
+          expect(results[2].trace instanceof Error).toBeTruthy();
+
+          expect(results[0].trace.message).toBe(results[0].message);
+          expect(results[1].trace.message).toBe(results[1].message);
+          expect(results[2].trace.message).toBe(results[2].message);
+        });
       });
 
       describe("when all of the matchers match", function() {
@@ -416,6 +426,14 @@ describe("Chained matchers", function() {
         it("builds a failure message from the complete chain of matchers", function() {
           expect(results[0].message).toBe("Expected { height : 3 } not to have a 'height' of exactly 3.");
           expect(results[1].message).toBe("Expected { height : 3 } not to have a 'height' between 2 and 4.");
+        });
+
+        it("builds a trace with the right message", function() {
+          expect(results[0].trace instanceof Error).toBeTruthy();
+          expect(results[1].trace instanceof Error).toBeTruthy();
+
+          expect(results[0].trace.message).toBe(results[0].message);
+          expect(results[1].trace.message).toBe(results[1].message);
         });
       });
     });

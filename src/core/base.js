@@ -97,10 +97,7 @@ jasmine.ExpectationResult = function(params) {
   this.passed_ = params.passed;
   this.expected = params.expected;
   this.actual = params.actual;
-  this.setDefaultMessage(params.message);
-
-  var trace = (params.trace || new Error(this.message));
-  this.trace = this.passed_ ? '' : trace;
+  this.setCustomMessage(params.message);
 };
 
 jasmine.ExpectationResult.prototype.toString = function () {
@@ -124,10 +121,10 @@ jasmine.ExpectationResult.prototype.setCustomMessage = function(message) {
 jasmine.ExpectationResult.prototype.afterUpdate_ = function(message) {
   if (this.passed_) {
     this.message = "Passed.";
-  } else if (this.customMessage) {
-    this.message = this.customMessage;
+    this.trace = "";
   } else {
-    this.message = this.defaultMessage;
+    this.message = this.customMessage || this.defaultMessage;
+    this.trace = new Error(this.message);
   }
 };
 
