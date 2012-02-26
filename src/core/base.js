@@ -202,13 +202,28 @@ jasmine.any = function(clazz) {
  *
  * @example
  * // don't care about any other attributes than foo.
- * expect(mySpy).toHaveBeenCalledWith(jasmine.objectContaining({foo: "bar"});
+ * expect(mySpy).toHaveBeenCalledWith(jasmine.objectContaining({foo: "bar"}));
  *
  * @param sample {Object} sample
  * @returns matchable object for the sample
  */
 jasmine.objectContaining = function (sample) {
     return new jasmine.Matchers.ObjectContaining(sample);
+};
+
+/**
+ * Returns a matchable subset of an array. For use in expectations when you don't care about all of the
+ * values in the array.
+ *
+ * @example
+ * // don't care about any other values than foo.
+ * expect(mySpy).toHaveBeenCalledWith(jasmine.arrayContaining(['foo']));
+ *
+ * @param sample {Array} sample
+ * @returns matchable array for the sample
+ */
+jasmine.arrayContaining = function (sample) {
+    return new jasmine.Matchers.ArrayContaining(sample);
 };
 
 /**
