@@ -30,43 +30,45 @@ jasmine.Matchers.wrapInto_ = function(prototype, matchersClass) {
   }
 };
 
-jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
-  return function() {
-    var matcherArgs = jasmine.util.argsToArray(arguments);
-    var result = matcherFunction.apply(this, arguments);
-    var passed = isPassing(this, result);
-    if (this.reportWasCalled_) return passed;
+;(function() {
+  jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
+    return function() {
+      var matcherArgs = jasmine.util.argsToArray(arguments);
+      var result = matcherFunction.apply(this, arguments);
+      var passed = isPassing(this, result);
+      if (this.reportWasCalled_) return passed;
 
-    var defaultMessage = makeDefaultMessage(this, matcherName, matcherArgs);
-    var customMessage  = makeCustomMessage(this);
+      var defaultMessage = makeDefaultMessage(this, matcherName, matcherArgs);
+      var customMessage  = makeCustomMessage(this);
 
-    var expectationResult;
-    if (this.precedingResult) {
-      expectationResult = this.precedingResult;
-      this.spec.updateMatcherResult(expectationResult, {
-        passed: passed,
-        customMessage: customMessage,
-        defaultMessage: defaultMessage
-      });
-    } else {
-      expectationResult = new jasmine.ExpectationResult({
-        passed: passed,
-        customMessage: customMessage,
-        defaultMessage: defaultMessage,
-        matcherName: matcherName,
-        expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
-        actual: this.actual
-      });
-      this.spec.addMatcherResult(expectationResult);
-    }
+      var expectationResult;
+      if (this.precedingResult) {
+        expectationResult = this.precedingResult;
+        this.spec.updateMatcherResult(expectationResult, {
+          passed: passed,
+          customMessage: customMessage,
+          defaultMessage: defaultMessage
+        });
+      } else {
+        expectationResult = new jasmine.ExpectationResult({
+          passed: passed,
+          customMessage: customMessage,
+          defaultMessage: defaultMessage,
+          matcherName: matcherName,
+          expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
+          actual: this.actual
+        });
+        this.spec.addMatcherResult(expectationResult);
+      }
 
-    var nextChainName = jasmine.ChainedMatchers.makeChainName(this.constructor.chainName, matcherName);
-    var chainedMatchersClass = this.spec.chainedMatchersClasses[nextChainName];
-    if (chainedMatchersClass) {
-      return new chainedMatchersClass(this, expectationResult);
-    } else {
-      return jasmine.undefined;
-    }
+      var nextChainName = jasmine.ChainedMatchers.makeChainName(this.constructor.chainName, matcherName);
+      var chainedMatchersClass = this.spec.chainedMatchersClasses[nextChainName];
+      if (chainedMatchersClass) {
+        return new chainedMatchersClass(this, expectationResult);
+      } else {
+        return jasmine.undefined;
+      }
+    };
   };
 
   function makeCustomMessage(self) {
@@ -103,7 +105,7 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
       return result;
     }
   }
-};
+})();
 
 
 
