@@ -35,32 +35,29 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
     var matcherArgs = jasmine.util.argsToArray(arguments);
     var result = matcherFunction.apply(this, arguments);
     var passed = isPassing(this, result);
-
     if (this.reportWasCalled_) return passed;
+
+    var defaultMessage = makeDefaultMessage(this, matcherName, matcherArgs);
+    var customMessage  = makeCustomMessage(this);
 
     var expectationResult;
     if (this.precedingResult) {
       expectationResult = this.precedingResult;
-      this.spec.updateMatcherResult(expectationResult, passed);
+      this.spec.updateMatcherResult(expectationResult, {
+        passed: passed,
+        customMessage: customMessage,
+        defaultMessage: defaultMessage
+      });
     } else {
       expectationResult = new jasmine.ExpectationResult({
-        matcherName: matcherName,
         passed: passed,
+        customMessage: customMessage,
+        defaultMessage: defaultMessage,
+        matcherName: matcherName,
         expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
         actual: this.actual
       });
       this.spec.addMatcherResult(expectationResult);
-    }
-
-    var message = defaultMessage(this, matcherName, matcherArgs);
-    expectationResult.setDefaultMessage(message);
-
-    if (this.message) {
-      var customMessage = this.message.apply(this, arguments);
-      if (jasmine.isArray_(customMessage)) customMessage = customMessage[this.isNot ? 1 : 0];
-      expectationResult.setCustomMessage(customMessage);
-    } else {
-      expectationResult.setCustomMessage(null);
     }
 
     var nextChainName = jasmine.ChainedMatchers.makeChainName(this.constructor.chainName, matcherName);
@@ -72,7 +69,15 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
     }
   };
 
-  function defaultMessage(self, matcherName, matcherArgs) {
+  function makeCustomMessage(self) {
+    if (self.message) {
+      var customMessage = self.message.apply(self, arguments);
+      if (jasmine.isArray_(customMessage)) customMessage = customMessage[self.isNot ? 1 : 0];
+      return customMessage;
+    }
+  }
+
+  function makeDefaultMessage(self, matcherName, matcherArgs) {
     var message;
     if (self.precedingResult) {
       message = self.precedingResult.defaultMessage.replace(/\.$/, " ");
