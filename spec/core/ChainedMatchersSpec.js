@@ -8,6 +8,48 @@ describe("Chained matchers", function() {
     env.currentSuite = suite;
   });
 
+  it("works in real life", function() {
+    this.addMatchers({
+      'toHaveA': function(key) {
+        this.valueToCompare = this.actual[key];
+        return !!this.valueToCompare;
+      },
+
+      'toHaveA withA': function(key) {
+        this.valueToCompare = this.valueToCompare[key];
+        return !!this.valueToCompare;
+      }
+    });
+
+    this.addMatchers(["toHaveA", "toHaveA withA"], {
+      'ofExactly': function(value) {
+        return this.valueToCompare === value;
+      },
+
+      'between': function(lowerBound) {
+        return this.valueToCompare >= lowerBound;
+      },
+
+      'between and': function(upperBound) {
+        return this.valueToCompare <= upperBound;
+      }
+    });
+
+    expect({ height: 12 }).toHaveA("height");
+    expect({ height: 12 }).not.toHaveA("width");
+    expect({ height: 12 }).toHaveA("height").ofExactly(12);
+    expect({ height: 12 }).not.toHaveA("height").ofExactly(20);
+    expect({ height: 12 }).toHaveA("height").between(10).and(20);
+    expect({ height: 12 }).not.toHaveA("height").between(1).and(10);
+
+    expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height");
+    expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("width");
+    expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height").ofExactly(12);
+    expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("height").ofExactly(24);
+    expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height").between(10).and(20);
+    expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("height").between(1).and(10);
+  });
+
   describe("ChainedMatchers.makeChainName(prefix, matcherName)", function() {
     describe("when there is no prefix", function() {
       it("returns the matcher name", function() {
