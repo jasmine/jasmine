@@ -73,6 +73,24 @@ jasmine.NestedResults.prototype.addResult = function(result) {
 };
 
 /**
+ * Updates a result, tracking counts (passed & failed)
+ * @param {jasmine.ExpectationResult} result
+ * @param {Object} params
+ */
+jasmine.NestedResults.prototype.updateResult = function(result, params) {
+  var wasPassing = result.passed_,
+      isPassing = params.passed;
+  if (wasPassing && !isPassing) {
+    this.passedCount--;
+    this.failedCount++;
+  } else if (isPassing && !wasPassing) {
+    this.passedCount++;
+    this.failedCount--;
+  }
+  result.update(params);
+};
+
+/**
  * @returns {Boolean} True if <b>everything</b> below passed
  */
 jasmine.NestedResults.prototype.passed = function() {
