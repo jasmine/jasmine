@@ -36,4 +36,30 @@ describe("jasmine.util", function() {
       expect(jasmine.isArray_(null)).toBe(false);
     });
   });
+
+  describe("subclass(parentClass)", function() {
+    var ParentClass, ChildClass, childInstance;
+
+    beforeEach(function() {
+      ParentClass = function(param) { this.param = param };
+      ChildClass = jasmine.util.subclass(ParentClass);
+      childInstance = new ChildClass("foo");
+    });
+
+    it("returns a constructor function", function() {
+      expect(typeof ChildClass).toBe("function");
+    });
+
+    it("sets up the prototype chain correctly", function() {
+      expect(childInstance instanceof ParentClass).toBeTruthy();
+    });
+
+    it("sets the 'constructor' property correctly", function() {
+      expect(childInstance.constructor).toBe(ChildClass);
+    });
+
+    it("sets up the new constructor function to call the parent constructor", function() {
+      expect(childInstance.param).toBe("foo");
+    });
+  });
 });

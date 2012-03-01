@@ -30,47 +30,82 @@ jasmine.Matchers.wrapInto_ = function(prototype, matchersClass) {
   }
 };
 
-jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
-  return function() {
-    var matcherArgs = jasmine.util.argsToArray(arguments);
-    var result = matcherFunction.apply(this, arguments);
+;(function() {
+  jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
+    return function() {
+      var matcherArgs = jasmine.util.argsToArray(arguments);
+      var result = matcherFunction.apply(this, arguments);
+      var passed = isPassing(this, result);
+      if (this.reportWasCalled_) return passed;
 
-    if (this.isNot) {
-      result = !result;
-    }
+      var defaultMessage = makeDefaultMessage(this, matcherName, matcherArgs);
+      var customMessage  = makeCustomMessage(this);
 
-    if (this.reportWasCalled_) return result;
-
-    var message;
-    if (!result) {
-      if (this.message) {
-        message = this.message.apply(this, arguments);
-        if (jasmine.isArray_(message)) {
-          message = message[this.isNot ? 1 : 0];
-        }
+      var expectationResult;
+      if (this.precedingResult) {
+        expectationResult = this.precedingResult;
+        this.spec.updateMatcherResult(expectationResult, {
+          passed: passed,
+          customMessage: customMessage,
+          defaultMessage: defaultMessage
+        });
       } else {
-        var englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
-        message = "Expected " + jasmine.pp(this.actual) + (this.isNot ? " not " : " ") + englishyPredicate;
-        if (matcherArgs.length > 0) {
-          for (var i = 0; i < matcherArgs.length; i++) {
-            if (i > 0) message += ",";
-            message += " " + jasmine.pp(matcherArgs[i]);
-          }
-        }
-        message += ".";
+        expectationResult = new jasmine.ExpectationResult({
+          passed: passed,
+          customMessage: customMessage,
+          defaultMessage: defaultMessage,
+          matcherName: matcherName,
+          expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
+          actual: this.actual
+        });
+        this.spec.addMatcherResult(expectationResult);
       }
-    }
-    var expectationResult = new jasmine.ExpectationResult({
-      matcherName: matcherName,
-      passed: result,
-      expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
-      actual: this.actual,
-      message: message
-    });
-    this.spec.addMatcherResult(expectationResult);
-    return jasmine.undefined;
+
+      var nextChainName = jasmine.ChainedMatchers.makeChainName(this.constructor.chainName, matcherName);
+      var chainedMatchersClass = this.spec.chainedMatchersClasses[nextChainName];
+      if (chainedMatchersClass) {
+        return new chainedMatchersClass(this, expectationResult);
+      } else {
+        return jasmine.undefined;
+      }
+    };
   };
-};
+
+  function makeCustomMessage(self) {
+    if (self.message) {
+      var customMessage = self.message.apply(self, arguments);
+      if (jasmine.isArray_(customMessage)) customMessage = customMessage[self.isNot ? 1 : 0];
+      return customMessage;
+    }
+  }
+
+  function makeDefaultMessage(self, matcherName, matcherArgs) {
+    var message;
+    if (self.precedingResult) {
+      message = self.precedingResult.defaultMessage.replace(/\.$/, " ");
+    } else {
+      message = "Expected " + jasmine.pp(self.actual) + (self.isNot ? " not " : " ");
+    }
+    message += matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
+    for (var i = 0; i < matcherArgs.length; i++) {
+      if (i > 0) message += ",";
+      message += " " + jasmine.pp(matcherArgs[i]);
+    }
+    message += ".";
+    return message;
+  }
+
+  function isPassing(self, result) {
+    var wasPassing = self.precedingResult && self.precedingResult.passed();
+    if (self.isNot) {
+      return wasPassing || !result;
+    } else if (self.precedingResult) {
+      return wasPassing && result;
+    } else {
+      return result;
+    }
+  }
+})();
 
 
 

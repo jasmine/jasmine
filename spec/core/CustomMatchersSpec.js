@@ -13,7 +13,7 @@ describe("Custom Matchers", function() {
       env.beforeEach(function() {
         this.addMatchers({
           matcherForSuite: function(expected) {
-            this.message = "matcherForSuite: actual: " + this.actual + "; expected: " + expected;
+            this.message = function() { return "matcherForSuite: actual: " + this.actual + "; expected: " + expected; };
             return true;
           }
         });
@@ -22,7 +22,7 @@ describe("Custom Matchers", function() {
       spec1 = env.it('spec with an expectation').runs(function () {
         this.addMatchers({
           matcherForSpec: function(expected) {
-            this.message = "matcherForSpec: actual: " + this.actual + "; expected: " + expected;
+            this.message = function() { return "matcherForSpec: actual: " + this.actual + "; expected: " + expected; };
             return true;
           }
         });
@@ -37,12 +37,12 @@ describe("Custom Matchers", function() {
     suite.execute();
 
     spec1Matcher.matcherForSuite("expected");
-    expect(spec1Matcher.message).toEqual("matcherForSuite: actual: xxx; expected: expected");
+    expect(spec1Matcher.message()).toEqual("matcherForSuite: actual: xxx; expected: expected");
     spec1Matcher.matcherForSpec("expected");
-    expect(spec1Matcher.message).toEqual("matcherForSpec: actual: xxx; expected: expected");
+    expect(spec1Matcher.message()).toEqual("matcherForSpec: actual: xxx; expected: expected");
 
     spec2Matcher.matcherForSuite("expected");
-    expect(spec2Matcher.message).toEqual("matcherForSuite: actual: yyy; expected: expected");
+    expect(spec2Matcher.message()).toEqual("matcherForSuite: actual: yyy; expected: expected");
     expect(spec2Matcher.matcherForSpec).toBe(jasmine.undefined);
   });
 
@@ -61,12 +61,17 @@ describe("Custom Matchers", function() {
     });
 
     suite.execute();
-    var passResult = new jasmine.ExpectationResult({passed: true, matcherName: 'toBeTrue',
-      actual: true, expected: jasmine.undefined, message: "Passed." });
-    var failResult = new jasmine.ExpectationResult({passed: false, matcherName: 'toBeTrue',
-      actual: false, expected: jasmine.undefined, message: "Expected false to be true." });
-    failResult.trace = jasmine.any(Object);
-    expect(spec.results().getItems()).toEqual([passResult, failResult]);
+    var results = spec.results().getItems();
+
+    expect(results[0].passed()).toBeTruthy();
+    expect(results[0].message).toBe("Passed.");
+    expect(results[0].actual).toBe(true);
+    expect(results[0].matcherName).toBe('toBeTrue');
+
+    expect(results[1].passed()).toBeFalsy();
+    expect(results[1].message).toBe("Expected false to be true.");
+    expect(results[1].actual).toBe(false);
+    expect(results[1].matcherName).toBe('toBeTrue');
   });
 
   it("should pass args", function() {

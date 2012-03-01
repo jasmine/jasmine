@@ -94,13 +94,12 @@ jasmine.MessageResult.prototype.toString = function() {
 jasmine.ExpectationResult = function(params) {
   this.type = 'expect';
   this.matcherName = params.matcherName;
-  this.passed_ = params.passed;
   this.expected = params.expected;
   this.actual = params.actual;
-  this.message = this.passed_ ? 'Passed.' : params.message;
+  this.update(params);
 
   var trace = (params.trace || new Error(this.message));
-  this.trace = this.passed_ ? '' : trace;
+  this.trace = this.passed_ ? "" : trace;
 };
 
 jasmine.ExpectationResult.prototype.toString = function () {
@@ -110,6 +109,21 @@ jasmine.ExpectationResult.prototype.toString = function () {
 jasmine.ExpectationResult.prototype.passed = function () {
   return this.passed_;
 };
+
+jasmine.ExpectationResult.prototype.update = function(params) {
+  this.defaultMessage = params.defaultMessage;
+  this.customMessage = params.customMessage || params.message;
+  this.passed_ = params.passed;
+
+  if (this.passed_) {
+    this.message = "Passed.";
+    this.trace = "";
+  } else {
+    this.message = this.customMessage || this.defaultMessage;
+    this.trace = new Error(this.message);
+  }
+};
+
 
 /**
  * Getter for the Jasmine environment. Ensures one gets created
