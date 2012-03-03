@@ -24,4 +24,51 @@ describe("base.js", function() {
       expect(jasmine.getGlobal()).toBe(globalObject);
     });
   });
+
+  describe("jasmine.ExpectationResult", function() {
+    var result;
+
+    beforeEach(function() {
+      result = new jasmine.ExpectationResult({
+        passed: true,
+        message: "some message"
+      });
+    });
+
+    describe("#update", function() {
+      it("updates the passing status", function() {
+        result.update({ passed: false });
+        expect(result.passed()).toBeFalsy();
+      });
+
+      describe("when the result is passing", function() {
+        it("sets the message to 'Passed.'", function() {
+          result.update({
+            passed: true,
+            message: "some message"
+          });
+
+          expect(result.message).toBe("Passed.");
+        });
+      });
+
+      describe("when the result is failing", function() {
+        beforeEach(function() {
+          result.update({
+            passed: false,
+            message: "some message"
+          });
+        });
+
+        it("updates the message", function() {
+          expect(result.message).toBe("some message");
+        });
+
+        it("creates a stack trace with the message", function() {
+          expect(result.trace instanceof Error).toBeTruthy();
+          expect(result.trace.message).toBe("some message");
+        });
+      });
+    });
+  });
 });
