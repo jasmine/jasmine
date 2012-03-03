@@ -68,7 +68,7 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
       message: message
     });
     this.spec.addMatcherResult(expectationResult);
-    return jasmine.undefined;
+    return this;
   };
 };
 
