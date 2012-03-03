@@ -204,6 +204,186 @@ describe("Chained matchers", function() {
       });
 
       itCreatesMatcherMethodsCorrectly();
+
+      it("adds the given matchers to ALL of the named matcher classes", function() {
+        var passingResults = resultsOfSpec(function() {
+          this.expect({ triangle: { height: 12 } }).toHaveA("triangle");
+          this.expect({ triangle: { height: 12 } }).not.toHaveA("square");
+          this.expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height");
+          this.expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("width");
+          this.expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height").ofExactly(12);
+          this.expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("height").ofExactly(24);
+          this.expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height").between(10).and(20);
+          this.expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("height").between(1).and(10);
+        });
+        var passingItems = passingResults.getItems();
+
+        expect(passingItems.length).toBe(8);
+        expect(passingResults.passedCount).toBe(8);
+        expect(passingResults.failedCount).toBe(0);
+
+        expect(passingItems[0].passed()).toBeTruthy();
+        expect(passingItems[1].passed()).toBeTruthy();
+        expect(passingItems[2].passed()).toBeTruthy();
+        expect(passingItems[3].passed()).toBeTruthy();
+        expect(passingItems[4].passed()).toBeTruthy();
+        expect(passingItems[5].passed()).toBeTruthy();
+        expect(passingItems[6].passed()).toBeTruthy();
+        expect(passingItems[7].passed()).toBeTruthy();
+
+        var failingResults = resultsOfSpec(function() {
+          this.expect({ triangle: { height: 12 } }).not.toHaveA("triangle");
+          this.expect({ triangle: { height: 12 } }).toHaveA("square");
+          this.expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("height");
+          this.expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("width");
+          this.expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("height").ofExactly(12);
+          this.expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height").ofExactly(24);
+          this.expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("height").between(10).and(20);
+          this.expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height").between(1).and(10);
+        });
+        var failingItems = failingResults.getItems();
+
+        expect(failingItems.length).toBe(8);
+        expect(failingResults.passedCount).toBe(0);
+        expect(failingResults.failedCount).toBe(8);
+
+        expect(failingItems[0].message).toBe("Expected { triangle : { height : 12 } } not to have a 'triangle'.");
+        expect(failingItems[1].message).toBe("Expected { triangle : { height : 12 } } to have a 'square'.");
+        expect(failingItems[2].message).toBe("Expected { triangle : { height : 12 } } not to have a 'triangle' with a 'height'.");
+        expect(failingItems[3].message).toBe("Expected { triangle : { height : 12 } } to have a 'triangle' with a 'width'.");
+        expect(failingItems[4].message).toBe("Expected { triangle : { height : 12 } } not to have a 'triangle' with a 'height' of exactly 12.");
+        expect(failingItems[5].message).toBe("Expected { triangle : { height : 12 } } to have a 'triangle' with a 'height' of exactly 24.");
+        expect(failingItems[6].message).toBe("Expected { triangle : { height : 12 } } not to have a 'triangle' with a 'height' between 10 and 20.");
+        expect(failingItems[7].message).toBe("Expected { triangle : { height : 12 } } to have a 'triangle' with a 'height' between 1 and 10.");
+      });
+    });
+
+    describe("when some of the matchers define custom messages", function() {
+      beforeEach(function() {
+        env.beforeEach(function() {
+          this.addMatchers({
+            toHaveA: function(key) {
+              this.valueToCompare = this.actual[key];
+              return !!this.valueToCompare;
+            },
+
+            toHaveASpecial: function(key) {
+              this.message = function() { return ["message for toHaveASpecial", "message for not toHaveASpecial"]; };
+              this.valueToCompare = this.actual[key];
+              return !!this.valueToCompare;
+            }
+          });
+
+          this.addMatchers(["toHaveA", "toHaveASpecial"], {
+            withA: function(key) {
+              this.valueToCompare = this.valueToCompare[key];
+              return !!this.valueToCompare;
+            },
+
+            withASpecial: function(key) {
+              this.message = function() { return ["message for withASpecial", "message for not withASpecial"]; };
+              this.valueToCompare = this.valueToCompare[key];
+              return !!this.valueToCompare;
+            }
+          });
+
+          this.addMatchers([ "toHaveA withA", "toHaveA withASpecial", "toHaveASpecial withA", "toHaveASpecial withASpecial" ], {
+            thatIs: function(value) {
+              return this.valueToCompare === value;
+            },
+
+            thatIsEspecially: function(value) {
+              this.message = function() { return ["message for thatIsEspecially", "message for not thatIsEspecially"]; };
+              return this.valueToCompare === value;
+            }
+          });
+        });
+      });
+
+      describe("when the last matcher in a chain has a custom message", function() {
+        it("uses the custom message", function() {
+          var results = resultsOfSpec(function() {
+            this.expect({ song: { melody: 'sad' } }).toHaveA("song").withASpecial('harmony');
+            this.expect({ song: { melody: 'sad' } }).not.toHaveA("song").withASpecial('melody');
+            this.expect({ song: { melody: 'sad' } }).toHaveA("song").withA('melody').thatIsEspecially('happy');
+            this.expect({ song: { melody: 'sad' } }).not.toHaveA("song").withA('melody').thatIsEspecially('sad');
+          });
+          var items = results.getItems();
+
+          expect(items.length).toBe(4);
+          expect(results.passedCount).toBe(0);
+          expect(results.failedCount).toBe(4);
+
+          expect(items[0].message).toBe("message for withASpecial");
+          expect(items[1].message).toBe("message for not withASpecial");
+          expect(items[2].message).toBe("message for thatIsEspecially");
+          expect(items[3].message).toBe("message for not thatIsEspecially");
+        });
+      });
+
+      describe("when the last matcher in the chain does not have a custom message", function() {
+        it("uses a message based on the chain of matcher names", function() {
+          var results = resultsOfSpec(function() {
+            this.expect({ song: { melody: 'sad' } }).toHaveASpecial("song").withA('harmony');
+            this.expect({ song: { melody: 'sad' } }).not.toHaveASpecial("song").withA('melody');
+            this.expect({ song: { melody: 'sad' } }).toHaveASpecial("song").withASpecial('melody').thatIs("happy");
+            this.expect({ song: { melody: 'sad' } }).not.toHaveASpecial("song").withASpecial('melody').thatIs("sad");
+          });
+          var items = results.getItems();
+
+          expect(items.length).toBe(4);
+          expect(results.passedCount).toBe(0);
+          expect(results.failedCount).toBe(4);
+
+          expect(items.length).toBe(4);
+          expect(items[0].message).toBe("Expected { song : { melody : 'sad' } } to have a special 'song' with a 'harmony'.");
+          expect(items[1].message).toBe("Expected { song : { melody : 'sad' } } not to have a special 'song' with a 'melody'.");
+          expect(items[2].message).toBe("Expected { song : { melody : 'sad' } } to have a special 'song' with a special 'melody' that is 'happy'.");
+          expect(items[3].message).toBe("Expected { song : { melody : 'sad' } } not to have a special 'song' with a special 'melody' that is 'sad'.");
+        });
+      });
+    });
+
+    it("works in real life", function() {
+      this.addMatchers({
+        'toHaveA': function(key) {
+          this.valueToCompare = this.actual[key];
+          return !!this.valueToCompare;
+        },
+
+        'toHaveA withA': function(key) {
+          this.valueToCompare = this.valueToCompare[key];
+          return !!this.valueToCompare;
+        }
+      });
+
+      this.addMatchers(["toHaveA", "toHaveA withA"], {
+        'ofExactly': function(value) {
+          return this.valueToCompare === value;
+        },
+
+        'between': function(lowerBound) {
+          return this.valueToCompare >= lowerBound;
+        },
+
+        'between and': function(upperBound) {
+          return this.valueToCompare <= upperBound;
+        }
+      });
+
+      expect({ height: 12 }).toHaveA("height");
+      expect({ height: 12 }).not.toHaveA("width");
+      expect({ height: 12 }).toHaveA("height").ofExactly(12);
+      expect({ height: 12 }).not.toHaveA("height").ofExactly(20);
+      expect({ height: 12 }).toHaveA("height").between(10).and(20);
+      expect({ height: 12 }).not.toHaveA("height").between(1).and(10);
+
+      expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height");
+      expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("width");
+      expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height").ofExactly(12);
+      expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("height").ofExactly(24);
+      expect({ triangle: { height: 12 } }).toHaveA("triangle").withA("height").between(10).and(20);
+      expect({ triangle: { height: 12 } }).not.toHaveA("triangle").withA("height").between(1).and(10);
     });
 
     function itCreatesMatcherMethodsCorrectly() {
@@ -277,6 +457,132 @@ describe("Chained matchers", function() {
           });
         });
       });
+
+      describe("when matchers are chained without a 'not'", function() {
+        var results, items;
+
+        describe("when any of the matchers in the chain do NOT match", function() {
+          beforeEach(function() {
+            results = resultsOfSpec(function() {
+              this.expect({ height: 3 }).toHaveA("width").ofExactly(3);
+              this.expect({ height: 3 }).toHaveA("height").ofExactly(5);
+              this.expect({ height: 3 }).toHaveA("height").between(1).and(2);
+            });
+            items = results.getItems();
+          });
+
+          it("adds one failure to the spec's results", function() {
+            expect(items.length).toBe(3);
+            expect(results.passedCount).toBe(0);
+            expect(results.failedCount).toBe(3);
+
+            expect(items[0].passed()).toBeFalsy();
+            expect(items[1].passed()).toBeFalsy();
+            expect(items[2].passed()).toBeFalsy();
+          });
+
+          it("builds a failure message from the complete chain of matchers", function() {
+            expect(items[0].message).toBe("Expected { height : 3 } to have a 'width' of exactly 3.");
+            expect(items[1].message).toBe("Expected { height : 3 } to have a 'height' of exactly 5.");
+            expect(items[2].message).toBe("Expected { height : 3 } to have a 'height' between 1 and 2.");
+          });
+
+          it("builds a trace with the right message", function() {
+            expect(items[0].trace instanceof Error).toBeTruthy();
+            expect(items[1].trace instanceof Error).toBeTruthy();
+            expect(items[2].trace instanceof Error).toBeTruthy();
+
+            expect(items[0].trace.message).toBe(items[0].message);
+            expect(items[1].trace.message).toBe(items[1].message);
+            expect(items[2].trace.message).toBe(items[2].message);
+          });
+        });
+
+        describe("when all of the matchers match", function() {
+          it("adds one success to the spec's results", function() {
+            results = resultsOfSpec(function() {
+              this.expect({ height: 3 }).toHaveA("height").ofExactly(3);
+              this.expect({ height: 3 }).toHaveA("height").between(2).and(5);
+            });
+            items = results.getItems();
+
+            expect(items.length).toBe(2);
+            expect(results.passedCount).toBe(2);
+            expect(results.failedCount).toBe(0);
+
+            expect(items[0].passed()).toBeTruthy();
+            expect(items[1].passed()).toBeTruthy();
+            expect(items[0].message).toBe("Passed.");
+            expect(items[1].message).toBe("Passed.");
+          });
+        });
+      });
+
+      describe("when matchers are chained, starting with a 'not'", function() {
+        var results, items;
+
+        describe("when any of the matchers in the chain do NOT match", function() {
+          it("adds a single success to the spec's results", function() {
+            results = resultsOfSpec(function() {
+              this.expect({ height: 3 }).not.toHaveA("width").ofExactly(3);
+              this.expect({ height: 3 }).not.toHaveA("height").ofExactly(5);
+              this.expect({ height: 3 }).not.toHaveA("height").between(5).and(10);
+              this.expect({ height: 3 }).not.toHaveA("height").between(10).and(20);
+            });
+            items = results.getItems();
+
+            expect(results.passedCount).toBe(4);
+            expect(items.length).toBe(4);
+
+            expect(items[0].passed()).toBeTruthy();
+            expect(items[1].passed()).toBeTruthy();
+            expect(items[2].passed()).toBeTruthy();
+            expect(items[3].passed()).toBeTruthy();
+            expect(items[0].message).toBe("Passed.");
+            expect(items[1].message).toBe("Passed.");
+            expect(items[2].message).toBe("Passed.");
+            expect(items[3].message).toBe("Passed.");
+          });
+        });
+
+        describe("when all of the matchers match", function() {
+          beforeEach(function() {
+            results = resultsOfSpec(function() {
+              this.expect({ height: 3 }).not.toHaveA("height").ofExactly(3);
+              this.expect({ height: 3 }).not.toHaveA("height").between(2).and(4);
+            });
+            items = results.getItems();
+          });
+
+          it("adds a single failure to the spec's results", function() {
+            expect(items.length).toBe(2);
+            expect(results.passedCount).toBe(0);
+            expect(results.failedCount).toBe(2);
+
+            expect(items[0].passed()).toBeFalsy();
+            expect(items[1].passed()).toBeFalsy();
+          });
+
+          it("builds a failure message from the complete chain of matchers", function() {
+            expect(items[0].message).toBe("Expected { height : 3 } not to have a 'height' of exactly 3.");
+            expect(items[1].message).toBe("Expected { height : 3 } not to have a 'height' between 2 and 4.");
+          });
+
+          it("builds a trace with the right message", function() {
+            expect(items[0].trace instanceof Error).toBeTruthy();
+            expect(items[1].trace instanceof Error).toBeTruthy();
+
+            expect(items[0].trace.message).toBe(items[0].message);
+            expect(items[1].trace.message).toBe(items[1].message);
+          });
+        });
+      });
+    }
+
+    function resultsOfSpec(specFunction) {
+      var spec = env.it("spec", specFunction);
+      suite.execute();
+      return spec.results();
     }
   });
 });

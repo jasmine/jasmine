@@ -11,6 +11,8 @@ jasmine.ChainedMatchers = function(params) {
       this[key] = precedingMatcher[key]
     }
   }
+  this.precedingResult  = params.precedingResult;
+  this.precedingMessage = params.precedingMessage;
 };
 
 jasmine.ChainedMatchers.makeChainName = function(/* chain names, matcher names */) {
