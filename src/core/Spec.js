@@ -26,6 +26,7 @@ jasmine.Spec = function(env, suite, description) {
   spec.results_ = new jasmine.NestedResults();
   spec.results_.description = description;
   spec.matchersClass = null;
+  spec.chainedMatchersClasses = {};
 };
 
 jasmine.Spec.prototype.getFullName = function() {
@@ -134,10 +135,49 @@ jasmine.Spec.prototype.getMatchersClass_ = function() {
   return this.matchersClass || this.env.matchersClass;
 };
 
-jasmine.Spec.prototype.addMatchers = function(matchersPrototype) {
-  var newMatchersClass = jasmine.util.subclass(this.getMatchersClass_());
+jasmine.Spec.prototype.makeMatchersClass_ = function(chainName) {
+  if (chainName) {
+    if (!this.chainedMatchersClasses[chainName]) {
+      this.chainedMatchersClasses[chainName] = jasmine.util.subclass(jasmine.ChainedMatchers);
+      this.chainedMatchersClasses[chainName].chainName = chainName;
+    }
+    return this.chainedMatchersClasses[chainName];
+  } else {
+    if (!this.matchersClass) {
+      this.matchersClass = jasmine.util.subclass(this.env.matchersClass);
+    }
+    return this.matchersClass;
+  }
+};
+
+jasmine.Spec.prototype.addMatchers = function(arg1, arg2) {
+  var matchers, chainPrefixes;
+  if (arg2) {
+    chainPrefixes = jasmine.isArray_(arg1) ? arg1 : [arg1];
+    matchers = arg2;
+  } else {
+    chainPrefixes = [""];
+    matchers = arg1;
+  }
+
+  var parsedMatchers   = jasmine.ChainedMatchers.parseMatchers(matchers),
+      topLevelMatchers = parsedMatchers.topLevel,
+      chainedMatchers  = parsedMatchers.chained;
+
+  var chainPrefix, fullChainName;
+  for (var i = 0; i < chainPrefixes.length; i++) {
+    chainPrefix = chainPrefixes[i];
+    this.addMatchers_(chainPrefix, topLevelMatchers);
+    for (var chainName in chainedMatchers) {
+      fullChainName = jasmine.ChainedMatchers.makeChainName(chainPrefix, chainName);
+      this.addMatchers_(fullChainName, chainedMatchers[chainName]);
+    }
+  }
+};
+
+jasmine.Spec.prototype.addMatchers_ = function(chainName, matchersPrototype) {
+  var newMatchersClass = this.makeMatchersClass_(chainName);
   jasmine.Matchers.wrapInto_(matchersPrototype, newMatchersClass);
-  this.matchersClass = newMatchersClass;
 };
 
 jasmine.Spec.prototype.finishCallback = function() {

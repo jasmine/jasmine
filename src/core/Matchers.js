@@ -68,7 +68,16 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
       message: message
     });
     this.spec.addMatcherResult(expectationResult);
-    return jasmine.undefined;
+
+    var nextChainName = jasmine.ChainedMatchers.makeChainName(this.constructor.chainName, matcherName);
+    var chainedMatchersClass = this.spec.chainedMatchersClasses[nextChainName];
+    if (chainedMatchersClass) {
+      return new chainedMatchersClass({
+        precedingMatcher: this
+      });
+    } else {
+      return jasmine.undefined;
+    }
   };
 };
 
