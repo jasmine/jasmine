@@ -771,7 +771,13 @@ describe("jasmine.Matchers", function() {
         TestClass.spyFunction('d', 'e', 'f');
         var expected = match(TestClass.spyFunction);
         expect(expected.toHaveBeenCalledWith('a', 'b')).toFail();
-        expect(lastResult().message).toEqual("Expected spy My spy to have been called with [ 'a', 'b' ] but was called with [ [ 'a', 'b', 'c' ], [ 'd', 'e', 'f' ] ]");
+        expect(lastResult().message).toEqual("Expected spy My spy to have been called with [ 'a', 'b' ] but actual calls were [ 'a', 'b', 'c' ], [ 'd', 'e', 'f' ]");
+      });
+
+      it("should return a decent message when it hasn't been called", function() {
+        var expected = match(TestClass.spyFunction);
+        expect(expected.toHaveBeenCalledWith('a', 'b')).toFail();
+        expect(lastResult().message).toEqual("Expected spy My spy to have been called with [ 'a', 'b' ] but it was never called.");
       });
 
       it("should return a decent message when inverted", function() {
@@ -779,7 +785,7 @@ describe("jasmine.Matchers", function() {
         TestClass.spyFunction('d', 'e', 'f');
         var expected = match(TestClass.spyFunction);
         expect(expected.not.toHaveBeenCalledWith('a', 'b', 'c')).toFail();
-        expect(lastResult().message).toEqual("Expected spy My spy not to have been called with [ 'a', 'b', 'c' ] but was called with [ [ 'a', 'b', 'c' ], [ 'd', 'e', 'f' ] ]");
+        expect(lastResult().message).toEqual("Expected spy My spy not to have been called with [ 'a', 'b', 'c' ] but it was.");
       });
 
       it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('toHaveBeenCalledWith'));
