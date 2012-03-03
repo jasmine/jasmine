@@ -18,6 +18,13 @@ jasmine.util.inherit = function(childClass, parentClass) {
   };
   subclass.prototype = parentClass.prototype;
   childClass.prototype = new subclass();
+  childClass.prototype.constructor = childClass;
+};
+
+jasmine.util.subclass = function(parentClass) {
+  var childClass = function() { return parentClass.apply(this, arguments) };
+  jasmine.util.inherit(childClass, parentClass);
+  return childClass;
 };
 
 jasmine.util.formatException = function(e) {

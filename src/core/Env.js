@@ -21,12 +21,7 @@ jasmine.Env = function() {
   this.nextSuiteId_ = 0;
   this.equalityTesters_ = [];
 
-  // wrap matchers
-  this.matchersClass = function() {
-    jasmine.Matchers.apply(this, arguments);
-  };
-  jasmine.util.inherit(this.matchersClass, jasmine.Matchers);
-
+  this.matchersClass = jasmine.util.subclass(jasmine.Matchers);
   jasmine.Matchers.wrapInto_(jasmine.Matchers.prototype, this.matchersClass);
 };
 

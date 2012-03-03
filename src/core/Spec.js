@@ -135,11 +135,7 @@ jasmine.Spec.prototype.getMatchersClass_ = function() {
 };
 
 jasmine.Spec.prototype.addMatchers = function(matchersPrototype) {
-  var parent = this.getMatchersClass_();
-  var newMatchersClass = function() {
-    parent.apply(this, arguments);
-  };
-  jasmine.util.inherit(newMatchersClass, parent);
+  var newMatchersClass = jasmine.util.subclass(this.getMatchersClass_());
   jasmine.Matchers.wrapInto_(matchersPrototype, newMatchersClass);
   this.matchersClass = newMatchersClass;
 };
