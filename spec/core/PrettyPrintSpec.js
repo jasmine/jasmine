@@ -32,6 +32,14 @@ describe("jasmine.pp", function () {
     }, bar: [1, 2, 3]})).toEqual("{ foo : Function, bar : [ 1, 2, 3 ] }");
   });
 
+  it("should not include inherited properties when stringifying an object", function() {
+    var SomeClass = function() {};
+    SomeClass.prototype.foo = "inherited foo";
+    var instance = new SomeClass();
+    instance.bar = "my own bar";
+    expect(jasmine.pp(instance)).toEqual("{ bar : 'my own bar' }");
+  });
+
   it("should stringify RegExp objects properly", function() {
     expect(jasmine.pp(/x|y|z/)).toEqual("/x|y|z/");
   });
