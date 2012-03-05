@@ -4,6 +4,7 @@ jasmine.TrivialReporter = function(doc) {
   this.document = doc || document;
   this.suiteDivs = {};
   this.logRunningSpecs = false;
+  this.pageURI = function(path) { return path; };
 };
 
 jasmine.TrivialReporter.prototype.createDom = function(type, attrs, childrenVarArgs) {
@@ -48,7 +49,7 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
           ),
 
       this.runnerDiv = this.createDom('div', { className: 'runner running' },
-          this.createDom('a', { className: 'run_spec', href: '?' }, "run all"),
+          this.createDom('a', { className: 'run_spec', href: this.pageURI('?') }, "run all"),
           this.runnerMessageSpan = this.createDom('span', {}, "Running..."),
           this.finishedAtSpan = this.createDom('span', { className: 'finished-at' }, ""))
       );
@@ -59,8 +60,8 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
   for (var i = 0; i < suites.length; i++) {
     var suite = suites[i];
     var suiteDiv = this.createDom('div', { className: 'suite' },
-        this.createDom('a', { className: 'run_spec', href: '?spec=' + encodeURIComponent(suite.getFullName()) }, "run"),
-        this.createDom('a', { className: 'description', href: '?spec=' + encodeURIComponent(suite.getFullName()) }, suite.description));
+        this.createDom('a', { className: 'run_spec', href: this.pageURI('?spec=' + encodeURIComponent(suite.getFullName())) }, "run"),
+        this.createDom('a', { className: 'description', href: this.pageURI('?spec=' + encodeURIComponent(suite.getFullName())) }, suite.description));
     this.suiteDivs[suite.id] = suiteDiv;
     var parentDiv = this.outerDiv;
     if (suite.parentSuite) {
@@ -104,7 +105,7 @@ jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
   }
   var message = "" + specCount + " spec" + (specCount == 1 ? "" : "s" ) + ", " + results.failedCount + " failure" + ((results.failedCount == 1) ? "" : "s");
   message += " in " + ((new Date().getTime() - this.startedAt.getTime()) / 1000) + "s";
-  this.runnerMessageSpan.replaceChild(this.createDom('a', { className: 'description', href: '?'}, message), this.runnerMessageSpan.firstChild);
+  this.runnerMessageSpan.replaceChild(this.createDom('a', { className: 'description', href: this.pageURI('?') }, message), this.runnerMessageSpan.firstChild);
 
   this.finishedAtSpan.appendChild(document.createTextNode("Finished at " + new Date().toString()));
 };
@@ -131,10 +132,10 @@ jasmine.TrivialReporter.prototype.reportSpecResults = function(spec) {
     status = 'skipped';
   }
   var specDiv = this.createDom('div', { className: 'spec '  + status },
-      this.createDom('a', { className: 'run_spec', href: '?spec=' + encodeURIComponent(spec.getFullName()) }, "run"),
+      this.createDom('a', { className: 'run_spec', href: this.pageURI('?spec=' + encodeURIComponent(spec.getFullName())) }, "run"),
       this.createDom('a', {
         className: 'description',
-        href: '?spec=' + encodeURIComponent(spec.getFullName()),
+        href: this.pageURI('?spec=' + encodeURIComponent(spec.getFullName())),
         title: spec.getFullName()
       }, spec.description));
 
