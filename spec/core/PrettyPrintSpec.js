@@ -40,6 +40,28 @@ describe("jasmine.pp", function () {
     expect(jasmine.pp(instance)).toEqual("{ bar : 'my own bar' }");
   });
 
+  it("should not recurse objects and arrays more deeply than jasmine.MAX_PRETTY_PRINT_DEPTH", function() {
+    var originalMaxDepth = jasmine.MAX_PRETTY_PRINT_DEPTH;
+    var nestedObject = { level1: { level2: { level3: { level4: "leaf" } } } };
+    var nestedArray  = [1, [2, [3, [4, "leaf"]]]];
+
+    try {
+      jasmine.MAX_PRETTY_PRINT_DEPTH = 2;
+      expect(jasmine.pp(nestedObject)).toEqual("{ level1 : { level2 : Object } }");
+      expect(jasmine.pp(nestedArray)).toEqual("[ 1, [ 2, Array ] ]");
+
+      jasmine.MAX_PRETTY_PRINT_DEPTH = 3;
+      expect(jasmine.pp(nestedObject)).toEqual("{ level1 : { level2 : { level3 : Object } } }");
+      expect(jasmine.pp(nestedArray)).toEqual("[ 1, [ 2, [ 3, Array ] ] ]");
+
+      jasmine.MAX_PRETTY_PRINT_DEPTH = 4;
+      expect(jasmine.pp(nestedObject)).toEqual("{ level1 : { level2 : { level3 : { level4 : 'leaf' } } } }");
+      expect(jasmine.pp(nestedArray)).toEqual("[ 1, [ 2, [ 3, [ 4, 'leaf' ] ] ] ]");
+    } finally {
+      jasmine.MAX_PRETTY_PRINT_DEPTH = originalMaxDepth;
+    }
+  });
+
   it("should stringify RegExp objects properly", function() {
     expect(jasmine.pp(/x|y|z/)).toEqual("/x|y|z/");
   });
