@@ -1,7 +1,51 @@
-[
-  "base.js",
-  "util.js",
-  "Env.js",
-  "Reporter.js",
-  "Block.js"
-]
+{
+  "core_sources": [
+    "base.js",
+    "util.js",
+    "Env.js",
+    "Reporter.js",
+    "Block.js"
+  ],
+  "html_sources": [
+    "HtmlReporterHelpers.js",
+    "HtmlReporter.js",
+    "ReporterView.js",
+    "SpecView.js",
+    "SuiteView.js",
+    "TrivialReporter.js"
+  ],
+  "console_sources": [
+    "ConsoleReporter.js"
+  ],
+  "core_specfiles": [
+    "BaseSpec.js",
+    "CustomMatchersSpec.js",
+    "EnvSpec.js",
+    "ExceptionsSpec.js",
+    "JsApiReporterSpec.js",
+    "MatchersSpec.js",
+    "MockClockSpec.js",
+    "MultiReporterSpec.js",
+    "NestedResultsSpec.js",
+    "PrettyPrintSpec.js",
+    "QueueSpec.js",
+    "ReporterSpec.js",
+    "RunnerSpec.js",
+    "SpecRunningSpec.js",
+    "SpecSpec.js",
+    "SpySpec.js",
+    "SuiteSpec.js",
+    "UtilSpec.js",
+    "WaitsForBlockSpec.js"
+  ],
+  "html_specfiles": [
+    "HTMLReporterSpec.js",
+    "MatchersHtmlSpec.js",
+    "PrettyPrintHtmlSpec.js",
+    "TrivialReporterSpec.js"
+  ],
+  "console_specfiles": [
+    "ConsoleReporterSpec.js"
+  ]
+}
+
