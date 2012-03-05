@@ -1,31 +1,49 @@
 require 'json'
 
-def core_sources
-  first_sources = JSON.parse(File.read('./src/SourcesList.json')).collect { |f| "./src/core/#{f}" }
+def get_sources(namespace)
+  JSON.parse(File.read('./src/SourcesList.json'))[namespace]
+end
 
-  remaining_sources = Dir.glob('./src/core/*.js').reject { |f| first_sources.include?(f) }.sort
+def core_sources
+  first_sources = get_sources('core_sources').collect {
+    |f| "./src/core/#{f}" 
+  }
+
+  remaining_sources = Dir.glob('./src/core/*.js').reject {
+    |f| first_sources.include?(f)
+  }.sort
 
   first_sources + remaining_sources
 end
 
 def html_sources
-  ['./src/html/HtmlReporterHelpers.js'] + Dir.glob('./src/html/*.js')
+  get_sources('html_sources').collect {
+    |f| "./src/html/#{f}"
+  }
 end
 
 def console_sources
-  Dir.glob('./src/console/*.js')
+  get_sources('console_sources').collect {
+    |f| "./src/console/#{f}" 
+  }
 end
 
 def core_specfiles
-  Dir.glob('./spec/core/*.js')
+  get_sources('core_specfiles').collect {
+    |f| "./spec/core/#{f}" 
+  }
 end
 
 def html_specfiles
-   Dir.glob('./spec/html/*.js')
+  get_sources('html_specfiles').collect {
+    |f| "./spec/html/#{f}" 
+  }
 end
 
 def console_specfiles
-  Dir.glob('./spec/console/*.js')
+  get_sources('console_specfiles').collect {
+    |f| "./spec/console/#{f}" 
+  }
 end
 
 def version_string
