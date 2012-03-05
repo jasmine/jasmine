@@ -193,8 +193,6 @@ describe("TrivialReporter", function() {
       expect(link_href_attr).toMatch(/custom_path\//);
     });
 
-    xit("should work on IE without console.log.apply", function() {
-    });
   });
 
   describe("duplicate example names", function() {
