@@ -58,3 +58,6 @@ jasmine.HtmlReporterHelpers.addHelpers = function(ctor) {
   }
 };
 
+jasmine.HtmlReporterHelpers.pageURI = function(path) {
+  return path;
+};

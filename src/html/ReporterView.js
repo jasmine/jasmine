@@ -8,9 +8,9 @@ jasmine.HtmlReporter.ReporterView = function(dom) {
 
   this.createResultsMenu = function() {
     this.resultsMenu = this.createDom('span', {className: 'resultsMenu bar'},
-      this.summaryMenuItem = this.createDom('a', {className: 'summaryMenuItem', href: "#"}, '0 specs'),
+      this.summaryMenuItem = this.createDom('a', {className: 'summaryMenuItem', href: this.pageURI("#")}, '0 specs'),
       ' | ',
-      this.detailsMenuItem = this.createDom('a', {className: 'detailsMenuItem', href: "#"}, '0 failing'));
+      this.detailsMenuItem = this.createDom('a', {className: 'detailsMenuItem', href: this.pageURI("#")}, '0 failing'));
 
     this.summaryMenuItem.onclick = function() {
       dom.reporter.className = dom.reporter.className.replace(/ showDetails/g, '');
@@ -81,14 +81,14 @@ jasmine.HtmlReporter.ReporterView = function(dom) {
 
     // currently running UI
     if (isUndefined(this.runningAlert)) {
-      this.runningAlert = this.createDom('a', {href: "?", className: "runningAlert bar"});
+      this.runningAlert = this.createDom('a', {href: this.pageURI("?"), className: "runningAlert bar"});
       dom.alert.appendChild(this.runningAlert);
     }
     this.runningAlert.innerHTML = "Running " + this.completeSpecCount + " of " + specPluralizedFor(this.totalSpecCount);
 
     // skipped specs UI
     if (isUndefined(this.skippedAlert)) {
-      this.skippedAlert = this.createDom('a', {href: "?", className: "skippedAlert bar"});
+      this.skippedAlert = this.createDom('a', {href: this.pageURI("?"), className: "skippedAlert bar"});
     }
 
     this.skippedAlert.innerHTML = "Skipping " + this.skippedCount + " of " + specPluralizedFor(this.totalSpecCount) + " - run all";
@@ -99,13 +99,13 @@ jasmine.HtmlReporter.ReporterView = function(dom) {
 
     // passing specs UI
     if (isUndefined(this.passedAlert)) {
-      this.passedAlert = this.createDom('span', {href: "?", className: "passingAlert bar"});
+      this.passedAlert = this.createDom('span', {href: this.pageURI("?"), className: "passingAlert bar"});
     }
     this.passedAlert.innerHTML = "Passing " + specPluralizedFor(this.passedCount);
 
     // failing specs UI
     if (isUndefined(this.failedAlert)) {
-      this.failedAlert = this.createDom('span', {href: "?", className: "failingAlert bar"});
+      this.failedAlert = this.createDom('span', {href: this.pageURI("?"), className: "failingAlert bar"});
     }
     this.failedAlert.innerHTML = "Failing " + specPluralizedFor(this.failedCount);
 
