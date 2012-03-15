@@ -53,6 +53,13 @@ describe('Spec', function () {
       });
     });
 
+    it('execute should clear jasmine spyCalls upon beginning execution', function () {
+      jasmine.spyCalls = [{name:'spy one', method: function(){}},{name:'spy two', method: function(){}}];
+
+      spec.execute();
+      expect(jasmine.spyCalls.length).toEqual(0);
+    });
+
 
     it('results shows the total number of expectations for each spec after execution', function () {
       expect(results.totalCount).toEqual(0);

@@ -161,6 +161,7 @@ jasmine.Spec.prototype.after = function(doAfter) {
 
 jasmine.Spec.prototype.execute = function(onComplete) {
   var spec = this;
+  jasmine.spyCalls = [];
   if (!spec.env.specFilter(spec)) {
     spec.results_.skipped = true;
     spec.finish(onComplete);
