@@ -122,7 +122,7 @@ jasmine.Matchers.prototype.toMatch = function(expected) {
 
 /**
  * Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch
- * @param expected
+* @param expected
  * @deprecated as of 1.0. Use not.toMatch() instead.
  */
 jasmine.Matchers.prototype.toNotMatch = function(expected) {
@@ -262,6 +262,51 @@ jasmine.Matchers.prototype.wasNotCalledWith = function() {
   };
 
   return !this.env.contains_(this.actual.argsForCall, expectedArgs);
+};
+
+/**
+ * Matcher that checks if the actual, a spy, was called before the expected, another spy, sometime during the spec
+ *
+ * @param {Object} expected
+ */
+jasmine.Matchers.prototype.toHaveBeenCalledBefore = function(expected) {
+  if (!jasmine.isSpy(this.actual)) {
+    throw new Error('Expected a spy, but got ' + jasmine.pp(this.actual) + '.');
+  }
+  if (!jasmine.isSpy(expected)) {
+    throw new Error('Expected a spy, but got ' + jasmine.pp(expected) + '.');
+  }
+
+
+  this.message = function() {
+    var messages = [
+      undefined,
+      "Expected " + jasmine.pp(this.actual) + " not to have been called before " + jasmine.pp(expected) + " but it was."
+    ];
+    if (this.actual.callCount === 0) {
+      messages[0] = ("Expected " + jasmine.pp(this.actual) + " to have been called before " + jasmine.pp(expected) + " but it was never called.");
+    } else {
+      messages[0] = ("Expected " + jasmine.pp(this.actual) + " to have been called before " + jasmine.pp(expected) + " but it was called after.");
+    }
+    return messages;
+  };
+
+  if(this.actual.callCount === 0) {
+    return false;
+  }
+  if(expected.callCount === 0) {
+    return true;
+  }
+
+  var me = this;
+  var indexOfSpyCall = function(spy){
+    for(var i = 0; i < jasmine.spyCalls.length; i++){
+      if(me.env.equals_(jasmine.spyCalls[i].object[spy.identity], spy)) return i;
+    }
+    return NaN;
+  }
+
+  return indexOfSpyCall(this.actual) < indexOfSpyCall(expected);
 };
 
 /**

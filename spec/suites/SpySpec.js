@@ -32,8 +32,8 @@ describe('Spies', function () {
     obj2.fn2();
 
     expect(jasmine.spyCalls.length).toEqual(2);
-    expect(jasmine.spyCalls[0].method).toEqual('fn1');
-    expect(jasmine.spyCalls[1].method).toEqual('fn2');
+    expect(jasmine.spyCalls[0].object).toEqual(obj1);
+    expect(jasmine.spyCalls[1].object).toEqual(obj2);
   });
 
   it('should allow you to view args for a particular call', function() {

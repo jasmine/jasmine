@@ -377,12 +377,12 @@ jasmine.createSpy = function(name) {
   var spyObj = function() {
     spyObj.wasCalled = true;
     spyObj.callCount++;
-    jasmine.spyCalls.push({obj: this, method: name, args: arguments});
     var args = jasmine.util.argsToArray(arguments);
     spyObj.mostRecentCall.object = this;
     spyObj.mostRecentCall.args = args;
     spyObj.argsForCall.push(args);
     spyObj.calls.push({object: this, args: args});
+    jasmine.spyCalls.push({object: this, args: args});
     return spyObj.plan.apply(this, arguments);
   };
 
