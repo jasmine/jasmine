@@ -1103,6 +1103,37 @@ describe("jasmine.Matchers", function() {
     });
   });
 
+  describe('toHaveBeenCalledBefore', function(){
+    var before, after, never;
+    beforeEach(function(){
+      before = { fn: function(){}};
+      after = { fn: function(){}};
+      never = { fn: function(){}};
+      spyOn(before, 'fn');
+      spyOn(after, 'fn');
+      spyOn(never, 'fn');
+
+      before.fn();
+      after.fn();
+    });
+    it('should return true if the spy was called before the argument spy', function(){
+      expect(before.fn).toHaveBeenCalledBefore(after.fn);
+    });
+    it('should return true if the spy was called before and after the argument spy', function(){
+      before.fn();
+      expect(before.fn).toHaveBeenCalledBefore(after.fn);
+    });
+    it('should return false if the spy was called after the argument spy', function(){
+      expect(after.fn).not.toHaveBeenCalledBefore(before.fn);
+    });
+    it('should return false if the spy was never called', function(){
+      expect(never.fn).not.toHaveBeenCalledBefore(before.fn);
+    });
+    it('should return true if the spy was called and the argument spy was never called', function(){
+      expect(before.fn).toHaveBeenCalledBefore(never.fn);
+    });
+  });
+
   describe("all matchers", function() {
     it("should return null, for future-proofing, since we might eventually allow matcher chaining", function() {
       expect(match(true).toBe(true)).toBeUndefined();

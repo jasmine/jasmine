@@ -22,6 +22,20 @@ describe('Spies', function () {
     expect(TestClass.someFunction.mostRecentCall.args).toEqual(['bar']);
   });
 
+  it('calling a spy should push its name to spec.spyCalls', function() {
+    var obj1 = { fn1: function(){}};
+    var obj2 = { fn2: function(){}};
+    spyOn(obj1, 'fn1');
+    spyOn(obj2, 'fn2');
+
+    obj1.fn1();
+    obj2.fn2();
+
+    expect(this.spyCalls.length).toEqual(2);
+    expect(this.spyCalls[0].object).toEqual(obj1);
+    expect(this.spyCalls[1].object).toEqual(obj2);
+  });
+
   it('should allow you to view args for a particular call', function() {
     var originalFunctionWasCalled = false;
     var TestClass = {

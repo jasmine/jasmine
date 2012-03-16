@@ -53,6 +53,12 @@ describe('Spec', function () {
       });
     });
 
+    it('execute should clear jasmine spyCalls upon beginning execution', function () {
+      spec.spyCalls = [{name:'spy one', method: function(){}},{name:'spy two', method: function(){}}];
+
+      spec.execute();
+      expect(spec.spyCalls.length).toEqual(0);
+    });
 
     it('results shows the total number of expectations for each spec after execution', function () {
       expect(results.totalCount).toEqual(0);
@@ -113,10 +119,10 @@ describe('Spec', function () {
       spec.execute();
       var items = results.getItems();
       expect(items).toEqual([
-          jasmine.any(jasmine.ExpectationResult),
-          jasmine.any(jasmine.ExpectationResult),
-          jasmine.any(jasmine.MessageResult)
-      ]);
+        jasmine.any(jasmine.ExpectationResult),
+        jasmine.any(jasmine.ExpectationResult),
+        jasmine.any(jasmine.MessageResult)
+        ]);
       var logResult = items[2];
       expect(logResult.values).toEqual(["here's some log message", {key: 'value'}, 123]);
     });
