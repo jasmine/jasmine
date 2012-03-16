@@ -300,8 +300,8 @@ jasmine.Matchers.prototype.toHaveBeenCalledBefore = function(expected) {
 
   var me = this;
   var indexOfSpyCall = function(spy){
-    for(var i = 0; i < jasmine.spyCalls.length; i++){
-      if(me.env.equals_(jasmine.spyCalls[i].object[spy.identity], spy)) return i;
+    for(var i = 0; i < me.spec.spyCalls.length; i++){
+      if(me.env.equals_(me.spec.spyCalls[i].object[spy.identity], spy)) return i;
     }
     return NaN;
   }
