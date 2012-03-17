@@ -382,7 +382,7 @@ jasmine.createSpy = function(name) {
     spyObj.mostRecentCall.args = args;
     spyObj.argsForCall.push(args);
     spyObj.calls.push({object: this, args: args});
-    jasmine.spyCalls.push({object: this, args: args});
+    jasmine.getEnv().currentSpec.spyCalls.push({object: this, args: args});
     return spyObj.plan.apply(this, arguments);
   };
 
