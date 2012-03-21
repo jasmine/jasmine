@@ -229,6 +229,106 @@ describe("jasmine spec running", function () {
     expect(yet_another_spec.results().getItems()[0].passed()).toEqual(false);
   });
 
+  it("should run asynchronus tests that return fulfilling promises", function () {
+    var done, spec;
+    runs(function () {
+      env.describe('promise test', function () {
+        spec = env.it('should resolve', function () {
+          return {
+            then: function (resolve, reject) {
+              setTimeout(function() {
+                resolve();
+                done = true;
+              }, 0);
+            }
+          }
+        });
+      });
+      env.execute();
+    });
+    waitsFor(function () {
+      return done;
+    });
+    runs(function () {
+      expect(spec.resolved).toBe(true);
+      expect(spec.results().getItems().length).toEqual(0);
+    });
+  });
+
+  it("should run asynchronus tests that return rejecting promises", function () {
+    var done, spec;
+    runs(function () {
+      env.describe('promise test', function () {
+        spec = env.it('should reject', function () {
+          return {
+            then: function (resolve, reject) {
+              setTimeout(function() {
+                reject(new Error("I should not be."));
+                done = true;
+              }, 0);
+            }
+          }
+        });
+      });
+      env.execute();
+    });
+    waitsFor(function () {
+      return done;
+    });
+    runs(function () {
+      expect(spec.rejected).toBe(true);
+      expect(spec.results().getItems().length).toEqual(1);
+      expect(spec.results().getItems()[0].passed()).toEqual(false);
+      expect(spec.results().getItems()[0].message).toEqual('Error: I should not be.');
+    });
+  });
+
+  it("should run asynchronus tests that return fulfilling promises with unexpected values", function () {
+    var done, spec;
+    runs(function () {
+      env.describe('promise test', function () {
+        spec = env.it('should resolve', function () {
+          return {
+            then: function (resolve, reject) {
+              setTimeout(function() {
+                resolve('I should not be.');
+                done = true;
+              }, 0);
+            }
+          }
+        });
+      });
+      spec.execute();
+    });
+    waitsFor(function () {
+      return done;
+    });
+    runs(function () {
+      expect(spec.results().getItems().length).toEqual(1);
+      expect(spec.results().getItems()[0].passed()).toEqual(false);
+      expect(spec.results().getItems()[0].message).toEqual('Error: Promise fulfilled with unexpected value: I should not be.');
+    });
+  });
+
+  it("should run asynchronus tests that return promises that throw errors", function () {
+    var done, spec;
+    runs(function () {
+      env.describe('promise test', function () {
+        spec = env.it('should resolve', function () {
+          return {
+            then: function (resolve, reject) {
+              throw new Error("I should not be.");
+            }
+          }
+        });
+      });
+      spec.execute();
+      expect(spec.results().getItems().length).toEqual(1);
+      expect(spec.results().getItems()[0].passed()).toEqual(false);
+      expect(spec.results().getItems()[0].message).toEqual("Error: I should not be.");
+    });
+  });
+
   it("testAsyncSpecsWithMockSuite", function () {
     var bar = 0;
     var another_spec;
