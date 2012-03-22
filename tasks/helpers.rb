@@ -3,29 +3,29 @@ require 'json'
 def core_sources
   first_sources = JSON.parse(File.read('./src/SourcesList.json')).collect { |f| "./src/core/#{f}" }
 
-  remaining_sources = Dir.glob('./src/core/*.js').reject { |f| first_sources.include?(f) }.sort
+  remaining_sources = Dir.glob('./src/core/*.js').sort.reject { |f| first_sources.include?(f) }.sort
 
   first_sources + remaining_sources
 end
 
 def html_sources
-  ['./src/html/HtmlReporterHelpers.js'] + Dir.glob('./src/html/*.js')
+  ['./src/html/HtmlReporterHelpers.js'] + Dir.glob('./src/html/*.js').sort
 end
 
 def console_sources
-  Dir.glob('./src/console/*.js')
+  Dir.glob('./src/console/*.js').sort
 end
 
 def core_specfiles
-  Dir.glob('./spec/core/*.js')
+  Dir.glob('./spec/core/*.js').sort
 end
 
 def html_specfiles
-   Dir.glob('./spec/html/*.js')
+   Dir.glob('./spec/html/*.js').sort
 end
 
 def console_specfiles
-  Dir.glob('./spec/console/*.js')
+  Dir.glob('./spec/console/*.js').sort
 end
 
 def version_string
