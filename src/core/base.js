@@ -79,16 +79,15 @@ jasmine.MessageResult = function(values) {
 };
 
 jasmine.MessageResult.prototype.toString = function() {
-  var text = "";
+  var strings = [];
   for (var i = 0; i < this.values.length; i++) {
-    if (i > 0) text += " ";
     if (jasmine.isString_(this.values[i])) {
-      text += this.values[i];
+      strings.push(this.values[i]);
     } else {
-      text += jasmine.pp(this.values[i]);
+      strings.push(jasmine.pp(this.values[i]));
     }
   }
-  return text;
+  return strings.join(" ");
 };
 
 jasmine.ExpectationResult = function(params) {
