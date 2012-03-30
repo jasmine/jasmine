@@ -53,24 +53,24 @@ jasmine.FakeTimer.prototype.runFunctionsWithinRange = function(oldMillis, nowMil
     }
   }
 
-  if (funcsToRun.length > 0) {
-    funcsToRun.sort(function(a, b) {
-      return a.runAtMillis - b.runAtMillis;
-    });
-    for (var i = 0; i < funcsToRun.length; ++i) {
-      try {
-        var funcToRun = funcsToRun[i];
-        this.nowMillis = funcToRun.runAtMillis;
-        funcToRun.funcToCall();
-        if (funcToRun.recurring) {
-          this.scheduleFunction(funcToRun.timeoutKey,
-              funcToRun.funcToCall,
-              funcToRun.millis,
-              true);
-        }
-      } catch(e) {
+  funcsToRun.sort(function(a, b) {
+    return a.runAtMillis - b.runAtMillis;
+  });
+  for (var i = 0; i < funcsToRun.length; ++i) {
+    try {
+      var funcToRun = funcsToRun[i];
+      this.nowMillis = funcToRun.runAtMillis;
+      funcToRun.funcToCall();
+      if (funcToRun.recurring) {
+        this.scheduleFunction(funcToRun.timeoutKey,
+            funcToRun.funcToCall,
+            funcToRun.millis,
+            true);
       }
+    } catch(e) {
     }
+  }
+  if (funcsToRun.length > 0) {
     this.runFunctionsWithinRange(oldMillis, nowMillis);
   }
 };
