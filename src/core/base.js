@@ -212,7 +212,7 @@ jasmine.objectContaining = function (sample) {
 };
 
 /**
- * Jasmine Spies are test doubles that can act as stubs, spies, fakes or when used in an expecation, mocks.
+ * Jasmine Spies are test doubles that can act as stubs, spies, fakes, or when used in an expectation, mocks.
  *
  * Spies should be created in test setup, before expectations.  They can then be checked, using the standard Jasmine
  * expectation syntax. Spies can be checked if they were called or not and what the calling params were.
@@ -234,8 +234,8 @@ jasmine.objectContaining = function (sample) {
  *
  * // actual foo.not will not be called, execution stops
  * spyOn(foo, 'not');
-
- // foo.not spied upon, execution will continue to implementation
+ *
+ * // foo.not spied upon, execution will continue to implementation
  * spyOn(foo, 'not').andCallThrough();
  *
  * // fake example

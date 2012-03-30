@@ -4,7 +4,7 @@
 jasmine.util = {};
 
 /**
- * Declare that a child class inherit it's prototype from the parent class.
+ * Declare that a child class inherit its prototype from the parent class.
  *
  * @private
  * @param {Function} childClass
