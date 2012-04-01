@@ -24,8 +24,3 @@ def pages_submodule_present
   File.exist?('pages/download.html')
 end
 
-class String
-  include Term::ANSIColor
-end
-
-Term::ANSIColor.coloring = STDOUT.isatty

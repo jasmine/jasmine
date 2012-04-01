@@ -12,7 +12,7 @@ class JasmineDev < Thor
 
     say "Running all appropriate specs via Node.js...", :cyan
 
-    with_color_option = Term::ANSIColor.coloring? ? "--color" : "--noColor"
+    with_color_option = STDOUT.isatty ? "--color" : "--noColor"
 
     run_with_output "node spec/node_suite.js #{with_color_option}", :capture => true
   end

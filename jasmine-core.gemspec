@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
 
   s.files         = Dir.glob("./lib/**/*") + Dir.glob("./lib/jasmine-core/spec/**/*.js")
   s.require_paths = ["lib"]
-  s.add_development_dependency "term-ansicolor"
   s.add_development_dependency "json_pure", ">= 1.4.3"
   s.add_development_dependency "frank"
   s.add_development_dependency "sass"
