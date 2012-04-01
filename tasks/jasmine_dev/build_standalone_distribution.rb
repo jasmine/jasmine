@@ -25,10 +25,10 @@ class JasmineDev < Thor
     say "Zipping distribution...", :yellow
 
     inside standalone_temp_dir do
-      run_with_output "zip -rq ../jasmine-standalone-#{jasmine_version}.zip ."
+      run_with_output "zip -rq ../jasmine-standalone-#{version_string}.zip ."
 
       say "Copying Zip file to downloads directory", :yellow
-      run "cp ../jasmine-standalone-#{jasmine_version}.zip #{download_dir}"
+      run "cp ../jasmine-standalone-#{version_string}.zip #{download_dir}"
     end
 
   end
