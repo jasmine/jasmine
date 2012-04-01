@@ -29,30 +29,17 @@ class JasmineDev < Thor
 
   no_tasks do
     def jasmine_js_paths
-      sources_list = File.read(File.join(JasmineDev.project_root, 'src', 'SourcesList.json'))
-      first_paths = JSON.parse(sources_list).collect do |f|
+      paths = JasmineDev::JASMINE_SOURCES[:core].collect do |f|
         File.join(JasmineDev.project_root, 'src', 'core', f)
       end
 
-      remaining_paths = Dir.glob(File.join(JasmineDev.project_root, 'src', 'core', '*.js'))
-      remaining_paths << File.join(JasmineDev.project_root, 'src', 'version.js')
-
-      add_only_new_elements(first_paths, remaining_paths)
+      paths << File.join(JasmineDev.project_root, 'src', 'version.js')
+      paths
     end
 
     def jasmine_html_js_paths
-      first_paths = []
-      first_paths << File.join(JasmineDev.project_root, 'src', 'html', 'HtmlReporterHelpers.js')
-      first_paths += Dir.glob(File.join('.', 'src', 'html', '*.js'))
-
-      remaining_paths = Dir.glob(File.join(JasmineDev.project_root, 'src', 'html', '*.js'))
-      add_only_new_elements(first_paths, remaining_paths)
-    end
-
-    def add_only_new_elements(first, remaining)
-      remaining.inject(first) do |result, element|
-        result << element unless result.include?(element)
-        result
+      JasmineDev::JASMINE_SOURCES[:html].collect do |f|
+        File.join(JasmineDev.project_root, 'src', 'html', f)
       end
     end
 

@@ -7,6 +7,7 @@ require 'ostruct'
 $:.unshift(File.join(File.dirname(__FILE__), "jasmine_dev"))
 
 require "base"
+require "sources"
 require "js_hint"
 require "build_distribution"
 require "build_github_pages"
