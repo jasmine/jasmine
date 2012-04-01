@@ -30,48 +30,85 @@ jasmine.Matchers.wrapInto_ = function(prototype, matchersClass) {
   }
 };
 
-jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
-  return function() {
-    var matcherArgs = jasmine.util.argsToArray(arguments);
-    var result = matcherFunction.apply(this, arguments);
+;(function() {
+  jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
+    return function() {
+      var matcherArgs = jasmine.util.argsToArray(arguments);
+      var result = matcherFunction.apply(this, arguments);
+      var passed = isPassing.call(this, result);
+      var defaultMessage = makeDefaultMessage.call(this, matcherName, matcherArgs);
+      var customMessage = makeCustomMessage.call(this, passed);
+      if (this.reportWasCalled_) return passed;
 
-    if (this.isNot) {
-      result = !result;
-    }
-
-    if (this.reportWasCalled_) return result;
-
-    var message;
-    if (!result) {
-      if (this.message) {
-        message = this.message.apply(this, arguments);
-        if (jasmine.isArray_(message)) {
-          message = message[this.isNot ? 1 : 0];
-        }
+      var expectationResult;
+      if (this.precedingResult) {
+        expectationResult = this.precedingResult;
+        this.spec.updateMatcherResult(expectationResult, {
+          passed: passed,
+          message: customMessage || defaultMessage
+        });
       } else {
-        var englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
-        message = "Expected " + jasmine.pp(this.actual) + (this.isNot ? " not " : " ") + englishyPredicate;
-        if (matcherArgs.length > 0) {
-          for (var i = 0; i < matcherArgs.length; i++) {
-            if (i > 0) message += ",";
-            message += " " + jasmine.pp(matcherArgs[i]);
-          }
-        }
-        message += ".";
+        expectationResult = new jasmine.ExpectationResult({
+          passed: passed,
+          message: customMessage || defaultMessage,
+          matcherName: matcherName,
+          expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
+          actual: this.actual
+        });
+        this.spec.addMatcherResult(expectationResult);
       }
-    }
-    var expectationResult = new jasmine.ExpectationResult({
-      matcherName: matcherName,
-      passed: result,
-      expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
-      actual: this.actual,
-      message: message
-    });
-    this.spec.addMatcherResult(expectationResult);
-    return jasmine.undefined;
-  };
-};
 
+      var nextChainName = jasmine.ChainedMatchers.makeChainName(this.constructor.chainName, matcherName);
+      var chainedMatchersClass = this.spec.chainedMatchersClasses[nextChainName];
+      if (chainedMatchersClass) {
+        return new chainedMatchersClass({
+          precedingMatcher: this,
+          precedingResult:  expectationResult,
+          precedingMessage: defaultMessage
+        });
+      } else {
+        return jasmine.undefined;
+      }
+    };
+  };
+
+  function makeCustomMessage(passed) {
+    if (this.message && !passed) {
+      var customMessage = this.message.apply(this, arguments);
+      if (jasmine.isArray_(customMessage)) customMessage = customMessage[this.isNot ? 1 : 0];
+      return customMessage;
+    }
+  }
+
+  function makeDefaultMessage(matcherName, matcherArgs) {
+    var message;
+    if (this.precedingMessage) {
+      message = this.precedingMessage.replace(/\.$/, " ");
+    } else {
+      message = "Expected " + jasmine.pp(this.actual) + (this.isNot ? " not " : " ");
+    }
+    message += matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
+    for (var i = 0; i < matcherArgs.length; i++) {
+      if (i > 0) message += ",";
+      message += " " + jasmine.pp(matcherArgs[i]);
+    }
+    message += ".";
+    return message;
+  }
+
+  function isPassing(result) {
+    var thisPassed = this.isNot ? !result : result;
+    if (this.precedingResult) {
+      if (this.isNot) {
+        return this.precedingResult.passed() || thisPassed;
+      } else {
+        return this.precedingResult.passed() && thisPassed;
+      }
+    } else {
+      return thisPassed;
+    }
+  }
+})();
 
 
 
