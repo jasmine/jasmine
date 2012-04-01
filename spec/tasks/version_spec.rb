@@ -21,7 +21,7 @@ describe "Version tasks" do
       js_version.should match(%Q{"build": #{jasmine_version_object["build"]}})
 
       if jasmine_version_object["release_candidate"]
-        js_version.should match(%Q{"rc:" #{jasmine_version_object["release_candidate"]}})
+        js_version.should match(%Q{"release_candidate": #{jasmine_version_object["release_candidate"]}})
       end
 
       js_version.should match(/"revision": \d+/)

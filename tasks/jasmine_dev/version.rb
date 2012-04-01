@@ -1,6 +1,7 @@
 class JasmineDev < Thor
 
   desc "write_version_files", "Write out version files"
+
   def write_version_files
     say JasmineDev.spacer
 
@@ -16,9 +17,16 @@ class JasmineDev < Thor
     create_file File.join(JasmineDev.project_root, 'src', 'version.js'), :force => true do
       js_template.render(scope)
     end
+
+    rb_template = Tilt.new(File.join(JasmineDev.project_root, 'src', 'templates', 'version.rb.erb'))
+
+    create_file File.join(JasmineDev.project_root, 'lib', 'jasmine-core', 'version.rb'), :force => true do
+      rb_template.render(scope)
+    end
   end
 
   desc "display_version", "Display version currently stored in source"
+
   def display_version
 
     say "Current version information from src/version.json", :cyan
