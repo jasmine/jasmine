@@ -489,6 +489,32 @@ var it = function(desc, func) {
 if (isCommonJS) exports.it = it;
 
 /**
+ * Creates an exclusive Jasmine spec that will be added to the current suite.
+ *
+ * If at least one exclusive (iit) spec is registered, only these exclusive specs are run.
+ * Note, that this behavior works only with the default specFilter.
+ * Note, that iit has higher priority over ddescribe
+ *
+ * @example
+ * describe('suite', function() {
+ *   iit('should be true', function() {
+ *     // only this spec will be run
+ *   });
+ *
+ *   it('should be false', function() {
+ *     // this won't be run
+ *   });
+ * });
+ *
+ * @param {String} desc description of this specification
+ * @param {Function} func defines the preconditions and expectations of the spec
+ */
+var iit = function(desc, func) {
+  return jasmine.getEnv().iit(desc, func);
+};
+if (isCommonJS) exports.iit = iit;
+
+/**
  * Creates a <em>disabled</em> Jasmine spec.
  *
  * A convenience method that allows existing specs to be disabled temporarily during development.
@@ -590,6 +616,37 @@ var describe = function(description, specDefinitions) {
   return jasmine.getEnv().describe(description, specDefinitions);
 };
 if (isCommonJS) exports.describe = describe;
+
+
+/**
+ * Defines an exclusive suite of specifications.
+ *
+ * If at least one exclusive (ddescribe) suite is registered, only these exclusive suites are run.
+ * Note, that this behavior works only with the default specFilter.
+ *
+ * @example
+ * ddescribe('exclusive suite', function() {
+ *   it('should be true', function() {
+ *     // this spec will be run
+ *   });
+ *
+ *   it('should be false', function() {
+ *     // this spec will be run as well
+ *   });
+ * });
+ *
+ * describe('normal suite', function() {
+ *   // no spec from this suite will be run
+ * });
+ *
+ *
+ * @param {String} description A string, usually the class under test.
+ * @param {Function} specDefinitions function that defines several specs.
+ */
+var ddescribe = function(description, specDefinitions) {
+  return jasmine.getEnv().ddescribe(description, specDefinitions);
+};
+if (isCommonJS) exports.ddescribe = ddescribe;
 
 /**
  * Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
