@@ -1,6 +1,5 @@
 require 'thor'
 require 'json'
-require 'term/ansicolor'
 require 'tilt'
 require 'ostruct'
 
