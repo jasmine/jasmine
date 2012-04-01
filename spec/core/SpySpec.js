@@ -197,5 +197,21 @@ describe('Spies', function () {
       }).toThrow('createSpyObj requires a non-empty array of method names to create spies for');
     });
   });
+  
+  describe('stub', function() {
+      
+      it('should allow to place a spy on a nonexisting method', function() {
+          object = {};
+          stub(object, 'method');
+          expect(object.method).toBeDefined();
+      });
+      
+      it("should restore an object to it's former state wen removing stubs", function() {
+          object = {};
+          stub(object, 'method');
+          this.removeAllSpies();
+          expect(object.method).not.toBeDefined();
+      });
+  });
 
 });

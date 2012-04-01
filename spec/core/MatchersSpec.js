@@ -548,6 +548,11 @@ describe("jasmine.Matchers", function() {
         expect(match(throwingFn).toThrow()).toPass();
       });
 
+      it("should match exception by class", function() {
+          expect(match(throwingFn).toThrow(Error)).toPass();
+          expect(match(throwingFn).toThrow(EvalError)).toFail();
+      });
+
       it("should match exceptions specified by message", function() {
         expect(match(throwingFn).toThrow("Fake Error")).toPass();
         expect(match(throwingFn).toThrow("Other Error")).toFail();
@@ -577,6 +582,12 @@ describe("jasmine.Matchers", function() {
 //          expect(lastResult().message).toMatch("Other Error");
           expect(match(throwingFn).not.toThrow(new Error("Other Error"))).toPass();
         });
+        
+        it("should match exception by class", function() {
+          expect(match(throwingFn).not.toThrow(Error)).toFail();
+          expect(match(throwingFn).not.toThrow(EvalError)).toPass();
+        });
+
       });
     });
 

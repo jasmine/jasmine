@@ -311,7 +311,7 @@ jasmine.Matchers.prototype.toBeCloseTo = function(expected, precision) {
 /**
  * Matcher that checks that the expected exception was thrown by the actual.
  *
- * @param {String} expected
+ * @param {String|Exception|Exception instance} expected
  */
 jasmine.Matchers.prototype.toThrow = function(expected) {
   var result = false;
@@ -325,7 +325,9 @@ jasmine.Matchers.prototype.toThrow = function(expected) {
     exception = e;
   }
   if (exception) {
-    result = (expected === jasmine.undefined || this.env.equals_(exception.message || exception, expected.message || expected));
+    result = (expected === jasmine.undefined 
+        || this.env.equals_(exception.message || exception, expected.message || expected)
+        || (expected instanceof Function && exception instanceof expected));
   }
 
   var not = this.isNot ? "not " : "";

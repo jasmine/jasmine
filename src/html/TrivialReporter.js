@@ -31,7 +31,7 @@ jasmine.TrivialReporter.prototype.createDom = function(type, attrs, childrenVarA
 };
 
 jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
-  var showPassed, showSkipped;
+  var showPassed, showSkipped, autoRerun;
 
   this.outerDiv = this.createDom('div', { id: 'TrivialReporter', className: 'jasmine_reporter' },
       this.createDom('div', { className: 'banner' },
@@ -43,7 +43,9 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
             showPassed = this.createDom('input', { id: "__jasmine_TrivialReporter_showPassed__", type: 'checkbox' }),
             this.createDom('label', { "for": "__jasmine_TrivialReporter_showPassed__" }, " passed "),
             showSkipped = this.createDom('input', { id: "__jasmine_TrivialReporter_showSkipped__", type: 'checkbox' }),
-            this.createDom('label', { "for": "__jasmine_TrivialReporter_showSkipped__" }, " skipped")
+            this.createDom('label', { "for": "__jasmine_TrivialReporter_showSkipped__" }, " skipped"),
+            autoRerun = this.createDom('input', { id: "__jasmine_TrivialReporter_autoRerun__", type: 'checkbox' }),
+            this.createDom('label', { "for": "__jasmine_TrivialReporter_autoRerun__" }, " auto rerun")
             )
           ),
 
@@ -87,11 +89,19 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
       self.outerDiv.className = self.outerDiv.className.replace(/ show-skipped/, '');
     }
   };
+  
+  autoRerun.checked = this.getSearchParameters().reload > 0;
+  autoRerun.onclick = function(evt) {
+    self.toggleAutoReload();
+  };
+  
+  this.document.title = "… -" + this.document.title;
 };
 
 jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
   var results = runner.results();
-  var className = (results.failedCount > 0) ? "runner failed" : "runner passed";
+  var didFail = results.failedCount > 0;
+  var className = didFail ? "runner failed" : "runner passed";
   this.runnerDiv.setAttribute("class", className);
   //do it twice for IE
   this.runnerDiv.setAttribute("className", className);
@@ -107,6 +117,11 @@ jasmine.TrivialReporter.prototype.reportRunnerResults = function(runner) {
   this.runnerMessageSpan.replaceChild(this.createDom('a', { className: 'description', href: '?'}, message), this.runnerMessageSpan.firstChild);
 
   this.finishedAtSpan.appendChild(document.createTextNode("Finished at " + new Date().toString()));
+  
+  var cleanedTitle = this.document.title.replace(/^… -/, " -");
+  this.document.title = (didFail ? "✗" : "✓") + cleanedTitle;
+  this.didFinishTestsuite = true;
+  this.scheduleReloadIfNeccessary();
 };
 
 jasmine.TrivialReporter.prototype.reportSuiteResults = function(suite) {
@@ -173,20 +188,67 @@ jasmine.TrivialReporter.prototype.log = function() {
   }
 };
 
+jasmine.TrivialReporter.prototype.specFilter = function(spec) {
+  var paramMap = this.getSearchParameters();
+  if (!paramMap.spec) {
+    return true;
+  }
+  return spec.getFullName().indexOf(paramMap.spec) === 0;
+};
+
 jasmine.TrivialReporter.prototype.getLocation = function() {
   return this.document.location;
 };
 
-jasmine.TrivialReporter.prototype.specFilter = function(spec) {
+jasmine.TrivialReporter.prototype.getSearchParameters = function() {
+  if (0 === this.getLocation().search.length)
+    return {};
+  
   var paramMap = {};
   var params = this.getLocation().search.substring(1).split('&');
   for (var i = 0; i < params.length; i++) {
     var p = params[i].split('=');
     paramMap[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
   }
+  return paramMap;
+};
 
-  if (!paramMap.spec) {
-    return true;
+jasmine.TrivialReporter.prototype.setSearchParameters = function(aParameterMap) {
+  var parameters = [];
+  for (var key in aParameterMap)
+    parameters.push(encodeURIComponent(key) + '=' + encodeURIComponent(aParameterMap[key]));
+  
+  var search = parameters.join('&');
+  if (search)
+    this.getLocation().search = '?' + search;
+  else
+    this.getLocation().search = '';
+};
+
+jasmine.TrivialReporter.prototype.toggleAutoReload = function() {
+  var parameterMap = this.getSearchParameters();
+  if (parameterMap.reload > 0)
+    delete parameterMap.reload;
+  else {
+    parameterMap.reload = 3;
   }
-  return spec.getFullName().indexOf(paramMap.spec) === 0;
+  this.setSearchParameters(parameterMap);
+  
+  this.scheduleReloadIfNeccessary();
+};
+
+jasmine.TrivialReporter.prototype.scheduleReloadIfNeccessary = function() {
+  if ( ! this.didFinishTestsuite
+      || this.reloadTimeout
+      || ! (this.getSearchParameters().reload > 0))
+    return;
+  
+  var reporter = this;
+  var reloader = function() { reporter.doReload(); };
+  this.reloadTimeout = setTimeout(reloader, this.getSearchParameters().reload * 1000);
+};
+
+jasmine.TrivialReporter.prototype.doReload = function() {
+  if (this.getSearchParameters().reload > 0)
+    this.getLocation().reload();
 };
