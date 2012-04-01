@@ -1,5 +1,5 @@
 var fs = require('fs');
-var sys = require('sys');
+var util = require('util');
 var path = require('path');
 
 // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
@@ -37,7 +37,7 @@ jasmine.executeSpecs = function(specs, done, isVerbose, showColors) {
   }
 
   var jasmineEnv = jasmine.getEnv();
-  var consoleReporter = new jasmine.ConsoleReporter(sys.print, done, showColors);
+  var consoleReporter = new jasmine.ConsoleReporter(util.print, done, showColors);
 
   jasmineEnv.addReporter(consoleReporter);
   jasmineEnv.execute();

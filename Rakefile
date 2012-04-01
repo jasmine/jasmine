@@ -10,20 +10,18 @@ end
 
 task :default => :spec
 
+desc "Run all developement tests"
+task :spec do
+  system "rspec"
+end
+
+# Keeping this around for the Doc task, remove when doc is refactored
 task :require_pages_submodule do
   raise "Submodule for Github Pages isn't present. Run git submodule update --init" unless pages_submodule_present
 end
 
-task :require_node do
-  raise "\nNode.js is required to develop code for Jasmine. Please visit http://nodejs.org to install.\n\n" unless node_installed?
-end
-
 def pages_submodule_present
   File.exist?('pages/download.html')
-end
-
-def node_installed?
- `which node` =~ /node/
 end
 
 class String
