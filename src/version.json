@@ -1,5 +1,6 @@
 {
   "major": 1,
-  "minor": 1,
-  "build": 0
+  "minor": 2,
+  "build": 0,
+  "release_candidate": 1
 }

@@ -34,12 +34,12 @@ As in all good projects, the `spec/` directory mirrors `src/` and follows the sa
 
 You will notice that all specs are run against the built `jasmine.js` instead of the component source files. This is intentional as a way to ensure that the concatenation code is working correctly.
 
-Please ensure all specs are green before committing.
+Please ensure all specs are green before committing or issuing a pull request.
 
-There are rake tasks to help with getting green:
+There are Thor tasks to help with getting green - run `thor list` to see them all. Here are the key tasks:
 
-* `rake spec` outputs the expected number of specs that should be run and attempts to run in browser and Node
-* `rake spec:browser` opens `spec/runner.html` in the default browser on MacOS. Please run this in at least Firefox and Chrome before committing
-* `rake spec:node` runs all the Jasmine specs in Node.js - it will complain if Node is not installed
-* `rake hint` runs all the files through JSHint and will complain about potential viable issues with your code. Fix them.
+* `thor jasmine_dev:execute_specs` outputs the expected number of specs that should be run and attempts to run in browser and Node
+* `thor jasmine_dev:execute_specs_in_browser` opens `spec/runner.html` in the default browser on MacOS. Please run this in at least Firefox and Chrome before committing
+* `thor jasmine_dev:execute_specs_in_node` runs all the Jasmine specs in Node.js - it will complain if Node is not installed
+* `thor jasmine_dev:js_hint` runs all the files through JSHint and will complain about potential viable issues with your code. Fix them.
 
