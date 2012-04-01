@@ -79,16 +79,15 @@ jasmine.MessageResult = function(values) {
 };
 
 jasmine.MessageResult.prototype.toString = function() {
-  var text = "";
+  var strings = [];
   for (var i = 0; i < this.values.length; i++) {
-    if (i > 0) text += " ";
     if (jasmine.isString_(this.values[i])) {
-      text += this.values[i];
+      strings.push(this.values[i]);
     } else {
-      text += jasmine.pp(this.values[i]);
+      strings.push(jasmine.pp(this.values[i]));
     }
   }
-  return text;
+  return strings.join(" ");
 };
 
 jasmine.ExpectationResult = function(params) {
@@ -212,7 +211,7 @@ jasmine.objectContaining = function (sample) {
 };
 
 /**
- * Jasmine Spies are test doubles that can act as stubs, spies, fakes or when used in an expecation, mocks.
+ * Jasmine Spies are test doubles that can act as stubs, spies, fakes, or when used in an expectation, mocks.
  *
  * Spies should be created in test setup, before expectations.  They can then be checked, using the standard Jasmine
  * expectation syntax. Spies can be checked if they were called or not and what the calling params were.
@@ -234,8 +233,8 @@ jasmine.objectContaining = function (sample) {
  *
  * // actual foo.not will not be called, execution stops
  * spyOn(foo, 'not');
-
- // foo.not spied upon, execution will continue to implementation
+ *
+ * // foo.not spied upon, execution will continue to implementation
  * spyOn(foo, 'not').andCallThrough();
  *
  * // fake example

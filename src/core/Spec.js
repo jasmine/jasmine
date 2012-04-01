@@ -182,8 +182,9 @@ jasmine.Spec.prototype.execute = function(onComplete) {
 jasmine.Spec.prototype.addBeforesAndAftersToQueue = function() {
   var runner = this.env.currentRunner();
   var i;
+  var suite;
 
-  for (var suite = this.suite; suite; suite = suite.parentSuite) {
+  for (suite = this.suite; suite; suite = suite.parentSuite) {
     for (i = 0; i < suite.before_.length; i++) {
       this.queue.addBefore(new jasmine.Block(this.env, suite.before_[i], this));
     }

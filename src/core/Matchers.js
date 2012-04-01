@@ -51,11 +51,9 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
       } else {
         var englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
         message = "Expected " + jasmine.pp(this.actual) + (this.isNot ? " not " : " ") + englishyPredicate;
-        if (matcherArgs.length > 0) {
-          for (var i = 0; i < matcherArgs.length; i++) {
-            if (i > 0) message += ",";
-            message += " " + jasmine.pp(matcherArgs[i]);
-          }
+        for (var i = 0; i < matcherArgs.length; i++) {
+          if (i > 0) message += ",";
+          message += " " + jasmine.pp(matcherArgs[i]);
         }
         message += ".";
       }
