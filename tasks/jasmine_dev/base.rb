@@ -36,9 +36,7 @@ class JasmineDev < Thor
 
     def has_node?
       run "which node", :verbose => false, :capture => true
-      last_exit_code = $?.to_s[-1]
-
-      last_exit_code == '0'
+      $?.exitstatus == 0
     end
 
     def pages_submodule_installed?
