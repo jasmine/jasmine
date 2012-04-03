@@ -40,8 +40,21 @@ describe "Build Github Pages task" do
       @output.should match(/Congratulations, project dumped to/)
     end
 
-    it "should copy the pages output to the requested diretory" do
+    it "should build the pages output to the requested diretory" do
       Dir.chdir File.join(pages_dir, 'pages_output') do
+        pages = Dir.glob(File.join('**', '*'))
+
+        pages.should include('download.html')
+        pages.should include('index.html')
+        pages.should include(File.join('images', 'jasmine_logo.png'))
+        pages.should include(File.join('images', 'pivotal_logo.gif'))
+        pages.should include(File.join('css', 'pygments.css'))
+        pages.should include(File.join('css', 'screen.css'))
+      end
+    end
+
+    it "should copy the generated page files to the destination directory" do
+      Dir.chdir pages_dir do
         pages = Dir.glob(File.join('**', '*'))
 
         pages.should include('download.html')

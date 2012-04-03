@@ -14,5 +14,18 @@ class JasmineDev < Thor
     inside File.join('pages', 'pages_source') do
       run_with_output "frank export #{pages_output}", :capture => true
     end
+
+    pages_files = Dir.chdir(pages_output) { Dir.glob('*') }
+
+    pages_files.each do |file|
+      source_path = File.join(pages_output, file)
+      destination_path = File.join(pages_dir, file)
+
+      if File.directory?(source_path)
+        directory source_path, destination_path
+      else
+        copy_file source_path, destination_path
+      end
+    end
   end
 end
