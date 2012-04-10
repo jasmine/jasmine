@@ -86,6 +86,7 @@ jasmine.HtmlReporter = function(_doc) {
 
   function createReporterDom(version) {
     dom.reporter = self.createDom('div', { id: 'HTMLReporter', className: 'jasmine_reporter' },
+      dom.jasmineContent = self.createDom('div', { id: 'jasmine_content' }),
       dom.banner = self.createDom('div', { className: 'banner' },
         self.createDom('span', { className: 'title' }, "Jasmine "),
         self.createDom('span', { className: 'version' }, version)),
