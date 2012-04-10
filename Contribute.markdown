@@ -12,7 +12,7 @@ Or, How to make a successful pull request
 * _Be environment agnostic_ - server-side developers are just as important as browser developers
 * _Be browser agnostic_ - if you must rely on browser-specific functionality, please write it in a way that degrades gracefully
 * _Write specs_ - Jasmine's a testing framework; don't add functionality without test-driving it
-* _Ensure the *entire* test suite is green_ in all the big browsers, Node, and JSHint - your contribution shouldn't break Jasmine for other users                                     
+* _Ensure the *entire* test suite is green_ in all the big browsers, Node, and JSHint - your contribution shouldn't break Jasmine for other users
 
 Follow these tips and your pull request, patch, or suggestion is much more likely to be integrated.
 

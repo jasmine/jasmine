@@ -29,7 +29,7 @@ class JasmineDev < Thor
     def node_installed?
       return true if has_node?
 
-      say "Node.js is required to develop Jasmine. Please visit http://nodejs.org to install. ",
+      say "Node.js is required to develop Jasmine. Please visit http://nodejs.org to install.",
           :red
       false
     end
@@ -48,7 +48,7 @@ class JasmineDev < Thor
     end
 
     def has_pages_submodule?
-      File.exist?(File.join(JasmineDev.project_root, 'pages', 'download.html'))
+      File.exist?(File.join(JasmineDev.project_root, 'pages', 'index.html'))
     end
   end
 end

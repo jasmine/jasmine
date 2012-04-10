@@ -30,7 +30,7 @@ class JasmineDev < Thor
     open_specs_in_browser
   end
 
-  desc "execute_specs", "Run all of Jasmine's specs"
+  desc "execute_specs", "Run all of Jasmine's JavaScript specs"
 
   def execute_specs
     invoke :execute_specs_in_node
