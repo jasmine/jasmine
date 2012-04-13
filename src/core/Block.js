@@ -12,11 +12,16 @@ jasmine.Block = function(env, func, spec) {
   this.spec = spec;
 };
 
-jasmine.Block.prototype.execute = function(onComplete) {  
-  try {
+jasmine.Block.prototype.execute = function(onComplete) {
+  if (!jasmine.CATCH_EXCEPTIONS) {
     this.func.apply(this.spec);
-  } catch (e) {
-    this.spec.fail(e);
+  }
+  else {
+    try {
+      this.func.apply(this.spec);
+    } catch (e) {
+      this.spec.fail(e);
+    }
   }
   onComplete();
 };

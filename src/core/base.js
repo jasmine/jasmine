@@ -39,6 +39,13 @@ jasmine.DEFAULT_UPDATE_INTERVAL = 250;
  */
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
+/**
+ * By default exceptions thrown in the context of a test are caught by jasmine so that it can run the remaining tests in the suite.
+ * Set to false to let the exception bubble up in the browser.
+ *
+ */
+jasmine.CATCH_EXCEPTIONS = true;
+
 jasmine.getGlobal = function() {
   function getGlobal() {
     return this;
