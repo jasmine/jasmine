@@ -264,4 +264,58 @@ describe('RunnerTest', function() {
       expect(suiteNames(suites)).toEqual([suite1.getFullName(), suite3.getFullName()]);
     });
   });
+  
+  describe('White-listing, a.k.a odescribe and oit', function(){
+    
+    it('should run exclude specs what are not white-listed if any are white-listed (oit)', function() {
+      var whiteListRan = false;
+      var anotherRan = false;
+      env.describe('one suite description', function () {
+        env.oit('white-listed test', function() {
+          this.runs(function () {
+            whiteListRan = true;
+            this.expect(true).toEqual(true);
+          });
+        });
+        env.it('should be another test', function() {
+          this.runs(function () {
+            anotherRan = true;
+            this.expect(true).toEqual(false);
+          });
+        });
+      });
+
+      env.execute();
+
+      expect(whiteListRan).toEqual(true);
+      expect(anotherRan).toEqual(false);
+    });
+
+    it('should run exclude suites what are not white-listed if any are white-listed (odescribe)', function() {
+      var whiteListRan = false;
+      var anotherRan = false;
+      env.odescribe('one suite description', function () {
+        env.it('a test', function() {
+          this.runs(function () {
+            whiteListRan = true;
+            this.expect(true).toEqual(true);
+          });
+        });
+      });
+      env.describe('another suite', function() {
+        env.it('should be another test', function() {
+          this.runs(function () {
+            anotherRan = true;
+            this.expect(true).toEqual(false);
+          });
+        });
+      });
+
+      env.execute();
+
+      expect(whiteListRan).toEqual(true);
+      expect(anotherRan).toEqual(false);
+    });
+    
+  })
 });

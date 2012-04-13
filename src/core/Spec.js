@@ -6,7 +6,7 @@
  * @param {jasmine.Suite} suite
  * @param {String} description
  */
-jasmine.Spec = function(env, suite, description) {
+jasmine.Spec = function(env, suite, description, whiteListed) {
   if (!env) {
     throw new Error('jasmine.Env() required');
   }
@@ -26,6 +26,7 @@ jasmine.Spec = function(env, suite, description) {
   spec.results_ = new jasmine.NestedResults();
   spec.results_.description = description;
   spec.matchersClass = null;
+  spec.whiteListed = whiteListed;
 };
 
 jasmine.Spec.prototype.getFullName = function() {
@@ -162,7 +163,7 @@ jasmine.Spec.prototype.after = function(doAfter) {
 
 jasmine.Spec.prototype.execute = function(onComplete) {
   var spec = this;
-  if (!spec.env.specFilter(spec)) {
+  if (!spec.env.specFilter(spec) || (spec.env.whiteListMode && !spec.whiteListed)) {
     spec.results_.skipped = true;
     spec.finish(onComplete);
     return;
@@ -178,6 +179,10 @@ jasmine.Spec.prototype.execute = function(onComplete) {
     spec.finish(onComplete);
   });
 };
+
+jasmine.Spec.prototype.markWhiteListed = function(){
+  this.whiteListed = true;
+}
 
 jasmine.Spec.prototype.addBeforesAndAftersToQueue = function() {
   var runner = this.env.currentRunner();

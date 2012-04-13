@@ -502,6 +502,19 @@ var xit = function(desc, func) {
 if (isCommonJS) exports.xit = xit;
 
 /**
+ * Creates a <em>white-listed</em> Jasmine spec.
+ *
+ * A convenience method that disables all other non-whitelisted specs temporarily during development.
+ *
+ * @param {String} desc description of this specification
+ * @param {Function} func defines the preconditions and expectations of the spec
+ */
+var oit = function(desc, func) {
+  return jasmine.getEnv().oit(desc, func);
+};
+if (isCommonJS) exports.oit = oit;
+
+/**
  * Starts a chain for a Jasmine expectation.
  *
  * It is passed an Object that is the actual value and should chain to one of the many
@@ -602,6 +615,17 @@ var xdescribe = function(description, specDefinitions) {
 };
 if (isCommonJS) exports.xdescribe = xdescribe;
 
+/**
+ * White-lists a suite of specifications.  Used to disable all other suites that are not in a white list, temporarily during
+ * development.
+ *
+ * @param {String} description A string, usually the class under test.
+ * @param {Function} specDefinitions function that defines several specs.
+ */
+var odescribe = function(description, specDefinitions) {
+  return jasmine.getEnv().odescribe(description, specDefinitions);
+}
+if (isCommonJS) exports.odescribe = odescribe;
 
 // Provide the XMLHttpRequest class for IE 5.x-6.x:
 jasmine.XmlHttpRequest = (typeof XMLHttpRequest == "undefined") ? function() {

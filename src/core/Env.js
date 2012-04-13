@@ -87,11 +87,21 @@ jasmine.Env.prototype.addReporter = function(reporter) {
 };
 
 jasmine.Env.prototype.execute = function() {
+  var specs = this.currentRunner_.specs();
+  this.whiteListMode = (function(){
+    var whiteListed = [];
+    for (var i = 0, len = specs.length; i < len; i++){
+      var spec = specs[i];
+      if (spec.whiteListed)
+        whiteListed.push(spec);
+    }
+    return whiteListed.length > 0;
+  }());
   this.currentRunner_.execute();
 };
 
-jasmine.Env.prototype.describe = function(description, specDefinitions) {
-  var suite = new jasmine.Suite(this, description, specDefinitions, this.currentSuite);
+jasmine.Env.prototype.describe = function(description, specDefinitions, whiteListed) {
+  var suite = new jasmine.Suite(this, description, specDefinitions, this.currentSuite, whiteListed);
 
   var parentSuite = this.currentSuite;
   if (parentSuite) {
@@ -119,6 +129,10 @@ jasmine.Env.prototype.describe = function(description, specDefinitions) {
 
   return suite;
 };
+
+jasmine.Env.prototype.odescribe = function(description, specDefinitions){
+  this.describe(description, specDefinitions, true);
+}
 
 jasmine.Env.prototype.beforeEach = function(beforeEachFunction) {
   if (this.currentSuite) {
@@ -148,8 +162,8 @@ jasmine.Env.prototype.xdescribe = function(desc, specDefinitions) {
   };
 };
 
-jasmine.Env.prototype.it = function(description, func) {
-  var spec = new jasmine.Spec(this, this.currentSuite, description);
+jasmine.Env.prototype.it = function(description, func, whiteListed) {
+  var spec = new jasmine.Spec(this, this.currentSuite, description, whiteListed);
   this.currentSuite.add(spec);
   this.currentSpec = spec;
 
@@ -166,6 +180,10 @@ jasmine.Env.prototype.xit = function(desc, func) {
     runs: function() {
     }
   };
+};
+
+jasmine.Env.prototype.oit = function(desc, func){
+  this.it(desc, func, true);
 };
 
 jasmine.Env.prototype.compareObjects_ = function(a, b, mismatchKeys, mismatchValues) {
