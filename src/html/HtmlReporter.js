@@ -18,6 +18,7 @@ jasmine.HtmlReporter = function(_doc) {
 
     createReporterDom(runner.env.versionString());
     doc.body.appendChild(dom.reporter);
+    setExceptionHandling();
 
     reporterView = new jasmine.HtmlReporter.ReporterView(dom);
     reporterView.addSpecs(specs, self.specFilter);
@@ -71,7 +72,7 @@ jasmine.HtmlReporter = function(_doc) {
       }
 
       var paramMap = [];
-      var params = doc.location.search.substring(1).split('&');
+      var params = jasmine.HtmlReporter.parameters(doc);
 
       for (var i = 0; i < params.length; i++) {
         var p = params[i].split('=');
@@ -91,11 +92,76 @@ jasmine.HtmlReporter = function(_doc) {
         self.createDom('span', { className: 'version' }, version)),
 
       dom.symbolSummary = self.createDom('ul', {className: 'symbolSummary'}),
-      dom.alert = self.createDom('div', {className: 'alert'}),
+      dom.alert = self.createDom('div', {className: 'alert'},
+        self.createDom('span', { className: 'exceptions' },
+          self.createDom('label', { className: 'label', for: 'catch_exceptions' }, 'Catch exceptions'),
+          self.createDom('input', { id: 'catch_exceptions', type: 'checkbox' }))),
       dom.results = self.createDom('div', {className: 'results'},
         dom.summary = self.createDom('div', { className: 'summary' }),
         dom.details = self.createDom('div', { id: 'details' }))
     );
   }
+
+  function shouldCatchExceptions() {
+    return !window.location.search.match(/catch=false/);
+  }
+
+  function searchWithCatch() {
+    var params = jasmine.HtmlReporter.parameters(window.document);
+    var removed = false;
+    var i = 0;
+
+    while (!removed && i < params.length) {
+      if (params[i].match(/catch=/)) {
+        params.splice(i, 1);
+        removed = true;
+      }
+      i++;
+    }
+    if (jasmine.CATCH_EXCEPTIONS) {
+      params.push("catch=false");
+    }
+
+    return params.join("&");
+  }
+
+  function setExceptionHandling() {
+    var catch_exceptions = document.getElementById('catch_exceptions');
+
+    if (shouldCatchExceptions()) {
+      catch_exceptions.setAttribute('checked', true);
+    }
+    else {
+      jasmine.CATCH_EXCEPTIONS = false;
+    }
+    catch_exceptions.onclick = function() {
+      window.location.search = searchWithCatch();
+    };
+  }
+};
+jasmine.HtmlReporter.parameters = function(doc) {
+  var paramStr = doc.location.search.substring(1);
+  var params = [];
+
+  if (paramStr.length > 0) {
+    params = paramStr.split('&');
+  }
+  return params;
+}
+jasmine.HtmlReporter.sectionLink = function(sectionName) {
+  var link = '?';
+  var params = [];
+
+  if (sectionName) {
+    params.push('spec=' + encodeURIComponent(sectionName));
+  }
+  if (!jasmine.CATCH_EXCEPTIONS) {
+    params.push("catch=false");
+  }
+  if (params.length > 0) {
+    link += params.join("&");
+  }
+
+  return link;
 };
 jasmine.HtmlReporterHelpers.addHelpers(jasmine.HtmlReporter);
