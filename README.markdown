@@ -11,7 +11,6 @@ Documentation & guides live here: [http://pivotal.github.com/jasmine/](http://pi
 
 * Search past discussions: [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js)
 * Send an email to the list: [jasmine-js@googlegroups.com](jasmine-js@googlegroups.com)
-* Check the current build status: [ci.pivotallabs.com](http://ci.pivotallabs.com)
 * View the project backlog at Pivotal Tracker: [http://www.pivotaltracker.com/projects/10606](http://www.pivotaltracker.com/projects/10606)
 * Follow us on Twitter: [@JasmineBDD](http://twitter.com/JasmineBDD)
 
