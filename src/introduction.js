@@ -656,7 +656,7 @@ describe("Asynchronous specs", function() {
 /**
  ## The Runner and Reporter
 
- Jasmine is built in JavaScript must be included into a JS environment, such as a web page, in order to run. Like this web page.
+ Jasmine is built in JavaScript and must be included into a JS environment, such as a web page, in order to run. Like this web page.
 
  This file is written in JavaSscript and is compiled into HTML via [Rocco](rocco). The JavaScript file is then included, via a `<script>` tag, so that all of the above specs are evaluated and recorded with Jasmine. Thus Jasmine can run all of these specs. This page is then considered a 'runner.'
 
