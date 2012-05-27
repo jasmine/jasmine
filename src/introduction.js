@@ -67,7 +67,7 @@ describe("The 'toBe' matcher compares with ===", function() {
 
  Jasmine as a rich set of matchers included. Each is used here - all expectations and specs pass.
 
- There is also the ability to write [custom matchers](custom_matchers) for when a project's domain calls for specific assertions that are not included below.
+ There is also the ability to write [custom matchers](https://github.com/pivotal/jasmine/wiki/Matchers) for when a project's domain calls for specific assertions that are not included below.
  */
 
 describe("Included matchers:", function() {
@@ -564,7 +564,7 @@ describe("jasmine.any", function() {
 /**
  ## Mocking the JavaScript Clock
 
- The Jasmine Mock Clock is available for a test suites thatz need the ability to use `setTimeout` or `setInterval` callbacks. It makes the timer callbacks synchronous, thus making them easier to test.
+ The Jasmine Mock Clock is available for a test suites that need the ability to use `setTimeout` or `setInterval` callbacks. It makes the timer callbacks synchronous, thus making them easier to test.
 
  */
 describe("Manually ticking the Jasmine Mock Clock", function() {
