@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files         = Dir.glob("./lib/**/*") + Dir.glob("./lib/jasmine-core/spec/**/*.js")
   s.require_paths = ["lib"]
   s.add_development_dependency "json_pure", ">= 1.4.3"
-  s.add_development_dependency "frank"
+  s.add_development_dependency "tilt"
   s.add_development_dependency "sass"
   s.add_development_dependency "compass"
   s.add_development_dependency "ragaskar-jsdoc_helper"
@@ -26,4 +26,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "awesome_print"
   s.add_development_dependency "thor"
   s.add_development_dependency "nokogiri"
+  s.add_development_dependency "rocco"
+  s.add_development_dependency "rdiscount"
 end

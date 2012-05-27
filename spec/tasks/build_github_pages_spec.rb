@@ -36,34 +36,25 @@ describe "Build Github Pages task" do
       @output.should match(/Building Github Pages/)
     end
 
-    it "should tell the user the pages are built" do
-      @output.should match(/Congratulations, project dumped to/)
-    end
+    it "should copy the latest jasmine files to the pages dir" do
+      ['jasmine.js', 'jasmine.css', 'jasmine-html.js'].each do |lib_file|
+        source = File.read(File.join(project_root, 'lib', 'jasmine-core', lib_file))
+        dest = File.read(File.join(pages_dir, 'lib', lib_file))
 
-    it "should build the pages output to the requested diretory" do
-      Dir.chdir File.join(pages_dir, 'pages_output') do
-        pages = Dir.glob(File.join('**', '*'))
-
-        pages.should include('download.html')
-        pages.should include('index.html')
-        pages.should include(File.join('images', 'jasmine_logo.png'))
-        pages.should include(File.join('images', 'pivotal_logo.gif'))
-        pages.should include(File.join('css', 'pygments.css'))
-        pages.should include(File.join('css', 'screen.css'))
+        source.should == dest
       end
     end
 
-    it "should copy the generated page files to the destination directory" do
-      Dir.chdir pages_dir do
-        pages = Dir.glob(File.join('**', '*'))
+    it "should build a new page" do
+      @output.should match(/rocco/)
+      File.exist?(File.join(pages_dir, 'introduction.html')).should be_true
+    end
 
-        pages.should include('download.html')
-        pages.should include('index.html')
-        pages.should include(File.join('images', 'jasmine_logo.png'))
-        pages.should include(File.join('images', 'pivotal_logo.gif'))
-        pages.should include(File.join('css', 'pygments.css'))
-        pages.should include(File.join('css', 'screen.css'))
-      end
+    it "should copy the rocco output to index.html" do
+      introduction = File.read(File.join(pages_dir, 'introduction.html'))
+      index = File.read(File.join(pages_dir, 'index.html'))
+
+      index.should == introduction
     end
   end
 end

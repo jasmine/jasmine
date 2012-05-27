@@ -8,24 +8,21 @@ class JasmineDev < Thor
 
     return unless pages_submodule_installed?
 
-    pages_output = File.join(pages_dir, 'pages_output')
-    FileUtils.rm_r(pages_output) if File.exist?(pages_output)
+    project_lib_dir = File.join(JasmineDev.project_root, 'lib', 'jasmine-core')
 
-    inside File.join('pages', 'pages_source') do
-      run_with_output "frank export #{pages_output}", :capture => true
+    pages_lib_dir = File.join(pages_dir, 'lib')
+    FileUtils.rm_r(pages_lib_dir) if File.exist?(pages_lib_dir)
+
+    ['jasmine.js', 'jasmine-html.js', 'jasmine.css'].each do |file|
+      copy_file File.join(project_lib_dir, file), File.join(pages_lib_dir, file)
     end
 
-    pages_files = Dir.chdir(pages_output) { Dir.glob('*') }
+    inside File.join(JasmineDev.project_root, 'pages', 'src') do
+      run_with_output "bundle exec rocco -l js introduction.js -t layout.mustache -o #{pages_dir}"
+    end
 
-    pages_files.each do |file|
-      source_path = File.join(pages_output, file)
-      destination_path = File.join(pages_dir, file)
-
-      if File.directory?(source_path)
-        directory source_path, destination_path
-      else
-        copy_file source_path, destination_path
-      end
+    inside pages_dir do
+      copy_file File.join(pages_dir,'introduction.html'), File.join(pages_dir,'index.html')
     end
   end
 end
