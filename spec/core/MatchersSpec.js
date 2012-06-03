@@ -75,6 +75,9 @@ describe("jasmine.Matchers", function() {
     expect((match(parseInt('5', 10)).toEqual(5))).toPass();
     expect((match(5).toNotEqual(5))).toFail();
     expect((match(parseInt('5', 10)).toNotEqual(5))).toFail();
+
+    expect((match(/1/i).toEqual(/1/i))).toPass();
+    expect((match(/1/i).toNotEqual(/1/i))).toFail();
   });
 
   it("toEqual to build an Expectation Result", function() {
