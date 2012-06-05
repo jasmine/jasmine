@@ -176,6 +176,23 @@ describe("TrivialReporter", function() {
 
     xit("should work on IE without console.log.apply", function() {
     });
+
+    it("should contain link with custom pageURI if defined", function() {
+      env.describe("suite", function() {
+        env.it("will have log messages", function() {
+          this.log("this is a", "log message for testing pageURI");
+        });
+      });
+
+      trivialReporter.pageURI = function(path) { return 'custom_path/' + path };
+      env.addReporter(trivialReporter);
+      env.execute();
+
+      var links = body.getElementsByTagName("a");
+      var link_href_attr = findElement(links, 'description').getAttribute('href');
+      expect(link_href_attr).toMatch(/custom_path\//);
+    });
+
   });
 
   describe("duplicate example names", function() {

@@ -9,7 +9,7 @@ jasmine.HtmlReporter.SpecView = function(spec, dom, views) {
   this.summary = this.createDom('div', { className: 'specSummary' },
       this.createDom('a', {
         className: 'description',
-        href: '?spec=' + encodeURIComponent(this.spec.getFullName()),
+        href: this.pageURI('?spec=' + encodeURIComponent(this.spec.getFullName())),
         title: this.spec.getFullName()
       }, this.spec.description)
   );
@@ -17,7 +17,7 @@ jasmine.HtmlReporter.SpecView = function(spec, dom, views) {
   this.detail = this.createDom('div', { className: 'specDetail' },
       this.createDom('a', {
         className: 'description',
-        href: '?spec=' + encodeURIComponent(this.spec.getFullName()),
+        href: this.pageURI('?spec=' + encodeURIComponent(this.spec.getFullName())),
         title: this.spec.getFullName()
       }, this.spec.getFullName())
   );
