@@ -78,6 +78,8 @@ describe("jasmine.Matchers", function() {
 
     expect((match(/1/i).toEqual(/1/i))).toPass();
     expect((match(/1/i).toNotEqual(/1/i))).toFail();
+    expect((match(/[abc]/gm).toEqual(/1/i))).toFail();
+    expect((match(/[abc]/gm).toNotEqual(/1/i))).toPass();
   });
 
   it("toEqual to build an Expectation Result", function() {
