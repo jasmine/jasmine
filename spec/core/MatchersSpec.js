@@ -389,6 +389,13 @@ describe("jasmine.Matchers", function() {
     circularObject.field = circularObject;
     secondCircularObject.field = secondCircularObject;
     expect(match(circularObject).toEqual(secondCircularObject)).toPass();
+
+    var thirdCircularObject = {};
+    circularObject.field = secondCircularObject;
+    secondCircularObject.field = thirdCircularObject;
+    secondCircularObject.first = circularObject;
+    thirdCircularObject.field = circularObject;
+    expect(match(circularObject).toEqual(secondCircularObject)).toFail();
   });
 
   it("toNotEqual as slightly surprising behavior, but is it intentional?", function() {
@@ -405,14 +412,27 @@ describe("jasmine.Matchers", function() {
   it("toContain and toNotContain", function() {
     expect(match('ABC').toContain('A')).toPass();
     expect(match('ABC').toContain('X')).toFail();
-
+    
     expect(match(['A', 'B', 'C']).toContain('A')).toPass();
     expect(match(['A', 'B', 'C']).toContain('F')).toFail();
     expect(match(['A', 'B', 'C']).toNotContain('F')).toPass();
     expect(match(['A', 'B', 'C']).toNotContain('A')).toFail();
-
+    
     expect(match(['A', {some:'object'}, 'C']).toContain({some:'object'})).toPass();
-    expect(match(['A', {some:'object'}, 'C']).toContain({some:'other object'})).toFail();
+    expect(match(['A', {some:'object'}, 'C']).toContain({some:'other object'})).toFail();    
+  });
+  
+  it("toContain handles circular objects ok", function() {
+    var circularObject = {};
+    var secondCircularObject = {};    
+    var thirdCircularObject = {};
+    var fourthCircularObject = {};
+    circularObject.field = secondCircularObject;
+    secondCircularObject.field = thirdCircularObject;
+    secondCircularObject.first = circularObject;
+    thirdCircularObject.field = fourthCircularObject;
+    fourthCircularObject.field = circularObject;
+    expect(match([circularObject]).toContain(secondCircularObject)).toFail();
   });
 
   it("toContain to build an ExpectationResult", function() {
