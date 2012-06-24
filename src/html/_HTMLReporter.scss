@@ -136,164 +136,171 @@ body {
       }
     }
   }
-  
+
+  .exceptions {
+    color: #fff;
+    float: right;
+    margin-top: 5px;
+    margin-right: 5px;
+  }
+
   //--- Alert ---//
-  
+
   .bar {
     line-height: $line-height * 2;
     font-size: $large-font-size;
-    
+
     display: block;
     color: #eee;
   }
-  
+
   .runningAlert {
     background-color: $light-text-color;
   }
-  
+
   .skippedAlert {
     background-color: $feint-text-color;
-  
+
     &:first-child {
       background-color: $text-color;
     }
-    
+
     &:hover {
       text-decoration: none;
       color: white;
       text-decoration: underline;
     }
   }
-  
+
   .passingAlert {
     background-color: $light-passing-color;
-    
+
     &:first-child {
       background-color: $passing-color;
     }
   }
-  
+
   .failingAlert {
     background-color: $light-failing-color;
-    
+
     &:first-child {
       background-color: $failing-color
     }
   }
 
   //--- Results ---//
-  
+
   .results {
     margin-top: $line-height;
   }
 
   //--- Results menu ---//
-  
+
   #details {
     display: none;
   }
-  
+
   .resultsMenu,
   .resultsMenu a {
     background-color: #fff;
     color: $text-color;
   }
-  
+
   &.showDetails {
-    
+
     .summaryMenuItem {
       font-weight: normal;
       text-decoration: inherit;
-      
+
       &:hover {
         text-decoration: underline;
       }
     }
-    
+
     .detailsMenuItem {
       font-weight: bold;
-      text-decoration: underline;    
+      text-decoration: underline;
     }
-  
+
     .summary {
       display: none;
     }
-    
+
     #details {
       display: block;
     }
   }
-  
-  .summaryMenuItem {  
+
+  .summaryMenuItem {
     font-weight: bold;
     text-decoration: underline;
   }
-  
+
   //--- Results summary ---//
-  
+
   .summary {
     margin-top: $margin-unit;
-    
+
     .suite .suite, .specSummary {
       margin-left: $margin-unit;
     }
-    
+
     .specSummary {
       &.passed a {
-        color: $passing-color;  
+        color: $passing-color;
       }
       &.failed a {
         color: $failing-color;
       }
     }
   }
-  
+
   .description+.suite {
     margin-top: 0;
   }
-  
+
   .suite {
     margin-top: $margin-unit;
-    
+
     a {
       color: $text-color;
     }
   }
-  
+
   //--- Results details ---//
-  
+
   #details {
     .specDetail {
       margin-bottom: $line-height * 2;
-      
+
       .description {
         //line-height: $line-height * 2;
         display: block;
-  
+
         color: white;
         background-color: $failing-color;
-        
+
         //font-size: $large-font-size;
       }
     }
   }
-  
+
   .resultMessage {
     padding-top: $line-height;
-    
+
     color: $text-color;
   }
-  
+
   .resultMessage span.result {
     display: block;
   }
-  
+
   .stackTrace {
     margin: 5px 0 0 0;
     max-height: $line-height * 16;
     overflow: auto;
     line-height: 18px;
-    
+
     color: $light-text-color;
     border: 1px solid #ddd;
     background: white;
