@@ -65,7 +65,7 @@ describe("The 'toBe' matcher compares with ===", function() {
 /**
  ### Included Matchers
 
- Jasmine as a rich set of matchers included. Each is used here - all expectations and specs pass.
+ Jasmine has a rich set of matchers included. Each is used here - all expectations and specs pass.
 
  There is also the ability to write [custom matchers](https://github.com/pivotal/jasmine/wiki/Matchers) for when a project's domain calls for specific assertions that are not included below.
  */
@@ -193,8 +193,9 @@ describe("Included matchers:", function() {
 /**
  ## Grouping Related Specs with `describe`
 
- The `describe` function is for grouping related specs. The string parameter is for naming the collection of specs, and will be contatenated with specs to make a spec's full name. This aids in finding specs in a large suite. If you name them well, your specs read as full sentences in traditional [BDD](bdd) style.
+ The `describe` function is for grouping related specs. The string parameter is for naming the collection of specs, and will be contatenated with specs to make a spec's full name. This aids in finding specs in a large suite. If you name them well, your specs read as full sentences in traditional [BDD][bdd] style.
 
+ [bdd]: http://en.wikipedia.org/wiki/Behavior-driven_development
  */
 describe("A spec", function() {
   it("is just a function, so it can contain any code", function() {
@@ -540,7 +541,7 @@ describe("Multiple spies, when created manually", function() {
 /**
  ## Matching Anything with `jasmine.any`
 
- `jasmine.any` takes a constructor or "class" name as an expected value. It returns `true` if the constructor matches the constructor of the acutal value.
+ `jasmine.any` takes a constructor or "class" name as an expected value. It returns `true` if the constructor matches the constructor of the actual value.
  */
 
 describe("jasmine.any", function() {
@@ -658,11 +659,13 @@ describe("Asynchronous specs", function() {
 
  Jasmine is built in JavaScript and must be included into a JS environment, such as a web page, in order to run. Like this web page.
 
- This file is written in JavaScript and is compiled into HTML via [Rocco](rocco). The JavaScript file is then included, via a `<script>` tag, so that all of the above specs are evaluated and recorded with Jasmine. Thus Jasmine can run all of these specs. This page is then considered a 'runner.'
+ This file is written in JavaScript and is compiled into HTML via [Rocco][rocco]. The JavaScript file is then included, via a `<script>` tag, so that all of the above specs are evaluated and recorded with Jasmine. Thus Jasmine can run all of these specs. This page is then considered a 'runner.'
 
  Scroll down the page to see the results of the above specs. All of the specs should pass.
 
  Meanwhile, here is how a runner works to execute a Jasmine suite.
+
+ [rocco]: http://rtomayko.github.com/rocco/
  */
 (function() {
   var jasmineEnv = jasmine.getEnv();
