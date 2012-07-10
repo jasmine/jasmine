@@ -311,7 +311,7 @@ jasmine.Matchers.prototype.toBeCloseTo = function(expected, precision) {
 /**
  * Matcher that checks that the expected exception was thrown by the actual.
  *
- * @param {String} expected
+ * @param {String} [expected]
  */
 jasmine.Matchers.prototype.toThrow = function(expected) {
   var result = false;
