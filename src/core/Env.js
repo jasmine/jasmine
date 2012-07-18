@@ -181,6 +181,9 @@ jasmine.Env.prototype.compareRegExps_ = function(a, b, mismatchKeys, mismatchVal
   if (a.multiline != b.multiline)
     mismatchValues.push("expected modifier m was" + (b.multiline ? " " : " not ") + "set and does not equal the origin modifier");
 
+  if (a.sticky != b.sticky)
+    mismatchValues.push("expected modifier y was" + (b.sticky ? " " : " not ") + "set and does not equal the origin modifier");
+
   return (mismatchValues.length === 0);
 };
 
