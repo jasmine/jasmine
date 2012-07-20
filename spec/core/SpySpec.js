@@ -50,9 +50,14 @@ describe('Spies', function () {
         return "return value from original function";
       }
     };
+    
+    TestClass.someFunction.prop1 = 'foo';
+    TestClass.someFunction.prop2 = { bar: 'baz' };
 
     this.spyOn(TestClass, 'someFunction').andCallThrough();
     var result = TestClass.someFunction('arg1', 'arg2');
+    expect(TestClass.someFunction.prop1).toBe('foo');
+    expect(TestClass.someFunction.prop2).toEqual({ bar: 'baz' });
     expect(result).toEqual("return value from original function");
     expect(originalFunctionWasCalled).toEqual(true);
     expect(passedArgs).toEqual(['arg1', 'arg2']);
