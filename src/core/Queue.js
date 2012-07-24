@@ -1,5 +1,9 @@
 jasmine.Queue = function(env) {
   this.env = env;
+
+  // parallel to blocks. each true value in this array means the block will
+  // get executed even if we abort
+  this.ensured = [];
   this.blocks = [];
   this.running = false;
   this.index = 0;
@@ -7,15 +11,30 @@ jasmine.Queue = function(env) {
   this.abort = false;
 };
 
-jasmine.Queue.prototype.addBefore = function(block) {
+jasmine.Queue.prototype.addBefore = function(block, ensure) {
+  if (ensure === jasmine.undefined) {
+    ensure = false;
+  }
+
   this.blocks.unshift(block);
+  this.ensured.unshift(ensure);
 };
 
-jasmine.Queue.prototype.add = function(block) {
+jasmine.Queue.prototype.add = function(block, ensure) {
+  if (ensure === jasmine.undefined) {
+    ensure = false;
+  }
+
   this.blocks.push(block);
+  this.ensured.push(ensure);
 };
 
-jasmine.Queue.prototype.insertNext = function(block) {
+jasmine.Queue.prototype.insertNext = function(block, ensure) {
+  if (ensure === jasmine.undefined) {
+    ensure = false;
+  }
+
+  this.ensured.splice((this.index + this.offset + 1), 0, ensure);
   this.blocks.splice((this.index + this.offset + 1), 0, block);
   this.offset++;
 };
@@ -39,7 +58,7 @@ jasmine.Queue.prototype.next_ = function() {
   while (goAgain) {
     goAgain = false;
     
-    if (self.index < self.blocks.length && !this.abort) {
+    if (self.index < self.blocks.length && !(this.abort && !this.ensured[self.index])) {
       var calledSynchronously = true;
       var completedSynchronously = false;
 

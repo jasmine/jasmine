@@ -154,7 +154,7 @@ jasmine.Spec.prototype.finish = function(onComplete) {
 
 jasmine.Spec.prototype.after = function(doAfter) {
   if (this.queue.isRunning()) {
-    this.queue.add(new jasmine.Block(this.env, doAfter, this));
+    this.queue.add(new jasmine.Block(this.env, doAfter, this), true);
   } else {
     this.afterCallbacks.unshift(doAfter);
   }
@@ -192,15 +192,15 @@ jasmine.Spec.prototype.addBeforesAndAftersToQueue = function() {
     this.queue.addBefore(new jasmine.Block(this.env, runner.before_[i], this));
   }
   for (i = 0; i < this.afterCallbacks.length; i++) {
-    this.queue.add(new jasmine.Block(this.env, this.afterCallbacks[i], this));
+    this.queue.add(new jasmine.Block(this.env, this.afterCallbacks[i], this), true);
   }
   for (suite = this.suite; suite; suite = suite.parentSuite) {
     for (i = 0; i < suite.after_.length; i++) {
-      this.queue.add(new jasmine.Block(this.env, suite.after_[i], this));
+      this.queue.add(new jasmine.Block(this.env, suite.after_[i], this), true);
     }
   }
   for (i = 0; i < runner.after_.length; i++) {
-    this.queue.add(new jasmine.Block(this.env, runner.after_[i], this));
+    this.queue.add(new jasmine.Block(this.env, runner.after_[i], this), true);
   }
 };
 
