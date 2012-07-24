@@ -398,6 +398,123 @@ describe("jasmine spec running", function () {
       expect(timeoutSpec.results().getItems()[0].message).toEqual('timeout: timed out after 500 msec waiting for something to happen');
       expect(subsequentSpecRan).toEqual(true);
     });
+
+    it("runs afterEach after timing out", function() {
+      var afterEach = jasmine.createSpy('afterEach');
+
+      env.describe('foo', function () {
+        env.afterEach(afterEach);
+
+        env.it('waitsFor', function () {
+          this.waitsFor(100, function() {
+            return false;
+          });
+        });
+      }).execute();
+
+      fakeTimer.tick(500);
+      expect(afterEach).toHaveBeenCalled();
+    });
+
+    it("runs single-spec after functions after timing out", function() {
+      var after = jasmine.createSpy('after');
+
+      env.describe('foo', function () {
+        env.it('waitsFor', function () {
+          this.after(after);
+          this.waitsFor(100, function() {
+            return false;
+          });
+        });
+      }).execute();
+
+      fakeTimer.tick(500);
+      expect(after).toHaveBeenCalled();
+    });
+
+    describe('with consecutive calls', function () {
+      var foo;
+      beforeEach(function () {
+        foo = 0;
+      });
+
+      it('exits immediately (does not stack) if the latchFunction times out', function () {
+        var reachedFirstWaitsFor = false;
+        var reachedSecondWaitsFor = false;
+        env.describe('suite that waits', function () {
+          env.it('should stack timeouts', function() {
+            this.waitsFor(500, function () {
+              reachedFirstWaitsFor = true;
+              return false;
+            });
+            this.waitsFor(500, function () {
+              reachedSecondWaitsFor = true;
+            });
+            this.runs(function () {
+              foo++;
+            });
+          });
+        });
+
+        expect(reachedFirstWaitsFor).toEqual(false);
+        env.execute();
+
+        expect(reachedFirstWaitsFor).toEqual(true);
+        expect(foo).toEqual(0);
+        expect(reachedSecondWaitsFor).toEqual(false);
+        fakeTimer.tick(500);
+        expect(reachedSecondWaitsFor).toEqual(false);
+        expect(foo).toEqual(0);
+        fakeTimer.tick(500);
+        expect(reachedSecondWaitsFor).toEqual(false);
+        expect(foo).toEqual(0);
+      });
+
+      it('stacks latchFunctions', function () {
+        var firstWaitsResult = false;
+        var secondWaitsResult = false;
+        var waitsSuite = env.describe('suite that waits', function () {
+          env.it('spec with waitsFors', function() {
+            this.waitsFor(600, function () {
+              fakeTimer.setTimeout(function () {
+                firstWaitsResult = true;
+              }, 300);
+              return firstWaitsResult;
+            });
+            this.waitsFor(600, function () {
+              fakeTimer.setTimeout(function () {
+                secondWaitsResult = true;
+              }, 300);
+              return secondWaitsResult;
+            });
+            this.runs(function () {
+              foo++;
+            });
+          });
+        });
+
+        expect(firstWaitsResult).toEqual(false);
+        expect(secondWaitsResult).toEqual(false);
+        waitsSuite.execute();
+
+        expect(firstWaitsResult).toEqual(false);
+        expect(secondWaitsResult).toEqual(false);
+        expect(foo).toEqual(0);
+
+        fakeTimer.tick(300);
+
+        expect(firstWaitsResult).toEqual(true);
+        expect(secondWaitsResult).toEqual(false);
+        expect(foo).toEqual(0);
+
+        fakeTimer.tick(300);
+
+        expect(firstWaitsResult).toEqual(true);
+        expect(secondWaitsResult).toEqual(true);
+        expect(foo).toEqual(1);
+
+      });
+    });
   });
 
   it("testSpecAfter", function() {
@@ -577,90 +694,6 @@ describe("jasmine spec running", function () {
     expect(bar).toEqual(1);
     expect(baz).toEqual(1);
     expect(quux).toEqual(1);
-  });
-
-  describe('#waitsFor should allow consecutive calls', function () {
-    var foo;
-    beforeEach(function () {
-      foo = 0;
-    });
-
-    it('exits immediately (does not stack) if the latchFunction times out', function () {
-      var reachedFirstWaitsFor = false;
-      var reachedSecondWaitsFor = false;
-      env.describe('suite that waits', function () {
-        env.it('should stack timeouts', function() {
-          this.waitsFor(500, function () {
-            reachedFirstWaitsFor = true;
-            return false;
-          });
-          this.waitsFor(500, function () {
-            reachedSecondWaitsFor = true;
-          });
-          this.runs(function () {
-            foo++;
-          });
-        });
-      });
-
-      expect(reachedFirstWaitsFor).toEqual(false);
-      env.execute();
-
-      expect(reachedFirstWaitsFor).toEqual(true);
-      expect(foo).toEqual(0);
-      expect(reachedSecondWaitsFor).toEqual(false);
-      fakeTimer.tick(500);
-      expect(reachedSecondWaitsFor).toEqual(false);
-      expect(foo).toEqual(0);
-      fakeTimer.tick(500);
-      expect(reachedSecondWaitsFor).toEqual(false);
-      expect(foo).toEqual(0);
-    });
-
-    it('stacks latchFunctions', function () {
-      var firstWaitsResult = false;
-      var secondWaitsResult = false;
-      var waitsSuite = env.describe('suite that waits', function () {
-        env.it('spec with waitsFors', function() {
-          this.waitsFor(600, function () {
-            fakeTimer.setTimeout(function () {
-              firstWaitsResult = true;
-            }, 300);
-            return firstWaitsResult;
-          });
-          this.waitsFor(600, function () {
-            fakeTimer.setTimeout(function () {
-              secondWaitsResult = true;
-            }, 300);
-            return secondWaitsResult;
-          });
-          this.runs(function () {
-            foo++;
-          });
-        });
-      });
-
-      expect(firstWaitsResult).toEqual(false);
-      expect(secondWaitsResult).toEqual(false);
-      waitsSuite.execute();
-
-      expect(firstWaitsResult).toEqual(false);
-      expect(secondWaitsResult).toEqual(false);
-      expect(foo).toEqual(0);
-
-      fakeTimer.tick(300);
-
-      expect(firstWaitsResult).toEqual(true);
-      expect(secondWaitsResult).toEqual(false);
-      expect(foo).toEqual(0);
-
-      fakeTimer.tick(300);
-
-      expect(firstWaitsResult).toEqual(true);
-      expect(secondWaitsResult).toEqual(true);
-      expect(foo).toEqual(1);
-
-    });
   });
 
   it("#beforeEach should be able to eval runs and waits blocks", function () {
