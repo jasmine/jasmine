@@ -302,10 +302,7 @@ jasmine.Matchers.prototype.toBeCloseTo = function(expected, precision) {
   if (!(precision === 0)) {
     precision = precision || 2;
   }
-  var multiplier = Math.pow(10, precision);
-  var actual = Math.round(this.actual * multiplier);
-  expected = Math.round(expected * multiplier);
-  return expected == actual;
+  return Math.abs(expected - this.actual) < (Math.pow(10, -precision) / 2);
 };
 
 /**
