@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "awesome_print"
   s.add_development_dependency "thor"
   s.add_development_dependency "nokogiri"
+  s.add_development_dependency "redcarpet", "1.7"
   s.add_development_dependency "rocco"
   s.add_development_dependency "rdiscount"
 end
