@@ -123,7 +123,7 @@ describe("Included matchers:", function() {
     };
 
     expect(a.foo).not.toBeUndefined();
-    expect(a.foo).not.toBeUndefined();
+    expect(a.bar).toBeUndefined();
   });
 
   it("The 'toBeNull' matcher compares against null", function() {

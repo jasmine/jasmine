@@ -58,7 +58,7 @@
         </div>
         <h2>Suites: <code>describe</code> Your Tests</h2>
 
-<p>A test suite begins with a call to the global Jasmine function <code>describe</code> with two parameters: a string and a function. The string is a name or title for a spec suite - usually what is under test. The function is a block of code that implements the suite.</p>
+<p>A test suite begins with a call to the global Jasmine function <code>describe</code> with two parameters: a string and a function. The string is a name or title for a spec suite &ndash; usually what is under test. The function is a block of code that implements the suite.</p>
 
 <h2>Specs</h2>
 
@@ -76,12 +76,12 @@
         </div>
       </td>
     </tr>
-    <tr id="section-It&amp;#39;s_Just_Functions">
+    <tr id="section-It&amp;rsquo;s_Just_Functions">
       <td class="docs">
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-It&amp;#39;s_Just_Functions">&#182;</a>
+          <a class="pilcrow" href="#section-It&amp;rsquo;s_Just_Functions">&#182;</a>
         </div>
-        <h3>It&#39;s Just Functions</h3>
+        <h3>It&rsquo;s Just Functions</h3>
 
 <p>Since <code>describe</code> and <code>it</code> blocks are functions, they can contain any executable code necessary to implement the test. JavaScript scoping rules apply, so variables declared in a <code>describe</code> are available to any <code>it</code> block inside the suite.</p>
       </td>
@@ -154,9 +154,9 @@
         </div>
         <h3>Included Matchers</h3>
 
-<p>Jasmine has a rich set of matchers included. Each is used here - all expectations and specs pass.</p>
+<p>Jasmine has a rich set of matchers included. Each is used here &ndash; all expectations and specs pass.</p>
 
-<p>There is also the ability to write <a href="https://github.com/pivotal/jasmine/wiki/Matchers">custom matchers</a> for when a project&#39;s domain calls for specific assertions that are not included below.</p>
+<p>There is also the ability to write <a href="https://github.com/pivotal/jasmine/wiki/Matchers">custom matchers</a> for when a project&rsquo;s domain calls for specific assertions that are not included below.</p>
       </td>
       <td class="code">
         <div class="highlight">
@@ -213,7 +213,7 @@
     <span class="p">};</span>
 
     <span class="nx">expect</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">foo</span><span class="p">).</span><span class="nx">not</span><span class="p">.</span><span class="nx">toBeUndefined</span><span class="p">();</span>
-    <span class="nx">expect</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">foo</span><span class="p">).</span><span class="nx">not</span><span class="p">.</span><span class="nx">toBeUndefined</span><span class="p">();</span>
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">bar</span><span class="p">).</span><span class="nx">toBeUndefined</span><span class="p">();</span>
   <span class="p">});</span>
 
   <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;The &#39;toBeNull&#39; matcher compares against null&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -289,7 +289,7 @@
         </div>
         <h2>Grouping Related Specs with <code>describe</code></h2>
 
-<p>The <code>describe</code> function is for grouping related specs. The string parameter is for naming the collection of specs, and will be contatenated with specs to make a spec&#39;s full name. This aids in finding specs in a large suite. If you name them well, your specs read as full sentences in traditional <a href="http://en.wikipedia.org/wiki/Behavior-driven_development">BDD</a> style.</p>
+<p>The <code>describe</code> function is for grouping related specs. The string parameter is for naming the collection of specs, and will be contatenated with specs to make a spec&rsquo;s full name. This aids in finding specs in a large suite. If you name them well, your specs read as full sentences in traditional <a href="http://en.wikipedia.org/wiki/Behavior-driven_development">BDD</a> style.</p>
       </td>
       <td class="code">
         <div class="highlight">
@@ -321,7 +321,7 @@
 
 <p>To help a test suite DRY up any duplicated setup and teardown code, Jasmine provides the global <code>beforeEach</code> and <code>afterEach</code> functions. As the name implies the <code>beforeEach</code> function is called once before each spec in the <code>describe</code> is run and the <code>afterEach</code> function is called once after each spec.</p>
 
-<p>Here is the same set of specs written a little differently. The variable under test is defined at the top-level scope -- the <code>describe</code> block --  and initialization code is moved into a <code>beforeEach</code> function. The <code>afterEach</code> function resets the variable before continuing.</p>
+<p>Here is the same set of specs written a little differently. The variable under test is defined at the top-level scope &mdash; the <code>describe</code> block &mdash;  and initialization code is moved into a <code>beforeEach</code> function. The <code>afterEach</code> function resets the variable before continuing.</p>
       </td>
       <td class="code">
         <div class="highlight">
@@ -429,7 +429,7 @@
         </div>
         <h2>Spies</h2>
 
-<p>Jasmine&#39;s test doubles are called spies. A spy can stub any function and tracks calls to it and all arguments. There are special matchers for interacting with spies.</p>
+<p>Jasmine&rsquo;s test doubles are called spies. A spy can stub any function and tracks calls to it and all arguments. There are special matchers for interacting with spies.</p>
 
 <p>The <code>toHaveBeenCalled</code> matcher will return true if the spy was called. The <code>toHaveBeenCalledWith</code> matcher will return true if the argument list matches any of the recorded calls to the spy.</p>
       </td>
@@ -623,7 +623,7 @@
         </div>
         <h3>Spies: <code>createSpy</code></h3>
 
-<p>When there is not a function to spy on, <code>jasmine.createSpy</code> can create a &quot;bare&quot; spy. This spy acts as any other spy - tracking calls, arguments, etc. But there is no implementation behind it. Spies are JavaScript objects and can be used as such.</p>
+<p>When there is not a function to spy on, <code>jasmine.createSpy</code> can create a &ldquo;bare&rdquo; spy. This spy acts as any other spy &ndash; tracking calls, arguments, etc. But there is no implementation behind it. Spies are JavaScript objects and can be used as such.</p>
       </td>
       <td class="code">
         <div class="highlight">
@@ -709,7 +709,7 @@
         </div>
         <h2>Matching Anything with <code>jasmine.any</code></h2>
 
-<p><code>jasmine.any</code> takes a constructor or &quot;class&quot; name as an expected value. It returns <code>true</code> if the constructor matches the constructor of the actual value.</p>
+<p><code>jasmine.any</code> takes a constructor or &ldquo;class&rdquo; name as an expected value. It returns <code>true</code> if the constructor matches the constructor of the actual value.</p>
       </td>
       <td class="code">
         <div class="highlight">
@@ -888,7 +888,7 @@
 
 <p>Jasmine is built in JavaScript and must be included into a JS environment, such as a web page, in order to run. Like this web page.</p>
 
-<p>This file is written in JavaScript and is compiled into HTML via <a href="http://rtomayko.github.com/rocco/">Rocco</a>. The JavaScript file is then included, via a <code>&lt;script&gt;</code> tag, so that all of the above specs are evaluated and recorded with Jasmine. Thus Jasmine can run all of these specs. This page is then considered a &#39;runner.&#39;</p>
+<p>This file is written in JavaScript and is compiled into HTML via <a href="http://rtomayko.github.com/rocco/">Rocco</a>. The JavaScript file is then included, via a <code>&lt;script&gt;</code> tag, so that all of the above specs are evaluated and recorded with Jasmine. Thus Jasmine can run all of these specs. This page is then considered a &lsquo;runner.&rsquo;</p>
 
 <p>Scroll down the page to see the results of the above specs. All of the specs should pass.</p>
 
@@ -936,7 +936,7 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-Test_Results">&#182;</a>
         </div>
-        <p>Run all of the tests when the page finishes loading - and make sure to run any previous <code>onload</code> handler</p>
+        <p>Run all of the tests when the page finishes loading &ndash; and make sure to run any previous <code>onload</code> handler</p>
 
 <h3>Test Results</h3>
 
@@ -977,7 +977,7 @@
 <h2>Support</h2>
 
 <ul>
-<li><a href="http://groups.google.com/group/jasmine-js">Mailing list</a> at Google Groups - a great first stop to ask questions, propose features, or discuss pull requests</li>
+<li><a href="http://groups.google.com/group/jasmine-js">Mailing list</a> at Google Groups &ndash; a great first stop to ask questions, propose features, or discuss pull requests</li>
 <li><a href="http://github.com/pivotal/jasmine/issues">Report Issues</a> at Github</li>
 <li>The <a href="http://www.pivotaltracker.com/projects/10606">Backlog</a> lives at <a href="http://www.pivotaltracker.com/">Pivotal Tracker</a></li>
 <li>Follow <a href="http://twitter.com/jasminebdd">@JasmineBDD</a> on Twitter</li>
