@@ -510,6 +510,11 @@ describe("jasmine.Matchers", function() {
       expect(-1.23).not.toBeCloseTo(-1.24);
     });
 
+    it("expects close numbers to 'be close' and further numbers not to", function() {
+      expect(1.225).not.toBeCloseTo(1.234); // difference is 0.009
+      expect(1.225).toBeCloseTo(1.224);     // difference is 0.001
+    });
+
     it("accepts an optional precision argument", function() {
       expect(1).toBeCloseTo(1.1, 0);
       expect(1.2).toBeCloseTo(1.23, 1);
