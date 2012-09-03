@@ -49,11 +49,11 @@ class JasmineDev < Thor
     end
 
     def example_source_tags
-      script_tags_for ['spec/SpecHelper.js', 'spec/PlayerSpec.js']
+      script_tags_for ['src/Player.js', 'src/Song.js']
     end
 
     def example_spec_tags
-      script_tags_for ['src/Player.js', 'src/Song.js']
+      script_tags_for ['spec/SpecHelper.js', 'spec/PlayerSpec.js']
     end
   end
 end
