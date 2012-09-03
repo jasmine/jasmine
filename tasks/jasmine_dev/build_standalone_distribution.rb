@@ -28,7 +28,8 @@ class JasmineDev < Thor
       run_with_output "zip -rq ../jasmine-standalone-#{version_string}.zip ."
 
       say "Copying Zip file to downloads directory", :yellow
-      run "cp ../jasmine-standalone-#{version_string}.zip #{download_dir}"
+      run "mkdir -p #{download_dir}"
+      run "cp ../jasmine-standalone-#{version_string}.zip #{download_dir}/"
     end
 
   end
