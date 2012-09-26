@@ -198,4 +198,36 @@ describe('Spies', function () {
     });
   });
 
+  describe("Spied arguments are cloned so they dont get modified futher down", function() {
+      it("should clone objects (shallow clone)", function() {
+        var mock = { fn: function(x) {} };
+        spyOn(mock, 'fn');
+        var params = { val: 1 };
+        mock.fn(params);            
+        params.val = 2;
+        mock.fn(params); 
+        expect(mock.fn.argsForCall[0]).toEqual([{val: 1}]);
+        expect(mock.fn.argsForCall[1]).toEqual([{val: 2}]);          
+      });
+      it("should clone arrays", function() {
+        var mock = { fn: function(x) {} };
+        spyOn(mock, 'fn');
+        var params = [1, 2, 3];
+        mock.fn(params);
+        params.splice(2);
+        params.push(4);
+        mock.fn(params); 
+        expect(mock.fn.argsForCall[0]).toEqual([[1, 2, 3]]);
+        expect(mock.fn.argsForCall[1]).toEqual([[1, 2, 4]]);
+      });
+      it("should leave primitives alone", function() {
+        var mock = { fn: function(x) {} };
+        spyOn(mock, 'fn');
+        mock.fn(1, 'foo', null, undefined, true);
+        mock.fn(false, undefined, null, 'bar', 2);
+        expect(mock.fn.argsForCall[0]).toEqual([1, 'foo', null, undefined, true]);
+        expect(mock.fn.argsForCall[1]).toEqual([false, undefined, null, 'bar', 2]);          
+      });
+  });
+
 });
