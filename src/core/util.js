@@ -65,3 +65,12 @@ jasmine.util.extend = function(destination, source) {
   return destination;
 };
 
+jasmine.util.clone = function(obj) {
+  if (Array.isArray(obj)) {
+    return obj.slice();
+  } else if (typeof obj === 'object' && obj !== null) {
+    return jasmine.util.extend({}, obj);
+  } else {
+    return obj;
+  }
+};
