@@ -165,6 +165,21 @@ describe('Spies', function () {
     expect(exception).toBeDefined();
   });
 
+	
+	it('to spy on an undefined method throws exception', function() {
+		var TestClass = {
+			someFunction : function() {
+			}
+		};
+		function efunc() {
+			this.spyOn(TestClass, 'someOtherFunction');
+		};
+		expect(function() {
+			efunc();
+		}).toThrow('someOtherFunction() method does not exist');
+	
+	}); 
+
   it('should be able to reset a spy', function() {
     var TestClass = { someFunction: function() {} };
     this.spyOn(TestClass, 'someFunction');
