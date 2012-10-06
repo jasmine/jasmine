@@ -281,6 +281,29 @@ describe("jasmine.Matchers", function() {
     expect(result.actual).toEqual(actual);
   });
 
+	it("toBeNaN", function() {
+		expect(match(Number.NaN).toBeNaN()).toPass();
+		expect(match(0).toBeNaN()).toFail();
+		expect(match(1).toBeNaN()).toFail();
+		expect(match(null).toBeNaN()).toFail();
+		expect(match(Number.POSITIVE_INFINITY).toBeNaN()).toFail();
+		expect(match(Number.NEGATIVE_INFINITY).toBeNaN()).toFail();
+		expect(match('NaN').toBeNaN()).toFail();
+	});
+
+	it("toBeNaN to build an ExpectationResult", function() {
+		var actual = 'a';
+		var matcher = match(actual);
+		matcher.toBeNaN();
+
+		var result = lastResult();
+
+		expect(result.matcherName).toEqual("toBeNaN");
+		expect(result.passed()).toFail();
+		expect(result.message).toMatch("Expected 'a' to be NaN.");
+		expect(result.actual).toMatch(actual);
+	});
+
   it("toBeFalsy", function() {
     expect(match(false).toBeFalsy()).toPass();
     expect(match(true).toBeFalsy()).toFail();
