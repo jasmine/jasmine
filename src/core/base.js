@@ -5,7 +5,49 @@ var isCommonJS = typeof window == "undefined" && typeof exports == "object";
  *
  * @namespace
  */
-var jasmine = {};
+var initedBefore=!!window.jasmine;
+
+var jasmine = initedBefore? {
+    setTimeout:jasmine.setTimeout,
+    clearTimeout:jasmine.clearTimeout,
+    setInterval:jasmine.setInterval,
+    clearInterval:jasmine.clearInterval
+
+} : {};
+
+/**
+ * Allows for bound functions to be compared.  Internal use only.
+ *
+ * @ignore
+ * @private
+ * @param base {Object} bound 'this' for the function
+ * @param name {Function} function to find
+ */
+jasmine.bindOriginal_ = function(base, name) {
+    var original = base[name];
+    if (original.apply) {
+        return function() {
+            return original.apply(base, arguments);
+        };
+    } else {
+        // IE support
+        return jasmine.getGlobal()[name];
+    }
+};
+
+jasmine.getGlobal = function() {
+    function getGlobal() {
+        return this;
+    }
+
+    return getGlobal();
+};
+if (!initedBefore){
+    jasmine.setTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'setTimeout');
+    jasmine.clearTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearTimeout');
+    jasmine.setInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'setInterval');
+    jasmine.clearInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearInterval');
+}
 if (isCommonJS) exports.jasmine = jasmine;
 /**
  * @private
@@ -45,39 +87,6 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
  *
  */
 jasmine.CATCH_EXCEPTIONS = true;
-
-jasmine.getGlobal = function() {
-  function getGlobal() {
-    return this;
-  }
-
-  return getGlobal();
-};
-
-/**
- * Allows for bound functions to be compared.  Internal use only.
- *
- * @ignore
- * @private
- * @param base {Object} bound 'this' for the function
- * @param name {Function} function to find
- */
-jasmine.bindOriginal_ = function(base, name) {
-  var original = base[name];
-  if (original.apply) {
-    return function() {
-      return original.apply(base, arguments);
-    };
-  } else {
-    // IE support
-    return jasmine.getGlobal()[name];
-  }
-};
-
-jasmine.setTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'setTimeout');
-jasmine.clearTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearTimeout');
-jasmine.setInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'setInterval');
-jasmine.clearInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearInterval');
 
 jasmine.MessageResult = function(values) {
   this.type = 'log';

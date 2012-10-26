@@ -128,10 +128,10 @@ jasmine.Clock = {
   },
 
   real: {
-    setTimeout: jasmine.getGlobal().setTimeout,
-    clearTimeout: jasmine.getGlobal().clearTimeout,
-    setInterval: jasmine.getGlobal().setInterval,
-    clearInterval: jasmine.getGlobal().clearInterval
+    setTimeout: jasmine.setTimeout,
+    clearTimeout: jasmine.clearTimeout,
+    setInterval: jasmine.setInterval,
+    clearInterval: jasmine.clearInterval
   },
 
   assertInstalled: function() {
