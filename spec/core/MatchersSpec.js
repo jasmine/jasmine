@@ -75,6 +75,18 @@ describe("jasmine.Matchers", function() {
     expect((match(parseInt('5', 10)).toEqual(5))).toPass();
     expect((match(5).toNotEqual(5))).toFail();
     expect((match(parseInt('5', 10)).toNotEqual(5))).toFail();
+
+    expect((match(/1/i).toEqual(/1/i))).toPass();
+    expect((match(/1/i).toNotEqual(/1/i))).toFail();
+    expect((match(/[abc]/gm).toEqual(/1/i))).toFail();
+    expect((match(/[abc]/gm).toNotEqual(/1/i))).toPass();
+
+    // only test if the browser supports the sticky option on a regExp see pull #234
+    if (RegExp.prototype.sticky !== undefined) {
+      var sticky_regexp = new RegExp("[abc]", "y");
+      expect((match(sticky_regexp).toEqual(/1/i))).toFail();
+      expect((match(sticky_regexp).toNotEqual(/1/i))).toPass();
+    }
   });
 
   it("toEqual to build an Expectation Result", function() {
