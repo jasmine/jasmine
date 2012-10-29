@@ -11,10 +11,6 @@ jasmine.PrettyPrinter = function() {
  * @param value
  */
 jasmine.PrettyPrinter.prototype.format = function(value) {
-  if (this.ppNestLevel_ > 40) {
-    throw new Error('jasmine.PrettyPrinter: format() nested too deeply!');
-  }
-
   this.ppNestLevel_++;
   try {
     if (value === jasmine.undefined) {
@@ -57,6 +53,7 @@ jasmine.PrettyPrinter.prototype.format = function(value) {
 
 jasmine.PrettyPrinter.prototype.iterateObject = function(obj, fn) {
   for (var property in obj) {
+    if (!obj.hasOwnProperty(property)) continue;
     if (property == '__Jasmine_been_here_before__') continue;
     fn(property, obj.__lookupGetter__ ? (obj.__lookupGetter__(property) !== jasmine.undefined && 
                                          obj.__lookupGetter__(property) !== null) : false);
@@ -84,6 +81,11 @@ jasmine.StringPrettyPrinter.prototype.emitString = function(value) {
 };
 
 jasmine.StringPrettyPrinter.prototype.emitArray = function(array) {
+  if (this.ppNestLevel_ > jasmine.MAX_PRETTY_PRINT_DEPTH) {
+    this.append("Array");
+    return;
+  }
+
   this.append('[ ');
   for (var i = 0; i < array.length; i++) {
     if (i > 0) {
@@ -95,6 +97,11 @@ jasmine.StringPrettyPrinter.prototype.emitArray = function(array) {
 };
 
 jasmine.StringPrettyPrinter.prototype.emitObject = function(obj) {
+  if (this.ppNestLevel_ > jasmine.MAX_PRETTY_PRINT_DEPTH) {
+    this.append("Object");
+    return;
+  }
+
   var self = this;
   this.append('{ ');
   var first = true;
