@@ -54,11 +54,16 @@ jasmine.HtmlReporter = function(_doc) {
   };
 
   self.specFilter = function(spec) {
-    if (!focusedSpecName()) {
-      return true;
+    var run = true;
+
+    if (focusedSpecName()) {
+      run = run && spec.getFullName().indexOf(focusedSpecName()) === 0;
     }
 
-    return spec.getFullName().indexOf(focusedSpecName()) === 0;
+    if(run && focusedPart()[1]) {
+      run = run && (spec.id % focusedPart()[1]) === focusedPart()[0];
+    }
+    return run;
   };
 
   return self;
@@ -83,6 +88,30 @@ jasmine.HtmlReporter = function(_doc) {
     })();
 
     return specName;
+  }
+
+
+  function focusedPart() {
+    var part;
+    var parts;
+
+    (function memoizePart() {
+      if (part) {
+        return;
+      }
+
+      var paramMap = [];
+      var params = jasmine.HtmlReporter.parameters(doc);
+
+      for (var i = 0; i < params.length; i++) {
+        var p = params[i].split('=');
+        paramMap[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+      }
+      part = paramMap.part ? parseInt(paramMap.part) : null;
+      parts = paramMap.parts ? parseInt(paramMap.parts) : null;
+    })();
+
+    return [part, parts];
   }
 
   function createReporterDom(version) {
