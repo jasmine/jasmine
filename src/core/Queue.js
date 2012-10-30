@@ -58,7 +58,14 @@ jasmine.Queue.prototype.next_ = function() {
   while (goAgain) {
     goAgain = false;
     
-    if (self.index < self.blocks.length && !(this.abort && !this.ensured[self.index])) {
+    if (this.abort) {
+      var blockNotEnsured = !this.ensured[self.index];
+      while (blockNotEnsured && self.index < self.blocks.length) {
+        self.index++;
+        blockNotEnsured = !this.ensured[self.index];
+      }
+    }
+    if (self.index < self.blocks.length) {
       var calledSynchronously = true;
       var completedSynchronously = false;
 

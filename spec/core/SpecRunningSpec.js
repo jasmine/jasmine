@@ -406,8 +406,14 @@ describe("jasmine spec running", function () {
         env.afterEach(afterEach);
 
         env.it('waitsFor', function () {
+          this.runs(function() {
+            return true;
+          });
           this.waitsFor(100, function() {
             return false;
+          });
+          this.runs(function() {
+            return true;
           });
         });
       }).execute();
