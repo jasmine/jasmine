@@ -44,6 +44,21 @@ describe("HtmlReporter", function() {
     expect(htmlReporter.specFilter(fakeSpec("not run this"))).toBeFalsy();
   });
 
+  it("should run only part of the specs with part and parts parameters", function() {
+    fakeDocument.location.search = "?part=0&parts=2";
+    spec = fakeSpec("run this");
+    spec.id = 2;
+    expect(htmlReporter.specFilter(spec)).toBeTruthy();
+    spec.id = 3;
+    expect(htmlReporter.specFilter(spec)).toBeFalsy();
+
+    fakeDocument.location.search = "?part=1&parts=2";
+    spec.id = 2;
+    expect(htmlReporter.specFilter(spec)).toBeFalsy();
+    spec.id = 3;
+    expect(htmlReporter.specFilter(spec)).toBeTruthy();
+  });
+
   describe("running without any specs", function() {
     var runner;
     beforeEach(function() {
