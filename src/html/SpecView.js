@@ -7,19 +7,29 @@ jasmine.HtmlReporter.SpecView = function(spec, dom, views) {
   this.dom.symbolSummary.appendChild(this.symbol);
 
   this.summary = this.createDom('div', { className: 'specSummary' },
-    this.createDom('a', {
-      className: 'description',
-      href: jasmine.HtmlReporter.sectionLink(this.spec.getFullName()),
-      title: this.spec.getFullName()
-    }, this.spec.description)
+    this.createDom('div', {
+        className: 'description'
+      },
+      this.createDom('a', {
+          href: jasmine.HtmlReporter.sectionLink(this.spec.getFullName()),
+          title: this.spec.getFullName()
+        },
+        this.spec.description
+      )
+    )
   );
 
   this.detail = this.createDom('div', { className: 'specDetail' },
+    this.createDom('div', {
+        className: 'description'
+      },
       this.createDom('a', {
-        className: 'description',
-        href: '?spec=' + encodeURIComponent(this.spec.getFullName()),
-        title: this.spec.getFullName()
-      }, this.spec.getFullName())
+          href: '?spec=' + encodeURIComponent(this.spec.getFullName()),
+          title: this.spec.getFullName()
+        },
+        this.spec.getFullName()
+      )
+    )
   );
 };
 

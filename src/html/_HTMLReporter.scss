@@ -277,10 +277,13 @@ body {
         //line-height: $line-height * 2;
         display: block;
 
-        color: white;
         background-color: $failing-color;
 
         //font-size: $large-font-size;
+      }
+
+      .description a {
+        color: white;
       }
     }
   }
