@@ -574,6 +574,37 @@ describe("jasmine.Matchers", function() {
     });
   });
 
+  describe('toBeNearTo', function() {
+    it("Returns true if the expected and actual numbers are within the given precision", function() {
+      expect(98).toBeNearTo(100, 2);
+      expect(99).toBeNearTo(100, 2);
+      expect(100).toBeNearTo(100, 2);
+      expect(101).toBeNearTo(100, 2);
+      expect(102).toBeNearTo(100, 2);
+    });
+
+    it("Returns false if the expected and actual numbers are outside the given precision", function () {
+      expect(97).not.toBeNearTo(100, 2);
+      expect(103).not.toBeNearTo(100, 2);
+    });
+
+    it("Builds an expectation result", function() {
+      var actual = 100;
+      var matcher = match(actual);
+      var expected = 97;
+      var precision = 2;
+      matcher.toBeNearTo(expected, precision);
+
+      var result = lastResult();
+
+      expect(result.matcherName).toBe("toBeNearTo");
+      expect(result.passed()).toFail();
+      expect(result.message).toMatch(jasmine.pp(actual) + ' to be near to');
+      expect(result.actual).toEqual(actual);
+      expect(result.expected).toEqual([expected, precision]);
+    });
+  });
+
   describe("toThrow", function() {
     describe("when code block throws an exception", function() {
       var throwingFn;
