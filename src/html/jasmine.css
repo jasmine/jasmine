@@ -44,7 +44,7 @@ body { background-color: #eeeeee; padding: 0; margin: 5px; overflow-y: scroll; }
 #HTMLReporter .summary .specSummary.failed a { color: #b03911; }
 #HTMLReporter .description + .suite { margin-top: 0; }
 #HTMLReporter .suite { margin-top: 14px; }
-#HTMLReporter .suite a { color: #333333; }
+#HTMLReporter .suite a { color: #333333; white-space: pre; }
 #HTMLReporter #details .specDetail { margin-bottom: 28px; }
 #HTMLReporter #details .specDetail .description { display: block; color: white; background-color: #b03911; }
 #HTMLReporter .resultMessage { padding-top: 14px; color: #333333; }
