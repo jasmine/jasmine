@@ -303,7 +303,7 @@ jasmine.Matchers.prototype.toBeGreaterThan = function(expected) {
  * up to a given level of decimal precision (default 2).
  *
  * @param {Number} expected
- * @param {Number} precision
+ * @param {Number} precision, as number of decimal places
  */
 jasmine.Matchers.prototype.toBeCloseTo = function(expected, precision) {
   if (!(precision === 0)) {
