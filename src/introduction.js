@@ -173,7 +173,7 @@ describe("Included matchers:", function() {
   it("The 'toBeCloseTo' matcher is for precision math comparison", function() {
     var pi = 3.1415926, e = 2.78;
 
-    expect(pi).not.toBeCloseTo(e, 0.1);
+    expect(pi).not.toBeCloseTo(e, 2);
     expect(pi).toBeCloseTo(e, 0);
   });
 
