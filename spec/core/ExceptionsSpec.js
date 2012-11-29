@@ -111,14 +111,14 @@ describe('Exceptions:', function() {
       expect(specResults.length).toEqual(5);
       expect(specResults[0].passed()).toMatch(false);
       var blockResults = specResults[0].getItems();
-      expect(blockResults[0].passed()).toEqual(false);
+      expect(blockResults[0].passed).toEqual(false);
       expect(blockResults[0].message).toMatch(/fake error 1/);
 
       expect(specResults[1].passed()).toEqual(false);
       blockResults = specResults[1].getItems();
-      expect(blockResults[0].passed()).toEqual(false);
+      expect(blockResults[0].passed).toEqual(false);
       expect(blockResults[0].message).toMatch(/fake error 2/);
-      expect(blockResults[1].passed()).toEqual(true);
+      expect(blockResults[1].passed).toEqual(true);
 
       expect(specResults[2].passed()).toEqual(true);
 

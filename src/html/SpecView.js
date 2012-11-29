@@ -61,7 +61,7 @@ jasmine.HtmlReporter.SpecView.prototype.appendFailureDetail = function() {
 
     if (result.type == 'log') {
       messagesDiv.appendChild(this.createDom('div', {className: 'resultMessage log'}, result.toString()));
-    } else if (result.type == 'expect' && result.passed && !result.passed()) {
+    } else if (result.type == 'expect' && !result.passed) {
       messagesDiv.appendChild(this.createDom('div', {className: 'resultMessage fail'}, result.message));
 
       if (result.trace.stack) {

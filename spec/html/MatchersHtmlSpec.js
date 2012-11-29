@@ -13,10 +13,10 @@ describe("MatchersSpec - HTML Dependent", function () {
 
     this.addMatchers({
       toPass: function() {
-        return lastResult().passed();
+        return lastResult().passed;
       },
       toFail: function() {
-        return !lastResult().passed();
+        return !lastResult().passed;
       }
     });
   });

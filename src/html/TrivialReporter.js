@@ -126,7 +126,7 @@ jasmine.TrivialReporter.prototype.reportSpecStarting = function(spec) {
 
 jasmine.TrivialReporter.prototype.reportSpecResults = function(spec) {
   var results = spec.results();
-  var status = results.passed() ? 'passed' : 'failed';
+  var status = results.passed ? 'passed' : 'failed';
   if (results.skipped) {
     status = 'skipped';
   }
@@ -146,7 +146,7 @@ jasmine.TrivialReporter.prototype.reportSpecResults = function(spec) {
 
     if (result.type == 'log') {
       messagesDiv.appendChild(this.createDom('div', {className: 'resultMessage log'}, result.toString()));
-    } else if (result.type == 'expect' && result.passed && !result.passed()) {
+    } else if (result.type == 'expect' && !result.passed) {
       messagesDiv.appendChild(this.createDom('div', {className: 'resultMessage fail'}, result.message));
 
       if (result.trace.stack) {

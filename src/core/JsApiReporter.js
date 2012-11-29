@@ -30,7 +30,7 @@ jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
     type: isSuite ? 'suite' : 'spec',
     children: []
   };
-  
+
   if (isSuite) {
     var children = suiteOrSpec.children();
     for (var i = 0; i < children.length; i++) {
@@ -85,11 +85,12 @@ jasmine.JsApiReporter.prototype.summarizeResult_ = function(result){
     var resultMessage = result.messages[messageIndex];
     summaryMessages.push({
       text: resultMessage.type == 'log' ? resultMessage.toString() : jasmine.undefined,
-      passed: resultMessage.passed ? resultMessage.passed() : true,
+      //TODO: wat? in theory this is saying non-expect results should always be considered passed, but that's weird.
+      passed: resultMessage.passed || true,
       type: resultMessage.type,
       message: resultMessage.message,
       trace: {
-        stack: resultMessage.passed && !resultMessage.passed() ? resultMessage.trace.stack : jasmine.undefined
+        stack: !resultMessage.passed ? resultMessage.trace.stack : jasmine.undefined
       }
     });
   }

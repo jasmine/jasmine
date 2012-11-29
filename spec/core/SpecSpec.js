@@ -112,11 +112,9 @@ describe('Spec', function () {
       });
       spec.execute();
       var items = results.getItems();
-      expect(items).toEqual([
-          originalJasmine.any(jasmine.ExpectationResult),
-          originalJasmine.any(jasmine.ExpectationResult),
-          originalJasmine.any(jasmine.MessageResult)
-      ]);
+      expect(items[0].type).toBe('expect');
+      expect(items[1].type).toBe('expect');
+      expect(items[2].type).toBe('log');
       var logResult = items[2];
       expect(logResult.values).toEqual(["here's some log message", {key: 'value'}, 123]);
     });

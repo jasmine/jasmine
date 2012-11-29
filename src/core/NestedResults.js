@@ -56,13 +56,14 @@ jasmine.NestedResults.prototype.getItems = function() {
  * Adds a result, tracking counts (total, passed, & failed)
  * @param {jasmine.ExpectationResult|jasmine.NestedResults} result
  */
+//TODO: Results are meant for consumption by reporters, not internally.
 jasmine.NestedResults.prototype.addResult = function(result) {
   if (result.type != 'log') {
     if (result.items_) {
       this.rollupCounts(result);
     } else {
       this.totalCount++;
-      if (result.passed()) {
+      if (result.passed) {
         this.passedCount++;
       } else {
         this.failedCount++;

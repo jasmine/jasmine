@@ -60,7 +60,7 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
         message += ".";
       }
     }
-    var expectationResult = new jasmine.ExpectationResult({
+    var expectationResult = jasmine.buildExpectationResult({
       matcherName: matcherName,
       passed: result,
       expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],

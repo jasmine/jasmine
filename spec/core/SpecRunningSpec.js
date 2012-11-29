@@ -68,10 +68,10 @@ describe("jasmine spec running", function () {
     expect(specWithNoBody.description).toEqual('new spec');
 
     expect(specWithExpectation.results().getItems().length).toEqual(1); // "Results aren't there after a spec was executed"
-    expect(specWithExpectation.results().getItems()[0].passed()).toEqual(true); // "Results has a result, but it's true"
+    expect(specWithExpectation.results().getItems()[0].passed).toEqual(true); // "Results has a result, but it's true"
     expect(specWithExpectation.results().description).toEqual('spec with an expectation'); // "Spec's results did not get the spec's description"
 
-    expect(specWithFailingExpectations.results().getItems()[0].passed()).toEqual(false); // "Expectation that failed, passed"
+    expect(specWithFailingExpectations.results().getItems()[0].passed).toEqual(false); // "Expectation that failed, passed"
 
     expect(specWithMultipleExpectations.results().getItems().length).toEqual(2); // "Spec doesn't support multiple expectations"
   });
@@ -90,8 +90,8 @@ describe("jasmine spec running", function () {
     another_spec.done = true;
 
     expect(another_spec.results().getItems().length).toEqual(2);
-    expect(another_spec.results().getItems()[0].passed()).toEqual(true); // "In a spec without a run block, expected first expectation result to be true but was false"
-    expect(another_spec.results().getItems()[1].passed()).toEqual(false); // "In a spec without a run block, expected second expectation result to be false but was true";
+    expect(another_spec.results().getItems()[0].passed).toEqual(true); // "In a spec without a run block, expected first expectation result to be true but was false"
+    expect(another_spec.results().getItems()[1].passed).toEqual(false); // "In a spec without a run block, expected second expectation result to be false but was true";
     expect(another_spec.results().description).toEqual('spec with an expectation'); // "In a spec without a run block, results did not include the spec's description";
   });
 
@@ -142,7 +142,7 @@ describe("jasmine spec running", function () {
     a_spec.execute();
 
     expect(a_spec.results().getItems().length).toEqual(1); // 'No call to waits(): Spec queue did not run all functions';
-    expect(a_spec.results().getItems()[0].passed()).toEqual(true); // 'No call to waits(): Queued expectation failed';
+    expect(a_spec.results().getItems()[0].passed).toEqual(true); // 'No call to waits(): Queued expectation failed';
 
     foo = 0;
     env.describe('test async spec', function() {
@@ -169,7 +169,7 @@ describe("jasmine spec running", function () {
     fakeTimer.tick(500);
     expect(a_spec.results().getItems().length).toEqual(1); // 'Calling waits(): Spec queue did not run all functions';
 
-    expect(a_spec.results().getItems()[0].passed()).toEqual(true); // 'Calling waits(): Queued expectation failed';
+    expect(a_spec.results().getItems()[0].passed).toEqual(true); // 'Calling waits(): Queued expectation failed';
 
     var bar = 0;
     var another_spec;
@@ -200,7 +200,7 @@ describe("jasmine spec running", function () {
     fakeTimer.tick(1000);
 
     expect(another_spec.results().getItems().length).toEqual(1);
-    expect(another_spec.results().getItems()[0].passed()).toEqual(true);
+    expect(another_spec.results().getItems()[0].passed).toEqual(true);
 
     var baz = 0;
     var yet_another_spec;
@@ -226,7 +226,7 @@ describe("jasmine spec running", function () {
 
 
     expect(yet_another_spec.results().getItems().length).toEqual(1);
-    expect(yet_another_spec.results().getItems()[0].passed()).toEqual(false);
+    expect(yet_another_spec.results().getItems()[0].passed).toEqual(false);
   });
 
   it("testAsyncSpecsWithMockSuite", function () {
@@ -255,7 +255,7 @@ describe("jasmine spec running", function () {
     another_spec.execute();
     fakeTimer.tick(2000);
     expect(another_spec.results().getItems().length).toEqual(1);
-    expect(another_spec.results().getItems()[0].passed()).toEqual(true);
+    expect(another_spec.results().getItems()[0].passed).toEqual(true);
   });
 
   describe("waitsFor", function() {
@@ -901,8 +901,8 @@ describe("jasmine spec running", function () {
 
     expect(report).toEqual("firstsecond");
     var suiteResults = suite.results();
-    expect(suiteResults.getItems()[0].getItems()[0].passed()).toEqual(false);
-    expect(suiteResults.getItems()[1].getItems()[0].passed()).toEqual(true);
+    expect(suiteResults.getItems()[0].getItems()[0].passed).toEqual(false);
+    expect(suiteResults.getItems()[1].getItems()[0].passed).toEqual(true);
   });
 
   it("testAfterExecutesSafely", function() {
@@ -942,14 +942,14 @@ describe("jasmine spec running", function () {
     var suiteResults = suite.results();
     expect(suiteResults.getItems().length).toEqual(3, 'testAfterExecutesSafely should have results for three specs');
 
-    expect(suiteResults.getItems()[0].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 1st spec should pass");
-    expect(suiteResults.getItems()[1].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 2nd spec should pass");
-    expect(suiteResults.getItems()[2].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 3rd spec should pass");
+    expect(suiteResults.getItems()[0].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 1st spec should pass");
+    expect(suiteResults.getItems()[1].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 2nd spec should pass");
+    expect(suiteResults.getItems()[2].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 3rd spec should pass");
 
-    expect(suiteResults.getItems()[0].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 1st result for 1st suite spec should pass");
-    expect(suiteResults.getItems()[0].getItems()[1].passed()).toEqual(false, "testAfterExecutesSafely 2nd result for 1st suite spec should fail because afterEach failed");
-    expect(suiteResults.getItems()[1].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 2nd suite spec should pass");
-    expect(suiteResults.getItems()[2].getItems()[0].passed()).toEqual(true, "testAfterExecutesSafely 3rd suite spec should pass");
+    expect(suiteResults.getItems()[0].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 1st result for 1st suite spec should pass");
+    expect(suiteResults.getItems()[0].getItems()[1].passed).toEqual(false, "testAfterExecutesSafely 2nd result for 1st suite spec should fail because afterEach failed");
+    expect(suiteResults.getItems()[1].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 2nd suite spec should pass");
+    expect(suiteResults.getItems()[2].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 3rd suite spec should pass");
   });
 
   it("should permit nested describes", function() {
@@ -1178,8 +1178,8 @@ describe("jasmine spec running", function () {
     expect(spec.foo).toEqual(2);
     var suiteResults = suite.results();
     expect(suiteResults.getItems()[0].getItems().length).toEqual(2);
-    expect(suiteResults.getItems()[0].getItems()[0].passed()).toEqual(false);
-    expect(suiteResults.getItems()[0].getItems()[1].passed()).toEqual(true);
+    expect(suiteResults.getItems()[0].getItems()[0].passed).toEqual(false);
+    expect(suiteResults.getItems()[0].getItems()[1].passed).toEqual(true);
   });
 
   it("shouldn't run disabled tests", function() {
@@ -1239,7 +1239,7 @@ describe("jasmine spec running", function () {
       var results = spec.results().getItems();
       for (var i = 0; i < results.length; i++) {
         var result = results[i];
-        specs.push("Result: " + result);
+        specs.push("Result: " + result.message);
       }
     };
 

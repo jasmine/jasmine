@@ -118,7 +118,7 @@ jasmine.Spec.prototype.waitsFor = function(latchFunction, optional_timeoutMessag
 };
 
 jasmine.Spec.prototype.fail = function (e) {
-  var expectationResult = new jasmine.ExpectationResult({
+  var expectationResult = jasmine.buildExpectationResult({
     passed: false,
     message: e ? jasmine.util.formatException(e) : 'Exception',
     trace: { stack: e.stack }

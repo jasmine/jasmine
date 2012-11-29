@@ -130,7 +130,7 @@ describe("TrivialReporter", function() {
     });
 
     it("should add the failure message to the DOM (non-toEquals matchers)", function() {
-      expectationResult = new jasmine.ExpectationResult({
+      expectationResult = jasmine.buildExpectationResult({
         matcherName: "toBeNull", passed: false, message: "Expected 'a' to be null, but it was not"
       });
 
@@ -144,7 +144,7 @@ describe("TrivialReporter", function() {
     });
 
     it("should add the failure message to the DOM (non-toEquals matchers) html escaping", function() {
-      expectationResult = new jasmine.ExpectationResult({
+      expectationResult = jasmine.buildExpectationResult({
         matcherName: "toBeNull", passed: false, message: "Expected '1 < 2' to <b>e null, & it was not"
       });
 
