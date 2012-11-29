@@ -1,3 +1,4 @@
+//TODO: expectation result may make more sense as a presentation of an expectation.
 jasmine.ExpectationResult = function(params) {
   this.type = 'expect';
   this.matcherName = params.matcherName;
