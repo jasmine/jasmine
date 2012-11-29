@@ -3,6 +3,7 @@ class JasmineDev < Thor
     :core => [
       "base.js",
       "util.js",
+      "ExpectationResult.js",
       "Env.js",
       "Reporter.js",
       "Block.js",
