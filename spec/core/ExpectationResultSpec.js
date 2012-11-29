@@ -5,9 +5,14 @@ describe("ExpectationResult", function() {
     expect(result.passed()).toBe('some-value');
   });
 
-  it("#toString returns message", function() {
-    var result = new jasmine.ExpectationResult({message: 'some-value'});
+  it("#toString returns message when failing", function() {
+    var result = new jasmine.ExpectationResult({passed: false, message: 'some-value'});
     expect(result.toString()).toBe('some-value');
+  });
+
+  it("#toString returns Passed when passing", function() {
+    var result = new jasmine.ExpectationResult({passed: true, message: 'some-value'});
+    expect(result.toString()).toBe('Passed.');
   });
 
   it("has a type of expect", function() {

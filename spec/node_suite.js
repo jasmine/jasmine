@@ -110,7 +110,7 @@ process.argv.forEach(function(arg) {
   }
 });
 
-var specs = jasmine.getAllSpecFiles(__dirname, new RegExp(".js$"));
+var specs = jasmine.getAllSpecFiles(__dirname, new RegExp("Spec.js$"));
 var domIndependentSpecs = [];
 for (var i = 0; i < specs.length; i++) {
   if (fs.readFileSync(specs[i], "utf8").indexOf("document.createElement") < 0) {
