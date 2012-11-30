@@ -47,10 +47,6 @@ jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
   this.after_.unshift(afterEachFunction);
 };
 
-jasmine.Suite.prototype.results = function() {
-  return this.queue.results();
-};
-
 jasmine.Suite.prototype.add = function(suiteOrSpec) {
   this.children_.push(suiteOrSpec);
   if (suiteOrSpec instanceof jasmine.Suite) {

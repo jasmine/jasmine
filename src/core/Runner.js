@@ -71,7 +71,3 @@ jasmine.Runner.prototype.topLevelSuites = function() {
   }
   return topLevelSuites;
 };
-
-jasmine.Runner.prototype.results = function() {
-  return this.queue.results();
-};

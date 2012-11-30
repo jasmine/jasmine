@@ -27,6 +27,9 @@ jasmine.HtmlReporterHelpers.createDom = function(type, attrs, childrenVarArgs) {
 };
 
 jasmine.HtmlReporterHelpers.getSpecStatus = function(child) {
+  if (!child.results) {
+    return;
+  }
   var results = child.results();
   var status = results.passed() ? 'passed' : 'failed';
   if (results.skipped) {

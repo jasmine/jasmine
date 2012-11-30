@@ -576,66 +576,6 @@ describe("jasmine spec running", function () {
 
   });
 
-  it("testBeforeAndAfterCallbacks", function () {
-    var suiteWithBefore = env.describe('one suite with a before', function () {
-
-      this.beforeEach(function () {
-        this.foo = 1;
-      });
-
-      env.it('should be a spec', function () {
-        this.runs(function() {
-          this.foo++;
-          this.expect(this.foo).toEqual(2);
-        });
-      });
-
-      env.it('should be another spec', function () {
-        this.runs(function() {
-          this.foo++;
-          this.expect(this.foo).toEqual(2);
-        });
-      });
-    });
-
-    suiteWithBefore.execute();
-
-    var suite = suiteWithBefore;
-
-    expect(suite.results().getItems()[0].passed()).toEqual(true); // "testBeforeAndAfterCallbacks: the first spec's foo should have been 2");
-    expect(suite.results().getItems()[1].passed()).toEqual(true); // "testBeforeAndAfterCallbacks: the second spec's this.foo should have been 2");
-
-
-    var foo = 1;
-    var suiteWithAfter = env.describe('one suite with an after_each', function () {
-
-      env.it('should be a spec with an after_each', function () {
-        this.expect(foo).toEqual(1);
-        foo++;
-        this.expect(foo).toEqual(2);
-      });
-
-      env.it('should be another spec with an after_each', function () {
-        this.expect(foo).toEqual(0);
-        foo++;
-        this.expect(foo).toEqual(1);
-      });
-
-      this.afterEach(function () {
-        foo = 0;
-      });
-    });
-
-    suiteWithAfter.execute();
-
-    suite = suiteWithAfter;
-    expect(suite.afterEach.length).toEqual(1);
-    expect(suite.results().getItems()[0].passed()).toEqual(true);
-    expect(suite.results().getItems()[1].passed()).toEqual(true);
-    expect(foo).toEqual(0);
-
-  });
-
   it('#waits should allow consecutive waits calls', function () {
     var foo = 0;
     var waitsSuite = env.describe('suite that waits', function () {
@@ -873,85 +813,6 @@ describe("jasmine spec running", function () {
     expect(secondSpecHasRun).toEqual(true);
   });
 
-  it("testBeforeExecutesSafely", function() {
-    var report = "";
-    var suite = env.describe('before fails on first test, passes on second', function() {
-      var counter = 0;
-      this.beforeEach(function() {
-        counter++;
-        if (counter == 1) {
-          throw "before failure";
-        }
-      });
-      env.it("first should not run because before fails", function() {
-        this.runs(function() {
-          report += "first";
-          this.expect(true).toEqual(true);
-        });
-      });
-      env.it("second should run and pass because before passes", function() {
-        this.runs(function() {
-          report += "second";
-          this.expect(true).toEqual(true);
-        });
-      });
-    });
-
-    suite.execute();
-
-    expect(report).toEqual("firstsecond");
-    var suiteResults = suite.results();
-    expect(suiteResults.getItems()[0].getItems()[0].passed).toEqual(false);
-    expect(suiteResults.getItems()[1].getItems()[0].passed).toEqual(true);
-  });
-
-  it("testAfterExecutesSafely", function() {
-    var report = "";
-    var suite = env.describe('after fails on first test, then passes', function() {
-      var counter = 0;
-      this.afterEach(function() {
-        counter++;
-        if (counter == 1) {
-          throw "after failure";
-        }
-      });
-      env.it("first should run, expectation passes, but spec fails because after fails", function() {
-        this.runs(function() {
-          report += "first";
-          this.expect(true).toEqual(true);
-        });
-      });
-      env.it("second should run and pass because after passes", function() {
-        this.runs(function() {
-          report += "second";
-          this.expect(true).toEqual(true);
-        });
-      });
-      env.it("third should run and pass because after passes", function() {
-        this.runs(function() {
-          report += "third";
-          this.expect(true).toEqual(true);
-        });
-      });
-    });
-
-    suite.execute();
-
-    expect(report).toEqual("firstsecondthird"); // "all tests should run");
-    //After each errors should not go in spec results because it confuses the count.
-    var suiteResults = suite.results();
-    expect(suiteResults.getItems().length).toEqual(3, 'testAfterExecutesSafely should have results for three specs');
-
-    expect(suiteResults.getItems()[0].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 1st spec should pass");
-    expect(suiteResults.getItems()[1].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 2nd spec should pass");
-    expect(suiteResults.getItems()[2].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 3rd spec should pass");
-
-    expect(suiteResults.getItems()[0].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 1st result for 1st suite spec should pass");
-    expect(suiteResults.getItems()[0].getItems()[1].passed).toEqual(false, "testAfterExecutesSafely 2nd result for 1st suite spec should fail because afterEach failed");
-    expect(suiteResults.getItems()[1].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 2nd suite spec should pass");
-    expect(suiteResults.getItems()[2].getItems()[0].passed).toEqual(true, "testAfterExecutesSafely 3rd suite spec should pass");
-  });
-
   it("should permit nested describes", function() {
     var actions = [];
 
@@ -1115,101 +976,36 @@ describe("jasmine spec running", function () {
     expect(nestedSpec.getFullName()).toEqual('Test Subject when under circumstance A and circumstance B behaves thusly.'); //, "Spec.fullName was incorrect: " + nestedSpec.getFullName());
   });
 
-  it("should skip empty suites", function () {
-    env.describe('NonEmptySuite1', function() {
-      env.it('should pass', function() {
-        this.expect(true).toEqual(true);
-      });
-      env.describe('NestedEmptySuite', function() {
-      });
-      env.it('should pass', function() {
-        this.expect(true).toEqual(true);
-      });
-    });
-
-    env.describe('EmptySuite', function() {
-    });
-
-    env.describe('NonEmptySuite2', function() {
-      env.it('should pass', function() {
-        this.expect(true).toEqual(true);
-      });
-    });
-
-    env.execute();
-
-    var runnerResults = env.currentRunner_.results();
-    expect(runnerResults.totalCount).toEqual(3);
-    expect(runnerResults.passedCount).toEqual(3);
-    expect(runnerResults.failedCount).toEqual(0);
-  });
-
   it("should bind 'this' to the running spec within the spec body", function() {
-    var spec;
-    var suite = env.describe('one suite description', function () {
-      env.it('should be a test with queuedFunctions', function() {
-        spec = this.runs(function() {
+    var specExecuted = jasmine.createSpy(), spec;
+
+    env.describe('Test Subject', function() {
+      spec = env.it('should be a test with queuedFunctions', function() {
+        this.runs(function() {
           this.foo = 0;
+          expect(this.foo).toBe(0);
+          specExecuted();
+        });
+
+        this.runs(function() {
           this.foo++;
-        });
-
-        this.runs(function() {
-          var that = this;
-          fakeTimer.setTimeout(function() {
-            that.foo++;
-          }, 250);
-        });
-
-        this.runs(function() {
-          this.expect(this.foo).toEqual(2);
-        });
-
-        this.waits(300);
-
-        this.runs(function() {
-          this.expect(this.foo).toEqual(2);
+          expect(this.foo).toBe(1);
+          specExecuted();
         });
       });
-
     });
 
-    suite.execute();
-    fakeTimer.tick(600);
-    expect(spec.foo).toEqual(2);
-    var suiteResults = suite.results();
-    expect(suiteResults.getItems()[0].getItems().length).toEqual(2);
-    expect(suiteResults.getItems()[0].getItems()[0].passed).toEqual(false);
-    expect(suiteResults.getItems()[0].getItems()[1].passed).toEqual(true);
+    spec.execute();
+    expect(specExecuted.callCount).toBe(2);
   });
 
   it("shouldn't run disabled tests", function() {
-    var xitSpecWasRun = false;
-    var suite = env.describe('default current suite', function() {
-      env.xit('disabled spec').runs(function () {
-        xitSpecWasRun = true;
-      });
-
-      env.it('enabled spec').runs(function () {
-        var foo = 'bar';
-        expect(foo).toEqual('bar');
-      });
+    var disabledSpec = originalJasmine.createSpy('disabledSpec'),
+    suite = env.describe('default current suite', function() {
+      env.xit('disabled spec').runs(disabledSpec);
     });
-
     suite.execute();
-    expect(xitSpecWasRun).toEqual(false);
-  });
-
-  it('shouldn\'t execute specs in disabled suites', function() {
-    var spy = originalJasmine.createSpy();
-    var disabledSuite = env.xdescribe('a disabled suite', function() {
-      env.it('enabled spec, but should not be run', function() {
-        spy();
-      });
-    });
-
-    disabledSuite.execute();
-
-    expect(spy).not.toHaveBeenCalled();
+    expect(disabledSpec).not.toHaveBeenCalled();
   });
 
   it('#explodes should throw an exception when it is called inside a spec', function() {

@@ -57,7 +57,7 @@ jasmine.Queue.prototype.next_ = function() {
 
   while (goAgain) {
     goAgain = false;
-    
+
     if (self.index < self.blocks.length && !(this.abort && !this.ensured[self.index])) {
       var calledSynchronously = true;
       var completedSynchronously = false;
@@ -95,7 +95,7 @@ jasmine.Queue.prototype.next_ = function() {
       if (completedSynchronously) {
         onComplete();
       }
-      
+
     } else {
       self.running = false;
       if (self.onComplete) {
@@ -104,15 +104,3 @@ jasmine.Queue.prototype.next_ = function() {
     }
   }
 };
-
-jasmine.Queue.prototype.results = function() {
-  var results = new jasmine.NestedResults();
-  for (var i = 0; i < this.blocks.length; i++) {
-    if (this.blocks[i].results) {
-      results.addResult(this.blocks[i].results());
-    }
-  }
-  return results;
-};
-
-

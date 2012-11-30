@@ -27,7 +27,6 @@ class JasmineDev < Thor
       "ReporterView.js",
       "SpecView.js",
       "SuiteView.js",
-      "TrivialReporter.js"
     ]
   }
 end
