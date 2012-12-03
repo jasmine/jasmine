@@ -94,7 +94,7 @@ jasmine.HtmlReporter = function(_doc) {
       dom.symbolSummary = self.createDom('ul', {className: 'symbolSummary'}),
       dom.alert = self.createDom('div', {className: 'alert'},
         self.createDom('span', { className: 'exceptions' },
-          self.createDom('label', { className: 'label', for: 'no_try_catch' }, 'No try/catch'),
+          self.createDom('label', { className: 'label', 'for': 'no_try_catch' }, 'No try/catch'),
           self.createDom('input', { id: 'no_try_catch', type: 'checkbox' }))),
       dom.results = self.createDom('div', {className: 'results'},
         dom.summary = self.createDom('div', { className: 'summary' }),
