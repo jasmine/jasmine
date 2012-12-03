@@ -7,14 +7,6 @@ describe("base.js", function() {
     });
   });
 
-  describe("jasmine.log", function() {
-    it("should accept n arguments", function() {
-      spyOn(jasmine.getEnv().currentSpec, 'log');
-      jasmine.log(1, 2, 3);
-      expect(jasmine.getEnv().currentSpec.log).toHaveBeenCalledWith(1, 2, 3);
-    });
-  });
-
   describe("jasmine.getGlobal", function() {
     it("should return the global object", function() {
       var globalObject = (function() {

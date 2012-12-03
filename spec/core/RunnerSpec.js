@@ -107,7 +107,7 @@ describe('RunnerTest', function() {
     });
 
     it('should run after a failing spec', function () {
-      var afterEach = jasmine.createSpy();
+      var afterEach = originalJasmine.createSpy();
       env.afterEach(afterEach);
 
       env.describe('suite', function () {
@@ -200,7 +200,7 @@ describe('RunnerTest', function() {
   describe('reporting', function () {
     var fakeReporter;
     beforeEach(function () {
-      fakeReporter = jasmine.createSpyObj("fakeReporter", ["log", "reportRunnerStarting", "reportRunnerResults"]);
+      fakeReporter = originalJasmine.createSpyObj("fakeReporter", ["log", "reportRunnerStarting", "reportRunnerResults"]);
       env.addReporter(fakeReporter);
     });
 
@@ -233,7 +233,7 @@ describe('RunnerTest', function() {
   });
 
   it("should report when the tests start running", function() {
-    var fakeReporter = jasmine.createSpyObj("fakeReporter", ["log", "reportRunnerStarting"]);
+    var fakeReporter = originalJasmine.createSpyObj("fakeReporter", ["log", "reportRunnerStarting"]);
     env.addReporter(fakeReporter);
 
 

@@ -391,7 +391,7 @@ describe("jasmine.Matchers", function() {
     var matcher;
     beforeEach(function () {
       matcher = {
-        jasmineMatches: jasmine.createSpy("jasmineMatches")
+        jasmineMatches: originalJasmine.createSpy("jasmineMatches")
       };
     });
 
@@ -694,7 +694,7 @@ describe("jasmine.Matchers", function() {
       TestClass = {
         normalFunction: function() {
         },
-        spyFunction: jasmine.createSpy("My spy")
+        spyFunction: originalJasmine.createSpy("My spy")
       };
     });
 
@@ -974,7 +974,7 @@ describe("jasmine.Matchers", function() {
     describe("in real life", function () {
       var method;
       beforeEach(function () {
-        method = jasmine.createSpy("method");
+        method = originalJasmine.createSpy("method");
         method({a:"b", c:"d"});
       });
       it("works correctly for positive matches", function () {

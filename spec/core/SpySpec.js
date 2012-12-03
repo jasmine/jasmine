@@ -165,7 +165,7 @@ describe('Spies', function () {
     expect(exception).toBeDefined();
   });
 
-	
+
 	it('to spy on an undefined method throws exception', function() {
 		var TestClass = {
 			someFunction : function() {
@@ -177,8 +177,8 @@ describe('Spies', function () {
 		expect(function() {
 			efunc();
 		}).toThrow('someOtherFunction() method does not exist');
-	
-	}); 
+
+	});
 
   it('should be able to reset a spy', function() {
     var TestClass = { someFunction: function() {} };
@@ -195,7 +195,7 @@ describe('Spies', function () {
   describe("createSpyObj", function() {
     it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
       var spyObj = jasmine.createSpyObj('BaseName', ['method1', 'method2']);
-      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
+      expect(spyObj).toEqual({ method1: originalJasmine.any(Function), method2: originalJasmine.any(Function)});
       expect(spyObj.method1.identity).toEqual('BaseName.method1');
       expect(spyObj.method2.identity).toEqual('BaseName.method2');
     });

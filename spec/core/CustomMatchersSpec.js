@@ -65,7 +65,7 @@ describe("Custom Matchers", function() {
       actual: true, expected: jasmine.undefined, message: "Passed." });
     var failResult = new jasmine.ExpectationResult({passed: false, matcherName: 'toBeTrue',
       actual: false, expected: jasmine.undefined, message: "Expected false to be true." });
-    failResult.trace = jasmine.any(Object);
+    failResult.trace = originalJasmine.any(Object);
     expect(spec.results().getItems()).toEqual([passResult, failResult]);
   });
 

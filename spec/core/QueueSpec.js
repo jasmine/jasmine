@@ -12,7 +12,6 @@ describe("jasmine.Queue", function() {
     queue.next_ = function() {
       nestCount++;
       if (nestCount > maxNestCount) maxNestCount = nestCount;
-
       jasmine.Queue.prototype.next_.apply(queue, arguments);
       nestCount--;
     };

@@ -7,7 +7,7 @@ describe('WaitsForBlock', function () {
     timeout = 1000;
     spec = new jasmine.Spec(env, suite);
     message = "some error message";
-    onComplete = jasmine.createSpy("onComplete");
+    onComplete = originalJasmine.createSpy("onComplete");
   });
 
   describe("jasmine.VERBOSE", function() {
@@ -63,7 +63,7 @@ describe('WaitsForBlock', function () {
   });
 
   it('should fail spec and call onComplete if there is an error in the latchFunction', function() {
-    var latchFunction = jasmine.createSpy('latchFunction').andThrow('some error');
+    var latchFunction = originalJasmine.createSpy('latchFunction').andThrow('some error');
     spyOn(spec, 'fail');
     var block = new jasmine.WaitsForBlock(env, timeout, latchFunction, message, spec);
     block.execute(onComplete);
@@ -74,7 +74,7 @@ describe('WaitsForBlock', function () {
   describe("if latchFunction returns false", function() {
     var latchFunction, fakeTimer;
     beforeEach(function() {
-      latchFunction = jasmine.createSpy('latchFunction').andReturn(false);
+      latchFunction = originalJasmine.createSpy('latchFunction').andReturn(false);
       fakeTimer = new jasmine.FakeTimer();
       env.setTimeout = fakeTimer.setTimeout;
       env.clearTimeout = fakeTimer.clearTimeout;

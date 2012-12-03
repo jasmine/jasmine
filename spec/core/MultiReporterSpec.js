@@ -3,8 +3,8 @@ describe("jasmine.MultiReporter", function() {
 
   beforeEach(function() {
     multiReporter = new jasmine.MultiReporter();
-    fakeReporter1 = jasmine.createSpyObj("fakeReporter1", ["reportSpecResults"]);
-    fakeReporter2 = jasmine.createSpyObj("fakeReporter2", ["reportSpecResults", "reportRunnerStarting"]);
+    fakeReporter1 = originalJasmine.createSpyObj("fakeReporter1", ["reportSpecResults"]);
+    fakeReporter2 = originalJasmine.createSpyObj("fakeReporter2", ["reportSpecResults", "reportRunnerStarting"]);
     multiReporter.addReporter(fakeReporter1);
     multiReporter.addReporter(fakeReporter2);
   });
@@ -15,11 +15,11 @@ describe("jasmine.MultiReporter", function() {
 
     this.addMatchers({
       toDelegateMethod: function(methodName) {
-        delegate[methodName] = jasmine.createSpy(methodName);
+        delegate[methodName] = originalJasmine.createSpy(methodName);
         this.actual[methodName]("whatever argument");
 
-        return delegate[methodName].wasCalled && 
-               delegate[methodName].mostRecentCall.args.length == 1 && 
+        return delegate[methodName].wasCalled &&
+               delegate[methodName].mostRecentCall.args.length == 1 &&
                delegate[methodName].mostRecentCall.args[0] == "whatever argument";
       }
     });

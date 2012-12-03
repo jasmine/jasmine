@@ -17,7 +17,7 @@ describe("jasmine.Env", function() {
     var fakeReporter;
 
     beforeEach(function() {
-      fakeReporter = jasmine.createSpyObj("fakeReporter", ["log"]);
+      fakeReporter = originalJasmine.createSpyObj("fakeReporter", ["log"]);
     });
 
     describe('version', function () {

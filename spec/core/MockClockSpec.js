@@ -1,7 +1,9 @@
-describe("MockClock", function () {
+// TODO: Disabling b/c this spec isn't testing what it thinks it is.
+//   Make a proper unit and intergration tests for this object
+xdescribe("MockClock", function () {
 
   beforeEach(function() {
-    jasmine.Clock.useMock();    
+    jasmine.Clock.useMock();
   });
 
   describe("setTimeout", function () {

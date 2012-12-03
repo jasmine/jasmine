@@ -6,7 +6,7 @@ describe('Suite', function() {
     env = new jasmine.Env();
     env.updateInterval = 0;
 
-    fakeTimer = new jasmine.FakeTimer();
+    fakeTimer = new originalJasmine.FakeTimer();
     env.setTimeout = fakeTimer.setTimeout;
     env.clearTimeout = fakeTimer.clearTimeout;
     env.setInterval = fakeTimer.setInterval;

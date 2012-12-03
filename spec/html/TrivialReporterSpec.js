@@ -69,7 +69,7 @@ describe("TrivialReporter", function() {
 
     var runner, spec, fakeTimer;
     beforeEach(function () {
-      fakeTimer = new jasmine.FakeTimer();
+      fakeTimer = new originalJasmine.FakeTimer();
       env.setTimeout = fakeTimer.setTimeout;
       env.clearTimeout = fakeTimer.clearTimeout;
       env.setInterval = fakeTimer.setInterval;

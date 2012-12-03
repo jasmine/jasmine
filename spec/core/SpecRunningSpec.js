@@ -6,7 +6,7 @@ describe("jasmine spec running", function () {
     env = new jasmine.Env();
     env.updateInterval = 0;
 
-    fakeTimer = new jasmine.FakeTimer();
+    fakeTimer = new originalJasmine.FakeTimer();
     env.setTimeout = fakeTimer.setTimeout;
     env.clearTimeout = fakeTimer.clearTimeout;
     env.setInterval = fakeTimer.setInterval;
@@ -400,7 +400,7 @@ describe("jasmine spec running", function () {
     });
 
     it("runs afterEach after timing out", function() {
-      var afterEach = jasmine.createSpy('afterEach');
+      var afterEach = originalJasmine.createSpy('afterEach');
 
       env.describe('foo', function () {
         env.afterEach(afterEach);
@@ -417,7 +417,7 @@ describe("jasmine spec running", function () {
     });
 
     it("runs single-spec after functions after timing out", function() {
-      var after = jasmine.createSpy('after');
+      var after = originalJasmine.createSpy('after');
 
       env.describe('foo', function () {
         env.it('waitsFor', function () {
@@ -1200,7 +1200,7 @@ describe("jasmine spec running", function () {
   });
 
   it('shouldn\'t execute specs in disabled suites', function() {
-    var spy = jasmine.createSpy();
+    var spy = originalJasmine.createSpy();
     var disabledSuite = env.xdescribe('a disabled suite', function() {
       env.it('enabled spec, but should not be run', function() {
         spy();

@@ -1,8 +1,8 @@
-jasmine_dir:
-  - 'src'
 #This 'magic' inclusion order allows the travis build to pass.
 #TODO: search for the correct files to include to prevent
-jasmine_files:
+src_dir:
+  - 'src'
+src_files:
   - 'core/base.js'
   - 'core/util.js'
   - 'core/Reporter.js'
@@ -24,15 +24,15 @@ jasmine_files:
   - 'html/HtmlReporterHelpers.js'
   - 'html/HtmlReporter.js'
   - '**/*.js'
-jasmine_css_files:
-  - 'html/jasmine.css'
-src_files:
 stylesheets:
+boot_dir: 'spec/support'
+boot_files:
+  - 'boot.js'
+  - 'dev_boot.js'
 helpers:
   - 'helpers/**/*.js'
 spec_files:
   - '**/*[Ss]pec.js'
-src_dir:
 spec_dir:
   - 'spec'
 
