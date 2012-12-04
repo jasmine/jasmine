@@ -141,9 +141,10 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
       failedSpecResults: []
     };
 
-    suite.results().items_.forEach(function(spec) {
+    for(var i = 0; i < suite.results().items_.length; i++) {
+      var spec = suite.results().items_[i];
       if (spec.failedCount > 0 && spec.description) suiteResult.failedSpecResults.push(spec);
-    });
+    }
 
     this.suiteResults.push(suiteResult);
   };
