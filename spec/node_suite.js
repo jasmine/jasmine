@@ -10,6 +10,53 @@ var jasmineGlobals = require('../lib/jasmine-core/jasmine.js');
 for (var k in jasmineGlobals) {
   global[k] = jasmineGlobals[k];
 }
+var env = jasmine.getEnv();
+
+var jasmineInterface = {
+  describe: function(description, specDefinitions) {
+    return env.describe(description, specDefinitions);
+  },
+
+  xdescribe: function(description, specDefinitions) {
+    return env.xdescribe(description, specDefinitions);
+  },
+
+  it: function(desc, func) {
+    return env.it(desc, func);
+  },
+
+  xit: function(desc, func) {
+    return env.xit(desc, func);
+  },
+
+  beforeEach: function(beforeEachFunction) {
+    return env.beforeEach(beforeEachFunction);
+  },
+
+  afterEach: function(afterEachFunction) {
+    return env.afterEach(afterEachFunction);
+  },
+
+  expect: function(actual) {
+    return env.expect(actual);
+  },
+
+  addMatchers: function(matchers) {
+    return env.addMatchers(matchers);
+  },
+
+  spyOn: function(obj, methodName) {
+    return env.spyOn(obj, methodName);
+  },
+
+
+  jsApiReporter: new jasmine.JsApiReporter(jasmine)
+};
+
+for (var k in jasmineInterface) {
+  global[k] = jasmineInterface[k];
+}
+
 require('../src/console/ConsoleReporter.js');
 
 /*
@@ -31,6 +78,8 @@ function noop() {
 }
 
 jasmine.executeSpecs = function(specs, done, isVerbose, showColors) {
+  global.originalJasmine = jasmine;
+
   for (var i = 0, len = specs.length; i < len; ++i) {
     var filename = specs[i];
     require(filename.replace(/\.\w+$/, ""));
@@ -118,8 +167,8 @@ for (var i = 0; i < specs.length; i++) {
   }
 }
 
-jasmine.executeSpecs(domIndependentSpecs, function(runner, log) {
-  if (runner.results().failedCount === 0) {
+jasmine.executeSpecs(domIndependentSpecs, function(passed) {
+  if (passed) {
     process.exit(0);
   } else {
     process.exit(1);

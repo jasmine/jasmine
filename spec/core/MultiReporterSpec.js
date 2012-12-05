@@ -13,7 +13,7 @@ describe("jasmine.MultiReporter", function() {
     var delegate = {};
     multiReporter.addReporter(delegate);
 
-    this.addMatchers({
+    addMatchers({
       toDelegateMethod: function(methodName) {
         delegate[methodName] = originalJasmine.createSpy(methodName);
         this.actual[methodName]("whatever argument");

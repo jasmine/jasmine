@@ -1,122 +1,202 @@
-describe('Spec', function () {
-  var env, suite;
-  beforeEach(function() {
-    env = new jasmine.Env();
-    env.updateInterval = 0;
-    suite = new jasmine.Suite(env, 'suite 1');
-  });
+describe("Spec (integration)", function() {
+  it("reports results for passing tests", function() {
+    var resultCallback = jasmine.createSpy('resultCallback'),
+      expectationFactory = function(actual, spec) {
+        expect(actual).toBe('some-actual');
+        return {
+          pass: function() {
+            spec.addExpectationResult(true);
+          }
+        }
+      },
+      spec = new jasmine.Spec({
+        description: 'my test',
+        id: 'some-id',
+        fn: function() {
+          this.expect('some-actual').pass();
+        },
+        resultCallback: resultCallback,
+        expectationFactory: expectationFactory
+      });
 
-  describe('initialization', function () {
+    spec.execute();
 
-    it('should raise an error if an env is not passed', function () {
-      try {
-        new jasmine.Spec();
-      }
-      catch (e) {
-        expect(e.message).toEqual('jasmine.Env() required');
-      }
-    });
-
-    it('should raise an error if a suite is not passed', function () {
-      try {
-        new jasmine.Spec(env);
-      }
-      catch (e) {
-        expect(e.message).toEqual('jasmine.Suite() required');
-      }
-    });
-
-    it('should assign sequential ids for specs belonging to the same env', function () {
-      var spec1 = new jasmine.Spec(env, suite);
-      var spec2 = new jasmine.Spec(env, suite);
-      var spec3 = new jasmine.Spec(env, suite);
-      expect(spec1.id).toEqual(0);
-      expect(spec2.id).toEqual(1);
-      expect(spec3.id).toEqual(2);
+    expect(resultCallback).toHaveBeenCalledWith({
+      id: "some-id",
+      status: "passed",
+      description: "my test",
+      failedExpectations: []
     });
   });
+  it("reports results for failing tests", function() {
+    var resultCallback = jasmine.createSpy('resultCallback'),
+      expectationFactory = function(actual, spec) {
+        expect(actual).toBe('some-actual');
+        return {
+          fail: function() {
+            spec.addExpectationResult(true);
+          }
+        }
+      },
+      spec = new jasmine.Spec({
+        description: 'my test',
+        id: 'some-id',
+        fn: function() {
+          this.expect('some-actual').fail();
+        },
+        resultCallback: resultCallback,
+        expectationFactory: expectationFactory
+      });
 
-  it('getFullName returns suite & spec description', function () {
-    var spec = new jasmine.Spec(env, suite, 'spec 1');
-    expect(spec.getFullName()).toEqual('suite 1 spec 1.');
+    spec.execute();
+
+    expect(resultCallback).toHaveBeenCalledWith({
+      id: "some-id",
+      status: "passed",
+      description: "my test",
+      failedExpectations: []
+    });
   });
 
-  describe('results', function () {
-    var spec, results;
-    beforeEach(function () {
-      spec = new jasmine.Spec(env, suite);
-      results = spec.results();
-      expect(results.totalCount).toEqual(0);
-      spec.runs(function () {
-        this.expect(true).toEqual(true);
-        this.expect(true).toEqual(true);
+  //TODO: test order of befores, spec, after.
+  it("executes before fns, after fns", function() {
+    var before = jasmine.createSpy('before'),
+      after = jasmine.createSpy('after'),
+      fn = originalJasmine.createSpy('test body').andCallFake(function() {
+        expect(before).toHaveBeenCalled();
+        expect(after).not.toHaveBeenCalled();
       });
+    spec = new jasmine.Spec({
+      fn: fn,
+      beforeFns: function() {
+        return [before]
+      },
+      afterFns: function() {
+        return [after]
+      }
     });
 
+    spec.execute();
 
-    it('results shows the total number of expectations for each spec after execution', function () {
-      expect(results.totalCount).toEqual(0);
+    expect(before).toHaveBeenCalled();
+    expect(before.mostRecentCall.object).toBe(spec);
+
+    expect(fn).toHaveBeenCalled();
+
+    expect(after).toHaveBeenCalled();
+    expect(after.mostRecentCall.object).toBe(spec);
+  });
+});
+
+describe("Spec (real-ish unit tests)", function() {
+  it("status returns null by default", function() {
+    var spec = new jasmine.Spec({});
+    expect(spec.status()).toBeNull();
+  });
+
+  it("status returns passed if all expectations in the spec have passed", function() {
+    var spec = new jasmine.Spec({});
+    spec.addExpectationResult(true);
+    expect(spec.status()).toBe('passed');
+  });
+
+  it("status returns failed if any expectations in the spec have failed", function() {
+    var spec = new jasmine.Spec({});
+    spec.addExpectationResult(true);
+    spec.addExpectationResult(false);
+    expect(spec.status()).toBe('failed');
+  });
+
+  it("calls the resultCallback with a failure when an exception occurs in the spec fn", function() {
+    //TODO: one day we should pass a stack with this.
+    var resultCallback = originalJasmine.createSpy('resultCallback'),
+      spec = new jasmine.Spec({
+        fn: function() {
+          throw new Error();
+        },
+        catchExceptions: true,
+        resultCallback: resultCallback
+      });
+
+    expect(resultCallback).not.toHaveBeenCalled();
+    spec.execute();
+    expect(resultCallback).toHaveBeenCalledWith(
+      originalJasmine.objectContaining({status: 'failed'})
+    );
+
+  });
+
+  it("throws when an exception occurs in the spec fn if catchExceptions is false", function() {
+    //TODO: one day we should pass a stack with this.
+    var resultCallback = originalJasmine.createSpy('resultCallback'),
+      spec = new jasmine.Spec({
+        fn: function() {
+          throw new Error();
+        },
+        catchExceptions: false,
+        resultCallback: resultCallback
+      });
+
+    expect(function() {
       spec.execute();
-      expect(results.totalCount).toEqual(2);
+    }).toThrow();
+  });
+
+  it("should call the start callback before any befores are called", function() {
+    var beforesWereCalled = false,
+      startCallback = originalJasmine.createSpy('start-callback').andCallFake(function() {
+        expect(beforesWereCalled).toBe(false);
+      }),
+      spec = new jasmine.Spec({
+        fn: function() {
+        },
+        beforeFns: function() {
+          return [function() {
+            beforesWereCalled = true
+          }]
+        },
+        startCallback: startCallback,
+        catchExceptions: false,
+        resultCallback: function() {
+        }
+      });
+
+    spec.execute();
+    expect(startCallback).toHaveBeenCalled();
+  });
+
+  it("can return its full name", function() {
+    //TODO: not convinced that a spec should provide this as part of its public interface, but adding temporarily
+    //until we fix the reporting
+    var spec = new jasmine.Spec({
+      fullNameFactory: function(passedVal) {
+        expect(passedVal).toBe(spec);
+        return 'expected val';
+      }
     });
 
-    it('results shows the number of passed expectations for each spec after execution', function () {
-      expect(results.passedCount).toEqual(0);
-      spec.execute();
-      expect(results.passedCount).toEqual(2);
-    });
+    expect(spec.getFullName()).toBe('expected val');
+  });
 
-    it('results shows the number of failed expectations for each spec after execution', function () {
-      spec.runs(function () {
-        this.expect(true).toEqual(false);
-      });
-      expect(results.failedCount).toEqual(0);
-      spec.execute();
-      expect(results.failedCount).toEqual(1);
-    });
+  it("can be disabled", function() {
+    var startCallback = jasmine.createSpy('startCallback'),
+      specBody = jasmine.createSpy('specBody'),
+      resultCallback = jasmine.createSpy('resultCallback'),
+      spec = new jasmine.Spec({
+        startCallback: startCallback,
+        fn: specBody,
+        resultCallback: resultCallback
 
-    describe('results.passed', function () {
-      it('is true if all spec expectations pass', function () {
-        spec.runs(function () {
-          this.expect(true).toEqual(true);
-        });
-        spec.execute();
-        expect(results.passed()).toEqual(true);
       });
 
-      it('is false if one spec expectation fails', function () {
-        spec.runs(function () {
-          this.expect(true).toEqual(false);
-        });
-        spec.execute();
-        expect(results.passed()).toEqual(false);
-      });
+    spec.disable();
+    expect(spec.status()).toBe('disabled');
 
-      it('a spec with no expectations will return true', function () {
-        var specWithoutExpectations = new jasmine.Spec(env, suite);
-        specWithoutExpectations.runs(function() {
+    spec.execute();
 
-        });
-        specWithoutExpectations.execute();
-        expect(results.passed()).toEqual(true);
-      });
-
-      it('an unexecuted spec will return true', function () {
-        expect(results.passed()).toEqual(true);
-      });
-    });
-
-    it("includes log messages, which may contain arbitary objects", function() {
-      spec.runs(function() {
-        this.log("here's some log message", {key: 'value'}, 123);
-      });
-      spec.execute();
-      var items = results.getItems();
-      expect(items[0].type).toBe('expect');
-      expect(items[1].type).toBe('expect');
-      expect(items[2].type).toBe('log');
-      var logResult = items[2];
-      expect(logResult.values).toEqual(["here's some log message", {key: 'value'}, 123]);
-    });
+    expect(startCallback).not.toHaveBeenCalled();
+    expect(specBody).not.toHaveBeenCalled();
+    //TODO: with expected data.
+    expect(resultCallback).toHaveBeenCalled();
   });
 });

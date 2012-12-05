@@ -76,21 +76,19 @@ describe("HtmlReporter", function() {
       env.clearTimeout = fakeTimer.clearTimeout;
       env.setInterval = fakeTimer.setInterval;
       env.clearInterval = fakeTimer.clearInterval;
-      runner = env.currentRunner();
-      var suite = new jasmine.Suite(env, 'some suite');
-      runner.add(suite);
-      spec = new jasmine.Spec(env, suite, 'some spec');
-      suite.add(spec);
       fakeDocument.location.search = "?";
       env.addReporter(htmlReporter);
     });
 
     describe('toContain', function() {
       it('should show actual and expected', function() {
-        spec.runs(function() {
-          this.expect('foo').toContain('bar');
+        env.describe('test suite', function() {
+          env.it('spec 0', function() {
+            this.expect('foo').toContain('bar');
+          });
         });
-        runner.execute();
+
+        env.execute();
         fakeTimer.tick(0);
 
         var resultEl = getResultMessageDiv(body);
@@ -134,39 +132,16 @@ describe("HtmlReporter", function() {
     });
   });
 
-  describe("log messages", function() {
-    it("should appear in the report of a failed spec", function() {
-      env.describe("suite", function() {
-        env.it("will have log messages", function() {
-          this.log("this is a", "multipart log message");
-          this.expect(true).toBeFalsy();
-        });
-      });
-
-      env.addReporter(htmlReporter);
-      env.execute();
-
-      var divs = body.getElementsByTagName("div");
-      var errorDiv = findElement(divs, 'specDetail failed');
-      expect(errorDiv.innerHTML).toMatch("this is a multipart log message");
-    });
-
-    xit("should work on IE without console.log.apply", function() {
-    });
-  });
-
   describe("duplicate example names", function() {
     it("should report failures correctly", function() {
       var suite1 = env.describe("suite", function() {
         env.it("will have log messages", function() {
-          this.log("this one fails!");
           this.expect(true).toBeFalsy();
         });
       });
 
       var suite2 = env.describe("suite", function() {
         env.it("will have log messages", function() {
-          this.log("this one passes!");
           this.expect(true).toBeTruthy();
         });
       });
@@ -177,33 +152,7 @@ describe("HtmlReporter", function() {
       var divs = body.getElementsByTagName("div");
       var failedSpecDiv = findElement(divs, 'specDetail failed');
       expect(failedSpecDiv.className).toEqual('specDetail failed');
-      expect(failedSpecDiv.innerHTML).toContain("this one fails!");
       expect(failedSpecDiv.innerHTML).not.toContain("this one passes!");
-    });
-  });
-
-  describe('#reportSpecStarting', function() {
-    beforeEach(function() {
-      env.describe("suite 1", function() {
-        env.it("spec 1", function() {
-        });
-      });
-      spyOn(htmlReporter, 'log').andCallThrough();
-    });
-
-    it('DOES NOT log running specs by default', function() {
-      env.addReporter(htmlReporter);
-      env.execute();
-
-      expect(htmlReporter.log).not.toHaveBeenCalled();
-    });
-
-    it('logs running specs when log_running_specs is true', function() {
-      htmlReporter.logRunningSpecs = true;
-      env.addReporter(htmlReporter);
-      env.execute();
-
-      expect(htmlReporter.log).toHaveBeenCalledWith('>> Jasmine Running suite 1 spec 1...');
     });
   });
 });

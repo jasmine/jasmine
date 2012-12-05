@@ -1,16 +1,18 @@
+//TODO: runner is a special case of suite.
 /**
  * Runner
  *
  * @constructor
  * @param {jasmine.Env} env
  */
-jasmine.Runner = function(env) {
+jasmine.Runner = function(env, isSuite) {
   var self = this;
   self.env = env;
   self.queue = new jasmine.Queue(env);
   self.before_ = [];
   self.after_ = [];
   self.suites_ = [];
+  self.isSuite = isSuite || function() {};
 };
 
 jasmine.Runner.prototype.execute = function() {
@@ -40,13 +42,18 @@ jasmine.Runner.prototype.finishCallback = function() {
 
 jasmine.Runner.prototype.addSuite = function(suite) {
   this.suites_.push(suite);
+  this.queue.add(suite);
 };
 
+
+//TODO: runner should die a slow unhappy death.
+//Nobody should ever call instanceof.
 jasmine.Runner.prototype.add = function(block) {
-  if (block instanceof jasmine.Suite) {
+  if (this.isSuite(block)) {
     this.addSuite(block);
+  } else {
+    this.queue.add(block);
   }
-  this.queue.add(block);
 };
 
 jasmine.Runner.prototype.specs = function () {

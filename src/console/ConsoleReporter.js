@@ -73,12 +73,22 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
     return newArr.join("\n");
   }
 
-  function specFailureDetails(suiteDescription, specDescription, stackTraces) {
+  // function specFailureDetails(suiteDescription, specDescription, stackTraces) {
+    // newline();
+    // print(suiteDescription + " " + specDescription);
+    // newline();
+    // for (var i = 0; i < stackTraces.length; i++) {
+      // print(indent(stackTraces[i], 2));
+      // newline();
+    // }
+  // }
+  function specFailureDetails(specFailure) {
     newline();
-    print(suiteDescription + " " + specDescription);
+    print(specFailure.fullName);
     newline();
-    for (var i = 0; i < stackTraces.length; i++) {
-      print(indent(stackTraces[i], 2));
+    for (var i = 0; i < specFailure.failedExpectations.length; i++) {
+      var failedExpectation = specFailure.failedExpectations[i];
+      print(indent(failedExpectation.trace.stack, 2));
       newline();
     }
   }
@@ -122,33 +132,48 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
   this.reportSpecStarting = function() { /* do nothing */
   };
 
-  this.reportSpecResults = function(spec) {
-    var results = spec.results();
-    if (results.skipped) {
+  this.specFailures = [];
+  this.specCount = 0;
+  this.reportSpecResults = function(result) {
+    this.specCount++;
+    if (result.status === 'disabled') {
       yellowStar();
-    } else if (results.passed()) {
+    } else if (result.status === 'passed') {
       greenDot();
     } else {
       redF();
+      this.specFailures.push(result);
     }
   };
 
-  this.suiteResults = [];
+  // this.suiteResults = [];
 
   this.reportSuiteResults = function(suite) {
-    var suiteResult = {
-      description: fullSuiteDescription(suite),
-      failedSpecResults: []
-    };
+    // var suiteResult = {
+      // description: fullSuiteDescription(suite),
+      // failedSpecResults: []
+    // };
 
-    suite.results().items_.forEach(function(spec) {
-      if (spec.failedCount > 0 && spec.description) suiteResult.failedSpecResults.push(spec);
-    });
+    // suite.results().items_.forEach(function(spec) {
+      // if (spec.failedCount > 0 && spec.description) suiteResult.failedSpecResults.push(spec);
+    // });
 
-    this.suiteResults.push(suiteResult);
+    // this.suiteResults.push(suiteResult);
   };
 
-  function eachSpecFailure(suiteResults, callback) {
+  // function eachSpecFailure(suiteResults, callback) {
+    // for (var i = 0; i < suiteResults.length; i++) {
+      // var suiteResult = suiteResults[i];
+      // for (var j = 0; j < suiteResult.failedSpecResults.length; j++) {
+        // var failedSpecResult = suiteResult.failedSpecResults[j];
+        // var stackTraces = [];
+        // for (var k = 0; k < failedSpecResult.items_.length; k++) stackTraces.push(failedSpecResult.items_[k].trace.stack);
+        // callback(suiteResult.description, failedSpecResult.description, stackTraces);
+      // }
+    // }
+  // }
+
+  function eachSpecFailure(specResult, callback) {
     for (var i = 0; i < suiteResults.length; i++) {
       var suiteResult = suiteResults[i];
       for (var j = 0; j < suiteResult.failedSpecResults.length; j++) {
@@ -163,15 +188,14 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
   this.reportRunnerResults = function(runner) {
     newline();
 
-    eachSpecFailure(this.suiteResults, function(suiteDescription, specDescription, stackTraces) {
-      specFailureDetails(suiteDescription, specDescription, stackTraces);
-    });
+    for (var i = 0; i < this.specFailures.length; i++) {
+      specFailureDetails(this.specFailures[i]);
+    }
 
     finished(this.now() - this.runnerStartTime);
 
-    var results = runner.results();
-    var summaryFunction = results.failedCount === 0 ? greenSummary : redSummary;
-    summaryFunction(runner.specs().length, results.failedCount);
-    doneCallback(runner);
+    var summaryFunction = this.specFailures.length === 0 ? greenSummary : redSummary;
+    summaryFunction(this.specCount, this.specFailures.length);
+    doneCallback(!!this.specFailures.length);
   };
 };

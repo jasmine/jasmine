@@ -5,6 +5,9 @@
  * @namespace
  */
 var jasmine = {};
+if (typeof window == "undefined" && typeof exports == "object") {
+  exports.jasmine = jasmine
+}
 
 /**
  * @private
@@ -430,14 +433,4 @@ jasmine.createSpyObj = function(baseName, methodNames) {
     obj[methodNames[i]] = jasmine.createSpy(baseName + '.' + methodNames[i]);
   }
   return obj;
-};
-
-/**
- * All parameters are pretty-printed and concatenated together, then written to the current spec's output.
- *
- * Be careful not to leave calls to <code>jasmine.log</code> in production code.
- */
-jasmine.log = function() {
-  var spec = jasmine.getEnv().currentSpec;
-  spec.log.apply(spec, arguments);
 };

@@ -1,243 +1,97 @@
-/**
- * Internal representation of a Jasmine specification, or test.
- *
- * @constructor
- * @param {jasmine.Env} env
- * @param {jasmine.Suite} suite
- * @param {String} description
- */
-jasmine.Spec = function(env, suite, description) {
-  if (!env) {
-    throw new Error('jasmine.Env() required');
+jasmine.Spec = function(attrs) {
+  this.failedExpectations = [];
+  this.encounteredExpectations = false;
+  this.expectationFactory = attrs.expectationFactory;
+  this.resultCallback = attrs.resultCallback  || function() {};
+  this.id = attrs.id;
+  this.description = attrs.description;
+  this.fn = attrs.fn;
+  this.beforeFns = attrs.beforeFns || function() {};
+  this.afterFns = attrs.afterFns || function() {};
+  this.catchExceptions = attrs.catchExceptions;
+  this.startCallback = attrs.startCallback || function() {};
+  this.exceptionFormatter = attrs.exceptionFormatter || function() {};
+  this.fullNameFactory = attrs.fullNameFactory;
+  this.expectationResultFactory = attrs.expectationResultFactory || function() {};
+};
+
+jasmine.Spec.prototype.addExpectationResult = function(passed, data) {
+  this.encounteredExpectations = true;
+  if (!passed) {
+    this.failedExpectations.push(data);
   }
-  if (!suite) {
-    throw new Error('jasmine.Suite() required');
-  }
-  var spec = this;
-  spec.id = env.nextSpecId ? env.nextSpecId() : null;
-  spec.env = env;
-  spec.suite = suite;
-  spec.description = description;
-  spec.queue = new jasmine.Queue(env);
-
-  spec.afterCallbacks = [];
-  spec.spies_ = [];
-
-  spec.results_ = new jasmine.NestedResults();
-  spec.results_.description = description;
-  spec.matchersClass = null;
-};
-
-jasmine.Spec.prototype.getFullName = function() {
-  return this.suite.getFullName() + ' ' + this.description + '.';
-};
-
-
-jasmine.Spec.prototype.results = function() {
-  return this.results_;
-};
-
-/**
- * All parameters are pretty-printed and concatenated together, then written to the spec's output.
- *
- * Be careful not to leave calls to <code>jasmine.log</code> in production code.
- */
-jasmine.Spec.prototype.log = function() {
-  return this.results_.log(arguments);
-};
-
-jasmine.Spec.prototype.runs = function (func) {
-  var block = new jasmine.Block(this.env, func, this);
-  this.addToQueue(block);
-  return this;
-};
-
-jasmine.Spec.prototype.addToQueue = function (block) {
-  if (this.queue.isRunning()) {
-    this.queue.insertNext(block);
-  } else {
-    this.queue.add(block);
-  }
-};
-
-/**
- * @param {jasmine.ExpectationResult} result
- */
-jasmine.Spec.prototype.addMatcherResult = function(result) {
-  this.results_.addResult(result);
 };
 
 jasmine.Spec.prototype.expect = function(actual) {
-  var positive = new (this.getMatchersClass_())(this.env, actual, this);
-  positive.not = new (this.getMatchersClass_())(this.env, actual, this, true);
-  return positive;
+  return this.expectationFactory(actual, this);
 };
 
-/**
- * Waits a fixed time period before moving to the next block.
- *
- * @deprecated Use waitsFor() instead
- * @param {Number} timeout milliseconds to wait
- */
-jasmine.Spec.prototype.waits = function(timeout) {
-  var waitsFunc = new jasmine.WaitsBlock(this.env, timeout, this);
-  this.addToQueue(waitsFunc);
-  return this;
-};
-
-/**
- * Waits for the latchFunction to return true before proceeding to the next block.
- *
- * @param {Function} latchFunction
- * @param {String} optional_timeoutMessage
- * @param {Number} optional_timeout
- */
-jasmine.Spec.prototype.waitsFor = function(latchFunction, optional_timeoutMessage, optional_timeout) {
-  var latchFunction_ = null;
-  var optional_timeoutMessage_ = null;
-  var optional_timeout_ = null;
-
-  for (var i = 0; i < arguments.length; i++) {
-    var arg = arguments[i];
-    switch (typeof arg) {
-      case 'function':
-        latchFunction_ = arg;
-        break;
-      case 'string':
-        optional_timeoutMessage_ = arg;
-        break;
-      case 'number':
-        optional_timeout_ = arg;
-        break;
-    }
-  }
-
-  var waitsForFunc = new jasmine.WaitsForBlock(this.env, optional_timeout_, latchFunction_, optional_timeoutMessage_, this);
-  this.addToQueue(waitsForFunc);
-  return this;
-};
-
-jasmine.Spec.prototype.fail = function (e) {
-  var expectationResult = jasmine.buildExpectationResult({
-    passed: false,
-    message: e ? jasmine.util.formatException(e) : 'Exception',
-    trace: { stack: e.stack }
-  });
-  this.results_.addResult(expectationResult);
-};
-
-jasmine.Spec.prototype.getMatchersClass_ = function() {
-  return this.matchersClass || this.env.matchersClass;
-};
-
-jasmine.Spec.prototype.addMatchers = function(matchersPrototype) {
-  var parent = this.getMatchersClass_();
-  var newMatchersClass = function() {
-    parent.apply(this, arguments);
-  };
-  jasmine.util.inherit(newMatchersClass, parent);
-  jasmine.Matchers.wrapInto_(matchersPrototype, newMatchersClass);
-  this.matchersClass = newMatchersClass;
-};
-
-jasmine.Spec.prototype.finishCallback = function() {
-  this.env.reporter.reportSpecResults(this);
-};
-
-jasmine.Spec.prototype.finish = function(onComplete) {
-  this.removeAllSpies();
-  this.finishCallback();
-  if (onComplete) {
-    onComplete();
-  }
-};
-
-jasmine.Spec.prototype.after = function(doAfter) {
-  if (this.queue.isRunning()) {
-    this.queue.add(new jasmine.Block(this.env, doAfter, this), true);
-  } else {
-    this.afterCallbacks.unshift(doAfter);
-  }
-};
-
-jasmine.Spec.prototype.execute = function(onComplete) {
-  var spec = this;
-  if (!spec.env.specFilter(spec)) {
-    spec.results_.skipped = true;
-    spec.finish(onComplete);
+jasmine.Spec.prototype.execute = function() {
+  if (this.disabled) {
+    resultCallback.call(this);
     return;
   }
 
-  this.env.reporter.reportSpecStarting(this);
-
-  spec.env.currentSpec = spec;
-
-  spec.addBeforesAndAftersToQueue();
-
-  spec.queue.start(function () {
-    spec.finish(onComplete);
-  });
-};
-
-jasmine.Spec.prototype.addBeforesAndAftersToQueue = function() {
-  var runner = this.env.currentRunner();
-  var i;
-
-  for (var suite = this.suite; suite; suite = suite.parentSuite) {
-    for (i = 0; i < suite.before_.length; i++) {
-      this.queue.addBefore(new jasmine.Block(this.env, suite.before_[i], this));
+  var befores = this.beforeFns() || [],
+  afters = this.afterFns() || [];
+  this.startCallback(this);
+  try {
+    for (var i = 0; i < befores.length; i++) {
+      befores[i].call(this);
+    }
+    this.fn.call(this);
+    for (i = 0; i < afters.length; i++) {
+      afters[i].call(this);
+    }
+  } catch (e) {
+    //TODO: weird. buildExpectationResult is really a presenter for expectations
+    //so this should take an expectation object.
+    this.addExpectationResult(false, this.expectationResultFactory({
+      matcherName: "",
+      passed: false,
+      expected: "",
+      actual: "",
+      message: this.exceptionFormatter(e),
+      trace: e
+    }));
+    if (!this.catchExceptions) {
+      throw e;
     }
   }
-  for (i = 0; i < runner.before_.length; i++) {
-    this.queue.addBefore(new jasmine.Block(this.env, runner.before_[i], this));
+  finally {
+    resultCallback.call(this);
   }
-  for (i = 0; i < this.afterCallbacks.length; i++) {
-    this.queue.add(new jasmine.Block(this.env, this.afterCallbacks[i], this), true);
-  }
-  for (suite = this.suite; suite; suite = suite.parentSuite) {
-    for (i = 0; i < suite.after_.length; i++) {
-      this.queue.add(new jasmine.Block(this.env, suite.after_[i], this), true);
-    }
-  }
-  for (i = 0; i < runner.after_.length; i++) {
-    this.queue.add(new jasmine.Block(this.env, runner.after_[i], this), true);
+
+  function resultCallback() {
+    this.resultCallback({
+      id: this.id,
+      status: this.status(),
+      description: this.description,
+      failedExpectations: this.failedExpectations
+    });
   }
 };
 
-jasmine.Spec.prototype.explodes = function() {
-  throw 'explodes function should not have been called';
+jasmine.Spec.prototype.disable = function() {
+  this.disabled = true;
 };
 
-jasmine.Spec.prototype.spyOn = function(obj, methodName, ignoreMethodDoesntExist) {
-  if (obj == jasmine.undefined) {
-    throw "spyOn could not find an object to spy upon for " + methodName + "()";
+jasmine.Spec.prototype.status = function() {
+  if (this.disabled) {
+    return 'disabled';
   }
 
-  if (!ignoreMethodDoesntExist && obj[methodName] === jasmine.undefined) {
-    throw methodName + '() method does not exist';
+  if (!this.encounteredExpectations) {
+    return null;
   }
-
-  if (!ignoreMethodDoesntExist && obj[methodName] && obj[methodName].isSpy) {
-    throw new Error(methodName + ' has already been spied upon');
+  if (this.failedExpectations.length > 0) {
+    return 'failed';
+  } else {
+    return 'passed';
   }
-
-  var spyObj = jasmine.createSpy(methodName);
-
-  this.spies_.push(spyObj);
-  spyObj.baseObj = obj;
-  spyObj.methodName = methodName;
-  spyObj.originalValue = obj[methodName];
-
-  obj[methodName] = spyObj;
-
-  return spyObj;
 };
 
-jasmine.Spec.prototype.removeAllSpies = function() {
-  for (var i = 0; i < this.spies_.length; i++) {
-    var spy = this.spies_[i];
-    spy.baseObj[spy.methodName] = spy.originalValue;
-  }
-  this.spies_ = [];
-};
-
+//TODO: remove
+jasmine.Spec.prototype.getFullName = function() {
+  return this.fullNameFactory(this);
+}

@@ -1,7 +1,8 @@
-jasmine.HtmlReporter.SpecView = function(spec, dom, views) {
+jasmine.HtmlReporter.SpecView = function(spec, dom, views, jasmine) {
   this.spec = spec;
   this.dom = dom;
   this.views = views;
+  this.jasmine = jasmine || {};
 
   this.symbol = this.createDom('li', { className: 'pending' });
   this.dom.symbolSummary.appendChild(this.symbol);
@@ -9,7 +10,7 @@ jasmine.HtmlReporter.SpecView = function(spec, dom, views) {
   this.summary = this.createDom('div', { className: 'specSummary' },
     this.createDom('a', {
       className: 'description',
-      href: jasmine.HtmlReporter.sectionLink(this.spec.getFullName()),
+      href: this.jasmine.HtmlReporter.sectionLink(this.spec.getFullName(), this.jasmine.CATCH_EXCEPTIONS),
       title: this.spec.getFullName()
     }, this.spec.description)
   );
@@ -24,16 +25,15 @@ jasmine.HtmlReporter.SpecView = function(spec, dom, views) {
 };
 
 jasmine.HtmlReporter.SpecView.prototype.status = function() {
-  return this.getSpecStatus(this.spec);
+  return this.spec.status();
 };
 
 jasmine.HtmlReporter.SpecView.prototype.refresh = function() {
   this.symbol.className = this.status();
 
   switch (this.status()) {
-    case 'skipped':
+    case 'disabled':
       break;
-
     case 'passed':
       this.appendSummaryToSuiteDiv();
       break;
@@ -53,7 +53,7 @@ jasmine.HtmlReporter.SpecView.prototype.appendSummaryToSuiteDiv = function() {
 jasmine.HtmlReporter.SpecView.prototype.appendFailureDetail = function() {
   this.detail.className += ' ' + this.status();
 
-  var resultItems = this.spec.results().getItems();
+  var resultItems = this.spec.failedExpectations;
   var messagesDiv = this.createDom('div', { className: 'messages' });
 
   for (var i = 0; i < resultItems.length; i++) {

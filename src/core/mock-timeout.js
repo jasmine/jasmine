@@ -111,6 +111,7 @@ jasmine.Clock = {
 
   useMock: function() {
     if (!jasmine.Clock.isInstalled()) {
+      //TODO: this is using an interface that doesn't exist.
       var spec = jasmine.getEnv().currentSpec;
       spec.after(jasmine.Clock.uninstallMock);
 

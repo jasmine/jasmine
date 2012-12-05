@@ -21,7 +21,7 @@ class JasmineDev < Thor
     def count_specs_in(relative_path)
       files = Dir.glob(File.join(JasmineDev.project_root, relative_path, '*.js'))
       files.inject(0) do |count, file|
-        File.read(file).scan(/\sit\s*\(/) { |s| count += 1 }
+        File.read(file).scan(/^\s*it\(.*/) { |s| count += 1 }
         count
       end
     end

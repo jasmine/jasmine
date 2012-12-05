@@ -22,46 +22,26 @@ describe("ConsoleReporter", function() {
 
   var newline = "\n";
 
-  var passingSpec = {
+  var passingSpec = { status: 'passed' },
+  failingSpec = { status: 'failed' },
+  skippedSpec = { status: 'disabled' },
+  passingRun = {
+    specs: function() {
+      return [null, null, null];
+    },
     results: function() {
-      return {
-        passed: function() {
-          return true;
-        }
-      };
+      return {failedCount: 0, items_: [null, null, null]};
     }
   },
-    failingSpec = {
-      results: function() {
-        return {
-          passed: function() {
-            return false;
-          }
-        };
-      }
+  failingRun = {
+    specs: function() {
+      return [null, null, null];
     },
-    skippedSpec = {
-      results: function() {
-        return {skipped: true};
-      }
-    },
-    passingRun = {
-      specs: function() {
-        return [null, null, null];
-      },
-      results: function() {
-        return {failedCount: 0, items_: [null, null, null]};
-      }
-    },
-    failingRun = {
-      specs: function() {
-        return [null, null, null];
-      },
-      results: function() {
-        return {
-          failedCount: 7, items_: [null, null, null]};
-      }
-    };
+    results: function() {
+      return {
+        failedCount: 7, items_: [null, null, null]};
+    }
+  };
 
   function repeatedlyInvoke(f, times) {
     for (var i = 0; i < times; i++) f(times + 1);
@@ -118,18 +98,7 @@ describe("ConsoleReporter", function() {
       simulateRun(reporter,
         repeat(passingSpec, 3),
         [],
-      {
-        specs: function() {
-          return [null, null, null];
-        },
-        results:function() {
-          return {
-            items_: [null, null, null],
-            totalCount: 7,
-            failedCount: 0
-          };
-        }
-      },
+      { },
         1000,
         1777
         );
@@ -144,30 +113,33 @@ describe("ConsoleReporter", function() {
       simulateRun(reporter,
         repeat(passingSpec, 57),
         [],
-      {
-        specs: function() {
-          return [null, null, null];
-        },
-        results:function() {
-          return {
-            items_: [null, null, null],
-            totalCount: 7,
-            failedCount: 0
-          };
-        }
-      },
+      {},
         1000,
         1777);
 
       var output = out.getOutput();
       expect(output).toMatch(/^Started/);
       expect(output).toMatch(/\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\./);
-      expect(output).toMatch(/3 specs, 0 failures/);
+      expect(output).toMatch(/57 specs, 0 failures/);
     });
 
     it("prints the proper output under a failure scenario.", function() {
+      var base1 =  jasmine.util.extend({}, failingSpec),
+      failingSpec1 = jasmine.util.extend(base1, {
+        fullName: 'The oven heats up',
+        failedExpectations: [
+          {trace:{stack:"stack trace one\n  second line"}},
+          {trace:{stack:"stack trace two"}}
+        ]}),
+        base2 = jasmine.util.extend({}, failingSpec),
+        failingSpec2 = jasmine.util.extend(base2, {
+          fullName: "The washing machine washes clothes",
+          failedExpectations: [
+            {trace:{stack:"stack trace one"}}
+          ]});
+
       simulateRun(reporter,
-        [failingSpec, passingSpec, failingSpec],
+        [failingSpec1, passingSpec, failingSpec2],
         [
           {description:"The oven",
             results:function() {
@@ -252,103 +224,8 @@ describe("ConsoleReporter", function() {
       });
     });
 
-    describe('when a suite reports', function() {
-      var emptyResults;
-      beforeEach(function() {
-        emptyResults = function() {
-          return {
-            items_:[]
-          };
-        };
-      });
-
-      it("remembers suite results", function() {
-        reporter.reportSuiteResults({description: "Oven", results: emptyResults});
-        reporter.reportSuiteResults({description: "Mixer", results: emptyResults});
-
-        expect(reporter.suiteResults[0].description).toEqual('Oven');
-        expect(reporter.suiteResults[1].description).toEqual('Mixer');
-      });
-
-      it("creates a description out of the current suite and any parent suites", function() {
-        var grandparentSuite = {
-          description: "My house",
-          results: emptyResults
-        };
-        var parentSuite = {
-          description: "kitchen",
-          parentSuite: grandparentSuite,
-          results: emptyResults
-        };
-        reporter.reportSuiteResults({ description: "oven", parentSuite: parentSuite, results: emptyResults });
-
-        expect(reporter.suiteResults[0].description).toEqual("My house kitchen oven");
-      });
-
-      it("gathers failing spec results from the suite - the spec must have a description.", function() {
-        reporter.reportSuiteResults({description:"Oven",
-          results: function() {
-            return {
-              items_:[
-                { failedCount: 0, description: "specOne" },
-                { failedCount: 99, description: "specTwo" },
-                { failedCount: 0, description: "specThree" },
-                { failedCount: 88, description: "specFour" },
-                { failedCount: 3 }
-              ]
-            };
-          }});
-
-        expect(reporter.suiteResults[0].failedSpecResults).
-          toEqual([
-          { failedCount: 99, description: "specTwo" },
-          { failedCount: 88, description: "specFour" }
-        ]);
-      });
-
-    });
 
     describe('and finishes', function() {
-
-      describe('when reporting spec failure information', function() {
-
-        it("prints suite and spec descriptions together as a sentence", function() {
-          reporter.suiteResults = [
-            {description:"The oven", failedSpecResults:[
-              {description:"heats up", items_:[]},
-              {description:"cleans itself", items_:[]}
-            ]},
-            {description:"The mixer", failedSpecResults:[
-              {description:"blends things together", items_:[]}
-            ]}
-          ];
-
-          reporter.reportRunnerResults(failingRun);
-
-          expect(out.getOutput()).toContain("The oven heats up");
-          expect(out.getOutput()).toContain("The oven cleans itself");
-          expect(out.getOutput()).toContain("The mixer blends things together");
-        });
-
-        it("prints stack trace of spec failure", function() {
-          reporter.suiteResults = [
-            {description:"The oven", failedSpecResults:[
-              {description:"heats up",
-                items_:[
-                  {trace:{stack:"stack trace one"}},
-                  {trace:{stack:"stack trace two"}}
-                ]}
-            ]}
-          ];
-
-          reporter.reportRunnerResults(failingRun);
-
-          expect(out.getOutput()).toContain("The oven heats up");
-          expect(out.getOutput()).toContain("stack trace one");
-          expect(out.getOutput()).toContain("stack trace two");
-        });
-
-      });
 
       describe('when reporting the execution time', function() {
 
@@ -388,47 +265,6 @@ describe("ConsoleReporter", function() {
 
           run(1000, 1001);
           expect(out.getOutput()).toContain("0.001 seconds");
-        });
-      });
-
-      describe("when reporting the results summary", function() {
-        it("prints statistics in green if there were no failures", function() {
-          reporter.reportRunnerResults({
-            specs: function() {
-              return [null, null, null];
-            },
-            results:function() {
-              return {items_: [null, null, null], totalCount: 7, failedCount: 0};
-            }
-          });
-          expect(out.getOutput()).
-            toContain("3 specs, 0 failures");
-        });
-
-        it("prints statistics in red if there was a failure", function() {
-          reporter.reportRunnerResults({
-            specs: function() {
-              return [null, null, null];
-            },
-            results:function() {
-              return {items_: [null, null, null], totalCount: 7, failedCount: 3};
-            }
-          });
-          expect(out.getOutput()).
-            toContain("3 specs, 3 failures");
-        });
-
-        it("handles pluralization with 1's ones appropriately", function() {
-          reporter.reportRunnerResults({
-            specs: function() {
-              return [null];
-            },
-            results:function() {
-              return {items_: [null], totalCount: 1, failedCount: 1};
-            }
-          });
-          expect(out.getOutput()).
-            toContain("1 spec, 1 failure");
         });
       });
 

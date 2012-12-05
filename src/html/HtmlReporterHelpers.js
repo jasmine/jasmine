@@ -46,7 +46,7 @@ jasmine.HtmlReporterHelpers.appendToSummary = function(child, childElement) {
 
   if (parent) {
     if (typeof this.views.suites[parent.id] == 'undefined') {
-      this.views.suites[parent.id] = new jasmine.HtmlReporter.SuiteView(parent, this.dom, this.views);
+      this.views.suites[parent.id] = new this.jasmine.HtmlReporter.SuiteView(parent, this.dom, this.views, this.jasmine);
     }
     parentDiv = this.views.suites[parent.id].element;
   }
@@ -56,6 +56,7 @@ jasmine.HtmlReporterHelpers.appendToSummary = function(child, childElement) {
 
 
 jasmine.HtmlReporterHelpers.addHelpers = function(ctor) {
+  //TODO: not really a helper, thus, no this.jasmine
   for(var fn in jasmine.HtmlReporterHelpers) {
     ctor.prototype[fn] = jasmine.HtmlReporterHelpers[fn];
   }

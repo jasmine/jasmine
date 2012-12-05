@@ -6,7 +6,6 @@ class JasmineDev < Thor
       "ExpectationResult.js",
       "Env.js",
       "Reporter.js",
-      "Block.js",
       "JsApiReporter.js",
       "Matchers.js",
       "mock-timeout.js",
@@ -17,8 +16,6 @@ class JasmineDev < Thor
       "Runner.js",
       "Spec.js",
       "Suite.js",
-      "WaitsBlock.js",
-      "WaitsForBlock.js"
     ],
 
     :html => [

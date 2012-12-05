@@ -90,7 +90,7 @@ describe('RunnerTest', function() {
 
       env.describe('suite',function() {
         env.it('fails', function() {
-          this.fail();
+          this.expect(true).toBe(false);
         });
       }).execute();
 
@@ -107,31 +107,20 @@ describe('RunnerTest', function() {
 
   describe('reporting', function() {
     var fakeReporter;
+    beforeEach(function() {
       fakeReporter = originalJasmine.createSpyObj("fakeReporter", ["log", "reportRunnerStarting", "reportRunnerResults"]);
       env.addReporter(fakeReporter);
     });
 
     it('should report runner results when the runner has completed running', function() {
-      env.describe('one suite description', function() {
-        env.it('should be a test', function() {
-          this.runs(function() {
-            this.expect(true).toEqual(true);
-          });
-        });
+      var specSpy = originalJasmine.createSpy('spec').andCallFake(function() {
+        expect(fakeReporter.reportRunnerResults).not.toHaveBeenCalled();
       });
-
-      env.describe('another suite description', function() {
-        env.it('should be another test', function() {
-          this.waits(200);
-          this.runs(function() {
-            this.expect(true).toEqual(false);
-          });
-        });
+      env.describe('description', function() {
+        env.it('should be a test', specSpy);
       });
-
       env.currentRunner().execute();
-      expect(fakeReporter.reportRunnerResults).not.toHaveBeenCalled();
-      fakeTimer.tick(200);
+      expect(specSpy).toHaveBeenCalled();
       expect(fakeReporter.reportRunnerResults).toHaveBeenCalledWith(env.currentRunner());
     });
   });

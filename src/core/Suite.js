@@ -7,13 +7,16 @@
  * @param {Function} specDefinitions
  * @param {jasmine.Suite} parentSuite
  */
-jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
+jasmine.Suite = function(env, description, specDefinitions, parentSuite, queueFactory, isSuite) {
   var self = this;
+  //TODO: remove once we unit test Suite
+  var queueFactory = queueFactory || function() {};
   self.id = env.nextSuiteId ? env.nextSuiteId() : null;
   self.description = description;
-  self.queue = new jasmine.Queue(env);
+  self.queue = queueFactory();
   self.parentSuite = parentSuite;
   self.env = env;
+  self.isSuite = isSuite || function() {};
   self.before_ = [];
   self.after_ = [];
   self.children_ = [];
@@ -47,15 +50,24 @@ jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
   this.after_.unshift(afterEachFunction);
 };
 
+//TODO: interface should be addSpec or addSuite methods.
 jasmine.Suite.prototype.add = function(suiteOrSpec) {
   this.children_.push(suiteOrSpec);
-  if (suiteOrSpec instanceof jasmine.Suite) {
+  if (this.isSuite(suiteOrSpec)) {
     this.suites_.push(suiteOrSpec);
     this.env.currentRunner().addSuite(suiteOrSpec);
   } else {
     this.specs_.push(suiteOrSpec);
   }
   this.queue.add(suiteOrSpec);
+};
+
+jasmine.Suite.prototype.specComplete = function(specResult) {
+  specResult.fullName = this.getFullName() + ' ' + specResult.description + '.';
+  specResult.suite = this;
+  this.env.removeAllSpies();
+  this.env.reporter.reportSpecResults(specResult);
+  this.queue.incrementQueue();
 };
 
 jasmine.Suite.prototype.specs = function() {

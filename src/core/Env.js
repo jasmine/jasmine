@@ -4,15 +4,18 @@
  * @constructor
  */
 (function() {
-
-  function createSpec(env, suite, description) {
-    return new jasmine.Spec(env, suite, description);
-  }
-
   jasmine.Env = function() {
+    var self = this;
+    var suiteConstructor = jasmine.Suite;
+    var isSuite = function(thing) {
+      return thing instanceof suiteConstructor;
+    }
+    this.jasmine = jasmine;
+    this.currentRunner_ = new jasmine.Runner(this, isSuite);
+    this.spies_ = [];
     this.currentSpec = null;
-    this.currentSuite = null;
-    this.currentRunner_ = new jasmine.Runner(this);
+    this.catchExceptions = jasmine.CATCH_EXCEPTIONS;
+    this.undefined = jasmine.undefined;
 
     this.reporter = new jasmine.MultiReporter();
 
@@ -34,6 +37,90 @@
     jasmine.util.inherit(this.matchersClass, jasmine.Matchers);
 
     jasmine.Matchers.wrapInto_(jasmine.Matchers.prototype, this.matchersClass);
+
+    var expectationFactory = function(actual, spec) {
+      var expect = new (self.matchersClass)(self, actual, spec);
+      expect.not = new (self.matchersClass)(self, actual, spec, true);
+      return expect;
+    };
+
+    var startCallback = function(spec) {
+      self.currentSpec = spec;
+      self.reporter.reportSpecStarting(spec);
+    };
+
+    var beforeFns = function(currentSuite) {
+      return function() {
+        var befores = [];
+        for (var suite = currentSuite; suite; suite = suite.parentSuite) {
+          befores = befores.concat(suite.before_)
+        }
+        return befores.concat(self.currentRunner_.before_).reverse();
+      }
+    };
+
+    var afterFns = function(currentSuite) {
+      return function() {
+        var afters = [];
+        for (var suite = currentSuite; suite; suite = suite.parentSuite) {
+          afters = afters.concat(suite.after_)
+        }
+        return afters.concat(self.currentRunner_.after_)
+      }
+    };
+
+    var exceptionFormatter = jasmine.util.formatException;
+
+    var specConstructor = jasmine.Spec;
+
+    // TODO: this deserves a better name (not a Factory the way others are)
+    var fullNameFactory = function(spec, currentSuite) {
+      var descriptions = [];
+      for (var suite = currentSuite; suite; suite = suite.parentSuite) {
+        descriptions.push(suite.description)
+      }
+      descriptions.push(spec.description);
+      return descriptions.join(' ') + '.';
+    };
+
+    var buildExpectationResult = jasmine.buildExpectationResult;
+    var expectationResultFactory = function(attrs) {
+      return buildExpectationResult(attrs);
+    };
+
+    this.specFactory = function(description, fn, suite) {
+      var spec = new specConstructor({
+        id: self.nextSpecId(),
+        beforeFns: beforeFns(suite),
+        afterFns: afterFns(suite),
+        expectationFactory: expectationFactory,
+        exceptionFormatter: exceptionFormatter,
+        //TODO: move spec creation to more appropriate level and remove this shim
+        resultCallback: function(result) { self.currentSpec = null; suite.specComplete(result); },
+        fullNameFactory: function(spec) { return fullNameFactory(spec, suite) },
+        startCallback: startCallback,
+        description: description,
+        catchExceptions: self.catchExceptions,
+        expectationResultFactory: expectationResultFactory,
+        fn: fn
+      });
+
+      if (!self.specFilter(spec)) {
+        spec.disable();
+      }
+
+      return spec;
+    };
+
+
+    var queueConstructor = jasmine.Queue;
+    var queueFactory = function() {
+      return new queueConstructor(self);
+    };
+    this.suiteFactory = function(description, specDefinitions) {
+      return new suiteConstructor(self, description, specDefinitions, self.currentSuite, queueFactory, isSuite);
+    };
+
   };
 
 
@@ -42,22 +129,69 @@
   jasmine.Env.prototype.setInterval = jasmine.setInterval;
   jasmine.Env.prototype.clearInterval = jasmine.clearInterval;
 
+  //TODO: shim Spec addMatchers behavior into Env. Should be rewritten to remove globals, etc.
+  jasmine.Env.prototype.addMatchers = function(matchersPrototype) {
+    var parent = this.matchersClass;
+    var newMatchersClass = function() {
+      parent.apply(this, arguments);
+    };
+    jasmine.util.inherit(newMatchersClass, parent);
+    jasmine.Matchers.wrapInto_(matchersPrototype, newMatchersClass);
+    this.matchersClass = newMatchersClass;
+  };
   /**
    * @returns an object containing jasmine version build info, if set.
    */
   jasmine.Env.prototype.version = function () {
-    if (jasmine.version_) {
-      return jasmine.version_;
+    if (this.jasmine.version_) {
+      return this.jasmine.version_;
     } else {
       throw new Error('Version not set');
     }
   };
 
+  jasmine.Env.prototype.expect = function(actual) {
+   return this.currentSpec.expect(actual);
+  };
+
+  jasmine.Env.prototype.spyOn = function(obj, methodName) {
+    if (obj == this.undefined) {
+      throw "spyOn could not find an object to spy upon for " + methodName + "()";
+    }
+
+    if (obj[methodName] === this.undefined) {
+      throw methodName + '() method does not exist';
+    }
+
+    if (obj[methodName] && obj[methodName].isSpy) {
+      //TODO?: should this return the current spy? Downside: may cause user confusion about spy state
+      throw new Error(methodName + ' has already been spied upon');
+    }
+
+    var spyObj = jasmine.createSpy(methodName);
+
+    this.spies_.push(spyObj);
+    spyObj.baseObj = obj;
+    spyObj.methodName = methodName;
+    spyObj.originalValue = obj[methodName];
+
+    obj[methodName] = spyObj;
+
+    return spyObj;
+  };
+
+  jasmine.Env.prototype.removeAllSpies = function() {
+    for (var i = 0; i < this.spies_.length; i++) {
+      var spy = this.spies_[i];
+      spy.baseObj[spy.methodName] = spy.originalValue;
+    }
+    this.spies_ = [];
+  };
   /**
    * @returns string containing jasmine version build info, if set.
    */
   jasmine.Env.prototype.versionString = function() {
-    if (!jasmine.version_) {
+    if (!this.jasmine.version_) {
       return "version unknown";
     }
 
@@ -97,13 +231,13 @@
   };
 
   jasmine.Env.prototype.describe = function(description, specDefinitions) {
-    var suite = new jasmine.Suite(this, description, specDefinitions, this.currentSuite);
+    var suite = this.suiteFactory(description, specDefinitions);
 
     var parentSuite = this.currentSuite;
     if (parentSuite) {
       parentSuite.add(suite);
     } else {
-      this.currentRunner_.add(suite);
+      this.currentRunner_.addSuite(suite);
     }
 
     this.currentSuite = suite;
@@ -154,15 +288,9 @@
     };
   };
 
-  jasmine.Env.prototype.it = function(description, func) {
-    var spec = createSpec(this, this.currentSuite, description);
+  jasmine.Env.prototype.it = function(description, fn) {
+    var spec = this.specFactory(description, fn, this.currentSuite);
     this.currentSuite.add(spec);
-    this.currentSpec = spec;
-
-    if (func) {
-      spec.runs(func);
-    }
-
     return spec;
   };
 
@@ -202,7 +330,7 @@
     b.__Jasmine_been_here_before__ = a;
 
     var hasKey = function(obj, keyName) {
-      return obj !== null && obj[keyName] !== jasmine.undefined;
+      return obj !== null && obj[keyName] !== this.undefined;
     };
 
     for (var property in b) {
@@ -238,13 +366,13 @@
     for (var i = 0; i < this.equalityTesters_.length; i++) {
       var equalityTester = this.equalityTesters_[i];
       var result = equalityTester(a, b, this, mismatchKeys, mismatchValues);
-      if (result !== jasmine.undefined) return result;
+      if (result !== this.undefined) return result;
     }
 
     if (a === b) return true;
 
-    if (a === jasmine.undefined || a === null || b === jasmine.undefined || b === null) {
-      return (a == jasmine.undefined && b == jasmine.undefined);
+    if (a === this.undefined || a === null || b === this.undefined || b === null) {
+      return (a == this.undefined && b == this.undefined);
     }
 
     if (jasmine.isDomNode(a) && jasmine.isDomNode(b)) {

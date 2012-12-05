@@ -5,6 +5,7 @@
  * @param {jasmine.Spec} spec
  */
 jasmine.Matchers = function(env, actual, spec, opt_isNot) {
+  //TODO: true dependency: equals, contains
   this.env = env;
   this.actual = actual;
   this.spec = spec;
@@ -15,6 +16,7 @@ jasmine.Matchers = function(env, actual, spec, opt_isNot) {
 jasmine.Matchers.pp = function(str) {
   throw new Error("jasmine.Matchers.pp() is no longer supported, please use jasmine.pp() instead!");
 };
+
 
 jasmine.Matchers.wrapInto_ = function(prototype, matchersClass) {
   for (var methodName in prototype) {
@@ -58,7 +60,7 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
       actual: this.actual,
       message: message
     });
-    this.spec.addMatcherResult(expectationResult);
+    this.spec.addExpectationResult(result, expectationResult);
     return jasmine.undefined;
   };
 };

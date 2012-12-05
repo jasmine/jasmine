@@ -9,9 +9,9 @@ describe("jasmine.Matchers", function() {
       spec = env.it("spec", function() {
       });
     });
-    spyOn(spec, 'addMatcherResult');
+    spyOn(spec, 'addExpectationResult');
 
-    this.addMatchers({
+    addMatchers({
       toPass: function() {
         return lastResult().passed;
       },
@@ -26,7 +26,7 @@ describe("jasmine.Matchers", function() {
   }
 
   function lastResult() {
-    return spec.addMatcherResult.mostRecentCall.args[0];
+    return spec.addExpectationResult.mostRecentCall.args[1];
   }
 
   function catchException(fn) {
@@ -293,28 +293,28 @@ describe("jasmine.Matchers", function() {
     expect(result.actual).toEqual(actual);
   });
 
-	it("toBeNaN", function() {
-		expect(match(Number.NaN).toBeNaN()).toPass();
-		expect(match(0).toBeNaN()).toFail();
-		expect(match(1).toBeNaN()).toFail();
-		expect(match(null).toBeNaN()).toFail();
-		expect(match(Number.POSITIVE_INFINITY).toBeNaN()).toFail();
-		expect(match(Number.NEGATIVE_INFINITY).toBeNaN()).toFail();
-		expect(match('NaN').toBeNaN()).toFail();
-	});
+  it("toBeNaN", function() {
+    expect(match(Number.NaN).toBeNaN()).toPass();
+    expect(match(0).toBeNaN()).toFail();
+    expect(match(1).toBeNaN()).toFail();
+    expect(match(null).toBeNaN()).toFail();
+    expect(match(Number.POSITIVE_INFINITY).toBeNaN()).toFail();
+    expect(match(Number.NEGATIVE_INFINITY).toBeNaN()).toFail();
+    expect(match('NaN').toBeNaN()).toFail();
+  });
 
-	it("toBeNaN to build an ExpectationResult", function() {
-		var actual = 'a';
-		var matcher = match(actual);
-		matcher.toBeNaN();
+  it("toBeNaN to build an ExpectationResult", function() {
+    var actual = 'a';
+    var matcher = match(actual);
+    matcher.toBeNaN();
 
-		var result = lastResult();
+    var result = lastResult();
 
-		expect(result.matcherName).toEqual("toBeNaN");
-		expect(result.passed).toBe(false);
-		expect(result.message).toMatch("Expected 'a' to be NaN.");
-		expect(result.actual).toMatch(actual);
-	});
+    expect(result.matcherName).toEqual("toBeNaN");
+    expect(result.passed).toBe(false);
+    expect(result.message).toMatch("Expected 'a' to be NaN.");
+    expect(result.actual).toMatch(actual);
+  });
 
   it("toBeFalsy", function() {
     expect(match(false).toBeFalsy()).toPass();
@@ -378,11 +378,11 @@ describe("jasmine.Matchers", function() {
     expect(match({someObj:'foo'}).toEqual(jasmine.any(Function))).toFail();
     expect(match(
       function() {
-      }).toEqual(jasmine.any(Object))).toFail();
+    }).toEqual(jasmine.any(Object))).toFail();
     expect(match(["foo", "goo"]).toEqual(["foo", jasmine.any(String)])).toPass();
     expect(match(
       function() {
-      }).toEqual(jasmine.any(Function))).toPass();
+    }).toEqual(jasmine.any(Function))).toPass();
     expect(match(["a", function() {
     }]).toEqual(["a", jasmine.any(Function)])).toPass();
   });
@@ -608,13 +608,13 @@ describe("jasmine.Matchers", function() {
 
         it("should match exceptions specified by message", function() {
           expect(match(throwingFn).not.toThrow("Fake Error")).toFail();
-//          expect(lastResult().message).toMatch(/Expected function not to throw Fake Error./);
+          //          expect(lastResult().message).toMatch(/Expected function not to throw Fake Error./);
           expect(match(throwingFn).not.toThrow("Other Error")).toPass();
         });
 
         it("should match exceptions specified by Error", function() {
           expect(match(throwingFn).not.toThrow(new Error("Fake Error"))).toFail();
-//          expect(lastResult().message).toMatch("Other Error");
+          //          expect(lastResult().message).toMatch("Other Error");
           expect(match(throwingFn).not.toThrow(new Error("Other Error"))).toPass();
         });
       });
@@ -645,7 +645,7 @@ describe("jasmine.Matchers", function() {
       it("should fail (or pass when inverted with .not)", function() {
         expect(match(
           function() {
-          }).toThrow()).toFail();
+        }).toThrow()).toFail();
         expect(lastResult().message).toEqual('Expected function to throw an exception.');
       });
     });
@@ -668,7 +668,7 @@ describe("jasmine.Matchers", function() {
     });
 
     it("should use the second message when the matcher sets an array of custom messages", function() {
-      spec.addMatchers({
+      env.addMatchers({
         custom: function() {
           this.message = function() {
             return ['Expected it was called.', 'Expected it wasn\'t called.'];
@@ -702,23 +702,23 @@ describe("jasmine.Matchers", function() {
       return function() {
         expect(
           function() {
-            match(TestClass.normalFunction)[methodName]();
-          }).toThrow('Expected a spy, but got Function.');
+          match(TestClass.normalFunction)[methodName]();
+        }).toThrow('Expected a spy, but got Function.');
 
         expect(
           function() {
-            match(jasmine.undefined)[methodName]();
-          }).toThrow('Expected a spy, but got undefined.');
+          match(jasmine.undefined)[methodName]();
+        }).toThrow('Expected a spy, but got undefined.');
 
         expect(
           function() {
-            match({some:'object'})[methodName]();
-          }).toThrow('Expected a spy, but got { some : \'object\' }.');
+          match({some:'object'})[methodName]();
+        }).toThrow('Expected a spy, but got { some : \'object\' }.');
 
         expect(
           function() {
-            match("<b>")[methodName]();
-          }).toThrow('Expected a spy, but got \'<b>\'.');
+          match("<b>")[methodName]();
+        }).toThrow('Expected a spy, but got \'<b>\'.');
       };
     }
 
@@ -733,8 +733,8 @@ describe("jasmine.Matchers", function() {
       it("should throw an exception when invoked with any arguments", function() {
         expect(
           function() {
-            match(TestClass.normalFunction).toHaveBeenCalled("unwanted argument");
-          }).toThrow('toHaveBeenCalled does not take arguments, use toHaveBeenCalledWith');
+          match(TestClass.normalFunction).toHaveBeenCalled("unwanted argument");
+        }).toThrow('toHaveBeenCalled does not take arguments, use toHaveBeenCalledWith');
       });
 
       it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('toHaveBeenCalled'));
@@ -762,8 +762,8 @@ describe("jasmine.Matchers", function() {
       it("should throw an exception when invoked with any arguments", function() {
         expect(
           function() {
-            match(TestClass.normalFunction).wasNotCalled("unwanted argument");
-          }).toThrow('wasNotCalled does not take arguments');
+          match(TestClass.normalFunction).wasNotCalled("unwanted argument");
+        }).toThrow('wasNotCalled does not take arguments');
       });
 
       it('should throw an exception when invoked on a non-spy', shouldThrowAnExceptionWhenInvokedOnANonSpy('wasNotCalled'));
@@ -839,7 +839,7 @@ describe("jasmine.Matchers", function() {
           }, spec);
           TestClass = { someFunction: function(a, b) {
           } };
-          spec.spyOn(TestClass, 'someFunction');
+          env.spyOn(TestClass, 'someFunction');
         });
 
         it("should should handle the case of a spy", function() {
@@ -910,7 +910,7 @@ describe("jasmine.Matchers", function() {
         containing = new jasmine.Matchers.ObjectContaining({});
       });
       it("matches everything", function () {
-         expect(containing.jasmineMatches("foo", [], [])).toBe(true);
+        expect(containing.jasmineMatches("foo", [], [])).toBe(true);
       });
 
       it("says it didn't expect to contain anything", function () {

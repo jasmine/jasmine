@@ -1,5 +1,6 @@
-jasmine.HtmlReporter = function(_doc) {
+jasmine.HtmlReporter = function(_doc, jasmine) {
   var self = this;
+  this.jasmine = jasmine || window.jasmine;
   var doc = _doc || window.document;
 
   var reporterView;
@@ -7,7 +8,6 @@ jasmine.HtmlReporter = function(_doc) {
   var dom = {};
 
   // Jasmine Reporter Public Interface
-  self.logRunningSpecs = false;
 
   self.reportRunnerStarting = function(runner) {
     var specs = runner.specs() || [];
@@ -20,7 +20,7 @@ jasmine.HtmlReporter = function(_doc) {
     doc.body.appendChild(dom.reporter);
     setExceptionHandling();
 
-    reporterView = new jasmine.HtmlReporter.ReporterView(dom);
+    reporterView = new self.jasmine.HtmlReporter.ReporterView(dom, self.jasmine);
     reporterView.addSpecs(specs, self.specFilter);
   };
 
@@ -33,17 +33,14 @@ jasmine.HtmlReporter = function(_doc) {
   };
 
   self.reportSpecStarting = function(spec) {
-    if (self.logRunningSpecs) {
-      self.log('>> Jasmine Running ' + spec.suite.description + ' ' + spec.description + '...');
-    }
   };
 
-  self.reportSpecResults = function(spec) {
-    reporterView.specComplete(spec);
+  self.reportSpecResults = function(result) {
+    reporterView.specComplete(result);
   };
 
   self.log = function() {
-    var console = jasmine.getGlobal().console;
+    var console = self.jasmine.getGlobal().console;
     if (console && console.log) {
       if (console.log.apply) {
         console.log.apply(console, arguments);
@@ -72,7 +69,7 @@ jasmine.HtmlReporter = function(_doc) {
       }
 
       var paramMap = [];
-      var params = jasmine.HtmlReporter.parameters(doc);
+      var params = self.jasmine.HtmlReporter.parameters(doc);
 
       for (var i = 0; i < params.length; i++) {
         var p = params[i].split('=');
@@ -118,7 +115,7 @@ jasmine.HtmlReporter = function(_doc) {
       }
       i++;
     }
-    if (jasmine.CATCH_EXCEPTIONS) {
+    if (self.jasmine.CATCH_EXCEPTIONS) {
       params.push("catch=false");
     }
 
@@ -130,7 +127,7 @@ jasmine.HtmlReporter = function(_doc) {
 
     if (noTryCatch()) {
       chxCatch.setAttribute('checked', true);
-      jasmine.CATCH_EXCEPTIONS = false;
+      self.jasmine.CATCH_EXCEPTIONS = false;
     }
     chxCatch.onclick = function() {
       window.location.search = searchWithCatch();
@@ -146,14 +143,14 @@ jasmine.HtmlReporter.parameters = function(doc) {
   }
   return params;
 }
-jasmine.HtmlReporter.sectionLink = function(sectionName) {
+jasmine.HtmlReporter.sectionLink = function(sectionName, catchExceptions) {
   var link = '?';
   var params = [];
 
   if (sectionName) {
     params.push('spec=' + encodeURIComponent(sectionName));
   }
-  if (!jasmine.CATCH_EXCEPTIONS) {
+  if (!catchExceptions) {
     params.push("catch=false");
   }
   if (params.length > 0) {
