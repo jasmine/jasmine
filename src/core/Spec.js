@@ -26,6 +26,7 @@ jasmine.Spec = function(env, suite, description) {
   spec.results_ = new jasmine.NestedResults();
   spec.results_.description = description;
   spec.matchersClass = null;
+  spec.exclusive_ = suite.exclusive_;
 };
 
 jasmine.Spec.prototype.getFullName = function() {
