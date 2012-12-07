@@ -8,9 +8,10 @@ describe("HtmlReporter", function() {
     env = new jasmine.Env();
     env.updateInterval = 0;
 
+
     body = document.createElement("body");
     fakeDocument = { body: body, location: { search: "" } };
-    htmlReporter = new jasmine.HtmlReporter(fakeDocument);
+    htmlReporter = new jasmine.HtmlReporter(fakeDocument, null, function(fn) { fn() });
   });
 
   function fakeSpec(name) {

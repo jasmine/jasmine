@@ -1,4 +1,4 @@
-jasmine.HtmlReporter = function(_doc, jasmine) {
+jasmine.HtmlReporter = function(_doc, jasmine, yieldForRender) {
   var self = this;
   this.jasmine = jasmine || window.jasmine;
   var doc = _doc || window.document;
@@ -35,8 +35,20 @@ jasmine.HtmlReporter = function(_doc, jasmine) {
   self.reportSpecStarting = function(spec) {
   };
 
+  var lastYieldForRender = 0;
+  var refreshInterval = 250;
+  yieldForRender = yieldForRender || function(fn) {
+    var now = Date.now();
+    var delta = (now - lastYieldForRender);
+    if (delta > refreshInterval) {
+      lastYieldForRender = now;
+      setTimeout(fn, 0);
+    } else {
+      fn();
+    }
+  }
   self.reportSpecResults = function(result) {
-    reporterView.specComplete(result);
+    yieldForRender(function() {reporterView.specComplete(result) });
   };
 
   self.log = function() {
