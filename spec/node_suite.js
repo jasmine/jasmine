@@ -159,6 +159,7 @@ process.argv.forEach(function(arg) {
   }
 });
 
+// var specs = jasmine.getAllSpecFiles(__dirname + '/smoke', new RegExp("test.js$"));
 var specs = jasmine.getAllSpecFiles(__dirname, new RegExp("Spec.js$"));
 var domIndependentSpecs = [];
 for (var i = 0; i < specs.length; i++) {

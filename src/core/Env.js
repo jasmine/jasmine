@@ -9,6 +9,8 @@
     var self = this;
     var global = options.global || jasmine.getGlobal();
 
+    var encourageGC = options.encourageGarbageCollection || encourageGarbageCollection;
+
     this.clock = new jasmine.Clock(global, new jasmine.DelayedFunctionScheduler());
 
     var suiteConstructor = jasmine.Suite;
@@ -24,8 +26,6 @@
 
     this.reporter = new jasmine.MultiReporter();
 
-    this.updateInterval = jasmine.DEFAULT_UPDATE_INTERVAL;
-    this.defaultTimeoutInterval = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     this.lastUpdate = 0;
     this.specFilter = function() {
       return true;
@@ -112,8 +112,11 @@
       function specResultCallback(result) {
         self.clock.uninstall();
         self.currentSpec = null;
-        suite.specComplete(result);
+        encourageGC(function() {
+          suite.specComplete(result);
+        });
       }
+
     };
 
     var queueConstructor = jasmine.Queue;
@@ -124,6 +127,18 @@
       return new suiteConstructor(self, description, specDefinitions, self.currentSuite, queueFactory, isSuite);
     };
 
+    var maximumSpecCallbackDepth = 100;
+    var currentSpecCallbackDepth = 0;
+    function encourageGarbageCollection(fn) {
+      currentSpecCallbackDepth++;
+      if (currentSpecCallbackDepth > maximumSpecCallbackDepth) {
+        currentSpecCallbackDepth = 0;
+        global.setTimeout(fn, 0);
+      } else {
+        fn();
+      }
+
+    }
   };
 
   //TODO: shim Spec addMatchers behavior into Env. Should be rewritten to remove globals, etc.
