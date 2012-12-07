@@ -158,7 +158,7 @@ describe("jasmine.Env", function() {
   });
 });
 
-describe("jasmine Env", function() {
+describe("jasmine Env (integration)", function() {
 
   it("Mock clock can be installed and used in tests", function() {
     var setTimeout = jasmine.createSpy('setTimeout'),
@@ -186,4 +186,28 @@ describe("jasmine Env", function() {
     expect(setTimeout).toHaveBeenCalledWith(globalTimeoutFn, 100);
   });
 
+  it("should be possible to get full name from a spec", function() {
+    var env = new jasmine.Env({global: { setTimeout: setTimeout }}),
+    topLevelSpec, nestedSpec, doublyNestedSpec;
+
+    env.describe("my tests", function() {
+      topLevelSpec = env.it("are sometimes top level", function() {
+      });
+      env.describe("are sometimes", function() {
+        nestedSpec = env.it("singly nested", function() {
+
+        });
+        env.describe("even", function() {
+          doublyNestedSpec = env.it("doubly nested", function() {
+
+          });
+        });
+      });
+    });
+
+    env.execute();
+    expect(topLevelSpec.getFullName()).toBe("my tests are sometimes top level.");
+    expect(nestedSpec.getFullName()).toBe("my tests are sometimes singly nested.");
+    expect(doublyNestedSpec.getFullName()).toBe("my tests are sometimes even doubly nested.");
+  });
 });

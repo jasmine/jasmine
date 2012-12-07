@@ -11,7 +11,7 @@ jasmine.Spec = function(attrs) {
   this.catchExceptions = attrs.catchExceptions;
   this.startCallback = attrs.startCallback || function() {};
   this.exceptionFormatter = attrs.exceptionFormatter || function() {};
-  this.fullNameFactory = attrs.fullNameFactory;
+  this.getSpecName = attrs.getSpecName;
   this.expectationResultFactory = attrs.expectationResultFactory || function() {};
 };
 
@@ -91,7 +91,6 @@ jasmine.Spec.prototype.status = function() {
   }
 };
 
-//TODO: remove
 jasmine.Spec.prototype.getFullName = function() {
-  return this.fullNameFactory(this);
+  return this.getSpecName(this);
 }

@@ -78,14 +78,8 @@
 
     var specConstructor = jasmine.Spec;
 
-    // TODO: this deserves a better name (not a Factory the way others are)
-    var fullNameFactory = function(spec, currentSuite) {
-      var descriptions = [];
-      for (var suite = currentSuite; suite; suite = suite.parentSuite) {
-        descriptions.push(suite.description)
-      }
-      descriptions.push(spec.description);
-      return descriptions.join(' ') + '.';
+    var getSpecName = function(spec, currentSuite) {
+      return currentSuite.getFullName() + ' ' + spec.description + '.';
     };
 
     var buildExpectationResult = jasmine.buildExpectationResult;
@@ -101,7 +95,7 @@
         expectationFactory: expectationFactory,
         exceptionFormatter: exceptionFormatter,
         resultCallback: specResultCallback,
-        fullNameFactory: function(spec) { return fullNameFactory(spec, suite) },
+        getSpecName: function(spec) { return getSpecName(spec, suite) },
         startCallback: startCallback,
         description: description,
         catchExceptions: self.catchExceptions,

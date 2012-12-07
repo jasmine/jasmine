@@ -166,10 +166,8 @@ describe("Spec (real-ish unit tests)", function() {
   });
 
   it("can return its full name", function() {
-    //TODO: not convinced that a spec should provide this as part of its public interface, but adding temporarily
-    //until we fix the reporting
     var spec = new jasmine.Spec({
-      fullNameFactory: function(passedVal) {
+      getSpecName: function(passedVal) {
         expect(passedVal).toBe(spec);
         return 'expected val';
       }

@@ -1,7 +1,5 @@
 describe("Clock", function() {
 
-// TODO: fullName/SpecFilter is broken, so don't nest describes you want to filter
-
   it("calls the global setTimeout directly if Clock is not installed", function() {
     var setTimeout = jasmine.createSpy('setTimeout'),
       delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['scheduleFunction']),
