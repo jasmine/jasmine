@@ -19,6 +19,7 @@ jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
   self.children_ = [];
   self.suites_ = [];
   self.specs_ = [];
+  self.exclusive_ = parentSuite && parentSuite.exclusive_ || 0;
 };
 
 jasmine.Suite.prototype.getFullName = function() {
