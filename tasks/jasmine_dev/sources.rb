@@ -8,7 +8,6 @@ class JasmineDev < Thor
       "Reporter.js",
       "JsApiReporter.js",
       "Matchers.js",
-      "mock-timeout.js",
       "MultiReporter.js",
       "NestedResults.js",
       "PrettyPrinter.js",
@@ -16,6 +15,8 @@ class JasmineDev < Thor
       "Runner.js",
       "Spec.js",
       "Suite.js",
+      "Clock.js",
+      "DelayedFunctionScheduler.js"
     ],
 
     :html => [

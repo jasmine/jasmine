@@ -5,12 +5,6 @@ describe('RunnerTest', function() {
   beforeEach(function() {
     env = new jasmine.Env();
     env.updateInterval = 0;
-
-    fakeTimer = new jasmine.FakeTimer();
-    env.setTimeout = fakeTimer.setTimeout;
-    env.clearTimeout = fakeTimer.clearTimeout;
-    env.setInterval = fakeTimer.setInterval;
-    env.clearInterval = fakeTimer.clearInterval;
   });
 
   describe('beforeEach', function() {

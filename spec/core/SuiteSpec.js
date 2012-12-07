@@ -1,16 +1,9 @@
 describe('Suite', function() {
-  var fakeTimer;
   var env;
 
   beforeEach(function() {
     env = new jasmine.Env();
     env.updateInterval = 0;
-
-    fakeTimer = new originalJasmine.FakeTimer();
-    env.setTimeout = fakeTimer.setTimeout;
-    env.clearTimeout = fakeTimer.clearTimeout;
-    env.setInterval = fakeTimer.setInterval;
-    env.clearInterval = fakeTimer.clearInterval;
   });
 
   describe('Specs', function () {
@@ -42,7 +35,7 @@ describe('Suite', function() {
         });
       });
     });
-    
+
     it('#specs should return all immediate children that are specs.', function () {
       var suiteSpecs = suite.specs();
       expect(suiteSpecs.length).toEqual(3);

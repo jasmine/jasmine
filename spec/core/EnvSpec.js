@@ -157,3 +157,33 @@ describe("jasmine.Env", function() {
     });
   });
 });
+
+describe("jasmine Env", function() {
+
+  it("Mock clock can be installed and used in tests", function() {
+    var setTimeout = jasmine.createSpy('setTimeout'),
+    globalTimeoutFn = jasmine.createSpy('globalTimeoutFn'),
+    fakeTimeoutFn = jasmine.createSpy('fakeTimeoutFn'),
+    env = new jasmine.Env({global: { setTimeout: setTimeout }});
+
+    env.describe("tests", function() {
+      env.it("test with mock clock", function() {
+        env.clock.install();
+        env.clock.setTimeout(fakeTimeoutFn, 100);
+        env.clock.tick(100);
+      });
+      env.it("test without mock clock", function() {
+        env.clock.setTimeout(globalTimeoutFn, 100);
+      });
+    });
+
+    expect(setTimeout).not.toHaveBeenCalled();
+    expect(fakeTimeoutFn).not.toHaveBeenCalled();
+
+    env.execute();
+
+    expect(fakeTimeoutFn).toHaveBeenCalled();
+    expect(setTimeout).toHaveBeenCalledWith(globalTimeoutFn, 100);
+  });
+
+});

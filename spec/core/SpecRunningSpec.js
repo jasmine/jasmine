@@ -5,12 +5,6 @@ describe("jasmine spec running", function () {
   beforeEach(function() {
     env = new jasmine.Env();
     env.updateInterval = 0;
-
-    fakeTimer = new originalJasmine.FakeTimer();
-    env.setTimeout = fakeTimer.setTimeout;
-    env.clearTimeout = fakeTimer.clearTimeout;
-    env.setInterval = fakeTimer.setInterval;
-    env.clearInterval = fakeTimer.clearInterval;
   });
 
   it('should assign spec ids sequentially', function() {

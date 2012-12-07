@@ -108,8 +108,8 @@ jasmine.MessageResult.prototype.toString = function() {
 /**
  * Getter for the Jasmine environment. Ensures one gets created
  */
-jasmine.getEnv = function() {
-  var env = jasmine.currentEnv_ = jasmine.currentEnv_ || new jasmine.Env();
+jasmine.getEnv = function(options) {
+  var env = jasmine.currentEnv_ = jasmine.currentEnv_ || new jasmine.Env(options);
   //jasmine. singletons in here (setTimeout blah blah).
   return env;
 };

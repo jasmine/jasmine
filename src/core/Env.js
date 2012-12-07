@@ -4,12 +4,17 @@
  * @constructor
  */
 (function() {
-  jasmine.Env = function() {
+  jasmine.Env = function(options) {
+    options = options || {};
     var self = this;
+    var global = options.global || jasmine.getGlobal();
+
+    this.clock = new jasmine.Clock(global, new jasmine.DelayedFunctionScheduler());
+
     var suiteConstructor = jasmine.Suite;
     var isSuite = function(thing) {
       return thing instanceof suiteConstructor;
-    }
+    };
     this.jasmine = jasmine;
     this.currentRunner_ = new jasmine.Runner(this, isSuite);
     this.spies_ = [];
@@ -95,8 +100,7 @@
         afterFns: afterFns(suite),
         expectationFactory: expectationFactory,
         exceptionFormatter: exceptionFormatter,
-        //TODO: move spec creation to more appropriate level and remove this shim
-        resultCallback: function(result) { self.currentSpec = null; suite.specComplete(result); },
+        resultCallback: specResultCallback,
         fullNameFactory: function(spec) { return fullNameFactory(spec, suite) },
         startCallback: startCallback,
         description: description,
@@ -110,8 +114,13 @@
       }
 
       return spec;
-    };
 
+      function specResultCallback(result) {
+        self.clock.uninstall();
+        self.currentSpec = null;
+        suite.specComplete(result);
+      }
+    };
 
     var queueConstructor = jasmine.Queue;
     var queueFactory = function() {
@@ -122,12 +131,6 @@
     };
 
   };
-
-
-  jasmine.Env.prototype.setTimeout = jasmine.setTimeout;
-  jasmine.Env.prototype.clearTimeout = jasmine.clearTimeout;
-  jasmine.Env.prototype.setInterval = jasmine.setInterval;
-  jasmine.Env.prototype.clearInterval = jasmine.clearInterval;
 
   //TODO: shim Spec addMatchers behavior into Env. Should be rewritten to remove globals, etc.
   jasmine.Env.prototype.addMatchers = function(matchersPrototype) {

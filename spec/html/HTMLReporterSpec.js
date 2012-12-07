@@ -71,12 +71,6 @@ describe("HtmlReporter", function() {
 
     var runner, spec, fakeTimer;
     beforeEach(function() {
-      fakeTimer = new jasmine.FakeTimer();
-      env.setTimeout = fakeTimer.setTimeout;
-      env.clearTimeout = fakeTimer.clearTimeout;
-      env.setInterval = fakeTimer.setInterval;
-      env.clearInterval = fakeTimer.clearInterval;
-      fakeDocument.location.search = "?";
       env.addReporter(htmlReporter);
     });
 
@@ -89,7 +83,6 @@ describe("HtmlReporter", function() {
         });
 
         env.execute();
-        fakeTimer.tick(0);
 
         var resultEl = getResultMessageDiv(body);
         expect(resultEl.innerHTML).toMatch(/foo/);
