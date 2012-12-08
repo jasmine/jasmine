@@ -16,6 +16,12 @@
 * Finish killing Globals
   * Guidelines: everything that isn't a CTOR should be closed inside `Env`, and everything that is a CTOR needs to be `new`ed inside the `Env`
   * Spies
+  * isA functions:
+    * isArray_ - used in matchers and spies
+    * isString_
+    * isDOMNode_
+    * isA_
+  * unimplementedMethod_, used by PrettyPrinter
   * jasmine.util should be util closure inside of env or something
     * argsToArray is used for Spies and matching
     * inherit is for how matchers are added/mixed in, reporters, and pretty printers

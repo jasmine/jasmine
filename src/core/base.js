@@ -5,6 +5,8 @@
  * @namespace
  */
 var jasmine = {};
+
+// TODO: do we need this now that we have boot.js?
 if (typeof window == "undefined" && typeof exports == "object") {
   exports.jasmine = jasmine
 }
@@ -23,12 +25,6 @@ jasmine.unimplementedMethod_ = function() {
  * @private
  */
 jasmine.undefined = jasmine.___undefined___;
-
-/**
- * Show diagnostic messages in the console if set to true
- *
- */
-jasmine.VERBOSE = false;
 
 /**
  * Default interval in milliseconds for event loop yields (e.g. to allow network activity or to refresh the screen with the HTML-based runner). Small values here may result in slow test running. Zero means no updates until all tests have completed.
