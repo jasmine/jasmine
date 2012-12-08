@@ -1,4 +1,4 @@
-jasmine.HtmlReporter.ReporterView = function(dom, jasmine) {
+jasmine.HtmlReporter.ReporterView = function(dom, jasmine, catchExceptions) {
   this.startedAt = new Date();
   this.runningSpecCount = 0;
   this.completeSpecCount = 0;
@@ -32,7 +32,7 @@ jasmine.HtmlReporter.ReporterView = function(dom, jasmine) {
 
     for (var i = 0; i < specs.length; i++) {
       var spec = specs[i];
-      this.views.specs[spec.id] = new this.jasmine.HtmlReporter.SpecView(spec, dom, this.views, this.jasmine);
+      this.views.specs[spec.id] = new this.jasmine.HtmlReporter.SpecView(spec, dom, this.views, this.jasmine, catchExceptions);
       if (specFilter(spec)) {
         this.runningSpecCount++;
       }
@@ -82,14 +82,14 @@ jasmine.HtmlReporter.ReporterView = function(dom, jasmine) {
 
     // currently running UI
     if (isUndefined(this.runningAlert)) {
-      this.runningAlert = this.createDom('a', { href: this.jasmine.HtmlReporter.sectionLink(null, this.jasmine.CATCH_EXCEPTIONS), className: "runningAlert bar" });
+      this.runningAlert = this.createDom('a', { href: this.jasmine.HtmlReporter.sectionLink(null, catchExceptions), className: "runningAlert bar" });
       dom.alert.appendChild(this.runningAlert);
     }
     this.runningAlert.innerHTML = "Running " + this.completeSpecCount + " of " + specPluralizedFor(this.totalSpecCount);
 
     // skipped specs UI
     if (isUndefined(this.skippedAlert)) {
-      this.skippedAlert = this.createDom('a', { href: this.jasmine.HtmlReporter.sectionLink(null, this.jasmine.CATCH_EXCEPTIONS), className: "skippedAlert bar" });
+      this.skippedAlert = this.createDom('a', { href: this.jasmine.HtmlReporter.sectionLink(null, catchExceptions), className: "skippedAlert bar" });
     }
 
     this.skippedAlert.innerHTML = "Skipping " + this.skippedCount + " of " + specPluralizedFor(this.totalSpecCount) + " - run all";
@@ -100,7 +100,7 @@ jasmine.HtmlReporter.ReporterView = function(dom, jasmine) {
 
     // passing specs UI
     if (isUndefined(this.passedAlert)) {
-      this.passedAlert = this.createDom('span', { href: this.jasmine.HtmlReporter.sectionLink(null, this.jasmine.CATCH_EXCEPTIONS), className: "passingAlert bar" });
+      this.passedAlert = this.createDom('span', { href: this.jasmine.HtmlReporter.sectionLink(null, catchExceptions), className: "passingAlert bar" });
     }
     this.passedAlert.innerHTML = "Passing " + specPluralizedFor(this.passedCount);
 

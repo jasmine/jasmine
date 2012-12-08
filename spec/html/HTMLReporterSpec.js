@@ -11,7 +11,10 @@ describe("HtmlReporter", function() {
 
     body = document.createElement("body");
     fakeDocument = { body: body, location: { search: "" } };
-    htmlReporter = new jasmine.HtmlReporter(fakeDocument, null, function(fn) { fn() });
+    htmlReporter = new jasmine.HtmlReporter(fakeDocument, null, {
+      catchingExceptions: function() { return true; },
+      catchExceptions: function() { }
+    }, {yieldForRender: function(fn) { fn() }});
   });
 
   function fakeSpec(name) {

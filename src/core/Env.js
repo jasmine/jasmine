@@ -9,6 +9,7 @@
     var self = this;
     var global = options.global || jasmine.getGlobal();
 
+    var catchExceptions = true;
     var encourageGC = options.encourageGarbageCollection || encourageGarbageCollection;
 
     this.clock = new jasmine.Clock(global, new jasmine.DelayedFunctionScheduler());
@@ -21,7 +22,6 @@
     this.currentRunner_ = new jasmine.Runner(this, isSuite);
     this.spies_ = [];
     this.currentSpec = null;
-    this.catchExceptions = jasmine.CATCH_EXCEPTIONS;
     this.undefined = jasmine.undefined;
 
     this.reporter = new jasmine.MultiReporter();
@@ -87,6 +87,14 @@
       return buildExpectationResult(attrs);
     };
 
+    this.catchExceptions = function(value) {
+      return catchExceptions = !!value;
+    }
+
+    this.catchingExceptions = function(value) {
+      return catchExceptions;
+    }
+
     this.specFactory = function(description, fn, suite) {
       var spec = new specConstructor({
         id: self.nextSpecId(),
@@ -98,7 +106,7 @@
         getSpecName: function(spec) { return getSpecName(spec, suite) },
         startCallback: startCallback,
         description: description,
-        catchExceptions: self.catchExceptions,
+        catchingExceptions: this.catchingExceptions,
         expectationResultFactory: expectationResultFactory,
         fn: fn
       });

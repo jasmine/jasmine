@@ -34,9 +34,7 @@ describe('Exceptions:', function() {
 
   describe('with break on exception', function() {
     it('should not catch the exception', function() {
-      var oldCatch = jasmine.CATCH_EXCEPTIONS;
-      jasmine.CATCH_EXCEPTIONS = false;
-      env = new jasmine.Env();
+      env.catchExceptions(false);
       var suite = env.describe('suite for break on exceptions', function() {
         env.it('should break when an exception is thrown', function() {
           throw new Error('I should hit a breakpoint!');
@@ -50,9 +48,6 @@ describe('Exceptions:', function() {
         dont_change = 'oops I changed';
       }
       catch (e) {}
-      finally {
-        jasmine.CATCH_EXCEPTIONS = oldCatch;
-      }
 
       expect(dont_change).toEqual('I will never change!');
     });

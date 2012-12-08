@@ -8,7 +8,7 @@ jasmine.Spec = function(attrs) {
   this.fn = attrs.fn;
   this.beforeFns = attrs.beforeFns || function() {};
   this.afterFns = attrs.afterFns || function() {};
-  this.catchExceptions = attrs.catchExceptions;
+  this.catchingExceptions = attrs.catchingExceptions;
   this.startCallback = attrs.startCallback || function() {};
   this.exceptionFormatter = attrs.exceptionFormatter || function() {};
   this.getSpecName = attrs.getSpecName;
@@ -54,8 +54,9 @@ jasmine.Spec.prototype.execute = function() {
         message: self.exceptionFormatter(e),
         trace: e
       }));
-      if (!self.catchExceptions) {
-        resultCallback();
+      if (!self.catchingExceptions()) {
+        //TODO: set a var when we catch an exception and
+        //use a finally block to close the loop in a nice way..
         throw e;
       }
     }

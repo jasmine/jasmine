@@ -1,8 +1,9 @@
-jasmine.HtmlReporter.SpecView = function(spec, dom, views, jasmine) {
+jasmine.HtmlReporter.SpecView = function(spec, dom, views, jasmine, catchExceptions) {
   this.spec = spec;
   this.dom = dom;
   this.views = views;
   this.jasmine = jasmine || {};
+  this.catchExceptions = catchExceptions;
 
   this.symbol = this.createDom('li', { className: 'pending' });
   this.dom.symbolSummary.appendChild(this.symbol);
@@ -10,7 +11,9 @@ jasmine.HtmlReporter.SpecView = function(spec, dom, views, jasmine) {
   this.summary = this.createDom('div', { className: 'specSummary' },
     this.createDom('a', {
       className: 'description',
-      href: this.jasmine.HtmlReporter.sectionLink(this.spec.getFullName(), this.jasmine.CATCH_EXCEPTIONS),
+      //TODO: sectionLink is a dependency passed in that knows about catchingExceptions
+      //so we don't pass catchExceptions everywhere.
+      href: this.jasmine.HtmlReporter.sectionLink(this.spec.getFullName(), catchExceptions),
       title: this.spec.getFullName()
     }, this.spec.description)
   );

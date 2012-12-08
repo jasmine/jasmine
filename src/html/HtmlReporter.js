@@ -1,7 +1,9 @@
-jasmine.HtmlReporter = function(_doc, jasmine, yieldForRender) {
+jasmine.HtmlReporter = function(_doc, jasmine, env, options) {
+  options = options || {};
   var self = this;
   this.jasmine = jasmine || window.jasmine;
   var doc = _doc || window.document;
+
 
   var reporterView;
 
@@ -20,7 +22,7 @@ jasmine.HtmlReporter = function(_doc, jasmine, yieldForRender) {
     doc.body.appendChild(dom.reporter);
     setExceptionHandling();
 
-    reporterView = new self.jasmine.HtmlReporter.ReporterView(dom, self.jasmine);
+    reporterView = new self.jasmine.HtmlReporter.ReporterView(dom, self.jasmine, env.catchingExceptions());
     reporterView.addSpecs(specs, self.specFilter);
   };
 
@@ -37,7 +39,7 @@ jasmine.HtmlReporter = function(_doc, jasmine, yieldForRender) {
 
   var lastYieldForRender = 0;
   var refreshInterval = 250;
-  yieldForRender = yieldForRender || function(fn) {
+  var yieldForRender = options.yieldForRender || function(fn) {
     var now = Date.now();
     var delta = (now - lastYieldForRender);
     if (delta > refreshInterval) {
@@ -116,7 +118,7 @@ jasmine.HtmlReporter = function(_doc, jasmine, yieldForRender) {
   }
 
   function searchWithCatch() {
-    var params = jasmine.HtmlReporter.parameters(window.document);
+    var params = self.jasmine.HtmlReporter.parameters(window.document);
     var removed = false;
     var i = 0;
 
@@ -127,7 +129,7 @@ jasmine.HtmlReporter = function(_doc, jasmine, yieldForRender) {
       }
       i++;
     }
-    if (self.jasmine.CATCH_EXCEPTIONS) {
+    if (env.catchingExceptions()) {
       params.push("catch=false");
     }
 
@@ -139,7 +141,7 @@ jasmine.HtmlReporter = function(_doc, jasmine, yieldForRender) {
 
     if (noTryCatch()) {
       chxCatch.setAttribute('checked', true);
-      self.jasmine.CATCH_EXCEPTIONS = false;
+      env.catchExceptions(false);
     }
     chxCatch.onclick = function() {
       window.location.search = searchWithCatch();

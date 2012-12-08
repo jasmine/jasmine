@@ -158,25 +158,6 @@ describe("Spec", function() {
     expect(spec.status()).toBe('failed');
   });
 
-  it("calls the resultCallback with a failure when an exception occurs in the spec fn", function() {
-    //TODO: one day we should pass a stack with this.
-    var resultCallback = originalJasmine.createSpy('resultCallback'),
-    spec = new jasmine.Spec({
-      fn: function() {
-        throw new Error();
-      },
-      catchExceptions: true,
-      resultCallback: resultCallback
-    });
-
-    expect(resultCallback).not.toHaveBeenCalled();
-    spec.execute();
-    expect(resultCallback).toHaveBeenCalledWith(
-      originalJasmine.objectContaining({status: 'failed'})
-    );
-
-  });
-
   it("throws when an exception occurs in the spec fn if catchExceptions is false", function() {
     //TODO: one day we should pass a stack with this.
     var resultCallback = originalJasmine.createSpy('resultCallback'),
