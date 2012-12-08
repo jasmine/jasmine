@@ -9,7 +9,6 @@ class JasmineDev < Thor
       "JsApiReporter.js",
       "Matchers.js",
       "MultiReporter.js",
-      "NestedResults.js",
       "PrettyPrinter.js",
       "Queue.js",
       "Runner.js",
