@@ -1,23 +1,23 @@
-describe("Spec (integration)", function() {
+describe("Spec", function() {
   it("reports results for passing tests", function() {
-    var resultCallback = jasmine.createSpy('resultCallback'),
-      expectationFactory = function(actual, spec) {
-        expect(actual).toBe('some-actual');
-        return {
-          pass: function() {
-            spec.addExpectationResult(true);
-          }
+    var resultCallback = originalJasmine.createSpy('resultCallback'),
+    expectationFactory = function(actual, spec) {
+      expect(actual).toBe('some-actual');
+      return {
+        pass: function() {
+          spec.addExpectationResult(true);
         }
+      }
+    },
+    spec = new jasmine.Spec({
+      description: 'my test',
+      id: 'some-id',
+      fn: function() {
+        this.expect('some-actual').pass();
       },
-      spec = new jasmine.Spec({
-        description: 'my test',
-        id: 'some-id',
-        fn: function() {
-          this.expect('some-actual').pass();
-        },
-        resultCallback: resultCallback,
-        expectationFactory: expectationFactory
-      });
+      resultCallback: resultCallback,
+      expectationFactory: expectationFactory
+    });
 
     spec.execute();
 
@@ -29,24 +29,24 @@ describe("Spec (integration)", function() {
     });
   });
   it("reports results for failing tests", function() {
-    var resultCallback = jasmine.createSpy('resultCallback'),
-      expectationFactory = function(actual, spec) {
-        expect(actual).toBe('some-actual');
-        return {
-          fail: function() {
-            spec.addExpectationResult(true);
-          }
+    var resultCallback = originalJasmine.createSpy('resultCallback'),
+    expectationFactory = function(actual, spec) {
+      expect(actual).toBe('some-actual');
+      return {
+        fail: function() {
+          spec.addExpectationResult(true);
         }
+      }
+    },
+    spec = new jasmine.Spec({
+      description: 'my test',
+      id: 'some-id',
+      fn: function() {
+        this.expect('some-actual').fail();
       },
-      spec = new jasmine.Spec({
-        description: 'my test',
-        id: 'some-id',
-        fn: function() {
-          this.expect('some-actual').fail();
-        },
-        resultCallback: resultCallback,
-        expectationFactory: expectationFactory
-      });
+      resultCallback: resultCallback,
+      expectationFactory: expectationFactory
+    });
 
     spec.execute();
 
@@ -58,14 +58,13 @@ describe("Spec (integration)", function() {
     });
   });
 
-  //TODO: test order of befores, spec, after.
   it("executes before fns, after fns", function() {
-    var before = jasmine.createSpy('before'),
-      after = jasmine.createSpy('after'),
-      fn = originalJasmine.createSpy('test body').andCallFake(function() {
-        expect(before).toHaveBeenCalled();
-        expect(after).not.toHaveBeenCalled();
-      });
+    var before = originalJasmine.createSpy('before'),
+    after = originalJasmine.createSpy('after'),
+    fn = originalJasmine.createSpy('test body').andCallFake(function() {
+      expect(before).toHaveBeenCalled();
+      expect(after).not.toHaveBeenCalled();
+    });
     spec = new jasmine.Spec({
       fn: fn,
       beforeFns: function() {
@@ -86,9 +85,61 @@ describe("Spec (integration)", function() {
     expect(after).toHaveBeenCalled();
     expect(after.mostRecentCall.object).toBe(spec);
   });
-});
 
-describe("Spec (real-ish unit tests)", function() {
+  it("passes an optional callback to spec bodies, befores, and afters", function() {
+    //TODO: it would be nice if spy arity could match the fake, so we could do something like:
+    //createSpy('asyncfn').andCallFake(function(done) {});
+    var resultCallback = originalJasmine.createSpy('resultCallback'),
+    beforeCallback = originalJasmine.createSpy('beforeCallback'),
+    fnCallback = originalJasmine.createSpy('fnCallback'),
+    afterCallback = originalJasmine.createSpy('afterCallback'),
+    before = function(done) {
+      beforeCallback();
+      setTimeout(function() { done() }, 100);
+    },
+    fn = function(done) {
+      fnCallback();
+      setTimeout(function() { done() }, 100);
+    },
+    after = function(done) {
+      afterCallback();
+      setTimeout(function() { done() }, 100);
+    },
+    spec = new jasmine.Spec({
+      resultCallback: resultCallback,
+      fn: fn,
+      beforeFns: function() {
+        return [before]
+      },
+      afterFns: function() {
+        return [after]
+      }
+    });
+    clock.install();
+
+    spec.execute();
+
+    expect(beforeCallback).toHaveBeenCalled();
+    expect(fnCallback).not.toHaveBeenCalled();
+    expect(afterCallback).not.toHaveBeenCalled();
+    expect(resultCallback).not.toHaveBeenCalled();
+
+    clock.tick(100);
+
+    expect(fnCallback).toHaveBeenCalled();
+    expect(afterCallback).not.toHaveBeenCalled();
+    expect(resultCallback).not.toHaveBeenCalled();
+
+    clock.tick(100);
+
+    expect(afterCallback).toHaveBeenCalled();
+    expect(resultCallback).not.toHaveBeenCalled();
+
+    clock.tick(100);
+
+    expect(resultCallback).toHaveBeenCalled();
+  });
+
   it("status returns null by default", function() {
     var spec = new jasmine.Spec({});
     expect(spec.status()).toBeNull();
@@ -110,13 +161,13 @@ describe("Spec (real-ish unit tests)", function() {
   it("calls the resultCallback with a failure when an exception occurs in the spec fn", function() {
     //TODO: one day we should pass a stack with this.
     var resultCallback = originalJasmine.createSpy('resultCallback'),
-      spec = new jasmine.Spec({
-        fn: function() {
-          throw new Error();
-        },
-        catchExceptions: true,
-        resultCallback: resultCallback
-      });
+    spec = new jasmine.Spec({
+      fn: function() {
+        throw new Error();
+      },
+      catchExceptions: true,
+      resultCallback: resultCallback
+    });
 
     expect(resultCallback).not.toHaveBeenCalled();
     spec.execute();
@@ -129,13 +180,13 @@ describe("Spec (real-ish unit tests)", function() {
   it("throws when an exception occurs in the spec fn if catchExceptions is false", function() {
     //TODO: one day we should pass a stack with this.
     var resultCallback = originalJasmine.createSpy('resultCallback'),
-      spec = new jasmine.Spec({
-        fn: function() {
-          throw new Error();
-        },
-        catchExceptions: false,
-        resultCallback: resultCallback
-      });
+    spec = new jasmine.Spec({
+      fn: function() {
+        throw new Error();
+      },
+      catchExceptions: false,
+      resultCallback: resultCallback
+    });
 
     expect(function() {
       spec.execute();
@@ -144,22 +195,22 @@ describe("Spec (real-ish unit tests)", function() {
 
   it("should call the start callback before any befores are called", function() {
     var beforesWereCalled = false,
-      startCallback = originalJasmine.createSpy('start-callback').andCallFake(function() {
-        expect(beforesWereCalled).toBe(false);
-      }),
-      spec = new jasmine.Spec({
-        fn: function() {
-        },
-        beforeFns: function() {
-          return [function() {
-            beforesWereCalled = true
-          }]
-        },
-        startCallback: startCallback,
-        catchExceptions: false,
-        resultCallback: function() {
-        }
-      });
+    startCallback = originalJasmine.createSpy('start-callback').andCallFake(function() {
+      expect(beforesWereCalled).toBe(false);
+    }),
+    spec = new jasmine.Spec({
+      fn: function() {
+      },
+      beforeFns: function() {
+        return [function() {
+          beforesWereCalled = true
+        }]
+      },
+      startCallback: startCallback,
+      catchExceptions: false,
+      resultCallback: function() {
+      }
+    });
 
     spec.execute();
     expect(startCallback).toHaveBeenCalled();
@@ -177,15 +228,15 @@ describe("Spec (real-ish unit tests)", function() {
   });
 
   it("can be disabled", function() {
-    var startCallback = jasmine.createSpy('startCallback'),
-      specBody = jasmine.createSpy('specBody'),
-      resultCallback = jasmine.createSpy('resultCallback'),
-      spec = new jasmine.Spec({
-        startCallback: startCallback,
-        fn: specBody,
-        resultCallback: resultCallback
+    var startCallback = originalJasmine.createSpy('startCallback'),
+    specBody = originalJasmine.createSpy('specBody'),
+    resultCallback = originalJasmine.createSpy('resultCallback'),
+    spec = new jasmine.Spec({
+      startCallback: startCallback,
+      fn: specBody,
+      resultCallback: resultCallback
 
-      });
+    });
 
     spec.disable();
     expect(spec.status()).toBe('disabled');
@@ -198,3 +249,4 @@ describe("Spec (real-ish unit tests)", function() {
     expect(resultCallback).toHaveBeenCalled();
   });
 });
+

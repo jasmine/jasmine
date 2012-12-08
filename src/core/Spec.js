@@ -27,47 +27,60 @@ jasmine.Spec.prototype.expect = function(actual) {
 };
 
 jasmine.Spec.prototype.execute = function() {
+  var self = this;
   if (this.disabled) {
-    resultCallback.call(this);
+    resultCallback();
     return;
   }
 
   var befores = this.beforeFns() || [],
   afters = this.afterFns() || [];
   this.startCallback(this);
-  try {
-    for (var i = 0; i < befores.length; i++) {
-      befores[i].call(this);
-    }
-    this.fn.call(this);
-    for (i = 0; i < afters.length; i++) {
-      afters[i].call(this);
-    }
-  } catch (e) {
-    //TODO: weird. buildExpectationResult is really a presenter for expectations
-    //so this should take an expectation object.
-    this.addExpectationResult(false, this.expectationResultFactory({
-      matcherName: "",
-      passed: false,
-      expected: "",
-      actual: "",
-      message: this.exceptionFormatter(e),
-      trace: e
-    }));
-    if (!this.catchExceptions) {
-      throw e;
+  var allFns = befores.concat(this.fn).concat(afters);
+
+  queueRunner(allFns, 0);
+
+  function attempt(fn) {
+    try {
+      fn();
+    } catch (e) {
+      //TODO: weird. buildExpectationResult is really a presenter for expectations
+      //so this should take an expectation object.
+      self.addExpectationResult(false, self.expectationResultFactory({
+        matcherName: "",
+        passed: false,
+        expected: "",
+        actual: "",
+        message: self.exceptionFormatter(e),
+        trace: e
+      }));
+      if (!self.catchExceptions) {
+        resultCallback();
+        throw e;
+      }
     }
   }
-  finally {
-    resultCallback.call(this);
+
+  function queueRunner(allFns, index) {
+    if (index >= allFns.length) {
+      resultCallback();
+      return;
+    }
+    var fn = allFns[index];
+    if (fn.length > 0) {
+      attempt(function() { fn.call(self, function() {  queueRunner(allFns, index + 1) }) });
+    } else {
+      attempt(function() { fn.call(self); });
+      queueRunner(allFns, index + 1);
+    }
   }
 
   function resultCallback() {
-    this.resultCallback({
-      id: this.id,
-      status: this.status(),
-      description: this.description,
-      failedExpectations: this.failedExpectations
+    self.resultCallback({
+      id: self.id,
+      status: self.status(),
+      description: self.description,
+      failedExpectations: self.failedExpectations
     });
   }
 };

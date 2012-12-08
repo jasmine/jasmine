@@ -49,6 +49,11 @@ var jasmineInterface = {
     return env.spyOn(obj, methodName);
   },
 
+  clock: env.clock,
+  setTimeout: env.clock.setTimeout,
+  clearTimeout: env.clock.clearTimeout,
+  setInterval: env.clock.setInterval,
+  clearInterval: env.clock.clearInterval,
 
   jsApiReporter: new jasmine.JsApiReporter(jasmine)
 };
