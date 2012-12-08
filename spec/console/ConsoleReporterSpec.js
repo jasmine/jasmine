@@ -124,15 +124,15 @@ describe("ConsoleReporter", function() {
     });
 
     it("prints the proper output under a failure scenario.", function() {
-      var base1 =  jasmine.util.extend({}, failingSpec),
-      failingSpec1 = jasmine.util.extend(base1, {
+      var base1 =  extend({}, failingSpec),
+      failingSpec1 = extend(base1, {
         fullName: 'The oven heats up',
         failedExpectations: [
           {trace:{stack:"stack trace one\n  second line"}},
           {trace:{stack:"stack trace two"}}
         ]}),
-        base2 = jasmine.util.extend({}, failingSpec),
-        failingSpec2 = jasmine.util.extend(base2, {
+        base2 = extend({}, failingSpec),
+        failingSpec2 = extend(base2, {
           fullName: "The washing machine washes clothes",
           failedExpectations: [
             {trace:{stack:"stack trace one"}}
@@ -284,4 +284,9 @@ describe("ConsoleReporter", function() {
       });
     });
   });
+
+  function extend(destination, source) {
+    for (var property in source) destination[property] = source[property];
+    return destination;
+  }
 });
