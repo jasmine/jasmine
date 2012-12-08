@@ -38,14 +38,6 @@ jasmine.NestedResults.prototype.rollupCounts = function(result) {
 };
 
 /**
- * Adds a log message.
- * @param values Array of message parts which will be concatenated later.
- */
-jasmine.NestedResults.prototype.log = function(values) {
-  this.items_.push(new jasmine.MessageResult(values));
-};
-
-/**
  * Getter for the results: message & results.
  */
 jasmine.NestedResults.prototype.getItems = function() {

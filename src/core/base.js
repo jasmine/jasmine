@@ -61,25 +61,6 @@ jasmine.getGlobal = function() {
   return getGlobal();
 };
 
-jasmine.MessageResult = function(values) {
-  this.type = 'log';
-  this.values = values;
-  this.trace = new Error(); // todo: test better
-};
-
-jasmine.MessageResult.prototype.toString = function() {
-  var text = "";
-  for (var i = 0; i < this.values.length; i++) {
-    if (i > 0) text += " ";
-    if (jasmine.isString_(this.values[i])) {
-      text += this.values[i];
-    } else {
-      text += jasmine.pp(this.values[i]);
-    }
-  }
-  return text;
-};
-
 /**
  * Getter for the Jasmine environment. Ensures one gets created
  */
