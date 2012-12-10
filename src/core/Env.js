@@ -74,7 +74,7 @@
       }
     };
 
-    var exceptionFormatter = jasmine.exceptionMessageFor;
+    var exceptionFormatter = jasmine.exceptionFormatter;
 
     var specConstructor = jasmine.Spec;
 
@@ -89,11 +89,11 @@
 
     this.catchExceptions = function(value) {
       return catchExceptions = !!value;
-    }
+    };
 
     this.catchingExceptions = function(value) {
       return catchExceptions;
-    }
+    };
 
     this.specFactory = function(description, fn, suite) {
       var spec = new specConstructor({
@@ -103,7 +103,9 @@
         expectationFactory: expectationFactory,
         exceptionFormatter: exceptionFormatter,
         resultCallback: specResultCallback,
-        getSpecName: function(spec) { return getSpecName(spec, suite) },
+        getSpecName: function(spec) {
+          return getSpecName(spec, suite)
+        },
         startCallback: startCallback,
         description: description,
         catchingExceptions: this.catchingExceptions,
@@ -131,12 +133,19 @@
     var queueFactory = function() {
       return new queueConstructor(self);
     };
-    this.suiteFactory = function(description, specDefinitions) {
-      return new suiteConstructor(self, description, specDefinitions, self.currentSuite, queueFactory, isSuite);
+    this.suiteFactory = function(description) {
+      return new suiteConstructor({
+        env: self,
+        description: description,
+        currentSuite: self.currentSuite,
+        queueFactory: queueFactory,
+        isSuite: isSuite
+      });
     };
 
     var maximumSpecCallbackDepth = 100;
     var currentSpecCallbackDepth = 0;
+
     function encourageGarbageCollection(fn) {
       currentSpecCallbackDepth++;
       if (currentSpecCallbackDepth > maximumSpecCallbackDepth) {
@@ -145,7 +154,6 @@
       } else {
         fn();
       }
-
     }
   };
 
@@ -162,7 +170,7 @@
   /**
    * @returns an object containing jasmine version build info, if set.
    */
-  jasmine.Env.prototype.version = function () {
+  jasmine.Env.prototype.version = function() {
     if (this.jasmine.version_) {
       return this.jasmine.version_;
     } else {
@@ -171,7 +179,7 @@
   };
 
   jasmine.Env.prototype.expect = function(actual) {
-   return this.currentSpec.expect(actual);
+    return this.currentSpec.expect(actual);
   };
 
   jasmine.Env.prototype.spyOn = function(obj, methodName) {
@@ -227,14 +235,14 @@
   /**
    * @returns a sequential integer starting at 0
    */
-  jasmine.Env.prototype.nextSpecId = function () {
+  jasmine.Env.prototype.nextSpecId = function() {
     return this.nextSpecId_++;
   };
 
   /**
    * @returns a sequential integer starting at 0
    */
-  jasmine.Env.prototype.nextSuiteId = function () {
+  jasmine.Env.prototype.nextSuiteId = function() {
     return this.nextSuiteId_++;
   };
 
@@ -265,7 +273,7 @@
     var declarationError = null;
     try {
       specDefinitions.call(suite);
-    } catch(e) {
+    } catch (e) {
       declarationError = e;
     }
 
@@ -288,7 +296,7 @@
     }
   };
 
-  jasmine.Env.prototype.currentRunner = function () {
+  jasmine.Env.prototype.currentRunner = function() {
     return this.currentRunner_;
   };
 

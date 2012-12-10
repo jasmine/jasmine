@@ -1,27 +1,19 @@
-/**
- * Internal representation of a Jasmine suite.
- *
- * @constructor
- * @param {jasmine.Env} env
- * @param {String} description
- * @param {Function} specDefinitions
- * @param {jasmine.Suite} parentSuite
- */
-jasmine.Suite = function(env, description, specDefinitions, parentSuite, queueFactory, isSuite) {
-  var self = this;
-  //TODO: remove once we unit test Suite
-  var queueFactory = queueFactory || function() {};
-  self.id = env.nextSuiteId ? env.nextSuiteId() : null;
-  self.description = description;
-  self.queue = queueFactory();
-  self.parentSuite = parentSuite;
-  self.env = env;
-  self.isSuite = isSuite || function() {};
-  self.before_ = [];
-  self.after_ = [];
-  self.children_ = [];
-  self.suites_ = [];
-  self.specs_ = [];
+jasmine.Suite = function(attrs) {
+  this.env = attrs.env;
+  this.id = attrs.id;
+  this.parentSuite = attrs.parentSuite;
+  this.description = attrs.description;
+  this.beforeFns = [];
+  this.afterFns = [];
+
+  var queueFactory = attrs.queueFactory || function() {};
+  this.queue = queueFactory();
+
+  this.isSuite = attrs.isSuite || function() {};
+
+  this.children_ = []; // TODO: used by current reporters; keep for now
+  this.suites_ = [];
+  this.specs_ = [];
 };
 
 jasmine.Suite.prototype.getFullName = function() {
@@ -40,14 +32,12 @@ jasmine.Suite.prototype.finish = function(onComplete) {
   }
 };
 
-jasmine.Suite.prototype.beforeEach = function(beforeEachFunction) {
-  beforeEachFunction.typeName = 'beforeEach';
-  this.before_.unshift(beforeEachFunction);
+jasmine.Suite.prototype.beforeEach = function(fn) {
+  this.beforeFns.unshift(fn);
 };
 
-jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
-  afterEachFunction.typeName = 'afterEach';
-  this.after_.unshift(afterEachFunction);
+jasmine.Suite.prototype.afterEach = function(fn) {
+  this.afterFns.unshift(fn);
 };
 
 //TODO: interface should be addSpec or addSuite methods.
