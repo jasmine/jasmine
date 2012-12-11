@@ -3,33 +3,40 @@ jasmine.Suite = function(attrs) {
   this.id = attrs.id;
   this.parentSuite = attrs.parentSuite;
   this.description = attrs.description;
+  this.onStart = attrs.onStart || function() {};
+  this.completeCallback = attrs.completeCallback || function() {};
+  this.resultCallback = attrs.resultCallback || function() {};
+  this.encourageGC = attrs.encourageGC || function(fn) {fn();};
+
   this.beforeFns = [];
   this.afterFns = [];
+  this.queueRunner = attrs.queueRunner || function() {};
+  this.disabled = false;
 
-  var queueFactory = attrs.queueFactory || function() {};
-  this.queue = queueFactory();
+  this.children_ = []; // TODO: rename
+  this.suites = []; // TODO: needed?
+  this.specs = [];  // TODO: needed?
 
-  this.isSuite = attrs.isSuite || function() {};
-
-  this.children_ = []; // TODO: used by current reporters; keep for now
-  this.suites_ = [];
-  this.specs_ = [];
+  this.result = {
+    id: this.id,
+    status: this.disabled ? 'disabled' : '',
+    description: this.description,
+    fullName: this.getFullName()
+  };
 };
 
 jasmine.Suite.prototype.getFullName = function() {
   var fullName = this.description;
   for (var parentSuite = this.parentSuite; parentSuite; parentSuite = parentSuite.parentSuite) {
-    fullName = parentSuite.description + ' ' + fullName;
+    if (parentSuite.parentSuite) {
+      fullName = parentSuite.description + ' ' + fullName;
+    }
   }
   return fullName;
 };
 
-jasmine.Suite.prototype.finish = function(onComplete) {
-  this.env.reporter.reportSuiteResults(this);
-  this.finished = true;
-  if (typeof(onComplete) == 'function') {
-    onComplete();
-  }
+jasmine.Suite.prototype.disable = function() {
+  this.disabled = true;
 };
 
 jasmine.Suite.prototype.beforeEach = function(fn) {
@@ -40,32 +47,15 @@ jasmine.Suite.prototype.afterEach = function(fn) {
   this.afterFns.unshift(fn);
 };
 
-//TODO: interface should be addSpec or addSuite methods.
-jasmine.Suite.prototype.add = function(suiteOrSpec) {
-  this.children_.push(suiteOrSpec);
-  if (this.isSuite(suiteOrSpec)) {
-    this.suites_.push(suiteOrSpec);
-    this.env.currentRunner().addSuite(suiteOrSpec);
-  } else {
-    this.specs_.push(suiteOrSpec);
-  }
-  this.queue.add(suiteOrSpec);
+jasmine.Suite.prototype.addSpec = function(spec) {
+  this.children_.push(spec);
+  this.specs.push(spec);   // TODO: needed?
 };
 
-jasmine.Suite.prototype.specComplete = function(specResult) {
-  specResult.fullName = this.getFullName() + ' ' + specResult.description + '.';
-  specResult.suite = this;
-  this.env.removeAllSpies();
-  this.env.reporter.reportSpecResults(specResult);
-  this.queue.incrementQueue();
-};
-
-jasmine.Suite.prototype.specs = function() {
-  return this.specs_;
-};
-
-jasmine.Suite.prototype.suites = function() {
-  return this.suites_;
+jasmine.Suite.prototype.addSuite = function(suite) {
+  suite.parentSuite = this;
+  this.children_.push(suite);
+  this.suites.push(suite);    // TODO: needed?
 };
 
 jasmine.Suite.prototype.children = function() {
@@ -74,7 +64,36 @@ jasmine.Suite.prototype.children = function() {
 
 jasmine.Suite.prototype.execute = function(onComplete) {
   var self = this;
-  this.queue.start(function () {
-    self.finish(onComplete);
+  if (this.disabled) {
+    complete();
+    return;
+  }
+
+  var allFns = [],
+    children = this.children_;
+
+  for (var i = 0; i < children.length; i++) {
+    allFns.push(wrapChild(children[i]));
+
+    function wrapChild(child) {
+      return function(done) {
+        child.execute(done);
+      }
+    }
+  }
+
+  this.onStart(this);
+
+  this.queueRunner({
+    fns: allFns,
+    onComplete: complete
   });
+
+  function complete() {
+    self.resultCallback(self.result);
+
+    if (onComplete) {
+      onComplete();
+    }
+  }
 };

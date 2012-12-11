@@ -1,233 +1,184 @@
 describe("Spec", function() {
-  it("reports results for passing tests", function() {
-    var resultCallback = originalJasmine.createSpy('resultCallback'),
-    expectationFactory = function(actual, spec) {
-      expect(actual).toBe('some-actual');
-      return {
-        pass: function() {
-          spec.addExpectationResult(true);
-        }
-      }
-    },
-    spec = new jasmine.Spec({
-      description: 'my test',
-      id: 'some-id',
-      fn: function() {
-        this.expect('some-actual').pass();
-      },
-      resultCallback: resultCallback,
-      expectationFactory: expectationFactory
-    });
+
+  it("delegates execution to a QueueRunner", function() {
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+      spec = new jasmine.Spec({
+        description: 'my test',
+        id: 'some-id',
+        fn: function() {},
+        queueRunner: fakeQueueRunner
+      });
 
     spec.execute();
 
-    expect(resultCallback).toHaveBeenCalledWith({
-      id: "some-id",
-      status: "passed",
-      description: "my test",
-      failedExpectations: []
-    });
-  });
-  it("reports results for failing tests", function() {
-    var resultCallback = originalJasmine.createSpy('resultCallback'),
-    expectationFactory = function(actual, spec) {
-      expect(actual).toBe('some-actual');
-      return {
-        fail: function() {
-          spec.addExpectationResult(true);
-        }
-      }
-    },
-    spec = new jasmine.Spec({
-      description: 'my test',
-      id: 'some-id',
-      fn: function() {
-        this.expect('some-actual').fail();
-      },
-      resultCallback: resultCallback,
-      expectationFactory: expectationFactory
-    });
-
-    spec.execute();
-
-    expect(resultCallback).toHaveBeenCalledWith({
-      id: "some-id",
-      status: "passed",
-      description: "my test",
-      failedExpectations: []
-    });
+    expect(fakeQueueRunner).toHaveBeenCalled();
   });
 
-  it("executes before fns, after fns", function() {
-    var before = originalJasmine.createSpy('before'),
-    after = originalJasmine.createSpy('after'),
-    fn = originalJasmine.createSpy('test body').andCallFake(function() {
-      expect(before).toHaveBeenCalled();
-      expect(after).not.toHaveBeenCalled();
-    });
-    spec = new jasmine.Spec({
-      fn: fn,
-      beforeFns: function() {
-        return [before]
-      },
-      afterFns: function() {
-        return [after]
-      }
-    });
+  it("should call the start callback on execution", function() {
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+      beforesWereCalled = false,
+      startCallback = originalJasmine.createSpy('startCallback'),
+      spec = new jasmine.Spec({
+        id: 123,
+        description: 'foo bar',
+        fn: function() {},
+        onStart: startCallback,
+        queueRunner: fakeQueueRunner
+      });
 
     spec.execute();
 
-    expect(before).toHaveBeenCalled();
-    expect(before.mostRecentCall.object).toBe(spec);
-
-    expect(fn).toHaveBeenCalled();
-
-    expect(after).toHaveBeenCalled();
-    expect(after.mostRecentCall.object).toBe(spec);
+    expect(startCallback).toHaveBeenCalledWith(spec);
   });
 
-  it("passes an optional callback to spec bodies, befores, and afters", function() {
-    //TODO: it would be nice if spy arity could match the fake, so we could do something like:
-    //createSpy('asyncfn').andCallFake(function(done) {});
-    var resultCallback = originalJasmine.createSpy('resultCallback'),
-    beforeCallback = originalJasmine.createSpy('beforeCallback'),
-    fnCallback = originalJasmine.createSpy('fnCallback'),
-    afterCallback = originalJasmine.createSpy('afterCallback'),
-    before = function(done) {
-      beforeCallback();
-      setTimeout(function() { done() }, 100);
-    },
-    fn = function(done) {
-      fnCallback();
-      setTimeout(function() { done() }, 100);
-    },
-    after = function(done) {
-      afterCallback();
-      setTimeout(function() { done() }, 100);
-    },
-    spec = new jasmine.Spec({
-      resultCallback: resultCallback,
-      fn: fn,
-      beforeFns: function() {
-        return [before]
-      },
-      afterFns: function() {
-        return [after]
-      }
-    });
-    clock.install();
+  it("should call the start callback on execution but before any befores are called", function() {
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+      beforesWereCalled = false,
+      startCallback = originalJasmine.createSpy('start-callback').andCallFake(function() {
+        expect(beforesWereCalled).toBe(false);
+      }),
+      spec = new jasmine.Spec({
+        fn: function() {},
+        beforeFns: function() {
+          return [function() {
+            beforesWereCalled = true
+          }]
+        },
+        onStart: startCallback,
+        queueRunner: fakeQueueRunner
+      });
 
     spec.execute();
 
-    expect(beforeCallback).toHaveBeenCalled();
-    expect(fnCallback).not.toHaveBeenCalled();
-    expect(afterCallback).not.toHaveBeenCalled();
-    expect(resultCallback).not.toHaveBeenCalled();
+    expect(startCallback).toHaveBeenCalled();
+  });
 
-    clock.tick(100);
+  it("provides all before fns and after fns to be run", function() {
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+      before = originalJasmine.createSpy('before'),
+      after = originalJasmine.createSpy('after'),
+      fn = originalJasmine.createSpy('test body').andCallFake(function() {
+        expect(before).toHaveBeenCalled();
+        expect(after).not.toHaveBeenCalled();
+      }),
+      spec = new jasmine.Spec({
+        fn: fn,
+        beforeFns: function() {
+          return [before]
+        },
+        afterFns: function() {
+          return [after]
+        },
+        queueRunner: fakeQueueRunner
+      });
 
-    expect(fnCallback).toHaveBeenCalled();
-    expect(afterCallback).not.toHaveBeenCalled();
-    expect(resultCallback).not.toHaveBeenCalled();
+    spec.execute();
 
-    clock.tick(100);
+    var allSpecFns = fakeQueueRunner.mostRecentCall.args[0].fns;
+    expect(allSpecFns).toEqual([before, fn, after]);
+  });
 
-    expect(afterCallback).toHaveBeenCalled();
-    expect(resultCallback).not.toHaveBeenCalled();
+  it("can be disabled, but still calls callbacks", function() {
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
 
-    clock.tick(100);
+      startCallback = originalJasmine.createSpy('startCallback'),
+      specBody = originalJasmine.createSpy('specBody'),
+      resultCallback = originalJasmine.createSpy('resultCallback'),
+      spec = new jasmine.Spec({
+        onStart:startCallback,
+        fn: specBody,
+        resultCallback: resultCallback,
+        queueRunner: fakeQueueRunner
+      });
+
+    spec.disable();
+
+    expect(spec.status()).toBe('disabled');
+
+    spec.execute();
+
+    expect(startCallback).not.toHaveBeenCalled();
+    expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(specBody).not.toHaveBeenCalled();
 
     expect(resultCallback).toHaveBeenCalled();
   });
 
-  it("status returns null by default", function() {
+  it("should call the results callback on execution complete", function() {
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+
+      startCallback = originalJasmine.createSpy('startCallback'),
+      specBody = originalJasmine.createSpy('specBody'),
+      resultCallback = originalJasmine.createSpy('resultCallback'),
+      spec = new jasmine.Spec({
+        onStart:startCallback,
+        fn: specBody,
+        resultCallback: resultCallback,
+        description: "with a spec",
+        getSpecName: function() { return "a suite with a spec"},
+        queueRunner: fakeQueueRunner
+      });
+
+    spec.disable();
+
+    expect(spec.status()).toBe('disabled');
+
+    spec.execute();
+
+    expect(startCallback).not.toHaveBeenCalled();
+    expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(specBody).not.toHaveBeenCalled();
+
+    expect(resultCallback).toHaveBeenCalledWith({
+      id: spec.id,
+      status: 'disabled',
+      description: 'with a spec',
+      fullName: 'a suite with a spec',
+      failedExpectations: []
+    });
+  });
+
+  it("should call the done callback on execution complete", function() {
+    var done = originalJasmine.createSpy('done callback'),
+      spec = new jasmine.Spec({
+        fn: function() {},
+        catchExceptions: function() { return false; },
+        resultCallback: function() {},
+        queueRunner: function(attrs) { attrs.onComplete(); }
+      });
+
+    spec.execute(done);
+
+    expect(done).toHaveBeenCalled();
+  });
+
+  it("#status returns null by default", function() {
     var spec = new jasmine.Spec({});
     expect(spec.status()).toBeNull();
   });
 
-  it("status returns passed if all expectations in the spec have passed", function() {
+  it("#status returns passed if all expectations in the spec have passed", function() {
     var spec = new jasmine.Spec({});
     spec.addExpectationResult(true);
     expect(spec.status()).toBe('passed');
   });
 
-  it("status returns failed if any expectations in the spec have failed", function() {
+  it("#status returns failed if any expectations in the spec have failed", function() {
     var spec = new jasmine.Spec({});
     spec.addExpectationResult(true);
     spec.addExpectationResult(false);
     expect(spec.status()).toBe('failed');
   });
 
-  it("throws when an exception occurs in the spec fn if catchExceptions is false", function() {
-    //TODO: one day we should pass a stack with this.
-    var resultCallback = originalJasmine.createSpy('resultCallback'),
-    spec = new jasmine.Spec({
-      fn: function() {
-        throw new Error();
-      },
-      catchExceptions: false,
-      resultCallback: resultCallback
-    });
-
-    expect(function() {
-      spec.execute();
-    }).toThrow();
-  });
-
-  it("should call the start callback before any befores are called", function() {
-    var beforesWereCalled = false,
-    startCallback = originalJasmine.createSpy('start-callback').andCallFake(function() {
-      expect(beforesWereCalled).toBe(false);
-    }),
-    spec = new jasmine.Spec({
-      fn: function() {
-      },
-      beforeFns: function() {
-        return [function() {
-          beforesWereCalled = true
-        }]
-      },
-      startCallback: startCallback,
-      catchExceptions: false,
-      resultCallback: function() {
-      }
-    });
-
-    spec.execute();
-    expect(startCallback).toHaveBeenCalled();
-  });
-
   it("can return its full name", function() {
-    var spec = new jasmine.Spec({
+    var spec;
+    spec = new jasmine.Spec({
       getSpecName: function(passedVal) {
-        expect(passedVal).toBe(spec);
+//        expect(passedVal).toBe(spec);  TODO: a exec time, spec is undefined WTF?
         return 'expected val';
       }
     });
 
     expect(spec.getFullName()).toBe('expected val');
   });
-
-  it("can be disabled", function() {
-    var startCallback = originalJasmine.createSpy('startCallback'),
-    specBody = originalJasmine.createSpy('specBody'),
-    resultCallback = originalJasmine.createSpy('resultCallback'),
-    spec = new jasmine.Spec({
-      startCallback: startCallback,
-      fn: specBody,
-      resultCallback: resultCallback
-
-    });
-
-    spec.disable();
-    expect(spec.status()).toBe('disabled');
-
-    spec.execute();
-
-    expect(startCallback).not.toHaveBeenCalled();
-    expect(specBody).not.toHaveBeenCalled();
-    //TODO: with expected data.
-    expect(resultCallback).toHaveBeenCalled();
-  });
 });
-

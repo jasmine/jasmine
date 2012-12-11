@@ -6,25 +6,21 @@ class JasmineDev < Thor
       "ExceptionFormatter.js",
       "ExpectationResult.js",
       "Env.js",
-      "Reporter.js",
       "JsApiReporter.js",
       "Matchers.js",
-      "MultiReporter.js",
       "PrettyPrinter.js",
-      "Queue.js",
-      "Runner.js",
+      "QueueRunner.js",
       "Spec.js",
       "Suite.js",
       "Clock.js",
-      "DelayedFunctionScheduler.js"
+      "DelayedFunctionScheduler.js",
+      "ReportDispatcher.js"
     ],
 
     :html => [
-      "HtmlReporterHelpers.js",
       "HtmlReporter.js",
-      "ReporterView.js",
-      "SpecView.js",
-      "SuiteView.js",
+      "ResultsNode.js",
+      "QueryString.js"
     ]
   }
 end

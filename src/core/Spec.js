@@ -1,24 +1,33 @@
 jasmine.Spec = function(attrs) {
-  this.failedExpectations = [];
   this.encounteredExpectations = false;
   this.expectationFactory = attrs.expectationFactory;
-  this.resultCallback = attrs.resultCallback  || function() {};
+  this.resultCallback = attrs.resultCallback || function() {};
   this.id = attrs.id;
-  this.description = attrs.description;
+  this.description = attrs.description || '';
   this.fn = attrs.fn;
   this.beforeFns = attrs.beforeFns || function() {};
   this.afterFns = attrs.afterFns || function() {};
   this.catchingExceptions = attrs.catchingExceptions;
-  this.startCallback = attrs.startCallback || function() {};
+  this.onStart = attrs.onStart || function() {};
   this.exceptionFormatter = attrs.exceptionFormatter || function() {};
-  this.getSpecName = attrs.getSpecName;
+  this.getSpecName = attrs.getSpecName || function() { return ''; };
   this.expectationResultFactory = attrs.expectationResultFactory || function() {};
+  this.queueRunner = attrs.queueRunner || { execute: function() {}};
+  this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
+
+  this.result = {
+    id: this.id,
+    description: this.description,
+    fullName: this.getFullName(),
+    status: this.status(),
+    failedExpectations: []
+  };
 };
 
 jasmine.Spec.prototype.addExpectationResult = function(passed, data) {
   this.encounteredExpectations = true;
   if (!passed) {
-    this.failedExpectations.push(data);
+    this.result.failedExpectations.push(data);
   }
 };
 
@@ -26,26 +35,22 @@ jasmine.Spec.prototype.expect = function(actual) {
   return this.expectationFactory(actual, this);
 };
 
-jasmine.Spec.prototype.execute = function() {
+jasmine.Spec.prototype.execute = function(onComplete) {
   var self = this;
+
   if (this.disabled) {
-    resultCallback();
+    complete();
     return;
   }
 
   var befores = this.beforeFns() || [],
-  afters = this.afterFns() || [];
-  this.startCallback(this);
+    afters = this.afterFns() || [];
   var allFns = befores.concat(this.fn).concat(afters);
 
-  queueRunner(allFns, 0);
-
-  function attempt(fn) {
-    try {
-      fn();
-    } catch (e) {
-      //TODO: weird. buildExpectationResult is really a presenter for expectations
-      //so this should take an expectation object.
+  this.onStart(this);
+  this.queueRunner({
+    fns: allFns,
+    onException: function(e) {
       self.addExpectationResult(false, self.expectationResultFactory({
         matcherName: "",
         passed: false,
@@ -54,35 +59,17 @@ jasmine.Spec.prototype.execute = function() {
         message: self.exceptionFormatter(e),
         trace: e
       }));
-      if (!self.catchingExceptions()) {
-        //TODO: set a var when we catch an exception and
-        //use a finally block to close the loop in a nice way..
-        throw e;
-      }
-    }
-  }
+    },
+    onComplete: complete
+  });
 
-  function queueRunner(allFns, index) {
-    if (index >= allFns.length) {
-      resultCallback();
-      return;
-    }
-    var fn = allFns[index];
-    if (fn.length > 0) {
-      attempt(function() { fn.call(self, function() {  queueRunner(allFns, index + 1) }) });
-    } else {
-      attempt(function() { fn.call(self); });
-      queueRunner(allFns, index + 1);
-    }
-  }
+  function complete() {
+    self.result.status = self.status();
+    self.resultCallback(self.result);
 
-  function resultCallback() {
-    self.resultCallback({
-      id: self.id,
-      status: self.status(),
-      description: self.description,
-      failedExpectations: self.failedExpectations
-    });
+    if (onComplete) {
+      onComplete();
+    }
   }
 };
 
@@ -98,7 +85,8 @@ jasmine.Spec.prototype.status = function() {
   if (!this.encounteredExpectations) {
     return null;
   }
-  if (this.failedExpectations.length > 0) {
+
+  if (this.result.failedExpectations.length > 0) {
     return 'failed';
   } else {
     return 'passed';

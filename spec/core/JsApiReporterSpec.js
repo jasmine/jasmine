@@ -1,5 +1,5 @@
-describe('jasmine.jsApiReporter', function() {
-  describe('results', function () {
+xdescribe('JsApiReporter (integration specs)', function() {
+  describe('results', function() {
     var reporter, spec1, spec2;
     var env;
     var suite, nestedSuite, nestedSpec;
@@ -33,13 +33,13 @@ describe('jasmine.jsApiReporter', function() {
 
     });
 
-    it('results() should return a hash of all results, indexed by spec id', function () {
+    it('results() should return a hash of all results, indexed by spec id', function() {
       var expectedSpec1Results = {
-        result: "passed"
-      },
-      expectedSpec2Results = {
-        result: "failed"
-      };
+          result: "passed"
+        },
+        expectedSpec2Results = {
+          result: "failed"
+        };
       expect(reporter.results()[spec1.id].result).toEqual('passed');
       expect(reporter.results()[spec2.id].result).toEqual('failed');
     });
@@ -76,5 +76,97 @@ describe('jasmine.jsApiReporter', function() {
       });
 
     });
+  });
+});
+
+
+describe("JsApiReporter", function() {
+
+  it("knows when a full environment is started", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    expect(reporter.started).toBe(false);
+    expect(reporter.finished).toBe(false);
+
+    reporter.jasmineStarted();
+
+    expect(reporter.started).toBe(true);
+    expect(reporter.finished).toBe(false);
+  });
+
+  it("knows when a full environment is done", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    expect(reporter.started).toBe(false);
+    expect(reporter.finished).toBe(false);
+
+    reporter.jasmineStarted();
+    reporter.jasmineDone();
+
+    expect(reporter.finished).toBe(true);
+  });
+
+  it("defaults to 'loaded' status", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    expect(reporter.status()).toEqual('loaded');
+  });
+
+  it("reports 'started' when Jasmine has started", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    reporter.jasmineStarted();
+
+    expect(reporter.status()).toEqual('started');
+  });
+
+  it("reports 'done' when Jasmine is done", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    reporter.jasmineDone();
+
+    expect(reporter.status()).toEqual('done');
+  });
+
+  it("tracks a suite", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    reporter.suiteStarted({
+      id: 123,
+      description: "A suite"
+    });
+
+    var suites = reporter.suites();
+
+    expect(suites).toEqual({123: {id: 123, description: "A suite"}});
+
+    reporter.suiteDone({
+      id: 123,
+      description: "A suite",
+      status: 'passed'
+    });
+
+    expect(suites).toEqual({123: {id: 123, description: "A suite", status: 'passed'}});
+  });
+
+  it("tracks a spec", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    reporter.specStarted({
+      id: 123,
+      description: "A spec"
+    });
+
+    var specs = reporter.specs();
+
+    expect(specs).toEqual({123: {id: 123, description: "A spec"}});
+
+    reporter.specDone({
+      id: 123,
+      description: "A spec",
+      status: 'passed'
+    });
+
+    expect(specs).toEqual({123: {id: 123, description: "A spec", status: 'passed'}});
   });
 });

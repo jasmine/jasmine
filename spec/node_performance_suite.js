@@ -86,7 +86,11 @@ jasmine.executeSpecs = function(specs, done, isVerbose, showColors) {
   }
 
   var jasmineEnv = jasmine.getEnv();
-  var consoleReporter = new jasmine.ConsoleReporter(util.print, done, showColors);
+  var consoleReporter = new jasmine.ConsoleReporter({
+    print: util.print,
+    onComplete: done,
+    showColors: showColors
+  });
 
   jasmineEnv.addReporter(consoleReporter);
   jasmineEnv.execute();

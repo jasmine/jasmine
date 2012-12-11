@@ -5,20 +5,14 @@ src_dir:
 src_files:
   - 'core/base.js'
   - 'core/util.js'
-  - 'core/Reporter.js'
   #end of known dependencies
   - 'core/Spec.js'
   - 'core/Env.js'
   - 'core/JsApiReporter.js'
   - 'core/Matchers.js'
-  - 'core/MultiReporter.js'
-  - 'core/NestedResults.js'
   - 'core/PrettyPrinter.js'
-  - 'core/Queue.js'
-  - 'core/Runner.js'
   - 'core/Suite.js'
-  - 'html/HtmlReporterHelpers.js'
-  - 'html/HtmlReporter.js'
+  - 'html/**.js'
   - '**/*.js'
 stylesheets:
 boot_dir: 'spec/support'

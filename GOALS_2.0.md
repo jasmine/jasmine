@@ -14,7 +14,10 @@
 
 ### Hard
 * Finish killing Globals
-  * Guidelines: everything that isn't a CTOR should be closed inside `Env`, and everything that is a CTOR needs to be `new`ed inside the `Env`
+  * Guidelines:
+    * New objects can have constructors on `jasmine`
+    * Top level functions can live on `jasmine`
+    * Top level (i.e., any `jasmine` property) should only be referenced inside the `Env` constructor
   * Spies
   * isA functions:
     * isArray_ - used in matchers and spies
@@ -26,20 +29,18 @@
     * argsToArray is used for Spies and matching
     * inherit is for how matchers are added/mixed in, reporters, and pretty printers
     * formatException is used only inside Env/spec
-    * htmlEscape is for messages in matchers - should this be HTML at all? Is that Reporter responsibility?
-* Suites need to be unit-tested
-* Remove Queue from Suite in favor of queuerunner refactoring
-* Remover Runner in favor of a top-level Suite
-  * This means Env needs to `new` a `Suite` first thing
-* get feature parity back on HTMLReporter
+    * htmlEscape is for messages in matchers - should this be HTML at all? Is that * Matchers improvements
+  * move AddMatchers to Env & global (away from spec)
+  * make matchers unit-testable
+  * write doc on how to make a matcher
 
 ### Easy
-* Refactor `queuerunner` into a new object
-* xdescribe / xit make skipped specs instead of empty blocks
 
 ## Other Topics
 
 * Build - can we, should we redo the build and release process AGAIN in order to make it less arcane
+  * Want to add JSHint to build
+  * Use a standard JS/Node based concat system instead of custom Ruby?
 * Docs
   * JsDoc is a pain to host and RubyMine is pretty good at navigating. I say we kill it officially
   * Docco has gone over well. Should we annotate all the sources and then have Pages be more complex, having tutorials and annotated source like Backbone? Are we small enough?

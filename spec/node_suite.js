@@ -91,7 +91,11 @@ jasmine.executeSpecs = function(specs, done, isVerbose, showColors) {
   }
 
   var jasmineEnv = jasmine.getEnv();
-  var consoleReporter = new jasmine.ConsoleReporter(util.print, done, showColors);
+  var consoleReporter = new jasmine.ConsoleReporter({
+    print: util.print,
+    onComplete: done,
+    showColors: showColors
+  });
 
   jasmineEnv.addReporter(consoleReporter);
   jasmineEnv.execute();
@@ -168,7 +172,7 @@ process.argv.forEach(function(arg) {
 var specs = jasmine.getAllSpecFiles(__dirname, new RegExp("Spec.js$"));
 var domIndependentSpecs = [];
 for (var i = 0; i < specs.length; i++) {
-  if (fs.readFileSync(specs[i], "utf8").indexOf("document.createElement") < 0) {
+  if (!specs[i].match('html')) {
     domIndependentSpecs.push(specs[i]);
   }
 }

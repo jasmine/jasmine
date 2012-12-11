@@ -1,19 +1,19 @@
 jasmine.Clock = function(global, delayedFunctionScheduler) {
   var self = this,
-  realTimingFunctions = {
-    setTimeout: global.setTimeout,
-    clearTimeout: global.clearTimeout,
-    setInterval: global.setInterval,
-    clearInterval: global.clearInterval
-  },
-  fakeTimingFunctions = {
-    setTimeout: setTimeout,
-    clearTimeout: clearTimeout,
-    setInterval: setInterval,
-    clearInterval: clearInterval
-  },
-  timer = realTimingFunctions,
-  installed = false;
+    realTimingFunctions = {
+      setTimeout: global.setTimeout,
+      clearTimeout: global.clearTimeout,
+      setInterval: global.setInterval,
+      clearInterval: global.clearInterval
+    },
+    fakeTimingFunctions = {
+      setTimeout: setTimeout,
+      clearTimeout: clearTimeout,
+      setInterval: setInterval,
+      clearInterval: clearInterval
+    },
+    timer = realTimingFunctions,
+    installed = false;
 
   self.install = function() {
     installed = true;
@@ -72,7 +72,7 @@ jasmine.Clock = function(global, delayedFunctionScheduler) {
   }
 
   function setTimeout(fn, delay) {
-    return delayedFunctionScheduler.scheduleFunction(fn, delay, argSlice(arguments,2));
+    return delayedFunctionScheduler.scheduleFunction(fn, delay, argSlice(arguments, 2));
   }
 
   function clearTimeout(id) {
