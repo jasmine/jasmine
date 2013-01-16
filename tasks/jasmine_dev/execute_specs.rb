@@ -17,6 +17,23 @@ class JasmineDev < Thor
     run_with_output "node spec/node_suite.js #{with_color_option}", :capture => true
   end
 
+  desc "execute_specs_in_node", "Run all relevant specs in Node.js"
+
+  def execute_specs_in_gjs
+    return unless gjs_installed?
+
+    invoke :build_distribution
+    invoke :count_specs
+
+    say JasmineDev.spacer
+
+    say "Running all appropriate specs via Gjs...", :cyan
+
+    with_color_option = STDOUT.isatty ? "--color" : "--noColor"
+
+    run_with_output "gjs spec/gjs_suite.js #{with_color_option}", :capture => true
+  end
+
   desc "execute_specs_in_browser", "Run all relevent specs in your default browser"
 
   def execute_specs_in_browser
@@ -34,6 +51,7 @@ class JasmineDev < Thor
 
   def execute_specs
     invoke :execute_specs_in_node
+    invoke :execute_specs_in_gjs
     invoke :execute_specs_in_browser
   end
 

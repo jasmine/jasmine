@@ -38,6 +38,40 @@ describe "Spec tasks" do
     end
   end
 
+  describe "execute_specs_in_gjs" do
+    describe "when Gjs is not present" do
+      before do
+        jasmine_dev.should_receive(:has_gjs?).and_return(false)
+        @output = capture_output { jasmine_dev.execute_specs_in_gjs }
+      end
+
+      it "should prompt the user to install Gjs" do
+        @output.should match(/Gjs is required/)
+      end
+    end
+
+    describe "when Gjs is present" do
+      before do
+        jasmine_dev.should_receive(:has_gjs?).and_return(true)
+        @output = capture_output { jasmine_dev.execute_specs_in_gjs }
+      end
+
+      it "should build the distribution" do
+        @output.should match(/Building Jasmine distribution/)
+      end
+
+      it "should tell the developer that the specs are being counted" do
+        @output.should match(/Counting specs/)
+      end
+
+      it "should tell the user that the specs are running in Gjs" do
+        @output.should match(/specs via Gjs/)
+        @output.should match(/Started/)
+        @output.should match(/\d+ specs, 0 failures/)
+      end
+    end
+  end
+
   describe "execute_specs_in_browser" do
     before do
       jasmine_dev.should_receive(:run)
@@ -72,6 +106,10 @@ describe "Spec tasks" do
 
     it "should tell the user that the specs are running in Node.js" do
       @output.should match(/specs via Node/)
+    end
+
+    it "should tell the user that the specs are running in Gjs" do
+      @output.should match(/specs via Gjs/)
     end
 
     it "should tell the user that the specs are running in the broswer" do

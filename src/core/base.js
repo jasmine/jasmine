@@ -1,3 +1,4 @@
+
 var isCommonJS = typeof window == "undefined" && typeof exports == "object";
 
 /**
@@ -7,6 +8,16 @@ var isCommonJS = typeof window == "undefined" && typeof exports == "object";
  */
 var jasmine = {};
 if (isCommonJS) exports.jasmine = jasmine;
+
+jasmine.GLib = null;
+if (typeof imports !== 'undefined') {
+  try {
+    jasmine.GLib = imports.gi.GLib;
+  } catch (e) {
+    // Ignore. We probably don't have GJS.
+  }
+}
+
 /**
  * @private
  */
@@ -79,10 +90,28 @@ jasmine.bindOriginal_ = function(base, name) {
   }
 };
 
-jasmine.setTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'setTimeout');
-jasmine.clearTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearTimeout');
-jasmine.setInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'setInterval');
-jasmine.clearInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearInterval');
+if ('setTimeout' in jasmine.getGlobal()) {
+  jasmine.setTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'setTimeout');
+  jasmine.clearTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearTimeout');
+  jasmine.setInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'setInterval');
+  jasmine.clearInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearInterval');
+} else if (GLib) {
+  // GJS does not have setTimeout and setInterval. Use GLib to
+  // simulate their behaviour.
+  jasmine.setTimeout = function(cb, time) {
+    return jasmine.GLib.timeout_add(jasmine.GLib.PRIORITY_DEFAULT, time, function() {
+      cb();
+      return false;
+    }, null, null);
+  };
+  jasmine.setInterval = function(cb, time) {
+    return jasmine.GLib.timeout_add(jasmine.GLib.PRIORITY_DEFAULT, time, function() {
+      cb();
+      return true;
+    }, null, null);
+  };
+  jasmine.clearTimeout = jasmine.clearInterval = jasmine.GLib.source_remove;
+}
 
 jasmine.MessageResult = function(values) {
   this.type = 'log';
