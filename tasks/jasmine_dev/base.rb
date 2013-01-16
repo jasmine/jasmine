@@ -34,8 +34,21 @@ class JasmineDev < Thor
       false
     end
 
+    def gjs_installed?
+      return true if has_gjs?
+
+      say "Gjs is required to develop Jasmine. Please visit https://live.gnome.org/Gjs to install.",
+          :red
+      false
+    end
+
     def has_node?
       run "which node", :verbose => false, :capture => true
+      $?.exitstatus == 0
+    end
+
+    def has_gjs?
+      run "which gjs", :verbose => false, :capture => true
       $?.exitstatus == 0
     end
 
