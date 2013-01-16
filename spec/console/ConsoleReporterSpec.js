@@ -198,7 +198,7 @@ describe("ConsoleReporter", function() {
 
       reporter.specDone({status: "passed"});
 
-      expect(out.getOutput()).toEqual("\033[32m.\033[0m");
+      expect(out.getOutput()).toEqual("\x1B[32m.\x1B[0m");
     });
 
     it("does not report a disabled spec", function() {
@@ -220,7 +220,7 @@ describe("ConsoleReporter", function() {
 
       reporter.specDone({status: 'failed'});
 
-      expect(out.getOutput()).toEqual("\033[31mF\033[0m");
+      expect(out.getOutput()).toEqual("\x1B[31mF\x1B[0m");
     });
   });
 });
