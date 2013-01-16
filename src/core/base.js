@@ -51,12 +51,13 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
  */
 jasmine.CATCH_EXCEPTIONS = true;
 
+/**
+ * ECMAScript 5 strict mode doesn't promote undefined to the global object,
+ * so if you want to run jasmine in strict mode, this is the only way to
+ * get the global obje
+jasmine.global = this;
 jasmine.getGlobal = function() {
-  function getGlobal() {
-    return this;
-  }
-
-  return getGlobal();
+  return jasmine.global;
 };
 
 /**
