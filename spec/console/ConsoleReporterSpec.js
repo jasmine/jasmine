@@ -1,23 +1,23 @@
 describe("ConsoleReporter", function() {
   //keep these literal.  otherwise the test loses value as a test.
   function green(str) {
-    return '\033[32m' + str + '\033[0m';
+    return '\x1B[32m' + str + '\x1B[0m';
   }
 
   function red(str) {
-    return '\033[31m' + str + '\033[0m';
+    return '\x1B[31m' + str + '\x1B[0m';
   }
 
   function yellow(str) {
-    return '\033[33m' + str + '\033[0m';
+    return '\x1B[33m' + str + '\x1B[0m';
   }
 
   function prefixGreen(str) {
-    return '\033[32m' + str;
+    return '\x1B[32m' + str;
   }
 
   function prefixRed(str) {
-    return '\033[31m' + str;
+    return '\x1B[31m' + str;
   }
 
   var newline = "\n";

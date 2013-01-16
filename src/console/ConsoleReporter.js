@@ -5,10 +5,10 @@ jasmine.ConsoleReporter = function(print, doneCallback, showColors) {
   doneCallback = doneCallback || function() {};
 
   var ansi = {
-      green: '\033[32m',
-      red: '\033[31m',
-      yellow: '\033[33m',
-      none: '\033[0m'
+      green: '\x1B[32m',
+      red: '\x1B[31m',
+      yellow: '\x1B[33m',
+      none: '\x1B[0m'
     },
     language = {
       spec: "spec",
