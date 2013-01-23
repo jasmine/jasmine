@@ -442,6 +442,10 @@ jasmine.isSpy = function(putativeSpy) {
  * @param {Array} methodNames array of names of methods to make spies
  */
 jasmine.createSpyObj = function(baseName, methodNames) {
+  if (jasmine.isArray_(baseName) && methodNames === undefined) {
+    methodNames = baseName;
+    baseName = 'unknown';
+  }
   if (!jasmine.isArray_(methodNames) || methodNames.length === 0) {
     throw new Error('createSpyObj requires a non-empty array of method names to create spies for');
   }
