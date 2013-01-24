@@ -82,13 +82,16 @@ getJasmineRequireObj().pp = function(j$) {
       this.append('Array');
       return;
     }
-
+    var length = Math.min(array.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
     this.append('[ ');
-    for (var i = 0; i < array.length; i++) {
+    for (var i = 0; i < length; i++) {
       if (i > 0) {
         this.append(', ');
       }
       this.format(array[i]);
+    }
+    if(array.length > length){
+      this.append(', ...');
     }
     this.append(' ]');
   };

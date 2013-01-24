@@ -70,6 +70,18 @@ describe("j$.pp", function () {
     expect(j$.pp(frozenObject)).toEqual("{ foo: { bar: 'baz' }, circular: <circular reference: Object> }");
   });
 
+  it("should truncate arrays that are longer than j$.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
+    var originalMaxLength = j$.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+    var array = [1, 2, 3];
+
+    try {
+      j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+      expect(j$.pp(array)).toEqual("[ 1, 2, ... ]");
+    } finally {
+      j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
+    }
+  });
+
   it("should stringify RegExp objects properly", function() {
     expect(j$.pp(/x|y|z/)).toEqual("/x|y|z/");
   });
