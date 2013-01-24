@@ -62,7 +62,21 @@ describe("jasmine.pp", function () {
     }
   });
 
-  it("should stringify RegExp objects properly", function() {
+    it("should not print contents of arrays that are longer than jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
+        var originalMaxLength = jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+        var array = []; array[1] = "foop";
+
+        try {
+            expect(jasmine.pp(array)).toEqual("[ undefined, 'foop' ]");
+
+            jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH = 1;
+            expect(jasmine.pp(array)).toEqual("Array[2]");
+        } finally {
+            jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
+        }
+    });
+
+    it("should stringify RegExp objects properly", function() {
     expect(jasmine.pp(/x|y|z/)).toEqual("/x|y|z/");
   });
 

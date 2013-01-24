@@ -86,6 +86,13 @@ jasmine.StringPrettyPrinter.prototype.emitArray = function(array) {
     return;
   }
 
+  if (array.length > jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH) {
+    this.append("Array[");
+    this.append(array.length);
+    this.append("]");
+    return;
+  }
+
   this.append('[ ');
   for (var i = 0; i < array.length; i++) {
     if (i > 0) {

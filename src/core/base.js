@@ -40,6 +40,11 @@ jasmine.DEFAULT_UPDATE_INTERVAL = 250;
 jasmine.MAX_PRETTY_PRINT_DEPTH = 40;
 
 /**
+ * Maximum length of array that will be pretty-printed
+ */
+jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH = 100;
+
+/**
  * Default timeout interval in milliseconds for waitsFor() blocks.
  */
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
