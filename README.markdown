@@ -1,4 +1,4 @@
-<a name="README">[Jasmine](http://pivotal.github.com/jasmine/)</a> <a title="Build at Travis CI" href="http://travis-ci.org/#!/pivotal/jasmine"><img src="https://secure.travis-ci.org/pivotal/jasmine.png" /></a>
+<a name="README">[Jasmine](http://pivotal.github.com/jasmine/)</a> [![Build Status](https://travis-ci.org/pivotal/jasmine.png?branch=master)](https://travis-ci.org/pivotal/jasmine)
 
 =======
 **A JavaScript Testing Framework**
