@@ -19,6 +19,7 @@ class JasmineDev < Thor
 
     :html => [
       "HtmlReporter.js",
+      "HtmlSpecFilter.js",
       "ResultsNode.js",
       "QueryString.js"
     ]

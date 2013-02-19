@@ -5,7 +5,6 @@ jasmine.HtmlReporter = function(options) {
     createElement = options.createElement,
     createTextNode = options.createTextNode,
     results = [],
-    queryString = options.queryString,
     startTime,
     specsExecuted = 0,
     failureCount = 0,
@@ -27,18 +26,6 @@ jasmine.HtmlReporter = function(options) {
     getContainer().appendChild(htmlReporterMain);
 
     symbols = find(".symbol-summary")[0];
-  };
-
-  var specFilterPattern;
-
-  this.specFilter = function(spec) {
-    if (!isFiltered()) {
-      return true;
-    }
-
-    var specName = spec.getFullName();
-
-    return !!(specName.match(specFilterPattern));
   };
 
   var totalSpecsDefined;
@@ -120,9 +107,7 @@ jasmine.HtmlReporter = function(options) {
     var checkbox = find("input")[0];
 
     checkbox.checked = !env.catchingExceptions();
-    checkbox.onclick = function() {
-      queryString.setParam("catch", !checkbox.checked);
-    };
+    checkbox.onclick = options.onRaiseExceptionsClick;
 
     if (specsExecuted < totalSpecsDefined) {
       var skippedMessage = "Ran " + specsExecuted + " of " + totalSpecsDefined + " specs - run all";
@@ -243,18 +228,6 @@ jasmine.HtmlReporter = function(options) {
 
   function specHref(result) {
     return "?spec=" + encodeURIComponent(result.fullName);
-  }
-
-  function isFiltered() {
-    buildSpecFilter();
-
-    return !!specFilterPattern;
-  }
-
-  function buildSpecFilter() {
-    var specFilterParam = queryString.getParam("spec") || "";
-
-    specFilterPattern = new RegExp(specFilterParam);
   }
 
   function setMenuModeTo(mode) {

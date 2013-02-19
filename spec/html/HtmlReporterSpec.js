@@ -188,7 +188,6 @@ describe("New HtmlReporter", function() {
       reporter.jasmineDone();
       var summary = container.getElementsByClassName("summary")[0];
 
-      console.error("=============>", summary);
       expect(summary.childNodes.length).toEqual(1);
 
       var outerSuite = summary.childNodes[0];
@@ -221,12 +220,18 @@ describe("New HtmlReporter", function() {
       it("should be unchecked if the env is catching", function() {
         var env = new jasmine.Env(),
           container = document.createElement("div"),
-          getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
+          getContainer = function() {
+            return container;
+          },
+          reporter = new jasmine.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            createElement: function() { return document.createElement.apply(document, arguments); },
-            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
           });
 
         reporter.initialize();
@@ -239,20 +244,18 @@ describe("New HtmlReporter", function() {
       it("should be checked if the env is not catching", function() {
         var env = new jasmine.Env(),
           container = document.createElement("div"),
-          fakeQueryString = "",
-          fakeWindowLocation = {
-            search: fakeQueryString
+          getContainer = function() {
+            return container;
           },
-          queryString = new jasmine.QueryString({
-            getWindowLocation: function() { return fakeWindowLocation; }
-          }),
-          getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
+          reporter = new jasmine.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            queryString: queryString,
-            createElement: function() { return document.createElement.apply(document, arguments); },
-            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
           });
 
         reporter.initialize();
@@ -266,20 +269,20 @@ describe("New HtmlReporter", function() {
       it("should affect the query param for catching exceptions", function() {
         var env = new jasmine.Env(),
           container = document.createElement("div"),
-          fakeQueryString = "",
-          fakeWindowLocation = {
-            search: fakeQueryString
+          exceptionsClickHandler = jasmine.createSpy("raise exceptions checked"),
+          getContainer = function() {
+            return container;
           },
-          queryString = new jasmine.QueryString({
-            getWindowLocation: function() { return fakeWindowLocation; }
-          }),
-          getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
+          reporter = new jasmine.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            queryString: queryString,
-            createElement: function() { return document.createElement.apply(document, arguments); },
-            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+            onRaiseExceptionsClick: exceptionsClickHandler,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
           });
 
         reporter.initialize();
@@ -287,10 +290,7 @@ describe("New HtmlReporter", function() {
 
         var input = container.getElementsByClassName("raise")[0];
         input.click();
-        expect(queryString.getParam("catch")).toEqual(false);
-
-        input.click();
-        expect(queryString.getParam("catch")).toEqual(true);
+        expect(exceptionsClickHandler).toHaveBeenCalled();
       });
     });
 
@@ -425,132 +425,6 @@ describe("New HtmlReporter", function() {
       });
     });
   });
-
-  describe("specFilter", function() {
-
-    it("always returns true if there is no filter", function() {
-      var env = new jasmine.Env(),
-        container = document.createElement("div"),
-        fakeQueryString = "",
-        fakeWindowLocation = {
-          search: fakeQueryString
-        },
-        queryString = new jasmine.QueryString({
-          getWindowLocation: function() { return fakeWindowLocation; }
-        }),
-        getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
-          env: env,
-          getContainer: getContainer,
-          queryString: queryString,
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        }),
-        fakeSpec = {
-          getFullName: function() { return "A suite with a spec"}
-        };
-
-      expect(reporter.specFilter(fakeSpec)).toBe(true);
-    });
-
-    it("matches a focused spec name", function() {
-      var env = new jasmine.Env(),
-        container = document.createElement("div"),
-        fakeWindowLocation = {
-          search: "?spec=A%20suite%20with%20a%20spec"
-        },
-        queryString = new jasmine.QueryString({
-          getWindowLocation: function() { return fakeWindowLocation; }
-        }),
-        getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
-          env: env,
-          getContainer: getContainer,
-          queryString: queryString,
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        }),
-        fakeMatchingSpec = {
-          getFullName: function() { return "A suite with a spec"}
-        },
-        fakeNonMatchingSpec = {
-          getFullName: function() { return "sasquatch"}
-        };
-
-      expect(reporter.specFilter(fakeMatchingSpec)).toBe(true);
-      expect(reporter.specFilter(fakeNonMatchingSpec)).toBe(false);
-    });
-
-    it("matches a substring of a spec name", function() {
-      var env = new jasmine.Env(),
-        container = document.createElement("div"),
-        fakeWindowLocation = {
-          search: "?spec=with"
-        },
-        queryString = new jasmine.QueryString({
-          getWindowLocation: function() { return fakeWindowLocation; }
-        }),
-        getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
-          env: env,
-          getContainer: getContainer,
-          queryString: queryString,
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        }),
-        fakeMatchingSpec = {
-          getFullName: function() { return "A suite with a spec" }
-        },
-        fakeNonMatchingSpec = {
-          getFullName: function() { return "sasquatch"}
-        };
-
-      expect(reporter.specFilter(fakeMatchingSpec)).toBe(true);
-      expect(reporter.specFilter(fakeNonMatchingSpec)).toBe(false);
-    });
-  });
-
-  describe("when specs are filtered", function() {
-    it("shows the count of run specs and defined specs", function() {
-      var env = new jasmine.Env(),
-        container = document.createElement("div"),
-        getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
-          env: env,
-          getContainer: getContainer,
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        });
-
-      reporter.initialize();
-
-      reporter.jasmineStarted({
-        totalSpecsDefined: 2
-      });
-      reporter.specDone({
-        id: 123,
-        description: "with a spec",
-        fullName: "A Suite with a spec",
-        status: "passed"
-      });
-      reporter.specDone({
-        id: 124,
-        description: "with another spec",
-        fullName: "A Suite inner suite with another spec",
-        status: "disabled"
-      });
-      reporter.jasmineDone();
-
-      var skippedBar = container.getElementsByClassName("bar")[0];
-      expect(skippedBar.getAttribute("class")).toMatch(/skipped/);
-
-      var runAllLink = skippedBar.childNodes[0];
-      expect(runAllLink.getAttribute("href")).toEqual("?");
-      expect(runAllLink.text).toMatch(/Ran \d+ of \d+ specs - run all/);
-    });
-  });
-
-  // try/catch
 
   // utility functions
   function findElements(divs, withClass) {
