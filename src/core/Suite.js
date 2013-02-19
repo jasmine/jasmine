@@ -74,12 +74,6 @@ jasmine.Suite.prototype.execute = function(onComplete) {
 
   for (var i = 0; i < children.length; i++) {
     allFns.push(wrapChild(children[i]));
-
-    function wrapChild(child) {
-      return function(done) {
-        child.execute(done);
-      }
-    }
   }
 
   this.onStart(this);
@@ -94,6 +88,12 @@ jasmine.Suite.prototype.execute = function(onComplete) {
 
     if (onComplete) {
       onComplete();
+    }
+  }
+
+  function wrapChild(child) {
+    return function (done) {
+      child.execute(done);
     }
   }
 };
