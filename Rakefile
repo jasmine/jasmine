@@ -55,9 +55,10 @@ end
 namespace :jasmine do
   task :server do
     port = ENV['JASMINE_PORT'] || 8888
-    Jasmine.load_configuration_from_yaml(File.join(Dir.pwd, 'spec', 'jasmine.yml'))
+    jasmine_yml = ENV['JASMINE_YML'] || 'jasmine.yml'
+    Jasmine.load_configuration_from_yaml(File.join(Dir.pwd, 'spec', jasmine_yml))
     config = Jasmine.config
-    server = Jasmine::Server.new(8888, Jasmine::Application.app(config))
+    server = Jasmine::Server.new(port, Jasmine::Application.app(config))
     server.start
 
     puts "your tests are here:"

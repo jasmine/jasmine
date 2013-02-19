@@ -23,6 +23,14 @@ module Jasmine
         spec_files("node")
       end
 
+      def boot_files
+        ["boot.js"]
+      end
+
+      def boot_dir
+        File.join(path, 'boot')
+      end
+
       def spec_files(type)
         raise ArgumentError.new("Unrecognized spec type") unless SPEC_TYPES.include?(type)
         (Dir.glob(File.join(path, "spec", type, "*.js"))).map { |f| File.join("spec", type, File.basename(f)) }.uniq

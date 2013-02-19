@@ -1,10 +1,12 @@
-jasmine.HtmlReporter.SuiteView = function(suite, dom, views) {
+jasmine.HtmlReporter.SuiteView = function(suite, dom, views, jasmine, catchExceptions) {
   this.suite = suite;
   this.dom = dom;
   this.views = views;
+  this.jasmine = jasmine || {};
+  this.catchExceptions = catchExceptions;
 
   this.element = this.createDom('div', { className: 'suite' },
-    this.createDom('a', { className: 'description', href: jasmine.HtmlReporter.sectionLink(this.suite.getFullName()) }, this.suite.description)
+    this.createDom('a', { className: 'description', href: this.jasmine.HtmlReporter.sectionLink(this.suite.getFullName(), catchExceptions) }, this.suite.description)
   );
 
   this.appendToSummary(this.suite, this.element);

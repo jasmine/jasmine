@@ -1,6 +1,6 @@
-describe('jasmine.jsApiReporter', function() {
-  describe('results', function () {
-    var reporter, spec1, spec2, spec3, expectedSpec1Results, expectedSpec2Results;
+xdescribe('JsApiReporter (integration specs)', function() {
+  describe('results', function() {
+    var reporter, spec1, spec2;
     var env;
     var suite, nestedSuite, nestedSpec;
 
@@ -24,34 +24,24 @@ describe('jasmine.jsApiReporter', function() {
           });
         });
 
-        spec3 = env.it("spec 3", function() {
-          this.log('some debug message');
-        });
       });
 
-      reporter = new jasmine.JsApiReporter();
+      reporter = new jasmine.JsApiReporter(jasmine);
       env.addReporter(reporter);
 
       env.execute();
 
-      expectedSpec1Results = {
-        messages: spec1.results().getItems(),
-        result: "passed"
-      };
-      expectedSpec2Results = {
-        messages: spec2.results().getItems(),
-        result: "failed"
-      };
     });
 
-    it('resultForSpec() should return the result for the given spec', function () {
-      expect(reporter.resultsForSpec(spec1.id)).toEqual(expectedSpec1Results);
-      expect(reporter.resultsForSpec(spec2.id)).toEqual(expectedSpec2Results);
-    });
-
-    it('results() should return a hash of all results, indexed by spec id', function () {
-      expect(reporter.results()[spec1.id]).toEqual(expectedSpec1Results);
-      expect(reporter.results()[spec2.id]).toEqual(expectedSpec2Results);
+    it('results() should return a hash of all results, indexed by spec id', function() {
+      var expectedSpec1Results = {
+          result: "passed"
+        },
+        expectedSpec2Results = {
+          result: "failed"
+        };
+      expect(reporter.results()[spec1.id].result).toEqual('passed');
+      expect(reporter.results()[spec2.id].result).toEqual('failed');
     });
 
     it("should return nested suites as children of their parents", function() {
@@ -65,7 +55,6 @@ describe('jasmine.jsApiReporter', function() {
                 { id: 2, name: 'nested spec', type: 'spec', children: [ ] }
               ]
             },
-            { id: 3, name: 'spec 3', type: 'spec', children: [ ] }
           ]
         }
       ]);
@@ -76,12 +65,7 @@ describe('jasmine.jsApiReporter', function() {
         var result = reporter.results()[spec1.id];
         var summarizedResult = reporter.summarizeResult_(result);
         expect(summarizedResult.result).toEqual('passed');
-        expect(summarizedResult.messages.length).toEqual(1);
-        expect(summarizedResult.messages[0].message).toEqual(result.messages[0].message);
-        expect(summarizedResult.messages[0].passed).toBeTruthy();
-        expect(summarizedResult.messages[0].type).toEqual('expect');
-        expect(summarizedResult.messages[0].text).toBeUndefined();
-        expect(summarizedResult.messages[0].trace.stack).toBeUndefined();
+        expect(summarizedResult.messages.length).toEqual(0);
       });
 
       it("should have a stack trace for failing specs", function() {
@@ -91,13 +75,98 @@ describe('jasmine.jsApiReporter', function() {
         expect(summarizedResult.messages[0].trace.stack).toEqual(result.messages[0].trace.stack);
       });
 
-      it("should have messages for specs with messages", function() {
-        var result = reporter.results()[spec3.id];
-        var summarizedResult = reporter.summarizeResult_(result);
-        expect(summarizedResult.result).toEqual('passed');
-        expect(summarizedResult.messages[0].type).toEqual('log');
-        expect(summarizedResult.messages[0].text).toEqual('some debug message');
-      });
     });
+  });
+});
+
+
+describe("JsApiReporter", function() {
+
+  it("knows when a full environment is started", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    expect(reporter.started).toBe(false);
+    expect(reporter.finished).toBe(false);
+
+    reporter.jasmineStarted();
+
+    expect(reporter.started).toBe(true);
+    expect(reporter.finished).toBe(false);
+  });
+
+  it("knows when a full environment is done", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    expect(reporter.started).toBe(false);
+    expect(reporter.finished).toBe(false);
+
+    reporter.jasmineStarted();
+    reporter.jasmineDone();
+
+    expect(reporter.finished).toBe(true);
+  });
+
+  it("defaults to 'loaded' status", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    expect(reporter.status()).toEqual('loaded');
+  });
+
+  it("reports 'started' when Jasmine has started", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    reporter.jasmineStarted();
+
+    expect(reporter.status()).toEqual('started');
+  });
+
+  it("reports 'done' when Jasmine is done", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    reporter.jasmineDone();
+
+    expect(reporter.status()).toEqual('done');
+  });
+
+  it("tracks a suite", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    reporter.suiteStarted({
+      id: 123,
+      description: "A suite"
+    });
+
+    var suites = reporter.suites();
+
+    expect(suites).toEqual({123: {id: 123, description: "A suite"}});
+
+    reporter.suiteDone({
+      id: 123,
+      description: "A suite",
+      status: 'passed'
+    });
+
+    expect(suites).toEqual({123: {id: 123, description: "A suite", status: 'passed'}});
+  });
+
+  it("tracks a spec", function() {
+    var reporter = new jasmine.JsApiReporter();
+
+    reporter.specStarted({
+      id: 123,
+      description: "A spec"
+    });
+
+    var specs = reporter.specs();
+
+    expect(specs).toEqual({123: {id: 123, description: "A spec"}});
+
+    reporter.specDone({
+      id: 123,
+      description: "A spec",
+      status: 'passed'
+    });
+
+    expect(specs).toEqual({123: {id: 123, description: "A spec", status: 'passed'}});
   });
 });

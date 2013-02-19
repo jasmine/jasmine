@@ -3,7 +3,7 @@
 $line-height: 14px;
 $margin-unit: 14px;
 
-$feint-text-color: #aaa;
+$faint-text-color: #aaa;
 $light-text-color: #666;
 $text-color: #333;
 
@@ -27,7 +27,7 @@ body {
   overflow-y: scroll;
 }
 
-#HTMLReporter {
+.html-reporter {
 
   font-size: $font-size;
   font-family: Monaco, "Lucida Console", monospace;
@@ -36,101 +36,104 @@ body {
 
   a {
     text-decoration: none;
-    
+
     &:hover {
       text-decoration: underline;
     }
   }
-  
+
   p, h1, h2, h3, h4, h5, h6 {
     margin: 0;
     line-height: $line-height;
   }
-  
+
   .banner,
-  .symbolSummary,
+  .symbol-summary,
   .summary,
-  .resultMessage,
-  .specDetail .description,
+  .result-message,
+  .spec .description,
+  .spec-detail .description,
   .alert .bar,
-  .stackTrace {
+  .stack-trace {
     padding-left: $margin-unit - 5px;
     padding-right: $margin-unit - 5px;
   }
-  
+
+  .banner .version {
+    margin-left: $margin-unit;
+  };
+
   // This div is available for testing elements that must be added to the DOM.
   // We position it out of view, so it doesn't obstruct the runner.
   #jasmine_content {
     position: fixed;
     right: 100%;
   }
-  
+
   .version {
-    color: $feint-text-color;
+    color: $faint-text-color;
   }
-  
+
   //--- Banner ---//
-  
+
   .banner {
     margin-top: $line-height;
   }
-  
+
   .duration {
-    color: $feint-text-color;
+    color: $faint-text-color;
     float: right;
   }
-  
+
   //--- Symbol summary ---//
-  
-  .symbolSummary {
+
+  .symbol-summary {
     @include clearfix;
     margin: $line-height 0;
-  
+
     li {
       display: block;
       float: left;
       height: $line-height / 2;
       width: $line-height;
       margin-bottom: $line-height / 2;
-  
-      //opacity: .9;
-      
+
       font-size: 16px;
-      
+
       &.passed {
         font-size: 14px;
-  
-        &:before{
+
+        &:before {
           color: $passing-color;
           content: "\02022";
         }
       }
-      
+
       &.failed {
         line-height: ($line-height / 2) + 2;
-      
-        &:before{
+
+        &:before {
           color: $failing-color;
           content: "x";
           font-weight: bold;
           margin-left: -1px;
         }
       }
-      
-      &.skipped {
+
+      &.disabled {
         font-size: 14px;
-        
-        &:before{
+
+        &:before {
           color: $neutral-color;
           content: "\02022";
         }
       }
-      
-      &.pending{
+
+      &.pending {
         line-height: ($line-height / 2) + 4;
-        
+
         &:before {
-          color: $feint-text-color;
+          color: $faint-text-color;
           content: "-";
         }
       }
@@ -144,7 +147,7 @@ body {
     margin-right: 5px;
   }
 
-  //--- Alert ---//
+  //--- Alerts: status bars ---//
 
   .bar {
     line-height: $line-height * 2;
@@ -152,40 +155,50 @@ body {
 
     display: block;
     color: #eee;
-  }
 
-  .runningAlert {
-    background-color: $light-text-color;
-  }
-
-  .skippedAlert {
-    background-color: $feint-text-color;
-
-    &:first-child {
-      background-color: $text-color;
-    }
-
-    &:hover {
-      text-decoration: none;
-      color: white;
-      text-decoration: underline;
-    }
-  }
-
-  .passingAlert {
-    background-color: $light-passing-color;
-
-    &:first-child {
-      background-color: $passing-color;
-    }
-  }
-
-  .failingAlert {
-    background-color: $light-failing-color;
-
-    &:first-child {
+    &.failed {
       background-color: $failing-color
     }
+
+    &.passed {
+      background-color: $light-passing-color;
+    }
+
+    &.skipped {
+      background-color: $neutral-color;
+    }
+
+    &.menu {
+      background-color: #fff;
+      color: $faint-text-color;
+
+      a {
+        color: $text-color;
+      }
+    }
+
+    a {
+      color: white;
+    }
+  }
+
+  // simplify toggle control between the two menu bars
+  &.spec-list {
+    .bar.menu.failure-list,
+    .results .failures {
+      display: none;
+    }
+  }
+
+  &.failure-list {
+    .bar.menu.spec-list,
+    .summary {
+      display: none;
+    }
+  }
+
+  .running-alert {
+    background-color: $light-text-color;
   }
 
   //--- Results ---//
@@ -195,16 +208,6 @@ body {
   }
 
   //--- Results menu ---//
-
-  #details {
-    display: none;
-  }
-
-  .resultsMenu,
-  .resultsMenu a {
-    background-color: #fff;
-    color: $text-color;
-  }
 
   &.showDetails {
 
@@ -236,19 +239,28 @@ body {
     text-decoration: underline;
   }
 
-  //--- Results summary ---//
+  //--- Results summary: Suites and Specs names/links ---//
 
   .summary {
     margin-top: $margin-unit;
 
-    .suite .suite, .specSummary {
+    ul {
+      list-style-type: none;
       margin-left: $margin-unit;
+      padding-top: 0;
+      padding-left: 0;
+
+      &.suite {
+        margin-top: $margin-unit/2;
+        margin-bottom: $margin-unit/2
+      }
     }
 
-    .specSummary {
+    li {
       &.passed a {
         color: $passing-color;
       }
+
       &.failed a {
         color: $failing-color;
       }
@@ -267,10 +279,10 @@ body {
     }
   }
 
-  //--- Results details ---//
+  //--- Failure details ---//
 
-  #details {
-    .specDetail {
+  .failures {
+    .spec-detail {
       margin-bottom: $line-height * 2;
 
       .description {
@@ -285,17 +297,17 @@ body {
     }
   }
 
-  .resultMessage {
+  .result-message {
     padding-top: $line-height;
 
     color: $text-color;
   }
 
-  .resultMessage span.result {
+  .result-message span.result {
     display: block;
   }
 
-  .stackTrace {
+  .stack-trace {
     margin: 5px 0 0 0;
     max-height: $line-height * 16;
     overflow: auto;

@@ -1,4 +1,9 @@
 describe('Spies', function () {
+  var env;
+  beforeEach(function() {
+    env = new jasmine.Env();
+  });
+
   it('should replace the specified function with a spy object', function() {
     var originalFunctionWasCalled = false;
     var TestClass = {
@@ -6,11 +11,13 @@ describe('Spies', function () {
         originalFunctionWasCalled = true;
       }
     };
-    this.spyOn(TestClass, 'someFunction');
+    env.spyOn(TestClass, 'someFunction');
 
     expect(TestClass.someFunction.wasCalled).toEqual(false);
     expect(TestClass.someFunction.callCount).toEqual(0);
+
     TestClass.someFunction('foo');
+
     expect(TestClass.someFunction.wasCalled).toEqual(true);
     expect(TestClass.someFunction.callCount).toEqual(1);
     expect(TestClass.someFunction.mostRecentCall.args).toEqual(['foo']);
@@ -29,7 +36,7 @@ describe('Spies', function () {
         originalFunctionWasCalled = true;
       }
     };
-    this.spyOn(TestClass, 'someFunction');
+    env.spyOn(TestClass, 'someFunction');
 
     TestClass.someFunction('foo');
     TestClass.someFunction('bar');
@@ -51,7 +58,7 @@ describe('Spies', function () {
       }
     };
 
-    this.spyOn(TestClass, 'someFunction').andCallThrough();
+    env.spyOn(TestClass, 'someFunction').andCallThrough();
     var result = TestClass.someFunction('arg1', 'arg2');
     expect(result).toEqual("return value from original function");
     expect(originalFunctionWasCalled).toEqual(true);
@@ -69,7 +76,7 @@ describe('Spies', function () {
       }
     };
 
-    this.spyOn(TestClass, 'someFunction').andReturn("some value");
+    env.spyOn(TestClass, 'someFunction').andReturn("some value");
     originalFunctionWasCalled = false;
     var result = TestClass.someFunction('arg1', 'arg2');
     expect(result).toEqual("some value");
@@ -85,7 +92,7 @@ describe('Spies', function () {
       }
     };
 
-    this.spyOn(TestClass, 'someFunction').andThrow(new Error('fake error'));
+    env.spyOn(TestClass, 'someFunction').andThrow(new Error('fake error'));
     var exception;
     try {
       TestClass.someFunction('arg1', 'arg2');
@@ -108,7 +115,7 @@ describe('Spies', function () {
       }
     };
 
-    this.spyOn(TestClass, 'someFunction').andCallFake(function() {
+    env.spyOn(TestClass, 'someFunction').andCallFake(function() {
       fakeFunctionWasCalled = true;
       passedArgs = arguments;
       passedObj = this;
@@ -124,65 +131,78 @@ describe('Spies', function () {
     expect(TestClass.someFunction.wasCalled).toEqual(true);
   });
 
-  it('is torn down when this.removeAllSpies is called', function() {
-    var originalFunctionWasCalled = false;
-    var TestClass = {
+  it('is torn down when env.removeAllSpies is called', function() {
+    var originalFunctionWasCalled = false,
+    env = new jasmine.Env(),
+    TestClass = {
       someFunction: function() {
         originalFunctionWasCalled = true;
       }
     };
-    this.spyOn(TestClass, 'someFunction');
+    env.spyOn(TestClass, 'someFunction');
 
     TestClass.someFunction('foo');
     expect(originalFunctionWasCalled).toEqual(false);
 
-    this.removeAllSpies();
+    env.removeAllSpies();
 
     TestClass.someFunction('foo');
     expect(originalFunctionWasCalled).toEqual(true);
   });
 
   it('calls removeAllSpies during spec finish', function() {
-    var test = new jasmine.Spec(new jasmine.Env(), {}, 'sample test');
+    var env = new jasmine.Env(),
+    originalFoo = function() {},
+    testObj = {
+      foo: originalFoo
+    },
+    firstSpec = originalJasmine.createSpy('firstSpec').andCallFake(function() {
+      env.spyOn(testObj, 'foo');
+    }),
+    secondSpec = originalJasmine.createSpy('secondSpec').andCallFake(function() {
+      expect(testObj.foo).toBe(originalFoo);
+    });
+    env.describe('test suite', function() {
+      env.it('spec 0', firstSpec);
+      env.it('spec 1', secondSpec);
+    });
 
-    this.spyOn(test, 'removeAllSpies');
-
-    test.finish();
-
-    expect(test.removeAllSpies).wasCalled();
+    env.execute();
+    expect(firstSpec).toHaveBeenCalled();
+    expect(secondSpec).toHaveBeenCalled();
   });
 
   it('throws an exception when some method is spied on twice', function() {
     var TestClass = { someFunction: function() {
     } };
-    this.spyOn(TestClass, 'someFunction');
+    env.spyOn(TestClass, 'someFunction');
     var exception;
     try {
-      this.spyOn(TestClass, 'someFunction');
+      env.spyOn(TestClass, 'someFunction');
     } catch (e) {
       exception = e;
     }
     expect(exception).toBeDefined();
   });
 
-	
-	it('to spy on an undefined method throws exception', function() {
-		var TestClass = {
-			someFunction : function() {
-			}
-		};
-		function efunc() {
-			this.spyOn(TestClass, 'someOtherFunction');
-		};
-		expect(function() {
-			efunc();
-		}).toThrow('someOtherFunction() method does not exist');
-	
-	}); 
+
+  it('to spy on an undefined method throws exception', function() {
+    var TestClass = {
+      someFunction : function() {
+      }
+    };
+    function efunc() {
+      env.spyOn(TestClass, 'someOtherFunction');
+    };
+    expect(function() {
+      efunc();
+    }).toThrow('someOtherFunction() method does not exist');
+
+  });
 
   it('should be able to reset a spy', function() {
     var TestClass = { someFunction: function() {} };
-    this.spyOn(TestClass, 'someFunction');
+    env.spyOn(TestClass, 'someFunction');
 
     expect(TestClass.someFunction).not.toHaveBeenCalled();
     TestClass.someFunction();
@@ -195,7 +215,7 @@ describe('Spies', function () {
   describe("createSpyObj", function() {
     it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
       var spyObj = jasmine.createSpyObj('BaseName', ['method1', 'method2']);
-      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
+      expect(spyObj).toEqual({ method1: originalJasmine.any(Function), method2: originalJasmine.any(Function)});
       expect(spyObj.method1.identity).toEqual('BaseName.method1');
       expect(spyObj.method2.identity).toEqual('BaseName.method2');
     });

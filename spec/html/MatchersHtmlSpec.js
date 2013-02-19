@@ -9,14 +9,14 @@ describe("MatchersSpec - HTML Dependent", function () {
       spec = env.it("spec", function() {
       });
     });
-    spyOn(spec, 'addMatcherResult');
+    spyOn(spec, 'addExpectationResult');
 
-    this.addMatchers({
+    addMatchers({
       toPass: function() {
-        return lastResult().passed();
+        return lastResult().passed;
       },
       toFail: function() {
-        return !lastResult().passed();
+        return !lastResult().passed;
       }
     });
   });
@@ -26,7 +26,7 @@ describe("MatchersSpec - HTML Dependent", function () {
   }
 
   function lastResult() {
-    return spec.addMatcherResult.mostRecentCall.args[0];
+    return spec.addExpectationResult.mostRecentCall.args[1];
   }
 
   it("toEqual with DOM nodes", function() {

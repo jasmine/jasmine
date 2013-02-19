@@ -5,11 +5,11 @@
  * @param {jasmine.Spec} spec
  */
 jasmine.Matchers = function(env, actual, spec, opt_isNot) {
+  //TODO: true dependency: equals, contains
   this.env = env;
   this.actual = actual;
   this.spec = spec;
   this.isNot = opt_isNot || false;
-  this.reportWasCalled_ = false;
 };
 
 // todo: @deprecated as of Jasmine 0.11, remove soon [xw]
@@ -17,14 +17,9 @@ jasmine.Matchers.pp = function(str) {
   throw new Error("jasmine.Matchers.pp() is no longer supported, please use jasmine.pp() instead!");
 };
 
-// todo: @deprecated Deprecated as of Jasmine 0.10. Rewrite your custom matchers to return true or false. [xw]
-jasmine.Matchers.prototype.report = function(result, failing_message, details) {
-  throw new Error("As of jasmine 0.11, custom matchers must be implemented differently -- please see jasmine docs");
-};
 
 jasmine.Matchers.wrapInto_ = function(prototype, matchersClass) {
   for (var methodName in prototype) {
-    if (methodName == 'report') continue;
     var orig = prototype[methodName];
     matchersClass.prototype[methodName] = jasmine.Matchers.matcherFn_(methodName, orig);
   }
@@ -38,8 +33,6 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
     if (this.isNot) {
       result = !result;
     }
-
-    if (this.reportWasCalled_) return result;
 
     var message;
     if (!result) {
@@ -60,14 +53,14 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
         message += ".";
       }
     }
-    var expectationResult = new jasmine.ExpectationResult({
+    var expectationResult = jasmine.buildExpectationResult({
       matcherName: matcherName,
       passed: result,
       expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
       actual: this.actual,
       message: message
     });
-    this.spec.addMatcherResult(expectationResult);
+    this.spec.addExpectationResult(result, expectationResult);
     return jasmine.undefined;
   };
 };
