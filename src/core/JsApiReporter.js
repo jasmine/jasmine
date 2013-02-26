@@ -2,8 +2,6 @@ jasmine.JsApiReporter = function(jasmine) {
   this.jasmine = jasmine || {};
   this.started = false;
   this.finished = false;
-  this.suites_ = [];
-  this.results_ = {};
 
   var status = 'loaded';
 
@@ -39,19 +37,16 @@ jasmine.JsApiReporter = function(jasmine) {
     return suites;
   };
 
-  var specs = {};
-
+  var specs = [];
   this.specStarted = function(result) {
-    storeSpec(result);
+    specs.push(result);
   };
 
-  this.specDone = function(result) {
-    storeSpec(result);
-  };
+  this.specDone = function(result) { };
 
-  function storeSpec(result) {
-    specs[result.id] = result;
-  }
+  this.specResults = function(index, length) {
+    return specs.slice(index, index + length);
+  };
 
   this.specs = function() {
     return specs;

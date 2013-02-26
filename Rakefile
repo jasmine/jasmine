@@ -43,13 +43,9 @@ task :list_dev_tasks do
   system "thor list"
 end
 
-require "jasmine"
-require 'rspec'
-require 'rspec/core/rake_task'
-
-desc "Run all examples"
-RSpec::Core::RakeTask.new(:jasmine_core_spec) do |t|
-  t.pattern = 'spec/jasmine_self_test_spec.rb'
+# TODO: Is there better way to invoke this using Jasmine gem???
+task :core_spec do
+  exec "ruby spec/jasmine_self_test_spec.rb"
 end
 
 namespace :jasmine do

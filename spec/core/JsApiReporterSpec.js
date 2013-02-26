@@ -150,23 +150,52 @@ describe("JsApiReporter", function() {
   });
 
   it("tracks a spec", function() {
-    var reporter = new jasmine.JsApiReporter();
+    var reporter = new jasmine.JsApiReporter(),
+      result = {
+        id: 123,
+        description: "A spec"
+      };
 
-    reporter.specStarted({
-      id: 123,
-      description: "A spec"
-    });
+    reporter.specStarted(result);
 
     var specs = reporter.specs();
 
-    expect(specs).toEqual({123: {id: 123, description: "A spec"}});
+    expect(specs).toEqual([result]);
 
-    reporter.specDone({
-      id: 123,
-      description: "A spec",
-      status: 'passed'
+    result.status = "passed";
+
+    reporter.specDone(result);
+
+    expect(specs).toEqual([result]);
+  });
+
+  describe("#specResults", function() {
+    var reporter, specResult1, specResult2;
+    beforeEach(function() {
+      reporter = new jasmine.JsApiReporter();
+      specResult1 = {
+        id: 1,
+        description: "A spec"
+      };
+      specResult2 = {
+        id: 2,
+        description: "Another spec"
+      };
+
+      reporter.specStarted(specResult1);
+      reporter.specStarted(specResult2);
     });
 
-    expect(specs).toEqual({123: {id: 123, description: "A spec", status: 'passed'}});
+    it("should return a slice of results", function() {
+      expect(reporter.specResults(0, 1)).toEqual([specResult1]);
+      expect(reporter.specResults(1, 1)).toEqual([specResult2]);
+    });
+
+    describe("when the results do not exist", function() {
+      it("should return a slice of shorter length", function() {
+        expect(reporter.specResults(0, 3)).toEqual([specResult1, specResult2]);
+        expect(reporter.specResults(2, 3)).toEqual([]);
+      });
+    });
   });
 });

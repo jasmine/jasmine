@@ -1,3 +1,5 @@
+require 'rubygems'
+require 'bundler/setup'
 require 'jasmine'
 
 Jasmine.load_configuration_from_yaml(File.join(Dir.pwd, 'spec', 'jasmine.yml'))
@@ -16,8 +18,12 @@ t.abort_on_exception = true
 Jasmine::wait_for_listener(config.port, "jasmine server")
 puts "jasmine server started."
 
-results_processor = Jasmine::ResultsProcessor.new(config)
-results = Jasmine::Runners::HTTP.new(driver, results_processor, config.result_batch_size).run
-formatter = Jasmine::RspecFormatter.new
-formatter.format_results(results)
+reporter = Jasmine::Runners::ApiReporter.new(driver, config.result_batch_size)
+raw_results = Jasmine::Runners::HTTP.new(driver, reporter).run
+results = Jasmine::Results.new(raw_results)
 
+formatter = Jasmine::Formatters::Console.new(results)
+puts formatter.failures
+puts formatter.summary
+
+exit results.failures.size
