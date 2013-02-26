@@ -377,6 +377,23 @@ describe("New HtmlReporter", function() {
         };
         reporter.specStarted(failingResult);
         reporter.specDone(failingResult);
+        
+        var failingResult2 = {
+          id: 125,
+          status: "failed",
+          description: "a failing spec",
+          fullName: "a suite with a failing spec",
+          failedExpectations: [
+            {
+              message: "a failure message\n\t",
+              trace: {
+                stack: "a stack trace"
+              }
+            }
+          ]
+        };
+        reporter.specStarted(failingResult2);
+        reporter.specDone(failingResult2);
         reporter.jasmineDone();
       });
 
@@ -385,7 +402,7 @@ describe("New HtmlReporter", function() {
         var alertBars = alert.getElementsByClassName("bar");
 
         expect(alertBars[0].getAttribute('class')).toMatch(/failed/);
-        expect(alertBars[0].innerHTML).toMatch(/2 specs, 1 failure/);
+        expect(alertBars[0].innerHTML).toMatch(/3 specs, 2 failure/);
       });
 
       it("reports failure messages and stack traces", function() {
@@ -407,6 +424,15 @@ describe("New HtmlReporter", function() {
         var stackTrace = failure.childNodes[1].childNodes[1];
         expect(stackTrace.getAttribute("class")).toEqual("stack-trace");
         expect(stackTrace.innerHTML).toEqual("a stack trace");
+      });
+      
+      it("escapes tabs and newlines in failure message", function() {
+        var specFailures = container.getElementsByClassName("failures")[0];
+        
+        var failure = specFailures.childNodes[1];
+        var message = failure.childNodes[1].childNodes[0];
+        expect(message.getAttribute("class")).toEqual("result-message");
+        expect(message.innerHTML).toEqual("a failure message\\n\\t");
       });
 
       it("allows switching between failure details and the spec summary", function() {
