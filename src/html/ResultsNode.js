@@ -11,5 +11,5 @@ jasmine.ResultsNode = function(result, type, parent) {
 
   this.last = function() {
     return this.children[this.children.length-1];
-  }
+  };
 };
