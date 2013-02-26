@@ -301,6 +301,8 @@ body {
     padding-top: $line-height;
 
     color: $text-color;
+    
+    white-space: pre;
   }
 
   .result-message span.result {

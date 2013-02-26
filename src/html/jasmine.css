@@ -48,6 +48,6 @@ body { background-color: #eeeeee; padding: 0; margin: 5px; overflow-y: scroll; }
 .html-reporter .suite a { color: #333333; }
 .html-reporter .failures .spec-detail { margin-bottom: 28px; }
 .html-reporter .failures .spec-detail .description { display: block; color: white; background-color: #b03911; }
-.html-reporter .result-message { padding-top: 14px; color: #333333; }
+.html-reporter .result-message { padding-top: 14px; color: #333333; white-space: pre; }
 .html-reporter .result-message span.result { display: block; }
-.html-reporter .stack-trace { margin: 5px 0 0 0; max-height: 224px; overflow: auto; line-height: 18px; color: #666666; border: 1px solid #ddd; background: white; white-space: pre; }
+.html-reporter .stack-trace { margin: 5px 0 0 0; max-height: 224px; overflow: auto; line-height: 18px; color: #666666; border: 1px solid #dddddd; background: white; white-space: pre; }
