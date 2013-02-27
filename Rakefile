@@ -2,6 +2,7 @@ require "bundler"
 Bundler::GemHelper.install_tasks
 require "json"
 require "tilt"
+require "jasmine"
 
 Dir["#{File.dirname(__FILE__)}/tasks/**/*.rb"].each do |file|
   require file
