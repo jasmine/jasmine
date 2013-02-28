@@ -37,8 +37,7 @@ describe("New HtmlReporter", function() {
       var env = new jasmine.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-       getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
+        reporter = new jasmine.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -54,12 +53,31 @@ describe("New HtmlReporter", function() {
       expect(specEl.getAttribute("id")).toEqual("spec_789");
     });
 
+    it("reports the status symbol of a pending spec", function() {
+      var env = new jasmine.Env(),
+        container = document.createElement("div"),
+        getContainer = function() { return container; },
+        reporter = new jasmine.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
+      reporter.initialize();
+
+      reporter.specDone({id: 789, status: "pending"});
+
+      var statuses = container.getElementsByClassName('symbol-summary')[0];
+      var specEl = statuses.getElementsByTagName('li')[0];
+      expect(specEl.getAttribute("class")).toEqual("pending");
+      expect(specEl.getAttribute("id")).toEqual("spec_789");
+    });
+
     it("reports the status symbol of a passing spec", function() {
       var env = new jasmine.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-       getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
+        reporter = new jasmine.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -79,8 +97,7 @@ describe("New HtmlReporter", function() {
       var env = new jasmine.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-       getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
+        reporter = new jasmine.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -108,7 +125,7 @@ describe("New HtmlReporter", function() {
         fakeNow = jasmine.createSpy('fake Date.now'),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
+        reporter = new jasmine.HtmlReporter({
           env: env,
           getContainer: getContainer,
           now: fakeNow,
@@ -132,7 +149,7 @@ describe("New HtmlReporter", function() {
       var env = new jasmine.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
+        reporter = new jasmine.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -300,12 +317,12 @@ describe("New HtmlReporter", function() {
         env = new jasmine.Env();
         container = document.createElement("div");
         getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
-          env: env,
-          getContainer: getContainer,
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        });
+          reporter = new jasmine.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() { return document.createElement.apply(document, arguments); },
+            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          });
         reporter.initialize();
 
         reporter.jasmineStarted({});
@@ -338,6 +355,51 @@ describe("New HtmlReporter", function() {
 
         expect(specFailure.childNodes.length).toEqual(0);
       });
+
+      it("reports no pending specs", function() {
+        var alert = container.getElementsByClassName("alert")[0];
+        var alertBars = alert.getElementsByClassName("bar");
+
+        expect(alertBars[0].innerHTML).not.toMatch(/pending spec[s]/);
+      });
+    });
+
+    describe("and there are pending specs", function() {
+      var env, container, reporter;
+      beforeEach(function() {
+        env = new jasmine.Env();
+        container = document.createElement("div");
+        getContainer = function() { return container; },
+          reporter = new jasmine.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() { return document.createElement.apply(document, arguments); },
+            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          });
+        reporter.initialize();
+
+        reporter.jasmineStarted({});
+        reporter.specDone({
+          id: 123,
+          description: "with a spec",
+          fullName: "A Suite with a spec",
+          status: "pending"
+        });
+        reporter.jasmineDone();
+      });
+
+      it("reports the pending specs count", function() {
+        var alert = container.getElementsByClassName("alert")[0];
+        var alertBars = alert.getElementsByClassName("bar");
+
+        expect(alertBars[0].innerHTML).toMatch(/1 spec, 0 failures, 1 pending spec/);
+      });
+
+      it("reports no failure details", function() {
+        var specFailure = container.getElementsByClassName("failures")[0];
+
+        expect(specFailure.childNodes.length).toEqual(0);
+      });
     });
 
     describe("and some tests fail", function() {
@@ -345,14 +407,14 @@ describe("New HtmlReporter", function() {
 
       beforeEach(function() {
         env = new jasmine.Env();
-        container = document.createElement("div");
+        container = document.createElement("div"),
         getContainer = function() { return container; },
-       reporter = new jasmine.HtmlReporter({
-          env: env,
-          getContainer: getContainer,
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        });
+          reporter = new jasmine.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() { return document.createElement.apply(document, arguments); },
+            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          });
         reporter.initialize();
 
         reporter.jasmineStarted({});

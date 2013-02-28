@@ -11,9 +11,13 @@ jasmine.Spec = function(attrs) {
   this.onStart = attrs.onStart || function() {};
   this.exceptionFormatter = attrs.exceptionFormatter || function() {};
   this.getSpecName = attrs.getSpecName || function() { return ''; };
-  this.expectationResultFactory = attrs.expectationResultFactory || function() {};
-  this.queueRunner = attrs.queueRunner || { execute: function() {}};
+  this.expectationResultFactory = attrs.expectationResultFactory || function() { };
+  this.queueRunner = attrs.queueRunner || function() {};
   this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
+
+  if (!this.fn) {
+    this.pend();
+  }
 
   this.result = {
     id: this.id,
@@ -39,7 +43,9 @@ jasmine.Spec.prototype.expect = function(actual) {
 jasmine.Spec.prototype.execute = function(onComplete) {
   var self = this;
 
-  if (this.disabled) {
+  this.onStart(this);
+
+  if (this.markedPending || this.disabled) {
     complete();
     return;
   }
@@ -48,10 +54,14 @@ jasmine.Spec.prototype.execute = function(onComplete) {
     afters = this.afterFns() || [];
   var allFns = befores.concat(this.fn).concat(afters);
 
-  this.onStart(this);
   this.queueRunner({
     fns: allFns,
     onException: function(e) {
+      if (jasmine.Spec.isPendingSpecException(e)) {
+        self.pend();
+        return;
+      }
+
       self.addExpectationResult(false, {
         matcherName: "",
         passed: false,
@@ -77,13 +87,17 @@ jasmine.Spec.prototype.disable = function() {
   this.disabled = true;
 };
 
+jasmine.Spec.prototype.pend = function() {
+  this.markedPending = true;
+};
+
 jasmine.Spec.prototype.status = function() {
   if (this.disabled) {
     return 'disabled';
   }
 
-  if (!this.encounteredExpectations) {
-    return null;
+  if (this.markedPending || !this.encounteredExpectations) {
+    return 'pending';
   }
 
   if (this.result.failedExpectations.length > 0) {
@@ -95,4 +109,10 @@ jasmine.Spec.prototype.status = function() {
 
 jasmine.Spec.prototype.getFullName = function() {
   return this.getSpecName(this);
+};
+
+jasmine.Spec.pendingSpecExceptionMessage = "=> marked Pending";
+
+jasmine.Spec.isPendingSpecException = function(e) {
+  return e.message.indexOf(jasmine.Spec.pendingSpecExceptionMessage) === 0;
 };

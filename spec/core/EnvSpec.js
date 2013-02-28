@@ -163,6 +163,29 @@ describe("Env", function() {
       });
     });
   });
+
+  describe("#catchException", function() {
+    it("returns true if the exception is a pending spec exception", function() {
+      env.catchExceptions(false);
+
+      expect(env.catchException(new Error(jasmine.Spec.pendingSpecExceptionMessage))).toBe(true);
+    });
+
+    it("returns false if the exception is not a pending spec exception and not catching exceptions", function() {
+      env.catchExceptions(false);
+
+      expect(env.catchException(new Error("external error"))).toBe(false);
+      expect(env.catchException(new Error(jasmine.Spec.pendingSpecExceptionMessage))).toBe(true);
+    });
+  });
+
+  describe("#pending", function() {
+    it("throws the Pending Spec exception", function() {
+      expect(function() {
+        env.pending();
+      }).toThrow(jasmine.Spec.pendingSpecExceptionMessage);
+    });
+  });
 });
 
 describe("Env (integration)", function() {
@@ -294,7 +317,7 @@ describe("Env (integration)", function() {
         env.expect(true).toBe(true);
       });
       env.describe("with a nested suite", function() {
-        env.xit("with a disabled spec", function() {
+        env.xit("with a pending spec", function() {
           env.expect(true).toBe(true);
         });
         env.it("with a spec", function() {

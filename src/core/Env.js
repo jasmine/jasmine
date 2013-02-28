@@ -97,6 +97,10 @@
       return catchExceptions;
     };
 
+    this.catchException = function(e){
+      return jasmine.Spec.isPendingSpecException(e) || catchExceptions;
+    };
+
     var maximumSpecCallbackDepth = 100;
     var currentSpecCallbackDepth = 0;
 
@@ -111,12 +115,11 @@
     }
 
     var queueRunnerFactory = function(options) {
-      options.catchingExceptions = self.catchingExceptions;
+      options.catchException = self.catchException;
       options.encourageGC = options.encourageGarbageCollection || encourageGarbageCollection;
 
       new jasmine.QueueRunner(options).run(options.fns, 0);
     };
-
 
     var totalSpecsDefined = 0;
     this.specFactory = function(description, fn, suite) {
@@ -322,7 +325,7 @@
   // TODO: move this to closure
   jasmine.Env.prototype.xit = function(description, fn) {
     var spec = this.it(description, fn);
-    spec.disable();
+    spec.pend();
     return spec;
   };
 
@@ -334,6 +337,11 @@
   // TODO: move this to closure
   jasmine.Env.prototype.afterEach = function(afterEachFunction) {
     this.currentSuite.afterEach(afterEachFunction);
+  };
+
+  // TODO: move this to closure
+  jasmine.Env.prototype.pending = function() {
+    throw new Error(jasmine.Spec.pendingSpecExceptionMessage);
   };
 
   // TODO: Still needed?

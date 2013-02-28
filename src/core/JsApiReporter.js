@@ -38,11 +38,11 @@ jasmine.JsApiReporter = function(jasmine) {
   };
 
   var specs = [];
-  this.specStarted = function(result) {
+  this.specStarted = function(result) { };
+
+  this.specDone = function(result) {
     specs.push(result);
   };
-
-  this.specDone = function(result) { };
 
   this.specResults = function(index, length) {
     return specs.slice(index, index + length);

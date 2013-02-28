@@ -3,7 +3,7 @@ jasmine.QueueRunner = function(attrs) {
   this.onComplete = attrs.onComplete || function() {};
   this.encourageGC = attrs.encourageGC || function(fn) {fn()};
   this.onException = attrs.onException || function() {};
-  this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
+  this.catchException = attrs.catchException || function() { return true; };
 };
 
 jasmine.QueueRunner.prototype.execute = function() {
@@ -30,7 +30,7 @@ jasmine.QueueRunner.prototype.run = function(fns, index) {
       fn();
     } catch (e) {
       self.onException(e);
-      if (!self.catchingExceptions()) {
+      if (!self.catchException(e)) {
         //TODO: set a var when we catch an exception and
         //use a finally block to close the loop in a nice way..
         throw e;

@@ -7,6 +7,7 @@ jasmine.ConsoleReporter = function(options) {
     specCount,
     failureCount,
     failedSpecs = [],
+    pendingCount,
     ansi = {
       green: '\033[32m',
       red: '\033[31m',
@@ -18,6 +19,7 @@ jasmine.ConsoleReporter = function(options) {
     startTime = now();
     specCount = 0;
     failureCount = 0;
+    pendingCount = 0;
     print("Started");
     printNewline();
   };
@@ -33,6 +35,11 @@ jasmine.ConsoleReporter = function(options) {
     printNewline();
     var specCounts = specCount + " " + plural("spec", specCount) + ", " +
       failureCount + " " + plural("failure", failureCount);
+
+    if (pendingCount) {
+      specCounts += ", " + pendingCount + " pending " + plural("spec", pendingCount);
+    }
+
     print(specCounts);
 
     printNewline();
@@ -46,6 +53,12 @@ jasmine.ConsoleReporter = function(options) {
 
   this.specDone = function(result) {
     specCount++;
+
+    if(result.status == "pending") {
+      pendingCount++;
+      print(colored("yellow", "*"));
+      return;
+    }
 
     if (result.status == "passed") {
       print(colored("green", '.'));
@@ -97,7 +110,7 @@ jasmine.ConsoleReporter = function(options) {
     for (var i = 0; i < result.failedExpectations.length; i++) {
       var failedExpectation = result.failedExpectations[i];
       printNewline();
-      print(indent(failedExpectation.trace.stack, 2));
+      print(indent(failedExpectation.stack, 2));
     }
 
     printNewline();

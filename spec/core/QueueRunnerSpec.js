@@ -96,7 +96,7 @@ describe("QueueRunner", function() {
       },
       queueRunner = new jasmine.QueueRunner({
         fns: [fn],
-        catchingExceptions: function() { return false; }
+        catchException: function(e) { return false; }
       });
 
     expect(function() { queueRunner.execute(); }).toThrow();

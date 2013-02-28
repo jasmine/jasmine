@@ -14,6 +14,7 @@ $passing-color: #5e7d00;
 
 $light-failing-color: #cf867e;
 $failing-color: #b03911;
+$pending-color: #ba9d37;
 
 $neutral-color: #bababa;
 
@@ -120,21 +121,20 @@ body {
         }
       }
 
-      &.disabled {
-        font-size: 14px;
+        &.disabled {
+          font-size: 14px;
 
-        &:before {
-          color: $neutral-color;
-          content: "\02022";
+          &:before {
+            color: $neutral-color;
+            content: "\02022";
+          }
         }
-      }
 
       &.pending {
-        line-height: ($line-height / 2) + 4;
-
+        line-height: 17px;
         &:before {
-          color: $faint-text-color;
-          content: "-";
+          color: $pending-color;
+          content: "*";
         }
       }
     }
@@ -263,6 +263,10 @@ body {
 
       &.failed a {
         color: $failing-color;
+      }
+
+      &.pending a {
+        color: $pending-color;
       }
     }
   }

@@ -149,26 +149,6 @@ describe("JsApiReporter", function() {
     expect(suites).toEqual({123: {id: 123, description: "A suite", status: 'passed'}});
   });
 
-  it("tracks a spec", function() {
-    var reporter = new jasmine.JsApiReporter(),
-      result = {
-        id: 123,
-        description: "A spec"
-      };
-
-    reporter.specStarted(result);
-
-    var specs = reporter.specs();
-
-    expect(specs).toEqual([result]);
-
-    result.status = "passed";
-
-    reporter.specDone(result);
-
-    expect(specs).toEqual([result]);
-  });
-
   describe("#specResults", function() {
     var reporter, specResult1, specResult2;
     beforeEach(function() {
@@ -182,8 +162,8 @@ describe("JsApiReporter", function() {
         description: "Another spec"
       };
 
-      reporter.specStarted(specResult1);
-      reporter.specStarted(specResult2);
+      reporter.specDone(specResult1);
+      reporter.specDone(specResult2);
     });
 
     it("should return a slice of results", function() {

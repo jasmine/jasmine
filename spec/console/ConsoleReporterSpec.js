@@ -58,6 +58,16 @@ describe("ConsoleReporter", function() {
     expect(out.getOutput()).toEqual("F");
   });
 
+  it("reports a pending spec as a '*'", function() {
+    var reporter = new jasmine.ConsoleReporter({
+      print: out.print
+    });
+
+    reporter.specDone({status: "pending"});
+
+    expect(out.getOutput()).toEqual("*");
+  });
+
   it("reports a summary when done (singluar spec and time)", function() {
     var fakeNow = jasmine.createSpy('fake Date.now'),
       reporter = new jasmine.ConsoleReporter({
@@ -75,6 +85,7 @@ describe("ConsoleReporter", function() {
     reporter.jasmineDone();
 
     expect(out.getOutput()).toMatch(/1 spec, 0 failures/);
+    expect(out.getOutput()).not.toMatch(/0 pending specs/);
     expect(out.getOutput()).toMatch("Finished in 1 second\n");
   });
 
@@ -88,6 +99,7 @@ describe("ConsoleReporter", function() {
     fakeNow.andReturn(500);
     reporter.jasmineStarted();
     reporter.specDone({status: "passed"});
+    reporter.specDone({status: "pending"});
     reporter.specDone({
       status: "failed",
       description: "with a failing spec",
@@ -98,9 +110,7 @@ describe("ConsoleReporter", function() {
           message: "Expected true to be false.",
           expected: false,
           actual: true,
-          trace: {
-            stack: "foo\nbar\nbaz"
-          }
+          stack: "foo\nbar\nbaz"
         }
       ]
     });
@@ -110,7 +120,7 @@ describe("ConsoleReporter", function() {
     fakeNow.andReturn(600);
     reporter.jasmineDone();
 
-    expect(out.getOutput()).toMatch(/2 specs, 1 failure/);
+    expect(out.getOutput()).toMatch(/3 specs, 1 failure, 1 pending spec/);
     expect(out.getOutput()).toMatch("Finished in 0.1 seconds\n");
   });
 
@@ -131,9 +141,7 @@ describe("ConsoleReporter", function() {
           message: "Expected true to be false.",
           expected: false,
           actual: true,
-          trace: {
-            stack: "foo bar baz"
-          }
+          stack: "foo bar baz"
         }
       ]
     });
