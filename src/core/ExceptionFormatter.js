@@ -1,12 +1,21 @@
-jasmine.exceptionMessageFor = function(e) {
-  var message = e.name
-    + ': '
-    + e.message
-    + ' in '
-    + (e.fileName || e.sourceURL || '')
-    + ' (line '
-    + (e.line || e.lineNumber || '')
-    + ')';
+jasmine.ExceptionFormatter = function() {
+  this.message = function(error) {
+    var message = error.name
+      + ': '
+      + error.message;
 
-  return message;
+    if (error.fileName || error.sourceURL) {
+      message += " in " + (error.fileName || error.sourceURL);
+    }
+
+    if (error.line || error.lineNumber) {
+      message += " (line " + (error.line || error.lineNumber) + ")"
+    }
+
+    return message;
+  };
+
+  this.stack = function(error) {
+    return error ? error.stack : null;
+  }
 };

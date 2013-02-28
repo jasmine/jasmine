@@ -71,18 +71,21 @@
       }
     };
 
-    var exceptionFormatter = jasmine.exceptionFormatter;
-
     var specConstructor = jasmine.Spec;
 
     var getSpecName = function(spec, currentSuite) {
       return currentSuite.getFullName() + ' ' + spec.description + '.';
     };
 
-    var buildExpectationResult = jasmine.buildExpectationResult;
-    var expectationResultFactory = function(attrs) {
-      return buildExpectationResult(attrs);
-    };
+    // TODO: we may just be able to pass in the fn instead of wrapping here
+    var buildExpectationResult = jasmine.buildExpectationResult,
+      exceptionFormatter = new jasmine.ExceptionFormatter(),
+      expectationResultFactory = function(attrs) {
+        attrs.messageFormatter = exceptionFormatter.message;
+        attrs.stackFormatter = exceptionFormatter.stack;
+
+        return buildExpectationResult(attrs);
+      };
 
     // TODO: fix this naming, and here's where the value comes in
     this.catchExceptions = function(value) {

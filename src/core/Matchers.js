@@ -53,19 +53,17 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
         message += ".";
       }
     }
-    var expectationResult = jasmine.buildExpectationResult({
+
+    this.spec.addExpectationResult(result, {
       matcherName: matcherName,
       passed: result,
       expected: matcherArgs.length > 1 ? matcherArgs : matcherArgs[0],
       actual: this.actual,
       message: message
     });
-    this.spec.addExpectationResult(result, expectationResult);
     return jasmine.undefined;
   };
 };
-
-
 
 
 /**
@@ -147,11 +145,11 @@ jasmine.Matchers.prototype.toBeNull = function() {
  * Matcher that compares the actual to NaN.
  */
 jasmine.Matchers.prototype.toBeNaN = function() {
-	this.message = function() {
-		return [ "Expected " + jasmine.pp(this.actual) + " to be NaN." ];
-	};
+  this.message = function() {
+      return [ "Expected " + jasmine.pp(this.actual) + " to be NaN." ];
+  };
 
-	return (this.actual !== this.actual);
+  return (this.actual !== this.actual);
 };
 
 /**
@@ -366,7 +364,7 @@ jasmine.Matchers.Any.prototype.jasmineToString = function() {
   return '<jasmine.any(' + this.expectedClass + ')>';
 };
 
-jasmine.Matchers.ObjectContaining = function (sample) {
+jasmine.Matchers.ObjectContaining = function(sample) {
   this.sample = sample;
 };
 
@@ -392,6 +390,6 @@ jasmine.Matchers.ObjectContaining.prototype.jasmineMatches = function(other, mis
   return (mismatchKeys.length === 0 && mismatchValues.length === 0);
 };
 
-jasmine.Matchers.ObjectContaining.prototype.jasmineToString = function () {
+jasmine.Matchers.ObjectContaining.prototype.jasmineToString = function() {
   return "<jasmine.objectContaining(" + jasmine.pp(this.sample) + ")>";
 };

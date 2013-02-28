@@ -1,13 +1,7 @@
 describe("buildExpectationResult", function() {
-
   it("defaults to passed", function() {
     var result = jasmine.buildExpectationResult({passed: 'some-value'});
     expect(result.passed).toBe('some-value');
-  });
-
-  it("has a type of expect", function() {
-    var result = jasmine.buildExpectationResult({});
-    expect(result.type).toBe('expect');
   });
 
   it("message defaults to Passed for passing specs", function() {
@@ -15,19 +9,39 @@ describe("buildExpectationResult", function() {
     expect(result.message).toBe('Passed.');
   });
 
-  it("message returns the message for failing specs", function() {
+  it("message returns the message for failing expecations", function() {
     var result = jasmine.buildExpectationResult({passed: false, message: 'some-value'});
     expect(result.message).toBe('some-value');
   });
 
-  it("trace passes trace if exists", function() {
-    var result = jasmine.buildExpectationResult({trace: 'some-value'});
-    expect(result.trace).toBe('some-value');
+  it("delegates message formatting to the provided formatter if there was an Error", function() {
+    var fakeError = {message: 'foo'},
+      messageFormatter = jasmine.createSpy("exception message formatter").andReturn(fakeError.message);
+
+    var result = jasmine.buildExpectationResult(
+      {
+        passed: false,
+        error: fakeError,
+        messageFormatter: messageFormatter
+      });
+
+    expect(messageFormatter).toHaveBeenCalledWith(fakeError);
+    expect(result.message).toEqual('foo');
   });
 
-  it("trace returns a new error if trace is falsy", function() {
-    var result = jasmine.buildExpectationResult({trace: false});
-    expect(result.trace).toEqual(jasmine.any(Error));
+  it("delegates stack formatting to the provided formatter if there was an Error", function() {
+    var fakeError = {stack: 'foo'},
+      stackFormatter = jasmine.createSpy("stack formatter").andReturn(fakeError.stack);
+
+    var result = jasmine.buildExpectationResult(
+      {
+        passed: false,
+        error: fakeError,
+        stackFormatter: stackFormatter
+      });
+
+    expect(stackFormatter).toHaveBeenCalledWith(fakeError);
+    expect(result.stack).toEqual('foo');
   });
 
   it("matcherName returns passed matcherName", function() {
@@ -44,5 +58,4 @@ describe("buildExpectationResult", function() {
     var result = jasmine.buildExpectationResult({actual: 'some-value'});
     expect(result.actual).toBe('some-value');
   });
-
 });

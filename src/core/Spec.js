@@ -26,9 +26,10 @@ jasmine.Spec = function(attrs) {
 
 jasmine.Spec.prototype.addExpectationResult = function(passed, data) {
   this.encounteredExpectations = true;
-  if (!passed) {
-    this.result.failedExpectations.push(data);
+  if (passed) {
+    return;
   }
+  this.result.failedExpectations.push(this.expectationResultFactory(data));
 };
 
 jasmine.Spec.prototype.expect = function(actual) {
@@ -51,14 +52,13 @@ jasmine.Spec.prototype.execute = function(onComplete) {
   this.queueRunner({
     fns: allFns,
     onException: function(e) {
-      self.addExpectationResult(false, self.expectationResultFactory({
+      self.addExpectationResult(false, {
         matcherName: "",
         passed: false,
         expected: "",
         actual: "",
-        message: self.exceptionFormatter(e),
-        trace: e
-      }));
+        error: e
+      });
     },
     onComplete: complete
   });
@@ -95,4 +95,4 @@ jasmine.Spec.prototype.status = function() {
 
 jasmine.Spec.prototype.getFullName = function() {
   return this.getSpecName(this);
-}
+};

@@ -1,12 +1,41 @@
 //TODO: expectation result may make more sense as a presentation of an expectation.
-jasmine.buildExpectationResult = function(params) {
+jasmine.buildExpectationResult = function(options) {
+  var messageFormatter = options.messageFormatter || function() {},
+    stackFormatter = options.stackFormatter || function() {};
+
   return {
-    type: 'expect',
-    matcherName: params.matcherName,
-    expected: params.expected,
-    actual:  params.actual,
-    message: params.passed ? 'Passed.' : params.message,
-    trace: params.passed ? '' : (params.trace || new Error(this.message)),
-    passed: params.passed
+    matcherName: options.matcherName,
+    expected: options.expected,
+    actual: options.actual,
+    message: message(),
+    stack: stack(),
+    passed: options.passed
   };
+
+  function message() {
+    if (options.passed) {
+      return "Passed."
+    } else if (options.message) {
+      return options.message
+    } else if (options.error) {
+      return messageFormatter(options.error);
+    }
+    return ""
+  }
+
+  function stack() {
+    if (options.passed) {
+      return "";
+    }
+
+    var error = options.error;
+    if (!error) {
+      try {
+        throw new Error(message());
+      } catch (e) {
+        error = e;
+      }
+    }
+    return stackFormatter(error);
+  }
 };

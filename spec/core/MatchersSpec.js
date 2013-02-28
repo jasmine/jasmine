@@ -660,9 +660,6 @@ describe("jasmine.Matchers", function() {
     });
 
     it("should provide an inverted default message", function() {
-      match(37).not.toBeGreaterThan(42);
-      expect(lastResult().message).toEqual("Passed.");
-
       match(42).not.toBeGreaterThan(37);
       expect(lastResult().message).toEqual("Expected 42 not to be greater than 37.");
     });
@@ -677,14 +674,10 @@ describe("jasmine.Matchers", function() {
         }
       });
 
-      match(true).custom();
-      expect(lastResult().message).toEqual("Passed.");
       match(false).custom();
       expect(lastResult().message).toEqual("Expected it was called.");
       match(true).not.custom();
       expect(lastResult().message).toEqual("Expected it wasn't called.");
-      match(false).not.custom();
-      expect(lastResult().message).toEqual("Passed.");
     });
   });
 

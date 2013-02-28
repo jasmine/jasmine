@@ -79,9 +79,8 @@ jasmine.HtmlReporter = function(options) {
 
       for (var i = 0; i < result.failedExpectations.length; i++) {
         var expectation = result.failedExpectations[i];
-        var stack = (expectation.trace && expectation.trace.stack) || "";
         messages.appendChild(createDom("div", {className: "result-message"}, expectation.message));
-        messages.appendChild(createDom("div", {className: "stack-trace"}, stack));
+        messages.appendChild(createDom("div", {className: "stack-trace"}, expectation.stack));
       }
 
       failures.push(failure);
