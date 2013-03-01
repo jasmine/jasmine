@@ -6,6 +6,13 @@ describe("Spec", function() {
     expect(jasmine.Spec.isPendingSpecException(e)).toBe(true);
   });
 
+  it("#isPendingSpecException returns true for a pending spec exception (protect against FF bug)", function() {
+    var e = new Error(jasmine.Spec.pendingSpecExceptionMessage);
+    delete e.message;
+
+    expect(jasmine.Spec.isPendingSpecException(e)).toBe(true);
+  });
+
   it("#isPendingSpecException returns true for a pending spec exception", function() {
     var e = new Error("foo");
 

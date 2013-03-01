@@ -114,5 +114,5 @@ jasmine.Spec.prototype.getFullName = function() {
 jasmine.Spec.pendingSpecExceptionMessage = "=> marked Pending";
 
 jasmine.Spec.isPendingSpecException = function(e) {
-  return e.message.indexOf(jasmine.Spec.pendingSpecExceptionMessage) === 0;
+  return e.toString().indexOf(jasmine.Spec.pendingSpecExceptionMessage) !== -1;
 };
