@@ -8,7 +8,7 @@ var jasmine = {};
 
 // TODO: do we need this now that we have boot.js?
 if (typeof window == "undefined" && typeof exports == "object") {
-  exports.jasmine = jasmine
+  exports.jasmine = jasmine;
 }
 
 /**
@@ -17,14 +17,6 @@ if (typeof window == "undefined" && typeof exports == "object") {
 jasmine.unimplementedMethod_ = function() {
   throw new Error("unimplemented method");
 };
-
-/**
- * Use <code>jasmine.undefined</code> instead of <code>undefined</code>, since <code>undefined</code> is just
- * a plain old variable and may be redefined by somebody else.
- *
- * @private
- */
-jasmine.undefined = jasmine.___undefined___;
 
 /**
  * Default interval in milliseconds for event loop yields (e.g. to allow network activity or to refresh the screen with the HTML-based runner). Small values here may result in slow test running. Zero means no updates until all tests have completed.

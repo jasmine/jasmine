@@ -94,6 +94,6 @@ jasmine.Suite.prototype.execute = function(onComplete) {
   function wrapChild(child) {
     return function (done) {
       child.execute(done);
-    }
+    };
   }
 };

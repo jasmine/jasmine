@@ -13,7 +13,7 @@ jasmine.PrettyPrinter = function() {
 jasmine.PrettyPrinter.prototype.format = function(value) {
   this.ppNestLevel_++;
   try {
-    if (value === jasmine.undefined) {
+    if (jasmine.util.isUndefined(value)) {
       this.emitScalar('undefined');
     } else if (value === null) {
       this.emitScalar('null');
@@ -55,7 +55,7 @@ jasmine.PrettyPrinter.prototype.iterateObject = function(obj, fn) {
   for (var property in obj) {
     if (!obj.hasOwnProperty(property)) continue;
     if (property == '__Jasmine_been_here_before__') continue;
-    fn(property, obj.__lookupGetter__ ? (obj.__lookupGetter__(property) !== jasmine.undefined && 
+    fn(property, obj.__lookupGetter__ ? (!jasmine.util.isUndefined(obj.__lookupGetter__(property)) &&
                                          obj.__lookupGetter__(property) !== null) : false);
   }
 };

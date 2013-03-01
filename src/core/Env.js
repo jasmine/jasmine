@@ -12,8 +12,6 @@
     this.spies_ = [];
     this.currentSpec = null;
 
-    this.undefined = jasmine.undefined;
-
     this.reporter = new jasmine.ReportDispatcher([
       "jasmineStarted",
       "jasmineDone",
@@ -55,20 +53,20 @@
       return function() {
         var befores = [];
         for (var suite = currentSuite; suite; suite = suite.parentSuite) {
-          befores = befores.concat(suite.beforeFns)
+          befores = befores.concat(suite.beforeFns);
         }
         return befores.reverse();
-      }
+      };
     };
 
     var afterFns = function(currentSuite) {
       return function() {
         var afters = [];
         for (var suite = currentSuite; suite; suite = suite.parentSuite) {
-          afters = afters.concat(suite.afterFns)
+          afters = afters.concat(suite.afterFns);
         }
         return afters;
-      }
+      };
     };
 
     var specConstructor = jasmine.Spec;
@@ -133,7 +131,7 @@
         exceptionFormatter: exceptionFormatter,
         resultCallback: specResultCallback,
         getSpecName: function(spec) {
-          return getSpecName(spec, suite)
+          return getSpecName(spec, suite);
         },
         onStart: specStarted,
         description: description,
@@ -218,11 +216,11 @@
   };
 
   jasmine.Env.prototype.spyOn = function(obj, methodName) {
-    if (obj == this.undefined) {
+    if (jasmine.util.isUndefined(obj)) {
       throw "spyOn could not find an object to spy upon for " + methodName + "()";
     }
 
-    if (obj[methodName] === this.undefined) {
+    if (jasmine.util.isUndefined(obj[methodName])) {
       throw methodName + '() method does not exist';
     }
 
@@ -377,7 +375,7 @@
     b.__Jasmine_been_here_before__ = a;
 
     var hasKey = function(obj, keyName) {
-      return obj !== null && obj[keyName] !== this.undefined;
+      return obj !== null && !jasmine.util.isUndefined(obj[keyName]);
     };
 
     for (var property in b) {
@@ -413,13 +411,15 @@
     for (var i = 0; i < this.equalityTesters_.length; i++) {
       var equalityTester = this.equalityTesters_[i];
       var result = equalityTester(a, b, this, mismatchKeys, mismatchValues);
-      if (result !== this.undefined) return result;
+      if (!jasmine.util.isUndefined(result)) {
+        return result;
+      }
     }
 
     if (a === b) return true;
 
-    if (a === this.undefined || a === null || b === this.undefined || b === null) {
-      return (a == this.undefined && b == this.undefined);
+    if (jasmine.util.isUndefined(a) || a === null || jasmine.util.isUndefined(b) || b === null) {
+      return (jasmine.util.isUndefined(a) && jasmine.util.isUndefined(b));
     }
 
     if (jasmine.isDomNode(a) && jasmine.isDomNode(b)) {

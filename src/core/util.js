@@ -59,3 +59,7 @@ jasmine.util.argsToArray = function(args) {
   for (var i = 0; i < args.length; i++) arrayOfArgs.push(args[i]);
   return arrayOfArgs;
 };
+
+jasmine.util.isUndefined = function(obj) {
+  return obj === void 0;
+};

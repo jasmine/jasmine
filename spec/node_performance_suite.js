@@ -2,10 +2,6 @@ var fs = require('fs');
 var util = require('util');
 var path = require('path');
 
-// yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
-// undefined = "diz be undefined yo";
-
-
 var jasmineGlobals = require('../lib/jasmine-core/jasmine.js');
 for (var k in jasmineGlobals) {
   global[k] = jasmineGlobals[k];

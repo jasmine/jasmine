@@ -44,3 +44,13 @@
 * Docs
   * JsDoc is a pain to host and RubyMine is pretty good at navigating. I say we kill it officially
   * Docco has gone over well. Should we annotate all the sources and then have Pages be more complex, having tutorials and annotated source like Backbone? Are we small enough?
+
+# Build
+
+* lib -> generated
+* 
+
+
+
+
+

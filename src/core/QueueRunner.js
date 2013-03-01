@@ -1,13 +1,13 @@
 jasmine.QueueRunner = function(attrs) {
   this.fns = attrs.fns || [];
   this.onComplete = attrs.onComplete || function() {};
-  this.encourageGC = attrs.encourageGC || function(fn) {fn()};
+  this.encourageGC = attrs.encourageGC || function(fn) {fn();};
   this.onException = attrs.onException || function() {};
   this.catchException = attrs.catchException || function() { return true; };
 };
 
 jasmine.QueueRunner.prototype.execute = function() {
-  this.run(this.fns, 0)
+  this.run(this.fns, 0);
 };
 
 jasmine.QueueRunner.prototype.run = function(fns, index) {
@@ -19,7 +19,7 @@ jasmine.QueueRunner.prototype.run = function(fns, index) {
   var fn = fns[index];
   var self = this;
   if (fn.length > 0) {
-    attempt(function() { fn.call(self, function() {  self.run(fns, index + 1) }) });
+    attempt(function() { fn.call(self, function() {  self.run(fns, index + 1); }); });
   } else {
     attempt(function() { fn.call(self); });
     self.run(fns, index + 1);

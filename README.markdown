@@ -7,6 +7,11 @@ Jasmine is a Behavior Driven Development testing framework for JavaScript. It do
 
 Documentation & guides live here: [http://pivotal.github.com/jasmine/](http://pivotal.github.com/jasmine/)
 
+# DEV GUIDE
+
+Dependencies for this repo
+* Ruby > 1.9, Rubygems, Bundler
+* Node.js, npm
 
 ## Support
 

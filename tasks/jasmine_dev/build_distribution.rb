@@ -2,8 +2,6 @@ class JasmineDev < Thor
 
   desc "build_distribution", "Build Jasmine js & css files"
   def build_distribution(directory = "./lib/jasmine-core")
-    invoke :js_hint
-
     say JasmineDev.spacer
 
     say "Building Jasmine distribution from source into #{directory}", :cyan

@@ -56,7 +56,7 @@ jasmine.Clock = function(global, delayedFunctionScheduler) {
 
   self.tick = function(millis) {
     if (installed) {
-      delayedFunctionScheduler.tick(millis)
+      delayedFunctionScheduler.tick(millis);
     } else {
       throw new Error("Mock clock is not installed, use jasmine.Clock.useMock()");
     }

@@ -61,7 +61,7 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
       actual: this.actual,
       message: message
     });
-    return jasmine.undefined;
+    return void 0;
   };
 };
 
@@ -124,14 +124,14 @@ jasmine.Matchers.prototype.toNotMatch = function(expected) {
  * Matcher that compares the actual to jasmine.undefined.
  */
 jasmine.Matchers.prototype.toBeDefined = function() {
-  return (this.actual !== jasmine.undefined);
+  return !jasmine.util.isUndefined(this.actual);
 };
 
 /**
  * Matcher that compares the actual to jasmine.undefined.
  */
 jasmine.Matchers.prototype.toBeUndefined = function() {
-  return (this.actual === jasmine.undefined);
+  return jasmine.util.isUndefined(this.actual);
 };
 
 /**
@@ -234,7 +234,7 @@ jasmine.Matchers.prototype.toHaveBeenCalledWith = function() {
     if (this.actual.callCount === 0) {
       positiveMessage = "Expected spy " + this.actual.identity + " to have been called with " + jasmine.pp(expectedArgs) + " but it was never called.";
     } else {
-      positiveMessage = "Expected spy " + this.actual.identity + " to have been called with " + jasmine.pp(expectedArgs) + " but actual calls were " + jasmine.pp(this.actual.argsForCall).replace(/^\[ | \]$/g, '')
+      positiveMessage = "Expected spy " + this.actual.identity + " to have been called with " + jasmine.pp(expectedArgs) + " but actual calls were " + jasmine.pp(this.actual.argsForCall).replace(/^\[ | \]$/g, '');
     }
     return [positiveMessage, invertedMessage];
   };
@@ -297,7 +297,7 @@ jasmine.Matchers.prototype.toBeGreaterThan = function(expected) {
  * @param {Number} precision, as number of decimal places
  */
 jasmine.Matchers.prototype.toBeCloseTo = function(expected, precision) {
-  if (!(precision === 0)) {
+  if (precision !== 0) {
     precision = precision || 2;
   }
   return Math.abs(expected - this.actual) < (Math.pow(10, -precision) / 2);
@@ -319,14 +319,15 @@ jasmine.Matchers.prototype.toThrow = function(expected) {
   } catch (e) {
     exception = e;
   }
+
   if (exception) {
-    result = (expected === jasmine.undefined || this.env.equals_(exception.message || exception, expected.message || expected));
+    result = (jasmine.util.isUndefined(expected) || this.env.equals_(exception.message || exception, expected.message || expected));
   }
 
   var not = this.isNot ? "not " : "";
 
   this.message = function() {
-    if (exception && (expected === jasmine.undefined || !this.env.equals_(exception.message || exception, expected.message || expected))) {
+    if (exception && (jasmine.util.isUndefined(expected) || !this.env.equals_(exception.message || exception, expected.message || expected))) {
       return ["Expected function " + not + "to throw", expected ? expected.message || expected : "an exception", ", but it threw", exception.message || exception].join(' ');
     } else {
       return "Expected function to throw an exception.";
@@ -375,7 +376,7 @@ jasmine.Matchers.ObjectContaining.prototype.jasmineMatches = function(other, mis
   var env = jasmine.getEnv();
 
   var hasKey = function(obj, keyName) {
-    return obj != null && obj[keyName] !== jasmine.undefined;
+    return obj !== null && !jasmine.util.isUndefined(obj[keyName]);
   };
 
   for (var property in this.sample) {

@@ -14,4 +14,15 @@ describe("jasmine.util", function() {
       expect(jasmine.isArray_(null)).toBe(false);
     });
   });
+
+  describe("isUndefined", function() {
+    it("reports if a variable is defined", function() {
+      var a;
+      expect(jasmine.util.isUndefined(a)).toBe(true);
+      expect(jasmine.util.isUndefined(undefined)).toBe(true);
+
+      var undefined = "diz be undefined yo";
+      expect(jasmine.util.isUndefined(undefined)).toBe(false);
+    });
+  });
 });

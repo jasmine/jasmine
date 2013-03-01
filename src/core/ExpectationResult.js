@@ -14,13 +14,13 @@ jasmine.buildExpectationResult = function(options) {
 
   function message() {
     if (options.passed) {
-      return "Passed."
+      return "Passed.";
     } else if (options.message) {
-      return options.message
+      return options.message;
     } else if (options.error) {
       return messageFormatter(options.error);
     }
-    return ""
+    return "";
   }
 
   function stack() {
