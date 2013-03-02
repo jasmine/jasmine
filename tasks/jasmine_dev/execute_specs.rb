@@ -5,7 +5,7 @@ class JasmineDev < Thor
   def execute_specs_in_node
     return unless node_installed?
 
-    invoke :build_distribution
+    `grunt buildDistribution`
     invoke :count_specs
 
     say JasmineDev.spacer
@@ -20,7 +20,9 @@ class JasmineDev < Thor
   desc "execute_specs_in_browser", "Run all relevent specs in your default browser"
 
   def execute_specs_in_browser
-    invoke :build_distribution
+    return unless node_installed?
+
+    `grunt buildDistribution`
     invoke :count_specs
 
     say JasmineDev.spacer

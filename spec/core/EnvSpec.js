@@ -21,63 +21,6 @@ describe("Env", function() {
       fakeReporter = originalJasmine.createSpyObj("fakeReporter", ["jasmineStarted"]);
     });
 
-    describe('version', function() {
-      var oldVersion;
-
-      beforeEach(function() {
-        oldVersion = jasmine.version_;
-      });
-
-      afterEach(function() {
-        jasmine.version_ = oldVersion;
-      });
-
-      it('should raise an error if version is not set', function() {
-        jasmine.version_ = null;
-        var exception;
-        try {
-          env.version();
-        }
-        catch (e) {
-          exception = e;
-        }
-        expect(exception.message).toEqual('Version not set');
-      });
-
-      it("version should return the current version as an int", function() {
-        jasmine.version_ = {
-          "major": 1,
-          "minor": 9,
-          "build": 7,
-          "revision": 8
-        };
-        expect(env.version()).toEqual({
-          "major": 1,
-          "minor": 9,
-          "build": 7,
-          "revision": 8
-        });
-      });
-
-      describe("versionString", function() {
-        it("should return a stringified version number", function() {
-          jasmine.version_ = {
-            "major": 1,
-            "minor": 9,
-            "build": 7,
-            "release_candidate": "1",
-            "revision": 8
-          };
-          expect(env.versionString()).toEqual("1.9.7.rc1 revision 8");
-        });
-
-        it("should return a nice string when version is unknown", function() {
-          jasmine.version_ = null;
-          expect(env.versionString()).toEqual("version unknown");
-        });
-      });
-    });
-
     it("should allow reporters to be registered", function() {
       env.addReporter(fakeReporter);
       env.reporter.jasmineStarted();

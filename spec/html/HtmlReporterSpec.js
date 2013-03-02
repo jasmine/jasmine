@@ -29,7 +29,7 @@ describe("New HtmlReporter", function() {
     expect(title.innerHTML).toMatch(/Jasmine/);
 
     var version = banner.getElementsByClassName("version")[0];
-    expect(version.innerHTML).toMatch(/\d+\.\d+\.\d+\srevision\s+\d+/);
+    expect(version.innerHTML).toEqual(jasmine.version);
   });
 
   describe("when a spec is done", function() {

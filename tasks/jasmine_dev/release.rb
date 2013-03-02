@@ -8,9 +8,6 @@ class JasmineDev < Thor
 
     return unless pages_submodule_installed?
 
-    invoke :write_version_files
-    invoke :build_distribution
-    invoke :build_standalone_distribution
     invoke :build_github_pages
   end
 end

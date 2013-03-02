@@ -16,7 +16,7 @@ jasmine.HtmlReporter = function(options) {
     htmlReporterMain = createDom("div", {className: "html-reporter"},
       createDom("div", {className: "banner"},
         createDom("span", {className: "title"}, "Jasmine"),
-        createDom("span", {className: "version"}, env.versionString())
+        createDom("span", {className: "version"}, jasmine.version)
       ),
       createDom("ul", {className: "symbol-summary"}),
       createDom("div", {className: "alert"}),

@@ -204,11 +204,7 @@
   };
 
   jasmine.Env.prototype.version = function() {
-    if (this.jasmine.version_) {
-      return this.jasmine.version_;
-    } else {
-      throw new Error('Version not set');
-    }
+    return jasmine.version;
   };
 
   jasmine.Env.prototype.expect = function(actual) {
@@ -252,17 +248,8 @@
 
   // TODO: move this to closure
   jasmine.Env.prototype.versionString = function() {
-    if (!this.jasmine.version_) {
-      return "version unknown";
-    }
-
-    var version = this.version();
-    var versionString = version.major + "." + version.minor + "." + version.build;
-    if (version.release_candidate) {
-      versionString += ".rc" + version.release_candidate;
-    }
-    versionString += " revision " + version.revision;
-    return versionString;
+    console.log("DEPRECATED == use jasmine.version");
+    return jasmine.version;
   };
 
   // TODO: move this to closure

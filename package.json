@@ -1,7 +1,12 @@
 {
   "name": "jasmine-core",
   "license": "MIT",
+  "version": "2.0.0-alpha",
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.2.0"
+    "grunt-contrib-jshint": "~0.2.0",
+    "grunt-contrib-concat": "~0.1.3",
+    "grunt-contrib-compass": "~0.1.3",
+    "grunt-contrib-compress": "~0.4.1",
+    "underscore": "~1.4.4"
   }
 }
