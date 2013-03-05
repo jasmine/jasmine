@@ -15,11 +15,36 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-compass');
   grunt.loadNpmTasks('grunt-contrib-compress');
 
-  var standaloneBuilder = require("./grunt/tasks/build_standalone.js")(grunt);
-  standaloneBuilder.registerTasks();
-  
   grunt.registerTask('default', ['jshint:all']);
+
   grunt.registerTask('buildDistribution',
     'Builds and lints jasmine.js, jasmine-html.js, jasmine.css',
-    ['compass', 'jshint:beforeConcat', 'concat', 'jshint:afterConcat']);
+    [
+      'compass',
+      'jshint:beforeConcat',
+      'concat',
+      'jshint:afterConcat'
+    ]
+  );
+
+  var standaloneBuilder = require('./grunt/tasks/build_standalone.js');
+
+  grunt.registerTask("build:compileSpecRunner",
+    "Processes the spec runner template and writes to a tmp file",
+    standaloneBuilder.compileSpecRunner
+  );
+
+  grunt.registerTask("build:cleanSpecRunner",
+    "Deletes the tmp spec runner file",
+    standaloneBuilder.cleanSpecRunner
+  );
+
+  grunt.registerTask("buildStandaloneDist",
+    "Builds a standalone distribution",
+    [
+      "build:compileSpecRunner",
+      "compress:standalone",
+      "build:cleanSpecRunner"
+    ]
+  );
 };
