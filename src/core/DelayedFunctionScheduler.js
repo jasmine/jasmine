@@ -5,11 +5,13 @@ jasmine.DelayedFunctionScheduler = function() {
   var delayedFnCount = 0;
 
   self.tick = function(millis) {
+    millis = millis || 0;
     runFunctionsWithinRange(currentTime, currentTime + millis);
     currentTime = currentTime + millis;
   };
 
   self.scheduleFunction = function(funcToCall, millis, params, recurring, timeoutKey, runAtMillis) {
+    millis = millis || 0;
     timeoutKey = timeoutKey || ++delayedFnCount;
     runAtMillis = runAtMillis || (currentTime + millis);
     scheduledFunctions[timeoutKey] = {
