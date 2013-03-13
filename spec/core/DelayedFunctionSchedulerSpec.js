@@ -12,6 +12,19 @@ describe("DelayedFunctionScheduler", function() {
     expect(fn).toHaveBeenCalled();
   });
 
+  it("defaults delay to 0", function() {
+    var scheduler = new jasmine.DelayedFunctionScheduler(),
+      fn = jasmine.createSpy('fn');
+
+    scheduler.scheduleFunction(fn);
+
+    expect(fn).not.toHaveBeenCalled();
+
+    scheduler.tick(0);
+
+    expect(fn).toHaveBeenCalled();
+  });
+
   it("optionally passes params to scheduled functions", function() {
     var scheduler = new jasmine.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
