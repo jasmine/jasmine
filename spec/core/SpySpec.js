@@ -211,7 +211,30 @@ describe('Spies', function () {
     expect(TestClass.someFunction).not.toHaveBeenCalled();
     expect(TestClass.someFunction.callCount).toEqual(0);
   });
-
+  
+  it('should allow you to remove a spy', function() {
+    var TestClass = { someFunction: function() {
+    } };
+    env.spyOn(TestClass, 'someFunction');
+    var exception;
+    try {
+      env.spyOn(TestClass, 'someFunction');
+    } catch (e) {
+      exception = e;
+    }
+    expect(exception).toBeDefined();
+    
+    env.removeSpy(TestClass, 'someFunction');
+    
+    var exception2;
+    try {
+      env.spyOn(TestClass, 'someFunction');
+    } catch (e) {
+      exception2 = e;
+    }
+    expect(exception2).not.toBeDefined();
+  });
+  
   describe("createSpyObj", function() {
     it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
       var spyObj = jasmine.createSpyObj('BaseName', ['method1', 'method2']);
