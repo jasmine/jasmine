@@ -483,7 +483,7 @@ describe("A spy, when created manually", function() {
   });
 
   it("is named, which helps in error reporting", function() {
-    expect(whatAmI.identity).toEqual('whatAmI')
+    expect(whatAmI.identity).toEqual('whatAmI');
   });
 
   it("tracks that the spy was called", function() {
@@ -554,7 +554,7 @@ describe("jasmine.any", function() {
     it("is useful for comparing arguments", function() {
       var foo = jasmine.createSpy('foo');
       foo(12, function() {
-        return true
+        return true;
       });
 
       expect(foo).toHaveBeenCalledWith(jasmine.any(Number), jasmine.any(Function));

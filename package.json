@@ -1,0 +1,9 @@
+{
+  "name": "jasmine-core-github-pages",
+  "license": "MIT",
+  "version": "2.0.0-alpha",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.3.0"
+  }
+}

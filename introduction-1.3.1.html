@@ -639,7 +639,7 @@
   <span class="p">});</span>
 
   <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;is named, which helps in error reporting&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">expect</span><span class="p">(</span><span class="nx">whatAmI</span><span class="p">.</span><span class="nx">identity</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;whatAmI&#39;</span><span class="p">)</span>
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">whatAmI</span><span class="p">.</span><span class="nx">identity</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;whatAmI&#39;</span><span class="p">);</span>
   <span class="p">});</span>
 
   <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;tracks that the spy was called&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -725,7 +725,7 @@
     <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;is useful for comparing arguments&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
       <span class="nx">foo</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="kc">true</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
       <span class="p">});</span>
 
       <span class="nx">expect</span><span class="p">(</span><span class="nx">foo</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">(</span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">any</span><span class="p">(</span><span class="nb">Number</span><span class="p">),</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">any</span><span class="p">(</span><span class="nb">Function</span><span class="p">));</span>

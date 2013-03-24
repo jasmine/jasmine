@@ -1,6 +1,7 @@
+.DS_Store
 .bundle/
 .idea/
-.DS_Store
-downloads
 tmp/
+node_modules/
 .rvmrc
+downloads
