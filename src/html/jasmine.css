@@ -1,54 +1,107 @@
+/* line 24, _HTMLReporter.scss */
 body { background-color: #eeeeee; padding: 0; margin: 5px; overflow-y: scroll; }
 
+/* line 31, _HTMLReporter.scss */
 .html-reporter { font-size: 11px; font-family: Monaco, "Lucida Console", monospace; line-height: 14px; color: #333333; }
+/* line 38, _HTMLReporter.scss */
 .html-reporter a { text-decoration: none; }
+/* line 41, _HTMLReporter.scss */
 .html-reporter a:hover { text-decoration: underline; }
+/* line 46, _HTMLReporter.scss */
 .html-reporter p, .html-reporter h1, .html-reporter h2, .html-reporter h3, .html-reporter h4, .html-reporter h5, .html-reporter h6 { margin: 0; line-height: 14px; }
+/* line 58, _HTMLReporter.scss */
 .html-reporter .banner, .html-reporter .symbol-summary, .html-reporter .summary, .html-reporter .result-message, .html-reporter .spec .description, .html-reporter .spec-detail .description, .html-reporter .alert .bar, .html-reporter .stack-trace { padding-left: 9px; padding-right: 9px; }
+/* line 63, _HTMLReporter.scss */
 .html-reporter .banner .version { margin-left: 14px; }
+/* line 69, _HTMLReporter.scss */
 .html-reporter #jasmine_content { position: fixed; right: 100%; }
+/* line 74, _HTMLReporter.scss */
 .html-reporter .version { color: #aaaaaa; }
+/* line 80, _HTMLReporter.scss */
 .html-reporter .banner { margin-top: 14px; }
+/* line 84, _HTMLReporter.scss */
 .html-reporter .duration { color: #aaaaaa; float: right; }
+/* line 91, _HTMLReporter.scss */
 .html-reporter .symbol-summary { overflow: hidden; *zoom: 1; margin: 14px 0; }
+/* line 95, _HTMLReporter.scss */
 .html-reporter .symbol-summary li { display: block; float: left; height: 7px; width: 14px; margin-bottom: 7px; font-size: 16px; }
+/* line 104, _HTMLReporter.scss */
 .html-reporter .symbol-summary li.passed { font-size: 14px; }
+/* line 107, _HTMLReporter.scss */
 .html-reporter .symbol-summary li.passed:before { color: #5e7d00; content: "\02022"; }
+/* line 113, _HTMLReporter.scss */
 .html-reporter .symbol-summary li.failed { line-height: 9px; }
+/* line 116, _HTMLReporter.scss */
 .html-reporter .symbol-summary li.failed:before { color: #b03911; content: "x"; font-weight: bold; margin-left: -1px; }
+/* line 124, _HTMLReporter.scss */
 .html-reporter .symbol-summary li.disabled { font-size: 14px; }
+/* line 127, _HTMLReporter.scss */
 .html-reporter .symbol-summary li.disabled:before { color: #bababa; content: "\02022"; }
+/* line 133, _HTMLReporter.scss */
 .html-reporter .symbol-summary li.pending { line-height: 17px; }
+/* line 135, _HTMLReporter.scss */
 .html-reporter .symbol-summary li.pending:before { color: #ba9d37; content: "*"; }
+/* line 143, _HTMLReporter.scss */
 .html-reporter .exceptions { color: #fff; float: right; margin-top: 5px; margin-right: 5px; }
+/* line 152, _HTMLReporter.scss */
 .html-reporter .bar { line-height: 28px; font-size: 14px; display: block; color: #eee; }
+/* line 159, _HTMLReporter.scss */
 .html-reporter .bar.failed { background-color: #b03911; }
+/* line 163, _HTMLReporter.scss */
 .html-reporter .bar.passed { background-color: #a6b779; }
+/* line 167, _HTMLReporter.scss */
 .html-reporter .bar.skipped { background-color: #bababa; }
+/* line 171, _HTMLReporter.scss */
 .html-reporter .bar.menu { background-color: #fff; color: #aaaaaa; }
+/* line 175, _HTMLReporter.scss */
 .html-reporter .bar.menu a { color: #333333; }
+/* line 180, _HTMLReporter.scss */
 .html-reporter .bar a { color: white; }
+/* line 188, _HTMLReporter.scss */
 .html-reporter.spec-list .bar.menu.failure-list, .html-reporter.spec-list .results .failures { display: none; }
+/* line 195, _HTMLReporter.scss */
 .html-reporter.failure-list .bar.menu.spec-list, .html-reporter.failure-list .summary { display: none; }
+/* line 200, _HTMLReporter.scss */
 .html-reporter .running-alert { background-color: #666666; }
+/* line 206, _HTMLReporter.scss */
 .html-reporter .results { margin-top: 14px; }
+/* line 214, _HTMLReporter.scss */
 .html-reporter.showDetails .summaryMenuItem { font-weight: normal; text-decoration: inherit; }
+/* line 218, _HTMLReporter.scss */
 .html-reporter.showDetails .summaryMenuItem:hover { text-decoration: underline; }
+/* line 223, _HTMLReporter.scss */
 .html-reporter.showDetails .detailsMenuItem { font-weight: bold; text-decoration: underline; }
+/* line 228, _HTMLReporter.scss */
 .html-reporter.showDetails .summary { display: none; }
+/* line 232, _HTMLReporter.scss */
 .html-reporter.showDetails #details { display: block; }
+/* line 237, _HTMLReporter.scss */
 .html-reporter .summaryMenuItem { font-weight: bold; text-decoration: underline; }
+/* line 244, _HTMLReporter.scss */
 .html-reporter .summary { margin-top: 14px; }
+/* line 247, _HTMLReporter.scss */
 .html-reporter .summary ul { list-style-type: none; margin-left: 14px; padding-top: 0; padding-left: 0; }
+/* line 253, _HTMLReporter.scss */
 .html-reporter .summary ul.suite { margin-top: 7px; margin-bottom: 7px; }
+/* line 260, _HTMLReporter.scss */
 .html-reporter .summary li.passed a { color: #5e7d00; }
+/* line 264, _HTMLReporter.scss */
 .html-reporter .summary li.failed a { color: #b03911; }
+/* line 268, _HTMLReporter.scss */
 .html-reporter .summary li.pending a { color: #ba9d37; }
+/* line 274, _HTMLReporter.scss */
 .html-reporter .description + .suite { margin-top: 0; }
+/* line 278, _HTMLReporter.scss */
 .html-reporter .suite { margin-top: 14px; }
+/* line 281, _HTMLReporter.scss */
 .html-reporter .suite a { color: #333333; }
+/* line 289, _HTMLReporter.scss */
 .html-reporter .failures .spec-detail { margin-bottom: 28px; }
+/* line 292, _HTMLReporter.scss */
 .html-reporter .failures .spec-detail .description { display: block; color: white; background-color: #b03911; }
+/* line 304, _HTMLReporter.scss */
 .html-reporter .result-message { padding-top: 14px; color: #333333; white-space: pre; }
+/* line 312, _HTMLReporter.scss */
 .html-reporter .result-message span.result { display: block; }
-.html-reporter .stack-trace { margin: 5px 0 0 0; max-height: 224px; overflow: auto; line-height: 18px; color: #666666; border: 1px solid #dddddd; background: white; white-space: pre; }
+/* line 316, _HTMLReporter.scss */
+.html-reporter .stack-trace { margin: 5px 0 0 0; max-height: 224px; overflow: auto; line-height: 18px; color: #666666; border: 1px solid #ddd; background: white; white-space: pre; }

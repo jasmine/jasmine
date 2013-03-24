@@ -1,14 +1,14 @@
 var grunt = require("grunt");
-var _ = require("underscore");
 
 function standaloneTmpDir(path) {  return "dist/tmp/" + path; }
 
 module.exports = {
   compileSpecRunner: function() {
-    var runnerTemplate = _.template(grunt.file.read("lib/templates/SpecRunner.html.jst")),
-      runner = runnerTemplate({ jasmineVersion: global.jasmineVersion });
+    var runnerHtml = grunt.template.process(
+        grunt.file.read("grunt/templates/SpecRunner.html.jst"),
+        { data: { jasmineVersion: global.jasmineVersion }});
 
-    grunt.file.write(standaloneTmpDir("SpecRunner.html"), runner);
+    grunt.file.write(standaloneTmpDir("SpecRunner.html"), runnerHtml);
   },
 
   cleanSpecRunner: function() {

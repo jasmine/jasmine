@@ -29,7 +29,7 @@ module.exports = {
         cwd: lib("")
       },
       {
-        src: [ "boot.js"],
+        src: [ "boot.js" ],
         dest: standaloneLibDir,
         expand: true,
         cwd: lib("boot")

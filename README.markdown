@@ -7,11 +7,9 @@ Jasmine is a Behavior Driven Development testing framework for JavaScript. It do
 
 Documentation & guides live here: [http://pivotal.github.com/jasmine/](http://pivotal.github.com/jasmine/)
 
-# DEV GUIDE
+## Contributing
 
-Dependencies for this repo
-* Ruby > 1.9, Rubygems, Bundler
-* Node.js, npm
+Please read the [contributors' guide](https://github.com/pivotal/jasmine/blob/master/Contribute.markdown)
 
 ## Support
 
@@ -20,11 +18,10 @@ Dependencies for this repo
 * View the project backlog at Pivotal Tracker: [http://www.pivotaltracker.com/projects/10606](http://www.pivotaltracker.com/projects/10606)
 * Follow us on Twitter: [@JasmineBDD](http://twitter.com/JasmineBDD)
 
-
 ## Maintainers
 
 * [Davis W. Frank](mailto:dwfrank@pivotallabs.com), Pivotal Labs
 * [Rajan Agaskar](mailto:rajan@pivotallabs.com), Pivotal Labs
 * [Christian Williams](mailto:antixian666@gmail.com), Square
 
-Copyright (c) 2008-2012 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2008-2013 Pivotal Labs. This software is licensed under the MIT License.

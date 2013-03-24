@@ -17,17 +17,23 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['jshint:all']);
 
+  var version = require('./grunt/tasks/version.js');
+  var standaloneBuilder = require('./grunt/tasks/build_standalone.js');
+
+  grunt.registerTask('build:copyVersionToGem',
+    "Propagates the version from package.json to version.rb",
+    version.copyToGem);
+
   grunt.registerTask('buildDistribution',
     'Builds and lints jasmine.js, jasmine-html.js, jasmine.css',
     [
       'compass',
       'jshint:beforeConcat',
       'concat',
-      'jshint:afterConcat'
+      'jshint:afterConcat',
+      'build:copyVersionToGem'
     ]
   );
-
-  var standaloneBuilder = require('./grunt/tasks/build_standalone.js');
 
   grunt.registerTask("build:compileSpecRunner",
     "Processes the spec runner template and writes to a tmp file",
@@ -47,4 +53,12 @@ module.exports = function(grunt) {
       "build:cleanSpecRunner"
     ]
   );
+
+  var spec = require('./grunt/tasks/spec.js');
+
+  grunt.registerTask("execSpecsInNode",
+  "Run Jasmine core specs in Node.js",
+    spec.execSpecsInNode
+  );
+
 };

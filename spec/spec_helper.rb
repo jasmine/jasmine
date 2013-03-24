@@ -18,8 +18,6 @@ def project_root
   File.join(File.expand_path(File.dirname(__FILE__)), '..')
 end
 
-require "#{project_root}/tasks/jasmine_dev"
-
 def capture_output(capture = true)
   if capture
     output = StringIO.new
