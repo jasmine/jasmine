@@ -2,3 +2,5 @@
 .idea/
 .DS_Store
 downloads
+tmp/
+.rvmrc
