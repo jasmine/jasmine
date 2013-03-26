@@ -193,7 +193,7 @@ describe("Included matchers:", function() {
 /**
  ## Grouping Related Specs with `describe`
 
- The `describe` function is for grouping related specs. The string parameter is for naming the collection of specs, and will be contatenated with specs to make a spec's full name. This aids in finding specs in a large suite. If you name them well, your specs read as full sentences in traditional [BDD][bdd] style.
+ The `describe` function is for grouping related specs. The string parameter is for naming the collection of specs, and will be concatenated with specs to make a spec's full name. This aids in finding specs in a large suite. If you name them well, your specs read as full sentences in traditional [BDD][bdd] style.
 
  [bdd]: http://en.wikipedia.org/wiki/Behavior-driven_development
  */
