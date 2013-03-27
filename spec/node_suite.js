@@ -44,6 +44,10 @@ var jasmineInterface = {
   spyOn: function(obj, methodName) {
     return env.spyOn(obj, methodName);
   },
+  
+  removeSpy: function(obj, methodName) {
+    return env.removeSpy(obj, methodName);
+  },
 
   clock: env.clock,
   setTimeout: env.clock.setTimeout,

@@ -236,6 +236,16 @@
 
     return spyObj;
   };
+  
+  jasmine.Env.prototype.removeSpy = function(obj, methodName) {
+    for (var i = 0; i < this.spies_.length; i++) {
+      var spy = this.spies_[i];
+      if(spy.baseObj === obj && spy.methodName === methodName){
+          spy.baseObj[spy.methodName] = spy.originalValue;
+          this.spies_.splice(i, 1);
+      }
+    }
+  };
 
   // TODO: move this to closure
   jasmine.Env.prototype.removeAllSpies = function() {

@@ -45,6 +45,9 @@ var jasmineInterface = {
     return env.spyOn(obj, methodName);
   },
 
+  removeSpy: function(obj, methodName) {
+    return env.removeSpy(obj, methodName);
+  },
 
   jsApiReporter: new jasmine.JsApiReporter(jasmine)
 };
