@@ -65,85 +65,42 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
   };
 };
 
-
-/**
- * toBe: compares the actual to the expected using ===
- * @param expected
- */
 jasmine.Matchers.prototype.toBe = function(expected) {
   return this.actual === expected;
 };
 
-/**
- * toNotBe: compares the actual to the expected using !==
- * @param expected
- * @deprecated as of 1.0. Use not.toBe() instead.
- */
 jasmine.Matchers.prototype.toNotBe = function(expected) {
   return this.actual !== expected;
 };
 
-/**
- * toEqual: compares the actual to the expected using common sense equality. Handles Objects, Arrays, etc.
- *
- * @param expected
- */
 jasmine.Matchers.prototype.toEqual = function(expected) {
   return this.env.equals_(this.actual, expected);
 };
 
-/**
- * toNotEqual: compares the actual to the expected using the ! of jasmine.Matchers.toEqual
- * @param expected
- * @deprecated as of 1.0. Use not.toEqual() instead.
- */
 jasmine.Matchers.prototype.toNotEqual = function(expected) {
   return !this.env.equals_(this.actual, expected);
 };
 
-/**
- * Matcher that compares the actual to the expected using a regular expression.  Constructs a RegExp, so takes
- * a pattern or a String.
- *
- * @param expected
- */
 jasmine.Matchers.prototype.toMatch = function(expected) {
   return new RegExp(expected).test(this.actual);
 };
 
-/**
- * Matcher that compares the actual to the expected using the boolean inverse of jasmine.Matchers.toMatch
- * @param expected
- * @deprecated as of 1.0. Use not.toMatch() instead.
- */
 jasmine.Matchers.prototype.toNotMatch = function(expected) {
   return !(new RegExp(expected).test(this.actual));
 };
 
-/**
- * Matcher that compares the actual to jasmine.undefined.
- */
 jasmine.Matchers.prototype.toBeDefined = function() {
   return !jasmine.util.isUndefined(this.actual);
 };
 
-/**
- * Matcher that compares the actual to jasmine.undefined.
- */
 jasmine.Matchers.prototype.toBeUndefined = function() {
   return jasmine.util.isUndefined(this.actual);
 };
 
-/**
- * Matcher that compares the actual to null.
- */
 jasmine.Matchers.prototype.toBeNull = function() {
   return (this.actual === null);
 };
 
-/**
- * Matcher that compares the actual to NaN.
- */
 jasmine.Matchers.prototype.toBeNaN = function() {
   this.message = function() {
       return [ "Expected " + jasmine.pp(this.actual) + " to be NaN." ];
@@ -152,25 +109,14 @@ jasmine.Matchers.prototype.toBeNaN = function() {
   return (this.actual !== this.actual);
 };
 
-/**
- * Matcher that boolean not-nots the actual.
- */
 jasmine.Matchers.prototype.toBeTruthy = function() {
   return !!this.actual;
 };
 
-
-/**
- * Matcher that boolean nots the actual.
- */
 jasmine.Matchers.prototype.toBeFalsy = function() {
   return !this.actual;
 };
 
-
-/**
- * Matcher that checks to see if the actual, a Jasmine spy, was called.
- */
 jasmine.Matchers.prototype.toHaveBeenCalled = function() {
   if (arguments.length > 0) {
     throw new Error('toHaveBeenCalled does not take arguments, use toHaveBeenCalledWith');
@@ -190,14 +136,9 @@ jasmine.Matchers.prototype.toHaveBeenCalled = function() {
   return this.actual.wasCalled;
 };
 
-/** @deprecated Use expect(xxx).toHaveBeenCalled() instead */
+// TODO: kill this for 2.0
 jasmine.Matchers.prototype.wasCalled = jasmine.Matchers.prototype.toHaveBeenCalled;
 
-/**
- * Matcher that checks to see if the actual, a Jasmine spy, was not called.
- *
- * @deprecated Use expect(xxx).not.toHaveBeenCalled() instead
- */
 jasmine.Matchers.prototype.wasNotCalled = function() {
   if (arguments.length > 0) {
     throw new Error('wasNotCalled does not take arguments');
@@ -217,12 +158,6 @@ jasmine.Matchers.prototype.wasNotCalled = function() {
   return !this.actual.wasCalled;
 };
 
-/**
- * Matcher that checks to see if the actual, a Jasmine spy, was called with a set of parameters.
- *
- * @example
- *
- */
 jasmine.Matchers.prototype.toHaveBeenCalledWith = function() {
   var expectedArgs = jasmine.util.argsToArray(arguments);
   if (!jasmine.isSpy(this.actual)) {
@@ -242,10 +177,10 @@ jasmine.Matchers.prototype.toHaveBeenCalledWith = function() {
   return this.env.contains_(this.actual.argsForCall, expectedArgs);
 };
 
-/** @deprecated Use expect(xxx).toHaveBeenCalledWith() instead */
+// TODO: kill for 2.0
 jasmine.Matchers.prototype.wasCalledWith = jasmine.Matchers.prototype.toHaveBeenCalledWith;
 
-/** @deprecated Use expect(xxx).not.toHaveBeenCalledWith() instead */
+// TODO: kill for 2.0
 jasmine.Matchers.prototype.wasNotCalledWith = function() {
   var expectedArgs = jasmine.util.argsToArray(arguments);
   if (!jasmine.isSpy(this.actual)) {
@@ -262,21 +197,10 @@ jasmine.Matchers.prototype.wasNotCalledWith = function() {
   return !this.env.contains_(this.actual.argsForCall, expectedArgs);
 };
 
-/**
- * Matcher that checks that the expected item is an element in the actual Array.
- *
- * @param {Object} expected
- */
 jasmine.Matchers.prototype.toContain = function(expected) {
   return this.env.contains_(this.actual, expected);
 };
 
-/**
- * Matcher that checks that the expected item is NOT an element in the actual Array.
- *
- * @param {Object} expected
- * @deprecated as of 1.0. Use not.toContain() instead.
- */
 jasmine.Matchers.prototype.toNotContain = function(expected) {
   return !this.env.contains_(this.actual, expected);
 };
@@ -289,13 +213,6 @@ jasmine.Matchers.prototype.toBeGreaterThan = function(expected) {
   return this.actual > expected;
 };
 
-/**
- * Matcher that checks that the expected item is equal to the actual item
- * up to a given level of decimal precision (default 2).
- *
- * @param {Number} expected
- * @param {Number} precision, as number of decimal places
- */
 jasmine.Matchers.prototype.toBeCloseTo = function(expected, precision) {
   if (precision !== 0) {
     precision = precision || 2;
@@ -303,11 +220,6 @@ jasmine.Matchers.prototype.toBeCloseTo = function(expected, precision) {
   return Math.abs(expected - this.actual) < (Math.pow(10, -precision) / 2);
 };
 
-/**
- * Matcher that checks that the expected exception was thrown by the actual.
- *
- * @param {String} [expected]
- */
 jasmine.Matchers.prototype.toThrow = function(expected) {
   var result = false;
   var exception;

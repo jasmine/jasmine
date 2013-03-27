@@ -1,15 +1,7 @@
-/**
- * Base class for pretty printing for expectation results.
- */
 jasmine.PrettyPrinter = function() {
   this.ppNestLevel_ = 0;
 };
 
-/**
- * Formats a value in a nice, human-readable string.
- *
- * @param value
- */
 jasmine.PrettyPrinter.prototype.format = function(value) {
   this.ppNestLevel_++;
   try {
