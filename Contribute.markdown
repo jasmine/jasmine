@@ -24,7 +24,7 @@ To install the Ruby dependencies, you will need Ruby, Rubygems, and Bundler avai
 
 ...will install all of the Ruby dependencies.
 
-To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http://gruntjs.com/) (including the grunt-cli).
+To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http://gruntjs.com/) (including the [grunt-cli](https://github.com/gruntjs/grunt-cli).
 
     $ npm install --local
 
