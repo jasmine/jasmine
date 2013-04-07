@@ -594,6 +594,12 @@ describe("jasmine.Matchers", function() {
         expect(lastResult().message).toMatch("Other Error");
       });
 
+      it("should match exceptions specified by regular expression", function() {
+        expect(match(throwingFn).toThrow(/Error/)).toPass();
+        expect(match(throwingFn).toThrow(/^Error/)).toFail();
+        expect(lastResult().message).toMatch("throw an exception matching /\\^Error/");
+      });
+
       it("should match exceptions specified by Error", function() {
         expect(match(throwingFn).toThrow(new Error("Fake Error"))).toPass();
         expect(match(throwingFn).toThrow(new Error("Other Error"))).toFail();
@@ -610,6 +616,12 @@ describe("jasmine.Matchers", function() {
           expect(match(throwingFn).not.toThrow("Fake Error")).toFail();
           //          expect(lastResult().message).toMatch(/Expected function not to throw Fake Error./);
           expect(match(throwingFn).not.toThrow("Other Error")).toPass();
+        });
+
+        it("should match exceptions specified by regular expression", function() {
+          expect(match(throwingFn).not.toThrow(/Error/)).toFail();
+          //          expect(lastResult().message).toMatch(/Expected function not to throw an exception matching \/Error\/./);
+          expect(match(throwingFn).not.toThrow(/^Error/)).toPass();
         });
 
         it("should match exceptions specified by Error", function() {
