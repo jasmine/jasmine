@@ -62,7 +62,7 @@ jasmine.objectContaining = function (sample) {
 };
 
 jasmine.Spy = function(name) {
-  this.identity = name || 'unknown';
+  this.identity = name || '007';
   this.isSpy = true;
   this.plan = function() {
   };
