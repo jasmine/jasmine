@@ -291,4 +291,24 @@ describe("Clock (acceptance)", function() {
     clock.tick(5);
     expect(delayedFn1).toHaveBeenCalled();
   });
+
+  it("calls the global clearTimeout correctly when not installed", function () {
+    var delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['clearTimeout']),
+      global = originalJasmine.getGlobal(),
+      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+
+    expect(function() {
+      clock.clearTimeout(123)
+    }).not.toThrow();
+  });
+
+  it("calls the global clearTimeout correctly when not installed", function () {
+    var delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['clearTimeout']),
+      global = originalJasmine.getGlobal(),
+      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+
+    expect(function() {
+      clock.clearInterval(123)
+    }).not.toThrow();
+  });
 });

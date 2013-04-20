@@ -33,7 +33,7 @@ jasmine.Clock = function(global, delayedFunctionScheduler) {
       }
       return timer.setTimeout(fn, delay);
     }
-    return timer.setTimeout.apply(null, arguments);
+    return timer.setTimeout.apply(global, arguments);
   };
 
   self.setInterval = function(fn, delay, params) {
@@ -43,15 +43,15 @@ jasmine.Clock = function(global, delayedFunctionScheduler) {
       }
       return timer.setInterval(fn, delay);
     }
-    return timer.setInterval.apply(null, arguments);
+    return timer.setInterval.apply(global, arguments);
   };
 
   self.clearTimeout = function(id) {
-    return timer.clearTimeout(id);
+    return timer.clearTimeout.call(global, id);
   };
 
   self.clearInterval = function(id) {
-    return timer.clearInterval(id);
+    return timer.clearInterval.call(global, id);
   };
 
   self.tick = function(millis) {
