@@ -193,8 +193,7 @@ jasmine.HtmlReporter = function(options) {
 
   function find(selector) {
     if (selector.match(/^\./)) {
-      var className = selector.substring(1);
-      return getContainer().getElementsByClassName(className);
+      return getContainer().querySelectorAll(selector);
     } else {
       return getContainer().getElementsByTagName(selector);
     }
