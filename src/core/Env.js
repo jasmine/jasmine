@@ -22,13 +22,18 @@
     ]);
 
     this.lastUpdate = 0;
-    this.specFilter = function() {
-      return true;
+    this.specFilter = function(spec) {
+      return this.exclusive_ <= spec.exclusive_;
     };
 
     this.nextSpecId_ = 0;
     this.nextSuiteId_ = 0;
     this.equalityTesters_ = [];
+
+    // 0 - normal
+    // 1 - contains some ddescribe
+    // 2 - contains some iit
+    this.exclusive_ = 0;
 
     // wrap matchers
     this.matchersClass = function() {
@@ -129,6 +134,7 @@
         afterFns: afterFns(suite),
         expectationFactory: expectationFactory,
         exceptionFormatter: exceptionFormatter,
+        exclusive_: suite.exclusive_,
         resultCallback: specResultCallback,
         getSpecName: function(spec) {
           return getSpecName(spec, suite);
@@ -269,8 +275,11 @@
 
   // TODO: move this to closure
   jasmine.Env.prototype.describe = function(description, specDefinitions) {
-    var suite = this.suiteFactory(description, specDefinitions);
+    var suite = new jasmine.Suite(this, description, null, this.currentSuite);
+    return this.describe_(suite, specDefinitions);
+  };
 
+  jasmine.Env.prototype.describe_ = function(suite, specDefinitions) {
     var parentSuite = this.currentSuite;
     parentSuite.addSuite(suite);
     this.currentSuite = suite;
@@ -294,6 +303,15 @@
   };
 
   // TODO: move this to closure
+  jasmine.Env.prototype.ddescribe = function(description, specDefinitions) {
+    var suite = new jasmine.Suite(this, description, null, this.currentSuite);
+    suite.exclusive_ = 1;
+    this.exclusive_ = Math.max(this.exclusive_, 1);
+
+    return this.describe_(suite, specDefinitions);
+  };
+
+  // TODO: move this to closure
   jasmine.Env.prototype.xdescribe = function(description, specDefinitions) {
     var suite = this.describe(description, specDefinitions);
     suite.disable();
@@ -304,6 +322,15 @@
   jasmine.Env.prototype.it = function(description, fn) {
     var spec = this.specFactory(description, fn, this.currentSuite);
     this.currentSuite.addSpec(spec);
+    return spec;
+  };
+
+  // TODO: move this to closure
+  jasmine.Env.prototype.iit = function(description, fn) {
+    var spec = this.it(description, fn);
+    spec.exclusive_ = 2;
+    this.exclusive_ = 2;
+
     return spec;
   };
 

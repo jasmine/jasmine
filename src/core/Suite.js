@@ -16,6 +16,7 @@ jasmine.Suite = function(attrs) {
   this.children_ = []; // TODO: rename
   this.suites = []; // TODO: needed?
   this.specs = [];  // TODO: needed?
+  this.exclusive_ = this.parentSuite && this.parentSuite.exclusive_ || 0;
 
   this.result = {
     id: this.id,
