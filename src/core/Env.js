@@ -134,6 +134,7 @@
         afterFns: afterFns(suite),
         expectationFactory: expectationFactory,
         exceptionFormatter: exceptionFormatter,
+        exclusive_: suite.exclusive_,
         resultCallback: specResultCallback,
         getSpecName: function(spec) {
           return getSpecName(spec, suite);
@@ -320,7 +321,6 @@
   // TODO: move this to closure
   jasmine.Env.prototype.it = function(description, fn) {
     var spec = this.specFactory(description, fn, this.currentSuite);
-    spec.exclusive_ = this.currentSuite.exclusive_;
     this.currentSuite.addSpec(spec);
     return spec;
   };
