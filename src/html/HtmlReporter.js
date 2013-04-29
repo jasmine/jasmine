@@ -65,7 +65,8 @@ jasmine.HtmlReporter = function(options) {
 
     symbols.appendChild(createDom("li", {
         className: result.status,
-        id: "spec_" + result.id}
+        id: "spec_" + result.id,
+        title: result.fullName}
     ));
 
     if (result.status == "failed") {
