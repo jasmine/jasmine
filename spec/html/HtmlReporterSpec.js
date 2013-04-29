@@ -46,12 +46,13 @@ describe("New HtmlReporter", function() {
         });
       reporter.initialize();
 
-      reporter.specDone({id: 789, status: "disabled"});
+      reporter.specDone({id: 789, status: "disabled", fullName: "symbols should have titles"});
 
       var statuses = container.getElementsByClassName('symbol-summary')[0];
       var specEl = statuses.getElementsByTagName('li')[0];
       expect(specEl.getAttribute("class")).toEqual("disabled");
       expect(specEl.getAttribute("id")).toEqual("spec_789");
+      expect(specEl.getAttribute("title")).toEqual("symbols should have titles");
     });
 
     it("reports the status symbol of a pending spec", function() {
