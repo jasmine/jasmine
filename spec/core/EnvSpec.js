@@ -182,6 +182,47 @@ describe("Env (integration)", function() {
 
   });
 
+    it("unloadSuites unloads the all registered suites", function() {
+    var env = new jasmine.Env(),
+      calls = [];
+
+    env.describe("Outer suite", function() {
+      env.it("an outer spec", function() {
+        calls.push('an outer spec')
+      });
+      env.describe("Inner suite", function() {
+        env.it("an inner spec", function() {
+          calls.push('an inner spec');
+        });
+        env.it("another inner spec", function() {
+          calls.push('another inner spec');
+        });
+      });
+    });
+
+    env.execute();
+
+    expect(calls).toEqual([
+      'an outer spec',
+      'an inner spec',
+      'another inner spec'
+    ]);
+
+    env.unloadSuites();
+    calls = [];
+    env.describe("New Suite", function() {
+      env.it("a spec of the new suite", function() {
+        calls.push('a spec of the new suite');
+      });  
+    });
+
+    env.execute();
+
+    expect(calls).toEqual([
+      'a spec of the new suite'
+    ]);  
+  });
+
   it("Multiple top-level Suites execute as expected", function() {
     var env = new jasmine.Env(),
       calls = [];
