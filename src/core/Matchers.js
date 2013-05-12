@@ -12,12 +12,6 @@ jasmine.Matchers = function(env, actual, spec, opt_isNot) {
   this.isNot = opt_isNot || false;
 };
 
-// todo: @deprecated as of Jasmine 0.11, remove soon [xw]
-jasmine.Matchers.pp = function(str) {
-  throw new Error("jasmine.Matchers.pp() is no longer supported, please use jasmine.pp() instead!");
-};
-
-
 jasmine.Matchers.wrapInto_ = function(prototype, matchersClass) {
   for (var methodName in prototype) {
     var orig = prototype[methodName];
