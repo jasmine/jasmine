@@ -170,6 +170,12 @@
     });
     this.currentSuite = this.topSuite;
 
+    self.lazy = { context: {}, values: {} };
+    self.topSuite.beforeEach(function() {
+      self.lazy.values = {};
+      self.lazy.context = new self.topSuite.LazyGetters();
+    });
+
     this.suiteFactory = function(description) {
       return new suiteConstructor({
         env: self,

@@ -27,6 +27,33 @@ jasmine.getEnv = function(options) {
   return env;
 };
 
+jasmine.given = function(name, block) {
+  if (typeof block !== 'function') {
+    throw "block required";
+  }
+  var env = (this instanceof jasmine.Env ? this : jasmine.getEnv());
+  if (! env.currentSuite) {
+    throw "invalid runtime invokation for given()";
+  }
+
+  env.currentSuite.LazyGetters.prototype.__defineGetter__(name, function() {
+    var lazy = env.lazy;
+    if (!lazy.values.hasOwnProperty(name)) {
+      lazy.values[name] = block();
+    }
+    return lazy.values[name];
+  });
+  if (!jasmine.given.__lookupGetter__(name)) {
+    jasmine.given.__defineGetter__(name, function() {
+      var lazy = env.lazy;
+      if (!lazy.values.hasOwnProperty(name)) {
+        lazy.values[name] = lazy.context[name];
+      }
+      return lazy.values[name];
+    });
+  }
+};
+
 jasmine.isArray_ = function(value) {
   return jasmine.isA_("Array", value);
 };

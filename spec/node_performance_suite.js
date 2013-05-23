@@ -17,6 +17,8 @@ var jasmineInterface = {
     return env.xdescribe(description, specDefinitions);
   },
 
+  given: env.jasmine.given,
+
   it: function(desc, func) {
     return env.it(desc, func);
   },
