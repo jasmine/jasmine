@@ -1,8 +1,8 @@
 jasmine.Suite = function(attrs) {
   this.env = attrs.env;
   this.id = attrs.id;
-  this.LazyGetters = function () {};
   this.parentSuite = attrs.parentSuite;
+  this.env.given().createContext(this);
   this.description = attrs.description;
   this.onStart = attrs.onStart || function() {};
   this.completeCallback = attrs.completeCallback || function() {};
@@ -55,12 +55,8 @@ jasmine.Suite.prototype.addSpec = function(spec) {
 
 jasmine.Suite.prototype.addSuite = function(suite) {
   suite.parentSuite = this;
-  suite.LazyGetters = function() {};
-  if (typeof this.LazyGetters === 'function') {
-    suite.LazyGetters.prototype = new this.LazyGetters();
-  }
   suite.beforeEach(function() {
-    suite.env.lazy.context = new suite.LazyGetters();
+    suite.env.given().useContextFrom(suite);
   });
   this.children_.push(suite);
   this.suites.push(suite);    // TODO: needed?

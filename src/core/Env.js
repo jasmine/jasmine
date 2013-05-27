@@ -170,10 +170,8 @@
     });
     this.currentSuite = this.topSuite;
 
-    self.lazy = { context: {}, values: {} };
     self.topSuite.beforeEach(function() {
-      self.lazy.values = {};
-      self.lazy.context = new self.topSuite.LazyGetters();
+      self.given().reset(self.topSuite);
     });
 
     this.suiteFactory = function(description) {
@@ -242,6 +240,60 @@
 
     return spyObj;
   };
+
+  jasmine.Env.prototype.given = (function() {
+    var lazyHandler = {
+      useContextFrom: function(suite) {
+        this.currentContext = suite.Getters;
+      },
+      reset: function(suite) {
+        this.values = {};
+        this.useContextFrom(suite);
+      },
+      createContext: function(suite) {
+        var getterClass = function() {};
+        if (suite.parentSuite) {
+          getterClass.prototype = suite.parentSuite.Getters;
+        }
+        suite.Getters = new getterClass();
+      },
+      currentContext: {},
+      values: {}
+    };
+    function defineGetter(obj, name, block) {
+      obj.__defineGetter__(name, function() {
+      var lazy = g();
+        if (!lazy.values.hasOwnProperty(name)) {
+          lazy.values[name] = (block ? block() : lazy.currentContext[name]);
+        }
+        return lazy.values[name];
+      });
+    }
+    function g(name, block) {
+      if (arguments.length === 0) {
+        return lazyHandler;
+      }
+      var env = this;
+      if (typeof block !== 'function') {
+        throw "block required";
+      }
+      if (! env.currentSuite) {
+        throw "invalid runtime invokation for given()";
+      }
+
+      defineGetter(env.currentSuite.Getters, name, block);
+      if (!g.__lookupGetter__(name)) {
+        defineGetter(g, name);
+      }
+      if (env.given !== g) {
+        defineGetter(env.given, name);
+      }
+      if (typeof given === "function") {
+        defineGetter(given, name);
+      }
+    }
+    return g;
+  })();
 
   // TODO: move this to closure
   jasmine.Env.prototype.removeAllSpies = function() {
