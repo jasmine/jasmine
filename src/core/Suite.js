@@ -2,6 +2,7 @@ jasmine.Suite = function(attrs) {
   this.env = attrs.env;
   this.id = attrs.id;
   this.parentSuite = attrs.parentSuite;
+  this.env.given().createContext(this);
   this.description = attrs.description;
   this.onStart = attrs.onStart || function() {};
   this.completeCallback = attrs.completeCallback || function() {};
@@ -54,6 +55,9 @@ jasmine.Suite.prototype.addSpec = function(spec) {
 
 jasmine.Suite.prototype.addSuite = function(suite) {
   suite.parentSuite = this;
+  suite.beforeEach(function() {
+    suite.env.given().useContextFrom(suite);
+  });
   this.children_.push(suite);
   this.suites.push(suite);    // TODO: needed?
 };
