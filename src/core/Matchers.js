@@ -250,6 +250,10 @@ jasmine.Matchers.Any = function(expectedClass) {
 };
 
 jasmine.Matchers.Any.prototype.jasmineMatches = function(other) {
+  if (!this.expectedClass) {
+    return typeof other !== 'undefined';
+  }
+
   if (this.expectedClass == String) {
     return typeof other == 'string' || other instanceof String;
   }

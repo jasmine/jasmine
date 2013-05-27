@@ -1033,6 +1033,36 @@ describe("jasmine.Matchers", function() {
     });
 
     describe(".jasmineMatches", function () {
+      describe("with no argument", function() {
+        beforeEach(function () {
+          any = jasmine.any();
+        });
+
+        it("matches an empty object", function () {
+          expect(any.jasmineMatches({})).toEqual(true);
+        });
+
+        it("matches a newed up object", function () {
+          expect(any.jasmineMatches(new Object())).toEqual(true);
+        });
+
+        it("matches a string", function () {
+          expect(any.jasmineMatches("")).toEqual(true);
+        });
+
+        it("matches a number", function () {
+          expect(any.jasmineMatches(123)).toEqual(true);
+        });
+
+        it("matches a function", function () {
+          expect(any.jasmineMatches(function () {})).toEqual(true);
+        });
+
+        it("does not match undefined", function () {
+          expect(any.jasmineMatches()).toEqual(false);
+        });
+      });
+
       describe("with Object", function () {
         beforeEach(function () {
           any = jasmine.any(Object);
