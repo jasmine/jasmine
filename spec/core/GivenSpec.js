@@ -11,13 +11,6 @@ describe("Given", function() {
       expect(lazy.values).not.toEqual( {} );
       expect(lazy.values).toEqual( {"myLazyValue":["a"],"testValue":"a"} );
     });
-
-    it("should cache values", function() {
-      var cachedValue = given.myLazyValue;
-      expect(given.myLazyValue).not.toBe(["a"]);
-      expect(given.myLazyValue).toEqual(["a"]);
-      expect(given.myLazyValue).toBe(cachedValue);
-    });
   });
 
   describe("with refinements of lazy-values", function() {
@@ -31,13 +24,13 @@ describe("Given", function() {
       expect(lazy.values).not.toEqual( {} );
       expect(lazy.values).toEqual( {"myLazyValue":[1],"testValue":1} );
     });
+  });
 
-    it("should cache values", function() {
-      var cachedValue = given.myLazyValue;
-      expect(given.myLazyValue).not.toBe([1]);
-      expect(given.myLazyValue).toEqual([1]);
-      expect(given.myLazyValue).toBe(cachedValue);
-    });
+  it("should cache values", function() {
+    var cachedValue = given.myLazyValue;
+    expect(given.myLazyValue).not.toBe(["a"]);
+    expect(given.myLazyValue).toEqual(["a"]);
+    expect(given.myLazyValue).toBe(cachedValue);
   });
 
   it("should ignore unknown lazy-values", function() {
