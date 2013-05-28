@@ -7,7 +7,7 @@ describe("ExceptionFormatter", function() {
           message: 'you got your foo in my bar',
           name: 'A Classic Mistake'
         },
-        exceptionFormatter = new jasmine.ExceptionFormatter(),
+        exceptionFormatter = new j$.ExceptionFormatter(),
         message = exceptionFormatter.message(sampleFirefoxException);
 
       expect(message).toEqual('A Classic Mistake: you got your foo in my bar in foo.js (line 1978)');
@@ -20,7 +20,7 @@ describe("ExceptionFormatter", function() {
           message: 'you got your foo in my bar',
           name: 'A Classic Mistake'
         },
-        exceptionFormatter = new jasmine.ExceptionFormatter(),
+        exceptionFormatter = new j$.ExceptionFormatter(),
         message = exceptionFormatter.message(sampleWebkitException);
 
       expect(message).toEqual('A Classic Mistake: you got your foo in my bar in foo.js (line 1978)');
@@ -31,7 +31,7 @@ describe("ExceptionFormatter", function() {
           message: 'you got your foo in my bar',
           name: 'A Classic Mistake'
         },
-        exceptionFormatter = new jasmine.ExceptionFormatter(),
+        exceptionFormatter = new j$.ExceptionFormatter(),
         message = exceptionFormatter.message(sampleV8);
 
       expect(message).toEqual('A Classic Mistake: you got your foo in my bar');
@@ -42,11 +42,11 @@ describe("ExceptionFormatter", function() {
   describe("#stack", function() {
     it("formats stack traces from Webkit, Firefox or node.js", function() {
       var error = new Error("an error");
-      expect(new jasmine.ExceptionFormatter().stack(error)).toMatch(/ExceptionFormatterSpec\.js.*\d+/)
+      expect(new j$.ExceptionFormatter().stack(error)).toMatch(/ExceptionFormatterSpec\.js.*\d+/)
     });
 
     it("returns null if no Error provided", function() {
-      expect(new jasmine.ExceptionFormatter().stack()).toBeNull();
+      expect(new j$.ExceptionFormatter().stack()).toBeNull();
     });
   });
 });

@@ -1,8 +1,8 @@
 describe("Suite", function() {
 
   it("keeps its id", function() {
-    var env = new jasmine.Env(),
-      suite = new jasmine.Suite({
+    var env = new j$.Env(),
+      suite = new j$.Suite({
         env: env,
         id: 456,
         description: "I am a suite"
@@ -12,8 +12,8 @@ describe("Suite", function() {
   });
 
   it("returns its full name", function() {
-    var env = new jasmine.Env(),
-      suite = new jasmine.Suite({
+    var env = new j$.Env(),
+      suite = new j$.Suite({
         env: env,
         description: "I am a suite"
       });
@@ -22,13 +22,13 @@ describe("Suite", function() {
   });
 
   it("returns its full name when it has parent suites", function() {
-    var env = new jasmine.Env(),
-      parentSuite = new jasmine.Suite({
+    var env = new j$.Env(),
+      parentSuite = new j$.Suite({
         env: env,
         description: "I am a parent suite",
         parentSuite: jasmine.createSpy('pretend top level suite')
       }),
-      suite = new jasmine.Suite({
+      suite = new j$.Suite({
         env: env,
         description: "I am a suite",
         parentSuite: parentSuite
@@ -38,8 +38,8 @@ describe("Suite", function() {
   });
 
   it("adds before functions in order of needed execution", function() {
-    var env = new jasmine.Env(),
-      suite = new jasmine.Suite({
+    var env = new j$.Env(),
+      suite = new j$.Suite({
         env: env,
         description: "I am a suite"
       }),
@@ -53,8 +53,8 @@ describe("Suite", function() {
   });
 
   it("adds after functions in order of needed execution", function() {
-    var env = new jasmine.Env(),
-      suite = new jasmine.Suite({
+    var env = new j$.Env(),
+      suite = new j$.Suite({
         env: env,
         description: "I am a suite"
       }),
@@ -68,11 +68,11 @@ describe("Suite", function() {
   });
 
   it("adds specs", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       fakeQueue = {
         add: jasmine.createSpy()
       },
-      suite = new jasmine.Suite({
+      suite = new j$.Suite({
         env: env,
         description: "I am a suite",
         queueFactory: function() {
@@ -89,18 +89,18 @@ describe("Suite", function() {
   });
 
   it("adds suites", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       fakeQueue = {
         add: jasmine.createSpy()
       },
-      suite = new jasmine.Suite({
+      suite = new j$.Suite({
         env: env,
         description: "I am a suite",
         queueFactory: function() {
           return fakeQueue
         }
       }),
-      anotherSuite = new jasmine.Suite({
+      anotherSuite = new j$.Suite({
         env: env,
         description: "I am another suite",
         queueFactory: function() {
@@ -116,9 +116,9 @@ describe("Suite", function() {
   });
 
   it("can be disabled", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       fakeQueueRunner = jasmine.createSpy('fake queue runner'),
-      suite = new jasmine.Suite({
+      suite = new j$.Suite({
         env: env,
         description: "with a child suite",
         queueRunner: fakeQueueRunner
@@ -134,16 +134,16 @@ describe("Suite", function() {
   });
 
   it("delegates execution of its specs and suites", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       parentSuiteDone = jasmine.createSpy('parent suite done'),
       fakeQueueRunnerForParent = jasmine.createSpy('fake parent queue runner'),
-      parentSuite = new jasmine.Suite({
+      parentSuite = new j$.Suite({
         env: env,
         description: "I am a parent suite",
         queueRunner: fakeQueueRunnerForParent
       }),
       fakeQueueRunner = jasmine.createSpy('fake queue runner'),
-      suite = new jasmine.Suite({
+      suite = new j$.Suite({
         env: env,
         description: "with a child suite",
         queueRunner: fakeQueueRunner
@@ -168,10 +168,10 @@ describe("Suite", function() {
   });
 
   it("calls a provided onStart callback when starting", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       suiteStarted = jasmine.createSpy('suiteStarted'),
       fakeQueueRunner = function(attrs) { attrs.onComplete(); },
-      suite = new jasmine.Suite({
+      suite = new j$.Suite({
         env: env,
         description: "with a child suite",
         onStart: suiteStarted,
@@ -187,10 +187,10 @@ describe("Suite", function() {
   });
 
   it("calls a provided onComplete callback when done", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       suiteCompleted = jasmine.createSpy('parent suite done'),
       fakeQueueRunner = function(attrs) { attrs.onComplete(); },
-      suite = new jasmine.Suite({
+      suite = new j$.Suite({
         env: env,
         description: "with a child suite",
         queueRunner: fakeQueueRunner
@@ -205,10 +205,10 @@ describe("Suite", function() {
   });
 
   it("calls a provided result callback when done", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       suiteResultsCallback = jasmine.createSpy('suite result callback'),
       fakeQueueRunner = function(attrs) { attrs.onComplete(); },
-      suite = new jasmine.Suite({
+      suite = new j$.Suite({
         env: env,
         description: "with a child suite",
         queueRunner: fakeQueueRunner,

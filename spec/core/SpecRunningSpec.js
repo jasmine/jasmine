@@ -4,7 +4,7 @@ describe("jasmine spec running", function () {
   var fakeTimer;
 
   beforeEach(function() {
-    env = new jasmine.Env();
+    env = new j$.Env();
     env.updateInterval = 0;
   });
 
@@ -221,7 +221,7 @@ describe("jasmine spec running", function () {
   });
 
   it("shouldn't run disabled suites", function() {
-    var specInADisabledSuite = originalJasmine.createSpy("specInADisabledSuite"),
+    var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
     suite = env.describe('A Suite', function() {
       env.xdescribe('with a disabled suite', function(){
         env.it('spec inside a disabled suite', specInADisabledSuite);
@@ -248,7 +248,7 @@ describe("jasmine spec running", function () {
   // TODO: is this useful? It doesn't catch syntax errors
   xit("should recover gracefully when there are errors in describe functions", function() {
     var specs = [];
-    var superSimpleReporter = new jasmine.Reporter();
+    var superSimpleReporter = new j$.Reporter();
     superSimpleReporter.reportSpecResults = function(result) {
       specs.push("Spec: " + result.fullName);
     };

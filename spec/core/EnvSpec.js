@@ -2,7 +2,7 @@
 describe("Env", function() {
   var env;
   beforeEach(function() {
-    env = new jasmine.Env();
+    env = new j$.Env();
     env.updateInterval = 0;
   });
 
@@ -18,7 +18,7 @@ describe("Env", function() {
     var fakeReporter;
 
     beforeEach(function() {
-      fakeReporter = originalJasmine.createSpyObj("fakeReporter", ["jasmineStarted"]);
+      fakeReporter = jasmine.createSpyObj("fakeReporter", ["jasmineStarted"]);
     });
 
     it("should allow reporters to be registered", function() {
@@ -111,14 +111,14 @@ describe("Env", function() {
     it("returns true if the exception is a pending spec exception", function() {
       env.catchExceptions(false);
 
-      expect(env.catchException(new Error(jasmine.Spec.pendingSpecExceptionMessage))).toBe(true);
+      expect(env.catchException(new Error(j$.Spec.pendingSpecExceptionMessage))).toBe(true);
     });
 
     it("returns false if the exception is not a pending spec exception and not catching exceptions", function() {
       env.catchExceptions(false);
 
       expect(env.catchException(new Error("external error"))).toBe(false);
-      expect(env.catchException(new Error(jasmine.Spec.pendingSpecExceptionMessage))).toBe(true);
+      expect(env.catchException(new Error(j$.Spec.pendingSpecExceptionMessage))).toBe(true);
     });
   });
 
@@ -126,7 +126,7 @@ describe("Env", function() {
     it("throws the Pending Spec exception", function() {
       expect(function() {
         env.pending();
-      }).toThrow(jasmine.Spec.pendingSpecExceptionMessage);
+      }).toThrow(j$.Spec.pendingSpecExceptionMessage);
     });
   });
 });
@@ -134,7 +134,7 @@ describe("Env", function() {
 describe("Env (integration)", function() {
 
   it("Suites execute as expected (no nesting)", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       calls = [];
 
     env.describe("A Suite", function() {
@@ -155,7 +155,7 @@ describe("Env (integration)", function() {
   });
 
   it("Nested Suites execute as expected", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       calls = [];
 
     env.describe("Outer suite", function() {
@@ -183,7 +183,7 @@ describe("Env (integration)", function() {
   });
 
   it("Multiple top-level Suites execute as expected", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       calls = [];
 
     env.describe("Outer suite", function() {
@@ -220,7 +220,7 @@ describe("Env (integration)", function() {
     var globalSetTimeout = jasmine.createSpy('globalSetTimeout'),
       delayedFunctionForGlobalClock = jasmine.createSpy('delayedFunctionForGlobalClock'),
       delayedFunctionForMockClock = jasmine.createSpy('delayedFunctionForMockClock'),
-      env = new jasmine.Env({global: { setTimeout: globalSetTimeout }});
+      env = new j$.Env({global: { setTimeout: globalSetTimeout }});
 
     env.describe("tests", function() {
       env.it("test with mock clock", function() {
@@ -242,8 +242,9 @@ describe("Env (integration)", function() {
     expect(globalSetTimeout).toHaveBeenCalledWith(delayedFunctionForGlobalClock, 100);
   });
 
+  // TODO: something is wrong with this spec
   it("should report as expected", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       reporter = jasmine.createSpyObj('fakeReproter', [
         "jasmineStarted",
         "jasmineDone",
@@ -280,7 +281,7 @@ describe("Env (integration)", function() {
   });
 
   it("should be possible to get full name from a spec", function() {
-    var env = new jasmine.Env({global: { setTimeout: setTimeout }}),
+    var env = new j$.Env({global: { setTimeout: setTimeout }}),
       topLevelSpec, nestedSpec, doublyNestedSpec;
 
     env.describe("my tests", function() {

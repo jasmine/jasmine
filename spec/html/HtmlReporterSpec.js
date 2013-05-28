@@ -1,7 +1,6 @@
 describe("New HtmlReporter", function() {
+  // TODO: Figure out why this isn't rendering...
   it("builds the initial DOM elements, including the title banner", function() {
-    jasmine.version = originalJasmine.version;
-
     var env = new jasmine.Env(),
       container = document.createElement("div"),
       getContainer = function() { return container; },
@@ -30,7 +29,7 @@ describe("New HtmlReporter", function() {
     expect(title.innerHTML).toMatch(/Jasmine/);
 
     var version = banner.getElementsByClassName("version")[0];
-    expect(version.innerHTML).toEqual(originalJasmine.version);
+    expect(version.innerHTML).toEqual(jasmine.version);
   });
 
   describe("when a spec is done", function() {

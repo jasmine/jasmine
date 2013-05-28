@@ -1,6 +1,6 @@
 describe("DelayedFunctionScheduler", function() {
   it("schedules a function for later execution", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler(),
+    var scheduler = new j$.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn, 0);
@@ -13,7 +13,7 @@ describe("DelayedFunctionScheduler", function() {
   });
 
   it("#tick defaults to 0", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler(),
+    var scheduler = new j$.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn, 0);
@@ -26,7 +26,7 @@ describe("DelayedFunctionScheduler", function() {
   });
 
   it("defaults delay to 0", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler(),
+    var scheduler = new j$.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn);
@@ -39,7 +39,7 @@ describe("DelayedFunctionScheduler", function() {
   });
 
   it("optionally passes params to scheduled functions", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler(),
+    var scheduler = new j$.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn, 0, ['foo', 'bar']);
@@ -52,7 +52,7 @@ describe("DelayedFunctionScheduler", function() {
   });
 
   it("scheduled fns can optionally reoccur", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler(),
+    var scheduler = new j$.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn, 20, [], true);
@@ -74,7 +74,7 @@ describe("DelayedFunctionScheduler", function() {
   });
 
   it("increments scheduled fns ids unless one is passed", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler();
+    var scheduler = new j$.DelayedFunctionScheduler();
 
     expect(scheduler.scheduleFunction(function() {
     }, 0)).toBe(1);
@@ -87,7 +87,7 @@ describe("DelayedFunctionScheduler", function() {
   });
 
   it("#removeFunctionWithId removes a previously scheduled function with a given id", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler(),
+    var scheduler = new j$.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn'),
       timeoutKey;
 
@@ -103,7 +103,7 @@ describe("DelayedFunctionScheduler", function() {
   });
 
   it("reset removes scheduled functions", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler(),
+    var scheduler = new j$.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn, 0);
@@ -118,7 +118,7 @@ describe("DelayedFunctionScheduler", function() {
   });
 
   it("reset resets the returned ids", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler();
+    var scheduler = new j$.DelayedFunctionScheduler();
     expect(scheduler.scheduleFunction(function() { }, 0)).toBe(1);
     expect(scheduler.scheduleFunction(function() { }, 0, [], false, 123)).toBe(123);
 
@@ -128,7 +128,7 @@ describe("DelayedFunctionScheduler", function() {
   });
 
   it("reset resets the current tick time", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler(),
+    var scheduler = new j$.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     expect(fn).not.toHaveBeenCalled();
@@ -144,7 +144,7 @@ describe("DelayedFunctionScheduler", function() {
   });
 
   it("executes recurring functions interleaved with regular functions in the correct order", function() {
-    var scheduler = new jasmine.DelayedFunctionScheduler(),
+    var scheduler = new j$.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn'),
       recurringCallCount = 0,
       recurring = jasmine.createSpy('recurring').andCallFake(function() {

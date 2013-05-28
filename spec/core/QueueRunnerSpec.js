@@ -4,7 +4,7 @@ describe("QueueRunner", function() {
     var calls = [],
       fn1 = jasmine.createSpy('fn1'),
       fn2 = jasmine.createSpy('fn2'),
-      queueRunner = new jasmine.QueueRunner({
+      queueRunner = new j$.QueueRunner({
         fns: [fn1, fn2]
       });
     fn1.andCallFake(function() {
@@ -23,10 +23,10 @@ describe("QueueRunner", function() {
     //TODO: it would be nice if spy arity could match the fake, so we could do something like:
     //createSpy('asyncfn').andCallFake(function(done) {});
 
-    var onComplete = originalJasmine.createSpy('onComplete'),
-      beforeCallback = originalJasmine.createSpy('beforeCallback'),
-      fnCallback = originalJasmine.createSpy('fnCallback'),
-      afterCallback = originalJasmine.createSpy('afterCallback'),
+    var onComplete = jasmine.createSpy('onComplete'),
+      beforeCallback = jasmine.createSpy('beforeCallback'),
+      fnCallback = jasmine.createSpy('fnCallback'),
+      afterCallback = jasmine.createSpy('afterCallback'),
       fn1 = function(done) {
         beforeCallback();
         setTimeout(function() {
@@ -45,7 +45,7 @@ describe("QueueRunner", function() {
           done()
         }, 100);
       },
-      queueRunner = new jasmine.QueueRunner({
+      queueRunner = new j$.QueueRunner({
         fns: [fn1, fn2, fn3],
         onComplete: onComplete
       });
@@ -80,7 +80,7 @@ describe("QueueRunner", function() {
         throw new Error('fake error');
       },
       exceptionCallback = jasmine.createSpy('exception callback'),
-      queueRunner = new jasmine.QueueRunner({
+      queueRunner = new j$.QueueRunner({
         fns: [fn],
         onException: exceptionCallback
       });
@@ -94,7 +94,7 @@ describe("QueueRunner", function() {
     var fn = function() {
         throw new Error('fake error');
       },
-      queueRunner = new jasmine.QueueRunner({
+      queueRunner = new j$.QueueRunner({
         fns: [fn],
         catchException: function(e) { return false; }
       });
@@ -105,7 +105,7 @@ describe("QueueRunner", function() {
   it("calls a provided complete callback when done", function() {
     var fn = jasmine.createSpy('fn'),
       completeCallback = jasmine.createSpy('completeCallback'),
-      queueRunner = new jasmine.QueueRunner({
+      queueRunner = new j$.QueueRunner({
         fns: [fn],
         onComplete: completeCallback
       });
@@ -119,7 +119,7 @@ describe("QueueRunner", function() {
     var fn = jasmine.createSpy('fn'),
       completeCallback = jasmine.createSpy('completeCallback'),
       encourageGC = jasmine.createSpy('encourageGC'),
-      queueRunner = new jasmine.QueueRunner({
+      queueRunner = new j$.QueueRunner({
         fns: [fn],
         encourageGC: encourageGC,
         onComplete: completeCallback

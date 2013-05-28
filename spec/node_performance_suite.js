@@ -74,7 +74,7 @@ function noop() {
 }
 
 jasmine.executeSpecs = function(specs, done, isVerbose, showColors) {
-  global.originalJasmine = jasmine;
+  global.jasmine = jasmine;
 
   for (var i = 0, len = specs.length; i < len; ++i) {
     var filename = specs[i];

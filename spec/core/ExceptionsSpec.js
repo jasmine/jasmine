@@ -2,7 +2,7 @@ describe('Exceptions:', function() {
   var env;
 
   beforeEach(function() {
-    env = new jasmine.Env();
+    env = new j$.Env();
     env.updateInterval = 0;
   });
 

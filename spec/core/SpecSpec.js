@@ -1,28 +1,28 @@
 describe("Spec", function() {
 
   it("#isPendingSpecException returns true for a pending spec exception", function() {
-    var e = new Error(jasmine.Spec.pendingSpecExceptionMessage);
+    var e = new Error(j$.Spec.pendingSpecExceptionMessage);
 
-    expect(jasmine.Spec.isPendingSpecException(e)).toBe(true);
+    expect(j$.Spec.isPendingSpecException(e)).toBe(true);
   });
 
   it("#isPendingSpecException returns true for a pending spec exception (even when FF bug is present)", function() {
     var fakeError = {
-      toString: function() { return "Error: " + jasmine.Spec.pendingSpecExceptionMessage; }
+      toString: function() { return "Error: " + j$.Spec.pendingSpecExceptionMessage; }
     };
 
-    expect(jasmine.Spec.isPendingSpecException(fakeError)).toBe(true);
+    expect(j$.Spec.isPendingSpecException(fakeError)).toBe(true);
   });
 
   it("#isPendingSpecException returns true for a pending spec exception", function() {
     var e = new Error("foo");
 
-    expect(jasmine.Spec.isPendingSpecException(e)).toBe(false);
+    expect(j$.Spec.isPendingSpecException(e)).toBe(false);
   });
 
   it("delegates execution to a QueueRunner", function() {
     var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
-      spec = new jasmine.Spec({
+      spec = new j$.Spec({
         description: 'my test',
         id: 'some-id',
         fn: function() {},
@@ -37,8 +37,8 @@ describe("Spec", function() {
   it("should call the start callback on execution", function() {
     var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
       beforesWereCalled = false,
-      startCallback = originalJasmine.createSpy('startCallback'),
-      spec = new jasmine.Spec({
+      startCallback = jasmine.createSpy('startCallback'),
+      spec = new j$.Spec({
         id: 123,
         description: 'foo bar',
         fn: function() {},
@@ -54,10 +54,10 @@ describe("Spec", function() {
   it("should call the start callback on execution but before any befores are called", function() {
     var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
       beforesWereCalled = false,
-      startCallback = originalJasmine.createSpy('start-callback').andCallFake(function() {
+      startCallback = jasmine.createSpy('start-callback').andCallFake(function() {
         expect(beforesWereCalled).toBe(false);
       }),
-      spec = new jasmine.Spec({
+      spec = new j$.Spec({
         fn: function() {},
         beforeFns: function() {
           return [function() {
@@ -75,13 +75,13 @@ describe("Spec", function() {
 
   it("provides all before fns and after fns to be run", function() {
     var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
-      before = originalJasmine.createSpy('before'),
-      after = originalJasmine.createSpy('after'),
-      fn = originalJasmine.createSpy('test body').andCallFake(function() {
+      before = jasmine.createSpy('before'),
+      after = jasmine.createSpy('after'),
+      fn = jasmine.createSpy('test body').andCallFake(function() {
         expect(before).toHaveBeenCalled();
         expect(after).not.toHaveBeenCalled();
       }),
-      spec = new jasmine.Spec({
+      spec = new j$.Spec({
         fn: fn,
         beforeFns: function() {
           return [before]
@@ -101,9 +101,9 @@ describe("Spec", function() {
   it("is marked pending if created without a function body", function() {
     var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
 
-      startCallback = originalJasmine.createSpy('startCallback'),
-      resultCallback = originalJasmine.createSpy('resultCallback'),
-      spec = new jasmine.Spec({
+      startCallback = jasmine.createSpy('startCallback'),
+      resultCallback = jasmine.createSpy('resultCallback'),
+      spec = new j$.Spec({
         onStart: startCallback,
         fn: null,
         resultCallback: resultCallback,
@@ -116,10 +116,10 @@ describe("Spec", function() {
 
   it("can be disabled, but still calls callbacks", function() {
     var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
-      startCallback = originalJasmine.createSpy('startCallback'),
-      specBody = originalJasmine.createSpy('specBody'),
-      resultCallback = originalJasmine.createSpy('resultCallback'),
-      spec = new jasmine.Spec({
+      startCallback = jasmine.createSpy('startCallback'),
+      specBody = jasmine.createSpy('specBody'),
+      resultCallback = jasmine.createSpy('resultCallback'),
+      spec = new j$.Spec({
         onStart:startCallback,
         fn: specBody,
         resultCallback: resultCallback,
@@ -141,9 +141,9 @@ describe("Spec", function() {
 
   it("can be marked pending, but still calls callbacks when executed", function() {
     var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
-      startCallback = originalJasmine.createSpy('startCallback'),
-      resultCallback = originalJasmine.createSpy('resultCallback'),
-      spec = new jasmine.Spec({
+      startCallback = jasmine.createSpy('startCallback'),
+      resultCallback = jasmine.createSpy('resultCallback'),
+      spec = new j$.Spec({
         onStart: startCallback,
         resultCallback: resultCallback,
         description: "with a spec",
@@ -172,8 +172,8 @@ describe("Spec", function() {
   });
 
   it("should call the done callback on execution complete", function() {
-    var done = originalJasmine.createSpy('done callback'),
-      spec = new jasmine.Spec({
+    var done = jasmine.createSpy('done callback'),
+      spec = new j$.Spec({
         fn: function() {},
         catchExceptions: function() { return false; },
         resultCallback: function() {},
@@ -186,13 +186,13 @@ describe("Spec", function() {
   });
 
   it("#status returns pending by default", function() {
-    var spec = new jasmine.Spec({fn: jasmine.createSpy("spec body")});
+    var spec = new j$.Spec({fn: jasmine.createSpy("spec body")});
     expect(spec.status()).toEqual('pending');
   });
 
   it("#status returns pending if no expectations were encountered", function() {
     var specBody = jasmine.createSpy("spec body"),
-      spec = new jasmine.Spec({fn: specBody});
+      spec = new j$.Spec({fn: specBody});
 
     spec.execute();
 
@@ -200,13 +200,13 @@ describe("Spec", function() {
   });
 
   it("#status returns passed if all expectations in the spec have passed", function() {
-    var spec = new jasmine.Spec({fn: jasmine.createSpy("spec body")});
+    var spec = new j$.Spec({fn: jasmine.createSpy("spec body")});
     spec.addExpectationResult(true);
     expect(spec.status()).toBe('passed');
   });
 
   it("#status returns failed if any expectations in the spec have failed", function() {
-    var spec = new jasmine.Spec({ fn: jasmine.createSpy("spec body") });
+    var spec = new j$.Spec({ fn: jasmine.createSpy("spec body") });
     spec.addExpectationResult(true);
     spec.addExpectationResult(false);
     expect(spec.status()).toBe('failed');
@@ -214,7 +214,7 @@ describe("Spec", function() {
 
   it("can return its full name", function() {
     var spec;
-    spec = new jasmine.Spec({
+    spec = new j$.Spec({
       getSpecName: function(passedVal) {
 //        expect(passedVal).toBe(spec);  TODO: a exec time, spec is undefined WTF?
         return 'expected val';
@@ -227,9 +227,9 @@ describe("Spec", function() {
   describe("when a spec is marked pending during execution", function() {
     it("should mark the spec as pending", function() {
       var fakeQueueRunner = function(opts) {
-          opts.onException(new Error(jasmine.Spec.pendingSpecExceptionMessage));
+          opts.onException(new Error(j$.Spec.pendingSpecExceptionMessage));
         },
-        spec = new jasmine.Spec({
+        spec = new j$.Spec({
           description: 'my test',
           id: 'some-id',
           fn: function() { },

@@ -1,52 +1,57 @@
-jasmine.util = {};
+getJasmineRequireObj().util = function() {
 
-jasmine.util.inherit = function(childClass, parentClass) {
-  var subclass = function() {
+  var util = {};
+
+  util.inherit = function(childClass, parentClass) {
+    var subclass = function() {
+    };
+    subclass.prototype = parentClass.prototype;
+    childClass.prototype = new subclass();
   };
-  subclass.prototype = parentClass.prototype;
-  childClass.prototype = new subclass();
-};
 
-jasmine.util.formatException = function(e) {
-  var lineNumber;
-  if (e.line) {
-    lineNumber = e.line;
-  }
-  else if (e.lineNumber) {
-    lineNumber = e.lineNumber;
-  }
+  util.formatException = function(e) {
+    var lineNumber;
+    if (e.line) {
+      lineNumber = e.line;
+    }
+    else if (e.lineNumber) {
+      lineNumber = e.lineNumber;
+    }
 
-  var file;
+    var file;
 
-  if (e.sourceURL) {
-    file = e.sourceURL;
-  }
-  else if (e.fileName) {
-    file = e.fileName;
-  }
+    if (e.sourceURL) {
+      file = e.sourceURL;
+    }
+    else if (e.fileName) {
+      file = e.fileName;
+    }
 
-  var message = (e.name && e.message) ? (e.name + ': ' + e.message) : e.toString();
+    var message = (e.name && e.message) ? (e.name + ': ' + e.message) : e.toString();
 
-  if (file && lineNumber) {
-    message += ' in ' + file + ' (line ' + lineNumber + ')';
-  }
+    if (file && lineNumber) {
+      message += ' in ' + file + ' (line ' + lineNumber + ')';
+    }
 
-  return message;
-};
+    return message;
+  };
 
-jasmine.util.htmlEscape = function(str) {
-  if (!str) return str;
-  return str.replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-};
+  util.htmlEscape = function(str) {
+    if (!str) return str;
+    return str.replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  };
 
-jasmine.util.argsToArray = function(args) {
-  var arrayOfArgs = [];
-  for (var i = 0; i < args.length; i++) arrayOfArgs.push(args[i]);
-  return arrayOfArgs;
-};
+  util.argsToArray = function(args) {
+    var arrayOfArgs = [];
+    for (var i = 0; i < args.length; i++) arrayOfArgs.push(args[i]);
+    return arrayOfArgs;
+  };
 
-jasmine.util.isUndefined = function(obj) {
-  return obj === void 0;
+  util.isUndefined = function(obj) {
+    return obj === void 0;
+  };
+
+  return util;
 };

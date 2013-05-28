@@ -1,30 +1,35 @@
-jasmine.ReportDispatcher = function(methods) {
+getJasmineRequireObj().ReportDispatcher = function() {
+  function ReportDispatcher(methods) {
 
-  var dispatchedMethods = methods || [];
+    var dispatchedMethods = methods || [];
 
-  for (var i = 0; i < dispatchedMethods.length; i++) {
-    var method = dispatchedMethods[i];
-    this[method] = function(m) {
-      return function() {
-        dispatch(m, arguments);
-      };
-    }(method);
-  }
+    for (var i = 0; i < dispatchedMethods.length; i++) {
+      var method = dispatchedMethods[i];
+      this[method] = function(m) {
+        return function() {
+          dispatch(m, arguments);
+        };
+      }(method);
+    }
 
-  var reporters = [];
+    var reporters = [];
 
-  this.addReporter = function(reporter) {
-    reporters.push(reporter);
-  };
+    this.addReporter = function(reporter) {
+      reporters.push(reporter);
+    };
 
-  return this;
+    return this;
 
-  function dispatch(method, args) {
-    for (var i = 0; i < reporters.length; i++) {
-      var reporter = reporters[i];
-      if (reporter[method]) {
-        reporter[method].apply(reporter, args);
+    function dispatch(method, args) {
+      for (var i = 0; i < reporters.length; i++) {
+        var reporter = reporters[i];
+        if (reporter[method]) {
+          reporter[method].apply(reporter, args);
+        }
       }
     }
   }
+
+  return ReportDispatcher;
 };
+

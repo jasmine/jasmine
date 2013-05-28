@@ -11,6 +11,7 @@ function license() {
 module.exports = {
   'jasmine-html': {
     src: [
+      'src/html/requireHtml.js',
       'src/html/HtmlReporter.js',
       'src/html/HtmlSpecFilter.js',
       'src/html/ResultsNode.js',
@@ -20,6 +21,7 @@ module.exports = {
   },
   jasmine: {
     src: [
+      'src/core/requireCore.js',
       'src/core/base.js',
       'src/core/util.js',
       'src/core/Spec.js',
@@ -36,6 +38,13 @@ module.exports = {
   boot: {
     src: ['lib/jasmine-core/boot/boot.js'],
     dest: 'lib/jasmine-core/boot.js'
+  },
+  console: {
+    src: [
+      'src/console/requireConsole.js',
+      'src/console/ConsoleReporter.js'
+    ],
+    dest: 'src/console/console.js'
   },
   options: {
     banner: license(),

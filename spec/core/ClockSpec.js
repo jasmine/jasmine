@@ -5,7 +5,7 @@ describe("Clock", function() {
       delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['scheduleFunction']),
       global = { setTimeout: setTimeout },
       delayedFn = jasmine.createSpy('delayedFn'),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     clock.setTimeout(delayedFn, 0);
 
@@ -19,7 +19,7 @@ describe("Clock", function() {
       delayedFunctionScheduler = {scheduleFunction: scheduleFunction},
       global = { setTimeout: setTimeout },
       delayedFn = jasmine.createSpy('delayedFn'),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     clock.install();
     clock.setTimeout(delayedFn, 0, 'a', 'b');
@@ -35,7 +35,7 @@ describe("Clock", function() {
       delayedFunctionScheduler = {scheduleFunction: scheduleFunction},
       global = { setTimeout: setTimeout },
       delayedFn = jasmine.createSpy('delayedFn'),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler),
+      clock = new j$.Clock(global, delayedFunctionScheduler),
       timeoutId;
 
     clock.install();
@@ -48,7 +48,7 @@ describe("Clock", function() {
     var clearTimeout = jasmine.createSpy('clearTimeout'),
       delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['clearTimeout']),
       global = { clearTimeout: clearTimeout },
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     clock.clearTimeout(123);
 
@@ -60,7 +60,7 @@ describe("Clock", function() {
       delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['removeFunctionWithId']),
       global = { setTimeout: clearTimeout },
       delayedFn = jasmine.createSpy('delayedFn'),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     clock.install();
     clock.clearTimeout(123);
@@ -74,7 +74,7 @@ describe("Clock", function() {
       delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['scheduleFunction']),
       global = { setInterval: setInterval },
       delayedFn = jasmine.createSpy('delayedFn'),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     clock.setInterval(delayedFn, 0);
 
@@ -88,7 +88,7 @@ describe("Clock", function() {
       delayedFunctionScheduler = {scheduleFunction: scheduleFunction},
       global = { setInterval: setInterval },
       delayedFn = jasmine.createSpy('delayedFn'),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     clock.install();
     clock.setInterval(delayedFn, 0, 'a', 'b');
@@ -104,7 +104,7 @@ describe("Clock", function() {
       delayedFunctionScheduler = {scheduleFunction: scheduleFunction},
       global = { setInterval: setInterval },
       delayedFn = jasmine.createSpy('delayedFn'),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler),
+      clock = new j$.Clock(global, delayedFunctionScheduler),
       intervalId;
 
     clock.install();
@@ -117,7 +117,7 @@ describe("Clock", function() {
     var clearInterval = jasmine.createSpy('clearInterval'),
       delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['clearInterval']),
       global = { clearInterval: clearInterval },
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     clock.clearInterval(123);
 
@@ -129,7 +129,7 @@ describe("Clock", function() {
       delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['removeFunctionWithId']),
       global = { setInterval: clearInterval },
       delayedFn = jasmine.createSpy('delayedFn'),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     clock.install();
     clock.clearInterval(123);
@@ -139,7 +139,7 @@ describe("Clock", function() {
   });
 
   it("gives you a friendly reminder if the Clock is not installed and you tick", function() {
-    var clock = new jasmine.Clock({}, jasmine.createSpyObj('delayedFunctionScheduler', ['tick']));
+    var clock = new j$.Clock({}, jasmine.createSpyObj('delayedFunctionScheduler', ['tick']));
     expect(function() {
       clock.tick(50);
     }).toThrow();
@@ -151,7 +151,7 @@ describe("Clock", function() {
       delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['scheduleFunction', 'tick', 'reset']),
       global = { setTimeout: setTimeout, setInterval: setInterval },
       delayedFn = jasmine.createSpy('delayedFn'),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     clock.install();
     clock.setTimeout(delayedFn, 0);
@@ -188,7 +188,7 @@ describe("Clock", function() {
     delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['scheduleFunction']),
     fn = jasmine.createSpy('fn'),
     global = { setTimeout: setTimeout, setInterval: setInterval },
-    clock = new jasmine.Clock(global, delayedFunctionScheduler);
+    clock = new j$.Clock(global, delayedFunctionScheduler);
 
     setTimeout.apply = null;
     setInterval.apply = null;
@@ -216,8 +216,8 @@ describe("Clock (acceptance)", function() {
       delayedFn2 = jasmine.createSpy('delayedFn2'),
       delayedFn3 = jasmine.createSpy('delayedFn3'),
       recurring1 = jasmine.createSpy('recurring1'),
-      delayedFunctionScheduler = new jasmine.DelayedFunctionScheduler(),
-      clock = new jasmine.Clock({setTimeout: setTimeout}, delayedFunctionScheduler);
+      delayedFunctionScheduler = new j$.DelayedFunctionScheduler(),
+      clock = new j$.Clock({setTimeout: setTimeout}, delayedFunctionScheduler);
 
     clock.install();
 
@@ -262,8 +262,8 @@ describe("Clock (acceptance)", function() {
 
   it("can clear a previously set timeout", function() {
     var clearedFn = jasmine.createSpy('clearedFn'),
-      delayedFunctionScheduler = new jasmine.DelayedFunctionScheduler(),
-      clock = new jasmine.Clock({setTimeout: function() {}}, delayedFunctionScheduler),
+      delayedFunctionScheduler = new j$.DelayedFunctionScheduler(),
+      clock = new j$.Clock({setTimeout: function() {}}, delayedFunctionScheduler),
       timeoutId;
 
     clock.install();
@@ -279,8 +279,8 @@ describe("Clock (acceptance)", function() {
 
   it("correctly schedules functions after the Clock has advanced", function() {
     var delayedFn1 = jasmine.createSpy('delayedFn1'),
-      delayedFunctionScheduler = new jasmine.DelayedFunctionScheduler(),
-      clock = new jasmine.Clock({setTimeout: function(){}}, delayedFunctionScheduler);
+      delayedFunctionScheduler = new j$.DelayedFunctionScheduler(),
+      clock = new j$.Clock({setTimeout: function(){}}, delayedFunctionScheduler);
 
     clock.install();
 
@@ -294,8 +294,8 @@ describe("Clock (acceptance)", function() {
 
   it("calls the global clearTimeout correctly when not installed", function () {
     var delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['clearTimeout']),
-      global = originalJasmine.getGlobal(),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      global = jasmine.getGlobal(),
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     expect(function() {
       clock.clearTimeout(123)
@@ -304,8 +304,8 @@ describe("Clock (acceptance)", function() {
 
   it("calls the global clearTimeout correctly when not installed", function () {
     var delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['clearTimeout']),
-      global = originalJasmine.getGlobal(),
-      clock = new jasmine.Clock(global, delayedFunctionScheduler);
+      global = jasmine.getGlobal(),
+      clock = new j$.Clock(global, delayedFunctionScheduler);
 
     expect(function() {
       clock.clearInterval(123)

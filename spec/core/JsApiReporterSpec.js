@@ -5,7 +5,7 @@ xdescribe('JsApiReporter (integration specs)', function() {
     var suite, nestedSuite, nestedSpec;
 
     beforeEach(function() {
-      env = new jasmine.Env();
+      env = new j$.Env();
       env.updateInterval = 0;
 
       suite = env.describe("top-level suite", function() {
@@ -26,7 +26,7 @@ xdescribe('JsApiReporter (integration specs)', function() {
 
       });
 
-      reporter = new jasmine.JsApiReporter(jasmine);
+      reporter = new j$.JsApiReporter(jasmine);
       env.addReporter(reporter);
 
       env.execute();
@@ -83,7 +83,7 @@ xdescribe('JsApiReporter (integration specs)', function() {
 describe("JsApiReporter", function() {
 
   it("knows when a full environment is started", function() {
-    var reporter = new jasmine.JsApiReporter();
+    var reporter = new j$.JsApiReporter();
 
     expect(reporter.started).toBe(false);
     expect(reporter.finished).toBe(false);
@@ -95,7 +95,7 @@ describe("JsApiReporter", function() {
   });
 
   it("knows when a full environment is done", function() {
-    var reporter = new jasmine.JsApiReporter();
+    var reporter = new j$.JsApiReporter();
 
     expect(reporter.started).toBe(false);
     expect(reporter.finished).toBe(false);
@@ -107,13 +107,13 @@ describe("JsApiReporter", function() {
   });
 
   it("defaults to 'loaded' status", function() {
-    var reporter = new jasmine.JsApiReporter();
+    var reporter = new j$.JsApiReporter();
 
     expect(reporter.status()).toEqual('loaded');
   });
 
   it("reports 'started' when Jasmine has started", function() {
-    var reporter = new jasmine.JsApiReporter();
+    var reporter = new j$.JsApiReporter();
 
     reporter.jasmineStarted();
 
@@ -121,7 +121,7 @@ describe("JsApiReporter", function() {
   });
 
   it("reports 'done' when Jasmine is done", function() {
-    var reporter = new jasmine.JsApiReporter();
+    var reporter = new j$.JsApiReporter();
 
     reporter.jasmineDone();
 
@@ -129,7 +129,7 @@ describe("JsApiReporter", function() {
   });
 
   it("tracks a suite", function() {
-    var reporter = new jasmine.JsApiReporter();
+    var reporter = new j$.JsApiReporter();
 
     reporter.suiteStarted({
       id: 123,
@@ -152,7 +152,7 @@ describe("JsApiReporter", function() {
   describe("#specResults", function() {
     var reporter, specResult1, specResult2;
     beforeEach(function() {
-      reporter = new jasmine.JsApiReporter();
+      reporter = new j$.JsApiReporter();
       specResult1 = {
         id: 1,
         description: "A spec"

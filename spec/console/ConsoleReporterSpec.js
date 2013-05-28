@@ -19,7 +19,7 @@ describe("ConsoleReporter", function() {
   });
 
   it("reports that the suite has started to the console", function() {
-    var reporter = new jasmine.ConsoleReporter({
+    var reporter = new j$.ConsoleReporter({
       print: out.print
     });
 
@@ -29,7 +29,7 @@ describe("ConsoleReporter", function() {
   });
 
   it("reports a passing spec as a dot", function() {
-    var reporter = new jasmine.ConsoleReporter({
+    var reporter = new j$.ConsoleReporter({
       print: out.print
     });
 
@@ -39,7 +39,7 @@ describe("ConsoleReporter", function() {
   });
 
   it("does not report a disabled spec", function() {
-    var reporter = new jasmine.ConsoleReporter({
+    var reporter = new j$.ConsoleReporter({
       print: out.print
     });
 
@@ -49,7 +49,7 @@ describe("ConsoleReporter", function() {
   });
 
   it("reports a failing spec as an 'F'", function() {
-    var reporter = new jasmine.ConsoleReporter({
+    var reporter = new j$.ConsoleReporter({
       print: out.print
     });
 
@@ -59,7 +59,7 @@ describe("ConsoleReporter", function() {
   });
 
   it("reports a pending spec as a '*'", function() {
-    var reporter = new jasmine.ConsoleReporter({
+    var reporter = new j$.ConsoleReporter({
       print: out.print
     });
 
@@ -70,7 +70,7 @@ describe("ConsoleReporter", function() {
 
   it("reports a summary when done (singluar spec and time)", function() {
     var fakeNow = jasmine.createSpy('fake Date.now'),
-      reporter = new jasmine.ConsoleReporter({
+      reporter = new j$.ConsoleReporter({
         print: out.print,
         now: fakeNow
       });
@@ -91,7 +91,7 @@ describe("ConsoleReporter", function() {
 
   it("reports a summary when done (pluralized specs and seconds)", function() {
     var fakeNow = jasmine.createSpy('fake Date.now'),
-      reporter = new jasmine.ConsoleReporter({
+      reporter = new j$.ConsoleReporter({
         print: out.print,
         now: fakeNow
       });
@@ -125,7 +125,7 @@ describe("ConsoleReporter", function() {
   });
 
   it("reports a summary when done that includes stack traces for a failing suite", function() {
-    var reporter = new jasmine.ConsoleReporter({
+    var reporter = new j$.ConsoleReporter({
       print: out.print
     });
 
@@ -155,7 +155,7 @@ describe("ConsoleReporter", function() {
 
   it("calls the onComplete callback when the suite is done", function() {
     var onComplete = jasmine.createSpy('onComplete'),
-      reporter = new jasmine.ConsoleReporter({
+      reporter = new j$.ConsoleReporter({
         print: out.print,
         onComplete: onComplete
       });
@@ -169,7 +169,7 @@ describe("ConsoleReporter", function() {
   describe("with color", function() {
 
     it("reports that the suite has started to the console", function() {
-      var reporter = new jasmine.ConsoleReporter({
+      var reporter = new j$.ConsoleReporter({
         print: out.print,
         showColors: true
       });
@@ -180,7 +180,7 @@ describe("ConsoleReporter", function() {
     });
 
     it("reports a passing spec as a dot", function() {
-      var reporter = new jasmine.ConsoleReporter({
+      var reporter = new j$.ConsoleReporter({
         print: out.print,
         showColors: true
       });
@@ -191,7 +191,7 @@ describe("ConsoleReporter", function() {
     });
 
     it("does not report a disabled spec", function() {
-      var reporter = new jasmine.ConsoleReporter({
+      var reporter = new j$.ConsoleReporter({
         print: out.print,
         showColors: true
       });
@@ -202,7 +202,7 @@ describe("ConsoleReporter", function() {
     });
 
     it("reports a failing spec as an 'F'", function() {
-      var reporter = new jasmine.ConsoleReporter({
+      var reporter = new j$.ConsoleReporter({
         print: out.print,
         showColors: true
       });

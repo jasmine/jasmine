@@ -2,7 +2,7 @@ describe("jasmine.Matchers", function() {
   var env, spec;
 
   beforeEach(function() {
-    env = new jasmine.Env();
+    env = new j$.Env();
     env.updateInterval = 0;
 
     var suite = env.describe("suite", function() {
@@ -391,7 +391,7 @@ describe("jasmine.Matchers", function() {
     var matcher;
     beforeEach(function () {
       matcher = {
-        jasmineMatches: originalJasmine.createSpy("jasmineMatches")
+        jasmineMatches: jasmine.createSpy("jasmineMatches")
       };
     });
 
@@ -699,7 +699,7 @@ describe("jasmine.Matchers", function() {
       TestClass = {
         normalFunction: function() {
         },
-        spyFunction: originalJasmine.createSpy("My spy")
+        spyFunction: jasmine.createSpy("My spy")
       };
     });
 
@@ -912,7 +912,7 @@ describe("jasmine.Matchers", function() {
     describe("with an empty object", function () {
       var containing;
       beforeEach(function () {
-        containing = new jasmine.Matchers.ObjectContaining({});
+        containing = new j$.Matchers.ObjectContaining({});
       });
       it("matches everything", function () {
         expect(containing.jasmineMatches("foo", [], [])).toBe(true);
@@ -928,7 +928,7 @@ describe("jasmine.Matchers", function() {
       beforeEach(function () {
         mismatchKeys = [];
         mismatchValues = [];
-        containing = new jasmine.Matchers.ObjectContaining({foo: "fooVal", bar: "barVal"});
+        containing = new j$.Matchers.ObjectContaining({foo: "fooVal", bar: "barVal"});
       });
 
       it("doesn't match an empty object", function () {
@@ -979,7 +979,7 @@ describe("jasmine.Matchers", function() {
     describe("in real life", function () {
       var method;
       beforeEach(function () {
-        method = originalJasmine.createSpy("method");
+        method = jasmine.createSpy("method");
         method({a:"b", c:"d"});
       });
       it("works correctly for positive matches", function () {

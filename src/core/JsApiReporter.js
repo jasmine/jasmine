@@ -1,55 +1,59 @@
-jasmine.JsApiReporter = function(jasmine) {
-  this.jasmine = jasmine || {};
-  this.started = false;
-  this.finished = false;
+getJasmineRequireObj().JsApiReporter = function() {
+  function JsApiReporter(jasmine) {  // TODO: this doesn't appear to be used
+    this.jasmine = jasmine || {};
+    this.started = false;
+    this.finished = false;
 
-  var status = 'loaded';
+    var status = 'loaded';
 
-  this.jasmineStarted = function() {
-    this.started = true;
-    status = 'started';
-  };
+    this.jasmineStarted = function() {
+      this.started = true;
+      status = 'started';
+    };
 
-  this.jasmineDone = function() {
-    this.finished = true;
-    status = 'done';
-  };
+    this.jasmineDone = function() {
+      this.finished = true;
+      status = 'done';
+    };
 
-  this.status = function() {
-    return status;
-  };
+    this.status = function() {
+      return status;
+    };
 
-  var suites = {};
+    var suites = {};
 
-  this.suiteStarted = function(result) {
-    storeSuite(result);
-  };
+    this.suiteStarted = function(result) {
+      storeSuite(result);
+    };
 
-  this.suiteDone = function(result) {
-    storeSuite(result);
-  };
+    this.suiteDone = function(result) {
+      storeSuite(result);
+    };
 
-  function storeSuite(result) {
-    suites[result.id] = result;
+    function storeSuite(result) {
+      suites[result.id] = result;
+    }
+
+    this.suites = function() {
+      return suites;
+    };
+
+    var specs = [];
+    this.specStarted = function(result) { };
+
+    this.specDone = function(result) {
+      specs.push(result);
+    };
+
+    this.specResults = function(index, length) {
+      return specs.slice(index, index + length);
+    };
+
+    this.specs = function() {
+      return specs;
+    };
+
   }
 
-  this.suites = function() {
-    return suites;
-  };
-
-  var specs = [];
-  this.specStarted = function(result) { };
-
-  this.specDone = function(result) {
-    specs.push(result);
-  };
-
-  this.specResults = function(index, length) {
-    return specs.slice(index, index + length);
-  };
-
-  this.specs = function() {
-    return specs;
-  };
-
+  return JsApiReporter;
 };

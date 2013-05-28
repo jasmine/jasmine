@@ -1,122 +1,127 @@
-jasmine.PrettyPrinter = function() {
-  this.ppNestLevel_ = 0;
-};
+getJasmineRequireObj().StringPrettyPrinter = function(j$) {
 
-jasmine.PrettyPrinter.prototype.format = function(value) {
-  this.ppNestLevel_++;
-  try {
-    if (jasmine.util.isUndefined(value)) {
-      this.emitScalar('undefined');
-    } else if (value === null) {
-      this.emitScalar('null');
-    } else if (value === jasmine.getGlobal()) {
-      this.emitScalar('<global>');
-    } else if (value.jasmineToString) {
-      this.emitScalar(value.jasmineToString());
-    } else if (typeof value === 'string') {
-      this.emitString(value);
-    } else if (jasmine.isSpy(value)) {
-      this.emitScalar("spy on " + value.identity);
-    } else if (value instanceof RegExp) {
-      this.emitScalar(value.toString());
-    } else if (typeof value === 'function') {
-      this.emitScalar('Function');
-    } else if (typeof value.nodeType === 'number') {
-      this.emitScalar('HTMLNode');
-    } else if (value instanceof Date) {
-      this.emitScalar('Date(' + value + ')');
-    } else if (value.__Jasmine_been_here_before__) {
-      this.emitScalar('<circular reference: ' + (jasmine.isArray_(value) ? 'Array' : 'Object') + '>');
-    } else if (jasmine.isArray_(value) || typeof value == 'object') {
-      value.__Jasmine_been_here_before__ = true;
-      if (jasmine.isArray_(value)) {
-        this.emitArray(value);
+  function PrettyPrinter() {
+    this.ppNestLevel_ = 0;
+  }
+
+  PrettyPrinter.prototype.format = function(value) {
+    this.ppNestLevel_++;
+    try {
+      if (j$.util.isUndefined(value)) {
+        this.emitScalar('undefined');
+      } else if (value === null) {
+        this.emitScalar('null');
+      } else if (value === j$.getGlobal()) {
+        this.emitScalar('<global>');
+      } else if (value.jasmineToString) {
+        this.emitScalar(value.jasmineToString());
+      } else if (typeof value === 'string') {
+        this.emitString(value);
+      } else if (j$.isSpy(value)) {
+        this.emitScalar("spy on " + value.identity);
+      } else if (value instanceof RegExp) {
+        this.emitScalar(value.toString());
+      } else if (typeof value === 'function') {
+        this.emitScalar('Function');
+      } else if (typeof value.nodeType === 'number') {
+        this.emitScalar('HTMLNode');
+      } else if (value instanceof Date) {
+        this.emitScalar('Date(' + value + ')');
+      } else if (value.__Jasmine_been_here_before__) {
+        this.emitScalar('<circular reference: ' + (j$.isArray_(value) ? 'Array' : 'Object') + '>');
+      } else if (j$.isArray_(value) || typeof value == 'object') {
+        value.__Jasmine_been_here_before__ = true;
+        if (j$.isArray_(value)) {
+          this.emitArray(value);
+        } else {
+          this.emitObject(value);
+        }
+        delete value.__Jasmine_been_here_before__;
       } else {
-        this.emitObject(value);
+        this.emitScalar(value.toString());
       }
-      delete value.__Jasmine_been_here_before__;
-    } else {
-      this.emitScalar(value.toString());
+    } finally {
+      this.ppNestLevel_--;
     }
-  } finally {
-    this.ppNestLevel_--;
-  }
-};
+  };
 
-jasmine.PrettyPrinter.prototype.iterateObject = function(obj, fn) {
-  for (var property in obj) {
-    if (!obj.hasOwnProperty(property)) continue;
-    if (property == '__Jasmine_been_here_before__') continue;
-    fn(property, obj.__lookupGetter__ ? (!jasmine.util.isUndefined(obj.__lookupGetter__(property)) &&
-                                         obj.__lookupGetter__(property) !== null) : false);
-  }
-};
-
-jasmine.PrettyPrinter.prototype.emitArray = jasmine.unimplementedMethod_;
-jasmine.PrettyPrinter.prototype.emitObject = jasmine.unimplementedMethod_;
-jasmine.PrettyPrinter.prototype.emitScalar = jasmine.unimplementedMethod_;
-jasmine.PrettyPrinter.prototype.emitString = jasmine.unimplementedMethod_;
-
-jasmine.StringPrettyPrinter = function() {
-  jasmine.PrettyPrinter.call(this);
-
-  this.string = '';
-};
-jasmine.util.inherit(jasmine.StringPrettyPrinter, jasmine.PrettyPrinter);
-
-jasmine.StringPrettyPrinter.prototype.emitScalar = function(value) {
-  this.append(value);
-};
-
-jasmine.StringPrettyPrinter.prototype.emitString = function(value) {
-  this.append("'" + value + "'");
-};
-
-jasmine.StringPrettyPrinter.prototype.emitArray = function(array) {
-  if (this.ppNestLevel_ > jasmine.MAX_PRETTY_PRINT_DEPTH) {
-    this.append("Array");
-    return;
-  }
-
-  this.append('[ ');
-  for (var i = 0; i < array.length; i++) {
-    if (i > 0) {
-      this.append(', ');
+  PrettyPrinter.prototype.iterateObject = function(obj, fn) {
+    for (var property in obj) {
+      if (!obj.hasOwnProperty(property)) continue;
+      if (property == '__Jasmine_been_here_before__') continue;
+      fn(property, obj.__lookupGetter__ ? (!j$.util.isUndefined(obj.__lookupGetter__(property)) &&
+        obj.__lookupGetter__(property) !== null) : false);
     }
-    this.format(array[i]);
+  };
+
+  PrettyPrinter.prototype.emitArray = j$.unimplementedMethod_;
+  PrettyPrinter.prototype.emitObject = j$.unimplementedMethod_;
+  PrettyPrinter.prototype.emitScalar = j$.unimplementedMethod_;
+  PrettyPrinter.prototype.emitString = j$.unimplementedMethod_;
+
+  function StringPrettyPrinter() {
+    PrettyPrinter.call(this);
+
+    this.string = '';
   }
-  this.append(' ]');
-};
+  j$.util.inherit(StringPrettyPrinter, PrettyPrinter);
 
-jasmine.StringPrettyPrinter.prototype.emitObject = function(obj) {
-  if (this.ppNestLevel_ > jasmine.MAX_PRETTY_PRINT_DEPTH) {
-    this.append("Object");
-    return;
-  }
+  StringPrettyPrinter.prototype.emitScalar = function(value) {
+    this.append(value);
+  };
 
-  var self = this;
-  this.append('{ ');
-  var first = true;
+  StringPrettyPrinter.prototype.emitString = function(value) {
+    this.append("'" + value + "'");
+  };
 
-  this.iterateObject(obj, function(property, isGetter) {
-    if (first) {
-      first = false;
-    } else {
-      self.append(', ');
+  StringPrettyPrinter.prototype.emitArray = function(array) {
+    if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
+      this.append("Array");
+      return;
     }
 
-    self.append(property);
-    self.append(' : ');
-    if (isGetter) {
-      self.append('<getter>');
-    } else {
-      self.format(obj[property]);
+    this.append('[ ');
+    for (var i = 0; i < array.length; i++) {
+      if (i > 0) {
+        this.append(', ');
+      }
+      this.format(array[i]);
     }
-  });
+    this.append(' ]');
+  };
 
-  this.append(' }');
-};
+  StringPrettyPrinter.prototype.emitObject = function(obj) {
+    if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
+      this.append("Object");
+      return;
+    }
 
-jasmine.StringPrettyPrinter.prototype.append = function(value) {
-  this.string += value;
+    var self = this;
+    this.append('{ ');
+    var first = true;
+
+    this.iterateObject(obj, function(property, isGetter) {
+      if (first) {
+        first = false;
+      } else {
+        self.append(', ');
+      }
+
+      self.append(property);
+      self.append(' : ');
+      if (isGetter) {
+        self.append('<getter>');
+      } else {
+        self.format(obj[property]);
+      }
+    });
+
+    this.append(' }');
+  };
+
+  StringPrettyPrinter.prototype.append = function(value) {
+    this.string += value;
+  };
+
+  return StringPrettyPrinter;
 };
