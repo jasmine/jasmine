@@ -29,18 +29,24 @@ getJasmineRequireObj().Env = function(j$) {
     this.nextSuiteId_ = 0;
     this.equalityTesters_ = [];
 
-    // wrap matchers
-    this.matchersClass = function() {
-      j$.Matchers.apply(this, arguments);
+    var customEqualityTesters = [];
+    this.addCustomEqualityTester = function(tester) {
+      customEqualityTesters.push(tester);
     };
-    j$.util.inherit(this.matchersClass, j$.Matchers);
 
-    j$.Matchers.wrapInto_(j$.Matchers.prototype, this.matchersClass);
+    j$.Expectation.addCoreMatchers(j$.matchers);
 
     var expectationFactory = function(actual, spec) {
-      var expect = new (self.matchersClass)(self, actual, spec);
-      expect.not = new (self.matchersClass)(self, actual, spec, true);
-      return expect;
+      return j$.Expectation.Factory({
+        util: j$.matchersUtil,
+        customEqualityTesters: customEqualityTesters,
+        actual: actual,
+        addExpectationResult: addExpectationResult
+      });
+
+      function addExpectationResult(passed, result) {
+        return spec.addExpectationResult(passed, result);
+      }
     };
 
     var specStarted = function(spec) {
@@ -68,7 +74,7 @@ getJasmineRequireObj().Env = function(j$) {
       };
     };
 
-    var specConstructor = j$.Spec;
+    var specConstructor = j$.Spec; // TODO: inline this
 
     var getSpecName = function(spec, currentSuite) {
       return currentSuite.getFullName() + ' ' + spec.description + '.';
@@ -147,6 +153,8 @@ getJasmineRequireObj().Env = function(j$) {
 
       function specResultCallback(result) {
         self.removeAllSpies();
+        j$.Expectation.resetMatchers();
+        customEqualityTesters.length = 0;
         self.clock.uninstall();
         self.currentSpec = null;
         self.reporter.specDone(result);
@@ -191,15 +199,8 @@ getJasmineRequireObj().Env = function(j$) {
     };
   }
 
-  //TODO: shim Spec addMatchers behavior into Env. Should be rewritten to remove globals, etc.
-  Env.prototype.addMatchers = function(matchersPrototype) {
-    var parent = this.matchersClass;
-    var newMatchersClass = function() {
-      parent.apply(this, arguments);
-    };
-    j$.util.inherit(newMatchersClass, parent);
-    j$.Matchers.wrapInto_(matchersPrototype, newMatchersClass);
-    this.matchersClass = newMatchersClass;
+  Env.prototype.addMatchers = function(matchersToAdd) {
+    j$.Expectation.addMatchers(matchersToAdd);
   };
 
   Env.prototype.version = function() {
@@ -331,139 +332,6 @@ getJasmineRequireObj().Env = function(j$) {
   // TODO: Still needed?
   Env.prototype.currentRunner = function() {
     return this.topSuite;
-  };
-
-  Env.prototype.compareRegExps_ = function(a, b, mismatchKeys, mismatchValues) {
-    if (a.source != b.source)
-      mismatchValues.push("expected pattern /" + b.source + "/ is not equal to the pattern /" + a.source + "/");
-
-    if (a.ignoreCase != b.ignoreCase)
-      mismatchValues.push("expected modifier i was" + (b.ignoreCase ? " " : " not ") + "set and does not equal the origin modifier");
-
-    if (a.global != b.global)
-      mismatchValues.push("expected modifier g was" + (b.global ? " " : " not ") + "set and does not equal the origin modifier");
-
-    if (a.multiline != b.multiline)
-      mismatchValues.push("expected modifier m was" + (b.multiline ? " " : " not ") + "set and does not equal the origin modifier");
-
-    if (a.sticky != b.sticky)
-      mismatchValues.push("expected modifier y was" + (b.sticky ? " " : " not ") + "set and does not equal the origin modifier");
-
-    return (mismatchValues.length === 0);
-  };
-
-  Env.prototype.compareObjects_ = function(a, b, mismatchKeys, mismatchValues) {
-    if (a.__Jasmine_been_here_before__ === b && b.__Jasmine_been_here_before__ === a) {
-      return true;
-    }
-
-    a.__Jasmine_been_here_before__ = b;
-    b.__Jasmine_been_here_before__ = a;
-
-    var hasKey = function(obj, keyName) {
-      return obj !== null && !j$.util.isUndefined(obj[keyName]);
-    };
-
-    for (var property in b) {
-      if (!hasKey(a, property) && hasKey(b, property)) {
-        mismatchKeys.push("expected has key '" + property + "', but missing from actual.");
-      }
-    }
-    for (property in a) {
-      if (!hasKey(b, property) && hasKey(a, property)) {
-        mismatchKeys.push("expected missing key '" + property + "', but present in actual.");
-      }
-    }
-    for (property in b) {
-      if (property == '__Jasmine_been_here_before__') continue;
-      if (!this.equals_(a[property], b[property], mismatchKeys, mismatchValues)) {
-        mismatchValues.push("'" + property + "' was '" + (b[property] ? j$.util.htmlEscape(b[property].toString()) : b[property]) + "' in expected, but was '" + (a[property] ? j$.util.htmlEscape(a[property].toString()) : a[property]) + "' in actual.");
-      }
-    }
-
-    if (j$.isArray_(a) && j$.isArray_(b) && a.length != b.length) {
-      mismatchValues.push("arrays were not the same length");
-    }
-
-    delete a.__Jasmine_been_here_before__;
-    delete b.__Jasmine_been_here_before__;
-    return (mismatchKeys.length === 0 && mismatchValues.length === 0);
-  };
-
-  Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
-    mismatchKeys = mismatchKeys || [];
-    mismatchValues = mismatchValues || [];
-
-    for (var i = 0; i < this.equalityTesters_.length; i++) {
-      var equalityTester = this.equalityTesters_[i];
-      var result = equalityTester(a, b, this, mismatchKeys, mismatchValues);
-      if (!j$.util.isUndefined(result)) {
-        return result;
-      }
-    }
-
-    if (a === b) return true;
-
-    if (j$.util.isUndefined(a) || a === null || j$.util.isUndefined(b) || b === null) {
-      return (j$.util.isUndefined(a) && j$.util.isUndefined(b));
-    }
-
-    if (j$.isDomNode(a) && j$.isDomNode(b)) {
-      return a === b;
-    }
-
-    if (a instanceof Date && b instanceof Date) {
-      return a.getTime() == b.getTime();
-    }
-
-    if (a.jasmineMatches) {
-      return a.jasmineMatches(b);
-    }
-
-    if (b.jasmineMatches) {
-      return b.jasmineMatches(a);
-    }
-
-    if (a instanceof j$.Matchers.ObjectContaining) {
-      return a.matches(b);
-    }
-
-    if (b instanceof j$.Matchers.ObjectContaining) {
-      return b.matches(a);
-    }
-
-    if (j$.isString_(a) && j$.isString_(b)) {
-      return (a == b);
-    }
-
-    if (j$.isNumber_(a) && j$.isNumber_(b)) {
-      return (a == b);
-    }
-
-    if (a instanceof RegExp && b instanceof RegExp) {
-      return this.compareRegExps_(a, b, mismatchKeys, mismatchValues);
-    }
-
-    if (typeof a === "object" && typeof b === "object") {
-      return this.compareObjects_(a, b, mismatchKeys, mismatchValues);
-    }
-
-    //Straight check
-    return (a === b);
-  };
-
-  Env.prototype.contains_ = function(haystack, needle) {
-    if (j$.isArray_(haystack)) {
-      for (var i = 0; i < haystack.length; i++) {
-        if (this.equals_(haystack[i], needle)) return true;
-      }
-      return false;
-    }
-    return haystack.indexOf(needle) >= 0;
-  };
-
-  Env.prototype.addEqualityTester = function(equalityTester) {
-    this.equalityTesters_.push(equalityTester);
   };
 
   return Env;
