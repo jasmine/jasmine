@@ -102,6 +102,16 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.equals(emptyArray, emptyObject)).toBe(false);
     });
 
+    it("passes for equivalent frozen objects (GitHub issue #266)", function() {
+      var a = { foo: 1 },
+        b = {foo: 1 };
+
+      Object.freeze(a);
+      Object.freeze(b);
+
+      expect(j$.matchersUtil.equals(a,b)).toBe(true);
+    });
+
     it("passes when Any is used", function() {
       var number = 3,
         anyNumber = new j$.Any(Number);
@@ -110,7 +120,7 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.equals(anyNumber, number)).toBe(true);
     });
 
-    it("fails when Any is compared to something unexepcted", function() {
+    it("fails when Any is compared to something unexpected", function() {
       var number = 3,
         anyString = new j$.Any(String);
 
@@ -122,7 +132,7 @@ describe("matchersUtil", function() {
       var obj = {
         foo: 3,
         bar: 7
-        };
+      };
 
       expect(j$.matchersUtil.equals(obj, new j$.ObjectContaining({foo: 3}))).toBe(true);
     });
@@ -163,9 +173,9 @@ describe("matchersUtil", function() {
     });
 
     it("uses custom equality testers if passed in and actual is an Array", function() {
-      var customTester = function(a,b) {return true;};
+      var customTester = function(a, b) {return true;};
 
-      expect(j$.matchersUtil.contains([1,2], 2, [customTester])).toBe(true);
+      expect(j$.matchersUtil.contains([1, 2], 2, [customTester])).toBe(true);
     });
   });
 
@@ -188,7 +198,7 @@ describe("matchersUtil", function() {
       expect(message).toEqual("Expected 'foo' not to bar.");
     });
 
-    it("builds an English sentence for an arbitrary array of expected arguments", function(){
+    it("builds an English sentence for an arbitrary array of expected arguments", function() {
       var actual = "foo",
         name = "toBar",
         message = j$.matchersUtil.buildFailureMessage(name, false, actual, "quux", "corge");
