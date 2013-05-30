@@ -596,5 +596,31 @@ describe("Matchers", function() {
       expect(result.pass).toBe(false);
       expect(result.message).toEqual("Expected function to throw an exception matching /short/.");
     });
+
+    it("passes if the actual throws an exception with an undefined message", function() {
+      var matcher = j$.matchers.toThrow(),
+        fn = function() {
+          throw void 0;
+        },
+        result;
+
+      result = matcher.compare(fn);
+
+      expect(result.pass).toBe(true);
+      expect(result.message).toEqual("Expected function not to throw an exception.");
+    });
+
+    it("passes if the actual throws an exception with an empty message", function() {
+      var matcher = j$.matchers.toThrow(),
+        fn = function() {
+          throw "";
+        },
+        result;
+
+      result = matcher.compare(fn);
+
+      expect(result.pass).toBe(true);
+      expect(result.message).toEqual("Expected function not to throw an exception.");
+    });
   });
 });
