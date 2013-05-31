@@ -11,6 +11,7 @@ jasmine.PrettyPrinter = function() {
  * @param value
  */
 jasmine.PrettyPrinter.prototype.format = function(value) {
+  if (this._Jasmine_string_too_long_) return;
   this.ppNestLevel_++;
   try {
     if (value === jasmine.undefined) {
@@ -126,5 +127,9 @@ jasmine.StringPrettyPrinter.prototype.emitObject = function(obj) {
 };
 
 jasmine.StringPrettyPrinter.prototype.append = function(value) {
+  if (this.string.length > 1000000) {
+    this.string = this.string.substr(0, 1000) + " ... (object too long)";
+  }
   this.string += value;
+  this._Jasmine_string_too_long_ = true;
 };
