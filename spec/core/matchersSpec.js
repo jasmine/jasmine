@@ -473,43 +473,18 @@ describe("Matchers", function() {
   });
 
   describe("toThrow", function() {
-    it("throw an error when the acutal is not a function ", function() {
+    it("throws an error when the acutal is not a function", function() {
       var matcher = j$.matchers.toThrow();
 
       expect(function() {
         matcher.compare({});
-      }).toThrow(new Error("Actual is not a Function"));
+      }).toThrow(new Error("Actual is not a Function")); // TODO: this needs to change for self-test
     });
 
-    it("throws an error when the expected can't be turned into an exception", function() {
+    it("fails if actual does not throw", function() {
       var matcher = j$.matchers.toThrow(),
         fn = function() {
-          throw "foo";
-        },
-        result;
-
-      expect(function() {
-        matcher.compare(fn, 1);
-      }).toThrow(new Error("Expected cannot be treated as an exception."));
-    });
-
-    it("passes if the actual throws any exception", function() {
-      var matcher = j$.matchers.toThrow(),
-        fn = function() {
-          throw "foo";
-        },
-        result;
-
-      result = matcher.compare(fn);
-
-      expect(result.pass).toBe(true);
-      expect(result.message).toEqual("Expected function not to throw an exception.");
-    });
-
-    it("fails if the actual does not throw an exception", function() {
-      var matcher = j$.matchers.toThrow(),
-        fn = function() {
-          return 0;
+          return true;
         },
         result;
 
@@ -519,108 +494,247 @@ describe("Matchers", function() {
       expect(result.message).toEqual("Expected function to throw an exception.");
     });
 
-    it("passes if the actual throws an exception with the expected message", function() {
-      var matcher = j$.matchers.toThrow(),
+    it("passes if it throws but there is no expected", function() {
+      var util = {
+          equals: j$.createSpy('delegated-equal').andReturn(true)
+        },
+        matcher = j$.matchers.toThrow(util),
         fn = function() {
-          throw "foo";
+          throw 5;
+        },
+        result;
+
+      result = matcher.compare(fn);
+
+      expect(result.pass).toBe(true);
+      expect(result.message).toEqual("Expected function not to throw.");
+    });
+
+    it("passes if what is thrown is equivalent to what is expected", function() {
+      var util = {
+          equals: j$.createSpy('delegated-equal').andReturn(true)
+        },
+        matcher = j$.matchers.toThrow(util),
+        fn = function() {
+          throw 5;
+        },
+        result;
+
+      result = matcher.compare(fn, 5);
+
+      expect(result.pass).toBe(true);
+      expect(result.message).toEqual("Expected function not to throw 5.");
+    });
+
+    it("fails if what is thrown is not equivalent to what is expected", function() {
+      var util = {
+          equals: j$.createSpy('delegated-equal').andReturn(false)
+        },
+        matcher = j$.matchers.toThrow(util),
+        fn = function() {
+          throw 5;
+        },
+        result;
+
+      result = matcher.compare(fn, "foo");
+
+      expect(result.pass).toBe(false);
+      expect(result.message).toEqual("Expected function to throw 'foo'.");
+    });
+  });
+
+  describe("toThrowError", function() {
+    it("throws an error when the acutal is not a function ", function() {
+      var matcher = j$.matchers.toThrowError();
+
+      expect(function() {
+        matcher.compare({});
+      }).toThrow(new Error("Actual is not a Function")); // TODO: this needs to change for self-test
+    });
+
+    it("throws an error when the expected is not an Error, string, or RegExp", function() {
+      var matcher = j$.matchers.toThrowError(),
+        fn = function() {
+          throw new Error("foo");
+        };
+
+      expect(function() {
+        matcher.compare(fn, 1);
+      }).toThrow(new Error("Expected is not an Error, message, or RegExp.")); // TODO: this needs to change for self-test
+    });
+
+    it("fails if actual does not throw at all", function() {
+      var matcher = j$.matchers.toThrowError(),
+        fn = function() {
+          return true;
+        },
+        result;
+
+      result = matcher.compare(fn);
+
+      expect(result.pass).toBe(false);
+      expect(result.message).toEqual("Expected function to throw an Error.");
+    });
+
+    it("passes if thrown is an Error, but there is no expected error", function() {
+      var matcher = j$.matchers.toThrowError(),
+        fn = function() {
+          throw new TypeError();
+        },
+        result;
+
+      result = matcher.compare(fn);
+
+      expect(result.pass).toBe(true);
+      expect(result.message).toEqual("Expected function not to throw an Error, but it threw TypeError.");
+    });
+
+    it("passes if thrown is an Error and the expected is the same message", function() {
+      var matcher = j$.matchers.toThrowError(),
+        fn = function() {
+          throw new Error("foo");
         },
         result;
 
       result = matcher.compare(fn, "foo");
 
       expect(result.pass).toBe(true);
-      expect(result.message).toEqual("Expected function not to throw an exception \"foo\".");
+      expect(result.message).toEqual("Expected function not to throw an execption with message 'foo'.");
     });
 
-    it("fails if the actual throws an exception with a different message", function() {
-      var matcher = j$.matchers.toThrow(),
+    it("fails if thrown is an Error and the expected is not the same message", function() {
+      var matcher = j$.matchers.toThrowError(),
         fn = function() {
-          throw "foo";
+          throw new Error("foo");
         },
         result;
 
       result = matcher.compare(fn, "bar");
 
       expect(result.pass).toBe(false);
-      expect(result.message).toEqual("Expected function to throw an exception \"bar\".");
+      expect(result.message).toEqual("Expected function to throw an execption with message 'bar'.");
     });
 
-    it("passes if the actual throws an exception and matches the message of the expected exception", function() {
-      var matcher = j$.matchers.toThrow(),
+    it("passes if thrown is an Error and the expected is a RegExp that matches the message", function() {
+      var matcher = j$.matchers.toThrowError(),
         fn = function() {
-          throw "foo";
-        },
-        result;
-
-      result = matcher.compare(fn, new Error("foo"));
-
-      expect(result.pass).toBe(true);
-      expect(result.message).toEqual("Expected function not to throw an exception \"foo\".");
-    });
-
-    it("fails if the actual throws an exception and it does not match the message of the expected exception with a custom message", function() {
-      var matcher = j$.matchers.toThrow(),
-        fn = function() {
-          throw "foo";
-        },
-        result;
-
-      result = matcher.compare(fn, new Error("bar"));
-
-      expect(result.pass).toBe(false);
-      expect(result.message).toEqual("Expected function to throw an exception \"bar\".");
-    });
-
-    it("passes if the actual throws an exception and the message matches the expected regular expression", function() {
-      var matcher = j$.matchers.toThrow(),
-        fn = function() {
-          throw "a long message";
+          throw new Error("a long message");
         },
         result;
 
       result = matcher.compare(fn, /long/);
 
       expect(result.pass).toBe(true);
-      expect(result.message).toEqual("Expected function not to throw an exception matching /long/.");
+      expect(result.message).toEqual("Expected function not to throw an execption with a message matching /long/.");
     });
 
-    it("fails if the actual throws an exception and the message does not match the expected regular expression", function() {
-      var matcher = j$.matchers.toThrow(),
+    it("fails if thrown is an Error and the expected is a RegExp that does not match the message", function() {
+      var matcher = j$.matchers.toThrowError(),
         fn = function() {
-          throw "a long message";
+          throw new Error("a long message");
         },
         result;
 
-      result = matcher.compare(fn, /short/);
+      result = matcher.compare(fn, /foo/);
 
       expect(result.pass).toBe(false);
-      expect(result.message).toEqual("Expected function to throw an exception matching /short/.");
+      expect(result.message).toEqual("Expected function to throw an execption with a message matching /foo/.");
     });
 
-    it("passes if the actual throws an exception with an undefined message", function() {
-      var matcher = j$.matchers.toThrow(),
+    it("passes if thrown is an Error and the expected the same Error", function() {
+      var util = {
+          equals: j$.createSpy('delegated-equal').andReturn(true)
+        },
+        matcher = j$.matchers.toThrowError(util),
         fn = function() {
-          throw void 0;
+          throw new Error();
         },
         result;
 
-      result = matcher.compare(fn);
+      result = matcher.compare(fn, Error);
 
       expect(result.pass).toBe(true);
-      expect(result.message).toEqual("Expected function not to throw an exception.");
+      expect(result.message).toEqual("Expected function not to throw Error.");
     });
 
-    it("passes if the actual throws an exception with an empty message", function() {
-      var matcher = j$.matchers.toThrow(),
+    it("fails if thrown is an Error and the expected is a different Error", function() {
+      var util = {
+          equals: j$.createSpy('delegated-equal').andReturn(false)
+        },
+        matcher = j$.matchers.toThrowError(util),
         fn = function() {
-          throw "";
+          throw new Error();
         },
         result;
 
-      result = matcher.compare(fn);
+      result = matcher.compare(fn, TypeError);
+
+      expect(result.pass).toBe(false);
+      expect(result.message).toEqual("Expected function to throw TypeError.");
+    });
+
+    it("passes if thrown is an Error and it is equal to the expected Error and message", function() {
+      var util = {
+          equals: j$.createSpy('delegated-equal').andReturn(true)
+        },
+        matcher = j$.matchers.toThrowError(util),
+        fn = function() {
+          throw new Error("foo");
+        },
+        result;
+
+      result = matcher.compare(fn, [Error, "foo"]);
 
       expect(result.pass).toBe(true);
-      expect(result.message).toEqual("Expected function not to throw an exception.");
+      expect(result.message).toEqual("Expected function not to throw Error with message \"foo\".");
+    });
+
+    it("fails if thrown is an Error and the expected is a different Error", function() {
+      var util = {
+          equals: j$.createSpy('delegated-equal').andReturn(false)
+        },
+        matcher = j$.matchers.toThrowError(util),
+        fn = function() {
+          throw new Error("foo");
+        },
+        result;
+
+      result = matcher.compare(fn, [Error, "bar"]);
+
+      expect(result.pass).toBe(false);
+      expect(result.message).toEqual("Expected function to throw Error with message \"bar\".");
+    });
+
+    it("passes if thrown is an Error and has the same type as the expected Error and the message matches the exepcted message", function() {
+      var util = {
+          equals: j$.createSpy('delegated-equal').andReturn(true)
+        },
+        matcher = j$.matchers.toThrowError(util),
+        fn = function() {
+          throw new Error("foo");
+        },
+        result;
+
+      result = matcher.compare(fn, [Error, /foo/]);
+
+      expect(result.pass).toBe(true);
+      expect(result.message).toEqual("Expected function not to throw Error with message matching /foo/.");
+    });
+
+    it("fails if thrown is an Error and the expected is a different Error", function() {
+      var util = {
+          equals: j$.createSpy('delegated-equal').andReturn(false)
+        },
+        matcher = j$.matchers.toThrowError(util),
+        fn = function() {
+          throw new Error("foo");
+        },
+        result;
+
+      result = matcher.compare(fn, [Error, /bar/]);
+
+      expect(result.pass).toBe(false);
+      expect(result.message).toEqual("Expected function to throw Error with message matching /bar/.");
     });
   });
 });
