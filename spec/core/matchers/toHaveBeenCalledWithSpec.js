@@ -3,7 +3,7 @@ describe("toHaveBeenCalledWith", function() {
     var util = {
         contains: j$.createSpy('delegated-contains').andReturn(true)
       },
-      matcher = j$.matchers.toHaveBeenCalledWith(util)
+      matcher = j$.matchers.toHaveBeenCalledWith(util),
     calledSpy = j$.createSpy('called-spy'),
       result;
 
