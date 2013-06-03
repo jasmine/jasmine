@@ -22,12 +22,12 @@ module.exports = {
   jasmine: {
     src: [
       'src/core/requireCore.js',
+      'src/core/matchers/requireMatchers.js',
       'src/core/base.js',
       'src/core/util.js',
       'src/core/Spec.js',
       'src/core/Env.js',
       'src/core/JsApiReporter.js',
-      'src/core/Matchers',
       'src/core/PrettyPrinter',
       'src/core/Suite',
       'src/core/**/*.js',

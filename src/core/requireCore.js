@@ -20,7 +20,6 @@ getJasmineRequireObj().core = function(jRequire) {
   j$.Expectation = jRequire.Expectation();
   j$.buildExpectationResult = jRequire.buildExpectationResult();
   j$.JsApiReporter = jRequire.JsApiReporter();
-  j$.matchers = jRequire.matchers(j$);
   j$.matchersUtil = jRequire.matchersUtil(j$);
   j$.ObjectContaining = jRequire.ObjectContaining(j$);
   j$.StringPrettyPrinter = jRequire.StringPrettyPrinter(j$);
@@ -29,6 +28,8 @@ getJasmineRequireObj().core = function(jRequire) {
   j$.Spec = jRequire.Spec();
   j$.Suite = jRequire.Suite();
   j$.version = jRequire.version();
+
+  j$.matchers = jRequire.requireMatchers(jRequire);
 
   return j$;
 };

@@ -86,25 +86,25 @@ function executeSpecs(specs, done, isVerbose, showColors) {
 }
 
 function getFiles(dir, matcher) {
-    specs = [];
+    var allFiles = [];
 
   if (fs.statSync(dir).isFile() && dir.match(matcher)) {
-    specs.push(dir);
+    allFiles.push(dir);
   } else {
     var files = fs.readdirSync(dir);
     for (var i = 0, len = files.length; i < len; ++i) {
       var filename = dir + '/' + files[i];
       if (fs.statSync(filename).isFile() && filename.match(matcher)) {
-        specs.push(filename);
+        allFiles.push(filename);
       } else if (fs.statSync(filename).isDirectory()) {
-        var subfiles = getSpecFiles(filename);
+        var subfiles = getFiles(filename);
         subfiles.forEach(function(result) {
-          specs.push(result);
+          allFiles.push(result);
         });
       }
     }
   }
-  return specs;
+  return allFiles;
 }
 
 function getSpecFiles(dir) {

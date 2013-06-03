@@ -9,9 +9,9 @@ src_files:
   - 'core/Spec.js'
   - 'core/Env.js'
   - 'core/JsApiReporter.js'
-  - 'core/Matchers.js'
   - 'core/PrettyPrinter.js'
   - 'core/Suite.js'
+  - 'core/**/*.js'
   - 'html/**.js'
   - '**/*.js'
 stylesheets:
