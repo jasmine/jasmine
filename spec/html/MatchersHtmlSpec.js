@@ -2,7 +2,7 @@ describe("MatchersSpec - HTML Dependent", function () {
   var env, spec;
 
   beforeEach(function() {
-    env = new jasmine.Env();
+    env = new j$.Env();
     env.updateInterval = 0;
 
     var suite = env.describe("suite", function() {
@@ -29,7 +29,7 @@ describe("MatchersSpec - HTML Dependent", function () {
     return spec.addExpectationResult.mostRecentCall.args[1];
   }
 
-  it("toEqual with DOM nodes", function() {
+  xit("toEqual with DOM nodes", function() {
     var nodeA = document.createElement('div');
     var nodeB = document.createElement('div');
     expect((match(nodeA).toEqual(nodeA))).toPass();

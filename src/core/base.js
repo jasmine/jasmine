@@ -48,11 +48,11 @@ getJasmineRequireObj().base = function(j$) {
   };
 
   j$.any = function(clazz) {
-    return new j$.Matchers.Any(clazz);
+    return new j$.Any(clazz);
   };
 
   j$.objectContaining = function(sample) {
-    return new j$.Matchers.ObjectContaining(sample);
+    return new j$.ObjectContaining(sample);
   };
 
   j$.Spy = function(name) {
@@ -128,7 +128,7 @@ getJasmineRequireObj().base = function(j$) {
 
   j$.createSpyObj = function(baseName, methodNames) {
     if (!j$.isArray_(methodNames) || methodNames.length === 0) {
-      throw new Error('createSpyObj requires a non-empty array of method names to create spies for');
+      throw "createSpyObj requires a non-empty array of method names to create spies for";
     }
     var obj = {};
     for (var i = 0; i < methodNames.length; i++) {

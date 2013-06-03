@@ -326,7 +326,7 @@ getJasmineRequireObj().Env = function(j$) {
 
   // TODO: move this to closure
   Env.prototype.pending = function() {
-    throw new Error(j$.Spec.pendingSpecExceptionMessage);
+    throw j$.Spec.pendingSpecExceptionMessage;
   };
 
   // TODO: Still needed?

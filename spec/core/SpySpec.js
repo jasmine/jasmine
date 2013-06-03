@@ -52,7 +52,7 @@ describe('Spies', function () {
     var TestClass = {
       someFunction: function() {
         originalFunctionWasCalled = true;
-        passedArgs = arguments;
+        passedArgs = Array.prototype.slice.call(arguments, 0);
         passedObj = this;
         return "return value from original function";
       }
@@ -117,7 +117,7 @@ describe('Spies', function () {
 
     env.spyOn(TestClass, 'someFunction').andCallFake(function() {
       fakeFunctionWasCalled = true;
-      passedArgs = arguments;
+      passedArgs = Array.prototype.slice.call(arguments, 0);
       passedObj = this;
       return "return value from fake function";
     });
@@ -185,7 +185,6 @@ describe('Spies', function () {
     expect(exception).toBeDefined();
   });
 
-
   it('to spy on an undefined method throws exception', function() {
     var TestClass = {
       someFunction : function() {
@@ -193,11 +192,11 @@ describe('Spies', function () {
     };
     function efunc() {
       env.spyOn(TestClass, 'someOtherFunction');
-    };
+    }
+
     expect(function() {
       efunc();
     }).toThrow('someOtherFunction() method does not exist');
-
   });
 
   it('should be able to reset a spy', function() {
@@ -214,7 +213,8 @@ describe('Spies', function () {
 
   describe("createSpyObj", function() {
     it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
-      var spyObj = jasmine.createSpyObj('BaseName', ['method1', 'method2']);
+      var spyObj = j$.createSpyObj('BaseName', ['method1', 'method2']);
+
       expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
       expect(spyObj.method1.identity).toEqual('BaseName.method1');
       expect(spyObj.method2.identity).toEqual('BaseName.method2');
@@ -222,15 +222,8 @@ describe('Spies', function () {
 
     it("should throw if you do not pass an array argument", function() {
       expect(function() {
-        jasmine.createSpyObj('BaseName');
-      }).toThrow('createSpyObj requires a non-empty array of method names to create spies for');
-    });
-
-    it("should throw if you pass an empty array argument", function() {
-      expect(function() {
-        jasmine.createSpyObj('BaseName');
-      }).toThrow('createSpyObj requires a non-empty array of method names to create spies for');
+        j$.createSpyObj('BaseName');
+      }).toThrow("createSpyObj requires a non-empty array of method names to create spies for");
     });
   });
-
 });
