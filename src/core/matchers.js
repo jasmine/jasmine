@@ -213,7 +213,7 @@ getJasmineRequireObj().matchers = function() {
           return result;
         }
 
-        if (expected == void 0) {
+        if (arguments.length == 1) {
           result.pass = true;
           result.message = "Expected function not to throw.";
 
@@ -234,7 +234,7 @@ getJasmineRequireObj().matchers = function() {
 
   matchers.toThrowError = function(util) {
     return {
-      compare: function(actual, expected) {
+      compare: function(actual) {
         var threw = false,
           thrown,
           errorType,
@@ -245,7 +245,7 @@ getJasmineRequireObj().matchers = function() {
           throw new Error("Actual is not a Function");
         }
 
-        extractExpectedParams();
+        extractExpectedParams.apply(null, arguments);
 
         try {
           actual();
@@ -262,7 +262,7 @@ getJasmineRequireObj().matchers = function() {
           return fail("Expected function to throw an Error, but it threw " + thrown + ".");
         }
 
-        if (expected == void 0) {
+        if (arguments.length == 1) {
           return pass("Expected function not to throw an Error, but it threw " + thrown + ".");
         }
 
@@ -321,29 +321,36 @@ getJasmineRequireObj().matchers = function() {
         }
 
         function extractExpectedParams() {
-          if (expected == void 0) {
+          if (arguments.length == 1) {
             return;
-          }
+          } else if (arguments.length == 2) {
+            var expected = arguments[1];
 
-          if (expected instanceof RegExp) {
-            regexp = expected;
-          } else if (typeof expected == "string") {
-            message = expected;
-          } else if (typeof expected == "function" && new expected() instanceof Error) {
-            errorType = expected;
-          } else if (expected.length) {
-            if (typeof expected[0] == "function" && new expected[0]() instanceof Error) {
-              errorType = expected[0];
+            if (expected instanceof RegExp) {
+              regexp = expected;
+            } else if (typeof expected == "string") {
+              message = expected;
+            } else if (typeof expected == "function" && new expected() instanceof Error) {
+              errorType = expected;
             }
-            if (expected[1] instanceof RegExp) {
-              regexp = expected[1];
-            } else if (typeof expected[1] == "string") {
-              message = expected[1];
-            }
-          }
 
-          if (!(errorType || message || regexp)) {
-            throw new Error("Expected is not an Error, message, or RegExp.");
+            if (!(errorType || message || regexp)) {
+              throw new Error("Expected is not an Error, string, or RegExp.");
+            }
+          } else {
+            if (typeof arguments[1] == "function" && new arguments[1]() instanceof Error) {
+              errorType = arguments[1];
+            } else {
+              throw new Error("Expected error type is not an Error.");
+            }
+
+            if (arguments[2] instanceof RegExp) {
+              regexp = arguments[2];
+            } else if (typeof arguments[2] == "string") {
+              message = arguments[2];
+            } else {
+              throw new Error("Expected error message is not a string or RegExp.");
+            }
           }
         }
       }

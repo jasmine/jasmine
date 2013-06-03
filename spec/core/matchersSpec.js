@@ -473,7 +473,7 @@ describe("Matchers", function() {
   });
 
   describe("toThrow", function() {
-    it("throws an error when the acutal is not a function", function() {
+    it("throws an error when the actual is not a function", function() {
       var matcher = j$.matchers.toThrow();
 
       expect(function() {
@@ -510,6 +510,18 @@ describe("Matchers", function() {
       expect(result.message).toEqual("Expected function not to throw.");
     });
 
+    it("passes even if what is thrown is falsy", function() {
+      var matcher = j$.matchers.toThrow(),
+        fn = function() {
+          throw undefined;
+        },
+        result;
+
+      result = matcher.compare(fn);
+      expect(result.pass).toBe(true);
+      expect(result.message).toEqual("Expected function not to throw.");
+    });
+
     it("passes if what is thrown is equivalent to what is expected", function() {
       var util = {
           equals: j$.createSpy('delegated-equal').andReturn(true)
@@ -541,10 +553,26 @@ describe("Matchers", function() {
       expect(result.pass).toBe(false);
       expect(result.message).toEqual("Expected function to throw 'foo'.");
     });
+
+    it("fails if what is thrown is not equivalent to undefined", function() {
+      var util = {
+          equals: j$.createSpy('delegated-equal').andReturn(false)
+        },
+        matcher = j$.matchers.toThrow(util),
+        fn = function() {
+          throw 5;
+        },
+        result;
+
+      result = matcher.compare(fn, void 0);
+
+      expect(result.pass).toBe(false);
+      expect(result.message).toEqual("Expected function to throw undefined.");
+    });
   });
 
   describe("toThrowError", function() {
-    it("throws an error when the acutal is not a function ", function() {
+    it("throws an error when the actual is not a function", function() {
       var matcher = j$.matchers.toThrowError();
 
       expect(function() {
@@ -560,7 +588,29 @@ describe("Matchers", function() {
 
       expect(function() {
         matcher.compare(fn, 1);
-      }).toThrow(new Error("Expected is not an Error, message, or RegExp.")); // TODO: this needs to change for self-test
+      }).toThrow(new Error("Expected is not an Error, string, or RegExp.")); // TODO: this needs to change for self-test
+    });
+
+    it("throws an error when the expected error type is not an Error", function() {
+      var matcher = j$.matchers.toThrowError(),
+        fn = function() {
+          throw new Error("foo");
+        };
+
+      expect(function() {
+        matcher.compare(fn, "string", "foo");
+      }).toThrow(new Error("Expected error type is not an Error.")); // TODO: this needs to change for self-test
+    });
+
+    it("throws an error when the expected error message is not a string or RegExp", function() {
+      var matcher = j$.matchers.toThrowError(),
+        fn = function() {
+          throw new Error("foo");
+        };
+
+      expect(function() {
+        matcher.compare(fn, Error, 1);
+      }).toThrow(new Error("Expected error message is not a string or RegExp.")); // TODO: this needs to change for self-test
     });
 
     it("fails if actual does not throw at all", function() {
@@ -574,6 +624,30 @@ describe("Matchers", function() {
 
       expect(result.pass).toBe(false);
       expect(result.message).toEqual("Expected function to throw an Error.");
+    });
+
+    it("fails if thrown is not an instanceof Error", function() {
+      var matcher = j$.matchers.toThrowError(),
+        fn = function() {
+          throw 4;
+        },
+        result;
+
+      result = matcher.compare(fn);
+      expect(result.pass).toBe(false);
+      expect(result.message).toEqual("Expected function to throw an Error, but it threw 4.");
+    });
+
+    it("fails with the correct message if thrown is a falsy value", function() {
+      var matcher = j$.matchers.toThrowError(),
+        fn = function() {
+          throw undefined;
+        },
+        result;
+
+      result = matcher.compare(fn);
+      expect(result.pass).toBe(false);
+      expect(result.message).toEqual("Expected function to throw an Error, but it threw undefined.");
     });
 
     it("passes if thrown is an Error, but there is no expected error", function() {
@@ -683,7 +757,7 @@ describe("Matchers", function() {
         },
         result;
 
-      result = matcher.compare(fn, [Error, "foo"]);
+      result = matcher.compare(fn, Error, "foo");
 
       expect(result.pass).toBe(true);
       expect(result.message).toEqual("Expected function not to throw Error with message \"foo\".");
@@ -699,7 +773,7 @@ describe("Matchers", function() {
         },
         result;
 
-      result = matcher.compare(fn, [Error, "bar"]);
+      result = matcher.compare(fn, Error, "bar");
 
       expect(result.pass).toBe(false);
       expect(result.message).toEqual("Expected function to throw Error with message \"bar\".");
@@ -715,7 +789,7 @@ describe("Matchers", function() {
         },
         result;
 
-      result = matcher.compare(fn, [Error, /foo/]);
+      result = matcher.compare(fn, Error, /foo/);
 
       expect(result.pass).toBe(true);
       expect(result.message).toEqual("Expected function not to throw Error with message matching /foo/.");
@@ -731,7 +805,7 @@ describe("Matchers", function() {
         },
         result;
 
-      result = matcher.compare(fn, [Error, /bar/]);
+      result = matcher.compare(fn, Error, /bar/);
 
       expect(result.pass).toBe(false);
       expect(result.message).toEqual("Expected function to throw Error with message matching /bar/.");
