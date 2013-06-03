@@ -79,7 +79,9 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       }
     }
 
-
+    if (a instanceof Error && b instanceof Error) {
+      return a.message == b.message;
+    }
 
     // Identical objects are equal. `0 === -0`, but they aren't identical.
     // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).

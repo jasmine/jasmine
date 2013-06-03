@@ -1,62 +1,43 @@
 getJasmineRequireObj().toThrow = function() {
 
-  function toThrow() {
+  function toThrow(util) {
     return {
       compare: function(actual, expected) {
         var result = { pass: false },
-          exception;
+          threw = false,
+          thrown;
 
         if (typeof actual != "function") {
           throw new Error("Actual is not a Function");
         }
 
-        if (expectedCannotBeTreatedAsException()) {
-          throw new Error("Expected cannot be treated as an exception.");
-        }
-
         try {
           actual();
         } catch (e) {
-          exception = new Error(e);
+          threw = true;
+          thrown = e;
         }
 
-        if (!exception) {
+        if (!threw) {
           result.message = "Expected function to throw an exception.";
           return result;
         }
 
-        if (void 0 == expected) {
+        if (arguments.length == 1) {
           result.pass = true;
-          result.message = "Expected function not to throw an exception.";
-        } else if (exception.message == expected) {
+          result.message = "Expected function not to throw.";
+
+          return result;
+        }
+
+        if (util.equals(thrown, expected)) {
           result.pass = true;
-          result.message = "Expected function not to throw an exception \"" + expected + "\".";
-        } else if (exception.message == expected.message) {
-          result.pass = true;
-          result.message = "Expected function not to throw an exception \"" + expected.message + "\".";
-        } else if (expected instanceof RegExp) {
-          if (expected.test(exception.message)) {
-            result.pass = true;
-            result.message = "Expected function not to throw an exception matching " + expected + ".";
-          } else {
-            result.pass = false;
-            result.message = "Expected function to throw an exception matching " + expected + ".";
-          }
+          result.message = "Expected function not to throw " + j$.pp(expected) + ".";
         } else {
-          result.pass = false;
-          result.message = "Expected function to throw an exception \"" + (expected.message || expected) + "\".";
+          result.message = "Expected function to throw " + j$.pp(expected) + ".";
         }
 
         return result;
-
-        function expectedCannotBeTreatedAsException() {
-          return !(
-            (void 0 == expected) ||
-              (expected instanceof Error) ||
-              (typeof expected == "string") ||
-              (expected instanceof RegExp)
-            );
-        }
       }
     };
   }

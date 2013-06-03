@@ -58,6 +58,14 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.equals([1, 2], [1, 2, 3])).toBe(false);
     });
 
+    it("passes for Errors that are the same type and have the same message", function() {
+      expect(j$.matchersUtil.equals(new Error("foo"), new Error("foo"))).toBe(true);
+    });
+
+    it("fails for Errors that are the same type and have different messages", function() {
+      expect(j$.matchersUtil.equals(new Error("foo"), new Error("bar"))).toBe(false);
+    });
+
     it("passes for Objects that are equivalent (simple case)", function() {
       expect(j$.matchersUtil.equals({a: "foo"}, {a: "foo"})).toBe(true);
     });
