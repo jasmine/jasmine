@@ -25,7 +25,7 @@ describe("toThrowError", function() {
       };
 
     expect(function() {
-      matcher.compare(fn, "string", "foo");
+      matcher.compare(fn, void 0, "foo");
     }).toThrow(new Error("Expected error type is not an Error.")); // TODO: this needs to change for self-test
   });
 
