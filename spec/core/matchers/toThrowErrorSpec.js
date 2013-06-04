@@ -158,6 +158,26 @@ describe("toThrowError", function() {
     expect(result.message).toEqual("Expected function not to throw Error.");
   });
 
+  it("passes if thrown is a custom error that takes arguments and the expected is the same error", function() {
+    var util = {
+        equals: j$.createSpy('delegated-equal').andReturn(true)
+      },
+      matcher = j$.matchers.toThrowError(util),
+      CustomError = function CustomError(arg) { arg.x },
+      fn = function() {
+        throw new CustomError({ x: 1 });
+      },
+      result;
+
+    CustomError.prototype = new Error();
+    CustomError.prototype.constructor = CustomError;
+
+    result = matcher.compare(fn, CustomError);
+
+    expect(result.pass).toBe(true);
+    expect(result.message).toEqual("Expected function not to throw CustomError.");
+  });
+
   it("fails if thrown is an Error and the expected is a different Error", function() {
     var util = {
         equals: j$.createSpy('delegated-equal').andReturn(false)
@@ -185,6 +205,26 @@ describe("toThrowError", function() {
       result;
 
     result = matcher.compare(fn, Error, "foo");
+
+    expect(result.pass).toBe(true);
+    expect(result.message).toEqual("Expected function not to throw Error with message \"foo\".");
+  });
+
+  it("passes if thrown is a custom error that takes arguments and it is equal to the expected custom error and message", function() {
+    var util = {
+        equals: j$.createSpy('delegated-equal').andReturn(true)
+      },
+      matcher = j$.matchers.toThrowError(util),
+      CustomError = function CustomError(arg) { this.message = arg.message },
+      fn = function() {
+        throw new CustomError({message: "foo"});
+      },
+      result;
+
+    CustomError.prototype = new Error();
+    CustomError.prototype.constructor = CustomError;
+
+    result = matcher.compare(fn, CustomError, "foo");
 
     expect(result.pass).toBe(true);
     expect(result.message).toEqual("Expected function not to throw Error with message \"foo\".");
