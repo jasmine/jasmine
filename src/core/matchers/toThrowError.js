@@ -34,7 +34,7 @@ getJasmineRequireObj().toThrowError = function() {
         }
 
         if (errorType && message) {
-          if (util.equals(thrown, new errorType(message))) {
+          if (thrown.constructor == errorType && util.equals(thrown.message, message)) {
             return pass("Expected function not to throw Error with message \"" + message + "\".");
           } else {
             return fail("Expected function to throw Error with message \"" + message + "\".");
@@ -99,7 +99,7 @@ getJasmineRequireObj().toThrowError = function() {
               regexp = expected;
             } else if (typeof expected == "string") {
               message = expected;
-            } else if (typeof expected == "function" && new expected() instanceof Error) {
+            } else if (checkForAnErrorType(expected)) {
               errorType = expected;
             }
 
@@ -107,7 +107,7 @@ getJasmineRequireObj().toThrowError = function() {
               throw new Error("Expected is not an Error, string, or RegExp.");
             }
           } else {
-            if (typeof arguments[1] == "function" && new arguments[1]() instanceof Error) {
+            if (checkForAnErrorType(arguments[1])) {
               errorType = arguments[1];
             } else {
               throw new Error("Expected error type is not an Error.");
@@ -122,6 +122,16 @@ getJasmineRequireObj().toThrowError = function() {
             }
           }
         }
+
+        function checkForAnErrorType(type) {
+          if (typeof expected == "function") {
+            return false;
+          }
+
+          var Surrogate = function() {};
+          Surrogate.prototype = type.prototype;
+          return (new Surrogate()) instanceof Error;
+        };
       }
     };
   }
