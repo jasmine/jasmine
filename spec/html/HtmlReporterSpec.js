@@ -13,22 +13,20 @@ describe("New HtmlReporter", function() {
     reporter.initialize();
 
     // Main top-level elements
-    var divs = container.getElementsByTagName("div");
-    expect(findElement(divs, "html-reporter")).toBeTruthy();
-    expect(findElement(divs, "banner")).toBeTruthy();
-    expect(findElement(divs, "alert")).toBeTruthy();
-    expect(findElement(divs, "results")).toBeTruthy();
+    expect(container.querySelector("div.html-reporter")).toBeTruthy();
+    expect(container.querySelector("div.banner")).toBeTruthy();
+    expect(container.querySelector("div.alert")).toBeTruthy();
+    expect(container.querySelector("div.results")).toBeTruthy();
 
-    var uls = container.getElementsByTagName("ul");
-    expect(findElement(uls, "symbol-summary")).toBeTruthy();
+    expect(container.querySelector("ul.symbol-summary")).toBeTruthy();
 
     // title banner
-    var banner = container.getElementsByClassName("banner")[0];
+    var banner = container.querySelector(".banner");
 
-    var title = banner.getElementsByClassName("title")[0];
+    var title = banner.querySelector(".title");
     expect(title.innerHTML).toMatch(/Jasmine/);
 
-    var version = banner.getElementsByClassName("version")[0];
+    var version = banner.querySelector(".version");
     expect(version.innerHTML).toEqual(jasmine.version);
   });
 
@@ -47,8 +45,7 @@ describe("New HtmlReporter", function() {
 
       reporter.specDone({id: 789, status: "disabled", fullName: "symbols should have titles"});
 
-      var statuses = container.getElementsByClassName('symbol-summary')[0];
-      var specEl = statuses.getElementsByTagName('li')[0];
+      var specEl = container.querySelector('.symbol-summary li');
       expect(specEl.getAttribute("class")).toEqual("disabled");
       expect(specEl.getAttribute("id")).toEqual("spec_789");
       expect(specEl.getAttribute("title")).toEqual("symbols should have titles");
@@ -68,8 +65,7 @@ describe("New HtmlReporter", function() {
 
       reporter.specDone({id: 789, status: "pending"});
 
-      var statuses = container.getElementsByClassName('symbol-summary')[0];
-      var specEl = statuses.getElementsByTagName('li')[0];
+      var specEl = container.querySelector('.symbol-summary li');
       expect(specEl.getAttribute("class")).toEqual("pending");
       expect(specEl.getAttribute("id")).toEqual("spec_789");
     });
@@ -88,8 +84,8 @@ describe("New HtmlReporter", function() {
 
       reporter.specDone({id: 123, status: "passed"});
 
-      var statuses = container.getElementsByClassName("symbol-summary")[0];
-      var specEl = statuses.getElementsByTagName("li")[0];
+      var statuses = container.querySelector(".symbol-summary");
+      var specEl = statuses.querySelector("li");
       expect(specEl.getAttribute("class")).toEqual("passed");
       expect(specEl.getAttribute("id")).toEqual("spec_123");
     });
@@ -113,8 +109,7 @@ describe("New HtmlReporter", function() {
         failedExpectations: []
       });
 
-      var statuses = container.getElementsByClassName('symbol-summary')[0];
-      var specEl = statuses.getElementsByTagName('li')[0];
+      var specEl = container.querySelector(".symbol-summary li");
       expect(specEl.getAttribute("class")).toEqual("failed");
       expect(specEl.getAttribute("id")).toEqual("spec_345");
     });
@@ -141,8 +136,7 @@ describe("New HtmlReporter", function() {
       fakeNow.andReturn(600);
       reporter.jasmineDone();
 
-      var banner = container.getElementsByClassName("banner")[0];
-      var duration = banner.getElementsByClassName("duration")[0];
+      var duration = container.querySelector(".banner .duration");
       expect(duration.innerHTML).toMatch(/finished in 0.1s/);
     });
 
@@ -204,7 +198,7 @@ describe("New HtmlReporter", function() {
       reporter.suiteDone({id: 1});
 
       reporter.jasmineDone();
-      var summary = container.getElementsByClassName("summary")[0];
+      var summary = container.querySelector(".summary");
 
       expect(summary.childNodes.length).toEqual(1);
 
@@ -255,7 +249,7 @@ describe("New HtmlReporter", function() {
         reporter.initialize();
         reporter.jasmineDone();
 
-        var raisingExceptionsUI = container.getElementsByClassName("raise")[0];
+        var raisingExceptionsUI = container.querySelector(".raise");
         expect(raisingExceptionsUI.checked).toBe(false);
       });
 
@@ -280,7 +274,7 @@ describe("New HtmlReporter", function() {
         env.catchExceptions(false);
         reporter.jasmineDone();
 
-        var raisingExceptionsUI = container.getElementsByClassName("raise")[0];
+        var raisingExceptionsUI = container.querySelector(".raise");
         expect(raisingExceptionsUI.checked).toBe(true);
       });
 
@@ -306,7 +300,7 @@ describe("New HtmlReporter", function() {
         reporter.initialize();
         reporter.jasmineDone();
 
-        var input = container.getElementsByClassName("raise")[0];
+        var input = container.querySelector(".raise");
         input.click();
         expect(exceptionsClickHandler).toHaveBeenCalled();
       });
@@ -343,8 +337,7 @@ describe("New HtmlReporter", function() {
       });
 
       it("reports the specs counts", function() {
-        var alert = container.getElementsByClassName("alert")[0];
-        var alertBars = alert.getElementsByClassName("bar");
+        var alertBars = container.querySelectorAll(".alert .bar");
 
         expect(alertBars.length).toEqual(1);
         expect(alertBars[0].getAttribute('class')).toMatch(/passed/);
@@ -352,16 +345,15 @@ describe("New HtmlReporter", function() {
       });
 
       it("reports no failure details", function() {
-        var specFailure = container.getElementsByClassName("failures")[0];
+        var specFailure = container.querySelector(".failures");
 
         expect(specFailure.childNodes.length).toEqual(0);
       });
 
       it("reports no pending specs", function() {
-        var alert = container.getElementsByClassName("alert")[0];
-        var alertBars = alert.getElementsByClassName("bar");
+        var alertBar = container.querySelector(".alert .bar");
 
-        expect(alertBars[0].innerHTML).not.toMatch(/pending spec[s]/);
+        expect(alertBar.innerHTML).not.toMatch(/pending spec[s]/);
       });
     });
 
@@ -390,14 +382,13 @@ describe("New HtmlReporter", function() {
       });
 
       it("reports the pending specs count", function() {
-        var alert = container.getElementsByClassName("alert")[0];
-        var alertBars = alert.getElementsByClassName("bar");
+        var alertBar = container.querySelector(".alert .bar");
 
-        expect(alertBars[0].innerHTML).toMatch(/1 spec, 0 failures, 1 pending spec/);
+        expect(alertBar.innerHTML).toMatch(/1 spec, 0 failures, 1 pending spec/);
       });
 
       it("reports no failure details", function() {
-        var specFailure = container.getElementsByClassName("failures")[0];
+        var specFailure = container.querySelector(".failures");
 
         expect(specFailure.childNodes.length).toEqual(0);
       });
@@ -442,15 +433,14 @@ describe("New HtmlReporter", function() {
       });
 
       it("reports the specs counts", function() {
-        var alert = container.getElementsByClassName("alert")[0];
-        var alertBars = alert.getElementsByClassName("bar");
+        var alertBar = container.querySelector(".alert .bar");
 
-        expect(alertBars[0].getAttribute('class')).toMatch(/failed/);
-        expect(alertBars[0].innerHTML).toMatch(/2 specs, 1 failure/);
+        expect(alertBar.getAttribute('class')).toMatch(/failed/);
+        expect(alertBar.innerHTML).toMatch(/2 specs, 1 failure/);
       });
 
       it("reports failure messages and stack traces", function() {
-        var specFailures = container.getElementsByClassName("failures")[0];
+        var specFailures = container.querySelector(".failures");
 
         var failure = specFailures.childNodes[0];
         expect(failure.getAttribute("class")).toMatch(/failed/);
@@ -471,36 +461,19 @@ describe("New HtmlReporter", function() {
       });
 
       it("allows switching between failure details and the spec summary", function() {
-        var menuBar = container.getElementsByClassName("bar")[1];
+        var menuBar = container.querySelectorAll(".bar")[1];
 
         expect(menuBar.getAttribute("class")).not.toMatch(/hidden/);
 
-        var link = menuBar.getElementsByTagName('a')[0];
+        var link = menuBar.querySelector('a');
         expect(link.text).toEqual("Failures");
         expect(link.getAttribute("href")).toEqual("#");
       });
 
       it("sets the reporter to 'Failures List' mode", function() {
-        var reporterNode = container.getElementsByClassName("html-reporter")[0];
+        var reporterNode = container.querySelector(".html-reporter");
         expect(reporterNode.getAttribute("class")).toMatch("failure-list");
       });
     });
   });
-
-  // utility functions
-  function findElements(divs, withClass) {
-    var els = [];
-    for (var i = 0; i < divs.length; i++) {
-      if (divs[i].className == withClass) els.push(divs[i]);
-    }
-    return els;
-  }
-
-  function findElement(divs, withClass) {
-    var els = findElements(divs, withClass);
-    if (els.length > 0) {
-      return els[0];
-    }
-    throw new Error("couldn't find div with class " + withClass);
-  }
 });
