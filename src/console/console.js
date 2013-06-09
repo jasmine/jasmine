@@ -38,8 +38,6 @@ getJasmineRequireObj().ConsoleReporter = function() {
     var print = options.print,
       showColors = options.showColors || false,
       onComplete = options.onComplete || function() {},
-      now = options.now || function() { return new Date().getTime();},
-      startTime = 0,
       specCount,
       failureCount,
       failedSpecs = [],
@@ -52,7 +50,6 @@ getJasmineRequireObj().ConsoleReporter = function() {
       };
 
     this.jasmineStarted = function() {
-      startTime = now();
       specCount = 0;
       failureCount = 0;
       pendingCount = 0;
@@ -60,9 +57,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
       printNewline();
     };
 
-    this.jasmineDone = function() {
-      var elapsed = now() - startTime;
-
+    this.jasmineDone = function(options) {
       printNewline();
       for (var i = 0; i < failedSpecs.length; i++) {
         specFailureDetails(failedSpecs[i]);
@@ -79,7 +74,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
       print(specCounts);
 
       printNewline();
-      var seconds = elapsed / 1000;
+      var seconds = options.executionTime / 1000;
       print("Finished in " + seconds + " " + plural("second", seconds));
 
       printNewline();
