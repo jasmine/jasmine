@@ -69,20 +69,15 @@ describe("ConsoleReporter", function() {
   });
 
   it("reports a summary when done (singluar spec and time)", function() {
-    var fakeNow = jasmine.createSpy('fake Date.now'),
-      reporter = new j$.ConsoleReporter({
+    var reporter = new j$.ConsoleReporter({
         print: out.print,
-        now: fakeNow
       });
-
-    fakeNow.andReturn(500);
 
     reporter.jasmineStarted();
     reporter.specDone({status: "passed"});
-    fakeNow.andReturn(1500);
 
     out.clear();
-    reporter.jasmineDone();
+    reporter.jasmineDone({executionTime: 1000});
 
     expect(out.getOutput()).toMatch(/1 spec, 0 failures/);
     expect(out.getOutput()).not.toMatch(/0 pending specs/);
@@ -90,13 +85,10 @@ describe("ConsoleReporter", function() {
   });
 
   it("reports a summary when done (pluralized specs and seconds)", function() {
-    var fakeNow = jasmine.createSpy('fake Date.now'),
-      reporter = new j$.ConsoleReporter({
+    var reporter = new j$.ConsoleReporter({
         print: out.print,
-        now: fakeNow
       });
 
-    fakeNow.andReturn(500);
     reporter.jasmineStarted();
     reporter.specDone({status: "passed"});
     reporter.specDone({status: "pending"});
@@ -117,8 +109,7 @@ describe("ConsoleReporter", function() {
 
     out.clear();
 
-    fakeNow.andReturn(600);
-    reporter.jasmineDone();
+    reporter.jasmineDone({executionTime: 100});
 
     expect(out.getOutput()).toMatch(/3 specs, 1 failure, 1 pending spec/);
     expect(out.getOutput()).toMatch("Finished in 0.1 seconds\n");
@@ -148,7 +139,7 @@ describe("ConsoleReporter", function() {
 
     out.clear();
 
-    reporter.jasmineDone();
+    reporter.jasmineDone({});
 
     expect(out.getOutput()).toMatch(/foo bar baz/);
   });
@@ -160,7 +151,7 @@ describe("ConsoleReporter", function() {
         onComplete: onComplete
       });
 
-    reporter.jasmineDone();
+    reporter.jasmineDone({});
 
     expect(onComplete).toHaveBeenCalled();
   });
