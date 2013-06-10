@@ -118,23 +118,19 @@ describe("New HtmlReporter", function() {
   describe("when Jasmine is done", function() {
     it("reports the run time", function() {
       var env = new jasmine.Env(),
-        fakeNow = jasmine.createSpy('fake Date.now'),
         container = document.createElement("div"),
         getContainer = function() { return container; },
         reporter = new jasmine.HtmlReporter({
           env: env,
           getContainer: getContainer,
-          now: fakeNow,
           createElement: function() { return document.createElement.apply(document, arguments); },
           createTextNode: function() { return document.createTextNode.apply(document, arguments); }
         });
 
       reporter.initialize();
 
-      fakeNow.andReturn(500);
       reporter.jasmineStarted({});
-      fakeNow.andReturn(600);
-      reporter.jasmineDone();
+      reporter.jasmineDone({executionTime: 100});
 
       var duration = container.querySelector(".banner .duration");
       expect(duration.innerHTML).toMatch(/finished in 0.1s/);
@@ -197,7 +193,7 @@ describe("New HtmlReporter", function() {
 
       reporter.suiteDone({id: 1});
 
-      reporter.jasmineDone();
+      reporter.jasmineDone({});
       var summary = container.querySelector(".summary");
 
       expect(summary.childNodes.length).toEqual(1);
@@ -247,7 +243,7 @@ describe("New HtmlReporter", function() {
           });
 
         reporter.initialize();
-        reporter.jasmineDone();
+        reporter.jasmineDone({});
 
         var raisingExceptionsUI = container.querySelector(".raise");
         expect(raisingExceptionsUI.checked).toBe(false);
@@ -272,7 +268,7 @@ describe("New HtmlReporter", function() {
 
         reporter.initialize();
         env.catchExceptions(false);
-        reporter.jasmineDone();
+        reporter.jasmineDone({});
 
         var raisingExceptionsUI = container.querySelector(".raise");
         expect(raisingExceptionsUI.checked).toBe(true);
@@ -298,7 +294,7 @@ describe("New HtmlReporter", function() {
           });
 
         reporter.initialize();
-        reporter.jasmineDone();
+        reporter.jasmineDone({});
 
         var input = container.querySelector(".raise");
         input.click();
@@ -333,7 +329,7 @@ describe("New HtmlReporter", function() {
           fullName: "A Suite inner suite with another spec",
           status: "passed"
         });
-        reporter.jasmineDone();
+        reporter.jasmineDone({});
       });
 
       it("reports the specs counts", function() {
@@ -378,7 +374,7 @@ describe("New HtmlReporter", function() {
           fullName: "A Suite with a spec",
           status: "pending"
         });
-        reporter.jasmineDone();
+        reporter.jasmineDone({});
       });
 
       it("reports the pending specs count", function() {
@@ -429,7 +425,7 @@ describe("New HtmlReporter", function() {
         };
         reporter.specStarted(failingResult);
         reporter.specDone(failingResult);
-        reporter.jasmineDone();
+        reporter.jasmineDone({});
       });
 
       it("reports the specs counts", function() {

@@ -11,8 +11,11 @@ getJasmineRequireObj().JsApiReporter = function() {
       status = 'started';
     };
 
-    this.jasmineDone = function() {
+    var executionTime;
+
+    this.jasmineDone = function(options) {
       this.finished = true;
+      executionTime = options.executionTime;
       status = 'done';
     };
 
@@ -51,6 +54,10 @@ getJasmineRequireObj().JsApiReporter = function() {
 
     this.specs = function() {
       return specs;
+    };
+
+    this.executionTime = function() {
+      return executionTime;
     };
 
   }

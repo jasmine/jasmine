@@ -101,7 +101,7 @@ describe("JsApiReporter", function() {
     expect(reporter.finished).toBe(false);
 
     reporter.jasmineStarted();
-    reporter.jasmineDone();
+    reporter.jasmineDone({});
 
     expect(reporter.finished).toBe(true);
   });
@@ -123,7 +123,7 @@ describe("JsApiReporter", function() {
   it("reports 'done' when Jasmine is done", function() {
     var reporter = new j$.JsApiReporter();
 
-    reporter.jasmineDone();
+    reporter.jasmineDone({});
 
     expect(reporter.status()).toEqual('done');
   });
@@ -175,6 +175,24 @@ describe("JsApiReporter", function() {
       it("should return a slice of shorter length", function() {
         expect(reporter.specResults(0, 3)).toEqual([specResult1, specResult2]);
         expect(reporter.specResults(2, 3)).toEqual([]);
+      });
+    });
+  });
+
+  describe("#executionTime", function() {
+    var reporter;
+    beforeEach(function() {
+      reporter = new j$.JsApiReporter();
+    });
+
+    it("should return the time it took the specs to run, in ms", function() {
+      reporter.jasmineDone({executionTime: 1000});
+      expect(reporter.executionTime()).toEqual(1000);
+    });
+
+    describe("when the specs haven't finished being run", function() {
+      it("should return undefined", function() {
+        expect(reporter.executionTime()).toBeUndefined();
       });
     });
   });

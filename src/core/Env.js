@@ -2,7 +2,8 @@ getJasmineRequireObj().Env = function(j$) {
   function Env(options) {
     options = options || {};
     var self = this;
-    var global = options.global || j$.getGlobal();
+    var global = options.global || j$.getGlobal(),
+      now = options.now || function() { return new Date().getTime(); };
 
     var catchExceptions = true;
 
@@ -192,10 +193,13 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.execute = function() {
+      var startTime = now();
       this.reporter.jasmineStarted({
         totalSpecsDefined: totalSpecsDefined
       });
-      this.topSuite.execute(this.reporter.jasmineDone);
+      this.topSuite.execute(function() {
+        self.reporter.jasmineDone({executionTime: now() - startTime});
+      });
     };
   }
 

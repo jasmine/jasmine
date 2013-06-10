@@ -2,11 +2,10 @@ jasmineRequire.HtmlReporter = function() {
   function HtmlReporter(options) {
     var env = options.env || {},
       getContainer = options.getContainer,
-      now = options.now || function() { return new Date().getTime();},
       createElement = options.createElement,
       createTextNode = options.createTextNode,
+      onRaiseExceptionsClick = options.onRaiseExceptionsClick,
       results = [],
-      startTime,
       specsExecuted = 0,
       failureCount = 0,
       pendingSpecCount = 0,
@@ -33,7 +32,6 @@ jasmineRequire.HtmlReporter = function() {
     var totalSpecsDefined;
     this.jasmineStarted = function(options) {
       totalSpecsDefined = options.totalSpecsDefined || 0;
-      startTime = now();
     };
 
     var summary = createDom("div", {className: "summary"});
@@ -94,11 +92,9 @@ jasmineRequire.HtmlReporter = function() {
       }
     };
 
-    this.jasmineDone = function() {
-      var elapsed = now() - startTime;
-
+    this.jasmineDone = function(options) {
       var banner = find(".banner");
-      banner.appendChild(createDom("span", {className: "duration"}, "finished in " + elapsed / 1000 + "s"));
+      banner.appendChild(createDom("span", {className: "duration"}, "finished in " + options.executionTime / 1000 + "s"));
 
       var alert = find(".alert");
 
@@ -113,7 +109,7 @@ jasmineRequire.HtmlReporter = function() {
       var checkbox = find("input");
 
       checkbox.checked = !env.catchingExceptions();
-      checkbox.onclick = options.onRaiseExceptionsClick;
+      checkbox.onclick = onRaiseExceptionsClick;
 
       if (specsExecuted < totalSpecsDefined) {
         var skippedMessage = "Ran " + specsExecuted + " of " + totalSpecsDefined + " specs - run all";
