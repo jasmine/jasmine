@@ -82,7 +82,7 @@ getJasmineRequireObj().SpyDelegate = function(j$) {
       };
 
     spy.isSpy = true;
-    spy.and = spy.has = spyDelegate;
+    spy.and = spy.get = spyDelegate;
 
     return spy;
   };

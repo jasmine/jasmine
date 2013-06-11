@@ -163,7 +163,7 @@ describe("createSpy", function() {
 
     expect(spy instanceof Function).toBe(true);
     expect(spy.and instanceof j$.SpyDelegate).toBe(true);
-    expect(spy.has).toEqual(spy.and);
+    expect(spy.get).toEqual(spy.and);
   });
 
   it("says that it is a spy", function() {
@@ -175,7 +175,7 @@ describe("createSpy", function() {
   it("keeps its identity", function() {
     var spy = j$.createSpy("foo");
 
-    expect(spy.has.identity()).toEqual("foo");
+    expect(spy.get.identity()).toEqual("foo");
   });
 
   it("acts like a spy for call tracking", function() {
@@ -183,8 +183,8 @@ describe("createSpy", function() {
 
     spy("foo");
 
-    expect(spy.has.callCount()).toEqual(1);
-    expect(spy.has.mostRecentCall()).toEqual({object: window, args: ["foo"]});
+    expect(spy.get.callCount()).toEqual(1);
+    expect(spy.get.mostRecentCall()).toEqual({object: window, args: ["foo"]});
   });
 
   it("acts like a spy for configuration", function() {
