@@ -1,229 +1,225 @@
-describe('Spies', function () {
-  var env;
-  beforeEach(function() {
-    env = new j$.Env();
+describe("SpyDelegate", function() {
+
+  it("defaults its name to unknown", function() {
+    var spyDelegate = new j$.SpyDelegate();
+
+    expect(spyDelegate.identity()).toEqual("unknown");
   });
 
-  it('should replace the specified function with a spy object', function() {
-    var originalFunctionWasCalled = false;
-    var TestClass = {
-      someFunction: function() {
-        originalFunctionWasCalled = true;
-      }
-    };
-    env.spyOn(TestClass, 'someFunction');
+  it("takes a name", function() {
+    var spyDelegate = new j$.SpyDelegate({name: "foo"});
 
-    expect(TestClass.someFunction.wasCalled).toEqual(false);
-    expect(TestClass.someFunction.callCount).toEqual(0);
-
-    TestClass.someFunction('foo');
-
-    expect(TestClass.someFunction.wasCalled).toEqual(true);
-    expect(TestClass.someFunction.callCount).toEqual(1);
-    expect(TestClass.someFunction.mostRecentCall.args).toEqual(['foo']);
-    expect(TestClass.someFunction.mostRecentCall.object).toEqual(TestClass);
-    expect(originalFunctionWasCalled).toEqual(false);
-
-    TestClass.someFunction('bar');
-    expect(TestClass.someFunction.callCount).toEqual(2);
-    expect(TestClass.someFunction.mostRecentCall.args).toEqual(['bar']);
+    expect(spyDelegate.identity()).toEqual("foo");
   });
 
-  it('should allow you to view args for a particular call', function() {
-    var originalFunctionWasCalled = false;
-    var TestClass = {
-      someFunction: function() {
-        originalFunctionWasCalled = true;
-      }
-    };
-    env.spyOn(TestClass, 'someFunction');
+  it("tracks that it was called when executed", function() {
+    var spyDelegate = new j$.SpyDelegate();
 
-    TestClass.someFunction('foo');
-    TestClass.someFunction('bar');
-    expect(TestClass.someFunction.calls[0].args).toEqual(['foo']);
-    expect(TestClass.someFunction.calls[1].args).toEqual(['bar']);
-    expect(TestClass.someFunction.mostRecentCall.args).toEqual(['bar']);
+    expect(spyDelegate.wasCalled()).toBe(false);
+
+    spyDelegate.exec();
+
+    expect(spyDelegate.wasCalled()).toBe(true);
   });
 
-  it('should be possible to call through to the original method, or return a specific result', function() {
-    var originalFunctionWasCalled = false;
-    var passedArgs;
-    var passedObj;
-    var TestClass = {
-      someFunction: function() {
-        originalFunctionWasCalled = true;
-        passedArgs = Array.prototype.slice.call(arguments, 0);
-        passedObj = this;
-        return "return value from original function";
-      }
-    };
+  it("tracks that number of times that it is executed", function() {
+    var spyDelegate = new j$.SpyDelegate();
 
-    env.spyOn(TestClass, 'someFunction').andCallThrough();
-    var result = TestClass.someFunction('arg1', 'arg2');
-    expect(result).toEqual("return value from original function");
-    expect(originalFunctionWasCalled).toEqual(true);
-    expect(passedArgs).toEqual(['arg1', 'arg2']);
-    expect(passedObj).toEqual(TestClass);
-    expect(TestClass.someFunction.wasCalled).toEqual(true);
+    expect(spyDelegate.callCount()).toEqual(0);
+
+    spyDelegate.exec();
+
+    expect(spyDelegate.callCount()).toEqual(1);
   });
 
-  it('should be possible to return a specific value', function() {
-    var originalFunctionWasCalled = false;
-    var TestClass = {
-      someFunction: function() {
-        originalFunctionWasCalled = true;
-        return "return value from original function";
-      }
-    };
+  it("tracks the params from each execution", function() {
+    var spyDelegate = new j$.SpyDelegate(),
+      args;
 
-    env.spyOn(TestClass, 'someFunction').andReturn("some value");
-    originalFunctionWasCalled = false;
-    var result = TestClass.someFunction('arg1', 'arg2');
-    expect(result).toEqual("some value");
-    expect(originalFunctionWasCalled).toEqual(false);
+    spyDelegate.exec();
+    spyDelegate.exec(0, "foo");
+
+    args = spyDelegate.argsForCall(0);
+    expect(args).toEqual([]);
+
+    args = spyDelegate.argsForCall(1);
+    expect(args).toEqual([0, "foo"]);
   });
 
-  it('should be possible to throw a specific error', function() {
-    var originalFunctionWasCalled = false;
-    var TestClass = {
-      someFunction: function() {
-        originalFunctionWasCalled = true;
-        return "return value from original function";
-      }
-    };
+  it("returns any empty array when there was no call", function() {
+    var spyDelegate = new j$.SpyDelegate();
 
-    env.spyOn(TestClass, 'someFunction').andThrow(new Error('fake error'));
-    var exception;
-    try {
-      TestClass.someFunction('arg1', 'arg2');
-    } catch (e) {
-      exception = e;
-    }
-    expect(exception.message).toEqual('fake error');
-    expect(originalFunctionWasCalled).toEqual(false);
+    expect(spyDelegate.argsForCall(0)).toEqual([]);
   });
 
-  it('should be possible to call a specified function', function() {
-    var originalFunctionWasCalled = false;
-    var fakeFunctionWasCalled = false;
-    var passedArgs;
-    var passedObj;
-    var TestClass = {
-      someFunction: function() {
-        originalFunctionWasCalled = true;
-        return "return value from original function";
-      }
-    };
+  it("tracks the context and arguments for each call", function() {
+    var spyDelegate = new j$.SpyDelegate(),
+      args;
 
-    env.spyOn(TestClass, 'someFunction').andCallFake(function() {
-      fakeFunctionWasCalled = true;
-      passedArgs = Array.prototype.slice.call(arguments, 0);
-      passedObj = this;
-      return "return value from fake function";
-    });
+    spyDelegate.exec();
+    spyDelegate.exec(0, "foo");
 
-    var result = TestClass.someFunction('arg1', 'arg2');
-    expect(result).toEqual("return value from fake function");
-    expect(originalFunctionWasCalled).toEqual(false);
-    expect(fakeFunctionWasCalled).toEqual(true);
-    expect(passedArgs).toEqual(['arg1', 'arg2']);
-    expect(passedObj).toEqual(TestClass);
-    expect(TestClass.someFunction.wasCalled).toEqual(true);
+    args = spyDelegate.calls()[0];
+    expect(args).toEqual({object: spyDelegate, args: []});
+
+    args = spyDelegate.calls()[1];
+    expect(args).toEqual({object: spyDelegate, args: [0, "foo"]});
   });
 
-  it('is torn down when env.removeAllSpies is called', function() {
-    var originalFunctionWasCalled = false,
-    env = new j$.Env(),
-    TestClass = {
-      someFunction: function() {
-        originalFunctionWasCalled = true;
-      }
-    };
-    env.spyOn(TestClass, 'someFunction');
+  it("simplifies access to the arguments from the most recent call", function() {
+    var spyDelegate = new j$.SpyDelegate();
 
-    TestClass.someFunction('foo');
-    expect(originalFunctionWasCalled).toEqual(false);
+    spyDelegate.exec();
+    spyDelegate.exec(0, "foo");
 
-    env.removeAllSpies();
-
-    TestClass.someFunction('foo');
-    expect(originalFunctionWasCalled).toEqual(true);
-  });
-
-  it('calls removeAllSpies during spec finish', function() {
-    var env = new j$.Env(),
-    originalFoo = function() {},
-    testObj = {
-      foo: originalFoo
-    },
-    firstSpec = jasmine.createSpy('firstSpec').andCallFake(function() {
-      env.spyOn(testObj, 'foo');
-    }),
-    secondSpec = jasmine.createSpy('secondSpec').andCallFake(function() {
-      expect(testObj.foo).toBe(originalFoo);
-    });
-    env.describe('test suite', function() {
-      env.it('spec 0', firstSpec);
-      env.it('spec 1', secondSpec);
-    });
-
-    env.execute();
-    expect(firstSpec).toHaveBeenCalled();
-    expect(secondSpec).toHaveBeenCalled();
-  });
-
-  it('throws an exception when some method is spied on twice', function() {
-    var TestClass = { someFunction: function() {
-    } };
-    env.spyOn(TestClass, 'someFunction');
-    var exception;
-    try {
-      env.spyOn(TestClass, 'someFunction');
-    } catch (e) {
-      exception = e;
-    }
-    expect(exception).toBeDefined();
-  });
-
-  it('to spy on an undefined method throws exception', function() {
-    var TestClass = {
-      someFunction : function() {
-      }
-    };
-    function efunc() {
-      env.spyOn(TestClass, 'someOtherFunction');
-    }
-
-    expect(function() {
-      efunc();
-    }).toThrow('someOtherFunction() method does not exist');
-  });
-
-  it('should be able to reset a spy', function() {
-    var TestClass = { someFunction: function() {} };
-    env.spyOn(TestClass, 'someFunction');
-
-    expect(TestClass.someFunction).not.toHaveBeenCalled();
-    TestClass.someFunction();
-    expect(TestClass.someFunction).toHaveBeenCalled();
-    TestClass.someFunction.reset();
-    expect(TestClass.someFunction).not.toHaveBeenCalled();
-    expect(TestClass.someFunction.callCount).toEqual(0);
-  });
-
-  describe("createSpyObj", function() {
-    it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
-      var spyObj = j$.createSpyObj('BaseName', ['method1', 'method2']);
-
-      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
-      expect(spyObj.method1.identity).toEqual('BaseName.method1');
-      expect(spyObj.method2.identity).toEqual('BaseName.method2');
-    });
-
-    it("should throw if you do not pass an array argument", function() {
-      expect(function() {
-        j$.createSpyObj('BaseName');
-      }).toThrow("createSpyObj requires a non-empty array of method names to create spies for");
+    expect(spyDelegate.mostRecentCall()).toEqual({
+      object: spyDelegate,
+      args: [0, "foo"]
     });
   });
+
+  it("returns a useful falsy value when there is no most recent call", function() {
+    var spyDelegate = new j$.SpyDelegate();
+
+    expect(spyDelegate.mostRecentCall()).toBeFalsy();
+  });
+
+  it("allows the tracking to be reset", function() {
+    var spyDelegate = new j$.SpyDelegate();
+
+    spyDelegate.exec();
+    spyDelegate.exec(0, "foo");
+    spyDelegate.reset();
+
+    expect(spyDelegate.wasCalled()).toBe(false);
+    expect(spyDelegate.callCount()).toEqual(0);
+    expect(spyDelegate.argsForCall(0)).toEqual([]);
+    expect(spyDelegate.calls()).toEqual([]);
+    expect(spyDelegate.mostRecentCall()).toBeFalsy();
+  });
+
+  it("stubs an original function, if provided", function() {
+    var originalFn = jasmine.createSpy("original"),
+      spyDelegate = new j$.SpyDelegate({fn: originalFn});
+
+    spyDelegate.exec();
+
+    expect(originalFn).not.toHaveBeenCalled();
+  });
+
+  it("allows an original function to be called, passed through the params and returns it's value", function() {
+    var originalFn = jasmine.createSpy("original").andReturn(42),
+      spyDelegate = new j$.SpyDelegate({fn: originalFn}),
+      returnValue;
+
+    spyDelegate.callThrough();
+    returnValue = spyDelegate.exec("foo");
+
+    expect(originalFn).toHaveBeenCalled();
+    expect(originalFn.mostRecentCall.args).toEqual(["foo"]);
+    expect(returnValue).toEqual(42);
+  });
+
+  it("can return a specified value when executed", function() {
+    var originalFn = jasmine.createSpy("original"),
+      spyDelegate = new j$.SpyDelegate({fn: originalFn}),
+      returnValue;
+
+    spyDelegate.return(17);
+    returnValue = spyDelegate.exec();
+
+    expect(originalFn).not.toHaveBeenCalled();
+    expect(returnValue).toEqual(17);
+  });
+
+  it("allows an exception to be thrown when executed", function() {
+    var originalFn = jasmine.createSpy("original"),
+      spyDelegate = new j$.SpyDelegate({fn: originalFn});
+
+    spyDelegate.throw("bar");
+
+    expect(function() { spyDelegate.exec(); }).toThrow("bar");
+    expect(originalFn).not.toHaveBeenCalled();
+  });
+
+  it("allows a fake function to be called instead", function() {
+    var originalFn = jasmine.createSpy("original"),
+      fakeFn = jasmine.createSpy("fake").andReturn(67),
+      spyDelegate = new j$.SpyDelegate({fn: originalFn}),
+      returnValue;
+
+    spyDelegate.callFake(fakeFn);
+    returnValue = spyDelegate.exec();
+
+    expect(originalFn).not.toHaveBeenCalled();
+    expect(returnValue).toEqual(67);
+  });
+});
+
+describe("createSpy", function() {
+
+  it("returns a function that has a SpyDelegate", function() {
+    var spy = j$.createSpy();
+
+    expect(spy instanceof Function).toBe(true);
+    expect(spy.and instanceof j$.SpyDelegate).toBe(true);
+    expect(spy.has).toEqual(spy.and);
+  });
+
+  it("says that it is a spy", function() {
+    var spy = j$.createSpy();
+
+    expect(spy.isSpy).toBe(true);
+  });
+
+  it("keeps its identity", function() {
+    var spy = j$.createSpy("foo");
+
+    expect(spy.has.identity()).toEqual("foo");
+  });
+
+  it("acts like a spy for call tracking", function() {
+    var spy = j$.createSpy();
+
+    spy("foo");
+
+    expect(spy.has.callCount()).toEqual(1);
+    expect(spy.has.mostRecentCall()).toEqual({object: window, args: ["foo"]});
+  });
+
+  it("acts like a spy for configuration", function() {
+    var originalFn = jasmine.createSpy("original").andReturn(17),
+      spy = j$.createSpy("foo", originalFn),
+      returnValue;
+
+    spy();
+
+    expect(originalFn).not.toHaveBeenCalled();
+
+    originalFn.reset();
+    spy.and.reset();
+
+    spy.and.callThrough();
+    returnValue = spy();
+
+    expect(originalFn).toHaveBeenCalled();
+    expect(returnValue).toEqual(17);
+
+    originalFn.reset();
+    spy.and.reset();
+
+    spy.and.return(42);
+    returnValue = spy();
+
+    expect(originalFn).not.toHaveBeenCalled();
+    expect(returnValue).toEqual(42);
+  });
+});
+
+describe("isSpy", function() {
+  // TODO: fill this in
+});
+
+describe("createSpyObj", function() {
+  // TODO: fill this in
 });

@@ -1,70 +1,90 @@
-getJasmineRequireObj().Spy = function(j$) {
+getJasmineRequireObj().SpyDelegate = function(j$) {
 
-  function Spy(name) {
-    this.identity = name || 'unknown';
-    this.isSpy = true;
-    this.plan = function() {
+  function SpyDelegate(options) {
+    var identity = (options && options.name) || "unknown",
+      originalFn = (options && options.fn) || function() {},
+      plan = function() {},
+      callCount,
+      calls;
+
+    this.identity = function() {
+      return identity;
     };
-    this.mostRecentCall = {};
 
-    this.argsForCall = [];
-    this.calls = [];
+    this.exec = function() {
+      callCount++;
+      calls.push({
+        object: this,
+        args: Array.prototype.slice.call(arguments)
+      });
+
+      return plan.apply(this, arguments);
+    };
+
+    this.wasCalled = function() {
+      return callCount > 0;
+    };
+
+    this.callCount = function() {
+      return callCount;
+    };
+
+    this.argsForCall = function(index) {
+      var call = calls[index];
+      return call ? call.args : [];
+    };
+
+    this.calls = function() {
+      return calls;
+    };
+
+    this.mostRecentCall = function() {
+      var mostRecentCall = calls[calls.length - 1];
+      return mostRecentCall && mostRecentCall;
+    };
+
+    this.reset = function() {
+      callCount = 0;
+      calls = [];
+    };
+
+    this.callThrough = function() {
+      plan = originalFn;
+    };
+
+    this.return = function(value) {
+      plan = function() {
+        return value;
+      };
+    };
+
+    this.throw = function(something) {
+      plan = function() {
+        throw something;
+      }
+    };
+
+    this.callFake = function(fn) {
+      plan = fn;
+    };
+
+    this.reset();
   }
 
-  Spy.prototype.andCallThrough = function() {
-    this.plan = this.originalValue;
-    return this;
-  };
+  j$.createSpy = function(name, originalFn) {
 
-  Spy.prototype.andReturn = function(value) {
-    this.plan = function() {
-      return value;
-    };
-    return this;
-  };
+    var spyDelegate = new SpyDelegate({
+        name: name,
+        fn: originalFn
+      }),
+      spy = function() {
+        return spyDelegate.exec.apply(this, arguments);
+      };
 
-  Spy.prototype.andThrow = function(exceptionMsg) {
-    this.plan = function() {
-      throw exceptionMsg;
-    };
-    return this;
-  };
+    spy.isSpy = true;
+    spy.and = spy.has = spyDelegate;
 
-  Spy.prototype.andCallFake = function(fakeFunc) {
-    this.plan = fakeFunc;
-    return this;
-  };
-
-  Spy.prototype.reset = function() {
-    this.wasCalled = false;
-    this.callCount = 0;
-    this.argsForCall = [];
-    this.calls = [];
-    this.mostRecentCall = {};
-  };
-
-  j$.createSpy = function(name) {
-
-    var spyObj = function() {
-      spyObj.wasCalled = true;
-      spyObj.callCount++;
-      var args = j$.util.argsToArray(arguments);
-      spyObj.mostRecentCall.object = this;
-      spyObj.mostRecentCall.args = args;
-      spyObj.argsForCall.push(args);
-      spyObj.calls.push({object: this, args: args});
-      return spyObj.plan.apply(this, arguments);
-    };
-
-    var spy = new Spy(name);
-
-    for (var prop in spy) {
-      spyObj[prop] = spy[prop];
-    }
-
-    spyObj.reset();
-
-    return spyObj;
+    return spy;
   };
 
   j$.isSpy = function(putativeSpy) {
@@ -82,5 +102,5 @@ getJasmineRequireObj().Spy = function(j$) {
     return obj;
   };
 
-  return Spy;
+  return SpyDelegate;
 };

@@ -26,7 +26,7 @@ getJasmineRequireObj().core = function(jRequire) {
   j$.QueueRunner = jRequire.QueueRunner();
   j$.ReportDispatcher = jRequire.ReportDispatcher();
   j$.Spec = jRequire.Spec();
-  j$.Spy = jRequire.Spy(j$);
+  j$.SpyDelegate = jRequire.SpyDelegate(j$);
   j$.Suite = jRequire.Suite();
   j$.version = jRequire.version();
 
