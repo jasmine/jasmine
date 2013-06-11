@@ -1,7 +1,7 @@
 describe("toHaveBeenCalled", function() {
   it("passes when the actual was called, with a custom .not fail message", function() {
     var matcher = j$.matchers.toHaveBeenCalled(),
-      calledSpy = j$.createSpy('called-spy'),
+      calledSpy = jasmine.createSpy('called-spy'),
       result;
 
     calledSpy();
@@ -13,7 +13,7 @@ describe("toHaveBeenCalled", function() {
 
   it("fails when the actual was not called", function() {
     var matcher = j$.matchers.toHaveBeenCalled(),
-      uncalledSpy = j$.createSpy('uncalled spy');
+      uncalledSpy = jasmine.createSpy('uncalled spy');
 
     result = matcher.compare(uncalledSpy);
     expect(result.pass).toBe(false);
@@ -28,14 +28,14 @@ describe("toHaveBeenCalled", function() {
 
   it("throws an exception when invoked with any arguments", function() {
     var matcher = j$.matchers.toHaveBeenCalled(),
-      spy = j$.createSpy('sample spy');
+      spy = jasmine.createSpy('sample spy');
 
     expect(function() { matcher.compare(spy, 'foo') }).toThrow(new Error("toHaveBeenCalled does not take arguments, use toHaveBeenCalledWith"));
   });
 
   it("has a custom message on failure", function() {
     var matcher = j$.matchers.toHaveBeenCalled(),
-      spy = j$.createSpy('sample-spy'),
+      spy = jasmine.createSpy('sample-spy'),
       result;
 
     result = matcher.compare(spy);

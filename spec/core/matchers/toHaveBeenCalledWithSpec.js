@@ -1,10 +1,10 @@
 describe("toHaveBeenCalledWith", function() {
   it("passes when the actual was called with matching parameters", function() {
     var util = {
-        contains: j$.createSpy('delegated-contains').andReturn(true)
+        contains: jasmine.createSpy('delegated-contains').andReturn(true)
       },
       matcher = j$.matchers.toHaveBeenCalledWith(util),
-    calledSpy = j$.createSpy('called-spy'),
+    calledSpy = jasmine.createSpy('called-spy'),
       result;
 
     calledSpy('a', 'b');
@@ -15,10 +15,10 @@ describe("toHaveBeenCalledWith", function() {
 
   it("fails when the actual was not called", function() {
     var util = {
-        contains: j$.createSpy('delegated-contains').andReturn(false)
+        contains: jasmine.createSpy('delegated-contains').andReturn(false)
       },
       matcher = j$.matchers.toHaveBeenCalledWith(util),
-      uncalledSpy = j$.createSpy('uncalled spy'),
+      uncalledSpy = jasmine.createSpy('uncalled spy'),
       result;
 
     result = matcher.compare(uncalledSpy);
@@ -27,10 +27,10 @@ describe("toHaveBeenCalledWith", function() {
 
   it("fails when the actual was called with different parameters", function() {
     var util = {
-        contains: j$.createSpy('delegated-contains').andReturn(false)
+        contains: jasmine.createSpy('delegated-contains').andReturn(false)
       },
       matcher = j$.matchers.toHaveBeenCalledWith(util),
-      calledSpy = j$.createSpy('called spy'),
+      calledSpy = jasmine.createSpy('called spy'),
       result;
 
     calledSpy('a');
@@ -48,7 +48,7 @@ describe("toHaveBeenCalledWith", function() {
 
   it("has a custom message on failure", function() {
     var matcher = j$.matchers.toHaveBeenCalledWith(),
-      spy = j$.createSpy('sample-spy'),
+      spy = jasmine.createSpy('sample-spy'),
       messages = matcher.message(spy);
 
     expect(messages.affirmative).toEqual("Expected spy sample-spy to have been called.")
