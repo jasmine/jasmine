@@ -22,6 +22,12 @@ describe("Any", function() {
 
     expect(any.jasmineMatches({})).toBe(true);
   });
+  
+  it("matches a Boolean", function() {
+    var any = new j$.Any(Boolean);
+
+    expect(any.jasmineMatches(true)).toBe(true);
+  });
 
   it("matches another constructed object", function() {
     var Thing = function() {},
