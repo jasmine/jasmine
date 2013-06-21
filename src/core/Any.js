@@ -21,7 +21,7 @@ getJasmineRequireObj().Any = function() {
       return typeof other == 'object';
     }
 	
-    if (this.expectedClass == Boolean) {
+    if (this.expectedObject == Boolean) {
       return typeof other == 'boolean';
     }
 
