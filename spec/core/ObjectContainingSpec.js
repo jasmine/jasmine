@@ -29,6 +29,19 @@ describe("ObjectContaining", function() {
 
     expect(containing.jasmineMatches({foo: "fooVal", bar: "barVal"})).toBe(false);
   });
+  
+  it("mismatchValues parameter must return array with mismatched reason", function() {
+    var containing = new j$.ObjectContaining({foo: "other"});
+    
+    var mismatchKeys = [];
+    var mismatchValues = [];
+
+    containing.jasmineMatches({foo: "fooVal", bar: "barVal"}, mismatchKeys, mismatchValues); 
+    
+    expect(mismatchValues.length).toBe(1);
+    
+    expect(mismatchValues[0]).toEqual("'foo' was 'fooVal' in actual, but was 'other' in expected.");
+  });
 
   it("jasmineToString's itself", function() {
     var containing = new j$.ObjectContaining({});
