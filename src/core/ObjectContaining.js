@@ -17,7 +17,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
         mismatchKeys.push("expected has key '" + property + "', but missing from actual.");
       }
       else if (!j$.matchersUtil.equals(this.sample[property], other[property], mismatchKeys, mismatchValues)) {
-        mismatchValues.push("'" + property + "' was '" + (other[property] ? j$.util.htmlEscape(other[property].toString()) : other[property]) + "' in expected, but was '" + (this.sample[property] ? j$.util.htmlEscape(this.sample[property].toString()) : this.sample[property]) + "' in actual.");
+        mismatchValues.push("'" + property + "' was '" + (other[property] ? j$.util.htmlEscape(other[property].toString()) : other[property]) + "' in actual, but was '" + (this.sample[property] ? j$.util.htmlEscape(this.sample[property].toString()) : this.sample[property]) + "' in expected.");
       }
     }
 
