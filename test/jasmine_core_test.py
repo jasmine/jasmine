@@ -2,7 +2,7 @@ from pytest import raises
 import pytest
 import subprocess
 
-from jasmine import Core
+from jasmine_core import Core
 import os
 import sys
 
