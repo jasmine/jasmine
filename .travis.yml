@@ -3,9 +3,9 @@
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-  - "mkvirtualenv jasmine && workon jasmine"
+  - "virtualenv ENV"
   - "pip install -r requirements.txt"
-script: "DISPLAY=:99.0 bundle exec rake core_spec && PYTHONPATH=. py.test"
+script: "DISPLAY=:99.0 bundle exec rake core_spec && source ENV/bin/activate && py.test"
 
 rvm:
   - "1.9.3"
