@@ -1,4 +1,4 @@
-getJasmineRequireObj().toBeNaN = function() {
+getJasmineRequireObj().toBeNaN = function(j$) {
 
   function toBeNaN() {
     return {

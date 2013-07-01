@@ -30,7 +30,7 @@ getJasmineRequireObj().core = function(jRequire) {
   j$.Suite = jRequire.Suite();
   j$.version = jRequire.version();
 
-  j$.matchers = jRequire.requireMatchers(jRequire);
+  j$.matchers = jRequire.requireMatchers(jRequire, j$);
 
   return j$;
 };

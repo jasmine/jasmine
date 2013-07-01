@@ -1,4 +1,4 @@
-getJasmineRequireObj().requireMatchers = function(jRequire) {
+getJasmineRequireObj().requireMatchers = function(jRequire, j$) {
   var availableMatchers = [
       "toBe",
       "toBeCloseTo",
@@ -22,7 +22,7 @@ getJasmineRequireObj().requireMatchers = function(jRequire) {
 
   for (var i = 0; i < availableMatchers.length; i++) {
     var name = availableMatchers[i];
-    matchers[name] = jRequire[name]();
+    matchers[name] = jRequire[name](j$);
   }
 
   return matchers;

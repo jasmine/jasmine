@@ -1,4 +1,4 @@
-getJasmineRequireObj().toHaveBeenCalled = function() {
+getJasmineRequireObj().toHaveBeenCalled = function(j$) {
 
   function toHaveBeenCalled() {
     return {

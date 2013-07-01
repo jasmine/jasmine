@@ -1,4 +1,4 @@
-getJasmineRequireObj().toThrow = function() {
+getJasmineRequireObj().toThrow = function(j$) {
 
   function toThrow(util) {
     return {

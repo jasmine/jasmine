@@ -1,4 +1,4 @@
-getJasmineRequireObj().toThrowError = function() {
+getJasmineRequireObj().toThrowError = function(j$) {
   function toThrowError (util) {
     return {
       compare: function(actual) {
