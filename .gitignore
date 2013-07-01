@@ -16,3 +16,4 @@ node_modules/
 *.pyc
 *.swp
 build/
+*.egg-info/
