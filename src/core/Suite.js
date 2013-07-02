@@ -7,7 +7,7 @@ getJasmineRequireObj().Suite = function() {
     this.onStart = attrs.onStart || function() {};
     this.completeCallback = attrs.completeCallback || function() {};
     this.resultCallback = attrs.resultCallback || function() {};
-    this.encourageGC = attrs.encourageGC || function(fn) {fn();};
+    this.clearStack = attrs.clearStack || function(fn) {fn();};
 
     this.beforeFns = [];
     this.afterFns = [];

@@ -3,7 +3,7 @@ getJasmineRequireObj().QueueRunner = function() {
   function QueueRunner(attrs) {
     this.fns = attrs.fns || [];
     this.onComplete = attrs.onComplete || function() {};
-    this.encourageGC = attrs.encourageGC || function(fn) {fn();};
+    this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.onException = attrs.onException || function() {};
     this.catchException = attrs.catchException || function() { return true; };
   }
@@ -14,7 +14,7 @@ getJasmineRequireObj().QueueRunner = function() {
 
   QueueRunner.prototype.run = function(fns, index) {
     if (index >= fns.length) {
-      this.encourageGC(this.onComplete);
+      this.clearStack(this.onComplete);
       return;
     }
 

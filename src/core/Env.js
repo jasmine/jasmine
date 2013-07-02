@@ -7,6 +7,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     var catchExceptions = true;
 
+    var realSetTimeout = global.setTimeout;
     this.clock = new j$.Clock(global, new j$.DelayedFunctionScheduler());
 
     this.spies_ = [];
@@ -108,11 +109,11 @@ getJasmineRequireObj().Env = function(j$) {
     var maximumSpecCallbackDepth = 100;
     var currentSpecCallbackDepth = 0;
 
-    function encourageGarbageCollection(fn) {
+    function clearStack(fn) {
       currentSpecCallbackDepth++;
       if (currentSpecCallbackDepth > maximumSpecCallbackDepth) {
         currentSpecCallbackDepth = 0;
-        global.setTimeout(fn, 0);
+        realSetTimeout(fn, 0);
       } else {
         fn();
       }
@@ -120,7 +121,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     var queueRunnerFactory = function(options) {
       options.catchException = self.catchException;
-      options.encourageGC = options.encourageGarbageCollection || encourageGarbageCollection;
+      options.clearStack = options.clearStack || clearStack;
 
       new j$.QueueRunner(options).run(options.fns, 0);
     };

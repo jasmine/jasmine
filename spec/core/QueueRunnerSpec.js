@@ -118,15 +118,15 @@ describe("QueueRunner", function() {
   it("calls a provided garbage collection function with the complete callback when done", function() {
     var fn = jasmine.createSpy('fn'),
       completeCallback = jasmine.createSpy('completeCallback'),
-      encourageGC = jasmine.createSpy('encourageGC'),
+      clearStack = jasmine.createSpy('clearStack'),
       queueRunner = new j$.QueueRunner({
         fns: [fn],
-        encourageGC: encourageGC,
+        clearStack: clearStack,
         onComplete: completeCallback
       });
 
     queueRunner.execute();
 
-    expect(encourageGC).toHaveBeenCalledWith(completeCallback);
+    expect(clearStack).toHaveBeenCalledWith(completeCallback);
   });
 });
