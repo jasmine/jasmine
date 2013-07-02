@@ -115,8 +115,8 @@ describe("QueueRunner", function() {
     expect(completeCallback).toHaveBeenCalled();
   });
 
-  it("calls a provided garbage collection function with the complete callback when done", function() {
-    var fn = jasmine.createSpy('fn'),
+  it("calls a provided stack clearing function when done with async specs", function() {
+    var fn = function(done) { done() },
       completeCallback = jasmine.createSpy('completeCallback'),
       clearStack = jasmine.createSpy('clearStack'),
       queueRunner = new j$.QueueRunner({
@@ -125,8 +125,11 @@ describe("QueueRunner", function() {
         onComplete: completeCallback
       });
 
+    clearStack.andCallFake(function(fn) { fn(); });
+
     queueRunner.execute();
 
-    expect(clearStack).toHaveBeenCalledWith(completeCallback);
+    expect(clearStack).toHaveBeenCalled();
+    expect(completeCallback).toHaveBeenCalled();
   });
 });

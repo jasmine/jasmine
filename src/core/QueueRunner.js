@@ -12,19 +12,26 @@ getJasmineRequireObj().QueueRunner = function() {
     this.run(this.fns, 0);
   };
 
-  QueueRunner.prototype.run = function(fns, index) {
-    if (index >= fns.length) {
-      this.clearStack(this.onComplete);
-      return;
+  QueueRunner.prototype.run = function(fns, recursiveIndex) {
+    var length = fns.length,
+        self = this,
+        iterativeIndex;
+
+    for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
+      var fn = fns[iterativeIndex];
+      if (fn.length > 0) {
+        attempt(function() { fn.call(self, function() {
+            self.clearStack(function() { self.run(fns, iterativeIndex + 1); });
+          });
+        });
+        return;
+      } else {
+        attempt(function() { fn.call(self); });
+      }
     }
 
-    var fn = fns[index];
-    var self = this;
-    if (fn.length > 0) {
-      attempt(function() { fn.call(self, function() { self.run(fns, index + 1); }); });
-    } else {
-      attempt(function() { fn.call(self); });
-      self.run(fns, index + 1);
+    if (iterativeIndex >= length) {
+      this.onComplete();
     }
 
     function attempt(fn) {

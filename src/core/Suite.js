@@ -93,9 +93,7 @@ getJasmineRequireObj().Suite = function() {
     }
 
     function wrapChild(child) {
-      return function(done) {
-        child.execute(done);
-      };
+      return function() { child.execute(); };
     }
   };
   
