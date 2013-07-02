@@ -38,6 +38,7 @@ getJasmineRequireObj().Env = function(j$) {
     j$.Expectation.addCoreMatchers(j$.matchers);
 
     var expectationFactory = function(actual, spec) {
+
       return j$.Expectation.Factory({
         util: j$.matchersUtil,
         customEqualityTesters: customEqualityTesters,
@@ -103,6 +104,33 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.catchException = function(e){
       return j$.Spec.isPendingSpecException(e) || catchExceptions;
+    };
+
+    this.spyRegistry = new j$.SpyRegistry();
+
+    this.createSpy = function(options) {
+      var originalFn = options.originalFn || function(){},
+          spyDelegate = new j$.SpyDelegate({
+            name: options.name,
+            fn: options.originalFn
+          }),
+          spy = function() {
+            return spyDelegate.exec.apply(this, arguments);
+          };
+
+      for(var prop in originalFn) {
+        if(originalFn.hasOwnProperty(prop)) {
+          spy[prop] = originalFn[prop];
+        }
+      }
+
+      this.spyRegistry.register(spy, spyDelegate);
+
+      return spy;
+    };
+
+    this.isSpy = function(putativeSpy) {
+      return !!(this.spyRegistry.lookup(putativeSpy));
     };
 
     var maximumSpecCallbackDepth = 100;

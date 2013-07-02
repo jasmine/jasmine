@@ -103,14 +103,8 @@ describe("j$.pp", function () {
   });
 
   it("should stringify spy objects properly", function() {
-    var TestObject = {
-      someFunction: function() {
-      }
-    };
-    spyOn(TestObject, 'someFunction');
-    expect(j$.pp(TestObject.someFunction)).toEqual("spy on someFunction");
-
-    expect(j$.pp(jasmine.createSpy("something"))).toEqual("spy on something");
+    var spy = j$.createSpy('someFunction');
+    expect(j$.pp(spy)).toEqual("spy on someFunction");
   });
 
   it("should stringify objects that implement jasmineToString", function () {

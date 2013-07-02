@@ -2,10 +2,12 @@ getJasmineRequireObj().SpyDelegate = function(j$) {
 
   function SpyDelegate(options) {
     var identity = (options && options.name) || "unknown",
-      originalFn = (options && options.fn) || function() {},
-      plan = function() {},
-      callCount,
-      calls;
+        originalFn = (options && options.fn) || function() {
+        },
+        plan = function() {
+        },
+        callCount,
+        calls;
 
     this.identity = function() {
       return identity;
@@ -70,26 +72,6 @@ getJasmineRequireObj().SpyDelegate = function(j$) {
 
     this.reset();
   }
-
-  j$.createSpy = function(name, originalFn) {
-
-    var spyDelegate = new SpyDelegate({
-        name: name,
-        fn: originalFn
-      }),
-      spy = function() {
-        return spyDelegate.exec.apply(this, arguments);
-      };
-
-    spy.isSpy = true;
-    spy.and = spy.get = spyDelegate;
-
-    return spy;
-  };
-
-  j$.isSpy = function(putativeSpy) {
-    return putativeSpy && putativeSpy.isSpy;
-  };
 
   j$.createSpyObj = function(baseName, methodNames) {
     if (!j$.isArray_(methodNames) || methodNames.length === 0) {

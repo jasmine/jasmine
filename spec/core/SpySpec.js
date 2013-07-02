@@ -34,7 +34,7 @@ describe("SpyDelegate", function() {
 
   it("tracks the params from each execution", function() {
     var spyDelegate = new j$.SpyDelegate(),
-      args;
+        args;
 
     spyDelegate.exec();
     spyDelegate.exec(0, "foo");
@@ -54,7 +54,7 @@ describe("SpyDelegate", function() {
 
   it("tracks the context and arguments for each call", function() {
     var spyDelegate = new j$.SpyDelegate(),
-      args;
+        args;
 
     spyDelegate.exec();
     spyDelegate.exec(0, "foo");
@@ -100,7 +100,7 @@ describe("SpyDelegate", function() {
 
   it("stubs an original function, if provided", function() {
     var originalFn = jasmine.createSpy("original"),
-      spyDelegate = new j$.SpyDelegate({fn: originalFn});
+        spyDelegate = new j$.SpyDelegate({fn: originalFn});
 
     spyDelegate.exec();
 
@@ -109,8 +109,8 @@ describe("SpyDelegate", function() {
 
   it("allows an original function to be called, passed through the params and returns it's value", function() {
     var originalFn = jasmine.createSpy("original").andReturn(42),
-      spyDelegate = new j$.SpyDelegate({fn: originalFn}),
-      returnValue;
+        spyDelegate = new j$.SpyDelegate({fn: originalFn}),
+        returnValue;
 
     spyDelegate.callThrough();
     returnValue = spyDelegate.exec("foo");
@@ -122,8 +122,8 @@ describe("SpyDelegate", function() {
 
   it("can return a specified value when executed", function() {
     var originalFn = jasmine.createSpy("original"),
-      spyDelegate = new j$.SpyDelegate({fn: originalFn}),
-      returnValue;
+        spyDelegate = new j$.SpyDelegate({fn: originalFn}),
+        returnValue;
 
     spyDelegate.return(17);
     returnValue = spyDelegate.exec();
@@ -134,19 +134,21 @@ describe("SpyDelegate", function() {
 
   it("allows an exception to be thrown when executed", function() {
     var originalFn = jasmine.createSpy("original"),
-      spyDelegate = new j$.SpyDelegate({fn: originalFn});
+        spyDelegate = new j$.SpyDelegate({fn: originalFn});
 
     spyDelegate.throw("bar");
 
-    expect(function() { spyDelegate.exec(); }).toThrow("bar");
+    expect(function() {
+      spyDelegate.exec();
+    }).toThrow("bar");
     expect(originalFn).not.toHaveBeenCalled();
   });
 
   it("allows a fake function to be called instead", function() {
     var originalFn = jasmine.createSpy("original"),
-      fakeFn = jasmine.createSpy("fake").andReturn(67),
-      spyDelegate = new j$.SpyDelegate({fn: originalFn}),
-      returnValue;
+        fakeFn = jasmine.createSpy("fake").andReturn(67),
+        spyDelegate = new j$.SpyDelegate({fn: originalFn}),
+        returnValue;
 
     spyDelegate.callFake(fakeFn);
     returnValue = spyDelegate.exec();
@@ -154,70 +156,6 @@ describe("SpyDelegate", function() {
     expect(originalFn).not.toHaveBeenCalled();
     expect(returnValue).toEqual(67);
   });
-});
-
-describe("createSpy", function() {
-
-  it("returns a function that has a SpyDelegate", function() {
-    var spy = j$.createSpy();
-
-    expect(spy instanceof Function).toBe(true);
-    expect(spy.and instanceof j$.SpyDelegate).toBe(true);
-    expect(spy.get).toEqual(spy.and);
-  });
-
-  it("says that it is a spy", function() {
-    var spy = j$.createSpy();
-
-    expect(spy.isSpy).toBe(true);
-  });
-
-  it("keeps its identity", function() {
-    var spy = j$.createSpy("foo");
-
-    expect(spy.get.identity()).toEqual("foo");
-  });
-
-  it("acts like a spy for call tracking", function() {
-    var spy = j$.createSpy();
-
-    spy("foo");
-
-    expect(spy.get.callCount()).toEqual(1);
-    expect(spy.get.mostRecentCall()).toEqual({object: window, args: ["foo"]});
-  });
-
-  it("acts like a spy for configuration", function() {
-    var originalFn = jasmine.createSpy("original").andReturn(17),
-      spy = j$.createSpy("foo", originalFn),
-      returnValue;
-
-    spy();
-
-    expect(originalFn).not.toHaveBeenCalled();
-
-    originalFn.reset();
-    spy.and.reset();
-
-    spy.and.callThrough();
-    returnValue = spy();
-
-    expect(originalFn).toHaveBeenCalled();
-    expect(returnValue).toEqual(17);
-
-    originalFn.reset();
-    spy.and.reset();
-
-    spy.and.return(42);
-    returnValue = spy();
-
-    expect(originalFn).not.toHaveBeenCalled();
-    expect(returnValue).toEqual(42);
-  });
-});
-
-describe("isSpy", function() {
-  // TODO: fill this in
 });
 
 describe("createSpyObj", function() {

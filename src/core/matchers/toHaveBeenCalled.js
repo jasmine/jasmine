@@ -1,11 +1,12 @@
 getJasmineRequireObj().toHaveBeenCalled = function(j$) {
 
-  function toHaveBeenCalled() {
+  function toHaveBeenCalled(util) {
     return {
       compare: function(actual) {
         var result = {};
 
-        if (!j$.isSpy(actual)) {
+        var spyDelegate = util.spyLookup(actual);
+        if (!spyDelegate) {
           throw new Error('Expected a spy, but got ' + j$.pp(actual) + '.');
         }
 
@@ -13,11 +14,11 @@ getJasmineRequireObj().toHaveBeenCalled = function(j$) {
           throw new Error('toHaveBeenCalled does not take arguments, use toHaveBeenCalledWith');
         }
 
-        result.pass = actual.wasCalled;
+        result.pass = spyDelegate.wasCalled();
 
         result.message = result.pass ?
-          "Expected spy " + actual.identity + " not to have been called." :
-          "Expected spy " + actual.identity + " to have been called.";
+          "Expected spy " + spyDelegate.identity() + " not to have been called." :
+          "Expected spy " + spyDelegate.identity() + " to have been called.";
 
         return result;
       }

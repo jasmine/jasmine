@@ -15,6 +15,18 @@ getJasmineRequireObj().base = function(j$) {
     return getGlobal();
   };
 
+  j$.createSpy = function(name, originalFn) {
+    return j$.getEnv().createSpy({
+      name: name,
+      originalFn: originalFn
+    });
+  };
+
+  // TODO: maybe this goes away once pretty printer doesn't need it?
+  j$.isSpy = function(putativeSpy) {
+    return j$.getEnv().isSpy(putativeSpy);
+  };
+
   j$.getEnv = function(options) {
     var env = j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options);
     //jasmine. singletons in here (setTimeout blah blah).

@@ -18,7 +18,7 @@ getJasmineRequireObj().StringPrettyPrinter = function(j$) {
       } else if (typeof value === 'string') {
         this.emitString(value);
       } else if (j$.isSpy(value)) {
-        this.emitScalar("spy on " + value.identity);
+        this.emitScalar("spy on " + j$.getEnv().spyRegistry.lookup(value).identity());
       } else if (value instanceof RegExp) {
         this.emitScalar(value.toString());
       } else if (typeof value === 'function') {

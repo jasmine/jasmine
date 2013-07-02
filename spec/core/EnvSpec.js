@@ -51,6 +51,41 @@ describe("Env", function() {
     });
   });
 
+  describe("#isSpy", function() {
+    it("reports whether the object is a spy", function() {
+      var spy = env.createSpy('genericSpy');
+
+      expect(env.isSpy(spy)).toBe(true);
+    });
+
+    it("handles being passed in undefined as a spy", function() {
+      expect(env.isSpy(void 0)).toBe(false);
+    });
+  });
+
+  describe("#createSpy", function() {
+    it("returns a function that corresponds to a spy", function() {
+      var spy = env.createSpy({name: "foo"});
+
+      expect(spy instanceof Function).toBe(true);
+    });
+
+    it("copies any properties on an original function to the stand-in", function() {
+      var originalFn = function() {},
+          spy;
+
+      originalFn.bar = "baz";
+      spy = env.createSpy({name: "foo", originalFn: originalFn});
+
+      expect(spy.bar).toEqual("baz");
+    });
+
+    it("registers a SpyDelegate for tracking calls", function() {
+      var spy = env.createSpy({});
+
+      expect(env.spyRegistry.lookup(spy) instanceof j$.SpyDelegate).toBe(true);
+    });
+  });
 });
 
 // TODO: move these into a separate file
