@@ -1,6 +1,10 @@
 import os
-
 import glob2
+
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 
 class Core(object):
@@ -21,7 +25,7 @@ class Core(object):
 
         spec_path = glob2.iglob(os.path.join(cls.path(), "spec", spec_type, "*.js"))
 
-        return set([os.path.join("spec", spec_type, os.path.basename(f)) for f in spec_path])
+        return cls._uniq([os.path.join("spec", spec_type, os.path.basename(f)) for f in spec_path])
 
     @classmethod
     def path(cls):
@@ -31,10 +35,10 @@ class Core(object):
     def js_files(cls):
         js_files = [os.path.basename(f) for f in glob2.iglob(os.path.join(cls.path(), "*.js"))]
 
-        js_fileset = set([f for f in js_files if f not in cls.boot_files()])
-        js_fileset.update(['jasmine.js'])
+        js_fileset = [f for f in js_files if f not in cls.boot_files()]
+        js_fileset.insert(0, 'jasmine.js')
 
-        return js_fileset
+        return cls._uniq(js_fileset)
 
     @classmethod
     def core_spec_files(cls):
@@ -46,4 +50,8 @@ class Core(object):
 
     @classmethod
     def css_files(cls):
-        return set([os.path.basename(f) for f in glob2.iglob(os.path.join(cls.path(), '*.css'))])
+        return cls._uniq([os.path.basename(f) for f in glob2.iglob(os.path.join(cls.path(), '*.css'))])
+
+    @classmethod
+    def _uniq(cls, items):
+        return list(OrderedDict.fromkeys(items))

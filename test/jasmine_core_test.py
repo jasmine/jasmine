@@ -42,10 +42,11 @@ def test_spec_files_returns_files():
 
 @notwin32
 def test_js_files():
-    files_from_shell = subprocess.check_output([
-        "find lib/jasmine-core -maxdepth 1 -name \*.js -not -name boot.js -exec basename {} \;"], shell=True)
-
-    files = set([x for x in files_from_shell.split('\n') if x])
+    files = [
+        'jasmine.js',
+        'jasmine-html.js',
+        'json2.js',
+    ]
 
     assert Core.js_files() == files
 
@@ -68,7 +69,7 @@ def test_css_files():
     """ Should return a list of css files that are relative to Core.path() """
     files_from_shell = subprocess.check_output(['find lib/jasmine-core/ -maxdepth 1 -type f -name *.css -exec basename {} \;'], shell=True)
 
-    files = set([x for x in files_from_shell.split('\n') if x])
+    files = [x for x in files_from_shell.split('\n') if x]
 
     assert files == Core.css_files()
 
@@ -76,4 +77,4 @@ def test_css_files():
 def _spec_files(spec_type='core'):
     files_from_shell = subprocess.check_output(['find spec/{} -maxdepth 1 -type f'.format(spec_type)], shell=True)
 
-    return set([x for x in files_from_shell.split('\n') if x])
+    return [x for x in files_from_shell.split('\n') if x]

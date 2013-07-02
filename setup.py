@@ -9,5 +9,5 @@ setup(
         '': ['jasmine.js', 'jasmine-html.js', 'jasmine.css'],
     },
 
-    install_requires = ['glob2>=0.4.1']
+    install_requires = ['glob2>=0.4.1', 'ordereddict==1.1']
 )
