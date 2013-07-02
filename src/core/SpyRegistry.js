@@ -3,12 +3,16 @@ getJasmineRequireObj().SpyRegistry = function() {
   function SpyRegistry() {
     var registry = {};
 
-    this.register = function(standin, delegate) {
-      registry[standin] = delegate;
+    this.register = function(standin, options) {
+      registry[standin] = options;
     };
 
-    this.lookup = function(standin) {
-      return registry[standin];
+    this.lookupDelegate = function(standin) {
+      return (registry[standin] || {}).delegate;
+    };
+
+    this.lookupBaseObj = function(standin) {
+      return (registry[standin] || {}).baseObj;
     };
 
     this.reset = function() {

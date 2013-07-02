@@ -124,13 +124,16 @@ getJasmineRequireObj().Env = function(j$) {
         }
       }
 
-      this.spyRegistry.register(spy, spyDelegate);
+      this.spyRegistry.register(spy, {
+        delegate: spyDelegate,
+        baseObj: options.baseObj
+      });
 
       return spy;
     };
 
     this.isSpy = function(putativeSpy) {
-      return !!(this.spyRegistry.lookup(putativeSpy));
+      return !!(this.spyRegistry.lookupDelegate(putativeSpy));
     };
 
     var maximumSpecCallbackDepth = 100;
@@ -244,32 +247,36 @@ getJasmineRequireObj().Env = function(j$) {
   };
 
   Env.prototype.spyOn = function(obj, methodName) {
-    if (j$.util.isUndefined(obj)) {
+    if (obj === void 0) {
       throw "spyOn could not find an object to spy upon for " + methodName + "()";
     }
 
-    if (j$.util.isUndefined(obj[methodName])) {
-      throw methodName + '() method does not exist';
+    if (obj[methodName] === void 0) {
+      throw methodName + "() method does not exist";
     }
 
-    if (obj[methodName] && obj[methodName].isSpy) {
+    if (this.spyRegistry.lookupDelegate(obj[methodName])) {
       //TODO?: should this return the current spy? Downside: may cause user confusion about spy state
-      throw new Error(methodName + ' has already been spied upon');
+      throw methodName + "() has already been spied upon";
     }
 
-    var spyObj = j$.createSpy(methodName);
+    var standIn = this.createSpy({
+      name: methodName,
+      originalFn: obj[methodName],
+      baseObj: obj
+    });
 
-    this.spies_.push(spyObj);
-    spyObj.baseObj = obj;
-    spyObj.methodName = methodName;
-    spyObj.originalValue = obj[methodName];
+    this.spies_.push(standIn);
+    standIn.baseObj = obj;
+    standIn.methodName = methodName;
+    standIn.originalValue = obj[methodName];
 
-    obj[methodName] = spyObj;
+    obj[methodName] = standIn;
 
-    return spyObj;
+    return standIn;
   };
 
-  // TODO: move this to closure
+  // TODO: does not need to be exposed (testing will be 'fun')
   Env.prototype.removeAllSpies = function() {
     for (var i = 0; i < this.spies_.length; i++) {
       var spy = this.spies_[i];

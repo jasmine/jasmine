@@ -1,17 +1,24 @@
 describe("SpyRegistry", function() {
-  it("allows registering a spy to a spyDelegate", function() {
+  it("allows registering a spy", function() {
     var spyRegistry = new j$.SpyRegistry(),
         standIn = function() {},
-        delegate = {};
+        delegate = {},
+        baseObj = {};
 
-    spyRegistry.register(standIn, delegate);
-    expect(spyRegistry.lookup(standIn)).toEqual(delegate);
+    spyRegistry.register(standIn, {
+      delegate: delegate,
+      baseObj: baseObj
+    });
+
+    expect(spyRegistry.lookupDelegate(standIn)).toEqual(delegate);
+    expect(spyRegistry.lookupBaseObj(standIn)).toEqual(baseObj);
   });
 
   it("is undefined when the lookup key does not exist", function() {
     var spyRegistry = new j$.SpyRegistry();
 
-    expect(spyRegistry.lookup(function() {})).toBeUndefined();
+    expect(spyRegistry.lookupDelegate(function() {})).toBeUndefined();
+    expect(spyRegistry.lookupBaseObj({})).toBeUndefined();
   });
 
   it("resetting the registry", function() {
@@ -23,6 +30,7 @@ describe("SpyRegistry", function() {
 
     spyRegistry.reset();
 
-    expect(spyRegistry.lookup(standIn)).toBeUndefined();
+    expect(spyRegistry.lookupDelegate(function() {})).toBeUndefined();
+    expect(spyRegistry.lookupBaseObj({})).toBeUndefined();
   });
 });

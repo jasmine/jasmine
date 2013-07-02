@@ -83,9 +83,45 @@ describe("Env", function() {
     it("registers a SpyDelegate for tracking calls", function() {
       var spy = env.createSpy({});
 
-      expect(env.spyRegistry.lookup(spy) instanceof j$.SpyDelegate).toBe(true);
+      expect(env.spyRegistry.lookupDelegate(spy) instanceof j$.SpyDelegate).toBe(true);
     });
   });
+
+  describe("#spyOn", function() {
+    it("creates a spy for the specified property", function() {
+      var obj = { dog: function() {}};
+
+      env.spyOn(obj, "dog");
+
+      expect(env.isSpy(obj.dog)).toBe(true);
+    });
+
+    it("throws if the object is undefined", function() {
+      var obj = void 0;
+
+      expect(function() { env.spyOn(obj, "dog"); }).toThrow("spyOn could not find an object to spy upon for dog()");
+    });
+
+    it("throws if the method does not exist on the object", function() {
+      var obj = {};
+
+      expect(function() { env.spyOn(obj, "dog"); }).toThrow("dog() method does not exist");
+    });
+
+    it("throws if the method has already been spied upon", function() {
+      var obj = { dog: function() {} };
+
+      env.spyOn(obj, "dog");
+
+      expect(function() { env.spyOn(obj, "dog"); }).toThrow("dog() has already been spied upon");
+    });
+  });
+
+  describe("#removeAllSpies", function() {
+    
+  });
+  
+  
 });
 
 // TODO: move these into a separate file
@@ -304,7 +340,7 @@ describe("Env (integration)", function() {
       matchers = {
         toFoo: function() {}
       },
-      reporter = jasmine.createSpyObj('fakeReproter', [
+      reporter = jasmine.createSpyObj('fakeReporter', [
         "jasmineStarted",
         "jasmineDone",
         "suiteStarted",
@@ -331,7 +367,7 @@ describe("Env (integration)", function() {
 
   it("Custom equality testers for toContain should be per spec", function() {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
-      reporter = jasmine.createSpyObj('fakeReproter', [
+      reporter = jasmine.createSpyObj('fakeReporter', [
         "jasmineStarted",
         "jasmineDone",
         "suiteStarted",
