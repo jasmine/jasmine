@@ -13,7 +13,7 @@ src_files:
 stylesheets:
 helpers:
 spec_files:
-  - 'smoke/performance_test.js'
+  - 'performance/performance_test.js'
 src_dir:
 spec_dir:
   - 'spec'

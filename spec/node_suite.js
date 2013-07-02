@@ -86,7 +86,7 @@ function executeSpecs(specs, done, isVerbose, showColors) {
 }
 
 function getFiles(dir, matcher) {
-    var allFiles = [];
+  var allFiles = [];
 
   if (fs.statSync(dir).isFile() && dir.match(matcher)) {
     allFiles.push(dir);
@@ -113,7 +113,7 @@ function getSpecFiles(dir) {
 
 var j$require = (function() {
   var exported = {},
-    j$req;
+      j$req;
 
   global.getJasmineRequireObj = getJasmineRequireObj;
 
@@ -124,7 +124,7 @@ var j$require = (function() {
   srcFiles.push(__dirname + "/../src/version.js");
   srcFiles.push(__dirname + "/../src/console/ConsoleReporter.js");
 
-  for (var i=0; i < srcFiles.length; i++) {
+  for (var i = 0; i < srcFiles.length; i++) {
     require(srcFiles[i]);
   }
   extend(j$req, exported);
@@ -141,17 +141,11 @@ var j$require = (function() {
 var j$ = j$require.core(j$require);
 j$require.console(j$require, j$);
 
-//var specs = getSpecFiles(__dirname + '/smoke', new RegExp("test.js$"));
-var consoleSpecs = getSpecFiles(__dirname + "/console"),
-  coreSpecs = getSpecFiles(__dirname + "/core"),
-  specs = [];
-
-specs = specs.concat(consoleSpecs);
-specs = specs.concat(coreSpecs);
-
 // options from command line
 var isVerbose = false;
 var showColors = true;
+var perfSuite = false;
+
 process.argv.forEach(function(arg) {
   switch (arg) {
     case '--color':
@@ -163,8 +157,21 @@ process.argv.forEach(function(arg) {
     case '--verbose':
       isVerbose = true;
       break;
+    case '--perf':
+      perfSuite = true;
+      break;
   }
 });
+
+specs = [];
+
+if (perfSuite) {
+  specs = getFiles(__dirname + '/performance', new RegExp("test.js$"));
+} else {
+  var consoleSpecs = getSpecFiles(__dirname + "/console"),
+      coreSpecs = getSpecFiles(__dirname + "/core"),
+      specs = consoleSpecs.concat(coreSpecs);
+}
 
 executeSpecs(specs, function(passed) {
   if (passed) {
