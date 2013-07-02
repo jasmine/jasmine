@@ -54,11 +54,22 @@ describe("Env", function() {
 });
 
 // TODO: move these into a separate file
-describe("Env (integration)", function() {
+describe("Env integration", function() {
 
-  it("Suites execute as expected (no nesting)", function() {
+  it("Suites execute as expected (no nesting)", function(done) {
     var env = new j$.Env(),
-      calls = [];
+        calls = [];
+
+    var assertions = function() {
+      expect(calls).toEqual([
+        "with a spec",
+        "and another spec"
+      ]);
+
+      done();
+    };
+
+    env.addReporter({ jasmineDone: assertions});
 
     env.describe("A Suite", function() {
       env.it("with a spec", function() {
@@ -70,16 +81,23 @@ describe("Env (integration)", function() {
     });
 
     env.execute();
-
-    expect(calls).toEqual([
-      "with a spec",
-      "and another spec"
-    ]);
   });
 
-  it("Nested Suites execute as expected", function() {
+  it("Nested Suites execute as expected", function(done) {
     var env = new j$.Env(),
-      calls = [];
+        calls = [];
+
+    var assertions = function() {
+      expect(calls).toEqual([
+        'an outer spec',
+        'an inner spec',
+        'another inner spec'
+      ]);
+
+      done();
+    };
+
+    env.addReporter({ jasmineDone: assertions });
 
     env.describe("Outer suite", function() {
       env.it("an outer spec", function() {
@@ -96,18 +114,25 @@ describe("Env (integration)", function() {
     });
 
     env.execute();
-
-    expect(calls).toEqual([
-      'an outer spec',
-      'an inner spec',
-      'another inner spec'
-    ]);
-
   });
 
-  it("Multiple top-level Suites execute as expected", function() {
+  it("Multiple top-level Suites execute as expected", function(done) {
     var env = new j$.Env(),
-      calls = [];
+        calls = [];
+
+    var assertions = function() {
+      expect(calls).toEqual([
+        'an outer spec',
+        'an inner spec',
+        'another inner spec',
+        'a 2nd outer spec'
+      ]);
+
+      done();
+    };
+
+    env.addReporter({ jasmineDone: assertions });
+
 
     env.describe("Outer suite", function() {
       env.it("an outer spec", function() {
@@ -130,20 +155,22 @@ describe("Env (integration)", function() {
     });
 
     env.execute();
-
-    expect(calls).toEqual([
-      'an outer spec',
-      'an inner spec',
-      'another inner spec',
-      'a 2nd outer spec'
-    ]);
   });
 
-  it("Mock clock can be installed and used in tests", function() {
+  it("Mock clock can be installed and used in tests", function(done) {
     var globalSetTimeout = jasmine.createSpy('globalSetTimeout'),
-      delayedFunctionForGlobalClock = jasmine.createSpy('delayedFunctionForGlobalClock'),
-      delayedFunctionForMockClock = jasmine.createSpy('delayedFunctionForMockClock'),
-      env = new j$.Env({global: { setTimeout: globalSetTimeout }});
+        delayedFunctionForGlobalClock = jasmine.createSpy('delayedFunctionForGlobalClock'),
+        delayedFunctionForMockClock = jasmine.createSpy('delayedFunctionForMockClock'),
+        env = new j$.Env({global: { setTimeout: globalSetTimeout }});
+
+    var assertions = function() {
+      expect(delayedFunctionForMockClock).toHaveBeenCalled();
+      expect(globalSetTimeout).toHaveBeenCalledWith(delayedFunctionForGlobalClock, 100);
+
+      done();
+    };
+
+    env.addReporter({ jasmineDone: assertions });
 
     env.describe("tests", function() {
       env.it("test with mock clock", function() {
@@ -160,23 +187,33 @@ describe("Env (integration)", function() {
     expect(delayedFunctionForMockClock).not.toHaveBeenCalled();
 
     env.execute();
-
-    expect(delayedFunctionForMockClock).toHaveBeenCalled();
-    expect(globalSetTimeout).toHaveBeenCalledWith(delayedFunctionForGlobalClock, 100);
   });
 
   // TODO: something is wrong with this spec
-  it("should report as expected", function() {
+  it("should report as expected", function(done) {
     var fakeNow = jasmine.createSpy('fake Date.now'),
-      env = new j$.Env({now: fakeNow}),
-      reporter = jasmine.createSpyObj('fakeReporter', [
-        "jasmineStarted",
-        "jasmineDone",
-        "suiteStarted",
-        "suiteDone",
-        "specStarted",
-        "specDone"
-      ]);
+        env = new j$.Env({now: fakeNow}),
+        reporter = jasmine.createSpyObj('fakeReporter', [
+          "jasmineStarted",
+          "jasmineDone",
+          "suiteStarted",
+          "suiteDone",
+          "specStarted",
+          "specDone"
+        ]);
+
+    reporter.jasmineDone.andCallFake(function() {
+      expect(reporter.jasmineStarted).toHaveBeenCalledWith({
+        totalSpecsDefined: 3
+      });
+      var suiteResult = reporter.suiteStarted.calls[0].args[0];
+      expect(suiteResult.description).toEqual("A Suite");
+      expect(reporter.jasmineDone).toHaveBeenCalledWith({
+        executionTime: 1000
+      });
+
+      done();
+    });
 
     fakeNow.andReturn(500);
     reporter.suiteDone.andCallFake(function() { fakeNow.andReturn(1500); });
@@ -198,20 +235,11 @@ describe("Env (integration)", function() {
     });
 
     env.execute();
-
-    expect(reporter.jasmineStarted).toHaveBeenCalledWith({
-      totalSpecsDefined: 3
-    });
-    var suiteResult = reporter.suiteStarted.calls[0].args[0];
-    expect(suiteResult.description).toEqual("A Suite");
-    expect(reporter.jasmineDone).toHaveBeenCalledWith({
-      executionTime: 1000
-    });
   });
 
   it("should be possible to get full name from a spec", function() {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
-      topLevelSpec, nestedSpec, doublyNestedSpec;
+        topLevelSpec, nestedSpec, doublyNestedSpec;
 
     env.describe("my tests", function() {
       topLevelSpec = env.it("are sometimes top level", function() {
@@ -231,16 +259,26 @@ describe("Env (integration)", function() {
     expect(doublyNestedSpec.getFullName()).toBe("my tests are sometimes even doubly nested.");
   });
 
-  it("Custom equality testers should be per spec", function() {
+  it("Custom equality testers should be per spec", function(done) {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
-      reporter = jasmine.createSpyObj('fakeReproter', [
-        "jasmineStarted",
-        "jasmineDone",
-        "suiteStarted",
-        "suiteDone",
-        "specStarted",
-        "specDone"
-      ]);
+        reporter = jasmine.createSpyObj('fakeReproter', [
+          "jasmineStarted",
+          "jasmineDone",
+          "suiteStarted",
+          "suiteDone",
+          "specStarted",
+          "specDone"
+        ]);
+
+    reporter.jasmineDone.andCallFake(function() {
+      var firstSpecResult = reporter.specDone.argsForCall[0][0],
+          secondSpecResult = reporter.specDone.argsForCall[1][0];
+
+      expect(firstSpecResult.status).toEqual("passed");
+      expect(secondSpecResult.status).toEqual("failed");
+
+      done();
+    });
 
     env.addReporter(reporter);
 
@@ -256,27 +294,21 @@ describe("Env (integration)", function() {
     });
 
     env.execute();
-
-    var firstSpecResult = reporter.specDone.argsForCall[0][0],
-      secondSpecResult = reporter.specDone.argsForCall[1][0];
-
-    expect(firstSpecResult.status).toEqual("passed");
-    expect(secondSpecResult.status).toEqual("failed");
   });
 
   it("Custom matchers should be per spec", function() {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
-      matchers = {
-        toFoo: function() {}
-      },
-      reporter = jasmine.createSpyObj('fakeReproter', [
-        "jasmineStarted",
-        "jasmineDone",
-        "suiteStarted",
-        "suiteDone",
-        "specStarted",
-        "specDone"
-      ]);
+        matchers = {
+          toFoo: function() {}
+        },
+        reporter = jasmine.createSpyObj('fakeReproter', [
+          "jasmineStarted",
+          "jasmineDone",
+          "suiteStarted",
+          "suiteDone",
+          "specStarted",
+          "specDone"
+        ]);
 
     env.addReporter(reporter);
 
@@ -294,16 +326,26 @@ describe("Env (integration)", function() {
     env.execute();
   });
 
-  it("Custom equality testers for toContain should be per spec", function() {
+  it("Custom equality testers for toContain should be per spec", function(done) {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
-      reporter = jasmine.createSpyObj('fakeReproter', [
-        "jasmineStarted",
-        "jasmineDone",
-        "suiteStarted",
-        "suiteDone",
-        "specStarted",
-        "specDone"
-      ]);
+        reporter = jasmine.createSpyObj('fakeReproter', [
+          "jasmineStarted",
+          "jasmineDone",
+          "suiteStarted",
+          "suiteDone",
+          "specStarted",
+          "specDone"
+        ]);
+
+    reporter.jasmineDone.andCallFake(function() {
+      var firstSpecResult = reporter.specDone.argsForCall[0][0],
+          secondSpecResult = reporter.specDone.argsForCall[1][0];
+
+      expect(firstSpecResult.status).toEqual("passed");
+      expect(secondSpecResult.status).toEqual("failed");
+
+      done();
+    });
 
     env.addReporter(reporter);
 
@@ -319,11 +361,5 @@ describe("Env (integration)", function() {
     });
 
     env.execute();
-
-    var firstSpecResult = reporter.specDone.argsForCall[0][0],
-      secondSpecResult = reporter.specDone.argsForCall[1][0];
-
-    expect(firstSpecResult.status).toEqual("passed");
-    expect(secondSpecResult.status).toEqual("failed");
   });
 });

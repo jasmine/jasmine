@@ -7,7 +7,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     var catchExceptions = true;
 
-    var realSetTimeout = global.setTimeout;
+    var realSetTimeout = j$.getGlobal().setTimeout;
     this.clock = new j$.Clock(global, new j$.DelayedFunctionScheduler());
 
     this.spies_ = [];
@@ -111,7 +111,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     function clearStack(fn) {
       currentSpecCallbackDepth++;
-      if (currentSpecCallbackDepth > maximumSpecCallbackDepth) {
+      if (currentSpecCallbackDepth >= maximumSpecCallbackDepth) {
         currentSpecCallbackDepth = 0;
         realSetTimeout(fn, 0);
       } else {

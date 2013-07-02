@@ -150,7 +150,7 @@ describe('Spies', function () {
     expect(originalFunctionWasCalled).toEqual(true);
   });
 
-  it('calls removeAllSpies during spec finish', function() {
+  it('calls removeAllSpies during spec finish', function(done) {
     var env = new j$.Env(),
     originalFoo = function() {},
     testObj = {
@@ -167,9 +167,15 @@ describe('Spies', function () {
       env.it('spec 1', secondSpec);
     });
 
+    var assertions = function() {
+      expect(firstSpec).toHaveBeenCalled();
+      expect(secondSpec).toHaveBeenCalled();
+      done();
+    };
+
+    env.addReporter({ jasmineDone: assertions });
+
     env.execute();
-    expect(firstSpec).toHaveBeenCalled();
-    expect(secondSpec).toHaveBeenCalled();
   });
 
   it('throws an exception when some method is spied on twice', function() {

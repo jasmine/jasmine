@@ -32,7 +32,7 @@ describe("jasmine spec running", function () {
     expect(it4.id).toEqual(4);
   });
 
-  it('nested suites', function () {
+  it('nested suites', function (done) {
 
     var foo = 0;
     var bar = 0;
@@ -63,15 +63,16 @@ describe("jasmine spec running", function () {
     expect(bar).toEqual(0);
     expect(baz).toEqual(0);
     expect(quux).toEqual(0);
-    nested.execute();
-
-    expect(foo).toEqual(1);
-    expect(bar).toEqual(1);
-    expect(baz).toEqual(1);
-    expect(quux).toEqual(1);
+    nested.execute(function() {
+      expect(foo).toEqual(1);
+      expect(bar).toEqual(1);
+      expect(baz).toEqual(1);
+      expect(quux).toEqual(1);
+      done();
+    });
   });
 
-  it("should permit nested describes", function() {
+  it("should permit nested describes", function(done) {
     var actions = [];
 
     env.beforeEach(function () {
@@ -128,42 +129,46 @@ describe("jasmine spec running", function () {
       });
     });
 
+    var assertions = function() {
+      var expected = [
+        "topSuite beforeEach",
+        "outer beforeEach",
+        "outer it 1",
+        "outer afterEach",
+        "topSuite afterEach",
+
+        "topSuite beforeEach",
+        "outer beforeEach",
+        "inner 1 beforeEach",
+        "inner 1 it",
+        "inner 1 afterEach",
+        "outer afterEach",
+        "topSuite afterEach",
+
+        "topSuite beforeEach",
+        "outer beforeEach",
+        "outer it 2",
+        "outer afterEach",
+        "topSuite afterEach",
+
+        "topSuite beforeEach",
+        "outer beforeEach",
+        "inner 2 beforeEach",
+        "inner 2 it",
+        "inner 2 afterEach",
+        "outer afterEach",
+        "topSuite afterEach"
+      ];
+      expect(actions).toEqual(expected);
+      done();
+    }
+
+    env.addReporter({jasmineDone: assertions});
+
     env.execute();
-
-
-    var expected = [
-      "topSuite beforeEach",
-      "outer beforeEach",
-      "outer it 1",
-      "outer afterEach",
-      "topSuite afterEach",
-
-      "topSuite beforeEach",
-      "outer beforeEach",
-      "inner 1 beforeEach",
-      "inner 1 it",
-      "inner 1 afterEach",
-      "outer afterEach",
-      "topSuite afterEach",
-
-      "topSuite beforeEach",
-      "outer beforeEach",
-      "outer it 2",
-      "outer afterEach",
-      "topSuite afterEach",
-
-      "topSuite beforeEach",
-      "outer beforeEach",
-      "inner 2 beforeEach",
-      "inner 2 it",
-      "inner 2 afterEach",
-      "outer afterEach",
-      "topSuite afterEach"
-    ];
-    expect(actions).toEqual(expected);
   });
 
-  it("should run multiple befores and afters in the order they are declared", function() {
+  it("should run multiple befores and afters in the order they are declared", function(done) {
     var actions = [];
 
     env.beforeEach(function () {
@@ -204,23 +209,28 @@ describe("jasmine spec running", function () {
       });
     });
 
-    env.execute();
+    var assertions = function() {
+      var expected = [
+        "runner beforeEach1",
+        "runner beforeEach2",
+        "beforeEach1",
+        "beforeEach2",
+        "outer it 1",
+        "afterEach2",
+        "afterEach1",
+        "runner afterEach2",
+        "runner afterEach1"
+      ];
+      expect(actions).toEqual(expected);
+      done();
+    };
 
-    var expected = [
-      "runner beforeEach1",
-      "runner beforeEach2",
-      "beforeEach1",
-      "beforeEach2",
-      "outer it 1",
-      "afterEach2",
-      "afterEach1",
-      "runner afterEach2",
-      "runner afterEach1"
-    ];
-    expect(actions).toEqual(expected);
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
   });
 
-  it("shouldn't run disabled suites", function() {
+  it("shouldn't run disabled suites", function(done) {
     var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
     suite = env.describe('A Suite', function() {
       env.xdescribe('with a disabled suite', function(){
@@ -228,20 +238,22 @@ describe("jasmine spec running", function () {
       });
     });
 
-    suite.execute();
-
-    expect(specInADisabledSuite).not.toHaveBeenCalled();
+    suite.execute(function() {
+      expect(specInADisabledSuite).not.toHaveBeenCalled();
+      done();
+    });
   });
 
-  it("should set all pending specs to pending when a suite is run", function() {
+  it("should set all pending specs to pending when a suite is run", function(done) {
     var pendingSpec,
       suite = env.describe('default current suite', function() {
         pendingSpec = env.it("I am a pending spec");
       });
 
-    suite.execute();
-
-    expect(pendingSpec.status()).toBe("pending");
+    suite.execute(function() {
+      expect(pendingSpec.status()).toBe("pending");
+      done();
+    });
   });
 
 
