@@ -191,9 +191,7 @@ describe("Env integration", function() {
 
   // TODO: something is wrong with this spec
   it("should report as expected", function(done) {
-    var fakeNow = jasmine.createSpy('fake Date.now'),
-        env = new j$.Env({now: fakeNow}),
-        reporter = jasmine.createSpyObj('fakeReporter', [
+    var reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineStarted",
           "jasmineDone",
           "suiteStarted",
@@ -208,15 +206,10 @@ describe("Env integration", function() {
       });
       var suiteResult = reporter.suiteStarted.calls[0].args[0];
       expect(suiteResult.description).toEqual("A Suite");
-      expect(reporter.jasmineDone).toHaveBeenCalledWith({
-        executionTime: 1000
-      });
+      expect(reporter.jasmineDone).toHaveBeenCalled();
 
       done();
     });
-
-    fakeNow.andReturn(500);
-    reporter.suiteDone.andCallFake(function() { fakeNow.andReturn(1500); });
 
     env.addReporter(reporter);
 
