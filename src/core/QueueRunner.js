@@ -20,9 +20,8 @@ getJasmineRequireObj().QueueRunner = function() {
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
       var fn = fns[iterativeIndex];
       if (fn.length > 0) {
-        attempt(function() { fn.call(self, function() {
-            self.clearStack(function() { self.run(fns, iterativeIndex + 1); });
-          });
+        attempt(function() {
+          fn.call(self, function() { self.run(fns, iterativeIndex + 1); });
         });
         return;
       } else {
@@ -30,7 +29,12 @@ getJasmineRequireObj().QueueRunner = function() {
       }
     }
 
-    if (iterativeIndex >= length) {
+    var runnerDone = iterativeIndex >= length,
+        hasBeenAsyncSpec = recursiveIndex > 0;
+
+    if (runnerDone && hasBeenAsyncSpec) {
+      this.clearStack(this.onComplete);
+    } else if(runnerDone) {
       this.onComplete();
     }
 

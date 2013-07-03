@@ -115,21 +115,19 @@ describe("QueueRunner", function() {
     expect(completeCallback).toHaveBeenCalled();
   });
 
-  it("calls a provided stack clearing function when done with async specs", function() {
-    var fn = function(done) { done() },
-      completeCallback = jasmine.createSpy('completeCallback'),
-      clearStack = jasmine.createSpy('clearStack'),
-      queueRunner = new j$.QueueRunner({
-        fns: [fn],
-        clearStack: clearStack,
-        onComplete: completeCallback
-      });
-
-    clearStack.andCallFake(function(fn) { fn(); });
+  it("with an async spec, calls a provided stack clearing function when done", function() {
+    var asyncFn = function(done) { done() },
+        afterFn = jasmine.createSpy('afterFn'),
+        completeCallback = jasmine.createSpy('completeCallback'),
+        clearStack = jasmine.createSpy('clearStack'),
+        queueRunner = new j$.QueueRunner({
+          fns: [asyncFn, afterFn],
+          clearStack: clearStack,
+          onComplete: completeCallback
+        });
 
     queueRunner.execute();
-
-    expect(clearStack).toHaveBeenCalled();
-    expect(completeCallback).toHaveBeenCalled();
+    expect(afterFn).toHaveBeenCalled();
+    expect(clearStack).toHaveBeenCalledWith(completeCallback);
   });
 });
