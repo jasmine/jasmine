@@ -26,7 +26,7 @@ xdescribe('JsApiReporter (integration specs)', function() {
 
       });
 
-      reporter = new j$.JsApiReporter(jasmine);
+      reporter = new j$.JsApiReporter({});
       env.addReporter(reporter);
 
       env.execute();
@@ -83,7 +83,7 @@ xdescribe('JsApiReporter (integration specs)', function() {
 describe("JsApiReporter", function() {
 
   it("knows when a full environment is started", function() {
-    var reporter = new j$.JsApiReporter();
+    var reporter = new j$.JsApiReporter({});
 
     expect(reporter.started).toBe(false);
     expect(reporter.finished).toBe(false);
@@ -95,7 +95,7 @@ describe("JsApiReporter", function() {
   });
 
   it("knows when a full environment is done", function() {
-    var reporter = new j$.JsApiReporter();
+    var reporter = new j$.JsApiReporter({});
 
     expect(reporter.started).toBe(false);
     expect(reporter.finished).toBe(false);
@@ -107,13 +107,13 @@ describe("JsApiReporter", function() {
   });
 
   it("defaults to 'loaded' status", function() {
-    var reporter = new j$.JsApiReporter();
+    var reporter = new j$.JsApiReporter({});
 
     expect(reporter.status()).toEqual('loaded');
   });
 
   it("reports 'started' when Jasmine has started", function() {
-    var reporter = new j$.JsApiReporter();
+    var reporter = new j$.JsApiReporter({});
 
     reporter.jasmineStarted();
 
@@ -121,7 +121,7 @@ describe("JsApiReporter", function() {
   });
 
   it("reports 'done' when Jasmine is done", function() {
-    var reporter = new j$.JsApiReporter();
+    var reporter = new j$.JsApiReporter({});
 
     reporter.jasmineDone({});
 
@@ -129,7 +129,7 @@ describe("JsApiReporter", function() {
   });
 
   it("tracks a suite", function() {
-    var reporter = new j$.JsApiReporter();
+    var reporter = new j$.JsApiReporter({});
 
     reporter.suiteStarted({
       id: 123,
@@ -152,7 +152,7 @@ describe("JsApiReporter", function() {
   describe("#specResults", function() {
     var reporter, specResult1, specResult2;
     beforeEach(function() {
-      reporter = new j$.JsApiReporter();
+      reporter = new j$.JsApiReporter({});
       specResult1 = {
         id: 1,
         description: "A spec"
@@ -180,18 +180,34 @@ describe("JsApiReporter", function() {
   });
 
   describe("#executionTime", function() {
-    var reporter;
-    beforeEach(function() {
-      reporter = new j$.JsApiReporter();
+    it("should start the timer when jasmine starts", function() {
+      var timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+          reporter = new j$.JsApiReporter({
+            timer: timerSpy
+          });
+
+      reporter.jasmineStarted();
+      expect(timerSpy.start).toHaveBeenCalled();
     });
 
     it("should return the time it took the specs to run, in ms", function() {
-      reporter.jasmineDone({executionTime: 1000});
+      var timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+          reporter = new j$.JsApiReporter({
+            timer: timerSpy
+          });
+
+      timerSpy.elapsed.andReturn(1000);
+      reporter.jasmineDone();
       expect(reporter.executionTime()).toEqual(1000);
     });
 
     describe("when the specs haven't finished being run", function() {
       it("should return undefined", function() {
+        var timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+            reporter = new j$.JsApiReporter({
+              timer: timerSpy
+            });
+
         expect(reporter.executionTime()).toBeUndefined();
       });
     });

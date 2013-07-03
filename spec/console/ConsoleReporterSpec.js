@@ -28,6 +28,18 @@ describe("ConsoleReporter", function() {
     expect(out.getOutput()).toEqual("Started\n");
   });
 
+  it("starts the provided timer when jasmine starts", function() {
+    var timerSpy = jasmine.createSpyObj('timer', ['start']),
+        reporter = new j$.ConsoleReporter({
+          print: out.print,
+          timer: timerSpy
+        });
+
+    reporter.jasmineStarted();
+
+    expect(timerSpy.start).toHaveBeenCalled();
+  });
+
   it("reports a passing spec as a dot", function() {
     var reporter = new j$.ConsoleReporter({
       print: out.print
@@ -69,15 +81,19 @@ describe("ConsoleReporter", function() {
   });
 
   it("reports a summary when done (singluar spec and time)", function() {
-    var reporter = new j$.ConsoleReporter({
-        print: out.print,
-      });
+    var timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+        reporter = new j$.ConsoleReporter({
+          print: out.print,
+          timer: timerSpy
+        });
 
     reporter.jasmineStarted();
     reporter.specDone({status: "passed"});
 
+    timerSpy.elapsed.andReturn(1000);
+
     out.clear();
-    reporter.jasmineDone({executionTime: 1000});
+    reporter.jasmineDone();
 
     expect(out.getOutput()).toMatch(/1 spec, 0 failures/);
     expect(out.getOutput()).not.toMatch(/0 pending specs/);
@@ -85,9 +101,11 @@ describe("ConsoleReporter", function() {
   });
 
   it("reports a summary when done (pluralized specs and seconds)", function() {
-    var reporter = new j$.ConsoleReporter({
-        print: out.print,
-      });
+    var timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+        reporter = new j$.ConsoleReporter({
+          print: out.print,
+          timer: timerSpy
+        });
 
     reporter.jasmineStarted();
     reporter.specDone({status: "passed"});
@@ -109,7 +127,9 @@ describe("ConsoleReporter", function() {
 
     out.clear();
 
-    reporter.jasmineDone({executionTime: 100});
+    timerSpy.elapsed.andReturn(100);
+
+    reporter.jasmineDone();
 
     expect(out.getOutput()).toMatch(/3 specs, 1 failure, 1 pending spec/);
     expect(out.getOutput()).toMatch("Finished in 0.1 seconds\n");

@@ -1,10 +1,17 @@
 jasmineRequire.HtmlReporter = function() {
+
+  var noopTimer = {
+    start: function(){},
+    elapsed: function(){ return 0; }
+  };
+
   function HtmlReporter(options) {
     var env = options.env || {},
       getContainer = options.getContainer,
       createElement = options.createElement,
       createTextNode = options.createTextNode,
       onRaiseExceptionsClick = options.onRaiseExceptionsClick,
+      timer = options.timer || noopTimer,
       results = [],
       specsExecuted = 0,
       failureCount = 0,
@@ -32,6 +39,7 @@ jasmineRequire.HtmlReporter = function() {
     var totalSpecsDefined;
     this.jasmineStarted = function(options) {
       totalSpecsDefined = options.totalSpecsDefined || 0;
+      timer.start();
     };
 
     var summary = createDom("div", {className: "summary"});
@@ -92,9 +100,9 @@ jasmineRequire.HtmlReporter = function() {
       }
     };
 
-    this.jasmineDone = function(options) {
+    this.jasmineDone = function() {
       var banner = find(".banner");
-      banner.appendChild(createDom("span", {className: "duration"}, "finished in " + options.executionTime / 1000 + "s"));
+      banner.appendChild(createDom("span", {className: "duration"}, "finished in " + timer.elapsed() / 1000 + "s"));
 
       var alert = find(".alert");
 

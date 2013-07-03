@@ -34,10 +34,17 @@ getJasmineRequireObj().console = function(jRequire, j$) {
 };
 
 getJasmineRequireObj().ConsoleReporter = function() {
+
+  var noopTimer = {
+    start: function(){},
+    elapsed: function(){ return 0; }
+  };
+
   function ConsoleReporter(options) {
     var print = options.print,
       showColors = options.showColors || false,
       onComplete = options.onComplete || function() {},
+      timer = options.timer || noopTimer,
       specCount,
       failureCount,
       failedSpecs = [],
@@ -55,9 +62,10 @@ getJasmineRequireObj().ConsoleReporter = function() {
       pendingCount = 0;
       print("Started");
       printNewline();
+      timer.start();
     };
 
-    this.jasmineDone = function(options) {
+    this.jasmineDone = function() {
       printNewline();
       for (var i = 0; i < failedSpecs.length; i++) {
         specFailureDetails(failedSpecs[i]);
@@ -74,7 +82,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
       print(specCounts);
 
       printNewline();
-      var seconds = options.executionTime / 1000;
+      var seconds = timer.elapsed() / 1000;
       print("Finished in " + seconds + " " + plural("second", seconds));
 
       printNewline();

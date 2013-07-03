@@ -28,6 +28,7 @@ getJasmineRequireObj().core = function(jRequire) {
   j$.Spec = jRequire.Spec();
   j$.Spy = jRequire.Spy(j$);
   j$.Suite = jRequire.Suite();
+  j$.Timer = jRequire.Timer();
   j$.version = jRequire.version();
 
   j$.matchers = jRequire.requireMatchers(jRequire, j$);

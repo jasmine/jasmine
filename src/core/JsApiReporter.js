@@ -1,21 +1,28 @@
 getJasmineRequireObj().JsApiReporter = function() {
-  function JsApiReporter(jasmine) {  // TODO: this doesn't appear to be used
-    this.jasmine = jasmine || {};
+
+  var noopTimer = {
+    start: function(){},
+    elapsed: function(){ return 0; }
+  };
+
+  function JsApiReporter(options) {
+    var timer = options.timer || noopTimer,
+        status = "loaded";
+
     this.started = false;
     this.finished = false;
-
-    var status = 'loaded';
 
     this.jasmineStarted = function() {
       this.started = true;
       status = 'started';
+      timer.start();
     };
 
     var executionTime;
 
-    this.jasmineDone = function(options) {
+    this.jasmineDone = function() {
       this.finished = true;
-      executionTime = options.executionTime;
+      executionTime = timer.elapsed();
       status = 'done';
     };
 

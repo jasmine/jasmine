@@ -30,6 +30,20 @@ describe("New HtmlReporter", function() {
     expect(version.innerHTML).toEqual(jasmine.version);
   });
 
+  it("starts the timer when jasmine begins", function() {
+    var env = new jasmine.Env(),
+        startTimerSpy = jasmine.createSpy("start-timer-spy"),
+        reporter = new jasmine.HtmlReporter({
+          env: env,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          timer: { start: startTimerSpy }
+        });
+
+    reporter.jasmineStarted({});
+
+    expect(startTimerSpy).toHaveBeenCalled();
+  });
+
   describe("when a spec is done", function() {
     it("reports the status symbol of a disabled spec", function() {
       var env = new jasmine.Env(),
@@ -119,18 +133,22 @@ describe("New HtmlReporter", function() {
     it("reports the run time", function() {
       var env = new jasmine.Env(),
         container = document.createElement("div"),
+        timer = jasmine.createSpyObj('timer', ['start', 'elapsed']),
         getContainer = function() { return container; },
         reporter = new jasmine.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); },
+          timer: timer
         });
 
       reporter.initialize();
 
       reporter.jasmineStarted({});
-      reporter.jasmineDone({executionTime: 100});
+
+      timer.elapsed.andReturn(100);
+      reporter.jasmineDone();
 
       var duration = container.querySelector(".banner .duration");
       expect(duration.innerHTML).toMatch(/finished in 0.1s/);

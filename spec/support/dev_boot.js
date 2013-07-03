@@ -53,7 +53,9 @@
     setInterval: env.clock.setInterval,
     clearInterval: env.clock.clearInterval,
 
-    jsApiReporter: new jasmine.JsApiReporter(jasmine)
+    jsApiReporter: new jasmine.JsApiReporter({
+      timer: new jasmine.Timer()
+    })
   };
 
   if (typeof window == "undefined" && typeof exports == "object") {
@@ -76,7 +78,8 @@
     onRaiseExceptionsClick: function() { queryString.setParam("catch", !env.catchingExceptions()); },
     getContainer: function() { return document.body; },
     createElement: function() { return document.createElement.apply(document, arguments); },
-    createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+    createTextNode: function() { return document.createTextNode.apply(document, arguments); },
+    timer: new jasmine.Timer()
   });
 
   env.addReporter(jasmineInterface.jsApiReporter);

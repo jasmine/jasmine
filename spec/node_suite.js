@@ -55,7 +55,9 @@ var jasmineInterface = {
   setInterval: env.clock.setInterval,
   clearInterval: env.clock.clearInterval,
 
-  jsApiReporter: new jasmine.JsApiReporter(jasmine)
+  jsApiReporter: new jasmine.JsApiReporter({
+    timer: new jasmine.Timer()
+  })
 };
 
 extend(global, jasmineInterface);
@@ -78,7 +80,8 @@ function executeSpecs(specs, done, isVerbose, showColors) {
   var consoleReporter = new jasmine.ConsoleReporter({
     print: util.print,
     onComplete: done,
-    showColors: showColors
+    showColors: showColors,
+    timer: new jasmine.Timer()
   });
 
   env.addReporter(consoleReporter);
