@@ -8,7 +8,7 @@ describe('Exceptions:', function() {
 
   describe('with break on exception', function() {
     it('should not catch the exception', function() {
-      env.catchExceptions(false);
+      env.raiseExceptions(true);
       var suite = env.describe('suite for break on exceptions', function() {
         env.it('should break when an exception is thrown', function() {
           throw new Error('I should hit a breakpoint!');

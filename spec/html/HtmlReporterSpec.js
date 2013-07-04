@@ -267,7 +267,7 @@ describe("New HtmlReporter", function() {
           });
 
         reporter.initialize();
-        env.catchExceptions(false);
+        env.raiseExceptions(true);
         reporter.jasmineDone({});
 
         var raisingExceptionsUI = container.querySelector(".raise");
@@ -277,14 +277,14 @@ describe("New HtmlReporter", function() {
       it("should affect the query param for catching exceptions", function() {
         var env = new j$.Env(),
           container = document.createElement("div"),
-          exceptionsClickHandler = j$.createSpy("raise exceptions checked"),
+          clickHandler = j$.createSpy("raise exceptions checked"),
           getContainer = function() {
             return container;
           },
           reporter = new j$.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            onRaiseExceptionsClick: exceptionsClickHandler,
+            onCheckboxClick: clickHandler,
             createElement: function() {
               return document.createElement.apply(document, arguments);
             },
@@ -298,7 +298,7 @@ describe("New HtmlReporter", function() {
 
         var input = container.querySelector(".raise");
         input.click();
-        expect(exceptionsClickHandler).toHaveBeenCalled();
+        expect(clickHandler).toHaveBeenCalled();
       });
     });
 

@@ -66,14 +66,12 @@
     getWindowLocation: function() { return window.location; }
   });
 
-  // TODO: move all of catching to raise so we don't break our brains
-  var catchingExceptions = queryString.getParam("catch");
-  env.catchExceptions(typeof catchingExceptions === "undefined" ? true : catchingExceptions);
+  env.raiseExceptions(queryString.getParam("raise"));
 
   var htmlReporter = new jasmine.HtmlReporter({
     env: env,
-    queryString: queryString,
-    onRaiseExceptionsClick: function() { queryString.setParam("catch", !env.catchingExceptions()); },
+    spec: queryString.getParam("spec") || "",
+    onCheckboxClick: function(event) { event.target.form.submit(); },
     getContainer: function() { return document.body; },
     createElement: function() { return document.createElement.apply(document, arguments); },
     createTextNode: function() { return document.createTextNode.apply(document, arguments); }

@@ -4,7 +4,8 @@ jasmineRequire.HtmlReporter = function() {
       getContainer = options.getContainer,
       createElement = options.createElement,
       createTextNode = options.createTextNode,
-      onRaiseExceptionsClick = options.onRaiseExceptionsClick,
+      onCheckboxClick = options.onCheckboxClick,
+      spec = options.spec,
       results = [],
       specsExecuted = 0,
       failureCount = 0,
@@ -96,20 +97,22 @@ jasmineRequire.HtmlReporter = function() {
       var banner = find(".banner");
       banner.appendChild(createDom("span", {className: "duration"}, "finished in " + options.executionTime / 1000 + "s"));
 
-      var alert = find(".alert");
-
-      alert.appendChild(createDom("span", { className: "exceptions" },
+      var form = createDom("form", { className: "options", action: ".", method: "get"},
         createDom("label", { className: "label", 'for': "raise-exceptions" }, "raise exceptions"),
-        createDom("input", {
-          className: "raise",
-          id: "raise-exceptions",
-          type: "checkbox"
-        })
-      ));
+        createDom("input", { className: "raise",    id: "raise-exceptions", name: "raise", value: "true", type: "checkbox" })
+      );
+
+      if (spec) {
+        form.appendChild(createDom("input", { name: "spec", type: "hidden", value: spec }));
+      }
+
+      var alert = find(".alert");
+      alert.appendChild(form);
+
       var checkbox = find("input");
 
-      checkbox.checked = !env.catchingExceptions();
-      checkbox.onclick = onRaiseExceptionsClick;
+      checkbox.checked = env.raisingExceptions();
+      checkbox.onclick = onCheckboxClick;
 
       if (specsExecuted < totalSpecsDefined) {
         var skippedMessage = "Ran " + specsExecuted + " of " + totalSpecsDefined + " specs - run all";
