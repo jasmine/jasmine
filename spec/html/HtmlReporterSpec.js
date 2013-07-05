@@ -225,23 +225,28 @@ describe("New HtmlReporter", function() {
     });
 
     describe("UI for raising/catching exceptions", function() {
-      it("should be unchecked if the env is catching", function() {
-        var env = new j$.Env(),
-          container = document.createElement("div"),
-          getContainer = function() {
-            return container;
+      var env, container, clickHandler, getContainer, reporter;
+      beforeEach(function() {
+        env = new j$.Env();
+        container = document.createElement("div");
+        clickHandler = j$.createSpy("raise exceptions checked"),
+        getContainer = function() {
+          return container;
+        };
+        reporter = new j$.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          reload: clickHandler,
+          createElement: function() {
+            return document.createElement.apply(document, arguments);
           },
-          reporter = new j$.HtmlReporter({
-            env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
-          });
+          createTextNode: function() {
+            return document.createTextNode.apply(document, arguments);
+          }
+        });
+      });
 
+      it("should be unchecked if the env is catching", function() {
         reporter.initialize();
         reporter.jasmineDone({});
 
@@ -250,22 +255,6 @@ describe("New HtmlReporter", function() {
       });
 
       it("should be checked if the env is not catching", function() {
-        var env = new j$.Env(),
-          container = document.createElement("div"),
-          getContainer = function() {
-            return container;
-          },
-          reporter = new j$.HtmlReporter({
-            env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
-          });
-
         reporter.initialize();
         env.raiseExceptions(true);
         reporter.jasmineDone({});
@@ -275,30 +264,93 @@ describe("New HtmlReporter", function() {
       });
 
       it("should affect the query param for catching exceptions", function() {
-        var env = new j$.Env(),
-          container = document.createElement("div"),
-          clickHandler = j$.createSpy("raise exceptions checked"),
-          getContainer = function() {
-            return container;
-          },
-          reporter = new j$.HtmlReporter({
-            env: env,
-            getContainer: getContainer,
-            onCheckboxClick: clickHandler,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
-          });
-
         reporter.initialize();
         reporter.jasmineDone({});
 
         var input = container.querySelector(".raise");
         input.click();
         expect(clickHandler).toHaveBeenCalled();
+      });
+    });
+
+    describe("UI for auto refresh", function() {
+      var env, container, clickHandler, getContainer, reporter;
+      beforeEach(function() {
+        env = new j$.Env();
+        container = document.createElement("div");
+        clickHandler = j$.createSpy("refresh called");
+        getContainer = function() {
+          return container;
+        };
+        reporter = new j$.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          reload: clickHandler,
+          createElement: function() {
+            return document.createElement.apply(document, arguments);
+          },
+          createTextNode: function() {
+            return document.createTextNode.apply(document, arguments);
+          }
+        });
+      });
+
+      it("should be unchecked if the env is one-pass", function() {
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var raisingExceptionsUI = container.querySelector(".refresh");
+        expect(raisingExceptionsUI.checked).toBe(false);
+      });
+
+      it("should be checked if the env is refreshing", function() {
+        reporter.initialize();
+        env.autoRefresh(true);
+        reporter.jasmineDone({});
+
+        var raisingExceptionsUI = container.querySelector(".refresh");
+        expect(raisingExceptionsUI.checked).toBe(true);
+      });
+
+      it("should not trigger a reload if the env is one-pass", function() {
+        clock.install();
+
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        clock.tick(10000);
+        expect(clickHandler).not.toHaveBeenCalled();
+      });
+
+      it("should trigger a reload if the env is refreshing", function() {
+        clock.install();
+
+        reporter.initialize();
+        env.autoRefresh(true);
+        reporter.jasmineDone({});
+
+        clock.tick(10000);
+        expect(clickHandler).toHaveBeenCalled();
+      });
+
+      it("should trigger a reload when toggled on", function() {
+        reporter.initialize();
+        env.autoRefresh(false);
+        reporter.jasmineDone({});
+
+        var input = container.querySelector(".refresh");
+        input.click();
+        expect(clickHandler).toHaveBeenCalled();
+      });
+
+      it("should not trigger a reload when toggled off", function() {
+        reporter.initialize();
+        env.autoRefresh(true);
+        reporter.jasmineDone({});
+
+        var input = container.querySelector(".refresh");
+        input.click();
+        expect(clickHandler).not.toHaveBeenCalled();
       });
     });
 
