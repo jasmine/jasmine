@@ -251,7 +251,7 @@ describe("New HtmlReporter", function() {
         getContainer = function() {
           return container;
         };
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmine.HtmlReporter({
           env: env,
           getContainer: getContainer,
           reload: clickHandler,
@@ -294,13 +294,13 @@ describe("New HtmlReporter", function() {
     describe("UI for auto refresh", function() {
       var env, container, clickHandler, getContainer, reporter;
       beforeEach(function() {
-        env = new j$.Env();
+        env = new jasmine.Env();
         container = document.createElement("div");
-        clickHandler = j$.createSpy("refresh called");
+        clickHandler = jasmine.createSpy("refresh called");
         getContainer = function() {
           return container;
         };
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmine.HtmlReporter({
           env: env,
           getContainer: getContainer,
           reload: clickHandler,
