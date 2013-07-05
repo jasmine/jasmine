@@ -3,3 +3,4 @@ include lib/jasmine-core/jasmine*.js
 include lib/jasmine-core/jasmine*.css
 include lib/jasmine-core/json2.js
 include lib/jasmine-core/boot/*.js
+include images/jasmine_favicon.png
