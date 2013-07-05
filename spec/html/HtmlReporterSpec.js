@@ -285,7 +285,7 @@ describe("New HtmlReporter", function() {
           });
 
         reporter.initialize();
-        env.catchExceptions(false);
+        env.raiseExceptions(true);
         reporter.jasmineDone({});
 
         var raisingExceptionsUI = container.querySelector(".raise");
@@ -302,7 +302,7 @@ describe("New HtmlReporter", function() {
           reporter = new jasmine.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            onRaiseExceptionsClick: exceptionsClickHandler,
+            onCheckboxClick: exceptionsClickHandler,
             createElement: function() {
               return document.createElement.apply(document, arguments);
             },

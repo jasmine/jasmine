@@ -42,7 +42,7 @@ body { background-color: #eeeeee; padding: 0; margin: 5px; overflow-y: scroll; }
 /* line 135, _HTMLReporter.scss */
 .html-reporter .symbol-summary li.pending:before { color: #ba9d37; content: "*"; }
 /* line 143, _HTMLReporter.scss */
-.html-reporter .exceptions { color: #fff; float: right; margin-top: 5px; margin-right: 5px; }
+.html-reporter .options { color: #fff; float: right; margin-top: 5px; margin-right: 5px; }
 /* line 152, _HTMLReporter.scss */
 .html-reporter .bar { line-height: 28px; font-size: 14px; display: block; color: #eee; }
 /* line 159, _HTMLReporter.scss */

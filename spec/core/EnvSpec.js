@@ -30,13 +30,13 @@ describe("Env", function() {
 
   describe("#catchException", function() {
     it("returns true if the exception is a pending spec exception", function() {
-      env.catchExceptions(false);
+      env.raiseExceptions(true);
 
       expect(env.catchException(new Error(j$.Spec.pendingSpecExceptionMessage))).toBe(true);
     });
 
     it("returns false if the exception is not a pending spec exception and not catching exceptions", function() {
-      env.catchExceptions(false);
+      env.raiseExceptions(true);
 
       expect(env.catchException(new Error("external error"))).toBe(false);
       expect(env.catchException(new Error(j$.Spec.pendingSpecExceptionMessage))).toBe(true);
@@ -191,7 +191,8 @@ describe("Env integration", function() {
 
   // TODO: something is wrong with this spec
   it("should report as expected", function(done) {
-    var reporter = jasmine.createSpyObj('fakeReporter', [
+    var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineStarted",
           "jasmineDone",
           "suiteStarted",
