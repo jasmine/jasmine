@@ -5,6 +5,7 @@ getJasmineRequireObj().Env = function(j$) {
     var global = options.global || j$.getGlobal();
 
     var raiseExceptions = false;
+    var refresh = false;
 
     var realSetTimeout = j$.getGlobal().setTimeout;
     this.clock = new j$.Clock(global, new j$.DelayedFunctionScheduler());
@@ -90,6 +91,15 @@ getJasmineRequireObj().Env = function(j$) {
 
         return buildExpectationResult(attrs);
       };
+
+    this.autoRefresh = function(value) {
+      refresh = !!value;
+      return refresh;
+    };
+
+    this.refreshing = function() {
+      return refresh;
+    };
 
     this.raiseExceptions = function(value) {
       raiseExceptions = !!value;
