@@ -73,6 +73,9 @@ def test_css_files():
 
     assert files == Core.css_files()
 
+def test_favicon_path():
+    assert os.path.isfile(Core.favicon_path())
+
 
 def _spec_files(spec_type='core'):
     files_from_shell = subprocess.check_output(['find spec/{} -maxdepth 1 -type f'.format(spec_type)], shell=True)

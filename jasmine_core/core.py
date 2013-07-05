@@ -55,3 +55,7 @@ class Core(object):
     @classmethod
     def _uniq(cls, items):
         return list(OrderedDict.fromkeys(items))
+
+    @classmethod
+    def favicon_path(cls):
+        return os.path.normpath(os.path.join(os.path.dirname(__file__), '../images/jasmine_favicon.png'))
