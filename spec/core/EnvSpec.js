@@ -191,7 +191,8 @@ describe("Env integration", function() {
 
   // TODO: something is wrong with this spec
   it("should report as expected", function(done) {
-    var reporter = jasmine.createSpyObj('fakeReporter', [
+    var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineStarted",
           "jasmineDone",
           "suiteStarted",
