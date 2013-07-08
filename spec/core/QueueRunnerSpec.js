@@ -102,6 +102,18 @@ describe("QueueRunner", function() {
     expect(function() { queueRunner.execute(); }).toThrow();
   });
 
+  it("continues running the functions even after an exception is thrown in an async spec", function() {
+    var fn = function(done) { throw new Error("error"); },
+        nextFn = jasmine.createSpy("nextFunction");
+
+    queueRunner = new j$.QueueRunner({
+      fns: [fn, nextFn]
+    });
+
+    queueRunner.execute();
+    expect(nextFn).toHaveBeenCalled();
+  });
+
   it("calls a provided complete callback when done", function() {
     var fn = jasmine.createSpy('fn'),
       completeCallback = jasmine.createSpy('completeCallback'),
