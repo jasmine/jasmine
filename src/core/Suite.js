@@ -74,7 +74,7 @@ getJasmineRequireObj().Suite = function() {
       children = this.children_;
 
     for (var i = 0; i < children.length; i++) {
-      allFns.push(wrapChild(children[i]));
+      allFns.push(wrapChildAsAsync(children[i]));
     }
 
     this.onStart(this);
@@ -92,8 +92,8 @@ getJasmineRequireObj().Suite = function() {
       }
     }
 
-    function wrapChild(child) {
-      return function() { child.execute(); };
+    function wrapChildAsAsync(child) {
+      return function(done) { child.execute(done); };
     }
   };
   

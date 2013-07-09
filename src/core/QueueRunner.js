@@ -32,13 +32,10 @@ getJasmineRequireObj().QueueRunner = function() {
       }
     }
 
-    var runnerDone = iterativeIndex >= length,
-        hasBeenAsyncSpec = recursiveIndex > 0;
+    var runnerDone = iterativeIndex >= length;
 
-    if (runnerDone && hasBeenAsyncSpec) {
+    if (runnerDone) {
       this.clearStack(this.onComplete);
-    } else if(runnerDone) {
-      this.onComplete();
     }
 
     function attempt(fn) {

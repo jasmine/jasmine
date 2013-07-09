@@ -127,7 +127,7 @@ describe("QueueRunner", function() {
     expect(completeCallback).toHaveBeenCalled();
   });
 
-  it("with an async spec, calls a provided stack clearing function when done", function() {
+  it("calls a provided stack clearing function when done", function() {
     var asyncFn = function(done) { done() },
         afterFn = jasmine.createSpy('afterFn'),
         completeCallback = jasmine.createSpy('completeCallback'),
