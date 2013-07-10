@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
     name = "jasmine",
-    version = "2.0",
+    version = "1.3.1",
 
     packages = find_packages(),
 
