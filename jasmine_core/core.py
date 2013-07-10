@@ -12,7 +12,7 @@ class Core(object):
 
     @classmethod
     def boot_files(cls):
-        return ["boot.js"]
+        return []
 
     @classmethod
     def boot_dir(cls):
