@@ -189,9 +189,34 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it("should run async specs in order, waiting for them to complete", function(done) {
+    var env = new j$.Env(), mutatedVar;
+
+    env.describe("tests", function() {
+      env.beforeEach(function() {
+        mutatedVar = 2;
+      });
+
+      env.it("async spec", function(underTestCallback) {
+        setTimeout(function() {
+          expect(mutatedVar).toEqual(2);
+          underTestCallback();
+          done();
+        }, 0);
+      });
+
+      env.it("after async spec", function() {
+        mutatedVar = 3;
+      });
+    });
+
+    env.execute();
+  });
+
   // TODO: something is wrong with this spec
   it("should report as expected", function(done) {
-    var reporter = jasmine.createSpyObj('fakeReporter', [
+    var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineStarted",
           "jasmineDone",
           "suiteStarted",

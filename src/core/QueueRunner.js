@@ -20,27 +20,28 @@ getJasmineRequireObj().QueueRunner = function() {
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
       var fn = fns[iterativeIndex];
       if (fn.length > 0) {
-        attempt(function() {
+        var attemptSuccessful = attempt(function() {
           fn.call(self, function() { self.run(fns, iterativeIndex + 1); });
         });
-        return;
+
+        if(attemptSuccessful) {
+          return;
+        }
       } else {
         attempt(function() { fn.call(self); });
       }
     }
 
-    var runnerDone = iterativeIndex >= length,
-        hasBeenAsyncSpec = recursiveIndex > 0;
+    var runnerDone = iterativeIndex >= length;
 
-    if (runnerDone && hasBeenAsyncSpec) {
+    if (runnerDone) {
       this.clearStack(this.onComplete);
-    } else if(runnerDone) {
-      this.onComplete();
     }
 
     function attempt(fn) {
       try {
         fn();
+        return true;
       } catch (e) {
         self.onException(e);
         if (!self.catchException(e)) {
@@ -48,6 +49,7 @@ getJasmineRequireObj().QueueRunner = function() {
           //use a finally block to close the loop in a nice way..
           throw e;
         }
+        return false;
       }
     }
   };
