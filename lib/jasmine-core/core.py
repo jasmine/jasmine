@@ -29,7 +29,7 @@ class Core(object):
 
     @classmethod
     def path(cls):
-        return os.path.normpath(os.path.join(os.path.dirname(__file__), '../lib/jasmine-core'))
+        return os.path.normpath(os.path.join(os.path.dirname(__file__), ''))
 
     @classmethod
     def js_files(cls):
@@ -58,4 +58,4 @@ class Core(object):
 
     @classmethod
     def favicon_path(cls):
-        return os.path.normpath(os.path.join(os.path.dirname(__file__), '../images/jasmine_favicon.png'))
+        return os.path.normpath(os.path.join(os.path.dirname(__file__), '../../images/jasmine_favicon.png'))
