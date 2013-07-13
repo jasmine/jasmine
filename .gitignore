@@ -18,3 +18,4 @@ node_modules/
 build/
 *.egg-info/
 dist/
+.tox
