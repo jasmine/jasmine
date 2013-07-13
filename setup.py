@@ -34,9 +34,9 @@ setup(
     ],
 
     namespace_packages=['jasmine'],
-    packages=['jasmine', 'jasmine.core'],
-    package_dir={'jasmine': 'lib', 'jasmine.core': 'lib/jasmine-core'},
-    package_data={'jasmine.core': ['*.js', '*.css']},
+    packages=['jasmine', 'jasmine.core', 'jasmine.core.images'],
+    package_dir={'jasmine': 'lib', 'jasmine.core': 'lib/jasmine-core', 'jasmine.core.images': 'images'},
+    package_data={'jasmine.core': ['*.js', '*.css'], 'jasmine.core.images': ['*.png']},
 
     include_package_data=True,
 

@@ -1,61 +1,54 @@
-import os
-import glob2
+import pkg_resources
 
 try:
     from collections import OrderedDict
 except ImportError:
     from ordereddict import OrderedDict
 
-
 class Core(object):
-    SPEC_TYPES = ['core', 'html', 'node']
+    @classmethod
+    def js_package(cls):
+        return __package__
 
     @classmethod
-    def boot_files(cls):
-        return []
+    def css_package(cls):
+        return __package__
 
     @classmethod
-    def boot_dir(cls):
-        return os.path.join(cls.path(), 'boot')
-
-    @classmethod
-    def spec_files(cls, spec_type):
-        if spec_type not in cls.SPEC_TYPES:
-            raise ValueError("Unrecognized spec type")
-
-        spec_path = glob2.iglob(os.path.join(cls.path(), "spec", spec_type, "*.js"))
-
-        return cls._uniq([os.path.join("spec", spec_type, os.path.basename(f)) for f in spec_path])
-
-    @classmethod
-    def path(cls):
-        return os.path.normpath(os.path.join(os.path.dirname(__file__), ''))
+    def image_package(cls):
+        return __package__ + ".images"
 
     @classmethod
     def js_files(cls):
-        js_files = [os.path.basename(f) for f in glob2.iglob(os.path.join(cls.path(), "*.js"))]
+        js_files = list(filter(lambda x: '.js' in x, pkg_resources.resource_listdir(cls.js_package(), '.')))
+        js_files.insert(0, 'jasmine.js')
 
-        js_fileset = [f for f in js_files if f not in cls.boot_files()]
-        js_fileset.insert(0, 'jasmine.js')
-
-        return cls._uniq(js_fileset)
-
-    @classmethod
-    def core_spec_files(cls):
-        return cls.spec_files('core')
-
-    @classmethod
-    def html_spec_files(cls):
-        return cls.spec_files('html')
+        return cls._uniq(js_files)
 
     @classmethod
     def css_files(cls):
-        return cls._uniq([os.path.basename(f) for f in glob2.iglob(os.path.join(cls.path(), '*.css'))])
+        return cls._uniq(filter(lambda x: '.css' in x, pkg_resources.resource_listdir(cls.css_package(), '.')))
 
     @classmethod
-    def _uniq(cls, items):
-        return list(OrderedDict.fromkeys(items))
+    def favicon(cls):
+        return 'jasmine_favicon.png'
 
     @classmethod
-    def favicon_path(cls):
-        return os.path.normpath(os.path.join(os.path.dirname(__file__), '../../images/jasmine_favicon.png'))
+    def _uniq(self, items, idfun=None):
+        # order preserving
+
+        if idfun is None:
+            def idfun(x): return x
+        seen = {}
+        result = []
+        for item in items:
+            marker = idfun(item)
+            # in old Python versions:
+            # if seen.has_key(marker)
+            # but in new ones:
+            if marker in seen:
+                continue
+
+            seen[marker] = 1
+            result.append(item)
+        return result
