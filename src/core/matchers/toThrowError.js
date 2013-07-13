@@ -35,17 +35,19 @@ getJasmineRequireObj().toThrowError = function(j$) {
 
         if (errorType && message) {
           if (thrown.constructor == errorType && util.equals(thrown.message, message)) {
-            return pass("Expected function not to throw Error with message \"" + message + "\".");
+            return pass("Expected function not to throw " + errorType.name + " with message \"" + message + "\".");
           } else {
-            return fail("Expected function to throw Error with message \"" + message + "\".");
+            return fail("Expected function to throw " + errorType.name + " with message \"" + message +
+                        "\", but it threw " + thrown.constructor.name + " with message \"" + thrown.message + "\".");
           }
         }
 
         if (errorType && regexp) {
           if (thrown.constructor == errorType && regexp.test(thrown.message)) {
-            return pass("Expected function not to throw Error with message matching " + regexp + ".");
+            return pass("Expected function not to throw " + errorType.name + " with message matching " + regexp + ".");
           } else {
-            return fail("Expected function to throw Error with message matching " + regexp + ".");
+            return fail("Expected function to throw " + errorType.name + " with message matching " + regexp +
+                        ", but it threw " + thrown.constructor.name + " with message \"" + thrown.message + "\".");
           }
         }
 
@@ -53,23 +55,25 @@ getJasmineRequireObj().toThrowError = function(j$) {
           if (thrown.constructor == errorType) {
             return pass("Expected function not to throw " + errorType.name + ".");
           } else {
-            return fail("Expected function to throw " + errorType.name + ".");
+            return fail("Expected function to throw " + errorType.name + ", but it threw " + thrown.constructor.name + ".");
           }
         }
 
         if (message) {
           if (thrown.message == message) {
-            return pass("Expected function not to throw an execption with message " + j$.pp(message) + ".");
+            return pass("Expected function not to throw an exception with message " + j$.pp(message) + ".");
           } else {
-            return fail("Expected function to throw an execption with message " + j$.pp(message) + ".");
+            return fail("Expected function to throw an exception with message " + j$.pp(message) +
+                        ", but it threw an exception with message " + j$.pp(thrown.message) + ".");
           }
         }
 
         if (regexp) {
           if (regexp.test(thrown.message)) {
-            return pass("Expected function not to throw an execption with a message matching " + j$.pp(regexp) + ".");
+            return pass("Expected function not to throw an exception with a message matching " + j$.pp(regexp) + ".");
           } else {
-            return fail("Expected function to throw an execption with a message matching " + j$.pp(regexp) + ".");
+            return fail("Expected function to throw an exception with a message matching " + j$.pp(regexp) +
+                        ", but it threw an exception with message " + j$.pp(thrown.message) + ".");
           }
         }
 

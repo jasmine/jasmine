@@ -25,7 +25,7 @@ getJasmineRequireObj().toThrow = function(j$) {
 
         if (arguments.length == 1) {
           result.pass = true;
-          result.message = "Expected function not to throw.";
+          result.message = "Expected function not to throw, but it threw " + j$.pp(thrown) + ".";
 
           return result;
         }
@@ -34,7 +34,7 @@ getJasmineRequireObj().toThrow = function(j$) {
           result.pass = true;
           result.message = "Expected function not to throw " + j$.pp(expected) + ".";
         } else {
-          result.message = "Expected function to throw " + j$.pp(expected) + ".";
+          result.message = "Expected function to throw " + j$.pp(expected) + ", but it threw " +  j$.pp(thrown) + ".";
         }
 
         return result;
