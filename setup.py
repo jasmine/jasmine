@@ -33,10 +33,9 @@ setup(
         'Topic :: Software Development :: Testing',
     ],
 
-    namespace_packages=['jasmine'],
-    packages=['jasmine', 'jasmine.core', 'jasmine.core.images'],
-    package_dir={'jasmine': 'lib', 'jasmine.core': 'lib/jasmine-core', 'jasmine.core.images': 'images'},
-    package_data={'jasmine.core': ['*.js', '*.css'], 'jasmine.core.images': ['*.png']},
+    packages=['jasmine_core', 'jasmine_core.images'],
+    package_dir={'jasmine_core': 'lib/jasmine-core', 'jasmine_core.images': 'images'},
+    package_data={'jasmine_core': ['*.js', '*.css'], 'jasmine_core.images': ['*.png']},
 
     include_package_data=True,
 

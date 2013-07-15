@@ -2,7 +2,7 @@ from pytest import raises
 import pytest
 import subprocess
 
-from jasmine.core import Core
+from jasmine_core import Core
 import os
 import pkg_resources
 
@@ -25,4 +25,4 @@ def test_css_files():
 
 
 def test_favicon():
-    assert os.path.isfile(pkg_resources.resource_filename('jasmine.core.images', 'jasmine_favicon.png'))
+    assert os.path.isfile(pkg_resources.resource_filename('jasmine_core.images', 'jasmine_favicon.png'))
