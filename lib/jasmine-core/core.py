@@ -20,14 +20,14 @@ class Core(object):
 
     @classmethod
     def js_files(cls):
-        js_files = list(filter(lambda x: '.js' in x, pkg_resources.resource_listdir(cls.js_package(), '.')))
+        js_files = sorted(list(filter(lambda x: '.js' in x, pkg_resources.resource_listdir(cls.js_package(), '.'))))
         js_files.insert(0, 'jasmine.js')
 
         return cls._uniq(js_files)
 
     @classmethod
     def css_files(cls):
-        return cls._uniq(filter(lambda x: '.css' in x, pkg_resources.resource_listdir(cls.css_package(), '.')))
+        return cls._uniq(sorted(filter(lambda x: '.css' in x, pkg_resources.resource_listdir(cls.css_package(), '.'))))
 
     @classmethod
     def favicon(cls):
