@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages, os
 
 setup(
-    name="jasmine",
+    name="jasmine-core",
     version="1.3.1",
     url="http://pivotal.github.io/jasmine/",
     author="Pivotal Labs",
