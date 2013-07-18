@@ -1,15 +1,28 @@
-# before_script:
+#before_script:
   # - "sh -e /etc/init.d/xvfb start"
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-  - "sh -e travis-chromium-script.sh"
+    #- "sh -e travis-chromium-script.sh"
 script: "DISPLAY=:99.0 bundle exec rake core_spec"
+
+language:
+  - ruby
+  - objective-c
 
 rvm:
   - "1.9.3"
 
 env:
   - JASMINE_BROWSER=firefox
-  - JASMINE_BROWSER=chrome
+  #- JASMINE_BROWSER=chrome
   - JASMINE_BROWSER=phantomjs
+  - JASMINE_BROWSER=safari
+
+matrix:
+  allow_failures:
+    #- env: JASMINE_BROWSER=chrome
+    - env: JASMINE_BROWSER=phantomjs
+  include:
+    - language: objective-c
+      env: JASMINE_BROWSER=safari
