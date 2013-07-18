@@ -90,7 +90,7 @@ describe("ConsoleReporter", function() {
     reporter.jasmineStarted();
     reporter.specDone({status: "passed"});
 
-    timerSpy.elapsed.andReturn(1000);
+    timerSpy.elapsed.and.callReturn(1000);
 
     out.clear();
     reporter.jasmineDone();
@@ -127,7 +127,7 @@ describe("ConsoleReporter", function() {
 
     out.clear();
 
-    timerSpy.elapsed.andReturn(100);
+    timerSpy.elapsed.and.callReturn(100);
 
     reporter.jasmineDone();
 

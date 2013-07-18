@@ -159,7 +159,7 @@ describe("Suite", function() {
 
     parentSuite.execute(parentSuiteDone);
 
-    var parentSuiteFns = fakeQueueRunnerForParent.mostRecentCall.args[0].fns;
+    var parentSuiteFns = fakeQueueRunnerForParent.calls.mostRecent().args[0].fns;
 
     parentSuiteFns[0]();
     expect(fakeSpec1.execute).toHaveBeenCalled();

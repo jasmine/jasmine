@@ -225,11 +225,11 @@ describe("Env integration", function() {
           "specDone"
         ]);
 
-    reporter.jasmineDone.andCallFake(function() {
+    reporter.jasmineDone.and.callFake(function() {
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
         totalSpecsDefined: 3
       });
-      var suiteResult = reporter.suiteStarted.calls[0].args[0];
+      var suiteResult = reporter.suiteStarted.calls.first().args[0];
       expect(suiteResult.description).toEqual("A Suite");
       expect(reporter.jasmineDone).toHaveBeenCalled();
 
@@ -288,9 +288,9 @@ describe("Env integration", function() {
           "specDone"
         ]);
 
-    reporter.jasmineDone.andCallFake(function() {
-      var firstSpecResult = reporter.specDone.argsForCall[0][0],
-          secondSpecResult = reporter.specDone.argsForCall[1][0];
+    reporter.jasmineDone.and.callFake(function() {
+      var firstSpecResult = reporter.specDone.calls.first().args[0],
+          secondSpecResult = reporter.specDone.calls.mostRecent().args[0];
 
       expect(firstSpecResult.status).toEqual("passed");
       expect(secondSpecResult.status).toEqual("failed");
@@ -355,9 +355,9 @@ describe("Env integration", function() {
           "specDone"
         ]);
 
-    reporter.jasmineDone.andCallFake(function() {
-      var firstSpecResult = reporter.specDone.argsForCall[0][0],
-          secondSpecResult = reporter.specDone.argsForCall[1][0];
+    reporter.jasmineDone.and.callFake(function() {
+      var firstSpecResult = reporter.specDone.calls.first().args[0],
+          secondSpecResult = reporter.specDone.calls.mostRecent().args[0];
 
       expect(firstSpecResult.status).toEqual("passed");
       expect(secondSpecResult.status).toEqual("failed");

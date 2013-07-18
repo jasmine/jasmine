@@ -22,7 +22,7 @@ describe("toThrow", function() {
 
   it("passes if it throws but there is no expected", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(true)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(true)
       },
       matcher = j$.matchers.toThrow(util),
       fn = function() {
@@ -50,7 +50,7 @@ describe("toThrow", function() {
 
   it("passes if what is thrown is equivalent to what is expected", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(true)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(true)
       },
       matcher = j$.matchers.toThrow(util),
       fn = function() {
@@ -66,7 +66,7 @@ describe("toThrow", function() {
 
   it("fails if what is thrown is not equivalent to what is expected", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(false)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(false)
       },
       matcher = j$.matchers.toThrow(util),
       fn = function() {
@@ -82,7 +82,7 @@ describe("toThrow", function() {
 
   it("fails if what is thrown is not equivalent to undefined", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(false)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(false)
       },
       matcher = j$.matchers.toThrow(util),
       fn = function() {

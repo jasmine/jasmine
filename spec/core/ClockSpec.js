@@ -31,7 +31,7 @@ describe("Clock", function() {
   it("returns an id for the delayed function", function() {
     var setTimeout = jasmine.createSpy('setTimeout'),
       scheduleId = 123,
-      scheduleFunction = jasmine.createSpy('scheduleFunction').andReturn(scheduleId),
+      scheduleFunction = jasmine.createSpy('scheduleFunction').and.callReturn(scheduleId),
       delayedFunctionScheduler = {scheduleFunction: scheduleFunction},
       global = { setTimeout: setTimeout },
       delayedFn = jasmine.createSpy('delayedFn'),
@@ -100,7 +100,7 @@ describe("Clock", function() {
   it("returns an id for the delayed function", function() {
     var setInterval = jasmine.createSpy('setInterval'),
       scheduleId = 123,
-      scheduleFunction = jasmine.createSpy('scheduleFunction').andReturn(scheduleId),
+      scheduleFunction = jasmine.createSpy('scheduleFunction').and.callReturn(scheduleId),
       delayedFunctionScheduler = {scheduleFunction: scheduleFunction},
       global = { setInterval: setInterval },
       delayedFn = jasmine.createSpy('delayedFn'),
@@ -239,25 +239,25 @@ describe("Clock (acceptance)", function() {
     clock.tick(50);
 
     expect(recurring1).toHaveBeenCalledWith('some', 'other', 'args');
-    expect(recurring1.callCount).toBe(1);
+    expect(recurring1.calls.count()).toBe(1);
     expect(delayedFn2).not.toHaveBeenCalled();
     expect(delayedFn3).not.toHaveBeenCalled();
 
     clock.tick(50);
 
-    expect(recurring1.callCount).toBe(2);
+    expect(recurring1.calls.count()).toBe(2);
     expect(delayedFn2).toHaveBeenCalled();
     expect(delayedFn3).not.toHaveBeenCalled();
 
     clock.tick(100);
 
-    expect(recurring1.callCount).toBe(4);
+    expect(recurring1.calls.count()).toBe(4);
     expect(delayedFn3).toHaveBeenCalled();
 
     clock.clearInterval(intervalId);
     clock.tick(50);
 
-    expect(recurring1.callCount).toBe(4);
+    expect(recurring1.calls.count()).toBe(4);
   });
 
   it("can clear a previously set timeout", function() {

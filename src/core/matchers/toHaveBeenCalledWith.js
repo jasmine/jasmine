@@ -12,13 +12,13 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
         }
 
         return {
-          pass: util.contains(actual.argsForCall, expectedArgs)
+          pass: util.contains(actual.calls.allArgs(), expectedArgs)
         };
       },
       message: function(actual) {
         return {
-          affirmative: "Expected spy " + actual.identity + " to have been called.",
-          negative: "Expected spy " + actual.identity + " not to have been called."
+          affirmative: "Expected spy " + actual.and.identity() + " to have been called.",
+          negative: "Expected spy " + actual.and.identity() + " not to have been called."
         };
       }
     };

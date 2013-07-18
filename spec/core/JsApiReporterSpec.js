@@ -196,7 +196,7 @@ describe("JsApiReporter", function() {
             timer: timerSpy
           });
 
-      timerSpy.elapsed.andReturn(1000);
+      timerSpy.elapsed.and.callReturn(1000);
       reporter.jasmineDone();
       expect(reporter.executionTime()).toEqual(1000);
     });

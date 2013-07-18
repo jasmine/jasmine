@@ -7,10 +7,10 @@ describe("QueueRunner", function() {
       queueRunner = new j$.QueueRunner({
         fns: [fn1, fn2]
       });
-    fn1.andCallFake(function() {
+    fn1.and.callFake(function() {
       calls.push('fn1');
     });
-    fn2.andCallFake(function() {
+    fn2.and.callFake(function() {
       calls.push('fn2');
     });
 
@@ -21,7 +21,7 @@ describe("QueueRunner", function() {
 
   it("supports asynchronous functions, only advancing to next function after a done() callback", function() {
     //TODO: it would be nice if spy arity could match the fake, so we could do something like:
-    //createSpy('asyncfn').andCallFake(function(done) {});
+    //createSpy('asyncfn').and.callFake(function(done) {});
 
     var onComplete = jasmine.createSpy('onComplete'),
       beforeCallback = jasmine.createSpy('beforeCallback'),
@@ -137,6 +137,8 @@ describe("QueueRunner", function() {
           clearStack: clearStack,
           onComplete: completeCallback
         });
+
+    clearStack.and.callFake(function(fn) { fn(); });
 
     queueRunner.execute();
     expect(afterFn).toHaveBeenCalled();

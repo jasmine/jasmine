@@ -144,7 +144,7 @@ describe("toThrowError", function() {
 
   it("passes if thrown is an Error and the expected the same Error", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(true)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(true)
       },
       matcher = j$.matchers.toThrowError(util),
       fn = function() {
@@ -160,7 +160,7 @@ describe("toThrowError", function() {
 
   it("passes if thrown is a custom error that takes arguments and the expected is the same error", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(true)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(true)
       },
       matcher = j$.matchers.toThrowError(util),
       CustomError = function CustomError(arg) { arg.x },
@@ -180,7 +180,7 @@ describe("toThrowError", function() {
 
   it("fails if thrown is an Error and the expected is a different Error", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(false)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(false)
       },
       matcher = j$.matchers.toThrowError(util),
       fn = function() {
@@ -196,7 +196,7 @@ describe("toThrowError", function() {
 
   it("passes if thrown is a type of Error and it is equal to the expected Error and message", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(true)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(true)
       },
       matcher = j$.matchers.toThrowError(util),
       fn = function() {
@@ -212,7 +212,7 @@ describe("toThrowError", function() {
 
   it("passes if thrown is a custom error that takes arguments and it is equal to the expected custom error and message", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(true)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(true)
       },
       matcher = j$.matchers.toThrowError(util),
       CustomError = function CustomError(arg) { this.message = arg.message },
@@ -232,7 +232,7 @@ describe("toThrowError", function() {
 
   it("fails if thrown is a type of Error and the expected is a different Error", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(false)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(false)
       },
       matcher = j$.matchers.toThrowError(util),
       fn = function() {
@@ -248,7 +248,7 @@ describe("toThrowError", function() {
 
   it("passes if thrown is a type of Error and has the same type as the expected Error and the message matches the exepcted message", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(true)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(true)
       },
       matcher = j$.matchers.toThrowError(util),
       fn = function() {
@@ -264,7 +264,7 @@ describe("toThrowError", function() {
 
   it("fails if thrown is a type of Error and the expected is a different Error", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').andReturn(false)
+        equals: jasmine.createSpy('delegated-equal').and.callReturn(false)
       },
       matcher = j$.matchers.toThrowError(util),
       fn = function() {
