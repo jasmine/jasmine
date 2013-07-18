@@ -14,13 +14,13 @@ describe("DelayedFunctionScheduler", function() {
 
   it("schedules a string for later execution", function() {
     var scheduler = new j$.DelayedFunctionScheduler(),
-        strfn = "window.horrible = true;";
+        strfn = "horrible = true;";
 
     scheduler.scheduleFunction(strfn, 0);
 
     scheduler.tick(0);
 
-    expect(window.horrible).toEqual(true);
+    expect(horrible).toEqual(true);
   });
 
   it("#tick defaults to 0", function() {
