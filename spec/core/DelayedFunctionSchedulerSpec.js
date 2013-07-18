@@ -12,6 +12,17 @@ describe("DelayedFunctionScheduler", function() {
     expect(fn).toHaveBeenCalled();
   });
 
+  it("schedules a string for later execution", function() {
+    var scheduler = new j$.DelayedFunctionScheduler(),
+        strfn = "window.horrible = true;";
+
+    scheduler.scheduleFunction(strfn, 0);
+
+    scheduler.tick(0);
+
+    expect(window.horrible).toEqual(true);
+  });
+
   it("#tick defaults to 0", function() {
     var scheduler = new j$.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');

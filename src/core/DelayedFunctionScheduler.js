@@ -12,12 +12,21 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
     };
 
     self.scheduleFunction = function(funcToCall, millis, params, recurring, timeoutKey, runAtMillis) {
+      var f;
+      if (typeof(funcToCall) === 'string') {
+        /* jshint evil: true */
+        f = function() { return eval(funcToCall); };
+        /* jshint evil: false */
+      } else {
+        f = funcToCall;
+      }
+
       millis = millis || 0;
       timeoutKey = timeoutKey || ++delayedFnCount;
       runAtMillis = runAtMillis || (currentTime + millis);
       scheduledFunctions[timeoutKey] = {
         runAtMillis: runAtMillis,
-        funcToCall: funcToCall,
+        funcToCall: f,
         recurring: recurring,
         params: params,
         timeoutKey: timeoutKey,
