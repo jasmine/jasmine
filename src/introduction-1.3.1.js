@@ -621,7 +621,7 @@ describe("Manually ticking the Jasmine Mock Clock", function() {
 describe("Asynchronous specs", function() {
   var value, flag;
 
-  it("should support async execution of test preparation and exepectations", function() {
+  it("should support async execution of test preparation and expectations", function() {
 
     /**
      Specs are written by defining a set of blocks with calls to `runs`, which usually finish with an asynchronous call.
