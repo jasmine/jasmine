@@ -7,3 +7,9 @@ script: "DISPLAY=:99.0 bundle exec rake core_spec"
 
 rvm:
   - "1.9.3"
+
+env:
+  - JASMINE_BROWSER=firefox
+  - JASMINE_BROWSER=chrome
+  - JASMINE_BROWSER=safari
+  - JASMINE_BROWSER=phantomjs

@@ -4,6 +4,9 @@ require 'jasmine'
 
 Jasmine.load_configuration_from_yaml(File.join(Dir.pwd, 'spec', 'jasmine.yml'))
 config = Jasmine.config
+Jasmine.configure do |config|
+  config.browser = ENV.fetch('JASMINE_BROWSER', 'firefox')
+end
 server = Jasmine::Server.new(config.port, Jasmine::Application.app(config))
 driver = Jasmine::SeleniumDriver.new(config.browser, "#{config.host}:#{config.port}/")
 
@@ -18,7 +21,7 @@ t.abort_on_exception = true
 Jasmine::wait_for_listener(config.port, "jasmine server")
 puts "jasmine server started."
 
-reporter = Jasmine::Runners::ApiReporter.new(driver, config.result_batch_size)
+reporter = Jasmine::Reporters::ApiReporter.new(driver, config.result_batch_size)
 raw_results = Jasmine::Runners::HTTP.new(driver, reporter).run
 results = Jasmine::Results.new(raw_results)
 
