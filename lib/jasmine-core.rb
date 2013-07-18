@@ -39,6 +39,11 @@ module Jasmine
       def css_files
         Dir.glob(File.join(path, "*.css")).map { |f| File.basename(f) }
       end
+
+      def images_dir
+        File.join(File.dirname(__FILE__), '../images')
+      end
+
     end
   end
 end
