@@ -5,7 +5,7 @@ require 'jasmine'
 Jasmine.load_configuration_from_yaml(File.join(Dir.pwd, 'spec', 'jasmine.yml'))
 config = Jasmine.config
 Jasmine.configure do |config|
-  config.browser = ENV.fetch('JASMINE_BROWSER', 'firefox')
+  config.browser = ENV['JASMINE_BROWSER'] || 'firefox'
 end
 server = Jasmine::Server.new(config.port, Jasmine::Application.app(config))
 driver = Jasmine::SeleniumDriver.new(config.browser, "#{config.host}:#{config.port}/")
