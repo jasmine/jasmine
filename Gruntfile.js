@@ -15,6 +15,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-compass');
   grunt.loadNpmTasks('grunt-contrib-compress');
 
+  grunt.loadTasks('grunt/tasks');
+
   grunt.registerTask('default', ['jshint:all']);
 
   var version = require('./grunt/tasks/version.js');
@@ -35,24 +37,6 @@ module.exports = function(grunt) {
     ]
   );
 
-  grunt.registerTask("build:compileSpecRunner",
-    "Processes the spec runner template and writes to a tmp file",
-    standaloneBuilder.compileSpecRunner
-  );
-
-  grunt.registerTask("build:cleanSpecRunner",
-    "Deletes the tmp spec runner file",
-    standaloneBuilder.cleanSpecRunner
-  );
-
-  grunt.registerTask("buildStandaloneDist",
-    "Builds a standalone distribution",
-    [
-      "build:compileSpecRunner",
-      "compress:standalone",
-      "build:cleanSpecRunner"
-    ]
-  );
 
   var spec = require('./grunt/tasks/spec.js');
 
