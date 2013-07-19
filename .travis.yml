@@ -1,6 +1,8 @@
 before_install:
   - "export DISPLAY=:99.0"
-  - "test \"Darwin\" != `uname` && sh -e /etc/init.d/xvfb start"
+  - "sudo mkdir -p /etc/init.d/"
+  - "sudo touch /etc/init.d/xvfb"
+  - "sh -e /etc/init.d/xvfb start"
     #- "sh -e travis-chromium-script.sh"
 script: "DISPLAY=:99.0 bundle exec rake core_spec"
 
