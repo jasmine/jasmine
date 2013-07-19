@@ -25,13 +25,17 @@ if ENV['USE_SAUCE'] == 'true'
 
   config.port = 5555
 
-  webdriver = Selenium::WebDriver.for :remote, :url => url, :desired_capabilities => {
-                :platform => platform,
-                :version => version,
-                :build => ENV['TRAVIS_BUILD_NUMBER'],
-                :tags => [ENV['TRAVIS_RUBY_VERSION'], 'CI'],
-                :browserName => browser
-              }
+  capabilities = {
+      :platform => platform,
+      :version => version,
+      :build => ENV['TRAVIS_BUILD_NUMBER'],
+      :tags => [ENV['TRAVIS_RUBY_VERSION'], 'CI'],
+      :browserName => browser
+  }
+
+  capabilities.merge!('tunnel-identifier' => ENV['TRAVIS_JOB_NUMBER']) if ENV['TRAVIS_JOB_NUMBER']
+
+  webdriver = Selenium::WebDriver.for :remote, :url => url, :desired_capabilities => capabilities
 end
 
 Jasmine.configure do |config|
