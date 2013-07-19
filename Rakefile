@@ -7,7 +7,7 @@ Dir["#{File.dirname(__FILE__)}/tasks/**/*.rb"].each do |file|
   require file
 end
 
-#  TODO: Is there better way to invoke this using Jasmine gem???
+# TODO: Is there better way to invoke this using Jasmine gem???
 task :core_spec do
   exec "ruby spec/jasmine_self_test_spec.rb"
 end
