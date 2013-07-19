@@ -17,23 +17,30 @@ matrix:
   allow_failures:
   - env: JASMINE_BROWSER=phantomjs
   include:
-  - JASMINE_BROWSER=firefox
-    SAUCE_PLATFORM=Linux
-    SAUCE_VERSION=''
-  - JASMINE_BROWSER=safari
-    SAUCE_PLATFORM="OS X 10.8"
-    SAUCE_VERSION=''
-  - JASMINE_BROWSER="internet explorer"
-    SAUCE_PLATFORM="Windows 8"
-    SAUCE_VERSION=10
-  - JASMINE_BROWSER="internet explorer"
-    SAUCE_PLATFORM="Windows 7"
-    SAUCE_VERSION=9
-  - JASMINE_BROWSER="internet explorer"
-    SAUCE_PLATFORM="Windows 7"
-    SAUCE_VERSION=8
-  - JASMINE_BROWSER=chrome
-    SAUCE_PLATFORM=Linux
-    SAUCE_VERSION=''
-  - JASMINE_BROWSER=phantomjs
-    USE_SAUCE=false
+  - env: 
+    - JASMINE_BROWSER=firefox
+    - SAUCE_PLATFORM=Linux
+    - SAUCE_VERSION=''
+  - env: 
+    - JASMINE_BROWSER=safari
+    - SAUCE_PLATFORM="OS X 10.8"
+    - SAUCE_VERSION=''
+  - env: 
+    - JASMINE_BROWSER="internet explorer"
+    - SAUCE_PLATFORM="Windows 8"
+    - SAUCE_VERSION=10
+  - env: 
+    - JASMINE_BROWSER="internet explorer"
+    - SAUCE_PLATFORM="Windows 7"
+    - SAUCE_VERSION=9
+  - env: 
+    - JASMINE_BROWSER="internet explorer"
+    - SAUCE_PLATFORM="Windows 7"
+    - SAUCE_VERSION=8
+  - env: 
+    - JASMINE_BROWSER=chrome
+    - SAUCE_PLATFORM=Linux
+    - SAUCE_VERSION=''
+  - env: 
+    - JASMINE_BROWSER=phantomjs
+    - USE_SAUCE=false
