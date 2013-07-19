@@ -1,26 +1,39 @@
+---
 before_install:
-  - "export DISPLAY=:99.0"
-  - "sudo mkdir -p /etc/init.d/"
-  - "sudo touch /etc/init.d/xvfb"
-  - "sh -e /etc/init.d/xvfb start"
-    #- "sh -e travis-chromium-script.sh"
-script: "DISPLAY=:99.0 bundle exec rake core_spec"
-
-language:
-  - ruby
-  - objective-c
-
-rvm: "1.9.3"
-
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+before_script:
+- curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash
+script: DISPLAY=:99.0 bundle exec rake core_spec
+language: ruby
+rvm: 1.9.3
 env:
-  - JASMINE_BROWSER=firefox
-  #- JASMINE_BROWSER=chrome
-  - JASMINE_BROWSER=phantomjs
-
+  global:
+  - USE_SAUCE=true
+  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+  - secure: WSPWhlnC4mWSnSPquX+m1/BCu5ch5NygkaHuM2Nea7lD8oS3XLX8QncZZAsQ4lnNfqoDDuBOizG0AESiqNvE4y6x5qvLLTS6q+ce255ZEMZ71TBdZgDEEvGMEjOPPsVXiXyTQOP1lwOPlrbZvaPgWV7e11KIBab6DfFcQpnvDgo=
+  - secure: SW7CJhZnwaNT749Gdnhvqb5rbXlAOsygUAzh9qhtyvbqXKkmJdBIEsO01YF6pbju1X2twE9JvWCOxeZju43NgQChJlPsGbjY2j3k/TdQeTAJesQe2K7ytwghunI30gjEovtRH0T3w1EmcKPH8yj5eBIcB2OYoJHx8KEC7e68q1g=
 matrix:
   allow_failures:
-    #- env: JASMINE_BROWSER=chrome
-    - env: JASMINE_BROWSER=phantomjs
+  - env: JASMINE_BROWSER=phantomjs
   include:
-    - language: objective-c
-      env: JASMINE_BROWSER=safari
+  - JASMINE_BROWSER=firefox
+    SAUCE_PLATFORM=Linux
+    SAUCE_VERSION=''
+  - JASMINE_BROWSER=safari
+    SAUCE_PLATFORM="OS X 10.8"
+    SAUCE_VERSION=''
+  - JASMINE_BROWSER="internet explorer"
+    SAUCE_PLATFORM="Windows 8"
+    SAUCE_VERSION=10
+  - JASMINE_BROWSER="internet explorer"
+    SAUCE_PLATFORM="Windows 7"
+    SAUCE_VERSION=9
+  - JASMINE_BROWSER="internet explorer"
+    SAUCE_PLATFORM="Windows 7"
+    SAUCE_VERSION=8
+  - JASMINE_BROWSER=chrome
+    SAUCE_PLATFORM=Linux
+    SAUCE_VERSION=''
+  - JASMINE_BROWSER=phantomjs
+    USE_SAUCE=false

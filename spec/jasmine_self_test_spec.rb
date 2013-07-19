@@ -4,8 +4,39 @@ require 'jasmine'
 
 Jasmine.load_configuration_from_yaml(File.join(Dir.pwd, 'spec', 'jasmine.yml'))
 config = Jasmine.config
+
+browser = ENV['JASMINE_BROWSER'] || 'firefox'
+
+if ENV['USE_SAUCE'] == 'true'
+  require 'selenium-webdriver'
+
+  unless ENV['TRAVIS_BUILD_NUMBER']
+    require 'sauce/connect'
+
+    # we want Sauce Connect locally, not on Travis
+    Sauce::Connect.connect!
+  end
+
+  username = ENV['SAUCE_USERNAME']
+  key = ENV['SAUCE_ACCESS_KEY']
+  platform = ENV['SAUCE_PLATFORM']
+  version = ENV['SAUCE_VERSION']
+  url = "http://#{username}:#{key}@localhost:4445/wd/hub"
+
+  config.port = 5555
+
+  webdriver = Selenium::WebDriver.for :remote, :url => url, :desired_capabilities => {
+                :platform => platform,
+                :version => version,
+                :build => ENV['TRAVIS_BUILD_NUMBER'],
+                :tags => [ENV['TRAVIS_RUBY_VERSION'], 'CI'],
+                :browserName => browser
+              }
+end
+
 Jasmine.configure do |config|
-  config.browser = ENV['JASMINE_BROWSER'] || 'firefox'
+  config.webdriver = webdriver if webdriver
+  config.browser = browser if browser
 end
 server = Jasmine::Server.new(config.port, Jasmine::Application.app(config))
 driver = Jasmine::SeleniumDriver.new(config.browser, "#{config.host}:#{config.port}/")
