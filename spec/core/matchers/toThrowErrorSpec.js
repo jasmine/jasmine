@@ -175,6 +175,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, CustomError);
 
     expect(result.pass).toBe(true);
+    debugger
     expect(result.message).toEqual("Expected function not to throw CustomError.");
   });
 

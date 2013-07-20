@@ -18,11 +18,11 @@ matrix:
   - env: JASMINE_BROWSER=phantomjs
   include:
   - env: 
-    - JASMINE_BROWSER=firefox
-    - SAUCE_PLATFORM=Linux
+    - JASMINE_BROWSER="firefox"
+    - SAUCE_PLATFORM="Linux"
     - SAUCE_VERSION=''
   - env: 
-    - JASMINE_BROWSER=safari
+    - JASMINE_BROWSER="safari"
     - SAUCE_PLATFORM="OS X 10.8"
     - SAUCE_VERSION=''
   - env: 
@@ -38,9 +38,9 @@ matrix:
     - SAUCE_PLATFORM="Windows 7"
     - SAUCE_VERSION=8
   - env: 
-    - JASMINE_BROWSER=chrome
-    - SAUCE_PLATFORM=Linux
+    - JASMINE_BROWSER="chrome"
+    - SAUCE_PLATFORM="Linux"
     - SAUCE_VERSION=''
   - env: 
-    - JASMINE_BROWSER=phantomjs
+    - JASMINE_BROWSER="phantomjs"
     - USE_SAUCE=false

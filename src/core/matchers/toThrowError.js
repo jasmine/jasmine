@@ -34,28 +34,38 @@ getJasmineRequireObj().toThrowError = function(j$) {
         }
 
         if (errorType && message) {
+          var name = errorType.name || errorType.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
+          var constructorName = thrown.constructor.name || thrown.constructor.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
+
           if (thrown.constructor == errorType && util.equals(thrown.message, message)) {
-            return pass("Expected function not to throw " + errorType.name + " with message \"" + message + "\".");
+            return pass("Expected function not to throw " + name + " with message \"" + message + "\".");
           } else {
-            return fail("Expected function to throw " + errorType.name + " with message \"" + message +
-                        "\", but it threw " + thrown.constructor.name + " with message \"" + thrown.message + "\".");
+            return fail("Expected function to throw " + name + " with message \"" + message +
+                        "\", but it threw " + constructorName + " with message \"" + thrown.message + "\".");
           }
         }
 
         if (errorType && regexp) {
+          var name = errorType.name || errorType.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
+          var constructorName = thrown.constructor.name || thrown.constructor.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
+
           if (thrown.constructor == errorType && regexp.test(thrown.message)) {
-            return pass("Expected function not to throw " + errorType.name + " with message matching " + regexp + ".");
+            return pass("Expected function not to throw " + name + " with message matching " + regexp + ".");
           } else {
-            return fail("Expected function to throw " + errorType.name + " with message matching " + regexp +
-                        ", but it threw " + thrown.constructor.name + " with message \"" + thrown.message + "\".");
+            return fail("Expected function to throw " + name + " with message matching " + regexp +
+                        ", but it threw " + constructorName + " with message \"" + thrown.message + "\".");
           }
         }
 
         if (errorType) {
+          var name = errorType.name || errorType.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
+          var constructorName = thrown.constructor.name || thrown.constructor.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
+
+
           if (thrown.constructor == errorType) {
-            return pass("Expected function not to throw " + errorType.name + ".");
+            return pass("Expected function not to throw " + name + ".");
           } else {
-            return fail("Expected function to throw " + errorType.name + ", but it threw " + thrown.constructor.name + ".");
+            return fail("Expected function to throw " + name + ", but it threw " + constructorName + ".");
           }
         }
 
