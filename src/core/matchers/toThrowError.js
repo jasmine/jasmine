@@ -6,7 +6,9 @@ getJasmineRequireObj().toThrowError = function(j$) {
           thrown,
           errorType,
           message,
-          regexp;
+          regexp,
+          name,
+          constructorName;
 
         if (typeof actual != "function") {
           throw new Error("Actual is not a Function");
@@ -33,10 +35,12 @@ getJasmineRequireObj().toThrowError = function(j$) {
           return pass("Expected function not to throw an Error, but it threw " + thrown + ".");
         }
 
-        if (errorType && message) {
-          var name = errorType.name || errorType.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
-          var constructorName = thrown.constructor.name || thrown.constructor.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
+        if (errorType) {
+          name = fnNameFor(errorType);
+          constructorName = fnNameFor(thrown.constructor);
+        }
 
+        if (errorType && message) {
           if (thrown.constructor == errorType && util.equals(thrown.message, message)) {
             return pass("Expected function not to throw " + name + " with message \"" + message + "\".");
           } else {
@@ -46,9 +50,6 @@ getJasmineRequireObj().toThrowError = function(j$) {
         }
 
         if (errorType && regexp) {
-          var name = errorType.name || errorType.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
-          var constructorName = thrown.constructor.name || thrown.constructor.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
-
           if (thrown.constructor == errorType && regexp.test(thrown.message)) {
             return pass("Expected function not to throw " + name + " with message matching " + regexp + ".");
           } else {
@@ -58,10 +59,6 @@ getJasmineRequireObj().toThrowError = function(j$) {
         }
 
         if (errorType) {
-          var name = errorType.name || errorType.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
-          var constructorName = thrown.constructor.name || thrown.constructor.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
-
-
           if (thrown.constructor == errorType) {
             return pass("Expected function not to throw " + name + ".");
           } else {
@@ -85,6 +82,10 @@ getJasmineRequireObj().toThrowError = function(j$) {
             return fail("Expected function to throw an exception with a message matching " + j$.pp(regexp) +
                         ", but it threw an exception with message " + j$.pp(thrown.message) + ".");
           }
+        }
+
+        function fnNameFor(func) {
+            return func.name || func.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
         }
 
         function pass(notMessage) {
