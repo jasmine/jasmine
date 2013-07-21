@@ -1,4 +1,4 @@
-# Developing for Jasmine Core     
+# Developing for Jasmine Core
 
 ## How to Contribute
 
@@ -34,7 +34,7 @@ To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http:/
 
 ...you see that JSHint runs your system is ready.
 
-## How to write new Jasmine code     
+## How to write new Jasmine code
 
 Or, How to make a successful pull request
 
@@ -53,27 +53,22 @@ All source code belongs in `src/`. The `core/` directory contains the bulk of Ja
 
 ## Running Specs
 
-Jasmine uses the Jasmine Ruby gem to test itself in browser.
+Jasmine uses the [Jasmine Ruby gem](http://github.com/pivotal/jasmine-gem) to test itself in browser.
 
     $ rake jasmine
 
 ...and then visit `http://localhost:8888` to run specs.
 
-Jasmine uses a Node 
+Jasmine uses Node.js with a custom runner to test outside of a browser.
 
- and uses a custom runner for node.
+    $ grunt execSpecsInNode
 
-Tests in Bro
+...and then the results will print to the console. All specs run except those that expect a browser (the specs in `spec/html` are ignored).
 
-As in all good projects, the `spec/` directory mirrors `src/` and follows the same rules. The browser runner will include and attempt to run all specs. The node runner will exclude any html-dependent specs (those in `spec/html/`).
+## Before Committing or Submitting a Pull Request
 
-You will notice that all specs are run against the built `jasmine.js` instead of the component source files. This is intentional as a way to ensure that the concatenation code is working correctly.
+1. Ensure all specs are green in browser *and* node
+1. Ensure JSHint is green with `grunt jsHint`
+1. Build `jasmine.js` with `grunt buildDistribution` and run all specs again - this ensures that your changes self-test well
 
-Please ensure all specs are green before committing or issuing a pull request.
-
-There are Thor tasks to help with getting green - run `thor list` to see them all. Here are the key tasks:
-
-* `thor jasmine_dev:execute_specs` outputs the expected number of specs that should be run and attempts to run in browser and Node
-* `thor jasmine_dev:execute_specs_in_browser` opens `spec/runner.html` in the default browser on MacOS. Please run this in at least Firefox and Chrome before committing
-* `thor jasmine_dev:execute_specs_in_node` runs all the Jasmine specs in Node.js - it will complain if Node is not installed
 
