@@ -175,7 +175,7 @@ describe("Spec", function() {
     var done = jasmine.createSpy('done callback'),
       spec = new j$.Spec({
         fn: function() {},
-        catchExceptions: function() { return false; },
+        raiseExceptions: function() { return true; },
         resultCallback: function() {},
         queueRunner: function(attrs) { attrs.onComplete(); }
       });

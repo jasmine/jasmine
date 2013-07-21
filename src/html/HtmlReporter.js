@@ -10,7 +10,8 @@ jasmineRequire.HtmlReporter = function() {
       getContainer = options.getContainer,
       createElement = options.createElement,
       createTextNode = options.createTextNode,
-      onRaiseExceptionsClick = options.onRaiseExceptionsClick,
+      reload = options.reload,
+      spec = options.spec,
       timer = options.timer || noopTimer,
       results = [],
       specsExecuted = 0,
@@ -100,24 +101,43 @@ jasmineRequire.HtmlReporter = function() {
       }
     };
 
+    this.submitForm = function() {
+      find('.options').submit();
+    };
+
+    var buildForm = function() {
+      var raise = createDom("input", { className: "raise", id: "raise-exceptions", name: "raise", value: "true", type: "checkbox" });
+      raise.checked = env.raisingExceptions();
+      raise.onclick = reload;
+
+      var refresh = createDom("input", { className: "refresh", id: "auto-refresh", name: "auto-refresh", value: "true", type: "checkbox"});
+      refresh.checked = env.refreshing();
+      refresh.onclick = function () {
+        if (env.autoRefresh(!env.refreshing())) {
+          reload();
+        }
+      };
+
+      var form = createDom("form", { className: "options", action: ".", method: "get"},
+                     createDom("label", { className: "label", 'for': "raise-exceptions" }, "raise exceptions"),
+                     raise,
+                     createDom("label", { className: "label", 'for': "auto-refresh"}, "refresh"),
+                     refresh
+                 );
+
+      if (spec) {
+        form.appendChild(createDom("input", { name: "spec", type: "hidden", value: spec }));
+      }
+
+      return form;
+    };
+
     this.jasmineDone = function() {
       var banner = find(".banner");
       banner.appendChild(createDom("span", {className: "duration"}, "finished in " + timer.elapsed() / 1000 + "s"));
 
       var alert = find(".alert");
-
-      alert.appendChild(createDom("span", { className: "exceptions" },
-        createDom("label", { className: "label", 'for': "raise-exceptions" }, "raise exceptions"),
-        createDom("input", {
-          className: "raise",
-          id: "raise-exceptions",
-          type: "checkbox"
-        })
-      ));
-      var checkbox = find("input");
-
-      checkbox.checked = !env.catchingExceptions();
-      checkbox.onclick = onRaiseExceptionsClick;
+      alert.appendChild(buildForm());
 
       if (specsExecuted < totalSpecsDefined) {
         var skippedMessage = "Ran " + specsExecuted + " of " + totalSpecsDefined + " specs - run all";
@@ -192,6 +212,16 @@ jasmineRequire.HtmlReporter = function() {
         for (var i = 0; i < failures.length; i++) {
           failureNode.appendChild(failures[i]);
         }
+      }
+
+      if (env.refreshing()) {
+        var trigger = function() {
+          if (env.refreshing()) {
+            reload();
+          }
+        };
+
+        env.clock.setTimeout(trigger, 10000);
       }
     };
 

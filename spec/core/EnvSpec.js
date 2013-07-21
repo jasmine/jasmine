@@ -30,13 +30,13 @@ describe("Env", function() {
 
   describe("#catchException", function() {
     it("returns true if the exception is a pending spec exception", function() {
-      env.catchExceptions(false);
+      env.raiseExceptions(true);
 
       expect(env.catchException(new Error(j$.Spec.pendingSpecExceptionMessage))).toBe(true);
     });
 
     it("returns false if the exception is not a pending spec exception and not catching exceptions", function() {
-      env.catchExceptions(false);
+      env.raiseExceptions(true);
 
       expect(env.catchException(new Error("external error"))).toBe(false);
       expect(env.catchException(new Error(j$.Spec.pendingSpecExceptionMessage))).toBe(true);

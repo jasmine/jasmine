@@ -4,7 +4,8 @@ getJasmineRequireObj().Env = function(j$) {
     var self = this;
     var global = options.global || j$.getGlobal();
 
-    var catchExceptions = true;
+    var raiseExceptions = false;
+    var refresh = false;
 
     var realSetTimeout = j$.getGlobal().setTimeout;
     this.clock = new j$.Clock(global, new j$.DelayedFunctionScheduler());
@@ -91,18 +92,26 @@ getJasmineRequireObj().Env = function(j$) {
         return buildExpectationResult(attrs);
       };
 
-    // TODO: fix this naming, and here's where the value comes in
-    this.catchExceptions = function(value) {
-      catchExceptions = !!value;
-      return catchExceptions;
+    this.autoRefresh = function(value) {
+      refresh = !!value;
+      return refresh;
     };
 
-    this.catchingExceptions = function() {
-      return catchExceptions;
+    this.refreshing = function() {
+      return refresh;
+    };
+
+    this.raiseExceptions = function(value) {
+      raiseExceptions = !!value;
+      return raiseExceptions;
+    };
+
+    this.raisingExceptions = function() {
+      return raiseExceptions;
     };
 
     this.catchException = function(e){
-      return j$.Spec.isPendingSpecException(e) || catchExceptions;
+      return j$.Spec.isPendingSpecException(e) || !raiseExceptions;
     };
 
     var maximumSpecCallbackDepth = 100;
