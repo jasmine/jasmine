@@ -1,10 +1,10 @@
 describe("New HtmlReporter", function() {
   // TODO: Figure out why this isn't rendering...
   it("builds the initial DOM elements, including the title banner", function() {
-    var env = new jasmine.Env(),
+    var env = new j$.Env(),
       container = document.createElement("div"),
       getContainer = function() { return container; },
-      reporter = new jasmine.HtmlReporter({
+      reporter = new j$.HtmlReporter({
         env: env,
         getContainer: getContainer,
         createElement: function() { return document.createElement.apply(document, arguments); },
@@ -26,8 +26,9 @@ describe("New HtmlReporter", function() {
     var title = banner.querySelector(".title");
     expect(title.innerHTML).toMatch(/Jasmine/);
 
-    var version = banner.querySelector(".version");
-    expect(version.innerHTML).toEqual(jasmine.version);
+    var version = banner.querySelector(".version"),
+      versionText = 'textContent' in version ? version.textContent : version.innerText;
+    expect(versionText).toEqual(j$.version);
   });
 
   it("starts the timer when jasmine begins", function() {
@@ -46,10 +47,10 @@ describe("New HtmlReporter", function() {
 
   describe("when a spec is done", function() {
     it("reports the status symbol of a disabled spec", function() {
-      var env = new jasmine.Env(),
+      var env = new j$.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new jasmine.HtmlReporter({
+        reporter = new j$.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -66,10 +67,10 @@ describe("New HtmlReporter", function() {
     });
 
     it("reports the status symbol of a pending spec", function() {
-      var env = new jasmine.Env(),
+      var env = new j$.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new jasmine.HtmlReporter({
+        reporter = new j$.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -85,10 +86,10 @@ describe("New HtmlReporter", function() {
     });
 
     it("reports the status symbol of a passing spec", function() {
-      var env = new jasmine.Env(),
+      var env = new j$.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new jasmine.HtmlReporter({
+        reporter = new j$.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -105,10 +106,10 @@ describe("New HtmlReporter", function() {
     });
 
     it("reports the status symbol of a failing spec", function() {
-      var env = new jasmine.Env(),
+      var env = new j$.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new jasmine.HtmlReporter({
+        reporter = new j$.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -131,11 +132,11 @@ describe("New HtmlReporter", function() {
 
   describe("when Jasmine is done", function() {
     it("reports the run time", function() {
-      var env = new jasmine.Env(),
+      var env = new j$.Env(),
         container = document.createElement("div"),
         timer = jasmine.createSpyObj('timer', ['start', 'elapsed']),
         getContainer = function() { return container; },
-        reporter = new jasmine.HtmlReporter({
+        reporter = new j$.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -155,10 +156,10 @@ describe("New HtmlReporter", function() {
     });
 
     it("reports the suite and spec names with status", function() {
-      var env = new jasmine.Env(),
+      var env = new j$.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new jasmine.HtmlReporter({
+        reporter = new j$.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -244,12 +245,12 @@ describe("New HtmlReporter", function() {
 
     describe("UI for raising/catching exceptions", function() {
       it("should be unchecked if the env is catching", function() {
-        var env = new jasmine.Env(),
+        var env = new j$.Env(),
           container = document.createElement("div"),
           getContainer = function() {
             return container;
           },
-          reporter = new jasmine.HtmlReporter({
+          reporter = new j$.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() {
@@ -268,12 +269,12 @@ describe("New HtmlReporter", function() {
       });
 
       it("should be checked if the env is not catching", function() {
-        var env = new jasmine.Env(),
+        var env = new j$.Env(),
           container = document.createElement("div"),
           getContainer = function() {
             return container;
           },
-          reporter = new jasmine.HtmlReporter({
+          reporter = new j$.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() {
@@ -293,13 +294,13 @@ describe("New HtmlReporter", function() {
       });
 
       it("should affect the query param for catching exceptions", function() {
-        var env = new jasmine.Env(),
+        var env = new j$.Env(),
           container = document.createElement("div"),
           exceptionsClickHandler = jasmine.createSpy("raise exceptions checked"),
           getContainer = function() {
             return container;
           },
-          reporter = new jasmine.HtmlReporter({
+          reporter = new j$.HtmlReporter({
             env: env,
             getContainer: getContainer,
             onRaiseExceptionsClick: exceptionsClickHandler,
@@ -323,10 +324,10 @@ describe("New HtmlReporter", function() {
     describe("and all specs pass", function() {
       var env, container, reporter;
       beforeEach(function() {
-        env = new jasmine.Env();
+        env = new j$.Env();
         container = document.createElement("div");
         getContainer = function() { return container; },
-          reporter = new jasmine.HtmlReporter({
+          reporter = new j$.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() { return document.createElement.apply(document, arguments); },
@@ -374,10 +375,10 @@ describe("New HtmlReporter", function() {
     describe("and there are pending specs", function() {
       var env, container, reporter;
       beforeEach(function() {
-        env = new jasmine.Env();
+        env = new j$.Env();
         container = document.createElement("div");
         getContainer = function() { return container; },
-          reporter = new jasmine.HtmlReporter({
+          reporter = new j$.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() { return document.createElement.apply(document, arguments); },
@@ -412,10 +413,10 @@ describe("New HtmlReporter", function() {
       var env, container, reporter;
 
       beforeEach(function() {
-        env = new jasmine.Env();
+        env = new j$.Env();
         container = document.createElement("div"),
         getContainer = function() { return container; },
-          reporter = new jasmine.HtmlReporter({
+          reporter = new j$.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() { return document.createElement.apply(document, arguments); },

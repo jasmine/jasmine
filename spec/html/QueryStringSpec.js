@@ -6,7 +6,7 @@ describe("QueryString", function() {
       var windowLocation = {
           search: ""
         },
-        queryString = new jasmine.QueryString({
+        queryString = new j$.QueryString({
           getWindowLocation: function() { return windowLocation }
         });
 
@@ -22,7 +22,7 @@ describe("QueryString", function() {
       var windowLocation = {
           search: "?baz=quux%20corge"
         },
-        queryString = new jasmine.QueryString({
+        queryString = new j$.QueryString({
           getWindowLocation: function() { return windowLocation }
         });
 
@@ -33,7 +33,7 @@ describe("QueryString", function() {
       var windowLocation = {
           search: ""
         },
-        queryString = new jasmine.QueryString({
+        queryString = new j$.QueryString({
           getWindowLocation: function() { return windowLocation }
         });
 
