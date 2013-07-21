@@ -270,7 +270,7 @@ getJasmineRequireObj().Env = function(j$) {
 
   // TODO: move this to closure
   Env.prototype.describe = function(description, specDefinitions) {
-    var suite = this.suiteFactory(description, specDefinitions);
+    var suite = this.suiteFactory(description);
 
     var parentSuite = this.currentSuite;
     parentSuite.addSuite(suite);
