@@ -32,7 +32,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
         }
 
         if (arguments.length == 1) {
-          return pass("Expected function not to throw an Error, but it threw " + thrown + ".");
+          return pass("Expected function not to throw an Error, but it threw " + fnNameFor(thrown) + ".");
         }
 
         if (errorType) {
