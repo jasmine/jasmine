@@ -24,7 +24,7 @@ matrix:
   - env: 
     - JASMINE_BROWSER="safari"
     - SAUCE_PLATFORM="OS X 10.8"
-    - SAUCE_VERSION=''
+    - SAUCE_VERSION=6
   - env: 
     - JASMINE_BROWSER="internet explorer"
     - SAUCE_PLATFORM="Windows 8"
