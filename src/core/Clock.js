@@ -34,7 +34,7 @@ getJasmineRequireObj().Clock = function() {
         }
         return timer.setTimeout(fn, delay);
       }
-      return timer.setTimeout.apply(global, arguments);
+      return Function.prototype.apply.apply(timer.setTimeout, [global, arguments]);
     };
 
     self.setInterval = function(fn, delay, params) {
@@ -44,15 +44,15 @@ getJasmineRequireObj().Clock = function() {
         }
         return timer.setInterval(fn, delay);
       }
-      return timer.setInterval.apply(global, arguments);
+      return Function.prototype.apply.apply(timer.setInterval, [global, arguments]);
     };
 
     self.clearTimeout = function(id) {
-      return timer.clearTimeout.call(global, id);
+      return Function.prototype.call.apply(timer.clearTimeout, [global, id]);
     };
 
     self.clearInterval = function(id) {
-      return timer.clearInterval.call(global, id);
+      return Function.prototype.call.apply(timer.clearInterval, [global, id]);
     };
 
     self.tick = function(millis) {

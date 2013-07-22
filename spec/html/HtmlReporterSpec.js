@@ -229,7 +229,7 @@ describe("New HtmlReporter", function() {
 
       var suiteDetail = outerSuite.childNodes[0];
       var suiteLink = suiteDetail.childNodes[0];
-      expect(suiteLink.text).toEqual("A Suite");
+      expect(suiteLink.innerHTML).toEqual("A Suite");
       expect(suiteLink.getAttribute('href')).toEqual("?spec=A%20Suite");
 
       var specs = outerSuite.childNodes[1];
@@ -238,7 +238,7 @@ describe("New HtmlReporter", function() {
       expect(spec.getAttribute("id")).toEqual("spec-123");
 
       var specLink = spec.childNodes[0];
-      expect(specLink.text).toEqual("with a spec");
+      expect(specLink.innerHTML).toEqual("with a spec");
       expect(specLink.getAttribute("href")).toEqual("?spec=A%20Suite%20with%20a%20spec");
 //      expect(specLink.getAttribute("title")).toEqual("A Suite with a spec");
     });
@@ -481,7 +481,7 @@ describe("New HtmlReporter", function() {
         expect(menuBar.getAttribute("class")).not.toMatch(/hidden/);
 
         var link = menuBar.querySelector('a');
-        expect(link.text).toEqual("Failures");
+        expect(link.innerHTML).toEqual("Failures");
         expect(link.getAttribute("href")).toEqual("#");
       });
 

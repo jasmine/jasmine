@@ -108,7 +108,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
 
       for (var i = 0; i < funcsToRun.length; ++i) {
         var funcToRun = funcsToRun[i];
-        funcToRun.funcToCall.apply(null, funcToRun.params);
+        funcToRun.funcToCall.apply(null, funcToRun.params || []);
       }
     }
   }
