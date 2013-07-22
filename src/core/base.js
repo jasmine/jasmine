@@ -65,12 +65,16 @@ getJasmineRequireObj().base = function(j$) {
           return spyStrategy.exec.apply(this, arguments);
         };
 
-    spy.and = spyStrategy;
-    spy.calls = callTracker;
+    for (var prop in originalFn) {
+      if (prop === 'and' || prop === 'calls') {
+        throw new Error("Jasmine spies would overwrite the 'and' and 'calls' properties on the object being spied upon");
+      }
 
-    for (prop in originalFn) {
       spy[prop] = originalFn[prop];
     }
+
+    spy.and = spyStrategy;
+    spy.calls = callTracker;
 
     return spy;
   };

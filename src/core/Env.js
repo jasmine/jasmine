@@ -211,16 +211,16 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.spyOn = function(obj, methodName) {
       if (j$.util.isUndefined(obj)) {
-        throw "spyOn could not find an object to spy upon for " + methodName + "()";
+        throw new Error("spyOn could not find an object to spy upon for " + methodName + "()");
       }
 
       if (j$.util.isUndefined(obj[methodName])) {
-        throw methodName + '() method does not exist';
+        throw new Error(methodName + '() method does not exist');
       }
 
       if (obj[methodName] && j$.isSpy(obj[methodName])) {
         //TODO?: should this return the current spy? Downside: may cause user confusion about spy state
-        throw methodName + ' has already been spied upon';
+        throw new Error(methodName + ' has already been spied upon');
       }
 
       var spy = j$.createSpy(methodName, obj[methodName]);
