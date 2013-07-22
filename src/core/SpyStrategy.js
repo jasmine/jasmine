@@ -39,6 +39,11 @@ getJasmineRequireObj().SpyStrategy = function() {
       plan = fn;
       return getSpy();
     };
+
+    this.stub = function(fn) {
+      plan = function() {};
+      return getSpy();
+    };
   }
 
   return SpyStrategy;

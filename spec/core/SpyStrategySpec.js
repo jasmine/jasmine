@@ -69,6 +69,24 @@ describe("SpyStrategy", function() {
     expect(returnValue).toEqual(67);
   });
 
+  it("allows a return to plan stubbing after another strategy", function() {
+    var originalFn = jasmine.createSpy("original"),
+        fakeFn = jasmine.createSpy("fake").and.callReturn(67),
+        spyStrategy = new j$.SpyStrategy({fn: originalFn}),
+        returnValue;
+
+    spyStrategy.callFake(fakeFn);
+    returnValue = spyStrategy.exec();
+
+    expect(originalFn).not.toHaveBeenCalled();
+    expect(returnValue).toEqual(67);
+    
+    spyStrategy.stub();
+    returnValue = spyStrategy.exec();
+
+    expect(returnValue).toEqual(void 0);
+  });
+
   it("returns the spy after changing the strategy", function(){
     var spy = {},
         spyFn = jasmine.createSpy('spyFn').and.callReturn(spy),
@@ -78,5 +96,6 @@ describe("SpyStrategy", function() {
     expect(spyStrategy.callReturn()).toBe(spy);
     expect(spyStrategy.callThrow()).toBe(spy);
     expect(spyStrategy.callFake()).toBe(spy);
+    expect(spyStrategy.stub()).toBe(spy);
   });
 });
