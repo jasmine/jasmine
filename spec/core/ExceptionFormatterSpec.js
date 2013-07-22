@@ -41,7 +41,7 @@ describe("ExceptionFormatter", function() {
 
   describe("#stack", function() {
     it("formats stack traces from Webkit, Firefox, node.js or IE10+", function() {
-      if (jasmine.getGlobal().ieVersion < 10) { return; }
+      if (jasmine.getEnv().ieVersion < 10) { return; }
 
       var error;
       try { throw new Error("an error") } catch(e) { error = e; }

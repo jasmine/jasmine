@@ -1,5 +1,5 @@
-(function(global) {
-  global.ieVersion = (function() {
+(function(env) {
+  env.ieVersion = (function() {
     var userAgent = jasmine.getGlobal().navigator.userAgent;
     if (!userAgent) { return Number.MAX_VALUE; }
 
@@ -7,4 +7,4 @@
 
     return match ? parseFloat(match[1]) : Number.MAX_VALUE;
   })();
-})(jasmine.getGlobal());
+})(jasmine.getEnv());
