@@ -111,6 +111,8 @@ describe("matchersUtil", function() {
     });
 
     it("passes for equivalent frozen objects (GitHub issue #266)", function() {
+      if (isIE(8)) { return; }
+
       var a = { foo: 1 },
         b = {foo: 1 };
 

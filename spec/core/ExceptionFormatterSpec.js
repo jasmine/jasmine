@@ -41,8 +41,11 @@ describe("ExceptionFormatter", function() {
 
   describe("#stack", function() {
     it("formats stack traces from Webkit, Firefox or node.js", function() {
+      if (isIE()) { return; }
+
       var error;
-      try { throw new Error("an error") } catch(e) { error = e; };
+      try { throw new Error("an error") } catch(e) { error = e; }
+
       expect(new j$.ExceptionFormatter().stack(error)).toMatch(/ExceptionFormatterSpec\.js.*\d+/)
     });
 
