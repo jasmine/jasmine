@@ -187,7 +187,7 @@ describe('Spies', function () {
 
   it('should be able to reset a spy', function() {
     var TestClass = { someFunction: function() {} };
-    spyOn(TestClass, 'someFunction');
+    env.spyOn(TestClass, 'someFunction');
 
     expect(TestClass.someFunction).not.toHaveBeenCalled();
     TestClass.someFunction();
@@ -195,6 +195,16 @@ describe('Spies', function () {
     TestClass.someFunction.calls.reset();
     expect(TestClass.someFunction).not.toHaveBeenCalled();
     expect(TestClass.someFunction.calls.count()).toEqual(0);
+  });
+
+  it("preserves the properties of the spied function", function() {
+    var TestClass = function() {};
+    TestClass.prototype.someFunction = function() {};
+    TestClass.prototype.someFunction.bob = "test";
+
+    var spy = env.spyOn(TestClass.prototype, 'someFunction');
+
+    expect(spy.bob).toEqual("test");
   });
 
   describe("createSpyObj", function() {

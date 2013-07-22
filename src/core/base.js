@@ -68,6 +68,10 @@ getJasmineRequireObj().base = function(j$) {
     spy.and = spyStrategy;
     spy.calls = callTracker;
 
+    for (prop in originalFn) {
+      spy[prop] = originalFn[prop];
+    }
+
     return spy;
   };
 
