@@ -1,13 +1,14 @@
 getJasmineRequireObj().Env = function(j$) {
   function Env(options) {
     options = options || {};
-
+    
     var self = this;
     var global = options.global || j$.getGlobal();
 
     var catchExceptions = true;
 
     var realSetTimeout = j$.getGlobal().setTimeout;
+    var realClearTimeout = j$.getGlobal().clearTimeout;
     this.clock = new j$.Clock(global, new j$.DelayedFunctionScheduler());
 
     var spies = [];
@@ -120,9 +121,13 @@ getJasmineRequireObj().Env = function(j$) {
       }
     }
 
+    var asyncSpecTimeout = 60000;
+
     var queueRunnerFactory = function(options) {
       options.catchException = self.catchException;
       options.clearStack = options.clearStack || clearStack;
+      options.realTimer = { setTimeout: realSetTimeout, clearTimeout: realClearTimeout };
+      options.asyncSpecTimeout = asyncSpecTimeout;
 
       new j$.QueueRunner(options).run(options.fns, 0);
     };

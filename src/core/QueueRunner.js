@@ -6,6 +6,11 @@ getJasmineRequireObj().QueueRunner = function() {
     this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.onException = attrs.onException || function() {};
     this.catchException = attrs.catchException || function() { return true; };
+    
+    this.timer = attrs.realTimer;
+    this.asyncSpecTimeout = attrs.asyncSpecTimeout || 60000;
+
+    this.leaf = attrs.leaf || false;
   }
 
   QueueRunner.prototype.execute = function() {
@@ -16,16 +21,23 @@ getJasmineRequireObj().QueueRunner = function() {
     var length = fns.length,
         self = this,
         iterativeIndex;
+    
+    var nextIteration = function(currentIteration) {
+      return function() {
+        self.run(fns, currentIteration + 1);
+      };
+    };
 
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
       var fn = fns[iterativeIndex];
+
       if (fn.length > 0) {
-        var attemptSuccessful = attempt(function() {
-          fn.call(self, function() { self.run(fns, iterativeIndex + 1); });
-        });
+        var attemptSuccessful = attempt(fn, nextIteration(iterativeIndex));
 
         if(attemptSuccessful) {
           return;
+        } else {
+          // TODO cleanup the timeout ?
         }
       } else {
         attempt(function() { fn.call(self); });
@@ -38,9 +50,24 @@ getJasmineRequireObj().QueueRunner = function() {
       this.clearStack(this.onComplete);
     }
 
-    function attempt(fn) {
+    function attempt(fn, done) {
+      var timeout;
+
       try {
-        fn();
+        if (self.leaf) {
+          timeout = self.timer.setTimeout(function() { 
+            self.onException(new Error("timeout"));
+            done();
+          }, self.asyncSpecTimeout);
+        }
+
+        var next = function() {
+          if (self.leaf) { self.timer.clearTimeout(timeout); }
+          done();
+        };
+        
+        fn.call(self, next);
+        
         return true;
       } catch (e) {
         self.onException(e);
