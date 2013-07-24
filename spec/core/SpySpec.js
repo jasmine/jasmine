@@ -15,6 +15,8 @@ describe('Spies', function () {
     });
 
     it("warns the user that we indend to overwrite an existing property", function() {
+      TestClass.prototype.someFunction.and = "turkey";
+
       expect(function() {
         j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
       }).toThrowError("Jasmine spies would overwrite the 'and' and 'calls' properties on the object being spied upon");
@@ -23,8 +25,8 @@ describe('Spies', function () {
     it("adds a spyStrategy and callTracker to the spy", function() {
       var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
 
-      expect(spy.and).toEqual(jasmine.any(j$.SpyStrategy);
-      expect(spy.calls).toEqual(jasmine.any(j$.CallTracker);
+      expect(spy.and).toEqual(jasmine.any(j$.SpyStrategy));
+      expect(spy.calls).toEqual(jasmine.any(j$.CallTracker));
     });
   });
 
