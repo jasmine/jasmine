@@ -77,8 +77,6 @@ getJasmineRequireObj().Env = function(j$) {
       };
     };
 
-    var specConstructor = j$.Spec; // TODO: inline this
-
     var getSpecName = function(spec, currentSuite) {
       return currentSuite.getFullName() + ' ' + spec.description + '.';
     };
@@ -131,7 +129,7 @@ getJasmineRequireObj().Env = function(j$) {
     this.specFactory = function(description, fn, suite) {
       totalSpecsDefined++;
 
-      var spec = new specConstructor({
+      var spec = new j$.Spec({
         id: self.nextSpecId(),
         beforeFns: beforeFns(suite),
         afterFns: afterFns(suite),
