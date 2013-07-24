@@ -6,9 +6,6 @@
 
   var env = jasmine.getEnv();
 
-  SUPER_TIMEOUT = setTimeout;
-  SUPER_CLEAR_TIMEOUT = clearTimeout;
-
   var jasmineInterface = {
     describe: function(description, specDefinitions) {
       return env.describe(description, specDefinitions);

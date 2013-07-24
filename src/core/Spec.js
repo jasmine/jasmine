@@ -57,7 +57,6 @@ getJasmineRequireObj().Spec = function() {
 
     this.queueRunner({
       fns: allFns,
-      leaf: true,
       onException: function(e) {
         if (Spec.isPendingSpecException(e)) {
           self.pend();

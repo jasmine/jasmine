@@ -291,55 +291,6 @@ describe("Env integration", function() {
 
     env.execute();
   });
-  
-  describe("with a mock clock", function() {
-    beforeEach(function() {
-      jasmine.getEnv().clock.install();
-    });
-
-    afterEach(function() {
-      jasmine.getEnv().clock.uninstall();
-    });
-    
-    it("should not hang on async specs that forget to call done()", function(done) {
-      var env = new j$.Env(),
-          reporter = jasmine.createSpyObj('fakeReporter', [
-            "jasmineStarted",
-            "jasmineDone",
-            "suiteStarted",
-            "suiteDone",
-            "specStarted",
-            "specDone"
-          ]);
-
-      env.addReporter(reporter);
-
-      env.describe("tests", function() {
-        env.it("async spec that will hang", function(underTestCallback) {
-          env.expect(true).toBeTruthy();
-        });
-
-        env.it("after async spec", function() {
-          env.expect(true).toBeTruthy();
-        });
-      });
-
-      env.execute();
-
-      reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.jasmineStarted).toHaveBeenCalledWith({
-          totalSpecsDefined: 2
-        });
-
-        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({status: 'passed'}));
-        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({status: 'failed'}));
-
-        done();
-      });
-
-      jasmine.getEnv().clock.tick(60001);
-    });
-  });
 
   // TODO: something is wrong with this spec
   it("should report as expected", function(done) {
