@@ -114,7 +114,7 @@ table td {
     border-left: 1px solid #e5e5ee;
   }
     pre, tt, code {
-      font-size: 12px; line-height: 18px;
+      line-height: 18px;
       font-family: Monaco, Consolas, "Lucida Console", monospace;
       margin: 0; padding: 0;
     }
