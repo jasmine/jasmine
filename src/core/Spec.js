@@ -52,12 +52,16 @@ getJasmineRequireObj().Spec = function() {
     }
 
     var befores = this.beforeFns() || [],
-      afters = this.afterFns() || [];
+        afters = this.afterFns() || [];
     var allFns = befores.concat(this.fn).concat(afters);
 
     this.queueRunner({
       fns: allFns,
-      onException: function(e) {
+      onException: onException,
+      onComplete: complete
+    });
+
+    function onException(e) {
         if (Spec.isPendingSpecException(e)) {
           self.pend();
           return;
@@ -70,9 +74,7 @@ getJasmineRequireObj().Spec = function() {
           actual: "",
           error: e
         });
-      },
-      onComplete: complete
-    });
+    }
 
     function complete() {
       self.result.status = self.status();
