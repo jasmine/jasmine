@@ -87,7 +87,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
 
       printNewline();
 
-      onComplete();
+      onComplete(failureCount === 0);
     };
 
     this.specDone = function(result) {
