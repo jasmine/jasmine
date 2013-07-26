@@ -3,18 +3,22 @@ before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 before_script:
-- curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash
-script: DISPLAY=:99.0 bundle exec rake core_spec
+- test $USE_SAUCE == "true" && curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash
+script: $TEST_COMMAND
 language: ruby
 rvm: 1.9.3
 env:
   global:
   - USE_SAUCE=true
   - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+  - TEST_COMMAND="bash travis-core-script.sh"
   - secure: WSPWhlnC4mWSnSPquX+m1/BCu5ch5NygkaHuM2Nea7lD8oS3XLX8QncZZAsQ4lnNfqoDDuBOizG0AESiqNvE4y6x5qvLLTS6q+ce255ZEMZ71TBdZgDEEvGMEjOPPsVXiXyTQOP1lwOPlrbZvaPgWV7e11KIBab6DfFcQpnvDgo=
   - secure: SW7CJhZnwaNT749Gdnhvqb5rbXlAOsygUAzh9qhtyvbqXKkmJdBIEsO01YF6pbju1X2twE9JvWCOxeZju43NgQChJlPsGbjY2j3k/TdQeTAJesQe2K7ytwghunI30gjEovtRH0T3w1EmcKPH8yj5eBIcB2OYoJHx8KEC7e68q1g=
 matrix:
   include:
+  - env:
+    - USE_SAUCE=false
+    - TEST_COMMAND="bash travis-node-script.sh"
   - env: 
     - JASMINE_BROWSER="firefox"
     - SAUCE_PLATFORM="Linux"
