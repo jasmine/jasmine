@@ -16,6 +16,8 @@ getJasmineRequireObj().Spec = function() {
     this.queueRunner = attrs.queueRunner || function() {};
     this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
 
+    this.timer = attrs.timer || {setTimeout: setTimeout, clearTimeout: clearTimeout};
+
     if (!this.fn) {
       this.pend();
     }
@@ -51,9 +53,26 @@ getJasmineRequireObj().Spec = function() {
       return;
     }
 
+    function timeoutable(fn) {
+      return function(done) {
+        var timeout = Function.prototype.apply.apply(self.timer.setTimeout, [window, [function() {
+          onException(new Error('timeout'));
+          done();
+        }, 10000]]);
+
+        var callDone = function() {
+          Function.prototype.apply.apply(self.timer.clearTimeout, [window, [timeout]]);
+          done();
+        };
+
+        fn(callDone); //TODO: do we care about more than 1 arg?
+      };
+    }
+
     var befores = this.beforeFns() || [],
-        afters = this.afterFns() || [];
-    var allFns = befores.concat(this.fn).concat(afters);
+        afters = this.afterFns() || [],
+        thisOne = (this.fn.length) ? timeoutable(this.fn) : this.fn;
+    var allFns = befores.concat(thisOne).concat(afters);
 
     this.queueRunner({
       fns: allFns,
