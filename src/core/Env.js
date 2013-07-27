@@ -106,7 +106,7 @@ getJasmineRequireObj().Env = function(j$) {
       return j$.Spec.isPendingSpecException(e) || catchExceptions;
     };
 
-    var maximumSpecCallbackDepth = 100;
+    var maximumSpecCallbackDepth = 75;
     var currentSpecCallbackDepth = 0;
 
     function clearStack(fn) {
