@@ -1,7 +1,7 @@
 {
   "name": "jasmine-core",
   "license": "MIT",
-  "version": "2.0.0-rc1",
+  "version": "2.0.0-rc2",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.2.0",
