@@ -33,6 +33,7 @@ If you want to submit changes to this repo and aren't a Pivotal Labs employee, y
 
 When ready to release - specs are all green and the stories are done:
 
+1. Update the release notes in `release_notes` - use the Anchorman gem to generate the markdown file and edit accordingly
 1. Update the version in `package.json` to a release candidate
 1. Update any links or top-level landing page for the Github Pages
 1. Build the standalone distribution with `grunt buildStandaloneDist`
@@ -42,6 +43,7 @@ When ready to release - specs are all green and the stories are done:
 1. __NOTE__: You will likely need to push a new jasmine gem with a dependent version right after this release.
 1. Push these changes to GitHub and verify that this SHA is green
 1. `rake release` - tags the repo with the version, builds the `jasmine-core` gem, pushes the gem to Rubygems.org. In order to release you will have to ensure you have rubygems creds locally.
+1. Visit the [Releases page for Jasmine](https://github.com/pivotal/jasmine/releases), find the tag just pushed. Paste in a link to the correct release notes for this release. The link should reference the blob and tag correctly, and the markdown file for the notes. If it is a pre-release, mark it as such.
 
 
 There should be a post to Pivotal Labs blog and a tweet to that link.
