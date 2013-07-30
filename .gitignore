@@ -5,6 +5,8 @@ site/
 .bundle/
 .pairs
 .rvmrc
+.ruby-gemset
+.ruby-version
 *.gem
 .bundle
 tags
