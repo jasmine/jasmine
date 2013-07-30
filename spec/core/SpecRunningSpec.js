@@ -25,11 +25,11 @@ describe("jasmine spec running", function () {
       });
     });
 
-    expect(it0.id).toEqual(0);
-    expect(it1.id).toEqual(1);
-    expect(it2.id).toEqual(2);
-    expect(it3.id).toEqual(3);
-    expect(it4.id).toEqual(4);
+    expect(it0.id).toEqual('spec0');
+    expect(it1.id).toEqual('spec1');
+    expect(it2.id).toEqual('spec2');
+    expect(it3.id).toEqual('spec3');
+    expect(it4.id).toEqual('spec4');
   });
 
   it('nested suites', function (done) {

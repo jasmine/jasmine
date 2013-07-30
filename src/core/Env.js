@@ -259,12 +259,12 @@ getJasmineRequireObj().Env = function(j$) {
 
   // TODO: move this to closure
   Env.prototype.nextSpecId = function() {
-    return this.nextSpecId_++;
+    return 'spec' + this.nextSpecId_++;
   };
 
   // TODO: move this to closure
   Env.prototype.nextSuiteId = function() {
-    return this.nextSuiteId_++;
+    return 'suite' + this.nextSuiteId_++;
   };
 
   // TODO: move this to closure
