@@ -300,6 +300,42 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it("Allows specifying which specs and suites to run", function(done) {
+    var env = new j$.Env(),
+        calls = [],
+        suiteCallback = jasmine.createSpy('suite callback'),
+        firstSpec,
+        secondSuite;
+
+    var assertions = function() {
+      expect(calls).toEqual([
+        'third spec',
+        'first spec'
+      ]);
+      expect(suiteCallback).toHaveBeenCalled();
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions, suiteDone: suiteCallback});
+
+    env.describe("first suite", function() {
+      firstSpec = env.it("first spec", function() {
+        calls.push('first spec');
+      });
+      env.it("second spec", function() {
+        calls.push('second spec');
+      });
+    });
+
+    secondSuite = env.describe("second suite", function() {
+      env.it("third spec", function() {
+        calls.push('third spec');
+      });
+    });
+
+    env.execute([secondSuite.id, firstSpec.id]);
+  });
+
   it("Mock clock can be installed and used in tests", function(done) {
     var globalSetTimeout = jasmine.createSpy('globalSetTimeout'),
         delayedFunctionForGlobalClock = jasmine.createSpy('delayedFunctionForGlobalClock'),
