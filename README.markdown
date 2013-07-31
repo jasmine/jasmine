@@ -9,7 +9,7 @@ Documentation & guides live here: [http://pivotal.github.com/jasmine/](http://pi
 
 ## Contributing
 
-Please read the [contributors' guide](https://github.com/pivotal/jasmine/blob/master/Contribute.markdown)
+Please read the [contributors' guide](https://github.com/pivotal/jasmine/blob/master/CONTRIBUTING.md)
 
 ## Support
 
