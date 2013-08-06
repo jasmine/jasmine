@@ -20,8 +20,6 @@
     * Top level (i.e., any `jasmine` property) should only be referenced inside the `Env` constructor
     * should better allow any object to get jasmine code (Node-friendly)
 * review everything in base.js
-* Spies
-  * break these out into their own tests/file
 * Remove isA functions:
   * isArray_ - used in matchers and spies
   * isString_
@@ -33,11 +31,6 @@
   * inherit is only for PrettyPrinter now
   * formatException is used only inside Env/spec
   * htmlEscape is for messages in matchers - should this be HTML at all?
-* Matchers improvements
-  * unit testable DONE
-  * better equality (from Underscore) DONE
-  * refactor equals function so that it just loops & recurses over a list of fns (custom and built-in) - 2.1?
-  * addCustomMatchers doesn't explode stack
 * Pretty printing
   * move away from pretty printer and to a JSON.stringify implementation?
   * jasmineToString vs. custom toString ?
@@ -46,6 +39,16 @@
 
 * unify params to ctors: options vs. attrs.
 * This will be a lot of the TODOs, but clean up & simplify Env.js (is this a 2.1 task?)
+
+### DONE
+* Matchers improvements
+  * unit testable DONE
+  * better equality (from Underscore) DONE
+  * addCustomMatchers doesn't explode stack DONE
+  * refactor equals function so that it just loops & recurses over a list of fns (custom and built-in) - 2.1? (Tracker story)
+* Spies
+  * break these out into their own tests/file DONE
+
 
 ## Other Topics
 
