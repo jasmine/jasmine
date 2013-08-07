@@ -46,6 +46,13 @@ module.exports = {
     ],
     dest: 'src/console/console.js'
   },
+  junit: {
+    src: [
+      'src/junit/requireJunit.js',
+      'src/junit/JunitReporter.js'
+    ],
+    dest: 'src/junit/junit.js'
+  },
   options: {
     banner: license(),
     process: {
