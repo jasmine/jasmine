@@ -11,6 +11,7 @@ describe("toHaveBeenCalledWith", function() {
     result = matcher.compare(calledSpy, 'a', 'b');
 
     expect(result.pass).toBe(true);
+    expect(result.message).toEqual("Expected spy called-spy not to have been called with [ 'a', 'b' ] but it was.");
   });
 
   it("fails when the actual was not called", function() {
@@ -23,6 +24,7 @@ describe("toHaveBeenCalledWith", function() {
 
     result = matcher.compare(uncalledSpy);
     expect(result.pass).toBe(false);
+    expect(result.message).toEqual("Expected spy uncalled spy to have been called with [  ] but it was never called.");
   });
 
   it("fails when the actual was called with different parameters", function() {
@@ -34,9 +36,11 @@ describe("toHaveBeenCalledWith", function() {
         result;
 
     calledSpy('a');
+    calledSpy('c', 'd');
     result = matcher.compare(calledSpy, 'a', 'b');
 
     expect(result.pass).toBe(false);
+    expect(result.message).toEqual("Expected spy called spy to have been called with [ 'a', 'b' ] but actual calls were [ 'a' ], [ 'c', 'd' ].");
   });
 
   it("throws an exception when the actual is not a spy", function() {
@@ -44,14 +48,5 @@ describe("toHaveBeenCalledWith", function() {
         fn = function() {};
 
     expect(function() { matcher.compare(fn) }).toThrow(new Error("Expected a spy, but got Function."));
-  });
-
-  it("has a custom message on failure", function() {
-    var matcher = j$.matchers.toHaveBeenCalledWith(),
-        spy = j$.createSpy('sample-spy'),
-        messages = matcher.message(spy);
-
-    expect(messages.affirmative).toEqual("Expected spy sample-spy to have been called.")
-    expect(messages.negative).toEqual("Expected spy sample-spy not to have been called.")
   });
 });

@@ -1,19 +1,23 @@
 (function(env) {
-  env.ieVersion = (function() {
+  function browserVersion(matchFn) {
     var userAgent = jasmine.getGlobal().navigator.userAgent;
-    if (!userAgent) { return Number.MAX_VALUE; }
+    if (!userAgent) { return void 0; }
 
-    var match = /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(userAgent);
+    var match = matchFn(userAgent);
 
-    return match ? parseFloat(match[1]) : Number.MAX_VALUE;
-  })();
+    return match ? parseFloat(match[1]) : void 0;
+  }
 
-  env.safariVersion = (function() {
-    var userAgent = jasmine.getGlobal().navigator.userAgent;
-    if (!userAgent) { return Number.MAX_VALUE; }
+  env.ieVersion = browserVersion(function(userAgent) {
+    return /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(userAgent);
+  });
 
-    var match = /Safari/.exec(userAgent) && /Version\/([0-9]{0,})/.exec(userAgent);
+  env.safariVersion = browserVersion(function(userAgent) {
+    return /Safari/.exec(userAgent) && /Version\/([0-9]{0,})/.exec(userAgent);
+  });
 
-    return match ? parseFloat(match[1]) : Number.MAX_VALUE;
-  })();
+  env.firefoxVersion = browserVersion(function(userAgent) {
+    return /Firefox\/([0-9]{0,})/.exec(userAgent);
+  });
+
 })(jasmine.getEnv());

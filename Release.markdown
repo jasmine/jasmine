@@ -3,7 +3,7 @@
 ## Development
 ___Jasmine Core Maintainers Only___
 
-Follow the instructions in `Contribute.markdown` during development.
+Follow the instructions in `CONTRIBUTING.md` during development.
 
 ### Git Rules
 

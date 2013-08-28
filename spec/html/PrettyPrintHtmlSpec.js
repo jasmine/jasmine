@@ -5,4 +5,11 @@ describe("j$.pp (HTML Dependent)", function () {
     expect(j$.pp(sampleNode)).toEqual("HTMLNode");
     expect(j$.pp({foo: sampleNode})).toEqual("{ foo : HTMLNode }");
   });
+
+  it("should print Firefox's wrapped native objects correctly", function() {
+    if(jasmine.getEnv().firefoxVersion) {
+      try { new CustomEvent(); } catch(e) { var err = e; };
+      expect(j$.pp(err)).toMatch(/Exception.*Not enough arguments/);
+    }
+  });
 });
