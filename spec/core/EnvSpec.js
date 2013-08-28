@@ -292,6 +292,19 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it("passes 'this' context to strict asynchronous functions", function() {
+    "use strict";
+
+    var env = new j$.Env();
+
+    env.it("async spec", function(underTestCallback) {
+      expect(this).toBeDefined();
+      underTestCallback();
+    });
+
+    env.execute();
+  });
+
   describe("with a mock clock", function() {
       beforeEach(function() {
           jasmine.getEnv().clock.install();
