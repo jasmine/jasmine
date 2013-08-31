@@ -253,8 +253,8 @@ describe("Clock (acceptance)", function() {
 
     clock.install();
 
-    clock.setTimeout(delayedFn1, 0, 'some', 'arg');
-    var intervalId = clock.setInterval(recurring1, 50, 'some', 'other', 'args');
+    clock.setTimeout(delayedFn1, 0);
+    var intervalId = clock.setInterval(recurring1, 50);
     clock.setTimeout(delayedFn2, 100);
     clock.setTimeout(delayedFn3, 200);
 
@@ -264,13 +264,13 @@ describe("Clock (acceptance)", function() {
 
     clock.tick(0);
 
-    expect(delayedFn1).toHaveBeenCalledWith('some', 'arg');
+    expect(delayedFn1).toHaveBeenCalled();
     expect(delayedFn2).not.toHaveBeenCalled();
     expect(delayedFn3).not.toHaveBeenCalled();
 
     clock.tick(50);
 
-    expect(recurring1).toHaveBeenCalledWith('some', 'other', 'args');
+    expect(recurring1).toHaveBeenCalled();
     expect(recurring1.calls.count()).toBe(1);
     expect(delayedFn2).not.toHaveBeenCalled();
     expect(delayedFn3).not.toHaveBeenCalled();
