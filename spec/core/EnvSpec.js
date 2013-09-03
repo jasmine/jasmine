@@ -315,7 +315,6 @@ describe("Env integration", function() {
       env.it("async spec that will hang", function(underTestCallback) {
         env.expect(true).toBeTruthy();
         jasmine.getEnv().clock.tick(10000);
-        jasmine.getEnv().clock.tick(1); // trigger specDone callback
       });
 
       env.execute();
