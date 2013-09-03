@@ -7,8 +7,8 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
 
     self.tick = function(millis) {
       millis = millis || 0;
-      runFunctionsWithinRange(currentTime, currentTime + millis);
       currentTime = currentTime + millis;
+      runFunctionsWithinRange(currentTime - millis, currentTime);
     };
 
     self.scheduleFunction = function(funcToCall, millis, params, recurring, timeoutKey, runAtMillis) {

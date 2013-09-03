@@ -324,6 +324,24 @@ describe("Clock (acceptance)", function() {
     expect(delayedFn1).toHaveBeenCalled();
   });
 
+  it("correctly schedules functions while the Clock is advancing", function() {
+    var delayedFn1 = jasmine.createSpy('delayedFn1'),
+        delayedFn2 = jasmine.createSpy('delayedFn2'),
+        delayedFunctionScheduler = new j$.DelayedFunctionScheduler(),
+        clock = new j$.Clock({setTimeout: function() {}}, delayedFunctionScheduler);
+
+    delayedFn1.and.callFake(function() { clock.setTimeout(delayedFn2, 0); });
+    clock.install();
+    clock.setTimeout(delayedFn1, 5);
+
+    clock.tick(5);
+    expect(delayedFn1).toHaveBeenCalled();
+    expect(delayedFn2).not.toHaveBeenCalled();
+
+    clock.tick();
+    expect(delayedFn2).toHaveBeenCalled();
+  });
+
   it("calls the global clearTimeout correctly when not installed", function() {
     var delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['clearTimeout']),
       global = jasmine.getGlobal(),
