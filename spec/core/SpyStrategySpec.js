@@ -50,9 +50,19 @@ describe("SpyStrategy", function() {
     var originalFn = jasmine.createSpy("original"),
         spyStrategy = new j$.SpyStrategy({fn: originalFn});
 
+    spyStrategy.callThrow(new TypeError("bar"));
+
+    expect(function() { spyStrategy.exec(); }).toThrowError(TypeError, "bar");
+    expect(originalFn).not.toHaveBeenCalled();
+  });
+
+  it("allows a non-Error to be thrown, wrapping it into an exception when executed", function() {
+    var originalFn = jasmine.createSpy("original"),
+        spyStrategy = new j$.SpyStrategy({fn: originalFn});
+
     spyStrategy.callThrow("bar");
 
-    expect(function() { spyStrategy.exec(); }).toThrow("bar");
+    expect(function() { spyStrategy.exec(); }).toThrowError(Error, "bar");
     expect(originalFn).not.toHaveBeenCalled();
   });
 
