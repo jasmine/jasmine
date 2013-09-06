@@ -29,8 +29,9 @@ getJasmineRequireObj().SpyStrategy = function() {
     };
 
     this.callThrow = function(something) {
+      var error = (something instanceof Error) ? something : new Error(something);
       plan = function() {
-        throw something;
+        throw error;
       };
       return getSpy();
     };
