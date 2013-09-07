@@ -21,14 +21,14 @@ getJasmineRequireObj().SpyStrategy = function() {
       return getSpy();
     };
 
-    this.callReturn = function(value) {
+    this.returnValue = function(value) {
       plan = function() {
         return value;
       };
       return getSpy();
     };
 
-    this.callThrow = function(something) {
+    this.throwError = function(something) {
       var error = (something instanceof Error) ? something : new Error(something);
       plan = function() {
         throw error;

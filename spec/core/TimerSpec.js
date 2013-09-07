@@ -3,10 +3,10 @@ describe("Timer", function() {
     var fakeNow = jasmine.createSpy('fake Date.now'),
         timer = new j$.Timer({now: fakeNow});
 
-    fakeNow.and.callReturn(100);
+    fakeNow.and.returnValue(100);
     timer.start();
 
-    fakeNow.and.callReturn(200);
+    fakeNow.and.returnValue(200);
 
     expect(timer.elapsed()).toEqual(100);
   });

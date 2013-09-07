@@ -56,7 +56,7 @@ describe("Expectation", function() {
 
   it("wraps matchers's compare functions, passing in matcher dependencies", function() {
     var fakeCompare = function() { return { pass: true }; },
-      matcherFactory = jasmine.createSpy("matcher").and.callReturn({ compare: fakeCompare }),
+      matcherFactory = jasmine.createSpy("matcher").and.returnValue({ compare: fakeCompare }),
       matchers = {
         toFoo: matcherFactory
       },
@@ -80,7 +80,7 @@ describe("Expectation", function() {
   });
 
   it("wraps matchers's compare functions, passing the actual and expected", function() {
-    var fakeCompare = jasmine.createSpy('fake-compare').and.callReturn({pass: true}),
+    var fakeCompare = jasmine.createSpy('fake-compare').and.returnValue({pass: true}),
       matchers = {
         toFoo: function() {
           return {

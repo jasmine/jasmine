@@ -148,7 +148,7 @@ describe("New HtmlReporter", function() {
 
       reporter.jasmineStarted({});
 
-      timer.elapsed.and.callReturn(100);
+      timer.elapsed.and.returnValue(100);
       reporter.jasmineDone();
 
       var duration = container.querySelector(".banner .duration");

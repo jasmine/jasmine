@@ -1,7 +1,7 @@
 describe("toContain", function() {
   it("delegates to j$.matchersUtil.contains", function() {
     var util = {
-        contains: jasmine.createSpy('delegated-contains').and.callReturn(true)
+        contains: jasmine.createSpy('delegated-contains').and.returnValue(true)
       },
       matcher = j$.matchers.toContain(util);
 
@@ -12,7 +12,7 @@ describe("toContain", function() {
 
   it("delegates to j$.matchersUtil.contains, passing in equality testers if present", function() {
     var util = {
-        contains: jasmine.createSpy('delegated-contains').and.callReturn(true)
+        contains: jasmine.createSpy('delegated-contains').and.returnValue(true)
       },
       customEqualityTesters = ['a', 'b'],
       matcher = j$.matchers.toContain(util, customEqualityTesters);

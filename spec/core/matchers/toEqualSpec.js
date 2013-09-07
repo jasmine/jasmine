@@ -1,7 +1,7 @@
 describe("toEqual", function() {
   it("delegates to equals function", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equals').and.callReturn(true)
+        equals: jasmine.createSpy('delegated-equals').and.returnValue(true)
       },
       matcher = j$.matchers.toEqual(util),
       result;
@@ -14,7 +14,7 @@ describe("toEqual", function() {
 
   it("delegates custom equality testers, if present", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equals').and.callReturn(true)
+        equals: jasmine.createSpy('delegated-equals').and.returnValue(true)
       },
       customEqualityTesters = ['a', 'b'],
       matcher = j$.matchers.toEqual(util, customEqualityTesters),

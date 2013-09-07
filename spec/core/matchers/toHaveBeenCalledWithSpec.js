@@ -1,7 +1,7 @@
 describe("toHaveBeenCalledWith", function() {
   it("passes when the actual was called with matching parameters", function() {
     var util = {
-          contains: jasmine.createSpy('delegated-contains').and.callReturn(true)
+          contains: jasmine.createSpy('delegated-contains').and.returnValue(true)
         },
         matcher = j$.matchers.toHaveBeenCalledWith(util),
         calledSpy = j$.createSpy('called-spy'),
@@ -16,7 +16,7 @@ describe("toHaveBeenCalledWith", function() {
 
   it("fails when the actual was not called", function() {
     var util = {
-          contains: jasmine.createSpy('delegated-contains').and.callReturn(false)
+          contains: jasmine.createSpy('delegated-contains').and.returnValue(false)
         },
         matcher = j$.matchers.toHaveBeenCalledWith(util),
         uncalledSpy = j$.createSpy('uncalled spy'),
@@ -29,7 +29,7 @@ describe("toHaveBeenCalledWith", function() {
 
   it("fails when the actual was called with different parameters", function() {
     var util = {
-          contains: jasmine.createSpy('delegated-contains').and.callReturn(false)
+          contains: jasmine.createSpy('delegated-contains').and.returnValue(false)
         },
         matcher = j$.matchers.toHaveBeenCalledWith(util),
         calledSpy = j$.createSpy('called spy'),

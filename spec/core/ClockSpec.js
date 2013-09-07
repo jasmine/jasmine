@@ -131,7 +131,7 @@ describe("Clock", function() {
   it("returns an id for the delayed function", function() {
     var fakeSetTimeout = jasmine.createSpy('setTimeout'),
       scheduleId = 123,
-      scheduleFunction = jasmine.createSpy('scheduleFunction').and.callReturn(scheduleId),
+      scheduleFunction = jasmine.createSpy('scheduleFunction').and.returnValue(scheduleId),
       delayedFunctionScheduler = {scheduleFunction: scheduleFunction},
       fakeGlobal = { setTimeout: fakeSetTimeout },
       delayedFn = jasmine.createSpy('delayedFn'),
@@ -176,7 +176,7 @@ describe("Clock", function() {
   it("returns an id for the delayed function", function() {
     var fakeSetInterval = jasmine.createSpy('setInterval'),
       scheduleId = 123,
-      scheduleFunction = jasmine.createSpy('scheduleFunction').and.callReturn(scheduleId),
+      scheduleFunction = jasmine.createSpy('scheduleFunction').and.returnValue(scheduleId),
       delayedFunctionScheduler = {scheduleFunction: scheduleFunction},
       fakeGlobal = { setInterval: fakeSetInterval },
       delayedFn = jasmine.createSpy('delayedFn'),

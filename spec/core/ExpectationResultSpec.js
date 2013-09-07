@@ -16,7 +16,7 @@ describe("buildExpectationResult", function() {
 
   it("delegates message formatting to the provided formatter if there was an Error", function() {
     var fakeError = {message: 'foo'},
-      messageFormatter = jasmine.createSpy("exception message formatter").and.callReturn(fakeError.message);
+      messageFormatter = jasmine.createSpy("exception message formatter").and.returnValue(fakeError.message);
 
     var result = j$.buildExpectationResult(
       {
@@ -31,7 +31,7 @@ describe("buildExpectationResult", function() {
 
   it("delegates stack formatting to the provided formatter if there was an Error", function() {
     var fakeError = {stack: 'foo'},
-      stackFormatter = jasmine.createSpy("stack formatter").and.callReturn(fakeError.stack);
+      stackFormatter = jasmine.createSpy("stack formatter").and.returnValue(fakeError.stack);
 
     var result = j$.buildExpectationResult(
       {
