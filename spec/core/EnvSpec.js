@@ -357,15 +357,19 @@ describe("Env integration", function() {
   });
 
   describe("with a mock clock", function() {
+    var originalTimeout;
+
     beforeEach(function() {
+      originalTimeout = j$.DEFAULT_TIMEOUT_INTERVAL;
       jasmine.getEnv().clock.install();
     });
 
     afterEach(function() {
       jasmine.getEnv().clock.uninstall();
+      j$.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    it("should not hang on async specs that forget to call done()", function(done) {
+    it("should wait a specified interval before failing specs haven't called done yet", function(done) {
       var env = new j$.Env(),
           reporter = jasmine.createSpyObj('fakeReporter', [ "specDone" ]);
 
@@ -375,10 +379,11 @@ describe("Env integration", function() {
       });
 
       env.addReporter(reporter);
+      j$.DEFAULT_TIMEOUT_INTERVAL = 8414;
 
-      env.it("async spec that will hang", function(underTestCallback) {
+      env.it("async spec that doesn't call done", function(underTestCallback) {
         env.expect(true).toBeTruthy();
-        jasmine.getEnv().clock.tick(10000);
+        jasmine.getEnv().clock.tick(8414);
       });
 
       env.execute();
