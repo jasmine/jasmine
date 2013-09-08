@@ -6,6 +6,7 @@ getJasmineRequireObj().QueueRunner = function() {
     this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.onException = attrs.onException || function() {};
     this.catchException = attrs.catchException || function() { return true; };
+    this.userContext = {};
   }
 
   QueueRunner.prototype.execute = function() {
@@ -34,7 +35,7 @@ getJasmineRequireObj().QueueRunner = function() {
 
     function attemptSync(fn) {
       try {
-        fn.call(self);
+        fn.call(self.userContext);
       } catch (e) {
         handleException(e);
       }
@@ -44,7 +45,7 @@ getJasmineRequireObj().QueueRunner = function() {
       var next = function () { self.run(fns, iterativeIndex + 1); };
 
       try {
-        fn.call(self, next);
+        fn.call(self.userContext, next);
       } catch (e) {
         handleException(e);
         next();

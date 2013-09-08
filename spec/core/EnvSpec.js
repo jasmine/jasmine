@@ -236,6 +236,70 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it("calls associated befores/specs/afters with the same 'this'", function(done) {
+    var env = new j$.Env();
+
+    env.addReporter({jasmineDone: done});
+
+    env.describe("tests", function() {
+      var firstTimeThrough = true, firstSpecContext, secondSpecContext;
+
+      env.beforeEach(function() {
+        if (firstTimeThrough) {
+          firstSpecContext = this;
+        } else {
+          secondSpecContext = this;
+        }
+        expect(this).toEqual({});
+      });
+
+      env.it("sync spec", function() {
+        expect(this).toBe(firstSpecContext);
+      });
+
+      env.it("another sync spec", function() {
+        expect(this).toBe(secondSpecContext);
+      });
+
+      env.afterEach(function() {
+        if (firstTimeThrough) {
+          expect(this).toBe(firstSpecContext);
+          firstTimeThrough = false;
+        } else {
+          expect(this).toBe(secondSpecContext);
+        }
+      });
+    });
+
+    env.execute();
+  });
+
+  it("calls associated befores/its/afters with the same 'this' for an async spec", function(done) {
+    var env = new j$.Env();
+
+    env.addReporter({jasmineDone: done});
+
+    env.describe("with an async spec", function() {
+      var specContext;
+
+      env.beforeEach(function() {
+        specContext = this;
+        expect(this).toEqual({});
+      });
+
+      env.it("sync spec", function(underTestCallback) {
+        expect(this).toBe(specContext);
+        underTestCallback();
+      });
+
+      env.afterEach(function() {
+        expect(this).toBe(specContext);
+      });
+    });
+
+    env.execute();
+  });
+
   it("Mock clock can be installed and used in tests", function(done) {
     var globalSetTimeout = jasmine.createSpy('globalSetTimeout'),
         delayedFunctionForGlobalClock = jasmine.createSpy('delayedFunctionForGlobalClock'),

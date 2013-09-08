@@ -19,6 +19,23 @@ describe("QueueRunner", function() {
     expect(calls).toEqual(['fn1', 'fn2']);
   });
 
+  it("calls each function with a consistent 'this'-- an empty object", function() {
+    var fn1 = jasmine.createSpy('fn1'),
+        fn2 = jasmine.createSpy('fn2'),
+        fn3 = function(done) { asyncContext = this; done(); },
+        queueRunner = new j$.QueueRunner({
+          fns: [fn1, fn2, fn3]
+        }),
+        asyncContext;
+
+    queueRunner.execute();
+
+    var context = fn1.calls.first().object;
+    expect(context).toEqual({});
+    expect(fn2.calls.first().object).toBe(context);
+    expect(asyncContext).toBe(context);
+  });
+
   it("supports asynchronous functions, only advancing to next function after a done() callback", function() {
     //TODO: it would be nice if spy arity could match the fake, so we could do something like:
     //createSpy('asyncfn').and.callFake(function(done) {});
