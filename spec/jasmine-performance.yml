@@ -1,20 +1,14 @@
-jasmine_dir:
+src_dir:
   - 'src'
-jasmine_files:
-  - 'core/base.js'
-  - 'core/util.js'
-  - 'core/Reporter.js'
-  - 'html/HtmlReporterHelpers.js'
-  - 'core/ExpectationResult.js'
-  - '**/*.js'
-jasmine_css_files:
-  - 'html/jasmine.css'
 src_files:
-stylesheets:
+  - '**/*.js'
+boot_dir: 'spec/support'
+boot_files:
+  - 'dev_boot.js'
 helpers:
+  - 'helpers/**/*.js'
 spec_files:
   - 'performance/performance_test.js'
-src_dir:
 spec_dir:
   - 'spec'
 
