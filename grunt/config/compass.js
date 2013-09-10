@@ -1,10 +1,10 @@
 module.exports = {
   jasmine: {
     options: {
-      cssDir: 'src/html',
+      cssDir: 'lib/jasmine-core/',
       sassDir: 'src/html',
       outputStyle: 'compact',
-      lineComments: false
+      noLineComments: true,
     }
   }
 };
