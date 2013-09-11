@@ -93,11 +93,9 @@ body {
     margin: $line-height 0;
 
     li {
-      display: block;
-      float: left;
+      display: inline-block;
       height: $line-height / 2;
       width: $line-height;
-      margin-bottom: $line-height / 2;
 
       font-size: 16px;
 
