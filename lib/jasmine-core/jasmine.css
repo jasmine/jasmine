@@ -11,7 +11,7 @@ body { background-color: #eeeeee; padding: 0; margin: 5px; overflow-y: scroll; }
 .html-reporter .banner { margin-top: 14px; }
 .html-reporter .duration { color: #aaaaaa; float: right; }
 .html-reporter .symbol-summary { overflow: hidden; *zoom: 1; margin: 14px 0; }
-.html-reporter .symbol-summary li { display: inline-block; height: 7px; width: 14px; font-size: 16px; }
+.html-reporter .symbol-summary li { display: inline-block; height: 8px; width: 14px; font-size: 16px; }
 .html-reporter .symbol-summary li.passed { font-size: 14px; }
 .html-reporter .symbol-summary li.passed:before { color: #5e7d00; content: "\02022"; }
 .html-reporter .symbol-summary li.failed { line-height: 9px; }

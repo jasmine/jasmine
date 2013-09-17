@@ -94,7 +94,7 @@ body {
 
     li {
       display: inline-block;
-      height: $line-height / 2;
+      height: ($line-height / 2) + 1;
       width: $line-height;
 
       font-size: 16px;
