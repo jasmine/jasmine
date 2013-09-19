@@ -8,9 +8,11 @@ Dir["#{File.dirname(__FILE__)}/tasks/**/*.rb"].each do |file|
 end
 
 # TODO: Is there better way to invoke this using Jasmine gem???
+desc "Run jasmine core specs in a browser."
 task :core_spec do
   exec "ruby spec/jasmine_self_test_spec.rb"
 end
+task :default => :core_spec
 
 namespace :jasmine do
   task :server do
