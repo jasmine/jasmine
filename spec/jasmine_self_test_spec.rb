@@ -41,9 +41,9 @@ end
 Jasmine.configure do |config|
   config.webdriver = webdriver if webdriver
   config.browser = browser if browser
+  config.runner = Jasmine::Runners::HTTP
 end
 server = Jasmine::Server.new(config.port, Jasmine::Application.app(config))
-driver = Jasmine::SeleniumDriver.new(config.browser, "#{config.host}:#{config.port}/")
 
 t = Thread.new do
   begin
@@ -56,12 +56,9 @@ t.abort_on_exception = true
 Jasmine::wait_for_listener(config.port, "jasmine server")
 puts "jasmine server started."
 
-reporter = Jasmine::Reporters::ApiReporter.new(driver, config.result_batch_size)
-raw_results = Jasmine::Runners::HTTP.new(driver, reporter).run
-results = Jasmine::Results.new(raw_results)
+formatters = config.formatters.map { |formatter_class| formatter_class.new(config) }
+runner = config.runner.new(Jasmine::Formatters::Multi.new(formatters), config)
+runner.run
 
-formatter = Jasmine::Formatters::Console.new(results)
-puts formatter.failures
-puts formatter.summary
+exit runner.succeeded? ? 0 : 1
 
-exit results.failures.size
