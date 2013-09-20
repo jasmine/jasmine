@@ -38,11 +38,9 @@ if ENV['USE_SAUCE'] == 'true'
   webdriver = Selenium::WebDriver.for :remote, :url => url, :desired_capabilities => capabilities
 end
 
-Jasmine.configure do |config|
-  config.webdriver = webdriver if webdriver
-  config.browser = browser if browser
-  config.runner = Jasmine::Runners::HTTP
-end
+config.webdriver = webdriver if webdriver
+config.browser = browser if browser
+config.runner = Jasmine::Runners::HTTP
 server = Jasmine::Server.new(config.port, Jasmine::Application.app(config))
 
 t = Thread.new do
