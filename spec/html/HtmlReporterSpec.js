@@ -159,11 +159,13 @@ describe("New HtmlReporter", function() {
       var env = new j$.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
+        favicon = jasmine.createSpyObj('Favico', ['badge']),
         reporter = new j$.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); },
+          favicon: favicon
         });
       reporter.initialize();
 
@@ -219,6 +221,7 @@ describe("New HtmlReporter", function() {
 
       var outerSuite = summary.childNodes[0];
       expect(outerSuite.childNodes.length).toEqual(4);
+      expect(favicon.badge).toHaveBeenCalledWith(1);
 
       var classes = [];
       for (var i = 0; i < outerSuite.childNodes.length; i++) {
