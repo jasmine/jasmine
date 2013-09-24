@@ -40,7 +40,7 @@ end
 
 config.webdriver = webdriver if webdriver
 config.browser = browser if browser
-config.runner = Jasmine::Runners::HTTP
+config.runner = lambda { |formatter, jasmine_server_url| Jasmine::Runners::HTTP.new(formatter, jasmine_server_url, config) }
 server = Jasmine::Server.new(config.port, Jasmine::Application.app(config))
 
 t = Thread.new do
@@ -55,7 +55,8 @@ Jasmine::wait_for_listener(config.port, "jasmine server")
 puts "jasmine server started."
 
 formatters = config.formatters.map { |formatter_class| formatter_class.new(config) }
-runner = config.runner.new(Jasmine::Formatters::Multi.new(formatters), config)
+url = "#{config.host}:#{config.port}/"
+runner = config.runner.call(Jasmine::Formatters::Multi.new(formatters), url)
 runner.run
 
 exit runner.succeeded? ? 0 : 1
