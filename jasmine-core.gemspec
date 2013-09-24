@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "sass"
   s.add_development_dependency "compass"
   s.add_development_dependency "rspec"
+  s.add_development_dependency "rake"
   s.add_development_dependency "fuubar"
   s.add_development_dependency "awesome_print"
   s.add_development_dependency "nokogiri"
