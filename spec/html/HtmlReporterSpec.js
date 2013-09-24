@@ -243,6 +243,80 @@ describe("New HtmlReporter", function() {
 //      expect(specLink.getAttribute("title")).toEqual("A Suite with a spec");
     });
 
+    it("shows count of red tests in favicon if favico.js is loaded", function() {
+      var env = new j$.Env(),
+        container = document.createElement("div"),
+        getContainer = function() { return container; },
+        favicon = jasmine.createSpyObj('Favico', ['badge']),
+        reporter = new j$.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); },
+          favicon: favicon
+        });
+      reporter.initialize();
+
+      reporter.jasmineStarted({});
+      reporter.suiteStarted({
+        id: 1,
+        description: "A Suite",
+        fullName: "A Suite"
+      });
+
+      specResult = {
+        id: 123,
+        description: "with a failing spec",
+        fullName: "A Suite inner with a failing spec",
+        status: "failed",
+        failedExpectations: []
+      };
+      reporter.specStarted(specResult);
+      reporter.specDone(specResult);
+
+      reporter.suiteDone({id: 1});
+
+      reporter.jasmineDone({});
+      expect(favicon.badge).toHaveBeenCalledWith(1);
+    });
+
+    it("does not change favicon if all tests passed", function() {
+      var env = new j$.Env(),
+        container = document.createElement("div"),
+        getContainer = function() { return container; },
+        favicon = jasmine.createSpyObj('Favico', ['badge']),
+        reporter = new j$.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); },
+          favicon: favicon
+        });
+      reporter.initialize();
+
+      reporter.jasmineStarted({});
+      reporter.suiteStarted({
+        id: 1,
+        description: "A Suite",
+        fullName: "A Suite"
+      });
+
+      specResult = {
+        id: 123,
+        description: "with a spec",
+        fullName: "A Suite inner with a spec",
+        status: "passed",
+        failedExpectations: []
+      };
+      reporter.specStarted(specResult);
+      reporter.specDone(specResult);
+
+      reporter.suiteDone({id: 1});
+
+      reporter.jasmineDone({});
+      expect(favicon.badge).not.toHaveBeenCalled();
+    });
+
     describe("UI for raising/catching exceptions", function() {
       it("should be unchecked if the env is catching", function() {
         var env = new j$.Env(),
