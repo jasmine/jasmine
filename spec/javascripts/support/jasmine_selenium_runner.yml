@@ -1,0 +1,16 @@
+---
+use_sauce: <%= ENV['USE_SAUCE'] %>
+browser: <%= ENV['JASMINE_BROWSER'] %>
+sauce:
+  name: jasmine-core <%= Time.now.to_s %>
+  username: <%= ENV['SAUCE_USERNAME'] %>
+  access_key: <%= ENV['SAUCE_ACCESS_KEY'] %>
+  build: <%= ENV['TRAVIS_BUILD_NUMBER'] || 'Ran locally' %>
+  tags:
+    - <%= ENV['TRAVIS_RUBY_VERSION'] || RUBY_VERSION %>
+    - CI
+  tunnel_identifier: <%= ENV['TRAVIS_JOB_NUMBER'] %>
+  os: <%= ENV['SAUCE_OS'] %>
+  browser_version: <%= ENV['SAUCE_BROWSER_VERSION'] %>
+
+

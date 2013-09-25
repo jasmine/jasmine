@@ -16,32 +16,32 @@ matrix:
     - TEST_COMMAND="bash travis-node-script.sh"
   - env: 
     - JASMINE_BROWSER="firefox"
-    - SAUCE_PLATFORM="Linux"
-    - SAUCE_VERSION=''
+    - SAUCE_OS="Linux"
+    - SAUCE_BROWSER_VERSION=''
   - env: 
     - JASMINE_BROWSER="safari"
-    - SAUCE_PLATFORM="OS X 10.8"
-    - SAUCE_VERSION=6
+    - SAUCE_OS="OS X 10.8"
+    - SAUCE_BROWSER_VERSION=6
   - env:
     - JASMINE_BROWSER="safari"
-    - SAUCE_PLATFORM="OS X 10.6"
-    - SAUCE_VERSION=5
+    - SAUCE_OS="OS X 10.6"
+    - SAUCE_BROWSER_VERSION=5
   - env: 
     - JASMINE_BROWSER="internet explorer"
-    - SAUCE_PLATFORM="Windows 8"
-    - SAUCE_VERSION=10
+    - SAUCE_OS="Windows 8"
+    - SAUCE_BROWSER_VERSION=10
   - env: 
     - JASMINE_BROWSER="internet explorer"
-    - SAUCE_PLATFORM="Windows 7"
-    - SAUCE_VERSION=9
+    - SAUCE_OS="Windows 7"
+    - SAUCE_BROWSER_VERSION=9
   - env: 
     - JASMINE_BROWSER="internet explorer"
-    - SAUCE_PLATFORM="Windows 7"
-    - SAUCE_VERSION=8
+    - SAUCE_OS="Windows 7"
+    - SAUCE_BROWSER_VERSION=8
   - env: 
     - JASMINE_BROWSER="chrome"
-    - SAUCE_PLATFORM="Linux"
-    - SAUCE_VERSION=''
+    - SAUCE_OS="Linux"
+    - SAUCE_BROWSER_VERSION=''
   - env: 
     - JASMINE_BROWSER="phantomjs"
     - USE_SAUCE=false
