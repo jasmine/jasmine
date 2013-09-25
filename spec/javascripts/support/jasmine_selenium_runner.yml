@@ -9,7 +9,7 @@ sauce:
   tags:
     - <%= ENV['TRAVIS_RUBY_VERSION'] || RUBY_VERSION %>
     - CI
-  tunnel_identifier: <%= ENV['TRAVIS_JOB_NUMBER'] ? "#{ENV['TRAVIS_JOB_NUMBER']}" : nil %>
+  tunnel_identifier: <%= ENV['TRAVIS_JOB_NUMBER'] ? %Q("#{ENV['TRAVIS_JOB_NUMBER']}") : nil %>
   os: <%= ENV['SAUCE_OS'] %>
   browser_version: <%= ENV['SAUCE_BROWSER_VERSION'] %>
 
