@@ -169,10 +169,10 @@ process.argv.forEach(function(arg) {
 specs = [];
 
 if (perfSuite) {
-  specs = getFiles(__dirname + '/performance', new RegExp("test.js$"));
+  specs = getFiles(__dirname + '/javascripts/performance', new RegExp("test.js$"));
 } else {
-  var consoleSpecs = getSpecFiles(__dirname + "/console"),
-      coreSpecs = getSpecFiles(__dirname + "/core"),
+  var consoleSpecs = getSpecFiles(__dirname + "/javascripts/console"),
+      coreSpecs = getSpecFiles(__dirname + "/javascripts/core"),
       specs = consoleSpecs.concat(coreSpecs);
 }
 

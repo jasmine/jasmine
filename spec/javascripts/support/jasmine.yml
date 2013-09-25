@@ -15,7 +15,7 @@ src_files:
   - 'html/**.js'
   - '**/*.js'
 stylesheets:
-boot_dir: 'spec/support'
+boot_dir: 'spec/javascripts/support'
 boot_files:
   - 'dev_boot.js'
 helpers:
@@ -23,6 +23,5 @@ helpers:
 spec_files:
   - '**/*[Ss]pec.js'
 spec_dir:
-  - 'spec'
 
 

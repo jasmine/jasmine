@@ -2,7 +2,7 @@ require 'rubygems'
 require 'bundler/setup'
 require 'jasmine'
 
-Jasmine.load_configuration_from_yaml(File.join(Dir.pwd, 'spec', 'jasmine.yml'))
+Jasmine.load_configuration_from_yaml(File.join(Dir.pwd, 'spec', 'javascripts', 'support', 'jasmine.yml'))
 config = Jasmine.config
 
 browser = ENV['JASMINE_BROWSER'] || 'firefox'
