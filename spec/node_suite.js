@@ -141,7 +141,7 @@ var j$require = (function() {
   }
 }());
 
-var j$ = j$require.core(j$require);
+j$ = j$require.core(j$require);
 j$require.console(j$require, j$);
 
 // options from command line
