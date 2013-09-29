@@ -8,7 +8,7 @@ function getJasmineRequireObj() {
 }
 
 getJasmineRequireObj().core = function(jRequire) {
-  j$ = {};
+  var j$ = {};
 
   jRequire.base(j$);
   j$.util = jRequire.util();
