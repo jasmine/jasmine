@@ -27,7 +27,7 @@ describe("Env", function() {
       expect(fakeReporter.jasmineStarted).toHaveBeenCalled();
     });
   });
-  
+
   it('removes all spies when env is executed', function(done) {
     originalFoo = function() {},
     testObj = {
@@ -85,11 +85,11 @@ describe("Env", function() {
       var subject = { spiedFunc: function() { originalFunctionWasCalled = true; } };
 
       originalFunc = subject.spiedFunc;
-      
+
       var spy = env.spyOn(subject, 'spiedFunc');
 
       expect(subject.spiedFunc).toEqual(spy);
-      
+
       expect(subject.spiedFunc.calls.any()).toEqual(false);
       expect(subject.spiedFunc.calls.count()).toEqual(0);
 
