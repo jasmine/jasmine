@@ -81,7 +81,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var getSpecName = function(spec, currentSuite) {
-      return currentSuite.getFullName() + ' ' + spec.description + '.';
+      return currentSuite.getFullName() + ' ' + spec.description;
     };
 
     // TODO: we may just be able to pass in the fn instead of wrapping here

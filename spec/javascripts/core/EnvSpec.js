@@ -485,9 +485,9 @@ describe("Env integration", function() {
       });
     });
 
-    expect(topLevelSpec.getFullName()).toBe("my tests are sometimes top level.");
-    expect(nestedSpec.getFullName()).toBe("my tests are sometimes singly nested.");
-    expect(doublyNestedSpec.getFullName()).toBe("my tests are sometimes even doubly nested.");
+    expect(topLevelSpec.getFullName()).toBe("my tests are sometimes top level");
+    expect(nestedSpec.getFullName()).toBe("my tests are sometimes singly nested");
+    expect(doublyNestedSpec.getFullName()).toBe("my tests are sometimes even doubly nested");
   });
 
   it("Custom equality testers should be per spec", function(done) {
