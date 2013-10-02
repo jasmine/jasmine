@@ -1,4 +1,4 @@
-xdescribe('Exceptions:', function() {
+describe('Exceptions:', function() {
   var env;
 
   beforeEach(function() {
