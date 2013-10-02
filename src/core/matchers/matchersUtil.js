@@ -52,10 +52,8 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     var result = true;
 
     for (var i = 0; i < customTesters.length; i++) {
-      result = customTesters[i](a, b);
-      if (result) {
-        return true;
-      }
+      var customTesterResult = customTesters[i](a, b);
+      if (!j$.util.isUndefined(customTesterResult)) return customTesterResult;
     }
 
     if (a instanceof j$.Any) {

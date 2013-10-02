@@ -92,6 +92,18 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.equals(actual, expected)).toBe(true);
     });
 
+    it("passes for two empty Objects", function () {
+      expect(j$.matchersUtil.equals({}, {})).toBe(true);
+    });
+
+    describe("when a custom equality matcher is installed that returns 'undefined'", function () {
+      var tester = function(a, b) { return jasmine.undefined; };
+
+      it("passes for two empty Objects", function () {
+        expect(j$.matchersUtil.equals({}, {}, [tester])).toBe(true);
+      });
+    });
+
     it("fails for Objects that are not equivalent (with cycles)", function() {
       var actual = { a: "foo" },
         expected = { a: "bar" };
@@ -156,7 +168,7 @@ describe("matchersUtil", function() {
     it("fails for equivalents when a custom equality matcher returns false", function() {
       var tester = function(a, b) { return false; };
 
-      expect(j$.matchersUtil.equals(1, 2, [tester])).toBe(false);
+      expect(j$.matchersUtil.equals(1, 1, [tester])).toBe(false);
     });
   });
 
