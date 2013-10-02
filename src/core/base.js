@@ -1,3 +1,4 @@
+getJasmineRequireObj().global = this;
 getJasmineRequireObj().base = function(j$) {
   j$.unimplementedMethod_ = function() {
     throw new Error("unimplemented method");
@@ -6,13 +7,11 @@ getJasmineRequireObj().base = function(j$) {
   j$.MAX_PRETTY_PRINT_DEPTH = 40;
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
-  j$.getGlobal = function() {
-    function getGlobal() {
-      return this;
-    }
-
-    return getGlobal();
-  };
+  j$.getGlobal = (function(global) {
+    return function() {
+      return global;
+    };
+  })(this.global);  // Here, this === getJasmineRequireObj()
 
   j$.getEnv = function(options) {
     var env = j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options);
