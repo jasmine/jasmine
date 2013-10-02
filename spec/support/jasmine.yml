@@ -15,13 +15,13 @@ src_files:
   - 'html/**.js'
   - '**/*.js'
 stylesheets:
-boot_dir: 'spec/javascripts/support'
+boot_dir: 'spec/support'
 boot_files:
   - 'dev_boot.js'
 helpers:
   - 'helpers/**/*.js'
 spec_files:
   - '**/*[Ss]pec.js'
-spec_dir:
+spec_dir: spec
 
 
