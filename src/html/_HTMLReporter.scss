@@ -288,13 +288,11 @@ body {
       margin-bottom: $line-height * 2;
 
       .description {
-        //line-height: $line-height * 2;
-        display: block;
-
-        color: white;
         background-color: $failing-color;
 
-        //font-size: $large-font-size;
+        a {
+          color: white;
+        }
       }
     }
   }
@@ -303,7 +301,7 @@ body {
     padding-top: $line-height;
 
     color: $text-color;
-    
+
     white-space: pre;
   }
 

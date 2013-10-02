@@ -461,8 +461,10 @@ describe("New HtmlReporter", function() {
         expect(failure.getAttribute("class")).toMatch(/failed/);
         expect(failure.getAttribute("class")).toMatch(/spec-detail/);
 
-        var specLink = failure.childNodes[0];
-        expect(specLink.getAttribute("class")).toEqual("description");
+        var specDiv = failure.childNodes[0];
+        expect(specDiv.getAttribute("class")).toEqual("description");
+
+        var specLink = specDiv.childNodes[0];
         expect(specLink.getAttribute("title")).toEqual("a suite with a failing spec");
         expect(specLink.getAttribute("href")).toEqual("?spec=a%20suite%20with%20a%20failing%20spec");
 
