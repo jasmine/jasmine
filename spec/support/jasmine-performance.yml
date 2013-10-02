@@ -2,13 +2,13 @@ src_dir:
   - 'src'
 src_files:
   - '**/*.js'
-boot_dir: 'spec/javascripts/support'
+boot_dir: 'spec/support'
 boot_files:
   - 'dev_boot.js'
 helpers:
   - 'helpers/**/*.js'
 spec_files:
   - 'performance/performance_test.js'
-spec_dir:
+spec_dir: spec
 
 
