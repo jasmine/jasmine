@@ -1,7 +1,7 @@
 var grunt = require("grunt");
 
 function standaloneTmpDir(path) {  return "dist/tmp/" + path; }
-  
+
 grunt.registerTask("build:compileSpecRunner",
     "Processes the spec runner template and writes to a tmp file",
     function() {
@@ -23,6 +23,7 @@ grunt.registerTask("build:cleanSpecRunner",
 grunt.registerTask("buildStandaloneDist",
     "Builds a standalone distribution",
     [
+      "buildDistribution",
       "build:compileSpecRunner",
       "compress:standalone",
       "build:cleanSpecRunner"
