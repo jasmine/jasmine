@@ -1,4 +1,4 @@
-getJasmineRequireObj().Spec = function() {
+getJasmineRequireObj().Spec = function(j$) {
   function Spec(attrs) {
     this.encounteredExpectations = false;
     this.expectationFactory = attrs.expectationFactory;
