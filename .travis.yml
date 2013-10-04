@@ -44,3 +44,6 @@ matrix:
   - env:
     - JASMINE_BROWSER="phantomjs"
     - USE_SAUCE=false
+  - env:
+    - USE_SAUCE=false
+    - TEST_COMMAND="bash travis-docs-script.sh"
