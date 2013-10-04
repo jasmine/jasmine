@@ -48,6 +48,10 @@ getJasmineRequireObj().base = function(j$) {
     return new j$.ObjectContaining(sample);
   };
 
+  j$.arrayContaining = function(sample) {
+    return new j$.ArrayContaining(sample);
+  };
+
   j$.createSpy = function(name, originalFn) {
 
     var spyStrategy = new j$.SpyStrategy({

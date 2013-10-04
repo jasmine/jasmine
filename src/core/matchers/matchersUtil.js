@@ -79,6 +79,13 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       }
     }
 
+    if (b instanceof j$.ArrayContaining) {
+      result = b.jasmineMatches(a);
+      if (result) {
+        return true;
+      }
+    }
+
     if (a instanceof Error && b instanceof Error) {
       return a.message == b.message;
     }

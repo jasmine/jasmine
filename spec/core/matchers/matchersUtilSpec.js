@@ -147,6 +147,12 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.equals(obj, new j$.ObjectContaining({foo: 3}))).toBe(true);
     });
 
+    it("passes when ArrayContaining is used", function() {
+      var arr = ["foo", "bar"];
+
+      expect(j$.matchersUtil.equals(arr, new j$.ArrayContaining(["bar"]))).toBe(true);
+    });
+
     it("passes when a custom equality matcher returns true", function() {
       var tester = function(a, b) { return true; };
 
