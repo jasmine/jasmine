@@ -125,7 +125,7 @@ getJasmineRequireObj().Env = function(j$) {
       options.catchException = self.catchException;
       options.clearStack = options.clearStack || clearStack;
 
-      new j$.QueueRunner(options).run(options.fns, 0);
+      new j$.QueueRunner(options).execute();
     };
 
     var totalSpecsDefined = 0;
