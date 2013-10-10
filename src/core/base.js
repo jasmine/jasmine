@@ -96,8 +96,4 @@ getJasmineRequireObj().base = function(j$) {
     }
     return obj;
   };
-
-  j$.addCustomEqualityTester = function(tester) {
-    j$.getEnv().addCustomEqualityTester(tester);
-  };
 };
