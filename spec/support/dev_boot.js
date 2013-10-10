@@ -47,7 +47,6 @@
       return env.spyOn(obj, methodName);
     },
 
-    clock: env.clock,
     jsApiReporter: new jasmine.JsApiReporter({
       timer: new jasmine.Timer()
     })
@@ -58,6 +57,18 @@
   } else {
     extend(window, jasmineInterface);
   }
+
+  jasmine.addCustomEqualityTester = function(tester) {
+    env.addCustomEqualityTester(tester);
+  };
+
+  jasmine.addMatchers = function(matchers) {
+    return env.addMatchers(matchers);
+  };
+
+  jasmine.clock = function() {
+    return env.clock;
+  };
 
   var queryString = new jasmine.QueryString({
     getWindowLocation: function() { return window.location; }

@@ -41,19 +41,9 @@ var jasmineInterface = {
     return env.expect(actual);
   },
 
-  addMatchers: function(matchers) {
-    return env.addMatchers(matchers);
-  },
-
   spyOn: function(obj, methodName) {
     return env.spyOn(obj, methodName);
   },
-
-  clock: env.clock,
-  setTimeout: env.clock.setTimeout,
-  clearTimeout: env.clock.clearTimeout,
-  setInterval: env.clock.setInterval,
-  clearInterval: env.clock.clearInterval,
 
   jsApiReporter: new jasmine.JsApiReporter({
     timer: new jasmine.Timer()
@@ -66,6 +56,18 @@ function extend(destination, source) {
   for (var property in source) destination[property] = source[property];
   return destination;
 }
+
+jasmine.addCustomEqualityTester = function(tester) {
+  env.addCustomEqualityTester(tester);
+};
+
+jasmine.addMatchers = function(matchers) {
+  return env.addMatchers(matchers);
+};
+
+jasmine.clock = function() {
+  return env.clock;
+};
 
 // Jasmine "runner"
 function executeSpecs(specs, done, isVerbose, showColors) {

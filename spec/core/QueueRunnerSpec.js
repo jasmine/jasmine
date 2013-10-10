@@ -67,7 +67,7 @@ describe("QueueRunner", function() {
         onComplete: onComplete
       });
 
-    clock.install();
+    jasmine.clock().install();
 
     queueRunner.execute();
 
@@ -76,18 +76,18 @@ describe("QueueRunner", function() {
     expect(afterCallback).not.toHaveBeenCalled();
     expect(onComplete).not.toHaveBeenCalled();
 
-    clock.tick(100);
+    jasmine.clock().tick(100);
 
     expect(fnCallback).toHaveBeenCalled();
     expect(afterCallback).not.toHaveBeenCalled();
     expect(onComplete).not.toHaveBeenCalled();
 
-    clock.tick(100);
+    jasmine.clock().tick(100);
 
     expect(afterCallback).toHaveBeenCalled();
     expect(onComplete).not.toHaveBeenCalled();
 
-    clock.tick(100);
+    jasmine.clock().tick(100);
 
     expect(onComplete).toHaveBeenCalled();
   });
