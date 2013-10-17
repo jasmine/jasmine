@@ -6,6 +6,10 @@ var path = require('path');
 var jasmineRequire = require('../lib/jasmine-core/jasmine.js');
 var jasmine = jasmineRequire.core(jasmineRequire);
 
+var junitFns = require('../src/junit/junit.js');
+extend(jasmineRequire, junitFns);
+jasmineRequire.junit(jasmineRequire, jasmine);
+
 var consoleFns = require('../src/console/console.js');
 extend(jasmineRequire, consoleFns);
 jasmineRequire.console(jasmineRequire, jasmine);
@@ -124,10 +128,14 @@ var j$require = (function() {
 
   j$req = require(__dirname + "/../src/core/requireCore.js");
   extend(j$req, require(__dirname + "/../src/console/requireConsole.js"));
+  extend(j$req, require(__dirname + "/../src/junit/requireJunit.js"));
+
 
   var srcFiles = getFiles(__dirname + "/../src/core");
   srcFiles.push(__dirname + "/../src/version.js");
   srcFiles.push(__dirname + "/../src/console/ConsoleReporter.js");
+  srcFiles.push(__dirname + "/../src/junit/JunitReporter.js");
+
 
   for (var i = 0; i < srcFiles.length; i++) {
     require(srcFiles[i]);
@@ -145,6 +153,8 @@ var j$require = (function() {
 
 j$ = j$require.core(j$require);
 j$require.console(j$require, j$);
+j$require.junit(j$require, j$);
+
 
 // options from command line
 var isVerbose = false;
@@ -174,8 +184,9 @@ if (perfSuite) {
   specs = getFiles(__dirname + '/performance', new RegExp("test.js$"));
 } else {
   var consoleSpecs = getSpecFiles(__dirname + "/console"),
+      junitSpecs = getSpecFiles(__dirname + "/junit"),
       coreSpecs = getSpecFiles(__dirname + "/core"),
-      specs = consoleSpecs.concat(coreSpecs);
+      specs = consoleSpecs.concat(coreSpecs).concat(junitSpecs);
 }
 
 executeSpecs(specs, function(passed) {
