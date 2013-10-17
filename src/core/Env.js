@@ -170,7 +170,6 @@ getJasmineRequireObj().Env = function(j$) {
         removeAllSpies();
         j$.Expectation.resetMatchers();
         customEqualityTesters.length = 0;
-        self.clock.uninstall();
         self.currentSpec = null;
         self.reporter.specDone(result);
       }
