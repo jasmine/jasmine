@@ -356,6 +356,7 @@ describe("Env integration", function() {
         env.clock.install();
         env.clock.setTimeout(delayedFunctionForMockClock, 100);
         env.clock.tick(100);
+        env.clock.uninstall();
       });
       env.it("test without mock clock", function() {
         env.clock.setTimeout(delayedFunctionForGlobalClock, 100);
