@@ -56,7 +56,7 @@ getJasmineRequireObj().Spec = function(j$) {
     function timeoutable(fn) {
       return function(done) {
         var timeout = Function.prototype.apply.apply(self.timer.setTimeout, [j$.getGlobal(), [function() {
-          onException(new Error('timeout'));
+          onException(new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'));
           done();
         }, j$.DEFAULT_TIMEOUT_INTERVAL]]);
 
