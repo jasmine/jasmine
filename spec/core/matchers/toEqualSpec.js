@@ -3,10 +3,10 @@ describe("toEqual", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equals').and.returnValue(true)
       },
-      matcher = j$.matchers.toEqual(util),
+      matcherComparator = j$.matchers.toEqual(util),
       result;
 
-    result = matcher.compare(1, 1);
+    result = matcherComparator(1, 1);
 
     expect(util.equals).toHaveBeenCalledWith(1, 1, []);
     expect(result.pass).toBe(true);
@@ -17,10 +17,10 @@ describe("toEqual", function() {
         equals: jasmine.createSpy('delegated-equals').and.returnValue(true)
       },
       customEqualityTesters = ['a', 'b'],
-      matcher = j$.matchers.toEqual(util, customEqualityTesters),
+      matcherComparator = j$.matchers.toEqual(util, customEqualityTesters),
       result;
 
-    result = matcher.compare(1, 1);
+    result = matcherComparator(1, 1);
 
     expect(util.equals).toHaveBeenCalledWith(1, 1, ['a', 'b']);
     expect(result.pass).toBe(true);

@@ -1,20 +1,20 @@
 describe("toThrow", function() {
   it("throws an error when the actual is not a function", function() {
-    var matcher = j$.matchers.toThrow();
+    var matcherComparator = j$.matchers.toThrow();
 
     expect(function() {
-      matcher.compare({});
+      matcherComparator({});
     }).toThrow(new Error("Actual is not a Function")); // TODO: this needs to change for self-test
   });
 
   it("fails if actual does not throw", function() {
-    var matcher = j$.matchers.toThrow(),
+    var matcherComparator = j$.matchers.toThrow(),
       fn = function() {
         return true;
       },
       result;
 
-    result = matcher.compare(fn);
+    result = matcherComparator(fn);
 
     expect(result.pass).toBe(false);
     expect(result.message).toEqual("Expected function to throw an exception.");
@@ -24,26 +24,26 @@ describe("toThrow", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrow(util),
+      matcherComparator = j$.matchers.toThrow(util),
       fn = function() {
         throw 5;
       },
       result;
 
-    result = matcher.compare(fn);
+    result = matcherComparator(fn);
 
     expect(result.pass).toBe(true);
     expect(result.message).toEqual("Expected function not to throw, but it threw 5.");
   });
 
   it("passes even if what is thrown is falsy", function() {
-    var matcher = j$.matchers.toThrow(),
+    var matcherComparator = j$.matchers.toThrow(),
       fn = function() {
         throw undefined;
       },
       result;
 
-    result = matcher.compare(fn);
+    result = matcherComparator(fn);
     expect(result.pass).toBe(true);
     expect(result.message).toEqual("Expected function not to throw, but it threw undefined.");
   });
@@ -52,13 +52,13 @@ describe("toThrow", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrow(util),
+      matcherComparator = j$.matchers.toThrow(util),
       fn = function() {
         throw 5;
       },
       result;
 
-    result = matcher.compare(fn, 5);
+    result = matcherComparator(fn, 5);
 
     expect(result.pass).toBe(true);
     expect(result.message).toEqual("Expected function not to throw 5.");
@@ -68,13 +68,13 @@ describe("toThrow", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
       },
-      matcher = j$.matchers.toThrow(util),
+      matcherComparator = j$.matchers.toThrow(util),
       fn = function() {
         throw 5;
       },
       result;
 
-    result = matcher.compare(fn, "foo");
+    result = matcherComparator(fn, "foo");
 
     expect(result.pass).toBe(false);
     expect(result.message).toEqual("Expected function to throw 'foo', but it threw 5.");
@@ -84,13 +84,13 @@ describe("toThrow", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
       },
-      matcher = j$.matchers.toThrow(util),
+      matcherComparator = j$.matchers.toThrow(util),
       fn = function() {
         throw 5;
       },
       result;
 
-    result = matcher.compare(fn, void 0);
+    result = matcherComparator(fn, void 0);
 
     expect(result.pass).toBe(false);
     expect(result.message).toEqual("Expected function to throw undefined, but it threw 5.");
