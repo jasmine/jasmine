@@ -5,7 +5,6 @@
 //
 //  beforeEach(function() {
 //    env = new jasmine.Env();
-//    env.updateInterval = 0;
 //  });
 //
 //  it("should be easy to add more matchers local to a spec, suite, etc.", function() {

@@ -3,7 +3,6 @@ describe('Exceptions:', function() {
 
   beforeEach(function() {
     env = new j$.Env();
-    env.updateInterval = 0;
   });
 
   describe('with break on exception', function() {

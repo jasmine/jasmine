@@ -6,7 +6,6 @@ xdescribe('JsApiReporter (integration specs)', function() {
 
     beforeEach(function() {
       env = new j$.Env();
-      env.updateInterval = 0;
 
       suite = env.describe("top-level suite", function() {
         spec1 = env.it("spec 1", function() {

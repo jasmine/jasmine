@@ -5,7 +5,6 @@ describe("jasmine spec running", function () {
 
   beforeEach(function() {
     env = new j$.Env();
-    env.updateInterval = 0;
   });
 
   it('should assign spec ids sequentially', function() {

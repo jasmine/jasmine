@@ -3,7 +3,6 @@ describe("Env", function() {
   var env;
   beforeEach(function() {
     env = new j$.Env();
-    env.updateInterval = 0;
   });
 
   describe('ids', function() {

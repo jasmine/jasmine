@@ -3,7 +3,6 @@ describe("MatchersSpec - HTML Dependent", function () {
 
   beforeEach(function() {
     env = new j$.Env();
-    env.updateInterval = 0;
 
     var suite = env.describe("suite", function() {
       spec = env.it("spec", function() {
