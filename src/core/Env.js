@@ -169,7 +169,7 @@ getJasmineRequireObj().Env = function(j$) {
       function specResultCallback(result) {
         removeAllSpies();
         j$.Expectation.resetMatchers();
-        customEqualityTesters.length = 0;
+        customEqualityTesters = [];
         self.currentSpec = null;
         self.reporter.specDone(result);
       }
