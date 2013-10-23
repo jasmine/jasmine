@@ -80,7 +80,6 @@
 
   var htmlReporter = new jasmine.HtmlReporter({
     env: env,
-    queryString: queryString,
     onRaiseExceptionsClick: function() { queryString.setParam("catch", !env.catchingExceptions()); },
     getContainer: function() { return document.body; },
     createElement: function() { return document.createElement.apply(document, arguments); },
