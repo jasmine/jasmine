@@ -22,6 +22,10 @@ Please read the [contributors' guide](https://github.com/pivotal/jasmine/blob/ma
 
 * [Davis W. Frank](mailto:dwfrank@pivotallabs.com), Pivotal Labs
 * [Rajan Agaskar](mailto:rajan@pivotallabs.com), Pivotal Labs
+* [Sheel Choksi](mailto:schoksi@pivotallabs.com), Pivotal Labs
+
+### Maintainers Emeritus
+
 * [Christian Williams](mailto:antixian666@gmail.com), Square
 
 Copyright (c) 2008-2013 Pivotal Labs. This software is licensed under the MIT License.
