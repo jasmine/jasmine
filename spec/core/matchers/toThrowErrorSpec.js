@@ -4,7 +4,7 @@ describe("toThrowError", function() {
 
     expect(function() {
       matcherComparator({});
-    }).toThrow(new Error("Actual is not a Function")); // TODO: this needs to change for self-test
+    }).toThrowError("Actual is not a Function");
   });
 
   it("throws an error when the expected is not an Error, string, or RegExp", function() {
@@ -15,7 +15,7 @@ describe("toThrowError", function() {
 
     expect(function() {
       matcherComparator(fn, 1);
-    }).toThrow(new Error("Expected is not an Error, string, or RegExp.")); // TODO: this needs to change for self-test
+    }).toThrowError("Expected is not an Error, string, or RegExp.");
   });
 
   it("throws an error when the expected error type is not an Error", function() {
@@ -26,7 +26,7 @@ describe("toThrowError", function() {
 
     expect(function() {
       matcherComparator(fn, void 0, "foo");
-    }).toThrow(new Error("Expected error type is not an Error.")); // TODO: this needs to change for self-test
+    }).toThrowError("Expected error type is not an Error.");
   });
 
   it("throws an error when the expected error message is not a string or RegExp", function() {
@@ -37,7 +37,7 @@ describe("toThrowError", function() {
 
     expect(function() {
       matcherComparator(fn, Error, 1);
-    }).toThrow(new Error("Expected error message is not a string or RegExp.")); // TODO: this needs to change for self-test
+    }).toThrowError("Expected error message is not a string or RegExp.");
   });
 
   it("fails if actual does not throw at all", function() {
