@@ -1,6 +1,5 @@
 getJasmineRequireObj().Spec = function(j$) {
   function Spec(attrs) {
-    this.encounteredExpectations = false;
     this.expectationFactory = attrs.expectationFactory;
     this.resultCallback = attrs.resultCallback || function() {};
     this.id = attrs.id;
@@ -26,13 +25,11 @@ getJasmineRequireObj().Spec = function(j$) {
       id: this.id,
       description: this.description,
       fullName: this.getFullName(),
-      status: this.status(),
       failedExpectations: []
     };
   }
 
   Spec.prototype.addExpectationResult = function(passed, data) {
-    this.encounteredExpectations = true;
     if (passed) {
       return;
     }
@@ -118,7 +115,7 @@ getJasmineRequireObj().Spec = function(j$) {
       return 'disabled';
     }
 
-    if (this.markedPending || !this.encounteredExpectations) {
+    if (this.markedPending) {
       return 'pending';
     }
 

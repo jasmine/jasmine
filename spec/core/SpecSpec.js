@@ -189,18 +189,9 @@ describe("Spec", function() {
     expect(done).toHaveBeenCalled();
   });
 
-  it("#status returns pending by default", function() {
+  it("#status returns passing by default", function() {
     var spec = new j$.Spec({fn: jasmine.createSpy("spec body")});
-    expect(spec.status()).toEqual('pending');
-  });
-
-  it("#status returns pending if no expectations were encountered", function() {
-    var specBody = jasmine.createSpy("spec body"),
-      spec = new j$.Spec({fn: specBody});
-
-    spec.execute();
-
-    expect(spec.status()).toEqual('pending');
+    expect(spec.status()).toEqual('passed');
   });
 
   it("#status returns passed if all expectations in the spec have passed", function() {
