@@ -175,20 +175,6 @@ getJasmineRequireObj().Env = function(j$) {
       j$.Expectation.addMatchers(matchersToAdd);
     };
 
-    this.version = function() {
-      return j$.version;
-    };
-
-    this.versionString = function() {
-      console.log("DEPRECATED == use j$.version");
-      return j$.version;
-    };
-
-    // TODO: Still needed?
-    this.currentRunner = function() {
-      return topSuite;
-    };
-
     this.spyOn = function(obj, methodName) {
       if (j$.util.isUndefined(obj)) {
         throw new Error("spyOn could not find an object to spy upon for " + methodName + "()");
