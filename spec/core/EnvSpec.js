@@ -5,20 +5,6 @@ describe("Env", function() {
     env = new j$.Env();
   });
 
-  describe("reporting", function() {
-    var fakeReporter;
-
-    beforeEach(function() {
-      fakeReporter = jasmine.createSpyObj("fakeReporter", ["jasmineStarted"]);
-    });
-
-    it("should allow reporters to be registered", function() {
-      env.addReporter(fakeReporter);
-      env.reporter.jasmineStarted();
-      expect(fakeReporter.jasmineStarted).toHaveBeenCalled();
-    });
-  });
-
   it('removes all spies when env is executed', function(done) {
     originalFoo = function() {},
     testObj = {
