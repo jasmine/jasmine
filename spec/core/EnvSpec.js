@@ -5,14 +5,6 @@ describe("Env", function() {
     env = new j$.Env();
   });
 
-  describe('ids', function() {
-    it('nextSpecId should return consecutive integers, starting at 0', function() {
-      expect(env.nextSpecId()).toEqual('spec0');
-      expect(env.nextSpecId()).toEqual('spec1');
-      expect(env.nextSpecId()).toEqual('spec2');
-    });
-  });
-
   describe("reporting", function() {
     var fakeReporter;
 

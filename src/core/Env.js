@@ -26,13 +26,10 @@ getJasmineRequireObj().Env = function(j$) {
       "specDone"
     ]);
 
-    this.lastUpdate = 0;
     this.specFilter = function() {
       return true;
     };
 
-    this.nextSpecId_ = 0;
-    this.nextSuiteId_ = 0;
     this.equalityTesters_ = [];
 
     var customEqualityTesters = [];
@@ -41,6 +38,16 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     j$.Expectation.addCoreMatchers(j$.matchers);
+
+    var nextSpecId = 0;
+    var getNextSpecId = function() {
+      return 'spec' + nextSpecId++;
+    };
+
+    var nextSuiteId = 0;
+    var getNextSuiteId = function() {
+      return 'suite' + nextSuiteId++;
+    };
 
     var expectationFactory = function(actual, spec) {
       return j$.Expectation.Factory({
@@ -133,7 +140,7 @@ getJasmineRequireObj().Env = function(j$) {
       totalSpecsDefined++;
 
       var spec = new j$.Spec({
-        id: self.nextSpecId(),
+        id: getNextSpecId(),
         beforeFns: beforeFns(suite),
         afterFns: afterFns(suite),
         expectationFactory: expectationFactory,
@@ -183,7 +190,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.topSuite = new j$.Suite({
       env: this,
-      id: this.nextSuiteId(),
+      id: getNextSuiteId(),
       description: 'Jasmine__TopLevel__Suite',
       queueRunner: queueRunnerFactory,
       completeCallback: function() {}, // TODO - hook this up
@@ -195,7 +202,7 @@ getJasmineRequireObj().Env = function(j$) {
     this.suiteFactory = function(description) {
       var suite = new suiteConstructor({
         env: self,
-        id: self.nextSuiteId(),
+        id: getNextSuiteId(),
         description: description,
         parentSuite: self.currentSuite,
         queueRunner: queueRunnerFactory,
@@ -271,16 +278,6 @@ getJasmineRequireObj().Env = function(j$) {
   Env.prototype.versionString = function() {
     console.log("DEPRECATED == use j$.version");
     return j$.version;
-  };
-
-  // TODO: move this to closure
-  Env.prototype.nextSpecId = function() {
-    return 'spec' + this.nextSpecId_++;
-  };
-
-  // TODO: move this to closure
-  Env.prototype.nextSuiteId = function() {
-    return 'suite' + this.nextSuiteId_++;
   };
 
   // TODO: move this to closure
