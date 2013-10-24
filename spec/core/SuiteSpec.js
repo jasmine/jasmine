@@ -81,11 +81,11 @@ describe("Suite", function() {
       }),
       fakeSpec = {};
 
-    expect(suite.specs.length).toEqual(0);
+    expect(suite.children_.length).toEqual(0);
 
     suite.addSpec(fakeSpec);
 
-    expect(suite.specs.length).toEqual(1);
+    expect(suite.children_.length).toEqual(1);
   });
 
   it("adds suites", function() {
@@ -108,11 +108,11 @@ describe("Suite", function() {
         }
       });
 
-    expect(suite.suites.length).toEqual(0);
+    expect(suite.children_.length).toEqual(0);
 
     suite.addSuite(anotherSuite);
 
-    expect(suite.suites.length).toEqual(1);
+    expect(suite.children_.length).toEqual(1);
   });
 
   it("can be disabled", function() {
