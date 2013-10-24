@@ -68,8 +68,6 @@ getJasmineRequireObj().Clock = function() {
 
     function legacyIE() {
       //if these methods are polyfilled, apply will be present
-      //TODO: it may be difficult to load the polyfill before jasmine loads
-      //(env should be new-ed inside of onload)
       return !(realTimingFunctions.setTimeout || realTimingFunctions.setInterval).apply;
     }
 
