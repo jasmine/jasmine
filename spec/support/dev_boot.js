@@ -39,10 +39,6 @@
       return env.pending();
     },
 
-    addMatchers: function(matchers) {
-      return env.addMatchers(matchers);
-    },
-
     spyOn: function(obj, methodName) {
       return env.spyOn(obj, methodName);
     },
