@@ -84,21 +84,6 @@ describe("Env", function() {
     });
   });
 
-  describe("#catchException", function() {
-    it("returns true if the exception is a pending spec exception", function() {
-      env.catchExceptions(false);
-
-      expect(env.catchException(new Error(j$.Spec.pendingSpecExceptionMessage))).toBe(true);
-    });
-
-    it("returns false if the exception is not a pending spec exception and not catching exceptions", function() {
-      env.catchExceptions(false);
-
-      expect(env.catchException(new Error("external error"))).toBe(false);
-      expect(env.catchException(new Error(j$.Spec.pendingSpecExceptionMessage))).toBe(true);
-    });
-  });
-
   describe("#pending", function() {
     it("throws the Pending Spec exception", function() {
       expect(function() {
@@ -422,7 +407,6 @@ describe("Env integration", function() {
       });
       var suiteResult = reporter.suiteStarted.calls.first().args[0];
       expect(suiteResult.description).toEqual("A Suite");
-      expect(reporter.jasmineDone).toHaveBeenCalled();
 
       done();
     });

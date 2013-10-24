@@ -116,10 +116,6 @@ getJasmineRequireObj().Env = function(j$) {
       return catchExceptions;
     };
 
-    this.catchException = function(e) {
-      return j$.Spec.isPendingSpecException(e) || catchExceptions;
-    };
-
     var maximumSpecCallbackDepth = 20;
     var currentSpecCallbackDepth = 0;
 
@@ -133,8 +129,12 @@ getJasmineRequireObj().Env = function(j$) {
       }
     }
 
+    var catchException = function(e) {
+      return j$.Spec.isPendingSpecException(e) || catchExceptions;
+    };
+
     var queueRunnerFactory = function(options) {
-      options.catchException = self.catchException;
+      options.catchException = catchException;
       options.clearStack = options.clearStack || clearStack;
 
       new j$.QueueRunner(options).execute();
