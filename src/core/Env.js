@@ -145,7 +145,6 @@ getJasmineRequireObj().Env = function(j$) {
       id: getNextSuiteId(),
       description: 'Jasmine__TopLevel__Suite',
       queueRunner: queueRunnerFactory,
-      completeCallback: function() {}, // TODO - hook this up
       resultCallback: function() {} // TODO - hook this up
     });
     runnableLookupTable[topSuite.id] = topSuite;
