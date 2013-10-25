@@ -67,54 +67,6 @@ describe("Suite", function() {
     expect(suite.afterFns).toEqual([innerAfter, outerAfter]);
   });
 
-  it("adds specs", function() {
-    var env = new j$.Env(),
-      fakeQueue = {
-        add: jasmine.createSpy()
-      },
-      suite = new j$.Suite({
-        env: env,
-        description: "I am a suite",
-        queueFactory: function() {
-          return fakeQueue
-        }
-      }),
-      fakeSpec = {};
-
-    expect(suite.children_.length).toEqual(0);
-
-    suite.addSpec(fakeSpec);
-
-    expect(suite.children_.length).toEqual(1);
-  });
-
-  it("adds suites", function() {
-    var env = new j$.Env(),
-      fakeQueue = {
-        add: jasmine.createSpy()
-      },
-      suite = new j$.Suite({
-        env: env,
-        description: "I am a suite",
-        queueFactory: function() {
-          return fakeQueue
-        }
-      }),
-      anotherSuite = new j$.Suite({
-        env: env,
-        description: "I am another suite",
-        queueFactory: function() {
-          return fakeQueue
-        }
-      });
-
-    expect(suite.children_.length).toEqual(0);
-
-    suite.addSuite(anotherSuite);
-
-    expect(suite.children_.length).toEqual(1);
-  });
-
   it("can be disabled", function() {
     var env = new j$.Env(),
       fakeQueueRunner = jasmine.createSpy('fake queue runner'),
