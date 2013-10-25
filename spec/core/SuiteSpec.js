@@ -106,8 +106,8 @@ describe("Suite", function() {
 
     spyOn(suite, "execute");
 
-    parentSuite.addSpec(fakeSpec1);
-    parentSuite.addSuite(suite);
+    parentSuite.addChild(fakeSpec1);
+    parentSuite.addChild(suite);
 
     parentSuite.execute(parentSuiteDone);
 

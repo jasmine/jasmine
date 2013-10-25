@@ -45,13 +45,8 @@ getJasmineRequireObj().Suite = function() {
     this.afterFns.unshift(fn);
   };
 
-  Suite.prototype.addSpec = function(spec) {
-    this.children.push(spec);
-  };
-
-  Suite.prototype.addSuite = function(suite) {
-    suite.parentSuite = this;
-    this.children.push(suite);
+  Suite.prototype.addChild = function(child) {
+    this.children.push(child);
   };
 
   Suite.prototype.execute = function(onComplete) {
