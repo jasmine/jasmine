@@ -1,4 +1,4 @@
-<a name="README">[Jasmine](http://pivotal.github.com/jasmine/)</a> [![Build Status](https://travis-ci.org/pivotal/jasmine.png?branch=master)](https://travis-ci.org/pivotal/jasmine)
+<a name="README">[Jasmine](http://pivotal.github.com/jasmine/)</a> [![Build Status](https://travis-ci.org/pivotal/jasmine.png?branch=master)](https://travis-ci.org/pivotal/jasmine) [![Code Climate](https://codeclimate.com/repos/5269970a13d6374b6c01d632/badges/8bc25526da64e02065f4/gpa.png)](https://codeclimate.com/repos/5269970a13d6374b6c01d632/feed)
 
 =======
 **A JavaScript Testing Framework**
