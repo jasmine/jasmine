@@ -3,14 +3,16 @@ getJasmineRequireObj().util = function() {
   var util = {};
 
   util.inherit = function(childClass, parentClass) {
-    var subclass = function() {
+    var Subclass = function() {
     };
-    subclass.prototype = parentClass.prototype;
-    childClass.prototype = new subclass();
+    Subclass.prototype = parentClass.prototype;
+    childClass.prototype = new Subclass();
   };
 
   util.htmlEscape = function(str) {
-    if (!str) return str;
+    if (!str) {
+      return str;
+    }
     return str.replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
@@ -18,7 +20,9 @@ getJasmineRequireObj().util = function() {
 
   util.argsToArray = function(args) {
     var arrayOfArgs = [];
-    for (var i = 0; i < args.length; i++) arrayOfArgs.push(args[i]);
+    for (var i = 0; i < args.length; i++) {
+      arrayOfArgs.push(args[i]);
+    }
     return arrayOfArgs;
   };
 

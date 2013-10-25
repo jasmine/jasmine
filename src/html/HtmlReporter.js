@@ -1,8 +1,8 @@
 jasmineRequire.HtmlReporter = function(j$) {
 
   var noopTimer = {
-    start: function(){},
-    elapsed: function(){ return 0; }
+    start: function() {},
+    elapsed: function() { return 0; }
   };
 
   function HtmlReporter(options) {
@@ -73,7 +73,8 @@ jasmineRequire.HtmlReporter = function(j$) {
       symbols.appendChild(createDom("li", {
           className: result.status,
           id: "spec_" + result.id,
-          title: result.fullName}
+          title: result.fullName
+        }
       ));
 
       if (result.status == "failed") {

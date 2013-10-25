@@ -37,7 +37,9 @@ getJasmineRequireObj().matchersUtil = function(j$) {
 
       if (expected.length > 0) {
         for (var i = 0; i < expected.length; i++) {
-          if (i > 0) message += ",";
+          if (i > 0) {
+            message += ",";
+          }
           message += " " + j$.pp(expected[i]);
         }
       }
@@ -85,11 +87,11 @@ getJasmineRequireObj().matchersUtil = function(j$) {
 
     // Identical objects are equal. `0 === -0`, but they aren't identical.
     // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
-    if (a === b) return a !== 0 || 1 / a == 1 / b;
+    if (a === b) { return a !== 0 || 1 / a == 1 / b; }
     // A strict comparison is necessary because `null == undefined`.
-    if (a === null || b === null) return a === b;
+    if (a === null || b === null) { return a === b; }
     var className = Object.prototype.toString.call(a);
-    if (className != Object.prototype.toString.call(b)) return false;
+    if (className != Object.prototype.toString.call(b)) { return false; }
     switch (className) {
       // Strings, numbers, dates, and booleans are compared by value.
       case '[object String]':
@@ -113,14 +115,14 @@ getJasmineRequireObj().matchersUtil = function(j$) {
           a.multiline == b.multiline &&
           a.ignoreCase == b.ignoreCase;
     }
-    if (typeof a != 'object' || typeof b != 'object') return false;
+    if (typeof a != 'object' || typeof b != 'object') { return false; }
     // Assume equality for cyclic structures. The algorithm for detecting cyclic
     // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
     var length = aStack.length;
     while (length--) {
       // Linear search. Performance is inversely proportional to the number of
       // unique nested structures.
-      if (aStack[length] == a) return bStack[length] == b;
+      if (aStack[length] == a) { return bStack[length] == b; }
     }
     // Add the first object to the stack of traversed objects.
     aStack.push(a);
@@ -134,7 +136,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       if (result) {
         // Deep compare the contents, ignoring non-numeric properties.
         while (size--) {
-          if (!(result = eq(a[size], b[size], aStack, bStack, customTesters))) break;
+          if (!(result = eq(a[size], b[size], aStack, bStack, customTesters))) { break; }
         }
       }
     } else {
@@ -151,13 +153,13 @@ getJasmineRequireObj().matchersUtil = function(j$) {
           // Count the expected number of properties.
           size++;
           // Deep compare each member.
-          if (!(result = has(b, key) && eq(a[key], b[key], aStack, bStack, customTesters))) break;
+          if (!(result = has(b, key) && eq(a[key], b[key], aStack, bStack, customTesters))) { break; }
         }
       }
       // Ensure that both objects contain the same number of properties.
       if (result) {
         for (key in b) {
-          if (has(b, key) && !(size--)) break;
+          if (has(b, key) && !(size--)) { break; }
         }
         result = !size;
       }

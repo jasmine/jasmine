@@ -5,11 +5,11 @@ getJasmineRequireObj().ReportDispatcher = function() {
 
     for (var i = 0; i < dispatchedMethods.length; i++) {
       var method = dispatchedMethods[i];
-      this[method] = function(m) {
+      this[method] = (function(m) {
         return function() {
           dispatch(m, arguments);
         };
-      }(method);
+      }(method));
     }
 
     var reporters = [];

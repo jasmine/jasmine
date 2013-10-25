@@ -47,8 +47,8 @@ getJasmineRequireObj().pp = function(j$) {
 
   PrettyPrinter.prototype.iterateObject = function(obj, fn) {
     for (var property in obj) {
-      if (!obj.hasOwnProperty(property)) continue;
-      if (property == '__Jasmine_been_here_before__') continue;
+      if (!obj.hasOwnProperty(property)) { continue; }
+      if (property == '__Jasmine_been_here_before__') { continue; }
       fn(property, obj.__lookupGetter__ ? (!j$.util.isUndefined(obj.__lookupGetter__(property)) &&
           obj.__lookupGetter__(property) !== null) : false);
     }

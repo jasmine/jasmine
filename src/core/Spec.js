@@ -67,8 +67,8 @@ getJasmineRequireObj().Spec = function(j$) {
     }
 
     var befores = this.beforeFns() || [],
-        afters = this.afterFns() || [],
-        thisOne = (this.fn.length) ? timeoutable(this.fn) : this.fn;
+      afters = this.afterFns() || [],
+      thisOne = (this.fn.length) ? timeoutable(this.fn) : this.fn;
     var allFns = befores.concat(thisOne).concat(afters);
 
     this.queueRunner({
@@ -78,18 +78,18 @@ getJasmineRequireObj().Spec = function(j$) {
     });
 
     function onException(e) {
-        if (Spec.isPendingSpecException(e)) {
-          self.pend();
-          return;
-        }
+      if (Spec.isPendingSpecException(e)) {
+        self.pend();
+        return;
+      }
 
-        self.addExpectationResult(false, {
-          matcherName: "",
-          passed: false,
-          expected: "",
-          actual: "",
-          error: e
-        });
+      self.addExpectationResult(false, {
+        matcherName: "",
+        passed: false,
+        expected: "",
+        actual: "",
+        error: e
+      });
     }
 
     function complete() {

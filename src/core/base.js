@@ -51,18 +51,18 @@ getJasmineRequireObj().base = function(j$) {
   j$.createSpy = function(name, originalFn) {
 
     var spyStrategy = new j$.SpyStrategy({
-          name: name,
-          fn: originalFn,
-          getSpy: function() { return spy; }
-        }),
-        callTracker = new j$.CallTracker(),
-        spy = function() {
-          callTracker.track({
-            object: this,
-            args: Array.prototype.slice.apply(arguments)
-          });
-          return spyStrategy.exec.apply(this, arguments);
-        };
+        name: name,
+        fn: originalFn,
+        getSpy: function() { return spy; }
+      }),
+      callTracker = new j$.CallTracker(),
+      spy = function() {
+        callTracker.track({
+          object: this,
+          args: Array.prototype.slice.apply(arguments)
+        });
+        return spyStrategy.exec.apply(this, arguments);
+      };
 
     for (var prop in originalFn) {
       if (prop === 'and' || prop === 'calls') {
@@ -83,7 +83,7 @@ getJasmineRequireObj().base = function(j$) {
       return false;
     }
     return putativeSpy.and instanceof j$.SpyStrategy &&
-        putativeSpy.calls instanceof j$.CallTracker;
+      putativeSpy.calls instanceof j$.CallTracker;
   };
 
   j$.createSpyObj = function(baseName, methodNames) {
