@@ -13,7 +13,8 @@ getJasmineRequireObj().Clock = function() {
         setInterval: setInterval,
         clearInterval: clearInterval
       },
-      installed = false;
+      installed = false,
+      timer;
 
     self.install = function() {
       replace(global, fakeTimingFunctions);
