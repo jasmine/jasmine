@@ -15,14 +15,6 @@ getJasmineRequireObj().Clock = function() {
       },
       installed = false;
 
-    if (date) {
-      var realDate = {
-        Date: global.Date
-      },
-      fakeDate = {
-        Date: date.Date
-      };
-    }
 
     self.install = function(mockDate) {
       replace(global, fakeTimingFunctions);
@@ -31,15 +23,13 @@ getJasmineRequireObj().Clock = function() {
 
       if (date && mockDate) {
         date.install(mockDate);
-        replace(global, fakeDate);
       }
     };
 
     self.uninstall = function() {
       delayedFunctionScheduler.reset();
       if (date) {
-        date.reset();
-        replace(global, realDate);
+        date.uninstall();
       }
       replace(global, realTimingFunctions);
 

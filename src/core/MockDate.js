@@ -6,16 +6,20 @@ getJasmineRequireObj().MockDate = function() {
     if (!global || !global.Date) {
       self.install = function() {};
       self.tick = function() {};
-      self.reset = function() {};
+      self.uninstall = function() {};
       return self;
     }
+
+    var GlobalDate = global.Date;
 
     self.install = function(mockDate) {
       if (mockDate instanceof Date) {
         currentTime = mockDate.getTime();
       } else {
-        currentTime = global.Date.now();
+        currentTime = GlobalDate.now();
       }
+
+      global.Date = FakeDate;
     };
 
     self.tick = function(millis) {
@@ -23,11 +27,10 @@ getJasmineRequireObj().MockDate = function() {
       currentTime = currentTime + millis;
     };
 
-    self.reset = function() {
+    self.uninstall = function() {
       currentTime = 0;
+      global.Date = GlobalDate;
     };
-
-    self.Date = FakeDate;
 
     createDateProperties();
 
@@ -35,23 +38,23 @@ getJasmineRequireObj().MockDate = function() {
 
     function FakeDate() {
       if (arguments.length === 0) {
-        return new global.Date(currentTime);
+        return new GlobalDate(currentTime);
       } else {
-        return global.Date.apply(this, arguments);
+        return new GlobalDate(arguments[0], arguments[1], arguments[2],
+          arguments[3], arguments[4], arguments[5], arguments[6]);
       }
-	  }
+    }
 
     function createDateProperties() {
-      FakeDate.prototype = global.Date.prototype;
 
       FakeDate.now = function() {
         return currentTime;
-      }
+      };
 
-      FakeDate.toSource = global.Date.toSource;
-      FakeDate.toString = global.Date.toString;
-      FakeDate.parse = global.Date.parse;
-      FakeDate.UTC = global.Date.UTC;
+      FakeDate.toSource = GlobalDate.toSource;
+      FakeDate.toString = GlobalDate.toString;
+      FakeDate.parse = GlobalDate.parse;
+      FakeDate.UTC = GlobalDate.UTC;
     }
 	}
 
