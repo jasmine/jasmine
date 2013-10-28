@@ -56,7 +56,7 @@ describe("Expectation", function() {
 
   it("wraps matchers's compare functions, passing in matcher dependencies", function() {
     var fakeCompare = function() { return { pass: true }; },
-      matcherFactory = jasmine.createSpy("matcher").and.returnValue(fakeCompare),
+      matcherFactory = jasmine.createSpy("matcher").and.returnValue({ compare: fakeCompare }),
       matchers = {
         toFoo: matcherFactory
       },
@@ -83,7 +83,9 @@ describe("Expectation", function() {
     var fakeCompare = jasmine.createSpy('fake-compare').and.returnValue({pass: true}),
       matchers = {
         toFoo: function() {
-          return fakeCompare;
+          return {
+            compare: fakeCompare
+          };
         }
       },
       util = {
@@ -108,7 +110,9 @@ describe("Expectation", function() {
   it("reports a passing result to the spec when the comparison passes", function() {
     var matchers = {
         toFoo: function() {
-          return function() { return { pass: true }; };
+          return {
+            compare: function() { return { pass: true }; }
+          };
         }
       },
       util = {
@@ -140,7 +144,9 @@ describe("Expectation", function() {
   it("reports a failing result to the spec when the comparison fails", function() {
     var matchers = {
         toFoo: function() {
-          return function() { return { pass: false }; };
+          return {
+            compare: function() { return { pass: false }; }
+          };
         }
       },
       util = {
@@ -172,11 +178,13 @@ describe("Expectation", function() {
   it("reports a failing result and a custom fail message to the spec when the comparison fails", function() {
     var matchers = {
         toFoo: function() {
-          return function() {
-            return {
-              pass: false,
-              message: "I am a custom message"
-            };
+          return {
+            compare: function() {
+              return {
+                pass: false,
+                message: "I am a custom message"
+              };
+            }
           };
         }
       },
@@ -205,7 +213,9 @@ describe("Expectation", function() {
   it("reports a passing result to the spec when the comparison fails for a negative expectation", function() {
     var matchers = {
         toFoo: function() {
-          return function() { return { pass: false }; };
+          return {
+            compare: function() { return { pass: false }; }
+          };
         }
       },
       util = {
@@ -238,7 +248,9 @@ describe("Expectation", function() {
   it("reports a failing result to the spec when the comparison passes for a negative expectation", function() {
     var matchers = {
         toFoo: function() {
-          return function() { return { pass: true }; };
+          return {
+            compare: function() { return { pass: true }; }
+          };
         }
       },
       util = {
@@ -272,11 +284,13 @@ describe("Expectation", function() {
   it("reports a failing result and a custom fail message to the spec when the comparison passes for a negative expectation", function() {
     var matchers = {
         toFoo: function() {
-          return function() {
-            return {
-              pass: true,
-              message: "I am a custom message"
-            };
+          return {
+            compare: function() {
+              return {
+                pass: true,
+                message: "I am a custom message"
+              };
+            }
           };
         }
       },

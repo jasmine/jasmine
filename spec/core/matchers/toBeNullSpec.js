@@ -1,17 +1,17 @@
 describe("toBeNull", function() {
   it("passes for null", function() {
-    var matcherComparator = j$.matchers.toBeNull(),
+    var matcher = j$.matchers.toBeNull(),
       result;
 
-    result = matcherComparator(null);
+    result = matcher.compare(null);
     expect(result.pass).toBe(true);
   });
 
   it("fails for non-null", function() {
-    var matcherComparator = j$.matchers.toBeNull(),
+    var matcher = j$.matchers.toBeNull(),
       result;
 
-    result = matcherComparator('foo');
+    result = matcher.compare('foo');
     expect(result.pass).toBe(false);
   });
 });

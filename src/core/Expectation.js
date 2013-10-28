@@ -22,8 +22,7 @@ getJasmineRequireObj().Expectation = function() {
 
       args.unshift(this.actual);
 
-      var matcherComparator = matcherFactory(this.util, this.customEqualityTesters),
-          result = matcherComparator.apply(null, args);
+      var result = matcherFactory(this.util, this.customEqualityTesters).compare.apply(null, args);
 
       if (this.isNot) {
         result.pass = !result.pass;

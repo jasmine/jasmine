@@ -1,9 +1,11 @@
 getJasmineRequireObj().toBeDefined = function() {
   function toBeDefined() {
-    return function(actual) {
-      return {
-        pass: (void 0 !== actual)
-      };
+    return {
+      compare: function(actual) {
+        return {
+          pass: (void 0 !== actual)
+        };
+      }
     };
   }
 

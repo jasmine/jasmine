@@ -1,38 +1,38 @@
 describe("toBeTruthy", function() {
   it("passes for 'truthy' values", function() {
-    var matcherComparator = j$.matchers.toBeTruthy(),
+    var matcher = j$.matchers.toBeTruthy(),
       result;
 
-    result = matcherComparator(true);
+    result = matcher.compare(true);
     expect(result.pass).toBe(true);
 
-    result = matcherComparator(1);
+    result = matcher.compare(1);
     expect(result.pass).toBe(true);
 
-    result = matcherComparator("foo");
+    result = matcher.compare("foo");
     expect(result.pass).toBe(true);
 
-    result = matcherComparator({});
+    result = matcher.compare({});
     expect(result.pass).toBe(true);
   });
 
   it("fails for 'falsy' values", function() {
-    var matcherComparator = j$.matchers.toBeTruthy(),
+    var matcher = j$.matchers.toBeTruthy(),
       result;
 
-    result = matcherComparator(false);
+    result = matcher.compare(false);
     expect(result.pass).toBe(false);
 
-    result = matcherComparator(0);
+    result = matcher.compare(0);
     expect(result.pass).toBe(false);
 
-    result = matcherComparator('');
+    result = matcher.compare('');
     expect(result.pass).toBe(false);
 
-    result = matcherComparator(null);
+    result = matcher.compare(null);
     expect(result.pass).toBe(false);
 
-    result = matcherComparator(void 0);
+    result = matcher.compare(void 0);
     expect(result.pass).toBe(false);
   });
 });

@@ -1,18 +1,18 @@
 describe("toBeDefined", function() {
   it("matches for defined values", function() {
-    var matcherComparator = j$.matchers.toBeDefined(),
+    var matcher = j$.matchers.toBeDefined(),
       result;
 
 
-    result = matcherComparator('foo');
+    result = matcher.compare('foo');
     expect(result.pass).toBe(true);
   });
 
   it("fails when matching undefined values", function() {
-    var matcherComparator = j$.matchers.toBeDefined(),
+    var matcher = j$.matchers.toBeDefined(),
       result;
 
-    result = matcherComparator(void 0);
+    result = matcher.compare(void 0);
     expect(result.pass).toBe(false);
   })
 });

@@ -1,10 +1,12 @@
 getJasmineRequireObj().toBeTruthy = function() {
 
   function toBeTruthy() {
-    return function(actual) {
-      return {
-        pass: !!actual
-      };
+    return {
+      compare: function(actual) {
+        return {
+          pass: !!actual
+        };
+      }
     };
   }
 
