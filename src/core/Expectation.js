@@ -22,11 +22,20 @@ getJasmineRequireObj().Expectation = function() {
 
       args.unshift(this.actual);
 
-      var result = matcherFactory(this.util, this.customEqualityTesters).compare.apply(null, args);
+      var matcher = matcherFactory(this.util, this.customEqualityTesters),
+          matcherCompare = matcher.compare;
+
+      function defaultNegativeCompare() {
+        var result = matcher.compare.apply(null, args);
+        result.pass = !result.pass;
+        return result;
+      }
 
       if (this.isNot) {
-        result.pass = !result.pass;
+        matcherCompare = matcher.negativeCompare || defaultNegativeCompare;
       }
+
+      var result = matcherCompare.apply(null, args);
 
       if (!result.pass) {
         if (!result.message) {

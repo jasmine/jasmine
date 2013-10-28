@@ -317,4 +317,77 @@ describe("Expectation", function() {
       message: "I am a custom message"
     });
   });
+
+  it("reports a passing result to the spec when the 'not' comparison passes, given a negativeCompare", function() {
+    var matchers = {
+        toFoo: function() {
+          return {
+            compare: function() { return { pass: true }; },
+            negativeCompare: function() { return { pass: true }; }
+          };
+        }
+      },
+      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      actual = "an actual",
+      expectation;
+
+    j$.Expectation.addMatchers(matchers);
+
+    expectation = new j$.Expectation({
+      matchers: matchers,
+      actual: "an actual",
+      addExpectationResult: addExpectationResult,
+      isNot: true
+    });
+
+    expectation.toFoo("hello");
+
+    expect(addExpectationResult).toHaveBeenCalledWith(true, {
+      matcherName: "toFoo",
+      passed: true,
+      expected: "hello",
+      actual: actual,
+      message: ""
+    });
+  });
+
+  it("reports a failing result and a custom fail message to the spec when the 'not' comparison fails, given a negativeCompare", function() {
+    var matchers = {
+        toFoo: function() {
+          return {
+            compare: function() { return { pass: true }; },
+            negativeCompare: function() {
+              return {
+                pass: false,
+                message: "I'm a custom message"
+              };
+            }
+          };
+        }
+      },
+      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      actual = "an actual",
+      expectation;
+
+    j$.Expectation.addMatchers(matchers);
+
+    expectation = new j$.Expectation({
+      matchers: matchers,
+      actual: "an actual",
+      addExpectationResult: addExpectationResult,
+      isNot: true
+    });
+
+    expectation.toFoo("hello");
+
+    expect(addExpectationResult).toHaveBeenCalledWith(false, {
+      matcherName: "toFoo",
+      passed: false,
+      expected: "hello",
+      actual: actual,
+      message: "I'm a custom message"
+    });
+  });
+
 });
+
