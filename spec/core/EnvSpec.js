@@ -92,6 +92,12 @@ describe("Env", function() {
     });
   });
 
+  describe("#topSuite", function() {
+    it("returns the Jasmine top suite for users to traverse the spec tree", function() {
+      var suite = env.topSuite();
+      expect(suite.description).toEqual('Jasmine__TopLevel__Suite');
+    });
+  });
 });
 
 // TODO: move these into a separate file

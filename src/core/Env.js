@@ -150,6 +150,10 @@ getJasmineRequireObj().Env = function(j$) {
     runnableLookupTable[topSuite.id] = topSuite;
     currentSuite = topSuite;
 
+    this.topSuite = function() {
+      return topSuite;
+    };
+
     this.execute = function(runnablesToRun) {
       runnablesToRun = runnablesToRun || [topSuite.id];
 
