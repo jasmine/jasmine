@@ -1,7 +1,8 @@
 var standaloneLibDir = "lib/jasmine-" + jasmineVersion;
 
 function root(path) { return "./" + path; }
-function lib(path) { return root("lib/jasmine-core/" + path); }
+function libJasmineCore(path) { return root("lib/jasmine-core/" + path); }
+function libConsole() { return "lib/console/" }
 function dist(path) { return root("dist/" + path); }
 
 module.exports = {
@@ -26,13 +27,21 @@ module.exports = {
         ],
         dest: standaloneLibDir,
         expand: true,
-        cwd: lib("")
+        cwd: libJasmineCore("")
+      },
+      {
+        src: [
+          "console.js"
+        ],
+        dest: standaloneLibDir,
+        expand: true,
+        cwd: libConsole()
       },
       {
         src: [ "boot.js" ],
         dest: standaloneLibDir,
         expand: true,
-        cwd: lib("boot")
+        cwd: libJasmineCore("boot")
       },
       {
         src: [ "SpecRunner.html" ],
@@ -44,13 +53,13 @@ module.exports = {
         src: [ "*.js" ],
         dest: "src",
         expand: true,
-        cwd: lib("example/src/")
+        cwd: libJasmineCore("example/src/")
       },
       {
         src: [ "*.js" ],
         dest: "spec",
         expand: true,
-        cwd: lib("example/spec/")
+        cwd: libJasmineCore("example/spec/")
       }
     ]
   }

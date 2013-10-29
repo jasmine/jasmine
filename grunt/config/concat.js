@@ -44,7 +44,7 @@ module.exports = {
       'src/console/requireConsole.js',
       'src/console/ConsoleReporter.js'
     ],
-    dest: 'src/console/console.js'
+    dest: 'lib/console/console.js'
   },
   options: {
     banner: license(),

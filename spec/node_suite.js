@@ -6,7 +6,7 @@ var path = require('path');
 var jasmineRequire = require('../lib/jasmine-core/jasmine.js');
 var jasmine = jasmineRequire.core(jasmineRequire);
 
-var consoleFns = require('../src/console/console.js');
+var consoleFns = require('../lib/console/console.js');
 extend(jasmineRequire, consoleFns);
 jasmineRequire.console(jasmineRequire, jasmine);
 
