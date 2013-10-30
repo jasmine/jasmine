@@ -36,11 +36,20 @@ describe("QueueRunner", function() {
     expect(asyncContext).toBe(context);
   });
 
-  it("supports asynchronous functions, only advancing to next function after a done() callback", function() {
-    //TODO: it would be nice if spy arity could match the fake, so we could do something like:
-    //createSpy('asyncfn').and.callFake(function(done) {});
+  describe("with an asynchronous function", function() {
+    beforeEach(function() {
+      jasmine.clock().install();
+    });
 
-    var onComplete = jasmine.createSpy('onComplete'),
+    afterEach(function() {
+      jasmine.clock().uninstall();
+    });
+
+    it("supports asynchronous functions, only advancing to next function after a done() callback", function() {
+      //TODO: it would be nice if spy arity could match the fake, so we could do something like:
+      //createSpy('asyncfn').and.callFake(function(done) {});
+
+      var onComplete = jasmine.createSpy('onComplete'),
       beforeCallback = jasmine.createSpy('beforeCallback'),
       fnCallback = jasmine.createSpy('fnCallback'),
       afterCallback = jasmine.createSpy('afterCallback'),
@@ -67,29 +76,28 @@ describe("QueueRunner", function() {
         onComplete: onComplete
       });
 
-    jasmine.clock().install();
+      queueRunner.execute();
 
-    queueRunner.execute();
+      expect(beforeCallback).toHaveBeenCalled();
+      expect(fnCallback).not.toHaveBeenCalled();
+      expect(afterCallback).not.toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
 
-    expect(beforeCallback).toHaveBeenCalled();
-    expect(fnCallback).not.toHaveBeenCalled();
-    expect(afterCallback).not.toHaveBeenCalled();
-    expect(onComplete).not.toHaveBeenCalled();
+      jasmine.clock().tick(100);
 
-    jasmine.clock().tick(100);
+      expect(fnCallback).toHaveBeenCalled();
+      expect(afterCallback).not.toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
 
-    expect(fnCallback).toHaveBeenCalled();
-    expect(afterCallback).not.toHaveBeenCalled();
-    expect(onComplete).not.toHaveBeenCalled();
+      jasmine.clock().tick(100);
 
-    jasmine.clock().tick(100);
+      expect(afterCallback).toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
 
-    expect(afterCallback).toHaveBeenCalled();
-    expect(onComplete).not.toHaveBeenCalled();
+      jasmine.clock().tick(100);
 
-    jasmine.clock().tick(100);
-
-    expect(onComplete).toHaveBeenCalled();
+      expect(onComplete).toHaveBeenCalled();
+    });
   });
 
   it("calls an exception handler when an exception is thrown in a fn", function() {
