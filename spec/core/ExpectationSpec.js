@@ -46,7 +46,7 @@ describe("Expectation", function() {
     expect(expectation.toFoo).toBeUndefined();
   });
 
-  it("Factory builds an expectaion/negative expectation", function() {
+  it("Factory builds an expectation/negative expectation", function() {
     var builtExpectation = j$.Expectation.Factory();
 
     expect(builtExpectation instanceof j$.Expectation).toBe(true);
@@ -254,7 +254,7 @@ describe("Expectation", function() {
         }
       },
       util = {
-        buildFailureMessage: function() { return "default messge"; }
+        buildFailureMessage: function() { return "default message"; }
       },
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       actual = "an actual",
@@ -277,7 +277,7 @@ describe("Expectation", function() {
       passed: false,
       expected: "hello",
       actual: actual,
-      message: "default messge"
+      message: "default message"
     });
   });
 

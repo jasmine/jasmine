@@ -14,7 +14,7 @@ describe('Spies', function () {
       expect(spy.bob).toEqual("test");
     });
 
-    it("warns the user that we indend to overwrite an existing property", function() {
+    it("warns the user that we intend to overwrite an existing property", function() {
       TestClass.prototype.someFunction.and = "turkey";
 
       expect(function() {

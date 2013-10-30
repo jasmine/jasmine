@@ -33,13 +33,13 @@ describe("Env", function() {
   });
 
   describe("#spyOn", function() {
-    it("checks for the existance of the object", function() {
+    it("checks for the existence of the object", function() {
       expect(function() {
         env.spyOn(void 0, 'pants');
       }).toThrowError(/could not find an object/);
     });
 
-    it("checks for the existance of the method", function() {
+    it("checks for the existence of the method", function() {
       var subject = {};
 
       expect(function() {
@@ -460,7 +460,7 @@ describe("Env integration", function() {
 
   it("Custom equality testers should be per spec", function(done) {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
-        reporter = jasmine.createSpyObj('fakeReproter', [
+        reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineStarted",
           "jasmineDone",
           "suiteStarted",
@@ -500,7 +500,7 @@ describe("Env integration", function() {
         matchers = {
           toFoo: function() {}
         },
-        reporter = jasmine.createSpyObj('fakeReproter', [
+        reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineStarted",
           "jasmineDone",
           "suiteStarted",
@@ -527,7 +527,7 @@ describe("Env integration", function() {
 
   it("Custom equality testers for toContain should be per spec", function(done) {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
-        reporter = jasmine.createSpyObj('fakeReproter', [
+        reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineStarted",
           "jasmineDone",
           "suiteStarted",
