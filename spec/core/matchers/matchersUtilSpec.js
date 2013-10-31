@@ -1,6 +1,6 @@
 describe("matchersUtil", function() {
   describe("equals", function() {
-    it("passes for literals that are tripple-equal", function() {
+    it("passes for literals that are triple-equal", function() {
       expect(j$.matchersUtil.equals(null, null)).toBe(true);
       expect(j$.matchersUtil.equals(void 0, void 0)).toBe(true);
     });
