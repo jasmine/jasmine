@@ -246,7 +246,7 @@ describe("toThrowError", function() {
     expect(result.message).toEqual("Expected function to throw TypeError with message \"bar\", but it threw TypeError with message \"foo\".");
   });
 
-  it("passes if thrown is a type of Error and has the same type as the expected Error and the message matches the exepcted message", function() {
+  it("passes if thrown is a type of Error and has the same type as the expected Error and the message matches the expected message", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },

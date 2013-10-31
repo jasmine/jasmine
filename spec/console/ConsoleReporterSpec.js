@@ -80,7 +80,7 @@ describe("ConsoleReporter", function() {
     expect(out.getOutput()).toEqual("*");
   });
 
-  it("reports a summary when done (singluar spec and time)", function() {
+  it("reports a summary when done (singular spec and time)", function() {
     var timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
         reporter = new j$.ConsoleReporter({
           print: out.print,

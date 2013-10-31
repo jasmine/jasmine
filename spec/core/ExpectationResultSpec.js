@@ -9,7 +9,7 @@ describe("buildExpectationResult", function() {
     expect(result.message).toBe('Passed.');
   });
 
-  it("message returns the message for failing expecations", function() {
+  it("message returns the message for failing expectations", function() {
     var result = j$.buildExpectationResult({passed: false, message: 'some-value'});
     expect(result.message).toBe('some-value');
   });
