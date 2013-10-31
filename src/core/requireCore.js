@@ -23,6 +23,7 @@ getJasmineRequireObj().core = function(jRequire) {
   j$.JsApiReporter = jRequire.JsApiReporter();
   j$.matchersUtil = jRequire.matchersUtil(j$);
   j$.ObjectContaining = jRequire.ObjectContaining(j$);
+  j$.ArrayContaining = jRequire.ArrayContaining(j$);
   j$.pp = jRequire.pp(j$);
   j$.QueueRunner = jRequire.QueueRunner();
   j$.ReportDispatcher = jRequire.ReportDispatcher();
