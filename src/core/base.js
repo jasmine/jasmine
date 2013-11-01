@@ -6,13 +6,12 @@ getJasmineRequireObj().base = function(j$) {
   j$.MAX_PRETTY_PRINT_DEPTH = 40;
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
-  j$.getGlobal = function() {
-    function getGlobal() {
-      return this;
-    }
-
-    return getGlobal();
-  };
+  j$.getGlobal = (function() {
+    var jasmineGlobal = eval.call(null, "this");
+    return function() {
+      return jasmineGlobal;
+    };
+  })();
 
   j$.getEnv = function(options) {
     var env = j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options);
