@@ -2,6 +2,10 @@
   "name": "jasmine-core",
   "license": "MIT",
   "version": "2.0.0-rc5",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pivotal/jasmine.git"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.7.0",
