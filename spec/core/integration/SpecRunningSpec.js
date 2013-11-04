@@ -1,4 +1,3 @@
-// TODO: This should really be part of the Env Integration Spec
 describe("jasmine spec running", function () {
   var env;
   var fakeTimer;
