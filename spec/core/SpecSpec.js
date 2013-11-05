@@ -215,7 +215,7 @@ describe("Spec", function() {
     });
 
     expect(spec.getFullName()).toBe('expected val');
-    expect(specNameSpy).toHaveBeenCalledWith(spec);
+    expect(specNameSpy.calls.mostRecent().args[0].id).toEqual(spec.id);
   });
 
   describe("when a spec is marked pending during execution", function() {
