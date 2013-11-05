@@ -208,15 +208,14 @@ describe("Spec", function() {
   });
 
   it("can return its full name", function() {
-    var spec;
-    spec = new j$.Spec({
-      getSpecName: function(passedVal) {
-//        expect(passedVal).toBe(spec);  TODO: a exec time, spec is undefined WTF?
-        return 'expected val';
-      }
+    var specNameSpy = jasmine.createSpy('specNameSpy').and.returnValue('expected val');
+
+    var spec = new j$.Spec({
+      getSpecName: specNameSpy
     });
 
     expect(spec.getFullName()).toBe('expected val');
+    expect(specNameSpy).toHaveBeenCalledWith(spec);
   });
 
   describe("when a spec is marked pending during execution", function() {
