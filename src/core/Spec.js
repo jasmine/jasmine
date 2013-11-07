@@ -62,7 +62,13 @@ getJasmineRequireObj().Spec = function(j$) {
           done();
         };
 
-        fn.call(this, callDone); //TODO: do we care about more than 1 arg?
+        try {
+          fn.call(this, callDone); //TODO: do we care about more than 1 arg?
+        }
+        catch (e) {
+          onException(e);
+          callDone();
+        }
       };
     }
 
