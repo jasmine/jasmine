@@ -270,7 +270,7 @@ getJasmineRequireObj().Env = function(j$) {
         onStart: specStarted,
         description: description,
         expectationResultFactory: expectationResultFactory,
-        queueRunner: queueRunnerFactory,
+        queueRunnerFactory: queueRunnerFactory,
         fn: fn,
         timer: {setTimeout: realSetTimeout, clearTimeout: realClearTimeout}
       });

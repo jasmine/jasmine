@@ -26,7 +26,7 @@ describe("Spec", function() {
         description: 'my test',
         id: 'some-id',
         fn: function() {},
-        queueRunner: fakeQueueRunner
+        queueRunnerFactory: fakeQueueRunner
       });
 
     spec.execute();
@@ -42,7 +42,7 @@ describe("Spec", function() {
         description: 'foo bar',
         fn: function() {},
         onStart: startCallback,
-        queueRunner: fakeQueueRunner
+        queueRunnerFactory: fakeQueueRunner
       });
 
     spec.execute();
@@ -69,7 +69,7 @@ describe("Spec", function() {
           }]
         },
         onStart: startCallback,
-        queueRunner: fakeQueueRunner
+        queueRunnerFactory: fakeQueueRunner
       });
 
     spec.execute();
@@ -93,7 +93,7 @@ describe("Spec", function() {
         afterFns: function() {
           return [after]
         },
-        queueRunner: fakeQueueRunner
+        queueRunnerFactory: fakeQueueRunner
       });
 
     spec.execute();
@@ -111,7 +111,7 @@ describe("Spec", function() {
         onStart: startCallback,
         fn: null,
         resultCallback: resultCallback,
-        queueRunner: fakeQueueRunner
+        queueRunnerFactory: fakeQueueRunner
       });
 
 
@@ -127,7 +127,7 @@ describe("Spec", function() {
         onStart:startCallback,
         fn: specBody,
         resultCallback: resultCallback,
-        queueRunner: fakeQueueRunner
+        queueRunnerFactory: fakeQueueRunner
       });
 
     spec.disable();
@@ -154,7 +154,7 @@ describe("Spec", function() {
         getSpecName: function() {
           return "a suite with a spec"
         },
-        queueRunner: fakeQueueRunner
+        queueRunnerFactory: fakeQueueRunner
       });
 
     spec.pend();
@@ -181,7 +181,7 @@ describe("Spec", function() {
         fn: function() {},
         catchExceptions: function() { return false; },
         resultCallback: function() {},
-        queueRunner: function(attrs) { attrs.onComplete(); }
+        queueRunnerFactory: function(attrs) { attrs.onComplete(); }
       });
 
     spec.execute(done);
@@ -265,7 +265,7 @@ describe("Spec", function() {
           description: 'my test',
           id: 'some-id',
           fn: function() { },
-          queueRunner: fakeQueueRunner
+          queueRunnerFactory: fakeQueueRunner
         });
 
       spec.execute();

@@ -12,7 +12,7 @@ getJasmineRequireObj().Spec = function(j$) {
     this.exceptionFormatter = attrs.exceptionFormatter || function() {};
     this.getSpecName = attrs.getSpecName || function() { return ''; };
     this.expectationResultFactory = attrs.expectationResultFactory || function() { };
-    this.queueRunner = attrs.queueRunner || function() {};
+    this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
     this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
 
     this.timer = attrs.timer || {setTimeout: setTimeout, clearTimeout: clearTimeout};
@@ -77,7 +77,7 @@ getJasmineRequireObj().Spec = function(j$) {
       thisOne = (this.fn.length) ? timeoutable(this.fn) : this.fn;
     var allFns = befores.concat(thisOne).concat(afters);
 
-    this.queueRunner({
+    this.queueRunnerFactory({
       fns: allFns,
       onException: onException,
       onComplete: complete
