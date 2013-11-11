@@ -175,5 +175,72 @@ describe("DelayedFunctionScheduler", function() {
     expect(fn).toHaveBeenCalled();
   });
 
+  it("schedules a function for later execution during a tick", function () {
+    var scheduler = new j$.DelayedFunctionScheduler(),
+      fn = jasmine.createSpy('fn'),
+      fnDelay = 10;
+
+    scheduler.scheduleFunction(function () {
+      scheduler.scheduleFunction(fn, fnDelay);
+    }, 0);
+
+    expect(fn).not.toHaveBeenCalled();
+
+    scheduler.tick(fnDelay);
+
+    expect(fn).toHaveBeenCalled();
+  });
+
+  it("#removeFunctionWithId removes a previously scheduled function with a given id during a tick", function () {
+    var scheduler = new j$.DelayedFunctionScheduler(),
+      fn = jasmine.createSpy('fn'),
+      fnDelay = 10,
+      timeoutKey;
+
+    scheduler.scheduleFunction(function () {
+      scheduler.removeFunctionWithId(timeoutKey);
+    }, 0);
+    timeoutKey = scheduler.scheduleFunction(fn, fnDelay);
+
+    expect(fn).not.toHaveBeenCalled();
+
+    scheduler.tick(fnDelay);
+
+    expect(fn).not.toHaveBeenCalled();
+  });
+
+  it("executes recurring functions interleaved with regular functions and functions scheduled during a tick in the correct order", function () {
+    var scheduler = new j$.DelayedFunctionScheduler(),
+      fn = jasmine.createSpy('fn'),
+      recurringCallCount = 0,
+      recurring = jasmine.createSpy('recurring').and.callFake(function() {
+        recurringCallCount++;
+        if (recurringCallCount < 5) {
+          expect(fn).not.toHaveBeenCalled();
+        }
+      }),
+      innerFn = jasmine.createSpy('innerFn').and.callFake(function() {
+        expect(recurring.calls.count()).toBe(4);
+        expect(fn).not.toHaveBeenCalled();
+      }),
+      scheduling = jasmine.createSpy('scheduling').and.callFake(function() {
+        expect(recurring.calls.count()).toBe(3);
+        expect(fn).not.toHaveBeenCalled();
+        scheduler.scheduleFunction(innerFn, 10);  // 41ms absolute
+      });
+
+    scheduler.scheduleFunction(recurring, 10, [], true);
+    scheduler.scheduleFunction(fn, 50);
+    scheduler.scheduleFunction(scheduling, 31);
+
+    scheduler.tick(60);
+
+    expect(recurring).toHaveBeenCalled();
+    expect(recurring.calls.count()).toBe(6);
+    expect(fn).toHaveBeenCalled();
+    expect(scheduling).toHaveBeenCalled();
+    expect(innerFn).toHaveBeenCalled();
+  });
+
 });
 

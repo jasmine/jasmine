@@ -341,4 +341,19 @@ describe("Clock (acceptance)", function() {
     clock.tick();
     expect(delayedFn2).toHaveBeenCalled();
   });
+
+  it("correctly calls functions scheduled while the Clock is advancing", function() {
+    var delayedFn1 = jasmine.createSpy('delayedFn1'),
+        delayedFn2 = jasmine.createSpy('delayedFn2'),
+        delayedFunctionScheduler = new j$.DelayedFunctionScheduler(),
+        clock = new j$.Clock({setTimeout: function() {}}, delayedFunctionScheduler);
+
+    delayedFn1.and.callFake(function() { clock.setTimeout(delayedFn2, 1); });
+    clock.install();
+    clock.setTimeout(delayedFn1, 5);
+
+    clock.tick(6);
+    expect(delayedFn1).toHaveBeenCalled();
+    expect(delayedFn2).toHaveBeenCalled();  
+  });
 });
