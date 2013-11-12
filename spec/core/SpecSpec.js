@@ -230,7 +230,7 @@ describe("Spec", function() {
           setTimeout: function (fn) { return setTimeout(fn, 0); },
           clearTimeout: clearTimeout
         },
-        queueRunner: function (attrs) {
+        queueRunnerFactory: function (attrs) {
           // Fake the "run" method of a regular queue runner
           // for an async spec.
           try {
