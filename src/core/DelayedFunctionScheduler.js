@@ -1,14 +1,17 @@
 getJasmineRequireObj().DelayedFunctionScheduler = function() {
   function DelayedFunctionScheduler() {
     var self = this;
+    var scheduledLookup = [];
     var scheduledFunctions = {};
     var currentTime = 0;
     var delayedFnCount = 0;
 
     self.tick = function(millis) {
       millis = millis || 0;
-      currentTime = currentTime + millis;
-      runFunctionsWithinRange(currentTime - millis, currentTime);
+      var endTime = currentTime + millis;
+
+      runScheduledFunctions(endTime);
+      currentTime = endTime;
     };
 
     self.scheduleFunction = function(funcToCall, millis, params, recurring, timeoutKey, runAtMillis) {
@@ -24,7 +27,8 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
       millis = millis || 0;
       timeoutKey = timeoutKey || ++delayedFnCount;
       runAtMillis = runAtMillis || (currentTime + millis);
-      scheduledFunctions[timeoutKey] = {
+
+      var funcToSchedule = {
         runAtMillis: runAtMillis,
         funcToCall: f,
         recurring: recurring,
@@ -32,58 +36,73 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
         timeoutKey: timeoutKey,
         millis: millis
       };
+
+      if (runAtMillis in scheduledFunctions) {
+        scheduledFunctions[runAtMillis].push(funcToSchedule);
+      } else {
+        scheduledFunctions[runAtMillis] = [funcToSchedule];
+        scheduledLookup.push(runAtMillis);
+        scheduledLookup.sort(function (a, b) {
+          return a - b;
+        });
+      }
+
       return timeoutKey;
     };
 
     self.removeFunctionWithId = function(timeoutKey) {
-      delete scheduledFunctions[timeoutKey];
+      for (var runAtMillis in scheduledFunctions) {
+        var funcs = scheduledFunctions[runAtMillis];
+        var i = indexOfFirstToPass(funcs, function (func) {
+          return func.timeoutKey === timeoutKey;
+        });
+
+        if (i > -1) {
+          if (funcs.length === 1) {
+            delete scheduledFunctions[runAtMillis];
+            deleteFromLookup(runAtMillis);
+          } else {
+            funcs.splice(i, 1);
+          }
+
+          // intervals get rescheduled when executed, so there's never more
+          // than a single scheduled function with a given timeoutKey
+          break;
+        }
+      }
     };
 
     self.reset = function() {
       currentTime = 0;
+      scheduledLookup = [];
       scheduledFunctions = {};
       delayedFnCount = 0;
     };
 
     return self;
 
-    // finds/dupes functions within range and removes them.
-    function functionsWithinRange(startMillis, endMillis) {
-      var fnsToRun = [];
-      for (var timeoutKey in scheduledFunctions) {
-        var scheduledFunc = scheduledFunctions[timeoutKey];
-        if (scheduledFunc &&
-          scheduledFunc.runAtMillis >= startMillis &&
-          scheduledFunc.runAtMillis <= endMillis) {
+    function indexOfFirstToPass(array, testFn) {
+      var index = -1;
 
-          // remove fn -- we'll reschedule later if it is recurring.
-          self.removeFunctionWithId(timeoutKey);
-          if (!scheduledFunc.recurring) {
-            fnsToRun.push(scheduledFunc); // schedules each function only once
-          } else {
-            fnsToRun.push(buildNthInstanceOf(scheduledFunc, 0));
-            var additionalTimesFnRunsInRange =
-              Math.floor((endMillis - scheduledFunc.runAtMillis) / scheduledFunc.millis);
-            for (var i = 0; i < additionalTimesFnRunsInRange; i++) {
-              fnsToRun.push(buildNthInstanceOf(scheduledFunc, i + 1));
-            }
-            reschedule(buildNthInstanceOf(scheduledFunc, additionalTimesFnRunsInRange));
-          }
+      for (var i = 0; i < array.length; ++i) {
+        if (testFn(array[i])) {
+          index = i;
+          break;
         }
       }
 
-      return fnsToRun;
+      return index;
     }
 
-    function buildNthInstanceOf(scheduledFunc, n) {
-      return {
-        runAtMillis: scheduledFunc.runAtMillis + (scheduledFunc.millis * n),
-        funcToCall: scheduledFunc.funcToCall,
-        params: scheduledFunc.params,
-        millis: scheduledFunc.millis,
-        recurring: scheduledFunc.recurring,
-        timeoutKey: scheduledFunc.timeoutKey
-      };
+    function deleteFromLookup(key) {
+      var value = Number(key);
+      var i = indexOfFirstToPass(scheduledLookup, function (millis) {
+        return millis === value;
+      });
+
+      if (i > -1) {
+        scheduledLookup.splice(i, 1);
+      }
     }
 
     function reschedule(scheduledFn) {
@@ -95,21 +114,30 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
         scheduledFn.runAtMillis + scheduledFn.millis);
     }
 
-
-    function runFunctionsWithinRange(startMillis, endMillis) {
-      var funcsToRun = functionsWithinRange(startMillis, endMillis);
-      if (funcsToRun.length === 0) {
+    function runScheduledFunctions(endTime) {
+      if (scheduledLookup.length === 0 || scheduledLookup[0] > endTime) {
         return;
       }
 
-      funcsToRun.sort(function(a, b) {
-        return a.runAtMillis - b.runAtMillis;
-      });
+      do {
+        currentTime = scheduledLookup.shift();
 
-      for (var i = 0; i < funcsToRun.length; ++i) {
-        var funcToRun = funcsToRun[i];
-        funcToRun.funcToCall.apply(null, funcToRun.params || []);
-      }
+        var funcsToRun = scheduledFunctions[currentTime];
+        delete scheduledFunctions[currentTime];
+
+        for (var i = 0; i < funcsToRun.length; ++i) {
+          var funcToRun = funcsToRun[i];
+          funcToRun.funcToCall.apply(null, funcToRun.params || []);
+
+          if (funcToRun.recurring) {
+            reschedule(funcToRun);
+          }
+        }
+      } while (scheduledLookup.length > 0 &&
+              // checking first if we're out of time prevents setTimeout(0)
+              // scheduled in a funcToRun from forcing an extra iteration
+                 currentTime !== endTime  &&
+                 scheduledLookup[0] <= endTime);
     }
   }
 
