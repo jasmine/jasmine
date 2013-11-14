@@ -11,6 +11,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
       var endTime = currentTime + millis;
 
       runScheduledFunctions(endTime);
+      currentTime = endTime;
     };
 
     self.scheduleFunction = function(funcToCall, millis, params, recurring, timeoutKey, runAtMillis) {
@@ -137,8 +138,6 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
               // scheduled in a funcToRun from forcing an extra iteration
                  currentTime !== endTime  &&
                  scheduledLookup[0] <= endTime);
-
-      currentTime = endTime;
     }
   }
 
