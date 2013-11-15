@@ -5,9 +5,8 @@ getJasmineRequireObj().Spec = function(j$) {
     this.id = attrs.id;
     this.description = attrs.description || '';
     this.fn = attrs.fn;
-    this.beforeFns = attrs.beforeFns || function() {};
-    this.afterFns = attrs.afterFns || function() {};
-    this.catchingExceptions = attrs.catchingExceptions;
+    this.beforeFns = attrs.beforeFns || function() { return []; };
+    this.afterFns = attrs.afterFns || function() { return []; };
     this.onStart = attrs.onStart || function() {};
     this.exceptionFormatter = attrs.exceptionFormatter || function() {};
     this.getSpecName = attrs.getSpecName || function() { return ''; };
@@ -72,13 +71,15 @@ getJasmineRequireObj().Spec = function(j$) {
       timeout = void 0;
     }
 
-    var befores = this.beforeFns() || [],
-      afters = this.afterFns() || [],
-      thisOne = (this.fn.length) ? timeoutable(this.fn) : this.fn;
-    var allFns = befores.concat(thisOne).concat(afters);
+    var allFns = this.beforeFns().concat(this.fn).concat(this.afterFns()),
+      allTimeoutableFns = [];
+    for (var i = 0; i < allFns.length; i++) {
+      var fn = allFns[i];
+      allTimeoutableFns.push(fn.length > 0 ? timeoutable(fn) : fn);
+    }
 
     this.queueRunnerFactory({
-      fns: allFns,
+      fns: allTimeoutableFns,
       onException: onException,
       onComplete: complete
     });
