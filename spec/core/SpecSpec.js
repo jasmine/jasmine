@@ -218,42 +218,24 @@ describe("Spec", function() {
     expect(specNameSpy.calls.mostRecent().args[0].id).toEqual(spec.id);
   });
 
-  it("resets the timeout timer when an async spec throws an exception", function(done) {
-    var handleException = jasmine.createSpy('exception handler'),
+  it("resets the timeout timer when an async spec throws an exception", function() {
+    var queueRunnerSpy = jasmine.createSpy('queueRunner'),
+      clearTimeoutSpy = jasmine.createSpy('clear timeout'),
       spec = new j$.Spec({
-        fn: function(done) { throw new Error('test'); },
+        fn: function(done) { },
         catchExceptions: function() { return true; },
-        expectationResultFactory: handleException,
         timer: {
-          // Force timeout to 0 to postpone execution to next tick
-          // without using the default 5s interval
-          setTimeout: function (fn) { return setTimeout(fn, 0); },
-          clearTimeout: clearTimeout
+          setTimeout: function () { return 920; },
+          clearTimeout: clearTimeoutSpy
         },
-        queueRunnerFactory: function (attrs) {
-          // Fake the "run" method of a regular queue runner
-          // for an async spec.
-          try {
-            attrs.fns[0].call({}, function () {});
-          } catch (e) {
-            handleException(e);
-          }
-        }
+        queueRunnerFactory: queueRunnerSpy
       });
 
-    // Spec execution will create the timeout timer that would report
-    // a failure on next tick unless it gets properly cleared before
-    // the end of this tick.
     spec.execute();
+    queueRunnerSpy.calls.mostRecent().args[0].fns[0]();
+    queueRunnerSpy.calls.mostRecent().args[0].onException(new Error());
 
-    // Run the expect clause on next tick to detect the case when the
-    // timeout timer was not properly reset. The exception handler is
-    // called once when the error is thrown. It is called twice when
-    // the timeout timer is not properly reset.
-    setTimeout(function () {
-      expect(handleException.calls.count()).toEqual(1);
-      done();
-    }, 0);
+    expect(clearTimeoutSpy).toHaveBeenCalledWith(920);
   });
 
   describe("when a spec is marked pending during execution", function() {
