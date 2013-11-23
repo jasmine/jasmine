@@ -23,6 +23,8 @@ getJasmineRequireObj().toThrow = function(j$) {
           return result;
         }
 
+        result.error = thrown;
+        
         if (arguments.length == 1) {
           result.pass = true;
           result.message = "Expected function not to throw, but it threw " + j$.pp(thrown) + ".";
