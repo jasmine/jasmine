@@ -13,20 +13,20 @@ describe('Exceptions:', function() {
           throw new Error('I should hit a breakpoint!');
         });
       });
-      var dont_change = 'I will never change!';
+      var spy = jasmine.createSpy('spy');
 
       try {
         env.execute();
-        dont_change = 'oops I changed';
+        spy();
       }
       catch (e) {}
 
-      expect(dont_change).toEqual('I will never change!');
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 
   describe("with catch on exception", function() {
-    it('should handle exceptions thrown, but continue', function() {
+    it('should handle exceptions thrown, but continue', function(done) {
       var secondTest = jasmine.createSpy('second test');
       env.describe('Suite for handles exceptions', function () {
         env.it('should be a test that fails because it throws an exception', function() {
@@ -35,11 +35,16 @@ describe('Exceptions:', function() {
         env.it('should be a passing test that runs after exceptions are thrown from a async test', secondTest);
       });
 
+      expectations = function() {
+        expect(secondTest).toHaveBeenCalled();
+        done();
+      };
+
+      env.addReporter({ jasmineDone: expectations });
       env.execute();
-      expect(secondTest).toHaveBeenCalled();
     });
 
-    it("should handle exceptions thrown directly in top-level describe blocks and continue", function () {
+    it("should handle exceptions thrown directly in top-level describe blocks and continue", function(done) {
       var secondDescribe = jasmine.createSpy("second describe");
       env.describe("a suite that throws an exception", function () {
         env.it("is a test that should pass", function () {
@@ -50,8 +55,13 @@ describe('Exceptions:', function() {
       });
       env.describe("a suite that doesn't throw an exception", secondDescribe);
 
+      expectations = function() {
+        expect(secondDescribe).toHaveBeenCalled();
+        done();
+      };
+
+      env.addReporter({ jasmineDone: expectations });
       env.execute();
-      expect(secondDescribe).toHaveBeenCalled();
     });
   });
 });

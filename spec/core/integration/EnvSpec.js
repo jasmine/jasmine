@@ -285,7 +285,7 @@ describe("Env integration", function() {
 
       env.it("async spec that doesn't call done", function(underTestCallback) {
         env.expect(true).toBeTruthy();
-        jasmine.getEnv().clock.tick(8414);
+        jasmine.getEnv().clock.tick(8415);
       });
 
       env.execute();
