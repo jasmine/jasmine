@@ -382,7 +382,7 @@ describe("A spy, when configured to call through", function() {
     expect(foo.getBar).toHaveBeenCalled();
   });
 
-  it("should not effect other functions", function() {
+  it("should not affect other functions", function() {
     expect(bar).toEqual(123);
   });
 
@@ -419,7 +419,7 @@ describe("A spy, when faking a return value", function() {
     expect(foo.getBar).toHaveBeenCalled();
   });
 
-  it("should not effect other functions", function() {
+  it("should not affect other functions", function() {
     expect(bar).toEqual(123);
   });
 
@@ -458,7 +458,7 @@ describe("A spy, when faking a return value", function() {
     expect(foo.getBar).toHaveBeenCalled();
   });
 
-  it("should not effect other functions", function() {
+  it("should not affect other functions", function() {
     expect(bar).toEqual(123);
   });
 
