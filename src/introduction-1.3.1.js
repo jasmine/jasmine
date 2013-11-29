@@ -565,7 +565,7 @@ describe("jasmine.any", function() {
 /**
  ## Mocking the JavaScript Clock
 
- The Jasmine Mock Clock is available for a test suites that need the ability to use `setTimeout` or `setInterval` callbacks. It makes the timer callbacks synchronous, thus making them easier to test.
+ The Jasmine Mock Clock is available for test suites that need the ability to use `setTimeout` or `setInterval` callbacks. It makes the timer callbacks synchronous, thus making them easier to test.
 
  */
 describe("Manually ticking the Jasmine Mock Clock", function() {
