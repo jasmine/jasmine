@@ -205,9 +205,14 @@ describe("Env integration", function() {
       var env = new j$.Env();
 
       var originalFunctionWasCalled = false;
-      var subject = { spiedFunc: function() { originalFunctionWasCalled = true; } };
+      var subject = {
+        spiedFunc: function() {
+          originalFunctionWasCalled = true;
+          return "original result";
+        }
+      };
 
-      var spy = env.spyOn(subject, 'spiedFunc');
+      var spy = env.spyOn(subject, 'spiedFunc').and.returnValue("stubbed result");
 
       expect(subject.spiedFunc).toEqual(spy);
 
@@ -220,11 +225,15 @@ describe("Env integration", function() {
       expect(subject.spiedFunc.calls.count()).toEqual(1);
       expect(subject.spiedFunc.calls.mostRecent().args).toEqual(['foo']);
       expect(subject.spiedFunc.calls.mostRecent().object).toEqual(subject);
+      expect(subject.spiedFunc.calls.mostRecent().returnValue).toEqual("stubbed result");
       expect(originalFunctionWasCalled).toEqual(false);
 
+      subject.spiedFunc.and.callThrough();
       subject.spiedFunc('bar');
       expect(subject.spiedFunc.calls.count()).toEqual(2);
       expect(subject.spiedFunc.calls.mostRecent().args).toEqual(['bar']);
+      expect(subject.spiedFunc.calls.mostRecent().returnValue).toEqual("original result");
+      expect(originalFunctionWasCalled).toEqual(true);
   });
 
   it("Mock clock can be installed and used in tests", function(done) {
