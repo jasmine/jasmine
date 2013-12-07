@@ -291,7 +291,7 @@
         </div>
         <h2>Grouping Related Specs with <code>describe</code></h2>
 
-<p>The <code>describe</code> function is for grouping related specs. The string parameter is for naming the collection of specs, and will be contatenated with specs to make a spec&rsquo;s full name. This aids in finding specs in a large suite. If you name them well, your specs read as full sentences in traditional <a href="http://en.wikipedia.org/wiki/Behavior-driven_development">BDD</a> style.</p>
+<p>The <code>describe</code> function is for grouping related specs. The string parameter is for naming the collection of specs, and will be concatenated with specs to make a spec&rsquo;s full name. This aids in finding specs in a large suite. If you name them well, your specs read as full sentences in traditional <a href="http://en.wikipedia.org/wiki/Behavior-driven_development">BDD</a> style.</p>
       </td>
       <td class="code">
         <div class="highlight">
@@ -515,7 +515,7 @@
     <span class="nx">expect</span><span class="p">(</span><span class="nx">foo</span><span class="p">.</span><span class="nx">getBar</span><span class="p">).</span><span class="nx">toHaveBeenCalled</span><span class="p">();</span>
   <span class="p">});</span>
 
-  <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should not effect other functions&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should not affect other functions&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">expect</span><span class="p">(</span><span class="nx">bar</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="mi">123</span><span class="p">);</span>
   <span class="p">});</span>
 
@@ -560,7 +560,7 @@
     <span class="nx">expect</span><span class="p">(</span><span class="nx">foo</span><span class="p">.</span><span class="nx">getBar</span><span class="p">).</span><span class="nx">toHaveBeenCalled</span><span class="p">();</span>
   <span class="p">});</span>
 
-  <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should not effect other functions&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should not affect other functions&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">expect</span><span class="p">(</span><span class="nx">bar</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="mi">123</span><span class="p">);</span>
   <span class="p">});</span>
 
@@ -607,7 +607,7 @@
     <span class="nx">expect</span><span class="p">(</span><span class="nx">foo</span><span class="p">.</span><span class="nx">getBar</span><span class="p">).</span><span class="nx">toHaveBeenCalled</span><span class="p">();</span>
   <span class="p">});</span>
 
-  <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should not effect other functions&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should not affect other functions&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="nx">expect</span><span class="p">(</span><span class="nx">bar</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="mi">123</span><span class="p">);</span>
   <span class="p">});</span>
 
@@ -639,7 +639,7 @@
   <span class="p">});</span>
 
   <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;is named, which helps in error reporting&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">expect</span><span class="p">(</span><span class="nx">whatAmI</span><span class="p">.</span><span class="nx">identity</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;whatAmI&#39;</span><span class="p">)</span>
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">whatAmI</span><span class="p">.</span><span class="nx">identity</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;whatAmI&#39;</span><span class="p">);</span>
   <span class="p">});</span>
 
   <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;tracks that the spy was called&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -725,7 +725,7 @@
     <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;is useful for comparing arguments&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span>
       <span class="nx">foo</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="kc">true</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
       <span class="p">});</span>
 
       <span class="nx">expect</span><span class="p">(</span><span class="nx">foo</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">(</span><span class="nx">jasmine</span><span class="p">.</span><span class="nx">any</span><span class="p">(</span><span class="nb">Number</span><span class="p">),</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">any</span><span class="p">(</span><span class="nb">Function</span><span class="p">));</span>
@@ -742,7 +742,7 @@
         </div>
         <h2>Mocking the JavaScript Clock</h2>
 
-<p>The Jasmine Mock Clock is available for a test suites that need the ability to use <code>setTimeout</code> or <code>setInterval</code> callbacks. It makes the timer callbacks synchronous, thus making them easier to test.</p>
+<p>The Jasmine Mock Clock is available for test suites that need the ability to use <code>setTimeout</code> or <code>setInterval</code> callbacks. It makes the timer callbacks synchronous, thus making them easier to test.</p>
       </td>
       <td class="code">
         <div class="highlight">
@@ -822,7 +822,7 @@
           <pre><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;Asynchronous specs&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">flag</span><span class="p">;</span>
 
-  <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should support async execution of test preparation and exepectations&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre>
+  <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should support async execution of test preparation and expectations&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre>
         </div>
       </td>
     </tr>
