@@ -201,6 +201,30 @@ describe("Env integration", function() {
     env.execute([secondSuite.id, firstSpec.id]);
   });
 
+  it("Functions can be spied on and have their calls tracked", function () {
+      var originalFunctionWasCalled = false;
+      var subject = { spiedFunc: function() { originalFunctionWasCalled = true; } };
+
+      var spy = spyOn(subject, 'spiedFunc');
+
+      expect(subject.spiedFunc).toEqual(spy);
+
+      expect(subject.spiedFunc.calls.any()).toEqual(false);
+      expect(subject.spiedFunc.calls.count()).toEqual(0);
+
+      subject.spiedFunc('foo');
+
+      expect(subject.spiedFunc.calls.any()).toEqual(true);
+      expect(subject.spiedFunc.calls.count()).toEqual(1);
+      expect(subject.spiedFunc.calls.mostRecent().args).toEqual(['foo']);
+      expect(subject.spiedFunc.calls.mostRecent().object).toEqual(subject);
+      expect(originalFunctionWasCalled).toEqual(false);
+
+      subject.spiedFunc('bar');
+      expect(subject.spiedFunc.calls.count()).toEqual(2);
+      expect(subject.spiedFunc.calls.mostRecent().args).toEqual(['bar']);
+  });
+
   it("Mock clock can be installed and used in tests", function(done) {
     var globalSetTimeout = jasmine.createSpy('globalSetTimeout'),
         delayedFunctionForGlobalClock = jasmine.createSpy('delayedFunctionForGlobalClock'),
