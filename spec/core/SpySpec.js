@@ -31,16 +31,21 @@ describe('Spies', function () {
 
     it("tracks the argument of calls", function () {
       var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var trackSpy = spyOn(spy.calls, "track");
+
       spy("arg");
-      expect(spy.calls.mostRecent().args).toEqual(["arg"]);
+
+      expect(trackSpy.calls.mostRecent().args[0].args).toEqual(["arg"]);
     });
 
     it("tracks the context of calls", function () {
       var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var trackSpy = spyOn(spy.calls, "track");
+
       var contextObject = { spyMethod: spy };
       contextObject.spyMethod();
 
-      expect(spy.calls[0].object).toEqual(contextObject);
+      expect(trackSpy.calls.mostRecent().args[0].object).toEqual(contextObject);
     });
   });
 
