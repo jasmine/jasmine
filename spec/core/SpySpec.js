@@ -28,6 +28,20 @@ describe('Spies', function () {
       expect(spy.and).toEqual(jasmine.any(j$.SpyStrategy));
       expect(spy.calls).toEqual(jasmine.any(j$.CallTracker));
     });
+
+    it("tracks the argument of calls", function () {
+      var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      spy("arg");
+      expect(spy.calls.mostRecent().args).toEqual(["arg"]);
+    });
+
+    it("tracks the context of calls", function () {
+      var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var contextObject = { spyMethod: spy };
+      contextObject.spyMethod();
+
+      expect(spy.calls[0].object).toEqual(contextObject);
+    });
   });
 
   describe("createSpyObj", function() {
