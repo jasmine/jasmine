@@ -202,10 +202,12 @@ describe("Env integration", function() {
   });
 
   it("Functions can be spied on and have their calls tracked", function () {
+      var env = new j$.Env();
+
       var originalFunctionWasCalled = false;
       var subject = { spiedFunc: function() { originalFunctionWasCalled = true; } };
 
-      var spy = spyOn(subject, 'spiedFunc');
+      var spy = env.spyOn(subject, 'spiedFunc');
 
       expect(subject.spiedFunc).toEqual(spy);
 
