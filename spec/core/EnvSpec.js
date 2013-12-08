@@ -61,26 +61,9 @@ describe("Env", function() {
       var originalFunctionWasCalled = false;
       var subject = { spiedFunc: function() { originalFunctionWasCalled = true; } };
 
-      originalFunc = subject.spiedFunc;
-
       var spy = env.spyOn(subject, 'spiedFunc');
 
       expect(subject.spiedFunc).toEqual(spy);
-
-      expect(subject.spiedFunc.calls.any()).toEqual(false);
-      expect(subject.spiedFunc.calls.count()).toEqual(0);
-
-      subject.spiedFunc('foo');
-
-      expect(subject.spiedFunc.calls.any()).toEqual(true);
-      expect(subject.spiedFunc.calls.count()).toEqual(1);
-      expect(subject.spiedFunc.calls.mostRecent().args).toEqual(['foo']);
-      expect(subject.spiedFunc.calls.mostRecent().object).toEqual(subject);
-      expect(originalFunctionWasCalled).toEqual(false);
-
-      subject.spiedFunc('bar');
-      expect(subject.spiedFunc.calls.count()).toEqual(2);
-      expect(subject.spiedFunc.calls.mostRecent().args).toEqual(['bar']);
     });
   });
 
