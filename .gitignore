@@ -17,3 +17,4 @@ src/html/.sass-cache/*
 node_modules/
 sauce_connect.log
 *.swp
+nbproject/
