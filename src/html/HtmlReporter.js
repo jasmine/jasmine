@@ -17,7 +17,12 @@ jasmine.HtmlReporter = function(_doc) {
     }
 
     createReporterDom(runner.env.versionString());
-    doc.body.appendChild(dom.reporter);
+    if (typeof doc.body !== 'undefined') {
+      doc.body.appendChild(dom.reporter);
+    }
+    else {
+      doc.appendChild(dom.reporter);
+    }
     setExceptionHandling();
 
     reporterView = new jasmine.HtmlReporter.ReporterView(dom);
@@ -138,7 +143,12 @@ jasmine.HtmlReporter = function(_doc) {
   }
 };
 jasmine.HtmlReporter.parameters = function(doc) {
-  var paramStr = doc.location.search.substring(1);
+  if (typeof doc.location !== 'undefined') {
+    paramStr = doc.location.search.substring(1);
+  }
+  else {
+    paramStr = window.location.search.substring(1);
+  }
   var params = [];
 
   if (paramStr.length > 0) {
