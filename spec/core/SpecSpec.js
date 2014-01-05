@@ -20,6 +20,10 @@ describe("Spec", function() {
     expect(j$.Spec.isPendingSpecException(e)).toBe(false);
   });
 
+  it("#isPendingSpecException returns false for thrown values that don't have toString", function() {
+    expect(j$.Spec.isPendingSpecException(void 0)).toBe(false);
+  });
+
   it("delegates execution to a QueueRunner", function() {
     var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
       spec = new j$.Spec({
