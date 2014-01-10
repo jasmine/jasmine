@@ -201,7 +201,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     return this;
 
     function find(selector) {
-      return getContainer().querySelector(selector);
+      return getContainer().querySelector('.html-reporter ' + selector);
     }
 
     function createDom(type, attrs, childrenVarArgs) {
