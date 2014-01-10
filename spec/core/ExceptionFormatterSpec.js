@@ -35,7 +35,14 @@ describe("ExceptionFormatter", function() {
         message = exceptionFormatter.message(sampleV8);
 
       expect(message).toEqual('A Classic Mistake: you got your foo in my bar');
+    });
 
+    it("formats thrown exceptions that aren't errors", function() {
+      var thrown = "crazy error",
+          exceptionFormatter = new j$.ExceptionFormatter(),
+          message = exceptionFormatter.message(thrown);
+
+      expect(message).toEqual("crazy error thrown");
     });
   });
 
