@@ -121,5 +121,12 @@ describe("j$.pp", function () {
 
     expect(j$.pp(obj)).toEqual("strung");
   });
+
+  it("should handle objects with null prototype", function() {
+    var obj = Object.create(null);
+    obj.foo = 'bar';
+
+    expect(j$.pp(obj)).toEqual("{ foo : 'bar' }");
+  });
 });
 
