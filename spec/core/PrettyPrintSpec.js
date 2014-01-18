@@ -123,6 +123,8 @@ describe("j$.pp", function () {
   });
 
   it("should handle objects with null prototype", function() {
+    if (jasmine.getEnv().ieVersion < 9) { return; }
+
     var obj = Object.create(null);
     obj.foo = 'bar';
 
