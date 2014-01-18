@@ -9,7 +9,8 @@ describe("toBeUndefined", function() {
   });
 
   it("fails when matching defined values", function() {
-    var matcher = j$.matchers.toBeUndefined();
+    var matcher = j$.matchers.toBeUndefined(),
+      result;
 
     result = matcher.compare('foo');
     expect(result.pass).toBe(false);

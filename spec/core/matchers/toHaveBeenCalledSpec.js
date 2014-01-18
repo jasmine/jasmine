@@ -13,7 +13,8 @@ describe("toHaveBeenCalled", function() {
 
   it("fails when the actual was not called", function() {
     var matcher = j$.matchers.toHaveBeenCalled(),
-      uncalledSpy = j$.createSpy('uncalled spy');
+      uncalledSpy = j$.createSpy('uncalled spy'),
+      result;
 
     result = matcher.compare(uncalledSpy);
     expect(result.pass).toBe(false);

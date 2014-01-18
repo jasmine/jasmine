@@ -50,31 +50,31 @@ describe("QueueRunner", function() {
       //createSpy('asyncfn').and.callFake(function(done) {});
 
       var onComplete = jasmine.createSpy('onComplete'),
-      beforeCallback = jasmine.createSpy('beforeCallback'),
-      fnCallback = jasmine.createSpy('fnCallback'),
-      afterCallback = jasmine.createSpy('afterCallback'),
-      fn1 = function(done) {
-        beforeCallback();
-        setTimeout(function() {
-          done()
-        }, 100);
-      },
-      fn2 = function(done) {
-        fnCallback();
-        setTimeout(function() {
-          done()
-        }, 100);
-      },
-      fn3 = function(done) {
-        afterCallback();
-        setTimeout(function() {
-          done()
-        }, 100);
-      },
-      queueRunner = new j$.QueueRunner({
-        fns: [fn1, fn2, fn3],
-        onComplete: onComplete
-      });
+        beforeCallback = jasmine.createSpy('beforeCallback'),
+        fnCallback = jasmine.createSpy('fnCallback'),
+        afterCallback = jasmine.createSpy('afterCallback'),
+        fn1 = function(done) {
+          beforeCallback();
+          setTimeout(function() {
+            done()
+          }, 100);
+        },
+        fn2 = function(done) {
+          fnCallback();
+          setTimeout(function() {
+            done()
+          }, 100);
+        },
+        fn3 = function(done) {
+          afterCallback();
+          setTimeout(function() {
+            done()
+          }, 100);
+        },
+        queueRunner = new j$.QueueRunner({
+          fns: [fn1, fn2, fn3],
+          onComplete: onComplete
+        });
 
       queueRunner.execute();
 
@@ -129,11 +129,10 @@ describe("QueueRunner", function() {
 
   it("continues running the functions even after an exception is thrown in an async spec", function() {
     var fn = function(done) { throw new Error("error"); },
-        nextFn = jasmine.createSpy("nextFunction");
-
-    queueRunner = new j$.QueueRunner({
-      fns: [fn, nextFn]
-    });
+      nextFn = jasmine.createSpy("nextFunction"),
+      queueRunner = new j$.QueueRunner({
+        fns: [fn, nextFn]
+      });
 
     queueRunner.execute();
     expect(nextFn).toHaveBeenCalled();

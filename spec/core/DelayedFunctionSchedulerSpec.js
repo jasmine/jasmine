@@ -14,7 +14,7 @@ describe("DelayedFunctionScheduler", function() {
 
   it("schedules a string for later execution", function() {
     var scheduler = new j$.DelayedFunctionScheduler(),
-        strfn = "horrible = true;";
+      strfn = "horrible = true;";
 
     scheduler.scheduleFunction(strfn, 0);
 

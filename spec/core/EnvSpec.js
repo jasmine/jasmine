@@ -6,20 +6,20 @@ describe("Env", function() {
   });
 
   it('removes all spies when env is executed', function(done) {
-    originalFoo = function() {},
-    testObj = {
-      foo: originalFoo
-    },
-    firstSpec = jasmine.createSpy('firstSpec').and.callFake(function() {
-      env.spyOn(testObj, 'foo');
-    }),
-    secondSpec = jasmine.createSpy('secondSpec').and.callFake(function() {
-      expect(testObj.foo).toBe(originalFoo);
-    });
-    env.describe('test suite', function() {
-      env.it('spec 0', firstSpec);
-      env.it('spec 1', secondSpec);
-    });
+    var originalFoo = function() {},
+      testObj = {
+        foo: originalFoo
+      },
+      firstSpec = jasmine.createSpy('firstSpec').and.callFake(function() {
+        env.spyOn(testObj, 'foo');
+      }),
+      secondSpec = jasmine.createSpy('secondSpec').and.callFake(function() {
+        expect(testObj.foo).toBe(originalFoo);
+      });
+      env.describe('test suite', function() {
+        env.it('spec 0', firstSpec);
+        env.it('spec 1', secondSpec);
+      });
 
     var assertions = function() {
       expect(firstSpec).toHaveBeenCalled();

@@ -326,7 +326,7 @@ describe("New HtmlReporter", function() {
       beforeEach(function() {
         env = new j$.Env();
         container = document.createElement("div");
-        getContainer = function() { return container; },
+        var getContainer = function() { return container; },
           reporter = new j$.HtmlReporter({
             env: env,
             getContainer: getContainer,
@@ -377,13 +377,13 @@ describe("New HtmlReporter", function() {
       beforeEach(function() {
         env = new j$.Env();
         container = document.createElement("div");
-        getContainer = function() { return container; },
-          reporter = new j$.HtmlReporter({
-            env: env,
-            getContainer: getContainer,
-            createElement: function() { return document.createElement.apply(document, arguments); },
-            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-          });
+        var getContainer = function() { return container; };
+        reporter = new j$.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
         reporter.initialize();
 
         reporter.jasmineStarted({});
@@ -414,14 +414,14 @@ describe("New HtmlReporter", function() {
 
       beforeEach(function() {
         env = new j$.Env();
-        container = document.createElement("div"),
-        getContainer = function() { return container; },
-          reporter = new j$.HtmlReporter({
-            env: env,
-            getContainer: getContainer,
-            createElement: function() { return document.createElement.apply(document, arguments); },
-            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-          });
+        container = document.createElement("div");
+        var getContainer = function() { return container; }
+        reporter = new j$.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
         reporter.initialize();
 
         reporter.jasmineStarted({});

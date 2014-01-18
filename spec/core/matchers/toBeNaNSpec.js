@@ -9,7 +9,8 @@ describe("toBeNaN", function() {
   });
 
   it("fails for anything not a NaN", function() {
-    var matcher = j$.matchers.toBeNaN();
+    var matcher = j$.matchers.toBeNaN(),
+      result;
 
     result = matcher.compare(1);
     expect(result.pass).toBe(false);

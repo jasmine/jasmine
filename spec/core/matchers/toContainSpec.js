@@ -3,7 +3,8 @@ describe("toContain", function() {
     var util = {
         contains: jasmine.createSpy('delegated-contains').and.returnValue(true)
       },
-      matcher = j$.matchers.toContain(util);
+      matcher = j$.matchers.toContain(util),
+      result;
 
     result = matcher.compare("ABC", "B");
     expect(util.contains).toHaveBeenCalledWith("ABC", "B", []);
@@ -15,7 +16,8 @@ describe("toContain", function() {
         contains: jasmine.createSpy('delegated-contains').and.returnValue(true)
       },
       customEqualityTesters = ['a', 'b'],
-      matcher = j$.matchers.toContain(util, customEqualityTesters);
+      matcher = j$.matchers.toContain(util, customEqualityTesters),
+      result;
 
     result = matcher.compare("ABC", "B");
     expect(util.contains).toHaveBeenCalledWith("ABC", "B", ['a', 'b']);
