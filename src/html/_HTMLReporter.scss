@@ -113,7 +113,7 @@ body {
 
         &:before {
           color: $failing-color;
-          content: "x";
+          content: "\d7";
           font-weight: bold;
           margin-left: -1px;
         }
