@@ -6,6 +6,12 @@
     "type": "git",
     "url": "https://github.com/pivotal/jasmine.git"
   },
+  "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
+  "homepage": "http://jasmine.github.io",
+  "files": [
+    "lib/console",
+    "lib/jasmine-core"
+  ],
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.7.0",
