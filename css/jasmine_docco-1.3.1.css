@@ -56,10 +56,6 @@ h1, h2, h3, h4, h5, h6 {
   box-flex: 1;
 }
 
-th {
-  background-color: #eee;
-}
-
 td.code, th.code {
   background-color: #073642;
 }
