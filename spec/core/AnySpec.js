@@ -40,6 +40,7 @@ describe("Any", function() {
     var any = new j$.Any(Number);
 
     expect(any.jasmineToString()).toMatch('<jasmine.any');
+    expect(any.jasmineToString()).toMatch('Number');
   });
 
 });
