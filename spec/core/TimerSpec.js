@@ -10,4 +10,22 @@ describe("Timer", function() {
 
     expect(timer.elapsed()).toEqual(100);
   });
+
+  describe("when date is stubbed, perhaps by other testing helpers", function() {
+    var origDate = Date;
+    beforeEach(function() {
+      Date = jasmine.createSpy('date spy');
+    });
+
+    afterEach(function() {
+      Date = origDate;
+    });
+
+    it("does not throw even though Date was taken away", function() {
+      var timer = new j$.Timer();
+
+      expect(timer.start).not.toThrow();
+      expect(timer.elapsed()).toEqual(jasmine.any(Number));
+    });
+  });
 });
