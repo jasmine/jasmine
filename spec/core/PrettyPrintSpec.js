@@ -11,6 +11,7 @@ describe("j$.pp", function () {
     expect(j$.pp(jasmine.undefined)).toEqual("undefined");
     expect(j$.pp(3)).toEqual("3");
     expect(j$.pp(-3.14)).toEqual("-3.14");
+    expect(j$.pp(-0)).toEqual("-0");
   });
 
   it("should stringify arrays properly", function() {
