@@ -10,10 +10,7 @@ module.exports = function(grunt) {
     compress: require('./grunt/config/compress.js')
   });
 
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-compass');
-  grunt.loadNpmTasks('grunt-contrib-compress');
+  require('load-grunt-tasks')(grunt);
 
   grunt.loadTasks('grunt/tasks');
 
@@ -36,7 +33,6 @@ module.exports = function(grunt) {
       'build:copyVersionToGem'
     ]
   );
-
 
   var spec = require('./grunt/tasks/spec.js');
 
