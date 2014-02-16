@@ -15,3 +15,4 @@ end
 
 task "jasmine:configure" => "jasmine:set_env"
 
+task :default => "jasmine:ci"
