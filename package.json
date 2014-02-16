@@ -18,6 +18,7 @@
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-compass": "~0.6.0",
     "grunt-contrib-compress": "~0.5.2",
+    "load-grunt-tasks": "0.3.0",
     "shelljs": "~0.1.4"
   }
 }
