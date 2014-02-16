@@ -13,17 +13,17 @@ body { background-color: #eeeeee; padding: 0; margin: 5px; overflow-y: scroll; }
 .html-reporter .symbol-summary { overflow: hidden; *zoom: 1; margin: 14px 0; }
 .html-reporter .symbol-summary li { display: inline-block; height: 8px; width: 14px; font-size: 16px; }
 .html-reporter .symbol-summary li.passed { font-size: 14px; }
-.html-reporter .symbol-summary li.passed:before { color: #5e7d00; content: "\02022"; }
+.html-reporter .symbol-summary li.passed:before { color: #007069; content: "\02022"; }
 .html-reporter .symbol-summary li.failed { line-height: 9px; }
-.html-reporter .symbol-summary li.failed:before { color: #b03911; content: "\d7"; font-weight: bold; margin-left: -1px; }
+.html-reporter .symbol-summary li.failed:before { color: #ca3a11; content: "\d7"; font-weight: bold; margin-left: -1px; }
 .html-reporter .symbol-summary li.disabled { font-size: 14px; }
 .html-reporter .symbol-summary li.disabled:before { color: #bababa; content: "\02022"; }
 .html-reporter .symbol-summary li.pending { line-height: 17px; }
 .html-reporter .symbol-summary li.pending:before { color: #ba9d37; content: "*"; }
 .html-reporter .exceptions { color: #fff; float: right; margin-top: 5px; margin-right: 5px; }
 .html-reporter .bar { line-height: 28px; font-size: 14px; display: block; color: #eee; }
-.html-reporter .bar.failed { background-color: #b03911; }
-.html-reporter .bar.passed { background-color: #a6b779; }
+.html-reporter .bar.failed { background-color: #ca3a11; }
+.html-reporter .bar.passed { background-color: #007069; }
 .html-reporter .bar.skipped { background-color: #bababa; }
 .html-reporter .bar.menu { background-color: #fff; color: #aaaaaa; }
 .html-reporter .bar.menu a { color: #333333; }
@@ -41,14 +41,14 @@ body { background-color: #eeeeee; padding: 0; margin: 5px; overflow-y: scroll; }
 .html-reporter .summary { margin-top: 14px; }
 .html-reporter .summary ul { list-style-type: none; margin-left: 14px; padding-top: 0; padding-left: 0; }
 .html-reporter .summary ul.suite { margin-top: 7px; margin-bottom: 7px; }
-.html-reporter .summary li.passed a { color: #5e7d00; }
-.html-reporter .summary li.failed a { color: #b03911; }
+.html-reporter .summary li.passed a { color: #007069; }
+.html-reporter .summary li.failed a { color: #ca3a11; }
 .html-reporter .summary li.pending a { color: #ba9d37; }
 .html-reporter .description + .suite { margin-top: 0; }
 .html-reporter .suite { margin-top: 14px; }
 .html-reporter .suite a { color: #333333; }
 .html-reporter .failures .spec-detail { margin-bottom: 28px; }
-.html-reporter .failures .spec-detail .description { background-color: #b03911; }
+.html-reporter .failures .spec-detail .description { background-color: #ca3a11; }
 .html-reporter .failures .spec-detail .description a { color: white; }
 .html-reporter .result-message { padding-top: 14px; color: #333333; white-space: pre; }
 .html-reporter .result-message span.result { display: block; }

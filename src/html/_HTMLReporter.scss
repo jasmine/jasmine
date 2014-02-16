@@ -9,11 +9,8 @@ $text-color: #333;
 
 $page-background-color: #eee;
 
-$light-passing-color: #a6b779;
-$passing-color: #5e7d00;
-
-$light-failing-color: #cf867e;
-$failing-color: #b03911;
+$passing-color: #007069;
+$failing-color: #ca3a11;
 $pending-color: #ba9d37;
 
 $neutral-color: #bababa;
@@ -159,7 +156,7 @@ body {
     }
 
     &.passed {
-      background-color: $light-passing-color;
+      background-color: $passing-color;
     }
 
     &.skipped {
