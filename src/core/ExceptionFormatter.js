@@ -10,11 +10,11 @@ getJasmineRequireObj().ExceptionFormatter = function() {
       }
 
       if (error.fileName || error.sourceURL) {
-        message += " in " + (error.fileName || error.sourceURL);
+        message += ' in ' + (error.fileName || error.sourceURL);
       }
 
       if (error.line || error.lineNumber) {
-        message += " (line " + (error.line || error.lineNumber) + ")";
+        message += ' (line ' + (error.line || error.lineNumber) + ')';
       }
 
       return message;

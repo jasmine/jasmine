@@ -7,8 +7,8 @@ getJasmineRequireObj().toThrow = function(j$) {
           threw = false,
           thrown;
 
-        if (typeof actual != "function") {
-          throw new Error("Actual is not a Function");
+        if (typeof actual != 'function') {
+          throw new Error('Actual is not a Function');
         }
 
         try {
@@ -19,22 +19,22 @@ getJasmineRequireObj().toThrow = function(j$) {
         }
 
         if (!threw) {
-          result.message = "Expected function to throw an exception.";
+          result.message = 'Expected function to throw an exception.';
           return result;
         }
 
         if (arguments.length == 1) {
           result.pass = true;
-          result.message = function() { return "Expected function not to throw, but it threw " + j$.pp(thrown) + "."; };
+          result.message = function() { return 'Expected function not to throw, but it threw ' + j$.pp(thrown) + '.'; };
 
           return result;
         }
 
         if (util.equals(thrown, expected)) {
           result.pass = true;
-          result.message = function() { return "Expected function not to throw " + j$.pp(expected) + "."; };
+          result.message = function() { return 'Expected function not to throw ' + j$.pp(expected) + '.'; };
         } else {
-          result.message = function() { return "Expected function to throw " + j$.pp(expected) + ", but it threw " +  j$.pp(thrown) + "."; };
+          result.message = function() { return 'Expected function to throw ' + j$.pp(expected) + ', but it threw ' +  j$.pp(thrown) + '.'; };
         }
 
         return result;

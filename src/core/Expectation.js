@@ -18,7 +18,7 @@ getJasmineRequireObj().Expectation = function() {
     return function() {
       var args = Array.prototype.slice.call(arguments, 0),
         expected = args.slice(0),
-        message = "";
+        message = '';
 
       args.unshift(this.actual);
 
@@ -43,7 +43,7 @@ getJasmineRequireObj().Expectation = function() {
           args.unshift(name);
           message = this.util.buildFailureMessage.apply(null, args);
         } else {
-          if (Object.prototype.toString.apply(result.message) === "[object Function]") {
+          if (Object.prototype.toString.apply(result.message) === '[object Function]') {
             message = result.message();
           } else {
             message = result.message;
