@@ -4,5 +4,6 @@
   "immed": true,
   "newcap": true,
   "trailing": true,
-  "loopfunc": true
+  "loopfunc": true,
+  "quotmark": "single"
 }

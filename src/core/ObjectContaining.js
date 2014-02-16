@@ -5,7 +5,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
   }
 
   ObjectContaining.prototype.jasmineMatches = function(other, mismatchKeys, mismatchValues) {
-    if (typeof(this.sample) !== "object") { throw new Error("You must provide an object to objectContaining, not '"+this.sample+"'."); }
+    if (typeof(this.sample) !== 'object') { throw new Error('You must provide an object to objectContaining, not \''+this.sample+'\'.'); }
 
     mismatchKeys = mismatchKeys || [];
     mismatchValues = mismatchValues || [];
@@ -16,10 +16,10 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
 
     for (var property in this.sample) {
       if (!hasKey(other, property) && hasKey(this.sample, property)) {
-        mismatchKeys.push("expected has key '" + property + "', but missing from actual.");
+        mismatchKeys.push('expected has key \'' + property + '\', but missing from actual.');
       }
       else if (!j$.matchersUtil.equals(this.sample[property], other[property])) {
-        mismatchValues.push("'" + property + "' was '" + (other[property] ? j$.util.htmlEscape(other[property].toString()) : other[property]) + "' in actual, but was '" + (this.sample[property] ? j$.util.htmlEscape(this.sample[property].toString()) : this.sample[property]) + "' in expected.");
+        mismatchValues.push('\'' + property + '\' was \'' + (other[property] ? j$.util.htmlEscape(other[property].toString()) : other[property]) + '\' in actual, but was \'' + (this.sample[property] ? j$.util.htmlEscape(this.sample[property].toString()) : this.sample[property]) + '\' in expected.');
       }
     }
 
@@ -27,7 +27,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
   };
 
   ObjectContaining.prototype.jasmineToString = function() {
-    return "<jasmine.objectContaining(" + j$.pp(this.sample) + ")>";
+    return '<jasmine.objectContaining(' + j$.pp(this.sample) + ')>';
   };
 
   return ObjectContaining;

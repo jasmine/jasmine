@@ -1,5 +1,5 @@
 function getJasmineRequireObj() {
-  if (typeof module !== "undefined" && module.exports) {
+  if (typeof module !== 'undefined' && module.exports) {
     return exports;
   } else {
     window.jasmineRequire = window.jasmineRequire || {};

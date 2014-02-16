@@ -32,7 +32,7 @@ getJasmineRequireObj().Clock = function() {
     self.setTimeout = function(fn, delay, params) {
       if (legacyIE()) {
         if (arguments.length > 2) {
-          throw new Error("IE < 9 cannot support extra params to setTimeout without a polyfill");
+          throw new Error('IE < 9 cannot support extra params to setTimeout without a polyfill');
         }
         return timer.setTimeout(fn, delay);
       }
@@ -42,7 +42,7 @@ getJasmineRequireObj().Clock = function() {
     self.setInterval = function(fn, delay, params) {
       if (legacyIE()) {
         if (arguments.length > 2) {
-          throw new Error("IE < 9 cannot support extra params to setInterval without a polyfill");
+          throw new Error('IE < 9 cannot support extra params to setInterval without a polyfill');
         }
         return timer.setInterval(fn, delay);
       }
@@ -61,7 +61,7 @@ getJasmineRequireObj().Clock = function() {
       if (installed) {
         delayedFunctionScheduler.tick(millis);
       } else {
-        throw new Error("Mock clock is not installed, use jasmine.clock().install()");
+        throw new Error('Mock clock is not installed, use jasmine.clock().install()');
       }
     };
 

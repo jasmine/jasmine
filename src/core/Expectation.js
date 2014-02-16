@@ -18,7 +18,7 @@ getJasmineRequireObj().Expectation = function() {
     return function() {
       var args = Array.prototype.slice.call(arguments, 0),
         expected = args.slice(0),
-        message = "";
+        message = '';
 
       args.unshift(this.actual);
 
