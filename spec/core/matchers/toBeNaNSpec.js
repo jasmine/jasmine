@@ -1,10 +1,11 @@
 describe("toBeNaN", function() {
-  it("passes for NaN", function() {
+  it("passes for NaN with a custom .not fail", function() {
     var matcher = j$.matchers.toBeNaN(),
       result;
 
     result = matcher.compare(Number.NaN);
     expect(result.pass).toBe(true);
+    expect(result.message).toEqual("Expected actual not to be NaN.");
   });
 
   it("fails for anything not a NaN", function() {
@@ -25,5 +26,12 @@ describe("toBeNaN", function() {
 
     result = matcher.compare(Number.POSITIVE_INFINITY);
     expect(result.pass).toBe(false);
+  });
+
+  it("has a custom message on failure", function() {
+    var matcher = j$.matchers.toBeNaN(),
+      result = matcher.compare(0);
+
+    expect(result.message).toEqual("Expected 0 to be NaN.");
   });
 });
