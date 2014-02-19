@@ -1,13 +1,13 @@
 getJasmineRequireObj().base = function(j$) {
   j$.unimplementedMethod_ = function() {
-    throw new Error("unimplemented method");
+    throw new Error('unimplemented method');
   };
 
   j$.MAX_PRETTY_PRINT_DEPTH = 40;
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
   j$.getGlobal = (function() {
-    var jasmineGlobal = eval.call(null, "this");
+    var jasmineGlobal = eval.call(null, 'this');
     return function() {
       return jasmineGlobal;
     };
@@ -20,15 +20,15 @@ getJasmineRequireObj().base = function(j$) {
   };
 
   j$.isArray_ = function(value) {
-    return j$.isA_("Array", value);
+    return j$.isA_('Array', value);
   };
 
   j$.isString_ = function(value) {
-    return j$.isA_("String", value);
+    return j$.isA_('String', value);
   };
 
   j$.isNumber_ = function(value) {
-    return j$.isA_("Number", value);
+    return j$.isA_('Number', value);
   };
 
   j$.isA_ = function(typeName, value) {
@@ -65,7 +65,7 @@ getJasmineRequireObj().base = function(j$) {
 
     for (var prop in originalFn) {
       if (prop === 'and' || prop === 'calls') {
-        throw new Error("Jasmine spies would overwrite the 'and' and 'calls' properties on the object being spied upon");
+        throw new Error('Jasmine spies would overwrite the \'and\' and \'calls\' properties on the object being spied upon');
       }
 
       spy[prop] = originalFn[prop];
@@ -87,7 +87,7 @@ getJasmineRequireObj().base = function(j$) {
 
   j$.createSpyObj = function(baseName, methodNames) {
     if (!j$.isArray_(methodNames) || methodNames.length === 0) {
-      throw "createSpyObj requires a non-empty array of method names to create spies for";
+      throw 'createSpyObj requires a non-empty array of method names to create spies for';
     }
     var obj = {};
     for (var i = 0; i < methodNames.length; i++) {

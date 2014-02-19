@@ -92,10 +92,10 @@ getJasmineRequireObj().Spec = function(j$) {
       }
 
       self.addExpectationResult(false, {
-        matcherName: "",
+        matcherName: '',
         passed: false,
-        expected: "",
-        actual: "",
+        expected: '',
+        actual: '',
         error: e
       });
     }
@@ -138,7 +138,7 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.getSpecName(this);
   };
 
-  Spec.pendingSpecExceptionMessage = "=> marked Pending";
+  Spec.pendingSpecExceptionMessage = '=> marked Pending';
 
   Spec.isPendingSpecException = function(e) {
     return !!(e && e.toString && e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1);
@@ -147,6 +147,6 @@ getJasmineRequireObj().Spec = function(j$) {
   return Spec;
 };
 
-if (typeof window == void 0 && typeof exports == "object") {
+if (typeof window == void 0 && typeof exports == 'object') {
   exports.Spec = jasmineRequire.Spec;
 }

@@ -21,12 +21,12 @@ getJasmineRequireObj().Env = function(j$) {
     var currentSuite = null;
 
     var reporter = new j$.ReportDispatcher([
-      "jasmineStarted",
-      "jasmineDone",
-      "suiteStarted",
-      "suiteDone",
-      "specStarted",
-      "specDone"
+      'jasmineStarted',
+      'jasmineDone',
+      'suiteStarted',
+      'suiteDone',
+      'specStarted',
+      'specDone'
     ]);
 
     this.specFilter = function() {
@@ -180,7 +180,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.spyOn = function(obj, methodName) {
       if (j$.util.isUndefined(obj)) {
-        throw new Error("spyOn could not find an object to spy upon for " + methodName + "()");
+        throw new Error('spyOn could not find an object to spy upon for ' + methodName + '()');
       }
 
       if (j$.util.isUndefined(obj[methodName])) {
@@ -238,7 +238,7 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       if (declarationError) {
-        this.it("encountered a declaration exception", function() {
+        this.it('encountered a declaration exception', function() {
           throw declarationError;
         });
       }

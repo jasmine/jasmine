@@ -11,7 +11,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     contains: function(haystack, needle, customTesters) {
       customTesters = customTesters || [];
 
-      if (Object.prototype.toString.apply(haystack) === "[object Array]") {
+      if (Object.prototype.toString.apply(haystack) === '[object Array]') {
         for (var i = 0; i < haystack.length; i++) {
           if (eq(haystack[i], needle, [], [], customTesters)) {
             return true;
@@ -30,21 +30,21 @@ getJasmineRequireObj().matchersUtil = function(j$) {
         expected = args.slice(3),
         englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
 
-      var message = "Expected " +
+      var message = 'Expected ' +
         j$.pp(actual) +
-        (isNot ? " not " : " ") +
+        (isNot ? ' not ' : ' ') +
         englishyPredicate;
 
       if (expected.length > 0) {
         for (var i = 0; i < expected.length; i++) {
           if (i > 0) {
-            message += ",";
+            message += ',';
           }
-          message += " " + j$.pp(expected[i]);
+          message += ' ' + j$.pp(expected[i]);
         }
       }
 
-      return message + ".";
+      return message + '.';
     }
   };
 

@@ -20,7 +20,7 @@ getJasmineRequireObj().pp = function(j$) {
       } else if (typeof value === 'string') {
         this.emitString(value);
       } else if (j$.isSpy(value)) {
-        this.emitScalar("spy on " + value.and.identity());
+        this.emitScalar('spy on ' + value.and.identity());
       } else if (value instanceof RegExp) {
         this.emitScalar(value.toString());
       } else if (typeof value === 'function') {
@@ -74,12 +74,12 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   StringPrettyPrinter.prototype.emitString = function(value) {
-    this.append("'" + value + "'");
+    this.append('\'' + value + '\'');
   };
 
   StringPrettyPrinter.prototype.emitArray = function(array) {
     if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
-      this.append("Array");
+      this.append('Array');
       return;
     }
 
@@ -95,7 +95,7 @@ getJasmineRequireObj().pp = function(j$) {
 
   StringPrettyPrinter.prototype.emitObject = function(obj) {
     if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
-      this.append("Object");
+      this.append('Object');
       return;
     }
 

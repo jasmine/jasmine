@@ -3,7 +3,7 @@ getJasmineRequireObj().SpyStrategy = function() {
   function SpyStrategy(options) {
     options = options || {};
 
-    var identity = options.name || "unknown",
+    var identity = options.name || 'unknown',
         originalFn = options.fn || function() {},
         getSpy = options.getSpy || function() {},
         plan = function() {};

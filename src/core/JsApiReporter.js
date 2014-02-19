@@ -7,7 +7,7 @@ getJasmineRequireObj().JsApiReporter = function() {
 
   function JsApiReporter(options) {
     var timer = options.timer || noopTimer,
-        status = "loaded";
+        status = 'loaded';
 
     this.started = false;
     this.finished = false;

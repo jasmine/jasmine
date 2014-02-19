@@ -16,9 +16,9 @@ jasmineRequire.QueryString = function() {
     function toQueryString(paramMap) {
       var qStrPairs = [];
       for (var prop in paramMap) {
-        qStrPairs.push(encodeURIComponent(prop) + "=" + encodeURIComponent(paramMap[prop]));
+        qStrPairs.push(encodeURIComponent(prop) + '=' + encodeURIComponent(paramMap[prop]));
       }
-      return "?" + qStrPairs.join('&');
+      return '?' + qStrPairs.join('&');
     }
 
     function queryStringToParamMap() {
@@ -31,7 +31,7 @@ jasmineRequire.QueryString = function() {
         for (var i = 0; i < params.length; i++) {
           var p = params[i].split('=');
           var value = decodeURIComponent(p[1]);
-          if (value === "true" || value === "false") {
+          if (value === 'true' || value === 'false') {
             value = JSON.parse(value);
           }
           paramMap[decodeURIComponent(p[0])] = value;
