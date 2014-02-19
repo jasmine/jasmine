@@ -32,6 +32,6 @@ describe("toBeNaN", function() {
     var matcher = j$.matchers.toBeNaN(),
       result = matcher.compare(0);
 
-    expect(result.message).toEqual("Expected 0 to be NaN.");
+    expect(result.message()).toEqual("Expected 0 to be NaN.");
   });
 });

@@ -62,7 +62,7 @@ describe("toThrowError", function() {
 
     result = matcher.compare(fn);
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected function to throw an Error, but it threw 4.");
+    expect(result.message()).toEqual("Expected function to throw an Error, but it threw 4.");
   });
 
   it("fails with the correct message if thrown is a falsy value", function() {
@@ -74,7 +74,7 @@ describe("toThrowError", function() {
 
     result = matcher.compare(fn);
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected function to throw an Error, but it threw undefined.");
+    expect(result.message()).toEqual("Expected function to throw an Error, but it threw undefined.");
   });
 
   it("passes if thrown is a type of Error, but there is no expected error", function() {
@@ -100,7 +100,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, "foo");
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw an exception with message 'foo'.");
+    expect(result.message()).toEqual("Expected function not to throw an exception with message 'foo'.");
   });
 
   it("fails if thrown is an Error and the expected is not the same message", function() {
@@ -113,7 +113,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, "bar");
 
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected function to throw an exception with message 'bar', but it threw an exception with message 'foo'.");
+    expect(result.message()).toEqual("Expected function to throw an exception with message 'bar', but it threw an exception with message 'foo'.");
   });
 
   it("passes if thrown is an Error and the expected is a RegExp that matches the message", function() {
@@ -126,7 +126,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, /long/);
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw an exception with a message matching /long/.");
+    expect(result.message()).toEqual("Expected function not to throw an exception with a message matching /long/.");
   });
 
   it("fails if thrown is an Error and the expected is a RegExp that does not match the message", function() {
@@ -139,7 +139,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, /foo/);
 
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected function to throw an exception with a message matching /foo/, but it threw an exception with message 'a long message'.");
+    expect(result.message()).toEqual("Expected function to throw an exception with a message matching /foo/, but it threw an exception with message 'a long message'.");
   });
 
   it("passes if thrown is an Error and the expected the same Error", function() {
@@ -207,7 +207,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, TypeError, "foo");
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw TypeError with message \"foo\".");
+    expect(result.message()).toEqual("Expected function not to throw TypeError with message 'foo'.");
   });
 
   it("passes if thrown is a custom error that takes arguments and it is equal to the expected custom error and message", function() {
@@ -227,7 +227,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, CustomError, "foo");
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw CustomError with message \"foo\".");
+    expect(result.message()).toEqual("Expected function not to throw CustomError with message 'foo'.");
   });
 
   it("fails if thrown is a type of Error and the expected is a different Error", function() {
@@ -243,7 +243,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, TypeError, "bar");
 
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected function to throw TypeError with message \"bar\", but it threw TypeError with message \"foo\".");
+    expect(result.message()).toEqual("Expected function to throw TypeError with message 'bar', but it threw TypeError with message 'foo'.");
   });
 
   it("passes if thrown is a type of Error and has the same type as the expected Error and the message matches the expected message", function() {
@@ -259,7 +259,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, TypeError, /foo/);
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw TypeError with message matching /foo/.");
+    expect(result.message()).toEqual("Expected function not to throw TypeError with message matching /foo/.");
   });
 
   it("fails if thrown is a type of Error and the expected is a different Error", function() {
@@ -275,6 +275,6 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, TypeError, /bar/);
 
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected function to throw TypeError with message matching /bar/, but it threw TypeError with message \"foo\".");
+    expect(result.message()).toEqual("Expected function to throw TypeError with message matching /bar/, but it threw TypeError with message 'foo'.");
   });
 });

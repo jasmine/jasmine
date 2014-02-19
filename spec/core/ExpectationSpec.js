@@ -194,6 +194,40 @@ describe("Expectation", function() {
     j$.Expectation.addMatchers(matchers);
 
     expectation = new j$.Expectation({
+      actual: "an actual",
+      addExpectationResult: addExpectationResult
+    });
+
+    expectation.toFoo("hello");
+
+    expect(addExpectationResult).toHaveBeenCalledWith(false, {
+      matcherName: "toFoo",
+      passed: false,
+      expected: "hello",
+      actual: "an actual",
+      message: "I am a custom message"
+    });
+  });
+
+  it("reports a failing result with a custom fail message function to the spec when the comparison fails", function() {
+    var matchers = {
+        toFoo: function() {
+          return {
+            compare: function() {
+              return {
+                pass: false,
+                message: function() { return "I am a custom message"; }
+              };
+            }
+          };
+        }
+      },
+      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      expectation;
+
+    j$.Expectation.addMatchers(matchers);
+
+    expectation = new j$.Expectation({
       matchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult

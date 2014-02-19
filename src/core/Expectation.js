@@ -43,7 +43,11 @@ getJasmineRequireObj().Expectation = function() {
           args.unshift(name);
           message = this.util.buildFailureMessage.apply(null, args);
         } else {
-          message = result.message;
+          if (Object.prototype.toString.apply(result.message) === "[object Function]") {
+            message = result.message();
+          } else {
+            message = result.message;
+          }
         }
       }
 

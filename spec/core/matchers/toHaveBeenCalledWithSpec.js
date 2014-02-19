@@ -11,7 +11,7 @@ describe("toHaveBeenCalledWith", function() {
     result = matcher.compare(calledSpy, 'a', 'b');
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected spy called-spy not to have been called with [ 'a', 'b' ] but it was.");
+    expect(result.message()).toEqual("Expected spy called-spy not to have been called with [ 'a', 'b' ] but it was.");
   });
 
   it("fails when the actual was not called", function() {
@@ -24,7 +24,7 @@ describe("toHaveBeenCalledWith", function() {
 
     result = matcher.compare(uncalledSpy);
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected spy uncalled spy to have been called with [  ] but it was never called.");
+    expect(result.message()).toEqual("Expected spy uncalled spy to have been called with [  ] but it was never called.");
   });
 
   it("fails when the actual was called with different parameters", function() {
@@ -40,7 +40,7 @@ describe("toHaveBeenCalledWith", function() {
     result = matcher.compare(calledSpy, 'a', 'b');
 
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected spy called spy to have been called with [ 'a', 'b' ] but actual calls were [ 'a' ], [ 'c', 'd' ].");
+    expect(result.message()).toEqual("Expected spy called spy to have been called with [ 'a', 'b' ] but actual calls were [ 'a' ], [ 'c', 'd' ].");
   });
 
   it("throws an exception when the actual is not a spy", function() {

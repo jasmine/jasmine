@@ -34,7 +34,7 @@ describe("toThrow", function() {
     result = matcher.compare(fn);
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw, but it threw 5.");
+    expect(result.message()).toEqual("Expected function not to throw, but it threw 5.");
   });
 
   it("passes even if what is thrown is falsy", function() {
@@ -46,7 +46,7 @@ describe("toThrow", function() {
 
     result = matcher.compare(fn);
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw, but it threw undefined.");
+    expect(result.message()).toEqual("Expected function not to throw, but it threw undefined.");
   });
 
   it("passes if what is thrown is equivalent to what is expected", function() {
@@ -62,7 +62,7 @@ describe("toThrow", function() {
     result = matcher.compare(fn, 5);
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw 5.");
+    expect(result.message()).toEqual("Expected function not to throw 5.");
   });
 
   it("fails if what is thrown is not equivalent to what is expected", function() {
@@ -78,7 +78,7 @@ describe("toThrow", function() {
     result = matcher.compare(fn, "foo");
 
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected function to throw 'foo', but it threw 5.");
+    expect(result.message()).toEqual("Expected function to throw 'foo', but it threw 5.");
   });
 
   it("fails if what is thrown is not equivalent to undefined", function() {
@@ -94,6 +94,6 @@ describe("toThrow", function() {
     result = matcher.compare(fn, void 0);
 
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected function to throw undefined, but it threw 5.");
+    expect(result.message()).toEqual("Expected function to throw undefined, but it threw 5.");
   });
 });
