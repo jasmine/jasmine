@@ -316,6 +316,69 @@ getJasmineRequireObj().Env = function(j$) {
       return spec;
     };
 
+    var createSyncDataDrivenFn = function(dataArgs, fn) {
+      return function() {
+        fn.apply(this, dataArgs);
+      };
+    };
+
+    var createAsyncDataDrivenFn = function(dataArgs, fn) {
+      return function(done) {
+        var fnArgs = [done];
+        fnArgs.unshift.apply(fnArgs, dataArgs);
+        fn.apply(this, fnArgs);
+      };
+    };
+
+    var createDataDrivenSpecs = function(specProvider, description, dataset, fn) {
+      var i = 0,
+          length = 0,
+          specs = [],
+          args,
+          maxArgCount = 0,
+          error,
+          variantDesc;
+
+      if (!dataset || !j$.isArray_(dataset) || dataset.length === 0) {
+        error = new Error("No arguments for a data-driven test were provided (" + description + ")");
+        error.name = "Jasmine.ArgumentsMissingError";
+        throw error;
+      }
+
+      for (i, length = dataset.length; i < length; i++) {
+        args = j$.isArray_(dataset[i]) ? dataset[i] : [dataset[i]];
+        maxArgCount = maxArgCount || args.length;
+        variantDesc = description + " (Variant #" + i + " <" + args.join(", ") + ">)";
+
+        if (args.length !== maxArgCount) {
+          error = new Error("Expected " + maxArgCount + " argument(s). Found " + args.length + " at index " + i + " (" + description + ")");
+          error.name = "Jasmine.ArgumentCountMismatchError";
+          throw error;
+        } else if (args.length === fn.length) {
+          specs.push(specProvider(variantDesc, createSyncDataDrivenFn(args, fn)));
+        } else if (args.length + 1 === fn.length) {
+          specs.push(specProvider(variantDesc, createAsyncDataDrivenFn(args, fn)));
+        } else {
+          error = new Error("Expecting data driven spec to accept " +
+                  args.length + " " + (args.length === 1 ? "argument" : "arguments") +
+                  ", but " + fn.length + " " + (fn.length === 1 ? "argument is" : "arguments are") +
+                  " specified in the dataset at index " + i + " (" + description + ")");
+          error.name = "Jasmine.ArgumentCountMismatchError";
+          throw error;
+        }
+      }
+
+      return specs;
+    };
+
+    this.all = function(description, dataset, fn) {
+      return createDataDrivenSpecs(this.it, description, dataset, fn);
+    };
+
+    this.xall = function(description, dataset, fn) {
+      return createDataDrivenSpecs(this.xit, description, dataset, fn);
+    };
+
     this.expect = function(actual) {
       return currentSpec.expect(actual);
     };

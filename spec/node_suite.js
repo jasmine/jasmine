@@ -29,6 +29,14 @@ var jasmineInterface = {
     return env.xit(desc, func);
   },
 
+  all: function(desc, values, func) {
+    return env.all(desc, values, func);
+  },
+
+  xall: function(desc, values, func) {
+    return env.xall(desc, values, func);
+  },
+
   beforeEach: function(beforeEachFunction) {
     return env.beforeEach(beforeEachFunction);
   },
