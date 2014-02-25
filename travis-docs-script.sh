@@ -7,6 +7,7 @@ cp lib/jasmine-core/{boot.js,jasmine-html.js,jasmine.js,jasmine.css} jasmine.git
 cp lib/console/console.js jasmine.github.io/edge/lib/
 
 cd jasmine.github.io
+bundle install
 export JASMINE_VERSION=edge
 CODE=`bundle exec rake phantom`
 
