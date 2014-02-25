@@ -8,12 +8,4 @@ cp lib/console/console.js jasmine.github.io/edge/lib/
 
 cd jasmine.github.io
 bundle install
-export JASMINE_VERSION=edge
-CODE=`bundle exec rake phantom`
-
-if [ $TRAVIS_PULL_REQUEST == false ]
-then
-  git push origin master
-fi
-
-exit $CODE
+JASMINE_VERSION=edge bundle exec rake phantom
