@@ -136,6 +136,7 @@ getJasmineRequireObj().Env = function(j$) {
     var queueRunnerFactory = function(options) {
       options.catchException = catchException;
       options.clearStack = options.clearStack || clearStack;
+      options.timer = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
 
       new j$.QueueRunner(options).execute();
     };
@@ -271,8 +272,7 @@ getJasmineRequireObj().Env = function(j$) {
         description: description,
         expectationResultFactory: expectationResultFactory,
         queueRunnerFactory: queueRunnerFactory,
-        fn: fn,
-        timer: {setTimeout: realSetTimeout, clearTimeout: realClearTimeout}
+        fn: fn
       });
 
       runnableLookupTable[spec.id] = spec;

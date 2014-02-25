@@ -299,10 +299,14 @@ describe("Env integration", function() {
 
     it("should wait a specified interval before failing specs haven't called done yet", function(done) {
       var env = new j$.Env(),
-          reporter = jasmine.createSpyObj('fakeReporter', [ "specDone" ]);
+          reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
 
       reporter.specDone.and.callFake(function() {
         expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({status: 'failed'}));
+      });
+
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.jasmineDone.calls.count()).toEqual(1);
         done();
       });
 
@@ -311,7 +315,7 @@ describe("Env integration", function() {
 
       env.it("async spec that doesn't call done", function(underTestCallback) {
         env.expect(true).toBeTruthy();
-        jasmine.getEnv().clock.tick(8415);
+        jasmine.getEnv().clock.tick(8416);
       });
 
       env.execute();
