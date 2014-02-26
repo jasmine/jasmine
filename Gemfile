@@ -9,6 +9,4 @@ end
 
 gemspec
 
-gem "jasmine_selenium_runner", :git => 'https://github.com/jasmine/jasmine_selenium_runner.git'
-
 gem "anchorman"
