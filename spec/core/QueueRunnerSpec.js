@@ -172,6 +172,32 @@ describe("QueueRunner", function() {
       jasmine.clock().tick(j$.DEFAULT_TIMEOUT_INTERVAL);
       expect(onException).not.toHaveBeenCalled();
     });
+
+    it("only moves to the next spec the first time you call done", function() {
+      var fn = function(done) {done(); done();},
+        nextFn = jasmine.createSpy('nextFn');
+      queueRunner = new j$.QueueRunner({
+        fns: [fn, nextFn]
+      });
+
+      queueRunner.execute();
+      expect(nextFn.calls.count()).toEqual(1);
+    });
+
+    it("does not move to the next spec if done is called after an exception has ended the spec", function() {
+       var fn = function(done) {
+         setTimeout(done, 1);
+         throw new Error('error!');
+       },
+        nextFn = jasmine.createSpy('nextFn');
+      queueRunner = new j$.QueueRunner({
+        fns: [fn, nextFn]
+      });
+
+      queueRunner.execute();
+      jasmine.clock().tick(1);
+      expect(nextFn.calls.count()).toEqual(1);
+    });
   });
 
   it("calls an exception handler when an exception is thrown in a fn", function() {
