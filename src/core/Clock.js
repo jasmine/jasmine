@@ -1,5 +1,5 @@
 getJasmineRequireObj().Clock = function() {
-  function Clock(global, delayedFunctionScheduler, date) {
+  function Clock(global, delayedFunctionScheduler, mockDate) {
     var self = this,
       realTimingFunctions = {
         setTimeout: global.setTimeout,
@@ -17,25 +17,25 @@ getJasmineRequireObj().Clock = function() {
       timer;
 
 
-    self.install = function(mockDate) {
+    self.install = function() {
       replace(global, fakeTimingFunctions);
       timer = fakeTimingFunctions;
       installed = true;
 
-      if (date && mockDate) {
-        date.install(mockDate);
-      }
+      return self;
     };
 
     self.uninstall = function() {
       delayedFunctionScheduler.reset();
-      if (date) {
-        date.uninstall();
-      }
+      mockDate.uninstall();
       replace(global, realTimingFunctions);
 
       timer = realTimingFunctions;
       installed = false;
+    };
+
+    self.mockDate = function(initialDate) {
+      mockDate.install(initialDate);
     };
 
     self.setTimeout = function(fn, delay, params) {
@@ -68,9 +68,7 @@ getJasmineRequireObj().Clock = function() {
 
     self.tick = function(millis) {
       if (installed) {
-        if (date) {
-          date.tick(millis);
-        }
+        mockDate.tick(millis);
         delayedFunctionScheduler.tick(millis);
       } else {
         throw new Error('Mock clock is not installed, use jasmine.clock().install()');

@@ -13,10 +13,10 @@ getJasmineRequireObj().MockDate = function() {
     var GlobalDate = global.Date;
 
     self.install = function(mockDate) {
-      if (mockDate instanceof Date) {
+      if (mockDate instanceof GlobalDate) {
         currentTime = mockDate.getTime();
       } else {
-        currentTime = GlobalDate.now();
+        currentTime = new GlobalDate().getTime();
       }
 
       global.Date = FakeDate;
@@ -48,7 +48,11 @@ getJasmineRequireObj().MockDate = function() {
     function createDateProperties() {
 
       FakeDate.now = function() {
-        return currentTime;
+        if (GlobalDate.now) {
+          return currentTime;
+        } else {
+          throw new Error("Browser does not support Date.now()");
+        }
       };
 
       FakeDate.toSource = GlobalDate.toSource;

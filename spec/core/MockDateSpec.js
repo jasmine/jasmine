@@ -3,84 +3,126 @@ describe("FakeDate", function() {
     var fakeGlobal = {},
       mockDate = new j$.MockDate(fakeGlobal);
 
-    mockDate.install();
-
-    fakeGlobal.Date = jasmine.createSpy("Date");
-
-    mockDate.tick(0);
-
-    expect(fakeGlobal.Date).not.toHaveBeenCalled();
+    expect(function() {
+      mockDate.install();
+      mockDate.tick(0);
+      mockDate.uninstall();
+    }).not.toThrow();
   });
 
-  it("does not replace global Date if it is not installed", function() {
-    var fakeDate = jasmine.createSpy("global Date"),
-      fakeGlobal = { Date: fakeDate },
+  it("replaces the global Date when it is installed", function() {
+    var globalDate = jasmine.createSpy("global Date").and.callFake(function() {
+        return {
+          getTime: function() {}
+        }
+      }),
+      fakeGlobal = { Date: globalDate },
       mockDate = new j$.MockDate(fakeGlobal);
 
-    fakeDate.now = function(){};
-
-    expect(fakeDate).toEqual(fakeGlobal.Date);
+    expect(fakeGlobal.Date).toEqual(globalDate);
     mockDate.install();
 
-    expect(fakeDate).not.toEqual(fakeGlobal.Date);
+    expect(fakeGlobal.Date).not.toEqual(globalDate);
   });
 
   it("replaces the global Date on uninstall", function() {
-    var fakeDate = jasmine.createSpy("global Date"),
-      fakeGlobal = { Date: fakeDate },
+    var globalDate = jasmine.createSpy("global Date").and.callFake(function() {
+        return {
+          getTime: function() {}
+        }
+      }),
+      fakeGlobal = { Date: globalDate },
       mockDate = new j$.MockDate(fakeGlobal);
-
-    fakeDate.now = function(){};
 
     mockDate.install();
     mockDate.uninstall();
 
-    expect(fakeDate).toEqual(fakeGlobal.Date);
-
+    expect(fakeGlobal.Date).toEqual(globalDate);
   });
 
   it("takes the current time as the base when installing without parameters", function() {
-    var fakeDate = jasmine.createSpy("global Date"),
-      fakeGlobal = { Date: fakeDate },
+    var globalDate = jasmine.createSpy("global Date").and.callFake(function() {
+        return {
+          getTime: function() {
+            return 1000;
+          }
+        }
+      }),
+      fakeGlobal = { Date: globalDate },
       mockDate = new j$.MockDate(fakeGlobal);
-
-    fakeGlobal.Date.prototype.getTime = function() {
-      return 1000;
-    };
-    fakeDate.now = function(){ return 1000; };
 
     mockDate.install();
 
-    expect(new fakeGlobal.Date().getTime()).toEqual(1000);
+    globalDate.calls.reset();
+    new fakeGlobal.Date();
+    expect(globalDate).toHaveBeenCalledWith(1000);
   });
 
   it("can accept a date as time base when installing", function() {
     var fakeGlobal = { Date: Date },
       mockDate = new j$.MockDate(fakeGlobal),
-      baseDate = new Date(2013, 9, 23);
+      baseDate = new Date();
 
+    spyOn(baseDate, 'getTime').and.returnValue(123);
     mockDate.install(baseDate);
 
-    expect(new fakeGlobal.Date().getTime()).toEqual(baseDate.getTime());
+    expect(new fakeGlobal.Date().getTime()).toEqual(123);
   });
 
+  it("makes real dates", function() {
+    var fakeGlobal = { Date: Date },
+      mockDate = new j$.MockDate(fakeGlobal);
+
+    mockDate.install();
+    expect(new fakeGlobal.Date()).toEqual(jasmine.any(Date));
+  });
 
   it("fakes current time when using Date.now()", function() {
-    var fakeGlobal = { Date: Date },
-      mockDate = new j$.MockDate(fakeGlobal),
-      baseDate = new Date(2013, 9, 23);
+    var globalDate = jasmine.createSpy("global Date").and.callFake(function() {
+        return {
+          getTime: function() {
+            return 1000;
+          }
+        }
+      }),
+      fakeGlobal = { Date: globalDate };
 
-    mockDate.install(baseDate);
+    globalDate.now = function() {};
+    var mockDate = new j$.MockDate(fakeGlobal);
 
-    expect(fakeGlobal.Date.now()).toEqual(baseDate.getTime());
+    mockDate.install();
+
+    expect(fakeGlobal.Date.now()).toEqual(1000);
+  });
+
+  it("does not stub Date.now() if it doesn't already exist", function() {
+    var globalDate = jasmine.createSpy("global Date").and.callFake(function() {
+        return {
+          getTime: function() {
+            return 1000;
+          }
+        }
+      }),
+      fakeGlobal = { Date: globalDate },
+      mockDate = new j$.MockDate(fakeGlobal);
+
+    mockDate.install();
+
+    expect(fakeGlobal.Date.now).toThrowError("Browser does not support Date.now()");
   });
 
   it("makes time passes using tick", function() {
-    var fakeDate = jasmine.createSpy("global Date"),
-      fakeGlobal = { Date: fakeDate },
-      mockDate = new j$.MockDate(fakeGlobal);
+    var globalDate = jasmine.createSpy("global Date").and.callFake(function() {
+        return {
+          getTime: function() {
+            return 1000;
+          }
+        }
+      }),
+      fakeGlobal = { Date: globalDate };
 
-    fakeDate.now = function(){ return 1000; };
+    globalDate.now = function() {};
+    var mockDate = new j$.MockDate(fakeGlobal);
 
     mockDate.install();
 
@@ -94,11 +136,17 @@ describe("FakeDate", function() {
   });
 
   it("allows to increase 0 milliseconds using tick", function() {
-    var fakeDate = jasmine.createSpy("global Date"),
-      fakeGlobal = { Date: fakeDate },
-      mockDate = new j$.MockDate(fakeGlobal);
+    var globalDate = jasmine.createSpy("global Date").and.callFake(function() {
+        return {
+          getTime: function() {
+            return 1000;
+          }
+        }
+      }),
+      fakeGlobal = { Date: globalDate };
 
-    fakeDate.now = function(){ return 1000; };
+    globalDate.now = function() {};
+    var mockDate = new j$.MockDate(fakeGlobal);
 
     mockDate.install();
 
@@ -109,7 +157,7 @@ describe("FakeDate", function() {
     expect(fakeGlobal.Date.now()).toEqual(1000);
   });
 
-  it("allows to create a Date in a different time than now", function() {
+  it("allows to create a Date in a different time than the mocked time", function() {
     var fakeGlobal = { Date: Date },
       mockDate = new j$.MockDate(fakeGlobal),
       baseDate = new Date(2013, 9, 23, 0, 0, 0, 0);
@@ -117,22 +165,14 @@ describe("FakeDate", function() {
     mockDate.install(baseDate);
 
     var otherDate = new fakeGlobal.Date(2013, 9, 23, 0, 0, 1, 0);
-
-    mockDate.tick(1000);
-
-    expect(fakeGlobal.Date.now()).toEqual(otherDate.getTime());
+    expect(otherDate.getTime()).not.toEqual(baseDate.getTime());
   });
 
   it("copies all Date properties to the mocked date", function() {
     var fakeGlobal = { Date: Date },
-      mockDate = new j$.MockDate(fakeGlobal),
-      baseDate = new Date(2013, 9, 23, 0, 0, 0, 0);
+      mockDate = new j$.MockDate(fakeGlobal);
 
-    mockDate.install(baseDate);
-
-    var otherDate = new fakeGlobal.Date();
-
-    expect(otherDate).toEqual(jasmine.any(Date));
+    mockDate.install();
 
     expect(fakeGlobal.Date.UTC(2013, 9, 23)).toEqual(Date.UTC(2013, 9, 23));
   });
