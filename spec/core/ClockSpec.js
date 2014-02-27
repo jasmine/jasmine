@@ -356,4 +356,73 @@ describe("Clock (acceptance)", function() {
     expect(delayedFn1).toHaveBeenCalled();
     expect(delayedFn2).toHaveBeenCalled();  
   });
+
+  it("does not mock the Date object when installing without parameters", function() {
+     var delayedFunctionScheduler = new j$.DelayedFunctionScheduler(),
+      global = {Date: Date},
+      mockDate = new j$.MockDate(global),
+      clock = new j$.Clock({setTimeout: setTimeout}, delayedFunctionScheduler, mockDate);
+
+    clock.install();
+
+    expect(global.Date).toEqual(Date);
+
+    var now = global.Date.now();
+
+    clock.tick(50);
+
+    expect(global.Date.now() - now).not.toEqual(50);
+  });
+
+  it("mocks the Date object and sets it to current time when installing with true parameter", function() {
+    var delayedFunctionScheduler = new j$.DelayedFunctionScheduler(),
+      global = {Date: Date},
+      mockDate = new j$.MockDate(global),
+      clock = new j$.Clock({setTimeout: setTimeout}, delayedFunctionScheduler, mockDate);
+
+    clock.install(true);
+
+    var now = global.Date.now();
+
+    clock.tick(50);
+
+    expect(global.Date.now() - now).toEqual(50);
+
+    var timeoutDate = 0;
+    clock.setTimeout(function() {
+      timeoutDate = global.Date.now();
+    }, 100);
+
+    clock.tick(100);
+
+    expect(timeoutDate - now).toEqual(150);
+  });
+
+  it("mocks the Date object and sets it to a given time when installing with a Date parameter", function() {
+    var delayedFunctionScheduler = new j$.DelayedFunctionScheduler(),
+      global = {Date: Date},
+      mockDate = new j$.MockDate(global),
+      clock = new j$.Clock({setTimeout: setTimeout}, delayedFunctionScheduler, mockDate),
+      baseTime = new Date(2013, 9, 23);
+
+
+    clock.install(baseTime);
+
+    var now = global.Date.now();
+
+    expect(now).toEqual(baseTime.getTime());
+
+    clock.tick(50);
+
+    expect(global.Date.now()).toEqual(baseTime.getTime() + 50);
+
+    var timeoutDate = 0;
+    clock.setTimeout(function() {
+      timeoutDate = global.Date.now();
+    }, 100);
+
+    clock.tick(100);
+
+    expect(timeoutDate).toEqual(baseTime.getTime() + 150);
+  });
 });
