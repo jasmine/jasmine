@@ -34,7 +34,7 @@ describe("New HtmlReporter", function() {
   it("starts the timer when jasmine begins", function() {
     var env = new jasmine.Env(),
         startTimerSpy = jasmine.createSpy("start-timer-spy"),
-        reporter = new jasmine.HtmlReporter({
+        reporter = new j$.HtmlReporter({
           env: env,
           createElement: function() { return document.createElement.apply(document, arguments); },
           timer: { start: startTimerSpy }
