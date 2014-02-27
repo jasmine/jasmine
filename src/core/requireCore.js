@@ -14,6 +14,7 @@ getJasmineRequireObj().core = function(jRequire) {
   j$.util = jRequire.util();
   j$.Any = jRequire.Any();
   j$.CallTracker = jRequire.CallTracker();
+  j$.MockDate = jRequire.MockDate();
   j$.Clock = jRequire.Clock();
   j$.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler();
   j$.Env = jRequire.Env(j$);
