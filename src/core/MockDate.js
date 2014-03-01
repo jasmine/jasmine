@@ -51,7 +51,7 @@ getJasmineRequireObj().MockDate = function() {
         if (GlobalDate.now) {
           return currentTime;
         } else {
-          throw new Error("Browser does not support Date.now()");
+          throw new Error('Browser does not support Date.now()');
         }
       };
 
