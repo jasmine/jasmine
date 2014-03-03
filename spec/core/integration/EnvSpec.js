@@ -165,6 +165,77 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it("calls associated beforeAlls/afterAlls only once per suite", function(done) {
+    var env = new j$.Env(),
+        before = jasmine.createSpy('beforeAll'),
+        after = jasmine.createSpy('afterAll');
+
+    env.addReporter({
+      jasmineDone: function() {
+        expect(after).toHaveBeenCalled();
+        expect(after.calls.count()).toBe(1);
+        expect(before.calls.count()).toBe(1);
+        done();
+      }
+    });
+
+    env.describe("with beforeAll and afterAll", function() {
+      env.it("spec", function() {
+        expect(before).toHaveBeenCalled();
+        expect(after).not.toHaveBeenCalled();
+      });
+
+      env.it("another spec", function() {
+        expect(before).toHaveBeenCalled();
+        expect(after).not.toHaveBeenCalled();
+      });
+
+      env.beforeAll(before);
+      env.afterAll(after);
+    });
+
+    env.execute();
+  });
+
+  it("calls associated beforeAlls/afterAlls only once per suite for async", function(done) {
+    var env = new j$.Env(),
+        before = jasmine.createSpy('beforeAll'),
+        after = jasmine.createSpy('afterAll');
+
+    env.addReporter({
+      jasmineDone: function() {
+        expect(after).toHaveBeenCalled();
+        expect(after.calls.count()).toBe(1);
+        expect(before.calls.count()).toBe(1);
+        done();
+      }
+    });
+
+    env.describe("with beforeAll and afterAll", function() {
+      env.it("spec", function() {
+        expect(before).toHaveBeenCalled();
+        expect(after).not.toHaveBeenCalled();
+      });
+
+      env.it("another spec", function() {
+        expect(before).toHaveBeenCalled();
+        expect(after).not.toHaveBeenCalled();
+      });
+
+      env.beforeAll(function(beforeCallbackUnderTest) {
+        before();
+        beforeCallbackUnderTest();
+      });
+
+      env.afterAll(function(afterCallbackUnderTest) {
+        after();
+        afterCallbackUnderTest();
+      });
+    });
+
+    env.execute();
+  });
+
   it("Allows specifying which specs and suites to run", function(done) {
     var env = new j$.Env(),
         calls = [],

@@ -10,6 +10,8 @@ getJasmineRequireObj().Suite = function() {
 
     this.beforeFns = [];
     this.afterFns = [];
+    this.beforeAllFns = [];
+    this.afterAllFns = [];
     this.queueRunner = attrs.queueRunner || function() {};
     this.disabled = false;
 
@@ -41,8 +43,16 @@ getJasmineRequireObj().Suite = function() {
     this.beforeFns.unshift(fn);
   };
 
+  Suite.prototype.beforeAll = function(fn) {
+    this.beforeAllFns.push(fn);
+  };
+
   Suite.prototype.afterEach = function(fn) {
     this.afterFns.unshift(fn);
+  };
+
+  Suite.prototype.afterAll = function(fn) {
+    this.afterAllFns.push(fn);
   };
 
   Suite.prototype.addChild = function(child) {
@@ -58,8 +68,18 @@ getJasmineRequireObj().Suite = function() {
 
     var allFns = [];
 
-    for (var i = 0; i < this.children.length; i++) {
-      allFns.push(wrapChildAsAsync(this.children[i]));
+    if (this.isExecutable()) {
+      for (var b = 0; b < this.beforeAllFns.length; b++) {
+        allFns.push(this.beforeAllFns[b]);
+      }
+
+      for (var i = 0; i < this.children.length; i++) {
+        allFns.push(wrapChildAsAsync(this.children[i]));
+      }
+
+      for (var a = 0; a < this.afterAllFns.length; a++) {
+        allFns.push(this.afterAllFns[a]);
+      }
     }
 
     this.onStart(this);
@@ -80,6 +100,17 @@ getJasmineRequireObj().Suite = function() {
     function wrapChildAsAsync(child) {
       return function(done) { child.execute(done); };
     }
+  };
+
+  Suite.prototype.isExecutable = function() {
+    var foundActive = false;
+    for(var i = 0; i < this.children.length; i++) {
+      if(this.children[i].isExecutable()) {
+        foundActive = true;
+        break;
+      }
+    }
+    return foundActive;
   };
 
   return Suite;

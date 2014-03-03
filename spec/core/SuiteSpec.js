@@ -52,6 +52,31 @@ describe("Suite", function() {
     expect(suite.beforeFns).toEqual([innerBefore, outerBefore]);
   });
 
+  it("runs beforeAll functions in order of needed execution", function() {
+    var env = new j$.Env(),
+      fakeQueueRunner = jasmine.createSpy('fake queue runner'),
+      suite = new j$.Suite({
+        env: env,
+        description: "I am a suite",
+        queueRunner: fakeQueueRunner
+      }),
+      firstBefore = jasmine.createSpy('outerBeforeAll'),
+      lastBefore = jasmine.createSpy('insideBeforeAll'),
+      fakeIt = {execute: jasmine.createSpy('it'), isExecutable: function() { return true; } };
+
+    suite.beforeAll(firstBefore);
+    suite.beforeAll(lastBefore);
+    suite.addChild(fakeIt);
+
+    suite.execute();
+    var suiteFns = fakeQueueRunner.calls.mostRecent().args[0].fns;
+
+    suiteFns[0]();
+    expect(firstBefore).toHaveBeenCalled();
+    suiteFns[1]();
+    expect(lastBefore).toHaveBeenCalled();
+  });
+
   it("adds after functions in order of needed execution", function() {
     var env = new j$.Env(),
       suite = new j$.Suite({
@@ -65,6 +90,31 @@ describe("Suite", function() {
     suite.afterEach(innerAfter);
 
     expect(suite.afterFns).toEqual([innerAfter, outerAfter]);
+  });
+
+  it("runs afterAll functions in order of needed execution", function() {
+    var env = new j$.Env(),
+      fakeQueueRunner = jasmine.createSpy('fake queue runner'),
+      suite = new j$.Suite({
+        env: env,
+        description: "I am a suite",
+        queueRunner: fakeQueueRunner
+      }),
+      firstAfter = jasmine.createSpy('outerAfterAll'),
+      lastAfter = jasmine.createSpy('insideAfterAll'),
+      fakeIt = {execute: jasmine.createSpy('it'), isExecutable: function() { return true; } };
+
+    suite.afterAll(firstAfter);
+    suite.afterAll(lastAfter);
+    suite.addChild(fakeIt);
+
+    suite.execute();
+    var suiteFns = fakeQueueRunner.calls.mostRecent().args[0].fns;
+
+    suiteFns[1]();
+    expect(firstAfter).toHaveBeenCalled();
+    suiteFns[2]();
+    expect(lastAfter).toHaveBeenCalled();
   });
 
   it("can be disabled", function() {
@@ -85,7 +135,7 @@ describe("Suite", function() {
     expect(fakeQueueRunner).not.toHaveBeenCalled();
   });
 
-  it("delegates execution of its specs and suites", function() {
+  it("delegates execution of its specs, suites, beforeAlls, and afterAlls", function() {
     var env = new j$.Env(),
       parentSuiteDone = jasmine.createSpy('parent suite done'),
       fakeQueueRunnerForParent = jasmine.createSpy('fake parent queue runner'),
@@ -101,22 +151,59 @@ describe("Suite", function() {
         queueRunner: fakeQueueRunner
       }),
       fakeSpec1 = {
-        execute: jasmine.createSpy('fakeSpec1')
-      };
+        execute: jasmine.createSpy('fakeSpec1'),
+        isExecutable: function() { return true; }
+      },
+      beforeAllFn = jasmine.createSpy('beforeAll'),
+      afterAllFn = jasmine.createSpy('afterAll');
 
     spyOn(suite, "execute");
 
     parentSuite.addChild(fakeSpec1);
     parentSuite.addChild(suite);
+    parentSuite.beforeAll(beforeAllFn);
+    parentSuite.afterAll(afterAllFn);
 
     parentSuite.execute(parentSuiteDone);
 
     var parentSuiteFns = fakeQueueRunnerForParent.calls.mostRecent().args[0].fns;
 
     parentSuiteFns[0]();
-    expect(fakeSpec1.execute).toHaveBeenCalled();
+    expect(beforeAllFn).toHaveBeenCalled();
     parentSuiteFns[1]();
+    expect(fakeSpec1.execute).toHaveBeenCalled();
+    parentSuiteFns[2]();
     expect(suite.execute).toHaveBeenCalled();
+    parentSuiteFns[3]();
+    expect(afterAllFn).toHaveBeenCalled();
+  });
+
+  it("does not run beforeAll or afterAll if there are no child specs to run", function() {
+    var env = new j$.Env(),
+        fakeQueueRunnerForParent = jasmine.createSpy('fake parent queue runner'),
+        fakeQueueRunnerForChild = jasmine.createSpy('fake child queue runner'),
+        parentSuite = new j$.Suite({
+          env: env,
+          description: "I am a suite",
+          queueRunner: fakeQueueRunnerForParent
+        }),
+        childSuite = new j$.Suite({
+          env: env,
+          description: "I am a suite",
+          queueRunner: fakeQueueRunnerForChild,
+          parentSuite: parentSuite
+        }),
+        spec1 = new j$.Spec({expectationFactory: function() {}}),
+        spec2 = new j$.Spec({expectationFactory: function() {}}),
+        beforeAllFn = jasmine.createSpy('beforeAll'),
+        afterAllFn = jasmine.createSpy('afterAll');
+
+    parentSuite.addChild(childSuite);
+    parentSuite.addChild(spec1);
+    childSuite.addChild(spec1);
+
+    parentSuite.execute();
+    expect(fakeQueueRunnerForParent).toHaveBeenCalledWith(jasmine.objectContaining({fns: []}));
   });
 
   it("calls a provided onStart callback when starting", function() {
@@ -130,7 +217,8 @@ describe("Suite", function() {
         queueRunner: fakeQueueRunner
       }),
       fakeSpec1 = {
-        execute: jasmine.createSpy('fakeSpec1')
+        execute: jasmine.createSpy('fakeSpec1'),
+        isExecutable: function() { return true; }
       };
 
     suite.execute();

@@ -324,8 +324,16 @@ getJasmineRequireObj().Env = function(j$) {
       currentSuite.beforeEach(beforeEachFunction);
     };
 
+    this.beforeAll = function(beforeAllFunction) {
+      currentSuite.beforeAll(beforeAllFunction);
+    };
+
     this.afterEach = function(afterEachFunction) {
       currentSuite.afterEach(afterEachFunction);
+    };
+
+    this.afterAll = function(afterAllFunction) {
+      currentSuite.afterAll(afterAllFunction);
     };
 
     this.pending = function() {
