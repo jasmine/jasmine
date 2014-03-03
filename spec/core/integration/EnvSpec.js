@@ -236,6 +236,60 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it("calls associated beforeAlls/afterAlls with the cascaded 'this'", function(done) {
+    var env = new j$.Env();
+
+    env.addReporter({jasmineDone: done});
+
+    env.describe("with beforeAll and afterAll", function() {
+      env.beforeAll(function() {
+        this.x = 1;
+      });
+
+      env.it("has an x at the root", function() {
+        expect(this.x).toBe(1);
+      });
+
+      env.describe("child that deletes", function() {
+        env.beforeAll(function() {
+          expect(this.x).toBe(1);
+          delete this.x;
+        });
+
+        env.it("has no x", function() {
+          expect(this.x).not.toBeDefined();
+        });
+      });
+
+      env.describe("child should still have x", function() {
+        env.beforeAll(function(innerDone) {
+          expect(this.x).toBe(1);
+          innerDone();
+        });
+
+        env.it("has an x", function() {
+          expect(this.x).toBe(1);
+          delete this.x;
+        });
+
+        env.it("still has an x", function() {
+          expect(this.x).toBe(1);
+        });
+
+        env.it("adds a y", function() {
+          this.y = 2;
+          expect(this.y).toBe(2);
+        });
+
+        env.it("doesn't have y that was added in sibling", function() {
+          expect(this.y).not.toBeDefined();
+        });
+      });
+    });
+
+    env.execute();
+  });
+
   it("Allows specifying which specs and suites to run", function(done) {
     var env = new j$.Env(),
         calls = [],

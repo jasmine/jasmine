@@ -17,7 +17,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.onException = attrs.onException || function() {};
     this.catchException = attrs.catchException || function() { return true; };
     this.enforceTimeout = attrs.enforceTimeout || function() { return false; };
-    this.userContext = {};
+    this.userContext = attrs.userContext || {};
     this.timer = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
   }
 

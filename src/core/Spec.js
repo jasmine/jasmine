@@ -7,6 +7,7 @@ getJasmineRequireObj().Spec = function(j$) {
     this.fn = attrs.fn;
     this.beforeFns = attrs.beforeFns || function() { return []; };
     this.afterFns = attrs.afterFns || function() { return []; };
+    this.userContext = attrs.userContext || function() { return {}; };
     this.onStart = attrs.onStart || function() {};
     this.exceptionFormatter = attrs.exceptionFormatter || function() {};
     this.getSpecName = attrs.getSpecName || function() { return ''; };
@@ -53,7 +54,8 @@ getJasmineRequireObj().Spec = function(j$) {
       fns: allFns,
       onException: onException,
       onComplete: complete,
-      enforceTimeout: function() { return true; }
+      enforceTimeout: function() { return true; },
+      userContext: this.userContext()
     });
 
     function onException(e) {

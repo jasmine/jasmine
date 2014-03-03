@@ -272,6 +272,7 @@ getJasmineRequireObj().Env = function(j$) {
         description: description,
         expectationResultFactory: expectationResultFactory,
         queueRunnerFactory: queueRunnerFactory,
+        userContext: function() { return suite.clonedSharedUserContext(); },
         fn: fn
       });
 

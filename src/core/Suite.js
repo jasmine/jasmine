@@ -86,7 +86,8 @@ getJasmineRequireObj().Suite = function() {
 
     this.queueRunner({
       fns: allFns,
-      onComplete: complete
+      onComplete: complete,
+      userContext: this.sharedUserContext()
     });
 
     function complete() {
@@ -112,6 +113,29 @@ getJasmineRequireObj().Suite = function() {
     }
     return foundActive;
   };
+
+  Suite.prototype.sharedUserContext = function() {
+    if (!this.sharedContext) {
+      this.sharedContext = this.parentSuite ? clone(this.parentSuite.sharedUserContext()) : {};
+    }
+
+    return this.sharedContext;
+  };
+
+  Suite.prototype.clonedSharedUserContext = function() {
+    return clone(this.sharedUserContext());
+  };
+
+  function clone(obj) {
+    var clonedObj = {};
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        clonedObj[prop] = obj[prop];
+      }
+    }
+
+    return clonedObj;
+  }
 
   return Suite;
 };
