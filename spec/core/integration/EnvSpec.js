@@ -414,11 +414,11 @@ describe("Env integration", function() {
 
     beforeEach(function() {
       originalTimeout = j$.DEFAULT_TIMEOUT_INTERVAL;
-      jasmine.getEnv().clock.install();
+      jasmine.clock().install();
     });
 
     afterEach(function() {
-      jasmine.getEnv().clock.uninstall();
+      jasmine.clock().uninstall();
       j$.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
@@ -440,7 +440,36 @@ describe("Env integration", function() {
 
       env.it("async spec that doesn't call done", function(underTestCallback) {
         env.expect(true).toBeTruthy();
-        jasmine.getEnv().clock.tick(8416);
+        jasmine.clock().tick(8416);
+      });
+
+      env.execute();
+    });
+
+    it("should wait a specified interval before failing beforeAll's and their associated specs that haven't called done", function(done) {
+      var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
+
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.specDone.calls.count()).toEqual(2);
+        expect(reporter.specDone.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({status: 'failed'}));
+        expect(reporter.specDone.calls.argsFor(1)[0]).toEqual(jasmine.objectContaining({status: 'failed'}));
+        done();
+      });
+
+      env.addReporter(reporter);
+      j$.DEFAULT_TIMEOUT_INTERVAL = 1290;
+
+      env.beforeAll(function(done) {
+        jasmine.clock().tick(1290);
+      });
+
+      env.it("spec that will be failed", function() {
+      });
+
+      env.describe("nesting", function() {
+        env.it("another spec to fail", function() {
+        });
       });
 
       env.execute();

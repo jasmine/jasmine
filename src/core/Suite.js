@@ -69,25 +69,22 @@ getJasmineRequireObj().Suite = function() {
     var allFns = [];
 
     if (this.isExecutable()) {
-      for (var b = 0; b < this.beforeAllFns.length; b++) {
-        allFns.push(this.beforeAllFns[b]);
-      }
+      allFns = this.beforeAllFns;
 
       for (var i = 0; i < this.children.length; i++) {
         allFns.push(wrapChildAsAsync(this.children[i]));
       }
 
-      for (var a = 0; a < this.afterAllFns.length; a++) {
-        allFns.push(this.afterAllFns[a]);
-      }
+      allFns = allFns.concat(this.afterAllFns);
     }
 
     this.onStart(this);
 
     this.queueRunner({
-      fns: allFns,
+      queueableFns: allFns,
       onComplete: complete,
-      userContext: this.sharedUserContext()
+      userContext: this.sharedUserContext(),
+      onException: function() { self.onException.apply(self, arguments); }
     });
 
     function complete() {
@@ -99,7 +96,7 @@ getJasmineRequireObj().Suite = function() {
     }
 
     function wrapChildAsAsync(child) {
-      return function(done) { child.execute(done); };
+      return { fn: function(done) { child.execute(done); } };
     }
   };
 
@@ -124,6 +121,13 @@ getJasmineRequireObj().Suite = function() {
 
   Suite.prototype.clonedSharedUserContext = function() {
     return clone(this.sharedUserContext());
+  };
+
+  Suite.prototype.onException = function() {
+    for (var i = 0; i < this.children.length; i++) {
+      var child = this.children[i];
+      child.onException.apply(child, arguments);
+    }
   };
 
   function clone(obj) {

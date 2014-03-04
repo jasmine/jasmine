@@ -161,14 +161,14 @@ getJasmineRequireObj().Env = function(j$) {
       var allFns = [];
       for(var i = 0; i < runnablesToRun.length; i++) {
         var runnable = runnableLookupTable[runnablesToRun[i]];
-        allFns.push((function(runnable) { return function(done) { runnable.execute(done); }; })(runnable));
+        allFns.push((function(runnable) { return { fn: function(done) { runnable.execute(done); } }; })(runnable));
       }
 
       reporter.jasmineStarted({
         totalSpecsDefined: totalSpecsDefined
       });
 
-      queueRunnerFactory({fns: allFns, onComplete: reporter.jasmineDone});
+      queueRunnerFactory({queueableFns: allFns, onComplete: reporter.jasmineDone});
     };
 
     this.addReporter = function(reporterToAdd) {
@@ -273,7 +273,7 @@ getJasmineRequireObj().Env = function(j$) {
         expectationResultFactory: expectationResultFactory,
         queueRunnerFactory: queueRunnerFactory,
         userContext: function() { return suite.clonedSharedUserContext(); },
-        fn: fn
+        queueableFn: { fn: fn, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } }
       });
 
       runnableLookupTable[spec.id] = spec;
@@ -322,19 +322,19 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.beforeEach = function(beforeEachFunction) {
-      currentSuite.beforeEach(beforeEachFunction);
+      currentSuite.beforeEach({ fn: beforeEachFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.beforeAll = function(beforeAllFunction) {
-      currentSuite.beforeAll(beforeAllFunction);
+      currentSuite.beforeAll({ fn: beforeAllFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.afterEach = function(afterEachFunction) {
-      currentSuite.afterEach(afterEachFunction);
+      currentSuite.afterEach({ fn: afterEachFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.afterAll = function(afterAllFunction) {
-      currentSuite.afterAll(afterAllFunction);
+      currentSuite.afterAll({ fn: afterAllFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.pending = function() {
