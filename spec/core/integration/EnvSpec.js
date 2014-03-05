@@ -825,4 +825,51 @@ describe("Env integration", function() {
 
     env.execute();
   });
+
+  it('throws an exception if you try to add a matcher outside of a runnable', function (done) {
+    var env = new j$.Env(),
+      obj = {fn: function () {}},
+      exception;
+
+    env.describe("a suite", function () {
+      try {
+        env.addMatchers({myMatcher: function(actual,expected){return false;}});
+      } catch(e) {
+        exception = e;
+      }
+    });
+
+    var assertions = function() {
+      expect(exception.message).toBe('Matchers must be added in a before function or a spec');
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
+  });
+
+  it('throws an exception if you try to add a custom equality outside of a runnable', function (done) {
+    var env = new j$.Env(),
+      obj = {fn: function () {}},
+      exception;
+
+    env.describe("a suite", function () {
+      try {
+        env.addCustomEqualityTester(function(first, second) {return true;});
+      } catch(e) {
+        exception = e;
+      }
+    });
+
+    var assertions = function() {
+      expect(exception.message).toBe('Custom Equalities must be added in a before function or a spec');
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
+  });
+
 });
