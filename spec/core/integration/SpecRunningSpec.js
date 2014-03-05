@@ -244,6 +244,29 @@ describe("jasmine spec running", function () {
     env.addReporter({jasmineDone: assertions});
 
     env.execute();
+  });
+
+  it("should allow top level suites to be disabled", function() {
+    var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
+      otherSpec = jasmine.createSpy("otherSpec");
+
+    env.xdescribe('A disabled suite', function() {
+      env.it('spec inside a disabled suite', specInADisabledSuite);
+    });
+    env.describe('Another suite', function() {
+      env.it('another spec', otherSpec);
+    });
+
+    var assertions = function() {
+      expect(specInADisabledSuite).not.toHaveBeenCalled();
+      expect(otherSpec).toHaveBeenCalled();
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
+  });
 
   it("should set all pending specs to pending when a suite is run", function(done) {
     var pendingSpec,

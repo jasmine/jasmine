@@ -31,7 +31,7 @@ getJasmineRequireObj().util = function() {
   };
 
   util.clone = function(obj) {
-    if (Object.prototype.toString.apply(obj) === "[object Array]") {
+    if (Object.prototype.toString.apply(obj) === '[object Array]') {
       return obj.slice();
     }
 
@@ -43,7 +43,7 @@ getJasmineRequireObj().util = function() {
     }
 
     return cloned;
-  }
+  };
 
   return util;
 };

@@ -1,7 +1,7 @@
 getJasmineRequireObj().SpyRegistry = function(j$) {
 
   function SpyRegistry(options) {
-    var options = options || {};
+    options = options || {};
     var currentSpies = options.currentSpies || function() { return []; };
 
     this.spyOn = function(obj, methodName) {
@@ -43,4 +43,3 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
 
   return SpyRegistry;
 };
-

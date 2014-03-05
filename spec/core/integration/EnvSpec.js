@@ -80,7 +80,7 @@ describe("Env integration", function() {
 
     env.describe("Outer suite", function() {
       env.it("an outer spec", function() {
-        calls.push('an outer spec')
+        calls.push('an outer spec');
       });
       env.describe("Inner suite", function() {
         env.it("an inner spec", function() {
@@ -803,4 +803,3 @@ describe("Env integration", function() {
     env.execute();
   });
 });
-

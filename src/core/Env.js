@@ -22,11 +22,11 @@ getJasmineRequireObj().Env = function(j$) {
 
     var currentSuite = function() {
       return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
-    }
+    };
 
     var currentRunnable = function() {
       return currentSpec || currentSuite();
-    }
+    };
 
     var reporter = new j$.ReportDispatcher([
       'jasmineStarted',
@@ -217,8 +217,10 @@ getJasmineRequireObj().Env = function(j$) {
         queueRunner: queueRunnerFactory,
         onStart: suiteStarted,
         resultCallback: function(attrs) {
-          clearResourcesForRunnable(suite.id);
-          currentlyExecutingSuites.pop();
+          if (!suite.disabled) {
+            clearResourcesForRunnable(suite.id);
+            currentlyExecutingSuites.pop();
+          }
           reporter.suiteDone(attrs);
         }
       });
