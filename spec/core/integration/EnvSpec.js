@@ -802,4 +802,27 @@ describe("Env integration", function() {
 
     env.execute();
   });
+
+  it('throws an exception if you try to create a spy outside of a runnable', function (done) {
+    var env = new j$.Env(),
+      obj = {fn: function () {}},
+      exception;
+
+    env.describe("a suite", function () {
+      try {
+        env.spyOn(obj, 'fn');
+      } catch(e) {
+        exception = e;
+      }
+    });
+
+    var assertions = function() {
+      expect(exception.message).toBe('Spies must be created in a before function or a spec');
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
+  });
 });

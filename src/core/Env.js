@@ -201,6 +201,9 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var spyRegistry = new j$.SpyRegistry({currentSpies: function() {
+      if(!currentRunnable()) {
+        throw new Error('Spies must be created in a before function or a spec');
+      }
       return runnableResources[currentRunnable().id].spies;
     }});
 
