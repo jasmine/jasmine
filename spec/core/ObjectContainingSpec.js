@@ -61,4 +61,10 @@ describe("ObjectContaining", function() {
 
     expect(containing.jasmineToString()).toMatch("<jasmine.objectContaining");
   });
+
+  it("matches recursively", function() {
+    var containing = new j$.ObjectContaining({one: new j$.ObjectContaining({two: {}})});
+
+    expect(containing.jasmineMatches({one: {two: {}}})).toBe(true);
+  });
 });
