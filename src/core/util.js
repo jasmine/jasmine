@@ -30,5 +30,20 @@ getJasmineRequireObj().util = function() {
     return obj === void 0;
   };
 
+  util.clone = function(obj) {
+    if (Object.prototype.toString.apply(obj) === "[object Array]") {
+      return obj.slice();
+    }
+
+    var cloned = {};
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        cloned[prop] = obj[prop];
+      }
+    }
+
+    return cloned;
+  }
+
   return util;
 };

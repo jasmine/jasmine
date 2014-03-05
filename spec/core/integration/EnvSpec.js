@@ -326,30 +326,93 @@ describe("Env integration", function() {
     env.execute([secondSuite.id, firstSpec.id]);
   });
 
-  it("Functions can be spied on and have their calls tracked", function () {
+  it("Functions can be spied on and have their calls tracked", function (done) {
       var env = new j$.Env();
 
       var originalFunctionWasCalled = false;
       var subject = { spiedFunc: function() { originalFunctionWasCalled = true; } };
 
-      var spy = env.spyOn(subject, 'spiedFunc');
+      env.addReporter({jasmineDone: done});
 
-      expect(subject.spiedFunc).toEqual(spy);
+      env.it("works with spies", function() {
+        var spy = env.spyOn(subject, 'spiedFunc');
 
-      expect(subject.spiedFunc.calls.any()).toEqual(false);
-      expect(subject.spiedFunc.calls.count()).toEqual(0);
+        expect(subject.spiedFunc).toEqual(spy);
+        expect(subject.spiedFunc.calls.any()).toEqual(false);
+        expect(subject.spiedFunc.calls.count()).toEqual(0);
 
-      subject.spiedFunc('foo');
+        subject.spiedFunc('foo');
 
-      expect(subject.spiedFunc.calls.any()).toEqual(true);
-      expect(subject.spiedFunc.calls.count()).toEqual(1);
-      expect(subject.spiedFunc.calls.mostRecent().args).toEqual(['foo']);
-      expect(subject.spiedFunc.calls.mostRecent().object).toEqual(subject);
-      expect(originalFunctionWasCalled).toEqual(false);
+        expect(subject.spiedFunc.calls.any()).toEqual(true);
+        expect(subject.spiedFunc.calls.count()).toEqual(1);
+        expect(subject.spiedFunc.calls.mostRecent().args).toEqual(['foo']);
+        expect(subject.spiedFunc.calls.mostRecent().object).toEqual(subject);
+        expect(originalFunctionWasCalled).toEqual(false);
 
-      subject.spiedFunc('bar');
-      expect(subject.spiedFunc.calls.count()).toEqual(2);
-      expect(subject.spiedFunc.calls.mostRecent().args).toEqual(['bar']);
+        subject.spiedFunc('bar');
+        expect(subject.spiedFunc.calls.count()).toEqual(2);
+        expect(subject.spiedFunc.calls.mostRecent().args).toEqual(['bar']);
+      });
+
+      env.execute();
+  });
+
+  it('removes all spies added in a spec after the spec is complete', function(done) {
+    var env = new j$.Env(),
+      originalFoo = function() {},
+      testObj = {
+        foo: originalFoo
+      },
+      firstSpec = jasmine.createSpy('firstSpec').and.callFake(function() {
+        env.spyOn(testObj, 'foo');
+      }),
+      secondSpec = jasmine.createSpy('secondSpec').and.callFake(function() {
+        expect(testObj.foo).toBe(originalFoo);
+      });
+      env.describe('test suite', function() {
+        env.it('spec 0', firstSpec);
+        env.it('spec 1', secondSpec);
+      });
+
+    var assertions = function() {
+      expect(firstSpec).toHaveBeenCalled();
+      expect(secondSpec).toHaveBeenCalled();
+      done();
+    };
+
+    env.addReporter({ jasmineDone: assertions });
+
+    env.execute();
+  });
+
+  it('removes all spies added in a suite after the suite is complete', function(done) {
+    var env = new j$.Env(),
+      originalFoo = function() {},
+      testObj = {
+        foo: originalFoo
+      };
+
+      env.describe('test suite', function() {
+        env.beforeAll(function() { env.spyOn(testObj, 'foo');})
+
+        env.it('spec 0', function() {
+          expect(j$.isSpy(testObj.foo)).toBe(true);
+        });
+
+        env.it('spec 1', function() {
+          expect(j$.isSpy(testObj.foo)).toBe(true);
+        });
+      });
+
+      env.describe('another suite', function() {
+        env.it('spec 2', function() {
+          expect(j$.isSpy(testObj.foo)).toBe(false);
+        });
+      });
+
+    env.addReporter({ jasmineDone: done });
+
+    env.execute();
   });
 
   it("Mock clock can be installed and used in tests", function(done) {
@@ -542,11 +605,7 @@ describe("Env integration", function() {
   it("Custom equality testers should be per spec", function(done) {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
         reporter = jasmine.createSpyObj('fakeReporter', [
-          "jasmineStarted",
           "jasmineDone",
-          "suiteStarted",
-          "suiteDone",
-          "specStarted",
           "specDone"
         ]);
 
@@ -576,30 +635,42 @@ describe("Env integration", function() {
     env.execute();
   });
 
-  it("Custom matchers should be per spec", function() {
+  it("Custom equality testers should be per suite", function(done) {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
-        matchers = {
-          toFoo: function() {}
-        },
         reporter = jasmine.createSpyObj('fakeReporter', [
-          "jasmineStarted",
           "jasmineDone",
-          "suiteStarted",
-          "suiteDone",
-          "specStarted",
           "specDone"
         ]);
 
+    reporter.jasmineDone.and.callFake(function() {
+      var firstSpecResult = reporter.specDone.calls.first().args[0],
+          secondSpecResult = reporter.specDone.calls.argsFor(0)[0],
+          thirdSpecResult = reporter.specDone.calls.mostRecent().args[0];
+
+      expect(firstSpecResult.status).toEqual("passed");
+      expect(secondSpecResult.status).toEqual("passed");
+      expect(thirdSpecResult.status).toEqual("failed");
+
+      done();
+    });
+
     env.addReporter(reporter);
 
-    env.describe("testing custom matchers", function() {
-      env.it("with a custom matcher", function() {
-        env.addMatchers(matchers);
-        expect(env.expect().toFoo).toBeDefined();
+    env.describe("testing custom equality testers", function() {
+      env.beforeAll(function() { env.addCustomEqualityTester(function(a, b) { return true; }); });
+
+      env.it("with a custom tester", function() {
+        env.expect("a").toEqual("b");
       });
 
-      env.it("without a custom matcher", function() {
-        expect(env.expect().toFoo).toBeUndefined();
+      env.it("with the same custom tester", function() {
+        env.expect("a").toEqual("b");
+      });
+    });
+
+    env.describe("another suite", function() {
+      env.it("without the custom tester", function(){
+        env.expect("a").toEqual("b");
       });
     });
 
@@ -609,11 +680,7 @@ describe("Env integration", function() {
   it("Custom equality testers for toContain should be per spec", function(done) {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
         reporter = jasmine.createSpyObj('fakeReporter', [
-          "jasmineStarted",
           "jasmineDone",
-          "suiteStarted",
-          "suiteDone",
-          "specStarted",
           "specDone"
         ]);
 
@@ -636,9 +703,102 @@ describe("Env integration", function() {
       });
 
       env.it("without a custom tester", function() {
-        env.expect("a").toContain("b");
+        env.expect(["a"]).toContain("b");
       });
     });
+
+    env.execute();
+  });
+
+  it("Custom equality testers for toContain should be per suite", function(done) {
+    var env = new j$.Env({global: { setTimeout: setTimeout }}),
+        reporter = jasmine.createSpyObj('fakeReporter', [
+          "jasmineDone",
+          "specDone"
+        ]);
+
+    reporter.jasmineDone.and.callFake(function() {
+      var firstSpecResult = reporter.specDone.calls.first().args[0],
+          secondSpecResult = reporter.specDone.calls.argsFor(1)[0],
+          thirdSpecResult = reporter.specDone.calls.mostRecent().args[0];
+
+      expect(firstSpecResult.status).toEqual("passed");
+      expect(secondSpecResult.status).toEqual("passed");
+      expect(thirdSpecResult.status).toEqual("failed");
+
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.describe("testing custom equality testers", function() {
+      env.beforeAll(function() { env.addCustomEqualityTester(function(a, b) { return true; })});
+
+      env.it("with a custom tester", function() {
+        env.expect(["a"]).toContain("b");
+      });
+
+      env.it("also with the custom tester", function() {
+        env.expect(["a"]).toContain("b");
+      });
+    });
+
+    env.describe("another suite", function() {
+      env.it("without the custom tester", function() {
+        env.expect(["a"]).toContain("b");
+      });
+    });
+
+    env.execute();
+  });
+
+  it("Custom matchers should be per spec", function(done) {
+    var env = new j$.Env({global: { setTimeout: setTimeout }}),
+        matchers = {
+          toFoo: function() {}
+        };
+
+    env.describe("testing custom matchers", function() {
+      env.it("with a custom matcher", function() {
+        env.addMatchers(matchers);
+        expect(env.expect().toFoo).toBeDefined();
+      });
+
+      env.it("without a custom matcher", function() {
+        expect(env.expect().toFoo).toBeUndefined();
+      });
+    });
+
+    env.addReporter({jasmineDone: done});
+
+    env.execute();
+  });
+
+  it("Custom matchers should be per suite", function(done) {
+    var env = new j$.Env({global: { setTimeout: setTimeout }}),
+        matchers = {
+          toFoo: function() {}
+        };
+
+    env.describe("testing custom matchers", function() {
+      env.beforeAll(function() { env.addMatchers(matchers); });
+
+      env.it("with a custom matcher", function() {
+        expect(env.expect().toFoo).toBeDefined();
+      });
+
+      env.it("with the same custom matcher", function() {
+        expect(env.expect().toFoo).toBeDefined();
+      });
+    });
+
+    env.describe("another suite", function() {
+      env.it("no longer has the custom matcher", function() {
+        expect(env.expect().toFoo).not.toBeDefined();
+      });
+    });
+
+    env.addReporter({jasmineDone: done});
 
     env.execute();
   });

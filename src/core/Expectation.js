@@ -1,7 +1,5 @@
 getJasmineRequireObj().Expectation = function() {
 
-  var matchers = {};
-
   function Expectation(options) {
     this.util = options.util || { buildFailureMessage: function() {} };
     this.customEqualityTesters = options.customEqualityTesters || [];
@@ -9,8 +7,9 @@ getJasmineRequireObj().Expectation = function() {
     this.addExpectationResult = options.addExpectationResult || function(){};
     this.isNot = options.isNot;
 
-    for (var matcherName in matchers) {
-      this[matcherName] = matchers[matcherName];
+    var customMatchers = options.customMatchers || {};
+    for (var matcherName in customMatchers) {
+      this[matcherName] = Expectation.prototype.wrapCompare(matcherName, customMatchers[matcherName]);
     }
   }
 
@@ -74,19 +73,6 @@ getJasmineRequireObj().Expectation = function() {
     for (var matcherName in matchers) {
       var matcher = matchers[matcherName];
       prototype[matcherName] = prototype.wrapCompare(matcherName, matcher);
-    }
-  };
-
-  Expectation.addMatchers = function(matchersToAdd) {
-    for (var name in matchersToAdd) {
-      var matcher = matchersToAdd[name];
-      matchers[name] = Expectation.prototype.wrapCompare(name, matcher);
-    }
-  };
-
-  Expectation.resetMatchers = function() {
-    for (var name in matchers) {
-      delete matchers[name];
     }
   };
 

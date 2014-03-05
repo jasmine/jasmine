@@ -236,11 +236,14 @@ describe("jasmine spec running", function () {
       });
     });
 
-    suite.execute(function() {
+    var assertions = function() {
       expect(specInADisabledSuite).not.toHaveBeenCalled();
       done();
-    });
-  });
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
 
   it("should set all pending specs to pending when a suite is run", function(done) {
     var pendingSpec,

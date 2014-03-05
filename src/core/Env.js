@@ -14,11 +14,19 @@ getJasmineRequireObj().Env = function(j$) {
     this.clock = new j$.Clock(global, new j$.DelayedFunctionScheduler(), new j$.MockDate(global));
 
     var runnableLookupTable = {};
-
-    var spies = [];
+    var runnableResources = {};
 
     var currentSpec = null;
-    var currentSuite = null;
+    var currentlyExecutingSuites = [];
+    var currentDeclarationSuite = null;
+
+    var currentSuite = function() {
+      return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
+    }
+
+    var currentRunnable = function() {
+      return currentSpec || currentSuite();
+    }
 
     var reporter = new j$.ReportDispatcher([
       'jasmineStarted',
@@ -33,11 +41,15 @@ getJasmineRequireObj().Env = function(j$) {
       return true;
     };
 
-    var equalityTesters = [];
-
-    var customEqualityTesters = [];
     this.addCustomEqualityTester = function(tester) {
-      customEqualityTesters.push(tester);
+      runnableResources[currentRunnable().id].customEqualityTesters.push(tester);
+    };
+
+    this.addMatchers = function(matchersToAdd) {
+      var customMatchers = runnableResources[currentRunnable().id].customMatchers;
+      for (var matcherName in matchersToAdd) {
+        customMatchers[matcherName] = matchersToAdd[matcherName];
+      }
     };
 
     j$.Expectation.addCoreMatchers(j$.matchers);
@@ -55,7 +67,8 @@ getJasmineRequireObj().Env = function(j$) {
     var expectationFactory = function(actual, spec) {
       return j$.Expectation.Factory({
         util: j$.matchersUtil,
-        customEqualityTesters: customEqualityTesters,
+        customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
+        customMatchers: runnableResources[spec.id].customMatchers,
         actual: actual,
         addExpectationResult: addExpectationResult
       });
@@ -65,9 +78,20 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
-    var specStarted = function(spec) {
-      currentSpec = spec;
-      reporter.specStarted(spec.result);
+    var defaultResourcesForRunnable = function(id, parentRunnableId) {
+      var resources = {spies: [], customEqualityTesters: [], customMatchers: {}};
+
+      if(runnableResources[parentRunnableId]){
+        resources.customEqualityTesters = j$.util.clone(runnableResources[parentRunnableId].customEqualityTesters);
+        resources.customMatchers = j$.util.clone(runnableResources[parentRunnableId].customMatchers);
+      }
+
+      runnableResources[id] = resources;
+    };
+
+    var clearResourcesForRunnable = function(id) {
+        spyRegistry.clearSpies();
+        delete runnableResources[id];
     };
 
     var beforeFns = function(suite) {
@@ -149,7 +173,8 @@ getJasmineRequireObj().Env = function(j$) {
       resultCallback: function() {} // TODO - hook this up
     });
     runnableLookupTable[topSuite.id] = topSuite;
-    currentSuite = topSuite;
+    defaultResourcesForRunnable(topSuite.id);
+    currentDeclarationSuite = topSuite;
 
     this.topSuite = function() {
       return topSuite;
@@ -175,36 +200,12 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.addReporter(reporterToAdd);
     };
 
-    this.addMatchers = function(matchersToAdd) {
-      j$.Expectation.addMatchers(matchersToAdd);
-    };
+    var spyRegistry = new j$.SpyRegistry({currentSpies: function() {
+      return runnableResources[currentRunnable().id].spies;
+    }});
 
-    this.spyOn = function(obj, methodName) {
-      if (j$.util.isUndefined(obj)) {
-        throw new Error('spyOn could not find an object to spy upon for ' + methodName + '()');
-      }
-
-      if (j$.util.isUndefined(obj[methodName])) {
-        throw new Error(methodName + '() method does not exist');
-      }
-
-      if (obj[methodName] && j$.isSpy(obj[methodName])) {
-        //TODO?: should this return the current spy? Downside: may cause user confusion about spy state
-        throw new Error(methodName + ' has already been spied upon');
-      }
-
-      var spy = j$.createSpy(methodName, obj[methodName]);
-
-      spies.push({
-        spy: spy,
-        baseObj: obj,
-        methodName: methodName,
-        originalValue: obj[methodName]
-      });
-
-      obj[methodName] = spy;
-
-      return spy;
+    this.spyOn = function() {
+      return spyRegistry.spyOn.apply(spyRegistry, arguments);
     };
 
     var suiteFactory = function(description) {
@@ -212,24 +213,32 @@ getJasmineRequireObj().Env = function(j$) {
         env: self,
         id: getNextSuiteId(),
         description: description,
-        parentSuite: currentSuite,
+        parentSuite: currentDeclarationSuite,
         queueRunner: queueRunnerFactory,
         onStart: suiteStarted,
         resultCallback: function(attrs) {
+          clearResourcesForRunnable(suite.id);
+          currentlyExecutingSuites.pop();
           reporter.suiteDone(attrs);
         }
       });
 
       runnableLookupTable[suite.id] = suite;
       return suite;
+
+      function suiteStarted(suite) {
+        currentlyExecutingSuites.push(suite);
+        defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
+        reporter.suiteStarted(suite.result);
+      }
     };
 
     this.describe = function(description, specDefinitions) {
       var suite = suiteFactory(description);
 
-      var parentSuite = currentSuite;
+      var parentSuite = currentDeclarationSuite;
       parentSuite.addChild(suite);
-      currentSuite = suite;
+      currentDeclarationSuite = suite;
 
       var declarationError = null;
       try {
@@ -244,7 +253,7 @@ getJasmineRequireObj().Env = function(j$) {
         });
       }
 
-      currentSuite = parentSuite;
+      currentDeclarationSuite = parentSuite;
 
       return suite;
     };
@@ -284,30 +293,22 @@ getJasmineRequireObj().Env = function(j$) {
 
       return spec;
 
-      function removeAllSpies() {
-        for (var i = 0; i < spies.length; i++) {
-          var spyEntry = spies[i];
-          spyEntry.baseObj[spyEntry.methodName] = spyEntry.originalValue;
-        }
-        spies = [];
-      }
-
       function specResultCallback(result) {
-        removeAllSpies();
-        j$.Expectation.resetMatchers();
-        customEqualityTesters = [];
+        clearResourcesForRunnable(spec.id);
         currentSpec = null;
         reporter.specDone(result);
       }
-    };
 
-    var suiteStarted = function(suite) {
-      reporter.suiteStarted(suite.result);
+      function specStarted(spec) {
+        currentSpec = spec;
+        defaultResourcesForRunnable(spec.id, suite.id);
+        reporter.specStarted(spec.result);
+      }
     };
 
     this.it = function(description, fn) {
-      var spec = specFactory(description, fn, currentSuite);
-      currentSuite.addChild(spec);
+      var spec = specFactory(description, fn, currentDeclarationSuite);
+      currentDeclarationSuite.addChild(spec);
       return spec;
     };
 
@@ -322,19 +323,19 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.beforeEach = function(beforeEachFunction) {
-      currentSuite.beforeEach({ fn: beforeEachFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+      currentDeclarationSuite.beforeEach({ fn: beforeEachFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.beforeAll = function(beforeAllFunction) {
-      currentSuite.beforeAll({ fn: beforeAllFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+      currentDeclarationSuite.beforeAll({ fn: beforeAllFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.afterEach = function(afterEachFunction) {
-      currentSuite.afterEach({ fn: afterEachFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+      currentDeclarationSuite.afterEach({ fn: afterEachFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.afterAll = function(afterAllFunction) {
-      currentSuite.afterAll({ fn: afterAllFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+      currentDeclarationSuite.afterAll({ fn: afterAllFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.pending = function() {
