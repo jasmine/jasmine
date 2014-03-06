@@ -225,6 +225,7 @@ getJasmineRequireObj().Env = function(j$) {
         parentSuite: currentDeclarationSuite,
         queueRunner: queueRunnerFactory,
         onStart: suiteStarted,
+        expectationFactory: expectationFactory,
         resultCallback: function(attrs) {
           if (!suite.disabled) {
             clearResourcesForRunnable(suite.id);
@@ -330,7 +331,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.expect = function(actual) {
-      return currentSpec.expect(actual);
+      return currentRunnable().expect(actual);
     };
 
     this.beforeEach = function(beforeEachFunction) {

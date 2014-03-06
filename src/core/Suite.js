@@ -7,6 +7,7 @@ getJasmineRequireObj().Suite = function() {
     this.onStart = attrs.onStart || function() {};
     this.resultCallback = attrs.resultCallback || function() {};
     this.clearStack = attrs.clearStack || function(fn) {fn();};
+    this.expectationFactory = attrs.expectationFactory;
 
     this.beforeFns = [];
     this.afterFns = [];
@@ -24,6 +25,10 @@ getJasmineRequireObj().Suite = function() {
       fullName: this.getFullName()
     };
   }
+
+  Suite.prototype.expect = function(actual) {
+    return this.expectationFactory(actual, this);
+  };
 
   Suite.prototype.getFullName = function() {
     var fullName = this.description;
@@ -127,6 +132,13 @@ getJasmineRequireObj().Suite = function() {
     for (var i = 0; i < this.children.length; i++) {
       var child = this.children[i];
       child.onException.apply(child, arguments);
+    }
+  };
+
+  Suite.prototype.addExpectationResult = function () {
+    for (var i = 0; i < this.children.length; i++) {
+      var child = this.children[i];
+      child.addExpectationResult.apply(child, arguments);
     }
   };
 

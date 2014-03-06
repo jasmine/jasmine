@@ -290,6 +290,44 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it("fails all underlying specs when the beforeAll fails", function (done) {
+    var env = new j$.Env(),
+      reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
+
+    reporter.jasmineDone.and.callFake(function() {
+      expect(reporter.specDone.calls.count()).toEqual(2);
+
+      expect(reporter.specDone.calls.argsFor(0)[0])
+        .toEqual(jasmine.objectContaining({status: 'failed'}));
+      expect(reporter.specDone.calls.argsFor(0)[0].failedExpectations[0].message)
+        .toEqual("Expected 1 to be 2.");
+
+      expect(reporter.specDone.calls.argsFor(1)[0])
+        .toEqual(jasmine.objectContaining({status: 'failed'}));
+      expect(reporter.specDone.calls.argsFor(1)[0].failedExpectations[0].message)
+        .toEqual("Expected 1 to be 2.");
+      done();
+  });
+
+    env.addReporter(reporter);
+
+    env.describe('A suite', function(){
+      env.beforeAll(function() {
+        env.expect(1).toBe(2);
+      });
+
+      env.it("spec that will be failed", function() {
+      });
+
+      env.describe("nesting", function() {
+        env.it("another spec to fail", function() {
+        });
+      });
+    });
+
+    env.execute();
+  });
+
   it("Allows specifying which specs and suites to run", function(done) {
     var env = new j$.Env(),
         calls = [],
@@ -871,5 +909,4 @@ describe("Env integration", function() {
 
     env.execute();
   });
-
 });
