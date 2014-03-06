@@ -176,9 +176,7 @@ describe("ConsoleReporter", function() {
     expect(onComplete).toHaveBeenCalled();
   });
 
-
   describe("with color", function() {
-
     it("reports that the suite has started to the console", function() {
       var reporter = new j$.ConsoleReporter({
         print: out.print,
@@ -221,6 +219,22 @@ describe("ConsoleReporter", function() {
       reporter.specDone({status: 'failed'});
 
       expect(out.getOutput()).toEqual("\x1B[31mF\x1B[0m");
+    });
+
+    it("displays all afterAll exceptions", function() {
+        var reporter = new j$.ConsoleReporter({
+          print: out.print,
+          showColors: true
+        }),
+          error = new Error('After All Exception'),
+          anotherError = new Error('Some Other Exception');
+
+        reporter.afterAllException(error);
+        reporter.afterAllException(anotherError);
+        reporter.jasmineDone();
+
+        expect(out.getOutput()).toMatch(/After All Exception/);
+        expect(out.getOutput()).toMatch(/Some Other Exception/);
     });
   });
 });

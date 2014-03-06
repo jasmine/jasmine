@@ -47,7 +47,15 @@ var jasmineInterface = {
 
   jsApiReporter: new jasmine.JsApiReporter({
     timer: new jasmine.Timer()
-  })
+  }),
+
+  beforeAll: function(beforeAllFunction) {
+    return env.beforeAll(beforeAllFunction);
+  },
+
+  afterAll: function(afterAllFunction) {
+    return env.afterAll(afterAllFunction);
+  }
 };
 
 extend(global, jasmineInterface);

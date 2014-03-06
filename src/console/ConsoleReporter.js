@@ -19,7 +19,8 @@ getJasmineRequireObj().ConsoleReporter = function() {
         red: '\x1B[31m',
         yellow: '\x1B[33m',
         none: '\x1B[0m'
-      };
+      },
+      exceptionList = [];
 
     this.jasmineStarted = function() {
       specCount = 0;
@@ -49,8 +50,15 @@ getJasmineRequireObj().ConsoleReporter = function() {
       printNewline();
       var seconds = timer.elapsed() / 1000;
       print('Finished in ' + seconds + ' ' + plural('second', seconds));
-
       printNewline();
+
+      exceptionList.forEach(function(error) {
+        printNewline();
+        print(colored('red', 'An error was thrown in an afterAll'));
+        printNewline();
+        print(colored('red', error.stack));
+        printNewline();
+      });
 
       onComplete(failureCount === 0);
     };
@@ -74,6 +82,10 @@ getJasmineRequireObj().ConsoleReporter = function() {
         failedSpecs.push(result);
         print(colored('red', 'F'));
       }
+    };
+
+    this.afterAllException = function(error) {
+      exceptionList.push(error);
     };
 
     return this;
