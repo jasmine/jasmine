@@ -34,7 +34,8 @@ getJasmineRequireObj().Env = function(j$) {
       'suiteStarted',
       'suiteDone',
       'specStarted',
-      'specDone'
+      'specDone',
+      'afterAllException'
     ]);
 
     this.specFilter = function() {
@@ -165,6 +166,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     var queueRunnerFactory = function(options) {
       options.catchException = catchException;
+      options.reporter = reporter;
       options.clearStack = options.clearStack || clearStack;
       options.timer = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
 
@@ -347,7 +349,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.afterAll = function(afterAllFunction) {
-      currentDeclarationSuite.afterAll({ fn: afterAllFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+      currentDeclarationSuite.afterAll({ fn: afterAllFunction, isAfterAll: true, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.pending = function() {

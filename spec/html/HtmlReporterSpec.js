@@ -130,6 +130,27 @@ describe("New HtmlReporter", function() {
     });
   });
 
+  describe("when afterAllException is called", function () {
+    it("sends a console error", function(){
+      var env = new j$.Env(),
+        error = new Error('After all exception!'),
+        container = document.createElement('div'),
+        getContainer = function () { return container; },
+        reporter = new j$.HtmlReporter({
+          env: env,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); },
+          getContainer: getContainer
+        });
+
+      reporter.initialize();
+
+      spyOn(window.console, 'error');
+      reporter.afterAllException(error);
+      expect(window.console.error).toHaveBeenCalled();
+    });
+  });
+
   describe("when Jasmine is done", function() {
     it("reports the run time", function() {
       var env = new j$.Env(),

@@ -64,6 +64,10 @@ jasmineRequire.HtmlReporter = function(j$) {
       currentParent.addChild(result, 'spec');
     };
 
+    this.afterAllException = function(error) {
+      console.error(error);
+    };
+
     var failures = [];
     this.specDone = function(result) {
       if (result.status != 'disabled') {

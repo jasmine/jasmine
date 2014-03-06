@@ -18,6 +18,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.catchException = attrs.catchException || function() { return true; };
     this.userContext = attrs.userContext || {};
     this.timer = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
+    this.reporter = attrs.reporter;
   }
 
   QueueRunner.prototype.execute = function() {
@@ -25,7 +26,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.run = function(queueableFns, recursiveIndex) {
-    var length = queueableFns.length,
+    var runner = this,
+        length = queueableFns.length,
         self = this,
         iterativeIndex;
 
@@ -48,6 +50,9 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       try {
         queueableFn.fn.call(self.userContext);
       } catch (e) {
+        if(queueableFn.isAfterAll){
+          runner.reporter.afterAllException(e);
+        }
         handleException(e);
       }
     }
@@ -72,6 +77,9 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       try {
         queueableFn.fn.call(self.userContext, next);
       } catch (e) {
+        if(queueableFn.isAfterAll) {
+          runner.reporter.afterAllException(e);
+        }
         handleException(e);
         next();
       }
