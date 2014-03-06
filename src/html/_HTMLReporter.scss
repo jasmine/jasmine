@@ -152,7 +152,7 @@ body {
     color: #eee;
 
     &.failed {
-      background-color: $failing-color
+      background-color: $failing-color;
     }
 
     &.passed {
@@ -161,6 +161,10 @@ body {
 
     &.skipped {
       background-color: $neutral-color;
+    }
+
+    &.errored {
+      background-color: $failing-color;
     }
 
     &.menu {

@@ -25,6 +25,7 @@ body { background-color: #eeeeee; padding: 0; margin: 5px; overflow-y: scroll; }
 .html-reporter .bar.failed { background-color: #ca3a11; }
 .html-reporter .bar.passed { background-color: #007069; }
 .html-reporter .bar.skipped { background-color: #bababa; }
+.html-reporter .bar.errored { background-color: #ca3a11; }
 .html-reporter .bar.menu { background-color: #fff; color: #aaaaaa; }
 .html-reporter .bar.menu a { color: #333333; }
 .html-reporter .bar a { color: white; }

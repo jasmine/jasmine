@@ -130,24 +130,33 @@ describe("New HtmlReporter", function() {
     });
   });
 
-  describe("when afterAllException is called", function () {
-    it("sends a console error", function(){
+  describe("when there are afterAllExceptions", function () {
+    it("displays the exceptions in their own alert bars", function(){
       var env = new j$.Env(),
-        error = new Error('After all exception!'),
-        container = document.createElement('div'),
-        getContainer = function () { return container; },
+        container = document.createElement("div"),
+        getContainer = function() { return container; },
         reporter = new j$.HtmlReporter({
           env: env,
+          getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); },
-          getContainer: getContainer
-        });
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        }),
+        error = new Error('My After All Exception'),
+        otherError = new Error('My Other Exception');
 
       reporter.initialize();
 
-      spyOn(window.console, 'error');
+      reporter.jasmineStarted({});
       reporter.afterAllException(error);
-      expect(window.console.error).toHaveBeenCalled();
+      reporter.afterAllException(otherError);
+      reporter.jasmineDone({});
+
+      var alertBars = container.querySelectorAll(".alert .bar");
+
+      expect(alertBars.length).toEqual(3);
+      expect(alertBars[1].innerHTML).toMatch(/My After All Exception/);
+      expect(alertBars[1].getAttribute("class")).toEqual('bar errored');
+      expect(alertBars[2].innerHTML).toMatch(/My Other Exception/);
     });
   });
 
