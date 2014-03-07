@@ -232,7 +232,7 @@ describe("ConsoleReporter", function() {
         reporter.afterAllException(error);
         reporter.afterAllException(anotherError);
         reporter.jasmineDone();
-
+        
         expect(out.getOutput()).toMatch(/After All Exception/);
         expect(out.getOutput()).toMatch(/Some Other Exception/);
     });

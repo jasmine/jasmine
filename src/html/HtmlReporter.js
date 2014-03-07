@@ -18,7 +18,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       pendingSpecCount = 0,
       htmlReporterMain,
       symbols,
-      exceptionsList = [];
+      exceptionList = [];
 
     this.initialize = function() {
       htmlReporterMain = createDom('div', {className: 'html-reporter'},
@@ -66,7 +66,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     };
 
     this.afterAllException = function(error) {
-      exceptionsList.push(error);
+      exceptionList.push(error);
     };
 
     var failures = [];
@@ -141,11 +141,11 @@ jasmineRequire.HtmlReporter = function(j$) {
       var statusBarClassName = 'bar ' + ((failureCount > 0) ? 'failed' : 'passed');
       alert.appendChild(createDom('span', {className: statusBarClassName}, statusBarMessage));
 
-      exceptionsList.forEach(function(error) {
-        var errorBarMessage = 'An error was thrown in an afterAll: ' + error.stack;
+      for(i = 0; i < exceptionList.length; i++) {
+        var errorBarMessage = 'An error was thrown in an afterAll: ' + (exceptionList[i].message || exceptionList[i].description);
         var errorBarClassName = 'bar errored';
         alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessage));
-      });
+      }
 
       var results = find('.results');
       results.appendChild(summary);
