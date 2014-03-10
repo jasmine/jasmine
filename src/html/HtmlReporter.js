@@ -66,6 +66,10 @@ jasmineRequire.HtmlReporter = function(j$) {
 
     var failures = [];
     this.specDone = function(result) {
+      if(result.status == 'empty' && console && console.error) {
+        console.error('Spec \'' + result.fullName + '\' has no expectations.');
+      }
+
       if (result.status != 'disabled') {
         specsExecuted++;
       }
@@ -160,12 +164,16 @@ jasmineRequire.HtmlReporter = function(j$) {
               specListNode = createDom('ul', {className: 'specs'});
               domParent.appendChild(specListNode);
             }
+            var specDescription = resultNode.result.description;
+            if(resultNode.result.status == 'empty') {
+              specDescription = 'SPEC HAS NO EXPECTATIONS ' + specDescription;
+            }
             specListNode.appendChild(
               createDom('li', {
                   className: resultNode.result.status,
                   id: 'spec-' + resultNode.result.id
                 },
-                createDom('a', {href: specHref(resultNode.result)}, resultNode.result.description)
+                createDom('a', {href: specHref(resultNode.result)}, specDescription)
               )
             );
           }

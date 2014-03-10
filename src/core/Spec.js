@@ -13,6 +13,7 @@ getJasmineRequireObj().Spec = function(j$) {
     this.expectationResultFactory = attrs.expectationResultFactory || function() { };
     this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
     this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
+    this.expectCalled = false;
 
     if (!this.fn) {
       this.pend();
@@ -27,6 +28,7 @@ getJasmineRequireObj().Spec = function(j$) {
   }
 
   Spec.prototype.addExpectationResult = function(passed, data) {
+    this.expectCalled = true;
     if (passed) {
       return;
     }
@@ -96,6 +98,10 @@ getJasmineRequireObj().Spec = function(j$) {
 
     if (this.markedPending) {
       return 'pending';
+    }
+
+    if(!this.expectCalled) {
+      return 'empty';
     }
 
     if (this.result.failedExpectations.length > 0) {

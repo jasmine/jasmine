@@ -193,9 +193,10 @@ describe("Spec", function() {
     expect(done).toHaveBeenCalled();
   });
 
-  it("#status returns passing by default", function() {
-    var spec = new j$.Spec({fn: jasmine.createSpy("spec body")});
-    expect(spec.status()).toEqual('passed');
+  it("#status returns empty by default", function(){
+    var emptySpec = new j$.Spec({ fn: function () {} });
+    emptySpec.execute();
+    expect(emptySpec.status()).toBe("empty");
   });
 
   it("#status returns passed if all expectations in the spec have passed", function() {

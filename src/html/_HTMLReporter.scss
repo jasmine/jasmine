@@ -12,7 +12,7 @@ $page-background-color: #eee;
 $passing-color: #007069;
 $failing-color: #ca3a11;
 $pending-color: #ba9d37;
-
+$empty-color: #eff543;
 $neutral-color: #bababa;
 
 $font-size: 11px;
@@ -152,7 +152,7 @@ body {
     color: #eee;
 
     &.failed {
-      background-color: $failing-color
+      background-color: $failing-color;
     }
 
     &.passed {
@@ -258,6 +258,10 @@ body {
 
       &.failed a {
         color: $failing-color;
+      }
+
+      &.empty a {
+        color: $pending-color;
       }
 
       &.pending a {

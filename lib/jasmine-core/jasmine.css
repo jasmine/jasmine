@@ -43,6 +43,7 @@ body { background-color: #eeeeee; padding: 0; margin: 5px; overflow-y: scroll; }
 .html-reporter .summary ul.suite { margin-top: 7px; margin-bottom: 7px; }
 .html-reporter .summary li.passed a { color: #007069; }
 .html-reporter .summary li.failed a { color: #ca3a11; }
+.html-reporter .summary li.empty a { color: #ba9d37; }
 .html-reporter .summary li.pending a { color: #ba9d37; }
 .html-reporter .description + .suite { margin-top: 0; }
 .html-reporter .suite { margin-top: 14px; }
