@@ -387,6 +387,27 @@ describe("New HtmlReporter", function() {
       });
     });
 
+    it("shows a message if no specs are run", function(){
+      var env, container, reporter;
+      env = new j$.Env();
+      container = document.createElement("div");
+      var getContainer = function() { return container; },
+      reporter = new j$.HtmlReporter({
+        env: env,
+        getContainer: getContainer,
+        createElement: function() { return document.createElement.apply(document, arguments); },
+        createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+      });
+      reporter.initialize();
+
+      reporter.jasmineStarted({});
+      reporter.jasmineDone({});
+
+      var alertBars = container.querySelectorAll(".alert .bar");
+      expect(alertBars[0].getAttribute('class')).toMatch(/skipped/);
+      expect(alertBars[0].innerHTML).toMatch(/No specs found/);
+    });
+
     describe("and all specs pass", function() {
       var env, container, reporter;
       beforeEach(function() {
@@ -401,7 +422,7 @@ describe("New HtmlReporter", function() {
           });
         reporter.initialize();
 
-        reporter.jasmineStarted({});
+        reporter.jasmineStarted({ totalSpecsDefined: 2 });
         reporter.specDone({
           id: 123,
           description: "with a spec",
@@ -452,7 +473,7 @@ describe("New HtmlReporter", function() {
         });
         reporter.initialize();
 
-        reporter.jasmineStarted({});
+        reporter.jasmineStarted({ totalSpecsDefined: 1 });
         reporter.specDone({
           id: 123,
           description: "with a spec",
@@ -490,7 +511,7 @@ describe("New HtmlReporter", function() {
         });
         reporter.initialize();
 
-        reporter.jasmineStarted({});
+        reporter.jasmineStarted({ totalSpecsDefined: 1 });
 
         var passingResult = {id: 123, status: "passed"};
         reporter.specStarted(passingResult);
