@@ -36,15 +36,20 @@ getJasmineRequireObj().ConsoleReporter = function() {
         specFailureDetails(failedSpecs[i]);
       }
 
-      printNewline();
-      var specCounts = specCount + ' ' + plural('spec', specCount) + ', ' +
-        failureCount + ' ' + plural('failure', failureCount);
+      if(specCount > 0) {
+        printNewline();
 
-      if (pendingCount) {
-        specCounts += ', ' + pendingCount + ' pending ' + plural('spec', pendingCount);
+        var specCounts = specCount + ' ' + plural('spec', specCount) + ', ' +
+          failureCount + ' ' + plural('failure', failureCount);
+
+        if (pendingCount) {
+          specCounts += ', ' + pendingCount + ' pending ' + plural('spec', pendingCount);
+        }
+
+        print(specCounts);
+      } else {
+        print('No specs found');
       }
-
-      print(specCounts);
 
       printNewline();
       var seconds = timer.elapsed() / 1000;

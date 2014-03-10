@@ -80,6 +80,18 @@ describe("ConsoleReporter", function() {
     expect(out.getOutput()).toEqual("*");
   });
 
+  it("alerts user if there are no specs", function(){
+    var reporter = new j$.ConsoleReporter({
+          print: out.print
+        });
+
+    reporter.jasmineStarted();
+    out.clear();
+    reporter.jasmineDone();
+
+    expect(out.getOutput()).toMatch(/No specs found/);
+  });
+
   it("reports a summary when done (singular spec and time)", function() {
     var timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
         reporter = new j$.ConsoleReporter({
