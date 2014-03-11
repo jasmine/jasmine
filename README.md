@@ -1,4 +1,6 @@
-<a name="README">[Jasmine](http://jasmine.github.io)</a> [![Build Status](https://travis-ci.org/pivotal/jasmine.png?branch=master)](https://travis-ci.org/pivotal/jasmine) [![Code Climate](https://codeclimate.com/github/pivotal/jasmine.png)](https://codeclimate.com/github/pivotal/jasmine)
+<a name="README">[<img src="https://rawgithub.com/pivotal/jasmine/master/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a> 
+
+[![Build Status](https://travis-ci.org/pivotal/jasmine.png?branch=master)](https://travis-ci.org/pivotal/jasmine) [![Code Climate](https://codeclimate.com/github/pivotal/jasmine.png)](https://codeclimate.com/github/pivotal/jasmine)
 
 =======
 
