@@ -23,8 +23,9 @@ describe("New HtmlReporter", function() {
     // title banner
     var banner = container.querySelector(".banner");
 
-    var title = banner.querySelector(".title");
-    expect(title.innerHTML).toMatch(/Jasmine/);
+    var title = banner.querySelector("a.title");
+    expect(title.getAttribute('href')).toEqual('http://jasmine.github.io/');
+    expect(title.getAttribute('target')).toEqual('_blank');
 
     var version = banner.querySelector(".version"),
       versionText = 'textContent' in version ? version.textContent : version.innerText;

@@ -57,9 +57,31 @@ body {
     padding-right: $margin-unit - 5px;
   }
 
+  .banner {
+    position: relative;
+  }
+
+  .banner .title {
+    background: inline-image('jasmine-horizontal.png') no-repeat;
+    background: inline-image('jasmine-horizontal.svg') no-repeat, none;
+    @include background-size(100%);
+    display: block;
+    float: left;
+    width: 90px;
+    height: 25px;
+  }
+
   .banner .version {
     margin-left: $margin-unit;
-  };
+    position: relative;
+    top: 6px;
+  }
+
+  .banner .duration {
+    position: absolute;
+    right: 14px;
+    top: 6px;
+   }
 
   // This div is available for testing elements that must be added to the DOM.
   // We position it out of view, so it doesn't obstruct the runner.
