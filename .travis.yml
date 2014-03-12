@@ -1,6 +1,7 @@
 ---
 script: $TEST_COMMAND
 language: ruby
+cache: bundler
 rvm: 1.9.3
 env:
   global:
