@@ -111,7 +111,7 @@ getJasmineRequireObj().pp = function(j$) {
       }
 
       self.append(property);
-      self.append(' : ');
+      self.append(': ');
       if (isGetter) {
         self.append('<getter>');
       } else {

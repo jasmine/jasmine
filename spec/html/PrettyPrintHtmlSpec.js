@@ -3,7 +3,7 @@ describe("j$.pp (HTML Dependent)", function () {
     var sampleNode = document.createElement('div');
     sampleNode.innerHTML = 'foo<b>bar</b>';
     expect(j$.pp(sampleNode)).toEqual("HTMLNode");
-    expect(j$.pp({foo: sampleNode})).toEqual("{ foo : HTMLNode }");
+    expect(j$.pp({foo: sampleNode})).toEqual("{ foo: HTMLNode }");
   });
 
   it("should print Firefox's wrapped native objects correctly", function() {
