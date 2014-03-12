@@ -64,10 +64,12 @@ describe("j$.pp", function () {
   });
 
   it("should stringify immutable circular objects", function(){
-    var frozenObject = {foo: {bar: 'baz'}};
-    frozenObject.circular = frozenObject;
-    frozenObject = Object.freeze(frozenObject);
-    expect(j$.pp(frozenObject)).toEqual("{ foo: { bar: 'baz' }, circular: <circular reference: Object> }");
+    if(Object.freeze){
+      var frozenObject = {foo: {bar: 'baz'}};
+      frozenObject.circular = frozenObject;
+      frozenObject = Object.freeze(frozenObject);
+      expect(j$.pp(frozenObject)).toEqual("{ foo: { bar: 'baz' }, circular: <circular reference: Object> }");
+    }
   });
 
   it("should truncate arrays that are longer than j$.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
