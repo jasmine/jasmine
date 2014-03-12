@@ -38,7 +38,7 @@ getJasmineRequireObj().util = function() {
       }
     }
     return false;
-  }
+  };
 
   return util;
 };
