@@ -63,6 +63,13 @@ describe("j$.pp", function () {
     }
   });
 
+  it("should stringify immutable circular objects", function(){
+    var frozenObject = {foo: {bar: 'baz'}};
+    frozenObject.circular = frozenObject;
+    frozenObject = Object.freeze(frozenObject);
+    expect(j$.pp(frozenObject)).toEqual("{ foo : { bar : 'baz' }, circular : <circular reference: Object> }");
+  });
+
   it("should stringify RegExp objects properly", function() {
     expect(j$.pp(/x|y|z/)).toEqual("/x|y|z/");
   });
