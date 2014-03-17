@@ -34,4 +34,4 @@ Please read the [contributors' guide](https://github.com/pivotal/jasmine/blob/ma
 
 * [Christian Williams](mailto:antixian666@gmail.com), Square
 
-Copyright (c) 2008-2013 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2008-2014 Pivotal Labs. This software is licensed under the MIT License.
