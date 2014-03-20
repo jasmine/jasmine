@@ -39,6 +39,10 @@ module.exports = {
     src: ['lib/jasmine-core/boot/boot.js'],
     dest: 'lib/jasmine-core/boot.js'
   },
+  nodeBoot: {
+    src: ['lib/jasmine-core/boot/node_boot.js'],
+    dest: 'lib/jasmine-core/node_boot.js'
+  },
   console: {
     src: [
       'src/console/requireConsole.js',

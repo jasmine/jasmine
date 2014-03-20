@@ -6,7 +6,7 @@ module Jasmine
       end
 
       def js_files
-        (["jasmine.js"] + Dir.glob(File.join(path, "*.js"))).map { |f| File.basename(f) }.uniq - boot_files
+        (["jasmine.js"] + Dir.glob(File.join(path, "*.js"))).map { |f| File.basename(f) }.uniq - boot_files - node_boot_files
       end
 
       SPEC_TYPES = ["core", "html", "node"]
@@ -27,8 +27,12 @@ module Jasmine
         ["boot.js"]
       end
 
+      def node_boot_files
+        ["node_boot.js"]
+      end
+
       def boot_dir
-        File.join(path, 'boot')
+        path
       end
 
       def spec_files(type)
