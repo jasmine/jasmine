@@ -14,6 +14,20 @@ describe("toHaveBeenCalledWith", function() {
     expect(result.message()).toEqual("Expected spy called-spy not to have been called with [ 'a', 'b' ] but it was.");
   });
 
+  it("passes through the custom equality testers", function() {
+    var util = {
+          contains: jasmine.createSpy('delegated-contains').and.returnValue(true)
+        },
+        customEqualityTesters = [function() { return true; }],
+        matcher = j$.matchers.toHaveBeenCalledWith(util, customEqualityTesters),
+        calledSpy = j$.createSpy('called-spy');
+
+    calledSpy('a', 'b');
+    matcher.compare(calledSpy, 'a', 'b');
+
+    expect(util.contains).toHaveBeenCalledWith([['a', 'b']], ['a', 'b'], customEqualityTesters);
+  });
+
   it("fails when the actual was not called", function() {
     var util = {
           contains: jasmine.createSpy('delegated-contains').and.returnValue(false)
