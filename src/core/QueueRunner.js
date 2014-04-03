@@ -2,10 +2,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
   function once(fn) {
     var called = false;
-    return function() {
+    return function(err) {
       if (!called) {
         called = true;
-        fn();
+        fn(err);
       }
     };
   }
@@ -57,7 +57,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       var clearTimeout = function () {
           Function.prototype.apply.apply(self.timer.clearTimeout, [j$.getGlobal(), [timeoutId]]);
         },
-        next = once(function () {
+        next = once(function (err) {
+          if (err) {
+            handleException(err);
+          }
           clearTimeout(timeoutId);
           self.run(fns, iterativeIndex + 1);
         }),
