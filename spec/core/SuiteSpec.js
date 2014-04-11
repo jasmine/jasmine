@@ -67,12 +67,17 @@ describe("Suite", function() {
     expect(suite.afterFns).toEqual([innerAfter, outerAfter]);
   });
 
-  it("can be disabled", function() {
+  it("can be disabled, but still calls callbacks", function() {
     var env = new j$.Env(),
       fakeQueueRunner = jasmine.createSpy('fake queue runner'),
+      onStart = jasmine.createSpy('onStart'),
+      resultCallback = jasmine.createSpy('resultCallback'),
+      onComplete = jasmine.createSpy('onComplete'),
       suite = new j$.Suite({
         env: env,
         description: "with a child suite",
+        onStart: onStart,
+        resultCallback: resultCallback,
         queueRunner: fakeQueueRunner
       });
 
@@ -80,9 +85,12 @@ describe("Suite", function() {
 
     expect(suite.disabled).toBe(true);
 
-    suite.execute();
+    suite.execute(onComplete);
 
     expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(onStart).toHaveBeenCalled();
+    expect(resultCallback).toHaveBeenCalled();
+    expect(onComplete).toHaveBeenCalled();
   });
 
   it("delegates execution of its specs and suites", function() {
