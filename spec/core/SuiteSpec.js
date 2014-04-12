@@ -179,4 +179,30 @@ describe("Suite", function() {
       fullName: "with a child suite"
     });
   });
+
+  it("calls a provided result callback with status being disabled when disabled and done", function() {
+    var env = new j$.Env(),
+      suiteResultsCallback = jasmine.createSpy('suite result callback'),
+      fakeQueueRunner = function(attrs) { attrs.onComplete(); },
+      suite = new j$.Suite({
+        env: env,
+        description: "with a child suite",
+        queueRunner: fakeQueueRunner,
+        resultCallback: suiteResultsCallback
+      }),
+      fakeSpec1 = {
+        execute: jasmine.createSpy('fakeSpec1')
+      };
+
+    suite.disable();
+
+    suite.execute();
+
+    expect(suiteResultsCallback).toHaveBeenCalledWith({
+      id: suite.id,
+      status: 'disabled',
+      description: "with a child suite",
+      fullName: "with a child suite"
+    });
+  });
 });
