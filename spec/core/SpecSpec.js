@@ -175,7 +175,9 @@ describe("Spec", function() {
       status: 'pending',
       description: 'with a spec',
       fullName: 'a suite with a spec',
-      failedExpectations: []
+      failedExpectations: [],
+      passedExpectations: [],
+      totalExpectations: 0
     });
   });
 

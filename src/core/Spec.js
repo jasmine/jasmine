@@ -22,15 +22,20 @@ getJasmineRequireObj().Spec = function(j$) {
       id: this.id,
       description: this.description,
       fullName: this.getFullName(),
-      failedExpectations: []
+      failedExpectations: [],
+      passedExpectations: [],
+      totalExpectations: 0
     };
   }
 
   Spec.prototype.addExpectationResult = function(passed, data) {
+    this.result.totalExpectations++;
+    var expectationResult = this.expectationResultFactory(data);
     if (passed) {
-      return;
+      this.result.passedExpectations.push(expectationResult);
+    } else {
+      this.result.failedExpectations.push(expectationResult);
     }
-    this.result.failedExpectations.push(this.expectationResultFactory(data));
   };
 
   Spec.prototype.expect = function(actual) {
