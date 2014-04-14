@@ -148,7 +148,9 @@ describe("New HtmlReporter", function() {
       reporter.specDone({
         id: 345,
         status: "failed",
-        failedExpectations: []
+        failedExpectations: [],
+        passedExpectations: [],
+        totalExpectations: 0
       });
 
       var specEl = container.querySelector(".symbol-summary li");
@@ -272,7 +274,9 @@ describe("New HtmlReporter", function() {
         description: "with a failing spec",
         fullName: "A Suite inner with a failing spec",
         status: "failed",
-        failedExpectations: []
+        failedExpectations: [],
+        passedExpectations: [],
+        totalExpectations: 0
       };
       reporter.specStarted(specResult);
       reporter.specDone(specResult);
