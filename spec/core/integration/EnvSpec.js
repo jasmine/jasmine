@@ -328,6 +328,30 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it("reports when an afterAll fails an expectation", function(done) {
+    var env = new j$.Env(),
+      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllError']);
+
+    reporter.jasmineDone.and.callFake(function() {
+      expect(reporter.afterAllError).toHaveBeenCalled();
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.describe('my suite', function() {
+      env.it('my spec', function() {
+      });
+
+      env.afterAll(function() {
+        env.expect(1).toEqual(2);
+
+      });
+    });
+
+    env.execute();
+  });
+
   it("reports when afterAll throws an exception", function(done) {
     var env = new j$.Env(),
       error = new Error('After All Exception'),
@@ -347,6 +371,30 @@ describe("Env integration", function() {
 
       env.afterAll(function() {
         throw error;
+      });
+    });
+
+    env.execute();
+  });
+
+  it("reports when an async afterAll fails an expectation", function(done) {
+    var env = new j$.Env(),
+      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllError']);
+
+    reporter.jasmineDone.and.callFake(function() {
+      expect(reporter.afterAllError).toHaveBeenCalled();
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.describe('my suite', function() {
+      env.it('my spec', function() {
+      });
+
+      env.afterAll(function(afterAllDone) {
+        env.expect(1).toEqual(2);
+        afterAllDone();
       });
     });
 
