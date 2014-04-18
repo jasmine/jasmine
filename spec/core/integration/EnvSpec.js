@@ -331,11 +331,11 @@ describe("Env integration", function() {
   it("reports when afterAll throws an exception", function(done) {
     var env = new j$.Env(),
       error = new Error('After All Exception'),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllException']);
+      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllError']);
 
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.afterAllException).toHaveBeenCalledWith(error);
+      expect(reporter.afterAllError).toHaveBeenCalledWith(error);
       done();
     });
 
@@ -356,11 +356,11 @@ describe("Env integration", function() {
   it("reports when an async afterAll throws an exception", function(done) {
     var env = new j$.Env(),
       error = new Error('After All Exception'),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllException']);
+      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllError']);
 
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.afterAllException).toHaveBeenCalledWith(error);
+      expect(reporter.afterAllError).toHaveBeenCalled();
       done();
     });
 
@@ -370,7 +370,7 @@ describe("Env integration", function() {
       env.it('my spec', function() {
       });
 
-      env.afterAll(function(done) {
+      env.afterAll(function(afterAllDone) {
         throw error;
       });
     });

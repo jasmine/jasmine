@@ -84,7 +84,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
       }
     };
 
-    this.afterAllException = function(error) {
+    this.afterAllError = function(error) {
       exceptionList.push(error);
     };
 

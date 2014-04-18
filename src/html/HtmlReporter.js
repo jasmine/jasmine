@@ -65,7 +65,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       currentParent.addChild(result, 'spec');
     };
 
-    this.afterAllException = function(error) {
+    this.afterAllError = function(error) {
       exceptionList.push(error);
     };
 

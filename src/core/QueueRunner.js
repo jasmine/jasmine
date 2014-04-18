@@ -51,7 +51,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         queueableFn.fn.call(self.userContext);
       } catch (e) {
         if(queueableFn.isAfterAll){
-          runner.reporter.afterAllException(e);
+          runner.reporter.afterAllError(e);
         }
         handleException(e);
       }
@@ -78,7 +78,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         queueableFn.fn.call(self.userContext, next);
       } catch (e) {
         if(queueableFn.isAfterAll) {
-          runner.reporter.afterAllException(e);
+          runner.reporter.afterAllError(e);
         }
         handleException(e);
         next();

@@ -35,7 +35,7 @@ getJasmineRequireObj().Env = function(j$) {
       'suiteDone',
       'specStarted',
       'specDone',
-      'afterAllException'
+      'afterAllError'
     ]);
 
     this.specFilter = function() {

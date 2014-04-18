@@ -130,7 +130,7 @@ describe("New HtmlReporter", function() {
     });
   });
 
-  describe("when there are afterAllExceptions", function () {
+  describe("when there are afterAllErrors", function () {
     it("displays the exceptions in their own alert bars", function(){
       var env = new j$.Env(),
         container = document.createElement("div"),
@@ -147,8 +147,8 @@ describe("New HtmlReporter", function() {
       reporter.initialize();
 
       reporter.jasmineStarted({});
-      reporter.afterAllException(error);
-      reporter.afterAllException(otherError);
+      reporter.afterAllError(error);
+      reporter.afterAllError(otherError);
       reporter.jasmineDone({});
 
       var alertBars = container.querySelectorAll(".alert .bar");
