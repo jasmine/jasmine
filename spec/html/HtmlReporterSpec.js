@@ -32,6 +32,23 @@ describe("New HtmlReporter", function() {
     expect(versionText).toEqual(j$.version);
   });
 
+  it("builds a single reporter even if initialized multiple times", function() {
+    var env = new j$.Env(),
+      container = document.createElement("div"),
+      getContainer = function() { return container; },
+      reporter = new j$.HtmlReporter({
+        env: env,
+        getContainer: getContainer,
+        createElement: function() { return document.createElement.apply(document, arguments); },
+        createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+      });
+    reporter.initialize();
+    reporter.initialize();
+    reporter.initialize();
+
+    expect(container.querySelectorAll("div.html-reporter").length).toEqual(1);
+  });
+
   it("starts the timer when jasmine begins", function() {
     var env = new jasmine.Env(),
         startTimerSpy = jasmine.createSpy("start-timer-spy"),
