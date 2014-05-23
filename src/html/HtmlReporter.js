@@ -20,6 +20,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       symbols;
 
     this.initialize = function() {
+      clearPrior();
       htmlReporterMain = createDom('div', {className: 'html-reporter'},
         createDom('div', {className: 'banner'},
           createDom('a', {className: 'title', href: 'http://jasmine.github.io/', target: '_blank'}),
@@ -218,6 +219,15 @@ jasmineRequire.HtmlReporter = function(j$) {
 
     function find(selector) {
       return getContainer().querySelector('.html-reporter ' + selector);
+    }
+
+    function clearPrior() {
+      // return the reporter
+      var oldReporter = find('');
+      
+      if(oldReporter) {
+        getContainer().removeChild(oldReporter);
+      }
     }
 
     function createDom(type, attrs, childrenVarArgs) {
