@@ -7,6 +7,11 @@ We welcome your contributions - Thanks for helping make Jasmine a better project
 Please submit pull requests via feature branches using the semi-standard workflow of:
 
 1. Fork it
+1. Clone your fork: (`git clone git@github.com:yourUserName/jasmine.git`)                                                                                                                         
+1. Change directory: (`cd jasmine`)                                                                                                                                                               
+1. Asign original repository to a remote named 'upstream': (`git remote add                                                                                                                       
+upstream https://github.com/pivotal/jasmine.git`)                                                                                                                                                 
+1. Pull in changes not present in your local repository: (`git fetch upstream`)
 1. Create your feature branch (`git checkout -b my-new-feature`)
 1. Commit your changes (`git commit -am 'Add some feature'`)
 1. Push to the branch (`git push origin my-new-feature`)
