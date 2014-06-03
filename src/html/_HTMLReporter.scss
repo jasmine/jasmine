@@ -19,13 +19,13 @@ $font-size: 11px;
 $large-font-size: 14px;
 
 body {
-  background-color: $page-background-color;
-  padding: 0;
-  margin: 5px;
   overflow-y: scroll;
 }
 
 .html-reporter {
+  background-color: $page-background-color;
+  padding: 5px;
+  margin: -8px;
 
   font-size: $font-size;
   font-family: Monaco, "Lucida Console", monospace;
