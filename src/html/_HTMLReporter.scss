@@ -7,8 +7,6 @@ $faint-text-color: #aaa;
 $light-text-color: #666;
 $text-color: #333;
 
-$page-background-color: #eee;
-
 $passing-color: #007069;
 $failing-color: #ca3a11;
 $pending-color: #ba9d37;
@@ -19,9 +17,6 @@ $font-size: 11px;
 $large-font-size: 14px;
 
 body {
-  background-color: $page-background-color;
-  padding: 0;
-  margin: 5px;
   overflow-y: scroll;
 }
 
