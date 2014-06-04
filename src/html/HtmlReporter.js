@@ -20,7 +20,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       symbols;
 
     this.initialize = function() {
-      htmlReporterMain = createDom('div', {className: 'html-reporter'},
+      htmlReporterMain = createDom('div', {className: 'jasmine_html-reporter'},
         createDom('div', {className: 'banner'},
           createDom('a', {className: 'title', href: 'http://jasmine.github.io/', target: '_blank'}),
           createDom('span', {className: 'version'}, j$.version)
@@ -217,7 +217,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     return this;
 
     function find(selector) {
-      return getContainer().querySelector('.html-reporter ' + selector);
+      return getContainer().querySelector('.jasmine_html-reporter ' + selector);
     }
 
     function createDom(type, attrs, childrenVarArgs) {
@@ -257,7 +257,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     function setMenuModeTo(mode) {
-      htmlReporterMain.setAttribute('class', 'html-reporter ' + mode);
+      htmlReporterMain.setAttribute('class', 'jasmine_html-reporter ' + mode);
     }
   }
 
