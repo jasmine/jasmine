@@ -7,6 +7,8 @@ $faint-text-color: #aaa;
 $light-text-color: #666;
 $text-color: #333;
 
+$page-background-color: #eee;
+
 $passing-color: #007069;
 $failing-color: #ca3a11;
 $pending-color: #ba9d37;
@@ -21,6 +23,8 @@ body {
 }
 
 .html-reporter {
+  background-color: $page-background-color;
+  padding: 5px;
 
   font-size: $font-size;
   font-family: Monaco, "Lucida Console", monospace;
