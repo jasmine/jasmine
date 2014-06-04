@@ -13,7 +13,7 @@ describe("New HtmlReporter", function() {
     reporter.initialize();
 
     // Main top-level elements
-    expect(container.querySelector("div.html-reporter")).toBeTruthy();
+    expect(container.querySelector("div.jasmine_html-reporter")).toBeTruthy();
     expect(container.querySelector("div.banner")).toBeTruthy();
     expect(container.querySelector("div.alert")).toBeTruthy();
     expect(container.querySelector("div.results")).toBeTruthy();
@@ -46,7 +46,7 @@ describe("New HtmlReporter", function() {
     reporter.initialize();
     reporter.initialize();
 
-    expect(container.querySelectorAll("div.html-reporter").length).toEqual(1);
+    expect(container.querySelectorAll("div.jasmine_html-reporter").length).toEqual(1);
   });
 
   it("starts the timer when jasmine begins", function() {
@@ -593,7 +593,7 @@ describe("New HtmlReporter", function() {
       });
 
       it("sets the reporter to 'Failures List' mode", function() {
-        var reporterNode = container.querySelector(".html-reporter");
+        var reporterNode = container.querySelector(".jasmine_html-reporter");
         expect(reporterNode.getAttribute("class")).toMatch("failure-list");
       });
     });
