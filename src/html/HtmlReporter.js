@@ -121,7 +121,7 @@ jasmineRequire.HtmlReporter = function(j$) {
           type: 'checkbox'
         })
       ));
-      var checkbox = find('input');
+      var checkbox = find('#raise-exceptions');
 
       checkbox.checked = !env.catchingExceptions();
       checkbox.onclick = onRaiseExceptionsClick;
