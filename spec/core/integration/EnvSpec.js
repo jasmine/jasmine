@@ -345,7 +345,6 @@ describe("Env integration", function() {
 
       env.afterAll(function() {
         env.expect(1).toEqual(2);
-
       });
     });
 
@@ -632,6 +631,29 @@ describe("Env integration", function() {
 
       env.describe("nesting", function() {
         env.it("another spec to fail", function() {
+        });
+      });
+
+      env.execute();
+    });
+
+    it("should wait the specified interval before reporting an afterAll that fails to call done", function(done) {
+      var env = new j$.Env(),
+      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllError']);
+
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.afterAllError).toHaveBeenCalledWith(jasmine.any(Error));
+        done();
+      });
+
+      env.addReporter(reporter);
+
+      env.describe('my suite', function() {
+        env.it('my spec', function() {
+        });
+
+        env.afterAll(function(innerDone) {
+          jasmine.clock().tick(4312);
         });
       });
 
