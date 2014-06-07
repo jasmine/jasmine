@@ -488,5 +488,19 @@ describe("Env integration", function() {
 
     env.execute();
   });
+
+  it("produces an understandable error message when an 'expect' is used outside of a current spec", function(done) {
+    var env = new j$.Env();
+
+    env.describe("A Suite", function() {
+      env.it("an async spec that is actually synchronous", function(underTestCallback) {
+        underTestCallback();
+        expect(function() { env.expect('a').toEqual('a'); }).toThrowError(/'expect' was used when there was no current spec/);
+        done();
+      });
+    });
+
+    env.execute();
+  });
 });
 
