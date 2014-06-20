@@ -166,9 +166,13 @@ getJasmineRequireObj().Env = function(j$) {
 
     var queueRunnerFactory = function(options) {
       options.catchException = catchException;
-      options.reporter = reporter;
       options.clearStack = options.clearStack || clearStack;
       options.timer = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
+      options.reportException = function(e, type) {
+        if (type === 'afterAll') {
+          reporter.afterAllError(e);
+        }
+      };
 
       new j$.QueueRunner(options).execute();
     };
@@ -296,7 +300,7 @@ getJasmineRequireObj().Env = function(j$) {
         expectationResultFactory: expectationResultFactory,
         queueRunnerFactory: queueRunnerFactory,
         userContext: function() { return suite.clonedSharedUserContext(); },
-        queueableFn: { fn: fn, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } }
+        queueableFn: { fn: fn, type: 'it', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } }
       });
 
       runnableLookupTable[spec.id] = spec;
@@ -337,19 +341,19 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.beforeEach = function(beforeEachFunction) {
-      currentDeclarationSuite.beforeEach({ fn: beforeEachFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+      currentDeclarationSuite.beforeEach({ fn: beforeEachFunction, type: 'beforeEach', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.beforeAll = function(beforeAllFunction) {
-      currentDeclarationSuite.beforeAll({ fn: beforeAllFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+      currentDeclarationSuite.beforeAll({ fn: beforeAllFunction, type: 'beforeAll', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.afterEach = function(afterEachFunction) {
-      currentDeclarationSuite.afterEach({ fn: afterEachFunction, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+      currentDeclarationSuite.afterEach({ fn: afterEachFunction, type: 'afterEach', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.afterAll = function(afterAllFunction) {
-      currentDeclarationSuite.afterAll({ fn: afterAllFunction, isAfterAll: true, timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+      currentDeclarationSuite.afterAll({ fn: afterAllFunction, type: 'afterAll', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.pending = function() {

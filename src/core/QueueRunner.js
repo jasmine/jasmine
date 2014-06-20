@@ -18,7 +18,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.catchException = attrs.catchException || function() { return true; };
     this.userContext = attrs.userContext || {};
     this.timer = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
-    this.reporter = attrs.reporter;
+    this.reportException = attrs.reportException || function() {};
   }
 
   QueueRunner.prototype.execute = function() {
@@ -50,10 +50,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       try {
         queueableFn.fn.call(self.userContext);
       } catch (e) {
-        if(queueableFn.isAfterAll){
-          runner.reporter.afterAllError(e);
-        }
-        handleException(e);
+        handleException(e, queueableFn);
       }
     }
 
@@ -70,10 +67,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       if (queueableFn.timeout) {
         timeoutId = Function.prototype.apply.apply(self.timer.setTimeout, [j$.getGlobal(), [function() {
           var error = new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.');
-          if (queueableFn.isAfterAll) {
-            runner.reporter.afterAllError(error);
-          }
-          self.onException(error);
+          onException(error, queueableFn);
           next();
         }, queueableFn.timeout()]]);
       }
@@ -81,16 +75,18 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       try {
         queueableFn.fn.call(self.userContext, next);
       } catch (e) {
-        if(queueableFn.isAfterAll) {
-          runner.reporter.afterAllError(e);
-        }
-        handleException(e);
+        handleException(e, queueableFn);
         next();
       }
     }
 
-    function handleException(e) {
+    function onException(e, queueableFn) {
+      self.reportException(e, queueableFn.type);
       self.onException(e);
+    }
+
+    function handleException(e, queueableFn) {
+      onException(e, queueableFn);
       if (!self.catchException(e)) {
         //TODO: set a var when we catch an exception and
         //use a finally block to close the loop in a nice way..
