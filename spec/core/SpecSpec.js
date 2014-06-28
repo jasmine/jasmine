@@ -194,10 +194,9 @@ describe("Spec", function() {
     expect(done).toHaveBeenCalled();
   });
 
-  it("#status returns empty by default", function(){
-    var emptySpec = new j$.Spec({ fn: function () {} });
-    emptySpec.execute();
-    expect(emptySpec.status()).toBe("empty");
+  it("#status returns passing by default", function(){
+    var spec = new j$.Spec({ fn: function () {} });
+    expect(spec.status()).toBe("passed");
   });
 
   it("#status returns passed if all expectations in the spec have passed", function() {

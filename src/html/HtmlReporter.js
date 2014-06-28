@@ -67,7 +67,7 @@ jasmineRequire.HtmlReporter = function(j$) {
 
     var failures = [];
     this.specDone = function(result) {
-      if(result.status == 'empty' && console && console.error) {
+      if(noExpectations(result) && console && console.error) {
         console.error('Spec \'' + result.fullName + '\' has no expectations.');
       }
 
@@ -76,7 +76,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       }
 
       symbols.appendChild(createDom('li', {
-          className: result.status,
+          className: noExpectations(result) ? 'empty' : result.status,
           id: 'spec_' + result.id,
           title: result.fullName
         }
@@ -174,7 +174,7 @@ jasmineRequire.HtmlReporter = function(j$) {
               domParent.appendChild(specListNode);
             }
             var specDescription = resultNode.result.description;
-            if(resultNode.result.status == 'empty') {
+            if(noExpectations(resultNode.result)) {
               specDescription = 'SPEC HAS NO EXPECTATIONS ' + specDescription;
             }
             specListNode.appendChild(
@@ -268,6 +268,11 @@ jasmineRequire.HtmlReporter = function(j$) {
 
     function setMenuModeTo(mode) {
       htmlReporterMain.setAttribute('class', 'jasmine_html-reporter ' + mode);
+    }
+
+    function noExpectations(result) {
+      return (result.failedExpectations.length + result.passedExpectations.length) === 0 &&
+        result.status === 'passed';
     }
   }
 
