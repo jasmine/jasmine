@@ -175,7 +175,9 @@ describe("Spec", function() {
       status: 'pending',
       description: 'with a spec',
       fullName: 'a suite with a spec',
-      failedExpectations: []
+      failedExpectations: [],
+      passedExpectations: [],
+      totalExpectations: 0
     });
   });
 
@@ -210,6 +212,26 @@ describe("Spec", function() {
     spec.addExpectationResult(true);
     spec.addExpectationResult(false);
     expect(spec.status()).toBe('failed');
+  });
+
+  it("keeps track of the number of expectations", function() {
+    var spec = new j$.Spec({ fn: jasmine.createSpy("spec body") });
+    spec.addExpectationResult(true);
+    spec.addExpectationResult(false);
+    expect(spec.result.totalExpectations).toBe(2);
+  });
+
+  it("keeps track of passed and failed expectations", function() {
+    var spec = new j$.Spec({
+      fn: jasmine.createSpy("spec body"),
+      expectationResultFactory: function (data) {
+        return data;
+      }
+    });
+    spec.addExpectationResult(true, 'expectation1');
+    spec.addExpectationResult(false, 'expectation2');
+    expect(spec.result.passedExpectations).toEqual(['expectation1']);
+    expect(spec.result.failedExpectations).toEqual(['expectation2']);
   });
 
   it("can return its full name", function() {
