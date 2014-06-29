@@ -18,6 +18,5 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.add_development_dependency "rake"
   s.add_development_dependency "sauce-connect"
-  s.add_development_dependency "jasmine_selenium_runner"
   s.add_development_dependency "compass"
 end
