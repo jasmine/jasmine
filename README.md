@@ -36,6 +36,14 @@ Add the following to your HTML file:
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine-html.js"></script>
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/boot.js"></script>
 
+For the Jasmine Ruby Gem:<br>
+[https://github.com/pivotal/jasmine-gem](https://github.com/pivotal/jasmine-gem)
+
+For the Jasmine Python Egg:<br>
+[https://github.com/pivotal/jasmine-py](https://github.com/pivotal/jasmine-py)
+
+
+
 ## Support
 
 * Search past discussions: [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js)
