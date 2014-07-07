@@ -17,6 +17,33 @@ Upgrading from Jasmine 1.x? Check out the [2.0 release notes](https://github.com
 
 Please read the [contributors' guide](https://github.com/pivotal/jasmine/blob/master/CONTRIBUTING.md)
 
+## Installation
+
+To install Jasmine on your local box:
+
+* Clone Jasmine - `git clone https://github.com/pivotal/jasmine.git`
+* Create a Jasmine directory in your project - `mkdir my-project/jasmine`
+* Move latest dist to your project directory - `mv jasmine/dist/jasmine-standalone-2.0.0.zip my-project/jasmine`
+* Change directory - `cd my-project/jasmine`
+* Unzip the dist - `unzip jasmine-standalone-2.0.0.zip`
+
+Add the following to your HTML file:
+
+    <link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-2.0.0/jasmine_favicon.png">
+    <link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-2.0.0/jasmine.css"> 
+
+    <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine.js"></script>
+    <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine-html.js"></script>
+    <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/boot.js"></script>
+
+For the Jasmine Ruby Gem:<br>
+[https://github.com/pivotal/jasmine-gem](https://github.com/pivotal/jasmine-gem)
+
+For the Jasmine Python Egg:<br>
+[https://github.com/pivotal/jasmine-py](https://github.com/pivotal/jasmine-py)
+
+
+
 ## Support
 
 * Search past discussions: [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js)
