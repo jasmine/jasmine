@@ -40,8 +40,8 @@ getJasmineRequireObj().MockDate = function() {
       if (arguments.length === 0) {
         return new GlobalDate(currentTime);
       } else {
-        return new GlobalDate(arguments[0], arguments[1], arguments[2],
-          arguments[3], arguments[4], arguments[5], arguments[6]);
+        var Constructor = GlobalDate.bind.apply(GlobalDate, arguments);
+        return new Constructor();
       }
     }
 

@@ -77,6 +77,14 @@ describe("FakeDate", function() {
     expect(new fakeGlobal.Date()).toEqual(jasmine.any(Date));
   });
 
+  it("does not break new Date(ms) while installed", function() {
+    var fakeGlobal = { Date: Date },
+      mockDate = new j$.MockDate(fakeGlobal);
+
+    mockDate.install();
+    expect(new fakeGlobal.Date(1234567890000).toString()).not.toEqual("Invalid Date");
+  });
+
   it("fakes current time when using Date.now()", function() {
     var globalDate = jasmine.createSpy("global Date").and.callFake(function() {
         return {
