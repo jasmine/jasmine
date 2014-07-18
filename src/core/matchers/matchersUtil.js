@@ -19,7 +19,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
         }
         return false;
       }
-      return haystack.indexOf(needle) >= 0;
+      return !!haystack && haystack.indexOf(needle) >= 0;
     },
 
     buildFailureMessage: function() {

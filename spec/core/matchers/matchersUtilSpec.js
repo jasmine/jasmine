@@ -199,6 +199,14 @@ describe("matchersUtil", function() {
 
       expect(j$.matchersUtil.contains([1, 2], 2, [customTester])).toBe(true);
     });
+
+    it("fails when actual is undefined", function() {
+      expect(j$.matchersUtil.contains(undefined, 'A')).toBe(false);
+    });
+
+    it("fails when actual is null", function() {
+      expect(j$.matchersUtil.contains(null, 'A')).toBe(false);
+    });
   });
 
   describe("buildMessage", function() {
