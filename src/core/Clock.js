@@ -105,7 +105,7 @@ getJasmineRequireObj().Clock = function() {
     }
 
     function argSlice(argsObj, n) {
-      return Array.prototype.slice.call(argsObj, 2);
+      return Array.prototype.slice.call(argsObj, n);
     }
   }
 
