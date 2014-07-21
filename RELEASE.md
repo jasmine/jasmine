@@ -21,14 +21,6 @@ This version is used by both `jasmine.js` and the `jasmine-core` Ruby gem.
 
 Note that Jasmine should *not* use the "patch" version number. Let downstream projects rev their patch versions as needed, keeping their major and minor version numbers in sync with Jasmine core.
 
-### Update the Github Pages (as needed)
-
-___Note: This is going to change right after 2.0___
-
-Github pages have to exist in a branch called `gh-pages` in order for their app to serve them. This repo adds that branch as a submodule under the `pages` directory. This is a bit of a hack, but it allows us to work with the pages and the source at the same time and with one set of rake tasks.
-
-If you want to submit changes to this repo and aren't a Pivotal Labs employee, you can fork and work in the `gh-pages` branch. You won't be able to edit the pages in the submodule off of master.
-
 ## Release
 
 When ready to release - specs are all green and the stories are done:
@@ -54,6 +46,11 @@ When ready to release - specs are all green and the stories are done:
 1. __NOTE__: You will likely need to push a new jasmine gem with a dependent version right after this release.
 1. Push these changes to GitHub and verify that this SHA is green
 1. `rake release` - tags the repo with the version, builds the `jasmine-core` gem, pushes the gem to Rubygems.org. In order to release you will have to ensure you have rubygems creds locally.
+
+### Release the NPM
+
+1. `npm adduser` to save your credentials locally
+1. `npm publish .` to publish what's in `package.json`
 
 ### Finally
 
