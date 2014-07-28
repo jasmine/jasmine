@@ -173,6 +173,7 @@ describe("ConsoleReporter", function() {
 
     reporter.jasmineDone({});
 
+    expect(out.getOutput()).toMatch(/true to be false/);
     expect(out.getOutput()).toMatch(/foo bar baz/);
   });
 
