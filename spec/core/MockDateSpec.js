@@ -157,15 +157,35 @@ describe("FakeDate", function() {
     expect(fakeGlobal.Date.now()).toEqual(1000);
   });
 
-  it("allows to create a Date in a different time than the mocked time", function() {
+  it("allows creation of a Date in a different time than the mocked time", function() {
     var fakeGlobal = { Date: Date },
-      mockDate = new j$.MockDate(fakeGlobal),
-      baseDate = new Date(2013, 9, 23, 0, 0, 0, 0);
+      mockDate = new j$.MockDate(fakeGlobal);
 
-    mockDate.install(baseDate);
+    mockDate.install();
 
     var otherDate = new fakeGlobal.Date(2013, 9, 23, 0, 0, 1, 0);
-    expect(otherDate.getTime()).not.toEqual(baseDate.getTime());
+    expect(otherDate.getTime()).toEqual(new Date(2013, 9, 23, 0, 0, 1, 0).getTime());
+  });
+
+  it("allows creation of a Date that isn't fully specified", function() {
+    var fakeGlobal = { Date: Date },
+      mockDate = new j$.MockDate(fakeGlobal);
+
+    mockDate.install();
+
+    var otherDate = new fakeGlobal.Date(2013, 9, 23);
+    expect(otherDate.getTime()).toEqual(new Date(2013, 9, 23).getTime());
+  });
+
+  it('allows creation of a Date with millis', function() {
+    var fakeGlobal = { Date: Date },
+      mockDate = new j$.MockDate(fakeGlobal),
+      now = new Date(2014, 3, 15).getTime();
+
+    mockDate.install();
+
+    var otherDate = new fakeGlobal.Date(now);
+    expect(otherDate.getTime()).toEqual(now);
   });
 
   it("copies all Date properties to the mocked date", function() {
