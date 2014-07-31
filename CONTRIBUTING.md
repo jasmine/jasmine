@@ -109,7 +109,7 @@ Jasmine uses Node.js with a custom runner to test outside of a browser.
 ## Before Committing or Submitting a Pull Request
 
 1. Ensure all specs are green in browser *and* node
-1. Ensure JSHint is green with `grunt jsHint`
+1. Ensure JSHint is green with `grunt jshint`
 1. Build `jasmine.js` with `grunt buildDistribution` and run all specs again - this ensures that your changes self-test well
 
 ## Submitting a Pull Request
