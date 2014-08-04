@@ -154,6 +154,15 @@ body {
           content: "*";
         }
       }
+
+      &.empty {
+        font-size: 14px;
+
+        &:before {
+          color: $pending-color;
+          content: "\02022";
+        }
+      }
     }
   }
 
