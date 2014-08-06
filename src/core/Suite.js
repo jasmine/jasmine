@@ -35,6 +35,7 @@ getJasmineRequireObj().Suite = function() {
 
   Suite.prototype.disable = function() {
     this.disabled = true;
+    this.result.status = 'disabled';
   };
 
   Suite.prototype.beforeEach = function(fn) {
