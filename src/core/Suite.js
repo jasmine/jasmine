@@ -23,6 +23,10 @@ getJasmineRequireObj().Suite = function() {
     };
   }
 
+  Suite.prototype.status = function() {
+    return this.disabled ? 'disabled' : '';
+  };
+
   Suite.prototype.getFullName = function() {
     var fullName = this.description;
     for (var parentSuite = this.parentSuite; parentSuite; parentSuite = parentSuite.parentSuite) {
@@ -71,6 +75,7 @@ getJasmineRequireObj().Suite = function() {
     });
 
     function complete() {
+      self.result.status = self.status();
       self.resultCallback(self.result);
 
       if (onComplete) {
