@@ -58,7 +58,7 @@ jasmine.Queue.prototype.next_ = function() {
   while (goAgain) {
     goAgain = false;
     
-    if (self.index < self.blocks.length && !(this.abort && !this.ensured[self.index])) {
+    if (self.index < self.blocks.length) {
       var calledSynchronously = true;
       var completedSynchronously = false;
 
@@ -89,7 +89,12 @@ jasmine.Queue.prototype.next_ = function() {
           }
         }
       };
-      self.blocks[self.index].execute(onComplete);
+      
+      if (!this.abort || this.ensured[self.index]) {
+        self.blocks[self.index].execute(onComplete);
+      } else {
+        onComplete();
+      }
 
       calledSynchronously = false;
       if (completedSynchronously) {
