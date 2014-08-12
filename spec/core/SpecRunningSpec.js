@@ -1287,5 +1287,30 @@ describe("jasmine spec running", function () {
         'Result: Passed.'
       ));
   });
+  
+  it("should not abort queue after waitsFor timeout", function() {
+    var insideAfter = false,
+        insideRun = false;
+    
+    var suite = env.describe("spec timing out", function() {
+      this.afterEach(function() { insideAfter = true });
+      
+      env.it("should time out", function() {
+        this.waitsFor(function() {}, 'timeout', 10);
+        
+        // This block is necessary to highlight the test goal; otherwise next_()
+        // works by accident when waitsFor() happens to be the last block
+        // in the queue before any ensured (afterEach) blocks. The block itself
+        // should not run however.
+        this.runs(function() { insideRun = true });
+      });
+    });
+    
+    suite.execute();
+    fakeTimer.tick(10);
+    
+    expect(insideRun).toBe(false);
+    expect(insideAfter).toBe(true);
+  });
 
 });
