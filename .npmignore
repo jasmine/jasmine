@@ -16,8 +16,5 @@ jasmine-core.gemspec
 *.sh
 Gruntfile.js
 lib/jasmine-core/boot/
-lib/jasmine-core/boot.js
 lib/jasmine-core/spec
-lib/jasmine-core/*.css
-lib/jasmine-core/jasmine-html.js
 lib/jasmine-core/version.rb
