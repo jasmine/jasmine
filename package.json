@@ -9,9 +9,6 @@
   "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
   "homepage": "http://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
-  "dependencies": {
-    "glob": "~3.2.9"
-  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.7.0",
@@ -19,6 +16,7 @@
     "grunt-contrib-compass": "~0.6.0",
     "grunt-contrib-compress": "~0.5.2",
     "shelljs": "~0.1.4",
+    "glob": "~3.2.9",
     "jasmine": "https://github.com/pivotal/jasmine-npm/archive/master.tar.gz",
     "load-grunt-tasks": "^0.4.0"
   }

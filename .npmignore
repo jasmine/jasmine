@@ -1,6 +1,5 @@
 dist/
 grunt/
-images/
 node_modules
 release_notes/
 spec/
@@ -15,6 +14,8 @@ jasmine-core.gemspec
 .gitignore
 *.sh
 Gruntfile.js
+lib/jasmine-core.rb
 lib/jasmine-core/boot/
 lib/jasmine-core/spec
 lib/jasmine-core/version.rb
+lib/jasmine-core/*.py
