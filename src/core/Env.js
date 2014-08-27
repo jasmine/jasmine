@@ -173,9 +173,6 @@ getJasmineRequireObj().Env = function(j$) {
           reporter.afterAllEvent('Error thrown: '+ (e.message || e.description));
         }
       };
-      options.reportExpectationFailure = function(message) {
-        reporter.afterAllEvent('Expectation failed: '+ message);
-      };
 
       new j$.QueueRunner(options).execute();
     };
@@ -185,7 +182,10 @@ getJasmineRequireObj().Env = function(j$) {
       id: getNextSuiteId(),
       description: 'Jasmine__TopLevel__Suite',
       queueRunner: queueRunnerFactory,
-      resultCallback: function() {} // TODO - hook this up
+      resultCallback: function() {}, // TODO - hook this up
+      reportExpectationFailure: function(message) {
+        reporter.afterAllEvent('Expectation failed: '+ message);
+      }
     });
     runnableLookupTable[topSuite.id] = topSuite;
     defaultResourcesForRunnable(topSuite.id);
@@ -241,6 +241,9 @@ getJasmineRequireObj().Env = function(j$) {
             currentlyExecutingSuites.pop();
           }
           reporter.suiteDone(attrs);
+        },
+        reportExpectationFailure: function(message) {
+          reporter.afterAllEvent('Expectation failed: '+ message);
         }
       });
 
