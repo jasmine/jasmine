@@ -159,21 +159,40 @@ describe("ConsoleReporter", function() {
 
     out.clear();
 
-    reporter.jasmineDone({});
+    reporter.jasmineDone();
 
     expect(out.getOutput()).toMatch(/foo bar baz/);
   });
 
-  it("calls the onComplete callback when the suite is done", function() {
-    var onComplete = jasmine.createSpy('onComplete'),
+  describe('onComplete callback', function(){
+    var onComplete, reporter;
+
+    beforeEach(function() {
+      onComplete = jasmine.createSpy('onComplete');
       reporter = new j$.ConsoleReporter({
         print: out.print,
         onComplete: onComplete
       });
+      reporter.jasmineStarted();
+    });
 
-    reporter.jasmineDone({});
+    it("is called when the suite is done", function() {
+      reporter.jasmineDone();
+      expect(onComplete).toHaveBeenCalledWith(true);
+    });
 
-    expect(onComplete).toHaveBeenCalled();
+    it('calls it with false if there are spec failures', function() {
+      reporter.specDone({status: "failed", failedExpectations: []});
+      reporter.jasmineDone();
+      expect(onComplete).toHaveBeenCalledWith(false);
+    });
+
+    it('calls it with false if there are afterAll events', function() {
+      reporter.afterAllEvent("bananas");
+      reporter.specDone({status: "passed"});
+      reporter.jasmineDone();
+      expect(onComplete).toHaveBeenCalledWith(false);
+    });
   });
 
   describe("with color", function() {

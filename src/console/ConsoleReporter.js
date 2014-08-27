@@ -83,6 +83,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
     };
 
     this.afterAllEvent = function(error) {
+      failureCount++;
       exceptionList.push(error);
     };
 
