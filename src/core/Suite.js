@@ -14,7 +14,6 @@ getJasmineRequireObj().Suite = function() {
     this.afterFns = [];
     this.beforeAllFns = [];
     this.afterAllFns = [];
-    this.afterAllExpectationFailures = [];
     this.queueRunner = attrs.queueRunner || function() {};
     this.disabled = false;
 
@@ -95,7 +94,6 @@ getJasmineRequireObj().Suite = function() {
     });
 
     function complete() {
-      self.reportAfterAllExpectationFailures();
       self.resultCallback(self.result);
 
       if (onComplete) {
@@ -105,12 +103,6 @@ getJasmineRequireObj().Suite = function() {
 
     function wrapChildAsAsync(child) {
       return { fn: function(done) { child.execute(done); } };
-    }
-  };
-
-  Suite.prototype.reportAfterAllExpectationFailures = function() {
-    while (this.afterAllExpectationFailures.length) {
-      this.reportExpectationFailure(this.afterAllExpectationFailures.pop());
     }
   };
 
@@ -146,7 +138,7 @@ getJasmineRequireObj().Suite = function() {
 
   Suite.prototype.addExpectationResult = function () {
     if(isAfterAll(this.children) && isFailure(arguments)){
-      this.afterAllExpectationFailures.push(arguments[1].message);
+      this.reportExpectationFailure(arguments[1].message);
     } else {
       for (var i = 0; i < this.children.length; i++) {
         var child = this.children[i];
