@@ -173,7 +173,7 @@ describe("QueueRunner", function() {
         queueRunner = new j$.QueueRunner({
           queueableFns: [queueableFn],
           onComplete: onComplete,
-          reportException: reportException
+          reportException: reportException,
           onException: onException
         });
 

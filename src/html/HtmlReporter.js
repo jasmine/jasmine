@@ -65,7 +65,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       currentParent.addChild(result, 'spec');
     };
 
-    this.afterAllError = function(error) {
+    this.afterAllEvent = function(error) {
       exceptionList.push(error);
     };
 
@@ -142,7 +142,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       alert.appendChild(createDom('span', {className: statusBarClassName}, statusBarMessage));
 
       for(i = 0; i < exceptionList.length; i++) {
-        var errorBarMessage = 'An error was thrown in an afterAll: ' + (exceptionList[i].message || exceptionList[i].description);
+        var errorBarMessage = 'AfterAll ' + (exceptionList[i]);
         var errorBarClassName = 'bar errored';
         alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessage));
       }

@@ -13,6 +13,7 @@ getJasmineRequireObj().Suite = function() {
     this.afterFns = [];
     this.beforeAllFns = [];
     this.afterAllFns = [];
+    this.afterAllExpectationFailures = [];
     this.queueRunner = attrs.queueRunner || function() {};
     this.disabled = false;
 
@@ -89,7 +90,8 @@ getJasmineRequireObj().Suite = function() {
       queueableFns: allFns,
       onComplete: complete,
       userContext: this.sharedUserContext(),
-      onException: function() { self.onException.apply(self, arguments); }
+      onException: function() { self.onException.apply(self, arguments); },
+      afterAllExpectationFailures: this.afterAllExpectationFailures
     });
 
     function complete() {
@@ -136,9 +138,21 @@ getJasmineRequireObj().Suite = function() {
   };
 
   Suite.prototype.addExpectationResult = function () {
-    for (var i = 0; i < this.children.length; i++) {
-      var child = this.children[i];
-      child.addExpectationResult.apply(child, arguments);
+    if(isAfterAll(this.children) && isFailure(arguments)){
+      this.afterAllExpectationFailures.push(arguments[1].message);
+    } else {
+      for (var i = 0; i < this.children.length; i++) {
+        var child = this.children[i];
+        child.addExpectationResult.apply(child, arguments);
+      }
+    }
+
+    function isAfterAll(children) {
+      return children && children[0].result.status;
+    }
+
+    function isFailure(args) {
+      return !args[0];
     }
   };
 

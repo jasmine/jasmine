@@ -54,9 +54,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
 
       for(i = 0; i < exceptionList.length; i++) {
         printNewline();
-        print(colored('red', 'An error was thrown in an afterAll'));
-        printNewline();
-        print(colored('red', (exceptionList[i].message || exceptionList[i].description)));
+        print(colored('red', 'AfterAll ' + exceptionList[i]));
         printNewline();
       }
 
@@ -84,7 +82,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
       }
     };
 
-    this.afterAllError = function(error) {
+    this.afterAllEvent = function(error) {
       exceptionList.push(error);
     };
 

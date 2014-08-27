@@ -35,7 +35,7 @@ getJasmineRequireObj().Env = function(j$) {
       'suiteDone',
       'specStarted',
       'specDone',
-      'afterAllError'
+      'afterAllEvent'
     ]);
 
     this.specFilter = function() {
@@ -170,8 +170,11 @@ getJasmineRequireObj().Env = function(j$) {
       options.timer = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
       options.reportException = function(e, type) {
         if (type === 'afterAll') {
-          reporter.afterAllError(e);
+          reporter.afterAllEvent('Error thrown: '+ (e.message || e.description));
         }
+      };
+      options.reportExpectationFailure = function(message) {
+        reporter.afterAllEvent('Expectation failed: '+ message);
       };
 
       new j$.QueueRunner(options).execute();

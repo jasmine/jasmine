@@ -229,8 +229,8 @@ describe("ConsoleReporter", function() {
           error = new Error('After All Exception'),
           anotherError = new Error('Some Other Exception');
 
-        reporter.afterAllError(error);
-        reporter.afterAllError(anotherError);
+        reporter.afterAllEvent(error);
+        reporter.afterAllEvent(anotherError);
         reporter.jasmineDone();
 
         expect(out.getOutput()).toMatch(/After All Exception/);
