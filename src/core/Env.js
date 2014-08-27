@@ -183,9 +183,7 @@ getJasmineRequireObj().Env = function(j$) {
       description: 'Jasmine__TopLevel__Suite',
       queueRunner: queueRunnerFactory,
       resultCallback: function() {}, // TODO - hook this up
-      reportExpectationFailure: function(message) {
-        reporter.afterAllEvent('Expectation failed: '+ message);
-      }
+      reportExpectationFailure: reportExpectationFailure
     });
     runnableLookupTable[topSuite.id] = topSuite;
     defaultResourcesForRunnable(topSuite.id);
@@ -242,9 +240,7 @@ getJasmineRequireObj().Env = function(j$) {
           }
           reporter.suiteDone(attrs);
         },
-        reportExpectationFailure: function(message) {
-          reporter.afterAllEvent('Expectation failed: '+ message);
-        }
+        reportExpectationFailure: reportExpectationFailure
       });
 
       runnableLookupTable[suite.id] = suite;
@@ -365,6 +361,10 @@ getJasmineRequireObj().Env = function(j$) {
     this.pending = function() {
       throw j$.Spec.pendingSpecExceptionMessage;
     };
+
+    function reportExpectationFailure(message) {
+      reporter.afterAllEvent('Expectation failed: '+ message);
+    }
   }
 
   return Env;
