@@ -193,14 +193,12 @@ describe("Suite", function() {
           queueRunner: fakeQueueRunnerForChild,
           parentSuite: parentSuite
         }),
-        spec1 = new j$.Spec({expectationFactory: function() {}, queueableFn: {}}),
-        spec2 = new j$.Spec({expectationFactory: function() {}, queueableFn: {}}),
         beforeAllFn = jasmine.createSpy('beforeAll'),
         afterAllFn = jasmine.createSpy('afterAll');
 
     parentSuite.addChild(childSuite);
-    parentSuite.addChild(spec1);
-    childSuite.addChild(spec1);
+    parentSuite.beforeAll(beforeAllFn);
+    parentSuite.afterAll(afterAllFn);
 
     parentSuite.execute();
     expect(fakeQueueRunnerForParent).toHaveBeenCalledWith(jasmine.objectContaining({queueableFns: []}));
