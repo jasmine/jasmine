@@ -228,6 +228,144 @@ describe("jasmine spec running", function () {
     env.execute();
   });
 
+  it('should run beforeAlls before beforeEachs and afterAlls after afterEachs', function() {
+    var actions = [];
+
+    env.beforeAll(function() {
+      actions.push('runner beforeAll');
+    });
+
+    env.afterAll(function() {
+      actions.push('runner afterAll');
+    });
+
+    env.beforeEach(function () {
+      actions.push('runner beforeEach');
+    });
+
+    env.afterEach(function () {
+      actions.push('runner afterEach');
+    });
+
+    env.describe('Something', function() {
+      env.beforeEach(function() {
+        actions.push('inner beforeEach');
+      });
+
+      env.afterEach(function() {
+        actions.push('inner afterEach');
+      });
+
+      env.beforeAll(function() {
+        actions.push('inner beforeAll');
+      });
+
+      env.afterAll(function() {
+        actions.push('inner afterAll');
+      });
+
+      env.it('does something or other', function() {
+        actions.push('it');
+      });
+    });
+
+    var assertions = function() {
+      var expected = [
+        "runner beforeAll",
+        "inner beforeAll",
+        "runner beforeEach",
+        "inner beforeEach",
+        "it",
+        "inner afterEach",
+        "runner afterEach",
+        "inner afterAll",
+        "runner afterAll"
+      ];
+      expect(actions).toEqual(expected);
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+    env.execute();
+  });
+
+  it('should run beforeAlls and afterAlls as beforeEachs and afterEachs in the order declared when runnablesToRun is provided', function() {
+    var actions = [],
+      spec,
+      spec2;
+
+    env.beforeAll(function() {
+      actions.push('runner beforeAll');
+    });
+
+    env.afterAll(function() {
+      actions.push('runner afterAll');
+    });
+
+    env.beforeEach(function () {
+      actions.push('runner beforeEach');
+    });
+
+    env.afterEach(function () {
+      actions.push('runner afterEach');
+    });
+
+    env.describe('Something', function() {
+      env.beforeEach(function() {
+        actions.push('inner beforeEach');
+      });
+
+      env.afterEach(function() {
+        actions.push('inner afterEach');
+      });
+
+      env.beforeAll(function() {
+        actions.push('inner beforeAll');
+      });
+
+      env.afterAll(function() {
+        actions.push('inner afterAll');
+      });
+
+      spec = env.it('does something', function() {
+        actions.push('it');
+      });
+
+      spec2 = env.it('does something or other', function() {
+        actions.push('it2');
+      });
+    });
+
+    var assertions = function() {
+      var expected = [
+        "runner beforeAll",
+        "inner beforeAll",
+        "runner beforeEach",
+        "inner beforeEach",
+        "it",
+        "inner afterEach",
+        "runner afterEach",
+        "inner afterAll",
+        "runner afterAll",
+
+        "runner beforeAll",
+        "inner beforeAll",
+        "runner beforeEach",
+        "inner beforeEach",
+        "it2",
+        "inner afterEach",
+        "runner afterEach",
+        "inner afterAll",
+        "runner afterAll"
+      ];
+      expect(actions).toEqual(expected);
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+    env.execute([spec.id, spec2.id]);
+  });
+
   it("shouldn't run disabled suites", function(done) {
     var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
     suite = env.describe('A Suite', function() {
