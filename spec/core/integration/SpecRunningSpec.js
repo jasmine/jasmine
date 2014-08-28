@@ -366,6 +366,49 @@ describe("jasmine spec running", function () {
     env.execute([spec.id, spec2.id]);
   });
 
+  describe('focused runnables', function() {
+    it('runs the relevant alls and eachs for each runnable', function() {
+      var actions = [];
+      env.beforeAll(function() {actions.push('beforeAll')});
+      env.afterAll(function() {actions.push('afterAll')});
+      env.beforeEach(function() {actions.push('beforeEach')});
+      env.afterEach(function() {actions.push('afterEach')});
+
+      env.fdescribe('a focused suite', function() {
+        env.it('is run', function() {
+          actions.push('spec in fdescribe')
+        });
+      });
+
+      env.describe('an unfocused suite', function() {
+        env.fit('has a focused spec', function() {
+          actions.push('focused spec')
+        });
+      });
+
+      var assertions = function() {
+        var expected = [
+          'beforeAll',
+          'beforeEach',
+          'spec in fdescribe',
+          'afterEach',
+          'afterAll',
+
+          'beforeAll',
+          'beforeEach',
+          'focused spec',
+          'afterEach',
+          'afterAll'
+        ];
+        expect(actions).toEqual(expected);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+      env.execute();
+    });
+  });
+
   it("shouldn't run disabled suites", function(done) {
     var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
     suite = env.describe('A Suite', function() {

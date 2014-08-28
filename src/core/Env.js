@@ -200,6 +200,7 @@ getJasmineRequireObj().Env = function(j$) {
       if(runnablesToRun) {
         runnablesExplictlySet = true;
       } else if (focusedRunnables.length) {
+        runnablesExplictlySet = true;
         runnablesToRun = focusedRunnables;
       } else {
         runnablesToRun = [topSuite.id];
