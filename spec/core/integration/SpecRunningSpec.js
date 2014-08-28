@@ -367,7 +367,7 @@ describe("jasmine spec running", function () {
   });
 
   describe('focused runnables', function() {
-    it('runs the relevant alls and eachs for each runnable', function() {
+    it('runs the relevant alls and eachs for each runnable', function(done) {
       var actions = [];
       env.beforeAll(function() {actions.push('beforeAll')});
       env.afterAll(function() {actions.push('afterAll')});
@@ -408,7 +408,7 @@ describe("jasmine spec running", function () {
       env.execute();
     });
 
-    it('runs fits in fdescribes twice', function(){
+    it('runs fits in fdescribes twice', function(done){
       var actions = [];
 
       env.fdescribe('focused suite', function() {
