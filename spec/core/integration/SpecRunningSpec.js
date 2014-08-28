@@ -407,6 +407,25 @@ describe("jasmine spec running", function () {
       env.addReporter({jasmineDone: assertions});
       env.execute();
     });
+
+    it('runs fits in fdescribes twice', function(){
+      var actions = [];
+
+      env.fdescribe('focused suite', function() {
+        env.fit('focused spec', function() {
+          actions.push('focused spec')
+        });
+      });
+
+      var assertions = function() {
+        var expected = ['focused spec', 'focused spec'];
+        expect(actions).toEqual(expected);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+      env.execute();
+    });
   });
 
   it("shouldn't run disabled suites", function(done) {
