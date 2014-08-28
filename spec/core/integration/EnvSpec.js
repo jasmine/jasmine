@@ -353,7 +353,6 @@ describe("Env integration", function() {
     env.execute();
   });
 
-
   it("only reports afterAll expectation failures once, regardless of suite children", function(done) {
     var env = new j$.Env(),
       reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllEvent']);

@@ -461,7 +461,6 @@ describe("jasmine spec running", function () {
     });
   });
 
-
   // TODO: is this useful? It doesn't catch syntax errors
   xit("should recover gracefully when there are errors in describe functions", function() {
     var specs = [];
