@@ -75,7 +75,7 @@ getJasmineRequireObj().Suite = function() {
     var allFns = [];
 
     if (this.isExecutable()) {
-      allFns = this.beforeAllFns;
+      allFns = allFns.concat(this.beforeAllFns);
 
       for (var i = 0; i < this.children.length; i++) {
         allFns.push(wrapChildAsAsync(this.children[i]));

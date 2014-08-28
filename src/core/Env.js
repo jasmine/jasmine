@@ -101,25 +101,23 @@ getJasmineRequireObj().Env = function(j$) {
         delete runnableResources[id];
     };
 
-    var beforeFns = function(suite) {
+    var beforeAndAfterFns = function(suite, runnablesExplictlySet) {
       return function() {
         var befores = [];
-        while(suite) {
-          befores = befores.concat(suite.beforeFns);
-          suite = suite.parentSuite;
-        }
-        return befores.reverse();
-      };
-    };
-
-    var afterFns = function(suite) {
-      return function() {
         var afters = [];
         while(suite) {
+          if (runnablesExplictlySet()) {
+            befores = befores.concat(suite.beforeAllFns);
+            afters = afters.concat(suite.afterAllFns);
+          }
+          befores = befores.concat(suite.beforeFns);
           afters = afters.concat(suite.afterFns);
           suite = suite.parentSuite;
         }
-        return afters;
+        return {
+          befores: befores.reverse(),
+          afters: afters
+        };
       };
     };
 
@@ -194,6 +192,9 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.execute = function(runnablesToRun) {
+      if(runnablesToRun) {
+        runnablesExplictlySet = true;
+      }
       runnablesToRun = runnablesToRun || [topSuite.id];
 
       var allFns = [];
@@ -284,13 +285,17 @@ getJasmineRequireObj().Env = function(j$) {
       return suite;
     };
 
+    var runnablesExplictlySet = false;
+
+    var runnablesExplictlySetGetter = function(){
+      return runnablesExplictlySet;
+    };
+
     var specFactory = function(description, fn, suite) {
       totalSpecsDefined++;
-
       var spec = new j$.Spec({
         id: getNextSpecId(),
-        beforeFns: beforeFns(suite),
-        afterFns: afterFns(suite),
+        beforeAndAfterFns: beforeAndAfterFns(suite, runnablesExplictlySetGetter),
         expectationFactory: expectationFactory,
         exceptionFormatter: exceptionFormatter,
         resultCallback: specResultCallback,

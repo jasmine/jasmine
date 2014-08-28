@@ -91,11 +91,8 @@ describe("Spec", function() {
       }) },
       spec = new j$.Spec({
         queueableFn: queueableFn,
-        beforeFns: function() {
-          return [before]
-        },
-        afterFns: function() {
-          return [after]
+        beforeAndAfterFns: function() {
+          return {befores: [before], afters: [after]}
         },
         queueRunnerFactory: fakeQueueRunner
       });

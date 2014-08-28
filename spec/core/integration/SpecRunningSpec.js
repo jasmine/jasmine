@@ -159,7 +159,7 @@ describe("jasmine spec running", function () {
       ];
       expect(actions).toEqual(expected);
       done();
-    }
+    };
 
     env.addReporter({jasmineDone: assertions});
 

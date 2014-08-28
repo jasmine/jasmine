@@ -5,8 +5,7 @@ getJasmineRequireObj().Spec = function(j$) {
     this.id = attrs.id;
     this.description = attrs.description || '';
     this.queueableFn = attrs.queueableFn;
-    this.beforeFns = attrs.beforeFns || function() { return []; };
-    this.afterFns = attrs.afterFns || function() { return []; };
+    this.beforeAndAfterFns = attrs.beforeAndAfterFns || function() { return {befores: [], afters: []}; };
     this.userContext = attrs.userContext || function() { return {}; };
     this.onStart = attrs.onStart || function() {};
     this.exceptionFormatter = attrs.exceptionFormatter || function() {};
@@ -48,7 +47,8 @@ getJasmineRequireObj().Spec = function(j$) {
       return;
     }
 
-    var allFns = this.beforeFns().concat(this.queueableFn).concat(this.afterFns());
+    var fns = this.beforeAndAfterFns();
+    var allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
 
     this.queueRunnerFactory({
       queueableFns: allFns,

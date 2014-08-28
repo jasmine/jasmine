@@ -460,8 +460,6 @@ describe("Env integration", function() {
     env.execute();
   });
 
-
-
   it("Allows specifying which specs and suites to run", function(done) {
     var env = new j$.Env(),
         calls = [],
@@ -496,6 +494,44 @@ describe("Env integration", function() {
     });
 
     env.execute([secondSuite.id, firstSpec.id]);
+  });
+
+  it('runs before and after all functions for focused specs', function(done) {
+    var env = new j$.Env(),
+      calls = [],
+      first_spec,
+      second_spec;
+
+    var assertions = function() {
+      expect(calls).toEqual([
+        "before",
+        "first spec",
+        "after",
+        "before",
+        "second spec",
+        "after"
+      ]);
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.describe("first suite", function() {
+      env.beforeAll(function() {
+        calls.push("before");
+      });
+      env.afterAll(function() {
+        calls.push("after")
+      });
+      first_spec = env.it("spec", function() {
+        calls.push('first spec');
+      });
+      second_spec = env.it("spec 2", function() {
+        calls.push("second spec");
+      });
+    });
+
+    env.execute([first_spec.id, second_spec.id]);
   });
 
   it("Functions can be spied on and have their calls tracked", function (done) {
