@@ -496,7 +496,7 @@ describe("Env integration", function() {
     env.execute([secondSuite.id, firstSpec.id]);
   });
 
-  it('runs before and after all functions for focused specs', function(done) {
+  it('runs before and after all functions for runnables provided to .execute()', function(done) {
     var env = new j$.Env(),
       calls = [],
       first_spec,
@@ -772,7 +772,32 @@ describe("Env integration", function() {
     });
   });
 
-  // TODO: something is wrong with this spec
+  describe('focused tests', function() {
+    it('should only run the focused tests', function(done) {
+      var env = new j$.Env(),
+        calls = [];
+
+      var assertions = function() {
+        expect(calls).toEqual(['focused']);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+
+      env.describe('a suite', function() {
+        env.fit('is focused', function() {
+          calls.push('focused');
+        });
+
+        env.it('is not focused', function() {
+          calls.push('freakout');
+        })
+      });
+
+      env.execute();
+    });
+  });
+
   it("should report as expected", function(done) {
     var env = new j$.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [

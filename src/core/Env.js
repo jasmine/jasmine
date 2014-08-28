@@ -199,8 +199,11 @@ getJasmineRequireObj().Env = function(j$) {
     this.execute = function(runnablesToRun) {
       if(runnablesToRun) {
         runnablesExplictlySet = true;
+      } else if (focusedRunnables.length) {
+        runnablesToRun = focusedRunnables;
+      } else {
+        runnablesToRun = [topSuite.id];
       }
-      runnablesToRun = runnablesToRun || [topSuite.id];
 
       var allFns = [];
       for(var i = 0; i < runnablesToRun.length; i++) {
@@ -345,6 +348,13 @@ getJasmineRequireObj().Env = function(j$) {
     this.xit = function(description, fn) {
       var spec = this.it(description, fn);
       spec.pend();
+      return spec;
+    };
+
+    var focusedRunnables = [];
+    this.fit = function(description, fn ){
+      var spec = this.it(description, fn);
+      focusedRunnables.push(spec.id);
       return spec;
     };
 
