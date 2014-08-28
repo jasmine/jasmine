@@ -720,13 +720,15 @@ describe("Env integration", function() {
       });
 
       env.addReporter(reporter);
+      j$.DEFAULT_TIMEOUT_INTERVAL = 3000;
 
       env.describe('my suite', function() {
         env.it('my spec', function() {
         });
 
         env.afterAll(function(innerDone) {
-          jasmine.clock().tick(4312);
+          jasmine.clock().tick(3001);
+          innerDone();
         });
       });
 
