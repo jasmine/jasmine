@@ -796,6 +796,32 @@ describe("Env integration", function() {
 
       env.execute();
     });
+
+    it('should only run focused suites', function(){
+      var env = new j$.Env(),
+        calls = [];
+
+      var assertions = function() {
+        expect(calls).toEqual(['focused']);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+
+      env.fdescribe('a focused suite', function() {
+        env.it('is focused', function() {
+          calls.push('focused');
+        });
+      });
+
+      env.describe('a regular suite', function() {
+        env.it('is not focused', function() {
+          calls.push('freakout');
+        })
+      });
+
+      env.execute();
+    });
   });
 
   it("should report as expected", function(done) {

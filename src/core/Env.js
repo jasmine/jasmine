@@ -293,6 +293,12 @@ getJasmineRequireObj().Env = function(j$) {
       return suite;
     };
 
+    this.fdescribe = function(description, specDefinitions) {
+      var suite = this.describe(description, specDefinitions);
+      focusedRunnables.push(suite.id);
+      return suite;
+    };
+
     var runnablesExplictlySet = false;
 
     var runnablesExplictlySetGetter = function(){
