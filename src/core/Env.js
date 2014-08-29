@@ -265,26 +265,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.describe = function(description, specDefinitions) {
       var suite = suiteFactory(description);
-
-      var parentSuite = currentDeclarationSuite;
-      parentSuite.addChild(suite);
-      currentDeclarationSuite = suite;
-
-      var declarationError = null;
-      try {
-        specDefinitions.call(suite);
-      } catch (e) {
-        declarationError = e;
-      }
-
-      if (declarationError) {
-        this.it('encountered a declaration exception', function() {
-          throw declarationError;
-        });
-      }
-
-      currentDeclarationSuite = parentSuite;
-
+      addSpecsToSuite(suite, specDefinitions);
       return suite;
     };
 
@@ -297,7 +278,15 @@ getJasmineRequireObj().Env = function(j$) {
     this.fdescribe = function(description, specDefinitions) {
       var suite = suiteFactory(description);
       suite.isFocused = true;
+      addSpecsToSuite(suite, specDefinitions);
 
+      if (!hasFocusedAncestor(suite.parentSuite)) {
+        focusedRunnables.push(suite.id);
+      }
+      return suite;
+    };
+
+    function addSpecsToSuite(suite, specDefinitions) {
       var parentSuite = currentDeclarationSuite;
       parentSuite.addChild(suite);
       currentDeclarationSuite = suite;
@@ -310,17 +299,13 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       if (declarationError) {
-        this.it('encountered a declaration exception', function() {
+        self.it('encountered a declaration exception', function() {
           throw declarationError;
         });
       }
 
       currentDeclarationSuite = parentSuite;
-      if (!hasFocusedAncestor(parentSuite)) {
-        focusedRunnables.push(suite.id);
-      }
-      return suite;
-    };
+    }
 
     function hasFocusedAncestor(suite) {
       while (suite) {
