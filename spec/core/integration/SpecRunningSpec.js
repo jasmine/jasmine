@@ -408,17 +408,23 @@ describe("jasmine spec running", function () {
       env.execute();
     });
 
-    it('runs fits in fdescribes twice', function(done){
+    it('runs fits and fdescribes in fdescribes only once', function(done){
       var actions = [];
 
       env.fdescribe('focused suite', function() {
         env.fit('focused spec', function() {
           actions.push('focused spec')
         });
+
+        env.fdescribe('inner focused suite', function() {
+          env.it('inner spec', function() {
+            actions.push('unfocused spec');
+          });
+        });
       });
 
       var assertions = function() {
-        var expected = ['focused spec', 'focused spec'];
+        var expected = ['focused spec', 'unfocused spec'];
         expect(actions).toEqual(expected);
         done();
       };

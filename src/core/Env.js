@@ -295,10 +295,43 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.fdescribe = function(description, specDefinitions) {
-      var suite = this.describe(description, specDefinitions);
-      focusedRunnables.push(suite.id);
+      var suite = suiteFactory(description);
+      suite.isFocused = true;
+
+      var parentSuite = currentDeclarationSuite;
+      parentSuite.addChild(suite);
+      currentDeclarationSuite = suite;
+
+      var declarationError = null;
+      try {
+        specDefinitions.call(suite);
+      } catch (e) {
+        declarationError = e;
+      }
+
+      if (declarationError) {
+        this.it('encountered a declaration exception', function() {
+          throw declarationError;
+        });
+      }
+
+      currentDeclarationSuite = parentSuite;
+      if (!hasFocusedAncestor(parentSuite)) {
+        focusedRunnables.push(suite.id);
+      }
       return suite;
     };
+
+    function hasFocusedAncestor(suite) {
+      while (suite) {
+        if (suite.isFocused) {
+          return true;
+        }
+        suite = suite.parentSuite;
+      }
+
+      return false;
+    }
 
     var runnablesExplictlySet = false;
 
@@ -361,7 +394,11 @@ getJasmineRequireObj().Env = function(j$) {
     var focusedRunnables = [];
     this.fit = function(description, fn ){
       var spec = this.it(description, fn);
-      focusedRunnables.push(spec.id);
+
+      if (!hasFocusedAncestor(currentDeclarationSuite)) {
+        focusedRunnables.push(spec.id);
+      }
+
       return spec;
     };
 
