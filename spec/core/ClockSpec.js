@@ -323,6 +323,24 @@ describe("Clock (acceptance)", function() {
     expect(clearedFn).not.toHaveBeenCalled();
   });
 
+  it("can clear a previously set interval using that interval's handler", function() {
+    var spy = jasmine.createSpy('spy'),
+      delayedFunctionScheduler = new j$.DelayedFunctionScheduler(),
+      mockDate = { install: function() {}, tick: function() {}, uninstall: function() {} },
+      clock = new j$.Clock({setInterval: function() {}}, delayedFunctionScheduler, mockDate),
+      intervalId;
+
+    clock.install();
+
+    intervalId = clock.setInterval(function() {
+      spy();
+      clock.clearInterval(intervalId);
+    }, 100);
+    clock.tick(200);
+
+    expect(spy.calls.count()).toEqual(1);
+  });
+
   it("correctly schedules functions after the Clock has advanced", function() {
     var delayedFn1 = jasmine.createSpy('delayedFn1'),
       delayedFunctionScheduler = new j$.DelayedFunctionScheduler(),

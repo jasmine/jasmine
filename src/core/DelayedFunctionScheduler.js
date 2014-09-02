@@ -127,11 +127,12 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
 
         for (var i = 0; i < funcsToRun.length; ++i) {
           var funcToRun = funcsToRun[i];
-          funcToRun.funcToCall.apply(null, funcToRun.params || []);
 
           if (funcToRun.recurring) {
             reschedule(funcToRun);
           }
+
+          funcToRun.funcToCall.apply(null, funcToRun.params || []);
         }
       } while (scheduledLookup.length > 0 &&
               // checking first if we're out of time prevents setTimeout(0)

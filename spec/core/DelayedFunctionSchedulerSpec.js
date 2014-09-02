@@ -242,5 +242,18 @@ describe("DelayedFunctionScheduler", function() {
     expect(innerFn).toHaveBeenCalled();
   });
 
+  it("executes recurring functions after rescheduling them", function () {
+    var scheduler = new j$.DelayedFunctionScheduler(),
+      recurring = function() {
+        expect(scheduler.scheduleFunction).toHaveBeenCalled();
+      };
+
+    scheduler.scheduleFunction(recurring, 10, [], true);
+
+    spyOn(scheduler, "scheduleFunction");
+
+    scheduler.tick(10);
+  });
+
 });
 
