@@ -383,11 +383,19 @@ describe("Env integration", function() {
           matcherName : '',
           expected : '',
           actual : '',
-          message : 'Error: After All Exception',
+          message : jasmine.any(String),
           stack : jasmine.any(String),
           passed: false
         }]
       }));
+
+      for (var i = 0; i < reporter.suiteDone.calls.count(); i++) {
+        var args = reporter.suiteDone.calls.argsFor(i);
+        if (args.description === 'my suite') {
+          expect(args.failedExpectations[0].message).toMatch(/^Error: After All Exception/);
+        }
+      }
+
       done();
     });
 
@@ -451,11 +459,19 @@ describe("Env integration", function() {
           matcherName : '',
           expected : '',
           actual : '',
-          message : 'Error: After All Exception',
+          message : jasmine.any(String),
           stack : jasmine.any(String),
           passed: false
         }]
       }));
+
+      for (var i = 0; i < reporter.suiteDone.calls.count(); i++) {
+        var args = reporter.suiteDone.calls.argsFor(i);
+        if (args.description === 'my suite') {
+          expect(args.failedExpectations[0].message).toMatch(/^Error: After All Exception/);
+        }
+      }
+
       done();
     });
 
@@ -765,15 +781,16 @@ describe("Env integration", function() {
 
       reporter.jasmineDone.and.callFake(function() {
         expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
-          failedExpectations: [{
-            matcherName : '',
-            expected : '',
-            actual : '',
-            message : 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
-            stack : jasmine.any(String),
-            passed: false
-          }]
+          description: 'my suite',
         }));
+
+        for (var i = 0; i < reporter.suiteDone.calls.count(); i++) {
+          var args = reporter.suiteDone.calls.argsFor(i);
+          if (args.description === 'my suite') {
+            expect(args.failedExpectations[0].message).toMatch(/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./);
+          }
+        }
+
         done();
       });
 
