@@ -130,7 +130,7 @@ describe("New HtmlReporter", function() {
     });
   });
 
-  describe("when there are afterAllEvents", function () {
+  describe("when there are suite failures", function () {
     it("displays the exceptions in their own alert bars", function(){
       var env = new j$.Env(),
         container = document.createElement("div"),
@@ -140,15 +140,13 @@ describe("New HtmlReporter", function() {
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
           createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        }),
-        error = new Error('My After All Exception'),
-        otherError = new Error('My Other Exception');
+        });
 
       reporter.initialize();
 
       reporter.jasmineStarted({});
-      reporter.afterAllEvent(error);
-      reporter.afterAllEvent(otherError);
+      reporter.suiteDone({ failedExpectations: [{ message: 'My After All Exception' }] });
+      reporter.suiteDone({ failedExpectations: [{ message: 'My Other Exception' }] });
       reporter.jasmineDone({});
 
       var alertBars = container.querySelectorAll(".alert .bar");

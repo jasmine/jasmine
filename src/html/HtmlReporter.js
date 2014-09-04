@@ -18,7 +18,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       pendingSpecCount = 0,
       htmlReporterMain,
       symbols,
-      exceptionList = [];
+      failedSuites = [];
 
     this.initialize = function() {
       htmlReporterMain = createDom('div', {className: 'html-reporter'},
@@ -54,6 +54,10 @@ jasmineRequire.HtmlReporter = function(j$) {
     };
 
     this.suiteDone = function(result) {
+      if (result.failedExpectations && result.failedExpectations.length > 0) {
+        failedSuites.push(result);
+      }
+
       if (currentParent == topResults) {
         return;
       }
@@ -63,10 +67,6 @@ jasmineRequire.HtmlReporter = function(j$) {
 
     this.specStarted = function(result) {
       currentParent.addChild(result, 'spec');
-    };
-
-    this.afterAllEvent = function(error) {
-      exceptionList.push(error);
     };
 
     var failures = [];
@@ -141,10 +141,13 @@ jasmineRequire.HtmlReporter = function(j$) {
       var statusBarClassName = 'bar ' + ((failureCount > 0) ? 'failed' : 'passed');
       alert.appendChild(createDom('span', {className: statusBarClassName}, statusBarMessage));
 
-      for(i = 0; i < exceptionList.length; i++) {
-        var errorBarMessage = 'AfterAll ' + (exceptionList[i]);
-        var errorBarClassName = 'bar errored';
-        alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessage));
+      for(i = 0; i < failedSuites.length; i++) {
+        var failedSuite = failedSuites[i];
+        for(var j = 0; j < failedSuite.failedExpectations.length; j++) {
+          var errorBarMessage = 'AfterAll ' + failedSuite.failedExpectations[j].message;
+          var errorBarClassName = 'bar errored';
+          alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessage));
+        }
       }
 
       var results = find('.results');

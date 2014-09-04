@@ -330,11 +330,29 @@ describe("Env integration", function() {
 
   it("reports when an afterAll fails an expectation", function(done) {
     var env = new j$.Env(),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllEvent']);
+      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.afterAllEvent).toHaveBeenCalledWith('Expectation failed: Expected 1 to equal 2.');
-      expect(reporter.afterAllEvent).toHaveBeenCalledWith('Expectation failed: Expected 2 to equal 3.');
+      expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        failedExpectations: [
+          {
+            matcherName : 'toEqual',
+            expected : 2,
+            actual : 1,
+            message : 'Expected 1 to equal 2.',
+            stack: jasmine.any(String),
+            passed: false
+          },
+          {
+            matcherName : 'toEqual',
+            expected : 3,
+            actual : 2,
+            message : 'Expected 2 to equal 3.',
+            stack: jasmine.any(String),
+            passed: false
+          }
+        ]
+      }));
       done();
     });
 
@@ -353,46 +371,23 @@ describe("Env integration", function() {
     env.execute();
   });
 
-  it("only reports afterAll expectation failures once, regardless of suite children", function(done) {
-    var env = new j$.Env(),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllEvent']);
-
-    reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.afterAllEvent.calls.count()).toEqual(1);
-      expect(reporter.afterAllEvent).toHaveBeenCalledWith('Expectation failed: Expected 1 to equal 2.');
-      done();
-    });
-
-    env.addReporter(reporter);
-
-    env.describe('my suite', function() {
-      env.it('my spec', function() {
-      });
-
-      env.it('my spec2', function() {
-      });
-
-      env.describe('nested suite', function(){
-        env.it('my spec3', function() {
-        });
-      });
-
-      env.afterAll(function() {
-        env.expect(1).toEqual(2);
-      });
-    });
-
-    env.execute();
-  });
-
   it("reports when afterAll throws an exception", function(done) {
     var env = new j$.Env(),
       error = new Error('After All Exception'),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllEvent']);
+      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.afterAllEvent.calls.count()).toEqual(1);
-      expect(reporter.afterAllEvent).toHaveBeenCalledWith('Error thrown: After All Exception');
+      expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        description: 'my suite',
+        failedExpectations: [{
+          matcherName : '',
+          expected : '',
+          actual : '',
+          message : 'Error: After All Exception',
+          stack : jasmine.any(String),
+          passed: false
+        }]
+      }));
       done();
     });
 
@@ -412,10 +407,19 @@ describe("Env integration", function() {
 
   it("reports when an async afterAll fails an expectation", function(done) {
     var env = new j$.Env(),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllEvent']);
+      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.afterAllEvent).toHaveBeenCalledWith('Expectation failed: Expected 1 to equal 2.');
+      expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        failedExpectations: [{
+          matcherName : 'toEqual',
+          expected : 2,
+          actual : 1,
+          message : 'Expected 1 to equal 2.',
+          stack: jasmine.any(String),
+          passed: false
+        }]
+      }));
       done();
     });
 
@@ -437,11 +441,21 @@ describe("Env integration", function() {
   it("reports when an async afterAll throws an exception", function(done) {
     var env = new j$.Env(),
       error = new Error('After All Exception'),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllEvent']);
+      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.afterAllEvent).toHaveBeenCalled();
+      expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        description: 'my suite',
+        failedExpectations: [{
+          matcherName : '',
+          expected : '',
+          actual : '',
+          message : 'Error: After All Exception',
+          stack : jasmine.any(String),
+          passed: false
+        }]
+      }));
       done();
     });
 
@@ -747,10 +761,19 @@ describe("Env integration", function() {
 
     it("should wait the specified interval before reporting an afterAll that fails to call done", function(done) {
       var env = new j$.Env(),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','afterAllEvent']);
+      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.afterAllEvent).toHaveBeenCalledWith(jasmine.any(String));
+        expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          failedExpectations: [{
+            matcherName : '',
+            expected : '',
+            actual : '',
+            message : 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.',
+            stack : jasmine.any(String),
+            passed: false
+          }]
+        }));
         done();
       });
 

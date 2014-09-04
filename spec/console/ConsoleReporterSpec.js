@@ -187,9 +187,9 @@ describe("ConsoleReporter", function() {
       expect(onComplete).toHaveBeenCalledWith(false);
     });
 
-    it('calls it with false if there are afterAll events', function() {
-      reporter.afterAllEvent("bananas");
+    it('calls it with false if there are suite failures', function() {
       reporter.specDone({status: "passed"});
+      reporter.suiteDone({failedExpectations: [{ message: 'bananas' }] });
       reporter.jasmineDone();
       expect(onComplete).toHaveBeenCalledWith(false);
     });
@@ -244,12 +244,10 @@ describe("ConsoleReporter", function() {
         var reporter = new j$.ConsoleReporter({
           print: out.print,
           showColors: true
-        }),
-          error = new Error('After All Exception'),
-          anotherError = new Error('Some Other Exception');
+        });
 
-        reporter.afterAllEvent(error);
-        reporter.afterAllEvent(anotherError);
+        reporter.suiteDone({ failedExpectations: [{ message: 'After All Exception' }] });
+        reporter.suiteDone({ failedExpectations: [{ message: 'Some Other Exception' }] });
         reporter.jasmineDone();
 
         expect(out.getOutput()).toMatch(/After All Exception/);

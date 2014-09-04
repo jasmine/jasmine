@@ -20,7 +20,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
         yellow: '\x1B[33m',
         none: '\x1B[0m'
       },
-      exceptionList = [];
+      failedSuites = [];
 
     this.jasmineStarted = function() {
       specCount = 0;
@@ -52,10 +52,8 @@ getJasmineRequireObj().ConsoleReporter = function() {
       print('Finished in ' + seconds + ' ' + plural('second', seconds));
       printNewline();
 
-      for(i = 0; i < exceptionList.length; i++) {
-        printNewline();
-        print(colored('red', 'AfterAll ' + exceptionList[i]));
-        printNewline();
+      for(i = 0; i < failedSuites.length; i++) {
+        suiteFailureDetails(failedSuites[i]);
       }
 
       onComplete(failureCount === 0);
@@ -82,9 +80,11 @@ getJasmineRequireObj().ConsoleReporter = function() {
       }
     };
 
-    this.afterAllEvent = function(error) {
-      failureCount++;
-      exceptionList.push(error);
+    this.suiteDone = function(result) {
+      if (result.failedExpectations && result.failedExpectations.length > 0) {
+        failureCount++;
+        failedSuites.push(result);
+      }
     };
 
     return this;
@@ -128,6 +128,17 @@ getJasmineRequireObj().ConsoleReporter = function() {
         print(indent(failedExpectation.stack, 2));
       }
 
+      printNewline();
+    }
+
+    function suiteFailureDetails(result) {
+      for (var i = 0; i < result.failedExpectations.length; i++) {
+        printNewline();
+        print(colored('red', 'An error was thrown in an afterAll'));
+        printNewline();
+        print(colored('red', 'AfterAll ' + result.failedExpectations[i].message));
+
+      }
       printNewline();
     }
   }

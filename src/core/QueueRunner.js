@@ -18,7 +18,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.catchException = attrs.catchException || function() { return true; };
     this.userContext = attrs.userContext || {};
     this.timer = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
-    this.reportException = attrs.reportException || function() {};
   }
 
   QueueRunner.prototype.execute = function() {
@@ -81,7 +80,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     }
 
     function onException(e, queueableFn) {
-      self.reportException(e, queueableFn.type);
       self.onException(e);
     }
 

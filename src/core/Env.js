@@ -34,8 +34,7 @@ getJasmineRequireObj().Env = function(j$) {
       'suiteStarted',
       'suiteDone',
       'specStarted',
-      'specDone',
-      'afterAllEvent'
+      'specDone'
     ]);
 
     this.specFilter = function() {
@@ -171,11 +170,6 @@ getJasmineRequireObj().Env = function(j$) {
       options.catchException = catchException;
       options.clearStack = options.clearStack || clearStack;
       options.timer = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
-      options.reportException = function(e, type) {
-        if (type === 'afterAll') {
-          reporter.afterAllEvent('Error thrown: '+ (e.message || e.description));
-        }
-      };
 
       new j$.QueueRunner(options).execute();
     };
@@ -185,8 +179,9 @@ getJasmineRequireObj().Env = function(j$) {
       id: getNextSuiteId(),
       description: 'Jasmine__TopLevel__Suite',
       queueRunner: queueRunnerFactory,
-      resultCallback: function() {}, // TODO - hook this up
-      reportExpectationFailure: reportExpectationFailure
+      resultCallback: function(attrs) {
+        reporter.suiteDone(attrs);
+      }
     });
     runnableLookupTable[topSuite.id] = topSuite;
     defaultResourcesForRunnable(topSuite.id);
@@ -243,14 +238,14 @@ getJasmineRequireObj().Env = function(j$) {
         queueRunner: queueRunnerFactory,
         onStart: suiteStarted,
         expectationFactory: expectationFactory,
+        expectationResultFactory: expectationResultFactory,
         resultCallback: function(attrs) {
           if (!suite.disabled) {
             clearResourcesForRunnable(suite.id);
             currentlyExecutingSuites.pop();
           }
           reporter.suiteDone(attrs);
-        },
-        reportExpectationFailure: reportExpectationFailure
+        }
       });
 
       runnableLookupTable[suite.id] = suite;
@@ -330,7 +325,6 @@ getJasmineRequireObj().Env = function(j$) {
         id: getNextSpecId(),
         beforeAndAfterFns: beforeAndAfterFns(suite, runnablesExplictlySetGetter),
         expectationFactory: expectationFactory,
-        exceptionFormatter: exceptionFormatter,
         resultCallback: specResultCallback,
         getSpecName: function(spec) {
           return getSpecName(spec, suite);
@@ -410,10 +404,6 @@ getJasmineRequireObj().Env = function(j$) {
     this.pending = function() {
       throw j$.Spec.pendingSpecExceptionMessage;
     };
-
-    function reportExpectationFailure(message) {
-      reporter.afterAllEvent('Expectation failed: '+ message);
-    }
   }
 
   return Env;

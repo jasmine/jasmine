@@ -262,7 +262,8 @@ describe("Suite", function() {
       id: suite.id,
       status: '',
       description: "with a child suite",
-      fullName: "with a child suite"
+      fullName: "with a child suite",
+      failedExpectations: []
     });
   });
 });

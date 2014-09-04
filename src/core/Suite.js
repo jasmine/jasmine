@@ -8,7 +8,7 @@ getJasmineRequireObj().Suite = function() {
     this.resultCallback = attrs.resultCallback || function() {};
     this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.expectationFactory = attrs.expectationFactory;
-    this.reportExpectationFailure = attrs.reportExpectationFailure || function() {};
+    this.expectationResultFactory = attrs.expectationResultFactory;
 
     this.beforeFns = [];
     this.afterFns = [];
@@ -23,7 +23,8 @@ getJasmineRequireObj().Suite = function() {
       id: this.id,
       status: this.disabled ? 'disabled' : '',
       description: this.description,
-      fullName: this.getFullName()
+      fullName: this.getFullName(),
+      failedExpectations: []
     };
   }
 
@@ -130,30 +131,42 @@ getJasmineRequireObj().Suite = function() {
   };
 
   Suite.prototype.onException = function() {
-    for (var i = 0; i < this.children.length; i++) {
-      var child = this.children[i];
-      child.onException.apply(child, arguments);
+    if(isAfterAll(this.children)) {
+      var data = {
+        matcherName: '',
+        passed: false,
+        expected: '',
+        actual: '',
+        error: arguments[0]
+      };
+      this.result.failedExpectations.push(this.expectationResultFactory(data));
+    } else {
+      for (var i = 0; i < this.children.length; i++) {
+        var child = this.children[i];
+        child.onException.apply(child, arguments);
+      }
     }
   };
 
   Suite.prototype.addExpectationResult = function () {
     if(isAfterAll(this.children) && isFailure(arguments)){
-      this.reportExpectationFailure(arguments[1].message);
+      var data = arguments[1];
+      this.result.failedExpectations.push(this.expectationResultFactory(data));
     } else {
       for (var i = 0; i < this.children.length; i++) {
         var child = this.children[i];
         child.addExpectationResult.apply(child, arguments);
       }
     }
-
-    function isAfterAll(children) {
-      return children && children[0].result.status;
-    }
-
-    function isFailure(args) {
-      return !args[0];
-    }
   };
+
+  function isAfterAll(children) {
+    return children && children[0].result.status;
+  }
+
+  function isFailure(args) {
+    return !args[0];
+  }
 
   function clone(obj) {
     var clonedObj = {};
