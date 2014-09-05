@@ -408,23 +408,68 @@ describe("jasmine spec running", function () {
       env.execute();
     });
 
-    it('runs fits and fdescribes in fdescribes only once', function(done){
+    it('focused specs in focused suites cause non-focused siblings to not run', function(done){
       var actions = [];
 
       env.fdescribe('focused suite', function() {
+        env.it('unfocused spec', function() {
+          actions.push('unfocused spec')
+        });
         env.fit('focused spec', function() {
           actions.push('focused spec')
         });
+      });
 
+      var assertions = function() {
+        var expected = ['focused spec'];
+        expect(actions).toEqual(expected);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+      env.execute();
+    });
+
+    it('focused suites in focused suites cause non-focused siblings to not run', function(done){
+      var actions = [];
+
+      env.fdescribe('focused suite', function() {
+        env.it('unfocused spec', function() {
+          actions.push('unfocused spec')
+        });
         env.fdescribe('inner focused suite', function() {
           env.it('inner spec', function() {
-            actions.push('unfocused spec');
+            actions.push('inner spec');
           });
         });
       });
 
       var assertions = function() {
-        var expected = ['focused spec', 'unfocused spec'];
+        var expected = ['inner spec'];
+        expect(actions).toEqual(expected);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+      env.execute();
+    });
+
+    it('focused runnables unfocus ancestor focused suites', function() {
+      var actions = [];
+
+      env.fdescribe('focused suite', function() {
+        env.it('unfocused spec', function() {
+          actions.push('unfocused spec')
+        });
+        env.describe('inner focused suite', function() {
+          env.fit('focused spec', function() {
+            actions.push('focused spec');
+          });
+        });
+      });
+
+      var assertions = function() {
+        var expected = ['focused spec'];
         expect(actions).toEqual(expected);
         done();
       };

@@ -270,14 +270,16 @@ getJasmineRequireObj().Env = function(j$) {
       return suite;
     };
 
+    var focusedRunnables = [];
+
     this.fdescribe = function(description, specDefinitions) {
       var suite = suiteFactory(description);
       suite.isFocused = true;
+
+      focusedRunnables.push(suite.id);
+      unfocusAncestor();
       addSpecsToSuite(suite, specDefinitions);
 
-      if (!hasFocusedAncestor(suite.parentSuite)) {
-        focusedRunnables.push(suite.id);
-      }
       return suite;
     };
 
@@ -302,15 +304,27 @@ getJasmineRequireObj().Env = function(j$) {
       currentDeclarationSuite = parentSuite;
     }
 
-    function hasFocusedAncestor(suite) {
+    function findFocusedAncestor(suite) {
       while (suite) {
         if (suite.isFocused) {
-          return true;
+          return suite.id;
         }
         suite = suite.parentSuite;
       }
 
-      return false;
+      return null;
+    }
+
+    function unfocusAncestor() {
+      var focusedAncestor = findFocusedAncestor(currentDeclarationSuite);
+      if (focusedAncestor) {
+        for (var i = 0; i < focusedRunnables.length; i++) {
+          if (focusedRunnables[i] === focusedAncestor) {
+            focusedRunnables.splice(i, 1);
+            break;
+          }
+        }
+      }
     }
 
     var runnablesExplictlySet = false;
@@ -370,14 +384,11 @@ getJasmineRequireObj().Env = function(j$) {
       return spec;
     };
 
-    var focusedRunnables = [];
     this.fit = function(description, fn ){
       var spec = this.it(description, fn);
 
-      if (!hasFocusedAncestor(currentDeclarationSuite)) {
-        focusedRunnables.push(spec.id);
-      }
-
+      focusedRunnables.push(spec.id);
+      unfocusAncestor();
       return spec;
     };
 
