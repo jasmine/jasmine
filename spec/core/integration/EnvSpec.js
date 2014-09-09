@@ -368,110 +368,140 @@ describe("Env integration", function() {
     env.execute();
   });
 
-  it("reports when an afterAll fails an expectation", function(done) {
-    var env = new j$.Env(),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
+  describe('suiteDone reporting', function(){
+    it("reports when an afterAll fails an expectation", function(done) {
+      var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
-    reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
-        'Expected 1 to equal 2.',
-        'Expected 2 to equal 3.'
-      ]);
-      done();
-    });
-
-    env.addReporter(reporter);
-
-    env.describe('my suite', function() {
-      env.it('my spec', function() {
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
+          'Expected 1 to equal 2.',
+          'Expected 2 to equal 3.'
+        ]);
+        done();
       });
 
-      env.afterAll(function() {
-        env.expect(1).toEqual(2);
-        env.expect(2).toEqual(3);
-      });
-    });
+      env.addReporter(reporter);
 
-    env.execute();
-  });
+      env.describe('my suite', function() {
+        env.it('my spec', function() {
+        });
 
-  it("reports when afterAll throws an exception", function(done) {
-    var env = new j$.Env(),
-      error = new Error('After All Exception'),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
-
-    reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
-        (/^Error: After All Exception/)
-      ]);
-      done();
-    });
-
-    env.addReporter(reporter);
-
-    env.describe('my suite', function() {
-      env.it('my spec', function() {
+        env.afterAll(function() {
+          env.expect(1).toEqual(2);
+          env.expect(2).toEqual(3);
+        });
       });
 
-      env.afterAll(function() {
-        throw error;
-      });
+      env.execute();
     });
 
-    env.execute();
-  });
+    it("if there are no specs, it still reports correctly", function(done) {
+        var env = new j$.Env(),
+          reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
-  it("reports when an async afterAll fails an expectation", function(done) {
-    var env = new j$.Env(),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
+        reporter.jasmineDone.and.callFake(function() {
+          expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('outer suite', [
+            'Expected 1 to equal 2.',
+            'Expected 2 to equal 3.'
+          ]);
+          done();
+        });
 
-    reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
-        'Expected 1 to equal 2.'
-      ]);
-      done();
-    });
+        env.addReporter(reporter);
 
-    env.addReporter(reporter);
+        env.describe('outer suite', function() {
+          env.describe('inner suite', function() {
+            env.it('spec', function(){ });
+          });
 
-    env.describe('my suite', function() {
-      env.it('my spec', function() {
+          env.afterAll(function() {
+            env.expect(1).toEqual(2);
+            env.expect(2).toEqual(3);
+          });
+        });
+
+        env.execute();
       });
 
-      env.afterAll(function(afterAllDone) {
-        env.expect(1).toEqual(2);
-        afterAllDone();
-      });
-    });
+    it("reports when afterAll throws an exception", function(done) {
+      var env = new j$.Env(),
+        error = new Error('After All Exception'),
+        reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
-    env.execute();
-  });
-
-  it("reports when an async afterAll throws an exception", function(done) {
-    var env = new j$.Env(),
-      error = new Error('After All Exception'),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
-
-
-    reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
-        (/^Error: After All Exception/)
-      ]);
-      done();
-    });
-
-    env.addReporter(reporter);
-
-    env.describe('my suite', function() {
-      env.it('my spec', function() {
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
+          (/^Error: After All Exception/)
+        ]);
+        done();
       });
 
-      env.afterAll(function(afterAllDone) {
-        throw error;
+      env.addReporter(reporter);
+
+      env.describe('my suite', function() {
+        env.it('my spec', function() {
+        });
+
+        env.afterAll(function() {
+          throw error;
+        });
       });
+
+      env.execute();
     });
 
-    env.execute();
+    it("reports when an async afterAll fails an expectation", function(done) {
+      var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
+
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
+          'Expected 1 to equal 2.'
+        ]);
+        done();
+      });
+
+      env.addReporter(reporter);
+
+      env.describe('my suite', function() {
+        env.it('my spec', function() {
+        });
+
+        env.afterAll(function(afterAllDone) {
+          env.expect(1).toEqual(2);
+          afterAllDone();
+        });
+      });
+
+      env.execute();
+    });
+
+    it("reports when an async afterAll throws an exception", function(done) {
+      var env = new j$.Env(),
+        error = new Error('After All Exception'),
+        reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
+
+
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
+          (/^Error: After All Exception/)
+        ]);
+        done();
+      });
+
+      env.addReporter(reporter);
+
+      env.describe('my suite', function() {
+        env.it('my spec', function() {
+        });
+
+        env.afterAll(function(afterAllDone) {
+          throw error;
+        });
+      });
+
+      env.execute();
+    });
   });
 
   it("Allows specifying which specs and suites to run", function(done) {

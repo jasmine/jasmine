@@ -260,7 +260,7 @@ describe("Suite", function() {
 
     expect(suiteResultsCallback).toHaveBeenCalledWith({
       id: suite.id,
-      status: '',
+      status: 'finished',
       description: "with a child suite",
       fullName: "with a child suite",
       failedExpectations: []

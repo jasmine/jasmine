@@ -21,7 +21,6 @@ getJasmineRequireObj().Suite = function() {
 
     this.result = {
       id: this.id,
-      status: this.disabled ? 'disabled' : '',
       description: this.description,
       fullName: this.getFullName(),
       failedExpectations: []
@@ -95,6 +94,7 @@ getJasmineRequireObj().Suite = function() {
     });
 
     function complete() {
+      self.result.status = self.disabled ? 'disabled' : 'finished';
       self.resultCallback(self.result);
 
       if (onComplete) {
