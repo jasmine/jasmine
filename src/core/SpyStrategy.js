@@ -1,4 +1,4 @@
-getJasmineRequireObj().SpyStrategy = function() {
+getJasmineRequireObj().SpyStrategy = function () {
 
   function SpyStrategy(options) {
     options = options || {};
@@ -28,7 +28,15 @@ getJasmineRequireObj().SpyStrategy = function() {
       return getSpy();
     };
 
-    this.throwError = function(something) {
+    this.returnValues = function () {
+      var values = Array.prototype.slice.call(arguments);
+      plan = function () {
+        return values.shift();
+      };
+      return getSpy();
+    };
+
+    this.throwError = function (something) {
       var error = (something instanceof Error) ? something : new Error(something);
       plan = function() {
         throw error;
