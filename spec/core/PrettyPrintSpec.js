@@ -26,6 +26,11 @@ describe("j$.pp", function () {
     expect(j$.pp(array1)).toEqual("[ 1, 2, [ <circular reference: Array> ] ]");
   });
 
+  it("should not indicate circular references incorrectly", function() {
+    var array = [ [1] ];
+    expect(j$.pp(array)).toEqual("[ [ 1 ] ]");
+  });
+
   it("should stringify objects properly", function() {
     expect(j$.pp({foo: 'bar'})).toEqual("{ foo: 'bar' }");
     expect(j$.pp({foo:'bar', baz:3, nullValue: null, undefinedValue: jasmine.undefined})).toEqual("{ foo: 'bar', baz: 3, nullValue: null, undefinedValue: undefined }");

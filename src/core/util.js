@@ -33,7 +33,7 @@ getJasmineRequireObj().util = function() {
   util.arrayContains = function(array, search) {
     var i = array.length;
     while (i--) {
-      if (array[i] == search) {
+      if (array[i] === search) {
         return true;
       }
     }
