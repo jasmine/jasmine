@@ -100,7 +100,7 @@ Jasmine uses the [Jasmine Ruby gem](http://github.com/pivotal/jasmine-gem) to te
 
 ...and then visit `http://localhost:8888` to run specs.
 
-Jasmine uses Node.js with a custom runner to test outside of a browser.
+Jasmine uses the [Jasmine NPM package](http://github.com/pivotal/jasmine-npm) to test itself in a Node.js/npm environment.
 
     $ grunt execSpecsInNode
 
