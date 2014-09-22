@@ -47,6 +47,16 @@ describe('Spies', function () {
 
       expect(trackSpy.calls.mostRecent().args[0].object).toEqual(contextObject);
     });
+
+    it("tracks the return value of calls", function () {
+      var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var trackSpy = spyOn(spy.calls, "track");
+
+      spy.and.returnValue("return value");
+      spy();
+
+      expect(trackSpy.calls.mostRecent().args[0].returnValue).toEqual("return value");
+    });
   });
 
   describe("createSpyObj", function() {
