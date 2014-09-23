@@ -32,6 +32,10 @@ getJasmineRequireObj().interface = function(jasmine, env) {
       return env.pending();
     },
 
+    fail: function() {
+      return env.fail.apply(env, arguments);
+    },
+
     spyOn: function(obj, methodName) {
       return env.spyOn(obj, methodName);
     },

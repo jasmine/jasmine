@@ -101,6 +101,53 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it('explicitly fails a spec', function(done) {
+    var env = new j$.Env(),
+        specDone = jasmine.createSpy('specDone');
+
+    env.addReporter({
+      specDone: specDone,
+      jasmineDone: function() {
+        expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          description: 'has a default message',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Failed'
+          })]
+        }));
+        expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          description: 'specifies a message',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Failed: messy message'
+          })]
+        }));
+        expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          description: 'has a message from an Error',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Failed: error message'
+          })]
+        }));
+        done();
+      }
+    });
+
+    env.describe('failing', function() {
+      env.it('has a default message', function() {
+        env.fail();
+      });
+
+      env.it('specifies a message', function() {
+        env.fail('messy message');
+      });
+
+      env.it('has a message from an Error', function() {
+        env.fail(new Error('error message'));
+      });
+    });
+
+    env.execute();
+  });
+
+
   it("calls associated befores/specs/afters with the same 'this'", function(done) {
     var env = new j$.Env();
 
@@ -325,6 +372,64 @@ describe("Env integration", function() {
       env.it("async spec that doesn't call done", function(underTestCallback) {
         env.expect(true).toBeTruthy();
         jasmine.getEnv().clock.tick(8416);
+      });
+
+      env.execute();
+    });
+
+    it('explicitly fails an async spec', function(done) {
+      var env = new j$.Env(),
+      specDone = jasmine.createSpy('specDone');
+
+      env.addReporter({
+        specDone: specDone,
+        specStarted: function() {
+          jasmine.clock().tick(1);
+        },
+        jasmineDone: function() {
+          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+            description: 'has a default message',
+            failedExpectations: [jasmine.objectContaining({
+              message: 'Failed'
+            })]
+          }));
+          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+            description: 'specifies a message',
+            failedExpectations: [jasmine.objectContaining({
+              message: 'Failed: messy message'
+            })]
+          }));
+          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+            description: 'has a message from an Error',
+            failedExpectations: [jasmine.objectContaining({
+              message: 'Failed: error message'
+            })]
+          }));
+          done();
+        }
+      });
+
+      env.describe('failing', function() {
+        env.it('has a default message', function(innerDone) {
+          setTimeout(function() {
+            env.fail();
+            innerDone();
+          }, 1);
+        });
+
+        env.it('specifies a message', function(innerDone) {
+          setTimeout(function() {
+            env.fail('messy message');
+            innerDone();
+          }, 1);
+        });
+
+        env.it('has a message from an Error', function(innerDone) {
+          setTimeout(function() {
+            env.fail(new Error('error message'));
+            innerDone();
+          }, 1);
+        });
       });
 
       env.execute();

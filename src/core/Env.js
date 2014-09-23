@@ -335,6 +335,22 @@ getJasmineRequireObj().Env = function(j$) {
     this.pending = function() {
       throw j$.Spec.pendingSpecExceptionMessage;
     };
+
+    this.fail = function(error) {
+      var message = 'Failed';
+      if (error) {
+        message += ': ';
+        message += error.message || error;
+      }
+
+      currentSpec.addExpectationResult(false, {
+        matcherName: '',
+        passed: false,
+        expected: '',
+        actual: '',
+        message: message
+      });
+    };
   }
 
   return Env;
