@@ -155,7 +155,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, Error);
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw Error.");
+    expect(result.message()).toEqual("Expected function not to throw Error.");
   });
 
   it("passes if thrown is a custom error that takes arguments and the expected is the same error", function() {
@@ -175,7 +175,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, CustomError);
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw CustomError.");
+    expect(result.message()).toEqual("Expected function not to throw CustomError.");
   });
 
   it("fails if thrown is an Error and the expected is a different Error", function() {
@@ -191,7 +191,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, TypeError);
 
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected function to throw TypeError, but it threw Error.");
+    expect(result.message()).toEqual("Expected function to throw TypeError, but it threw Error.");
   });
 
   it("passes if thrown is a type of Error and it is equal to the expected Error and message", function() {
@@ -259,7 +259,7 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, TypeError, /foo/);
 
     expect(result.pass).toBe(true);
-    expect(result.message()).toEqual("Expected function not to throw TypeError with message matching /foo/.");
+    expect(result.message()).toEqual("Expected function not to throw TypeError with a message matching /foo/.");
   });
 
   it("fails if thrown is a type of Error and the expected is a different Error", function() {
@@ -275,6 +275,6 @@ describe("toThrowError", function() {
     result = matcher.compare(fn, TypeError, /bar/);
 
     expect(result.pass).toBe(false);
-    expect(result.message()).toEqual("Expected function to throw TypeError with message matching /bar/, but it threw TypeError with message 'foo'.");
+    expect(result.message()).toEqual("Expected function to throw TypeError with a message matching /bar/, but it threw TypeError with message 'foo'.");
   });
 });
