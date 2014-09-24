@@ -417,6 +417,8 @@ describe("Clock (acceptance)", function() {
 
     clock.install().mockDate();
 
+    expect(new global.Date() instanceof global.Date).toBe(true);
+
     var now = new global.Date().getTime();
 
     clock.tick(50);
@@ -442,6 +444,8 @@ describe("Clock (acceptance)", function() {
 
 
     clock.install().mockDate(baseTime);
+
+    expect(new global.Date() instanceof global.Date).toBe(true);
 
     var now = new global.Date().getTime();
 
