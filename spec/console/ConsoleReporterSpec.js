@@ -171,27 +171,44 @@ describe("ConsoleReporter", function() {
 
     out.clear();
 
-    reporter.jasmineDone({});
+    reporter.jasmineDone();
 
     expect(out.getOutput()).toMatch(/true to be false/);
     expect(out.getOutput()).toMatch(/foo bar baz/);
   });
 
-  it("calls the onComplete callback when the suite is done", function() {
-    var onComplete = jasmine.createSpy('onComplete'),
+  describe('onComplete callback', function(){
+    var onComplete, reporter;
+
+    beforeEach(function() {
+      onComplete = jasmine.createSpy('onComplete');
       reporter = new j$.ConsoleReporter({
         print: out.print,
         onComplete: onComplete
       });
+      reporter.jasmineStarted();
+    });
 
-    reporter.jasmineDone({});
+    it("is called when the suite is done", function() {
+      reporter.jasmineDone();
+      expect(onComplete).toHaveBeenCalledWith(true);
+    });
 
-    expect(onComplete).toHaveBeenCalled();
+    it('calls it with false if there are spec failures', function() {
+      reporter.specDone({status: "failed", failedExpectations: []});
+      reporter.jasmineDone();
+      expect(onComplete).toHaveBeenCalledWith(false);
+    });
+
+    it('calls it with false if there are suite failures', function() {
+      reporter.specDone({status: "passed"});
+      reporter.suiteDone({failedExpectations: [{ message: 'bananas' }] });
+      reporter.jasmineDone();
+      expect(onComplete).toHaveBeenCalledWith(false);
+    });
   });
 
-
   describe("with color", function() {
-
     it("reports that the suite has started to the console", function() {
       var reporter = new j$.ConsoleReporter({
         print: out.print,
@@ -234,6 +251,20 @@ describe("ConsoleReporter", function() {
       reporter.specDone({status: 'failed'});
 
       expect(out.getOutput()).toEqual("\x1B[31mF\x1B[0m");
+    });
+
+    it("displays all afterAll exceptions", function() {
+        var reporter = new j$.ConsoleReporter({
+          print: out.print,
+          showColors: true
+        });
+
+        reporter.suiteDone({ failedExpectations: [{ message: 'After All Exception' }] });
+        reporter.suiteDone({ failedExpectations: [{ message: 'Some Other Exception' }] });
+        reporter.jasmineDone();
+
+        expect(out.getOutput()).toMatch(/After All Exception/);
+        expect(out.getOutput()).toMatch(/Some Other Exception/);
     });
   });
 });

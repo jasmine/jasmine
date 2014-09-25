@@ -30,6 +30,7 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .bar.failed { background-color: #ca3a11; }
 .jasmine_html-reporter .bar.passed { background-color: #007069; }
 .jasmine_html-reporter .bar.skipped { background-color: #bababa; }
+.jasmine_html-reporter .bar.errored { background-color: #ca3a11; }
 .jasmine_html-reporter .bar.menu { background-color: #fff; color: #aaaaaa; }
 .jasmine_html-reporter .bar.menu a { color: #333333; }
 .jasmine_html-reporter .bar a { color: white; }

@@ -135,7 +135,9 @@ describe("j$.pp", function () {
         },
         env = new j$.Env();
 
-    env.spyOn(TestObject, 'someFunction');
+    var spyRegistry = new j$.SpyRegistry({currentSpies: function() {return [];}});
+
+    spyRegistry.spyOn(TestObject, 'someFunction');
     expect(j$.pp(TestObject.someFunction)).toEqual("spy on someFunction");
 
     expect(j$.pp(j$.createSpy("something"))).toEqual("spy on something");
@@ -158,4 +160,3 @@ describe("j$.pp", function () {
     expect(j$.pp(obj)).toEqual("{ foo: 'bar' }");
   });
 });
-

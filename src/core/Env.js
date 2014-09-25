@@ -14,11 +14,19 @@ getJasmineRequireObj().Env = function(j$) {
     this.clock = new j$.Clock(global, new j$.DelayedFunctionScheduler(), new j$.MockDate(global));
 
     var runnableLookupTable = {};
-
-    var spies = [];
+    var runnableResources = {};
 
     var currentSpec = null;
-    var currentSuite = null;
+    var currentlyExecutingSuites = [];
+    var currentDeclarationSuite = null;
+
+    var currentSuite = function() {
+      return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
+    };
+
+    var currentRunnable = function() {
+      return currentSpec || currentSuite();
+    };
 
     var reporter = new j$.ReportDispatcher([
       'jasmineStarted',
@@ -33,11 +41,21 @@ getJasmineRequireObj().Env = function(j$) {
       return true;
     };
 
-    var equalityTesters = [];
-
-    var customEqualityTesters = [];
     this.addCustomEqualityTester = function(tester) {
-      customEqualityTesters.push(tester);
+      if(!currentRunnable()) {
+        throw new Error('Custom Equalities must be added in a before function or a spec');
+      }
+      runnableResources[currentRunnable().id].customEqualityTesters.push(tester);
+    };
+
+    this.addMatchers = function(matchersToAdd) {
+      if(!currentRunnable()) {
+        throw new Error('Matchers must be added in a before function or a spec');
+      }
+      var customMatchers = runnableResources[currentRunnable().id].customMatchers;
+      for (var matcherName in matchersToAdd) {
+        customMatchers[matcherName] = matchersToAdd[matcherName];
+      }
     };
 
     j$.Expectation.addCoreMatchers(j$.matchers);
@@ -55,7 +73,8 @@ getJasmineRequireObj().Env = function(j$) {
     var expectationFactory = function(actual, spec) {
       return j$.Expectation.Factory({
         util: j$.matchersUtil,
-        customEqualityTesters: customEqualityTesters,
+        customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
+        customMatchers: runnableResources[spec.id].customMatchers,
         actual: actual,
         addExpectationResult: addExpectationResult
       });
@@ -65,30 +84,44 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
-    var specStarted = function(spec) {
-      currentSpec = spec;
-      reporter.specStarted(spec.result);
+    var defaultResourcesForRunnable = function(id, parentRunnableId) {
+      var resources = {spies: [], customEqualityTesters: [], customMatchers: {}};
+
+      if(runnableResources[parentRunnableId]){
+        resources.customEqualityTesters = j$.util.clone(runnableResources[parentRunnableId].customEqualityTesters);
+        resources.customMatchers = j$.util.clone(runnableResources[parentRunnableId].customMatchers);
+      }
+
+      runnableResources[id] = resources;
     };
 
-    var beforeFns = function(suite) {
+    var clearResourcesForRunnable = function(id) {
+        spyRegistry.clearSpies();
+        delete runnableResources[id];
+    };
+
+    var beforeAndAfterFns = function(suite, runnablesExplictlySet) {
       return function() {
-        var befores = [];
+        var befores = [],
+          afters = [],
+          beforeAlls = [],
+          afterAlls = [];
+
         while(suite) {
           befores = befores.concat(suite.beforeFns);
-          suite = suite.parentSuite;
-        }
-        return befores.reverse();
-      };
-    };
-
-    var afterFns = function(suite) {
-      return function() {
-        var afters = [];
-        while(suite) {
           afters = afters.concat(suite.afterFns);
+
+          if (runnablesExplictlySet()) {
+            beforeAlls = beforeAlls.concat(suite.beforeAllFns);
+            afterAlls = afterAlls.concat(suite.afterAllFns);
+          }
+
           suite = suite.parentSuite;
         }
-        return afters;
+        return {
+          befores: beforeAlls.reverse().concat(befores.reverse()),
+          afters: afters.concat(afterAlls)
+        };
       };
     };
 
@@ -146,65 +179,54 @@ getJasmineRequireObj().Env = function(j$) {
       id: getNextSuiteId(),
       description: 'Jasmine__TopLevel__Suite',
       queueRunner: queueRunnerFactory,
-      resultCallback: function() {} // TODO - hook this up
+      resultCallback: function(attrs) {
+        reporter.suiteDone(attrs);
+      }
     });
     runnableLookupTable[topSuite.id] = topSuite;
-    currentSuite = topSuite;
+    defaultResourcesForRunnable(topSuite.id);
+    currentDeclarationSuite = topSuite;
 
     this.topSuite = function() {
       return topSuite;
     };
 
     this.execute = function(runnablesToRun) {
-      runnablesToRun = runnablesToRun || [topSuite.id];
+      if(runnablesToRun) {
+        runnablesExplictlySet = true;
+      } else if (focusedRunnables.length) {
+        runnablesExplictlySet = true;
+        runnablesToRun = focusedRunnables;
+      } else {
+        runnablesToRun = [topSuite.id];
+      }
 
       var allFns = [];
       for(var i = 0; i < runnablesToRun.length; i++) {
         var runnable = runnableLookupTable[runnablesToRun[i]];
-        allFns.push((function(runnable) { return function(done) { runnable.execute(done); }; })(runnable));
+        allFns.push((function(runnable) { return { fn: function(done) { runnable.execute(done); } }; })(runnable));
       }
 
       reporter.jasmineStarted({
         totalSpecsDefined: totalSpecsDefined
       });
 
-      queueRunnerFactory({fns: allFns, onComplete: reporter.jasmineDone});
+      queueRunnerFactory({queueableFns: allFns, onComplete: reporter.jasmineDone});
     };
 
     this.addReporter = function(reporterToAdd) {
       reporter.addReporter(reporterToAdd);
     };
 
-    this.addMatchers = function(matchersToAdd) {
-      j$.Expectation.addMatchers(matchersToAdd);
-    };
-
-    this.spyOn = function(obj, methodName) {
-      if (j$.util.isUndefined(obj)) {
-        throw new Error('spyOn could not find an object to spy upon for ' + methodName + '()');
+    var spyRegistry = new j$.SpyRegistry({currentSpies: function() {
+      if(!currentRunnable()) {
+        throw new Error('Spies must be created in a before function or a spec');
       }
+      return runnableResources[currentRunnable().id].spies;
+    }});
 
-      if (j$.util.isUndefined(obj[methodName])) {
-        throw new Error(methodName + '() method does not exist');
-      }
-
-      if (obj[methodName] && j$.isSpy(obj[methodName])) {
-        //TODO?: should this return the current spy? Downside: may cause user confusion about spy state
-        throw new Error(methodName + ' has already been spied upon');
-      }
-
-      var spy = j$.createSpy(methodName, obj[methodName]);
-
-      spies.push({
-        spy: spy,
-        baseObj: obj,
-        methodName: methodName,
-        originalValue: obj[methodName]
-      });
-
-      obj[methodName] = spy;
-
-      return spy;
+    this.spyOn = function() {
+      return spyRegistry.spyOn.apply(spyRegistry, arguments);
     };
 
     var suiteFactory = function(description) {
@@ -212,40 +234,33 @@ getJasmineRequireObj().Env = function(j$) {
         env: self,
         id: getNextSuiteId(),
         description: description,
-        parentSuite: currentSuite,
+        parentSuite: currentDeclarationSuite,
         queueRunner: queueRunnerFactory,
         onStart: suiteStarted,
+        expectationFactory: expectationFactory,
+        expectationResultFactory: expectationResultFactory,
         resultCallback: function(attrs) {
+          if (!suite.disabled) {
+            clearResourcesForRunnable(suite.id);
+            currentlyExecutingSuites.pop();
+          }
           reporter.suiteDone(attrs);
         }
       });
 
       runnableLookupTable[suite.id] = suite;
       return suite;
+
+      function suiteStarted(suite) {
+        currentlyExecutingSuites.push(suite);
+        defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
+        reporter.suiteStarted(suite.result);
+      }
     };
 
     this.describe = function(description, specDefinitions) {
       var suite = suiteFactory(description);
-
-      var parentSuite = currentSuite;
-      parentSuite.addChild(suite);
-      currentSuite = suite;
-
-      var declarationError = null;
-      try {
-        specDefinitions.call(suite);
-      } catch (e) {
-        declarationError = e;
-      }
-
-      if (declarationError) {
-        this.it('encountered a declaration exception', function() {
-          throw declarationError;
-        });
-      }
-
-      currentSuite = parentSuite;
-
+      addSpecsToSuite(suite, specDefinitions);
       return suite;
     };
 
@@ -255,15 +270,75 @@ getJasmineRequireObj().Env = function(j$) {
       return suite;
     };
 
+    var focusedRunnables = [];
+
+    this.fdescribe = function(description, specDefinitions) {
+      var suite = suiteFactory(description);
+      suite.isFocused = true;
+
+      focusedRunnables.push(suite.id);
+      unfocusAncestor();
+      addSpecsToSuite(suite, specDefinitions);
+
+      return suite;
+    };
+
+    function addSpecsToSuite(suite, specDefinitions) {
+      var parentSuite = currentDeclarationSuite;
+      parentSuite.addChild(suite);
+      currentDeclarationSuite = suite;
+
+      var declarationError = null;
+      try {
+        specDefinitions.call(suite);
+      } catch (e) {
+        declarationError = e;
+      }
+
+      if (declarationError) {
+        self.it('encountered a declaration exception', function() {
+          throw declarationError;
+        });
+      }
+
+      currentDeclarationSuite = parentSuite;
+    }
+
+    function findFocusedAncestor(suite) {
+      while (suite) {
+        if (suite.isFocused) {
+          return suite.id;
+        }
+        suite = suite.parentSuite;
+      }
+
+      return null;
+    }
+
+    function unfocusAncestor() {
+      var focusedAncestor = findFocusedAncestor(currentDeclarationSuite);
+      if (focusedAncestor) {
+        for (var i = 0; i < focusedRunnables.length; i++) {
+          if (focusedRunnables[i] === focusedAncestor) {
+            focusedRunnables.splice(i, 1);
+            break;
+          }
+        }
+      }
+    }
+
+    var runnablesExplictlySet = false;
+
+    var runnablesExplictlySetGetter = function(){
+      return runnablesExplictlySet;
+    };
+
     var specFactory = function(description, fn, suite) {
       totalSpecsDefined++;
-
       var spec = new j$.Spec({
         id: getNextSpecId(),
-        beforeFns: beforeFns(suite),
-        afterFns: afterFns(suite),
+        beforeAndAfterFns: beforeAndAfterFns(suite, runnablesExplictlySetGetter),
         expectationFactory: expectationFactory,
-        exceptionFormatter: exceptionFormatter,
         resultCallback: specResultCallback,
         getSpecName: function(spec) {
           return getSpecName(spec, suite);
@@ -272,7 +347,8 @@ getJasmineRequireObj().Env = function(j$) {
         description: description,
         expectationResultFactory: expectationResultFactory,
         queueRunnerFactory: queueRunnerFactory,
-        fn: fn
+        userContext: function() { return suite.clonedSharedUserContext(); },
+        queueableFn: { fn: fn, type: 'it', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } }
       });
 
       runnableLookupTable[spec.id] = spec;
@@ -283,30 +359,22 @@ getJasmineRequireObj().Env = function(j$) {
 
       return spec;
 
-      function removeAllSpies() {
-        for (var i = 0; i < spies.length; i++) {
-          var spyEntry = spies[i];
-          spyEntry.baseObj[spyEntry.methodName] = spyEntry.originalValue;
-        }
-        spies = [];
-      }
-
       function specResultCallback(result) {
-        removeAllSpies();
-        j$.Expectation.resetMatchers();
-        customEqualityTesters = [];
+        clearResourcesForRunnable(spec.id);
         currentSpec = null;
         reporter.specDone(result);
       }
-    };
 
-    var suiteStarted = function(suite) {
-      reporter.suiteStarted(suite.result);
+      function specStarted(spec) {
+        currentSpec = spec;
+        defaultResourcesForRunnable(spec.id, suite.id);
+        reporter.specStarted(spec.result);
+      }
     };
 
     this.it = function(description, fn) {
-      var spec = specFactory(description, fn, currentSuite);
-      currentSuite.addChild(spec);
+      var spec = specFactory(description, fn, currentDeclarationSuite);
+      currentDeclarationSuite.addChild(spec);
       return spec;
     };
 
@@ -316,20 +384,36 @@ getJasmineRequireObj().Env = function(j$) {
       return spec;
     };
 
+    this.fit = function(description, fn ){
+      var spec = this.it(description, fn);
+
+      focusedRunnables.push(spec.id);
+      unfocusAncestor();
+      return spec;
+    };
+
     this.expect = function(actual) {
-      if (!currentSpec) {
+      if (!currentRunnable()) {
         throw new Error('\'expect\' was used when there was no current spec, this could be because an asynchronous test timed out');
       }
 
-      return currentSpec.expect(actual);
+      return currentRunnable().expect(actual);
     };
 
     this.beforeEach = function(beforeEachFunction) {
-      currentSuite.beforeEach(beforeEachFunction);
+      currentDeclarationSuite.beforeEach({ fn: beforeEachFunction, type: 'beforeEach', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+    };
+
+    this.beforeAll = function(beforeAllFunction) {
+      currentDeclarationSuite.beforeAll({ fn: beforeAllFunction, type: 'beforeAll', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.afterEach = function(afterEachFunction) {
-      currentSuite.afterEach(afterEachFunction);
+      currentDeclarationSuite.afterEach({ fn: afterEachFunction, type: 'afterEach', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+    };
+
+    this.afterAll = function(afterAllFunction) {
+      currentDeclarationSuite.afterAll({ fn: afterAllFunction, type: 'afterAll', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
     };
 
     this.pending = function() {
@@ -343,7 +427,7 @@ getJasmineRequireObj().Env = function(j$) {
         message += error.message || error;
       }
 
-      currentSpec.addExpectationResult(false, {
+      currentRunnable().addExpectationResult(false, {
         matcherName: '',
         passed: false,
         expected: '',

@@ -7,9 +7,13 @@ getJasmineRequireObj().Suite = function() {
     this.onStart = attrs.onStart || function() {};
     this.resultCallback = attrs.resultCallback || function() {};
     this.clearStack = attrs.clearStack || function(fn) {fn();};
+    this.expectationFactory = attrs.expectationFactory;
+    this.expectationResultFactory = attrs.expectationResultFactory;
 
     this.beforeFns = [];
     this.afterFns = [];
+    this.beforeAllFns = [];
+    this.afterAllFns = [];
     this.queueRunner = attrs.queueRunner || function() {};
     this.disabled = false;
 
@@ -17,11 +21,15 @@ getJasmineRequireObj().Suite = function() {
 
     this.result = {
       id: this.id,
-      status: this.disabled ? 'disabled' : '',
       description: this.description,
-      fullName: this.getFullName()
+      fullName: this.getFullName(),
+      failedExpectations: []
     };
   }
+
+  Suite.prototype.expect = function(actual) {
+    return this.expectationFactory(actual, this);
+  };
 
   Suite.prototype.getFullName = function() {
     var fullName = this.description;
@@ -42,8 +50,16 @@ getJasmineRequireObj().Suite = function() {
     this.beforeFns.unshift(fn);
   };
 
+  Suite.prototype.beforeAll = function(fn) {
+    this.beforeAllFns.push(fn);
+  };
+
   Suite.prototype.afterEach = function(fn) {
     this.afterFns.unshift(fn);
+  };
+
+  Suite.prototype.afterAll = function(fn) {
+    this.afterAllFns.push(fn);
   };
 
   Suite.prototype.addChild = function(child) {
@@ -62,16 +78,25 @@ getJasmineRequireObj().Suite = function() {
 
     var allFns = [];
 
-    for (var i = 0; i < this.children.length; i++) {
-      allFns.push(wrapChildAsAsync(this.children[i]));
+    if (this.isExecutable()) {
+      allFns = allFns.concat(this.beforeAllFns);
+
+      for (var i = 0; i < this.children.length; i++) {
+        allFns.push(wrapChildAsAsync(this.children[i]));
+      }
+
+      allFns = allFns.concat(this.afterAllFns);
     }
 
     this.queueRunner({
-      fns: allFns,
-      onComplete: complete
+      queueableFns: allFns,
+      onComplete: complete,
+      userContext: this.sharedUserContext(),
+      onException: function() { self.onException.apply(self, arguments); }
     });
 
     function complete() {
+      self.result.status = self.disabled ? 'disabled' : 'finished';
       self.resultCallback(self.result);
 
       if (onComplete) {
@@ -80,9 +105,81 @@ getJasmineRequireObj().Suite = function() {
     }
 
     function wrapChildAsAsync(child) {
-      return function(done) { child.execute(done); };
+      return { fn: function(done) { child.execute(done); } };
     }
   };
+
+  Suite.prototype.isExecutable = function() {
+    var foundActive = false;
+    for(var i = 0; i < this.children.length; i++) {
+      if(this.children[i].isExecutable()) {
+        foundActive = true;
+        break;
+      }
+    }
+    return foundActive;
+  };
+
+  Suite.prototype.sharedUserContext = function() {
+    if (!this.sharedContext) {
+      this.sharedContext = this.parentSuite ? clone(this.parentSuite.sharedUserContext()) : {};
+    }
+
+    return this.sharedContext;
+  };
+
+  Suite.prototype.clonedSharedUserContext = function() {
+    return clone(this.sharedUserContext());
+  };
+
+  Suite.prototype.onException = function() {
+    if(isAfterAll(this.children)) {
+      var data = {
+        matcherName: '',
+        passed: false,
+        expected: '',
+        actual: '',
+        error: arguments[0]
+      };
+      this.result.failedExpectations.push(this.expectationResultFactory(data));
+    } else {
+      for (var i = 0; i < this.children.length; i++) {
+        var child = this.children[i];
+        child.onException.apply(child, arguments);
+      }
+    }
+  };
+
+  Suite.prototype.addExpectationResult = function () {
+    if(isAfterAll(this.children) && isFailure(arguments)){
+      var data = arguments[1];
+      this.result.failedExpectations.push(this.expectationResultFactory(data));
+    } else {
+      for (var i = 0; i < this.children.length; i++) {
+        var child = this.children[i];
+        child.addExpectationResult.apply(child, arguments);
+      }
+    }
+  };
+
+  function isAfterAll(children) {
+    return children && children[0].result.status;
+  }
+
+  function isFailure(args) {
+    return !args[0];
+  }
+
+  function clone(obj) {
+    var clonedObj = {};
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        clonedObj[prop] = obj[prop];
+      }
+    }
+
+    return clonedObj;
+  }
 
   return Suite;
 };

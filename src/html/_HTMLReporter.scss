@@ -194,6 +194,10 @@ body {
       background-color: $neutral-color;
     }
 
+    &.errored {
+      background-color: $failing-color;
+    }
+
     &.menu {
       background-color: #fff;
       color: $faint-text-color;

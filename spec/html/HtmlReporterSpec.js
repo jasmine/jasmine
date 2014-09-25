@@ -179,6 +179,34 @@ describe("New HtmlReporter", function() {
     });
   });
 
+  describe("when there are suite failures", function () {
+    it("displays the exceptions in their own alert bars", function(){
+      var env = new j$.Env(),
+        container = document.createElement("div"),
+        getContainer = function() { return container; },
+        reporter = new j$.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
+
+      reporter.initialize();
+
+      reporter.jasmineStarted({});
+      reporter.suiteDone({ failedExpectations: [{ message: 'My After All Exception' }] });
+      reporter.suiteDone({ failedExpectations: [{ message: 'My Other Exception' }] });
+      reporter.jasmineDone({});
+
+      var alertBars = container.querySelectorAll(".alert .bar");
+
+      expect(alertBars.length).toEqual(3);
+      expect(alertBars[1].innerHTML).toMatch(/My After All Exception/);
+      expect(alertBars[1].getAttribute("class")).toEqual('bar errored');
+      expect(alertBars[2].innerHTML).toMatch(/My Other Exception/);
+    });
+  });
+
   describe("when Jasmine is done", function() {
     it("adds EMPTY to the link title of specs that have no expectations", function() {
       if (!window.console) {

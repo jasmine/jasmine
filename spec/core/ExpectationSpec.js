@@ -1,14 +1,14 @@
 describe("Expectation", function() {
-  it(".addMatchers makes matchers available to any expectation", function() {
+  it("makes custom matchers available to this expectation", function() {
     var matchers = {
         toFoo: function() {},
         toBar: function() {}
       },
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
-    expectation = new j$.Expectation({});
+    expectation = new j$.Expectation({
+      customMatchers: matchers
+    });
 
     expect(expectation.toFoo).toBeDefined();
     expect(expectation.toBar).toBeDefined();
@@ -25,25 +25,6 @@ describe("Expectation", function() {
     expectation = new j$.Expectation({});
 
     expect(expectation.toQuux).toBeDefined();
-  });
-
-  it(".resetMatchers should keep only core matchers", function() {
-    var matchers = {
-        toFoo: function() {}
-      },
-      coreMatchers = {
-        toQuux: function() {}
-      },
-      expectation;
-
-    j$.Expectation.addCoreMatchers(coreMatchers);
-    j$.Expectation.addMatchers(matchers);
-    j$.Expectation.resetMatchers();
-
-    expectation = new j$.Expectation({});
-
-    expect(expectation.toQuux).toBeDefined();
-    expect(expectation.toFoo).toBeUndefined();
   });
 
   it("Factory builds an expectation/negative expectation", function() {
@@ -65,10 +46,9 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
       util: util,
+      customMatchers: matchers,
       customEqualityTesters: customEqualityTesters,
       actual: "an actual",
       addExpectationResult: addExpectationResult
@@ -94,10 +74,9 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
       util: util,
+      customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult
     });
@@ -121,10 +100,8 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
-      matchers: matchers,
+      customMatchers: matchers,
       util: util,
       actual: "an actual",
       addExpectationResult: addExpectationResult
@@ -155,10 +132,8 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
-      matchers: matchers,
+      customMatchers: matchers,
       util: util,
       actual: "an actual",
       addExpectationResult: addExpectationResult
@@ -191,10 +166,9 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
       actual: "an actual",
+      customMatchers: matchers,
       addExpectationResult: addExpectationResult
     });
 
@@ -225,10 +199,8 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
-      matchers: matchers,
+      customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult
     });
@@ -259,10 +231,8 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
-      matchers: matchers,
+      customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult,
       isNot: true
@@ -294,10 +264,8 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
-      matchers: matchers,
+      customMatchers: matchers,
       actual: "an actual",
       util: util,
       addExpectationResult: addExpectationResult,
@@ -332,10 +300,8 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
-      matchers: matchers,
+      customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult,
       isNot: true
@@ -365,10 +331,8 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
-      matchers: matchers,
+      customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult,
       isNot: true
@@ -403,10 +367,8 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    j$.Expectation.addMatchers(matchers);
-
     expectation = new j$.Expectation({
-      matchers: matchers,
+      customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult,
       isNot: true

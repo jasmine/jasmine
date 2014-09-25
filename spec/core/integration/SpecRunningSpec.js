@@ -159,7 +159,7 @@ describe("jasmine spec running", function () {
       ];
       expect(actions).toEqual(expected);
       done();
-    }
+    };
 
     env.addReporter({jasmineDone: assertions});
 
@@ -228,6 +228,257 @@ describe("jasmine spec running", function () {
     env.execute();
   });
 
+  it('should run beforeAlls before beforeEachs and afterAlls after afterEachs', function() {
+    var actions = [];
+
+    env.beforeAll(function() {
+      actions.push('runner beforeAll');
+    });
+
+    env.afterAll(function() {
+      actions.push('runner afterAll');
+    });
+
+    env.beforeEach(function () {
+      actions.push('runner beforeEach');
+    });
+
+    env.afterEach(function () {
+      actions.push('runner afterEach');
+    });
+
+    env.describe('Something', function() {
+      env.beforeEach(function() {
+        actions.push('inner beforeEach');
+      });
+
+      env.afterEach(function() {
+        actions.push('inner afterEach');
+      });
+
+      env.beforeAll(function() {
+        actions.push('inner beforeAll');
+      });
+
+      env.afterAll(function() {
+        actions.push('inner afterAll');
+      });
+
+      env.it('does something or other', function() {
+        actions.push('it');
+      });
+    });
+
+    var assertions = function() {
+      var expected = [
+        "runner beforeAll",
+        "inner beforeAll",
+        "runner beforeEach",
+        "inner beforeEach",
+        "it",
+        "inner afterEach",
+        "runner afterEach",
+        "inner afterAll",
+        "runner afterAll"
+      ];
+      expect(actions).toEqual(expected);
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+    env.execute();
+  });
+
+  it('should run beforeAlls and afterAlls as beforeEachs and afterEachs in the order declared when runnablesToRun is provided', function() {
+    var actions = [],
+      spec,
+      spec2;
+
+    env.beforeAll(function() {
+      actions.push('runner beforeAll');
+    });
+
+    env.afterAll(function() {
+      actions.push('runner afterAll');
+    });
+
+    env.beforeEach(function () {
+      actions.push('runner beforeEach');
+    });
+
+    env.afterEach(function () {
+      actions.push('runner afterEach');
+    });
+
+    env.describe('Something', function() {
+      env.beforeEach(function() {
+        actions.push('inner beforeEach');
+      });
+
+      env.afterEach(function() {
+        actions.push('inner afterEach');
+      });
+
+      env.beforeAll(function() {
+        actions.push('inner beforeAll');
+      });
+
+      env.afterAll(function() {
+        actions.push('inner afterAll');
+      });
+
+      spec = env.it('does something', function() {
+        actions.push('it');
+      });
+
+      spec2 = env.it('does something or other', function() {
+        actions.push('it2');
+      });
+    });
+
+    var assertions = function() {
+      var expected = [
+        "runner beforeAll",
+        "inner beforeAll",
+        "runner beforeEach",
+        "inner beforeEach",
+        "it",
+        "inner afterEach",
+        "runner afterEach",
+        "inner afterAll",
+        "runner afterAll",
+
+        "runner beforeAll",
+        "inner beforeAll",
+        "runner beforeEach",
+        "inner beforeEach",
+        "it2",
+        "inner afterEach",
+        "runner afterEach",
+        "inner afterAll",
+        "runner afterAll"
+      ];
+      expect(actions).toEqual(expected);
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+    env.execute([spec.id, spec2.id]);
+  });
+
+  describe('focused runnables', function() {
+    it('runs the relevant alls and eachs for each runnable', function(done) {
+      var actions = [];
+      env.beforeAll(function() {actions.push('beforeAll')});
+      env.afterAll(function() {actions.push('afterAll')});
+      env.beforeEach(function() {actions.push('beforeEach')});
+      env.afterEach(function() {actions.push('afterEach')});
+
+      env.fdescribe('a focused suite', function() {
+        env.it('is run', function() {
+          actions.push('spec in fdescribe')
+        });
+      });
+
+      env.describe('an unfocused suite', function() {
+        env.fit('has a focused spec', function() {
+          actions.push('focused spec')
+        });
+      });
+
+      var assertions = function() {
+        var expected = [
+          'beforeAll',
+          'beforeEach',
+          'spec in fdescribe',
+          'afterEach',
+          'afterAll',
+
+          'beforeAll',
+          'beforeEach',
+          'focused spec',
+          'afterEach',
+          'afterAll'
+        ];
+        expect(actions).toEqual(expected);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+      env.execute();
+    });
+
+    it('focused specs in focused suites cause non-focused siblings to not run', function(done){
+      var actions = [];
+
+      env.fdescribe('focused suite', function() {
+        env.it('unfocused spec', function() {
+          actions.push('unfocused spec')
+        });
+        env.fit('focused spec', function() {
+          actions.push('focused spec')
+        });
+      });
+
+      var assertions = function() {
+        var expected = ['focused spec'];
+        expect(actions).toEqual(expected);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+      env.execute();
+    });
+
+    it('focused suites in focused suites cause non-focused siblings to not run', function(done){
+      var actions = [];
+
+      env.fdescribe('focused suite', function() {
+        env.it('unfocused spec', function() {
+          actions.push('unfocused spec')
+        });
+        env.fdescribe('inner focused suite', function() {
+          env.it('inner spec', function() {
+            actions.push('inner spec');
+          });
+        });
+      });
+
+      var assertions = function() {
+        var expected = ['inner spec'];
+        expect(actions).toEqual(expected);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+      env.execute();
+    });
+
+    it('focused runnables unfocus ancestor focused suites', function() {
+      var actions = [];
+
+      env.fdescribe('focused suite', function() {
+        env.it('unfocused spec', function() {
+          actions.push('unfocused spec')
+        });
+        env.describe('inner focused suite', function() {
+          env.fit('focused spec', function() {
+            actions.push('focused spec');
+          });
+        });
+      });
+
+      var assertions = function() {
+        var expected = ['focused spec'];
+        expect(actions).toEqual(expected);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+      env.execute();
+    });
+  });
+
   it("shouldn't run disabled suites", function(done) {
     var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
     suite = env.describe('A Suite', function() {
@@ -236,10 +487,36 @@ describe("jasmine spec running", function () {
       });
     });
 
-    suite.execute(function() {
+    var assertions = function() {
       expect(specInADisabledSuite).not.toHaveBeenCalled();
       done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
+  });
+
+  it("should allow top level suites to be disabled", function() {
+    var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
+      otherSpec = jasmine.createSpy("otherSpec");
+
+    env.xdescribe('A disabled suite', function() {
+      env.it('spec inside a disabled suite', specInADisabledSuite);
     });
+    env.describe('Another suite', function() {
+      env.it('another spec', otherSpec);
+    });
+
+    var assertions = function() {
+      expect(specInADisabledSuite).not.toHaveBeenCalled();
+      expect(otherSpec).toHaveBeenCalled();
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
   });
 
   it("should set all pending specs to pending when a suite is run", function(done) {
@@ -253,7 +530,6 @@ describe("jasmine spec running", function () {
       done();
     });
   });
-
 
   // TODO: is this useful? It doesn't catch syntax errors
   xit("should recover gracefully when there are errors in describe functions", function() {
