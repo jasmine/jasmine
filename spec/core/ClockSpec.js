@@ -389,7 +389,7 @@ describe("Clock (acceptance)", function() {
 
     clock.tick(6);
     expect(delayedFn1).toHaveBeenCalled();
-    expect(delayedFn2).toHaveBeenCalled();  
+    expect(delayedFn2).toHaveBeenCalled();
   });
 
   it("does not mock the Date object by default", function() {

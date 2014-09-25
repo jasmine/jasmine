@@ -61,6 +61,7 @@ getJasmineRequireObj().MockDate = function() {
     }
 
     function createDateProperties() {
+      FakeDate.prototype = GlobalDate.prototype;
 
       FakeDate.now = function() {
         if (GlobalDate.now) {

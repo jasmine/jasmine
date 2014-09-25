@@ -75,6 +75,7 @@ describe("FakeDate", function() {
 
     mockDate.install();
     expect(new fakeGlobal.Date()).toEqual(jasmine.any(Date));
+    expect(new fakeGlobal.Date() instanceof fakeGlobal.Date).toBe(true);
   });
 
   it("fakes current time when using Date.now()", function() {
