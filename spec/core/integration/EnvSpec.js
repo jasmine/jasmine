@@ -1,15 +1,15 @@
 describe("Env integration", function() {
   beforeEach(function() {
     jasmine.addMatchers({
-      toHaveFailedExpecationsForSuite: function(util, customeEqualityTesters) {
+      toHaveFailedExpecationsForRunnable: function(util, customeEqualityTesters) {
         return {
-          compare: function(actual, suiteName, expectedFailures) {
-            var foundSuite = false, expectations = true, foundFailures = [];
+          compare: function(actual, fullName, expectedFailures) {
+            var foundRunnable = false, expectations = true, foundFailures = [];
             for (var i = 0; i < actual.calls.count(); i++) {
               var args = actual.calls.argsFor(i)[0];
 
-              if (args.description === suiteName) {
-                foundSuite = true;
+              if (args.fullName === fullName) {
+                foundRunnable = true;
 
                 for (var j = 0; j < args.failedExpectations.length; j++) {
                   foundFailures.push(args.failedExpectations[j].message);
@@ -30,9 +30,9 @@ describe("Env integration", function() {
             }
 
             return {
-              pass: foundSuite && expectations,
-              message: !foundSuite ? 'The suite "' + suiteName + '" never finished' :
-                'Expected suite "' + suiteName + '" to have failures ' + jasmine.pp(expectedFailures) + ' but it had ' + jasmine.pp(foundFailures)
+              pass: foundRunnable && expectations,
+              message: !foundRunnable ? 'The runnable "' + fullName + '" never finished' :
+                'Expected runnable "' + fullName + '" to have failures ' + jasmine.pp(expectedFailures) + ' but it had ' + jasmine.pp(foundFailures)
             };
           }
         };
@@ -421,7 +421,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
           'Expected 1 to equal 2.',
           'Expected 2 to equal 3.'
         ]);
@@ -448,7 +448,7 @@ describe("Env integration", function() {
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
         reporter.jasmineDone.and.callFake(function() {
-          expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('outer suite', [
+          expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('outer suite', [
             'Expected 1 to equal 2.',
             'Expected 2 to equal 3.'
           ]);
@@ -477,7 +477,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
           (/^Error: After All Exception/)
         ]);
         done();
@@ -502,7 +502,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
           'Expected 1 to equal 2.'
         ]);
         done();
@@ -530,7 +530,7 @@ describe("Env integration", function() {
 
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
           (/^Error: After All Exception/)
         ]);
         done();
@@ -851,7 +851,7 @@ describe("Env integration", function() {
       reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForSuite('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
           (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
         ]);
         done();
@@ -878,40 +878,25 @@ describe("Env integration", function() {
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-          fullName: 'suite beforeAll times out',
-          failedExpectations: [jasmine.objectContaining({
-            message: 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'
-          })]
-        }));
+        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite beforeAll times out', [
+          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
+        ]);
 
-        expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
-          fullName: 'suite afterAll',
-          failedExpectations: [jasmine.objectContaining({
-            message: 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'
-          })]
-        }));
+        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('suite afterAll', [
+          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
+        ]);
 
-        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-          fullName: 'suite beforeEach times out',
-          failedExpectations: [jasmine.objectContaining({
-            message: 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'
-          })]
-        }));
+        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite beforeEach times out', [
+          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
+        ]);
 
-        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-          fullName: 'suite afterEach times out',
-          failedExpectations: [jasmine.objectContaining({
-            message: 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'
-          })]
-        }));
+        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite afterEach times out', [
+          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
+        ]);
 
-        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-          fullName: 'suite it times out',
-          failedExpectations: [jasmine.objectContaining({
-            message: 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'
-          })]
-        }));
+        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite it times out', [
+          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
+        ]);
 
         done();
       });
