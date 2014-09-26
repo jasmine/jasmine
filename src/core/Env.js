@@ -333,7 +333,7 @@ getJasmineRequireObj().Env = function(j$) {
       return runnablesExplictlySet;
     };
 
-    var specFactory = function(description, fn, suite) {
+    var specFactory = function(description, fn, suite, timeout) {
       totalSpecsDefined++;
       var spec = new j$.Spec({
         id: getNextSpecId(),
@@ -348,7 +348,11 @@ getJasmineRequireObj().Env = function(j$) {
         expectationResultFactory: expectationResultFactory,
         queueRunnerFactory: queueRunnerFactory,
         userContext: function() { return suite.clonedSharedUserContext(); },
-        queueableFn: { fn: fn, type: 'it', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } }
+        queueableFn: {
+          fn: fn,
+          type: 'it',
+          timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+        }
       });
 
       runnableLookupTable[spec.id] = spec;
@@ -372,20 +376,20 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
-    this.it = function(description, fn) {
-      var spec = specFactory(description, fn, currentDeclarationSuite);
+    this.it = function(description, fn, timeout) {
+      var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
       currentDeclarationSuite.addChild(spec);
       return spec;
     };
 
-    this.xit = function(description, fn) {
-      var spec = this.it(description, fn);
+    this.xit = function() {
+      var spec = this.it.apply(this, arguments);
       spec.pend();
       return spec;
     };
 
-    this.fit = function(description, fn ){
-      var spec = this.it(description, fn);
+    this.fit = function(){
+      var spec = this.it.apply(this, arguments);
 
       focusedRunnables.push(spec.id);
       unfocusAncestor();
@@ -400,20 +404,36 @@ getJasmineRequireObj().Env = function(j$) {
       return currentRunnable().expect(actual);
     };
 
-    this.beforeEach = function(beforeEachFunction) {
-      currentDeclarationSuite.beforeEach({ fn: beforeEachFunction, type: 'beforeEach', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+    this.beforeEach = function(beforeEachFunction, timeout) {
+      currentDeclarationSuite.beforeEach({
+        fn: beforeEachFunction,
+        type: 'beforeEach',
+        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+      });
     };
 
-    this.beforeAll = function(beforeAllFunction) {
-      currentDeclarationSuite.beforeAll({ fn: beforeAllFunction, type: 'beforeAll', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+    this.beforeAll = function(beforeAllFunction, timeout) {
+      currentDeclarationSuite.beforeAll({
+        fn: beforeAllFunction,
+        type: 'beforeAll',
+        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+      });
     };
 
-    this.afterEach = function(afterEachFunction) {
-      currentDeclarationSuite.afterEach({ fn: afterEachFunction, type: 'afterEach', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+    this.afterEach = function(afterEachFunction, timeout) {
+      currentDeclarationSuite.afterEach({
+        fn: afterEachFunction,
+        type: 'afterEach',
+        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+      });
     };
 
-    this.afterAll = function(afterAllFunction) {
-      currentDeclarationSuite.afterAll({ fn: afterAllFunction, type: 'afterAll', timeout: function() { return j$.DEFAULT_TIMEOUT_INTERVAL; } });
+    this.afterAll = function(afterAllFunction, timeout) {
+      currentDeclarationSuite.afterAll({
+        fn: afterAllFunction,
+        type: 'afterAll',
+        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+      });
     };
 
     this.pending = function() {

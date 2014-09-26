@@ -873,6 +873,98 @@ describe("Env integration", function() {
       env.execute();
     });
 
+    it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
+      var env = new j$.Env(),
+          reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']);
+
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          fullName: 'suite beforeAll times out',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'
+          })]
+        }));
+
+        expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          fullName: 'suite afterAll',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'
+          })]
+        }));
+
+        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          fullName: 'suite beforeEach times out',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'
+          })]
+        }));
+
+        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          fullName: 'suite afterEach times out',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'
+          })]
+        }));
+
+        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          fullName: 'suite it times out',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.'
+          })]
+        }));
+
+        done();
+      });
+
+      env.addReporter(reporter);
+      j$.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
+      env.describe('suite', function() {
+        env.describe('beforeAll', function() {
+          env.beforeAll(function(innerDone) {
+            jasmine.clock().tick(5001);
+            innerDone();
+          }, 5000);
+
+          env.it('times out', function() {});
+        });
+
+        env.describe('afterAll', function() {
+          env.afterAll(function(innerDone) {
+            jasmine.clock().tick(2001);
+            innerDone();
+          }, 2000);
+
+          env.it('times out', function() {});
+        });
+
+        env.describe('beforeEach', function() {
+          env.beforeEach(function(innerDone) {
+            jasmine.clock().tick(1001);
+            innerDone();
+          }, 1000);
+
+          env.it('times out', function() {});
+        });
+
+        env.describe('afterEach', function() {
+          env.afterEach(function(innerDone) {
+            jasmine.clock().tick(4001);
+            innerDone();
+          }, 4000);
+
+          env.it('times out', function() {});
+        });
+
+        env.it('it times out', function(innerDone) {
+          jasmine.clock().tick(6001);
+          innerDone();
+        }, 6000);
+      });
+
+      env.execute();
+    });
+
     it('explicitly fails an async spec', function(done) {
       var env = new j$.Env(),
       specDone = jasmine.createSpy('specDone');
