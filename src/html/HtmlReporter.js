@@ -55,7 +55,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     };
 
     this.suiteDone = function(result) {
-      if (result.failedExpectations && result.failedExpectations.length > 0) {
+      if (result.status == 'failed') {
         failedSuites.push(result);
       }
 

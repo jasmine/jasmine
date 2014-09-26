@@ -43,7 +43,6 @@ getJasmineRequireObj().Suite = function() {
 
   Suite.prototype.disable = function() {
     this.disabled = true;
-    this.result.status = 'disabled';
   };
 
   Suite.prototype.beforeEach = function(fn) {
@@ -64,6 +63,18 @@ getJasmineRequireObj().Suite = function() {
 
   Suite.prototype.addChild = function(child) {
     this.children.push(child);
+  };
+
+  Suite.prototype.status = function() {
+    if (this.disabled) {
+      return 'disabled';
+    }
+
+    if (this.result.failedExpectations.length > 0) {
+      return 'failed';
+    } else {
+      return 'finished';
+    }
   };
 
   Suite.prototype.execute = function(onComplete) {
@@ -96,7 +107,7 @@ getJasmineRequireObj().Suite = function() {
     });
 
     function complete() {
-      self.result.status = self.disabled ? 'disabled' : 'finished';
+      self.result.status = self.status();
       self.resultCallback(self.result);
 
       if (onComplete) {

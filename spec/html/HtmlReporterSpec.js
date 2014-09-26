@@ -194,8 +194,8 @@ describe("New HtmlReporter", function() {
       reporter.initialize();
 
       reporter.jasmineStarted({});
-      reporter.suiteDone({ failedExpectations: [{ message: 'My After All Exception' }] });
-      reporter.suiteDone({ failedExpectations: [{ message: 'My Other Exception' }] });
+      reporter.suiteDone({ status: 'failed', failedExpectations: [{ message: 'My After All Exception' }] });
+      reporter.suiteDone({ status: 'failed', failedExpectations: [{ message: 'My Other Exception' }] });
       reporter.jasmineDone({});
 
       var alertBars = container.querySelectorAll(".alert .bar");

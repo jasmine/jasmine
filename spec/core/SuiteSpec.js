@@ -301,4 +301,14 @@ describe("Suite", function() {
       failedExpectations: []
     });
   });
+
+  it('has a status of failed if any afterAll expectations have failed', function() {
+    var suite = new j$.Suite({
+      expectationResultFactory: function() { return 'hi'; }
+    });
+    suite.addChild({ result: { status: 'done' } });
+
+    suite.addExpectationResult(false);
+    expect(suite.status()).toBe('failed');
+  });
 });
