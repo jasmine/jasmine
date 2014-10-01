@@ -71,6 +71,20 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         }, queueableFn.timeout()]]);
       }
 
+      next.continuation = function(innerFn) {
+        var wrapperFn = function() {
+          try {
+            innerFn.apply(self.userContext, arguments);
+          } catch (e) {
+            // TODO: Needs test coverage. Not sure how best to do that.
+            handleException(e);
+            next();
+          }
+        };
+        return wrapperFn;
+      };
+      next.done = next;
+
       try {
         queueableFn.fn.call(self.userContext, next);
       } catch (e) {

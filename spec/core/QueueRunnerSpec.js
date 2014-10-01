@@ -93,6 +93,70 @@ describe("QueueRunner", function() {
       expect(onComplete).toHaveBeenCalled();
     });
 
+    it("supports continuations of asynchronous functions", function() {
+      var onComplete = jasmine.createSpy('onComplete'),
+        fnCallback = jasmine.createSpy('fnCallback'),
+        contCallback1 = jasmine.createSpy('contCallback1'),
+        contCallback2 = jasmine.createSpy('contCallback2'),
+        afterCallback = jasmine.createSpy('afterCallback'),
+        fn1 = function(async) {
+          var cont1 = async.continuation(function(a){
+                contCallback1(a);
+                setTimeout(
+                  function(){ cont2(1,2); },
+                  100
+                );
+              }),
+            cont2 = async.continuation(function(a,b){
+              contCallback2(a,b);
+              setTimeout(async.done, 100);
+            });
+          fnCallback();
+          setTimeout(
+            function(){ cont1('xyz'); },
+            100
+          );
+        },
+        fn2 = function(done) {
+          afterCallback();
+          setTimeout(done, 100);
+        },
+        queueRunner = new j$.QueueRunner({
+          fns: [fn1, fn2],
+          onComplete: onComplete
+        });
+
+      queueRunner.execute();
+
+      expect(fnCallback).toHaveBeenCalled();
+      expect(contCallback1).not.toHaveBeenCalled();
+      expect(contCallback2).not.toHaveBeenCalled();
+      expect(afterCallback).not.toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(contCallback1).toHaveBeenCalledWith('xyz');
+      expect(contCallback2).not.toHaveBeenCalled();
+      expect(afterCallback).not.toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(contCallback2).toHaveBeenCalledWith(1,2);
+      expect(afterCallback).not.toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(afterCallback).toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(onComplete).toHaveBeenCalled();
+    })
+
     it("sets a timeout if requested for asynchronous functions so they don't go on forever", function() {
       var timeout = 3,
         beforeFn = { fn: function(done) { }, type: 'before', timeout: function() { return timeout; } },
