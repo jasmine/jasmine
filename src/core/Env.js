@@ -350,7 +350,6 @@ getJasmineRequireObj().Env = function(j$) {
         userContext: function() { return suite.clonedSharedUserContext(); },
         queueableFn: {
           fn: fn,
-          type: 'it',
           timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
         }
       });
@@ -407,7 +406,6 @@ getJasmineRequireObj().Env = function(j$) {
     this.beforeEach = function(beforeEachFunction, timeout) {
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
-        type: 'beforeEach',
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
       });
     };
@@ -415,7 +413,6 @@ getJasmineRequireObj().Env = function(j$) {
     this.beforeAll = function(beforeAllFunction, timeout) {
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
-        type: 'beforeAll',
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
       });
     };
@@ -423,7 +420,6 @@ getJasmineRequireObj().Env = function(j$) {
     this.afterEach = function(afterEachFunction, timeout) {
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
-        type: 'afterEach',
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
       });
     };
@@ -431,7 +427,6 @@ getJasmineRequireObj().Env = function(j$) {
     this.afterAll = function(afterAllFunction, timeout) {
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
-        type: 'afterAll',
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
       });
     };
