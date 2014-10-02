@@ -973,6 +973,12 @@ describe("Env integration", function() {
             })]
           }));
           expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+            description: 'fails via the done callback',
+            failedExpectations: [jasmine.objectContaining({
+              message: 'Failed: done failed'
+            })]
+          }));
+          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
             description: 'has a message from an Error',
             failedExpectations: [jasmine.objectContaining({
               message: 'Failed: error message'
@@ -994,6 +1000,12 @@ describe("Env integration", function() {
           setTimeout(function() {
             env.fail('messy message');
             innerDone();
+          }, 1);
+        });
+
+        env.it('fails via the done callback', function(innerDone) {
+          setTimeout(function() {
+            innerDone.fail('done failed');
           }, 1);
         });
 

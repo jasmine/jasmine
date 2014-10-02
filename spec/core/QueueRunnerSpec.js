@@ -93,6 +93,28 @@ describe("QueueRunner", function() {
       expect(onComplete).toHaveBeenCalled();
     });
 
+    it("explicitly fails an async function with a provided fail function and moves to the next function", function() {
+      var queueableFn1 = { fn: function(done) {
+          setTimeout(function() { done.fail('foo'); }, 100);
+        } },
+        queueableFn2 = { fn: jasmine.createSpy('fn2') },
+        failFn = jasmine.createSpy('fail'),
+        queueRunner = new j$.QueueRunner({
+          queueableFns: [queueableFn1, queueableFn2],
+          fail: failFn
+        });
+
+      queueRunner.execute();
+
+      expect(failFn).not.toHaveBeenCalled();
+      expect(queueableFn2.fn).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(failFn).toHaveBeenCalledWith('foo');
+      expect(queueableFn2.fn).toHaveBeenCalled();
+    });
+
     it("sets a timeout if requested for asynchronous functions so they don't go on forever", function() {
       var timeout = 3,
         beforeFn = { fn: function(done) { }, type: 'before', timeout: function() { return timeout; } },

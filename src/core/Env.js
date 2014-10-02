@@ -170,6 +170,7 @@ getJasmineRequireObj().Env = function(j$) {
       options.catchException = catchException;
       options.clearStack = options.clearStack || clearStack;
       options.timer = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
+      options.fail = self.fail;
 
       new j$.QueueRunner(options).execute();
     };
