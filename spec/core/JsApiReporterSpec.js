@@ -201,11 +201,9 @@ describe("JsApiReporter", function() {
       expect(reporter.suiteResults(1, 1)).toEqual([suiteResult2]);
     });
 
-    describe("when the results do not exist", function() {
-      it("should return a slice of shorter length", function() {
-        expect(reporter.suiteResults(0, 3)).toEqual([suiteResult1, suiteResult2]);
-        expect(reporter.suiteResults(2, 3)).toEqual([]);
-      });
+    it("returns nothing for out of bounds indicies", function() {
+      expect(reporter.suiteResults(0, 3)).toEqual([suiteResult1, suiteResult2]);
+      expect(reporter.suiteResults(2, 3)).toEqual([]);
     });
   });
 
