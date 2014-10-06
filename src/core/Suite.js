@@ -35,7 +35,7 @@ getJasmineRequireObj().Suite = function() {
     var fullName = this.description;
     for (var parentSuite = this.parentSuite; parentSuite; parentSuite = parentSuite.parentSuite) {
       if (parentSuite.parentSuite) {
-        fullName = parentSuite.description + ' ' + fullName;
+        fullName = parentSuite.description + ', ' + fullName;
       }
     }
     return fullName;

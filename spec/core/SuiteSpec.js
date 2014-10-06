@@ -34,7 +34,7 @@ describe("Suite", function() {
         parentSuite: parentSuite
       });
 
-    expect(suite.getFullName()).toEqual("I am a parent suite I am a suite");
+    expect(suite.getFullName()).toEqual("I am a parent suite, I am a suite");
   });
 
   it("adds before functions in order of needed execution", function() {

@@ -878,23 +878,23 @@ describe("Env integration", function() {
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite beforeAll times out', [
+        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite, beforeAll: times out', [
           (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
         ]);
 
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('suite afterAll', [
+        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('suite, afterAll', [
           (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
         ]);
 
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite beforeEach times out', [
+        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite, beforeEach: times out', [
           (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
         ]);
 
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite afterEach times out', [
+        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite, afterEach: times out', [
           (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
         ]);
 
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite it times out', [
+        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite: times out', [
           (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
         ]);
 
@@ -941,7 +941,7 @@ describe("Env integration", function() {
           env.it('times out', function() {});
         });
 
-        env.it('it times out', function(innerDone) {
+        env.it('times out', function(innerDone) {
           jasmine.clock().tick(6001);
           innerDone();
         }, 6000);
@@ -1130,9 +1130,9 @@ describe("Env integration", function() {
       });
     });
 
-    expect(topLevelSpec.getFullName()).toBe("my tests are sometimes top level");
-    expect(nestedSpec.getFullName()).toBe("my tests are sometimes singly nested");
-    expect(doublyNestedSpec.getFullName()).toBe("my tests are sometimes even doubly nested");
+    expect(topLevelSpec.getFullName()).toBe("my tests: are sometimes top level");
+    expect(nestedSpec.getFullName()).toBe("my tests, are sometimes: singly nested");
+    expect(doublyNestedSpec.getFullName()).toBe("my tests, are sometimes, even: doubly nested");
   });
 
   it("Custom equality testers should be per spec", function(done) {
