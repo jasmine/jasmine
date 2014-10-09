@@ -182,6 +182,9 @@ describe("JsApiReporter", function() {
     var reporter, suiteResult1, suiteResult2;
     beforeEach(function() {
       reporter = new j$.JsApiReporter({});
+      suiteStarted1 = {
+        id: 1
+      };
       suiteResult1 = {
         id: 1,
         status: 'failed',
@@ -192,8 +195,13 @@ describe("JsApiReporter", function() {
         status: 'finished'
       };
 
+      reporter.suiteStarted(suiteStarted1);
       reporter.suiteDone(suiteResult1);
       reporter.suiteDone(suiteResult2);
+    });
+
+    it('should not include suite starts', function(){
+      expect(reporter.suiteResults(0,3).length).toEqual(2);
     });
 
     it("should return a slice of results", function() {
