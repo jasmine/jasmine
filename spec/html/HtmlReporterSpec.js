@@ -65,8 +65,8 @@ describe("New HtmlReporter", function() {
 
   describe("when a spec is done", function() {
     it("logs errors to the console and prints a special symbol if it is an empty spec", function() {
-      if (!window.console) {
-        window.console = { error: function(){} };
+      if (typeof console === "undefined") {
+        console = { error: function(){} };
       }
 
       var env = new j$.Env(),

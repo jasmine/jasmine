@@ -200,6 +200,10 @@ describe("JsApiReporter", function() {
       reporter.suiteDone(suiteResult2);
     });
 
+    it('should not include suite starts', function(){
+      expect(reporter.suiteResults(0,3).length).toEqual(2);
+    });
+
     it("should return a slice of results", function() {
       expect(reporter.suiteResults(0, 1)).toEqual([suiteResult1]);
       expect(reporter.suiteResults(1, 1)).toEqual([suiteResult2]);
