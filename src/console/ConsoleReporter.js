@@ -6,6 +6,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
   };
 
   function ConsoleReporter(options) {
+    console.warn('ConsoleReporter is deprecated and will be removed in a future version.');
     var print = options.print,
       showColors = options.showColors || false,
       onComplete = options.onComplete || function() {},
