@@ -9,7 +9,7 @@ describe("ConsoleReporter", function() {
           output += str;
         },
         getOutput: function() {
-          return output;
+          return output.replace('ConsoleReporter is deprecated and will be removed in a future version.', '');
         },
         clear: function() {
           output = "";
