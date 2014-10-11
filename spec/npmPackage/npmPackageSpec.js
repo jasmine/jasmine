@@ -1,21 +1,23 @@
 describe('npm package', function() {
-  beforeEach(function() {
+  var path = require('path'),
+      fs = require('fs');
+
+  beforeAll(function() {
     var shell = require('shelljs'),
         pack = shell.exec('npm pack', { silent: true });
 
     this.tarball = pack.output.split('\n')[0];
     this.tmpDir = '/tmp/jasmine-core';
 
-    var path = this.path = require('path');
-    var fs = this.fs = require('fs');
-
-    this.fs.mkdirSync(this.tmpDir);
+    fs.mkdirSync(this.tmpDir);
 
     var untar = shell.exec('tar -xzf ' + this.tarball + ' -C ' + this.tmpDir, { silent: true });
     expect(untar.code).toBe(0);
 
-    this.packagedCore = require(this.path.join(this.tmpDir, 'package/lib/jasmine-core.js'));
+    this.packagedCore = require(path.join(this.tmpDir, 'package/lib/jasmine-core.js'));
+  });
 
+  beforeEach(function() {
     jasmine.addMatchers({
       toExistInPath: function(util, customEquality) {
         return {
@@ -30,8 +32,7 @@ describe('npm package', function() {
     });
   });
 
-  afterEach(function() {
-    var path = this.path, fs = this.fs;
+  afterAll(function() {
     var cleanup = function (parent, fileOrFolder) {
       var fullPath = path.join(parent, fileOrFolder);
       if (fs.statSync(fullPath).isFile()) {
@@ -48,11 +49,11 @@ describe('npm package', function() {
   });
 
   it('has a root path', function() {
-    expect(this.packagedCore.files.path).toEqual(this.fs.realpathSync(this.path.resolve(this.tmpDir, 'package/lib/jasmine-core')));
+    expect(this.packagedCore.files.path).toEqual(fs.realpathSync(path.resolve(this.tmpDir, 'package/lib/jasmine-core')));
   });
 
   it('has a bootDir', function() {
-    expect(this.packagedCore.files.bootDir).toEqual(this.fs.realpathSync(this.path.resolve(this.tmpDir, 'package/lib/jasmine-core')));
+    expect(this.packagedCore.files.bootDir).toEqual(fs.realpathSync(path.resolve(this.tmpDir, 'package/lib/jasmine-core')));
   });
 
   it('has jsFiles', function() {
@@ -93,8 +94,8 @@ describe('npm package', function() {
   });
 
   it('has an imagesDir', function() {
-    expect(this.packagedCore.files.imagesDir).toEqual(this.fs.realpathSync(this.path.resolve(this.tmpDir, 'package/images')));
-    var images = this.fs.readdirSync(this.path.resolve(this.tmpDir, 'package/images'));
+    expect(this.packagedCore.files.imagesDir).toEqual(fs.realpathSync(path.resolve(this.tmpDir, 'package/images')));
+    var images = fs.readdirSync(path.resolve(this.tmpDir, 'package/images'));
 
     expect(images).toContain('jasmine-horizontal.png');
     expect(images).toContain('jasmine-horizontal.svg');
