@@ -52,6 +52,13 @@ When ready to release - specs are all green and the stories are done:
 1. `npm adduser` to save your credentials locally
 1. `npm publish .` to publish what's in `package.json`
 
+### Release the docs
+
+Probably only need to do this when releasing a minor version, and not a patch version.
+
+1. `cp edge ${version}` to copy the current edge docs to the new version
+1. Add a link to the new version in `index.html`
+
 ### Finally
 
 1. Visit the [Releases page for Jasmine](https://github.com/pivotal/jasmine/releases), find the tag just pushed.
