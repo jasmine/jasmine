@@ -14,7 +14,7 @@ describe("Spec", function() {
     expect(j$.Spec.isPendingSpecException(fakeError)).toBe(true);
   });
 
-  it("#isPendingSpecException returns true for a pending spec exception", function() {
+  it("#isPendingSpecException returns false for not a pending spec exception", function() {
     var e = new Error("foo");
 
     expect(j$.Spec.isPendingSpecException(e)).toBe(false);
