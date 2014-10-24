@@ -3,6 +3,7 @@
     fs = require("fs");
 
   var glob = require("glob");
+  require('es6-promise').polyfill();
 
   var j$Require = require(path.join(__dirname, "../../src/core/requireCore.js"));
 
