@@ -60,5 +60,6 @@ For the Jasmine Python Egg:<br>
 ### Maintainers Emeritus
 
 * [Christian Williams](mailto:antixian666@gmail.com), Cloud Foundry
+* Sheel Choksi
 
 Copyright (c) 2008-2014 Pivotal Labs. This software is licensed under the MIT License.
