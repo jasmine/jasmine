@@ -53,12 +53,12 @@ For the Jasmine Python Egg:<br>
 
 ## Maintainers
 
-* [Davis W. Frank](mailto:dwfrank@pivotallabs.com), Pivotal Labs
-* [Rajan Agaskar](mailto:rajan@pivotallabs.com), Pivotal Labs
-* [Sheel Choksi](mailto:schoksi@pivotallabs.com), Pivotal Labs
+* [Davis W. Frank](mailto:dwfrank@pivotal.io), Pivotal Labs
+* [Rajan Agaskar](mailto:rajan@pivotal.io), Pivotal Labs
+* [Gregg Van Hove](mailto:ghove@pivotal.io), Pivotal Labs
 
 ### Maintainers Emeritus
 
-* [Christian Williams](mailto:antixian666@gmail.com), Square
+* [Christian Williams](mailto:antixian666@gmail.com), Cloud Foundry
 
 Copyright (c) 2008-2014 Pivotal Labs. This software is licensed under the MIT License.
