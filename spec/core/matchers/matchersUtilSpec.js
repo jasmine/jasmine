@@ -207,6 +207,15 @@ describe("matchersUtil", function() {
     it("fails when actual is null", function() {
       expect(j$.matchersUtil.contains(null, 'A')).toBe(false);
     });
+
+    it("passes with array-like objects", function() {
+      var capturedArgs;
+      function testFunction(){
+        capturedArgs = arguments;
+      }
+      testFunction('foo', 'bar');
+      expect(capturedArgs).toContain('bar');
+    });
   });
 
   describe("buildMessage", function() {
