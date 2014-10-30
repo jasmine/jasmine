@@ -174,7 +174,7 @@ describe("matchersUtil", function() {
 
   describe("contains", function() {
     it("passes when expected is a substring of actual", function() {
-      expect(j$.matchersUtil.contains("ABC", "B")).toBe(true);
+      expect(j$.matchersUtil.contains("ABC", "BC")).toBe(true);
     });
 
     it("fails when expected is a not substring of actual", function() {
@@ -206,6 +206,15 @@ describe("matchersUtil", function() {
 
     it("fails when actual is null", function() {
       expect(j$.matchersUtil.contains(null, 'A')).toBe(false);
+    });
+
+    it("passes with array-like objects", function() {
+      var capturedArgs = null;
+      function testFunction(){
+        capturedArgs = arguments;
+      }
+      testFunction('foo', 'bar');
+      expect(j$.matchersUtil.contains(capturedArgs, 'bar')).toBe(true);
     });
   });
 
