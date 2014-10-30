@@ -19,7 +19,12 @@ getJasmineRequireObj().matchersUtil = function(j$) {
         }
         return false;
       }
-      return !!haystack && haystack.indexOf(needle) >= 0;
+      if (!haystack) {
+        return false;
+      } else {
+        var indexOf = haystack.indexOf || Array.prototype.indexOf;
+        return indexOf.call(haystack, needle) >= 0;
+      }
     },
 
     buildFailureMessage: function() {
