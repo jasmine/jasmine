@@ -10,6 +10,18 @@ grunt.registerTask("build:compileSpecRunner",
             { data: { jasmineVersion: global.jasmineVersion }});
 
         grunt.file.write(standaloneTmpDir("SpecRunner.html"), runnerHtml);
+
+        var amdRunnerHtml = grunt.template.process(
+            grunt.file.read("grunt/templates/AmdSpecRunner.html.jst"),
+            { data: { jasmineVersion: global.jasmineVersion }});
+
+        grunt.file.write(standaloneTmpDir("AmdSpecRunner.html"), amdRunnerHtml);
+
+        var amdRunnerJs = grunt.template.process(
+            grunt.file.read("grunt/templates/amdSpecRunner.js.jst"),
+            { data: { jasmineVersion: global.jasmineVersion }});
+
+        grunt.file.write(standaloneTmpDir("amdSpecRunner.js"), amdRunnerJs);
     }
 );
 

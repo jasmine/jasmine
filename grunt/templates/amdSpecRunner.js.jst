@@ -1,0 +1,31 @@
+define([], function() {
+  "use strict";
+
+  // Shim jasmine. jasmine.js creates the `window.jasmineRequire` global. jasmine-html.js adds additional properties to that global.
+  require.config({
+    baseUrl: ".",
+    paths: {
+      "jasmineRequire": "lib/jasmine-<%= jasmineVersion %>/jasmine",
+      "jasmineRequireHtml": "lib/jasmine-<%= jasmineVersion %>/jasmine-html",
+      "amd": "lib/jasmine-<%= jasmineVersion %>/amd"
+    },
+    shim: {
+      "jasmineRequire": {
+        exports: "jasmineRequire"
+      },
+      "jasmineRequireHtml": {
+        deps: ["jasmineRequire"],
+        exports: "jasmineRequire"
+      }
+    }
+  });
+
+  // Load the HTML bootloader and all of the specs
+  require(["spec/amdSpecList", "amd/boot"], function (amdSpecList, boot) {
+    require(amdSpecList, function() {
+      // All of the specs have been loaded. Initialize the HTML Reporter and execute the environment.
+      boot.initializeHtmlReporter();
+      boot.execute();
+    });
+  });
+});

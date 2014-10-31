@@ -50,6 +50,26 @@ module.exports = {
         cwd: dist("tmp")
       },
       {
+        src: [ "AmdSpecRunner.html" ],
+        dest: root(""),
+        expand: true,
+        cwd: dist("tmp")
+      },
+      {
+        src: [ "amdSpecRunner.js" ],
+        dest: standaloneLibDir + "/amd",
+        expand: true,
+        cwd: dist("tmp")
+      },
+      {
+        src: [
+          "*.js",
+        ],
+        dest: standaloneLibDir + "/amd",
+        expand: true,
+        cwd: libJasmineCore("amd")
+      },
+      {
         src: [ "*.js" ],
         dest: "src",
         expand: true,
