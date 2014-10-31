@@ -36,7 +36,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       if (queueableFn.fn.length > 0) {
         return attemptAsync(queueableFn);
       } else {
-        attemptSync(queueableFn);
+        var possiblePromise = attemptSync(queueableFn);
+
+        if (possiblePromise && typeof possiblePromise.then === 'function') {
+          return handlePromise(possiblePromise);
+        }
       }
     }
 
@@ -48,13 +52,36 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     function attemptSync(queueableFn) {
       try {
-        queueableFn.fn.call(self.userContext);
+        return queueableFn.fn.call(self.userContext);
       } catch (e) {
-        handleException(e, queueableFn);
+        handleException(e);
       }
     }
 
     function attemptAsync(queueableFn) {
+      var next = createNextStep();
+      try {
+        queueableFn.fn.call(self.userContext, next);
+      } catch (e) {
+        handleException(e);
+        next();
+      }
+    }
+
+    function onException(e) {
+      self.onException(e);
+    }
+
+    function handleException(e) {
+      onException(e);
+      if (!self.catchException(e)) {
+        //TODO: set a var when we catch an exception and
+        //use a finally block to close the loop in a nice way..
+        throw e;
+      }
+    }
+
+    function createNextStep() {
       var clearTimeout = function () {
           Function.prototype.apply.apply(self.timer.clearTimeout, [j$.getGlobal(), [timeoutId]]);
         },
@@ -72,30 +99,17 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       if (queueableFn.timeout) {
         timeoutId = Function.prototype.apply.apply(self.timer.setTimeout, [j$.getGlobal(), [function() {
           var error = new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.');
-          onException(error, queueableFn);
+          onException(error);
           next();
         }, queueableFn.timeout()]]);
       }
 
-      try {
-        queueableFn.fn.call(self.userContext, next);
-      } catch (e) {
-        handleException(e, queueableFn);
-        next();
-      }
+      return next;
     }
 
-    function onException(e, queueableFn) {
-      self.onException(e);
-    }
-
-    function handleException(e, queueableFn) {
-      onException(e, queueableFn);
-      if (!self.catchException(e)) {
-        //TODO: set a var when we catch an exception and
-        //use a finally block to close the loop in a nice way..
-        throw e;
-      }
+    function handlePromise(promise) {
+      var next = createNextStep();
+      promise.then(next, next.fail);
     }
   };
 

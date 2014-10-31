@@ -93,6 +93,66 @@ describe("QueueRunner", function() {
       expect(onComplete).toHaveBeenCalled();
     });
 
+    it("supports Promise returning functions, only advancing to next function after a done() callback", function() {
+      var firstPromise,
+        secondPromise,
+        thirdPromise,
+        onComplete = jasmine.createSpy('onComplete'),
+        beforeCallback = jasmine.createSpy('beforeCallback'),
+        fnCallback = jasmine.createSpy('fnCallback'),
+        afterCallback = jasmine.createSpy('afterCallback'),
+        queueableFn1 = { fn: function() {
+          beforeCallback();
+          return firstPromise = new Promise(function (resolve, reject) {
+            setTimeout(resolve, 100);
+          });
+        } },
+        queueableFn2 = { fn: function() {
+          fnCallback();
+          return secondPromise = new Promise(function (resolve, reject) {
+            setTimeout(resolve, 100);
+          });
+        } },
+        queueableFn3 = { fn: function() {
+          afterCallback();
+          return thirdPromise = new Promise(function (resolve, reject) {
+            setTimeout(resolve, 100);
+          });
+        } },
+        queueRunner = new j$.QueueRunner({
+          queueableFns: [queueableFn1, queueableFn2, queueableFn3],
+          onComplete: onComplete
+        });
+
+      queueRunner.execute();
+
+      expect(beforeCallback).toHaveBeenCalled();
+      expect(fnCallback).not.toHaveBeenCalled();
+      expect(afterCallback).not.toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      return firstPromise.then(function() {
+        expect(fnCallback).toHaveBeenCalled();
+        expect(afterCallback).not.toHaveBeenCalled();
+        expect(onComplete).not.toHaveBeenCalled();
+
+        jasmine.clock().tick(100);
+
+        return secondPromise;
+      }).then(function() {
+        expect(afterCallback).toHaveBeenCalled();
+        expect(onComplete).not.toHaveBeenCalled();
+
+        jasmine.clock().tick(100);
+
+        return thirdPromise;
+      }).then(function() {
+        expect(onComplete).toHaveBeenCalled();
+      });
+    });
+
     it("explicitly fails an async function with a provided fail function and moves to the next function", function() {
       var queueableFn1 = { fn: function(done) {
           setTimeout(function() { done.fail('foo'); }, 100);

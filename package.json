@@ -10,14 +10,15 @@
   "homepage": "http://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
   "devDependencies": {
+    "es6-promise": "^2.0.0",
+    "glob": "~3.2.9",
     "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.7.0",
-    "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-compass": "~0.6.0",
     "grunt-contrib-compress": "~0.5.2",
-    "shelljs": "~0.1.4",
-    "glob": "~3.2.9",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-jshint": "~0.7.0",
     "jasmine": "https://github.com/pivotal/jasmine-npm/archive/master.tar.gz",
-    "load-grunt-tasks": "^0.4.0"
+    "load-grunt-tasks": "^0.4.0",
+    "shelljs": "~0.1.4"
   }
 }
