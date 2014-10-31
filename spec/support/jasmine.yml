@@ -18,6 +18,7 @@ stylesheets:
 helpers:
   - 'helpers/BrowserFlags.js'
   - 'helpers/defineJasmineUnderTest.js'
+  - 'helpers/es6-promise.min.js'
 spec_files:
   - '**/*[Ss]pec.js'
   - '!npmPackage/**/*'
