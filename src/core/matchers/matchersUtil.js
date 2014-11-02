@@ -11,20 +11,14 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     contains: function(haystack, needle, customTesters) {
       customTesters = customTesters || [];
 
-      if (Object.prototype.toString.apply(haystack) === '[object Array]') {
+      if (!!haystack && (haystack.length > 0)) {
         for (var i = 0; i < haystack.length; i++) {
           if (eq(haystack[i], needle, [], [], customTesters)) {
             return true;
           }
         }
-        return false;
       }
-      if (!haystack) {
-        return false;
-      } else {
-        var indexOf = haystack.indexOf || Array.prototype.indexOf;
-        return indexOf.call(haystack, needle) >= 0;
-      }
+      return false;
     },
 
     buildFailureMessage: function() {
