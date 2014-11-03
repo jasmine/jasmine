@@ -11,7 +11,9 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     contains: function(haystack, needle, customTesters) {
       customTesters = customTesters || [];
 
-      if (Object.prototype.toString.apply(haystack) === '[object Array]') {
+      if ((Object.prototype.toString.apply(haystack) === '[object Array]') ||
+        (!!haystack && !haystack.indexOf))
+      {
         for (var i = 0; i < haystack.length; i++) {
           if (eq(haystack[i], needle, [], [], customTesters)) {
             return true;
@@ -19,6 +21,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
         }
         return false;
       }
+
       return !!haystack && haystack.indexOf(needle) >= 0;
     },
 
