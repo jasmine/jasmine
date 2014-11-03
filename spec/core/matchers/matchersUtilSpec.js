@@ -177,6 +177,10 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.contains("ABC", "BC")).toBe(true);
     });
 
+    it("passes when expected is a multi-character substring of actual", function() {
+      expect(j$.matchersUtil.contains("ABC", "BC")).toBe(true);
+    });
+
     it("fails when expected is a not substring of actual", function() {
       expect(j$.matchersUtil.contains("ABC", "X")).toBe(false);
     });
