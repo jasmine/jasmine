@@ -180,6 +180,9 @@ getJasmineRequireObj().Env = function(j$) {
       id: getNextSuiteId(),
       description: 'Jasmine__TopLevel__Suite',
       queueRunner: queueRunnerFactory,
+      onStart: function(suite) {
+        reporter.suiteStarted(suite.result);
+      },
       resultCallback: function(attrs) {
         reporter.suiteDone(attrs);
       }

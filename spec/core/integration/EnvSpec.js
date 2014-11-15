@@ -100,6 +100,21 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it('Tells the reporter when the top-level suite has started and finished', function(done) {
+    var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('reporter', ['suiteStarted', 'suiteDone', 'jasmineDone']);
+
+    reporter.jasmineDone.and.callFake(function() {
+      expect(reporter.suiteStarted).toHaveBeenCalled();
+      expect(reporter.suiteDone).toHaveBeenCalled();
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.execute();
+  });
+
   it("Multiple top-level Suites execute as expected", function(done) {
     var env = new j$.Env(),
         calls = [];
@@ -1088,7 +1103,7 @@ describe("Env integration", function() {
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
         totalSpecsDefined: 3
       });
-      var suiteResult = reporter.suiteStarted.calls.first().args[0];
+      var suiteResult = reporter.suiteStarted.calls.argsFor(1)[0];
       expect(suiteResult.description).toEqual("A Suite");
 
       done();
