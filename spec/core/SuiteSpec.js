@@ -186,7 +186,7 @@ describe("Suite", function() {
     expect(afterAllFn.fn).toHaveBeenCalled();
   });
 
-  it("does not run beforeAll or afterAll if there are no child specs to run", function() {
+  it("does not run beforeAll or afterAll if there are no executable child specs", function() {
     var env = new j$.Env(),
         fakeQueueRunnerForParent = jasmine.createSpy('fake parent queue runner'),
         fakeQueueRunnerForChild = jasmine.createSpy('fake child queue runner'),
@@ -209,7 +209,9 @@ describe("Suite", function() {
     parentSuite.afterAll(afterAllFn);
 
     parentSuite.execute();
-    expect(fakeQueueRunnerForParent).toHaveBeenCalledWith(jasmine.objectContaining({queueableFns: []}));
+    expect(fakeQueueRunnerForParent).toHaveBeenCalledWith(jasmine.objectContaining({
+      queueableFns: [{ fn: jasmine.any(Function) }]
+    }));
   });
 
   it("calls a provided onStart callback when starting", function() {

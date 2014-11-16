@@ -1101,8 +1101,10 @@ describe("Env integration", function() {
 
     reporter.jasmineDone.and.callFake(function() {
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
-        totalSpecsDefined: 3
+        totalSpecsDefined: 5
       });
+
+      expect(reporter.specDone.calls.count()).toBe(5);
       var suiteResult = reporter.suiteStarted.calls.argsFor(1)[0];
       expect(suiteResult.description).toEqual("A Suite");
 
@@ -1121,6 +1123,13 @@ describe("Env integration", function() {
         });
         env.it("with a spec", function() {
           env.expect(true).toBe(false);
+        });
+      });
+
+      env.describe('with only pending specs', function() {
+        env.it('is pending');
+        env.xit('is pending', function() {
+          env.expect(true).toBe(true);
         });
       });
     });
