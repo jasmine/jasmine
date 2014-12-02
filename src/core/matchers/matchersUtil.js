@@ -64,24 +64,15 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     }
 
     if (a instanceof j$.Any) {
-      result = a.jasmineMatches(b);
-      if (result) {
-        return true;
-      }
+      return a.jasmineMatches(b);
     }
 
     if (b instanceof j$.Any) {
-      result = b.jasmineMatches(a);
-      if (result) {
-        return true;
-      }
+      return b.jasmineMatches(a);
     }
 
     if (b instanceof j$.ObjectContaining) {
-      result = b.jasmineMatches(a);
-      if (result) {
-        return true;
-      }
+      return b.jasmineMatches(a);
     }
 
     if (a instanceof Error && b instanceof Error) {
