@@ -1,7 +1,6 @@
 describe("QueryString", function() {
 
   describe("#setParam", function() {
-
     it("sets the query string to include the given key/value pair", function() {
       var windowLocation = {
           search: ""
@@ -13,6 +12,20 @@ describe("QueryString", function() {
       queryString.setParam("foo", "bar baz");
 
       expect(windowLocation.search).toMatch(/foo=bar%20baz/);
+    });
+
+    it("leaves existing params alone", function() {
+      var windowLocation = {
+        search: "?foo=bar"
+      },
+      queryString = new j$.QueryString({
+        getWindowLocation: function() { return windowLocation }
+      });
+
+      queryString.setParam("baz", "quux");
+
+      expect(windowLocation.search).toMatch(/foo=bar/);
+      expect(windowLocation.search).toMatch(/baz=quux/);
     });
   });
 
