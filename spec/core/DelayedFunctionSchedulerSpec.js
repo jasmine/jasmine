@@ -255,5 +255,42 @@ describe("DelayedFunctionScheduler", function() {
     scheduler.tick(10);
   });
 
+  it("removes functions during a tick that runs the function", function() {
+    var scheduler = new j$.DelayedFunctionScheduler(),
+      fn = jasmine.createSpy('fn'),
+      fnDelay = 10,
+      timeoutKey;
+
+    timeoutKey = scheduler.scheduleFunction(fn, fnDelay, [], true);
+    scheduler.scheduleFunction(function () {
+      scheduler.removeFunctionWithId(timeoutKey);
+    }, 2 * fnDelay);
+
+    expect(fn).not.toHaveBeenCalled();
+
+    scheduler.tick(3 * fnDelay);
+
+    expect(fn).toHaveBeenCalled();
+    expect(fn.calls.count()).toBe(2);
+  });
+
+  it("removes functions during the first tick that runs the function", function() {
+    var scheduler = new j$.DelayedFunctionScheduler(),
+      fn = jasmine.createSpy('fn'),
+      fnDelay = 10,
+      timeoutKey;
+
+    timeoutKey = scheduler.scheduleFunction(fn, fnDelay, [], true);
+    scheduler.scheduleFunction(function () {
+      scheduler.removeFunctionWithId(timeoutKey);
+    }, fnDelay);
+
+    expect(fn).not.toHaveBeenCalled();
+
+    scheduler.tick(3 * fnDelay);
+
+    expect(fn).toHaveBeenCalled();
+    expect(fn.calls.count()).toBe(1);
+  });
 });
 
