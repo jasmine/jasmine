@@ -1122,6 +1122,43 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it('should report xdescribes as expected', function(done) {
+    var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
+          "jasmineStarted",
+          "jasmineDone",
+          "suiteStarted",
+          "suiteDone",
+          "specStarted",
+          "specDone"
+        ]);
+
+    reporter.jasmineDone.and.callFake(function() {
+      expect(reporter.jasmineStarted).toHaveBeenCalledWith({
+        totalSpecsDefined: 1
+      });
+
+      expect(reporter.specDone).not.toHaveBeenCalled();
+      expect(reporter.suiteDone.calls.count()).toBe(3);
+
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.describe("A Suite", function() {
+      env.describe("nested", function() {
+        env.xdescribe("xd out", function() {
+          env.it("with a spec", function() {
+            env.expect(true).toBe(false);
+          });
+        });
+      });
+    });
+
+    env.execute();
+  });
+
   it("should be possible to get full name from a spec", function() {
     var env = new j$.Env({global: { setTimeout: setTimeout }}),
         topLevelSpec, nestedSpec, doublyNestedSpec;

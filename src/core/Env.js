@@ -240,8 +240,8 @@ getJasmineRequireObj().Env = function(j$) {
         resultCallback: function(attrs) {
           if (!suite.disabled) {
             clearResourcesForRunnable(suite.id);
-            currentlyExecutingSuites.pop();
           }
+          currentlyExecutingSuites.pop();
           reporter.suiteDone(attrs);
         }
       });
