@@ -56,13 +56,6 @@ getJasmineRequireObj().matchersUtil = function(j$) {
   function eq(a, b, aStack, bStack, customTesters) {
     var result = true;
 
-    for (var i = 0; i < customTesters.length; i++) {
-      var customTesterResult = customTesters[i](a, b);
-      if (!j$.util.isUndefined(customTesterResult)) {
-        return customTesterResult;
-      }
-    }
-
     if (a instanceof j$.Any) {
       return a.jasmineMatches(b);
     }
@@ -73,6 +66,13 @@ getJasmineRequireObj().matchersUtil = function(j$) {
 
     if (b instanceof j$.ObjectContaining) {
       return b.jasmineMatches(a);
+    }
+
+    for (var i = 0; i < customTesters.length; i++) {
+      var customTesterResult = customTesters[i](a, b);
+      if (!j$.util.isUndefined(customTesterResult)) {
+        return customTesterResult;
+      }
     }
 
     if (a instanceof Error && b instanceof Error) {

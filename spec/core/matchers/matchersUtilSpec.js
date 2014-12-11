@@ -138,6 +138,14 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.equals(anyString, number)).toBe(false);
     });
 
+    it("Any should have priority over the custom equality matcher", function() {
+      var tester = function(a ,b) { return false; },
+        number = 3,
+        anyNumber = new j$.Any(Number);
+      
+      expect(j$.matchersUtil.equals(number, anyNumber, [tester])).toBe(true);
+    });
+
     it("passes when ObjectContaining is used", function() {
       var obj = {
         foo: 3,
@@ -146,6 +154,17 @@ describe("matchersUtil", function() {
 
       expect(j$.matchersUtil.equals(obj, new j$.ObjectContaining({foo: 3}))).toBe(true);
     });
+
+    it("ObjectContaining should have priority over the custom equality matcher", function() {
+      var tester = function(a ,b) { return false; },
+        obj = {
+          foo: 3,
+          bar: 7
+        };
+      
+      expect(j$.matchersUtil.equals(obj, new j$.ObjectContaining({foo: 3}), [tester])).toBe(true);
+    });
+
 
     it("passes when a custom equality matcher returns true", function() {
       var tester = function(a, b) { return true; };
