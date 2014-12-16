@@ -31,7 +31,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
         }
 
         if (errorMatcher.hasNoSpecifics()) {
-          pass.message = 'Expected function not to throw an Error, but it threw ' + fnNameFor(thrown) + '.';
+          pass.message = 'Expected function not to throw an Error, but it threw ' + j$.fnNameFor(thrown) + '.';
           return pass;
         }
 
@@ -85,9 +85,9 @@ getJasmineRequireObj().toThrowError = function(j$) {
       }
 
       return {
-        errorTypeDescription: errorType ? fnNameFor(errorType) : 'an exception',
+        errorTypeDescription: errorType ? j$.fnNameFor(errorType) : 'an exception',
         thrownDescription: function(thrown) {
-          var thrownName = errorType ? fnNameFor(thrown.constructor) : 'an exception',
+          var thrownName = errorType ? j$.fnNameFor(thrown.constructor) : 'an exception',
               thrownMessage = '';
 
           if (expected) {
@@ -113,10 +113,6 @@ getJasmineRequireObj().toThrowError = function(j$) {
             (expected === null || messageMatch(error.message));
         }
       };
-    }
-
-    function fnNameFor(func) {
-      return func.name || func.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
     }
 
     function isStringOrRegExp(potential) {

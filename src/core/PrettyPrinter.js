@@ -97,13 +97,15 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   StringPrettyPrinter.prototype.emitObject = function(obj) {
+    var constructorName = obj.constructor ? j$.fnNameFor(obj.constructor) : 'null';
+    this.append(constructorName);
+
     if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
-      this.append('Object');
       return;
     }
 
     var self = this;
-    this.append('{ ');
+    this.append('({ ');
     var first = true;
 
     this.iterateObject(obj, function(property, isGetter) {
@@ -122,7 +124,7 @@ getJasmineRequireObj().pp = function(j$) {
       }
     });
 
-    this.append(' }');
+    this.append(' })');
   };
 
   StringPrettyPrinter.prototype.append = function(value) {

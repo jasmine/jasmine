@@ -37,6 +37,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return obj.nodeType > 0;
   };
 
+  j$.fnNameFor = function(func) {
+    return func.name || func.toString().match(/^\s*function\s*(\w*)\s*\(/)[1];
+  };
+
   j$.any = function(clazz) {
     return new j$.Any(clazz);
   };

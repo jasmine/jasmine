@@ -16,7 +16,7 @@ describe("j$.pp", function () {
 
   it("should stringify arrays properly", function() {
     expect(j$.pp([1, 2])).toEqual("[ 1, 2 ]");
-    expect(j$.pp([1, 'foo', {}, jasmine.undefined, null])).toEqual("[ 1, 'foo', {  }, undefined, null ]");
+    expect(j$.pp([1, 'foo', {}, jasmine.undefined, null])).toEqual("[ 1, 'foo', Object({  }), undefined, null ]");
   });
 
   it("should indicate circular array references", function() {
@@ -32,18 +32,18 @@ describe("j$.pp", function () {
   });
 
   it("should stringify objects properly", function() {
-    expect(j$.pp({foo: 'bar'})).toEqual("{ foo: 'bar' }");
-    expect(j$.pp({foo:'bar', baz:3, nullValue: null, undefinedValue: jasmine.undefined})).toEqual("{ foo: 'bar', baz: 3, nullValue: null, undefinedValue: undefined }");
+    expect(j$.pp({foo: 'bar'})).toEqual("Object({ foo: 'bar' })");
+    expect(j$.pp({foo:'bar', baz:3, nullValue: null, undefinedValue: jasmine.undefined})).toEqual("Object({ foo: 'bar', baz: 3, nullValue: null, undefinedValue: undefined })");
     expect(j$.pp({foo: function () {
-    }, bar: [1, 2, 3]})).toEqual("{ foo: Function, bar: [ 1, 2, 3 ] }");
+    }, bar: [1, 2, 3]})).toEqual("Object({ foo: Function, bar: [ 1, 2, 3 ] })");
   });
 
   it("should not include inherited properties when stringifying an object", function() {
-    var SomeClass = function() {};
+    var SomeClass = function SomeClass() {};
     SomeClass.prototype.foo = "inherited foo";
     var instance = new SomeClass();
     instance.bar = "my own bar";
-    expect(j$.pp(instance)).toEqual("{ bar: 'my own bar' }");
+    expect(j$.pp(instance)).toEqual("SomeClass({ bar: 'my own bar' })");
   });
 
   it("should not recurse objects and arrays more deeply than j$.MAX_PRETTY_PRINT_DEPTH", function() {
@@ -53,15 +53,15 @@ describe("j$.pp", function () {
 
     try {
       j$.MAX_PRETTY_PRINT_DEPTH = 2;
-      expect(j$.pp(nestedObject)).toEqual("{ level1: { level2: Object } }");
+      expect(j$.pp(nestedObject)).toEqual("Object({ level1: Object({ level2: Object }) })");
       expect(j$.pp(nestedArray)).toEqual("[ 1, [ 2, Array ] ]");
 
       j$.MAX_PRETTY_PRINT_DEPTH = 3;
-      expect(j$.pp(nestedObject)).toEqual("{ level1: { level2: { level3: Object } } }");
+      expect(j$.pp(nestedObject)).toEqual("Object({ level1: Object({ level2: Object({ level3: Object }) }) })");
       expect(j$.pp(nestedArray)).toEqual("[ 1, [ 2, [ 3, Array ] ] ]");
 
       j$.MAX_PRETTY_PRINT_DEPTH = 4;
-      expect(j$.pp(nestedObject)).toEqual("{ level1: { level2: { level3: { level4: 'leaf' } } } }");
+      expect(j$.pp(nestedObject)).toEqual("Object({ level1: Object({ level2: Object({ level3: Object({ level4: 'leaf' }) }) }) })");
       expect(j$.pp(nestedArray)).toEqual("[ 1, [ 2, [ 3, [ 4, 'leaf' ] ] ] ]");
     } finally {
       j$.MAX_PRETTY_PRINT_DEPTH = originalMaxDepth;
@@ -73,7 +73,7 @@ describe("j$.pp", function () {
       var frozenObject = {foo: {bar: 'baz'}};
       frozenObject.circular = frozenObject;
       frozenObject = Object.freeze(frozenObject);
-      expect(j$.pp(frozenObject)).toEqual("{ foo: { bar: 'baz' }, circular: <circular reference: Object> }");
+      expect(j$.pp(frozenObject)).toEqual("Object({ foo: Object({ bar: 'baz' }), circular: <circular reference: Object> })");
     }
   });
 
@@ -96,7 +96,7 @@ describe("j$.pp", function () {
   it("should indicate circular object references", function() {
     var sampleValue = {foo: 'hello'};
     sampleValue.nested = sampleValue;
-    expect(j$.pp(sampleValue)).toEqual("{ foo: 'hello', nested: <circular reference: Object> }");
+    expect(j$.pp(sampleValue)).toEqual("Object({ foo: 'hello', nested: <circular reference: Object> })");
   });
 
   it("should indicate getters on objects as such", function() {
@@ -108,10 +108,10 @@ describe("j$.pp", function () {
       });
     }
     if (sampleValue.__defineGetter__) {
-      expect(j$.pp(sampleValue)).toEqual("{ id: 1, calculatedValue: <getter> }");
+      expect(j$.pp(sampleValue)).toEqual("Object({ id: 1, calculatedValue: <getter> })");
     }
     else {
-      expect(j$.pp(sampleValue)).toEqual("{ id: 1 }");
+      expect(j$.pp(sampleValue)).toEqual("Object({ id: 1 })");
     }
   });
 
@@ -157,6 +157,6 @@ describe("j$.pp", function () {
     var obj = Object.create(null);
     obj.foo = 'bar';
 
-    expect(j$.pp(obj)).toEqual("{ foo: 'bar' }");
+    expect(j$.pp(obj)).toEqual("null({ foo: 'bar' })");
   });
 });
