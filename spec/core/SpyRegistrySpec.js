@@ -7,6 +7,15 @@ describe("SpyRegistry", function() {
       }).toThrowError(/could not find an object/);
     });
 
+    it("checks that a method name was passed", function() {
+      var spyRegistry = new j$.SpyRegistry(),
+        subject = {};
+
+        expect(function() {
+          spyRegistry.spyOn(subject);
+        }).toThrowError(/No method name supplied/);
+    });
+
     it("checks for the existence of the method", function() {
       var spyRegistry = new j$.SpyRegistry(),
         subject = {};
