@@ -30,5 +30,13 @@ describe("toMatch", function() {
     result = matcher.compare('bar', 'foo');
     expect(result.pass).toBe(false);
   });
+
+  it("throws an Error when the expected is not a String or RegExp", function() {
+    var matcher = j$.matchers.toMatch();
+
+    expect(function() {
+      matcher.compare('foo', { bar: 'baz' });
+    }).toThrowError('Expected is not a String or a RegExp');
+  });
 });
 
