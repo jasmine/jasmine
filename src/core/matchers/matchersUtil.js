@@ -110,6 +110,29 @@ getJasmineRequireObj().matchersUtil = function(j$) {
           a.ignoreCase == b.ignoreCase;
     }
     if (typeof a != 'object' || typeof b != 'object') { return false; }
+
+    var aIsDomNode = j$.isDomNode(a);
+    var bIsDomNode = j$.isDomNode(b);
+    if (aIsDomNode && bIsDomNode) {
+      // At first try to use DOM3 method isEqualNode
+      if (a.isEqualNode) {
+        return a.isEqualNode(b);
+      }
+      // IE8 doesn't support isEqualNode, try to use outerHTML && innerText
+      var aIsElement = a instanceof Element;
+      var bIsElement = b instanceof Element;
+      if (aIsElement && bIsElement) {
+        return a.outerHTML == b.outerHTML;
+      }
+      if (aIsElement || bIsElement) {
+        return false;
+      }
+      return a.innerText == b.innerText && a.textContent == b.textContent;
+    }
+    if (aIsDomNode || bIsDomNode) {
+      return false;
+    }
+
     // Assume equality for cyclic structures. The algorithm for detecting cyclic
     // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
     var length = aStack.length;

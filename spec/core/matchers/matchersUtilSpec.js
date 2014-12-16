@@ -132,6 +132,45 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.equals(a,b)).toBe(true);
     });
 
+    it("passes for equivalent DOM nodes", function() {
+      if (typeof document === 'undefined') {
+        return;
+      }
+      var a = document.createElement("div");
+      a.setAttribute("test-attr", "attr-value")
+      a.appendChild(document.createTextNode('test'));
+
+      var b = document.createElement("div");
+      b.setAttribute("test-attr", "attr-value")
+      b.appendChild(document.createTextNode('test'));
+
+      expect(j$.matchersUtil.equals(a,b)).toBe(true);
+    });
+
+    it("fails for DOM nodes with different attributes or child nodes", function() {
+      if (typeof document === 'undefined') {
+        return;
+      }
+      var a = document.createElement("div");
+      a.setAttribute("test-attr", "attr-value")
+      a.appendChild(document.createTextNode('test'));
+
+      var b = document.createElement("div");
+      b.setAttribute("test-attr", "attr-value2")
+      b.appendChild(document.createTextNode('test'));
+
+      expect(j$.matchersUtil.equals(a,b)).toBe(false);
+
+      b.setAttribute("test-attr", "attr-value");
+      expect(j$.matchersUtil.equals(a,b)).toBe(true);
+
+      b.appendChild(document.createTextNode('2'));
+      expect(j$.matchersUtil.equals(a,b)).toBe(false);
+
+      a.appendChild(document.createTextNode('2'));
+      expect(j$.matchersUtil.equals(a,b)).toBe(true);
+    });
+
     it("passes when Any is used", function() {
       var number = 3,
         anyNumber = new j$.Any(Number);
