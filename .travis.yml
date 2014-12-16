@@ -32,6 +32,10 @@ matrix:
       - SAUCE_BROWSER_VERSION=5
     - env:
       - JASMINE_BROWSER="internet explorer"
+      - SAUCE_OS="Windows 8.1"
+      - SAUCE_BROWSER_VERSION=11
+    - env:
+      - JASMINE_BROWSER="internet explorer"
       - SAUCE_OS="Windows 8"
       - SAUCE_BROWSER_VERSION=10
     - env:
