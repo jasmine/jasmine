@@ -58,6 +58,16 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.equals([1, 2], [1, 2, 3])).toBe(false);
     });
 
+    it("fails for Arrays whose contents are equivalent, but have differing properties", function() {
+      var one = [1,2,3],
+          two = [1,2,3];
+
+      one.foo = 'bar';
+      two.foo = 'baz';
+
+      expect(j$.matchersUtil.equals(one, two)).toBe(false);
+    });
+
     it("passes for Errors that are the same type and have the same message", function() {
       expect(j$.matchersUtil.equals(new Error("foo"), new Error("foo"))).toBe(true);
     });
