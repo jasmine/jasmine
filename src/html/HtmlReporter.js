@@ -11,6 +11,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       createElement = options.createElement,
       createTextNode = options.createTextNode,
       onRaiseExceptionsClick = options.onRaiseExceptionsClick || function() {},
+      addToExistingQueryString = options.addToExistingQueryString || defaultQueryString,
       timer = options.timer || noopTimer,
       results = [],
       specsExecuted = 0,
@@ -238,7 +239,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     function clearPrior() {
       // return the reporter
       var oldReporter = find('');
-      
+
       if(oldReporter) {
         getContainer().removeChild(oldReporter);
       }
@@ -277,7 +278,11 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     function specHref(result) {
-      return '?spec=' + encodeURIComponent(result.fullName);
+      return addToExistingQueryString('spec', encodeURIComponent(result.fullName));
+    }
+
+    function defaultQueryString(key, value) {
+      return '?' + key + '=' + value;
     }
 
     function setMenuModeTo(mode) {

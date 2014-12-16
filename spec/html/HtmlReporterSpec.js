@@ -278,7 +278,8 @@ describe("New HtmlReporter", function() {
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); },
+          addToExistingQueryString: function(key, value) { return "?foo=bar&" + key + "=" + value; }
         });
       reporter.initialize();
 
@@ -350,7 +351,7 @@ describe("New HtmlReporter", function() {
       var suiteDetail = outerSuite.childNodes[0];
       var suiteLink = suiteDetail.childNodes[0];
       expect(suiteLink.innerHTML).toEqual("A Suite");
-      expect(suiteLink.getAttribute('href')).toEqual("?spec=A%20Suite");
+      expect(suiteLink.getAttribute('href')).toEqual("?foo=bar&spec=A%20Suite");
 
       var specs = outerSuite.childNodes[1];
       var spec = specs.childNodes[0];
@@ -359,7 +360,7 @@ describe("New HtmlReporter", function() {
 
       var specLink = spec.childNodes[0];
       expect(specLink.innerHTML).toEqual("with a spec");
-      expect(specLink.getAttribute("href")).toEqual("?spec=A%20Suite%20with%20a%20spec");
+      expect(specLink.getAttribute("href")).toEqual("?foo=bar&spec=A%20Suite%20with%20a%20spec");
 //      expect(specLink.getAttribute("title")).toEqual("A Suite with a spec");
     });
 
@@ -567,7 +568,8 @@ describe("New HtmlReporter", function() {
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); },
+          addToExistingQueryString: function(key, value) { return "?foo=bar&" + key + "=" + value; }
         });
         reporter.initialize();
 
@@ -614,7 +616,7 @@ describe("New HtmlReporter", function() {
 
         var specLink = specDiv.childNodes[0];
         expect(specLink.getAttribute("title")).toEqual("a suite with a failing spec");
-        expect(specLink.getAttribute("href")).toEqual("?spec=a%20suite%20with%20a%20failing%20spec");
+        expect(specLink.getAttribute("href")).toEqual("?foo=bar&spec=a%20suite%20with%20a%20failing%20spec");
 
         var message = failure.childNodes[1].childNodes[0];
         expect(message.getAttribute("class")).toEqual("result-message");

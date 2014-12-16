@@ -1,10 +1,14 @@
 jasmineRequire.QueryString = function() {
   function QueryString(options) {
 
-    this.setParam = function(key, value) {
+    this.navigateWithNewParam = function(key, value) {
+      options.getWindowLocation().search = this.fullStringWithNewParam(key, value);
+    };
+
+    this.fullStringWithNewParam = function(key, value) {
       var paramMap = queryStringToParamMap();
       paramMap[key] = value;
-      options.getWindowLocation().search = toQueryString(paramMap);
+      return toQueryString(paramMap);
     };
 
     this.getParam = function(key) {
