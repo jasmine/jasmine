@@ -45,6 +45,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return new j$.Any(clazz);
   };
 
+  j$.anything = function() {
+    return new j$.Anything();
+  };
+
   j$.objectContaining = function(sample) {
     return new j$.ObjectContaining(sample);
   };
