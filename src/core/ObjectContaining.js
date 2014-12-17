@@ -7,13 +7,9 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
   ObjectContaining.prototype.asymmetricMatch = function(other) {
     if (typeof(this.sample) !== 'object') { throw new Error('You must provide an object to objectContaining, not \''+this.sample+'\'.'); }
 
-    var hasKey = function(obj, keyName) {
-      return obj !== null && !j$.util.isUndefined(obj[keyName]);
-    };
-
     for (var property in this.sample) {
-      if (!hasKey(other, property) && hasKey(this.sample, property) ||
-          !j$.matchersUtil.equals(other[property], this.sample[property])) {
+      if (!Object.prototype.hasOwnProperty.call(other, property) ||
+          !j$.matchersUtil.equals(this.sample[property], other[property])) {
         return false;
       }
     }

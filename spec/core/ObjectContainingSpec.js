@@ -43,4 +43,16 @@ describe("ObjectContaining", function() {
 
     expect(containing.asymmetricMatch({one: {two: {}}})).toBe(true);
   });
+
+  it("matches when key is present with undefined value", function() {
+    var containing = new j$.ObjectContaining({ one: undefined });
+
+    expect(containing.asymmetricMatch({ one: undefined })).toBe(true);
+  });
+
+  it("does not match when key with undefined value is not present", function() {
+    var containing = new j$.ObjectContaining({ one: undefined });
+
+    expect(containing.asymmetricMatch({})).toBe(false);
+  });
 });

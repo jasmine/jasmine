@@ -191,9 +191,11 @@ describe("matchersUtil", function() {
       var obj = {
         foo: 3,
         bar: 7
-      };
+      },
+      containing = new j$.ObjectContaining({foo: 3});
 
-      expect(j$.matchersUtil.equals(obj, new j$.ObjectContaining({foo: 3}))).toBe(true);
+      expect(j$.matchersUtil.equals(obj, containing)).toBe(true);
+      expect(j$.matchersUtil.equals(containing, obj)).toBe(true);
     });
 
     it("passes when a custom equality matcher returns true", function() {
