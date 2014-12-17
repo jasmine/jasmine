@@ -55,24 +55,38 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     return obj && j$.isA_('Function', obj.asymmetricMatch);
   }
 
+  function asymmetricMatch(a, b) {
+    var asymmetricA = isAsymmetric(a),
+        asymmetricB = isAsymmetric(b);
+
+    if (asymmetricA && asymmetricB) {
+      return undefined;
+    }
+
+    if (asymmetricA) {
+      return a.asymmetricMatch(b);
+    }
+
+    if (asymmetricB) {
+      return b.asymmetricMatch(a);
+    }
+  }
+
   // Equality function lovingly adapted from isEqual in
   //   [Underscore](http://underscorejs.org)
   function eq(a, b, aStack, bStack, customTesters) {
     var result = true;
+
+    var asymmetricResult = asymmetricMatch(a, b);
+    if (!j$.util.isUndefined(asymmetricResult)) {
+      return asymmetricResult;
+    }
 
     for (var i = 0; i < customTesters.length; i++) {
       var customTesterResult = customTesters[i](a, b);
       if (!j$.util.isUndefined(customTesterResult)) {
         return customTesterResult;
       }
-    }
-
-    if (isAsymmetric(a)) {
-      return a.asymmetricMatch(b);
-    }
-
-    if (isAsymmetric(b)) {
-      return b.asymmetricMatch(a);
     }
 
     if (a instanceof Error && b instanceof Error) {

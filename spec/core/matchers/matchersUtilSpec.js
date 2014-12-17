@@ -235,6 +235,21 @@ describe("matchersUtil", function() {
 
       expect(j$.matchersUtil.equals(1, 1, [tester])).toBe(false);
     });
+
+    it("passes for an asymmetric equality tester that returns true when a custom equality tester return false", function() {
+      var asymmetricTester = { asymmetricMatch: function(other) { return true; } },
+          symmetricTester = function(a, b) { return false; };
+
+      expect(j$.matchersUtil.equals(asymmetricTester, true, [symmetricTester])).toBe(true);
+      expect(j$.matchersUtil.equals(true, asymmetricTester, [symmetricTester])).toBe(true);
+    });
+
+    it("passes when an Any is compared to an Any that checks for the same type", function() {
+      var any1 = new j$.Any(Function),
+          any2 = new j$.Any(Function);
+
+      expect(j$.matchersUtil.equals(any1, any2)).toBe(true);
+    });
   });
 
   describe("contains", function() {
