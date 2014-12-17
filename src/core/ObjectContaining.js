@@ -4,7 +4,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
     this.sample = sample;
   }
 
-  ObjectContaining.prototype.jasmineMatches = function(other) {
+  ObjectContaining.prototype.asymmetricMatch = function(other) {
     if (typeof(this.sample) !== 'object') { throw new Error('You must provide an object to objectContaining, not \''+this.sample+'\'.'); }
 
     var hasKey = function(obj, keyName) {

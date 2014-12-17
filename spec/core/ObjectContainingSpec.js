@@ -3,33 +3,33 @@ describe("ObjectContaining", function() {
   it("matches any actual to an empty object", function() {
     var containing = new j$.ObjectContaining({});
 
-    expect(containing.jasmineMatches("foo")).toBe(true);
+    expect(containing.asymmetricMatch("foo")).toBe(true);
   });
 
   it("does not match an empty object actual", function() {
     var containing = new j$.ObjectContaining("foo");
 
     expect(function() {
-      containing.jasmineMatches({})
+      containing.asymmetricMatch({})
     }).toThrowError(/not 'foo'/)
   });
 
   it("matches when the key/value pair is present in the actual", function() {
     var containing = new j$.ObjectContaining({foo: "fooVal"});
 
-    expect(containing.jasmineMatches({foo: "fooVal", bar: "barVal"})).toBe(true);
+    expect(containing.asymmetricMatch({foo: "fooVal", bar: "barVal"})).toBe(true);
   });
 
   it("does not match when the key/value pair is not present in the actual", function() {
     var containing = new j$.ObjectContaining({foo: "fooVal"});
 
-    expect(containing.jasmineMatches({bar: "barVal", quux: "quuxVal"})).toBe(false);
+    expect(containing.asymmetricMatch({bar: "barVal", quux: "quuxVal"})).toBe(false);
   });
 
   it("does not match when the key is present but the value is different in the actual", function() {
     var containing = new j$.ObjectContaining({foo: "other"});
 
-    expect(containing.jasmineMatches({foo: "fooVal", bar: "barVal"})).toBe(false);
+    expect(containing.asymmetricMatch({foo: "fooVal", bar: "barVal"})).toBe(false);
   });
 
   it("jasmineToString's itself", function() {
@@ -41,6 +41,6 @@ describe("ObjectContaining", function() {
   it("matches recursively", function() {
     var containing = new j$.ObjectContaining({one: new j$.ObjectContaining({two: {}})});
 
-    expect(containing.jasmineMatches({one: {two: {}}})).toBe(true);
+    expect(containing.asymmetricMatch({one: {two: {}}})).toBe(true);
   });
 });
