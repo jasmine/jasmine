@@ -198,6 +198,20 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.equals(containing, obj)).toBe(true);
     });
 
+    it("passes when an asymmetric equality tester returns true", function() {
+      var tester = { asymmetricMatch: function(other) { return true; } };
+
+      expect(j$.matchersUtil.equals(false, tester)).toBe(true);
+      expect(j$.matchersUtil.equals(tester, false)).toBe(true);
+    });
+
+    it("fails when an asymmetric equality tester returns false", function() {
+      var tester = { asymmetricMatch: function(other) { return false; } };
+
+      expect(j$.matchersUtil.equals(true, tester)).toBe(false);
+      expect(j$.matchersUtil.equals(tester, true)).toBe(false);
+    });
+
     it("passes when a custom equality matcher returns true", function() {
       var tester = function(a, b) { return true; };
 
