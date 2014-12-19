@@ -10,7 +10,7 @@ Please submit pull requests via feature branches using the semi-standard workflo
 1. Clone your fork: (`git clone git@github.com:yourUserName/jasmine.git`)                                                                                                                         
 1. Change directory: (`cd jasmine`)                                                                                                                                                               
 1. Asign original repository to a remote named 'upstream': (`git remote add                                                                                                                       
-upstream https://github.com/pivotal/jasmine.git`)                                                                                                                                                 
+upstream https://github.com/jasmine/jasmine.git`)                                                                                                                                                 
 1. Pull in changes not present in your local repository: (`git fetch upstream`)
 1. Create your feature branch (`git checkout -b my-new-feature`)
 1. Commit your changes (`git commit -am 'Add some feature'`)
@@ -94,13 +94,13 @@ Follow these tips and your pull request, patch, or suggestion is much more likel
 
 ### Running Specs
 
-Jasmine uses the [Jasmine Ruby gem](http://github.com/pivotal/jasmine-gem) to test itself in browser.
+Jasmine uses the [Jasmine Ruby gem](http://github.com/jasmine/jasmine-gem) to test itself in browser.
 
     $ rake jasmine
 
 ...and then visit `http://localhost:8888` to run specs.
 
-Jasmine uses the [Jasmine NPM package](http://github.com/pivotal/jasmine-npm) to test itself in a Node.js/npm environment.
+Jasmine uses the [Jasmine NPM package](http://github.com/jasmine/jasmine-npm) to test itself in a Node.js/npm environment.
 
     $ grunt execSpecsInNode
 
