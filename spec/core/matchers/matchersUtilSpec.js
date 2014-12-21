@@ -250,6 +250,30 @@ describe("matchersUtil", function() {
 
       expect(j$.matchersUtil.equals(any1, any2)).toBe(true);
     });
+
+    it("passes for null prototype objects with same properties", function () {
+      if (jasmine.getEnv().ieVersion < 9) { return; }
+
+      var objA = Object.create(null),
+          objB = Object.create(null);
+
+      objA.name = 'test';
+      objB.name = 'test';
+
+      expect(j$.matchersUtil.equals(objA, objB)).toBe(true);
+    });
+
+    it("fails for null prototype objects with different properties", function () {
+      if (jasmine.getEnv().ieVersion < 9) { return; }
+
+      var objA = Object.create(null),
+          objB = Object.create(null);
+
+      objA.name = 'test';
+      objB.test = 'name';
+
+      expect(j$.matchersUtil.equals(objA, objB)).toBe(false);
+    });
   });
 
   describe("contains", function() {

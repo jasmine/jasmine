@@ -197,7 +197,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     return result;
 
     function has(obj, key) {
-      return obj.hasOwnProperty(key);
+      return Object.prototype.hasOwnProperty.call(obj, key);
     }
 
     function isFunction(obj) {
