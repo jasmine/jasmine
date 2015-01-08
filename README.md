@@ -19,6 +19,15 @@ Please read the [contributors' guide](https://github.com/pivotal/jasmine/blob/ma
 
 ## Installation
 
+For the Jasmine NPM module:<br>
+[https://github.com/pivotal/jasmine-npm](https://github.com/pivotal/jasmine-npm)
+
+For the Jasmine Ruby Gem:<br>
+[https://github.com/pivotal/jasmine-gem](https://github.com/pivotal/jasmine-gem)
+
+For the Jasmine Python Egg:<br>
+[https://github.com/pivotal/jasmine-py](https://github.com/pivotal/jasmine-py)
+
 To install Jasmine on your local box:
 
 * Clone Jasmine - `git clone https://github.com/pivotal/jasmine.git`
@@ -35,13 +44,6 @@ Add the following to your HTML file:
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine.js"></script>
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine-html.js"></script>
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/boot.js"></script>
-
-For the Jasmine Ruby Gem:<br>
-[https://github.com/pivotal/jasmine-gem](https://github.com/pivotal/jasmine-gem)
-
-For the Jasmine Python Egg:<br>
-[https://github.com/pivotal/jasmine-py](https://github.com/pivotal/jasmine-py)
-
 
 
 ## Support
