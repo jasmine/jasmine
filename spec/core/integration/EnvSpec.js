@@ -143,8 +143,7 @@ describe("Env integration", function() {
 
   it('explicitly fails a spec', function(done) {
     var env = new j$.Env(),
-        specDone = jasmine.createSpy('specDone'),
-        errorObj = new Error('error message');
+        specDone = jasmine.createSpy('specDone');
 
     env.addReporter({
       specDone: specDone,
@@ -167,7 +166,16 @@ describe("Env integration", function() {
             message: 'Failed: error message',
             stack: {
               asymmetricMatch: function(other) {
-                var firstLine = other.split('\n')[1];
+                if (!other) {
+                  // IE doesn't give us a stacktrace so just ignore it.
+                  return true;
+                }
+                var split = other.split('\n'),
+                    firstLine = split[0];
+                if (firstLine.indexOf('error message') >= 0) {
+                  // Chrome inserts the message and a newline before the first stacktrace line.
+                  firstLine = split[1];
+                }
                 return firstLine.indexOf('EnvSpec') >= 0;
               }
             }
@@ -187,7 +195,7 @@ describe("Env integration", function() {
       });
 
       env.it('has a message and stack trace from an Error', function() {
-        env.fail(errorObj);
+        env.fail(new Error('error message'));
       });
     });
 
