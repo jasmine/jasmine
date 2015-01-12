@@ -445,7 +445,8 @@ getJasmineRequireObj().Env = function(j$) {
         passed: false,
         expected: '',
         actual: '',
-        message: message
+        message: message,
+        error: error && error.message ? error : null
       });
     };
   }

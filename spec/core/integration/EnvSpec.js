@@ -143,7 +143,8 @@ describe("Env integration", function() {
 
   it('explicitly fails a spec', function(done) {
     var env = new j$.Env(),
-        specDone = jasmine.createSpy('specDone');
+        specDone = jasmine.createSpy('specDone'),
+        errorObj = new Error('error message');
 
     env.addReporter({
       specDone: specDone,
@@ -161,9 +162,15 @@ describe("Env integration", function() {
           })]
         }));
         expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-          description: 'has a message from an Error',
+          description: 'has a message and stack trace from an Error',
           failedExpectations: [jasmine.objectContaining({
-            message: 'Failed: error message'
+            message: 'Failed: error message',
+            stack: {
+              asymmetricMatch: function(other) {
+                var firstLine = other.split('\n')[1];
+                return firstLine.indexOf('EnvSpec') >= 0;
+              }
+            }
           })]
         }));
         done();
@@ -179,8 +186,8 @@ describe("Env integration", function() {
         env.fail('messy message');
       });
 
-      env.it('has a message from an Error', function() {
-        env.fail(new Error('error message'));
+      env.it('has a message and stack trace from an Error', function() {
+        env.fail(errorObj);
       });
     });
 
