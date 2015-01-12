@@ -7,7 +7,7 @@ describe('Spies', function () {
       TestClass.prototype.someFunction = function() {};
       TestClass.prototype.someFunction.bob = "test";
     });
-    
+
     it("preserves the properties of the spied function", function() {
       var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
 
@@ -66,6 +66,14 @@ describe('Spies', function () {
       expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
       expect(spyObj.method1.and.identity()).toEqual('BaseName.method1');
       expect(spyObj.method2.and.identity()).toEqual('BaseName.method2');
+    });
+
+    it("should allow you to omit the baseName", function() {
+      var spyObj = j$.createSpyObj(['method1', 'method2']);
+
+      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
+      expect(spyObj.method1.and.identity()).toEqual('unknown.method1');
+      expect(spyObj.method2.and.identity()).toEqual('unknown.method2');
     });
 
     it("should throw if you do not pass an array argument", function() {
