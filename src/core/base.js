@@ -57,6 +57,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return new j$.StringMatching(expected);
   };
 
+  j$.arrayContaining = function(sample) {
+    return new j$.ArrayContaining(sample);
+  };
+
   j$.createSpy = function(name, originalFn) {
 
     var spyStrategy = new j$.SpyStrategy({
