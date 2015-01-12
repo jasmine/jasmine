@@ -11,7 +11,7 @@ Jasmine is a Behavior Driven Development testing framework for JavaScript. It do
 Documentation & guides live here: [http://jasmine.github.io](http://jasmine.github.io/)  
 For a quick start guide of Jasmine 2.0, see the beginning of [http://jasmine.github.io/2.0/introduction.html](http://jasmine.github.io/2.0/introduction.html)
 
-Upgrading from Jasmine 1.x? Check out the [2.0 release notes](https://github.com/jasmine/jasmine/blob/v2.0.0/release_notes/20.md) for a list of what's new (including breaking interface changes).
+Upgrading from Jasmine 1.x? Check out the [2.0 release notes](https://github.com/jasmine/jasmine/blob/v2.0.0/release_notes/20.md) for a list of what's new (including breaking interface changes). You can also read the [upgrade guide](http://jasmine.github.io/2.0/upgrading.html).
 
 ## Contributing
 
@@ -44,6 +44,10 @@ Add the following to your HTML file:
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine.js"></script>
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine-html.js"></script>
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/boot.js"></script>
+
+## Supported environments
+
+Jasmine tests itself across many browsers (Safari, Chrome, Firefox, PhantomJS, and new Internet Explorer) as well as node. To see the exact version tests are run against look at our [.travis.yml](https://github.com/jasmine/jasmine/blob/master/.travis.yml)
 
 
 ## Support
