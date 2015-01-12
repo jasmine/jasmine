@@ -1,4 +1,4 @@
-<a name="README">[<img src="https://rawgithub.com/pivotal/jasmine/master/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a> 
+<a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/master/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a> 
 
 [![Build Status](https://travis-ci.org/jasmine/jasmine.png?branch=master)](https://travis-ci.org/jasmine/jasmine) [![Code Climate](https://codeclimate.com/github/pivotal/jasmine.png)](https://codeclimate.com/github/pivotal/jasmine)
 
@@ -11,17 +11,26 @@ Jasmine is a Behavior Driven Development testing framework for JavaScript. It do
 Documentation & guides live here: [http://jasmine.github.io](http://jasmine.github.io/)  
 For a quick start guide of Jasmine 2.0, see the beginning of [http://jasmine.github.io/2.0/introduction.html](http://jasmine.github.io/2.0/introduction.html)
 
-Upgrading from Jasmine 1.x? Check out the [2.0 release notes](https://github.com/pivotal/jasmine/blob/v2.0.0/release_notes/20.md) for a list of what's new (including breaking interface changes).
+Upgrading from Jasmine 1.x? Check out the [2.0 release notes](https://github.com/jasmine/jasmine/blob/v2.0.0/release_notes/20.md) for a list of what's new (including breaking interface changes).
 
 ## Contributing
 
-Please read the [contributors' guide](https://github.com/pivotal/jasmine/blob/master/CONTRIBUTING.md)
+Please read the [contributors' guide](https://github.com/jasmine/jasmine/blob/master/CONTRIBUTING.md)
 
 ## Installation
 
+For the Jasmine NPM module:<br>
+[https://github.com/jasmine/jasmine-npm](https://github.com/jasmine/jasmine-npm)
+
+For the Jasmine Ruby Gem:<br>
+[https://github.com/jasmine/jasmine-gem](https://github.com/jasmine/jasmine-gem)
+
+For the Jasmine Python Egg:<br>
+[https://github.com/jasmine/jasmine-py](https://github.com/jasmine/jasmine-py)
+
 To install Jasmine on your local box:
 
-* Clone Jasmine - `git clone https://github.com/pivotal/jasmine.git`
+* Clone Jasmine - `git clone https://github.com/jasmine/jasmine.git`
 * Create a Jasmine directory in your project - `mkdir my-project/jasmine`
 * Move latest dist to your project directory - `mv jasmine/dist/jasmine-standalone-2.0.0.zip my-project/jasmine`
 * Change directory - `cd my-project/jasmine`
@@ -36,13 +45,6 @@ Add the following to your HTML file:
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine-html.js"></script>
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/boot.js"></script>
 
-For the Jasmine Ruby Gem:<br>
-[https://github.com/pivotal/jasmine-gem](https://github.com/pivotal/jasmine-gem)
-
-For the Jasmine Python Egg:<br>
-[https://github.com/pivotal/jasmine-py](https://github.com/pivotal/jasmine-py)
-
-
 
 ## Support
 
@@ -55,7 +57,7 @@ For the Jasmine Python Egg:<br>
 
 * [Davis W. Frank](mailto:dwfrank@pivotal.io), Pivotal Labs
 * [Rajan Agaskar](mailto:rajan@pivotal.io), Pivotal Labs
-* [Gregg Van Hove](mailto:ghove@pivotal.io), Pivotal Labs
+* [Gregg Van Hove](mailto:gvanhove@pivotal.io), Pivotal Labs
 
 ### Maintainers Emeritus
 
