@@ -108,7 +108,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }
 
       try {
-        queueableFn.fn.call(self.userContext, next);
+        ensureSynchronousCodeCompletes(queueableFn.fn.bind(self.userContext), next);
       } catch (e) {
         handleException(e, queueableFn);
         next();
