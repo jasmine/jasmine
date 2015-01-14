@@ -61,7 +61,7 @@ Probably only need to do this when releasing a minor version, and not a patch ve
 
 ### Finally
 
-1. Visit the [Releases page for Jasmine](https://github.com/pivotal/jasmine/releases), find the tag just pushed.
+1. Visit the [Releases page for Jasmine](https://github.com/jasmine/jasmine/releases), find the tag just pushed.
  1. Paste in a link to the correct release notes for this release. The link should reference the blob and tag correctly, and the markdown file for the notes.
  1. If it is a pre-release, mark it as such.
  1. Attach the standalone zipfile

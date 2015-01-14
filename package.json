@@ -4,7 +4,7 @@
   "version": "2.1.3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pivotal/jasmine.git"
+    "url": "https://github.com/jasmine/jasmine.git"
   },
   "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
   "homepage": "http://jasmine.github.io",
@@ -17,7 +17,7 @@
     "grunt-contrib-compress": "~0.5.2",
     "shelljs": "~0.1.4",
     "glob": "~3.2.9",
-    "jasmine": "https://github.com/pivotal/jasmine-npm/archive/master.tar.gz",
+    "jasmine": "https://github.com/jasmine/jasmine-npm/archive/master.tar.gz",
     "load-grunt-tasks": "^0.4.0"
   }
 }
