@@ -34,7 +34,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
       var queueableFn = queueableFns[iterativeIndex];
       if (queueableFn.fn.length > 0) {
-        return attemptAsync(queueableFn);
+        attemptAsync(queueableFn);
+        return;
       } else {
         attemptSync(queueableFn);
       }

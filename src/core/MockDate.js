@@ -54,7 +54,7 @@ getJasmineRequireObj().MockDate = function() {
         case 6:
           return new GlobalDate(arguments[0], arguments[1], arguments[2], arguments[3],
                                 arguments[4], arguments[5]);
-        case 7:
+        default:
           return new GlobalDate(arguments[0], arguments[1], arguments[2], arguments[3],
                                 arguments[4], arguments[5], arguments[6]);
       }
