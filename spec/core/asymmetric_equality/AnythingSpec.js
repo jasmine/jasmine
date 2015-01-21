@@ -35,4 +35,10 @@ describe("Anything", function() {
 
     expect(anything.asymmetricMatch(null)).toBe(false);
   });
+
+  it("jasmineToString's itself", function() {
+    var anything = new j$.Anything();
+
+    expect(anything.jasmineToString()).toEqual("<jasmine.anything>");
+  });
 });

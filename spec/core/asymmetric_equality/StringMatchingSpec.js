@@ -18,4 +18,10 @@ describe("StringMatching", function() {
       new j$.StringMatching({});
     }).toThrowError(/not a String or a RegExp/);
   });
+
+  it("jasmineToString's itself", function() {
+    var matching = new j$.StringMatching(/^foo/);
+
+    expect(matching.jasmineToString()).toEqual("<jasmine.stringMatching(/^foo/)>");
+  });
 });
