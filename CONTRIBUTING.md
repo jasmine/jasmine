@@ -67,7 +67,11 @@ To install the Ruby dependencies, you will need Ruby, Rubygems, and Bundler avai
 
     $ bundle
 
-...will install all of the Ruby dependencies.
+...will install all of the Ruby dependencies. If the ffi gem fails to build its native extensions, you may need to manually install some system dependencies. On Ubuntu:
+
+    $ apt-get install gcc ruby ruby-dev libxml2 libxml2-dev libxslt1-dev
+
+...should get you to the point that `bundle` can install everything.
 
 To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http://gruntjs.com/), the [grunt-cli](https://github.com/gruntjs/grunt-cli) and ensure that `grunt` is on your path.
 
