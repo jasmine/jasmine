@@ -13,7 +13,7 @@ getJasmineRequireObj().StringMatching = function(j$) {
   };
 
   StringMatching.prototype.jasmineToString = function() {
-    return "<jasmine.stringMatching(" + this.regexp + ")>";
+    return '<jasmine.stringMatching(' + this.regexp + ')>';
   };
 
   return StringMatching;

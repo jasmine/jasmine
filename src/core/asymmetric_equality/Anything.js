@@ -7,7 +7,7 @@ getJasmineRequireObj().Anything = function(j$) {
   };
 
   Anything.prototype.jasmineToString = function() {
-    return "<jasmine.anything>";
+    return '<jasmine.anything>';
   };
 
   return Anything;
