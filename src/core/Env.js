@@ -237,6 +237,7 @@ getJasmineRequireObj().Env = function(j$) {
         onStart: suiteStarted,
         expectationFactory: expectationFactory,
         expectationResultFactory: expectationResultFactory,
+        runnablesExplictlySetGetter: runnablesExplictlySetGetter,
         resultCallback: function(attrs) {
           if (!suite.disabled) {
             clearResourcesForRunnable(suite.id);

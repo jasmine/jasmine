@@ -9,6 +9,7 @@ getJasmineRequireObj().Suite = function() {
     this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.expectationFactory = attrs.expectationFactory;
     this.expectationResultFactory = attrs.expectationResultFactory;
+    this.runnablesExplictlySetGetter = attrs.runnablesExplictlySetGetter || function() {};
 
     this.beforeFns = [];
     this.afterFns = [];
@@ -120,14 +121,8 @@ getJasmineRequireObj().Suite = function() {
   };
 
   Suite.prototype.isExecutable = function() {
-    var foundActive = false;
-    for(var i = 0; i < this.children.length; i++) {
-      if(this.children[i].isExecutable()) {
-        foundActive = true;
-        break;
-      }
-    }
-    return foundActive;
+    var runnablesExplicitlySet = this.runnablesExplictlySetGetter();
+    return !runnablesExplicitlySet && hasExecutableChild(this.children);
   };
 
   Suite.prototype.sharedUserContext = function() {
@@ -178,6 +173,17 @@ getJasmineRequireObj().Suite = function() {
 
   function isFailure(args) {
     return !args[0];
+  }
+
+  function hasExecutableChild(children) {
+    var foundActive = false;
+    for (var i = 0; i < children.length; i++) {
+      if (children[i].isExecutable()) {
+        foundActive = true;
+        break;
+      }
+    }
+    return foundActive;
   }
 
   function clone(obj) {

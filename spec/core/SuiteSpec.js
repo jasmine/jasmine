@@ -117,6 +117,32 @@ describe("Suite", function() {
     expect(lastAfter).toHaveBeenCalled();
   });
 
+  it("does not run *All functions if runnables are explicitly set", function(){
+    var env = new j$.Env(),
+      fakeQueueRunner = jasmine.createSpy('fake queue runner'),
+      suite = new j$.Suite({
+        env: env,
+        description: "I am a suite",
+        queueRunner: fakeQueueRunner,
+        runnablesExplictlySetGetter: function(){return true;}
+      }),
+      beforeAll = jasmine.createSpy('beforeAll'),
+      afterAll = jasmine.createSpy('afterAll'),
+      fakeIt = {execute: jasmine.createSpy('it'), isExecutable: function() { return true; } };
+
+    suite.beforeAll(beforeAll);
+    suite.afterAll(afterAll);
+    suite.addChild(fakeIt);
+
+    suite.execute();
+    var suiteFns = fakeQueueRunner.calls.mostRecent().args[0].queueableFns;
+
+    expect(suite.isExecutable()).toBeFalsy();
+    expect(suiteFns.length).toEqual(1);
+    expect(beforeAll).not.toHaveBeenCalled();
+    expect(afterAll).not.toHaveBeenCalled();
+  });
+
   it("can be disabled, but still calls callbacks", function() {
     var env = new j$.Env(),
       fakeQueueRunner = jasmine.createSpy('fake queue runner'),

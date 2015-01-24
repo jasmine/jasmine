@@ -228,7 +228,7 @@ describe("jasmine spec running", function () {
     env.execute();
   });
 
-  it('should run beforeAlls before beforeEachs and afterAlls after afterEachs', function() {
+  it('should run beforeAlls before beforeEachs and afterAlls after afterEachs', function(done) {
     var actions = [];
 
     env.beforeAll(function() {
@@ -289,7 +289,7 @@ describe("jasmine spec running", function () {
     env.execute();
   });
 
-  it('should run beforeAlls and afterAlls as beforeEachs and afterEachs in the order declared when runnablesToRun is provided', function() {
+  it('should run beforeAlls and afterAlls as beforeEachs and afterEachs in the order declared when runnablesToRun is provided', function(done) {
     var actions = [],
       spec,
       spec2;
@@ -364,6 +364,30 @@ describe("jasmine spec running", function () {
 
     env.addReporter({jasmineDone: assertions});
     env.execute([spec.id, spec2.id]);
+  });
+
+  it('only runs *Alls once in a focused suite', function(done){
+    var actions = [];
+
+    env.fdescribe('Suite', function() {
+      env.beforeAll(function(){
+        actions.push('beforeAll');
+      });
+      env.it('should run beforeAll once', function() {
+        actions.push('spec');
+      });
+      env.afterAll(function(){
+        actions.push('afterAll');
+      });
+    });
+
+    var assertions = function() {
+      expect(actions).toEqual(['beforeAll', 'spec', 'afterAll']);
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+    env.execute();
   });
 
   describe('focused runnables', function() {
