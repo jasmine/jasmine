@@ -430,8 +430,12 @@ getJasmineRequireObj().Env = function(j$) {
       });
     };
 
-    this.pending = function() {
-      throw j$.Spec.pendingSpecExceptionMessage;
+    this.pending = function(message) {
+      var fullMessage = j$.Spec.pendingSpecExceptionMessage;
+      if(message) {
+        fullMessage += message;
+      }
+      throw fullMessage;
     };
 
     this.fail = function(error) {

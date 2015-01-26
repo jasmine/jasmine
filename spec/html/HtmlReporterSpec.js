@@ -533,14 +533,17 @@ describe("New HtmlReporter", function() {
         reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 1 });
-        reporter.specDone({
+        var specStatus = {
           id: 123,
           description: "with a spec",
           fullName: "A Suite with a spec",
           status: "pending",
           passedExpectations: [],
-          failedExpectations: []
-        });
+          failedExpectations: [],
+          pendingReason: "my custom pending reason"
+        };
+        reporter.specStarted(specStatus);
+        reporter.specDone(specStatus);
         reporter.jasmineDone({});
       });
 
@@ -554,6 +557,12 @@ describe("New HtmlReporter", function() {
         var specFailure = container.querySelector(".failures");
 
         expect(specFailure.childNodes.length).toEqual(0);
+      });
+
+      it("displays the custom pending reason", function() {
+        var pendingDetails = container.querySelector(".summary .pending");
+
+        expect(pendingDetails.innerHTML).toContain("my custom pending reason");
       });
     });
 

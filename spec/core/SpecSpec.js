@@ -14,6 +14,10 @@ describe("Spec", function() {
     expect(j$.Spec.isPendingSpecException(fakeError)).toBe(true);
   });
 
+  it("#isPendingSpecException returns true for a pending spec exception with a custom message", function() {
+    expect(j$.Spec.isPendingSpecException(j$.Spec.pendingSpecExceptionMessage + 'foo')).toBe(true);
+  });
+
   it("#isPendingSpecException returns false for not a pending spec exception", function() {
     var e = new Error("foo");
 
@@ -174,7 +178,8 @@ describe("Spec", function() {
       description: 'with a spec',
       fullName: 'a suite with a spec',
       failedExpectations: [],
-      passedExpectations: []
+      passedExpectations: [],
+      pendingReason: ''
     });
   });
 
@@ -254,6 +259,24 @@ describe("Spec", function() {
       spec.execute();
 
       expect(spec.status()).toEqual("pending");
+      expect(spec.result.pendingReason).toEqual('');
+    });
+
+    it("should set the pendingReason", function() {
+      var fakeQueueRunner = function(opts) {
+          opts.onException(new Error(j$.Spec.pendingSpecExceptionMessage + 'custom message'));
+        },
+        spec = new j$.Spec({
+          description: 'my test',
+          id: 'some-id',
+          queueableFn: { fn: function() { } },
+          queueRunnerFactory: fakeQueueRunner
+        });
+
+      spec.execute();
+
+      expect(spec.status()).toEqual("pending");
+      expect(spec.result.pendingReason).toEqual('custom message');
     });
   });
 });

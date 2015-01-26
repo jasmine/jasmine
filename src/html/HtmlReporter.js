@@ -192,6 +192,9 @@ jasmineRequire.HtmlReporter = function(j$) {
             if(noExpectations(resultNode.result)) {
               specDescription = 'SPEC HAS NO EXPECTATIONS ' + specDescription;
             }
+            if(resultNode.result.status === 'pending' && resultNode.result.pendingReason !== '') {
+              specDescription = specDescription + ' PENDING WITH MESSAGE: ' + resultNode.result.pendingReason;
+            }
             specListNode.appendChild(
               createDom('li', {
                   className: resultNode.result.status,

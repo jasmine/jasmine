@@ -11,6 +11,12 @@ describe("Env", function() {
         env.pending();
       }).toThrow(j$.Spec.pendingSpecExceptionMessage);
     });
+
+    it("throws the Pending Spec exception with a custom message", function() {
+      expect(function() {
+        env.pending('custom message');
+      }).toThrow(j$.Spec.pendingSpecExceptionMessage + 'custom message');
+    });
   });
 
   describe("#topSuite", function() {

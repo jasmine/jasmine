@@ -45,7 +45,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     pending: function() {
-      return env.pending();
+      return env.pending.apply(env, arguments);
     },
 
     fail: function() {

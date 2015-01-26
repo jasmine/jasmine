@@ -1137,6 +1137,30 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it('should report pending spec messages', function(done) {
+    var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
+          'specDone',
+          'jasmineDone'
+        ]);
+
+    reporter.jasmineDone.and.callFake(function() {
+      var specStatus = reporter.specDone.calls.argsFor(0)[0];
+
+      expect(specStatus.pendingReason).toBe('with a message');
+
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.it('will be pending', function() {
+      env.pending('with a message');
+    });
+
+    env.execute();
+  });
+
   it('should report xdescribes as expected', function(done) {
     var env = new j$.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [
