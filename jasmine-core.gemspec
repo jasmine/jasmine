@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.summary = %q{JavaScript BDD framework}
   s.description = %q{Test your JavaScript without any framework dependencies, in any environment, and with a nice descriptive syntax.}
   s.email = %q{jasmine-js@googlegroups.com}
-  s.homepage = "http://pivotal.github.com/jasmine"
+  s.homepage = "http://jasmine.github.io"
   s.rubyforge_project = "jasmine-core"
   s.license = "MIT"
 

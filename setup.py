@@ -7,7 +7,7 @@ with open('package.json') as packageFile:
 setup(
     name="jasmine-core",
     version=version,
-    url="http://pivotal.github.io/jasmine/",
+    url="http://jasmine.github.io",
     author="Pivotal Labs",
     author_email="jasmine-js@googlegroups.com",
     description=('Jasmine is a Behavior Driven Development testing framework for JavaScript. It does not rely on '+

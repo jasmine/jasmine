@@ -15,11 +15,16 @@ Please attempt to keep commits to `master` small, but cohesive. If a feature is 
 
 We attempt to stick to [Semantic Versioning](http://semver.org/). Most of the time, development should be against a new minor version - fixing bugs and adding new features that are backwards compatible.
 
-The current version lives in the file `/package.json`. This file should be set to the version that is _currently_ under development. That is, if version 1.0.0 is the current release then version should be incremented say, to 1.1.0.
+The current version lives in the file `/package.json`. This version will be the version number that is currently released. When releasing a new version, update `package.json` and `bower.json` with the new version and `grunt build:copyVersionToGem` to update the gem version number.
 
 This version is used by both `jasmine.js` and the `jasmine-core` Ruby gem.
 
-Note that Jasmine should *not* use the "patch" version number. Let downstream projects rev their patch versions as needed, keeping their major and minor version numbers in sync with Jasmine core.
+Note that Jasmine should only use the "patch" version number in the following cases:
+
+* Changes related to packaging for a specific platform (npm, gem, or pip).
+* Fixes for regressions.
+
+When jasmine-core revs its major or minor version, the binding libraries should also rev to that version.
 
 ## Release
 
