@@ -27,7 +27,7 @@
     "jasmine-core.gemspec",
     "*.sh",
     "*.py",
-    "Gruntfile.js"
+    "Gruntfile.js",
     "lib/jasmine-core.rb",
     "lib/jasmine-core/boot/",
     "lib/jasmine-core/spec",
