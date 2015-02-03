@@ -171,6 +171,33 @@ describe("matchersUtil", function() {
       expect(j$.matchersUtil.equals(a,b)).toBe(true);
     });
 
+    it("passes for equivalent objects from different vm contexts", function() {
+      if (typeof require !== 'function') {
+        return;
+      }
+      var vm = require('vm');
+      var sandbox = {
+        obj: null
+      };
+      vm.runInNewContext('obj = {a: 1, b: 2}', sandbox);
+
+      expect(j$.matchersUtil.equals(sandbox.obj, {a: 1, b: 2})).toBe(true);
+    });
+
+    it("passes for equivalent arrays from different vm contexts", function() {
+      if (typeof require !== 'function') {
+        return;
+      }
+
+      var vm = require('vm');
+      var sandbox = {
+        arr: null
+      };
+      vm.runInNewContext('arr = [1, 2]', sandbox);
+
+      expect(j$.matchersUtil.equals(sandbox.arr, [1, 2])).toBe(true);
+    });
+
     it("passes when Any is used", function() {
       var number = 3,
         anyNumber = new j$.Any(Number);
