@@ -14,21 +14,63 @@ describe("j$.pp", function () {
     expect(j$.pp(-0)).toEqual("-0");
   });
 
-  it("should stringify arrays properly", function() {
-    expect(j$.pp([1, 2])).toEqual("[ 1, 2 ]");
-    expect(j$.pp([1, 'foo', {}, jasmine.undefined, null])).toEqual("[ 1, 'foo', Object({  }), undefined, null ]");
-  });
+  describe('stringify arrays', function() {
+    it("should stringify arrays properly", function() {
+      expect(j$.pp([1, 2])).toEqual("[ 1, 2 ]");
+      expect(j$.pp([1, 'foo', {}, jasmine.undefined, null])).toEqual("[ 1, 'foo', Object({  }), undefined, null ]");
+    });
 
-  it("should indicate circular array references", function() {
-    var array1 = [1, 2];
-    var array2 = [array1];
-    array1.push(array2);
-    expect(j$.pp(array1)).toEqual("[ 1, 2, [ <circular reference: Array> ] ]");
-  });
+    it("should truncate arrays that are longer than j$.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
+      var originalMaxLength = j$.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+      var array = [1, 2, 3];
 
-  it("should not indicate circular references incorrectly", function() {
-    var array = [ [1] ];
-    expect(j$.pp(array)).toEqual("[ [ 1 ] ]");
+      try {
+        j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+        expect(j$.pp(array)).toEqual("[ 1, 2, ... ]");
+      } finally {
+        j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
+      }
+    });
+
+    it("should stringify arrays with properties properly", function() {
+      var arr = [1, 2];
+      arr.foo = 'bar';
+      arr.baz = {};
+      expect(j$.pp(arr)).toEqual("[ 1, 2, foo: 'bar', baz: Object({  }) ]");
+    });
+
+    it("should stringify empty arrays with properties properly", function() {
+      var empty = [];
+      empty.foo = 'bar';
+      empty.baz = {};
+      expect(j$.pp(empty)).toEqual("[ foo: 'bar', baz: Object({  }) ]");
+    });
+
+    it("should stringify long arrays with properties properly", function() {
+      var originalMaxLength = j$.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+      var long = [1,2,3];
+      long.foo = 'bar';
+      long.baz = {};
+
+      try {
+        j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+        expect(j$.pp(long)).toEqual("[ 1, 2, ..., foo: 'bar', baz: Object({  }) ]");
+      } finally {
+        j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
+      }
+    });
+
+    it("should indicate circular array references", function() {
+      var array1 = [1, 2];
+      var array2 = [array1];
+      array1.push(array2);
+      expect(j$.pp(array1)).toEqual("[ 1, 2, [ <circular reference: Array> ] ]");
+    });
+
+    it("should not indicate circular references incorrectly", function() {
+      var array = [ [1] ];
+      expect(j$.pp(array)).toEqual("[ [ 1 ] ]");
+    });
   });
 
   it("should stringify objects properly", function() {
@@ -74,18 +116,6 @@ describe("j$.pp", function () {
       frozenObject.circular = frozenObject;
       frozenObject = Object.freeze(frozenObject);
       expect(j$.pp(frozenObject)).toEqual("Object({ foo: Object({ bar: 'baz' }), circular: <circular reference: Object> })");
-    }
-  });
-
-  it("should truncate arrays that are longer than j$.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
-    var originalMaxLength = j$.MAX_PRETTY_PRINT_ARRAY_LENGTH;
-    var array = [1, 2, 3];
-
-    try {
-      j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-      expect(j$.pp(array)).toEqual("[ 1, 2, ... ]");
-    } finally {
-      j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
     }
   });
 
