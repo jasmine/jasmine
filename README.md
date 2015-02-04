@@ -1,4 +1,4 @@
-<a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/master/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a> 
+<a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/master/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a>
 
 [![Build Status](https://travis-ci.org/jasmine/jasmine.png?branch=master)](https://travis-ci.org/jasmine/jasmine) [![Code Climate](https://codeclimate.com/github/pivotal/jasmine.png)](https://codeclimate.com/github/pivotal/jasmine)
 
@@ -39,7 +39,7 @@ To install Jasmine on your local box:
 Add the following to your HTML file:
 
     <link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-2.0.0/jasmine_favicon.png">
-    <link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-2.0.0/jasmine.css"> 
+    <link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-2.0.0/jasmine.css">
 
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine.js"></script>
     <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine-html.js"></script>
@@ -68,4 +68,4 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, PhantomJS, a
 * [Christian Williams](mailto:antixian666@gmail.com), Cloud Foundry
 * Sheel Choksi
 
-Copyright (c) 2008-2014 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2008-2015 Pivotal Labs. This software is licensed under the MIT License.
