@@ -55,4 +55,35 @@ describe("ObjectContaining", function() {
 
     expect(containing.asymmetricMatch({})).toBe(false);
   });
+
+  it("matches defined properties", function(){
+    // IE 8 doesn't support `definePropery` on non-DOM nodes
+    if (jasmine.getEnv().ieVersion < 9) { return; }
+
+    var containing = new j$.ObjectContaining({ foo: "fooVal" });
+
+    var definedPropertyObject = {};
+    Object.defineProperty(definedPropertyObject, "foo", {
+      get: function() { return "fooVal" }
+    });
+    expect(containing.asymmetricMatch(definedPropertyObject)).toBe(true);
+  });
+
+  it("matches prototype properties", function(){
+    var containing = new j$.ObjectContaining({ foo: "fooVal" });
+
+    var prototypeObject = {foo: "fooVal"};
+    var obj;
+
+    if (Object.create) {
+      obj = Object.create(prototypeObject);
+    } else {
+      function Foo() {}
+      Foo.prototype = prototypeObject;
+      Foo.prototype.constructor = Foo;
+      obj = new Foo();
+    }
+
+    expect(containing.asymmetricMatch(obj)).toBe(true);
+  });
 });
