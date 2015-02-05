@@ -17,7 +17,6 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['jshint:all']);
 
   var version = require('./grunt/tasks/version.js');
-  var standaloneBuilder = require('./grunt/tasks/build_standalone.js');
 
   grunt.registerTask('build:copyVersionToGem',
     "Propagates the version from package.json to version.rb",
