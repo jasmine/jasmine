@@ -6,6 +6,12 @@
     "type": "git",
     "url": "https://github.com/jasmine/jasmine.git"
   },
+  "keywords": [
+    "test",
+    "jasmine",
+    "tdd",
+    "bdd"
+  ],
   "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
   "homepage": "http://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
