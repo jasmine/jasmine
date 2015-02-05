@@ -7,7 +7,9 @@
   ],
   "description": "Official packaging of Jasmine's core files",
   "keywords": [
+    "test",
     "jasmine",
+    "tdd",
     "bdd"
   ],
   "license": "MIT",
