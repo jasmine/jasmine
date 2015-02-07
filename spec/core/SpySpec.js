@@ -63,7 +63,7 @@ describe('Spies', function () {
     it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
       var spyObj = j$.createSpyObj('BaseName', ['method1', 'method2']);
 
-      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
+      expect(spyObj).toEqual(jasmine.objectContaining({ method1: jasmine.any(Function), method2: jasmine.any(Function)}));
       expect(spyObj.method1.and.identity()).toEqual('BaseName.method1');
       expect(spyObj.method2.and.identity()).toEqual('BaseName.method2');
     });
@@ -71,7 +71,7 @@ describe('Spies', function () {
     it("should allow you to omit the baseName", function() {
       var spyObj = j$.createSpyObj(['method1', 'method2']);
 
-      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
+      expect(spyObj).toEqual(jasmine.objectContaining({ method1: jasmine.any(Function), method2: jasmine.any(Function)}));
       expect(spyObj.method1.and.identity()).toEqual('unknown.method1');
       expect(spyObj.method2.and.identity()).toEqual('unknown.method2');
     });
@@ -81,5 +81,23 @@ describe('Spies', function () {
         j$.createSpyObj('BaseName');
       }).toThrow("createSpyObj requires a non-empty array of method names to create spies for");
     });
+
+    var itThrowsAMeaningfulErrorWhenChainedWith_and = function (methodName) {
+      describe(".and." + methodName, function () {
+        it("throws a meaningful error", function () {
+          expect(j$.createSpyObj('...', ['...']).and[methodName])
+            .toThrowError("and-style chaining cannot be used with createSpyObj, use createSpy instead");
+        });
+      });
+    };
+
+    itThrowsAMeaningfulErrorWhenChainedWith_and('identity');
+    itThrowsAMeaningfulErrorWhenChainedWith_and('exec');
+    itThrowsAMeaningfulErrorWhenChainedWith_and('callThrough');
+    itThrowsAMeaningfulErrorWhenChainedWith_and('returnValue');
+    itThrowsAMeaningfulErrorWhenChainedWith_and('returnValues');
+    itThrowsAMeaningfulErrorWhenChainedWith_and('throwError');
+    itThrowsAMeaningfulErrorWhenChainedWith_and('callFake');
+    itThrowsAMeaningfulErrorWhenChainedWith_and('stub');
   });
 });

@@ -117,6 +117,8 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     for (var i = 0; i < methodNames.length; i++) {
       obj[methodNames[i]] = j$.createSpy(baseName + '.' + methodNames[i]);
     }
+
+    obj.and = obj.and || new j$.InvalidSpyStrategy();
     return obj;
   };
 };

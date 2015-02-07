@@ -40,6 +40,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.Spec = jRequire.Spec(j$);
     j$.SpyRegistry = jRequire.SpyRegistry(j$);
     j$.SpyStrategy = jRequire.SpyStrategy();
+    j$.InvalidSpyStrategy = jRequire.InvalidSpyStrategy();
     j$.StringMatching = jRequire.StringMatching(j$);
     j$.Suite = jRequire.Suite();
     j$.Timer = jRequire.Timer();
