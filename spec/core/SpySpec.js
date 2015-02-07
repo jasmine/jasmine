@@ -99,5 +99,11 @@ describe('Spies', function () {
     itThrowsAMeaningfulErrorWhenChainedWith_and('throwError');
     itThrowsAMeaningfulErrorWhenChainedWith_and('callFake');
     itThrowsAMeaningfulErrorWhenChainedWith_and('stub');
+
+    it("still creates a spy if an and method is specified", function () {
+        var spy = j$.createSpyObj('testSpy', ['and']);
+        spy.and.and.returnValue('eggs');
+        expect(spy.and()).toEqual('eggs');
+    });
   });
 });
