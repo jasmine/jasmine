@@ -1,7 +1,7 @@
 getJasmineRequireObj().InvalidSpyStrategy = function() {
     var InvalidSpyStrategy = function () {
         var raiseImproperUsage = function () {
-          throw Error('and-style chaining cannot be used with createSpyObj, use createSpy instead');
+          throw new Error('and-style chaining cannot be used with createSpyObj, use createSpy instead');
         };
 
         return {
