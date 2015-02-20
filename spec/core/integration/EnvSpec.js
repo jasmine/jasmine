@@ -1177,8 +1177,11 @@ describe("Env integration", function() {
         totalSpecsDefined: 1
       });
 
-      expect(reporter.specDone).not.toHaveBeenCalled();
-      expect(reporter.suiteDone.calls.count()).toBe(3);
+      expect(reporter.specDone.calls.count()).toBe(1);
+      var specResult = reporter.specDone.calls.mostRecent().args[0];
+      expect(specResult.status).toBe("disabled");
+      
+      expect(reporter.suiteDone.calls.count()).toBe(4);
 
       done();
     });
@@ -1188,9 +1191,11 @@ describe("Env integration", function() {
     env.describe("A Suite", function() {
       env.describe("nested", function() {
         env.xdescribe("xd out", function() {
-          env.it("with a spec", function() {
-            env.expect(true).toBe(false);
-          });
+          env.describe('nested again', function() {
+            env.it("with a spec", function() {
+              env.expect(true).toBe(false);
+            });
+          })
         });
       });
     });

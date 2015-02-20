@@ -83,15 +83,14 @@ getJasmineRequireObj().Suite = function() {
 
     this.onStart(this);
 
-    if (this.disabled) {
-      complete();
-      return;
-    }
-
     var allFns = [];
 
     for (var i = 0; i < this.children.length; i++) {
-      allFns.push(wrapChildAsAsync(this.children[i]));
+      var child = this.children[i];
+      if (this.disabled) {
+        child.disable();
+      }
+      allFns.push(wrapChildAsAsync(child));
     }
 
     if (this.isExecutable()) {

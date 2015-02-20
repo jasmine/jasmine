@@ -145,7 +145,7 @@ describe("Suite", function() {
 
   it("can be disabled, but still calls callbacks", function() {
     var env = new j$.Env(),
-      fakeQueueRunner = jasmine.createSpy('fake queue runner'),
+      fakeQueueRunner = function(attrs) { attrs.onComplete(); },
       onStart = jasmine.createSpy('onStart'),
       resultCallback = jasmine.createSpy('resultCallback'),
       onComplete = jasmine.createSpy('onComplete'),
@@ -163,7 +163,6 @@ describe("Suite", function() {
 
     suite.execute(onComplete);
 
-    expect(fakeQueueRunner).not.toHaveBeenCalled();
     expect(onStart).toHaveBeenCalled();
     expect(resultCallback).toHaveBeenCalled();
     expect(onComplete).toHaveBeenCalled();
@@ -303,7 +302,7 @@ describe("Suite", function() {
     });
   });
 
-  it("calls a provided result callback with status being disabled when disabled and done", function() {
+  it("calls a provided result callback with status being disabled when suite is disabled and done", function() {
     var env = new j$.Env(),
       suiteResultsCallback = jasmine.createSpy('suite result callback'),
       fakeQueueRunner = function(attrs) { attrs.onComplete(); },
@@ -314,12 +313,17 @@ describe("Suite", function() {
         resultCallback: suiteResultsCallback
       }),
       fakeSpec1 = {
-        execute: jasmine.createSpy('fakeSpec1')
+          disable: jasmine.createSpy('fakeSpec1 disable'),
+          isExecutable: jasmine.createSpy('fakeSpec1 isExecutable').and.returnValue(false)
       };
 
+    suite.addChild(fakeSpec1);
+    
     suite.disable();
 
     suite.execute();
+    
+    expect(fakeSpec1.disable).toHaveBeenCalled();
 
     expect(suiteResultsCallback).toHaveBeenCalledWith({
       id: suite.id,
