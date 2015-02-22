@@ -1,5 +1,6 @@
 describe('npm package', function() {
   var path = require('path'),
+      temp = require('temp').track(),
       fs = require('fs');
 
   beforeAll(function() {
@@ -7,9 +8,7 @@ describe('npm package', function() {
         pack = shell.exec('npm pack', { silent: true });
 
     this.tarball = pack.output.split('\n')[0];
-    this.tmpDir = '/tmp/jasmine-core';
-
-    fs.mkdirSync(this.tmpDir);
+    this.tmpDir = temp.mkdirSync(); // automatically deleted on exit
 
     var untar = shell.exec('tar -xzf ' + this.tarball + ' -C ' + this.tmpDir, { silent: true });
     expect(untar.code).toBe(0);
@@ -44,8 +43,6 @@ describe('npm package', function() {
     };
 
     fs.unlink(this.tarball);
-    fs.readdirSync(this.tmpDir).forEach(cleanup.bind(null, this.tmpDir));
-    fs.rmdirSync(this.tmpDir);
   });
 
   it('has a root path', function() {
