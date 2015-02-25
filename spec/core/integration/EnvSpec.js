@@ -861,6 +861,36 @@ describe("Env integration", function() {
       env.execute();
     });
 
+    it("should not use the mock clock for asynchronous timeouts", function(){
+      var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]),
+        clock = env.clock;
+
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.specDone.calls.count()).toEqual(1);
+        expect(reporter.specDone.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({status: 'passed'}));
+      });
+
+      env.addReporter(reporter);
+      j$.DEFAULT_TIMEOUT_INTERVAL = 5;
+
+      env.beforeAll(function() {
+        clock.install();
+      });
+
+      env.afterAll(function() {
+        clock.uninstall();
+      });
+
+      env.it("spec that should not time out", function(done) {
+        clock.tick(6);
+        expect(true).toEqual(true);
+        done();
+      });
+
+      env.execute();
+    });
+
     it("should wait the specified interval before reporting an afterAll that fails to call done", function(done) {
       var env = new j$.Env(),
       reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
