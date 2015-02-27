@@ -4,18 +4,13 @@ getJasmineRequireObj().Suite = function() {
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
     this.description = attrs.description;
-    this.onStart = attrs.onStart || function() {};
-    this.resultCallback = attrs.resultCallback || function() {};
-    this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.expectationFactory = attrs.expectationFactory;
     this.expectationResultFactory = attrs.expectationResultFactory;
-    this.runnablesExplictlySetGetter = attrs.runnablesExplictlySetGetter || function() {};
 
     this.beforeFns = [];
     this.afterFns = [];
     this.beforeAllFns = [];
     this.afterAllFns = [];
-    this.queueRunner = attrs.queueRunner || function() {};
     this.disabled = false;
 
     this.children = [];
@@ -78,51 +73,17 @@ getJasmineRequireObj().Suite = function() {
     }
   };
 
-  Suite.prototype.execute = function(onComplete) {
-    var self = this;
-
-    this.onStart(this);
-
-    if (this.disabled) {
-      complete();
-      return;
-    }
-
-    var allFns = [];
-
-    for (var i = 0; i < this.children.length; i++) {
-      allFns.push(wrapChildAsAsync(this.children[i]));
-    }
-
-    if (this.isExecutable()) {
-      allFns = this.beforeAllFns.concat(allFns);
-      allFns = allFns.concat(this.afterAllFns);
-    }
-
-    this.queueRunner({
-      queueableFns: allFns,
-      onComplete: complete,
-      userContext: this.sharedUserContext(),
-      onException: function() { self.onException.apply(self, arguments); }
-    });
-
-    function complete() {
-      self.result.status = self.status();
-      self.resultCallback(self.result);
-
-      if (onComplete) {
-        onComplete();
-      }
-    }
-
-    function wrapChildAsAsync(child) {
-      return { fn: function(done) { child.execute(done); } };
-    }
+  Suite.prototype.isExecutable = function() {
+    return !this.disabled;
   };
 
-  Suite.prototype.isExecutable = function() {
-    var runnablesExplicitlySet = this.runnablesExplictlySetGetter();
-    return !runnablesExplicitlySet && hasExecutableChild(this.children);
+  Suite.prototype.canBeReentered = function() {
+    return this.beforeAllFns.length === 0 && this.afterAllFns.length === 0;
+  };
+
+  Suite.prototype.getResult = function() {
+    this.result.status = this.status();
+    return this.result;
   };
 
   Suite.prototype.sharedUserContext = function() {
@@ -173,17 +134,6 @@ getJasmineRequireObj().Suite = function() {
 
   function isFailure(args) {
     return !args[0];
-  }
-
-  function hasExecutableChild(children) {
-    var foundActive = false;
-    for (var i = 0; i < children.length; i++) {
-      if (children[i].isExecutable()) {
-        foundActive = true;
-        break;
-      }
-    }
-    return foundActive;
   }
 
   function clone(obj) {

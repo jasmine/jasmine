@@ -148,6 +148,29 @@ describe("Spec", function() {
     expect(resultCallback).toHaveBeenCalled();
   });
 
+  it("can be disabled at execution time by a parent", function() {
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+      startCallback = jasmine.createSpy('startCallback'),
+      specBody = jasmine.createSpy('specBody'),
+      resultCallback = jasmine.createSpy('resultCallback'),
+      spec = new j$.Spec({
+        onStart:startCallback,
+        queueableFn: { fn: specBody },
+        resultCallback: resultCallback,
+        queueRunnerFactory: fakeQueueRunner
+      });
+
+    spec.execute(undefined, false);
+
+    expect(spec.result.status).toBe('disabled');
+
+    expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(specBody).not.toHaveBeenCalled();
+
+    expect(startCallback).toHaveBeenCalled();
+    expect(resultCallback).toHaveBeenCalled();
+  });
+
   it("can be marked pending, but still calls callbacks when executed", function() {
     var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
       startCallback = jasmine.createSpy('startCallback'),
@@ -244,7 +267,7 @@ describe("Spec", function() {
     expect(specNameSpy.calls.mostRecent().args[0].id).toEqual(spec.id);
   });
 
-   describe("when a spec is marked pending during execution", function() {
+  describe("when a spec is marked pending during execution", function() {
     it("should mark the spec as pending", function() {
       var fakeQueueRunner = function(opts) {
           opts.onException(new Error(j$.Spec.pendingSpecExceptionMessage));
@@ -278,5 +301,51 @@ describe("Spec", function() {
       expect(spec.status()).toEqual("pending");
       expect(spec.result.pendingReason).toEqual('custom message');
     });
+  });
+
+  it("retrieves a result with updated status", function() {
+    var spec = new j$.Spec({ queueableFn: { fn: function() {} } });
+
+    expect(spec.getResult().status).toBe('passed');
+  });
+
+  it("retrives a result with disabled status", function() {
+    var spec = new j$.Spec({ queueableFn: { fn: function() {} } });
+    spec.disable();
+
+    expect(spec.getResult().status).toBe('disabled');
+  });
+
+  it("retrives a result with pending status", function() {
+    var spec = new j$.Spec({ queueableFn: { fn: function() {} } });
+    spec.pend();
+
+    expect(spec.getResult().status).toBe('pending');
+  });
+
+  it("should not be executable when disabled", function() {
+    var spec = new j$.Spec({
+      queueableFn: { fn: function() {} }
+    });
+    spec.disable();
+
+    expect(spec.isExecutable()).toBe(false);
+  });
+
+  it("should not be executable when pending", function() {
+    var spec = new j$.Spec({
+      queueableFn: { fn: function() {} }
+    });
+    spec.pend();
+
+    expect(spec.isExecutable()).toBe(false);
+  });
+
+  it("should be executable when not disabled or pending", function() {
+    var spec = new j$.Spec({
+      queueableFn: { fn: function() {} }
+    });
+
+    expect(spec.isExecutable()).toBe(true);
   });
 });

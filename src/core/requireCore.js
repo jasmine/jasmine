@@ -43,6 +43,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.StringMatching = jRequire.StringMatching(j$);
     j$.Suite = jRequire.Suite();
     j$.Timer = jRequire.Timer();
+    j$.TreeProcessor = jRequire.TreeProcessor();
     j$.version = jRequire.version();
 
     j$.matchers = jRequire.requireMatchers(jRequire, j$);

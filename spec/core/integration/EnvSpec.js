@@ -612,8 +612,6 @@ describe("Env integration", function() {
       expect(calls).toEqual([
         "before",
         "first spec",
-        "after",
-        "before",
         "second spec",
         "after"
       ]);
@@ -1208,7 +1206,7 @@ describe("Env integration", function() {
         totalSpecsDefined: 1
       });
 
-      expect(reporter.specDone).not.toHaveBeenCalled();
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ status: 'disabled' }));
       expect(reporter.suiteDone.calls.count()).toBe(3);
 
       done();
