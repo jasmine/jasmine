@@ -60,16 +60,6 @@ getJasmineRequireObj().Env = function(j$) {
 
     j$.Expectation.addCoreMatchers(j$.matchers);
 
-    var nextSpecId = 0;
-    var getNextSpecId = function() {
-      return 'spec' + nextSpecId++;
-    };
-
-    var nextSuiteId = 0;
-    var getNextSuiteId = function() {
-      return 'suite' + nextSuiteId++;
-    };
-
     var expectationFactory = function(actual, spec) {
       return j$.Expectation.Factory({
         util: j$.matchersUtil,
@@ -174,6 +164,15 @@ getJasmineRequireObj().Env = function(j$) {
 
       new j$.QueueRunner(options).execute();
     };
+
+    var buildNamedCounter = function (name) {
+        var i = 0;
+        return function () {
+            return name + i++;
+        };
+    };
+
+    var getNextSuiteId = buildNamedCounter('suite');
 
     var topSuite = new j$.Suite({
       env: this,
@@ -332,6 +331,14 @@ getJasmineRequireObj().Env = function(j$) {
       return runnablesExplictlySet;
     };
 
+    var providedTimeoutOrDefault = function (timeout) {
+        return function () {
+            return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+        };
+    };
+
+    var getNextSpecId = buildNamedCounter('spec');
+
     var specFactory = function(description, fn, suite, timeout) {
       totalSpecsDefined++;
       var spec = new j$.Spec({
@@ -349,7 +356,7 @@ getJasmineRequireObj().Env = function(j$) {
         userContext: function() { return suite.clonedSharedUserContext(); },
         queueableFn: {
           fn: fn,
-          timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+          timeout: providedTimeoutOrDefault(timeout)
         }
       });
 
@@ -402,40 +409,22 @@ getJasmineRequireObj().Env = function(j$) {
       return currentRunnable().expect(actual);
     };
 
-    this.beforeEach = function(beforeEachFunction, timeout) {
-      currentDeclarationSuite.beforeEach({
-        fn: beforeEachFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
-      });
+    var buildSimpleHook = function(hookName) {
+        return function(hookFn, timeout) {
+          currentDeclarationSuite[hookName]({
+            fn: hookFn,
+            timeout: providedTimeoutOrDefault(timeout)
+          });
+        };
     };
 
-    this.beforeAll = function(beforeAllFunction, timeout) {
-      currentDeclarationSuite.beforeAll({
-        fn: beforeAllFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
-      });
-    };
-
-    this.afterEach = function(afterEachFunction, timeout) {
-      currentDeclarationSuite.afterEach({
-        fn: afterEachFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
-      });
-    };
-
-    this.afterAll = function(afterAllFunction, timeout) {
-      currentDeclarationSuite.afterAll({
-        fn: afterAllFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
-      });
-    };
+    this.beforeEach = buildSimpleHook('beforeEach');
+    this.beforeAll = buildSimpleHook('beforeAll');
+    this.afterEach = buildSimpleHook('afterEach');
+    this.afterAll = buildSimpleHook('afterAll');
 
     this.pending = function(message) {
-      var fullMessage = j$.Spec.pendingSpecExceptionMessage;
-      if(message) {
-        fullMessage += message;
-      }
-      throw fullMessage;
+      throw j$.Spec.pendingSpecExceptionMessage + (message || '');
     };
 
     this.fail = function(error) {
