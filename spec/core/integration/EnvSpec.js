@@ -1001,9 +1001,6 @@ describe("Env integration", function() {
 
       env.addReporter({
         specDone: specDone,
-        specStarted: function() {
-          jasmine.clock().tick(1);
-        },
         jasmineDone: function() {
           expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
             description: 'has a default message',
@@ -1063,6 +1060,10 @@ describe("Env integration", function() {
       });
 
       env.execute();
+      jasmine.clock().tick(1);
+      jasmine.clock().tick(1);
+      jasmine.clock().tick(1);
+      jasmine.clock().tick(1);
     });
   });
 
