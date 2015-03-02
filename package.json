@@ -28,6 +28,7 @@
     "grunt-contrib-jshint": "~0.7.0",
     "jasmine": "https://github.com/jasmine/jasmine-npm/archive/master.tar.gz",
     "load-grunt-tasks": "^0.4.0",
-    "shelljs": "~0.1.4"
+    "shelljs": "~0.1.4",
+    "temp": "~0.8.1"
   }
 }
