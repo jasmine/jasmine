@@ -22,7 +22,7 @@ describe("Any", function() {
 
     expect(any.asymmetricMatch({})).toBe(true);
   });
-  
+
   it("matches a Boolean", function() {
     var any = new j$.Any(Boolean);
 
@@ -39,8 +39,7 @@ describe("Any", function() {
   it("jasmineToString's itself", function() {
     var any = new j$.Any(Number);
 
-    expect(any.jasmineToString()).toMatch('<jasmine.any');
-    expect(any.jasmineToString()).toMatch('Number');
+    expect(any.jasmineToString()).toEqual('<jasmine.any(Number)>');
   });
 
 });
