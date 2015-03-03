@@ -72,13 +72,6 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
       }
     };
 
-    self.reset = function() {
-      currentTime = 0;
-      scheduledLookup = [];
-      scheduledFunctions = {};
-      delayedFnCount = 0;
-    };
-
     return self;
 
     function indexOfFirstToPass(array, testFn) {
