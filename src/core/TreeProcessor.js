@@ -117,7 +117,7 @@ getJasmineRequireObj().TreeProcessor = function() {
           minIndex = childSegment.min;
 
         if (isSegmentBoundary(minIndex)) {
-          currentSegment = {index: result.length, owner: node, nodes: [], min: defaultMin, max: defaultMin};
+          currentSegment = {index: result.length, owner: node, nodes: [], min: defaultMin, max: defaultMax};
           result.push(currentSegment);
         }
 
@@ -130,11 +130,11 @@ getJasmineRequireObj().TreeProcessor = function() {
       nodeStats.segments = result;
     }
 
-    function orderChildSegments(array) {
+    function orderChildSegments(children) {
       var result = [];
 
-      for (var i = 0; i < array.length; i++) {
-        var child = array[i],
+      for (var i = 0; i < children.length; i++) {
+        var child = children[i],
             segments = stats[child.id].segments;
 
         for (var j = 0; j < segments.length; j++) {

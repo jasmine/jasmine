@@ -500,22 +500,24 @@ describe("TreeProcessor", function() {
     expect(specifiedLeaf.execute).toHaveBeenCalled();
   });
 
-  it("runs a node twice if the order specified leaves and re-enters it", function() {
+  it("runs a node multiple times if the order specified leaves and re-enters it", function() {
     var leaf1 = new Leaf(),
         leaf2 = new Leaf(),
         leaf3 = new Leaf(),
-        reentered = new Node({ children: [leaf1, leaf2] }),
-        root = new Node({ children: [reentered, leaf3] }),
+        leaf4 = new Leaf(),
+        leaf5 = new Leaf(),
+        reentered = new Node({ children: [leaf1, leaf2, leaf3] }),
+        root = new Node({ children: [reentered, leaf4, leaf5] }),
         queueRunner = jasmine.createSpy('queueRunner'),
         processor = new j$.TreeProcessor({
           tree: root,
-          runnableIds: [leaf1.id, leaf3.id, leaf2.id],
+          runnableIds: [leaf1.id, leaf4.id, leaf2.id, leaf5.id, leaf3.id],
           queueRunnerFactory: queueRunner
         });
 
     processor.execute();
     var queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(3);
+    expect(queueableFns.length).toBe(5);
 
     queueableFns[0].fn();
     expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
@@ -523,13 +525,79 @@ describe("TreeProcessor", function() {
     expect(leaf1.execute).toHaveBeenCalled();
 
     queueableFns[1].fn();
-    expect(leaf3.execute).toHaveBeenCalled();
+    expect(leaf4.execute).toHaveBeenCalled();
 
     queueableFns[2].fn();
     expect(queueRunner.calls.count()).toBe(3);
     expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
     queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
     expect(leaf2.execute).toHaveBeenCalled();
+
+    queueableFns[3].fn();
+    expect(leaf5.execute).toHaveBeenCalled();
+
+    queueableFns[4].fn();
+    expect(queueRunner.calls.count()).toBe(4);
+    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
+    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    expect(leaf3.execute).toHaveBeenCalled();
+  });
+
+  it("runs a parent of a node with segments correctly", function() {
+    var leaf1 = new Leaf(),
+        leaf2 = new Leaf(),
+        leaf3 = new Leaf(),
+        leaf4 = new Leaf(),
+        leaf5 = new Leaf(),
+        parent = new Node({ children: [leaf1, leaf2, leaf3] }),
+        grandparent = new Node({ children: [parent] }),
+        root = new Node({ children: [grandparent, leaf4, leaf5] }),
+        queueRunner = jasmine.createSpy('queueRunner'),
+        processor = new j$.TreeProcessor({
+          tree: root,
+          runnableIds: [leaf1.id, leaf4.id, leaf2.id, leaf5.id, leaf3.id],
+          queueRunnerFactory: queueRunner
+        });
+
+    processor.execute();
+    var queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
+    expect(queueableFns.length).toBe(5);
+
+    queueableFns[0].fn();
+    expect(queueRunner.calls.count()).toBe(2);
+    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
+
+    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    expect(queueRunner.calls.count()).toBe(3);
+
+    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    expect(leaf1.execute).toHaveBeenCalled();
+
+    queueableFns[1].fn();
+    expect(leaf4.execute).toHaveBeenCalled();
+
+    queueableFns[2].fn();
+    expect(queueRunner.calls.count()).toBe(4);
+    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
+
+    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    expect(queueRunner.calls.count()).toBe(5);
+
+    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    expect(leaf2.execute).toHaveBeenCalled();
+
+    queueableFns[3].fn();
+    expect(leaf5.execute).toHaveBeenCalled();
+
+    queueableFns[4].fn();
+    expect(queueRunner.calls.count()).toBe(6);
+    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
+
+    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    expect(queueRunner.calls.count()).toBe(7);
+
+    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    expect(leaf3.execute).toHaveBeenCalled();
   });
 
   it("runs nodes in the order they were declared", function() {
