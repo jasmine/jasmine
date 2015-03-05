@@ -25,4 +25,24 @@ describe("Env", function() {
       expect(suite.description).toEqual('Jasmine__TopLevel__Suite');
     });
   });
+
+  it('can configure specs to throw errors on expectation failures', function() {
+    env.throwOnExpectationFailure(true);
+
+    spyOn(j$, 'Spec');
+    env.it('foo', function() {});
+    expect(j$.Spec).toHaveBeenCalledWith(jasmine.objectContaining({
+      throwOnExpectationFailure: true
+    }));
+  });
+
+  it('can configure suites to throw errors on expectation failures', function() {
+    env.throwOnExpectationFailure(true);
+
+    spyOn(j$, 'Suite');
+    env.describe('foo', function() {});
+    expect(j$.Suite).toHaveBeenCalledWith(jasmine.objectContaining({
+      throwOnExpectationFailure: true
+    }));
+  });
 });

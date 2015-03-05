@@ -14,6 +14,7 @@ $failing-color: #ca3a11;
 $pending-color: #ba9d37;
 $empty-color: #eff543;
 $neutral-color: #bababa;
+$jasmine-color: #8a4182;
 
 $font-size: 11px;
 $large-font-size: 14px;
@@ -77,12 +78,6 @@ body {
     top: 6px;
   }
 
-  .banner .duration {
-    position: absolute;
-    right: 14px;
-    top: 6px;
-   }
-
   // This div is available for testing elements that must be added to the DOM.
   // We position it out of view, so it doesn't obstruct the runner.
   #jasmine_content {
@@ -101,8 +96,10 @@ body {
   }
 
   .duration {
-    color: $faint-text-color;
+    color: #fff;
     float: right;
+    line-height: $line-height * 2;
+    padding-right: 9px;
   }
 
   //--- Symbol summary ---//
@@ -166,11 +163,32 @@ body {
     }
   }
 
-  .exceptions {
-    color: #fff;
+  .run-options {
     float: right;
-    margin-top: 5px;
     margin-right: 5px;
+    border: 1px solid $jasmine-color;
+    color: $jasmine-color;
+    position: relative;
+    line-height: 20px;
+
+    .trigger {
+      cursor: pointer;
+      padding: 8px 16px;
+    }
+
+    .payload {
+      position: absolute;
+      display: none;
+      right: -1px;
+      border: 1px solid $jasmine-color;
+      background-color: $page-background-color;
+      white-space: nowrap;
+      padding: 4px 8px;
+
+      &.open {
+        display: block;
+      }
+    }
   }
 
   //--- Alerts: status bars ---//

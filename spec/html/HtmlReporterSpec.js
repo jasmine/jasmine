@@ -266,7 +266,7 @@ describe("New HtmlReporter", function() {
       timer.elapsed.and.returnValue(100);
       reporter.jasmineDone();
 
-      var duration = container.querySelector(".banner .duration");
+      var duration = container.querySelector(".alert .duration");
       expect(duration.innerHTML).toMatch(/finished in 0.1s/);
     });
 
@@ -364,6 +364,40 @@ describe("New HtmlReporter", function() {
 //      expect(specLink.getAttribute("title")).toEqual("A Suite with a spec");
     });
 
+    it("has an options menu", function() {
+      var env = new j$.Env(),
+        container = document.createElement("div"),
+        getContainer = function() {
+          return container;
+        },
+        reporter = new j$.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() {
+            return document.createElement.apply(document, arguments);
+          },
+          createTextNode: function() {
+            return document.createTextNode.apply(document, arguments);
+          }
+        });
+
+      reporter.initialize();
+      reporter.jasmineDone({});
+
+      var trigger = container.querySelector('.run-options .trigger'),
+          payload = container.querySelector('.run-options .payload');
+
+      expect(payload.className).not.toContain('open');
+
+      trigger.click();
+
+      expect(payload.className).toContain('open');
+
+      trigger.click();
+
+      expect(payload.className).not.toContain('open');
+    });
+
     describe("UI for raising/catching exceptions", function() {
       it("should be unchecked if the env is catching", function() {
         var env = new j$.Env(),
@@ -439,6 +473,86 @@ describe("New HtmlReporter", function() {
         var input = container.querySelector(".raise");
         input.click();
         expect(exceptionsClickHandler).toHaveBeenCalled();
+      });
+    });
+
+    describe("UI for throwing errors on expectation failures", function() {
+      it("should be unchecked if not throwing", function() {
+        var env = new j$.Env(),
+          container = document.createElement("div"),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new j$.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var throwingExpectationsUI = container.querySelector(".throw");
+        expect(throwingExpectationsUI.checked).toBe(false);
+      });
+
+      it("should be checked if throwing", function() {
+        var env = new j$.Env(),
+          container = document.createElement("div"),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new j$.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        env.throwOnExpectationFailure(true);
+
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var throwingExpectationsUI = container.querySelector(".throw");
+        expect(throwingExpectationsUI.checked).toBe(true);
+      });
+
+      it("should affect the query param for throw expectation failures", function() {
+        var env = new j$.Env(),
+          container = document.createElement("div"),
+          throwingExceptionHandler = jasmine.createSpy('throwingExceptions'),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new j$.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            onThrowExpectationsClick: throwingExceptionHandler,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var throwingExpectationsUI = container.querySelector(".throw");
+        throwingExpectationsUI.click();
+
+        expect(throwingExceptionHandler).toHaveBeenCalled();
       });
     });
 

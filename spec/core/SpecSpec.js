@@ -255,6 +255,27 @@ describe("Spec", function() {
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual(['expectation2']);
   });
 
+  it("throws an ExpectationFailed error upon receiving a failed expectation when 'throwOnExpectationFailure' is set", function() {
+    var resultCallback = jasmine.createSpy('resultCallback'),
+      spec = new j$.Spec({
+      queueableFn: { fn: function() {} },
+      expectationResultFactory: function(data) { return data; },
+      queueRunnerFactory: function(attrs) { attrs.onComplete(); },
+      resultCallback: resultCallback,
+      throwOnExpectationFailure: true
+    });
+
+    spec.addExpectationResult(true, 'passed');
+    expect(function() {
+      spec.addExpectationResult(false, 'failed')
+    }).toThrowError(j$.errors.ExpectationFailed);
+
+    spec.execute();
+
+    expect(resultCallback.calls.first().args[0].passedExpectations).toEqual(['passed']);
+    expect(resultCallback.calls.first().args[0].failedExpectations).toEqual(['failed']);
+  });
+
   it("can return its full name", function() {
     var specNameSpy = jasmine.createSpy('specNameSpy').and.returnValue('expected val');
 
@@ -301,6 +322,42 @@ describe("Spec", function() {
       expect(spec.status()).toEqual("pending");
       expect(spec.result.pendingReason).toEqual('custom message');
     });
+  });
+
+  it("should log a failure when handling an exception", function() {
+    var resultCallback = jasmine.createSpy('resultCallback'),
+      spec = new j$.Spec({
+        queueableFn: { fn: function() {} },
+        expectationResultFactory: function(data) { return data; },
+        queueRunnerFactory: function(attrs) { attrs.onComplete(); },
+        resultCallback: resultCallback
+      });
+
+    spec.onException('foo');
+    spec.execute();
+
+    expect(resultCallback.calls.first().args[0].failedExpectations).toEqual([{
+      error: 'foo',
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: ''
+    }]);
+  });
+
+  it("should not log an additional failure when handling an ExpectationFailed error", function() {
+    var resultCallback = jasmine.createSpy('resultCallback'),
+      spec = new j$.Spec({
+        queueableFn: { fn: function() {} },
+        expectationResultFactory: function(data) { return data; },
+        queueRunnerFactory: function(attrs) { attrs.onComplete(); },
+        resultCallback: resultCallback
+      });
+
+    spec.onException(new j$.errors.ExpectationFailed());
+    spec.execute();
+
+    expect(resultCallback.calls.first().args[0].failedExpectations).toEqual([]);
   });
 
   it("retrieves a result with updated status", function() {

@@ -19,6 +19,7 @@ getJasmineRequireObj().Env = function(j$) {
     var currentSpec = null;
     var currentlyExecutingSuites = [];
     var currentDeclarationSuite = null;
+    var throwOnExpectationFailure = false;
 
     var currentSuite = function() {
       return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
@@ -160,6 +161,14 @@ getJasmineRequireObj().Env = function(j$) {
       return j$.Spec.isPendingSpecException(e) || catchExceptions;
     };
 
+    this.throwOnExpectationFailure = function(value) {
+      throwOnExpectationFailure = !!value;
+    };
+
+    this.throwingExpectationFailures = function() {
+      return throwOnExpectationFailure;
+    };
+
     var queueRunnerFactory = function(options) {
       options.catchException = catchException;
       options.clearStack = options.clearStack || clearStack;
@@ -242,7 +251,8 @@ getJasmineRequireObj().Env = function(j$) {
         description: description,
         parentSuite: currentDeclarationSuite,
         expectationFactory: expectationFactory,
-        expectationResultFactory: expectationResultFactory
+        expectationResultFactory: expectationResultFactory,
+        throwOnExpectationFailure: throwOnExpectationFailure
       });
 
       runnableLookupTable[suite.id] = suite;
@@ -336,7 +346,8 @@ getJasmineRequireObj().Env = function(j$) {
         queueableFn: {
           fn: fn,
           timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
-        }
+        },
+        throwOnExpectationFailure: throwOnExpectationFailure
       });
 
       runnableLookupTable[spec.id] = spec;

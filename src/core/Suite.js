@@ -6,6 +6,7 @@ getJasmineRequireObj().Suite = function() {
     this.description = attrs.description;
     this.expectationFactory = attrs.expectationFactory;
     this.expectationResultFactory = attrs.expectationResultFactory;
+    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
     this.beforeFns = [];
     this.afterFns = [];
@@ -99,6 +100,10 @@ getJasmineRequireObj().Suite = function() {
   };
 
   Suite.prototype.onException = function() {
+    if (arguments[0] instanceof j$.errors.ExpectationFailed) {
+      return;
+    }
+
     if(isAfterAll(this.children)) {
       var data = {
         matcherName: '',
@@ -120,10 +125,17 @@ getJasmineRequireObj().Suite = function() {
     if(isAfterAll(this.children) && isFailure(arguments)){
       var data = arguments[1];
       this.result.failedExpectations.push(this.expectationResultFactory(data));
+      if(this.throwOnExpectationFailure) {
+        throw new j$.errors.ExpectationFailed();
+      }
     } else {
       for (var i = 0; i < this.children.length; i++) {
         var child = this.children[i];
-        child.addExpectationResult.apply(child, arguments);
+        try {
+          child.addExpectationResult.apply(child, arguments);
+        } catch(e) {
+          // keep going
+        }
       }
     }
   };

@@ -83,7 +83,7 @@ describe("Suite", function() {
     expect(suite.getResult().status).toBe('finished');
   });
 
-  it("retrives a result with disabled status", function() {
+  it("retrieves a result with disabled status", function() {
     var suite = new j$.Suite({});
     suite.disable();
 
@@ -102,4 +102,44 @@ describe("Suite", function() {
 
     expect(suite.isExecutable()).toBe(false);
   });
+
+  it("tells all children about expectation failures, even if one throws", function() {
+    var suite = new j$.Suite({}),
+      child1 = { addExpectationResult: jasmine.createSpy('child1#expectationResult'), result: {} },
+      child2 = { addExpectationResult: jasmine.createSpy('child2#expectationResult'), result: {} };
+
+    suite.addChild(child1);
+    suite.addChild(child2);
+
+    child1.addExpectationResult.and.throwError('foo');
+
+    suite.addExpectationResult('stuff');
+
+    expect(child1.addExpectationResult).toHaveBeenCalledWith('stuff');
+    expect(child2.addExpectationResult).toHaveBeenCalledWith('stuff');
+  });
+
+  it("throws an ExpectationFailed when receiving a failed expectation in an afterAll when throwOnExpectationFailure is set", function() {
+    var suite = new j$.Suite({
+      expectationResultFactory: function(data) { return data; },
+      throwOnExpectationFailure: true
+    });
+    suite.addChild({ result: { status: 'done' } });
+
+    expect(function() {
+      suite.addExpectationResult(false, 'failed');
+    }).toThrowError(j$.errors.ExpectationFailed);
+
+    expect(suite.status()).toBe('failed');
+    expect(suite.result.failedExpectations).toEqual(['failed']);
+  });
+
+  it("does not add an additional failure when an expectation fails in an afterAll", function(){
+    var suite = new j$.Suite({});
+    suite.addChild({ result: { status: 'done' } });
+
+    suite.onException(new j$.errors.ExpectationFailed());
+
+    expect(suite.getResult().failedExpectations).toEqual([]);
+  })
 });

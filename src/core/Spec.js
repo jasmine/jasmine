@@ -12,6 +12,7 @@ getJasmineRequireObj().Spec = function(j$) {
     this.expectationResultFactory = attrs.expectationResultFactory || function() { };
     this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
     this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
+    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
     if (!this.queueableFn.fn) {
       this.pend();
@@ -33,6 +34,10 @@ getJasmineRequireObj().Spec = function(j$) {
       this.result.passedExpectations.push(expectationResult);
     } else {
       this.result.failedExpectations.push(expectationResult);
+
+      if(this.throwOnExpectationFailure){
+        throw new j$.errors.ExpectationFailed();
+      }
     }
   };
 
@@ -73,6 +78,10 @@ getJasmineRequireObj().Spec = function(j$) {
   Spec.prototype.onException = function onException(e) {
     if (Spec.isPendingSpecException(e)) {
       this.pend(extractCustomPendingMessage(e));
+      return;
+    }
+
+    if (e instanceof j$.errors.ExpectationFailed) {
       return;
     }
 
