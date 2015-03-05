@@ -34,6 +34,15 @@ getJasmineRequireObj().Clock = function() {
       installed = false;
     };
 
+    self.withMock = function(closure) {
+      this.install();
+      try {
+        closure();
+      } finally {
+        this.uninstall();
+      }
+    };
+
     self.mockDate = function(initialDate) {
       mockDate.install(initialDate);
     };
