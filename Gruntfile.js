@@ -42,10 +42,8 @@ module.exports = function(grunt) {
           jasmine = new Jasmine({jasmineCore: jasmineCore});
 
       jasmine.loadConfigFile('./spec/support/jasmine.json');
-      jasmine.configureDefaultReporter({
-        onComplete: function(passed) {
-          done(passed);
-        }
+      jasmine.onComplete(function(passed) {
+        done(passed);
       });
 
       jasmine.execute();
