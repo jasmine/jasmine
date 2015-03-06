@@ -389,11 +389,11 @@ describe("New HtmlReporter", function() {
 
       expect(payload.className).not.toContain('open');
 
-      trigger.click();
+      trigger.onclick();
 
       expect(payload.className).toContain('open');
 
-      trigger.click();
+      trigger.onclick();
 
       expect(payload.className).not.toContain('open');
     });
