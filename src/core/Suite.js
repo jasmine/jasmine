@@ -1,4 +1,4 @@
-getJasmineRequireObj().Suite = function() {
+getJasmineRequireObj().Suite = function(j$) {
   function Suite(attrs) {
     this.env = attrs.env;
     this.id = attrs.id;
