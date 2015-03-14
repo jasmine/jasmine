@@ -2,7 +2,7 @@ language: ruby
 
 sudo: false
 
-rvm: 1.9.3
+rvm: 2.2.0
 
 script: $TEST_COMMAND
 
