@@ -1,5 +1,5 @@
 getJasmineRequireObj().Clock = function() {
-  function Clock(global, delayedFunctionScheduler, mockDate) {
+  function Clock(global, delayedFunctionSchedulerFactory, mockDate) {
     var self = this,
       realTimingFunctions = {
         setTimeout: global.setTimeout,
@@ -14,19 +14,21 @@ getJasmineRequireObj().Clock = function() {
         clearInterval: clearInterval
       },
       installed = false,
+      delayedFunctionScheduler,
       timer;
 
 
     self.install = function() {
       replace(global, fakeTimingFunctions);
       timer = fakeTimingFunctions;
+      delayedFunctionScheduler = delayedFunctionSchedulerFactory();
       installed = true;
 
       return self;
     };
 
     self.uninstall = function() {
-      delayedFunctionScheduler.reset();
+      delayedFunctionScheduler = null;
       mockDate.uninstall();
       replace(global, realTimingFunctions);
 
