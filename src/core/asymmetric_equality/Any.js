@@ -1,4 +1,4 @@
-getJasmineRequireObj().Any = function() {
+getJasmineRequireObj().Any = function(j$) {
 
   function Any(expectedObject) {
     this.expectedObject = expectedObject;

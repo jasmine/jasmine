@@ -21,7 +21,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     jRequire.base(j$, jasmineGlobal);
     j$.util = jRequire.util();
     j$.errors = jRequire.errors();
-    j$.Any = jRequire.Any();
+    j$.Any = jRequire.Any(j$);
     j$.Anything = jRequire.Anything(j$);
     j$.CallTracker = jRequire.CallTracker();
     j$.MockDate = jRequire.MockDate();
