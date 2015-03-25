@@ -66,6 +66,14 @@ describe("Env", function() {
     });
   });
 
+  describe("fcontext", function(){
+    it("is an alias for fdescribe", function(){
+      spyOn(env, 'fdescribe');
+      env.fcontext("foo", foo);
+      expect(env.fdescribe).toHaveBeenCalled();
+    });
+  });
+
   describe("with", function(){
     it("is an alias for describe, but adds 'with' to the beginning of the descriptions", function(){
       spyOn(env, 'describe');
@@ -82,6 +90,14 @@ describe("Env", function() {
     });
   });
 
+  describe("fwith", function(){
+    it("is an alias for fdescribe, but adds 'with' to the beginning of the description", function(){
+      spyOn(env, 'fdescribe');
+      env.fwith("foo", foo);
+      expect(env.fdescribe).toHaveBeenCalledWith("with foo", foo);
+    });
+  });
+
   describe("without", function(){
     it("is an alias for describe, but adds 'without' to the beginning of the description", function(){
       spyOn(env, 'describe');
@@ -95,6 +111,14 @@ describe("Env", function() {
       spyOn(env, 'xdescribe');
       env.xwithout("foo", foo);
       expect(env.xdescribe).toHaveBeenCalledWith("without foo", foo);
+    });
+  });
+
+  describe("fwithout", function(){
+    it("is an alias for fdescribe, but adds 'without' to the beginning of the description", function(){
+      spyOn(env, 'fdescribe');
+      env.fwithout("foo", foo);
+      expect(env.fdescribe).toHaveBeenCalledWith("without foo", foo);
     });
   });
 });
