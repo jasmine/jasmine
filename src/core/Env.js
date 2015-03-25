@@ -271,6 +271,30 @@ getJasmineRequireObj().Env = function(j$) {
       return suite;
     };
 
+    this.context = function(description, specDefinition) {
+      return this.describe(description, specDefinition);
+    };
+
+    this.xcontext = function(description, specDefinition) {
+      return this.xdescribe(description, specDefinition);
+    };
+
+    this.with = function(description, specDefinition) {
+      return this.describe('with '+description, specDefinition);
+    };
+
+    this.xwith = function(description, specDefinition) {
+      return this.xdescribe('with '+description, specDefinition);
+    };
+
+    this.without = function(description, specDefinition) {
+      return this.describe('without '+description, specDefinition);
+    };
+
+    this.xwithout = function(description, specDefinition) {
+      return this.xdescribe('without '+description, specDefinition);
+    };
+
     var focusedRunnables = [];
 
     this.fdescribe = function(description, specDefinitions) {
@@ -282,6 +306,18 @@ getJasmineRequireObj().Env = function(j$) {
       addSpecsToSuite(suite, specDefinitions);
 
       return suite;
+    };
+
+    this.fcontext = function(description, specDefinition) {
+      return this.fdescribe(description, specDefinition);
+    };
+
+    this.fwith = function(description, specDefinition) {
+      return this.fdescribe('with '+description, specDefinition);
+    };
+
+    this.fwithout = function(description, specDefinition) {
+      return this.fdescribe('without '+description, specDefinition);
     };
 
     function addSpecsToSuite(suite, specDefinitions) {

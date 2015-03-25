@@ -12,6 +12,42 @@ getJasmineRequireObj().interface = function(jasmine, env) {
       return env.fdescribe(description, specDefinitions);
     },
 
+    context: function(description, specDefinitions) {
+      return env.context(description, specDefinitions);
+    },
+
+    xcontext: function(description, specDefinitions) {
+      return env.xcontext(description, specDefinitions);
+    },
+
+    fcontext: function(description, specDefinitions) {
+      return env.fcontext(description, specDefinitions);
+    },
+
+    _with: function(description, specDefinitions) {
+      return env.with(description, specDefinitions);
+    },
+
+    _xwith: function(description, specDefinitions) {
+      return env.xwith(description, specDefinitions);
+    },
+
+    _fwith: function(description, specDefinitions) {
+      return env.fwith(description, specDefinitions);
+    },
+
+    _without: function(description, specDefinitions) {
+      return env.without(description, specDefinitions);
+    },
+
+    _xwithout: function(description, specDefinitions) {
+      return env.xwithout(description, specDefinitions);
+    },
+
+    _fwithout: function(description, specDefinitions) {
+      return env.fwithout(description, specDefinitions);
+    },
+
     it: function() {
       return env.it.apply(env, arguments);
     },
