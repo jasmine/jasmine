@@ -320,6 +320,10 @@ body {
       &.pending a {
         color: $pending-color;
       }
+
+      &.disabled a {
+        color: $neutral-color;
+      }
     }
   }
 

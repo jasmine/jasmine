@@ -26,7 +26,7 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .symbol-summary li.empty:before { color: #ba9d37; content: "\02022"; }
 .jasmine_html-reporter .run-options { float: right; margin-right: 5px; border: 1px solid #8a4182; color: #8a4182; position: relative; line-height: 20px; }
 .jasmine_html-reporter .run-options .trigger { cursor: pointer; padding: 8px 16px; }
-.jasmine_html-reporter .run-options .payload { position: absolute; display: none; right: 0; border: 1px solid #8a4182; background-color: #eee; white-space: nowrap; padding: 4px 8px; }
+.jasmine_html-reporter .run-options .payload { position: absolute; display: none; right: -1px; border: 1px solid #8a4182; background-color: #eee; white-space: nowrap; padding: 4px 8px; }
 .jasmine_html-reporter .run-options .payload.open { display: block; }
 .jasmine_html-reporter .bar { line-height: 28px; font-size: 14px; display: block; color: #eee; }
 .jasmine_html-reporter .bar.failed { background-color: #ca3a11; }
@@ -53,6 +53,7 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .summary li.failed a { color: #ca3a11; }
 .jasmine_html-reporter .summary li.empty a { color: #ba9d37; }
 .jasmine_html-reporter .summary li.pending a { color: #ba9d37; }
+.jasmine_html-reporter .summary li.disabled a { color: #bababa; }
 .jasmine_html-reporter .description + .suite { margin-top: 0; }
 .jasmine_html-reporter .suite { margin-top: 14px; }
 .jasmine_html-reporter .suite a { color: #333; }
