@@ -88,6 +88,78 @@ describe("Clock", function() {
     expect(fakeClearInterval).not.toHaveBeenCalled();
   });
 
+  it("does not install if the current setTimeout is not the original function on the global", function() {
+    var originalFakeSetTimeout = function() {},
+      replacedSetTimeout = function() {},
+      fakeGlobal = { setTimeout: originalFakeSetTimeout },
+      delayedFunctionSchedulerFactory = jasmine.createSpy('delayedFunctionSchedulerFactory'),
+      mockDate = {},
+      clock = new j$.Clock(fakeGlobal, delayedFunctionSchedulerFactory, mockDate);
+
+    fakeGlobal.setTimeout = replacedSetTimeout;
+
+    expect(function() {
+      clock.install();
+    }).toThrowError(/unable to install/);
+
+    expect(delayedFunctionSchedulerFactory).not.toHaveBeenCalled();
+    expect(fakeGlobal.setTimeout).toBe(replacedSetTimeout);
+  });
+
+  it("does not install if the current clearTimeout is not the original function on the global", function() {
+    var originalFakeClearTimeout = function() {},
+      replacedClearTimeout = function() {},
+      fakeGlobal = { clearTimeout: originalFakeClearTimeout },
+      delayedFunctionSchedulerFactory = jasmine.createSpy('delayedFunctionSchedulerFactory'),
+      mockDate = {},
+      clock = new j$.Clock(fakeGlobal, delayedFunctionSchedulerFactory, mockDate);
+
+    fakeGlobal.clearTimeout = replacedClearTimeout;
+
+    expect(function() {
+      clock.install();
+    }).toThrowError(/unable to install/);
+
+    expect(delayedFunctionSchedulerFactory).not.toHaveBeenCalled();
+    expect(fakeGlobal.clearTimeout).toBe(replacedClearTimeout);
+  });
+
+  it("does not install if the current setInterval is not the original function on the global", function() {
+    var originalFakeSetInterval = function() {},
+      replacedSetInterval = function() {},
+      fakeGlobal = { setInterval: originalFakeSetInterval },
+      delayedFunctionSchedulerFactory = jasmine.createSpy('delayedFunctionSchedulerFactory'),
+      mockDate = {},
+      clock = new j$.Clock(fakeGlobal, delayedFunctionSchedulerFactory, mockDate);
+
+    fakeGlobal.setInterval = replacedSetInterval;
+
+    expect(function() {
+      clock.install();
+    }).toThrowError(/unable to install/);
+
+    expect(delayedFunctionSchedulerFactory).not.toHaveBeenCalled();
+    expect(fakeGlobal.setInterval).toBe(replacedSetInterval);
+  });
+
+  it("does not install if the current clearInterval is not the original function on the global", function() {
+    var originalFakeClearInterval = function() {},
+      replacedClearInterval = function() {},
+      fakeGlobal = { clearInterval: originalFakeClearInterval },
+      delayedFunctionSchedulerFactory = jasmine.createSpy('delayedFunctionSchedulerFactory'),
+      mockDate = {},
+      clock = new j$.Clock(fakeGlobal, delayedFunctionSchedulerFactory, mockDate);
+
+    fakeGlobal.clearInterval = replacedClearInterval;
+
+    expect(function() {
+      clock.install();
+    }).toThrowError(/unable to install/);
+
+    expect(delayedFunctionSchedulerFactory).not.toHaveBeenCalled();
+    expect(fakeGlobal.clearInterval).toBe(replacedClearInterval);
+  });
+
   it("replaces the global timer functions on uninstall", function() {
     var fakeSetTimeout = jasmine.createSpy("global setTimeout"),
       fakeClearTimeout = jasmine.createSpy("global clearTimeout"),
