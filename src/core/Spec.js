@@ -28,14 +28,14 @@ getJasmineRequireObj().Spec = function(j$) {
     };
   }
 
-  Spec.prototype.addExpectationResult = function(passed, data) {
+  Spec.prototype.addExpectationResult = function(passed, data, isError) {
     var expectationResult = this.expectationResultFactory(data);
     if (passed) {
       this.result.passedExpectations.push(expectationResult);
     } else {
       this.result.failedExpectations.push(expectationResult);
 
-      if(this.throwOnExpectationFailure){
+      if (this.throwOnExpectationFailure && !isError) {
         throw new j$.errors.ExpectationFailed();
       }
     }
@@ -91,7 +91,7 @@ getJasmineRequireObj().Spec = function(j$) {
       expected: '',
       actual: '',
       error: e
-    });
+    }, true);
   };
 
   Spec.prototype.disable = function() {

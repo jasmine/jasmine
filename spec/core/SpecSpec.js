@@ -276,6 +276,19 @@ describe("Spec", function() {
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual(['failed']);
   });
 
+  it("does not throw an ExpectationFailed error when handling an error", function() {
+    var resultCallback = jasmine.createSpy('resultCallback'),
+      spec = new j$.Spec({
+        queueableFn: { fn: function() {} },
+        expectationResultFactory: function(data) { return data; },
+        queueRunnerFactory: function(attrs) { attrs.onComplete(); },
+        resultCallback: resultCallback,
+        throwOnExpectationFailure: true
+      });
+
+    spec.onException('failing exception');
+  });
+
   it("can return its full name", function() {
     var specNameSpy = jasmine.createSpy('specNameSpy').and.returnValue('expected val');
 
