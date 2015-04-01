@@ -1,6 +1,12 @@
 # Developing for Jasmine Core
 
-We welcome your contributions - Thanks for helping make Jasmine a better project for everyone. Please review the backlog and discussion lists (the main group - [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js) and the developer's list - [http://groups.google.com/group/jasmine-js-dev](http://groups.google.com/group/jasmine-js-dev)) before starting work - what you're looking for may already have been done. If it hasn't, the community can help make your contribution better.
+We welcome your contributions! Thanks for helping make Jasmine a better project for everyone. Please review the backlog and discussion lists before starting work.  What you're looking for may already have been done. If it hasn't, the community can help make your contribution better.
+
+## Links
+
+- [Jasmine Google Group](http://groups.google.com/group/jasmine-js)
+- [Jasmine-dev Google Group](http://groups.google.com/group/jasmine-js-dev)
+- [Jasmine on PivotalTracker](https://www.pivotaltracker.com/n/projects/10606)
 
 ## General Workflow
 
