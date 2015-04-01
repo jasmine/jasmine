@@ -12,18 +12,17 @@ We welcome your contributions! Thanks for helping make Jasmine a better project 
 
 Please submit pull requests via feature branches using the semi-standard workflow of:
 
-1. Fork it
-1. Clone your fork: (`git clone git@github.com:yourUserName/jasmine.git`)                                                                                                                         
-1. Change directory: (`cd jasmine`)                                                                                                                                                               
-1. Assign original repository to a remote named 'upstream': (`git remote add                                                                                                                       
-upstream https://github.com/jasmine/jasmine.git`)                                                                                                                                                 
-1. Pull in changes not present in your local repository: (`git fetch upstream`)
-1. Create your feature branch (`git checkout -b my-new-feature`)
-1. Commit your changes (`git commit -am 'Add some feature'`)
-1. Push to the branch (`git push origin my-new-feature`)
-1. Create new Pull Request
+```bash
+git clone git@github.com:yourUserName/jasmine.git              # Clone your fork
+cd jasmine                                                     # Change directory
+git remote add upstream https://github.com/jasmine/jasmine.git # Assign original repository to a remote named 'upstream'
+git fetch upstream                                             # Pull in changes not present in your local repository
+git checkout -b my-new-feature                                 # Create your feature branch
+git commit -am 'Add some feature'                              # Commit your changes
+git push origin my-new-feature                                 # Push to the branch
+```
 
-We favor pull requests with very small, single commits with a single purpose.
+Once you've pushed a feature branch to your forked repo, you're ready to open a pull request. We favor pull requests with very small, single commits with a single purpose.
 
 ## Background
 
