@@ -1,23 +1,28 @@
 # Developing for Jasmine Core
 
-We welcome your contributions - Thanks for helping make Jasmine a better project for everyone. Please review the backlog and discussion lists (the main group - [http://groups.google.com/group/jasmine-js](http://groups.google.com/group/jasmine-js) and the developer's list - [http://groups.google.com/group/jasmine-js-dev](http://groups.google.com/group/jasmine-js-dev)) before starting work - what you're looking for may already have been done. If it hasn't, the community can help make your contribution better.
+We welcome your contributions! Thanks for helping make Jasmine a better project for everyone. Please review the backlog and discussion lists before starting work.  What you're looking for may already have been done. If it hasn't, the community can help make your contribution better.
+
+## Links
+
+- [Jasmine Google Group](http://groups.google.com/group/jasmine-js)
+- [Jasmine-dev Google Group](http://groups.google.com/group/jasmine-js-dev)
+- [Jasmine on PivotalTracker](https://www.pivotaltracker.com/n/projects/10606)
 
 ## General Workflow
 
 Please submit pull requests via feature branches using the semi-standard workflow of:
 
-1. Fork it
-1. Clone your fork: (`git clone git@github.com:yourUserName/jasmine.git`)                                                                                                                         
-1. Change directory: (`cd jasmine`)                                                                                                                                                               
-1. Assign original repository to a remote named 'upstream': (`git remote add                                                                                                                       
-upstream https://github.com/jasmine/jasmine.git`)                                                                                                                                                 
-1. Pull in changes not present in your local repository: (`git fetch upstream`)
-1. Create your feature branch (`git checkout -b my-new-feature`)
-1. Commit your changes (`git commit -am 'Add some feature'`)
-1. Push to the branch (`git push origin my-new-feature`)
-1. Create new Pull Request
+```bash
+git clone git@github.com:yourUserName/jasmine.git              # Clone your fork
+cd jasmine                                                     # Change directory
+git remote add upstream https://github.com/jasmine/jasmine.git # Assign original repository to a remote named 'upstream'
+git fetch upstream                                             # Pull in changes not present in your local repository
+git checkout -b my-new-feature                                 # Create your feature branch
+git commit -am 'Add some feature'                              # Commit your changes
+git push origin my-new-feature                                 # Push to the branch
+```
 
-We favor pull requests with very small, single commits with a single purpose.
+Once you've pushed a feature branch to your forked repo, you're ready to open a pull request. We favor pull requests with very small, single commits with a single purpose.
 
 ## Background
 
