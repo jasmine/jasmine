@@ -29,6 +29,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return j$.isA_('Number', value);
   };
 
+  j$.isArguments_ = function(value) {
+    return j$.isA_('Arguments', value);
+  };
+
   j$.isA_ = function(typeName, value) {
     return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
   };
