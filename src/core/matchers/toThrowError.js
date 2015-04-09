@@ -109,7 +109,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
           return expected === null && errorType === null;
         },
         matches: function(error) {
-          return (errorType === null || error.constructor === errorType) &&
+          return (errorType === null || error instanceof errorType) &&
             (expected === null || messageMatch(error.message));
         }
       };

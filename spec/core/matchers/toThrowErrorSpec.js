@@ -170,7 +170,6 @@ describe("toThrowError", function() {
       result;
 
     CustomError.prototype = new Error();
-    CustomError.prototype.constructor = CustomError;
 
     result = matcher.compare(fn, CustomError);
 
@@ -222,7 +221,6 @@ describe("toThrowError", function() {
       result;
 
     CustomError.prototype = new Error();
-    CustomError.prototype.constructor = CustomError;
 
     result = matcher.compare(fn, CustomError, "foo");
 
