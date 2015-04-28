@@ -20,5 +20,5 @@ sauce_connect.log
 *.swp
 build/
 *.egg-info/
-dist/*.tar.gz
+dist
 nbproject/
