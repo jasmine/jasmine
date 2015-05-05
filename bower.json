@@ -14,7 +14,7 @@
   ],
   "license": "MIT",
   "moduleType": "globals",
-  "main": "lib/jasmine-core.js",
+  "main": "lib/jasmine-core/jasmine.js",
   "ignore": [
     "**/.*",
     "dist",
