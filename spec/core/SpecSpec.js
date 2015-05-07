@@ -119,7 +119,6 @@ describe("Spec", function() {
         queueRunnerFactory: fakeQueueRunner
       });
 
-
     expect(spec.status()).toBe('pending');
   });
 
@@ -402,13 +401,13 @@ describe("Spec", function() {
     expect(spec.isExecutable()).toBe(false);
   });
 
-  it("should not be executable when pending", function() {
+  it("should be executable when pending", function() {
     var spec = new j$.Spec({
       queueableFn: { fn: function() {} }
     });
     spec.pend();
 
-    expect(spec.isExecutable()).toBe(false);
+    expect(spec.isExecutable()).toBe(true);
   });
 
   it("should be executable when not disabled or pending", function() {

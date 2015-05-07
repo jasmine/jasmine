@@ -1134,6 +1134,27 @@ describe("Env integration", function() {
       });
 
       expect(reporter.specDone.calls.count()).toBe(5);
+
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        description: 'with a top level spec',
+        status: 'passed'
+      }));
+
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        description: "with an x'ed spec",
+        status: 'pending'
+      }));
+
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        description: 'with a spec',
+        status: 'failed'
+      }));
+
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        description: 'is pending',
+        status: 'pending'
+      }));
+
       var suiteResult = reporter.suiteStarted.calls.argsFor(0)[0];
       expect(suiteResult.description).toEqual("A Suite");
 
@@ -1147,7 +1168,7 @@ describe("Env integration", function() {
         env.expect(true).toBe(true);
       });
       env.describe("with a nested suite", function() {
-        env.xit("with a pending spec", function() {
+        env.xit("with an x'ed spec", function() {
           env.expect(true).toBe(true);
         });
         env.it("with a spec", function() {
@@ -1155,9 +1176,9 @@ describe("Env integration", function() {
         });
       });
 
-      env.describe('with only pending specs', function() {
+      env.describe('with only non-executable specs', function() {
         env.it('is pending');
-        env.xit('is pending', function() {
+        env.xit('is xed', function() {
           env.expect(true).toBe(true);
         });
       });
