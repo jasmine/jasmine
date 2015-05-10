@@ -255,38 +255,6 @@ body {
     margin-top: $line-height;
   }
 
-  //--- Results menu ---//
-
-  &.showDetails {
-
-    .summaryMenuItem {
-      font-weight: normal;
-      text-decoration: inherit;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    .detailsMenuItem {
-      font-weight: bold;
-      text-decoration: underline;
-    }
-
-    .summary {
-      display: none;
-    }
-
-    #details {
-      display: block;
-    }
-  }
-
-  .summaryMenuItem {
-    font-weight: bold;
-    text-decoration: underline;
-  }
-
   //--- Results summary: Suites and Specs names/links ---//
 
   .summary {
