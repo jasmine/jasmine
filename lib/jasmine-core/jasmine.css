@@ -40,12 +40,6 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter.failure-list .bar.menu.spec-list, .jasmine_html-reporter.failure-list .summary { display: none; }
 .jasmine_html-reporter .running-alert { background-color: #666; }
 .jasmine_html-reporter .results { margin-top: 14px; }
-.jasmine_html-reporter.showDetails .summaryMenuItem { font-weight: normal; text-decoration: inherit; }
-.jasmine_html-reporter.showDetails .summaryMenuItem:hover { text-decoration: underline; }
-.jasmine_html-reporter.showDetails .detailsMenuItem { font-weight: bold; text-decoration: underline; }
-.jasmine_html-reporter.showDetails .summary { display: none; }
-.jasmine_html-reporter.showDetails #details { display: block; }
-.jasmine_html-reporter .summaryMenuItem { font-weight: bold; text-decoration: underline; }
 .jasmine_html-reporter .summary { margin-top: 14px; }
 .jasmine_html-reporter .summary ul { list-style-type: none; margin-left: 14px; padding-top: 0; padding-left: 0; }
 .jasmine_html-reporter .summary ul.suite { margin-top: 7px; margin-bottom: 7px; }
