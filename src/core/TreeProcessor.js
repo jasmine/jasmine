@@ -29,6 +29,7 @@ getJasmineRequireObj().TreeProcessor = function() {
 
       queueRunnerFactory({
         queueableFns: childFns,
+        userContext: tree.sharedUserContext(),
         onException: function() {
           tree.onException.apply(tree, arguments);
         },

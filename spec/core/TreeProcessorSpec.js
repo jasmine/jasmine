@@ -202,7 +202,7 @@ describe("TreeProcessor", function() {
 
   it("runs a single leaf", function() {
     var leaf = new Leaf(),
-        node = new Node({ children: [leaf] }),
+        node = new Node({ children: [leaf], userContext: { root: 'context' } }),
         queueRunner = jasmine.createSpy('queueRunner'),
         processor = new j$.TreeProcessor({ tree: node, runnableIds: [leaf.id], queueRunnerFactory: queueRunner }),
         treeComplete = jasmine.createSpy('treeComplete');
@@ -212,6 +212,7 @@ describe("TreeProcessor", function() {
     expect(queueRunner).toHaveBeenCalledWith({
       onComplete: treeComplete,
       onException: jasmine.any(Function),
+      userContext: { root: 'context' },
       queueableFns: [{ fn: jasmine.any(Function) }]
     });
 
@@ -222,7 +223,7 @@ describe("TreeProcessor", function() {
 
   it("runs a node with no children", function() {
     var node = new Node({ userContext: { node: 'context' } }),
-        root = new Node({ children: [node] }),
+        root = new Node({ children: [node], userContext: { root: 'context' } }),
         nodeStart = jasmine.createSpy('nodeStart'),
         nodeComplete = jasmine.createSpy('nodeComplete'),
         queueRunner = jasmine.createSpy('queueRunner'),
@@ -241,6 +242,7 @@ describe("TreeProcessor", function() {
     expect(queueRunner).toHaveBeenCalledWith({
       onComplete: treeComplete,
       onException: jasmine.any(Function),
+      userContext: { root: 'context' },
       queueableFns: [{ fn: jasmine.any(Function) }]
     });
 
