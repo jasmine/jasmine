@@ -38,7 +38,6 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .bar a { color: white; }
 .jasmine_html-reporter.spec-list .bar.menu.failure-list, .jasmine_html-reporter.spec-list .results .failures { display: none; }
 .jasmine_html-reporter.failure-list .bar.menu.spec-list, .jasmine_html-reporter.failure-list .summary { display: none; }
-.jasmine_html-reporter .running-alert { background-color: #666; }
 .jasmine_html-reporter .results { margin-top: 14px; }
 .jasmine_html-reporter .summary { margin-top: 14px; }
 .jasmine_html-reporter .summary ul { list-style-type: none; margin-left: 14px; padding-top: 0; padding-left: 0; }
