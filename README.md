@@ -28,11 +28,11 @@ For the Jasmine Ruby Gem:<br>
 For the Jasmine Python Egg:<br>
 [https://github.com/jasmine/jasmine-py](https://github.com/jasmine/jasmine-py)
 
-To install Jasmine on your local box:
+To install Jasmine standalone on your local box:
 
-* Clone Jasmine - `git clone https://github.com/jasmine/jasmine.git`
+* Download the standalone distribution for your desired release from the [releases page](https://github.com/jasmine/jasmine/releases)
 * Create a Jasmine directory in your project - `mkdir my-project/jasmine`
-* Move latest dist to your project directory - `mv jasmine/dist/jasmine-standalone-2.0.0.zip my-project/jasmine`
+* Move the dist to your project directory - `mv jasmine/dist/jasmine-standalone-2.0.0.zip my-project/jasmine`
 * Change directory - `cd my-project/jasmine`
 * Unzip the dist - `unzip jasmine-standalone-2.0.0.zip`
 
@@ -62,6 +62,8 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, PhantomJS, a
 * [Davis W. Frank](mailto:dwfrank@pivotal.io), Pivotal Labs
 * [Rajan Agaskar](mailto:rajan@pivotal.io), Pivotal Labs
 * [Gregg Van Hove](mailto:gvanhove@pivotal.io), Pivotal Labs
+* [Greg Cobb](mailto:gcobb@pivotal.io), Pivotal Labs
+* [Chris Amavisca](mailto:camavisca@pivotal.io), Pivotal Labs
 
 ### Maintainers Emeritus
 
