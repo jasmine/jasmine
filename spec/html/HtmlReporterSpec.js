@@ -14,20 +14,20 @@ describe("New HtmlReporter", function() {
 
     // Main top-level elements
     expect(container.querySelector("div.jasmine_html-reporter")).toBeTruthy();
-    expect(container.querySelector("div.banner_jasmine-css")).toBeTruthy();
-    expect(container.querySelector("div.alert_jasmine-css")).toBeTruthy();
-    expect(container.querySelector("div.results_jasmine-css")).toBeTruthy();
+    expect(container.querySelector("div.jasmine-banner")).toBeTruthy();
+    expect(container.querySelector("div.jasmine-alert")).toBeTruthy();
+    expect(container.querySelector("div.jasmine-results")).toBeTruthy();
 
-    expect(container.querySelector("ul.symbol-summary_jasmine-css")).toBeTruthy();
+    expect(container.querySelector("ul.jasmine-symbol-summary")).toBeTruthy();
 
     // title banner
-    var banner = container.querySelector(".banner_jasmine-css");
+    var banner = container.querySelector(".jasmine-banner");
 
-    var title = banner.querySelector("a.title_jasmine-css");
+    var title = banner.querySelector("a.jasmine-title");
     expect(title.getAttribute('href')).toEqual('http://jasmine.github.io/');
     expect(title.getAttribute('target')).toEqual('_blank');
 
-    var version = banner.querySelector(".version_jasmine-css"),
+    var version = banner.querySelector(".jasmine-version"),
       versionText = 'textContent' in version ? version.textContent : version.innerText;
     expect(versionText).toEqual(j$.version);
   });
@@ -90,8 +90,8 @@ describe("New HtmlReporter", function() {
         failedExpectations: []
       });
       expect(console.error).toHaveBeenCalledWith("Spec \'Some Name\' has no expectations.");
-      var specEl = container.querySelector('.symbol-summary_jasmine-css li');
-      expect(specEl.getAttribute("class")).toEqual("empty_jasmine-css");
+      var specEl = container.querySelector('.jasmine-symbol-summary li');
+      expect(specEl.getAttribute("class")).toEqual("jasmine-empty");
     });
 
     it("reports the status symbol of a disabled spec", function() {
@@ -108,8 +108,8 @@ describe("New HtmlReporter", function() {
 
       reporter.specDone({id: 789, status: "disabled", fullName: "symbols should have titles", passedExpectations: [], failedExpectations: []});
 
-      var specEl = container.querySelector('.symbol-summary_jasmine-css li');
-      expect(specEl.getAttribute("class")).toEqual("disabled_jasmine-css");
+      var specEl = container.querySelector('.jasmine-symbol-summary li');
+      expect(specEl.getAttribute("class")).toEqual("jasmine-disabled");
       expect(specEl.getAttribute("id")).toEqual("spec_789");
       expect(specEl.getAttribute("title")).toEqual("symbols should have titles");
     });
@@ -128,8 +128,8 @@ describe("New HtmlReporter", function() {
 
       reporter.specDone({id: 789, status: "pending", passedExpectations: [], failedExpectations: []});
 
-      var specEl = container.querySelector('.symbol-summary_jasmine-css li');
-      expect(specEl.getAttribute("class")).toEqual("pending_jasmine-css");
+      var specEl = container.querySelector('.jasmine-symbol-summary li');
+      expect(specEl.getAttribute("class")).toEqual("jasmine-pending");
       expect(specEl.getAttribute("id")).toEqual("spec_789");
     });
 
@@ -147,9 +147,9 @@ describe("New HtmlReporter", function() {
 
       reporter.specDone({id: 123, status: "passed", passedExpectations: [{passed: true}], failedExpectations: []});
 
-      var statuses = container.querySelector(".symbol-summary_jasmine-css");
+      var statuses = container.querySelector(".jasmine-symbol-summary");
       var specEl = statuses.querySelector("li");
-      expect(specEl.getAttribute("class")).toEqual("passed_jasmine-css");
+      expect(specEl.getAttribute("class")).toEqual("jasmine-passed");
       expect(specEl.getAttribute("id")).toEqual("spec_123");
     });
 
@@ -173,8 +173,8 @@ describe("New HtmlReporter", function() {
         passedExpectations: []
       });
 
-      var specEl = container.querySelector(".symbol-summary_jasmine-css li");
-      expect(specEl.getAttribute("class")).toEqual("failed_jasmine-css");
+      var specEl = container.querySelector(".jasmine-symbol-summary li");
+      expect(specEl.getAttribute("class")).toEqual("jasmine-failed");
       expect(specEl.getAttribute("id")).toEqual("spec_345");
     });
   });
@@ -198,11 +198,11 @@ describe("New HtmlReporter", function() {
       reporter.suiteDone({ status: 'failed', failedExpectations: [{ message: 'My Other Exception' }] });
       reporter.jasmineDone({});
 
-      var alertBars = container.querySelectorAll(".alert_jasmine-css .bar_jasmine-css");
+      var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
 
       expect(alertBars.length).toEqual(3);
       expect(alertBars[1].innerHTML).toMatch(/My After All Exception/);
-      expect(alertBars[1].getAttribute("class")).toEqual('bar_jasmine-css errored_jasmine-css');
+      expect(alertBars[1].getAttribute("class")).toEqual('jasmine-bar jasmine-errored');
       expect(alertBars[2].innerHTML).toMatch(/My Other Exception/);
     });
   });
@@ -238,7 +238,7 @@ describe("New HtmlReporter", function() {
       reporter.suiteDone({id: 1});
       reporter.jasmineDone({});
 
-      var summary = container.querySelector('.summary_jasmine-css');
+      var summary = container.querySelector('.jasmine-summary');
       var suite = summary.childNodes[0];
       var specs = suite.childNodes[1];
       var spec = specs.childNodes[0];
@@ -266,7 +266,7 @@ describe("New HtmlReporter", function() {
       timer.elapsed.and.returnValue(100);
       reporter.jasmineDone();
 
-      var duration = container.querySelector(".alert_jasmine-css .duration_jasmine-css");
+      var duration = container.querySelector(".jasmine-alert .jasmine-duration");
       expect(duration.innerHTML).toMatch(/finished in 0.1s/);
     });
 
@@ -334,7 +334,7 @@ describe("New HtmlReporter", function() {
       reporter.suiteDone({id: 1});
 
       reporter.jasmineDone({});
-      var summary = container.querySelector(".summary_jasmine-css");
+      var summary = container.querySelector(".jasmine-summary");
 
       expect(summary.childNodes.length).toEqual(1);
 
@@ -346,7 +346,7 @@ describe("New HtmlReporter", function() {
         var node = outerSuite.childNodes[i];
         classes.push(node.getAttribute("class"));
       }
-      expect(classes).toEqual(["suite-detail_jasmine-css", "specs_jasmine-css", "suite_jasmine-css", "specs_jasmine-css"]);
+      expect(classes).toEqual(["jasmine-suite-detail", "jasmine-specs", "jasmine-suite", "jasmine-specs"]);
 
       var suiteDetail = outerSuite.childNodes[0];
       var suiteLink = suiteDetail.childNodes[0];
@@ -355,7 +355,7 @@ describe("New HtmlReporter", function() {
 
       var specs = outerSuite.childNodes[1];
       var spec = specs.childNodes[0];
-      expect(spec.getAttribute("class")).toEqual("passed_jasmine-css");
+      expect(spec.getAttribute("class")).toEqual("jasmine-passed");
       expect(spec.getAttribute("id")).toEqual("spec-123");
 
       var specLink = spec.childNodes[0];
@@ -384,18 +384,18 @@ describe("New HtmlReporter", function() {
       reporter.initialize();
       reporter.jasmineDone({});
 
-      var trigger = container.querySelector('.run-options_jasmine-css .trigger_jasmine-css'),
-          payload = container.querySelector('.run-options_jasmine-css .payload_jasmine-css');
+      var trigger = container.querySelector('.jasmine-run-options .jasmine-trigger'),
+          payload = container.querySelector('.jasmine-run-options .jasmine-payload');
 
-      expect(payload.className).not.toContain('open_jasmine-css');
-
-      trigger.onclick();
-
-      expect(payload.className).toContain('open_jasmine-css');
+      expect(payload.className).not.toContain('jasmine-open');
 
       trigger.onclick();
 
-      expect(payload.className).not.toContain('open_jasmine-css');
+      expect(payload.className).toContain('jasmine-open');
+
+      trigger.onclick();
+
+      expect(payload.className).not.toContain('jasmine-open');
     });
 
     describe("UI for raising/catching exceptions", function() {
@@ -419,7 +419,7 @@ describe("New HtmlReporter", function() {
         reporter.initialize();
         reporter.jasmineDone({});
 
-        var raisingExceptionsUI = container.querySelector(".raise_jasmine-css");
+        var raisingExceptionsUI = container.querySelector(".jasmine-raise");
         expect(raisingExceptionsUI.checked).toBe(false);
       });
 
@@ -444,7 +444,7 @@ describe("New HtmlReporter", function() {
         env.catchExceptions(false);
         reporter.jasmineDone({});
 
-        var raisingExceptionsUI = container.querySelector(".raise_jasmine-css");
+        var raisingExceptionsUI = container.querySelector(".jasmine-raise");
         expect(raisingExceptionsUI.checked).toBe(true);
       });
 
@@ -470,7 +470,7 @@ describe("New HtmlReporter", function() {
         reporter.initialize();
         reporter.jasmineDone({});
 
-        var input = container.querySelector(".raise_jasmine-css");
+        var input = container.querySelector(".jasmine-raise");
         input.click();
         expect(exceptionsClickHandler).toHaveBeenCalled();
       });
@@ -497,7 +497,7 @@ describe("New HtmlReporter", function() {
         reporter.initialize();
         reporter.jasmineDone({});
 
-        var throwingExpectationsUI = container.querySelector(".throw_jasmine-css");
+        var throwingExpectationsUI = container.querySelector(".jasmine-throw");
         expect(throwingExpectationsUI.checked).toBe(false);
       });
 
@@ -523,7 +523,7 @@ describe("New HtmlReporter", function() {
         reporter.initialize();
         reporter.jasmineDone({});
 
-        var throwingExpectationsUI = container.querySelector(".throw_jasmine-css");
+        var throwingExpectationsUI = container.querySelector(".jasmine-throw");
         expect(throwingExpectationsUI.checked).toBe(true);
       });
 
@@ -549,7 +549,7 @@ describe("New HtmlReporter", function() {
         reporter.initialize();
         reporter.jasmineDone({});
 
-        var throwingExpectationsUI = container.querySelector(".throw_jasmine-css");
+        var throwingExpectationsUI = container.querySelector(".jasmine-throw");
         throwingExpectationsUI.click();
 
         expect(throwingExceptionHandler).toHaveBeenCalled();
@@ -572,8 +572,8 @@ describe("New HtmlReporter", function() {
       reporter.jasmineStarted({});
       reporter.jasmineDone({});
 
-      var alertBars = container.querySelectorAll(".alert_jasmine-css .bar_jasmine-css");
-      expect(alertBars[0].getAttribute('class')).toMatch(/skipped_jasmine-css/);
+      var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
+      expect(alertBars[0].getAttribute('class')).toMatch(/jasmine-skipped/);
       expect(alertBars[0].innerHTML).toMatch(/No specs found/);
     });
 
@@ -612,21 +612,21 @@ describe("New HtmlReporter", function() {
       });
 
       it("reports the specs counts", function() {
-        var alertBars = container.querySelectorAll(".alert_jasmine-css .bar_jasmine-css");
+        var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
 
         expect(alertBars.length).toEqual(1);
-        expect(alertBars[0].getAttribute('class')).toMatch(/passed_jasmine-css/);
+        expect(alertBars[0].getAttribute('class')).toMatch(/jasmine-passed/);
         expect(alertBars[0].innerHTML).toMatch(/2 specs, 0 failures/);
       });
 
       it("reports no failure details", function() {
-        var specFailure = container.querySelector(".failures_jasmine-css");
+        var specFailure = container.querySelector(".jasmine-failures");
 
         expect(specFailure.childNodes.length).toEqual(0);
       });
 
       it("reports no pending specs", function() {
-        var alertBar = container.querySelector(".alert_jasmine-css .bar_jasmine-css");
+        var alertBar = container.querySelector(".jasmine-alert .jasmine-bar");
 
         expect(alertBar.innerHTML).not.toMatch(/pending spec[s]/);
       });
@@ -662,19 +662,19 @@ describe("New HtmlReporter", function() {
       });
 
       it("reports the pending specs count", function() {
-        var alertBar = container.querySelector(".alert_jasmine-css .bar_jasmine-css");
+        var alertBar = container.querySelector(".jasmine-alert .jasmine-bar");
 
         expect(alertBar.innerHTML).toMatch(/1 spec, 0 failures, 1 pending spec/);
       });
 
       it("reports no failure details", function() {
-        var specFailure = container.querySelector(".failures_jasmine-css");
+        var specFailure = container.querySelector(".jasmine-failures");
 
         expect(specFailure.childNodes.length).toEqual(0);
       });
 
       it("displays the custom pending reason", function() {
-        var pendingDetails = container.querySelector(".summary_jasmine-css .pending_jasmine-css");
+        var pendingDetails = container.querySelector(".jasmine-summary .jasmine-pending");
 
         expect(pendingDetails.innerHTML).toContain("my custom pending reason");
       });
@@ -721,37 +721,37 @@ describe("New HtmlReporter", function() {
       });
 
       it("reports the specs counts", function() {
-        var alertBar = container.querySelector(".alert_jasmine-css .bar_jasmine-css");
+        var alertBar = container.querySelector(".jasmine-alert .jasmine-bar");
 
-        expect(alertBar.getAttribute('class')).toMatch(/failed_jasmine-css/);
+        expect(alertBar.getAttribute('class')).toMatch(/jasmine-failed/);
         expect(alertBar.innerHTML).toMatch(/2 specs, 1 failure/);
       });
 
       it("reports failure messages and stack traces", function() {
-        var specFailures = container.querySelector(".failures_jasmine-css");
+        var specFailures = container.querySelector(".jasmine-failures");
 
         var failure = specFailures.childNodes[0];
-        expect(failure.getAttribute("class")).toMatch(/failed_jasmine-css/);
-        expect(failure.getAttribute("class")).toMatch(/spec-detail_jasmine-css/);
+        expect(failure.getAttribute("class")).toMatch(/jasmine-failed/);
+        expect(failure.getAttribute("class")).toMatch(/jasmine-spec-detail/);
 
         var specDiv = failure.childNodes[0];
-        expect(specDiv.getAttribute("class")).toEqual("description_jasmine-css");
+        expect(specDiv.getAttribute("class")).toEqual("jasmine-description");
 
         var specLink = specDiv.childNodes[0];
         expect(specLink.getAttribute("title")).toEqual("a suite with a failing spec");
         expect(specLink.getAttribute("href")).toEqual("?foo=bar&spec=a suite with a failing spec");
 
         var message = failure.childNodes[1].childNodes[0];
-        expect(message.getAttribute("class")).toEqual("result-message_jasmine-css");
+        expect(message.getAttribute("class")).toEqual("jasmine-result-message");
         expect(message.innerHTML).toEqual("a failure message");
 
         var stackTrace = failure.childNodes[1].childNodes[1];
-        expect(stackTrace.getAttribute("class")).toEqual("stack-trace_jasmine-css");
+        expect(stackTrace.getAttribute("class")).toEqual("jasmine-stack-trace");
         expect(stackTrace.innerHTML).toEqual("a stack trace");
       });
 
       it("allows switching between failure details and the spec summary", function() {
-        var menuBar = container.querySelectorAll(".bar_jasmine-css")[1];
+        var menuBar = container.querySelectorAll(".jasmine-bar")[1];
 
         expect(menuBar.getAttribute("class")).not.toMatch(/hidden/);
 
@@ -762,7 +762,7 @@ describe("New HtmlReporter", function() {
 
       it("sets the reporter to 'Failures List' mode", function() {
         var reporterNode = container.querySelector(".jasmine_html-reporter");
-        expect(reporterNode.getAttribute("class")).toMatch("failure-list_jasmine-css");
+        expect(reporterNode.getAttribute("class")).toMatch("jasmine-failure-list");
       });
     });
   });

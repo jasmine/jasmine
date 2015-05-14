@@ -46,23 +46,23 @@ body {
     line-height: $line-height;
   }
 
-  .banner_jasmine-css,
-  .symbol-summary_jasmine-css,
-  .summary_jasmine-css,
-  .result-message_jasmine-css,
-  .spec_jasmine-css .description_jasmine-css,
-  .spec-detail_jasmine-css .description_jasmine-css,
-  .alert_jasmine-css .bar_jasmine-css,
-  .stack-trace_jasmine-css {
+  .jasmine-banner,
+  .jasmine-symbol-summary,
+  .jasmine-summary,
+  .jasmine-result-message,
+  .jasmine-spec .jasmine-description,
+  .jasmine-spec-detail .jasmine-description,
+  .jasmine-alert .jasmine-bar,
+  .jasmine-stack-trace {
     padding-left: $margin-unit - 5px;
     padding-right: $margin-unit - 5px;
   }
 
-  .banner_jasmine-css {
+  .jasmine-banner {
     position: relative;
   }
 
-  .banner_jasmine-css .title_jasmine-css {
+  .jasmine-banner .jasmine-title {
     background: inline-image('jasmine-horizontal.png') no-repeat;
     background: inline-image('jasmine-horizontal.svg') no-repeat, none;
     @include background-size(100%);
@@ -72,7 +72,7 @@ body {
     height: 25px;
   }
 
-  .banner_jasmine-css .version_jasmine-css {
+  .jasmine-banner .jasmine-version {
     margin-left: $margin-unit;
     position: relative;
     top: 6px;
@@ -85,17 +85,17 @@ body {
     right: 100%;
   }
 
-  .version_jasmine-css {
+  .jasmine-version {
     color: $faint-text-color;
   }
 
   //--- Banner ---//
 
-  .banner_jasmine-css {
+  .jasmine-banner {
     margin-top: $line-height;
   }
 
-  .duration_jasmine-css {
+  .jasmine-duration {
     color: #fff;
     float: right;
     line-height: $line-height * 2;
@@ -104,7 +104,7 @@ body {
 
   //--- Symbol summary ---//
 
-  .symbol-summary_jasmine-css {
+  .jasmine-symbol-summary {
     @include clearfix;
     margin: $line-height 0;
 
@@ -115,7 +115,7 @@ body {
 
       font-size: 16px;
 
-      &.passed_jasmine-css {
+      &.jasmine-passed {
         font-size: 14px;
 
         &:before {
@@ -124,7 +124,7 @@ body {
         }
       }
 
-      &.failed_jasmine-css {
+      &.jasmine-failed {
         line-height: ($line-height / 2) + 2;
 
         &:before {
@@ -135,7 +135,7 @@ body {
         }
       }
 
-        &.disabled_jasmine-css {
+        &.jasmine-disabled {
           font-size: 14px;
 
           &:before {
@@ -144,7 +144,7 @@ body {
           }
         }
 
-      &.pending_jasmine-css {
+      &.jasmine-pending {
         line-height: 17px;
         &:before {
           color: $pending-color;
@@ -152,7 +152,7 @@ body {
         }
       }
 
-      &.empty_jasmine-css {
+      &.jasmine-empty {
         font-size: 14px;
 
         &:before {
@@ -163,7 +163,7 @@ body {
     }
   }
 
-  .run-options_jasmine-css {
+  .jasmine-run-options {
     float: right;
     margin-right: 5px;
     border: 1px solid $jasmine-color;
@@ -171,12 +171,12 @@ body {
     position: relative;
     line-height: 20px;
 
-    .trigger_jasmine-css {
+    .jasmine-trigger {
       cursor: pointer;
       padding: 8px 16px;
     }
 
-    .payload_jasmine-css {
+    .jasmine-payload {
       position: absolute;
       display: none;
       right: -1px;
@@ -185,7 +185,7 @@ body {
       white-space: nowrap;
       padding: 4px 8px;
 
-      &.open_jasmine-css {
+      &.jasmine-open {
         display: block;
       }
     }
@@ -193,30 +193,30 @@ body {
 
   //--- Alerts: status bars ---//
 
-  .bar_jasmine-css {
+  .jasmine-bar {
     line-height: $line-height * 2;
     font-size: $large-font-size;
 
     display: block;
     color: #eee;
 
-    &.failed_jasmine-css {
+    &.jasmine-failed {
       background-color: $failing-color;
     }
 
-    &.passed_jasmine-css {
+    &.jasmine-passed {
       background-color: $passing-color;
     }
 
-    &.skipped_jasmine-css {
+    &.jasmine-skipped {
       background-color: $neutral-color;
     }
 
-    &.errored_jasmine-css {
+    &.jasmine-errored {
       background-color: $failing-color;
     }
 
-    &.menu_jasmine-css {
+    &.jasmine-menu {
       background-color: #fff;
       color: $faint-text-color;
 
@@ -231,29 +231,29 @@ body {
   }
 
   // simplify toggle control between the two menu bars
-  &.spec-list_jasmine-css {
-    .bar_jasmine-css.menu_jasmine-css.failure-list_jasmine-css,
-    .results_jasmine-css .failures_jasmine-css {
+  &.jasmine-spec-list {
+    .jasmine-bar.jasmine-menu.jasmine-failure-list,
+    .jasmine-results .jasmine-failures {
       display: none;
     }
   }
 
-  &.failure-list_jasmine-css {
-    .bar_jasmine-css.menu_jasmine-css.spec-list_jasmine-css,
-    .summary_jasmine-css {
+  &.jasmine-failure-list {
+    .jasmine-bar.jasmine-menu.jasmine-spec-list,
+    .jasmine-summary {
       display: none;
     }
   }
 
   //--- Results ---//
 
-  .results_jasmine-css {
+  .jasmine-results {
     margin-top: $line-height;
   }
 
   //--- Results summary: Suites and Specs names/links ---//
 
-  .summary_jasmine-css {
+  .jasmine-summary {
     margin-top: $margin-unit;
 
     ul {
@@ -262,40 +262,40 @@ body {
       padding-top: 0;
       padding-left: 0;
 
-      &.suite_jasmine-css {
+      &.jasmine-suite {
         margin-top: $margin-unit/2;
         margin-bottom: $margin-unit/2
       }
     }
 
     li {
-      &.passed_jasmine-css a {
+      &.jasmine-passed a {
         color: $passing-color;
       }
 
-      &.failed_jasmine-css a {
+      &.jasmine-failed a {
         color: $failing-color;
       }
 
-      &.empty_jasmine-css a {
+      &.jasmine-empty a {
         color: $pending-color;
       }
 
-      &.pending_jasmine-css a {
+      &.jasmine-pending a {
         color: $pending-color;
       }
 
-      &.disabled_jasmine-css a {
+      &.jasmine-disabled a {
         color: $neutral-color;
       }
     }
   }
 
-  .description_jasmine-css + .suite_jasmine-css {
+  .jasmine-description + .jasmine-suite {
     margin-top: 0;
   }
 
-  .suite_jasmine-css {
+  .jasmine-suite {
     margin-top: $margin-unit;
 
     a {
@@ -305,11 +305,11 @@ body {
 
   //--- Failure details ---//
 
-  .failures_jasmine-css {
-    .spec-detail_jasmine-css {
+  .jasmine-failures {
+    .jasmine-spec-detail {
       margin-bottom: $line-height * 2;
 
-      .description_jasmine-css {
+      .jasmine-description {
         background-color: $failing-color;
 
         a {
@@ -319,7 +319,7 @@ body {
     }
   }
 
-  .result-message_jasmine-css {
+  .jasmine-result-message {
     padding-top: $line-height;
 
     color: $text-color;
@@ -327,11 +327,11 @@ body {
     white-space: pre;
   }
 
-  .result-message_jasmine-css span.result_jasmine-css {
+  .jasmine-result-message span.jasmine-result {
     display: block;
   }
 
-  .stack-trace_jasmine-css {
+  .jasmine-stack-trace {
     margin: 5px 0 0 0;
     max-height: $line-height * 16;
     overflow: auto;
