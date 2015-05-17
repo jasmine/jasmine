@@ -42,4 +42,11 @@ describe("Any", function() {
     expect(any.jasmineToString()).toEqual('<jasmine.any(Number)>');
   });
 
+  describe("when called without an argument", function() {
+    it("tells the user to pass a constructor or use jasmine.anything()", function() {
+      expect(function() {
+        new j$.Any();
+      }).toThrowError(TypeError, /constructor.*anything/);
+    });
+  });
 });
