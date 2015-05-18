@@ -1,6 +1,12 @@
 getJasmineRequireObj().Any = function(j$) {
 
   function Any(expectedObject) {
+    if (typeof expectedObject === 'undefined') {
+      throw new TypeError(
+        'jasmine.any() expects to be passed a constructor function. ' +
+        'Please pass one or use jasmine.anything() to match any object.'
+      );
+    }
     this.expectedObject = expectedObject;
   }
 
