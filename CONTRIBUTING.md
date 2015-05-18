@@ -82,11 +82,11 @@ To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http:/
 
     $ npm install --local
 
-...will install all of the node modules locally. If when you run
+...will install all of the node modules locally. Now run
 
     $ grunt
 
-...you see that JSHint runs your system is ready.
+...if you see that JSHint runs, your system is ready.
 
 ### How to write new Jasmine code
 
