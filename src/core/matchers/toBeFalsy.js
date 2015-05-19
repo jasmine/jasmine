@@ -11,3 +11,5 @@ getJasmineRequireObj().toBeFalsy = function() {
 
   return toBeFalsy;
 };
+
+getJasmineRequireObj().toBeFalsey = getJasmineRequireObj().toBeFalsy;
