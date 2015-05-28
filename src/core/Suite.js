@@ -42,6 +42,10 @@ getJasmineRequireObj().Suite = function(j$) {
     this.disabled = true;
   };
 
+  Suite.prototype.pend = function(message) {
+    this.markedPending = true;
+  };
+
   Suite.prototype.beforeEach = function(fn) {
     this.beforeFns.unshift(fn);
   };
@@ -65,6 +69,10 @@ getJasmineRequireObj().Suite = function(j$) {
   Suite.prototype.status = function() {
     if (this.disabled) {
       return 'disabled';
+    }
+
+    if (this.markedPending) {
+      return 'pending';
     }
 
     if (this.result.failedExpectations.length > 0) {

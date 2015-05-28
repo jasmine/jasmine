@@ -90,6 +90,21 @@ describe("Suite", function() {
     expect(suite.getResult().status).toBe('disabled');
   });
 
+  it("retrieves a result with pending status", function() {
+    var suite = new j$.Suite({});
+    suite.pend();
+
+    expect(suite.getResult().status).toBe('pending');
+  });
+
+  it("priviledges a disabled status over pending status", function() {
+    var suite = new j$.Suite({});
+    suite.disable();
+    suite.pend();
+
+    expect(suite.getResult().status).toBe('disabled');
+  });
+
   it("is executable if not disabled", function() {
     var suite = new j$.Suite({});
 
