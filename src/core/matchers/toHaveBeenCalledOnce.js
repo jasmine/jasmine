@@ -10,7 +10,7 @@ getJasmineRequireObj().toHaveBeenCalledOnce = function(j$) {
         }
 
         if (arguments.length > 1) {
-          throw new Error('toHaveBeenCalledOnce does not take arguments, use toHaveBeenCalledTimes');
+          throw new Error('toHaveBeenCalledOnce does not take arguments, use toHaveBeenCalledTimes.');
         }
         
         var calls = actual.calls.count();

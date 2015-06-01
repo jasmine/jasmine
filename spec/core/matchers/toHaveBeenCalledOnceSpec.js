@@ -1,34 +1,24 @@
 describe("toHaveBeenCalledOnce", function() {
-  it("passes when the actual was called only once, with a custom .not fail message", function() {
+ it("passes when the actual was called one time", function() {
     var matcher = j$.matchers.toHaveBeenCalledOnce(),
-      calledSpy = j$.createSpy('called-spy'),
+      calledSpy = j$.createSpy('called spy'),
       result;
 
     calledSpy();
-
+	
     result = matcher.compare(calledSpy);
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected spy called-spy not to have been called.");
   });
-
-  it("fails when the actual was not called", function() {
-    var matcher = j$.matchers.toHaveBeenCalledOnce(),
-      uncalledSpy = j$.createSpy('uncalled spy'),
-      result;
-
-    result = matcher.compare(uncalledSpy);
-    expect(result.pass).toBe(false);
-  });
-
+  
   it("fails when the actual was called more than once", function() {
     var matcher = j$.matchers.toHaveBeenCalledOnce(),
-      uncalledSpy = j$.createSpy('uncalled spy'),
+      calledSpy = j$.createSpy('called spy'),
       result;
 
     calledSpy();
     calledSpy();
 	
-    result = matcher.compare(uncalledSpy);
+    result = matcher.compare(calledSpy);
     expect(result.pass).toBe(false);
   });
   
@@ -40,7 +30,7 @@ describe("toHaveBeenCalledOnce", function() {
   });
 
   it("throws an exception when invoked with any arguments", function() {
-    var matcher = j$.matchers.toHaveBeenCalledOnce(),
+    var matcher = j$.matchers.toHaveBeenCalledOnce(1),
       spy = j$.createSpy('sample spy');
 
     expect(function() { matcher.compare(spy, 'foo') }).toThrow(new Error("toHaveBeenCalledOnce does not take arguments, use toHaveBeenCalledTimes."));
@@ -50,10 +40,10 @@ describe("toHaveBeenCalledOnce", function() {
     var matcher = j$.matchers.toHaveBeenCalledOnce(),
       spy = j$.createSpy('sample-spy'),
       result;
-    calledSpy();
-    calledSpy();
-    calledSpy();
-    calledSpy();
+    spy();
+    spy();
+    spy();
+    spy();
 
     result = matcher.compare(spy);
 
