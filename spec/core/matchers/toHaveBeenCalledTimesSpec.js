@@ -1,45 +1,41 @@
-describe("toHaveBeenCalledTimes", function() {
+
+fdescribe("toHaveBeenCalledTimes", function() {
   // TODO: I'd rather not allow .not.toHaveBeenCalledTimes()
   it("passes when the actual matches the expected", function() {
-    var matcher = j$.matchers.toHaveBeenCalledTimes(1),
+    var matcher = j$.matchers.toHaveBeenCalledTimes(),
       calledSpy = j$.createSpy('called-spy'),
       result;
-
     calledSpy();
 
-    result = matcher.compare(calledSpy);
+    result = matcher.compare(calledSpy, 1);
     expect(result.pass).toBe(true);
   });
   it("fails when expected numbers is not supplied", function(){
-     var matcher = j$.matchers.toHaveBeenCalledTimes(1),
+     var matcher = j$.matchers.toHaveBeenCalledTimes(),
       spy = j$.createSpy('spy'),
       result;
 
-    calledSpy();
-
-    result = matcher.compare(calledSpy);
-    expect(result.pass).toBe(false);
-    //expect(calledSpy).toThrow();
-     expect(function() { matcher.compare(spy, 'foo') }).toThrow(new Error('Expected times failed is required as an argument.'));
+    spy();
+     expect(function() { matcher.compare(spy) }).toThrow(new Error('Expected times failed is required as an argument.'));
   });
   it("fails when the actual was called less than the expected", function() {
-    var matcher = j$.matchers.toHaveBeenCalledTimes(2),
+    var matcher = j$.matchers.toHaveBeenCalledTimes(),
       uncalledSpy = j$.createSpy('uncalled spy'),
       result;
     
-    result = matcher.compare(uncalledSpy);
+    result = matcher.compare(uncalledSpy, 2);
     expect(result.pass).toBe(false);
   });
 
   it("fails when the actual was called more than expected", function() {
-    var matcher = j$.matchers.toHaveBeenCalledTimes(1),
+    var matcher = j$.matchers.toHaveBeenCalledTimes(),
       uncalledSpy = j$.createSpy('uncalled spy'),
       result;
 
-    calledSpy();
-    calledSpy();
+    uncalledSpy();
+    uncalledSpy();
 	
-    result = matcher.compare(uncalledSpy);
+    result = matcher.compare(uncalledSpy, 1);
     expect(result.pass).toBe(false);
   });
   
@@ -50,18 +46,31 @@ describe("toHaveBeenCalledTimes", function() {
     expect(function() { matcher.compare(fn) }).toThrow(new Error("Expected a spy, but got Function."));
   });
   
+  it("has a custom message on failure that tells it was called only once", function() {
+    var matcher = j$.matchers.toHaveBeenCalledTimes(),
+      spy = j$.createSpy('sample-spy'),
+      result;
+    spy();
+    spy();
+    spy();
+    spy();
+
+    result = matcher.compare(spy, 1);
+
+    expect(result.message).toEqual('Expected spy sample-spy to have been called once. It was called ' +  4 + ' times.');
+  });
   it("has a custom message on failure that tells how many times it was called", function() {
     var matcher = j$.matchers.toHaveBeenCalledTimes(),
       spy = j$.createSpy('sample-spy'),
       result;
-    calledSpy();
-    calledSpy();
-    calledSpy();
-    calledSpy();
+    spy();
+    spy();
+    spy();
+    spy();
 
-    result = matcher.compare(spy);
+    result = matcher.compare(spy, 2);
 
-    expect(result.message).toEqual('Expected spy sample-spy to have been called only once. It was called ' +  4 + ' times.');
+    expect(result.message).toEqual('Expected spy sample-spy to have been called 2 times. It was called ' +  4 + ' times.');
   });
 });
 
