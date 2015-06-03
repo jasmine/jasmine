@@ -1,5 +1,5 @@
 
-fdescribe("toHaveBeenCalledTimes", function() {
+describe("toHaveBeenCalledTimes", function() {
   // TODO: I'd rather not allow .not.toHaveBeenCalledTimes()
   it("passes when the actual matches the expected", function() {
     var matcher = j$.matchers.toHaveBeenCalledTimes(),
