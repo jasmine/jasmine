@@ -7,7 +7,7 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
           throw new Error('Expected a spy, but got ' + j$.pp(actual) + '.');
         }
         
-        var args = Array.prototype.slice.call(arguments, 0)
+        var args = Array.prototype.slice.call(arguments, 0),
           result = { pass: false };
           
         if(!expected){
