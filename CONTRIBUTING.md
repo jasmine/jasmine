@@ -105,7 +105,7 @@ Follow these tips and your pull request, patch, or suggestion is much more likel
 
 Jasmine uses the [Jasmine Ruby gem](http://github.com/jasmine/jasmine-gem) to test itself in browser.
 
-    $ rake jasmine
+    $ bundle exec rake jasmine
 
 ...and then visit `http://localhost:8888` to run specs.
 
