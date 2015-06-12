@@ -15,7 +15,7 @@ Please attempt to keep commits to `master` small, but cohesive. If a feature is 
 
 We attempt to stick to [Semantic Versioning](http://semver.org/). Most of the time, development should be against a new minor version - fixing bugs and adding new features that are backwards compatible.
 
-The current version lives in the file `/package.json`. This version will be the version number that is currently released. When releasing a new version, update `package.json` and `bower.json` with the new version and `grunt build:copyVersionToGem` to update the gem version number.
+The current version lives in the file `/package.json`. This version will be the version number that is currently released. When releasing a new version, update `package.json` with the new version and `grunt build:copyVersionToGem` to update the gem version number.
 
 This version is used by both `jasmine.js` and the `jasmine-core` Ruby gem.
 
