@@ -25,6 +25,21 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       return !!haystack && haystack.indexOf(needle) >= 0;
     },
 
+    endsWith: function(everything, ending) {
+
+      if(ending.length > everything.length) {
+        return false;
+      }
+
+      for (var ever = everything.length - 1, ender = ending.length - 1; ender >= 0; ever--, ender--) {
+        if(everything[ever] !== ending[ender]) {
+          return false;
+        }
+      }
+      return true;
+
+    },
+
     buildFailureMessage: function() {
       var args = Array.prototype.slice.call(arguments, 0),
         matcherName = args[0],
