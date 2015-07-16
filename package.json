@@ -19,7 +19,7 @@
   "homepage": "http://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
   "devDependencies": {
-    "glob": "~3.2.9",
+    "glob": "~5.0.13",
     "grunt": "~0.4.1",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-compass": "~0.6.0",
