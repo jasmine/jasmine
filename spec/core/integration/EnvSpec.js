@@ -1115,6 +1115,78 @@ describe("Env integration", function() {
 
       env.execute();
     });
+
+    it('should run focused tests inside an xdescribe', function(done) {
+      var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
+          "jasmineStarted",
+          "jasmineDone",
+          "suiteStarted",
+          "suiteDone",
+          "specStarted",
+          "specDone"
+        ]);
+
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.jasmineStarted).toHaveBeenCalledWith({
+          totalSpecsDefined: 1
+        });
+
+        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          description: 'with a fit spec',
+          status: 'failed'
+        }));
+
+        done();
+      });
+
+      env.addReporter(reporter);
+
+      env.xdescribe("xd suite", function() {
+        env.fit("with a fit spec", function() {
+          env.expect(true).toBe(false);
+        });
+      });
+
+      env.execute();
+    });
+
+    it('should run focused suites inside an xdescribe', function(done) {
+      var env = new j$.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
+          "jasmineStarted",
+          "jasmineDone",
+          "suiteStarted",
+          "suiteDone",
+          "specStarted",
+          "specDone"
+        ]);
+
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.jasmineStarted).toHaveBeenCalledWith({
+          totalSpecsDefined: 1
+        });
+
+        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          description: 'with a spec',
+          status: 'failed'
+        }));
+
+        done();
+      });
+
+      env.addReporter(reporter);
+
+      env.xdescribe("xd suite", function() {
+        env.fdescribe("fd suite", function() {
+          env.it("with a spec", function() {
+            env.expect(true).toBe(false);
+          });
+        });
+      });
+
+      env.execute();
+    });
   });
 
   it("should report as expected", function(done) {
@@ -1227,9 +1299,10 @@ describe("Env integration", function() {
         totalSpecsDefined: 1
       });
 
-      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ status: 'disabled' }));
-      expect(reporter.suiteDone.calls.count()).toBe(3);
-
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ status: 'pending' }));
+      expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({ description: 'xd out', status: 'pending' }));
+      expect(reporter.suiteDone.calls.count()).toBe(4);
+      
       done();
     });
 
@@ -1238,8 +1311,10 @@ describe("Env integration", function() {
     env.describe("A Suite", function() {
       env.describe("nested", function() {
         env.xdescribe("xd out", function() {
-          env.it("with a spec", function() {
-            env.expect(true).toBe(false);
+          env.describe("nested again", function() {
+            env.it("with a spec", function() {
+              env.expect(true).toBe(false);
+            });
           });
         });
       });

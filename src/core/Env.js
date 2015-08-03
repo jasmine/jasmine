@@ -261,13 +261,17 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.describe = function(description, specDefinitions) {
       var suite = suiteFactory(description);
+      if (currentDeclarationSuite.markedPending) {
+        suite.pend();
+      }
       addSpecsToSuite(suite, specDefinitions);
       return suite;
     };
 
     this.xdescribe = function(description, specDefinitions) {
-      var suite = this.describe(description, specDefinitions);
-      suite.disable();
+      var suite = suiteFactory(description);
+      suite.pend();
+      addSpecsToSuite(suite, specDefinitions);
       return suite;
     };
 
@@ -373,6 +377,9 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.it = function(description, fn, timeout) {
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
+      if (currentDeclarationSuite.markedPending) {
+        spec.pend();
+      }
       currentDeclarationSuite.addChild(spec);
       return spec;
     };
@@ -383,9 +390,9 @@ getJasmineRequireObj().Env = function(j$) {
       return spec;
     };
 
-    this.fit = function(){
-      var spec = this.it.apply(this, arguments);
-
+    this.fit = function(description, fn, timeout){
+      var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
+      currentDeclarationSuite.addChild(spec);
       focusedRunnables.push(spec.id);
       unfocusAncestor();
       return spec;
