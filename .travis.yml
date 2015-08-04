@@ -27,6 +27,10 @@ matrix:
       - TEST_COMMAND="bash travis-node-script.sh"
     - env:
       - JASMINE_BROWSER="safari"
+      - SAUCE_OS="OS X 10.11"
+      - SAUCE_BROWSER_VERSION=8.1
+    - env:
+      - JASMINE_BROWSER="safari"
       - SAUCE_OS="OS X 10.10"
       - SAUCE_BROWSER_VERSION=8
     - env:
@@ -37,10 +41,6 @@ matrix:
       - JASMINE_BROWSER="safari"
       - SAUCE_OS="OS X 10.8"
       - SAUCE_BROWSER_VERSION=6
-    - env:
-      - JASMINE_BROWSER="safari"
-      - SAUCE_OS="OS X 10.6"
-      - SAUCE_BROWSER_VERSION=5
     - env:
       - JASMINE_BROWSER="internet explorer"
       - SAUCE_OS="Windows 8.1"
