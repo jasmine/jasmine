@@ -1,6 +1,6 @@
 <a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/master/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a>
 
-[![Build Status](https://travis-ci.org/jasmine/jasmine.png?branch=master)](https://travis-ci.org/jasmine/jasmine) [![Code Climate](https://codeclimate.com/github/pivotal/jasmine.png)](https://codeclimate.com/github/pivotal/jasmine)
+[![Build Status][travis-image]][travis-url] [![Code Climate][codeclimate-image]][codeclimate-url]
 
 =======
 
@@ -71,3 +71,9 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, PhantomJS, a
 * Sheel Choksi
 
 Copyright (c) 2008-2015 Pivotal Labs. This software is licensed under the MIT License.
+
+
+[travis-url]: https://travis-ci.org/jasmine/jasmine
+[travis-image]: https://img.shields.io/travis/jasmine/jasmine.svg
+[codeclimate-url]: https://codeclimate.com/github/pivotal/jasmine
+[codeclimate-image]: https://img.shields.io/codeclimate/github/pivotal/jasmine.svg
