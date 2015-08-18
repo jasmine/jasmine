@@ -217,10 +217,10 @@ describe("jasmine spec running", function () {
         "beforeEach1",
         "beforeEach2",
         "outer it 1",
-        "afterEach2",
         "afterEach1",
-        "runner afterEach2",
-        "runner afterEach1"
+        "afterEach2",
+        "runner afterEach1",
+        "runner afterEach2"
       ];
       expect(actions).toEqual(expected);
       done();
