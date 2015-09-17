@@ -45,7 +45,7 @@ getJasmineRequireObj().SpyStrategy = function() {
     };
 
     this.callFake = function(fn) {
-      plan = fn;
+      plan = fn || function() {};
       return getSpy();
     };
 

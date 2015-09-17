@@ -92,6 +92,19 @@ describe("SpyStrategy", function() {
     expect(returnValue).toEqual(67);
   });
 
+  it("allows a fake default empty function after another strategy", function () {
+    var originalFn = jasmine.createSpy("original"),
+        spyStrategy = new j$.SpyStrategy({fn: originalFn}),
+        returnValue;
+
+    spyStrategy.returnValue(135);
+    spyStrategy.callFake();
+    returnValue = spyStrategy.exec();
+
+    expect(originalFn).not.toHaveBeenCalled();
+    expect(returnValue).toBeUndefined();
+  });
+
   it("allows a return to plan stubbing after another strategy", function() {
     var originalFn = jasmine.createSpy("original"),
         fakeFn = jasmine.createSpy("fake").and.returnValue(67),
