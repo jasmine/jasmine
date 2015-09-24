@@ -36,8 +36,6 @@ jasmineRequire.HtmlReporter = function(j$) {
         )
       );
       getContainer().appendChild(htmlReporterMain);
-
-      symbols = find('.jasmine-symbol-summary');
     };
 
     var totalSpecsDefined;
@@ -80,6 +78,10 @@ jasmineRequire.HtmlReporter = function(j$) {
 
       if (result.status != 'disabled') {
         specsExecuted++;
+      }
+
+      if (!symbols){
+        symbols = find('.jasmine-symbol-summary');
       }
 
       symbols.appendChild(createDom('li', {
