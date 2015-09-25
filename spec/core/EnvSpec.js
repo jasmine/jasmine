@@ -19,6 +19,35 @@ describe("Env", function() {
     });
   });
 
+  describe('#xit', function() {
+    var spyPend, spyIt, pendingReason;
+    beforeEach(function() {
+      spyPend = jasmine.createSpy('pend');
+      spyIt = spyOn(env, 'it').and.returnValue({pend: spyPend});
+      pendingReason = 'pending spec reason';
+    });
+
+    it('can take a message argument and passes it to spec.pend', function() {
+      env.xit('pending spec description', function() {
+        expect(true).toEqual(true);
+      }, pendingReason);
+
+      expect(spyPend).toHaveBeenCalledWith(pendingReason);
+    });
+
+    it('can take a timeout and message', function() {
+      var pendingSpecDescription = 'pending spec description';
+      var timeout = 1000;
+      var specdFunction = function() {
+        expect(true).toEqual(true);
+      };
+      env.xit(pendingSpecDescription, specdFunction, timeout, pendingReason);
+
+      expect(spyIt).toHaveBeenCalledWith(pendingSpecDescription, specdFunction, timeout);
+      expect(spyPend).toHaveBeenCalledWith(pendingReason);
+    });
+  });
+
   describe("#topSuite", function() {
     it("returns the Jasmine top suite for users to traverse the spec tree", function() {
       var suite = env.topSuite();
