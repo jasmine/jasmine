@@ -30,6 +30,8 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitScalar('HTMLNode');
       } else if (value instanceof Date) {
         this.emitScalar('Date(' + value + ')');
+      } else if (value.toString && typeof value === 'object' && !(value instanceof Array) && value.toString !== Object.prototype.toString) {
+        this.emitScalar(value.toString());
       } else if (j$.util.arrayContains(this.seen, value)) {
         this.emitScalar('<circular reference: ' + (j$.isArray_(value) ? 'Array' : 'Object') + '>');
       } else if (j$.isArray_(value) || j$.isA_('Object', value)) {
