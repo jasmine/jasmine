@@ -690,4 +690,67 @@ describe("TreeProcessor", function() {
     queueableFns[10].fn();
     expect(leaf11.execute).toHaveBeenCalled();
   });
+
+  it("runs nodes in a custom order when orderChildren is overrided", function() {
+    var leaf1 = new Leaf(),
+        leaf2 = new Leaf(),
+        leaf3 = new Leaf(),
+        leaf4 = new Leaf(),
+        leaf5 = new Leaf(),
+        leaf6 = new Leaf(),
+        leaf7 = new Leaf(),
+        leaf8 = new Leaf(),
+        leaf9 = new Leaf(),
+        leaf10 = new Leaf(),
+        leaf11 = new Leaf(),
+        root = new Node({ children: [leaf1, leaf2, leaf3, leaf4, leaf5, leaf6, leaf7, leaf8, leaf9, leaf10, leaf11] }),
+        queueRunner = jasmine.createSpy('queueRunner'),
+        processor = new j$.TreeProcessor({
+          tree: root,
+          runnableIds: [root.id],
+          queueRunnerFactory: queueRunner,
+          orderChildren: function(node) {
+            var children = node.children.slice();
+            return children.reverse();
+          }
+        });
+
+    processor.execute();
+    var queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
+    expect(queueableFns.length).toBe(11);
+
+    queueableFns[0].fn();
+    expect(leaf11.execute).toHaveBeenCalled();
+
+    queueableFns[1].fn();
+    expect(leaf10.execute).toHaveBeenCalled();
+
+    queueableFns[2].fn();
+    expect(leaf9.execute).toHaveBeenCalled();
+
+    queueableFns[3].fn();
+    expect(leaf8.execute).toHaveBeenCalled();
+
+    queueableFns[4].fn();
+    expect(leaf7.execute).toHaveBeenCalled();
+
+    queueableFns[5].fn();
+    expect(leaf6.execute).toHaveBeenCalled();
+
+    queueableFns[6].fn();
+    expect(leaf5.execute).toHaveBeenCalled();
+
+    queueableFns[7].fn();
+    expect(leaf4.execute).toHaveBeenCalled();
+
+    queueableFns[8].fn();
+    expect(leaf3.execute).toHaveBeenCalled();
+
+    queueableFns[9].fn();
+    expect(leaf2.execute).toHaveBeenCalled();
+
+    queueableFns[10].fn();
+    expect(leaf1.execute).toHaveBeenCalled();
+
+  });
 });

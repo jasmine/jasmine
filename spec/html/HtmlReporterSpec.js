@@ -556,6 +556,142 @@ describe("New HtmlReporter", function() {
       });
     });
 
+    describe("UI for running tests in random order", function() {
+      it("should be unchecked if not randomizing", function() {
+        var env = new j$.Env(),
+          container = document.createElement("div"),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new j$.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var randomUI = container.querySelector(".jasmine-random");
+        expect(randomUI.checked).toBe(false);
+      });
+
+      it("should be checked if randomizing", function() {
+        var env = new j$.Env(),
+          container = document.createElement("div"),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new j$.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        env.randomizeTests(true);
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var throwingExpectationsUI = container.querySelector(".jasmine-random");
+        expect(throwingExpectationsUI.checked).toBe(true);
+      });
+
+      it("should affect the query param for random tests", function() {
+        var env = new j$.Env(),
+          container = document.createElement("div"),
+          randomHandler = jasmine.createSpy('randomHandler'),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new j$.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            onRandomClick: randomHandler,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var randomUI = container.querySelector(".jasmine-random");
+        randomUI.click();
+
+        expect(randomHandler).toHaveBeenCalled();
+      });
+
+      it("should show the seed bar if randomizing", function() {
+        var env = new j$.Env(),
+            container = document.createElement("div"),
+            getContainer = function() {
+              return container;
+            },
+            reporter = new j$.HtmlReporter({
+              env: env,
+              getContainer: getContainer,
+              createElement: function() {
+                return document.createElement.apply(document, arguments);
+              },
+              createTextNode: function() {
+                return document.createTextNode.apply(document, arguments);
+              }
+            });
+
+        reporter.initialize();
+        reporter.jasmineDone({
+          order: {
+            random: true,
+            seed: '424242'
+          }
+        });
+
+        var seedBar = container.querySelector(".jasmine-seed-bar");
+        var seedBarText = 'textContent' in seedBar ? seedBar.textContent : seedBar.innerText;
+        expect(seedBarText).toBe(', randomized with seed 424242');
+        var seedLink = container.querySelector(".jasmine-seed-bar a");
+        expect(seedLink.getAttribute('href')).toBe('?seed=424242');
+      });
+
+      it("should not show the current seed bar if not randomizing", function() {
+        var env = new j$.Env(),
+            container = document.createElement("div"),
+            getContainer = function() {
+              return container;
+            },
+            reporter = new j$.HtmlReporter({
+              env: env,
+              getContainer: getContainer,
+              createElement: function() {
+                return document.createElement.apply(document, arguments);
+              },
+              createTextNode: function() {
+                return document.createTextNode.apply(document, arguments);
+              }
+            });
+
+        reporter.initialize();
+        reporter.jasmineDone();
+
+        var seedBar = container.querySelector(".jasmine-seed-bar");
+        expect(seedBar).toBeNull();
+      });
+
+    });
+
     it("shows a message if no specs are run", function(){
       var env, container, reporter;
       env = new j$.Env();

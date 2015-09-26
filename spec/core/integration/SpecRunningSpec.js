@@ -696,4 +696,103 @@ describe("jasmine spec running", function () {
       env.execute([spec2.id, spec3.id, spec1.id]);
     }).toThrowError(/afterAll/);
   });
+
+  it("should run the tests in a consistent order when a seed is supplied", function(done) {
+    var actions = [];
+    env.randomizeTests(true);
+    env.seed('123456');
+
+    env.beforeEach(function () {
+      actions.push('topSuite beforeEach');
+    });
+
+    env.afterEach(function () {
+      actions.push('topSuite afterEach');
+    });
+
+    env.describe('Something', function() {
+      env.beforeEach(function() {
+        actions.push('outer beforeEach');
+      });
+
+      env.afterEach(function() {
+        actions.push('outer afterEach');
+      });
+
+      env.it('does it 1', function() {
+        actions.push('outer it 1');
+      });
+
+      env.describe('Inner 1', function() {
+        env.beforeEach(function() {
+          actions.push('inner 1 beforeEach');
+        });
+
+        env.afterEach(function() {
+          actions.push('inner 1 afterEach');
+        });
+
+        env.it('does it 2', function() {
+          actions.push('inner 1 it');
+        });
+      });
+
+      env.it('does it 3', function() {
+        actions.push('outer it 2');
+      });
+
+      env.describe('Inner 2', function() {
+        env.beforeEach(function() {
+          actions.push('inner 2 beforeEach');
+        });
+
+        env.afterEach(function() {
+          actions.push('inner 2 afterEach');
+        });
+
+        env.it('does it 2', function() {
+          actions.push('inner 2 it');
+        });
+      });
+    });
+
+    var assertions = function() {
+      var expected = [
+        'topSuite beforeEach',
+        'outer beforeEach',
+        'outer it 2',
+        'outer afterEach',
+        'topSuite afterEach',
+
+        'topSuite beforeEach',
+        'outer beforeEach',
+        'inner 2 beforeEach',
+        'inner 2 it',
+        'inner 2 afterEach',
+        'outer afterEach',
+        'topSuite afterEach',
+
+        'topSuite beforeEach',
+        'outer beforeEach',
+        'inner 1 beforeEach',
+        'inner 1 it',
+        'inner 1 afterEach',
+        'outer afterEach',
+        'topSuite afterEach',
+
+        'topSuite beforeEach',
+        'outer beforeEach',
+        'outer it 1',
+        'outer afterEach',
+        'topSuite afterEach'
+      ];
+      expect(actions).toEqual(expected);
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
+  });
+
 });

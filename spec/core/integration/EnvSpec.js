@@ -207,7 +207,6 @@ describe("Env integration", function() {
     var env = new j$.Env();
 
     env.addReporter({jasmineDone: done});
-
     env.describe("tests", function() {
       var firstTimeThrough = true, firstSpecContext, secondSpecContext;
 
