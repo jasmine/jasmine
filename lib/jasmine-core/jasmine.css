@@ -13,7 +13,7 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .jasmine-banner { margin-top: 14px; }
 .jasmine_html-reporter .jasmine-duration { color: #fff; float: right; line-height: 28px; padding-right: 9px; }
 .jasmine_html-reporter .jasmine-symbol-summary { overflow: hidden; *zoom: 1; margin: 14px 0; }
-.jasmine_html-reporter .jasmine-symbol-summary li { display: inline-block; height: 8px; width: 14px; font-size: 16px; }
+.jasmine_html-reporter .jasmine-symbol-summary li { display: inline-block; height: 10px; width: 14px; font-size: 16px; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-passed { font-size: 14px; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-passed:before { color: #007069; content: "\02022"; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-failed { line-height: 9px; }
