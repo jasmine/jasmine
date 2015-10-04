@@ -181,6 +181,14 @@ describe("j$.pp", function () {
     expect(j$.pp(obj)).toEqual("strung");
   });
 
+  it("should stringify objects that implement custom toString", function () {
+    var obj = {
+      toString: function () { return "my toString"; }
+    };
+
+    expect(j$.pp(obj)).toEqual("my toString");
+  });
+
   it("should handle objects with null prototype", function() {
     if (jasmine.getEnv().ieVersion < 9) { return; }
 
