@@ -20,6 +20,8 @@ getJasmineRequireObj().Env = function(j$) {
     var currentlyExecutingSuites = [];
     var currentDeclarationSuite = null;
     var throwOnExpectationFailure = false;
+    var random = false;
+    var seed = null;
 
     var currentSuite = function() {
       return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
@@ -169,6 +171,21 @@ getJasmineRequireObj().Env = function(j$) {
       return throwOnExpectationFailure;
     };
 
+    this.randomizeTests = function(value) {
+      random = !!value;
+    };
+
+    this.randomTests = function() {
+      return random;
+    };
+
+    this.seed = function(value) {
+      if (value) {
+        seed = value;
+      }
+      return seed;
+    };
+
     var queueRunnerFactory = function(options) {
       options.catchException = catchException;
       options.clearStack = options.clearStack || clearStack;
@@ -200,6 +217,12 @@ getJasmineRequireObj().Env = function(j$) {
           runnablesToRun = [topSuite.id];
         }
       }
+
+      var order = new j$.Order({
+        random: random,
+        seed: seed
+      });
+
       var processor = new j$.TreeProcessor({
         tree: topSuite,
         runnableIds: runnablesToRun,
@@ -215,6 +238,9 @@ getJasmineRequireObj().Env = function(j$) {
           }
           currentlyExecutingSuites.pop();
           reporter.suiteDone(result);
+        },
+        orderChildren: function(node) {
+          return order.sort(node.children);
         }
       });
 
@@ -226,7 +252,11 @@ getJasmineRequireObj().Env = function(j$) {
         totalSpecsDefined: totalSpecsDefined
       });
 
-      processor.execute(reporter.jasmineDone);
+      processor.execute(function() {
+        reporter.jasmineDone({
+          order: order
+        });
+      });
     };
 
     this.addReporter = function(reporterToAdd) {

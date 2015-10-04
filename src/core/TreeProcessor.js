@@ -5,6 +5,7 @@ getJasmineRequireObj().TreeProcessor = function() {
         queueRunnerFactory = attrs.queueRunnerFactory,
         nodeStart = attrs.nodeStart || function() {},
         nodeComplete = attrs.nodeComplete || function() {},
+        orderChildren = attrs.orderChildren || function(node) { return node.children; },
         stats = { valid: true },
         processed = false,
         defaultMin = Infinity,
@@ -68,8 +69,10 @@ getJasmineRequireObj().TreeProcessor = function() {
       } else {
         var hasExecutableChild = false;
 
-        for (var i = 0; i < node.children.length; i++) {
-          var child = node.children[i];
+        var orderedChildren = orderChildren(node);
+
+        for (var i = 0; i < orderedChildren.length; i++) {
+          var child = orderedChildren[i];
 
           processNode(child, parentEnabled);
 
@@ -86,7 +89,7 @@ getJasmineRequireObj().TreeProcessor = function() {
           executable: hasExecutableChild
         };
 
-        segmentChildren(node, stats[node.id], executableIndex);
+        segmentChildren(node, orderedChildren, stats[node.id], executableIndex);
 
         if (!node.canBeReentered() && stats[node.id].segments.length > 1) {
           stats = { valid: false };
@@ -102,11 +105,11 @@ getJasmineRequireObj().TreeProcessor = function() {
       return executableIndex === undefined ? defaultMax : executableIndex;
     }
 
-    function segmentChildren(node, nodeStats, executableIndex) {
+    function segmentChildren(node, orderedChildren, nodeStats, executableIndex) {
       var currentSegment = { index: 0, owner: node, nodes: [], min: startingMin(executableIndex), max: startingMax(executableIndex) },
           result = [currentSegment],
           lastMax = defaultMax,
-          orderedChildSegments = orderChildSegments(node.children);
+          orderedChildSegments = orderChildSegments(orderedChildren);
 
       function isSegmentBoundary(minIndex) {
         return lastMax !== defaultMax && minIndex !== defaultMin && lastMax < minIndex - 1;

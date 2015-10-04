@@ -26,6 +26,7 @@ module.exports = {
       'src/core/base.js',
       'src/core/util.js',
       'src/core/Spec.js',
+      'src/core/Order.js',
       'src/core/Env.js',
       'src/core/JsApiReporter.js',
       'src/core/PrettyPrinter',
