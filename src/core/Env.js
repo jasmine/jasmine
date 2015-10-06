@@ -415,8 +415,23 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.xit = function() {
-      var spec = this.it.apply(this, arguments);
-      spec.pend();
+      var description, fn, timeout, pendingReason;
+      description = arguments[0];
+      fn = arguments[1];
+
+      if(arguments.length === 3) {
+        if(typeof arguments[2] === 'string') {
+          pendingReason = arguments[2];
+        } else {
+          timeout = arguments[2];
+        }
+      } else if(arguments.length === 4) {
+        timeout = arguments[2];
+        pendingReason = arguments[3];
+      }
+
+      var spec = this.it.call(this, description, fn, timeout);
+      spec.pend(pendingReason);
       return spec;
     };
 
