@@ -416,7 +416,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.xit = function() {
       var spec = this.it.apply(this, arguments);
-      spec.pend();
+      spec.pend('Temporarily disabled with xit');
       return spec;
     };
 
