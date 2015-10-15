@@ -45,4 +45,15 @@ describe("Env", function() {
       throwOnExpectationFailure: true
     }));
   });
+
+  describe('#xit', function() {
+    it('calls spec.pend with "Temporarily disabled with xit"', function() {
+      var pendSpy = jasmine.createSpy();
+      spyOn(env, 'it').and.returnValue({
+        pend: pendSpy
+      });
+      env.xit();
+      expect(pendSpy).toHaveBeenCalledWith('Temporarily disabled with xit');
+    });
+  });
 });
