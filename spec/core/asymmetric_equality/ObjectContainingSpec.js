@@ -86,4 +86,40 @@ describe("ObjectContaining", function() {
 
     expect(containing.asymmetricMatch(obj)).toBe(true);
   });
+
+  it("does match when the Symbol is present in the actual", function() {
+    var expected = {};
+    expected[Symbol.for('foo')] = 'fooVal';
+
+    var actual = {};
+    actual[Symbol.for('foo')] = 'fooVal';
+
+    var containing = new j$.ObjectContaining(expected);
+
+    expect(containing.asymmetricMatch(actual)).toBe(true);
+  });
+
+  it("does not match when the Symbol is present but the value is different in the actual", function() {
+    var expected = {};
+    expected[Symbol.for('foo')] = 'fooVal';
+
+    var actual = {};
+    actual[Symbol.for('foo')] = 'barVal';
+
+    var containing = new j$.ObjectContaining(expected);
+
+    expect(containing.asymmetricMatch(actual)).toBe(false);
+  });
+
+  it("does not match when the Symbol is not present in the actual", function() {
+    var expected = {};
+    expected[Symbol.for('foo')] = 'fooVal';
+
+    var actual = {};
+    actual['foo'] = 'fooVal';
+
+    var containing = new j$.ObjectContaining(expected);
+
+    expect(containing.asymmetricMatch(actual)).toBe(false);
+  });
 });
