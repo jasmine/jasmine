@@ -28,10 +28,28 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
     return hasProperty(getPrototype(obj), property);
   }
 
+  function getAllProperties(target) {
+    var properties = [];
+
+    for (var property in target) {
+      properties.push(property);
+    }
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      properties = properties.concat(Object.getOwnPropertySymbols(target));
+    }
+
+    return properties;
+  }
+
   ObjectContaining.prototype.asymmetricMatch = function(other) {
     if (typeof(this.sample) !== 'object') { throw new Error('You must provide an object to objectContaining, not \''+this.sample+'\'.'); }
 
-    for (var property in this.sample) {
+    var properties = getAllProperties(this.sample);
+
+    for (var i = 0; i < properties.length; i++) {
+      var property = properties[i];
+
       if (!hasProperty(other, property) ||
           !j$.matchersUtil.equals(this.sample[property], other[property])) {
         return false;
