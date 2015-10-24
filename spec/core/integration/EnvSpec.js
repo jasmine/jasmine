@@ -677,6 +677,35 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it('allows to respy functions', function () {
+
+    var env = new j$.Env(),
+        foo = {
+          'bar': function () {
+            return 1;
+          }
+        };
+
+    env.allowRespy(true);
+
+    env.describe('test suite', function(){
+        env.it('spec 0', function(){
+          env.spyOn(foo,'bar');
+
+          var error = null;
+
+          try {
+            env.spyOn(foo, 'bar'); // no exception thrown
+          }catch(e){
+            error = e;
+          }
+          expect(error).toBeNull();
+        });
+    });
+
+    env.execute();
+  });
+
   it('removes all spies added in a spec after the spec is complete', function(done) {
     var env = new j$.Env(),
       originalFoo = function() {},
