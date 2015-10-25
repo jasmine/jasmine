@@ -26,6 +26,15 @@ describe("Env", function() {
     });
   });
 
+  describe('#describe', function () {
+    var spec = function(done){};
+    it("throws the error", function() {
+      expect(function() {
+        env.describe('done method', spec);
+      }).toThrow(new Error('describe is not expecting a done parameter'));
+    });
+  });
+
   it('can configure specs to throw errors on expectation failures', function() {
     env.throwOnExpectationFailure(true);
 

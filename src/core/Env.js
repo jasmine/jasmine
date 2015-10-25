@@ -291,6 +291,9 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.describe = function(description, specDefinitions) {
       var suite = suiteFactory(description);
+      if (specDefinitions.length > 0) {
+        throw new Error('describe is not expecting a done parameter');
+      }
       if (currentDeclarationSuite.markedPending) {
         suite.pend();
       }
