@@ -1,6 +1,6 @@
 body { overflow-y: scroll; }
 
-.jasmine_html-reporter { background-color: #eee; padding: 5px; margin: -8px; font-size: 11px; font-family: Monaco, "Lucida Console", monospace; line-height: 14px; color: #333; }
+.jasmine_html-reporter { background-color: #eee; font-size: 11px; font-family: Monaco, "Lucida Console", monospace; line-height: 14px; color: #333; }
 .jasmine_html-reporter a { text-decoration: none; }
 .jasmine_html-reporter a:hover { text-decoration: underline; }
 .jasmine_html-reporter p, .jasmine_html-reporter h1, .jasmine_html-reporter h2, .jasmine_html-reporter h3, .jasmine_html-reporter h4, .jasmine_html-reporter h5, .jasmine_html-reporter h6 { margin: 0; line-height: 14px; }
