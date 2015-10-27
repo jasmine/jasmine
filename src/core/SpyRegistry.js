@@ -23,7 +23,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       var descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
-      if (!(descriptor.writable || descriptor.set)) {
+      if (descriptor && !(descriptor.writable || descriptor.set)) {
         throw new Error(methodName + ' is not declared writable or has no setter');
       }
 
