@@ -146,7 +146,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrowError(util),
+      matcher = j$.matchers.toThrowError(),
       fn = function() {
         throw new Error();
       },
@@ -162,7 +162,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrowError(util),
+      matcher = j$.matchers.toThrowError(),
       CustomError = function CustomError(arg) { arg.x },
       fn = function() {
         throw new CustomError({ x: 1 });
@@ -181,7 +181,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
       },
-      matcher = j$.matchers.toThrowError(util),
+      matcher = j$.matchers.toThrowError(),
       fn = function() {
         throw new Error();
       },
@@ -197,7 +197,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrowError(util),
+      matcher = j$.matchers.toThrowError(),
       fn = function() {
         throw new TypeError("foo");
       },
@@ -213,7 +213,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrowError(util),
+      matcher = j$.matchers.toThrowError(),
       CustomError = function CustomError(arg) { this.message = arg.message },
       fn = function() {
         throw new CustomError({message: "foo"});
@@ -232,7 +232,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
       },
-      matcher = j$.matchers.toThrowError(util),
+      matcher = j$.matchers.toThrowError(),
       fn = function() {
         throw new TypeError("foo");
       },
@@ -248,7 +248,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrowError(util),
+      matcher = j$.matchers.toThrowError(),
       fn = function() {
         throw new TypeError("foo");
       },
@@ -264,7 +264,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
       },
-      matcher = j$.matchers.toThrowError(util),
+      matcher = j$.matchers.toThrowError(),
       fn = function() {
         throw new TypeError("foo");
       },
