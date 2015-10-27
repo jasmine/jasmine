@@ -22,7 +22,13 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         throw new Error(methodName + ' has already been spied upon');
       }
 
-      var descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
+      var descriptor = undefined;
+      try {
+        descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
+      } catch(e) {
+        // IE 8 doesn't support `definePropery` on non-DOM nodes
+      }
+
       if (descriptor && !(descriptor.writable || descriptor.set)) {
         throw new Error(methodName + ' is not declared writable or has no setter');
       }

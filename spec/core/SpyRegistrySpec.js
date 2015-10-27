@@ -38,6 +38,9 @@ describe("SpyRegistry", function() {
     });
 
     it("checks if it can be spied upon", function() {
+      // IE 8 doesn't support `definePropery` on non-DOM nodes
+      if (jasmine.getEnv().ieVersion < 9) { return; }
+
       var scope = {};
 
       function myFunc() {
