@@ -22,7 +22,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         throw new Error(methodName + ' has already been spied upon');
       }
 
-      var descriptor = undefined;
+      var descriptor;
       try {
         descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
       } catch(e) {
