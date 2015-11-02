@@ -56,6 +56,10 @@ getJasmineRequireObj().interface = function(jasmine, env) {
       return env.spyOn(obj, methodName);
     },
 
+    spyPromise: function(obj, methodName, args) {
+      return env.spyPromise(obj, methodName, args);
+    },
+
     jsApiReporter: new jasmine.JsApiReporter({
       timer: new jasmine.Timer()
     }),
