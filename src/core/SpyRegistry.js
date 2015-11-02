@@ -47,7 +47,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       return spy;
     };
 
-    this.spyPromise = function(obj, methodName, arguments) {
+    this.spyPromise = function(obj, methodName, args) {
       var result;
       var isResolved = false;
       var isRejected = false;
@@ -57,11 +57,11 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         throw new Error(methodName + ' should be a function');
       }
 
-      if (typeof arguments === 'undefined') {
-        arguments = [];
+      if (typeof args === 'undefined') {
+        args = [];
       }
 
-      result = obj[methodName].apply(null, arguments);
+      result = obj[methodName].apply(null, args);
 
       if (typeof result.then !== 'function' || typeof result.catch !== 'function') {
         throw new Error(methodName + ' should return a Promise');

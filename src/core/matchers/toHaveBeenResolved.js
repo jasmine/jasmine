@@ -17,7 +17,7 @@ getJasmineRequireObj().toHaveBeenResolved = function (j$) {
 
           return result;
         }
-      }
+      };
     }
 
     return toHaveBeenResolved;

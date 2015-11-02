@@ -17,7 +17,7 @@ getJasmineRequireObj().toHaveBeenRejected = function (j$) {
 
           return result;
         }
-      }
+      };
     }
 
     return toHaveBeenRejected;
