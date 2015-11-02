@@ -58,7 +58,15 @@ describe("toHaveBeenResolved", function() {
 function Promise(startFunction) {
     this.startFunction = startFunction;
 
-    this.startFunction.call(this.startFunction, resolver.bind(this), rejecter.bind(this));
+    this.startFunction.call(this.startFunction, bind(resolver, this), bind(rejecter, this));
+
+    function bind(func, thisp) {
+        var args = Array.prototype.splice(arguments, 0, 2);
+
+        return function() {
+            return func.apply(thisp, args);
+        };
+    }
 
     function resolver() {
         this.isResolved = true;
