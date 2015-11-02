@@ -82,9 +82,8 @@ Promise.prototype = {
         if (this.isResolved) {
             nextStep();
         }
-        else {
-            this.nextStep = nextStep;
-        }
+
+        this.nextStep = nextStep;
         return this;
     },
 
@@ -92,9 +91,8 @@ Promise.prototype = {
         if (this.isRejected) {
             catcher();
         }
-        else {
-            this.catcher = catcher;
-        }
+
+        this.catcher = catcher;
         return this;
     }
 };
