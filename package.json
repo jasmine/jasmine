@@ -26,7 +26,7 @@
     "grunt-contrib-compress": "~0.5.2",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-jshint": "~0.7.0",
-    "jasmine": "https://github.com/jasmine/jasmine-npm.git",
+    "jasmine": "git://github.com/jasmine/jasmine-npm.git",
     "load-grunt-tasks": "^0.4.0",
     "shelljs": "~0.1.4",
     "temp": "~0.8.1"
