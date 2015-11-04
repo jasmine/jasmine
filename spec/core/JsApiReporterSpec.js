@@ -248,4 +248,12 @@ describe("JsApiReporter", function() {
       });
     });
   });
+
+  describe('#runDetails', function() {
+    it('should have details about the run', function() {
+      var reporter = new j$.JsApiReporter({});
+      reporter.jasmineDone({some: {run: 'details'}});
+      expect(reporter.runDetails).toEqual({some: {run: 'details'}});
+    });
+  });
 });
