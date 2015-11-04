@@ -22,5 +22,5 @@ spec_files:
   - '**/*[Ss]pec.js'
   - '!npmPackage/**/*'
 spec_dir: spec
-
+random: true
 
