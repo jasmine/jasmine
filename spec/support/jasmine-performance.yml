@@ -7,3 +7,4 @@ helpers:
 spec_files:
   - 'performance/performance_test.js'
 spec_dir: spec
+random: true

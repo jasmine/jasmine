@@ -7,5 +7,6 @@
   ],
   "helpers": [
     "helpers/nodeDefineJasmineUnderTest.js"
-  ]
+  ],
+  "random": true
 }
