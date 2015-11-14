@@ -39,12 +39,14 @@ To install Jasmine standalone on your local box:
 
 Add the following to your HTML file:
 
-    <link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-2.0.0/jasmine_favicon.png">
-    <link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-2.0.0/jasmine.css">
+```html
+<link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-2.0.0/jasmine_favicon.png">
+<link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-2.0.0/jasmine.css">
 
-    <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine.js"></script>
-    <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine-html.js"></script>
-    <script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/boot.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine-html.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/boot.js"></script>
+```
 
 ## Supported environments
 
