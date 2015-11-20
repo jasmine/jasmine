@@ -82,8 +82,7 @@ getJasmineRequireObj().Clock = function() {
 
     self.tick = function(millis) {
       if (installed) {
-        mockDate.tick(millis);
-        delayedFunctionScheduler.tick(millis);
+        delayedFunctionScheduler.tick(millis, mockDate);
       } else {
         throw new Error('Mock clock is not installed, use jasmine.clock().install()');
       }

@@ -251,5 +251,23 @@ describe("DelayedFunctionScheduler", function() {
     expect(fn).toHaveBeenCalled();
     expect(fn.calls.count()).toBe(1);
   });
+  
+  it("updates the mockDate per scheduled time", function () {
+    var scheduler = new j$.DelayedFunctionScheduler(),
+      fakeGlobal = { Date: Date },
+      mockDate = new j$.MockDate(fakeGlobal),
+      baseTime = new Date();
+      
+      mockDate.install(baseTime);
+      
+      var actualTimes = [];
+      var pushCurrentTime = function() { actualTimes.push(fakeGlobal.Date().getTime()); };
+      scheduler.scheduleFunction(pushCurrentTime);
+      scheduler.scheduleFunction(pushCurrentTime, 1);
+      
+      scheduler.tick(1, mockDate);
+      
+      expect(actualTimes).toEqual([baseTime.getTime(), baseTime.getTime() + 1]);
+  })
 });
 
