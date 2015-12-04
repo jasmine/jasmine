@@ -110,7 +110,7 @@ getJasmineRequireObj().Env = function(j$) {
 
         while(suite) {
           befores = befores.concat(suite.beforeFns);
-          afters = afters.concat(suite.afterFns.reverse());
+          afters = afters.concat(suite.afterFns);
 
           suite = suite.parentSuite;
         }

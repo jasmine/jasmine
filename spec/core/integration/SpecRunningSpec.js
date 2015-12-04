@@ -169,7 +169,7 @@ describe("jasmine spec running", function () {
     env.execute();
   });
 
-  it("should run multiple befores and afters in the order they are declared", function(done) {
+  it("should run multiple befores and afters ordered so functions declared later are treated as more specific", function(done) {
     var actions = [];
 
     env.beforeEach(function () {
@@ -217,10 +217,10 @@ describe("jasmine spec running", function () {
         "beforeEach1",
         "beforeEach2",
         "outer it 1",
-        "afterEach1",
         "afterEach2",
-        "runner afterEach1",
-        "runner afterEach2"
+        "afterEach1",
+        "runner afterEach2",
+        "runner afterEach1"
       ];
       expect(actions).toEqual(expected);
       done();
