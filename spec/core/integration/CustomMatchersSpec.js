@@ -3,7 +3,7 @@ describe("Custom Matchers (Integration)", function() {
   var fakeTimer;
 
   beforeEach(function() {
-    env = new j$.Env();
+    env = new jasmineUnderTest.Env();
   });
 
   it("allows adding more matchers local to a spec", function(done) {
@@ -142,7 +142,7 @@ describe("Custom Matchers (Integration)", function() {
     });
 
     var specExpectations = function() {
-      expect(argumentSpy).toHaveBeenCalledWith(j$.matchersUtil, [customEqualityFn]);
+      expect(argumentSpy).toHaveBeenCalledWith(jasmineUnderTest.matchersUtil, [customEqualityFn]);
     };
 
     env.addReporter({ specDone: specExpectations, jasmineDone: done });

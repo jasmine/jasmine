@@ -2,7 +2,7 @@ describe("jasmine spec running", function () {
   var env;
 
   beforeEach(function() {
-    env = new j$.Env();
+    env = new jasmineUnderTest.Env();
   });
 
   it('should assign spec ids sequentially', function() {
@@ -559,7 +559,7 @@ describe("jasmine spec running", function () {
   // TODO: is this useful? It doesn't catch syntax errors
   xit("should recover gracefully when there are errors in describe functions", function() {
     var specs = [];
-    var superSimpleReporter = new j$.Reporter();
+    var superSimpleReporter = new jasmineUnderTest.Reporter();
     superSimpleReporter.reportSpecResults = function(result) {
       specs.push("Spec: " + result.fullName);
     };

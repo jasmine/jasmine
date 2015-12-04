@@ -1,7 +1,7 @@
 describe("toHaveBeenCalledTimes", function() {
   it("passes when the actual matches the expected", function() {
-    var matcher = j$.matchers.toHaveBeenCalledTimes(),
-      calledSpy = j$.createSpy('called-spy'),
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      calledSpy = jasmineUnderTest.createSpy('called-spy'),
       result;
     calledSpy();
 
@@ -10,8 +10,8 @@ describe("toHaveBeenCalledTimes", function() {
   });
 
   it("fails when expected numbers is not supplied", function(){
-     var matcher = j$.matchers.toHaveBeenCalledTimes(),
-      spy = j$.createSpy('spy'),
+     var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      spy = jasmineUnderTest.createSpy('spy'),
       result;
 
     spy();
@@ -21,8 +21,8 @@ describe("toHaveBeenCalledTimes", function() {
   });
 
   it("fails when the actual was called less than the expected", function() {
-    var matcher = j$.matchers.toHaveBeenCalledTimes(),
-      uncalledSpy = j$.createSpy('uncalled spy'),
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      uncalledSpy = jasmineUnderTest.createSpy('uncalled spy'),
       result;
 
     result = matcher.compare(uncalledSpy, 2);
@@ -30,8 +30,8 @@ describe("toHaveBeenCalledTimes", function() {
   });
 
   it("fails when the actual was called more than expected", function() {
-    var matcher = j$.matchers.toHaveBeenCalledTimes(),
-      uncalledSpy = j$.createSpy('uncalled spy'),
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      uncalledSpy = jasmineUnderTest.createSpy('uncalled spy'),
       result;
 
     uncalledSpy();
@@ -42,7 +42,7 @@ describe("toHaveBeenCalledTimes", function() {
   });
 
   it("throws an exception when the actual is not a spy", function() {
-    var matcher = j$.matchers.toHaveBeenCalledTimes(),
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
       fn = function() {};
 
     expect(function() {
@@ -51,8 +51,8 @@ describe("toHaveBeenCalledTimes", function() {
   });
 
   it("has a custom message on failure that tells it was called only once", function() {
-    var matcher = j$.matchers.toHaveBeenCalledTimes(),
-      spy = j$.createSpy('sample-spy'),
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      spy = jasmineUnderTest.createSpy('sample-spy'),
       result;
     spy();
     spy();
@@ -65,8 +65,8 @@ describe("toHaveBeenCalledTimes", function() {
   });
 
   it("has a custom message on failure that tells how many times it was called", function() {
-    var matcher = j$.matchers.toHaveBeenCalledTimes(),
-      spy = j$.createSpy('sample-spy'),
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      spy = jasmineUnderTest.createSpy('sample-spy'),
       result;
     spy();
     spy();

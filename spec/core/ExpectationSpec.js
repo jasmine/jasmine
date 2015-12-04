@@ -6,7 +6,7 @@ describe("Expectation", function() {
       },
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       customMatchers: matchers
     });
 
@@ -20,18 +20,18 @@ describe("Expectation", function() {
       },
       expectation;
 
-    j$.Expectation.addCoreMatchers(coreMatchers);
+    jasmineUnderTest.Expectation.addCoreMatchers(coreMatchers);
 
-    expectation = new j$.Expectation({});
+    expectation = new jasmineUnderTest.Expectation({});
 
     expect(expectation.toQuux).toBeDefined();
   });
 
   it("Factory builds an expectation/negative expectation", function() {
-    var builtExpectation = j$.Expectation.Factory();
+    var builtExpectation = jasmineUnderTest.Expectation.Factory();
 
-    expect(builtExpectation instanceof j$.Expectation).toBe(true);
-    expect(builtExpectation.not instanceof j$.Expectation).toBe(true);
+    expect(builtExpectation instanceof jasmineUnderTest.Expectation).toBe(true);
+    expect(builtExpectation.not instanceof jasmineUnderTest.Expectation).toBe(true);
     expect(builtExpectation.not.isNot).toBe(true);
   });
 
@@ -46,7 +46,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       util: util,
       customMatchers: matchers,
       customEqualityTesters: customEqualityTesters,
@@ -74,7 +74,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       util: util,
       customMatchers: matchers,
       actual: "an actual",
@@ -100,7 +100,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       customMatchers: matchers,
       util: util,
       actual: "an actual",
@@ -132,7 +132,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       customMatchers: matchers,
       util: util,
       actual: "an actual",
@@ -166,7 +166,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       actual: "an actual",
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
@@ -199,7 +199,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult
@@ -231,7 +231,7 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult,
@@ -264,7 +264,7 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       customMatchers: matchers,
       actual: "an actual",
       util: util,
@@ -300,7 +300,7 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult,
@@ -331,7 +331,7 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult,
@@ -367,7 +367,7 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = new j$.Expectation({
+    expectation = new jasmineUnderTest.Expectation({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult,

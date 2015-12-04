@@ -5,7 +5,7 @@ describe("QueryString", function() {
       var windowLocation = {
           search: ""
         },
-        queryString = new j$.QueryString({
+        queryString = new jasmineUnderTest.QueryString({
           getWindowLocation: function() { return windowLocation }
         });
 
@@ -18,7 +18,7 @@ describe("QueryString", function() {
       var windowLocation = {
         search: "?foo=bar"
       },
-      queryString = new j$.QueryString({
+      queryString = new jasmineUnderTest.QueryString({
         getWindowLocation: function() { return windowLocation }
       });
 
@@ -34,7 +34,7 @@ describe("QueryString", function() {
       var windowLocation = {
         search: "?foo=bar"
       },
-      queryString = new j$.QueryString({
+      queryString = new jasmineUnderTest.QueryString({
         getWindowLocation: function() { return windowLocation }
       });
 
@@ -51,7 +51,7 @@ describe("QueryString", function() {
       var windowLocation = {
           search: "?baz=quux%20corge"
         },
-        queryString = new j$.QueryString({
+        queryString = new jasmineUnderTest.QueryString({
           getWindowLocation: function() { return windowLocation }
         });
 
@@ -62,7 +62,7 @@ describe("QueryString", function() {
       var windowLocation = {
           search: ""
         },
-        queryString = new j$.QueryString({
+        queryString = new jasmineUnderTest.QueryString({
           getWindowLocation: function() { return windowLocation }
         });
 

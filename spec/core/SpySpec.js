@@ -9,7 +9,7 @@ describe('Spies', function () {
     });
 
     it("preserves the properties of the spied function", function() {
-      var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var spy = jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
 
       expect(spy.bob).toEqual("test");
     });
@@ -18,19 +18,19 @@ describe('Spies', function () {
       TestClass.prototype.someFunction.and = "turkey";
 
       expect(function() {
-        j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+        jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
       }).toThrowError("Jasmine spies would overwrite the 'and' and 'calls' properties on the object being spied upon");
     });
 
     it("adds a spyStrategy and callTracker to the spy", function() {
-      var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var spy = jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
 
-      expect(spy.and).toEqual(jasmine.any(j$.SpyStrategy));
-      expect(spy.calls).toEqual(jasmine.any(j$.CallTracker));
+      expect(spy.and).toEqual(jasmine.any(jasmineUnderTest.SpyStrategy));
+      expect(spy.calls).toEqual(jasmine.any(jasmineUnderTest.CallTracker));
     });
 
     it("tracks the argument of calls", function () {
-      var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var spy = jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
       var trackSpy = spyOn(spy.calls, "track");
 
       spy("arg");
@@ -39,7 +39,7 @@ describe('Spies', function () {
     });
 
     it("tracks the context of calls", function () {
-      var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var spy = jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
       var trackSpy = spyOn(spy.calls, "track");
 
       var contextObject = { spyMethod: spy };
@@ -49,7 +49,7 @@ describe('Spies', function () {
     });
 
     it("tracks the return value of calls", function () {
-      var spy = j$.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var spy = jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
       var trackSpy = spyOn(spy.calls, "track");
 
       spy.and.returnValue("return value");
@@ -61,7 +61,7 @@ describe('Spies', function () {
 
   describe("createSpyObj", function() {
     it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
-      var spyObj = j$.createSpyObj('BaseName', ['method1', 'method2']);
+      var spyObj = jasmineUnderTest.createSpyObj('BaseName', ['method1', 'method2']);
 
       expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
       expect(spyObj.method1.and.identity()).toEqual('BaseName.method1');
@@ -69,7 +69,7 @@ describe('Spies', function () {
     });
 
     it("should allow you to omit the baseName", function() {
-      var spyObj = j$.createSpyObj(['method1', 'method2']);
+      var spyObj = jasmineUnderTest.createSpyObj(['method1', 'method2']);
 
       expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
       expect(spyObj.method1.and.identity()).toEqual('unknown.method1');
@@ -78,7 +78,7 @@ describe('Spies', function () {
 
     it("should throw if you do not pass an array argument", function() {
       expect(function() {
-        j$.createSpyObj('BaseName');
+        jasmineUnderTest.createSpyObj('BaseName');
       }).toThrow("createSpyObj requires a non-empty array of method names to create spies for");
     });
   });

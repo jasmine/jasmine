@@ -1,10 +1,10 @@
 describe("New HtmlReporter", function() {
   // TODO: Figure out why this isn't rendering...
   it("builds the initial DOM elements, including the title banner", function() {
-    var env = new j$.Env(),
+    var env = new jasmineUnderTest.Env(),
       container = document.createElement("div"),
       getContainer = function() { return container; },
-      reporter = new j$.HtmlReporter({
+      reporter = new jasmineUnderTest.HtmlReporter({
         env: env,
         getContainer: getContainer,
         createElement: function() { return document.createElement.apply(document, arguments); },
@@ -29,14 +29,14 @@ describe("New HtmlReporter", function() {
 
     var version = banner.querySelector(".jasmine-version"),
       versionText = 'textContent' in version ? version.textContent : version.innerText;
-    expect(versionText).toEqual(j$.version);
+    expect(versionText).toEqual(jasmineUnderTest.version);
   });
 
   it("builds a single reporter even if initialized multiple times", function() {
-    var env = new j$.Env(),
+    var env = new jasmineUnderTest.Env(),
       container = document.createElement("div"),
       getContainer = function() { return container; },
-      reporter = new j$.HtmlReporter({
+      reporter = new jasmineUnderTest.HtmlReporter({
         env: env,
         getContainer: getContainer,
         createElement: function() { return document.createElement.apply(document, arguments); },
@@ -52,7 +52,7 @@ describe("New HtmlReporter", function() {
   it("starts the timer when jasmine begins", function() {
     var env = new jasmine.Env(),
         startTimerSpy = jasmine.createSpy("start-timer-spy"),
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           createElement: function() { return document.createElement.apply(document, arguments); },
           timer: { start: startTimerSpy }
@@ -69,10 +69,10 @@ describe("New HtmlReporter", function() {
         console = { error: function(){} };
       }
 
-      var env = new j$.Env(),
+      var env = new jasmineUnderTest.Env(),
       container = document.createElement('div'),
       getContainer = function() {return container;},
-      reporter = new j$.HtmlReporter({
+      reporter = new jasmineUnderTest.HtmlReporter({
         env: env,
         getContainer: getContainer,
         createElement: function() { return document.createElement.apply(document, arguments); },
@@ -95,10 +95,10 @@ describe("New HtmlReporter", function() {
     });
 
     it("reports the status symbol of a disabled spec", function() {
-      var env = new j$.Env(),
+      var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -115,10 +115,10 @@ describe("New HtmlReporter", function() {
     });
 
     it("reports the status symbol of a pending spec", function() {
-      var env = new j$.Env(),
+      var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -134,10 +134,10 @@ describe("New HtmlReporter", function() {
     });
 
     it("reports the status symbol of a passing spec", function() {
-      var env = new j$.Env(),
+      var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -154,10 +154,10 @@ describe("New HtmlReporter", function() {
     });
 
     it("reports the status symbol of a failing spec", function() {
-      var env = new j$.Env(),
+      var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -181,10 +181,10 @@ describe("New HtmlReporter", function() {
 
   describe("when there are suite failures", function () {
     it("displays the exceptions in their own alert bars", function(){
-      var env = new j$.Env(),
+      var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -212,10 +212,10 @@ describe("New HtmlReporter", function() {
       if (!window.console) {
         window.console = { error: function(){} };
       }
-      var env = new j$.Env(),
+      var env = new jasmineUnderTest.Env(),
       container = document.createElement('div'),
       getContainer = function() {return container;},
-      reporter = new j$.HtmlReporter({
+      reporter = new jasmineUnderTest.HtmlReporter({
         env: env,
         getContainer: getContainer,
         createElement: function() { return document.createElement.apply(document, arguments); },
@@ -247,11 +247,11 @@ describe("New HtmlReporter", function() {
     });
 
     it("reports the run time", function() {
-      var env = new j$.Env(),
+      var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
         timer = jasmine.createSpyObj('timer', ['start', 'elapsed']),
         getContainer = function() { return container; },
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -271,10 +271,10 @@ describe("New HtmlReporter", function() {
     });
 
     it("reports the suite and spec names with status", function() {
-      var env = new j$.Env(),
+      var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -365,12 +365,12 @@ describe("New HtmlReporter", function() {
     });
 
     it("has an options menu", function() {
-      var env = new j$.Env(),
+      var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
         getContainer = function() {
           return container;
         },
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() {
@@ -400,12 +400,12 @@ describe("New HtmlReporter", function() {
 
     describe("UI for raising/catching exceptions", function() {
       it("should be unchecked if the env is catching", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           getContainer = function() {
             return container;
           },
-          reporter = new j$.HtmlReporter({
+          reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() {
@@ -424,12 +424,12 @@ describe("New HtmlReporter", function() {
       });
 
       it("should be checked if the env is not catching", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           getContainer = function() {
             return container;
           },
-          reporter = new j$.HtmlReporter({
+          reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() {
@@ -449,13 +449,13 @@ describe("New HtmlReporter", function() {
       });
 
       it("should affect the query param for catching exceptions", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           exceptionsClickHandler = jasmine.createSpy("raise exceptions checked"),
           getContainer = function() {
             return container;
           },
-          reporter = new j$.HtmlReporter({
+          reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
             onRaiseExceptionsClick: exceptionsClickHandler,
@@ -478,12 +478,12 @@ describe("New HtmlReporter", function() {
 
     describe("UI for throwing errors on expectation failures", function() {
       it("should be unchecked if not throwing", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           getContainer = function() {
             return container;
           },
-          reporter = new j$.HtmlReporter({
+          reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() {
@@ -502,12 +502,12 @@ describe("New HtmlReporter", function() {
       });
 
       it("should be checked if throwing", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           getContainer = function() {
             return container;
           },
-          reporter = new j$.HtmlReporter({
+          reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() {
@@ -528,13 +528,13 @@ describe("New HtmlReporter", function() {
       });
 
       it("should affect the query param for throw expectation failures", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           throwingExceptionHandler = jasmine.createSpy('throwingExceptions'),
           getContainer = function() {
             return container;
           },
-          reporter = new j$.HtmlReporter({
+          reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
             onThrowExpectationsClick: throwingExceptionHandler,
@@ -558,12 +558,12 @@ describe("New HtmlReporter", function() {
 
     describe("UI for running tests in random order", function() {
       it("should be unchecked if not randomizing", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           getContainer = function() {
             return container;
           },
-          reporter = new j$.HtmlReporter({
+          reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() {
@@ -582,12 +582,12 @@ describe("New HtmlReporter", function() {
       });
 
       it("should be checked if randomizing", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           getContainer = function() {
             return container;
           },
-          reporter = new j$.HtmlReporter({
+          reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() {
@@ -607,13 +607,13 @@ describe("New HtmlReporter", function() {
       });
 
       it("should affect the query param for random tests", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           randomHandler = jasmine.createSpy('randomHandler'),
           getContainer = function() {
             return container;
           },
-          reporter = new j$.HtmlReporter({
+          reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
             onRandomClick: randomHandler,
@@ -635,12 +635,12 @@ describe("New HtmlReporter", function() {
       });
 
       it("should show the seed bar if randomizing", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
             container = document.createElement("div"),
             getContainer = function() {
               return container;
             },
-            reporter = new j$.HtmlReporter({
+            reporter = new jasmineUnderTest.HtmlReporter({
               env: env,
               getContainer: getContainer,
               createElement: function() {
@@ -667,12 +667,12 @@ describe("New HtmlReporter", function() {
       });
 
       it("should not show the current seed bar if not randomizing", function() {
-        var env = new j$.Env(),
+        var env = new jasmineUnderTest.Env(),
             container = document.createElement("div"),
             getContainer = function() {
               return container;
             },
-            reporter = new j$.HtmlReporter({
+            reporter = new jasmineUnderTest.HtmlReporter({
               env: env,
               getContainer: getContainer,
               createElement: function() {
@@ -694,10 +694,10 @@ describe("New HtmlReporter", function() {
 
     it("shows a message if no specs are run", function(){
       var env, container, reporter;
-      env = new j$.Env();
+      env = new jasmineUnderTest.Env();
       container = document.createElement("div");
       var getContainer = function() { return container; },
-      reporter = new j$.HtmlReporter({
+      reporter = new jasmineUnderTest.HtmlReporter({
         env: env,
         getContainer: getContainer,
         createElement: function() { return document.createElement.apply(document, arguments); },
@@ -716,10 +716,10 @@ describe("New HtmlReporter", function() {
     describe("and all specs pass", function() {
       var env, container, reporter;
       beforeEach(function() {
-        env = new j$.Env();
+        env = new jasmineUnderTest.Env();
         container = document.createElement("div");
         var getContainer = function() { return container; },
-          reporter = new j$.HtmlReporter({
+          reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
             createElement: function() { return document.createElement.apply(document, arguments); },
@@ -771,10 +771,10 @@ describe("New HtmlReporter", function() {
     describe("and there are pending specs", function() {
       var env, container, reporter;
       beforeEach(function() {
-        env = new j$.Env();
+        env = new jasmineUnderTest.Env();
         container = document.createElement("div");
         var getContainer = function() { return container; };
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },
@@ -820,10 +820,10 @@ describe("New HtmlReporter", function() {
       var env, container, reporter;
 
       beforeEach(function() {
-        env = new j$.Env();
+        env = new jasmineUnderTest.Env();
         container = document.createElement("div");
         var getContainer = function() { return container; }
-        reporter = new j$.HtmlReporter({
+        reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
           createElement: function() { return document.createElement.apply(document, arguments); },

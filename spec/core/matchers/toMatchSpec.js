@@ -1,6 +1,6 @@
 describe("toMatch", function() {
   it("passes when RegExps are equivalent", function() {
-    var matcher = j$.matchers.toMatch(),
+    var matcher = jasmineUnderTest.matchers.toMatch(),
       result;
 
     result = matcher.compare(/foo/, /foo/);
@@ -8,7 +8,7 @@ describe("toMatch", function() {
   });
 
   it("fails when RegExps are not equivalent", function() {
-    var matcher = j$.matchers.toMatch(),
+    var matcher = jasmineUnderTest.matchers.toMatch(),
       result;
 
     result = matcher.compare(/bar/, /foo/);
@@ -16,7 +16,7 @@ describe("toMatch", function() {
   });
 
   it("passes when the actual matches the expected string as a pattern", function() {
-    var matcher = j$.matchers.toMatch(),
+    var matcher = jasmineUnderTest.matchers.toMatch(),
       result;
 
     result = matcher.compare('foosball', 'foo');
@@ -24,7 +24,7 @@ describe("toMatch", function() {
   });
 
   it("fails when the actual matches the expected string as a pattern", function() {
-    var matcher = j$.matchers.toMatch(),
+    var matcher = jasmineUnderTest.matchers.toMatch(),
       result;
 
     result = matcher.compare('bar', 'foo');
@@ -32,7 +32,7 @@ describe("toMatch", function() {
   });
 
   it("throws an Error when the expected is not a String or RegExp", function() {
-    var matcher = j$.matchers.toMatch();
+    var matcher = jasmineUnderTest.matchers.toMatch();
 
     expect(function() {
       matcher.compare('foo', { bar: 'baz' });

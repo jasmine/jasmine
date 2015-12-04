@@ -1,6 +1,6 @@
 describe("toThrowError", function() {
   it("throws an error when the actual is not a function", function() {
-    var matcher = j$.matchers.toThrowError();
+    var matcher = jasmineUnderTest.matchers.toThrowError();
 
     expect(function() {
       matcher.compare({});
@@ -8,7 +8,7 @@ describe("toThrowError", function() {
   });
 
   it("throws an error when the expected is not an Error, string, or RegExp", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new Error("foo");
       };
@@ -19,7 +19,7 @@ describe("toThrowError", function() {
   });
 
   it("throws an error when the expected error type is not an Error", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new Error("foo");
       };
@@ -30,7 +30,7 @@ describe("toThrowError", function() {
   });
 
   it("throws an error when the expected error message is not a string or RegExp", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new Error("foo");
       };
@@ -41,7 +41,7 @@ describe("toThrowError", function() {
   });
 
   it("fails if actual does not throw at all", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         return true;
       },
@@ -54,7 +54,7 @@ describe("toThrowError", function() {
   });
 
   it("fails if thrown is not an instanceof Error", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw 4;
       },
@@ -66,7 +66,7 @@ describe("toThrowError", function() {
   });
 
   it("fails with the correct message if thrown is a falsy value", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw undefined;
       },
@@ -78,7 +78,7 @@ describe("toThrowError", function() {
   });
 
   it("passes if thrown is a type of Error, but there is no expected error", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new TypeError();
       },
@@ -91,7 +91,7 @@ describe("toThrowError", function() {
   });
 
   it("passes if thrown is an Error and the expected is the same message", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new Error("foo");
       },
@@ -104,7 +104,7 @@ describe("toThrowError", function() {
   });
 
   it("fails if thrown is an Error and the expected is not the same message", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new Error("foo");
       },
@@ -117,7 +117,7 @@ describe("toThrowError", function() {
   });
 
   it("passes if thrown is an Error and the expected is a RegExp that matches the message", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new Error("a long message");
       },
@@ -130,7 +130,7 @@ describe("toThrowError", function() {
   });
 
   it("fails if thrown is an Error and the expected is a RegExp that does not match the message", function() {
-    var matcher = j$.matchers.toThrowError(),
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new Error("a long message");
       },
@@ -146,7 +146,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrowError(),
+      matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new Error();
       },
@@ -162,7 +162,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrowError(),
+      matcher = jasmineUnderTest.matchers.toThrowError(),
       CustomError = function CustomError(arg) { arg.x },
       fn = function() {
         throw new CustomError({ x: 1 });
@@ -181,7 +181,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
       },
-      matcher = j$.matchers.toThrowError(),
+      matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new Error();
       },
@@ -197,7 +197,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrowError(),
+      matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new TypeError("foo");
       },
@@ -213,7 +213,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrowError(),
+      matcher = jasmineUnderTest.matchers.toThrowError(),
       CustomError = function CustomError(arg) { this.message = arg.message },
       fn = function() {
         throw new CustomError({message: "foo"});
@@ -232,7 +232,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
       },
-      matcher = j$.matchers.toThrowError(),
+      matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new TypeError("foo");
       },
@@ -248,7 +248,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrowError(),
+      matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new TypeError("foo");
       },
@@ -264,7 +264,7 @@ describe("toThrowError", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
       },
-      matcher = j$.matchers.toThrowError(),
+      matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new TypeError("foo");
       },

@@ -1,9 +1,9 @@
 describe("toContain", function() {
-  it("delegates to j$.matchersUtil.contains", function() {
+  it("delegates to jasmineUnderTest.matchersUtil.contains", function() {
     var util = {
         contains: jasmine.createSpy('delegated-contains').and.returnValue(true)
       },
-      matcher = j$.matchers.toContain(util),
+      matcher = jasmineUnderTest.matchers.toContain(util),
       result;
 
     result = matcher.compare("ABC", "B");
@@ -11,12 +11,12 @@ describe("toContain", function() {
     expect(result.pass).toBe(true);
   });
 
-  it("delegates to j$.matchersUtil.contains, passing in equality testers if present", function() {
+  it("delegates to jasmineUnderTest.matchersUtil.contains, passing in equality testers if present", function() {
     var util = {
         contains: jasmine.createSpy('delegated-contains').and.returnValue(true)
       },
       customEqualityTesters = ['a', 'b'],
-      matcher = j$.matchers.toContain(util, customEqualityTesters),
+      matcher = jasmineUnderTest.matchers.toContain(util, customEqualityTesters),
       result;
 
     result = matcher.compare("ABC", "B");

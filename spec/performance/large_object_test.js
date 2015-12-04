@@ -30,7 +30,7 @@ describe('Printing a big object', function(){
 
   it('takes a resonable amount of time', function(){
     bigObject = generateObject(0);
-    expect(j$.pp(bigObject)).toMatch(/cycle/);
+    expect(jasmineUnderTest.pp(bigObject)).toMatch(/cycle/);
   });
 });
 

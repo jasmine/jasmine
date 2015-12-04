@@ -1,7 +1,7 @@
 describe("ReportDispatcher", function() {
 
   it("builds an interface of requested methods", function() {
-    var dispatcher = new j$.ReportDispatcher(['foo', 'bar', 'baz']);
+    var dispatcher = new jasmineUnderTest.ReportDispatcher(['foo', 'bar', 'baz']);
 
     expect(dispatcher.foo).toBeDefined();
     expect(dispatcher.bar).toBeDefined();
@@ -9,7 +9,7 @@ describe("ReportDispatcher", function() {
   });
 
   it("dispatches requested methods to added reporters", function() {
-    var dispatcher = new j$.ReportDispatcher(['foo', 'bar']),
+    var dispatcher = new jasmineUnderTest.ReportDispatcher(['foo', 'bar']),
       reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']),
       anotherReporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
 
@@ -28,7 +28,7 @@ describe("ReportDispatcher", function() {
   });
 
   it("does not dispatch to a reporter if the reporter doesn't accept the method", function() {
-    var dispatcher = new j$.ReportDispatcher(['foo']),
+    var dispatcher = new jasmineUnderTest.ReportDispatcher(['foo']),
       reporter = jasmine.createSpyObj('reporter', ['baz']);
 
     dispatcher.addReporter(reporter);

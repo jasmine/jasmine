@@ -1,6 +1,6 @@
 describe("toThrow", function() {
   it("throws an error when the actual is not a function", function() {
-    var matcher = j$.matchers.toThrow();
+    var matcher = jasmineUnderTest.matchers.toThrow();
 
     expect(function() {
       matcher.compare({});
@@ -9,7 +9,7 @@ describe("toThrow", function() {
   });
 
   it("fails if actual does not throw", function() {
-    var matcher = j$.matchers.toThrow(),
+    var matcher = jasmineUnderTest.matchers.toThrow(),
       fn = function() {
         return true;
       },
@@ -25,7 +25,7 @@ describe("toThrow", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrow(util),
+      matcher = jasmineUnderTest.matchers.toThrow(util),
       fn = function() {
         throw 5;
       },
@@ -38,7 +38,7 @@ describe("toThrow", function() {
   });
 
   it("passes even if what is thrown is falsy", function() {
-    var matcher = j$.matchers.toThrow(),
+    var matcher = jasmineUnderTest.matchers.toThrow(),
       fn = function() {
         throw undefined;
       },
@@ -53,7 +53,7 @@ describe("toThrow", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
       },
-      matcher = j$.matchers.toThrow(util),
+      matcher = jasmineUnderTest.matchers.toThrow(util),
       fn = function() {
         throw 5;
       },
@@ -69,7 +69,7 @@ describe("toThrow", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
       },
-      matcher = j$.matchers.toThrow(util),
+      matcher = jasmineUnderTest.matchers.toThrow(util),
       fn = function() {
         throw 5;
       },
@@ -85,7 +85,7 @@ describe("toThrow", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
       },
-      matcher = j$.matchers.toThrow(util),
+      matcher = jasmineUnderTest.matchers.toThrow(util),
       fn = function() {
         throw 5;
       },

@@ -1,6 +1,6 @@
 describe("toBe", function() {
   it("passes when actual === expected", function() {
-    var matcher = j$.matchers.toBe(),
+    var matcher = jasmineUnderTest.matchers.toBe(),
       result;
 
     result = matcher.compare(1, 1);
@@ -8,7 +8,7 @@ describe("toBe", function() {
   });
 
   it("fails when actual !== expected", function() {
-    var matcher = j$.matchers.toBe(),
+    var matcher = jasmineUnderTest.matchers.toBe(),
       result;
 
     result = matcher.compare(1, 2);

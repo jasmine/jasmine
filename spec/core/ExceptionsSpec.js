@@ -2,7 +2,7 @@ describe('Exceptions:', function() {
   var env;
 
   beforeEach(function() {
-    env = new j$.Env();
+    env = new jasmineUnderTest.Env();
   });
 
   describe('with break on exception', function() {

@@ -30,7 +30,7 @@ describe("TreeProcessor", function() {
 
   it("processes a single executable leaf", function() {
     var leaf = new Leaf(),
-        processor = new j$.TreeProcessor({ tree: leaf, runnableIds: [leaf.id] }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: leaf, runnableIds: [leaf.id] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
@@ -43,7 +43,7 @@ describe("TreeProcessor", function() {
 
   it("processes a single non-executable leaf", function() {
     var leaf = new Leaf({ executable: false }),
-        processor = new j$.TreeProcessor({ tree: leaf, runnableIds: [leaf.id] }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: leaf, runnableIds: [leaf.id] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
@@ -56,7 +56,7 @@ describe("TreeProcessor", function() {
 
   it("processes a single non-specified leaf", function() {
     var leaf = new Leaf(),
-        processor = new j$.TreeProcessor({ tree: leaf, runnableIds: [] }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: leaf, runnableIds: [] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
@@ -70,7 +70,7 @@ describe("TreeProcessor", function() {
   it("processes a tree with a single leaf with the root specified", function() {
     var leaf = new Leaf(),
         parent = new Node({ children: [leaf] }),
-        processor = new j$.TreeProcessor({ tree: parent, runnableIds: [parent.id] }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: parent, runnableIds: [parent.id] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
@@ -89,7 +89,7 @@ describe("TreeProcessor", function() {
   it("processes a tree with a single non-executable leaf, with the root specified", function() {
     var leaf = new Leaf({ executable: false }),
         parent = new Node({ children: [leaf] }),
-        processor = new j$.TreeProcessor({ tree: parent, runnableIds: [parent.id] }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: parent, runnableIds: [parent.id] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
@@ -113,7 +113,7 @@ describe("TreeProcessor", function() {
         childOfDisabled = new Leaf({ executable: true }),
         disabledNode = new Node({ executable: false, children: [childOfDisabled] }),
         root = new Node({ children: [parent, childless, disabledNode] }),
-        processor = new j$.TreeProcessor({ tree: root, runnableIds: [root.id] }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: root, runnableIds: [root.id] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
@@ -160,7 +160,7 @@ describe("TreeProcessor", function() {
         leaf3 = new Leaf(),
         reentered = new Node({ noReenter: true, children: [leaf1, leaf2] }),
         root = new Node({ children: [reentered, leaf3] }),
-        processor = new j$.TreeProcessor({ tree: root, runnableIds: [leaf1.id, leaf3.id, leaf2.id] }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: root, runnableIds: [leaf1.id, leaf3.id, leaf2.id] }),
         result = processor.processTree();
 
     expect(result).toEqual({ valid: false });
@@ -172,7 +172,7 @@ describe("TreeProcessor", function() {
         leaf3 = new Leaf(),
         reentered = new Node({ children: [leaf1, leaf2] }),
         root = new Node({ children: [reentered, leaf3] }),
-        processor = new j$.TreeProcessor({ tree: root, runnableIds: [leaf1.id, leaf3.id, leaf2.id] }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: root, runnableIds: [leaf1.id, leaf3.id, leaf2.id] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
@@ -184,7 +184,7 @@ describe("TreeProcessor", function() {
         leaf3 = new Leaf(),
         noReentry = new Node({ noReenter: true }),
         root = new Node({ children: [noReentry] }),
-        processor = new j$.TreeProcessor({ tree: root, runnableIds: [leaf2.id, leaf1.id, leaf3.id] }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: root, runnableIds: [leaf2.id, leaf1.id, leaf3.id] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
@@ -194,7 +194,7 @@ describe("TreeProcessor", function() {
     var leaf1 = new Leaf(),
         noReentry = new Node({ noReenter: true }),
         root = new Node({ children: [noReentry] }),
-        processor = new j$.TreeProcessor({ tree: root, runnableIds: [root.id] }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: root, runnableIds: [root.id] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
@@ -204,7 +204,7 @@ describe("TreeProcessor", function() {
     var leaf = new Leaf(),
         node = new Node({ children: [leaf], userContext: { root: 'context' } }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({ tree: node, runnableIds: [leaf.id], queueRunnerFactory: queueRunner }),
+        processor = new jasmineUnderTest.TreeProcessor({ tree: node, runnableIds: [leaf.id], queueRunnerFactory: queueRunner }),
         treeComplete = jasmine.createSpy('treeComplete');
 
     processor.execute(treeComplete);
@@ -227,7 +227,7 @@ describe("TreeProcessor", function() {
         nodeStart = jasmine.createSpy('nodeStart'),
         nodeComplete = jasmine.createSpy('nodeComplete'),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [node.id],
           nodeStart: nodeStart,
@@ -269,7 +269,7 @@ describe("TreeProcessor", function() {
         node = new Node({ children: [leaf1, leaf2] }),
         root = new Node({ children: [node] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [node.id],
           queueRunnerFactory: queueRunner
@@ -298,7 +298,7 @@ describe("TreeProcessor", function() {
         queueRunner = jasmine.createSpy('queueRunner'),
         nodeStart = jasmine.createSpy('nodeStart'),
         nodeComplete = jasmine.createSpy('nodeComplete'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [node.id],
           queueRunnerFactory: queueRunner,
@@ -334,7 +334,7 @@ describe("TreeProcessor", function() {
         }),
         root = new Node({ children: [node] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [node.id],
           queueRunnerFactory: queueRunner
@@ -359,7 +359,7 @@ describe("TreeProcessor", function() {
         }),
         root = new Node({ children: [node] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [node.id],
           queueRunnerFactory: queueRunner
@@ -383,7 +383,7 @@ describe("TreeProcessor", function() {
         }),
         root = new Node({ children: [node] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [node.id],
           queueRunnerFactory: queueRunner
@@ -410,7 +410,7 @@ describe("TreeProcessor", function() {
         }),
         root = new Node({ children: [node] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [node.id],
           queueRunnerFactory: queueRunner
@@ -432,7 +432,7 @@ describe("TreeProcessor", function() {
         leaf2 = new Leaf(),
         root = new Node({ children: [leaf1, leaf2] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [leaf2.id, leaf1.id],
           queueRunnerFactory: queueRunner
@@ -456,7 +456,7 @@ describe("TreeProcessor", function() {
         nonSpecified = new Leaf(),
         root = new Node({ children: [nonSpecified, specified] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [specified.id],
           queueRunnerFactory: queueRunner
@@ -481,7 +481,7 @@ describe("TreeProcessor", function() {
         specifiedNode = new Node({ children: [childLeaf] }),
         root = new Node({ children: [specifiedLeaf, specifiedNode] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [specifiedNode.id, specifiedLeaf.id],
           queueRunnerFactory: queueRunner
@@ -511,7 +511,7 @@ describe("TreeProcessor", function() {
         reentered = new Node({ children: [leaf1, leaf2, leaf3] }),
         root = new Node({ children: [reentered, leaf4, leaf5] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [leaf1.id, leaf4.id, leaf2.id, leaf5.id, leaf3.id],
           queueRunnerFactory: queueRunner
@@ -555,7 +555,7 @@ describe("TreeProcessor", function() {
         grandparent = new Node({ children: [parent] }),
         root = new Node({ children: [grandparent, leaf4, leaf5] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [leaf1.id, leaf4.id, leaf2.id, leaf5.id, leaf3.id],
           queueRunnerFactory: queueRunner
@@ -609,7 +609,7 @@ describe("TreeProcessor", function() {
         parent = new Node({ children: [leaf2, leaf3] }),
         root = new Node({ children: [leaf1, parent] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [root.id],
           queueRunnerFactory: queueRunner
@@ -647,7 +647,7 @@ describe("TreeProcessor", function() {
         leaf11 = new Leaf(),
         root = new Node({ children: [leaf1, leaf2, leaf3, leaf4, leaf5, leaf6, leaf7, leaf8, leaf9, leaf10, leaf11] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [root.id],
           queueRunnerFactory: queueRunner
@@ -705,7 +705,7 @@ describe("TreeProcessor", function() {
         leaf11 = new Leaf(),
         root = new Node({ children: [leaf1, leaf2, leaf3, leaf4, leaf5, leaf6, leaf7, leaf8, leaf9, leaf10, leaf11] }),
         queueRunner = jasmine.createSpy('queueRunner'),
-        processor = new j$.TreeProcessor({
+        processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
           runnableIds: [root.id],
           queueRunnerFactory: queueRunner,

@@ -1,7 +1,7 @@
 describe("Timer", function() {
   it("reports the time elapsed", function() {
     var fakeNow = jasmine.createSpy('fake Date.now'),
-        timer = new j$.Timer({now: fakeNow});
+        timer = new jasmineUnderTest.Timer({now: fakeNow});
 
     fakeNow.and.returnValue(100);
     timer.start();
@@ -22,7 +22,7 @@ describe("Timer", function() {
     });
 
     it("does not throw even though Date was taken away", function() {
-      var timer = new j$.Timer();
+      var timer = new jasmineUnderTest.Timer();
 
       expect(timer.start).not.toThrow();
       expect(timer.elapsed()).toEqual(jasmine.any(Number));

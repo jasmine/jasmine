@@ -1,14 +1,14 @@
 describe("SpyRegistry", function() {
   describe("#spyOn", function() {
     it("checks for the existence of the object", function() {
-      var spyRegistry = new j$.SpyRegistry();
+      var spyRegistry = new jasmineUnderTest.SpyRegistry();
       expect(function() {
         spyRegistry.spyOn(void 0, 'pants');
       }).toThrowError(/could not find an object/);
     });
 
     it("checks that a method name was passed", function() {
-      var spyRegistry = new j$.SpyRegistry(),
+      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
         subject = {};
 
         expect(function() {
@@ -17,7 +17,7 @@ describe("SpyRegistry", function() {
     });
 
     it("checks for the existence of the method", function() {
-      var spyRegistry = new j$.SpyRegistry(),
+      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
         subject = {};
 
       expect(function() {
@@ -27,7 +27,7 @@ describe("SpyRegistry", function() {
 
     it("checks if it has already been spied upon", function() {
       var spies = [],
-        spyRegistry = new j$.SpyRegistry({currentSpies: function() { return spies; }}),
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
         subject = { spiedFunc: function() {} };
 
       spyRegistry.spyOn(subject, 'spiedFunc');
@@ -54,7 +54,7 @@ describe("SpyRegistry", function() {
       });
 
       var spies = [],
-        spyRegistry = new j$.SpyRegistry({currentSpies: function() { return spies; }}),
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
         subject = { spiedFunc: scope.myFunc };
 
       expect(function() {
@@ -68,7 +68,7 @@ describe("SpyRegistry", function() {
 
     it("overrides the method on the object and returns the spy", function() {
       var originalFunctionWasCalled = false,
-        spyRegistry = new j$.SpyRegistry(),
+        spyRegistry = new jasmineUnderTest.SpyRegistry(),
         subject = { spiedFunc: function() { originalFunctionWasCalled = true; } };
 
       var spy = spyRegistry.spyOn(subject, 'spiedFunc');
@@ -80,7 +80,7 @@ describe("SpyRegistry", function() {
   describe("#clearSpies", function() {
     it("restores the original functions on the spied-upon objects", function() {
       var spies = [],
-        spyRegistry = new j$.SpyRegistry({currentSpies: function() { return spies; }}),
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
         originalFunction = function() {},
         subject = { spiedFunc: originalFunction };
 

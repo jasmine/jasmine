@@ -4,10 +4,10 @@
 
   var glob = require("glob");
 
-  var j$Require = require(path.join(__dirname, "../../src/core/requireCore.js"));
+  var jasmineUnderTestRequire = require(path.join(__dirname, "../../src/core/requireCore.js"));
 
   global.getJasmineRequireObj = function () {
-    return j$Require;
+    return jasmineUnderTestRequire;
   };
 
   function extend(destination, source) {
@@ -25,9 +25,9 @@
     });
   }
 
-  extend(j$Require, require(path.join(__dirname,"../../src/console/requireConsole.js")));
+  extend(jasmineUnderTestRequire, require(path.join(__dirname,"../../src/console/requireConsole.js")));
   getSourceFiles();
-  global.j$ = j$Require.core(j$Require);
+  global.jasmineUnderTest = jasmineUnderTestRequire.core(jasmineUnderTestRequire);
 
-  j$Require.console(j$Require, j$);
+  jasmineUnderTestRequire.console(jasmineUnderTestRequire, jasmineUnderTest);
 })();

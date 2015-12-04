@@ -2,20 +2,20 @@
 describe("Env", function() {
   var env;
   beforeEach(function() {
-    env = new j$.Env();
+    env = new jasmineUnderTest.Env();
   });
 
   describe("#pending", function() {
     it("throws the Pending Spec exception", function() {
       expect(function() {
         env.pending();
-      }).toThrow(j$.Spec.pendingSpecExceptionMessage);
+      }).toThrow(jasmineUnderTest.Spec.pendingSpecExceptionMessage);
     });
 
     it("throws the Pending Spec exception with a custom message", function() {
       expect(function() {
         env.pending('custom message');
-      }).toThrow(j$.Spec.pendingSpecExceptionMessage + 'custom message');
+      }).toThrow(jasmineUnderTest.Spec.pendingSpecExceptionMessage + 'custom message');
     });
   });
 
@@ -38,9 +38,9 @@ describe("Env", function() {
   it('can configure specs to throw errors on expectation failures', function() {
     env.throwOnExpectationFailure(true);
 
-    spyOn(j$, 'Spec');
+    spyOn(jasmineUnderTest, 'Spec');
     env.it('foo', function() {});
-    expect(j$.Spec).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(jasmine.objectContaining({
       throwOnExpectationFailure: true
     }));
   });
@@ -48,9 +48,9 @@ describe("Env", function() {
   it('can configure suites to throw errors on expectation failures', function() {
     env.throwOnExpectationFailure(true);
 
-    spyOn(j$, 'Suite');
+    spyOn(jasmineUnderTest, 'Suite');
     env.describe('foo', function() {});
-    expect(j$.Suite).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(jasmineUnderTest.Suite).toHaveBeenCalledWith(jasmine.objectContaining({
       throwOnExpectationFailure: true
     }));
   });

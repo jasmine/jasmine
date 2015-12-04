@@ -2,6 +2,7 @@
 use_sauce: <%= ENV['USE_SAUCE'] %>
 browser: <%= ENV['JASMINE_BROWSER'] %>
 sauce:
+  sauce_connect_path: "/Users/gregg/Downloads/sc-4.3.11-osx/bin/sc"
   name: jasmine-core <%= Time.now.to_s %>
   username: <%= ENV['SAUCE_USERNAME'] %>
   access_key: <%= ENV['SAUCE_ACCESS_KEY'] %>

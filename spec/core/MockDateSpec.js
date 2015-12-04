@@ -1,7 +1,7 @@
 describe("FakeDate", function() {
   it("does not fail if no global date is found", function() {
     var fakeGlobal = {},
-      mockDate = new j$.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     expect(function() {
       mockDate.install();
@@ -17,7 +17,7 @@ describe("FakeDate", function() {
         }
       }),
       fakeGlobal = { Date: globalDate },
-      mockDate = new j$.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     expect(fakeGlobal.Date).toEqual(globalDate);
     mockDate.install();
@@ -32,7 +32,7 @@ describe("FakeDate", function() {
         }
       }),
       fakeGlobal = { Date: globalDate },
-      mockDate = new j$.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     mockDate.install();
     mockDate.uninstall();
@@ -49,7 +49,7 @@ describe("FakeDate", function() {
         }
       }),
       fakeGlobal = { Date: globalDate },
-      mockDate = new j$.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     mockDate.install();
 
@@ -60,7 +60,7 @@ describe("FakeDate", function() {
 
   it("can accept a date as time base when installing", function() {
     var fakeGlobal = { Date: Date },
-      mockDate = new j$.MockDate(fakeGlobal),
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal),
       baseDate = new Date();
 
     spyOn(baseDate, 'getTime').and.returnValue(123);
@@ -71,7 +71,7 @@ describe("FakeDate", function() {
 
   it("makes real dates", function() {
     var fakeGlobal = { Date: Date },
-      mockDate = new j$.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     mockDate.install();
     expect(new fakeGlobal.Date()).toEqual(jasmine.any(Date));
@@ -89,7 +89,7 @@ describe("FakeDate", function() {
       fakeGlobal = { Date: globalDate };
 
     globalDate.now = function() {};
-    var mockDate = new j$.MockDate(fakeGlobal);
+    var mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     mockDate.install();
 
@@ -105,7 +105,7 @@ describe("FakeDate", function() {
         }
       }),
       fakeGlobal = { Date: globalDate },
-      mockDate = new j$.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     mockDate.install();
 
@@ -123,7 +123,7 @@ describe("FakeDate", function() {
       fakeGlobal = { Date: globalDate };
 
     globalDate.now = function() {};
-    var mockDate = new j$.MockDate(fakeGlobal);
+    var mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     mockDate.install();
 
@@ -147,7 +147,7 @@ describe("FakeDate", function() {
       fakeGlobal = { Date: globalDate };
 
     globalDate.now = function() {};
-    var mockDate = new j$.MockDate(fakeGlobal);
+    var mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     mockDate.install();
 
@@ -160,7 +160,7 @@ describe("FakeDate", function() {
 
   it("allows creation of a Date in a different time than the mocked time", function() {
     var fakeGlobal = { Date: Date },
-      mockDate = new j$.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     mockDate.install();
 
@@ -170,7 +170,7 @@ describe("FakeDate", function() {
 
   it("allows creation of a Date that isn't fully specified", function() {
     var fakeGlobal = { Date: Date },
-      mockDate = new j$.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     mockDate.install();
 
@@ -180,7 +180,7 @@ describe("FakeDate", function() {
 
   it('allows creation of a Date with millis', function() {
     var fakeGlobal = { Date: Date },
-      mockDate = new j$.MockDate(fakeGlobal),
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal),
       now = new Date(2014, 3, 15).getTime();
 
     mockDate.install();
@@ -191,7 +191,7 @@ describe("FakeDate", function() {
 
   it("copies all Date properties to the mocked date", function() {
     var fakeGlobal = { Date: Date },
-      mockDate = new j$.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
 
     mockDate.install();
 

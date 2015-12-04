@@ -1,34 +1,34 @@
-describe("j$.pp", function () {
+describe("jasmineUnderTest.pp", function () {
   it("should wrap strings in single quotes", function() {
-    expect(j$.pp("some string")).toEqual("'some string'");
-    expect(j$.pp("som' string")).toEqual("'som' string'");
+    expect(jasmineUnderTest.pp("some string")).toEqual("'some string'");
+    expect(jasmineUnderTest.pp("som' string")).toEqual("'som' string'");
   });
 
   it("should stringify primitives properly", function() {
-    expect(j$.pp(true)).toEqual("true");
-    expect(j$.pp(false)).toEqual("false");
-    expect(j$.pp(null)).toEqual("null");
-    expect(j$.pp(jasmine.undefined)).toEqual("undefined");
-    expect(j$.pp(3)).toEqual("3");
-    expect(j$.pp(-3.14)).toEqual("-3.14");
-    expect(j$.pp(-0)).toEqual("-0");
+    expect(jasmineUnderTest.pp(true)).toEqual("true");
+    expect(jasmineUnderTest.pp(false)).toEqual("false");
+    expect(jasmineUnderTest.pp(null)).toEqual("null");
+    expect(jasmineUnderTest.pp(jasmine.undefined)).toEqual("undefined");
+    expect(jasmineUnderTest.pp(3)).toEqual("3");
+    expect(jasmineUnderTest.pp(-3.14)).toEqual("-3.14");
+    expect(jasmineUnderTest.pp(-0)).toEqual("-0");
   });
 
   describe('stringify arrays', function() {
     it("should stringify arrays properly", function() {
-      expect(j$.pp([1, 2])).toEqual("[ 1, 2 ]");
-      expect(j$.pp([1, 'foo', {}, jasmine.undefined, null])).toEqual("[ 1, 'foo', Object({  }), undefined, null ]");
+      expect(jasmineUnderTest.pp([1, 2])).toEqual("[ 1, 2 ]");
+      expect(jasmineUnderTest.pp([1, 'foo', {}, jasmine.undefined, null])).toEqual("[ 1, 'foo', Object({  }), undefined, null ]");
     });
 
-    it("should truncate arrays that are longer than j$.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
-      var originalMaxLength = j$.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+    it("should truncate arrays that are longer than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
+      var originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
       var array = [1, 2, 3];
 
       try {
-        j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        expect(j$.pp(array)).toEqual("[ 1, 2, ... ]");
+        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+        expect(jasmineUnderTest.pp(array)).toEqual("[ 1, 2, ... ]");
       } finally {
-        j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
+        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
       }
     });
 
@@ -36,27 +36,27 @@ describe("j$.pp", function () {
       var arr = [1, 2];
       arr.foo = 'bar';
       arr.baz = {};
-      expect(j$.pp(arr)).toEqual("[ 1, 2, foo: 'bar', baz: Object({  }) ]");
+      expect(jasmineUnderTest.pp(arr)).toEqual("[ 1, 2, foo: 'bar', baz: Object({  }) ]");
     });
 
     it("should stringify empty arrays with properties properly", function() {
       var empty = [];
       empty.foo = 'bar';
       empty.baz = {};
-      expect(j$.pp(empty)).toEqual("[ foo: 'bar', baz: Object({  }) ]");
+      expect(jasmineUnderTest.pp(empty)).toEqual("[ foo: 'bar', baz: Object({  }) ]");
     });
 
     it("should stringify long arrays with properties properly", function() {
-      var originalMaxLength = j$.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+      var originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
       var long = [1,2,3];
       long.foo = 'bar';
       long.baz = {};
 
       try {
-        j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        expect(j$.pp(long)).toEqual("[ 1, 2, ..., foo: 'bar', baz: Object({  }) ]");
+        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+        expect(jasmineUnderTest.pp(long)).toEqual("[ 1, 2, ..., foo: 'bar', baz: Object({  }) ]");
       } finally {
-        j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
+        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
       }
     });
 
@@ -64,19 +64,19 @@ describe("j$.pp", function () {
       var array1 = [1, 2];
       var array2 = [array1];
       array1.push(array2);
-      expect(j$.pp(array1)).toEqual("[ 1, 2, [ <circular reference: Array> ] ]");
+      expect(jasmineUnderTest.pp(array1)).toEqual("[ 1, 2, [ <circular reference: Array> ] ]");
     });
 
     it("should not indicate circular references incorrectly", function() {
       var array = [ [1] ];
-      expect(j$.pp(array)).toEqual("[ [ 1 ] ]");
+      expect(jasmineUnderTest.pp(array)).toEqual("[ [ 1 ] ]");
     });
   });
 
   it("should stringify objects properly", function() {
-    expect(j$.pp({foo: 'bar'})).toEqual("Object({ foo: 'bar' })");
-    expect(j$.pp({foo:'bar', baz:3, nullValue: null, undefinedValue: jasmine.undefined})).toEqual("Object({ foo: 'bar', baz: 3, nullValue: null, undefinedValue: undefined })");
-    expect(j$.pp({foo: function () {
+    expect(jasmineUnderTest.pp({foo: 'bar'})).toEqual("Object({ foo: 'bar' })");
+    expect(jasmineUnderTest.pp({foo:'bar', baz:3, nullValue: null, undefinedValue: jasmine.undefined})).toEqual("Object({ foo: 'bar', baz: 3, nullValue: null, undefinedValue: undefined })");
+    expect(jasmineUnderTest.pp({foo: function () {
     }, bar: [1, 2, 3]})).toEqual("Object({ foo: Function, bar: [ 1, 2, 3 ] })");
   });
 
@@ -85,28 +85,28 @@ describe("j$.pp", function () {
     SomeClass.prototype.foo = "inherited foo";
     var instance = new SomeClass();
     instance.bar = "my own bar";
-    expect(j$.pp(instance)).toEqual("SomeClass({ bar: 'my own bar' })");
+    expect(jasmineUnderTest.pp(instance)).toEqual("SomeClass({ bar: 'my own bar' })");
   });
 
-  it("should not recurse objects and arrays more deeply than j$.MAX_PRETTY_PRINT_DEPTH", function() {
-    var originalMaxDepth = j$.MAX_PRETTY_PRINT_DEPTH;
+  it("should not recurse objects and arrays more deeply than jasmineUnderTest.MAX_PRETTY_PRINT_DEPTH", function() {
+    var originalMaxDepth = jasmineUnderTest.MAX_PRETTY_PRINT_DEPTH;
     var nestedObject = { level1: { level2: { level3: { level4: "leaf" } } } };
     var nestedArray  = [1, [2, [3, [4, "leaf"]]]];
 
     try {
-      j$.MAX_PRETTY_PRINT_DEPTH = 2;
-      expect(j$.pp(nestedObject)).toEqual("Object({ level1: Object({ level2: Object }) })");
-      expect(j$.pp(nestedArray)).toEqual("[ 1, [ 2, Array ] ]");
+      jasmineUnderTest.MAX_PRETTY_PRINT_DEPTH = 2;
+      expect(jasmineUnderTest.pp(nestedObject)).toEqual("Object({ level1: Object({ level2: Object }) })");
+      expect(jasmineUnderTest.pp(nestedArray)).toEqual("[ 1, [ 2, Array ] ]");
 
-      j$.MAX_PRETTY_PRINT_DEPTH = 3;
-      expect(j$.pp(nestedObject)).toEqual("Object({ level1: Object({ level2: Object({ level3: Object }) }) })");
-      expect(j$.pp(nestedArray)).toEqual("[ 1, [ 2, [ 3, Array ] ] ]");
+      jasmineUnderTest.MAX_PRETTY_PRINT_DEPTH = 3;
+      expect(jasmineUnderTest.pp(nestedObject)).toEqual("Object({ level1: Object({ level2: Object({ level3: Object }) }) })");
+      expect(jasmineUnderTest.pp(nestedArray)).toEqual("[ 1, [ 2, [ 3, Array ] ] ]");
 
-      j$.MAX_PRETTY_PRINT_DEPTH = 4;
-      expect(j$.pp(nestedObject)).toEqual("Object({ level1: Object({ level2: Object({ level3: Object({ level4: 'leaf' }) }) }) })");
-      expect(j$.pp(nestedArray)).toEqual("[ 1, [ 2, [ 3, [ 4, 'leaf' ] ] ] ]");
+      jasmineUnderTest.MAX_PRETTY_PRINT_DEPTH = 4;
+      expect(jasmineUnderTest.pp(nestedObject)).toEqual("Object({ level1: Object({ level2: Object({ level3: Object({ level4: 'leaf' }) }) }) })");
+      expect(jasmineUnderTest.pp(nestedArray)).toEqual("[ 1, [ 2, [ 3, [ 4, 'leaf' ] ] ] ]");
     } finally {
-      j$.MAX_PRETTY_PRINT_DEPTH = originalMaxDepth;
+      jasmineUnderTest.MAX_PRETTY_PRINT_DEPTH = originalMaxDepth;
     }
   });
 
@@ -115,18 +115,18 @@ describe("j$.pp", function () {
       var frozenObject = {foo: {bar: 'baz'}};
       frozenObject.circular = frozenObject;
       frozenObject = Object.freeze(frozenObject);
-      expect(j$.pp(frozenObject)).toEqual("Object({ foo: Object({ bar: 'baz' }), circular: <circular reference: Object> })");
+      expect(jasmineUnderTest.pp(frozenObject)).toEqual("Object({ foo: Object({ bar: 'baz' }), circular: <circular reference: Object> })");
     }
   });
 
   it("should stringify RegExp objects properly", function() {
-    expect(j$.pp(/x|y|z/)).toEqual("/x|y|z/");
+    expect(jasmineUnderTest.pp(/x|y|z/)).toEqual("/x|y|z/");
   });
 
   it("should indicate circular object references", function() {
     var sampleValue = {foo: 'hello'};
     sampleValue.nested = sampleValue;
-    expect(j$.pp(sampleValue)).toEqual("Object({ foo: 'hello', nested: <circular reference: Object> })");
+    expect(jasmineUnderTest.pp(sampleValue)).toEqual("Object({ foo: 'hello', nested: <circular reference: Object> })");
   });
 
   it("should indicate getters on objects as such", function() {
@@ -138,39 +138,39 @@ describe("j$.pp", function () {
       });
     }
     if (sampleValue.__defineGetter__) {
-      expect(j$.pp(sampleValue)).toEqual("Object({ id: 1, calculatedValue: <getter> })");
+      expect(jasmineUnderTest.pp(sampleValue)).toEqual("Object({ id: 1, calculatedValue: <getter> })");
     }
     else {
-      expect(j$.pp(sampleValue)).toEqual("Object({ id: 1 })");
+      expect(jasmineUnderTest.pp(sampleValue)).toEqual("Object({ id: 1 })");
     }
   });
 
 
   it('should not do HTML escaping of strings', function() {
-    expect(j$.pp('some <b>html string</b> &', false)).toEqual('\'some <b>html string</b> &\'');
+    expect(jasmineUnderTest.pp('some <b>html string</b> &', false)).toEqual('\'some <b>html string</b> &\'');
   });
 
   it("should abbreviate the global (usually window) object", function() {
-    expect(j$.pp(jasmine.getGlobal())).toEqual("<global>");
+    expect(jasmineUnderTest.pp(jasmine.getGlobal())).toEqual("<global>");
   });
 
   it("should stringify Date objects properly", function() {
     var now = new Date();
-    expect(j$.pp(now)).toEqual("Date(" + now.toString() + ")");
+    expect(jasmineUnderTest.pp(now)).toEqual("Date(" + now.toString() + ")");
   });
 
   it("should stringify spy objects properly", function() {
     var TestObject = {
           someFunction: function() {}
         },
-        env = new j$.Env();
+        env = new jasmineUnderTest.Env();
 
-    var spyRegistry = new j$.SpyRegistry({currentSpies: function() {return [];}});
+    var spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() {return [];}});
 
     spyRegistry.spyOn(TestObject, 'someFunction');
-    expect(j$.pp(TestObject.someFunction)).toEqual("spy on someFunction");
+    expect(jasmineUnderTest.pp(TestObject.someFunction)).toEqual("spy on someFunction");
 
-    expect(j$.pp(j$.createSpy("something"))).toEqual("spy on something");
+    expect(jasmineUnderTest.pp(jasmineUnderTest.createSpy("something"))).toEqual("spy on something");
   });
 
   it("should stringify objects that implement jasmineToString", function () {
@@ -178,7 +178,7 @@ describe("j$.pp", function () {
       jasmineToString: function () { return "strung"; }
     };
 
-    expect(j$.pp(obj)).toEqual("strung");
+    expect(jasmineUnderTest.pp(obj)).toEqual("strung");
   });
 
   it("should stringify objects that implement custom toString", function () {
@@ -186,7 +186,7 @@ describe("j$.pp", function () {
       toString: function () { return "my toString"; }
     };
 
-    expect(j$.pp(obj)).toEqual("my toString");
+    expect(jasmineUnderTest.pp(obj)).toEqual("my toString");
   });
 
   it("should handle objects with null prototype", function() {
@@ -195,6 +195,6 @@ describe("j$.pp", function () {
     var obj = Object.create(null);
     obj.foo = 'bar';
 
-    expect(j$.pp(obj)).toEqual("null({ foo: 'bar' })");
+    expect(jasmineUnderTest.pp(obj)).toEqual("null({ foo: 'bar' })");
   });
 });
