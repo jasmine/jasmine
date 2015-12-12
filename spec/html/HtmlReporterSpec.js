@@ -690,6 +690,45 @@ describe("New HtmlReporter", function() {
         expect(seedBar).toBeNull();
       });
 
+      it("should include the random query param in the jasmine-skipped link when randomizing", function(){
+        var env, container, reporter;
+        env = new jasmineUnderTest.Env();
+        container = document.createElement("div");
+        var getContainer = function() { return container; },
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
+
+        reporter.initialize();
+        reporter.jasmineStarted({ totalSpecsDefined: 1 });
+        reporter.jasmineDone({ order: { random: true } });
+
+        var skippedLink = container.querySelector(".jasmine-skipped a");
+        expect(skippedLink.getAttribute('href')).toEqual('?random=true');
+      });
+
+      it("should not include the random query param in the jasmine-skipped link when not randomizing", function(){
+        var env, container, reporter;
+        env = new jasmineUnderTest.Env();
+        container = document.createElement("div");
+        var getContainer = function() { return container; },
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
+
+        reporter.initialize();
+        reporter.jasmineStarted({ totalSpecsDefined: 1 });
+        reporter.jasmineDone();
+
+        var skippedLink = container.querySelector(".jasmine-skipped a");
+        expect(skippedLink.getAttribute('href')).toEqual('?');
+      });
     });
 
     it("shows a message if no specs are run", function(){
