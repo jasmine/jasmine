@@ -1,30 +1,32 @@
-getJasmineRequireObj().Suite = function() {
+getJasmineRequireObj().Suite = function(j$) {
   function Suite(attrs) {
     this.env = attrs.env;
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
     this.description = attrs.description;
-    this.onStart = attrs.onStart || function() {};
-    this.completeCallback = attrs.completeCallback || function() {}; // TODO: this is unused
-    this.resultCallback = attrs.resultCallback || function() {};
-    this.clearStack = attrs.clearStack || function(fn) {fn();};
+    this.expectationFactory = attrs.expectationFactory;
+    this.expectationResultFactory = attrs.expectationResultFactory;
+    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
     this.beforeFns = [];
     this.afterFns = [];
-    this.queueRunner = attrs.queueRunner || function() {};
+    this.beforeAllFns = [];
+    this.afterAllFns = [];
     this.disabled = false;
 
-    this.children_ = []; // TODO: rename
-    this.suites = []; // TODO: needed?
-    this.specs = [];  // TODO: needed?
+    this.children = [];
 
     this.result = {
       id: this.id,
-      status: this.disabled ? 'disabled' : '',
       description: this.description,
-      fullName: this.getFullName()
+      fullName: this.getFullName(),
+      failedExpectations: []
     };
   }
+
+  Suite.prototype.expect = function(actual) {
+    return this.expectationFactory(actual, this);
+  };
 
   Suite.prototype.getFullName = function() {
     var fullName = this.description;
@@ -40,66 +42,134 @@ getJasmineRequireObj().Suite = function() {
     this.disabled = true;
   };
 
+  Suite.prototype.pend = function(message) {
+    this.markedPending = true;
+  };
+
   Suite.prototype.beforeEach = function(fn) {
     this.beforeFns.unshift(fn);
+  };
+
+  Suite.prototype.beforeAll = function(fn) {
+    this.beforeAllFns.push(fn);
   };
 
   Suite.prototype.afterEach = function(fn) {
     this.afterFns.unshift(fn);
   };
 
-  Suite.prototype.addSpec = function(spec) {
-    this.children_.push(spec);
-    this.specs.push(spec);   // TODO: needed?
+  Suite.prototype.afterAll = function(fn) {
+    this.afterAllFns.push(fn);
   };
 
-  Suite.prototype.addSuite = function(suite) {
-    suite.parentSuite = this;
-    this.children_.push(suite);
-    this.suites.push(suite);    // TODO: needed?
+  Suite.prototype.addChild = function(child) {
+    this.children.push(child);
   };
 
-  Suite.prototype.children = function() {
-    return this.children_;
-  };
-
-  Suite.prototype.execute = function(onComplete) {
-    var self = this;
+  Suite.prototype.status = function() {
     if (this.disabled) {
-      complete();
+      return 'disabled';
+    }
+
+    if (this.markedPending) {
+      return 'pending';
+    }
+
+    if (this.result.failedExpectations.length > 0) {
+      return 'failed';
+    } else {
+      return 'finished';
+    }
+  };
+
+  Suite.prototype.isExecutable = function() {
+    return !this.disabled;
+  };
+
+  Suite.prototype.canBeReentered = function() {
+    return this.beforeAllFns.length === 0 && this.afterAllFns.length === 0;
+  };
+
+  Suite.prototype.getResult = function() {
+    this.result.status = this.status();
+    return this.result;
+  };
+
+  Suite.prototype.sharedUserContext = function() {
+    if (!this.sharedContext) {
+      this.sharedContext = this.parentSuite ? clone(this.parentSuite.sharedUserContext()) : {};
+    }
+
+    return this.sharedContext;
+  };
+
+  Suite.prototype.clonedSharedUserContext = function() {
+    return clone(this.sharedUserContext());
+  };
+
+  Suite.prototype.onException = function() {
+    if (arguments[0] instanceof j$.errors.ExpectationFailed) {
       return;
     }
 
-    var allFns = [],
-      children = this.children_;
-
-    for (var i = 0; i < children.length; i++) {
-      allFns.push(wrapChildAsAsync(children[i]));
+    if(isAfterAll(this.children)) {
+      var data = {
+        matcherName: '',
+        passed: false,
+        expected: '',
+        actual: '',
+        error: arguments[0]
+      };
+      this.result.failedExpectations.push(this.expectationResultFactory(data));
+    } else {
+      for (var i = 0; i < this.children.length; i++) {
+        var child = this.children[i];
+        child.onException.apply(child, arguments);
+      }
     }
+  };
 
-    this.onStart(this);
+  Suite.prototype.addExpectationResult = function () {
+    if(isAfterAll(this.children) && isFailure(arguments)){
+      var data = arguments[1];
+      this.result.failedExpectations.push(this.expectationResultFactory(data));
+      if(this.throwOnExpectationFailure) {
+        throw new j$.errors.ExpectationFailed();
+      }
+    } else {
+      for (var i = 0; i < this.children.length; i++) {
+        var child = this.children[i];
+        try {
+          child.addExpectationResult.apply(child, arguments);
+        } catch(e) {
+          // keep going
+        }
+      }
+    }
+  };
 
-    this.queueRunner({
-      fns: allFns,
-      onComplete: complete
-    });
+  function isAfterAll(children) {
+    return children && children[0].result.status;
+  }
 
-    function complete() {
-      self.resultCallback(self.result);
+  function isFailure(args) {
+    return !args[0];
+  }
 
-      if (onComplete) {
-        onComplete();
+  function clone(obj) {
+    var clonedObj = {};
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        clonedObj[prop] = obj[prop];
       }
     }
 
-    function wrapChildAsAsync(child) {
-      return function(done) { child.execute(done); };
-    }
-  };
-  
+    return clonedObj;
+  }
+
   return Suite;
 };
 
-if (typeof window == void 0 && typeof exports == "object") {
+if (typeof window == void 0 && typeof exports == 'object') {
   exports.Suite = jasmineRequire.Suite;
 }

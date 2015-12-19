@@ -1,6 +1,6 @@
 describe("toBeDefined", function() {
   it("matches for defined values", function() {
-    var matcher = j$.matchers.toBeDefined(),
+    var matcher = jasmineUnderTest.matchers.toBeDefined(),
       result;
 
 
@@ -9,7 +9,7 @@ describe("toBeDefined", function() {
   });
 
   it("fails when matching undefined values", function() {
-    var matcher = j$.matchers.toBeDefined(),
+    var matcher = jasmineUnderTest.matchers.toBeDefined(),
       result;
 
     result = matcher.compare(void 0);

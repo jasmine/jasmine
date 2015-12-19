@@ -1,6 +1,6 @@
 describe("toBeNull", function() {
   it("passes for null", function() {
-    var matcher = j$.matchers.toBeNull(),
+    var matcher = jasmineUnderTest.matchers.toBeNull(),
       result;
 
     result = matcher.compare(null);
@@ -8,7 +8,7 @@ describe("toBeNull", function() {
   });
 
   it("fails for non-null", function() {
-    var matcher = j$.matchers.toBeNull(),
+    var matcher = jasmineUnderTest.matchers.toBeNull(),
       result;
 
     result = matcher.compare('foo');

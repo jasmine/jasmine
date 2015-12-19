@@ -1,18 +1,47 @@
 describe("QueryString", function() {
 
-  describe("#setParam", function() {
-
+  describe("#navigateWithNewParam", function() {
     it("sets the query string to include the given key/value pair", function() {
       var windowLocation = {
           search: ""
         },
-        queryString = new j$.QueryString({
+        queryString = new jasmineUnderTest.QueryString({
           getWindowLocation: function() { return windowLocation }
         });
 
-      queryString.setParam("foo", "bar baz");
+      queryString.navigateWithNewParam("foo", "bar baz");
 
       expect(windowLocation.search).toMatch(/foo=bar%20baz/);
+    });
+
+    it("leaves existing params alone", function() {
+      var windowLocation = {
+        search: "?foo=bar"
+      },
+      queryString = new jasmineUnderTest.QueryString({
+        getWindowLocation: function() { return windowLocation }
+      });
+
+      queryString.navigateWithNewParam("baz", "quux");
+
+      expect(windowLocation.search).toMatch(/foo=bar/);
+      expect(windowLocation.search).toMatch(/baz=quux/);
+    });
+  });
+
+  describe('#fullStringWithNewParam', function() {
+    it("gets the query string including the given key/value pair", function() {
+      var windowLocation = {
+        search: "?foo=bar"
+      },
+      queryString = new jasmineUnderTest.QueryString({
+        getWindowLocation: function() { return windowLocation }
+      });
+
+      var result = queryString.fullStringWithNewParam("baz", "quux");
+
+      expect(result).toMatch(/foo=bar/);
+      expect(result).toMatch(/baz=quux/);
     });
   });
 
@@ -22,7 +51,7 @@ describe("QueryString", function() {
       var windowLocation = {
           search: "?baz=quux%20corge"
         },
-        queryString = new j$.QueryString({
+        queryString = new jasmineUnderTest.QueryString({
           getWindowLocation: function() { return windowLocation }
         });
 
@@ -33,7 +62,7 @@ describe("QueryString", function() {
       var windowLocation = {
           search: ""
         },
-        queryString = new j$.QueryString({
+        queryString = new jasmineUnderTest.QueryString({
           getWindowLocation: function() { return windowLocation }
         });
 

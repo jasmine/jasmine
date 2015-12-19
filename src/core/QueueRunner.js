@@ -1,29 +1,43 @@
-getJasmineRequireObj().QueueRunner = function() {
+getJasmineRequireObj().QueueRunner = function(j$) {
+
+  function once(fn) {
+    var called = false;
+    return function() {
+      if (!called) {
+        called = true;
+        fn();
+      }
+    };
+  }
 
   function QueueRunner(attrs) {
-    this.fns = attrs.fns || [];
+    this.queueableFns = attrs.queueableFns || [];
     this.onComplete = attrs.onComplete || function() {};
     this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.onException = attrs.onException || function() {};
     this.catchException = attrs.catchException || function() { return true; };
-    this.userContext = {};
+    this.userContext = attrs.userContext || {};
+    this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
+    this.fail = attrs.fail || function() {};
   }
 
   QueueRunner.prototype.execute = function() {
-    this.run(this.fns, 0);
+    this.run(this.queueableFns, 0);
   };
 
-  QueueRunner.prototype.run = function(fns, recursiveIndex) {
-    var length = fns.length,
-        self = this,
-        iterativeIndex;
+  QueueRunner.prototype.run = function(queueableFns, recursiveIndex) {
+    var length = queueableFns.length,
+      self = this,
+      iterativeIndex;
+
 
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
-      var fn = fns[iterativeIndex];
-      if (fn.length > 0) {
-        return attemptAsync(fn);
+      var queueableFn = queueableFns[iterativeIndex];
+      if (queueableFn.fn.length > 0) {
+        attemptAsync(queueableFn);
+        return;
       } else {
-        attemptSync(fn);
+        attemptSync(queueableFn);
       }
     }
 
@@ -33,27 +47,51 @@ getJasmineRequireObj().QueueRunner = function() {
       this.clearStack(this.onComplete);
     }
 
-    function attemptSync(fn) {
+    function attemptSync(queueableFn) {
       try {
-        fn.call(self.userContext);
+        queueableFn.fn.call(self.userContext);
       } catch (e) {
-        handleException(e);
+        handleException(e, queueableFn);
       }
     }
 
-    function attemptAsync(fn) {
-      var next = function () { self.run(fns, iterativeIndex + 1); };
+    function attemptAsync(queueableFn) {
+      var clearTimeout = function () {
+          Function.prototype.apply.apply(self.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
+        },
+        next = once(function () {
+          clearTimeout(timeoutId);
+          self.run(queueableFns, iterativeIndex + 1);
+        }),
+        timeoutId;
+
+      next.fail = function() {
+        self.fail.apply(null, arguments);
+        next();
+      };
+
+      if (queueableFn.timeout) {
+        timeoutId = Function.prototype.apply.apply(self.timeout.setTimeout, [j$.getGlobal(), [function() {
+          var error = new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.');
+          onException(error);
+          next();
+        }, queueableFn.timeout()]]);
+      }
 
       try {
-        fn.call(self.userContext, next);
+        queueableFn.fn.call(self.userContext, next);
       } catch (e) {
-        handleException(e);
+        handleException(e, queueableFn);
         next();
       }
     }
 
-    function handleException(e) {
+    function onException(e) {
       self.onException(e);
+    }
+
+    function handleException(e, queueableFn) {
+      onException(e);
       if (!self.catchException(e)) {
         //TODO: set a var when we catch an exception and
         //use a finally block to close the loop in a nice way..

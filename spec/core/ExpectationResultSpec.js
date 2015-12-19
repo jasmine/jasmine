@@ -1,16 +1,16 @@
 describe("buildExpectationResult", function() {
   it("defaults to passed", function() {
-    var result = j$.buildExpectationResult({passed: 'some-value'});
+    var result = jasmineUnderTest.buildExpectationResult({passed: 'some-value'});
     expect(result.passed).toBe('some-value');
   });
 
   it("message defaults to Passed for passing specs", function() {
-    var result = j$.buildExpectationResult({passed: true, message: 'some-value'});
+    var result = jasmineUnderTest.buildExpectationResult({passed: true, message: 'some-value'});
     expect(result.message).toBe('Passed.');
   });
 
-  it("message returns the message for failing expecations", function() {
-    var result = j$.buildExpectationResult({passed: false, message: 'some-value'});
+  it("message returns the message for failing expectations", function() {
+    var result = jasmineUnderTest.buildExpectationResult({passed: false, message: 'some-value'});
     expect(result.message).toBe('some-value');
   });
 
@@ -18,7 +18,7 @@ describe("buildExpectationResult", function() {
     var fakeError = {message: 'foo'},
       messageFormatter = jasmine.createSpy("exception message formatter").and.returnValue(fakeError.message);
 
-    var result = j$.buildExpectationResult(
+    var result = jasmineUnderTest.buildExpectationResult(
       {
         passed: false,
         error: fakeError,
@@ -33,7 +33,7 @@ describe("buildExpectationResult", function() {
     var fakeError = {stack: 'foo'},
       stackFormatter = jasmine.createSpy("stack formatter").and.returnValue(fakeError.stack);
 
-    var result = j$.buildExpectationResult(
+    var result = jasmineUnderTest.buildExpectationResult(
       {
         passed: false,
         error: fakeError,
@@ -45,17 +45,17 @@ describe("buildExpectationResult", function() {
   });
 
   it("matcherName returns passed matcherName", function() {
-    var result = j$.buildExpectationResult({matcherName: 'some-value'});
+    var result = jasmineUnderTest.buildExpectationResult({matcherName: 'some-value'});
     expect(result.matcherName).toBe('some-value');
   });
 
   it("expected returns passed expected", function() {
-    var result = j$.buildExpectationResult({expected: 'some-value'});
+    var result = jasmineUnderTest.buildExpectationResult({expected: 'some-value'});
     expect(result.expected).toBe('some-value');
   });
 
   it("actual returns passed actual", function() {
-    var result = j$.buildExpectationResult({actual: 'some-value'});
+    var result = jasmineUnderTest.buildExpectationResult({actual: 'some-value'});
     expect(result.actual).toBe('some-value');
   });
 });

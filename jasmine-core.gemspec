@@ -6,11 +6,11 @@ Gem::Specification.new do |s|
   s.name = "jasmine-core"
   s.version = Jasmine::Core::VERSION
   s.platform = Gem::Platform::RUBY
-  s.authors = ["Rajan Agaskar", "Davis W. Frank", "Christian Williams"]
+  s.authors = ["Rajan Agaskar", "Davis W. Frank", "Gregg Van Hove"]
   s.summary = %q{JavaScript BDD framework}
   s.description = %q{Test your JavaScript without any framework dependencies, in any environment, and with a nice descriptive syntax.}
   s.email = %q{jasmine-js@googlegroups.com}
-  s.homepage = "http://pivotal.github.com/jasmine"
+  s.homepage = "http://jasmine.github.io"
   s.rubyforge_project = "jasmine-core"
   s.license = "MIT"
 
@@ -18,5 +18,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.add_development_dependency "rake"
   s.add_development_dependency "sauce-connect"
-  s.add_development_dependency "jasmine_selenium_runner"
+  s.add_development_dependency "compass"
+  s.add_development_dependency "jasmine_selenium_runner", ">= 0.2.0"
 end

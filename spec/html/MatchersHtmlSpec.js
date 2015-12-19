@@ -2,8 +2,7 @@ describe("MatchersSpec - HTML Dependent", function () {
   var env, spec;
 
   beforeEach(function() {
-    env = new j$.Env();
-    env.updateInterval = 0;
+    env = new jasmineUnderTest.Env();
 
     var suite = env.describe("suite", function() {
       spec = env.it("spec", function() {

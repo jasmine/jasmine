@@ -1,8 +1,8 @@
 describe("Suite", function() {
 
   it("keeps its id", function() {
-    var env = new j$.Env(),
-      suite = new j$.Suite({
+    var env = new jasmineUnderTest.Env(),
+      suite = new jasmineUnderTest.Suite({
         env: env,
         id: 456,
         description: "I am a suite"
@@ -12,8 +12,8 @@ describe("Suite", function() {
   });
 
   it("returns its full name", function() {
-    var env = new j$.Env(),
-      suite = new j$.Suite({
+    var env = new jasmineUnderTest.Env(),
+      suite = new jasmineUnderTest.Suite({
         env: env,
         description: "I am a suite"
       });
@@ -22,13 +22,13 @@ describe("Suite", function() {
   });
 
   it("returns its full name when it has parent suites", function() {
-    var env = new j$.Env(),
-      parentSuite = new j$.Suite({
+    var env = new jasmineUnderTest.Env(),
+      parentSuite = new jasmineUnderTest.Suite({
         env: env,
         description: "I am a parent suite",
         parentSuite: jasmine.createSpy('pretend top level suite')
       }),
-      suite = new j$.Suite({
+      suite = new jasmineUnderTest.Suite({
         env: env,
         description: "I am a suite",
         parentSuite: parentSuite
@@ -38,8 +38,8 @@ describe("Suite", function() {
   });
 
   it("adds before functions in order of needed execution", function() {
-    var env = new j$.Env(),
-      suite = new j$.Suite({
+    var env = new jasmineUnderTest.Env(),
+      suite = new jasmineUnderTest.Suite({
         env: env,
         description: "I am a suite"
       }),
@@ -53,8 +53,8 @@ describe("Suite", function() {
   });
 
   it("adds after functions in order of needed execution", function() {
-    var env = new j$.Env(),
-      suite = new j$.Suite({
+    var env = new jasmineUnderTest.Env(),
+      suite = new jasmineUnderTest.Suite({
         env: env,
         description: "I am a suite"
       }),
@@ -67,164 +67,94 @@ describe("Suite", function() {
     expect(suite.afterFns).toEqual([innerAfter, outerAfter]);
   });
 
-  it("adds specs", function() {
-    var env = new j$.Env(),
-      fakeQueue = {
-        add: jasmine.createSpy()
-      },
-      suite = new j$.Suite({
-        env: env,
-        description: "I am a suite",
-        queueFactory: function() {
-          return fakeQueue
-        }
-      }),
-      fakeSpec = {};
+  it('has a status of failed if any afterAll expectations have failed', function() {
+    var suite = new jasmineUnderTest.Suite({
+      expectationResultFactory: function() { return 'hi'; }
+    });
+    suite.addChild({ result: { status: 'done' } });
 
-    expect(suite.specs.length).toEqual(0);
-
-    suite.addSpec(fakeSpec);
-
-    expect(suite.specs.length).toEqual(1);
+    suite.addExpectationResult(false);
+    expect(suite.status()).toBe('failed');
   });
 
-  it("adds suites", function() {
-    var env = new j$.Env(),
-      fakeQueue = {
-        add: jasmine.createSpy()
-      },
-      suite = new j$.Suite({
-        env: env,
-        description: "I am a suite",
-        queueFactory: function() {
-          return fakeQueue
-        }
-      }),
-      anotherSuite = new j$.Suite({
-        env: env,
-        description: "I am another suite",
-        queueFactory: function() {
-          return fakeQueue
-        }
-      });
+  it("retrieves a result with updated status", function() {
+    var suite = new jasmineUnderTest.Suite({});
 
-    expect(suite.suites.length).toEqual(0);
-
-    suite.addSuite(anotherSuite);
-
-    expect(suite.suites.length).toEqual(1);
+    expect(suite.getResult().status).toBe('finished');
   });
 
-  it("can be disabled", function() {
-    var env = new j$.Env(),
-      fakeQueueRunner = jasmine.createSpy('fake queue runner'),
-      suite = new j$.Suite({
-        env: env,
-        description: "with a child suite",
-        queueRunner: fakeQueueRunner
-      });
-
+  it("retrieves a result with disabled status", function() {
+    var suite = new jasmineUnderTest.Suite({});
     suite.disable();
 
-    expect(suite.disabled).toBe(true);
-
-    suite.execute();
-
-    expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(suite.getResult().status).toBe('disabled');
   });
 
-  it("delegates execution of its specs and suites", function() {
-    var env = new j$.Env(),
-      parentSuiteDone = jasmine.createSpy('parent suite done'),
-      fakeQueueRunnerForParent = jasmine.createSpy('fake parent queue runner'),
-      parentSuite = new j$.Suite({
-        env: env,
-        description: "I am a parent suite",
-        queueRunner: fakeQueueRunnerForParent
-      }),
-      fakeQueueRunner = jasmine.createSpy('fake queue runner'),
-      suite = new j$.Suite({
-        env: env,
-        description: "with a child suite",
-        queueRunner: fakeQueueRunner
-      }),
-      fakeSpec1 = {
-        execute: jasmine.createSpy('fakeSpec1')
-      };
+  it("retrieves a result with pending status", function() {
+    var suite = new jasmineUnderTest.Suite({});
+    suite.pend();
 
-    spyOn(suite, "execute");
-
-    parentSuite.addSpec(fakeSpec1);
-    parentSuite.addSuite(suite);
-
-    parentSuite.execute(parentSuiteDone);
-
-    var parentSuiteFns = fakeQueueRunnerForParent.calls.mostRecent().args[0].fns;
-
-    parentSuiteFns[0]();
-    expect(fakeSpec1.execute).toHaveBeenCalled();
-    parentSuiteFns[1]();
-    expect(suite.execute).toHaveBeenCalled();
+    expect(suite.getResult().status).toBe('pending');
   });
 
-  it("calls a provided onStart callback when starting", function() {
-    var env = new j$.Env(),
-      suiteStarted = jasmine.createSpy('suiteStarted'),
-      fakeQueueRunner = function(attrs) { attrs.onComplete(); },
-      suite = new j$.Suite({
-        env: env,
-        description: "with a child suite",
-        onStart: suiteStarted,
-        queueRunner: fakeQueueRunner
-      }),
-      fakeSpec1 = {
-        execute: jasmine.createSpy('fakeSpec1')
-      };
+  it("priviledges a disabled status over pending status", function() {
+    var suite = new jasmineUnderTest.Suite({});
+    suite.disable();
+    suite.pend();
 
-    suite.execute();
-
-    expect(suiteStarted).toHaveBeenCalledWith(suite);
+    expect(suite.getResult().status).toBe('disabled');
   });
 
-  it("calls a provided onComplete callback when done", function() {
-    var env = new j$.Env(),
-      suiteCompleted = jasmine.createSpy('parent suite done'),
-      fakeQueueRunner = function(attrs) { attrs.onComplete(); },
-      suite = new j$.Suite({
-        env: env,
-        description: "with a child suite",
-        queueRunner: fakeQueueRunner
-      }),
-      fakeSpec1 = {
-        execute: jasmine.createSpy('fakeSpec1')
-      };
+  it("is executable if not disabled", function() {
+    var suite = new jasmineUnderTest.Suite({});
 
-    suite.execute(suiteCompleted);
-
-    expect(suiteCompleted).toHaveBeenCalled();
+    expect(suite.isExecutable()).toBe(true);
   });
 
-  it("calls a provided result callback when done", function() {
-    var env = new j$.Env(),
-      suiteResultsCallback = jasmine.createSpy('suite result callback'),
-      fakeQueueRunner = function(attrs) { attrs.onComplete(); },
-      suite = new j$.Suite({
-        env: env,
-        description: "with a child suite",
-        queueRunner: fakeQueueRunner,
-        resultCallback: suiteResultsCallback
-      }),
-      fakeSpec1 = {
-        execute: jasmine.createSpy('fakeSpec1')
-      };
+  it("is not executable if disabled", function() {
+    var suite = new jasmineUnderTest.Suite({});
+    suite.disable();
 
-    suite.execute();
+    expect(suite.isExecutable()).toBe(false);
+  });
 
-    expect(suiteResultsCallback).toHaveBeenCalledWith({
-      id: suite.id,
-      status: '',
-      description: "with a child suite",
-      fullName: "with a child suite"
+  it("tells all children about expectation failures, even if one throws", function() {
+    var suite = new jasmineUnderTest.Suite({}),
+      child1 = { addExpectationResult: jasmine.createSpy('child1#expectationResult'), result: {} },
+      child2 = { addExpectationResult: jasmine.createSpy('child2#expectationResult'), result: {} };
+
+    suite.addChild(child1);
+    suite.addChild(child2);
+
+    child1.addExpectationResult.and.throwError('foo');
+
+    suite.addExpectationResult('stuff');
+
+    expect(child1.addExpectationResult).toHaveBeenCalledWith('stuff');
+    expect(child2.addExpectationResult).toHaveBeenCalledWith('stuff');
+  });
+
+  it("throws an ExpectationFailed when receiving a failed expectation in an afterAll when throwOnExpectationFailure is set", function() {
+    var suite = new jasmineUnderTest.Suite({
+      expectationResultFactory: function(data) { return data; },
+      throwOnExpectationFailure: true
     });
+    suite.addChild({ result: { status: 'done' } });
+
+    expect(function() {
+      suite.addExpectationResult(false, 'failed');
+    }).toThrowError(jasmineUnderTest.errors.ExpectationFailed);
+
+    expect(suite.status()).toBe('failed');
+    expect(suite.result.failedExpectations).toEqual(['failed']);
   });
+
+  it("does not add an additional failure when an expectation fails in an afterAll", function(){
+    var suite = new jasmineUnderTest.Suite({});
+    suite.addChild({ result: { status: 'done' } });
+
+    suite.onException(new jasmineUnderTest.errors.ExpectationFailed());
+
+    expect(suite.getResult().failedExpectations).toEqual([]);
+  })
 });

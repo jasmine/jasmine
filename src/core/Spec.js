@@ -1,24 +1,20 @@
 getJasmineRequireObj().Spec = function(j$) {
   function Spec(attrs) {
-    this.encounteredExpectations = false;
     this.expectationFactory = attrs.expectationFactory;
     this.resultCallback = attrs.resultCallback || function() {};
     this.id = attrs.id;
     this.description = attrs.description || '';
-    this.fn = attrs.fn;
-    this.beforeFns = attrs.beforeFns || function() {};
-    this.afterFns = attrs.afterFns || function() {};
-    this.catchingExceptions = attrs.catchingExceptions;
+    this.queueableFn = attrs.queueableFn;
+    this.beforeAndAfterFns = attrs.beforeAndAfterFns || function() { return {befores: [], afters: []}; };
+    this.userContext = attrs.userContext || function() { return {}; };
     this.onStart = attrs.onStart || function() {};
-    this.exceptionFormatter = attrs.exceptionFormatter || function() {};
     this.getSpecName = attrs.getSpecName || function() { return ''; };
     this.expectationResultFactory = attrs.expectationResultFactory || function() { };
-    this.queueRunner = attrs.queueRunner || function() {};
+    this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
     this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
+    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
-    this.timer = attrs.timer || {setTimeout: setTimeout, clearTimeout: clearTimeout};
-
-    if (!this.fn) {
+    if (!this.queueableFn.fn) {
       this.pend();
     }
 
@@ -26,77 +22,51 @@ getJasmineRequireObj().Spec = function(j$) {
       id: this.id,
       description: this.description,
       fullName: this.getFullName(),
-      status: this.status(),
-      failedExpectations: []
+      failedExpectations: [],
+      passedExpectations: [],
+      pendingReason: ''
     };
   }
 
-  Spec.prototype.addExpectationResult = function(passed, data) {
-    this.encounteredExpectations = true;
+  Spec.prototype.addExpectationResult = function(passed, data, isError) {
+    var expectationResult = this.expectationResultFactory(data);
     if (passed) {
-      return;
+      this.result.passedExpectations.push(expectationResult);
+    } else {
+      this.result.failedExpectations.push(expectationResult);
+
+      if (this.throwOnExpectationFailure && !isError) {
+        throw new j$.errors.ExpectationFailed();
+      }
     }
-    this.result.failedExpectations.push(this.expectationResultFactory(data));
   };
 
   Spec.prototype.expect = function(actual) {
     return this.expectationFactory(actual, this);
   };
 
-  Spec.prototype.execute = function(onComplete) {
+  Spec.prototype.execute = function(onComplete, enabled) {
     var self = this;
 
     this.onStart(this);
 
-    if (this.markedPending || this.disabled) {
-      complete();
+    if (!this.isExecutable() || this.markedPending || enabled === false) {
+      complete(enabled);
       return;
     }
 
-    function timeoutable(fn) {
-      return function(done) {
-        var timeout = Function.prototype.apply.apply(self.timer.setTimeout, [j$.getGlobal(), [function() {
-          onException(new Error('timeout'));
-          done();
-        }, j$.DEFAULT_TIMEOUT_INTERVAL]]);
+    var fns = this.beforeAndAfterFns();
+    var allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
 
-        var callDone = function() {
-          Function.prototype.apply.apply(self.timer.clearTimeout, [j$.getGlobal(), [timeout]]);
-          done();
-        };
-
-        fn.call(this, callDone); //TODO: do we care about more than 1 arg?
-      };
-    }
-
-    var befores = this.beforeFns() || [],
-        afters = this.afterFns() || [],
-        thisOne = (this.fn.length) ? timeoutable(this.fn) : this.fn;
-    var allFns = befores.concat(thisOne).concat(afters);
-
-    this.queueRunner({
-      fns: allFns,
-      onException: onException,
-      onComplete: complete
+    this.queueRunnerFactory({
+      queueableFns: allFns,
+      onException: function() { self.onException.apply(self, arguments); },
+      onComplete: complete,
+      userContext: this.userContext()
     });
 
-    function onException(e) {
-        if (Spec.isPendingSpecException(e)) {
-          self.pend();
-          return;
-        }
-
-        self.addExpectationResult(false, {
-          matcherName: "",
-          passed: false,
-          expected: "",
-          actual: "",
-          error: e
-        });
-    }
-
-    function complete() {
-      self.result.status = self.status();
+    function complete(enabledAgain) {
+      self.result.status = self.status(enabledAgain);
       self.resultCallback(self.result);
 
       if (onComplete) {
@@ -105,20 +75,47 @@ getJasmineRequireObj().Spec = function(j$) {
     }
   };
 
+  Spec.prototype.onException = function onException(e) {
+    if (Spec.isPendingSpecException(e)) {
+      this.pend(extractCustomPendingMessage(e));
+      return;
+    }
+
+    if (e instanceof j$.errors.ExpectationFailed) {
+      return;
+    }
+
+    this.addExpectationResult(false, {
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: '',
+      error: e
+    }, true);
+  };
+
   Spec.prototype.disable = function() {
     this.disabled = true;
   };
 
-  Spec.prototype.pend = function() {
+  Spec.prototype.pend = function(message) {
     this.markedPending = true;
+    if (message) {
+      this.result.pendingReason = message;
+    }
   };
 
-  Spec.prototype.status = function() {
-    if (this.disabled) {
+  Spec.prototype.getResult = function() {
+    this.result.status = this.status();
+    return this.result;
+  };
+
+  Spec.prototype.status = function(enabled) {
+    if (this.disabled || enabled === false) {
       return 'disabled';
     }
 
-    if (this.markedPending || !this.encounteredExpectations) {
+    if (this.markedPending) {
       return 'pending';
     }
 
@@ -129,19 +126,31 @@ getJasmineRequireObj().Spec = function(j$) {
     }
   };
 
+  Spec.prototype.isExecutable = function() {
+    return !this.disabled;
+  };
+
   Spec.prototype.getFullName = function() {
     return this.getSpecName(this);
   };
 
-  Spec.pendingSpecExceptionMessage = "=> marked Pending";
+  var extractCustomPendingMessage = function(e) {
+    var fullMessage = e.toString(),
+        boilerplateStart = fullMessage.indexOf(Spec.pendingSpecExceptionMessage),
+        boilerplateEnd = boilerplateStart + Spec.pendingSpecExceptionMessage.length;
+
+    return fullMessage.substr(boilerplateEnd);
+  };
+
+  Spec.pendingSpecExceptionMessage = '=> marked Pending';
 
   Spec.isPendingSpecException = function(e) {
-    return e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1;
+    return !!(e && e.toString && e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1);
   };
 
   return Spec;
 };
 
-if (typeof window == void 0 && typeof exports == "object") {
+if (typeof window == void 0 && typeof exports == 'object') {
   exports.Spec = jasmineRequire.Spec;
 }

@@ -1,0 +1,12 @@
+{
+  "spec_dir": "spec",
+  "spec_files": [
+    "core/**/*.js",
+    "console/**/*.js",
+    "npmPackage/**/*.js"
+  ],
+  "helpers": [
+    "helpers/nodeDefineJasmineUnderTest.js"
+  ],
+  "random": true
+}

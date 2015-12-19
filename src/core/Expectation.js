@@ -1,7 +1,5 @@
 getJasmineRequireObj().Expectation = function() {
 
-  var matchers = {};
-
   function Expectation(options) {
     this.util = options.util || { buildFailureMessage: function() {} };
     this.customEqualityTesters = options.customEqualityTesters || [];
@@ -9,8 +7,9 @@ getJasmineRequireObj().Expectation = function() {
     this.addExpectationResult = options.addExpectationResult || function(){};
     this.isNot = options.isNot;
 
-    for (var matcherName in matchers) {
-      this[matcherName] = matchers[matcherName];
+    var customMatchers = options.customMatchers || {};
+    for (var matcherName in customMatchers) {
+      this[matcherName] = Expectation.prototype.wrapCompare(matcherName, customMatchers[matcherName]);
     }
   }
 
@@ -18,15 +17,24 @@ getJasmineRequireObj().Expectation = function() {
     return function() {
       var args = Array.prototype.slice.call(arguments, 0),
         expected = args.slice(0),
-        message = "";
+        message = '';
 
       args.unshift(this.actual);
 
-      var result = matcherFactory(this.util, this.customEqualityTesters).compare.apply(null, args);
+      var matcher = matcherFactory(this.util, this.customEqualityTesters),
+          matcherCompare = matcher.compare;
+
+      function defaultNegativeCompare() {
+        var result = matcher.compare.apply(null, args);
+        result.pass = !result.pass;
+        return result;
+      }
 
       if (this.isNot) {
-        result.pass = !result.pass;
+        matcherCompare = matcher.negativeCompare || defaultNegativeCompare;
       }
+
+      var result = matcherCompare.apply(null, args);
 
       if (!result.pass) {
         if (!result.message) {
@@ -34,7 +42,11 @@ getJasmineRequireObj().Expectation = function() {
           args.unshift(name);
           message = this.util.buildFailureMessage.apply(null, args);
         } else {
-          message = result.message;
+          if (Object.prototype.toString.apply(result.message) === '[object Function]') {
+            message = result.message();
+          } else {
+            message = result.message;
+          }
         }
       }
 
@@ -61,19 +73,6 @@ getJasmineRequireObj().Expectation = function() {
     for (var matcherName in matchers) {
       var matcher = matchers[matcherName];
       prototype[matcherName] = prototype.wrapCompare(matcherName, matcher);
-    }
-  };
-
-  Expectation.addMatchers = function(matchersToAdd) {
-    for (var name in matchersToAdd) {
-      var matcher = matchersToAdd[name];
-      matchers[name] = Expectation.prototype.wrapCompare(name, matcher);
-    }
-  };
-
-  Expectation.resetMatchers = function() {
-    for (var name in matchers) {
-      delete matchers[name];
     }
   };
 

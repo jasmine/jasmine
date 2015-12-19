@@ -3,7 +3,7 @@ getJasmineRequireObj().SpyStrategy = function() {
   function SpyStrategy(options) {
     options = options || {};
 
-    var identity = options.name || "unknown",
+    var identity = options.name || 'unknown',
         originalFn = options.fn || function() {},
         getSpy = options.getSpy || function() {},
         plan = function() {};
@@ -24,6 +24,14 @@ getJasmineRequireObj().SpyStrategy = function() {
     this.returnValue = function(value) {
       plan = function() {
         return value;
+      };
+      return getSpy();
+    };
+
+    this.returnValues = function() {
+      var values = Array.prototype.slice.call(arguments);
+      plan = function () {
+        return values.shift();
       };
       return getSpy();
     };

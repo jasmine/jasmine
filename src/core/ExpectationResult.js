@@ -4,29 +4,34 @@ getJasmineRequireObj().buildExpectationResult = function() {
     var messageFormatter = options.messageFormatter || function() {},
       stackFormatter = options.stackFormatter || function() {};
 
-    return {
+    var result = {
       matcherName: options.matcherName,
-      expected: options.expected,
-      actual: options.actual,
       message: message(),
       stack: stack(),
       passed: options.passed
     };
 
+    if(!result.passed) {
+      result.expected = options.expected;
+      result.actual = options.actual;
+    }
+
+    return result;
+
     function message() {
       if (options.passed) {
-        return "Passed.";
+        return 'Passed.';
       } else if (options.message) {
         return options.message;
       } else if (options.error) {
         return messageFormatter(options.error);
       }
-      return "";
+      return '';
     }
 
     function stack() {
       if (options.passed) {
-        return "";
+        return '';
       }
 
       var error = options.error;

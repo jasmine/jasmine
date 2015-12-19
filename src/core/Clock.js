@@ -1,5 +1,5 @@
 getJasmineRequireObj().Clock = function() {
-  function Clock(global, delayedFunctionScheduler) {
+  function Clock(global, delayedFunctionSchedulerFactory, mockDate) {
     var self = this,
       realTimingFunctions = {
         setTimeout: global.setTimeout,
@@ -13,25 +13,49 @@ getJasmineRequireObj().Clock = function() {
         setInterval: setInterval,
         clearInterval: clearInterval
       },
-      installed = false;
+      installed = false,
+      delayedFunctionScheduler,
+      timer;
+
 
     self.install = function() {
+      if(!originalTimingFunctionsIntact()) {
+        throw new Error('Jasmine Clock was unable to install over custom global timer functions. Is the clock already installed?');
+      }
       replace(global, fakeTimingFunctions);
       timer = fakeTimingFunctions;
+      delayedFunctionScheduler = delayedFunctionSchedulerFactory();
       installed = true;
+
+      return self;
     };
 
     self.uninstall = function() {
-      delayedFunctionScheduler.reset();
+      delayedFunctionScheduler = null;
+      mockDate.uninstall();
       replace(global, realTimingFunctions);
+
       timer = realTimingFunctions;
       installed = false;
+    };
+
+    self.withMock = function(closure) {
+      this.install();
+      try {
+        closure();
+      } finally {
+        this.uninstall();
+      }
+    };
+
+    self.mockDate = function(initialDate) {
+      mockDate.install(initialDate);
     };
 
     self.setTimeout = function(fn, delay, params) {
       if (legacyIE()) {
         if (arguments.length > 2) {
-          throw new Error("IE < 9 cannot support extra params to setTimeout without a polyfill");
+          throw new Error('IE < 9 cannot support extra params to setTimeout without a polyfill');
         }
         return timer.setTimeout(fn, delay);
       }
@@ -41,7 +65,7 @@ getJasmineRequireObj().Clock = function() {
     self.setInterval = function(fn, delay, params) {
       if (legacyIE()) {
         if (arguments.length > 2) {
-          throw new Error("IE < 9 cannot support extra params to setInterval without a polyfill");
+          throw new Error('IE < 9 cannot support extra params to setInterval without a polyfill');
         }
         return timer.setInterval(fn, delay);
       }
@@ -58,18 +82,24 @@ getJasmineRequireObj().Clock = function() {
 
     self.tick = function(millis) {
       if (installed) {
+        mockDate.tick(millis);
         delayedFunctionScheduler.tick(millis);
       } else {
-        throw new Error("Mock clock is not installed, use jasmine.getEnv().clock.install()");
+        throw new Error('Mock clock is not installed, use jasmine.clock().install()');
       }
     };
 
     return self;
 
+    function originalTimingFunctionsIntact() {
+      return global.setTimeout === realTimingFunctions.setTimeout &&
+        global.clearTimeout === realTimingFunctions.clearTimeout &&
+        global.setInterval === realTimingFunctions.setInterval &&
+        global.clearInterval === realTimingFunctions.clearInterval;
+    }
+
     function legacyIE() {
       //if these methods are polyfilled, apply will be present
-      //TODO: it may be difficult to load the polyfill before jasmine loads
-      //(env should be new-ed inside of onload)
       return !(realTimingFunctions.setTimeout || realTimingFunctions.setInterval).apply;
     }
 
@@ -96,7 +126,7 @@ getJasmineRequireObj().Clock = function() {
     }
 
     function argSlice(argsObj, n) {
-      return Array.prototype.slice.call(argsObj, 2);
+      return Array.prototype.slice.call(argsObj, n);
     }
   }
 

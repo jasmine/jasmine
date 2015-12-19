@@ -9,26 +9,24 @@ $text-color: #333;
 
 $page-background-color: #eee;
 
-$light-passing-color: #a6b779;
-$passing-color: #5e7d00;
-
-$light-failing-color: #cf867e;
-$failing-color: #b03911;
+$passing-color: #007069;
+$failing-color: #ca3a11;
 $pending-color: #ba9d37;
-
+$empty-color: #eff543;
 $neutral-color: #bababa;
+$jasmine-color: #8a4182;
 
 $font-size: 11px;
 $large-font-size: 14px;
 
 body {
-  background-color: $page-background-color;
-  padding: 0;
-  margin: 5px;
   overflow-y: scroll;
 }
 
-.html-reporter {
+.jasmine_html-reporter {
+  background-color: $page-background-color;
+  padding: 5px;
+  margin: -8px;
 
   font-size: $font-size;
   font-family: Monaco, "Lucida Console", monospace;
@@ -48,21 +46,37 @@ body {
     line-height: $line-height;
   }
 
-  .banner,
-  .symbol-summary,
-  .summary,
-  .result-message,
-  .spec .description,
-  .spec-detail .description,
-  .alert .bar,
-  .stack-trace {
+  .jasmine-banner,
+  .jasmine-symbol-summary,
+  .jasmine-summary,
+  .jasmine-result-message,
+  .jasmine-spec .jasmine-description,
+  .jasmine-spec-detail .jasmine-description,
+  .jasmine-alert .jasmine-bar,
+  .jasmine-stack-trace {
     padding-left: $margin-unit - 5px;
     padding-right: $margin-unit - 5px;
   }
 
-  .banner .version {
+  .jasmine-banner {
+    position: relative;
+  }
+
+  .jasmine-banner .jasmine-title {
+    background: inline-image('jasmine-horizontal.png') no-repeat;
+    background: inline-image('jasmine-horizontal.svg') no-repeat, none;
+    @include background-size(100%);
+    display: block;
+    float: left;
+    width: 90px;
+    height: 25px;
+  }
+
+  .jasmine-banner .jasmine-version {
     margin-left: $margin-unit;
-  };
+    position: relative;
+    top: 6px;
+  }
 
   // This div is available for testing elements that must be added to the DOM.
   // We position it out of view, so it doesn't obstruct the runner.
@@ -71,35 +85,37 @@ body {
     right: 100%;
   }
 
-  .version {
+  .jasmine-version {
     color: $faint-text-color;
   }
 
   //--- Banner ---//
 
-  .banner {
+  .jasmine-banner {
     margin-top: $line-height;
   }
 
-  .duration {
-    color: $faint-text-color;
+  .jasmine-duration {
+    color: #fff;
     float: right;
+    line-height: $line-height * 2;
+    padding-right: 9px;
   }
 
   //--- Symbol summary ---//
 
-  .symbol-summary {
+  .jasmine-symbol-summary {
     @include clearfix;
     margin: $line-height 0;
 
     li {
       display: inline-block;
-      height: ($line-height / 2) + 1;
+      height: ($line-height / 2) + 3;
       width: $line-height;
 
       font-size: 16px;
 
-      &.passed {
+      &.jasmine-passed {
         font-size: 14px;
 
         &:before {
@@ -108,18 +124,18 @@ body {
         }
       }
 
-      &.failed {
+      &.jasmine-failed {
         line-height: ($line-height / 2) + 2;
 
         &:before {
           color: $failing-color;
-          content: "x";
+          content: "\d7";
           font-weight: bold;
           margin-left: -1px;
         }
       }
 
-        &.disabled {
+        &.jasmine-disabled {
           font-size: 14px;
 
           &:before {
@@ -128,45 +144,79 @@ body {
           }
         }
 
-      &.pending {
+      &.jasmine-pending {
         line-height: 17px;
         &:before {
           color: $pending-color;
           content: "*";
         }
       }
+
+      &.jasmine-empty {
+        font-size: 14px;
+
+        &:before {
+          color: $pending-color;
+          content: "\02022";
+        }
+      }
     }
   }
 
-  .exceptions {
-    color: #fff;
+  .jasmine-run-options {
     float: right;
-    margin-top: 5px;
     margin-right: 5px;
+    border: 1px solid $jasmine-color;
+    color: $jasmine-color;
+    position: relative;
+    line-height: 20px;
+
+    .jasmine-trigger {
+      cursor: pointer;
+      padding: 8px 16px;
+    }
+
+    .jasmine-payload {
+      position: absolute;
+      display: none;
+      right: -1px;
+      border: 1px solid $jasmine-color;
+      background-color: $page-background-color;
+      white-space: nowrap;
+      padding: 4px 8px;
+
+      &.jasmine-open {
+        display: block;
+      }
+    }
   }
 
   //--- Alerts: status bars ---//
 
-  .bar {
+  .jasmine-bar {
     line-height: $line-height * 2;
     font-size: $large-font-size;
 
     display: block;
     color: #eee;
 
-    &.failed {
-      background-color: $failing-color
+    &.jasmine-failed {
+      background-color: $failing-color;
     }
 
-    &.passed {
-      background-color: $light-passing-color;
+    &.jasmine-passed {
+      background-color: $passing-color;
     }
 
-    &.skipped {
+    &.jasmine-skipped {
       background-color: $neutral-color;
     }
 
-    &.menu {
+    &.jasmine-errored {
+      background-color: $failing-color;
+    }
+
+    &.jasmine-menu {
       background-color: #fff;
       color: $faint-text-color;
 
@@ -181,65 +231,29 @@ body {
   }
 
   // simplify toggle control between the two menu bars
-  &.spec-list {
-    .bar.menu.failure-list,
-    .results .failures {
+  &.jasmine-spec-list {
+    .jasmine-bar.jasmine-menu.jasmine-failure-list,
+    .jasmine-results .jasmine-failures {
       display: none;
     }
   }
 
-  &.failure-list {
-    .bar.menu.spec-list,
-    .summary {
+  &.jasmine-failure-list {
+    .jasmine-bar.jasmine-menu.jasmine-spec-list,
+    .jasmine-summary {
       display: none;
     }
-  }
-
-  .running-alert {
-    background-color: $light-text-color;
   }
 
   //--- Results ---//
 
-  .results {
+  .jasmine-results {
     margin-top: $line-height;
-  }
-
-  //--- Results menu ---//
-
-  &.showDetails {
-
-    .summaryMenuItem {
-      font-weight: normal;
-      text-decoration: inherit;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    .detailsMenuItem {
-      font-weight: bold;
-      text-decoration: underline;
-    }
-
-    .summary {
-      display: none;
-    }
-
-    #details {
-      display: block;
-    }
-  }
-
-  .summaryMenuItem {
-    font-weight: bold;
-    text-decoration: underline;
   }
 
   //--- Results summary: Suites and Specs names/links ---//
 
-  .summary {
+  .jasmine-summary {
     margin-top: $margin-unit;
 
     ul {
@@ -248,32 +262,40 @@ body {
       padding-top: 0;
       padding-left: 0;
 
-      &.suite {
+      &.jasmine-suite {
         margin-top: $margin-unit/2;
         margin-bottom: $margin-unit/2
       }
     }
 
     li {
-      &.passed a {
+      &.jasmine-passed a {
         color: $passing-color;
       }
 
-      &.failed a {
+      &.jasmine-failed a {
         color: $failing-color;
       }
 
-      &.pending a {
+      &.jasmine-empty a {
         color: $pending-color;
+      }
+
+      &.jasmine-pending a {
+        color: $pending-color;
+      }
+
+      &.jasmine-disabled a {
+        color: $neutral-color;
       }
     }
   }
 
-  .description+.suite {
+  .jasmine-description + .jasmine-suite {
     margin-top: 0;
   }
 
-  .suite {
+  .jasmine-suite {
     margin-top: $margin-unit;
 
     a {
@@ -283,11 +305,11 @@ body {
 
   //--- Failure details ---//
 
-  .failures {
-    .spec-detail {
+  .jasmine-failures {
+    .jasmine-spec-detail {
       margin-bottom: $line-height * 2;
 
-      .description {
+      .jasmine-description {
         background-color: $failing-color;
 
         a {
@@ -297,7 +319,7 @@ body {
     }
   }
 
-  .result-message {
+  .jasmine-result-message {
     padding-top: $line-height;
 
     color: $text-color;
@@ -305,11 +327,11 @@ body {
     white-space: pre;
   }
 
-  .result-message span.result {
+  .jasmine-result-message span.jasmine-result {
     display: block;
   }
 
-  .stack-trace {
+  .jasmine-stack-trace {
     margin: 5px 0 0 0;
     max-height: $line-height * 16;
     overflow: auto;

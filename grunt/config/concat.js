@@ -26,6 +26,7 @@ module.exports = {
       'src/core/base.js',
       'src/core/util.js',
       'src/core/Spec.js',
+      'src/core/Order.js',
       'src/core/Env.js',
       'src/core/JsApiReporter.js',
       'src/core/PrettyPrinter',
@@ -39,12 +40,16 @@ module.exports = {
     src: ['lib/jasmine-core/boot/boot.js'],
     dest: 'lib/jasmine-core/boot.js'
   },
+  nodeBoot: {
+    src: ['lib/jasmine-core/boot/node_boot.js'],
+    dest: 'lib/jasmine-core/node_boot.js'
+  },
   console: {
     src: [
       'src/console/requireConsole.js',
       'src/console/ConsoleReporter.js'
     ],
-    dest: 'src/console/console.js'
+    dest: 'lib/console/console.js'
   },
   options: {
     banner: license(),

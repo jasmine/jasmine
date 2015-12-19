@@ -1,6 +1,6 @@
 describe("toBeNaN", function() {
   it("passes for NaN with a custom .not fail", function() {
-    var matcher = j$.matchers.toBeNaN(),
+    var matcher = jasmineUnderTest.matchers.toBeNaN(),
       result;
 
     result = matcher.compare(Number.NaN);
@@ -9,7 +9,8 @@ describe("toBeNaN", function() {
   });
 
   it("fails for anything not a NaN", function() {
-    var matcher = j$.matchers.toBeNaN();
+    var matcher = jasmineUnderTest.matchers.toBeNaN(),
+      result;
 
     result = matcher.compare(1);
     expect(result.pass).toBe(false);
@@ -28,9 +29,9 @@ describe("toBeNaN", function() {
   });
 
   it("has a custom message on failure", function() {
-    var matcher = j$.matchers.toBeNaN(),
+    var matcher = jasmineUnderTest.matchers.toBeNaN(),
       result = matcher.compare(0);
 
-    expect(result.message).toEqual("Expected 0 to be NaN.");
+    expect(result.message()).toEqual("Expected 0 to be NaN.");
   });
 });

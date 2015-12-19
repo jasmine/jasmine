@@ -7,10 +7,11 @@ getJasmineRequireObj().JsApiReporter = function() {
 
   function JsApiReporter(options) {
     var timer = options.timer || noopTimer,
-        status = "loaded";
+        status = 'loaded';
 
     this.started = false;
     this.finished = false;
+    this.runDetails = {};
 
     this.jasmineStarted = function() {
       this.started = true;
@@ -20,8 +21,9 @@ getJasmineRequireObj().JsApiReporter = function() {
 
     var executionTime;
 
-    this.jasmineDone = function() {
+    this.jasmineDone = function(runDetails) {
       this.finished = true;
+      this.runDetails = runDetails;
       executionTime = timer.elapsed();
       status = 'done';
     };
@@ -30,26 +32,31 @@ getJasmineRequireObj().JsApiReporter = function() {
       return status;
     };
 
-    var suites = {};
+    var suites = [],
+      suites_hash = {};
 
     this.suiteStarted = function(result) {
-      storeSuite(result);
+      suites_hash[result.id] = result;
     };
 
     this.suiteDone = function(result) {
       storeSuite(result);
     };
 
+    this.suiteResults = function(index, length) {
+      return suites.slice(index, index + length);
+    };
+
     function storeSuite(result) {
-      suites[result.id] = result;
+      suites.push(result);
+      suites_hash[result.id] = result;
     }
 
     this.suites = function() {
-      return suites;
+      return suites_hash;
     };
 
     var specs = [];
-    this.specStarted = function(result) { };
 
     this.specDone = function(result) {
       specs.push(result);

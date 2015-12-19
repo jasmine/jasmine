@@ -10,17 +10,13 @@ module.exports = function(grunt) {
     compress: require('./grunt/config/compress.js')
   });
 
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-compass');
-  grunt.loadNpmTasks('grunt-contrib-compress');
+  require('load-grunt-tasks')(grunt);
 
   grunt.loadTasks('grunt/tasks');
 
   grunt.registerTask('default', ['jshint:all']);
 
   var version = require('./grunt/tasks/version.js');
-  var standaloneBuilder = require('./grunt/tasks/build_standalone.js');
 
   grunt.registerTask('build:copyVersionToGem',
     "Propagates the version from package.json to version.rb",
@@ -37,12 +33,27 @@ module.exports = function(grunt) {
     ]
   );
 
-
-  var spec = require('./grunt/tasks/spec.js');
-
   grunt.registerTask("execSpecsInNode",
-  "Run Jasmine core specs in Node.js",
-    spec.execSpecsInNode
+    "Run Jasmine core specs in Node.js",
+    function() {
+      var done = this.async(),
+          Jasmine = require('jasmine'),
+          jasmineCore = require('./lib/jasmine-core.js'),
+          jasmine = new Jasmine({jasmineCore: jasmineCore});
+
+      jasmine.loadConfigFile('./spec/support/jasmine.json');
+      jasmine.onComplete(function(passed) {
+        done(passed);
+      });
+
+      jasmine.execute();
+    }
   );
 
+  grunt.registerTask("execSpecsInNode:performance",
+    "Run Jasmine performance specs in Node.js",
+    function() {
+      require("shelljs").exec("node_modules/.bin/jasmine JASMINE_CONFIG_PATH=spec/support/jasmine-performance.json");
+    }
+  );
 };

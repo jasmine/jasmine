@@ -1,6 +1,6 @@
 describe("toBeCloseTo", function() {
   it("passes when within two decimal places by default", function() {
-    var matcher = j$.matchers.toBeCloseTo(),
+    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
       result;
 
     result = matcher.compare(0, 0);
@@ -11,7 +11,7 @@ describe("toBeCloseTo", function() {
   });
 
   it("fails when not within two decimal places by default", function() {
-    var matcher = j$.matchers.toBeCloseTo(),
+    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
       result;
 
     result = matcher.compare(0, 0.01);
@@ -19,7 +19,7 @@ describe("toBeCloseTo", function() {
   });
 
   it("accepts an optional precision argument", function() {
-    var matcher = j$.matchers.toBeCloseTo(),
+    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
       result;
 
     result = matcher.compare(0, 0.1, 0);
@@ -30,7 +30,7 @@ describe("toBeCloseTo", function() {
   });
 
   it("rounds expected values", function() {
-    var matcher = j$.matchers.toBeCloseTo(),
+    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
       result;
 
     result = matcher.compare(1.23, 1.229);
