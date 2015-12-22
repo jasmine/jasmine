@@ -652,4 +652,23 @@ describe("Clock (acceptance)", function() {
 
     expect(timeoutDate).toEqual(baseTime.getTime() + 150);
   });
+
+  it("mocks the Date object and updates the date per delayed function", function () {
+    var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      global = {Date: Date},
+      mockDate = new jasmineUnderTest.MockDate(global),
+      clock = new jasmineUnderTest.Clock({setTimeout: setTimeout}, function () { return delayedFunctionScheduler; }, mockDate),
+      baseTime = new Date();
+
+    clock.install().mockDate(baseTime);
+
+    var actualTimes = [];
+    var pushCurrentTime = function() { actualTimes.push(global.Date().getTime()); };
+    delayedFunctionScheduler.scheduleFunction(pushCurrentTime);
+    delayedFunctionScheduler.scheduleFunction(pushCurrentTime, 1);
+
+    clock.tick(1);
+
+    expect(actualTimes).toEqual([baseTime.getTime(), baseTime.getTime() + 1]);
+  })
 });

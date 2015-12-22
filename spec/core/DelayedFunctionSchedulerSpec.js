@@ -251,5 +251,18 @@ describe("DelayedFunctionScheduler", function() {
     expect(fn).toHaveBeenCalled();
     expect(fn.calls.count()).toBe(1);
   });
+
+  it("updates the mockDate per scheduled time", function () {
+    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      tickDate = jasmine.createSpy('tickDate');
+
+      scheduler.scheduleFunction(function() {});
+      scheduler.scheduleFunction(function() {}, 1);
+
+      scheduler.tick(1, tickDate);
+
+      expect(tickDate).toHaveBeenCalledWith(0);
+      expect(tickDate).toHaveBeenCalledWith(1);
+  })
 });
 

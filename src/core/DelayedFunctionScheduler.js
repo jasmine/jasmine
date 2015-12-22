@@ -6,11 +6,11 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
     var currentTime = 0;
     var delayedFnCount = 0;
 
-    self.tick = function(millis) {
+    self.tick = function(millis, tickDate) {
       millis = millis || 0;
       var endTime = currentTime + millis;
 
-      runScheduledFunctions(endTime);
+      runScheduledFunctions(endTime, tickDate);
       currentTime = endTime;
     };
 
@@ -113,13 +113,18 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
       }
     }
 
-    function runScheduledFunctions(endTime) {
+    function runScheduledFunctions(endTime, tickDate) {
+      tickDate = tickDate || function() {};
       if (scheduledLookup.length === 0 || scheduledLookup[0] > endTime) {
+        tickDate(endTime);
         return;
       }
 
       do {
-        currentTime = scheduledLookup.shift();
+        var newCurrentTime = scheduledLookup.shift();
+        tickDate(newCurrentTime - currentTime);
+
+        currentTime = newCurrentTime;
 
         var funcsToRun = scheduledFunctions[currentTime];
         delete scheduledFunctions[currentTime];
