@@ -1,9 +1,26 @@
-getJasmineRequireObj().CallTracker = function() {
+getJasmineRequireObj().CallTracker = function(j$) {
 
   function CallTracker() {
     var calls = [];
+    var opts = {};
+
+    function argCloner(context) {
+      debugger;
+      var clonedArgs = [];
+      j$.util.argsToArray(context.args).forEach(function(arg) {
+        if(Object.prototype.toString.apply(arg) === '[object Object]') {
+          clonedArgs.push(j$.util.clone(arg));
+        } else {
+          clonedArgs.push(arg);
+        }
+      });
+      context.args = clonedArgs;
+    }
 
     this.track = function(context) {
+      if(opts.cloneArgs) {
+        argCloner(context);
+      }
       calls.push(context);
     };
 
@@ -44,6 +61,11 @@ getJasmineRequireObj().CallTracker = function() {
     this.reset = function() {
       calls = [];
     };
+
+    this.saveArgumentsByValue = function() {
+      opts.cloneArgs = true;
+    };
+
   }
 
   return CallTracker;
