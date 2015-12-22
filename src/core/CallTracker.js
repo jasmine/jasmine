@@ -5,15 +5,15 @@ getJasmineRequireObj().CallTracker = function(j$) {
     var opts = {};
 
     function argCloner(context) {
-      debugger;
       var clonedArgs = [];
-      j$.util.argsToArray(context.args).forEach(function(arg) {
-        if(Object.prototype.toString.apply(arg) === '[object Object]') {
-          clonedArgs.push(j$.util.clone(arg));
+      var argsAsArray = j$.util.argsToArray(context.args);
+      for(var i = 0; i < argsAsArray.length; i++) {
+        if(Object.prototype.toString.apply(argsAsArray[i]) === '[object Object]') {
+          clonedArgs.push(j$.util.clone(argsAsArray[i]));
         } else {
-          clonedArgs.push(arg);
+          clonedArgs.push(argsAsArray[i]);
         }
-      });
+      }
       context.args = clonedArgs;
     }
 
