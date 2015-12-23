@@ -49,6 +49,23 @@ getJasmineRequireObj().SpyStrategy = function() {
       return getSpy();
     };
 
+    this.callBefore = function(fn) {
+      plan = function() {
+        fn.apply(this, arguments);
+        return originalFn.apply(this, arguments);
+      };
+      return getSpy();
+    };
+
+    this.callAfter = function(fn) {
+      plan = function() {
+        var returnValue = originalFn.apply(this, arguments);
+        fn.apply(this, arguments);
+        return returnValue;
+      };
+      return getSpy();
+    };
+
     this.stub = function(fn) {
       plan = function() {};
       return getSpy();

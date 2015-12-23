@@ -92,6 +92,46 @@ describe("SpyStrategy", function() {
     expect(returnValue).toEqual(67);
   });
 
+  it("allows a callback to be called before the original function, returning the value from the original function", function() {
+    function callback() {
+      expect(originalFn).not.toHaveBeenCalled();
+      return 67;
+    }
+    var originalFn = jasmine.createSpy("original").and.returnValue(42),
+        callbackFn = jasmine.createSpy("callback").and.callFake(callback),
+        spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn}),
+        returnValue;
+
+    spyStrategy.callBefore(callbackFn);
+    returnValue = spyStrategy.exec("foo");
+
+    expect(callbackFn).toHaveBeenCalled();
+    expect(originalFn).toHaveBeenCalled();
+    expect(callbackFn.calls.mostRecent().args).toEqual(["foo"]);
+    expect(originalFn.calls.mostRecent().args).toEqual(["foo"]);
+    expect(returnValue).toEqual(42);
+  });
+
+  it("allows a callback to be called after the original function, returning the value from the original function", function() {
+    function original() {
+      expect(callbackFn).not.toHaveBeenCalled();
+      return 42;
+    }
+    var originalFn = jasmine.createSpy("original").and.callFake(original),
+        callbackFn = jasmine.createSpy("callback").and.returnValue(67),
+        spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn}),
+        returnValue;
+
+    spyStrategy.callAfter(callbackFn);
+    returnValue = spyStrategy.exec("foo");
+
+    expect(callbackFn).toHaveBeenCalled();
+    expect(originalFn).toHaveBeenCalled();
+    expect(callbackFn.calls.mostRecent().args).toEqual(["foo"]);
+    expect(originalFn.calls.mostRecent().args).toEqual(["foo"]);
+    expect(returnValue).toEqual(42);
+  });
+
   it("allows a return to plan stubbing after another strategy", function() {
     var originalFn = jasmine.createSpy("original"),
         fakeFn = jasmine.createSpy("fake").and.returnValue(67),
