@@ -25,4 +25,23 @@ describe("jasmineUnderTest.util", function() {
       expect(jasmineUnderTest.util.isUndefined(undefined)).toBe(false);
     });
   });
+
+  describe("getPropertyDescriptor", function() {
+    it("get property descriptor from object", function() {
+      var obj = {prop: 1},
+        actual = jasmineUnderTest.util.getPropertyDescriptor(obj, 'prop'),
+        expected = Object.getOwnPropertyDescriptor(obj, 'prop');
+
+      expect(actual).toEqual(expected);
+    });
+
+    it("get property descriptor from object property", function() {
+      var proto = {prop: 1},
+        obj = Object.create(proto),
+        actual = jasmineUnderTest.util.getPropertyDescriptor(proto, 'prop'),
+        expected = Object.getOwnPropertyDescriptor(proto, 'prop');
+
+      expect(actual).toEqual(expected);
+    });
+  });
 });
