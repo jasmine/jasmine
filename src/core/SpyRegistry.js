@@ -63,6 +63,66 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       return spiedMethod;
     };
 
+    this.spyOnProperty = function (obj, propertyName, accessType) {
+      accessType = accessType || 'get';
+
+      if (j$.util.isUndefined(obj)) {
+        throw new Error('spyOn could not find an object to spy upon for ' + propertyName + '');
+      }
+
+      if (j$.util.isUndefined(propertyName)) {
+        throw new Error('No property name supplied');
+      }
+
+      var descriptor;
+      try {
+        descriptor = j$.util.getPropertyDescriptor(obj, propertyName);
+      } catch(e) {
+        // IE 8 doesn't support `definePropery` on non-DOM nodes
+      }
+
+      if (!descriptor) {
+        throw new Error(propertyName + ' property does not exist');
+      }
+
+      if (!descriptor.configurable) {
+        throw new Error(propertyName + ' is not declared configurable');
+      }
+
+      if(!descriptor[accessType]) {
+        throw new Error('Property ' + propertyName + ' does not have access type ' + accessType);
+      }
+
+      if (j$.isSpy(descriptor[accessType])) {
+        //TODO?: should this return the current spy? Downside: may cause user confusion about spy state
+        throw new Error(propertyName + ' has already been spied upon');
+      }
+
+      var originalDescriptor = j$.util.clone(descriptor),
+        spy = j$.createSpy(propertyName, descriptor[accessType]),
+        restoreStrategy;
+
+      if (Object.prototype.hasOwnProperty.call(obj, propertyName)) {
+        restoreStrategy = function() {
+          Object.defineProperty(obj, propertyName, originalDescriptor);
+        };
+      } else {
+        restoreStrategy = function() {
+          delete obj[propertyName];
+        };
+      }
+
+      currentSpies().push({
+        restoreObjectToOriginalState: restoreStrategy
+      });
+
+      descriptor[accessType] = spy;
+
+      Object.defineProperty(obj, propertyName, descriptor);
+
+      return spy;
+    };
+
     this.clearSpies = function() {
       var spies = currentSpies();
       for (var i = spies.length - 1; i >= 0; i--) {
