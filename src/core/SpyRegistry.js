@@ -49,7 +49,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
 
     this.clearSpies = function() {
       var spies = currentSpies();
-      for (var i = 0; i < spies.length; i++) {
+      for (var i = spies.length - 1; i >= 0; i--) {
         var spyEntry = spies[i];
         spyEntry.baseObj[spyEntry.methodName] = spyEntry.originalValue;
       }
