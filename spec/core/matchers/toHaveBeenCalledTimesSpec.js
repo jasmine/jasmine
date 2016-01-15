@@ -1,11 +1,11 @@
-describe("toHaveBeenCalledTimes", function () {
+fdescribe("toHaveBeenCalledTimes", function () {
 
     it("passes when the actual 0 matches the expected 0 ", function () {
         var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
             calledSpy = jasmineUnderTest.createSpy('called-spy'),
             result;
         result = matcher.compare(calledSpy, 0);
-        expect(result.pass).toBe(true);
+        expect(result.pass).toBeTruthy();
     });
     it("passes when the actual matches the expected", function () {
         var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
@@ -14,7 +14,7 @@ describe("toHaveBeenCalledTimes", function () {
         calledSpy();
 
         result = matcher.compare(calledSpy, 1);
-        expect(result.pass).toBe(true);
+        expect(result.pass).toBeTruthy();
     });
 
     it("fails when expected numbers is not supplied", function () {
@@ -34,7 +34,7 @@ describe("toHaveBeenCalledTimes", function () {
             result;
 
         result = matcher.compare(uncalledSpy, 2);
-        expect(result.pass).toBe(false);
+        expect(result.pass).toBeFalsy();
     });
 
     it("fails when the actual was called more than expected", function () {
@@ -46,7 +46,7 @@ describe("toHaveBeenCalledTimes", function () {
         uncalledSpy();
 
         result = matcher.compare(uncalledSpy, 1);
-        expect(result.pass).toBe(false);
+        expect(result.pass).toBeFalsy();
     });
 
     it("throws an exception when the actual is not a spy", function () {
@@ -84,6 +84,23 @@ describe("toHaveBeenCalledTimes", function () {
         result = matcher.compare(spy, 2);
 
         expect(result.message).toEqual('Expected spy sample-spy to have been called 2 times. It was called ' + 4 + ' times.');
+    });
+    
+    fit("should work when chained to expect", function(){
+        // test for the way we'll use it in real code
+        var foo = {
+            func: function(){}
+        };
+        spyOn(foo, 'func');
+        expect(foo.func).toHaveBeenCalledTimes(0);
+        foo.func();
+        expect(foo.func).toHaveBeenCalledTimes(1);
+        foo.func();
+        foo.func();
+        foo.func();
+        expect(foo.func).toHaveBeenCalledTimes(4);
+        foo.func.calls.reset();
+        expect(foo.func).toHaveBeenCalledTimes(0);
     });
 });
 
