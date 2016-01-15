@@ -1,4 +1,4 @@
-fdescribe("toHaveBeenCalledTimes", function () {
+describe("toHaveBeenCalledTimes", function () {
 
     it("passes when the actual 0 matches the expected 0 ", function () {
         var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
