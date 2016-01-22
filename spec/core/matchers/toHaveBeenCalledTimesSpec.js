@@ -86,7 +86,7 @@ describe("toHaveBeenCalledTimes", function () {
         expect(result.message).toEqual('Expected spy sample-spy to have been called 2 times. It was called ' + 4 + ' times.');
     });
     
-    fit("should work when chained to expect", function(){
+    it("should work when chained to expect", function(){
         // test for the way we'll use it in real code
         var foo = {
             func: function(){}
