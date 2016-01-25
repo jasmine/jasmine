@@ -10,7 +10,7 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
         var args = Array.prototype.slice.call(arguments, 0),
           result = { pass: false };
 
-        if (expected === void 0){
+        if (!!expected){
           throw new Error('Expected times failed is required as an argument.');
         }
 
