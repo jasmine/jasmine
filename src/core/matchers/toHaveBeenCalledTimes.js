@@ -11,6 +11,7 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
           result = { pass: false };
 
         if (!j$.isNumber_(expected)){
+          console.log('toHaveBeenCalledTimes: expected: ' + expected)
           throw new Error('The expected times failed is a required argument and must be a number.');
         }
 
