@@ -17,7 +17,7 @@ describe("toHaveBeenCalledTimes", function () {
         expect(result.pass).toBeTruthy();
     });
 
-    it("fails when expected numbers is not supplied", function () {
+    it("fails when expected number is not supplied", function () {
         var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
             spy = jasmineUnderTest.createSpy('spy'),
             result;
@@ -25,7 +25,18 @@ describe("toHaveBeenCalledTimes", function () {
         spy();
         expect(function () {
             matcher.compare(spy);
-        }).toThrowError('Expected times failed is required as an argument.');
+        }).toThrowError('The expected times failed is a required argument and must be a number.');
+    });
+    
+    it("fails when expected number is a string", function () {
+        var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+            spy = jasmineUnderTest.createSpy('spy'),
+            result;
+
+        spy();
+        expect(function () {
+            matcher.compare(spy, "1");
+        }).toThrowError('The expected times failed is a required argument and must be a number.');
     });
 
     it("fails when the actual was called less than the expected", function () {
