@@ -96,7 +96,7 @@ describe("toHaveBeenCalledTimes", function () {
 
         expect(result.message).toEqual('Expected spy sample-spy to have been called 2 times. It was called ' + 4 + ' times.');
     });
-    
+    /*
     it("should work when chained to expect", function(){
         // test for the way we'll use it in real code
         var foo = {
@@ -112,6 +112,6 @@ describe("toHaveBeenCalledTimes", function () {
         expect(foo.func).toHaveBeenCalledTimes(4);
         foo.func.calls.reset();
         expect(foo.func).toHaveBeenCalledTimes(0);
-    });
+    });*/
 });
 

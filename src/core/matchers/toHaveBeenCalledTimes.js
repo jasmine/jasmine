@@ -3,6 +3,7 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
   function toHaveBeenCalledTimes() {
     return {
       compare: function(actual, expected) {
+        console.log('toHaveBeenCalledTimes: expected: ' + expected);
         if (!j$.isSpy(actual)) {
           throw new Error('Expected a spy, but got ' + j$.pp(actual) + '.');
         }
@@ -11,7 +12,6 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
           result = { pass: false };
 
         if (!j$.isNumber_(expected)){
-          console.log('toHaveBeenCalledTimes: expected: ' + expected)
           throw new Error('The expected times failed is a required argument and must be a number.');
         }
 
