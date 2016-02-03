@@ -382,4 +382,103 @@ describe("matchersUtil", function() {
       expect(message).toEqual("Expected 'foo' to bar 'quux', 'corge'.");
     });
   });
+
+  describe("diffStringArrays", function() {
+    it("should show no difference between empty arrays", function() {
+      var result = jasmineUnderTest.matchersUtil.diffStringArrays([], []);
+      expect(result.none).toBe(true);
+      expect(result.extra).toEqual([]);
+      expect(result.missing).toEqual([]);
+    });
+
+    it("should show no difference between equal arrays", function() {
+      var result = jasmineUnderTest.matchersUtil.diffStringArrays(['a'], ['a']);
+      expect(result.none).toBe(true);
+      expect(result.extra).toEqual([]);
+      expect(result.missing).toEqual([]);
+    });
+
+    it("lists missing items", function() {
+      var actual = ['hello'],
+        expected = ['hello', 'goodbye'];
+
+      var result = jasmineUnderTest.matchersUtil.diffStringArrays(actual, expected);
+
+      expect(result.none).toBe(false);
+      expect(result.extra).toEqual([]);
+      expect(result.missing).toEqual(['goodbye']);
+    });
+
+    it("lists extra items", function() {
+      var actual = ['hello'],
+        expected = [];
+
+      var result = jasmineUnderTest.matchersUtil.diffStringArrays(actual, expected);
+
+      expect(result.none).toBe(false);
+      expect(result.extra).toEqual(['hello']);
+      expect(result.missing).toEqual([]);
+    });
+
+    it("handles complex cases", function() {
+      var actual = ['a', 'b', 'c', 'd', 'e'],
+        expected = ['e', 'f', 'a'];
+
+      var result = jasmineUnderTest.matchersUtil.diffStringArrays(actual, expected);
+
+      expect(result.none).toBe(false);
+      expect(result.extra).toEqual(['b', 'c', 'd']);
+      expect(result.missing).toEqual(['f']);
+    });
+  });
+
+  describe("keys", function() {
+    it("returns an empty array for an empty object", function() {
+      var util = jasmineUnderTest.matchersUtil;
+      expect(util.keys({})).toEqual([]);
+    });
+
+    it("returns the keys for an object with properties", function() {
+      var util = jasmineUnderTest.matchersUtil;
+      expect(util.keys({a: 1})).toEqual(['a']);
+    });
+  });
+
+  describe("isObject", function() {
+    it("returns true when passed an object", function() {
+      var util = jasmineUnderTest.matchersUtil;
+      expect(util.isObject({})).toBe(true);
+    });
+
+    it("returns false when passed anything else", function() {
+      var util = jasmineUnderTest.matchersUtil;
+      expect(util.isObject()).toBe(false);
+      expect(util.isObject(null)).toBe(false);
+      expect(util.isObject(1)).toBe(false);
+      expect(util.isObject(0/0)).toBe(false);
+      expect(util.isObject(1/0)).toBe(false);
+      expect(util.isObject('hello')).toBe(false);
+      expect(util.isObject(/hello/)).toBe(false);
+      expect(util.isObject([])).toBe(false);
+    });
+  });
+
+  describe("isArray", function() {
+    it("returns true when passed an array", function () {
+      var util = jasmineUnderTest.matchersUtil;
+      expect(util.isArray([])).toBe(true);
+    });
+
+    it("returns false when passed anything else", function() {
+      var util = jasmineUnderTest.matchersUtil;
+      expect(util.isArray()).toBe(false);
+      expect(util.isArray(null)).toBe(false);
+      expect(util.isArray(1)).toBe(false);
+      expect(util.isArray(0/0)).toBe(false);
+      expect(util.isArray(1/0)).toBe(false);
+      expect(util.isArray('hello')).toBe(false);
+      expect(util.isArray(/hello/)).toBe(false);
+      expect(util.isArray({})).toBe(false);
+    });
+  });
 });
