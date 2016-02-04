@@ -177,7 +177,9 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       }
 
       // Deep compare objects.
-      var aKeys = keys(a), size = aKeys.length, key;
+      var aKeys = keys(a), key;
+      size = aKeys.length;
+
       // Ensure that both objects contain the same number of properties before comparing deep equality.
       if (keys(b).length !== size) { return false; }
 
