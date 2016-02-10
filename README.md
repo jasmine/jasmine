@@ -50,7 +50,7 @@ Add the following to your HTML file:
 
 ## Supported environments
 
-Jasmine tests itself across many browsers (Safari, Chrome, Firefox, PhantomJS, and new Internet Explorer) as well as node. To see the exact version tests are run against look at our [.travis.yml](https://github.com/jasmine/jasmine/blob/master/.travis.yml)
+Jasmine tests itself across many browsers (Safari, Chrome, Firefox, PhantomJS, and Edge) as well as node. To see the exact version tests are run against look at our [.travis.yml](https://github.com/jasmine/jasmine/blob/master/.travis.yml)
 
 
 ## Support
