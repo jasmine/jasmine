@@ -5,6 +5,7 @@ module.exports = {
       sassDir: 'src/html',
       outputStyle: 'compact',
       noLineComments: true,
+      bundleExec: true
     }
   }
 };
