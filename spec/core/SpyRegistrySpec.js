@@ -89,5 +89,24 @@ describe("SpyRegistry", function() {
 
       expect(subject.spiedFunc).toBe(originalFunction);
     });
+
+    it("restores the original functions, even when that spy has been replace and re-spied upon", function() {
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        originalFunction = function() {},
+        subject = { spiedFunc: originalFunction };
+
+      spyRegistry.spyOn(subject, 'spiedFunc');
+
+      // replace the original spy with some other function
+      subject.spiedFunc = function() {};
+
+      // spy on the function in that location again
+      spyRegistry.spyOn(subject, 'spiedFunc');
+
+      spyRegistry.clearSpies();
+
+      expect(subject.spiedFunc).toBe(originalFunction);
+    });
   });
 });
