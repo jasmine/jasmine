@@ -180,9 +180,10 @@ jasmineRequire.HtmlReporter = function(j$) {
 
       if (specsExecuted < totalSpecsDefined) {
         var skippedMessage = 'Ran ' + specsExecuted + ' of ' + totalSpecsDefined + ' specs - run all';
+        var skippedLink = order && order.random ? '?random=true' : '?';
         alert.appendChild(
           createDom('span', {className: 'jasmine-bar jasmine-skipped'},
-            createDom('a', {href: '?', title: 'Run all specs'}, skippedMessage)
+            createDom('a', {href: skippedLink, title: 'Run all specs'}, skippedMessage)
           )
         );
       }
