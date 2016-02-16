@@ -102,4 +102,19 @@ describe("CallTracker", function() {
     expect(callTracker.all()).toEqual([]);
     expect(callTracker.mostRecent()).toBeFalsy();
   });
+
+  it("allows object arguments to be shallow cloned", function() {
+    var callTracker = new jasmineUnderTest.CallTracker();
+    callTracker.saveArgumentsByValue();
+
+    var objectArg = {"foo": "bar"},
+        arrayArg = ["foo", "bar"];
+
+    callTracker.track({object: {}, args: [objectArg, arrayArg, false, undefined, null, NaN, "", 0, 1.0]});
+
+    expect(callTracker.mostRecent().args[0]).not.toBe(objectArg);
+    expect(callTracker.mostRecent().args[0]).toEqual(objectArg);
+    expect(callTracker.mostRecent().args[1]).not.toBe(arrayArg);
+    expect(callTracker.mostRecent().args[1]).toEqual(arrayArg);
+  });
 });
