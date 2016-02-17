@@ -24,7 +24,7 @@ describe("toHaveBeenCalledTimes", function() {
     spy();
      expect(function() {
        matcher.compare(spy);
-     }).toThrowError('Expected times failed is required as an argument.');
+     }).toThrowError('The expected times failed is a required argument and must be a number.');
   });
 
   it("fails when the actual was called less than the expected", function() {
