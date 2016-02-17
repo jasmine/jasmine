@@ -1,4 +1,11 @@
 describe("toHaveBeenCalledTimes", function() {
+  it("passes when the actual 0 matches the expected 0 ", function () {
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+        calledSpy = jasmineUnderTest.createSpy('called-spy'),
+        result;
+    result = matcher.compare(calledSpy, 0);
+    expect(result.pass).toBeTruthy();
+  });
   it("passes when the actual matches the expected", function() {
     var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
       calledSpy = jasmineUnderTest.createSpy('called-spy'),
@@ -17,7 +24,7 @@ describe("toHaveBeenCalledTimes", function() {
     spy();
      expect(function() {
        matcher.compare(spy);
-     }).toThrowError('Expected times failed is required as an argument.');
+     }).toThrowError('The expected times failed is a required argument and must be a number.');
   });
 
   it("fails when the actual was called less than the expected", function() {
@@ -60,7 +67,6 @@ describe("toHaveBeenCalledTimes", function() {
     spy();
 
     result = matcher.compare(spy, 1);
-
     expect(result.message).toEqual('Expected spy sample-spy to have been called once. It was called ' +  4 + ' times.');
   });
 
@@ -74,7 +80,6 @@ describe("toHaveBeenCalledTimes", function() {
     spy();
 
     result = matcher.compare(spy, 2);
-
     expect(result.message).toEqual('Expected spy sample-spy to have been called 2 times. It was called ' +  4 + ' times.');
   });
 });
