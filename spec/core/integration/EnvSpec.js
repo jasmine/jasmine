@@ -677,6 +677,31 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it('can be configured to allow respying on functions', function () {
+    var env = new jasmineUnderTest.Env(),
+        foo = {
+          bar: function () {
+            return 1;
+          }
+        };
+
+    env.allowRespy(true);
+
+    env.describe('test suite', function(){
+      env.it('spec 0', function(){
+        env.spyOn(foo,'bar');
+
+        var error = null;
+
+        expect(function() {
+          env.spyOn(foo, 'bar');
+        }).not.toThrow();
+      });
+    });
+
+    env.execute();
+  });
+
   it('removes all spies added in a spec after the spec is complete', function(done) {
     var env = new jasmineUnderTest.Env(),
       originalFoo = function() {},

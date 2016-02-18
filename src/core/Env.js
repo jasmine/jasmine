@@ -269,6 +269,10 @@ getJasmineRequireObj().Env = function(j$) {
       return runnableResources[currentRunnable().id].spies;
     }});
 
+    this.allowRespy = function(allow){
+      spyRegistry.allowRespy(allow);
+    };
+
     this.spyOn = function() {
       return spyRegistry.spyOn.apply(spyRegistry, arguments);
     };

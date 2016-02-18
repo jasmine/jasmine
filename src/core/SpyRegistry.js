@@ -4,6 +4,10 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
     options = options || {};
     var currentSpies = options.currentSpies || function() { return []; };
 
+    this.allowRespy = function(allow){
+      this.respy = allow;
+    };
+
     this.spyOn = function(obj, methodName) {
       if (j$.util.isUndefined(obj)) {
         throw new Error('spyOn could not find an object to spy upon for ' + methodName + '()');
@@ -17,9 +21,12 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         throw new Error(methodName + '() method does not exist');
       }
 
-      if (obj[methodName] && j$.isSpy(obj[methodName])) {
-        //TODO?: should this return the current spy? Downside: may cause user confusion about spy state
-        throw new Error(methodName + ' has already been spied upon');
+      if (obj[methodName] && j$.isSpy(obj[methodName])  ) {
+        if ( !!this.respy ){
+          return obj[methodName];
+        }else {
+          throw new Error(methodName + ' has already been spied upon');
+        }
       }
 
       var descriptor;
