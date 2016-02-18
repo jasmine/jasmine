@@ -31,7 +31,7 @@ describe("Env", function() {
     it("throws the error", function() {
       expect(function() {
         env.describe('done method', spec);
-      }).toThrow(new Error('describe does not expect a done parameter'));
+      }).toThrow(new Error('describe does not expect any arguments'));
     });
   });
 
