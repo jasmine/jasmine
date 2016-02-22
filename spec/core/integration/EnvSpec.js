@@ -1307,6 +1307,28 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it('should report using fallback reporter', function(done) {
+    var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
+          'specDone',
+          'jasmineDone'
+        ]);
+
+    reporter.jasmineDone.and.callFake(function() {
+      expect(reporter.specDone).toHaveBeenCalled();
+
+      done();
+    });
+
+    env.provideFallbackReporter(reporter);
+
+    env.it('will be pending', function() {
+      env.pending('with a message');
+    });
+
+    env.execute();
+  });
+
   it('should report xdescribes as expected', function(done) {
     var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [

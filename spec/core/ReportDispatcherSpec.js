@@ -37,4 +37,28 @@ describe("ReportDispatcher", function() {
       dispatcher.foo(123, 456);
     }).not.toThrow();
   });
+
+  it("allows providing a fallback reporter in case there's no other report", function() {
+    var dispatcher = new jasmineUnderTest.ReportDispatcher(['foo', 'bar']),
+      reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
+
+    dispatcher.provideFallbackReporter(reporter);
+    dispatcher.foo(123, 456);
+    expect(reporter.foo).toHaveBeenCalledWith(123, 456);
+
+  });
+
+  it("does not call fallback reporting methods when another report is provided", function() {
+    var dispatcher = new jasmineUnderTest.ReportDispatcher(['foo', 'bar']),
+      reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']),
+      fallbackReporter = jasmine.createSpyObj('otherReporter', ['foo', 'bar']);
+
+    dispatcher.provideFallbackReporter(fallbackReporter);
+    dispatcher.addReporter(reporter);
+    dispatcher.foo(123, 456);
+
+    expect(reporter.foo).toHaveBeenCalledWith(123, 456);
+    expect(fallbackReporter.foo).not.toHaveBeenCalledWith(123, 456);
+
+  });
 });
