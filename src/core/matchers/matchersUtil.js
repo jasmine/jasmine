@@ -161,36 +161,43 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     var size = 0;
     // Recursively compare objects and arrays.
     // Compare array lengths to determine if a deep comparison is necessary.
-    if (className == '[object Array]' && a.length !== b.length) {
-      result = false;
-    }
+    if (className == '[object Array]') {
+      size = a.length;
+      if (size !== b.length) {
+        return false;
+      }
 
-    if (result) {
-      // Objects with different constructors are not equivalent, but `Object`s
-      // or `Array`s from different frames are.
-      if (className !== '[object Array]') {
-        var aCtor = a.constructor, bCtor = b.constructor;
-        if (aCtor !== bCtor && !(isFunction(aCtor) && aCtor instanceof aCtor &&
-               isFunction(bCtor) && bCtor instanceof bCtor)) {
+      while (size--) {
+        result = eq(a[size], b[size], aStack, bStack, customTesters);
+        if (!result) {
           return false;
         }
       }
+    } else {
 
-      // Deep compare objects.
-      var aKeys = keys(a), key;
-      size = aKeys.length;
+      // Objects with different constructors are not equivalent, but `Object`s
+      // or `Array`s from different frames are.
+      var aCtor = a.constructor, bCtor = b.constructor;
+      if (aCtor !== bCtor && !(isFunction(aCtor) && aCtor instanceof aCtor &&
+                               isFunction(bCtor) && bCtor instanceof bCtor)) {
+        return false;
+      }
+    }
 
-      // Ensure that both objects contain the same number of properties before comparing deep equality.
-      if (keys(b).length !== size) { return false; }
+    // Deep compare objects.
+    var aKeys = keys(a, className == '[object Array]'), key;
+    size = aKeys.length;
 
-      while (size--) {
-        key = aKeys[size];
-        // Deep compare each member
-        result = has(b, key) && eq(a[key], b[key], aStack, bStack, customTesters);
+    // Ensure that both objects contain the same number of properties before comparing deep equality.
+    if (keys(b, className == '[object Array]').length !== size) { return false; }
 
-        if (!result) {
-            return false;
-        }
+    while (size--) {
+      key = aKeys[size];
+      // Deep compare each member
+      result = has(b, key) && eq(a[key], b[key], aStack, bStack, customTesters);
+
+      if (!result) {
+        return false;
       }
     }
     // Remove the first object from the stack of traversed objects.
@@ -199,8 +206,8 @@ getJasmineRequireObj().matchersUtil = function(j$) {
 
     return result;
 
-    function keys(obj) {
-      return Object.keys ? Object.keys(obj) :
+    function keys(obj, isArray) {
+      var allKeys = Object.keys ? Object.keys(obj) :
         (function(o) {
             var keys = [];
             for (var key in o) {
@@ -210,6 +217,19 @@ getJasmineRequireObj().matchersUtil = function(j$) {
             }
             return keys;
         })(obj);
+
+      if (!isArray) {
+        return allKeys;
+      }
+
+      var extraKeys = [];
+      for (var i in allKeys) {
+        if (!allKeys[i].match(/^[0-9]+$/)) {
+          extraKeys.push(key);
+        }
+      }
+
+      return extraKeys;
     }
 
     function has(obj, key) {

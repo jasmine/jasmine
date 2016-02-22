@@ -54,6 +54,13 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals([1, 2], [1, 2])).toBe(true);
     });
 
+    it("passes for Arrays that are equivalent, with elements added by changing length", function() {
+      var foo = [];
+      foo.length = 1;
+
+      expect(jasmineUnderTest.matchersUtil.equals(foo, [undefined])).toBe(true);
+    });
+
     it("fails for Arrays that are not equivalent", function() {
       expect(jasmineUnderTest.matchersUtil.equals([1, 2], [1, 2, 3])).toBe(false);
     });
