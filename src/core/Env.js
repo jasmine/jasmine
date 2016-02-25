@@ -204,7 +204,9 @@ getJasmineRequireObj().Env = function(j$) {
     var topSuite = new j$.Suite({
       env: this,
       id: getNextSuiteId(),
-      description: 'Jasmine__TopLevel__Suite'
+      description: 'Jasmine__TopLevel__Suite',
+      expectationFactory: expectationFactory,
+      expectationResultFactory: expectationResultFactory
     });
     runnableLookupTable[topSuite.id] = topSuite;
     defaultResourcesForRunnable(topSuite.id);
@@ -257,9 +259,15 @@ getJasmineRequireObj().Env = function(j$) {
         totalSpecsDefined: totalSpecsDefined
       });
 
+      currentlyExecutingSuites.push(topSuite);
+
       processor.execute(function() {
+        clearResourcesForRunnable(topSuite.id);
+        currentlyExecutingSuites.pop();
+
         reporter.jasmineDone({
-          order: order
+          order: order,
+          failedExpectations: topSuite.result.failedExpectations
         });
       });
     };
