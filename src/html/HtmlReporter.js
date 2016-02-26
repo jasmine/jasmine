@@ -209,13 +209,20 @@ jasmineRequire.HtmlReporter = function(j$) {
 
       alert.appendChild(createDom('span', {className: statusBarClassName}, statusBarMessage, seedBar));
 
+      var errorBarClassName = 'jasmine-bar jasmine-errored';
+      var errorBarMessagePrefix = 'AfterAll ';
+
       for(i = 0; i < failedSuites.length; i++) {
         var failedSuite = failedSuites[i];
         for(var j = 0; j < failedSuite.failedExpectations.length; j++) {
-          var errorBarMessage = 'AfterAll ' + failedSuite.failedExpectations[j].message;
-          var errorBarClassName = 'jasmine-bar jasmine-errored';
-          alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessage));
+          alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessagePrefix + failedSuite.failedExpectations[j].message));
         }
+      }
+
+      var globalFailures = (doneResult && doneResult.failedExpectations) || [];
+      for(i = 0; i < globalFailures.length; i++) {
+        var failure = globalFailures[i];
+        alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessagePrefix + failure.message));
       }
 
       var results = find('.jasmine-results');
