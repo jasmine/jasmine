@@ -7,6 +7,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         called = true;
         fn();
       }
+      return null;
     };
   }
 
