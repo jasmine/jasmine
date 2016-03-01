@@ -220,6 +220,22 @@ describe("QueueRunner", function() {
       jasmine.clock().tick(1);
       expect(nextQueueableFn.fn.calls.count()).toEqual(1);
     });
+
+    it("should return a null when you call done", function () {
+      // Bluebird promises want handlers to return anything but undefined to help catch "forgotten returns".
+      // http://bluebirdjs.com/docs/warning-explanations.html#warning-a-promise-was-created-in-a-handler-but-none-were-returned-from-it
+      // When doing ".finally(done, done.fail)" done and done.fail are hanlders so need to return null.
+      var doneReturn,
+        queueableFn = { fn: function(done) {
+          doneReturn = done();
+        } },
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn]
+        });
+
+      queueRunner.execute();
+      expect(doneReturn).toBe(null);
+    });
   });
 
   it("calls exception handlers when an exception is thrown in a fn", function() {
