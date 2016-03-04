@@ -11,6 +11,10 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     contains: function(haystack, needle, customTesters) {
       customTesters = customTesters || [];
 
+      if ((Object.prototype.toString.apply(haystack) === '[object Set]')) {
+        return haystack.has(needle);
+      }
+
       if ((Object.prototype.toString.apply(haystack) === '[object Array]') ||
         (!!haystack && !haystack.indexOf))
       {
@@ -173,6 +177,19 @@ getJasmineRequireObj().matchersUtil = function(j$) {
           return false;
         }
       }
+    } else if (className == '[object Set]') {
+      if (a.size != b.size) {
+        return false;
+      }
+      var iterA = a.values(), iterB = b.values();
+      var valA, valB;
+      do {
+        valA = iterA.next();
+        valB = iterB.next();
+        if (!eq(valA.value, valB.value, aStack, bStack, customTesters)) {
+          return false;
+        }
+      } while (!valA.done && !valB.done);
     } else {
 
       // Objects with different constructors are not equivalent, but `Object`s

@@ -314,6 +314,42 @@ describe("matchersUtil", function() {
 
       expect(jasmineUnderTest.matchersUtil.equals(objA, objB)).toBe(false);
     });
+
+    it("passes when comparing two empty sets", function() {
+      if (typeof Set === 'undefined') { return; }
+      expect(jasmineUnderTest.matchersUtil.equals(new Set(), new Set())).toBe(true);
+    });
+
+    it("passes when comparing identical sets", function() {
+      if (typeof Set === 'undefined') { return; }
+      var setA = new Set([6, 5]);
+      var setB = new Set();
+      setB.add(6);
+      setB.add(5);
+      expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
+    });
+
+    it("fails for sets with different elements", function() {
+      if (typeof Set === 'undefined') { return; }
+      var setA = new Set([6, 3, 5]);
+      var setB = new Set([6, 4, 5]);
+      expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
+    });
+
+    it("fails for sets of different size", function() {
+      if (typeof Set === 'undefined') { return; }
+      var setA = new Set([6, 3]);
+      var setB = new Set([6, 4, 5]);
+      expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
+    });
+
+    it("fails for sets with different insertion order", function() {
+      if (typeof Set === 'undefined') { return; }
+      var setA = new Set([3, 6]);
+      var setB = new Set([6, 3]);
+      expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
+    });
+
   });
 
   describe("contains", function() {

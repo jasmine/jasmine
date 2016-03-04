@@ -14,6 +14,25 @@ describe("jasmineUnderTest.pp", function () {
     expect(jasmineUnderTest.pp(-0)).toEqual("-0");
   });
 
+  describe('stringify sets', function() {
+    if (typeof Set === 'undefined') { return; }
+
+    it("should stringify sets properly", function() {
+      expect(jasmineUnderTest.pp(new Set([1, 2]))).toEqual("Set( 1, 2 )");
+    });
+
+    it("should truncate sets with more elments than jasmineUnderTest.MAX_PRETTY_PRINT_SET_SIZE", function() {
+      var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_SET_SIZE;
+
+      try {
+        jasmineUnderTest.MAX_PRETTY_PRINT_SET_SIZE = 2;
+        expect(jasmineUnderTest.pp(new Set(["a", "b", "c"]))).toEqual("Set( 'a', 'b', ... )");
+      } finally {
+        jasmineUnderTest.MAX_PRETTY_PRINT_SET_SIZE = originalMaxSize;
+      }
+    })
+  });
+
   describe('stringify arrays', function() {
     it("should stringify arrays properly", function() {
       expect(jasmineUnderTest.pp([1, 2])).toEqual("[ 1, 2 ]");
