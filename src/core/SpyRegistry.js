@@ -1,5 +1,7 @@
 getJasmineRequireObj().SpyRegistry = function(j$) {
 
+  var getErrorMsg = j$.formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
+
   function SpyRegistry(options) {
     options = options || {};
     var currentSpies = options.currentSpies || function() { return []; };
@@ -9,23 +11,24 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
     };
 
     this.spyOn = function(obj, methodName) {
+
       if (j$.util.isUndefined(obj)) {
-        throw new Error('spyOn could not find an object to spy upon for ' + methodName + '()');
+        throw new Error(getErrorMsg('could not find an object to spy upon for ' + methodName + '()'));
       }
 
       if (j$.util.isUndefined(methodName)) {
-        throw new Error('No method name supplied');
+        throw new Error(getErrorMsg('No method name supplied'));
       }
 
       if (j$.util.isUndefined(obj[methodName])) {
-        throw new Error(methodName + '() method does not exist');
+        throw new Error(getErrorMsg(methodName + '() method does not exist'));
       }
 
       if (obj[methodName] && j$.isSpy(obj[methodName])  ) {
         if ( !!this.respy ){
           return obj[methodName];
         }else {
-          throw new Error(methodName + ' has already been spied upon');
+          throw new Error(getErrorMsg(methodName + ' has already been spied upon'));
         }
       }
 
@@ -37,7 +40,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       if (descriptor && !(descriptor.writable || descriptor.set)) {
-        throw new Error(methodName + ' is not declared writable or has no setter');
+        throw new Error(getErrorMsg(methodName + ' is not declared writable or has no setter'));
       }
 
       var originalMethod = obj[methodName],

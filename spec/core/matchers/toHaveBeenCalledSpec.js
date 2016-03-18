@@ -24,14 +24,14 @@ describe("toHaveBeenCalled", function() {
     var matcher = jasmineUnderTest.matchers.toHaveBeenCalled(),
       fn = function() {};
 
-    expect(function() { matcher.compare(fn) }).toThrow(new Error("Expected a spy, but got Function."));
+    expect(function() { matcher.compare(fn) }).toThrowError(Error, /Expected a spy, but got Function./);
   });
 
   it("throws an exception when invoked with any arguments", function() {
     var matcher = jasmineUnderTest.matchers.toHaveBeenCalled(),
       spy = jasmineUnderTest.createSpy('sample spy');
 
-    expect(function() { matcher.compare(spy, 'foo') }).toThrow(new Error("toHaveBeenCalled does not take arguments, use toHaveBeenCalledWith"));
+    expect(function() { matcher.compare(spy, 'foo') }).toThrowError(Error, /Does not take arguments, use toHaveBeenCalledWith/);
   });
 
   it("has a custom message on failure", function() {

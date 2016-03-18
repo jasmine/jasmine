@@ -1,5 +1,7 @@
 getJasmineRequireObj().toThrow = function(j$) {
 
+  var getErrorMsg = j$.formatErrorMsg('<toThrow>', 'expect(function() {<expectation>}).toThrow()');
+
   function toThrow(util) {
     return {
       compare: function(actual, expected) {
@@ -8,7 +10,7 @@ getJasmineRequireObj().toThrow = function(j$) {
           thrown;
 
         if (typeof actual != 'function') {
-          throw new Error('Actual is not a Function');
+          throw new Error(getErrorMsg('Actual is not a Function'));
         }
 
         try {

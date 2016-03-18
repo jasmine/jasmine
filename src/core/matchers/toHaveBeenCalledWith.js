@@ -1,5 +1,7 @@
 getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
 
+  var getErrorMsg = j$.formatErrorMsg('<toHaveBeenCalledWith>', 'expect(<spyObj>).toHaveBeenCalledWith(...arguments)');
+
   function toHaveBeenCalledWith(util, customEqualityTesters) {
     return {
       compare: function() {
@@ -9,7 +11,7 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
           result = { pass: false };
 
         if (!j$.isSpy(actual)) {
-          throw new Error('Expected a spy, but got ' + j$.pp(actual) + '.');
+          throw new Error(getErrorMsg('Expected a spy, but got ' + j$.pp(actual) + '.'));
         }
 
         if (!actual.calls.any()) {
