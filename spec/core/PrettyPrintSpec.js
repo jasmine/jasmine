@@ -187,6 +187,15 @@ describe("jasmineUnderTest.pp", function () {
     };
 
     expect(jasmineUnderTest.pp(obj)).toEqual("my toString");
+
+    // Simulate object from another global context (e.g. an iframe or Web Worker) that does not actually have a custom
+    // toString despite obj.toString !== Object.prototype.toString
+    var objFromOtherContext = {
+      foo: 'bar',
+      toString: function () { return Object.prototype.toString.call(this); }
+    };
+
+    expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar', toString: Function })");
   });
 
   it("should handle objects with null prototype", function() {

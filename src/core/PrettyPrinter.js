@@ -5,6 +5,12 @@ getJasmineRequireObj().pp = function(j$) {
     this.seen = [];
   }
 
+  function hasCustomToString(value) {
+    // value.toString !== Object.prototype.toString if value has no custom toString but is from another context (e.g.
+    // iframe, web worker)
+    return value.toString !== Object.prototype.toString && (value.toString() !== Object.prototype.toString.call(value));
+  }
+
   PrettyPrinter.prototype.format = function(value) {
     this.ppNestLevel_++;
     try {
@@ -30,7 +36,7 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitScalar('HTMLNode');
       } else if (value instanceof Date) {
         this.emitScalar('Date(' + value + ')');
-      } else if (value.toString && typeof value === 'object' && !(value instanceof Array) && value.toString !== Object.prototype.toString) {
+      } else if (value.toString && typeof value === 'object' && !j$.isArray_(value) && hasCustomToString(value)) {
         this.emitScalar(value.toString());
       } else if (j$.util.arrayContains(this.seen, value)) {
         this.emitScalar('<circular reference: ' + (j$.isArray_(value) ? 'Array' : 'Object') + '>');
