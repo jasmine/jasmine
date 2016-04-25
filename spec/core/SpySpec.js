@@ -60,6 +60,17 @@ describe('Spies', function () {
   });
 
   describe("createSpyObj", function() {
+    it("should create an object with spy methods and corresponding return values when you call jasmine.createSpyObj() with an object", function () {
+      var spyObj = jasmineUnderTest.createSpyObj('BaseName', {'method1': 42, 'method2': 'special sauce' });
+
+      expect(spyObj.method1()).toEqual(42);
+      expect(spyObj.method1.and.identity()).toEqual('BaseName.method1');
+
+      expect(spyObj.method2()).toEqual('special sauce');
+      expect(spyObj.method2.and.identity()).toEqual('BaseName.method2');
+    });
+
+
     it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
       var spyObj = jasmineUnderTest.createSpyObj('BaseName', ['method1', 'method2']);
 
@@ -76,10 +87,22 @@ describe('Spies', function () {
       expect(spyObj.method2.and.identity()).toEqual('unknown.method2');
     });
 
-    it("should throw if you do not pass an array argument", function() {
+    it("should throw if you do not pass an array or object argument", function() {
       expect(function() {
         jasmineUnderTest.createSpyObj('BaseName');
-      }).toThrow("createSpyObj requires a non-empty array of method names to create spies for");
+      }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
+    });
+
+    it("should throw if you pass an empty array argument", function() {
+      expect(function() {
+        jasmineUnderTest.createSpyObj('BaseName', []);
+      }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
+    });
+
+    it("should throw if you pass an empty object argument", function() {
+      expect(function() {
+        jasmineUnderTest.createSpyObj('BaseName', {});
+      }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
     });
   });
 });
