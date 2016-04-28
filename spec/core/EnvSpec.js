@@ -27,8 +27,8 @@ describe("Env", function() {
   });
 
   describe('#describe', function () {
-    var spec = function(done){};
-    it("throws the error", function() {
+    it("when callback takes any arguments throws error", function() {
+      var spec = function(done){};
       expect(function() {
         env.describe('done method', spec);
       }).toThrow(new Error('describe does not expect any arguments'));
