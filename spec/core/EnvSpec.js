@@ -33,6 +33,13 @@ describe("Env", function() {
         env.describe('done method', spec);
       }).toThrow(new Error('describe does not expect any arguments'));
     });
+
+    it("when no callback is provided throws error", function() {
+      var spec = null;
+      expect(function() {
+        env.describe('I do not have a callback', null);
+      }).toThrow(new Error('describe did not get a spec definition callback'));
+    });
   });
 
   it('can configure specs to throw errors on expectation failures', function() {

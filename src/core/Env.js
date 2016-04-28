@@ -312,6 +312,10 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.describe = function(description, specDefinitions) {
       var suite = suiteFactory(description);
+      if (typeof specDefinitions !== 'function'){
+        throw new Error('describe did not get a spec definition callback');
+      }
+
       if (specDefinitions.length > 0) {
         throw new Error('describe does not expect any arguments');
       }
