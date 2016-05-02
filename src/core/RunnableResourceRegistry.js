@@ -6,27 +6,27 @@ getJasmineRequireObj().RunnableResourceRegistry = function(j$) {
       _runnableResources[id] = buildDefaultsFor(id, parentId);
     };
 
-    this.clear = function (id) {
+    this.remove = function (id) {
       delete _runnableResources[id];
     };
 
-    this.customEqualityTesters = function (id, tester) {
+    this.addCustomEqualityTester = function (id, tester) {
       _runnableResources[id].customEqualityTesters.push(tester);
     };
 
-    this.customMatchers = function (id) {
-      return _runnableResources[id].customMatchers;
+    this.getCustomEqualityTesters = function (id) {
+      return _runnableResources[id].customEqualityTesters;
     };
 
-    this.addMatchers = function (id, matchersObj) {
+    this.copyCustomMatchers = function (id, matchersObj) {
       var customMatchers = _runnableResources[id].customMatchers;
       for (var matcherName in matchersObj) {
         customMatchers[matcherName] = matchersObj[matcherName];
       }
     };
 
-    this.equalityTesters = function (id) {
-      return _runnableResources[id].customEqualityTesters;
+    this.getCustomMatchers = function (id) {
+      return _runnableResources[id].customMatchers;
     };
 
     this.spies = function (id) {

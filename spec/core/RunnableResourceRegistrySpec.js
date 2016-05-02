@@ -7,11 +7,11 @@ describe("RunnableResourceRegistry", function (){
         registry = new jasmineUnderTest.RunnableResourceRegistry();
       });
 
-      it("sets empty arrays for spies, customEqualityTesters, customMatchers", function(){
+      it("sets empty arrays for spies, getCustomEqualityTesters, customMatchers", function(){
         registry.setDefaultResources("id under test");
         expect(registry.spies("id under test")).toEqual([]);
-        expect(registry.equalityTesters("id under test")).toEqual([]);
-        expect(registry.customMatchers("id under test")).toEqual({});
+        expect(registry.getCustomEqualityTesters("id under test")).toEqual([]);
+        expect(registry.getCustomMatchers("id under test")).toEqual({});
       });
     });
 
@@ -28,13 +28,13 @@ describe("RunnableResourceRegistry", function (){
         registry.setDefaultResources("parent");
       });
 
-      it("copies references to parent's customEqualityTesters and customMatchers", function(){
-        registry.customEqualityTesters("parent", fakeEqualityTester);
-        registry.addMatchers("parent", { fakeMatcher: fakeCustomMatcher });
+      it("copies references to parent's getCustomEqualityTesters and customMatchers", function(){
+        registry.addCustomEqualityTester("parent", fakeEqualityTester);
+        registry.copyCustomMatchers("parent", { fakeMatcher: fakeCustomMatcher });
 
         registry.setDefaultResources("child", "parent");
-        expect(registry.equalityTesters("child")).toEqual([fakeEqualityTester]);
-        expect(registry.customMatchers("child")).toEqual({ fakeMatcher: fakeCustomMatcher });
+        expect(registry.getCustomEqualityTesters("child")).toEqual([fakeEqualityTester]);
+        expect(registry.getCustomMatchers("child")).toEqual({ fakeMatcher: fakeCustomMatcher });
       });
 
       it("sets an empty array for spies", function(){
@@ -44,7 +44,7 @@ describe("RunnableResourceRegistry", function (){
     });
   });
 
-  describe("#clear", function() {
+  describe("#remove", function() {
     beforeEach(function(){
       registry = new jasmineUnderTest.RunnableResourceRegistry();
     });
@@ -54,7 +54,7 @@ describe("RunnableResourceRegistry", function (){
       registry.setDefaultResources("some_runnable_id");
       expect(registry.spies("some_runnable_id")).toEqual([]);
 
-      registry.clear("some_runnable_id");
+      registry.remove("some_runnable_id");
 
       expect(function(){
         registry.spies("some_runnable_id");
@@ -62,8 +62,7 @@ describe("RunnableResourceRegistry", function (){
     });
   });
 
-  // TODO fix naming
-  describe("#customEqualityTesters", function(){
+  describe("#addCustomEqualityTester", function(){
     beforeEach(function(){
       registry = new jasmineUnderTest.RunnableResourceRegistry();
     });
@@ -72,12 +71,12 @@ describe("RunnableResourceRegistry", function (){
       var fakeEqualityTester = jasmine.createSpy("fakeEqualityTester");
 
       registry.setDefaultResources("some_runnable_id");
-      registry.customEqualityTesters("some_runnable_id", fakeEqualityTester);
-      expect(registry.equalityTesters("some_runnable_id")).toEqual([fakeEqualityTester]);
+      registry.addCustomEqualityTester("some_runnable_id", fakeEqualityTester);
+      expect(registry.getCustomEqualityTesters("some_runnable_id")).toEqual([fakeEqualityTester]);
     });
   });
 
-  describe("#equalityTesters", function(){
+  describe("#getCustomGetCustomEqualityTesters", function(){
     beforeEach(function(){
       registry = new jasmineUnderTest.RunnableResourceRegistry();
     });
@@ -87,14 +86,14 @@ describe("RunnableResourceRegistry", function (){
 
       registry.setDefaultResources("some_runnable_id");
 
-      expect(registry.equalityTesters("some_runnable_id")).toEqual([]);
-      registry.customEqualityTesters("some_runnable_id", fakeEqualityTester);
+      expect(registry.getCustomEqualityTesters("some_runnable_id")).toEqual([]);
+      registry.addCustomEqualityTester("some_runnable_id", fakeEqualityTester);
 
-      expect(registry.equalityTesters("some_runnable_id")).toEqual([fakeEqualityTester]);
+      expect(registry.getCustomEqualityTesters("some_runnable_id")).toEqual([fakeEqualityTester]);
     });
   });
 
-  describe("#customMatchers", function(){
+  describe("#getCustomMatchers", function(){
     beforeEach(function(){
       registry = new jasmineUnderTest.RunnableResourceRegistry();
     });
@@ -103,12 +102,12 @@ describe("RunnableResourceRegistry", function (){
       var fakeMatchers = { customMatcher0: function(){}, customMatcher1: function(){} };
 
       registry.setDefaultResources("some_runnable_id");
-      registry.addMatchers("some_runnable_id", fakeMatchers);
-      expect(registry.customMatchers("some_runnable_id")).toEqual(fakeMatchers);
+      registry.copyCustomMatchers("some_runnable_id", fakeMatchers);
+      expect(registry.getCustomMatchers("some_runnable_id")).toEqual(fakeMatchers);
     });
   });
 
-  describe("#addMatchers", function (){
+  describe("#copyCustomMatchers", function (){
     beforeEach(function(){
       registry = new jasmineUnderTest.RunnableResourceRegistry();
     });
@@ -116,10 +115,10 @@ describe("RunnableResourceRegistry", function (){
     it("copies an object of custom matchers into a resource's matchers", function (){
       var fakeMatchers = { customMatcher0: function(){}, customMatcher1: function(){} };
       registry.setDefaultResources("some_runnable_id");
-      expect(registry.customMatchers("some_runnable_id")).toEqual({});
+      expect(registry.getCustomMatchers("some_runnable_id")).toEqual({});
 
-      registry.addMatchers("some_runnable_id", fakeMatchers);
-      expect(registry.customMatchers("some_runnable_id")).toEqual(fakeMatchers);
+      registry.copyCustomMatchers("some_runnable_id", fakeMatchers);
+      expect(registry.getCustomMatchers("some_runnable_id")).toEqual(fakeMatchers);
     });
   });
 

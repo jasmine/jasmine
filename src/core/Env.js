@@ -48,7 +48,7 @@ getJasmineRequireObj().Env = function(j$) {
       if(!currentRunnable()) {
         throw new Error('Custom Equalities must be added in a before function or a spec');
       }
-      runnableResources.customEqualityTesters(
+      runnableResources.addCustomEqualityTester(
         currentRunnable().id,
         tester
       );
@@ -59,7 +59,7 @@ getJasmineRequireObj().Env = function(j$) {
         throw new Error('Matchers must be added in a before function or a spec');
       }
 
-      runnableResources.addMatchers(
+      runnableResources.copyCustomMatchers(
         currentRunnable().id,
         matchersToAdd
       );
@@ -80,8 +80,8 @@ getJasmineRequireObj().Env = function(j$) {
     var expectationFactory = function(actual, spec) {
       return j$.Expectation.Factory({
         util: j$.matchersUtil,
-        customEqualityTesters: runnableResources.equalityTesters(spec.id),
-        customMatchers: runnableResources.customMatchers(spec.id),
+        customEqualityTesters: runnableResources.getCustomEqualityTesters(spec.id),
+        customMatchers: runnableResources.getCustomMatchers(spec.id),
         actual: actual,
         addExpectationResult: addExpectationResult
       });
@@ -97,7 +97,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     var clearResourcesForRunnable = function(id) {
         spyRegistry.clearSpies();
-        runnableResources.clear(id);
+        runnableResources.remove(id);
     };
 
     var beforeAndAfterFns = function(suite) {
