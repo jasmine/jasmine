@@ -14,7 +14,7 @@ getJasmineRequireObj().Env = function(j$) {
     this.clock = new j$.Clock(global, function () { return new j$.DelayedFunctionScheduler(); }, new j$.MockDate(global));
 
     var runnableLookupTable = {};
-    var runnableResources = new j$.RunnableResourceRepository();
+    var runnableResources = new j$.RunnableResourceRegistry();
 
     var currentSpec = null;
     var currentlyExecutingSuites = [];

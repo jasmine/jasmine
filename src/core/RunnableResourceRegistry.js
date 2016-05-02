@@ -1,5 +1,5 @@
-getJasmineRequireObj().RunnableResourceRepository = function(j$) {
-  function RunnableResourceRepository () {
+getJasmineRequireObj().RunnableResourceRegistry = function(j$) {
+  function RunnableResourceRegistry () {
     var _runnableResources = {};
 
     this.setDefaultResources = function (id, parentId) {
@@ -47,6 +47,6 @@ getJasmineRequireObj().RunnableResourceRepository = function(j$) {
     }
   }
 
-  return RunnableResourceRepository;
+  return RunnableResourceRegistry;
 };
 
