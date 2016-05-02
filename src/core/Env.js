@@ -14,7 +14,7 @@ getJasmineRequireObj().Env = function(j$) {
     this.clock = new j$.Clock(global, function () { return new j$.DelayedFunctionScheduler(); }, new j$.MockDate(global));
 
     var runnableLookupTable = {};
-    var runnableResources = {};
+    var runnableResources = new j$.RunnableResourceRepository();
 
     var currentSpec = null;
     var currentlyExecutingSuites = [];
@@ -48,17 +48,21 @@ getJasmineRequireObj().Env = function(j$) {
       if(!currentRunnable()) {
         throw new Error('Custom Equalities must be added in a before function or a spec');
       }
-      runnableResources[currentRunnable().id].customEqualityTesters.push(tester);
+      runnableResources.customEqualityTesters(
+        currentRunnable().id,
+        tester
+      );
     };
 
     this.addMatchers = function(matchersToAdd) {
       if(!currentRunnable()) {
         throw new Error('Matchers must be added in a before function or a spec');
       }
-      var customMatchers = runnableResources[currentRunnable().id].customMatchers;
-      for (var matcherName in matchersToAdd) {
-        customMatchers[matcherName] = matchersToAdd[matcherName];
-      }
+
+      runnableResources.addMatchers(
+        currentRunnable().id,
+        matchersToAdd
+      );
     };
 
     j$.Expectation.addCoreMatchers(j$.matchers);
@@ -76,8 +80,8 @@ getJasmineRequireObj().Env = function(j$) {
     var expectationFactory = function(actual, spec) {
       return j$.Expectation.Factory({
         util: j$.matchersUtil,
-        customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
-        customMatchers: runnableResources[spec.id].customMatchers,
+        customEqualityTesters: runnableResources.equalityTesters(spec.id),
+        customMatchers: runnableResources.customMatchers(spec.id),
         actual: actual,
         addExpectationResult: addExpectationResult
       });
@@ -88,19 +92,12 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var defaultResourcesForRunnable = function(id, parentRunnableId) {
-      var resources = {spies: [], customEqualityTesters: [], customMatchers: {}};
-
-      if(runnableResources[parentRunnableId]){
-        resources.customEqualityTesters = j$.util.clone(runnableResources[parentRunnableId].customEqualityTesters);
-        resources.customMatchers = j$.util.clone(runnableResources[parentRunnableId].customMatchers);
-      }
-
-      runnableResources[id] = resources;
+      runnableResources.setDefaultResources(id, parentRunnableId);
     };
 
     var clearResourcesForRunnable = function(id) {
         spyRegistry.clearSpies();
-        delete runnableResources[id];
+        runnableResources.clear(id);
     };
 
     var beforeAndAfterFns = function(suite) {
@@ -284,7 +281,7 @@ getJasmineRequireObj().Env = function(j$) {
       if(!currentRunnable()) {
         throw new Error('Spies must be created in a before function or a spec');
       }
-      return runnableResources[currentRunnable().id].spies;
+      return runnableResources.spies(currentRunnable().id);
     }});
 
     this.allowRespy = function(allow){
