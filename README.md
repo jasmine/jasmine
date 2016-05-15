@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jasmine/jasmine.svg?branch=master)](https://travis-ci.org/jasmine/jasmine)
 [![Code Climate](https://codeclimate.com/github/pivotal/jasmine.svg)](https://codeclimate.com/github/pivotal/jasmine)
+[![Known Vulnerabilities](https://snyk.io/test/github/jasmine/jasmine/badge.svg)](https://snyk.io/test/github/jasmine/jasmine)
 
 =======
 
