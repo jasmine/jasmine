@@ -293,6 +293,10 @@ getJasmineRequireObj().Env = function(j$) {
       return spyRegistry.spyOn.apply(spyRegistry, arguments);
     };
 
+    this.spyOnProperty = function() {
+      return spyRegistry.spyOnProperty.apply(spyRegistry, arguments);
+    };
+
     var suiteFactory = function(description) {
       var suite = new j$.Suite({
         env: self,
