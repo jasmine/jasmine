@@ -36,4 +36,17 @@ describe("ArrayContaining", function() {
 
     expect(containing.jasmineToString()).toMatch("<jasmine.arrayContaining");
   });
+
+  it("uses custom equality testers", function() {
+    var tester = function(a, b) {
+      // All "foo*" strings match each other.
+      if (typeof a == "string" && typeof b == "string" &&
+          a.substr(0, 3) == "foo" && b.substr(0, 3) == "foo") {
+        return true;
+      }
+    };
+    var containing = new jasmineUnderTest.ArrayContaining(["fooVal"]);
+
+    expect(containing.asymmetricMatch(["fooBar"], [tester])).toBe(true);
+  });
 });
