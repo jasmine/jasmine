@@ -67,7 +67,13 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         timeoutId;
 
       next.fail = function() {
-        self.fail.apply(null, arguments);
+        try {
+          self.fail.apply(null, arguments);
+        } catch (e) {
+          // this was either a j$.errors.ExpectationFailed or a fatal error adding a failed expectation
+          // in either case we skip all subsequent queued functions
+          iterativeIndex = length;
+        }
         next();
       };
 
