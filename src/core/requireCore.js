@@ -32,6 +32,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.MockDate = jRequire.MockDate();
     j$.Clock = jRequire.Clock();
     j$.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler();
+    j$.RunnableResourceRegistry = jRequire.RunnableResourceRegistry(j$);
     j$.Env = jRequire.Env(j$);
     j$.ExceptionFormatter = jRequire.ExceptionFormatter();
     j$.Expectation = jRequire.Expectation();
