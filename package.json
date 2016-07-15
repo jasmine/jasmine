@@ -13,7 +13,7 @@
     "bdd"
   ],
   "scripts": {
-    "test": "./node_modules/.bin/grunt jshint execSpecsInNode"
+    "test": "grunt jshint execSpecsInNode"
   },
   "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
   "homepage": "http://jasmine.github.io",
