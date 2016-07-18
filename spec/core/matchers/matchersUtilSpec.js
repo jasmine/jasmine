@@ -75,6 +75,16 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(one, two)).toBe(false);
     });
 
+    it("passes for Arrays with equivalent contents and properties", function() {
+      var one = [1,2,3],
+          two = [1,2,3];
+
+      one.foo = 'bar';
+      two.foo = 'bar';
+
+      expect(jasmineUnderTest.matchersUtil.equals(one, two)).toBe(true);
+    });
+
     it("passes for Errors that are the same type and have the same message", function() {
       expect(jasmineUnderTest.matchersUtil.equals(new Error("foo"), new Error("foo"))).toBe(true);
     });
