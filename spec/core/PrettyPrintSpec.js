@@ -99,6 +99,11 @@ describe("jasmineUnderTest.pp", function () {
     }, bar: [1, 2, 3]})).toEqual("Object({ foo: Function, bar: [ 1, 2, 3 ] })");
   });
 
+  it("should print 'null' as the constructor of an object with its own constructor property", function() {
+    expect(jasmineUnderTest.pp({constructor: function() {}})).toEqual("null({ constructor: Function })");
+    expect(jasmineUnderTest.pp({constructor: 'foo'})).toEqual("null({ constructor: 'foo' })");
+  });
+
   it("should not include inherited properties when stringifying an object", function() {
     var SomeClass = function SomeClass() {};
     SomeClass.prototype.foo = "inherited foo";
@@ -163,7 +168,6 @@ describe("jasmineUnderTest.pp", function () {
       expect(jasmineUnderTest.pp(sampleValue)).toEqual("Object({ id: 1 })");
     }
   });
-
 
   it('should not do HTML escaping of strings', function() {
     expect(jasmineUnderTest.pp('some <b>html string</b> &', false)).toEqual('\'some <b>html string</b> &\'');

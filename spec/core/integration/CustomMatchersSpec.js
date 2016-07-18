@@ -79,6 +79,30 @@ describe("Custom Matchers (Integration)", function() {
     env.execute();
   });
 
+  it("displays an appropriate failure message if a custom equality matcher fails", function(done) {
+    env.it("spec using custom equality matcher", function() {
+      var customEqualityFn = function(a, b) {
+        // "foo" is not equal to anything
+        if (a === 'foo' || b === 'foo') {
+          return false;
+        }
+      };
+
+      env.addCustomEqualityTester(customEqualityFn);
+      env.expect({foo: 'foo'}).toEqual({foo: 'foo'});
+    });
+
+    var specExpectations = function(result) {
+      expect(result.status).toEqual('failed');
+      expect(result.failedExpectations[0].message).toEqual(
+        "Expected $.foo = 'foo' to equal 'foo'."
+      );
+    };
+
+    env.addReporter({ specDone: specExpectations, jasmineDone: done });
+    env.execute();
+  });
+
   it("uses the negative compare function for a negative comparison, if provided", function(done) {
     env.it("spec with custom negative comparison matcher", function() {
       env.addMatchers({

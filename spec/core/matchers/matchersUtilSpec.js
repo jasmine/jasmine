@@ -61,8 +61,12 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(foo, [undefined])).toBe(true);
     });
 
-    it("fails for Arrays that are not equivalent", function() {
+    it("fails for Arrays that have different lengths", function() {
       expect(jasmineUnderTest.matchersUtil.equals([1, 2], [1, 2, 3])).toBe(false);
+    });
+
+    it("fails for Arrays that have different elements", function() {
+      expect(jasmineUnderTest.matchersUtil.equals([1, 2, 3], [1, 5, 3])).toBe(false);
     });
 
     it("fails for Arrays whose contents are equivalent, but have differing properties", function() {
@@ -135,6 +139,13 @@ describe("matchersUtil", function() {
 
       expect(jasmineUnderTest.matchersUtil.equals(actual, expected)).toBe(false);
     });
+
+    it("fails for Objects that have the same number of keys, but different keys/values", function () {
+      var expected = { a: undefined },
+        actual = { b: 1 };
+
+      expect(jasmineUnderTest.matchersUtil.equals(actual, expected)).toBe(false);
+    })
 
     it("fails when comparing an empty object to an empty array (issue #114)", function() {
       var emptyObject = {},
