@@ -93,6 +93,24 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(new Error("foo"), new Error("bar"))).toBe(false);
     });
 
+    it("fails for objects with different constructors", function() {
+      function One() {}
+      function Two() {}
+
+      expect(jasmineUnderTest.matchersUtil.equals(new One(), new Two())).toBe(false);
+    });
+
+    if (typeof document === 'object') {
+      it("passes for equivalent objects from different frames", function() {
+        var iframe = document.createElement('iframe');
+        document.body.appendChild(iframe);
+        console.log(iframe);
+        iframe.contentWindow.eval('window.testObject = {}');
+        expect(jasmineUnderTest.matchersUtil.equals({}, iframe.contentWindow.testObject)).toBe(true);
+        document.body.removeChild(iframe);
+      });
+    }
+
     it("passes for Objects that are equivalent (simple case)", function() {
       expect(jasmineUnderTest.matchersUtil.equals({a: "foo"}, {a: "foo"})).toBe(true);
     });
