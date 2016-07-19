@@ -231,21 +231,21 @@ getJasmineRequireObj().matchersUtil = function(j$) {
 
       return extraKeys;
     }
+  }
+  
+  function has(obj, key) {
+    return Object.prototype.hasOwnProperty.call(obj, key);
+  }
 
-    function has(obj, key) {
-      return Object.prototype.hasOwnProperty.call(obj, key);
-    }
+  function isFunction(obj) {
+    return typeof obj === 'function';
+  }
 
-    function isFunction(obj) {
-      return typeof obj === 'function';
-    }
-
-    function isObjectConstructor(ctor) {
-      // aCtor instanceof aCtor is true for the Object and Function
-      // constructors (since a constructor is-a Function and a function is-a
-      // Object). We don't just compare ctor === Object because the constructor
-      // might come from a different frame with different globals.
-      return isFunction(ctor) && ctor instanceof ctor;
-    }
+  function isObjectConstructor(ctor) {
+    // aCtor instanceof aCtor is true for the Object and Function
+    // constructors (since a constructor is-a Function and a function is-a
+    // Object). We don't just compare ctor === Object because the constructor
+    // might come from a different frame with different globals.
+    return isFunction(ctor) && ctor instanceof ctor;
   }
 };
