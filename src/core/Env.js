@@ -13,7 +13,6 @@ getJasmineRequireObj().Env = function(j$) {
     var realClearTimeout = j$.getGlobal().clearTimeout;
     this.clock = new j$.Clock(global, function () { return new j$.DelayedFunctionScheduler(); }, new j$.MockDate(global));
 
-    var runnableLookupTable = {};
     var runnableResources = {};
 
     var currentSpec = null;
@@ -208,7 +207,6 @@ getJasmineRequireObj().Env = function(j$) {
       expectationFactory: expectationFactory,
       expectationResultFactory: expectationResultFactory
     });
-    runnableLookupTable[topSuite.id] = topSuite;
     defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
 
@@ -306,7 +304,6 @@ getJasmineRequireObj().Env = function(j$) {
         throwOnExpectationFailure: throwOnExpectationFailure
       });
 
-      runnableLookupTable[suite.id] = suite;
       return suite;
     };
 
@@ -407,8 +404,6 @@ getJasmineRequireObj().Env = function(j$) {
         },
         throwOnExpectationFailure: throwOnExpectationFailure
       });
-
-      runnableLookupTable[spec.id] = spec;
 
       if (!self.specFilter(spec)) {
         spec.disable();
