@@ -19,7 +19,7 @@
   "homepage": "http://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
   "devDependencies": {
-    "glob": "~5.0.13",
+    "glob": "~7.0.5",
     "grunt": "~0.4.1",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-compass": "~0.6.0",
@@ -28,7 +28,7 @@
     "grunt-contrib-jshint": "~0.7.0",
     "jasmine": "git://github.com/jasmine/jasmine-npm.git",
     "load-grunt-tasks": "^0.4.0",
-    "shelljs": "~0.1.4",
+    "shelljs": "^0.7.0",
     "temp": "~0.8.1"
   }
 }
