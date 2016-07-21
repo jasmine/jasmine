@@ -48,6 +48,52 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       }
 
       return message + '.';
+    },
+
+    diffStringArrays: function(actual, expected) {
+      var difference = {
+        none: true,
+        extra: [],
+        missing: []
+      };
+
+      var item, i;
+
+      for (i = 0; i < expected.length; i++) {
+        item = expected[i];
+
+        if (actual.indexOf(item) === -1) {
+          difference.missing.push(item);
+        }
+      }
+
+      for (i = 0; i < actual.length; i++) {
+        item = actual[i];
+
+        if (expected.indexOf(item) === -1) {
+          difference.extra.push(item);
+        }
+      }
+
+      difference.none = difference.extra.length === 0 && difference.missing.length === 0;
+
+      return difference;
+    },
+
+    keys: function(object) {
+      var keys = [], key;
+      for (key in object) {
+        keys.push(key);
+      }
+      return keys;
+    },
+
+    isObject: function(allegedObject) {
+      return Object.prototype.toString.call(allegedObject) === '[object Object]';
+    },
+
+    isArray: function(allegedArray) {
+      return Object.prototype.toString.call(allegedArray) === '[object Array]';
     }
   };
 
