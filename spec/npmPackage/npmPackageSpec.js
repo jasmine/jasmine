@@ -5,9 +5,9 @@ describe('npm package', function() {
 
   beforeAll(function() {
     var shell = require('shelljs'),
-        pack = shell.exec('npm pack', { silent: true });
+        pack = shell.exec('npm pack', { silent: true});
 
-    this.tarball = pack.output.split('\n')[0];
+    this.tarball = pack.stdout.split('\n')[0];
     this.tmpDir = temp.mkdirSync(); // automatically deleted on exit
 
     var untar = shell.exec('tar -xzf ' + this.tarball + ' -C ' + this.tmpDir, { silent: true });
