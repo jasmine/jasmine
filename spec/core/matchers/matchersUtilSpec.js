@@ -93,6 +93,13 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(new Error("foo"), new Error("bar"))).toBe(false);
     });
 
+    it("fails for objects with different constructors", function() {
+      function One() {}
+      function Two() {}
+
+      expect(jasmineUnderTest.matchersUtil.equals(new One(), new Two())).toBe(false);
+    });
+
     it("passes for Objects that are equivalent (simple case)", function() {
       expect(jasmineUnderTest.matchersUtil.equals({a: "foo"}, {a: "foo"})).toBe(true);
     });
@@ -149,70 +156,81 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(true);
     });
 
-    it("passes for equivalent DOM nodes", function() {
-      if (typeof document === 'undefined') {
-        return;
-      }
-      var a = document.createElement("div");
-      a.setAttribute("test-attr", "attr-value")
-      a.appendChild(document.createTextNode('test'));
+    describe("when running in a browser", function() {
+      beforeEach(function() {
+        if (typeof document === 'undefined') {
+          pending();
+        }
+      });
 
-      var b = document.createElement("div");
-      b.setAttribute("test-attr", "attr-value")
-      b.appendChild(document.createTextNode('test'));
+      it("passes for equivalent DOM nodes", function() {
+        var a = document.createElement("div");
+        a.setAttribute("test-attr", "attr-value");
+        a.appendChild(document.createTextNode('test'));
 
-      expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(true);
+        var b = document.createElement("div");
+        b.setAttribute("test-attr", "attr-value");
+        b.appendChild(document.createTextNode('test'));
+
+        expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(true);
+      });
+
+      it("passes for equivalent objects from different frames", function() {
+        var iframe = document.createElement('iframe');
+        document.body.appendChild(iframe);
+        iframe.contentWindow.eval('window.testObject = {}');
+        expect(jasmineUnderTest.matchersUtil.equals({}, iframe.contentWindow.testObject)).toBe(true);
+        document.body.removeChild(iframe);
+      });
+
+      it("fails for DOM nodes with different attributes or child nodes", function() {
+        var a = document.createElement("div");
+        a.setAttribute("test-attr", "attr-value")
+        a.appendChild(document.createTextNode('test'));
+
+        var b = document.createElement("div");
+        b.setAttribute("test-attr", "attr-value2")
+        b.appendChild(document.createTextNode('test'));
+
+        expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(false);
+
+        b.setAttribute("test-attr", "attr-value");
+        expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(true);
+
+        b.appendChild(document.createTextNode('2'));
+        expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(false);
+
+        a.appendChild(document.createTextNode('2'));
+        expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(true);
+      });
     });
 
-    it("fails for DOM nodes with different attributes or child nodes", function() {
-      if (typeof document === 'undefined') {
-        return;
-      }
-      var a = document.createElement("div");
-      a.setAttribute("test-attr", "attr-value")
-      a.appendChild(document.createTextNode('test'));
+    describe("when running in Node", function() {
+      beforeEach(function() {
+        if (typeof require !== 'function') {
+          pending();
+        }
+      });
 
-      var b = document.createElement("div");
-      b.setAttribute("test-attr", "attr-value2")
-      b.appendChild(document.createTextNode('test'));
+      it("passes for equivalent objects from different vm contexts", function() {
+        var vm = require('vm');
+        var sandbox = {
+          obj: null
+        };
+        vm.runInNewContext('obj = {a: 1, b: 2}', sandbox);
 
-      expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(false);
+        expect(jasmineUnderTest.matchersUtil.equals(sandbox.obj, {a: 1, b: 2})).toBe(true);
+      });
 
-      b.setAttribute("test-attr", "attr-value");
-      expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(true);
+      it("passes for equivalent arrays from different vm contexts", function() {
+        var vm = require('vm');
+        var sandbox = {
+          arr: null
+        };
+        vm.runInNewContext('arr = [1, 2]', sandbox);
 
-      b.appendChild(document.createTextNode('2'));
-      expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(false);
-
-      a.appendChild(document.createTextNode('2'));
-      expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(true);
-    });
-
-    it("passes for equivalent objects from different vm contexts", function() {
-      if (typeof require !== 'function') {
-        return;
-      }
-      var vm = require('vm');
-      var sandbox = {
-        obj: null
-      };
-      vm.runInNewContext('obj = {a: 1, b: 2}', sandbox);
-
-      expect(jasmineUnderTest.matchersUtil.equals(sandbox.obj, {a: 1, b: 2})).toBe(true);
-    });
-
-    it("passes for equivalent arrays from different vm contexts", function() {
-      if (typeof require !== 'function') {
-        return;
-      }
-
-      var vm = require('vm');
-      var sandbox = {
-        arr: null
-      };
-      vm.runInNewContext('arr = [1, 2]', sandbox);
-
-      expect(jasmineUnderTest.matchersUtil.equals(sandbox.arr, [1, 2])).toBe(true);
+        expect(jasmineUnderTest.matchersUtil.equals(sandbox.arr, [1, 2])).toBe(true);
+      });
     });
 
     it("passes when Any is used", function() {
