@@ -157,13 +157,14 @@ describe("matchersUtil", function() {
     });
 
     describe("when running in a browser", function() {
-      beforeEach(function() {
-        if (typeof document === 'undefined') {
-          pending();
-        }
-      });
+      function isNotRunningInBrowser() {
+        return typeof document === 'undefined'
+      }
 
       it("passes for equivalent DOM nodes", function() {
+        if (isNotRunningInBrowser()) {
+          return;
+        }
         var a = document.createElement("div");
         a.setAttribute("test-attr", "attr-value");
         a.appendChild(document.createTextNode('test'));
@@ -176,6 +177,13 @@ describe("matchersUtil", function() {
       });
 
       it("passes for equivalent objects from different frames", function() {
+        if (isNotRunningInBrowser()) {
+          return;
+        }
+        // iframe.contentWindow.eval isn't supported in ie8
+        if (jasmine.getEnv().ieVersion < 9) {
+          return;
+        }
         var iframe = document.createElement('iframe');
         document.body.appendChild(iframe);
         iframe.contentWindow.eval('window.testObject = {}');
@@ -184,6 +192,9 @@ describe("matchersUtil", function() {
       });
 
       it("fails for DOM nodes with different attributes or child nodes", function() {
+        if (isNotRunningInBrowser()) {
+          return;
+        }
         var a = document.createElement("div");
         a.setAttribute("test-attr", "attr-value")
         a.appendChild(document.createTextNode('test'));
@@ -206,13 +217,14 @@ describe("matchersUtil", function() {
     });
 
     describe("when running in Node", function() {
-      beforeEach(function() {
-        if (typeof require !== 'function') {
-          pending();
-        }
-      });
+      function isNotRunningInNode() {
+        return typeof require !== 'function'
+      }
 
       it("passes for equivalent objects from different vm contexts", function() {
+        if (isNotRunningInNode()) {
+          return;
+        }
         var vm = require('vm');
         var sandbox = {
           obj: null
@@ -223,6 +235,9 @@ describe("matchersUtil", function() {
       });
 
       it("passes for equivalent arrays from different vm contexts", function() {
+        if (isNotRunningInNode()) {
+          return;
+        }
         var vm = require('vm');
         var sandbox = {
           arr: null
