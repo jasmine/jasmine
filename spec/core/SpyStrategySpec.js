@@ -21,7 +21,7 @@ describe("SpyStrategy", function() {
     expect(originalFn).not.toHaveBeenCalled();
   });
 
-  it("allows an original function to be called, passed through the params and returns it's value", function() {
+  it("allows an original function to be called, passed through the params and returns its value", function() {
     var originalFn = jasmine.createSpy("original").and.returnValue(42),
         spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn}),
         returnValue;

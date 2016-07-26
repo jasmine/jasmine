@@ -45,6 +45,9 @@ getJasmineRequireObj().SpyStrategy = function() {
     };
 
     this.callFake = function(fn) {
+      if (arguments.length && typeof fn !== 'function') {
+        throw new Error('callFake requires function but received ' + typeof fn);
+      }
       plan = fn;
       return getSpy();
     };
