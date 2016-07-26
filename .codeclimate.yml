@@ -1,2 +1,7 @@
+languages:
+  JavaScript: true
 exclude_paths:
-- "lib/"
+- "lib/*"
+- "dist/*"
+- "grunt/*"
+- "images/*"
