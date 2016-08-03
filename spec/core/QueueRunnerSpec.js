@@ -234,6 +234,26 @@ describe("QueueRunner", function() {
       queueRunner.execute();
       expect(doneReturn).toBe(null);
     });
+
+    it("does not try catch an fn if told to", function() {
+      var queueableFn = {
+            fn: function (done) {
+              throw new Error('no try catch error');
+            }
+          },
+          queueRunner = new jasmineUnderTest.QueueRunner({
+            queueableFns: [queueableFn],
+            noTryCatch: true
+          });
+
+      try {
+        queueRunner.execute();
+        fail("should have thrown an exception");
+      } catch (e) {
+        expect(e.message).toBe('no try catch error');
+        expect(e.caughtByJasmine).toBeUndefined();
+      }
+    });
   });
 
   it("calls exception handlers when an exception is thrown in a fn", function() {
@@ -252,18 +272,43 @@ describe("QueueRunner", function() {
     expect(onExceptionCallback).toHaveBeenCalledWith(jasmine.any(Error));
   });
 
+  it("does not try catch an fn if told to", function() {
+    var queueableFn = {
+          fn: function () {
+            throw new Error('no try catch error');
+          }
+        },
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn],
+          noTryCatch: true
+        });
+
+    try {
+      queueRunner.execute();
+      fail("should have thrown an exception");
+    } catch (e) {
+      expect(e.message).toBe('no try catch error');
+      expect(e.caughtByJasmine).toBeUndefined();
+    }
+  });
+
+
   it("rethrows an exception if told to", function() {
     var queueableFn = { fn: function() {
-        throw new Error('fake error');
+        throw new Error('rethrow exception error');
       } },
       queueRunner = new jasmineUnderTest.QueueRunner({
         queueableFns: [queueableFn],
         catchException: function(e) { return false; }
       });
 
-    expect(function() {
+    try {
       queueRunner.execute();
-    }).toThrowError('fake error');
+      fail("should have rethrown exception");
+    } catch(e) {
+      expect(e.message).toBe('rethrow exception error');
+      expect(e.caughtByJasmine).toBeTruthy();
+    }
   });
 
   it("continues running the functions even after an exception is thrown in an async spec", function() {

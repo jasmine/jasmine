@@ -19,6 +19,7 @@ getJasmineRequireObj().Env = function(j$) {
     var currentlyExecutingSuites = [];
     var currentDeclarationSuite = null;
     var throwOnExpectationFailure = false;
+    var noTryCatch = false;
     var random = false;
     var seed = null;
 
@@ -176,6 +177,14 @@ getJasmineRequireObj().Env = function(j$) {
       return throwOnExpectationFailure;
     };
 
+    this.noTryCatch = function(value) {
+      noTryCatch = !!value;
+    };
+
+    this.noTryCatching = function() {
+      return noTryCatch;
+    };
+
     this.randomizeTests = function(value) {
       random = !!value;
     };
@@ -196,6 +205,7 @@ getJasmineRequireObj().Env = function(j$) {
       options.clearStack = options.clearStack || clearStack;
       options.timeout = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
       options.fail = self.fail;
+      options.noTryCatch = !!noTryCatch;
 
       new j$.QueueRunner(options).execute();
     };
