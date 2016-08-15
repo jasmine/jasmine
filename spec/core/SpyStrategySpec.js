@@ -92,6 +92,18 @@ describe("SpyStrategy", function() {
     expect(returnValue).toEqual(67);
   });
 
+  it('throws an error when a non-function is passed to callFake strategy', function() {
+    var originalFn = jasmine.createSpy('original'),
+        invalidFakes = [5, 'foo', {}, true, false, null, void 0, new Date(), /.*/];
+
+    for (var i=0; i<invalidFakes.length; i++) {
+      var invalidFake = invalidFakes[i],
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      expect(function() {spyStrategy.callFake(invalidFake);}).toThrowError('Argument passed to callFake should be a function, got ' + invalidFake);
+    }
+  });
+
   it("allows a return to plan stubbing after another strategy", function() {
     var originalFn = jasmine.createSpy("original"),
         fakeFn = jasmine.createSpy("fake").and.returnValue(67),
@@ -103,7 +115,7 @@ describe("SpyStrategy", function() {
 
     expect(originalFn).not.toHaveBeenCalled();
     expect(returnValue).toEqual(67);
-    
+
     spyStrategy.stub();
     returnValue = spyStrategy.exec();
 
@@ -118,7 +130,7 @@ describe("SpyStrategy", function() {
     expect(spyStrategy.callThrough()).toBe(spy);
     expect(spyStrategy.returnValue()).toBe(spy);
     expect(spyStrategy.throwError()).toBe(spy);
-    expect(spyStrategy.callFake()).toBe(spy);
+    expect(spyStrategy.callFake(function() {})).toBe(spy);
     expect(spyStrategy.stub()).toBe(spy);
   });
 });
