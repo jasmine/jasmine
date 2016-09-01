@@ -116,7 +116,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
     function runScheduledFunctions(endTime, tickDate) {
       tickDate = tickDate || function() {};
       if (scheduledLookup.length === 0 || scheduledLookup[0] > endTime) {
-        tickDate(endTime);
+        tickDate(endTime - currentTime);
         return;
       }
 
@@ -143,6 +143,11 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
               // scheduled in a funcToRun from forcing an extra iteration
                  currentTime !== endTime  &&
                  scheduledLookup[0] <= endTime);
+
+      // ran out of functions to call, but still time left on the clock
+      if (currentTime !== endTime) {
+        tickDate(endTime - currentTime);
+      }
     }
   }
 
