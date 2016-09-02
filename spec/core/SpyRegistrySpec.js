@@ -127,6 +127,29 @@ describe("SpyRegistry", function() {
 
       expect(subject.hasOwnProperty('spiedFunc')).toBe(false);
       expect(subject.spiedFunc).toBe(originalFunction);
-    })
+    });
+
+    it("restores the original function when it\'s inherited and cannot be deleted", function() {
+      // IE 8 doesn't support `Object.create` or `Object.defineProperty`
+      if (jasmine.getEnv().ieVersion < 9) { return; }
+
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        originalFunction = function() {},
+        subjectParent = {spiedFunc: originalFunction};
+
+      var subject = Object.create(subjectParent);
+
+      spyRegistry.spyOn(subject, 'spiedFunc');
+
+      // simulate a spy that cannot be deleted
+      Object.defineProperty(subject, 'spiedFunc', {
+        configurable: false
+      });
+
+      spyRegistry.clearSpies();
+
+      expect(jasmineUnderTest.isSpy(subject.spiedFunc)).toBe(false);
+    });
   });
 });

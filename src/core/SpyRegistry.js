@@ -53,7 +53,9 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         };
       } else {
         restoreStrategy = function() {
-          delete obj[methodName];
+          if (!delete obj[methodName]) {
+            obj[methodName] = originalMethod;
+          }
         };
       }
 
