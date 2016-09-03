@@ -21,6 +21,8 @@ getJasmineRequireObj().Env = function(j$) {
     var throwOnExpectationFailure = false;
     var random = false;
     var seed = null;
+    var allPassed = true;
+    var onComplete = function () {};
 
     var currentSuite = function() {
       return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
@@ -214,6 +216,10 @@ getJasmineRequireObj().Env = function(j$) {
       return topSuite;
     };
 
+    this.onComplete = function(callback) {
+      onComplete = callback;
+    };
+
     this.execute = function(runnablesToRun) {
       if(!runnablesToRun) {
         if (focusedRunnables.length) {
@@ -267,6 +273,8 @@ getJasmineRequireObj().Env = function(j$) {
           order: order,
           failedExpectations: topSuite.result.failedExpectations
         });
+
+        onComplete(allPassed);
       });
     };
 
@@ -414,6 +422,7 @@ getJasmineRequireObj().Env = function(j$) {
       function specResultCallback(result) {
         clearResourcesForRunnable(spec.id);
         currentSpec = null;
+        allPassed = allPassed && result.failedExpectations.length === 0;
         reporter.specDone(result);
       }
 

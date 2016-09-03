@@ -1746,4 +1746,95 @@ describe("Env integration", function() {
 
     env.execute();
   });
+
+  describe('onComplete callback', function () {
+    it('should be called after execution', function (done) {
+      var env = new jasmineUnderTest.Env(),
+        self = this;
+
+      self.onCompleteCallback = function() {
+        done();
+      };
+
+      spyOn(self, 'onCompleteCallback').and.callThrough();
+
+      var jasmineDone = function() {
+        expect(self.onCompleteCallback).not.toHaveBeenCalled(); // yet
+      };
+
+      env.addReporter({jasmineDone: jasmineDone});
+      env.onComplete(self.onCompleteCallback);
+      env.execute();
+    });
+
+    it('should be called with true when no specs are executed', function (done) {
+      var env = new jasmineUnderTest.Env(),
+        assertions = function(passed) {
+          expect(passed).toBe(true);
+          done();
+        };
+
+      env.onComplete(assertions);
+      env.execute();
+    });
+
+    it('should be called with true when execution is successful', function (done) {
+      var env = new jasmineUnderTest.Env(),
+        assertions = function(passed) {
+          expect(passed).toBe(true);
+          done();
+        };
+
+      env.describe('my suite', function() {
+        env.it('my spec', function() {
+          env.expect(1).toEqual(1);
+        });
+      });
+
+      env.onComplete(assertions);
+      env.execute();
+    });
+
+    it('should be called with false when execution is failed', function (done) {
+      var env = new jasmineUnderTest.Env(),
+        assertions = function(passed) {
+          expect(passed).toBe(false);
+          done();
+        };
+
+      env.describe('my suite', function() {
+        env.it('my spec', function() {
+          env.expect(1).toEqual(2);
+        });
+      });
+
+      env.onComplete(assertions);
+      env.execute();
+    });
+
+    it('should be called with false when execution timeout', function (done) {
+      jasmine.clock().install();
+      var originalTimeout = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL,
+        env = new jasmineUnderTest.Env(),
+        assertions = function(passed) {
+          expect(passed).toBe(false);
+          done();
+        };
+
+      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 10;
+
+      env.describe('my suite', function() {
+        env.it('my spec', function(innerDone) {
+          jasmine.clock().tick(11);
+          innerDone();
+        });
+      });
+
+      env.onComplete(assertions);
+      env.execute();
+
+      jasmine.clock().uninstall();
+      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+    });
+  });
 });
