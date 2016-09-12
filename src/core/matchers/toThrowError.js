@@ -1,4 +1,7 @@
 getJasmineRequireObj().toThrowError = function(j$) {
+
+  var getErrorMsg =  j$.formatErrorMsg('<toThrowError>', 'expect(function() {<expectation>}).toThrowError(<ErrorConstructor>, <message>)');
+
   function toThrowError () {
     return {
       compare: function(actual) {
@@ -8,7 +11,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
           thrown;
 
         if (typeof actual != 'function') {
-          throw new Error('Actual is not a Function');
+          throw new Error(getErrorMsg('Actual is not a Function'));
         }
 
         var errorMatcher = getMatcher.apply(null, arguments);
@@ -64,15 +67,15 @@ getJasmineRequireObj().toThrowError = function(j$) {
         errorType = arguments[1];
         expected = arguments[2];
         if (!isAnErrorType(errorType)) {
-          throw new Error('Expected error type is not an Error.');
+          throw new Error(getErrorMsg('Expected error type is not an Error.'));
         }
       }
 
       if (expected && !isStringOrRegExp(expected)) {
         if (errorType) {
-          throw new Error('Expected error message is not a string or RegExp.');
+          throw new Error(getErrorMsg('Expected error message is not a string or RegExp.'));
         } else {
-          throw new Error('Expected is not an Error, string, or RegExp.');
+          throw new Error(getErrorMsg('Expected is not an Error, string, or RegExp.'));
         }
       }
 

@@ -29,6 +29,9 @@ For the Jasmine Ruby Gem:<br>
 For the Jasmine Python Egg:<br>
 [https://github.com/jasmine/jasmine-py](https://github.com/jasmine/jasmine-py)
 
+For the Jasmine headless browser gulp plugin:<br>
+[https://github.com/jasmine/gulp-jasmine-browser](https://github.com/jasmine/gulp-jasmine-browser)
+
 To install Jasmine standalone on your local box:
 
 * Download the standalone distribution for your desired release from the [releases page](https://github.com/jasmine/jasmine/releases)

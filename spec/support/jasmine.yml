@@ -23,4 +23,5 @@ spec_files:
   - '!npmPackage/**/*'
 spec_dir: spec
 random: true
+spec_helper: spec/support/jasmine_helper.rb
 

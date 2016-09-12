@@ -666,9 +666,17 @@ describe("Clock (acceptance)", function() {
     var pushCurrentTime = function() { actualTimes.push(global.Date().getTime()); };
     delayedFunctionScheduler.scheduleFunction(pushCurrentTime);
     delayedFunctionScheduler.scheduleFunction(pushCurrentTime, 1);
+    delayedFunctionScheduler.scheduleFunction(pushCurrentTime, 3);
 
     clock.tick(1);
+    expect(global.Date().getTime()).toEqual(baseTime.getTime() + 1);
 
-    expect(actualTimes).toEqual([baseTime.getTime(), baseTime.getTime() + 1]);
+    clock.tick(3);
+    expect(global.Date().getTime()).toEqual(baseTime.getTime() + 4);
+
+    clock.tick(1);
+    expect(global.Date().getTime()).toEqual(baseTime.getTime() + 5);
+
+    expect(actualTimes).toEqual([baseTime.getTime(), baseTime.getTime() + 1, baseTime.getTime() + 3]);
   })
 });

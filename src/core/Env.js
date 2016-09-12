@@ -13,7 +13,6 @@ getJasmineRequireObj().Env = function(j$) {
     var realClearTimeout = j$.getGlobal().clearTimeout;
     this.clock = new j$.Clock(global, function () { return new j$.DelayedFunctionScheduler(); }, new j$.MockDate(global));
 
-    var runnableLookupTable = {};
     var runnableResources = {};
 
     var currentSpec = null;
@@ -123,7 +122,13 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var getSpecName = function(spec, suite) {
-      return suite.getFullName() + ' ' + spec.description;
+      var fullName = [spec.description],
+          suiteFullName = suite.getFullName();
+
+      if (suiteFullName !== '') {
+        fullName.unshift(suiteFullName);
+      }
+      return fullName.join(' ');
     };
 
     // TODO: we may just be able to pass in the fn instead of wrapping here
@@ -198,9 +203,10 @@ getJasmineRequireObj().Env = function(j$) {
     var topSuite = new j$.Suite({
       env: this,
       id: getNextSuiteId(),
-      description: 'Jasmine__TopLevel__Suite'
+      description: 'Jasmine__TopLevel__Suite',
+      expectationFactory: expectationFactory,
+      expectationResultFactory: expectationResultFactory
     });
-    runnableLookupTable[topSuite.id] = topSuite;
     defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
 
@@ -251,9 +257,15 @@ getJasmineRequireObj().Env = function(j$) {
         totalSpecsDefined: totalSpecsDefined
       });
 
+      currentlyExecutingSuites.push(topSuite);
+
       processor.execute(function() {
+        clearResourcesForRunnable(topSuite.id);
+        currentlyExecutingSuites.pop();
+
         reporter.jasmineDone({
-          order: order
+          order: order,
+          failedExpectations: topSuite.result.failedExpectations
         });
       });
     };
@@ -296,7 +308,6 @@ getJasmineRequireObj().Env = function(j$) {
         throwOnExpectationFailure: throwOnExpectationFailure
       });
 
-      runnableLookupTable[suite.id] = suite;
       return suite;
     };
 
@@ -397,8 +408,6 @@ getJasmineRequireObj().Env = function(j$) {
         },
         throwOnExpectationFailure: throwOnExpectationFailure
       });
-
-      runnableLookupTable[spec.id] = spec;
 
       if (!self.specFilter(spec)) {
         spec.disable();

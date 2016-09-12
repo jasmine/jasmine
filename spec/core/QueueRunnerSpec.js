@@ -220,6 +220,20 @@ describe("QueueRunner", function() {
       jasmine.clock().tick(1);
       expect(nextQueueableFn.fn.calls.count()).toEqual(1);
     });
+
+    it("should return a null when you call done", function () {
+      // Some promises want handlers to return anything but undefined to help catch "forgotten returns".
+      var doneReturn,
+        queueableFn = { fn: function(done) {
+          doneReturn = done();
+        } },
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn]
+        });
+
+      queueRunner.execute();
+      expect(doneReturn).toBe(null);
+    });
   });
 
   it("calls exception handlers when an exception is thrown in a fn", function() {

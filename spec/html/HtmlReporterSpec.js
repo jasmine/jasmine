@@ -1,5 +1,4 @@
 describe("New HtmlReporter", function() {
-  // TODO: Figure out why this isn't rendering...
   it("builds the initial DOM elements, including the title banner", function() {
     var env = new jasmineUnderTest.Env(),
       container = document.createElement("div"),
@@ -196,14 +195,16 @@ describe("New HtmlReporter", function() {
       reporter.jasmineStarted({});
       reporter.suiteDone({ status: 'failed', failedExpectations: [{ message: 'My After All Exception' }] });
       reporter.suiteDone({ status: 'failed', failedExpectations: [{ message: 'My Other Exception' }] });
-      reporter.jasmineDone({});
+      reporter.jasmineDone({ failedExpectations: [{ message: 'Global After All Failure' }, { message: 'Other Global' }] });
 
       var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
 
-      expect(alertBars.length).toEqual(3);
+      expect(alertBars.length).toEqual(5);
       expect(alertBars[1].innerHTML).toMatch(/My After All Exception/);
       expect(alertBars[1].getAttribute("class")).toEqual('jasmine-bar jasmine-errored');
       expect(alertBars[2].innerHTML).toMatch(/My Other Exception/);
+      expect(alertBars[3].innerHTML).toMatch(/Global After All Failure/);
+      expect(alertBars[4].innerHTML).toMatch(/Other Global/);
     });
   });
 

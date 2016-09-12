@@ -29,13 +29,13 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.getFullName = function() {
-    var fullName = this.description;
-    for (var parentSuite = this.parentSuite; parentSuite; parentSuite = parentSuite.parentSuite) {
+    var fullName = [];
+    for (var parentSuite = this; parentSuite; parentSuite = parentSuite.parentSuite) {
       if (parentSuite.parentSuite) {
-        fullName = parentSuite.description + ' ' + fullName;
+        fullName.unshift(parentSuite.description);
       }
     }
-    return fullName;
+    return fullName.join(' ');
   };
 
   Suite.prototype.disable = function() {

@@ -556,15 +556,24 @@ describe("jasmine spec running", function () {
     env.execute();
   });
 
-  // TODO: is this useful? It doesn't catch syntax errors
-  xit("should recover gracefully when there are errors in describe functions", function() {
-    var specs = [];
-    var superSimpleReporter = new jasmineUnderTest.Reporter();
-    superSimpleReporter.reportSpecResults = function(result) {
-      specs.push("Spec: " + result.fullName);
-    };
+  it("should recover gracefully when there are errors in describe functions", function(done) {
+    var specs = [],
+      reporter = jasmine.createSpyObj(['specDone', 'jasmineDone']);
 
-    try {
+    reporter.specDone.and.callFake(function(result) {
+      specs.push(result.fullName);
+    });
+
+    reporter.jasmineDone.and.callFake(function() {
+      expect(specs).toContain('outer1 inner1 should thingy');
+      expect(specs).toContain('outer1 inner1 encountered a declaration exception');
+      expect(specs).toContain('outer1 inner2 should other thingy');
+      expect(specs).toContain('outer1 encountered a declaration exception');
+      expect(specs).toContain('outer2 should xxx');
+      done();
+    });
+
+    expect(function() {
       env.describe("outer1", function() {
         env.describe("inner1", function() {
           env.it("should thingy", function() {
@@ -583,8 +592,7 @@ describe("jasmine spec running", function () {
         throw new Error("fake error");
 
       });
-    } catch(e) {
-    }
+    }).not.toThrow();
 
     env.describe("outer2", function() {
       env.it("should xxx", function() {
@@ -592,17 +600,8 @@ describe("jasmine spec running", function () {
       });
     });
 
-    env.addReporter(superSimpleReporter);
+    env.addReporter(reporter);
     env.execute();
-
-    expect(specs.join('')).toMatch(new RegExp(
-      'Spec: outer1 inner1 should thingy.' +
-      'Spec: outer1 inner1 encountered a declaration exception.' +
-      'Spec: outer1 inner2 should other thingy.' +
-      'Spec: outer1 encountered a declaration exception.' +
-      'Spec: outer2 should xxx.'
-    ));
-
   });
 
   it("re-enters suites that have no *Alls", function(done) {

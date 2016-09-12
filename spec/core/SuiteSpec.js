@@ -11,14 +11,14 @@ describe("Suite", function() {
     expect(suite.id).toEqual(456);
   });
 
-  it("returns its full name", function() {
+  it("returns blank full name for top level suite", function() {
     var env = new jasmineUnderTest.Env(),
       suite = new jasmineUnderTest.Suite({
         env: env,
         description: "I am a suite"
       });
 
-    expect(suite.getFullName()).toEqual("I am a suite");
+    expect(suite.getFullName()).toEqual("");
   });
 
   it("returns its full name when it has parent suites", function() {
