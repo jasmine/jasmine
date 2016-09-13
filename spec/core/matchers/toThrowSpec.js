@@ -1,11 +1,12 @@
 describe("toThrow", function() {
+
   it("throws an error when the actual is not a function", function() {
     var matcher = jasmineUnderTest.matchers.toThrow();
 
     expect(function() {
       matcher.compare({});
       matcherComparator({});
-    }).toThrowError("Actual is not a Function");
+    }).toThrowError(/Actual is not a Function/);
   });
 
   it("fails if actual does not throw", function() {

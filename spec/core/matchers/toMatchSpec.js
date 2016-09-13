@@ -1,4 +1,5 @@
 describe("toMatch", function() {
+
   it("passes when RegExps are equivalent", function() {
     var matcher = jasmineUnderTest.matchers.toMatch(),
       result;
@@ -36,7 +37,7 @@ describe("toMatch", function() {
 
     expect(function() {
       matcher.compare('foo', { bar: 'baz' });
-    }).toThrowError('Expected is not a String or a RegExp');
+    }).toThrowError(/Expected is not a String or a RegExp/);
   });
 });
 

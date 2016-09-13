@@ -1,7 +1,7 @@
 var getJasmineRequireObj = (function (jasmineGlobal) {
   var jasmineRequire;
 
-  if (typeof module !== 'undefined' && module.exports) {
+  if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined') {
     if (typeof global !== 'undefined') {
       jasmineGlobal = global;
     } else {
@@ -25,6 +25,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     jRequire.base(j$, jasmineGlobal);
     j$.util = jRequire.util();
     j$.errors = jRequire.errors();
+    j$.formatErrorMsg = jRequire.formatErrorMsg();
     j$.Any = jRequire.Any(j$);
     j$.Anything = jRequire.Anything(j$);
     j$.CallTracker = jRequire.CallTracker(j$);

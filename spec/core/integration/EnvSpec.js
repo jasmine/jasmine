@@ -458,32 +458,32 @@ describe("Env integration", function() {
     });
 
     it("if there are no specs, it still reports correctly", function(done) {
-        var env = new jasmineUnderTest.Env(),
-          reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
+      var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
-        reporter.jasmineDone.and.callFake(function() {
-          expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('outer suite', [
-            'Expected 1 to equal 2.',
-            'Expected 2 to equal 3.'
-          ]);
-          done();
-        });
-
-        env.addReporter(reporter);
-
-        env.describe('outer suite', function() {
-          env.describe('inner suite', function() {
-            env.it('spec', function(){ });
-          });
-
-          env.afterAll(function() {
-            env.expect(1).toEqual(2);
-            env.expect(2).toEqual(3);
-          });
-        });
-
-        env.execute();
+      reporter.jasmineDone.and.callFake(function() {
+        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('outer suite', [
+          'Expected 1 to equal 2.',
+          'Expected 2 to equal 3.'
+        ]);
+        done();
       });
+
+      env.addReporter(reporter);
+
+      env.describe('outer suite', function() {
+        env.describe('inner suite', function() {
+          env.it('spec', function(){ });
+        });
+
+        env.afterAll(function() {
+          env.expect(1).toEqual(2);
+          env.expect(2).toEqual(3);
+        });
+      });
+
+      env.execute();
+    });
 
     it("reports when afterAll throws an exception", function(done) {
       var env = new jasmineUnderTest.Env(),
@@ -563,6 +563,53 @@ describe("Env integration", function() {
 
       env.execute();
     });
+  });
+
+  it('cascades expecatation failures in global beforeAll down to children', function(done) {
+    var env = new jasmineUnderTest.Env(),
+      reporter = jasmine.createSpyObj(['specDone', 'jasmineDone']);
+
+    reporter.jasmineDone.and.callFake(function(results) {
+      expect(results.failedExpectations).toEqual([]);
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('is a spec', [
+        'Expected 1 to be 0.'
+      ]);
+      done();
+    });
+
+    env.beforeAll(function() {
+      env.expect(1).toBe(0);
+    });
+
+    env.it('is a spec', function() {
+      env.expect(true).toBe(true);
+    });
+
+    env.addReporter(reporter);
+
+    env.execute();
+  });
+
+  it('reports expectation failures in global afterAll', function(done) {
+    var env = new jasmineUnderTest.Env(),
+      reporter = jasmine.createSpyObj(['jasmineDone']);
+
+    reporter.jasmineDone.and.callFake(function(results) {
+      expect(results.failedExpectations).toEqual([jasmine.objectContaining({ message: 'Expected 1 to be 0.' })]);
+      done();
+    });
+
+    env.afterAll(function() {
+      env.expect(1).toBe(0);
+    });
+
+    env.it('is a spec', function() {
+      env.expect(true).toBe(true);
+    });
+
+    env.addReporter(reporter);
+
+    env.execute();
   });
 
   it("Allows specifying which specs and suites to run", function(done) {
@@ -756,6 +803,31 @@ describe("Env integration", function() {
       });
 
     env.addReporter({ jasmineDone: done });
+
+    env.execute();
+  });
+
+  it('removes a spy from the top suite after the run is complete', function(done) {
+    var env = new jasmineUnderTest.Env(),
+      originalFoo = function() {},
+      testObj = {
+        foo: originalFoo
+      };
+
+    env.beforeAll(function() {
+      env.spyOn(testObj, 'foo');
+    });
+
+    env.it('spec', function() {
+      expect(jasmineUnderTest.isSpy(testObj.foo)).toBe(true);
+    });
+
+    env.addReporter({
+      jasmineDone: function() {
+        expect(jasmineUnderTest.isSpy(testObj.foo)).toBe(false);
+        done();
+      }
+    });
 
     env.execute();
   });

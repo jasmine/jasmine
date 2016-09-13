@@ -115,6 +115,15 @@ Jasmine uses the [Jasmine NPM package](http://github.com/jasmine/jasmine-npm) to
 
 ...and then the results will print to the console. All specs run except those that expect a browser (the specs in `spec/html` are ignored).
 
+The easiest way to run the tests in **Internet Explorer** is to run a VM that has IE installed. It's easy to do this with VirtualBox.
+
+1. Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
+1. Download a VM image [from Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/). Select "VirtualBox" as the platform.
+1. Unzip the downloaded archive. There should be an OVA file inside.
+1. In VirtualBox, choose `File > Import Appliance` and select the OVA file. Accept the default settings in the dialog that appears. Now you have a Windows VM!
+1. Run the VM and start IE.
+1. With `bundle exec rake jasmine` running on your host machine, navigate to `http://10.0.2.2:8888` in IE.
+
 ## Before Committing or Submitting a Pull Request
 
 1. Ensure all specs are green in browser *and* node

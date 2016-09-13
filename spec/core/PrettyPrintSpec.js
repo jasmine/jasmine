@@ -189,6 +189,15 @@ describe("jasmineUnderTest.pp", function () {
     expect(jasmineUnderTest.pp(obj)).toEqual("my toString");
   });
 
+  it("should stringify objects from anonymous constructors with custom toString", function () {
+    var MyAnonymousConstructor = (function() { return function () {}; })();
+    MyAnonymousConstructor.toString = function () { return ''; };
+
+    var a = new MyAnonymousConstructor();
+
+    expect(jasmineUnderTest.pp(a)).toEqual("<anonymous>({  })");
+  });
+
   it("should handle objects with null prototype", function() {
     if (jasmine.getEnv().ieVersion < 9) { return; }
 

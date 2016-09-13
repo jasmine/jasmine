@@ -209,13 +209,20 @@ jasmineRequire.HtmlReporter = function(j$) {
 
       alert.appendChild(createDom('span', {className: statusBarClassName}, statusBarMessage, seedBar));
 
-      for(i = 0; i < failedSuites.length; i++) {
+      var errorBarClassName = 'jasmine-bar jasmine-errored';
+      var errorBarMessagePrefix = 'AfterAll ';
+
+      for(var i = 0; i < failedSuites.length; i++) {
         var failedSuite = failedSuites[i];
         for(var j = 0; j < failedSuite.failedExpectations.length; j++) {
-          var errorBarMessage = 'AfterAll ' + failedSuite.failedExpectations[j].message;
-          var errorBarClassName = 'jasmine-bar jasmine-errored';
-          alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessage));
+          alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessagePrefix + failedSuite.failedExpectations[j].message));
         }
+      }
+
+      var globalFailures = (doneResult && doneResult.failedExpectations) || [];
+      for(i = 0; i < globalFailures.length; i++) {
+        var failure = globalFailures[i];
+        alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessagePrefix + failure.message));
       }
 
       var results = find('.jasmine-results');
@@ -281,7 +288,7 @@ jasmineRequire.HtmlReporter = function(j$) {
         setMenuModeTo('jasmine-failure-list');
 
         var failureNode = find('.jasmine-failures');
-        for (var i = 0; i < failures.length; i++) {
+        for (i = 0; i < failures.length; i++) {
           failureNode.appendChild(failures[i]);
         }
       }

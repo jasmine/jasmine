@@ -1,4 +1,5 @@
 describe("toHaveBeenCalledWith", function() {
+
   it("passes when the actual was called with matching parameters", function() {
     var util = {
           contains: jasmine.createSpy('delegated-contains').and.returnValue(true)
@@ -61,6 +62,6 @@ describe("toHaveBeenCalledWith", function() {
     var matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(),
         fn = function() {};
 
-    expect(function() { matcher.compare(fn) }).toThrow(new Error("Expected a spy, but got Function."));
+    expect(function() { matcher.compare(fn) }).toThrowError(/Expected a spy, but got Function./);
   });
 });
