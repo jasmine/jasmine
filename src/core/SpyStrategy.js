@@ -1,4 +1,4 @@
-getJasmineRequireObj().SpyStrategy = function() {
+getJasmineRequireObj().SpyStrategy = function(j$) {
 
   function SpyStrategy(options) {
     options = options || {};
@@ -45,7 +45,7 @@ getJasmineRequireObj().SpyStrategy = function() {
     };
 
     this.callFake = function(fn) {
-      if(!(fn instanceof Function)) {
+      if(!j$.isFunction_(fn)) {
         throw new Error('Argument passed to callFake should be a function, got ' + fn);
       }
       plan = fn;

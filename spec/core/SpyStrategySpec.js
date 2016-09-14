@@ -94,14 +94,14 @@ describe("SpyStrategy", function() {
 
   it('throws an error when a non-function is passed to callFake strategy', function() {
     var originalFn = jasmine.createSpy('original'),
+        spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn}),
         invalidFakes = [5, 'foo', {}, true, false, null, void 0, new Date(), /.*/];
 
-    for (var i=0; i<invalidFakes.length; i++) {
-      var invalidFake = invalidFakes[i],
-          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+    spyOn(jasmineUnderTest, 'isFunction_').and.returnValue(false);
 
-      expect(function() {spyStrategy.callFake(invalidFake);}).toThrowError('Argument passed to callFake should be a function, got ' + invalidFake);
-    }
+    expect(function () {
+      spyStrategy.callFake(function() {});
+    }).toThrowError(/^Argument passed to callFake should be a function, got/);
   });
 
   it("allows a return to plan stubbing after another strategy", function() {
