@@ -45,7 +45,6 @@ describe("ReportDispatcher", function() {
     dispatcher.provideFallbackReporter(reporter);
     dispatcher.foo(123, 456);
     expect(reporter.foo).toHaveBeenCalledWith(123, 456);
-
   });
 
   it("does not call fallback reporting methods when another report is provided", function() {
@@ -59,6 +58,22 @@ describe("ReportDispatcher", function() {
 
     expect(reporter.foo).toHaveBeenCalledWith(123, 456);
     expect(fallbackReporter.foo).not.toHaveBeenCalledWith(123, 456);
+  });
 
+  it("allows registered reporters to be cleared", function() {
+    var dispatcher = new jasmineUnderTest.ReportDispatcher(['foo', 'bar']),
+        reporter1 = jasmine.createSpyObj('reporter1', ['foo', 'bar']),
+        reporter2 = jasmine.createSpyObj('reporter2', ['foo', 'bar']);
+
+    dispatcher.addReporter(reporter1);
+    dispatcher.foo(123);
+    expect(reporter1.foo).toHaveBeenCalledWith(123);
+
+    dispatcher.clearReporters();
+    dispatcher.addReporter(reporter2);
+    dispatcher.bar(456);
+
+    expect(reporter1.bar).not.toHaveBeenCalled();
+    expect(reporter2.bar).toHaveBeenCalledWith(456);
   });
 });

@@ -278,6 +278,10 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.provideFallbackReporter(reporterToAdd);
     };
 
+    this.clearReporters = function() {
+      reporter.clearReporters();
+    };
+
     var spyRegistry = new j$.SpyRegistry({currentSpies: function() {
       if(!currentRunnable()) {
         throw new Error('Spies must be created in a before function or a spec');

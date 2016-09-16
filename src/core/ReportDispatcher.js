@@ -18,11 +18,14 @@ getJasmineRequireObj().ReportDispatcher = function() {
     this.addReporter = function(reporter) {
       reporters.push(reporter);
     };
-    
+
     this.provideFallbackReporter = function(reporter) {
       fallbackReporter = reporter;
     };
 
+    this.clearReporters = function() {
+      reporters = [];
+    };
 
     return this;
 
