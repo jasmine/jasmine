@@ -16,7 +16,7 @@ Upgrading from Jasmine 1.x? Check out the [2.0 release notes](https://github.com
 
 ## Contributing
 
-Please read the [contributors' guide](https://github.com/jasmine/jasmine/blob/master/CONTRIBUTING.md)
+Please read the [contributors' guide](https://github.com/jasmine/jasmine/blob/master/.github/CONTRIBUTING.md)
 
 ## Installation
 
