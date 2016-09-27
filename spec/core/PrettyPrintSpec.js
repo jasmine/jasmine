@@ -15,13 +15,13 @@ describe("jasmineUnderTest.pp", function () {
   });
 
   describe('stringify sets', function() {
-    if (typeof Set === 'undefined') { return; }
-
     it("should stringify sets properly", function() {
+      jasmine.getEnv().requireFunctioningSets();
       expect(jasmineUnderTest.pp(new Set([1, 2]))).toEqual("Set( 1, 2 )");
     });
 
     it("should truncate sets with more elments than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
+      jasmine.getEnv().requireFunctioningSets();
       var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
 
       try {
