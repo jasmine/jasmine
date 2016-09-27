@@ -195,7 +195,11 @@ describe("jasmineUnderTest.pp", function () {
       toString: function () { return Object.prototype.toString.call(this); }
     };
 
-    expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar', toString: Function })");
+    if (jasmine.getEnv().ieVersion < 9) {
+      expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar' })");
+    } else {
+      expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar', toString: Function })");
+    }
   });
 
   it("should stringify objects from anonymous constructors with custom toString", function () {
