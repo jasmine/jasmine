@@ -86,4 +86,17 @@ describe("ObjectContaining", function() {
 
     expect(containing.asymmetricMatch(obj)).toBe(true);
   });
+
+  it("uses custom equality testers", function() {
+    var tester = function(a, b) {
+      // All "foo*" strings match each other.
+      if (typeof a == "string" && typeof b == "string" &&
+          a.substr(0, 3) == "foo" && b.substr(0, 3) == "foo") {
+        return true;
+      }
+    };
+    var containing = new jasmineUnderTest.ObjectContaining({foo: "fooVal"});
+
+    expect(containing.asymmetricMatch({foo: "fooBar"}, [tester])).toBe(true);
+  });
 });

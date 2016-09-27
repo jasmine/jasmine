@@ -55,7 +55,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     return obj && j$.isA_('Function', obj.asymmetricMatch);
   }
 
-  function asymmetricMatch(a, b) {
+  function asymmetricMatch(a, b, customTesters) {
     var asymmetricA = isAsymmetric(a),
         asymmetricB = isAsymmetric(b);
 
@@ -64,11 +64,11 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     }
 
     if (asymmetricA) {
-      return a.asymmetricMatch(b);
+      return a.asymmetricMatch(b, customTesters);
     }
 
     if (asymmetricB) {
-      return b.asymmetricMatch(a);
+      return b.asymmetricMatch(a, customTesters);
     }
   }
 
@@ -77,7 +77,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
   function eq(a, b, aStack, bStack, customTesters) {
     var result = true;
 
-    var asymmetricResult = asymmetricMatch(a, b);
+    var asymmetricResult = asymmetricMatch(a, b, customTesters);
     if (!j$.util.isUndefined(asymmetricResult)) {
       return asymmetricResult;
     }
