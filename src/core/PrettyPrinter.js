@@ -36,6 +36,8 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitScalar('HTMLNode');
       } else if (value instanceof Date) {
         this.emitScalar('Date(' + value + ')');
+      } else if (value.toString && value.toString() == '[object Set]') {
+        this.emitSet(value);
       } else if (value.toString && typeof value === 'object' && !j$.isArray_(value) && hasCustomToString(value)) {
         this.emitScalar(value.toString());
       } else if (j$.util.arrayContains(this.seen, value)) {
@@ -65,6 +67,7 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   PrettyPrinter.prototype.emitArray = j$.unimplementedMethod_;
+  PrettyPrinter.prototype.emitSet = j$.unimplementedMethod_;
   PrettyPrinter.prototype.emitObject = j$.unimplementedMethod_;
   PrettyPrinter.prototype.emitScalar = j$.unimplementedMethod_;
   PrettyPrinter.prototype.emitString = j$.unimplementedMethod_;
@@ -119,6 +122,26 @@ getJasmineRequireObj().pp = function(j$) {
     });
 
     this.append(' ]');
+  };
+
+  StringPrettyPrinter.prototype.emitSet = function(set) {
+    if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
+      this.append('Set');
+      return;
+    }
+    this.append('Set( ');
+    var size = Math.min(set.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
+    var iter = set.values();
+    for (var i = 0; i < size; i++) {
+      if (i > 0) {
+        this.append(', ');
+      }
+      this.format(iter.next().value);
+    }
+    if (set.size > size){
+      this.append(', ...');
+    }
+    this.append(' )');
   };
 
   StringPrettyPrinter.prototype.emitObject = function(obj) {
