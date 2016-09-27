@@ -71,38 +71,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.createSpy = function(name, originalFn) {
-
-    var spyStrategy = new j$.SpyStrategy({
-        name: name,
-        fn: originalFn,
-        getSpy: function() { return spy; }
-      }),
-      callTracker = new j$.CallTracker(),
-      spy = function() {
-        var callData = {
-          object: this,
-          args: Array.prototype.slice.apply(arguments)
-        };
-
-        callTracker.track(callData);
-        var returnValue = spyStrategy.exec.apply(this, arguments);
-        callData.returnValue = returnValue;
-
-        return returnValue;
-      };
-
-    for (var prop in originalFn) {
-      if (prop === 'and' || prop === 'calls') {
-        throw new Error('Jasmine spies would overwrite the \'and\' and \'calls\' properties on the object being spied upon');
-      }
-
-      spy[prop] = originalFn[prop];
-    }
-
-    spy.and = spyStrategy;
-    spy.calls = callTracker;
-
-    return spy;
+    return j$.Spy(name, originalFn);
   };
 
   j$.isSpy = function(putativeSpy) {
