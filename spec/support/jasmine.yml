@@ -17,6 +17,7 @@ src_files:
 stylesheets:
 helpers:
   - 'helpers/BrowserFlags.js'
+  - 'helpers/checkForSet.js'
   - 'helpers/defineJasmineUnderTest.js'
 spec_files:
   - '**/*[Ss]pec.js'
