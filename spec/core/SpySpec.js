@@ -73,7 +73,7 @@ describe('Spies', function () {
         var spy = jasmineUnderTest.createSpy(functions[arity].name, someFunction);
 
         expect(spy.length).toEqual(arity);
-      });
+      }
     });
   });
 
