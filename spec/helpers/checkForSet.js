@@ -14,7 +14,7 @@
 
   env.requireFunctioningSets = function() {
     if (!hasFunctioningSets()) {
-      pending("Browser has incomplete or missing support for Sets");
+      env.pending("Browser has incomplete or missing support for Sets");
     }
   };
 
