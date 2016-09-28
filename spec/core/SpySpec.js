@@ -69,8 +69,8 @@ describe('Spies', function () {
         function senary (arg1, arg2, arg3, arg4, arg5, arg6) {}
       ];
 
-      functions.forEach(function (someFunction, arity) {
-        var spy = jasmineUnderTest.createSpy(someFunction.name, someFunction);
+      for (var arity = 0; arity < functions.length; arity++) {
+        var spy = jasmineUnderTest.createSpy(functions[arity].name, someFunction);
 
         expect(spy.length).toEqual(arity);
       });
