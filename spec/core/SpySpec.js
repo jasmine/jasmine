@@ -57,6 +57,24 @@ describe('Spies', function () {
 
       expect(trackSpy.calls.mostRecent().args[0].returnValue).toEqual("return value");
     });
+
+    it("preserves arity of original function", function () {
+      var functions = [
+        function nullary () {},
+        function unary (arg) {},
+        function binary (arg1, arg2) {},
+        function ternary (arg1, arg2, arg3) {},
+        function quaternary (arg1, arg2, arg3, arg4) {},
+        function quinary (arg1, arg2, arg3, arg4, arg5) {},
+        function senary (arg1, arg2, arg3, arg4, arg5, arg6) {}
+      ];
+
+      functions.forEach(function (someFunction, arity) {
+        var spy = jasmineUnderTest.createSpy(someFunction.name, someFunction);
+
+        expect(spy.length).toEqual(arity);
+      });
+    });
   });
 
   describe("createSpyObj", function() {
