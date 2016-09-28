@@ -68,6 +68,51 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       return spiedMethod;
     };
 
+    this.spyPromise = function(obj, methodName, args) {
+      var result;
+      var isResolved = false;
+      var isRejected = false;
+      var promiseCheck = {};
+
+      if (!obj || typeof obj !== 'object' || typeof obj[methodName] !== 'function') {
+        throw new Error(methodName + ' should be a function');
+      }
+
+      if (typeof args === 'undefined') {
+        args = [];
+      }
+
+      result = obj[methodName].apply(null, args);
+
+      if (typeof result.then !== 'function' || typeof result.catch !== 'function') {
+        throw new Error(methodName + ' should return a Promise');
+      }
+
+      promiseCheck.baseMethod = methodName;
+      promiseCheck.isResolved = function() {
+        return isResolved;
+      };
+      promiseCheck.isRejected = function() {
+        return isRejected;
+      };
+
+      result
+        .then(resolve)
+        .catch(reject);
+
+      obj[methodName] = promiseCheck;
+
+      return promiseCheck;
+
+      function resolve() {
+        isResolved = true;
+      }
+
+      function reject() {
+        isRejected = true;
+      }
+    };
+
     this.clearSpies = function() {
       var spies = currentSpies();
       for (var i = spies.length - 1; i >= 0; i--) {

@@ -77,6 +77,92 @@ describe("SpyRegistry", function() {
     });
   });
 
+  describe("#spyPromise", function() {
+    var spyRegistry;
+
+    beforeEach(function() {
+      spyRegistry = new j$.SpyRegistry();
+    });
+
+    it('should be defined', function() {
+      expect(spyRegistry.spyPromise).toBeDefined();
+    });
+
+    it('should check if object or methodName are defined', function () {
+      expect(wrappedSpyPromiseCallObjectNull).toThrowError('undefined should be a function');
+      expect(wrappedSpyPromiseCallObjectUndefined).toThrowError('undefined should be a function');
+      expect(wrappedSpyPromiseCallMethodNameNull).toThrowError('null should be a function');
+      expect(wrappedSpyPromiseCallMethodNameUndefined).toThrowError('undefined should be a function');
+
+      function wrappedSpyPromiseCallObjectNull() {
+        spyRegistry.spyPromise(null);
+      }
+
+      function wrappedSpyPromiseCallObjectUndefined() {
+        spyRegistry.spyPromise();
+      }
+
+      function wrappedSpyPromiseCallMethodNameNull() {
+        spyRegistry.spyPromise({}, null);
+      }
+
+      function wrappedSpyPromiseCallMethodNameUndefined() {
+        spyRegistry.spyPromise({});
+      }
+    });
+
+    it('should throw an error when there is no then or catch method', function() {
+      expect(wrappedSpyPromiseCallWithoutThen).toThrowError('test should return a Promise');
+      expect(wrappedSpyPromiseCallWithoutCatch).toThrowError('test should return a Promise');
+
+      function wrappedSpyPromiseCallWithoutThen() {
+        var obj = {
+          test: function() {
+            return {
+              catch: function() {}
+            }
+          }
+        };
+
+        spyRegistry.spyPromise(obj, 'test');
+      }
+
+      function wrappedSpyPromiseCallWithoutCatch() {
+        var obj = {
+          test: function() {
+            return {
+              then: function() {}
+            }
+          }
+        };
+
+        spyRegistry.spyPromise(obj, 'test');
+      }
+    });
+
+    it('should return baseMethod name, resolve and reject method', function() {
+      var obj = {
+        test: function() {
+          return {
+            then: function() {return this;},
+            catch: function() {return this;}
+          }
+        }
+      };
+
+      var result = spyRegistry.spyPromise(obj, 'test');
+
+      expect(result).toBeDefined();
+      expect(result.baseMethod).toBe('test');
+      expect(typeof result.isResolved).toBe('function');
+      expect(typeof result.isRejected).toBe('function');
+    });
+
+    afterEach(function () {
+      spyRegistry.clearSpies();
+    });
+  });
+
   describe("#clearSpies", function() {
     it("restores the original functions on the spied-upon objects", function() {
       var spies = [],
