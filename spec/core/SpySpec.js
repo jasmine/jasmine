@@ -70,7 +70,8 @@ describe('Spies', function () {
       ];
 
       for (var arity = 0; arity < functions.length; arity++) {
-        var spy = jasmineUnderTest.createSpy(functions[arity].name, someFunction);
+        var someFunction = functions[arity],
+            spy = jasmineUnderTest.createSpy(someFunction.name, someFunction);
 
         expect(spy.length).toEqual(arity);
       }
