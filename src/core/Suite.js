@@ -5,7 +5,7 @@ getJasmineRequireObj().Suite = function(j$) {
     this.parentSuite = attrs.parentSuite;
     this.description = attrs.description;
     this.expectationFactory = attrs.expectationFactory;
-    this.expectationResultFactory = attrs.expectationResultFactory;
+    this.expectationResultFactory = attrs.expectationResultFactory || function() {};
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
     this.beforeFns = [];
