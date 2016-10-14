@@ -1130,6 +1130,7 @@ describe("Env integration", function() {
             env.fail();
             innerDone();
           }, 1);
+          jasmine.clock().tick(1);
         });
 
         env.it('specifies a message', function(innerDone) {
@@ -1137,12 +1138,14 @@ describe("Env integration", function() {
             env.fail('messy message');
             innerDone();
           }, 1);
+          jasmine.clock().tick(1);
         });
 
         env.it('fails via the done callback', function(innerDone) {
           setTimeout(function() {
             innerDone.fail('done failed');
           }, 1);
+          jasmine.clock().tick(1);
         });
 
         env.it('has a message from an Error', function(innerDone) {
@@ -1150,14 +1153,11 @@ describe("Env integration", function() {
             env.fail(new Error('error message'));
             innerDone();
           }, 1);
+          jasmine.clock().tick(1);
         });
       });
 
       env.execute();
-      jasmine.clock().tick(1);
-      jasmine.clock().tick(1);
-      jasmine.clock().tick(1);
-      jasmine.clock().tick(1);
     });
   });
 
@@ -1186,7 +1186,7 @@ describe("Env integration", function() {
       env.execute();
     });
 
-    it('should only run focused suites', function(){
+    it('should only run focused suites', function(done){
       var env = new jasmineUnderTest.Env(),
         calls = [];
 
@@ -1572,14 +1572,17 @@ describe("Env integration", function() {
   });
 
   it("produces an understandable error message when an 'expect' is used outside of a current spec", function(done) {
-    var env = new jasmineUnderTest.Env();
+    var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
+
+    reporter.jasmineDone.and.callFake(done);
+    env.addReporter(reporter);
 
     env.describe("A Suite", function() {
       env.it("an async spec that is actually synchronous", function(underTestCallback) {
         underTestCallback();
-        expect(function() { env.expect('a').toEqual('a'); }).toThrowError(/'expect' was used when there was no current spec/);
-        done();
       });
+      expect(function() { env.expect('a').toEqual('a'); }).toThrowError(/'expect' was used when there was no current spec/);
     });
 
     env.execute();

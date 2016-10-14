@@ -475,7 +475,7 @@ describe("jasmine spec running", function () {
       env.execute();
     });
 
-    it('focused runnables unfocus ancestor focused suites', function() {
+    it('focused runnables unfocus ancestor focused suites', function(done) {
       var actions = [];
 
       env.fdescribe('focused suite', function() {
@@ -518,7 +518,7 @@ describe("jasmine spec running", function () {
     env.execute();
   });
 
-  it("should allow top level suites to be disabled", function() {
+  it("should allow top level suites to be disabled", function(done) {
     var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
       otherSpec = jasmine.createSpy("otherSpec");
 

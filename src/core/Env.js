@@ -11,6 +11,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     var realSetTimeout = j$.getGlobal().setTimeout;
     var realClearTimeout = j$.getGlobal().clearTimeout;
+    var clearStack = j$.getClearStack(j$.getGlobal());
     this.clock = new j$.Clock(global, function () { return new j$.DelayedFunctionScheduler(); }, new j$.MockDate(global));
 
     var runnableResources = {};
@@ -153,16 +154,6 @@ getJasmineRequireObj().Env = function(j$) {
 
     var maximumSpecCallbackDepth = 20;
     var currentSpecCallbackDepth = 0;
-
-    function clearStack(fn) {
-      currentSpecCallbackDepth++;
-      if (currentSpecCallbackDepth >= maximumSpecCallbackDepth) {
-        currentSpecCallbackDepth = 0;
-        realSetTimeout(fn, 0);
-      } else {
-        fn();
-      }
-    }
 
     var catchException = function(e) {
       return j$.Spec.isPendingSpecException(e) || catchExceptions;
