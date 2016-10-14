@@ -940,8 +940,8 @@ describe("Env integration", function() {
       env.addReporter(reporter);
       jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 1290;
 
-      env.beforeAll(function(done) {
-        jasmine.clock().tick(1290);
+      env.beforeAll(function(innerDone) {
+        jasmine.clock().tick(1291);
       });
 
       env.it("spec that will be failed", function() {
@@ -981,6 +981,7 @@ describe("Env integration", function() {
         clock.tick(6);
         expect(true).toEqual(true);
         innerDone();
+        jasmine.clock().tick(1);
       });
 
       env.execute();
@@ -1007,10 +1008,12 @@ describe("Env integration", function() {
         env.afterAll(function(innerDone) {
           jasmine.clock().tick(3001);
           innerDone();
+          jasmine.clock().tick(1);
         });
       });
 
       env.execute();
+      jasmine.clock().tick(1);
     });
 
     it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
@@ -1132,6 +1135,7 @@ describe("Env integration", function() {
             innerDone();
           }, 1);
           jasmine.clock().tick(1);
+          jasmine.clock().tick(1);
         });
 
         env.it('specifies a message', function(innerDone) {
@@ -1140,12 +1144,14 @@ describe("Env integration", function() {
             innerDone();
           }, 1);
           jasmine.clock().tick(1);
+          jasmine.clock().tick(1);
         });
 
         env.it('fails via the done callback', function(innerDone) {
           setTimeout(function() {
             innerDone.fail('done failed');
           }, 1);
+          jasmine.clock().tick(1);
           jasmine.clock().tick(1);
         });
 
@@ -1154,6 +1160,7 @@ describe("Env integration", function() {
             env.fail(new Error('error message'));
             innerDone();
           }, 1);
+          jasmine.clock().tick(1);
           jasmine.clock().tick(1);
         });
       });

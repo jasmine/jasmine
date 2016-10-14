@@ -1,12 +1,6 @@
 describe("ClearStack", function() {
   it("works in an integrationy way", function(done) {
-    var global = {
-          setTimeout: typeof setTimeout === 'undefined' ? undefined : setTimeout,
-          setImmediate: typeof setImmediate === 'undefined' ? undefined : setImmediate,
-          MessageChannel: typeof MessageChannel === 'undefined' ? undefined : MessageChannel,
-          process: typeof process === 'undefined' ? undefined : process
-        },
-        clearStack = jasmineUnderTest.getClearStack(global);
+    var clearStack = jasmineUnderTest.getClearStack(jasmineUnderTest.getGlobal());
 
     clearStack(function() {
       done();
