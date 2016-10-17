@@ -21,6 +21,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return j$.isA_('Array', value);
   };
 
+  j$.isObject_ = function(value) {
+    return !j$.util.isUndefined(value) && value !== null && j$.isA_('Object', value);
+  };
+
   j$.isString_ = function(value) {
     return j$.isA_('String', value);
   };
@@ -83,18 +87,35 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.createSpyObj = function(baseName, methodNames) {
-    if (j$.isArray_(baseName) && j$.util.isUndefined(methodNames)) {
+    var baseNameIsCollection = j$.isObject_(baseName) || j$.isArray_(baseName);
+
+    if (baseNameIsCollection && j$.util.isUndefined(methodNames)) {
       methodNames = baseName;
       baseName = 'unknown';
     }
 
-    if (!j$.isArray_(methodNames) || methodNames.length === 0) {
-      throw 'createSpyObj requires a non-empty array of method names to create spies for';
-    }
     var obj = {};
-    for (var i = 0; i < methodNames.length; i++) {
-      obj[methodNames[i]] = j$.createSpy(baseName + '.' + methodNames[i]);
+    var spiesWereSet = false;
+
+    if (j$.isArray_(methodNames)) {
+      for (var i = 0; i < methodNames.length; i++) {
+        obj[methodNames[i]] = j$.createSpy(baseName + '.' + methodNames[i]);
+        spiesWereSet = true;
+      }
+    } else if (j$.isObject_(methodNames)) {
+      for (var key in methodNames) {
+        if (methodNames.hasOwnProperty(key)) {
+          obj[key] = j$.createSpy(baseName + '.' + key);
+          obj[key].and.returnValue(methodNames[key]);
+          spiesWereSet = true;
+        }
+      }
     }
+
+    if (!spiesWereSet) {
+      throw 'createSpyObj requires a non-empty array or object of method names to create spies for';
+    }
+
     return obj;
   };
 };
