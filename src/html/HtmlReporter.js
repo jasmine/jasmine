@@ -235,9 +235,13 @@ jasmineRequire.HtmlReporter = function(j$) {
         for (var i = 0; i < resultsTree.children.length; i++) {
           var resultNode = resultsTree.children[i];
           if (resultNode.type == 'suite') {
+            var suiteDescription = resultNode.result.description;
+            if (resultNode.result.status === 'pending' && resultNode.result.pendingReason !== '') {
+              suiteDescription = suiteDescription + ' PENDING WITH MESSAGE: ' + resultNode.result.pendingReason;
+            }
             var suiteListNode = createDom('ul', {className: 'jasmine-suite', id: 'suite-' + resultNode.result.id},
-              createDom('li', {className: 'jasmine-suite-detail'},
-                createDom('a', {href: specHref(resultNode.result)}, resultNode.result.description)
+              createDom('li', {className: 'jasmine-suite-detail jasmine-' + resultNode.result.status},
+                createDom('a', {href: specHref(resultNode.result)}, suiteDescription)
               )
             );
 

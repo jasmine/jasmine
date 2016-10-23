@@ -288,7 +288,8 @@ describe("New HtmlReporter", function() {
       reporter.suiteStarted({
         id: 1,
         description: "A Suite",
-        fullName: "A Suite"
+        fullName: "A Suite",
+        status: "failed"
       });
 
       var specResult = {
@@ -305,7 +306,8 @@ describe("New HtmlReporter", function() {
       reporter.suiteStarted({
         id: 2,
         description: "inner suite",
-        fullName: "A Suite inner suite"
+        fullName: "A Suite inner suite",
+        status: "finished"
       });
 
       var specResult = {
@@ -347,7 +349,7 @@ describe("New HtmlReporter", function() {
         var node = outerSuite.childNodes[i];
         classes.push(node.getAttribute("class"));
       }
-      expect(classes).toEqual(["jasmine-suite-detail", "jasmine-specs", "jasmine-suite", "jasmine-specs"]);
+      expect(classes).toEqual(["jasmine-suite-detail jasmine-failed", "jasmine-specs", "jasmine-suite", "jasmine-specs"]);
 
       var suiteDetail = outerSuite.childNodes[0];
       var suiteLink = suiteDetail.childNodes[0];
@@ -847,6 +849,70 @@ describe("New HtmlReporter", function() {
 
       it("displays the custom pending reason", function() {
         var pendingDetails = container.querySelector(".jasmine-summary .jasmine-pending");
+
+        expect(pendingDetails.innerHTML).toContain("my custom pending reason");
+      });
+    });
+
+    describe("and there are pending suites", function() {
+      var env, container, reporter;
+      beforeEach(function() {
+        env = new jasmineUnderTest.Env();
+        container = document.createElement("div");
+        var getContainer = function() { return container; };
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
+        reporter.initialize();
+
+        reporter.jasmineStarted({ totalSpecsDefined: 2 });
+
+        reporter.suiteStarted({
+          id: 1,
+          description: "A pending Suite",
+          fullName: "A pending Suite",
+          status: "pending",
+          pendingReason: "my custom pending reason"
+        });
+
+        reporter.specDone({
+          id: 123,
+          description: "with a spec",
+          fullName: "A pending Suite with a spec",
+          status: "pending",
+          passedExpectations: [],
+          failedExpectations: [],
+        });
+        reporter.specDone({
+          id: 124,
+          description: "with another spec",
+          fullName: "A pending Suite with another spec",
+          status: "pending",
+          passedExpectations: [],
+          failedExpectations: [],
+        });
+        reporter.suiteDone({id: 1});
+        reporter.jasmineDone({});
+      });
+
+      it("reports the pending specs count", function() {
+        var alertBar = container.querySelector(".jasmine-alert .jasmine-bar");
+
+        expect(alertBar.innerHTML).toMatch(/2 specs, 0 failures, 2 pending specs/);
+      });
+
+      it("reports no failure details", function() {
+        var specFailure = container.querySelector(".jasmine-failures");
+
+        expect(specFailure.childNodes.length).toEqual(0);
+      });
+
+      it("displays the custom pending reason", function() {
+        var pendingDetails = container.querySelector(
+            ".jasmine-summary .jasmine-suite-detail.jasmine-pending");
 
         expect(pendingDetails.innerHTML).toContain("my custom pending reason");
       });
