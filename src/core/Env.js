@@ -229,7 +229,7 @@ getJasmineRequireObj().Env = function(j$) {
           reporter.suiteStarted(suite.result);
         },
         nodeComplete: function(suite, result) {
-          if (!suite.disabled) {
+          if (!suite.markedPending) {
             clearResourcesForRunnable(suite.id);
           }
           currentlyExecutingSuites.pop();
