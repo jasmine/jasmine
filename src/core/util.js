@@ -55,5 +55,17 @@ getJasmineRequireObj().util = function() {
     return cloned;
   };
 
+  util.getPropertyDescriptor = function(obj, methodName) {
+    var descriptor,
+      proto = obj;
+
+    do {
+      descriptor = Object.getOwnPropertyDescriptor(proto, methodName);
+      proto = Object.getPrototypeOf(proto);
+    } while (!descriptor && proto);
+
+    return descriptor;
+  };
+
   return util;
 };
