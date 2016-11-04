@@ -804,6 +804,64 @@ describe("New HtmlReporter", function() {
       });
     });
 
+    describe("and there are disabled specs", function() {
+      var env, container, reporter, reporterConfig, specStatus;
+      beforeEach(function() {
+        env = new jasmineUnderTest.Env();
+        container = document.createElement("div");
+        reporterConfig = {
+          env: env,
+          getContainer: function() { return container; },
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        };
+        specStatus = {
+          id: 123,
+          description: "with a disabled spec",
+          fullName: "A Suite with a disabled spec",
+          status: "disabled",
+          passedExpectations: [],
+          failedExpectations: []
+        };
+      });
+
+      describe("when the specs are not filtered", function() {
+        beforeEach(function() {
+          reporterConfig.filterSpecs = false;
+          reporter = new jasmineUnderTest.HtmlReporter(reporterConfig);
+          reporter.initialize();
+          reporter.jasmineStarted({ totalSpecsDefined: 1 });
+          reporter.specStarted(specStatus);
+          reporter.specDone(specStatus);
+          reporter.jasmineDone({});
+        });
+
+        it("shows the disabled spec in the spec list", function() {
+          var specList = container.querySelector(".jasmine-summary");
+
+          expect(specList.innerHTML).toContain('with a disabled spec');
+        });
+      });
+
+      describe("when the specs are filtered", function() {
+        beforeEach(function() {
+          reporterConfig.filterSpecs = true;
+          reporter = new jasmineUnderTest.HtmlReporter(reporterConfig);
+          reporter.initialize();
+          reporter.jasmineStarted({ totalSpecsDefined: 1 });
+          reporter.specStarted(specStatus);
+          reporter.specDone(specStatus);
+          reporter.jasmineDone({});
+        });
+
+        it("doesn't show the disabled spec in the spec list", function() {
+          var specList = container.querySelector(".jasmine-summary");
+
+          expect(specList.innerHTML).toEqual('');
+        });
+      });
+    });
+
     describe("and there are pending specs", function() {
       var env, container, reporter;
       beforeEach(function() {

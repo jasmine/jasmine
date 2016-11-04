@@ -14,6 +14,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       onThrowExpectationsClick = options.onThrowExpectationsClick || function() {},
       onRandomClick = options.onRandomClick || function() {},
       addToExistingQueryString = options.addToExistingQueryString || defaultQueryString,
+      filterSpecs = options.filterSpecs,
       timer = options.timer || noopTimer,
       results = [],
       specsExecuted = 0,
@@ -234,6 +235,9 @@ jasmineRequire.HtmlReporter = function(j$) {
         var specListNode;
         for (var i = 0; i < resultsTree.children.length; i++) {
           var resultNode = resultsTree.children[i];
+          if (filterSpecs && !hasActiveSpec(resultNode)) {
+            continue;
+          }
           if (resultNode.type == 'suite') {
             var suiteListNode = createDom('ul', {className: 'jasmine-suite', id: 'suite-' + resultNode.result.id},
               createDom('li', {className: 'jasmine-suite-detail'},
@@ -360,6 +364,20 @@ jasmineRequire.HtmlReporter = function(j$) {
     function noExpectations(result) {
       return (result.failedExpectations.length + result.passedExpectations.length) === 0 &&
         result.status === 'passed';
+    }
+
+    function hasActiveSpec(resultNode) {
+      if (resultNode.type == 'spec' && resultNode.result.status != 'disabled') {
+        return true;
+      }
+
+      if (resultNode.type == 'suite') {
+        for (var i = 0, j = resultNode.children.length; i < j; i++) {
+          if (hasActiveSpec(resultNode.children[i])) {
+            return true;
+          }
+        }
+      }
     }
   }
 
