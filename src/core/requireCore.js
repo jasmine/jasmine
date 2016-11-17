@@ -54,6 +54,9 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.TreeProcessor = jRequire.TreeProcessor();
     j$.version = jRequire.version();
     j$.Order = jRequire.Order();
+    j$.DiffBuilder = jRequire.DiffBuilder(j$);
+    j$.NullDiffBuilder = jRequire.NullDiffBuilder(j$);
+    j$.ObjectPath = jRequire.ObjectPath(j$);
 
     j$.matchers = jRequire.requireMatchers(jRequire, j$);
 

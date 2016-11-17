@@ -145,7 +145,13 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   StringPrettyPrinter.prototype.emitObject = function(obj) {
-    var constructorName = obj.constructor ? j$.fnNameFor(obj.constructor) : 'null';
+    var ctor = obj.constructor,
+        constructorName;
+
+    constructorName = typeof ctor === 'function' && obj instanceof ctor ?
+      j$.fnNameFor(obj.constructor) :
+      'null';
+
     this.append(constructorName);
 
     if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {

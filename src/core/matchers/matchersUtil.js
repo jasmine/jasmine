@@ -2,11 +2,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
   // TODO: what to do about jasmine.pp not being inject? move to JSON.stringify? gut PrettyPrinter?
 
   return {
-    equals: function(a, b, customTesters) {
-      customTesters = customTesters || [];
-
-      return eq(a, b, [], [], customTesters);
-    },
+    equals: equals,
 
     contains: function(haystack, needle, customTesters) {
       customTesters = customTesters || [];
@@ -19,7 +15,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
         (!!haystack && !haystack.indexOf))
       {
         for (var i = 0; i < haystack.length; i++) {
-          if (eq(haystack[i], needle, [], [], customTesters)) {
+          if (equals(haystack[i], needle, customTesters)) {
             return true;
           }
         }
@@ -59,67 +55,113 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     return obj && j$.isA_('Function', obj.asymmetricMatch);
   }
 
-  function asymmetricMatch(a, b, customTesters) {
+  function asymmetricMatch(a, b, customTesters, diffBuilder) {
     var asymmetricA = isAsymmetric(a),
-        asymmetricB = isAsymmetric(b);
+        asymmetricB = isAsymmetric(b),
+        result;
 
     if (asymmetricA && asymmetricB) {
       return undefined;
     }
 
     if (asymmetricA) {
-      return a.asymmetricMatch(b, customTesters);
+      result = a.asymmetricMatch(b, customTesters);
+      diffBuilder.record(a, b);
+      return result;
     }
 
     if (asymmetricB) {
-      return b.asymmetricMatch(a, customTesters);
+      result = b.asymmetricMatch(a, customTesters);
+      diffBuilder.record(a, b);
+      return result;
     }
+  }
+
+  function equals(a, b, customTesters, diffBuilder) {
+    customTesters = customTesters || [];
+    diffBuilder = diffBuilder || j$.NullDiffBuilder();
+
+    return eq(a, b, [], [], customTesters, diffBuilder);
   }
 
   // Equality function lovingly adapted from isEqual in
   //   [Underscore](http://underscorejs.org)
-  function eq(a, b, aStack, bStack, customTesters) {
-    var result = true;
+  function eq(a, b, aStack, bStack, customTesters, diffBuilder) {
+    var result = true, i;
 
-    var asymmetricResult = asymmetricMatch(a, b, customTesters);
+    var asymmetricResult = asymmetricMatch(a, b, customTesters, diffBuilder);
     if (!j$.util.isUndefined(asymmetricResult)) {
       return asymmetricResult;
     }
 
-    for (var i = 0; i < customTesters.length; i++) {
+    for (i = 0; i < customTesters.length; i++) {
       var customTesterResult = customTesters[i](a, b);
       if (!j$.util.isUndefined(customTesterResult)) {
+        if (!customTesterResult) {
+          diffBuilder.record(a, b);
+        }
         return customTesterResult;
       }
     }
 
     if (a instanceof Error && b instanceof Error) {
-      return a.message == b.message;
+      result = a.message == b.message;
+      if (!result) {
+        diffBuilder.record(a, b);
+      }
+      return result;
     }
 
     // Identical objects are equal. `0 === -0`, but they aren't identical.
     // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
-    if (a === b) { return a !== 0 || 1 / a == 1 / b; }
+    if (a === b) {
+      result = a !== 0 || 1 / a == 1 / b;
+      if (!result) {
+        diffBuilder.record(a, b);
+      }
+      return result;
+    }
     // A strict comparison is necessary because `null == undefined`.
-    if (a === null || b === null) { return a === b; }
+    if (a === null || b === null) {
+      result = a === b;
+      if (!result) {
+        diffBuilder.record(a, b);
+      }
+      return result;
+    }
     var className = Object.prototype.toString.call(a);
-    if (className != Object.prototype.toString.call(b)) { return false; }
+    if (className != Object.prototype.toString.call(b)) {
+      diffBuilder.record(a, b);
+      return false;
+    }
     switch (className) {
       // Strings, numbers, dates, and booleans are compared by value.
       case '[object String]':
         // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
         // equivalent to `new String("5")`.
-        return a == String(b);
+        result = a == String(b);
+        if (!result) {
+          diffBuilder.record(a, b);
+        }
+        return result;
       case '[object Number]':
         // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for
         // other numeric values.
-        return a != +a ? b != +b : (a === 0 ? 1 / a == 1 / b : a == +b);
+        result = a != +a ? b != +b : (a === 0 ? 1 / a == 1 / b : a == +b);
+        if (!result) {
+          diffBuilder.record(a, b);
+        }
+        return result;
       case '[object Date]':
       case '[object Boolean]':
         // Coerce dates and booleans to numeric primitive values. Dates are compared by their
         // millisecond representations. Note that invalid dates with millisecond representations
         // of `NaN` are not equivalent.
-        return +a == +b;
+        result = +a == +b;
+        if (!result) {
+          diffBuilder.record(a, b);
+        }
+        return result;
       // RegExps are compared by their source patterns and flags.
       case '[object RegExp]':
         return a.source == b.source &&
@@ -127,14 +169,21 @@ getJasmineRequireObj().matchersUtil = function(j$) {
           a.multiline == b.multiline &&
           a.ignoreCase == b.ignoreCase;
     }
-    if (typeof a != 'object' || typeof b != 'object') { return false; }
+    if (typeof a != 'object' || typeof b != 'object') {
+      diffBuilder.record(a, b);
+      return false;
+    }
 
     var aIsDomNode = j$.isDomNode(a);
     var bIsDomNode = j$.isDomNode(b);
     if (aIsDomNode && bIsDomNode) {
       // At first try to use DOM3 method isEqualNode
       if (a.isEqualNode) {
-        return a.isEqualNode(b);
+        result = a.isEqualNode(b);
+        if (!result) {
+          diffBuilder.record(a, b);
+        }
+        return result;
       }
       // IE8 doesn't support isEqualNode, try to use outerHTML && innerText
       var aIsElement = a instanceof Element;
@@ -168,17 +217,21 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     if (className == '[object Array]') {
       size = a.length;
       if (size !== b.length) {
+        diffBuilder.record(a, b);
         return false;
       }
 
-      while (size--) {
-        result = eq(a[size], b[size], aStack, bStack, customTesters);
-        if (!result) {
-          return false;
-        }
+      for (i = 0; i < size; i++) {
+        diffBuilder.withPath(i, function() {
+          result = eq(a[i], b[i], aStack, bStack, customTesters, diffBuilder) && result;
+        });
+      }
+      if (!result) {
+        return false;
       }
     } else if (className == '[object Set]') {
       if (a.size != b.size) {
+        diffBuilder.record(a, b);
         return false;
       }
       var iterA = a.values(), iterB = b.values();
@@ -186,7 +239,8 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       do {
         valA = iterA.next();
         valB = iterB.next();
-        if (!eq(valA.value, valB.value, aStack, bStack, customTesters)) {
+        if (!eq(valA.value, valB.value, aStack, bStack, customTesters, j$.NullDiffBuilder())) {
+          diffBuilder.record(a, b);
           return false;
         }
       } while (!valA.done && !valB.done);
@@ -195,8 +249,12 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       // Objects with different constructors are not equivalent, but `Object`s
       // or `Array`s from different frames are.
       var aCtor = a.constructor, bCtor = b.constructor;
-      if (aCtor !== bCtor && !(isObjectConstructor(aCtor) &&
-                               isObjectConstructor(bCtor))) {
+      if (aCtor !== bCtor &&
+          isFunction(aCtor) && isFunction(bCtor) &&
+          a instanceof aCtor && b instanceof bCtor &&
+          !(aCtor instanceof aCtor && bCtor instanceof bCtor)) {
+
+        diffBuilder.record(a, b, constructorsAreDifferentFormatter);
         return false;
       }
     }
@@ -206,52 +264,66 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     size = aKeys.length;
 
     // Ensure that both objects contain the same number of properties before comparing deep equality.
-    if (keys(b, className == '[object Array]').length !== size) { return false; }
-
-    while (size--) {
-      key = aKeys[size];
-      // Deep compare each member
-      result = has(b, key) && eq(a[key], b[key], aStack, bStack, customTesters);
-
-      if (!result) {
-        return false;
-      }
+    if (keys(b, className == '[object Array]').length !== size) {
+      diffBuilder.record(a, b, objectKeysAreDifferentFormatter);
+      return false;
     }
+
+    for (i = 0; i < size; i++) {
+      key = aKeys[i];
+      // Deep compare each member
+      if (!j$.util.has(b, key)) {
+        diffBuilder.record(a, b, objectKeysAreDifferentFormatter);
+        result = false;
+        continue;
+      }
+
+      diffBuilder.withPath(key, function() {
+        if(!eq(a[key], b[key], aStack, bStack, customTesters, diffBuilder)) {
+          result = false;
+        }
+      });
+    }
+
+    if (!result) {
+      return false;
+    }
+
     // Remove the first object from the stack of traversed objects.
     aStack.pop();
     bStack.pop();
 
     return result;
+  }
 
-    function keys(obj, isArray) {
-      var allKeys = Object.keys ? Object.keys(obj) :
-        (function(o) {
-            var keys = [];
-            for (var key in o) {
-                if (has(o, key)) {
-                    keys.push(key);
-                }
-            }
-            return keys;
-        })(obj);
-
-      if (!isArray) {
-        return allKeys;
-      }
-
-      var extraKeys = [];
-      if (allKeys.length === 0) {
-          return allKeys;
-      }
-
-      for (var x = 0; x < allKeys.length; x++) {
-          if (!allKeys[x].match(/^[0-9]+$/)) {
-              extraKeys.push(allKeys[x]);
+  function keys(obj, isArray) {
+    var allKeys = Object.keys ? Object.keys(obj) :
+      (function(o) {
+          var keys = [];
+          for (var key in o) {
+              if (j$.util.has(o, key)) {
+                  keys.push(key);
+              }
           }
-      }
+          return keys;
+      })(obj);
 
-      return extraKeys;
+    if (!isArray) {
+      return allKeys;
     }
+
+    if (allKeys.length === 0) {
+        return allKeys;
+    }
+
+    var extraKeys = [];
+    for (var i in allKeys) {
+      if (!allKeys[i].match(/^[0-9]+$/)) {
+        extraKeys.push(allKeys[i]);
+      }
+    }
+
+    return extraKeys;
   }
 
   function has(obj, key) {
@@ -262,11 +334,44 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     return typeof obj === 'function';
   }
 
-  function isObjectConstructor(ctor) {
-    // aCtor instanceof aCtor is true for the Object and Function
-    // constructors (since a constructor is-a Function and a function is-a
-    // Object). We don't just compare ctor === Object because the constructor
-    // might come from a different frame with different globals.
-    return isFunction(ctor) && ctor instanceof ctor;
+  function objectKeysAreDifferentFormatter(actual, expected, path) {
+    var missingProperties = j$.util.objectDifference(expected, actual),
+        extraProperties = j$.util.objectDifference(actual, expected),
+        missingPropertiesMessage = formatKeyValuePairs(missingProperties),
+        extraPropertiesMessage = formatKeyValuePairs(extraProperties),
+        messages = [];
+
+    if (!path.depth()) {
+      path = 'object';
+    }
+
+    if (missingPropertiesMessage.length) {
+      messages.push('Expected ' + path + ' to have properties' + missingPropertiesMessage);
+    }
+
+    if (extraPropertiesMessage.length) {
+      messages.push('Expected ' + path + ' not to have properties' + extraPropertiesMessage);
+    }
+
+    return messages.join('\n');
+  }
+
+  function constructorsAreDifferentFormatter(actual, expected, path) {
+    if (!path.depth()) {
+      path = 'object';
+    }
+
+    return 'Expected ' +
+      path + ' to be a kind of ' +
+      expected.constructor.name +
+      ', but was ' + j$.pp(actual) + '.';
+  }
+
+  function formatKeyValuePairs(obj) {
+    var formatted = '';
+    for (var key in obj) {
+      formatted += '\n    ' + key + ': ' + j$.pp(obj[key]);
+    }
+    return formatted;
   }
 };
