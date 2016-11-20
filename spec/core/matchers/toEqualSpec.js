@@ -289,7 +289,22 @@ describe("toEqual", function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
+  function constructorIsNotEnumerable() {
+    // in IE8, the constructor property is not enumerable, even if it is an
+    // own property of the object.
+    // Objects that differ only by an own `constructor` property are thus
+    // considered equal in IE8.
+    for (var key in {constructor: 1}) {
+      return false;
+    }
+    return true;
+  }
+
   it("reports mismatches between objects with their own constructor property", function () {
+    if (constructorIsNotEnumerable()) {
+      return;
+    }
+
     function Foo() {}
     function Bar() {}
 
@@ -301,6 +316,10 @@ describe("toEqual", function() {
   });
 
   it("reports mismatches between an object with a real constructor and one with its own constructor property", function () {
+    if (constructorIsNotEnumerable()) {
+      return;
+    }
+
     function Foo() {}
     function Bar() {}
 
