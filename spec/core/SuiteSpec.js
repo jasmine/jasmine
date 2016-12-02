@@ -83,13 +83,6 @@ describe("Suite", function() {
     expect(suite.getResult().status).toBe('finished');
   });
 
-  it("retrieves a result with disabled status", function() {
-    var suite = new jasmineUnderTest.Suite({});
-    suite.disable();
-
-    expect(suite.getResult().status).toBe('disabled');
-  });
-
   it("retrieves a result with pending status", function() {
     var suite = new jasmineUnderTest.Suite({});
     suite.pend();
@@ -97,23 +90,15 @@ describe("Suite", function() {
     expect(suite.getResult().status).toBe('pending');
   });
 
-  it("priviledges a disabled status over pending status", function() {
-    var suite = new jasmineUnderTest.Suite({});
-    suite.disable();
-    suite.pend();
-
-    expect(suite.getResult().status).toBe('disabled');
-  });
-
-  it("is executable if not disabled", function() {
+  it("is executable if not pending", function() {
     var suite = new jasmineUnderTest.Suite({});
 
     expect(suite.isExecutable()).toBe(true);
   });
 
-  it("is not executable if disabled", function() {
+  it("is not executable if pending", function() {
     var suite = new jasmineUnderTest.Suite({});
-    suite.disable();
+    suite.pend();
 
     expect(suite.isExecutable()).toBe(false);
   });

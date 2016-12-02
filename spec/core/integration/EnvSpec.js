@@ -1425,7 +1425,7 @@ describe("Env integration", function() {
         totalSpecsDefined: 1
       });
 
-      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ status: 'pending' }));
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ status: 'disabled' }));
       expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({ description: 'xd out', status: 'pending' }));
       expect(reporter.suiteDone.calls.count()).toBe(4);
 

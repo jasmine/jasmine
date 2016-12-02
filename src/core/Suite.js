@@ -12,7 +12,6 @@ getJasmineRequireObj().Suite = function(j$) {
     this.afterFns = [];
     this.beforeAllFns = [];
     this.afterAllFns = [];
-    this.disabled = false;
 
     this.children = [];
 
@@ -36,10 +35,6 @@ getJasmineRequireObj().Suite = function(j$) {
       }
     }
     return fullName.join(' ');
-  };
-
-  Suite.prototype.disable = function() {
-    this.disabled = true;
   };
 
   Suite.prototype.pend = function(message) {
@@ -67,10 +62,6 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.status = function() {
-    if (this.disabled) {
-      return 'disabled';
-    }
-
     if (this.markedPending) {
       return 'pending';
     }
@@ -83,7 +74,7 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.isExecutable = function() {
-    return !this.disabled;
+    return !this.markedPending;
   };
 
   Suite.prototype.canBeReentered = function() {
