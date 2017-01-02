@@ -76,4 +76,4 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, PhantomJS, a
 * [Christian Williams](mailto:antixian666@gmail.com), Cloud Foundry
 * Sheel Choksi
 
-Copyright (c) 2008-2016 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2008-2017 Pivotal Labs. This software is licensed under the MIT License.
