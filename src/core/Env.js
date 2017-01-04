@@ -17,6 +17,7 @@ getJasmineRequireObj().Env = function(j$) {
     var runnableResources = {};
 
     var currentSpec = null;
+    var currentQueueRunner = null;
     var currentlyExecutingSuites = [];
     var currentDeclarationSuite = null;
     var throwOnExpectationFailure = false;
@@ -188,7 +189,8 @@ getJasmineRequireObj().Env = function(j$) {
       options.timeout = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
       options.fail = self.fail;
 
-      new j$.QueueRunner(options).execute();
+      currentQueueRunner = new j$.QueueRunner(options);
+      currentQueueRunner.execute();
     };
 
     var topSuite = new j$.Suite({
@@ -203,6 +205,10 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.topSuite = function() {
       return topSuite;
+    };
+
+    this.done = function() {
+      return currentQueueRunner.done.apply(currentQueueRunner, arguments);
     };
 
     this.execute = function(runnablesToRun) {

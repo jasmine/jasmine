@@ -115,6 +115,24 @@ describe("QueueRunner", function() {
       expect(queueableFn2.fn).toHaveBeenCalled();
     });
 
+    it("explicitly moves to the next test when public method done() is called on the QueueRunner interface", function() {
+      var queueableFn1 = { fn: function(done) {
+          setTimeout(function() { queueRunner.done(); }, 50);
+        } },
+        queueableFn2 = { fn: jasmine.createSpy('fn2') },
+        queueRunner = new j$.QueueRunner({
+          queueableFns: [queueableFn1, queueableFn2]
+        });
+
+      queueRunner.execute();
+
+      expect(queueableFn2.fn).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(queueableFn2.fn).toHaveBeenCalled();
+    });
+
     it("sets a timeout if requested for asynchronous functions so they don't go on forever", function() {
       var timeout = 3,
         beforeFn = { fn: function(done) { }, type: 'before', timeout: function() { return timeout; } },

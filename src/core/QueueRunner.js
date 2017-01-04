@@ -67,6 +67,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         next();
       };
 
+      self.done = next;
+
       if (queueableFn.timeout) {
         timeoutId = Function.prototype.apply.apply(self.timeout.setTimeout, [j$.getGlobal(), [function() {
           var error = new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.');

@@ -1016,6 +1016,34 @@ describe("Env integration", function() {
       jasmine.clock().tick(1);
     });
 
+    it("should proceed if done is called on the environment using jasmine.getEnv().done()", function(done) {
+      var env = new j$.Env(),
+          reporter = jasmine.createSpyObj('fakeReport', ['specDone']),
+          passed = [];
+
+      reporter.specDone.and.callFake(function(results) {
+        if (results.status === 'passed') { passed.push(results); }
+        if (passed.length == 2) { done(); }
+      });
+
+      env.addReporter(reporter);
+      j$.DEFAULT_TIMEOUT_INTERVAL = 3000;
+
+      env.describe('a suite', function() {
+        env.it('async with environment done()', function(done) {
+          expect(true).toBe(true);
+          env.done();
+        });
+
+        env.it('async with argument done', function(done) {
+          expect(true).toBe(true);
+          done();
+        })
+      });
+
+      env.execute();
+    });
+
     it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
       var env = new jasmineUnderTest.Env(),
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']);
