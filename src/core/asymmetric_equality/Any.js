@@ -24,7 +24,7 @@ getJasmineRequireObj().Any = function(j$) {
     }
 
     if (this.expectedObject == Object) {
-      return typeof other == 'object';
+      return Object.prototype.toString.call(other) == '[object Object]';
     }
 
     if (this.expectedObject == Boolean) {

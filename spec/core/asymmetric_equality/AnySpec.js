@@ -21,6 +21,7 @@ describe("Any", function() {
     var any = new jasmineUnderTest.Any(Object);
 
     expect(any.asymmetricMatch({})).toBe(true);
+    expect(any.asymmetricMatch(null)).toBe(false);
   });
 
   it("matches a Boolean", function() {
