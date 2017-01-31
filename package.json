@@ -13,6 +13,11 @@
     "bdd"
   ],
   "scripts": {
+    "benchmark": "grunt execSpecsInNode:performance",
+    "build": "grunt buildDistribution",
+    "build:rubygem": "grunt build:copyVersionToGem",
+    "build:standalone": "grunt buildStandaloneDist",
+    "lint": "grunt jshint",
     "test": "grunt jshint execSpecsInNode"
   },
   "description": "Official packaging of Jasmine's core files for use by Node.js projects.",

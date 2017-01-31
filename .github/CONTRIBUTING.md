@@ -78,13 +78,13 @@ To install the Ruby dependencies, you will need Ruby, Rubygems, and Bundler avai
 
 ...should get you to the point that `bundle` can install everything.
 
-To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http://gruntjs.com/), the [grunt-cli](https://github.com/gruntjs/grunt-cli) and ensure that `grunt` is on your path.
+To install the Node dependencies you will need Node.js and Npm, all other dependencies are installed locally to the project.
 
-    $ npm install --local
+    $ npm install
 
 ...will install all of the node modules locally. Now run
 
-    $ grunt
+    $ npm run lint
 
 ...if you see that JSHint runs, your system is ready.
 
@@ -111,7 +111,7 @@ Jasmine uses the [Jasmine Ruby gem](http://github.com/jasmine/jasmine-gem) to te
 
 Jasmine uses the [Jasmine NPM package](http://github.com/jasmine/jasmine-npm) to test itself in a Node.js/npm environment.
 
-    $ grunt execSpecsInNode
+    $ npm test
 
 ...and then the results will print to the console. All specs run except those that expect a browser (the specs in `spec/html` are ignored).
 
@@ -127,11 +127,11 @@ The easiest way to run the tests in **Internet Explorer** is to run a VM that ha
 ## Before Committing or Submitting a Pull Request
 
 1. Ensure all specs are green in browser *and* node
-1. Ensure JSHint is green with `grunt jshint`
-1. Build `jasmine.js` with `grunt buildDistribution` and run all specs again - this ensures that your changes self-test well
+1. Ensure JSHint is green with `npm run lint`
+1. Build `jasmine.js` with `npm run build` and run all specs again - this ensures that your changes self-test well
 
 ## Submitting a Pull Request
-1. Revert your changes to `jasmine.js` and `jasmine-html.js`
+1. Revert your changes to `jasmine.js` and `jasmine-html.js` (in `lib/jasmine-core/`)
   * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches
 1. When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into master
 
