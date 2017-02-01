@@ -234,6 +234,52 @@ describe("QueueRunner", function() {
       queueRunner.execute();
       expect(doneReturn).toBe(null);
     });
+
+    it("supports promises (and thenables) returned by queued functions", function(done) {
+      var queueableFn1 = { fn: function() {
+          return Promise.resolve();
+        } },
+        queueableFn2 = { fn: jasmine.createSpy('fn2') },
+        completeCallback = jasmine.createSpy('completeCallback'),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn1, queueableFn2],
+          onComplete: completeCallback
+        });
+
+      queueRunner.execute();
+
+      expect(completeCallback).not.toHaveBeenCalled();
+      expect(queueableFn2.fn).not.toHaveBeenCalled();
+
+      setImmediate(function() {
+        expect(completeCallback).toHaveBeenCalled();
+        expect(queueableFn2.fn).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it("calls 'done.fail' when a promise is rejected", function(done) {
+      var error, queueableFn1 = { fn: function() {
+          return Promise.reject(error = new Error('foo'));
+        } },
+        queueableFn2 = { fn: jasmine.createSpy('fn2') },
+        failFn = jasmine.createSpy('fail'),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn1, queueableFn2],
+          fail: failFn
+        });
+
+      queueRunner.execute();
+
+      expect(failFn).not.toHaveBeenCalled();
+      expect(queueableFn2.fn).not.toHaveBeenCalled();
+
+      setImmediate(function() {
+        expect(failFn).toHaveBeenCalledWith(error);
+        expect(queueableFn2.fn).toHaveBeenCalled();
+        done();
+      });
+    });
   });
 
   it("calls exception handlers when an exception is thrown in a fn", function() {
