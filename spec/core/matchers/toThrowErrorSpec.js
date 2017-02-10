@@ -65,6 +65,30 @@ describe("toThrowError", function() {
     expect(result.message()).toEqual("Expected function to throw an Error, but it threw 4.");
   });
 
+  function isNotRunningInBrowser() {
+    return typeof document === 'undefined'
+  }
+
+  it("passes if thrown is an instanceof Error regardless of global that contains its constructor", function() {
+    if (isNotRunningInBrowser()) {
+      return;
+    }
+
+    var matcher = jasmineUnderTest.matchers.toThrowError(),
+      iframe = document.body.appendChild(document.createElement("iframe")),
+      iframeDocument = iframe.contentDocument,
+      result;
+
+    iframeDocument.body.appendChild(iframeDocument.createElement("script"))
+      .textContent = "function method() { throw new Error('foo'); }";
+
+    result = matcher.compare(iframe.contentWindow.method);
+    expect(result.pass).toBe(true);
+    expect(result.message).toEqual("Expected function not to throw an Error, but it threw Error.");
+
+    document.body.removeChild(iframe);
+  });
+
   it("fails with the correct message if thrown is a falsy value", function() {
     var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {

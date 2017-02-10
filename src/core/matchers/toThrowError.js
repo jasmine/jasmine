@@ -28,7 +28,9 @@ getJasmineRequireObj().toThrowError = function(j$) {
           return fail;
         }
 
-        if (!(thrown instanceof Error)) {
+        // Get Error constructor of thrown
+        if (!thrown || !thrown.constructor || !thrown.constructor.constructor ||
+            !(thrown instanceof (thrown.constructor.constructor('return this')()).Error)) {
           fail.message = function() { return 'Expected function to throw an Error, but it threw ' + j$.pp(thrown) + '.'; };
           return fail;
         }
