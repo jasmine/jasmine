@@ -16,6 +16,22 @@ describe("SpyRegistry", function() {
         }).toThrowError(/No method name supplied/);
     });
 
+    it("checks that the object is not `null`", function() {
+      var spyRegistry = new jasmineUnderTest.SpyRegistry();
+      expect(function() {
+        spyRegistry.spyOn(null, 'pants');
+      }).toThrowError(/could not find an object/);
+    });
+
+    it("checks that the method name is not `null`", function() {
+      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+        subject = {};
+
+      expect(function() {
+        spyRegistry.spyOn(subject, null);
+      }).toThrowError(/No method name supplied/);
+    });
+
     it("checks for the existence of the method", function() {
       var spyRegistry = new jasmineUnderTest.SpyRegistry(),
         subject = {};
