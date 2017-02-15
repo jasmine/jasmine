@@ -26,15 +26,6 @@ describe("Env", function() {
     });
   });
 
-  describe('#describe', function () {
-    var spec = function(done){};
-    it("throws the error", function() {
-      expect(function() {
-        env.describe('done method', spec);
-      }).toThrow(new Error('describe does not expect any arguments'));
-    });
-  });
-
   it('can configure specs to throw errors on expectation failures', function() {
     env.throwOnExpectationFailure(true);
 
@@ -55,14 +46,113 @@ describe("Env", function() {
     }));
   });
 
+  describe('#describe', function () {
+    it("throws an error when given arguments", function() {
+      expect(function() {
+        env.describe('done method', function(done) {});
+      }).toThrowError('describe does not expect any arguments');
+    });
+
+    it('throws an error when it receives a non-fn argument', function() {
+      // Some versions of PhantomJS return [object DOMWindow] when
+      // Object.prototype.toString.apply is called with `undefined` or `null`.
+      // In a similar fashion, IE8 gives [object Object] for both `undefined`
+      // and `null`. We mostly just want these tests to check that using
+      // anything other than a function throws an error.
+      expect(function() {
+        env.describe('undefined arg', undefined);
+      }).toThrowError(/describe expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      expect(function() {
+        env.describe('null arg', null);
+      }).toThrowError(/describe expects a function argument; received \[object (Null|DOMWindow|Object)\]/);
+
+      expect(function() {
+        env.describe('array arg', []);
+      }).toThrowError('describe expects a function argument; received [object Array]');
+      expect(function() {
+        env.describe('object arg', {});
+      }).toThrowError('describe expects a function argument; received [object Object]');
+
+      expect(function() {
+        env.describe('fn arg', function() {});
+      }).not.toThrowError('describe expects a function argument; received [object Function]');
+    });
+  });
+
+  describe('#it', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.it('undefined arg', undefined);
+      }).toThrowError(/it expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+
+    it('does not throw when it is not given a fn argument', function() {
+      expect(function() {
+        env.it('pending spec');
+      }).not.toThrow();
+    });
+  });
+
   describe('#xit', function() {
     it('calls spec.pend with "Temporarily disabled with xit"', function() {
       var pendSpy = jasmine.createSpy();
       spyOn(env, 'it').and.returnValue({
         pend: pendSpy
       });
-      env.xit();
+      env.xit('foo', function() {});
       expect(pendSpy).toHaveBeenCalledWith('Temporarily disabled with xit');
+    });
+
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.xit('undefined arg', undefined);
+      }).toThrowError(/xit expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+
+    it('does not throw when it is not given a fn argument', function() {
+      expect(function() {
+        env.xit('pending spec');
+      }).not.toThrow();
+    });
+  });
+
+  describe('#fit', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.fit('undefined arg', undefined);
+      }).toThrowError(/fit expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+  });
+
+  describe('#beforeEach', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.beforeEach(undefined);
+      }).toThrowError(/beforeEach expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+  });
+
+  describe('#beforeAll', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.beforeAll(undefined);
+      }).toThrowError(/beforeAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+  });
+
+  describe('#afterEach', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.afterEach(undefined);
+      }).toThrowError(/afterEach expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+  });
+
+  describe('#afterAll', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.afterAll(undefined);
+      }).toThrowError(/afterAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
     });
   });
 });

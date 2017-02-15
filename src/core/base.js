@@ -38,7 +38,11 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isA_ = function(typeName, value) {
-    return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
+    return j$.getType_(value) === '[object ' + typeName + ']';
+  };
+
+  j$.getType_ = function(value) {
+    return Object.prototype.toString.apply(value);
   };
 
   j$.isDomNode = function(obj) {
