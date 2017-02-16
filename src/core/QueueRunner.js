@@ -41,7 +41,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         } catch (e) {
           handleException(e, queueableFn);
         }
-        if (!promise || typeof promise.then !== 'function') {
+        if (promise && typeof promise.then !== 'function') {
+          promise = null;
+        }
+        if (!promise) {
           continue;
         }
       }
