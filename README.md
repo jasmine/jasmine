@@ -65,14 +65,14 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, PhantomJS, a
 
 ## Maintainers
 
-* [Davis W. Frank](mailto:dwfrank@pivotal.io), Pivotal Labs
-* [Rajan Agaskar](mailto:rajan@pivotal.io), Pivotal Labs
 * [Gregg Van Hove](mailto:gvanhove@pivotal.io), Pivotal Labs
-* [Greg Cobb](mailto:gcobb@pivotal.io), Pivotal Labs
-* [Chris Amavisca](mailto:camavisca@pivotal.io), Pivotal Labs
 
 ### Maintainers Emeritus
 
+* [Davis W. Frank](mailto:dwfrank@pivotal.io), Pivotal Labs
+* [Rajan Agaskar](mailto:rajan@pivotal.io), Pivotal Labs
+* [Greg Cobb](mailto:gcobb@pivotal.io), Pivotal Labs
+* [Chris Amavisca](mailto:camavisca@pivotal.io), Pivotal Labs
 * [Christian Williams](mailto:antixian666@gmail.com), Cloud Foundry
 * Sheel Choksi
 
