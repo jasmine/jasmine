@@ -69,8 +69,31 @@ describe("toThrowError", function() {
     return typeof document === 'undefined'
   }
 
+  function isRunningInPhantomJS(minVersion, maxVersion) {
+    if (!window.callPhantom) {
+      return false;
+    }
+
+    function getVerNum(ver) {
+      var nums = ver.split('.'), verNum = 0;
+      if ((nums[0] = +nums[0])) { verNum += nums[0] * 10000; }
+      if ((nums[1] = +nums[1])) { verNum += nums[1] * 100; }
+      if ((nums[2] = +nums[2])) { verNum += nums[2]; }
+      return verNum;
+    }
+
+    if (minVersion || maxVersion) {
+      var ver = (/\sPhantomJS\/([\d\.]+)\s/.exec(window.navigator.userAgent) || [])[1];
+      if (!ver) { return false; }
+      ver = getVerNum(ver);
+      if (minVersion && ver < getVerNum(minVersion)) { return false; }
+      if (maxVersion && ver > getVerNum(maxVersion)) { return false; }
+    }
+    return true;
+  }
+
   it("passes if thrown is an instanceof Error regardless of global that contains its constructor", function() {
-    if (isNotRunningInBrowser()) {
+    if (isNotRunningInBrowser() || isRunningInPhantomJS(null, '1.9.8')) {
       return;
     }
 
