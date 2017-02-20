@@ -50,10 +50,40 @@ describe("toHaveBeenCalledBefore", function() {
 
     result = matcher.compare(firstSpy, secondSpy);
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual('Expected first spy to have been called before second spy');
+    expect(result.message).toEqual('Expected spy first spy to have been called before spy second spy');
   });
 
-  it("passes when first spy is called before second spy", function() {
+	it("fails when the actual is called before and after the expected", function() {
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+        firstSpy = jasmineUnderTest.createSpy('first spy'),
+        secondSpy = jasmineUnderTest.createSpy('second spy'),
+        result;
+
+    firstSpy();
+    secondSpy();
+    firstSpy();
+
+    result = matcher.compare(firstSpy, secondSpy);
+    expect(result.pass).toBe(false);
+    expect(result.message).toEqual('Expected latest call to spy first spy to have been called before first call to spy second spy (no interleaved calls)');
+  });
+
+	it("fails when the expected is called before and after the actual", function() {
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+        firstSpy = jasmineUnderTest.createSpy('first spy'),
+        secondSpy = jasmineUnderTest.createSpy('second spy'),
+        result;
+
+    secondSpy();
+    firstSpy();
+    secondSpy();
+
+    result = matcher.compare(firstSpy, secondSpy);
+    expect(result.pass).toBe(false);
+    expect(result.message).toEqual('Expected first call to spy second spy to have been called after latest call to spy first spy (no interleaved calls)');
+  });
+
+  it("passes when the actual is called before the expected", function() {
     var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
         firstSpy = jasmineUnderTest.createSpy('first spy'),
         secondSpy = jasmineUnderTest.createSpy('second spy'),
@@ -64,6 +94,6 @@ describe("toHaveBeenCalledBefore", function() {
 
     result = matcher.compare(firstSpy, secondSpy);
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual('Expected first spy to not have been called before second spy, but it was');
+    expect(result.message).toEqual('Expected spy first spy to not have been called before spy second spy, but it was');
   });
 });
