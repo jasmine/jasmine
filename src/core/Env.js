@@ -516,9 +516,17 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.fail = function(error) {
       var message = 'Failed';
+      var isError = error instanceof Error;
       if (error) {
         message += ': ';
-        message += error.message || error;
+        if (isError) {
+          message += error.message;
+        } else if (typeof error === 'object') {
+          // pretty print all kind of objects. This includes arrays.
+          message += jasmine.pp(error);
+        } else {
+          message += error;
+        }
       }
 
       currentRunnable().addExpectationResult(false, {
@@ -527,7 +535,7 @@ getJasmineRequireObj().Env = function(j$) {
         expected: '',
         actual: '',
         message: message,
-        error: error && error.message ? error : null
+        error: isError ? error : null
       });
     };
   }
