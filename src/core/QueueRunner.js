@@ -29,15 +29,15 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   QueueRunner.prototype.run = function(queueableFns, recursiveIndex) {
     var length = queueableFns.length,
       self = this,
-      iterativeIndex;
-
+      iterativeIndex,
+      promise;
 
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
       var queueableFn = queueableFns[iterativeIndex];
-      if (queueableFn.fn.length == 0) {
+      if (queueableFn.fn.length === 0) {
         try {
           // Synchronous tests may return a promise.
-          var promise = queueableFn.fn.call(self.userContext);
+          promise = queueableFn.fn.call(self.userContext);
         } catch (e) {
           handleException(e, queueableFn);
         }
