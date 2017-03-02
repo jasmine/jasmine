@@ -1,5 +1,8 @@
 languages:
   JavaScript: true
+ratings:
+  paths:
+  - "src/**/*.js"
 exclude_paths:
 - "lib/**"
 - "dist/*"
