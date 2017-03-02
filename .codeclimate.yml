@@ -1,7 +1,13 @@
 languages:
   JavaScript: true
 exclude_paths:
-- "lib/*"
+- "lib/**"
 - "dist/*"
-- "grunt/*"
+- "grunt/**"
 - "images/*"
+- "**/*.md"
+- "**/*.yml"
+- "**/*.json"
+- "**/*.scss"
+- "**/*.erb"
+- "*.sh"
