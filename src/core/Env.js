@@ -280,12 +280,25 @@ getJasmineRequireObj().Env = function(j$) {
       return runnableResources[currentRunnable().id].spies;
     }});
 
+    var restoreSpy = function(obj, name) {
+      var spies = runnableResources[currentRunnable().id].spies;
+      for(var i = 0; i < spies.length; i++) {
+        if(spies[i].obj === obj && spies[i].name === name) {
+          spies[i].restoreObjectToOriginalState();
+        }
+      }
+    };
+
     this.allowRespy = function(allow){
       spyRegistry.allowRespy(allow);
     };
 
     this.spyOn = function() {
       return spyRegistry.spyOn.apply(spyRegistry, arguments);
+    };
+
+    this.unspy = function(obj, methodName) {
+      restoreSpy(obj, methodName);
     };
 
     this.spyOnProperty = function() {

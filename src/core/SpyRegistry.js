@@ -60,6 +60,8 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       currentSpies().push({
+        obj: obj,
+        name: methodName,
         restoreObjectToOriginalState: restoreStrategy
       });
 
@@ -118,6 +120,8 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       currentSpies().push({
+        obj: obj,
+        name: propertyName,
         restoreObjectToOriginalState: restoreStrategy
       });
 
