@@ -282,7 +282,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     var restoreSpy = function(obj, name) {
       var spies = runnableResources[currentRunnable().id].spies;
-      for(var i = 0; i < spies.length; i++) {
+      for(var i = spies.length - 1; i >= 0; i--) {
         if(spies[i].obj === obj && spies[i].name === name) {
           spies[i].restoreObjectToOriginalState();
         }
