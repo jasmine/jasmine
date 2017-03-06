@@ -338,7 +338,8 @@ describe("SpyRegistry", function() {
 
   describe("#clearSpy", function () {
     it('restores the original function to the object', function () {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
         originalFunction = function() {},
         subject = { spiedFunc: originalFunction };
 
@@ -350,7 +351,8 @@ describe("SpyRegistry", function() {
     });
 
     it('restores the first original function to the object', function () {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
         originalFunction = function() {},
         subject = { spiedFunc: originalFunction };
 
@@ -368,7 +370,8 @@ describe("SpyRegistry", function() {
     });
 
     it('does not affect a non-spy object', function () {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
         originalFunction = function() {},
         subject = { spiedFunc: originalFunction };
 
@@ -379,7 +382,8 @@ describe("SpyRegistry", function() {
 
     describe('resotoring properties', function () {
       it('restores the original getter to the property', function () {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+        var spies = [],
+          spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
           getterFunction = function () {},
           subject = {};
 
@@ -388,7 +392,7 @@ describe("SpyRegistry", function() {
           configurable: true
         });
 
-        spyRegistry.spyOn(subject, 'spiedProperty');
+        spyRegistry.spyOnProperty(subject, 'spiedProperty');
 
         spyRegistry.clearSpy(subject, 'spiedProperty');
 
@@ -398,7 +402,8 @@ describe("SpyRegistry", function() {
       });
 
       it('restores the original setter to the property', function () {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+        var spies = [],
+          spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
           setterFunction = function () {},
           subject = {};
 
@@ -407,7 +412,7 @@ describe("SpyRegistry", function() {
           configurable: true
         });
 
-        spyRegistry.spyOn(subject, 'spiedProperty', 'set');
+        spyRegistry.spyOnProperty(subject, 'spiedProperty', 'set');
 
         spyRegistry.clearSpy(subject, 'spiedProperty', 'set');
 
@@ -417,7 +422,8 @@ describe("SpyRegistry", function() {
       });
 
       it('does not affect a non-spy property', function () {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+        var spies = [],
+          spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
           getterFunction = function () {},
           subject = {};
 
