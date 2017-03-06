@@ -280,16 +280,6 @@ getJasmineRequireObj().Env = function(j$) {
       return runnableResources[currentRunnable().id].spies;
     }});
 
-    var restoreSpy = function(obj, name, accessType) {
-      var spies = runnableResources[currentRunnable().id].spies;
-      for(var i = spies.length - 1; i >= 0; i--) {
-        if(spies[i].obj === obj && spies[i].name === name && spies[i].accessType === accessType) {
-          spies[i].restoreObjectToOriginalState();
-          spies.splice(i, 1);
-        }
-      }
-    };
-
     this.allowRespy = function(allow){
       spyRegistry.allowRespy(allow);
     };
@@ -299,7 +289,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.unspy = function(obj, methodName) {
-      restoreSpy(obj, methodName);
+    return spyRegistry.clearSpy.apply(spyRegistry, [obj, methodName]);
     };
 
     this.spyOnProperty = function() {
@@ -308,7 +298,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.unspyProperty = function(obj, propertyName, accessType) {
       accessType = accessType || 'get';
-      restoreSpy(obj, propertyName, accessType);
+      return spyRegistry.clearSpy.apply(spyRegistry, [obj, propertyName, accessType]);
     };
 
     var ensureIsFunction = function(fn, caller) {
