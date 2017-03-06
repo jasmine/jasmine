@@ -122,6 +122,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       currentSpies().push({
         obj: obj,
         name: propertyName,
+        accessType: accessType,
         restoreObjectToOriginalState: restoreStrategy
       });
 
