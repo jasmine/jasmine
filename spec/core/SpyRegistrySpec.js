@@ -99,7 +99,7 @@ describe("SpyRegistry", function() {
 
       spyRegistry.spyOn(subject, 'spiedFunc');
 
-      expect(spies[0].object).toBe(subject);
+      expect(spies[0].obj).toBe(subject);
       expect(spies[0].name).toBe('spiedFunc');
     });
   });
@@ -237,7 +237,7 @@ describe("SpyRegistry", function() {
 
       spyRegistry.spyOnProperty(subject, 'spiedProperty', 'set');
 
-      expect(spies[0].object).toBe(subject);
+      expect(spies[0].obj).toBe(subject);
       expect(spies[0].name).toBe('spiedProperty');
       expect(spies[0].accessType).toBe('set');
     });
