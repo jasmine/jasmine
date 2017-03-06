@@ -155,4 +155,66 @@ describe("Env", function() {
       }).toThrowError(/afterAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
     });
   });
+
+  describe('#unspy', function () {
+    var originalFunction,
+      subject,
+      additionalFunction;
+    beforeEach(function () {
+      originalFunction = function() {};
+      subject = { spiedFunc: originalFunction };
+      additionalFunction = function () {};
+    });
+
+    it('restores the original function to the object', function () {
+      env.spyOn(subject, 'spiedFunc');
+      env.unspy(subject, 'spiedFunc');
+      expect(subject.spiedFunc).toBe(originalFunction);
+    });
+
+    it('restores the first original function to the object', function () {
+      env.spyOn(subject, 'spiedFunc');
+      subject.spiedFunc = additionalFunction;
+      env.spyOn(subject, 'spiedFunc');
+      env.unspy(subject, 'spiedFunc');
+      expect(subject.spiedFunc).toBe(originalFunction);
+    });
+
+    it('does not affect a non-spy object', function () {
+      env.unspy(subject, 'spiedFunc');
+      expect(subject.spiedFunc).toBe(originalFunction);
+    });
+  });
+
+  describe('#unspyProperty', function () {
+    var getValue,
+      setValue,
+      subject;
+    beforeEach(function() {
+      getValue = 1;
+      subject = {};
+      Object.defineProperty(subject, 'spiedProperty', {
+        get: function() { return getValue; },
+        set: function(value) { setValue = value; },
+        configurable: true
+      });
+    });
+    it('restores the original getter to the property', function () {
+      env.spyOnProperty(subject, 'spiedProperty');
+      env.unspyProperty(subject, 'spiedProperty');
+      expect(subject.spiedProperty).toBe(getValue);
+    });
+
+    it('restores the original setter to the property', function () {
+      env.spyOnProperty(subject, 'spiedProperty',  'set');
+      env.unspyProperty(subject, 'spiedProperty', 'set');
+      subject.spiedProperty = 1;
+      expect(setValue).toBe(1);
+    });
+
+    it('does not affect a non-spy property', function () {
+      env.unspyProperty(subject, 'spiedProperty', 'set');
+      expect(subject.spiedProperty).toBe(getValue);
+    });
+  });
 });

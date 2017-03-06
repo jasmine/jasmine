@@ -91,6 +91,17 @@ describe("SpyRegistry", function() {
 
       expect(subject.spiedFunc).toEqual(spy);
     });
+
+    it("saves the object and methodName for the spied-upon objects", function() {
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        subject = { spiedFunc: function() {} };
+
+      spyRegistry.spyOn(subject, 'spiedFunc');
+
+      expect(spies[0].object).toBe(subject);
+      expect(spies[0].name).toBe('spiedFunc');
+    });
   });
 
   describe("#spyOnProperty", function() {
@@ -210,6 +221,25 @@ describe("SpyRegistry", function() {
 
       expect(subject.spiedProperty).toEqual(returnValue);
       expect(setter).toEqual(spy);
+    });
+
+    it("saves the object and propertyName for the spied-upon objects", function() {
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        subject = {},
+        returnValue = 1;
+
+      Object.defineProperty(subject, 'spiedProperty', {
+        get: function() { return returnValue; },
+        set: function() {},
+        configurable: true
+      });
+
+      spyRegistry.spyOnProperty(subject, 'spiedProperty', 'set');
+
+      expect(spies[0].object).toBe(subject);
+      expect(spies[0].name).toBe('spiedProperty');
+      expect(spies[0].accessType).toBe('set');
     });
   });
 
