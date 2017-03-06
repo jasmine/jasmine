@@ -285,6 +285,7 @@ getJasmineRequireObj().Env = function(j$) {
       for(var i = spies.length - 1; i >= 0; i--) {
         if(spies[i].obj === obj && spies[i].name === name) {
           spies[i].restoreObjectToOriginalState();
+          spies.splice(i, 1);
         }
       }
     };
