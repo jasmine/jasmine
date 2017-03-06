@@ -156,6 +156,18 @@ describe("Env", function() {
     });
   });
 
+  describe('#spyOn', function () {
+    it('replaces the method with a spy', function () {
+      var spy,
+        originalFunction = function() {},
+        subject = { spiedFunc: originalFunction };
+      env.it('', function () {
+        spy = env.spyOn(subject, 'spiedFunc');
+      })
+      expect(subject.spiedFunc).toBe(spy);
+    });
+  });
+
   describe('#unspy', function () {
     var originalFunction,
       subject,
@@ -167,22 +179,52 @@ describe("Env", function() {
     });
 
     it('restores the original function to the object', function () {
-      env.spyOn(subject, 'spiedFunc');
-      env.unspy(subject, 'spiedFunc');
+      env.it('', function () {
+        env.spyOn(subject, 'spiedFunc');
+        env.unspy(subject, 'spiedFunc');
+      })
       expect(subject.spiedFunc).toBe(originalFunction);
     });
 
     it('restores the first original function to the object', function () {
-      env.spyOn(subject, 'spiedFunc');
-      subject.spiedFunc = additionalFunction;
-      env.spyOn(subject, 'spiedFunc');
-      env.unspy(subject, 'spiedFunc');
+      env.it('', function () {
+        env.spyOn(subject, 'spiedFunc');
+        subject.spiedFunc = additionalFunction;
+        env.spyOn(subject, 'spiedFunc');
+        env.unspy(subject, 'spiedFunc');
+      });
       expect(subject.spiedFunc).toBe(originalFunction);
     });
 
     it('does not affect a non-spy object', function () {
-      env.unspy(subject, 'spiedFunc');
+      env.it('', function () {
+        env.unspy(subject, 'spiedFunc');
+      });
       expect(subject.spiedFunc).toBe(originalFunction);
+    });
+  });
+
+  describe("#spyOnProperty", function () {
+    it("overrides the property getter on the object and returns the spy", function() {
+      var spy,
+        getterFunction = function () {},
+        subject = {},
+        getter;
+
+      Object.defineProperty(subject, 'spiedProperty', {
+        get: getterFunction,
+        configurable: true
+      });
+
+      getter = Object.getOwnPropertyDescriptor(subject, 'spiedProperty').get;
+      expect(getter).toEqual(getterFunction);
+
+      env.it('', function () {
+        spy = env.spyOnProperty(subject, 'spiedProperty');
+      })
+
+      getter = Object.getOwnPropertyDescriptor(subject, 'spiedProperty').get;
+      expect(getter).toEqual(spy);
     });
   });
 
@@ -200,20 +242,26 @@ describe("Env", function() {
       });
     });
     it('restores the original getter to the property', function () {
-      env.spyOnProperty(subject, 'spiedProperty');
-      env.unspyProperty(subject, 'spiedProperty');
+      env.it('', function () {
+        env.spyOnProperty(subject, 'spiedProperty');
+        env.unspyProperty(subject, 'spiedProperty');
+      });
       expect(subject.spiedProperty).toBe(getValue);
     });
 
     it('restores the original setter to the property', function () {
-      env.spyOnProperty(subject, 'spiedProperty',  'set');
-      env.unspyProperty(subject, 'spiedProperty', 'set');
-      subject.spiedProperty = 1;
+      env.it('', function () {
+        env.spyOnProperty(subject, 'spiedProperty',  'set');
+        env.unspyProperty(subject, 'spiedProperty', 'set');
+        subject.spiedProperty = 1;
+      });
       expect(setValue).toBe(1);
     });
 
     it('does not affect a non-spy property', function () {
-      env.unspyProperty(subject, 'spiedProperty', 'set');
+      env.it('', function () {
+        env.unspyProperty(subject, 'spiedProperty', 'set');
+      });
       expect(subject.spiedProperty).toBe(getValue);
     });
   });
