@@ -394,7 +394,7 @@ describe("SpyRegistry", function() {
 
         spyRegistry.spyOnProperty(subject, 'spiedProperty');
 
-        spyRegistry.clearSpy(subject, 'spiedProperty');
+        spyRegistry.clearSpy(subject, 'spiedProperty', 'get');
 
         expect(subject.spiedProperty).toBe(returnValue);
       });
@@ -417,7 +417,7 @@ describe("SpyRegistry", function() {
 
         subject.spiedProperty = setTo;
 
-        expect(subject.spiedProperty).toBe(setTo);
+        expect(setterValue).toBe(setTo);
       });
 
       it('does not affect a non-spy property', function () {
@@ -431,7 +431,7 @@ describe("SpyRegistry", function() {
           configurable: true
         });
 
-        spyRegistry.clearSpy(subject, 'spiedProperty');
+        spyRegistry.clearSpy(subject, 'spiedProperty', 'get');
 
         var getter = Object.getOwnPropertyDescriptor(subject, 'spiedProperty').get
 
