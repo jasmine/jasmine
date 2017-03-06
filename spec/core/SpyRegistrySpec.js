@@ -384,11 +384,11 @@ describe("SpyRegistry", function() {
       it('restores the original getter to the property', function () {
         var spies = [],
           spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
-          getterFunction = function () {},
+          returnValue = 1,
           subject = {};
 
         Object.defineProperty(subject, 'spiedProperty', {
-          get: getterFunction,
+          get: function () { return returnValue; },
           configurable: true
         });
 
@@ -396,19 +396,18 @@ describe("SpyRegistry", function() {
 
         spyRegistry.clearSpy(subject, 'spiedProperty');
 
-        var getter = Object.getOwnPropertyDescriptor(subject, 'spiedProperty').get
-
-        expect(getter).toBe(getterFunction);
+        expect(subject.spiedProperty).toBe(returnValue);
       });
 
       it('restores the original setter to the property', function () {
         var spies = [],
           spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
-          setterFunction = function () {},
+          setterValue,
+          setTo = 1,
           subject = {};
 
         Object.defineProperty(subject, 'spiedProperty', {
-          set: setterFunction,
+          set: function (value) { setterValue = value; },
           configurable: true
         });
 
@@ -416,9 +415,9 @@ describe("SpyRegistry", function() {
 
         spyRegistry.clearSpy(subject, 'spiedProperty', 'set');
 
-        var setter = Object.getOwnPropertyDescriptor(subject, 'spiedProperty').get
+        subject.spiedProperty = setTo;
 
-        expect(setter).toBe(setterFunction);
+        expect(subject.spiedProperty).toBe(setTo);
       });
 
       it('does not affect a non-spy property', function () {
