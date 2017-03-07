@@ -29,43 +29,38 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   QueueRunner.prototype.run = function(queueableFns, recursiveIndex) {
     var length = queueableFns.length,
       self = this,
-      iterativeIndex;
-
+      iterativeIndex,
+      promise;
 
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
       var queueableFn = queueableFns[iterativeIndex];
-      if (queueableFn.fn.length > 0) {
-        attemptAsync(queueableFn);
-        return;
-      } else {
-        attemptSync(queueableFn);
+      if (queueableFn.fn.length === 0) {
+        try {
+          // Synchronous tests may return a promise.
+          promise = queueableFn.fn.call(self.userContext);
+        } catch (e) {
+          handleException(e, queueableFn);
+        }
+        if (promise && typeof promise.then !== 'function') {
+          promise = null;
+        }
+        if (!promise) {
+          continue;
+        }
       }
-    }
 
-    this.clearStack(this.onComplete);
-
-    function attemptSync(queueableFn) {
-      try {
-        queueableFn.fn.call(self.userContext);
-      } catch (e) {
-        handleException(e, queueableFn);
-      }
-    }
-
-    function attemptAsync(queueableFn) {
-      var clearTimeout = function () {
+      var timeoutId,
+        clearTimeout = function() {
           Function.prototype.apply.apply(self.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
         },
-        next = once(function () {
+        next = once(function() {
           clearTimeout(timeoutId);
           self.run(queueableFns, iterativeIndex + 1);
-        }),
-        timeoutId;
-
-      next.fail = function() {
-        self.fail.apply(null, arguments);
-        next();
-      };
+        });
+        next.fail = function() {
+          self.fail.apply(null, arguments);
+          next();
+        };
 
       if (queueableFn.timeout) {
         timeoutId = Function.prototype.apply.apply(self.timeout.setTimeout, [j$.getGlobal(), [function() {
@@ -75,13 +70,23 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         }, queueableFn.timeout()]]);
       }
 
-      try {
-        queueableFn.fn.call(self.userContext, next);
-      } catch (e) {
-        handleException(e, queueableFn);
-        next();
+      if (promise) {
+        promise.then(next, next.fail);
+      } else {
+        try {
+          queueableFn.fn.call(self.userContext, next);
+        } catch (e) {
+          handleException(e, queueableFn);
+          next();
+        }
       }
+
+      // Prevent further iterations until
+      // the asynchronous test is finished.
+      return;
     }
+
+    this.clearStack(this.onComplete);
 
     function onException(e) {
       self.onException(e);
