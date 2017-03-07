@@ -20,6 +20,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.userContext = attrs.userContext || {};
     this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
     this.fail = attrs.fail || function() {};
+    this.noTryCatch = !!attrs.noTryCatch;
   }
 
   QueueRunner.prototype.execute = function() {
@@ -45,10 +46,16 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.clearStack(this.onComplete);
 
     function attemptSync(queueableFn) {
-      try {
+      if(!self.noTryCatch)
+      {
+        try {
+          queueableFn.fn.call(self.userContext);
+        } catch (e) {
+          handleException(e, queueableFn);
+        }
+
+      } else {
         queueableFn.fn.call(self.userContext);
-      } catch (e) {
-        handleException(e, queueableFn);
       }
     }
 
@@ -75,11 +82,15 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         }, queueableFn.timeout()]]);
       }
 
-      try {
+      if(!self.noTryCatch) {
+        try {
+          queueableFn.fn.call(self.userContext, next);
+        } catch (e) {
+          handleException(e, queueableFn);
+          next();
+        }
+      } else {
         queueableFn.fn.call(self.userContext, next);
-      } catch (e) {
-        handleException(e, queueableFn);
-        next();
       }
     }
 
@@ -88,6 +99,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     }
 
     function handleException(e, queueableFn) {
+      e.caughtByJasmine = true;
       onException(e);
       if (!self.catchException(e)) {
         //TODO: set a var when we catch an exception and
