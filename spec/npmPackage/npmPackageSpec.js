@@ -42,7 +42,7 @@ describe('npm package', function() {
       }
     };
 
-    fs.unlink(this.tarball);
+    fs.unlinkSync(this.tarball);
   });
 
   it('has a root path', function() {
