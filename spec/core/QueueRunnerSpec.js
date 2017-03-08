@@ -234,6 +234,43 @@ describe("QueueRunner", function() {
       queueRunner.execute();
       expect(doneReturn).toBe(null);
     });
+
+    it("continues running functions when an exception is thrown in async code without timing out", function() {
+      var queueableFn = { fn: function(done) { throwAsync(); }, timeout: function() { return 1; } },
+        nextQueueableFn = { fn: jasmine.createSpy("nextFunction") },
+        onException = jasmine.createSpy('onException'),
+        globalErrors = { pushListener: jasmine.createSpy('pushListener'), popListener: jasmine.createSpy('popListener') },
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn, nextQueueableFn],
+          onException: onException,
+          globalErrors: globalErrors
+        }),
+        throwAsync = function() {
+          globalErrors.pushListener.calls.mostRecent().args[0](new Error('foo'));
+          jasmine.clock().tick(2);
+        };
+
+      nextQueueableFn.fn.and.callFake(function() {
+        // should remove the same function that was added
+        expect(globalErrors.popListener).toHaveBeenCalledWith(globalErrors.pushListener.calls.argsFor(0)[0]);
+      });
+
+      queueRunner.execute();
+
+      function errorWithMessage(message) {
+        return {
+          asymmetricMatch(other) {
+            return new RegExp(message).test(other.message);
+          },
+          toString: function() {
+            return '<Error with message like "' + message + '">';
+          }
+        };
+      }
+      expect(onException).not.toHaveBeenCalledWith(errorWithMessage(/DEFAULT_TIMEOUT_INTERVAL/));
+      expect(onException).toHaveBeenCalledWith(errorWithMessage(/^foo$/));
+      expect(nextQueueableFn.fn).toHaveBeenCalled();
+    });
   });
 
   it("calls exception handlers when an exception is thrown in a fn", function() {

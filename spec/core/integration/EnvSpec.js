@@ -1757,4 +1757,37 @@ describe("Env integration", function() {
 
     env.execute();
   });
+
+  it("should associate errors thrown from async code with the correct runnable", function(done) {
+    var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone','specDone']);
+
+    reporter.jasmineDone.and.callFake(function() {
+      expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('async suite', [
+        /^(((Uncaught )?Error: suite( thrown)?)|(suite thrown))$/
+      ]);
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite async spec', [
+        /^(((Uncaught )?Error: spec( thrown)?)|(spec thrown))$/
+      ]);
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.describe('async suite', function() {
+      env.afterAll(function(innerDone) {
+        setTimeout(function() { throw new Error('suite'); }, 1);
+      }, 10);
+
+      env.it('spec', function() {});
+    });
+
+    env.describe('suite', function() {
+      env.it('async spec', function(innerDone) {
+        setTimeout(function() { throw new Error('spec'); }, 1);
+      }, 10);
+    });
+
+    env.execute();
+  });
 });

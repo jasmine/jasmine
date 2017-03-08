@@ -20,6 +20,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.userContext = attrs.userContext || {};
     this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
     this.fail = attrs.fail || function() {};
+    this.globalErrors = attrs.globalErrors || { pushListener: function() {}, popListener: function() {} };
   }
 
   QueueRunner.prototype.execute = function() {
@@ -56,8 +57,13 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       var clearTimeout = function () {
           Function.prototype.apply.apply(self.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
         },
+        handleError = function(error) {
+          onException(error);
+          next();
+        },
         next = once(function () {
           clearTimeout(timeoutId);
+          self.globalErrors.popListener(handleError);
           self.run(queueableFns, iterativeIndex + 1);
         }),
         timeoutId;
@@ -66,6 +72,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         self.fail.apply(null, arguments);
         next();
       };
+
+      self.globalErrors.pushListener(handleError);
 
       if (queueableFn.timeout) {
         timeoutId = Function.prototype.apply.apply(self.timeout.setTimeout, [j$.getGlobal(), [function() {

@@ -40,6 +40,8 @@ getJasmineRequireObj().Env = function(j$) {
       'specDone'
     ]);
 
+    var globalErrors = new j$.GlobalErrors();
+
     this.specFilter = function() {
       return true;
     };
@@ -187,6 +189,7 @@ getJasmineRequireObj().Env = function(j$) {
       options.clearStack = options.clearStack || clearStack;
       options.timeout = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
       options.fail = self.fail;
+      options.globalErrors = globalErrors;
 
       new j$.QueueRunner(options).execute();
     };
@@ -250,9 +253,11 @@ getJasmineRequireObj().Env = function(j$) {
 
       currentlyExecutingSuites.push(topSuite);
 
+      globalErrors.install();
       processor.execute(function() {
         clearResourcesForRunnable(topSuite.id);
         currentlyExecutingSuites.pop();
+        globalErrors.uninstall();
 
         reporter.jasmineDone({
           order: order,
