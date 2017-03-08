@@ -259,7 +259,7 @@ describe("QueueRunner", function() {
 
       function errorWithMessage(message) {
         return {
-          asymmetricMatch(other) {
+          asymmetricMatch: function(other) {
             return new RegExp(message).test(other.message);
           },
           toString: function() {
