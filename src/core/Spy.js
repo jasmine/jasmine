@@ -1,5 +1,13 @@
 getJasmineRequireObj().Spy = function (j$) {
 
+  var nextOrder = (function() {
+    var order = 0;
+
+    return function() {
+      return order++;
+    };
+  })();
+
   function Spy(name, originalFn) {
     var args = buildArgs(),
       /*`eval` is the only option to preserve both this and context:
@@ -21,6 +29,7 @@ getJasmineRequireObj().Spy = function (j$) {
       spy = function () {
         var callData = {
           object: this,
+          invocationOrder: nextOrder(),
           args: Array.prototype.slice.apply(arguments)
         };
 
