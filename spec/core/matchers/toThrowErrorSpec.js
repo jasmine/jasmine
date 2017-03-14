@@ -65,51 +65,41 @@ describe("toThrowError", function() {
     expect(result.message()).toEqual("Expected function to throw an Error, but it threw 4.");
   });
 
-  function isNotRunningInBrowser() {
-    return typeof document === 'undefined'
-  }
-
-  function isRunningInPhantomJS(minVersion, maxVersion) {
-    if (!window.callPhantom) {
-      return false;
+  describe("when error is from another frame", function() {
+    function isNotRunningInBrowser() {
+      return typeof document === 'undefined'
     }
 
-    function getVerNum(ver) {
-      var nums = ver.split('.'), verNum = 0;
-      if ((nums[0] = +nums[0])) { verNum += nums[0] * 10000; }
-      if ((nums[1] = +nums[1])) { verNum += nums[1] * 100; }
-      if ((nums[2] = +nums[2])) { verNum += nums[2]; }
-      return verNum;
-    }
+    var iframe = null;
 
-    if (minVersion || maxVersion) {
-      var ver = (/\sPhantomJS\/([\d\.]+)\s/.exec(window.navigator.userAgent) || [])[1];
-      if (!ver) { return false; }
-      ver = getVerNum(ver);
-      if (minVersion && ver < getVerNum(minVersion)) { return false; }
-      if (maxVersion && ver > getVerNum(maxVersion)) { return false; }
-    }
-    return true;
-  }
+    afterEach(function() {
+      if (iframe !== null) {
+        document.body.removeChild(iframe);
+      }
+    });
 
-  it("passes if thrown is an instanceof Error regardless of global that contains its constructor", function() {
-    if (isNotRunningInBrowser() || isRunningInPhantomJS(null, '1.9.8')) {
-      return;
-    }
+    it("passes if thrown is an instanceof Error regardless of global that contains its constructor", function() {
+      if (isNotRunningInBrowser() || jasmine.getEnv().phantomVersion < 2 || jasmine.getEnv().ieVersion < 10) {
+        return;
+      }
 
-    var matcher = jasmineUnderTest.matchers.toThrowError(),
-      iframe = document.body.appendChild(document.createElement("iframe")),
-      iframeDocument = iframe.contentDocument,
-      result;
+      var matcher = jasmineUnderTest.matchers.toThrowError();
+      iframe = document.body.appendChild(document.createElement("iframe"));
+      iframe.src = "about:blank";
+      var iframeDocument = iframe.contentWindow.document;
 
-    iframeDocument.body.appendChild(iframeDocument.createElement("script"))
-      .textContent = "function method() { throw new Error('foo'); }";
+      if (iframeDocument.body) {
+        iframeDocument.body.appendChild(iframeDocument.createElement("script"))
+        .textContent = "function method() { throw new Error('foo'); }";
+      } else {
+        // older IE
+        iframeDocument.write("<html><head><script>function method() { throw new Error('foo'); }</script></head></html>");
+      }
 
-    result = matcher.compare(iframe.contentWindow.method);
-    expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw an Error, but it threw Error.");
-
-    document.body.removeChild(iframe);
+      var result = matcher.compare(iframe.contentWindow.method);
+      expect(result.pass).toBe(true);
+      expect(result.message).toEqual("Expected function not to throw an Error, but it threw Error.");
+    });
   });
 
   it("fails with the correct message if thrown is a falsy value", function() {

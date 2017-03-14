@@ -29,8 +29,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
         }
 
         // Get Error constructor of thrown
-        if (!thrown || !thrown.constructor || !thrown.constructor.constructor ||
-            !(thrown instanceof (thrown.constructor.constructor('return this')()).Error)) {
+        if (!isErrorObject(thrown)) {
           fail.message = function() { return 'Expected function to throw an Error, but it threw ' + j$.pp(thrown) + '.'; };
           return fail;
         }
@@ -131,7 +130,18 @@ getJasmineRequireObj().toThrowError = function(j$) {
 
       var Surrogate = function() {};
       Surrogate.prototype = type.prototype;
-      return (new Surrogate()) instanceof Error;
+      return isErrorObject(new Surrogate());
+    }
+
+    function isErrorObject(thrown) {
+      if (thrown instanceof Error) {
+        return true;
+      }
+      if (thrown && thrown.constructor && thrown.constructor.constructor &&
+          (thrown instanceof (thrown.constructor.constructor('return this')()).Error)) {
+        return true;
+      }
+      return false;
     }
   }
 
