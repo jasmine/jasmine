@@ -181,6 +181,12 @@ describe("Env integration", function() {
             }
           })]
         }));
+        expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          description: 'pretty prints objects',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Failed: Object({ prop: \'value\', arr: [ \'works\', true ] })'
+          })]
+        }));
         done();
       }
     });
@@ -197,6 +203,10 @@ describe("Env integration", function() {
       env.it('has a message and stack trace from an Error', function() {
         env.fail(new Error('error message'));
       });
+
+      env.it('pretty prints objects', function() {
+        env.fail({prop: 'value', arr: ['works', true]});
+      })
     });
 
     env.execute();
