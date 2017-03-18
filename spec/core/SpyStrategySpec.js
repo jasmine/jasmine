@@ -46,6 +46,29 @@ describe("SpyStrategy", function() {
     expect(returnValue).toEqual(17);
   });
 
+  it("can return a modified result of original function when executed", function() {
+    var originalFn = jasmine.createSpy("original").and.returnValue({
+          a: 1,
+          b: 2
+        }),
+        spyStrategy = new j$.SpyStrategy({fn: originalFn}),
+        returnValue;
+
+    spyStrategy.returnModified(function(originalValue){
+      originalValue.a = 3;
+      originalValue.c = 1;
+      return originalValue;
+    });
+    returnValue = spyStrategy.exec();
+
+    expect(originalFn).toHaveBeenCalled();
+    expect(returnValue).toEqual({
+      a: 3,
+      b: 2,
+      c: 1
+    });
+  });
+
   it("can return specified values in order specified when executed", function() {
     var originalFn = jasmine.createSpy("original"),
         spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});

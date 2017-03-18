@@ -36,6 +36,16 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
       return getSpy();
     };
 
+    this.returnModified = function(fn){
+      plan = function(){
+        var args = Array.prototype.slice.call(arguments),
+            originalReturnValue = originalFn.apply(this, args);
+
+        return fn(originalReturnValue);
+      };
+      return getSpy();
+    };
+
     this.throwError = function(something) {
       var error = (something instanceof Error) ? something : new Error(something);
       plan = function() {
