@@ -5,6 +5,13 @@ getJasmineRequireObj().JsApiReporter = function() {
     elapsed: function(){ return 0; }
   };
 
+  /**
+   * _Note:_ Do not construct this directly, use the global `jsApiReporter` to retrieve the instantiated object.
+   *
+   * @name jsApiReporter
+   * @classdesc Reporter added by default in `boot.js` to record results for retrieval in javascript code.
+   * @class
+   */
   function JsApiReporter(options) {
     var timer = options.timer || noopTimer,
         status = 'loaded';
@@ -28,6 +35,10 @@ getJasmineRequireObj().JsApiReporter = function() {
       status = 'done';
     };
 
+    /**
+     * @name jsApiReporter#status
+     * @function
+     */
     this.status = function() {
       return status;
     };
@@ -43,6 +54,10 @@ getJasmineRequireObj().JsApiReporter = function() {
       storeSuite(result);
     };
 
+    /**
+     * @name jsApiReporter#suiteResults
+     * @function
+     */
     this.suiteResults = function(index, length) {
       return suites.slice(index, index + length);
     };

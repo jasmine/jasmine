@@ -3,14 +3,30 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     throw new Error('unimplemented method');
   };
 
+  /**
+   * @name jasmine.MAX_PRETTY_PRINT_DEPTH
+   */
   j$.MAX_PRETTY_PRINT_DEPTH = 40;
+  /**
+   * @name jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH
+   */
   j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 100;
+  /**
+   * @name jasmine.DEFAULT_TIMEOUT_INTERVAL
+   */
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
   j$.getGlobal = function() {
     return jasmineGlobal;
   };
 
+  /**
+   * Get the currently booted Jasmine Environment.
+   *
+   * @name jasmine.getEnv
+   * @function
+   * @return {Env}
+   */
   j$.getEnv = function(options) {
     var env = j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options);
     //jasmine. singletons in here (setTimeout blah blah).
@@ -58,26 +74,51 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return matches ? matches[1] : '<anonymous>';
   };
 
+  /**
+   * @name jasmine.any
+   * @function
+   */
   j$.any = function(clazz) {
     return new j$.Any(clazz);
   };
 
+  /**
+   * @name jasmine.anything
+   * @function
+   */
   j$.anything = function() {
     return new j$.Anything();
   };
 
+  /**
+   * @name jasmine.objectContaining
+   * @function
+   */
   j$.objectContaining = function(sample) {
     return new j$.ObjectContaining(sample);
   };
 
+  /**
+   * @name jasmine.stringMatching
+   * @function
+   */
   j$.stringMatching = function(expected) {
     return new j$.StringMatching(expected);
   };
 
+  /**
+   * @name jasmine.arrayContaining
+   * @function
+   */
   j$.arrayContaining = function(sample) {
     return new j$.ArrayContaining(sample);
   };
 
+  /**
+   * @name jasmine.createSpy
+   * @function
+   * @return {Spy}
+   */
   j$.createSpy = function(name, originalFn) {
     return j$.Spy(name, originalFn);
   };
@@ -90,6 +131,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       putativeSpy.calls instanceof j$.CallTracker;
   };
 
+  /**
+   * @name jasmine.createSpyObj
+   * @function
+   */
   j$.createSpyObj = function(baseName, methodNames) {
     var baseNameIsCollection = j$.isObject_(baseName) || j$.isArray_(baseName);
 

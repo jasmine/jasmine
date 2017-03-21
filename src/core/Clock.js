@@ -1,4 +1,9 @@
 getJasmineRequireObj().Clock = function() {
+  /**
+   * _Note:_ Do not construct this directly, Jasmine will make one during booting. You can get the current clock with {@link jasmine.clock}.
+   * @class Clock
+   * @classdesc Jasmine's mock clock is used when testing time dependent code.
+   */
   function Clock(global, delayedFunctionSchedulerFactory, mockDate) {
     var self = this,
       realTimingFunctions = {
@@ -18,6 +23,12 @@ getJasmineRequireObj().Clock = function() {
       timer;
 
 
+    /**
+     * Install the mock clock over the built-in methods.
+     * @name Clock#install
+     * @function
+     * @return {Clock}
+     */
     self.install = function() {
       if(!originalTimingFunctionsIntact()) {
         throw new Error('Jasmine Clock was unable to install over custom global timer functions. Is the clock already installed?');
@@ -30,6 +41,11 @@ getJasmineRequireObj().Clock = function() {
       return self;
     };
 
+    /**
+     * Uninstall the mock clock, returning the built-in methods to their places.
+     * @name Clock#uninstall
+     * @function
+     */
     self.uninstall = function() {
       delayedFunctionScheduler = null;
       mockDate.uninstall();
@@ -39,6 +55,14 @@ getJasmineRequireObj().Clock = function() {
       installed = false;
     };
 
+    /**
+     * Execute a function with a mocked Clock
+     *
+     * The clock will be {@link Clock#install|install}ed before the function is called and {@link Clock#uninstall|uninstall}ed in a `finally` after the function completes.
+     * @name Clock#withMock
+     * @function
+     * @param {closure} Function The function to be called.
+     */
     self.withMock = function(closure) {
       this.install();
       try {
@@ -48,6 +72,12 @@ getJasmineRequireObj().Clock = function() {
       }
     };
 
+    /**
+     * Instruct the installed Clock to also mock the date returned by `new Date()`
+     * @name Clock#mockDate
+     * @function
+     * @param {Date} [initialDate=now] The `Date` to provide.
+     */
     self.mockDate = function(initialDate) {
       mockDate.install(initialDate);
     };
@@ -80,6 +110,12 @@ getJasmineRequireObj().Clock = function() {
       return Function.prototype.call.apply(timer.clearInterval, [global, id]);
     };
 
+    /**
+     * Tick the Clock forward, running any enqueued timeouts along the way
+     * @name Clock#tick
+     * @function
+     * @param {int} millis The number of milliseconds to tick.
+     */
     self.tick = function(millis) {
       if (installed) {
         delayedFunctionScheduler.tick(millis, function(millis) { mockDate.tick(millis); });

@@ -8,6 +8,11 @@ getJasmineRequireObj().Spy = function (j$) {
     };
   })();
 
+  /**
+   * _Note:_ Do not construct this directly, use {@link spyOn}, {@link spyOnProperty}, {@link jasmine.createSpy}, or {@link jasmine.createSpyObj}
+   * @constructor
+   * @name Spy
+   */
   function Spy(name, originalFn) {
     var args = buildArgs(),
       /*`eval` is the only option to preserve both this and context:
@@ -27,6 +32,12 @@ getJasmineRequireObj().Spy = function (j$) {
       }),
       callTracker = new j$.CallTracker(),
       spy = function () {
+        /**
+         * @name Spy.callData
+         * @property {object} object - `this` context for the invocation.
+         * @property {number} invocationOrder - Order of the invocation.
+         * @property {Array} args - The arguments passed for this invocation.
+         */
         var callData = {
           object: this,
           invocationOrder: nextOrder(),

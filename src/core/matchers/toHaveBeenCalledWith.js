@@ -2,6 +2,14 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
 
   var getErrorMsg = j$.formatErrorMsg('<toHaveBeenCalledWith>', 'expect(<spyObj>).toHaveBeenCalledWith(...arguments)');
 
+  /**
+   * {@link expect} the actual (a {@link Spy}) to have been called with particular arguments at least once.
+   * @function
+   * @name matchers#toHaveBeenCalledWith
+   * @param {...Object} - The arguments to look for
+   * @example
+   * expect(mySpy).toHaveBeenCalledWith('foo', 'bar', 2);
+   */
   function toHaveBeenCalledWith(util, customEqualityTesters) {
     return {
       compare: function() {

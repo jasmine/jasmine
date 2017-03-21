@@ -1,4 +1,10 @@
 getJasmineRequireObj().Env = function(j$) {
+  /**
+   * _Note:_ Do not construct this directly, Jasmine will make one during booting.
+   * @name Env
+   * @classdesc The Jasmine environment
+   * @constructor
+   */
   function Env(options) {
     options = options || {};
 
@@ -266,6 +272,11 @@ getJasmineRequireObj().Env = function(j$) {
       });
     };
 
+    /**
+     * @name Env#addReporter
+     * @function
+     * @tutorial addReporter
+     */
     this.addReporter = function(reporterToAdd) {
       reporter.addReporter(reporterToAdd);
     };

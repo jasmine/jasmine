@@ -1,5 +1,9 @@
 getJasmineRequireObj().Expectation = function() {
 
+  /**
+   * Matchers that come with Jasmine out of the box.
+   * @namespace matchers
+   */
   function Expectation(options) {
     this.util = options.util || { buildFailureMessage: function() {} };
     this.customEqualityTesters = options.customEqualityTesters || [];

@@ -2,6 +2,19 @@ getJasmineRequireObj().toThrowError = function(j$) {
 
   var getErrorMsg =  j$.formatErrorMsg('<toThrowError>', 'expect(function() {<expectation>}).toThrowError(<ErrorConstructor>, <message>)');
 
+  /**
+   * {@link expect} a function to `throw` an `Error`.
+   * @function
+   * @name matchers#toThrowError
+   * @param {Error} [expected] - `Error` constructor the object that was thrown needs to be an instance of. If not provided, `Error` will be used.
+   * @param {RegExp|String} [message] - The message that should be set on the thrown `Error`
+   * @example
+   * expect(function() { return 'things'; }).toThrowError(MyCustomError, 'message');
+   * expect(function() { return 'things'; }).toThrowError(MyCustomError, /bar/);
+   * expect(function() { return 'stuff'; }).toThrowError(MyCustomError);
+   * expect(function() { return 'other'; }).toThrowError(/foo/);
+   * expect(function() { return 'other'; }).toThrowError();
+   */
   function toThrowError () {
     return {
       compare: function(actual) {
