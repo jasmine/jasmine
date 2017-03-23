@@ -1,8 +1,9 @@
 getJasmineRequireObj().interface = function(jasmine, env) {
   var jasmineInterface = {
     /**
-     * Create a suite of specs
+     * Create a group of specs (often called a suite).
      *
+     * Calls to `describe` can be nested within other calls to compose your suite as a tree.
      * @name describe
      * @function
      * @global
@@ -31,7 +32,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * A focused [`describe`]{@link describe}
      *
      * If suites or specs are focused, only those that are focused will be executed
-     * @see {fit}
+     * @see fit
      * @name fdescribe
      * @function
      * @global
@@ -43,7 +44,9 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     /**
-     * A single spec
+     * Define a single spec. A spec should contain one or more {@link expect|expectations} that test the state of the code.
+     *
+     * A spec whose expectations all succeed will be passing and a spec with any failures will fail.
      * @name it
      * @function
      * @global
@@ -208,24 +211,33 @@ getJasmineRequireObj().interface = function(jasmine, env) {
   };
 
   /**
+   * Add a custom equality tester for the current scope of specs.
+   *
+   * _Note:_ This is only callable from within a {@link beforeEach}, {@link it}, or {@link beforeAll}.
    * @name jasmine.addCustomEqualityTester
    * @function
-   * @tutorial addCustomEqualityTester
+   * @param {Function} tester - A function which takes two arguments to compare and returns a `true` or `false` comparison result if it knows how to compare them, and `undefined` otherwise.
+   * @see custom_equality
    */
   jasmine.addCustomEqualityTester = function(tester) {
     env.addCustomEqualityTester(tester);
   };
 
   /**
+   * Add custom matchers for the current scope of specs.
+   *
+   * _Note:_ This is only callable from within a {@link beforeEach}, {@link it}, or {@link beforeAll}.
    * @name jasmine.addMatchers
    * @function
-   * @tutorial addMatchers
+   * @param {Object} matchers - Keys from this object will be the new matcher names.
+   * @see custom_matcher
    */
   jasmine.addMatchers = function(matchers) {
     return env.addMatchers(matchers);
   };
 
   /**
+   * Get the currently booted mock {Clock} for this Jasmine environment.
    * @name jasmine.clock
    * @function
    * @returns {Clock}

@@ -4,14 +4,19 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
+   * Maximum object depth the pretty printer will print to.
+   * Set this to a lower value to speed up pretty printing if you have large objects.
    * @name jasmine.MAX_PRETTY_PRINT_DEPTH
    */
   j$.MAX_PRETTY_PRINT_DEPTH = 40;
   /**
+   * Maximum number of array elements to display when pretty printing objects.
+   * Elements past this number will be ellipised.
    * @name jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH
    */
   j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 100;
   /**
+   * Default number of milliseconds Jasmine will wait for an asynchronous spec to complete.
    * @name jasmine.DEFAULT_TIMEOUT_INTERVAL
    */
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
@@ -75,14 +80,19 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value being compared is an instance of the specified class/constructor.
    * @name jasmine.any
    * @function
+   * @param {Constructor} clazz - The constructor to check against.
    */
   j$.any = function(clazz) {
     return new j$.Any(clazz);
   };
 
   /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value being compared is not `null` and not `undefined`.
    * @name jasmine.anything
    * @function
    */
@@ -91,32 +101,44 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value being compared contains at least the keys and values.
    * @name jasmine.objectContaining
    * @function
+   * @param {Object} sample - The subset of properties that _must_ be in the actual.
    */
   j$.objectContaining = function(sample) {
     return new j$.ObjectContaining(sample);
   };
 
   /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value is a `String` that matches the `RegExp` or `String`.
    * @name jasmine.stringMatching
    * @function
+   * @param {RegExp|String} expected
    */
   j$.stringMatching = function(expected) {
     return new j$.StringMatching(expected);
   };
 
   /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value is an `Array` that contains at least the elements in the sample.
    * @name jasmine.arrayContaining
    * @function
+   * @param {Array} sample
    */
   j$.arrayContaining = function(sample) {
     return new j$.ArrayContaining(sample);
   };
 
   /**
+   * Create a bare {@link Spy} object. This won't be installed anywhere and will not have any implementation behind it.
    * @name jasmine.createSpy
    * @function
+   * @param {String} [name] - Name to give the spy. This will be displayed in failure messages.
+   * @param {Function} [originalFn] - Function to act as the real implementation.
    * @return {Spy}
    */
   j$.createSpy = function(name, originalFn) {
@@ -132,8 +154,12 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
+   * Create an object with multiple {@link Spy}s as its members.
    * @name jasmine.createSpyObj
    * @function
+   * @param {String} [baseName] - Base name for the spies in the object.
+   * @param {String[]|Object} methodNames - Array of method names to create spies for, or Object whose keys will be method names and values the {@link Spy#and#returnValue|returnValue}.
+   * @return {Object}
    */
   j$.createSpyObj = function(baseName, methodNames) {
     var baseNameIsCollection = j$.isObject_(baseName) || j$.isArray_(baseName);
