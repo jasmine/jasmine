@@ -113,6 +113,7 @@ describe("Expectation", function() {
       matcherName: "toFoo",
       passed: true,
       message: "",
+      error: undefined,
       expected: "hello",
       actual: "an actual"
     });
@@ -146,7 +147,8 @@ describe("Expectation", function() {
       passed: false,
       expected: "hello",
       actual: "an actual",
-      message: ""
+      message: "",
+      error: undefined
     });
   });
 
@@ -179,7 +181,8 @@ describe("Expectation", function() {
       passed: false,
       expected: "hello",
       actual: "an actual",
-      message: "I am a custom message"
+      message: "I am a custom message",
+      error: undefined
     });
   });
 
@@ -212,7 +215,8 @@ describe("Expectation", function() {
       passed: false,
       expected: "hello",
       actual: "an actual",
-      message: "I am a custom message"
+      message: "I am a custom message",
+      error: undefined
     });
   });
 
@@ -244,6 +248,7 @@ describe("Expectation", function() {
       matcherName: "toFoo",
       passed: true,
       message: "",
+      error: undefined,
       expected: "hello",
       actual: actual
     });
@@ -279,7 +284,8 @@ describe("Expectation", function() {
       passed: false,
       expected: "hello",
       actual: actual,
-      message: "default message"
+      message: "default message",
+      error: undefined
     });
   });
 
@@ -314,7 +320,8 @@ describe("Expectation", function() {
       passed: false,
       expected: "hello",
       actual: actual,
-      message: "I am a custom message"
+      message: "I am a custom message",
+      error: undefined
     });
   });
 
@@ -345,7 +352,8 @@ describe("Expectation", function() {
       passed: true,
       expected: "hello",
       actual: actual,
-      message: ""
+      message: "",
+      error: undefined
     });
   });
 
@@ -381,7 +389,8 @@ describe("Expectation", function() {
       passed: false,
       expected: "hello",
       actual: actual,
-      message: "I'm a custom message"
+      message: "I'm a custom message",
+      error: undefined
     });
   });
   
