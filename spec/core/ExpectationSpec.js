@@ -384,6 +384,42 @@ describe("Expectation", function() {
       message: "I'm a custom message"
     });
   });
+  
+  it("reports a custom error message to the spec", function() {
+    var customError = new Error("I am a custom error");
+    var matchers = {
+        toFoo: function() {
+          return {
+            compare: function() {
+              return {
+                pass: false,
+                message: "I am a custom message",
+                error: customError
+              };
+            }
+          };
+        }
+      },
+      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      expectation;
+
+    expectation = new jasmineUnderTest.Expectation({
+      actual: "an actual",
+      customMatchers: matchers,
+      addExpectationResult: addExpectationResult
+    });
+
+    expectation.toFoo("hello");
+
+    expect(addExpectationResult).toHaveBeenCalledWith(false, {
+      matcherName: "toFoo",
+      passed: false,
+      expected: "hello",
+      actual: "an actual",
+      message: "I am a custom message",
+      error: customError
+    });
+  });
 
 });
 
