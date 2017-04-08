@@ -22,3 +22,4 @@ build/
 *.egg-info/
 dist
 nbproject/
+*.iml
