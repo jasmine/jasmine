@@ -172,6 +172,22 @@ describe("jasmine spec running", function () {
   it("should run multiple befores and afters ordered so functions declared later are treated as more specific", function(done) {
     var actions = [];
 
+    env.beforeAll(function() {
+      actions.push('runner beforeAll1');
+    });
+
+    env.afterAll(function() {
+      actions.push('runner afterAll1');
+    });
+
+    env.beforeAll(function() {
+      actions.push('runner beforeAll2');
+    });
+
+    env.afterAll(function() {
+      actions.push('runner afterAll2');
+    });
+
     env.beforeEach(function () {
       actions.push('runner beforeEach1');
     });
@@ -212,6 +228,8 @@ describe("jasmine spec running", function () {
 
     var assertions = function() {
       var expected = [
+        "runner beforeAll1",
+        "runner beforeAll2",
         "runner beforeEach1",
         "runner beforeEach2",
         "beforeEach1",
@@ -220,7 +238,9 @@ describe("jasmine spec running", function () {
         "afterEach2",
         "afterEach1",
         "runner afterEach2",
-        "runner afterEach1"
+        "runner afterEach1",
+        "runner afterAll2",
+        "runner afterAll1"
       ];
       expect(actions).toEqual(expected);
       done();
