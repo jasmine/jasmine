@@ -212,6 +212,23 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it("produces an understandable error message when 'fail' is used outside of a current spec", function(done) {
+    var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
+
+    reporter.jasmineDone.and.callFake(done);
+    env.addReporter(reporter);
+
+    env.describe("A Suite", function() {
+      env.it("an async spec that is actually synchronous", function(underTestCallback) {
+        underTestCallback();
+      });
+      expect(function() { env.fail(); }).toThrowError(/'fail' was used when there was no current spec/);
+    });
+
+    env.execute();
+  });
+
 
   it("calls associated befores/specs/afters with the same 'this'", function(done) {
     var env = new jasmineUnderTest.Env();
