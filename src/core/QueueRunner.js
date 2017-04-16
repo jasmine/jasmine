@@ -52,6 +52,36 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         handleException(e, queueableFn);
       }
     }
+    
+    function ensureSynchronousCodeCompletes(beforeEachFunction, existingDoneFunction) {
+      var endReached = false;
+      var triedToCallDoneEarly = false;
+
+      var patchedDone = function () {
+          //this tells you if done has been called before the end of the beforeEach has been hit
+          triedToCallDoneEarly = true;
+
+          //if we haven't dropped off the end of the before each method then don't call done yet
+          //code further down will do that for us instead at the appropriate point
+          if(!endReached)
+              return;
+
+          //if the end has already been reached then call the done function to move to the next test
+          existingDoneFunction();
+      };
+
+      //kick off the before each method with our more cautious version of done
+      beforeEachFunction(patchedDone);
+      //we've definitely called all of the (none async) code in the beforeEach by this point
+      endReached = true;
+
+      //if the done function attempted to proceed too early then trigger the actual done function
+      //it turns out it didn't need an async wait after all
+      if(triedToCallDoneEarly)
+          existingDoneFunction();
+
+      //otherwise do nothing - we need to wait for an async call to done
+    }
 
     function attemptAsync(queueableFn) {
       var clearTimeout = function () {
@@ -84,7 +114,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }
 
       try {
-        queueableFn.fn.call(self.userContext, next);
+        ensureSynchronousCodeCompletes(queueableFn.fn.bind(self.userContext), next);
       } catch (e) {
         handleException(e, queueableFn);
         next();
