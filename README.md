@@ -32,23 +32,23 @@ For the Jasmine Python Egg:<br>
 For the Jasmine headless browser gulp plugin:<br>
 [https://github.com/jasmine/gulp-jasmine-browser](https://github.com/jasmine/gulp-jasmine-browser)
 
-To install Jasmine standalone on your local box:
+To install Jasmine standalone on your local box (where **_{#.#.#}_** below is substituted by the release number downloaded):
 
 * Download the standalone distribution for your desired release from the [releases page](https://github.com/jasmine/jasmine/releases)
 * Create a Jasmine directory in your project - `mkdir my-project/jasmine`
-* Move the dist to your project directory - `mv jasmine/dist/jasmine-standalone-2.0.0.zip my-project/jasmine`
+* Move the dist to your project directory - `mv jasmine/dist/jasmine-standalone-{#.#.#}.zip my-project/jasmine`
 * Change directory - `cd my-project/jasmine`
-* Unzip the dist - `unzip jasmine-standalone-2.0.0.zip`
+* Unzip the dist - `unzip jasmine-standalone-{#.#.#}.zip`
 
 Add the following to your HTML file:
 
 ```html
-<link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-2.0.0/jasmine_favicon.png">
-<link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-2.0.0/jasmine.css">
+<link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-core/jasmine_favicon.png">
+<link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-core/jasmine.css">
 
-<script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine.js"></script>
-<script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine-html.js"></script>
-<script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/boot.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-core/jasmine.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-core/jasmine-html.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-core/boot.js"></script>
 ```
 
 ## Supported environments
