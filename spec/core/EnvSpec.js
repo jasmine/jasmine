@@ -83,7 +83,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.it('undefined arg', null);
-      }).toThrowError(/it expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/it expects a function argument; received \[object Null\]/);
     });
 
     it('does not throw when it is not given a fn argument', function() {
@@ -106,7 +106,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.xit('undefined arg', null);
-      }).toThrowError(/xit expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/xit expects a function argument; received \[object Null\]/);
     });
 
     it('does not throw when it is not given a fn argument', function() {
