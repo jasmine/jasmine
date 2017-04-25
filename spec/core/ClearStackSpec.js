@@ -7,20 +7,6 @@ describe("ClearStack", function() {
     });
   });
 
-  it("uses nextTick when available", function() {
-    var nextTick = jasmine.createSpy('nextTick').and.callFake(function(fn) { fn() }),
-        global = { process: { nextTick: nextTick } },
-        clearStack = jasmineUnderTest.getClearStack(global),
-        called = false;
-
-    clearStack(function() {
-      called = true;
-    });
-
-    expect(called).toBe(true);
-    expect(nextTick).toHaveBeenCalled();
-  });
-
   it("uses setImmediate when available", function() {
     var setImmediate = jasmine.createSpy('setImmediate').and.callFake(function(fn) { fn() }),
         global = { setImmediate: setImmediate },
