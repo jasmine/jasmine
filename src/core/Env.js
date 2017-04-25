@@ -452,7 +452,7 @@ getJasmineRequireObj().Env = function(j$) {
     this.it = function(description, fn, timeout) {
       // it() sometimes doesn't have a fn argument, so only check the type if
       // it's given.
-      if (arguments.length > 1) {
+      if (arguments.length > 1 && typeof fn !== 'undefined') {
         ensureIsFunction(fn, 'it');
       }
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
@@ -466,7 +466,7 @@ getJasmineRequireObj().Env = function(j$) {
     this.xit = function(description, fn, timeout) {
       // xit(), like it(), doesn't always have a fn argument, so only check the
       // type when needed.
-      if (arguments.length > 1) {
+      if (arguments.length > 1 && typeof fn !== 'undefined') {
         ensureIsFunction(fn, 'xit');
       }
       var spec = this.it.apply(this, arguments);
