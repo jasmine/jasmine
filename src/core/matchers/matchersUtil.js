@@ -327,7 +327,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     }
 
     var extraKeys = [];
-    for (var i in allKeys) {
+    for (var i = 0; i < allKeys.length; i++) {
       if (!allKeys[i].match(/^[0-9]+$/)) {
         extraKeys.push(allKeys[i]);
       }
