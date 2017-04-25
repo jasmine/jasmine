@@ -14,15 +14,14 @@ getJasmineRequireObj().Spy = function (j$) {
    * @name Spy
    */
   function Spy(name, originalFn) {
-    var args = buildArgs(),
-      /*`eval` is the only option to preserve both this and context:
-        - former is needed to work as expected with methods,
-        - latter is needed to access real spy function and allows to reduce eval'ed code to absolute minimum
-        More explanation here (look at comments): http://www.bennadel.com/blog/1909-javascript-function-constructor-does-not-create-a-closure.htm
-       */
-      /* jshint evil: true */
-      wrapper = eval('(0, function (' + args + ') { return spy.apply(this, Array.prototype.slice.call(arguments)); })'),
-      /* jshint evil: false */
+    var numArgs = originalFn.length,
+      wrapper = function () {
+        var args = [];
+        for (var i = 0; i < numArgs || i < arguments.length; i++) {
+          args[i] = arguments[i];
+        }
+        return spy.apply(this, args);
+      },
       spyStrategy = new j$.SpyStrategy({
         name: name,
         fn: originalFn,
@@ -50,16 +49,6 @@ getJasmineRequireObj().Spy = function (j$) {
 
         return returnValue;
       };
-
-    function buildArgs() {
-      var args = [];
-
-      while (originalFn instanceof Function && args.length < originalFn.length) {
-        args.push('arg' + args.length);
-      }
-
-      return args.join(', ');
-    }
 
     for (var prop in originalFn) {
       if (prop === 'and' || prop === 'calls') {
