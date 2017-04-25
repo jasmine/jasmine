@@ -413,6 +413,49 @@ describe("matchersUtil", function() {
       var setB = new Set([6, 3]);
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
     });
+
+    describe("when running in an environment with array polyfills", function() {
+      // IE 8 doesn't support `definePropery` on non-DOM nodes
+      if (jasmine.getEnv().ieVersion < 9) { return; }
+
+      beforeEach(function() {
+        this.origDescriptor = Object.getOwnPropertyDescriptor(Array.prototype, 'findIndex');
+        Object.defineProperty(Array.prototype, 'findIndex', {
+          enumerable: true,
+          value: function (predicate) {
+	            if (this === null) {
+	                throw new TypeError('Array.prototype.findIndex called on null or undefined');
+	            }
+
+	            if (typeof predicate !== 'function') {
+	                throw new TypeError('predicate must be a function');
+	            }
+
+	            var list = Object(this);
+	            var length = list.length >>> 0;
+	            var thisArg = arguments[1];
+	            var value;
+
+	            for (var i = 0; i < length; i++) {
+	                value = list[i];
+	                if (predicate.call(thisArg, value, i, list)) {
+	                    return i;
+	                }
+	            }
+
+	            return -1;
+	        }
+        });
+      });
+
+      afterEach(function() {
+        Object.defineProperty(Array.prototype, 'findIndex', this.origDescriptor);
+      });
+
+      it("passes when there's an array polyfill", function() {
+        expect(['foo']).toEqual(['foo']);
+      });
+    });
   });
 
   describe("contains", function() {
