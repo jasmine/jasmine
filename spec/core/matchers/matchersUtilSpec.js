@@ -418,8 +418,12 @@ describe("matchersUtil", function() {
       // IE 8 doesn't support `definePropery` on non-DOM nodes
       if (jasmine.getEnv().ieVersion < 9) { return; }
 
+      var findIndexDescriptor = Object.getOwnPropertyDescriptor(Array.prototype, 'findIndex');
+      if (!findIndexDescriptor) {
+        return;
+      }
+
       beforeEach(function() {
-        this.origDescriptor = Object.getOwnPropertyDescriptor(Array.prototype, 'findIndex');
         Object.defineProperty(Array.prototype, 'findIndex', {
           enumerable: true,
           value: function (predicate) {
@@ -449,7 +453,7 @@ describe("matchersUtil", function() {
       });
 
       afterEach(function() {
-        Object.defineProperty(Array.prototype, 'findIndex', this.origDescriptor);
+        Object.defineProperty(Array.prototype, 'findIndex', findIndexDescriptor);
       });
 
       it("passes when there's an array polyfill", function() {
