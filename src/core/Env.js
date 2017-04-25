@@ -310,7 +310,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var ensureIsFunction = function(fn, caller) {
-      if (!j$.isFunction_(fn)) {
+      if (typeof fn !== "undefined" && !j$.isFunction_(fn)) {
         throw new Error(caller + ' expects a function argument; received ' + j$.getType_(fn));
       }
     };
