@@ -14,7 +14,7 @@ getJasmineRequireObj().Spy = function (j$) {
    * @name Spy
    */
   function Spy(name, originalFn) {
-    var numArgs = originalFn.length,
+    var numArgs = (typeof originalFn === "function" ? originalFn.length : 0),
       wrapper = function () {
         var args = [];
         for (var i = 0; i < numArgs || i < arguments.length; i++) {
