@@ -14,15 +14,10 @@ getJasmineRequireObj().Spy = function (j$) {
    * @name Spy
    */
   function Spy(name, originalFn) {
-    var args = buildArgs(),
-      /*`eval` is the only option to preserve both this and context:
-        - former is needed to work as expected with methods,
-        - latter is needed to access real spy function and allows to reduce eval'ed code to absolute minimum
-        More explanation here (look at comments): http://www.bennadel.com/blog/1909-javascript-function-constructor-does-not-create-a-closure.htm
-       */
-      /* jshint evil: true */
-      wrapper = eval('(0, function (' + args + ') { return spy.apply(this, Array.prototype.slice.call(arguments)); })'),
-      /* jshint evil: false */
+    var numArgs = (typeof originalFn === 'function' ? originalFn.length : 0),
+      wrapper = makeFunc(numArgs, function () {
+        return spy.apply(this, Array.prototype.slice.call(arguments));
+      }),
       spyStrategy = new j$.SpyStrategy({
         name: name,
         fn: originalFn,
@@ -51,14 +46,19 @@ getJasmineRequireObj().Spy = function (j$) {
         return returnValue;
       };
 
-    function buildArgs() {
-      var args = [];
-
-      while (originalFn instanceof Function && args.length < originalFn.length) {
-        args.push('arg' + args.length);
+    function makeFunc(length, fn) {
+      switch (length) {
+        case 1 : return function (a) { return fn.apply(this, arguments); };
+        case 2 : return function (a,b) { return fn.apply(this, arguments); };
+        case 3 : return function (a,b,c) { return fn.apply(this, arguments); };
+        case 4 : return function (a,b,c,d) { return fn.apply(this, arguments); };
+        case 5 : return function (a,b,c,d,e) { return fn.apply(this, arguments); };
+        case 6 : return function (a,b,c,d,e,f) { return fn.apply(this, arguments); };
+        case 7 : return function (a,b,c,d,e,f,g) { return fn.apply(this, arguments); };
+        case 8 : return function (a,b,c,d,e,f,g,h) { return fn.apply(this, arguments); };
+        case 9 : return function (a,b,c,d,e,f,g,h,i) { return fn.apply(this, arguments); };
+        default : return function () { return fn.apply(this, arguments); };
       }
-
-      return args.join(', ');
     }
 
     for (var prop in originalFn) {
