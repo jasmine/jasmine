@@ -59,7 +59,7 @@ getJasmineRequireObj().Spy = function (j$) {
         case 9 : return function (a,b,c,d,e,f,g,h,i) { return fn.apply(this, arguments); };
         default : return function () { return fn.apply(this, arguments); };
       }
-    };
+    }
 
     for (var prop in originalFn) {
       if (prop === 'and' || prop === 'calls') {
