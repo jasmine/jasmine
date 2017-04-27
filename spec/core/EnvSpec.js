@@ -130,12 +130,6 @@ describe("Env", function() {
         env.beforeEach(undefined);
       }).toThrowError(/beforeEach expects a function or async function argument; received \[object (Undefined|DOMWindow|Object)\]/);
     });
-
-    it('does not throw when it receives a async function', function() {
-      expect(function() {
-        env.beforeEach(async function(){});
-      }).not.toThrow()
-    });
   });
 
   describe('#beforeAll', function () {
