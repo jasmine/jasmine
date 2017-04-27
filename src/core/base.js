@@ -54,6 +54,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return j$.isA_('Number', value);
   };
 
+  j$.isAsyncFunction_ = function(value) {
+    return j$.isA_('AsyncFunction', value);
+  };
+
   j$.isFunction_ = function(value) {
     return j$.isA_('Function', value);
   };

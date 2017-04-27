@@ -128,7 +128,13 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.beforeEach(undefined);
-      }).toThrowError(/beforeEach expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/beforeEach expects a function or async function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+
+    it('does not throw when it receives a async function', function() {
+      expect(function() {
+        env.beforeEach(async function(){});
+      }).not.toThrow()
     });
   });
 
@@ -136,7 +142,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.beforeAll(undefined);
-      }).toThrowError(/beforeAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/beforeAll expects a function or async function argument; received \[object (Undefined|DOMWindow|Object)\]/);
     });
   });
 
@@ -144,7 +150,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.afterEach(undefined);
-      }).toThrowError(/afterEach expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/afterEach expects a function or async function argument; received \[object (Undefined|DOMWindow|Object)\]/);
     });
   });
 
@@ -152,7 +158,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.afterAll(undefined);
-      }).toThrowError(/afterAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/afterAll expects a function or async function argument; received \[object (Undefined|DOMWindow|Object)\]/);
     });
   });
 });
