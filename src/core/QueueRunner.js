@@ -35,23 +35,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
       var queueableFn = queueableFns[iterativeIndex];
-      if (queueableFn.fn.length > 0) {
-        attemptAsync(queueableFn);
-        return;
-      } else {
-        attemptSync(queueableFn);
-      }
+      attemptAsync(queueableFn);
     }
 
     this.clearStack(this.onComplete);
-
-    function attemptSync(queueableFn) {
-      try {
-        queueableFn.fn.call(self.userContext);
-      } catch (e) {
-        handleException(e, queueableFn);
-      }
-    }
 
     function attemptAsync(queueableFn) {
       var clearTimeout = function () {
@@ -84,7 +71,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }
 
       try {
-        queueableFn.fn.call(self.userContext, next);
+        var promise = queueableFn.fn.call(self.userContext, next);
+        if (promise && promise.then && promise.catch && promise['finally']) {
+          promise
+              .catch(function(e) { handleException(e, queueableFn) })
+              ['finally'](function() { next() })
+        }
       } catch (e) {
         handleException(e, queueableFn);
         next();
