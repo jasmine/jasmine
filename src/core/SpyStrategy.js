@@ -27,7 +27,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
      * @function
      */
     this.exec = function() {
-      return plan.apply(this, arguments);
+      return Function.prototype.apply.call(plan, this, arguments);
     };
 
     /**
@@ -88,7 +88,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
      * @param {Function} fn The function to invoke with the passed parameters.
      */
     this.callFake = function(fn) {
-      if(!j$.isFunction_(fn)) {
+      if(typeof fn !== 'function') {
         throw new Error('Argument passed to callFake should be a function, got ' + fn);
       }
       plan = fn;
