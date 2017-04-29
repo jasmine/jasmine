@@ -94,7 +94,6 @@ describe("SpyStrategy", function() {
 
   it('throws an error when a non-function is passed to callFake strategy', function() {
     var originalFn = jasmine.createSpy('original'),
-        spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn}),
         invalidFakes = [5, 'foo', {}, true, false, null, void 0, new Date(), /.*/];
     
     for (var i=0; i<invalidFakes.length; i++) {
