@@ -1,4 +1,4 @@
-getJasmineRequireObj().SpyStrategy = function(j$) {
+getJasmineRequireObj().SpyStrategy = function() {
 
   /**
    * @namespace Spy#and
