@@ -390,6 +390,37 @@ describe("toEqual", function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
+  it("does not report deep mismatches within Maps", function() {
+    // TODO: implement deep comparison of Map elements
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var actual = new Map([['a', 1]]),
+      expected = new Map([['a', 2]]),
+      message = "Expected Map( [ 'a', 1 ] ) to equal Map( [ 'a', 2 ] ).";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("reports mismatches between Maps nested in objects", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var actual = {Maps: [new Map([['a', 1]])]},
+      expected = {Maps: [new Map([['a', 2], ['b', 1]])]},
+      message = "Expected $.Maps[0] = Map( [ 'a', 1 ] ) to equal Map( [ 'a', 2 ], [ 'b', 1 ] ).";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("reports mismatches between Maps of different lengths", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var actual = new Map([['a', 1]]),
+      expected = new Map([['a', 2]]),
+      message = "Expected Map( [ 'a', 1 ] ) to equal Map( [ 'a', 2 ] ).";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });  
+
   function isNotRunningInBrowser() {
     return typeof document === 'undefined'
   }
