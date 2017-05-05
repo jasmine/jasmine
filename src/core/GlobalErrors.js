@@ -1,6 +1,6 @@
 getJasmineRequireObj().GlobalErrors = function(j$) {
   function GlobalErrors(global) {
-    var handlers = [];
+    var handlers = [], installed = false, originalHandler = null;
     global = global || j$.getGlobal();
 
     var onerror = function onerror() {
@@ -8,28 +8,35 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       handler.apply(null, Array.prototype.slice.call(arguments, 0));
     };
 
-    this.uninstall = function noop() {};
+    this.uninstall = function uninstall() {
+      if (!installed) {
+        return;
+      }
+
+      if (global.process && global.process.listeners && j$.isFunction_(global.process.on)) {
+        global.process.removeListener('uncaughtException', onerror);
+        for (var i = 0; i < originalHandler.length; i++) {
+          global.process.on('uncaughtException', originalHandler[i]);
+        }
+      } else {
+        global.onerror = originalHandler;
+      }
+
+      installed = false;
+      originalHandler = null;
+    };
 
     this.install = function install() {
       if (global.process && global.process.listeners && j$.isFunction_(global.process.on)) {
-        var originalHandlers = global.process.listeners('uncaughtException');
+        originalHandler = global.process.listeners('uncaughtException');
         global.process.removeAllListeners('uncaughtException');
         global.process.on('uncaughtException', onerror);
-
-        this.uninstall = function uninstall() {
-          global.process.removeListener('uncaughtException', onerror);
-          for (var i = 0; i < originalHandlers.length; i++) {
-            global.process.on('uncaughtException', originalHandlers[i]);
-          }
-        };
       } else {
-        var originalHandler = global.onerror;
+        originalHandler = global.onerror;
         global.onerror = onerror;
-
-        this.uninstall = function uninstall() {
-          global.onerror = originalHandler;
-        };
       }
+
+      installed = true;
     };
 
     this.pushListener = function pushListener(listener) {
