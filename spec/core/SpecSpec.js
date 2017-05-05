@@ -357,6 +357,23 @@ describe("Spec", function() {
     }]);
   });
 
+  it("should return true when handling an exception", function() {
+    var spec = new jasmineUnderTest.Spec(
+      {queueableFn: { fn: function() {} }
+    });
+
+    expect(spec.onException('foo')).toEqual(true);
+  });
+
+  it("should return true when handling a pending spec exception", function() {
+    var spec = new jasmineUnderTest.Spec(
+      {queueableFn: { fn: function() {} }
+      });
+    var error = new Error(jasmineUnderTest.Spec.pendingSpecExceptionMessage);
+
+    expect(spec.onException(error)).toEqual(true);
+  });
+
   it("should not log an additional failure when handling an ExpectationFailed error", function() {
     var resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
