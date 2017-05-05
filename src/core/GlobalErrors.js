@@ -1,6 +1,6 @@
 getJasmineRequireObj().GlobalErrors = function(j$) {
   function GlobalErrors(global) {
-    var handlers = [], installed = false, originalHandler = null;
+    var handlers = [], installable = false, installed = false, originalHandler = null;
     global = global || j$.getGlobal();
 
     var onerror = function onerror() {
@@ -9,6 +9,11 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     };
 
     this.uninstall = function uninstall() {
+      unregister();
+      installable = false;
+    };
+
+    var unregister = function unregister() {
       if (!installed) {
         return;
       }
@@ -27,6 +32,10 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     };
 
     this.install = function install() {
+      installable = true;
+    };
+
+    var register = function register() {
       if (global.process && global.process.listeners && j$.isFunction_(global.process.on)) {
         originalHandler = global.process.listeners('uncaughtException');
         global.process.removeAllListeners('uncaughtException');
@@ -41,10 +50,18 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
 
     this.pushListener = function pushListener(listener) {
       handlers.push(listener);
+
+      if (installable && !installed) {
+        register();
+      }
     };
 
     this.popListener = function popListener() {
       handlers.pop();
+
+      if (handlers.length === 0) {
+        unregister();
+      }
     };
   }
 
