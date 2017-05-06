@@ -2,10 +2,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
   function once(fn) {
     var called = false;
-    return function() {
+    return function(err) {
       if (!called) {
         called = true;
-        fn();
+        fn(err);
       }
       return null;
     };
@@ -61,7 +61,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
           onException(error);
           next();
         },
-        next = once(function () {
+        next = once(function (err) {
+          if (err) {
+            handleException(err);
+          }
           clearTimeout(timeoutId);
           self.globalErrors.popListener(handleError);
           self.run(queueableFns, iterativeIndex + 1);

@@ -137,6 +137,62 @@ describe("QueueRunner", function() {
       expect(onComplete).toHaveBeenCalled();
     });
 
+    it('logs async errors passed via done(err)', function() {
+      var error = new Error('failure');
+      
+      function asyncError(done) {
+        setTimeout(function() {
+          // node style error indication
+          done(error);
+        }, 100);
+      }
+
+      var fn = asyncError,
+        onComplete = jasmine.createSpy('onComplete'),
+        onException = jasmine.createSpy('onException'),
+        queueRunner = new j$.QueueRunner({
+          fns: [asyncError],
+          onComplete: onComplete,
+          onException: onException
+        });
+
+      queueRunner.execute();
+      expect(onComplete).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(110);
+
+      expect(onException).toHaveBeenCalledWith(error);
+      expect(onComplete).toHaveBeenCalled();
+    });
+
+    it('logs NO async errors via done(null)', function() {
+      var error = new Error('failure');
+      
+      function asyncNoError(done) {
+        setTimeout(function() {
+          // node style no error indication
+          done(null);
+        }, 100);
+      }
+
+      var fn = asyncNoError,
+        onComplete = jasmine.createSpy('onComplete'),
+        onException = jasmine.createSpy('onException'),
+        queueRunner = new j$.QueueRunner({
+          fns: [asyncNoError],
+          onComplete: onComplete,
+          onException: onException
+        });
+
+      queueRunner.execute();
+      expect(onComplete).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(110);
+
+      expect(onException).not.toHaveBeenCalled();
+      expect(onComplete).toHaveBeenCalled();
+    });
+
     it("by default does not set a timeout for asynchronous functions", function() {
       var beforeFn = { fn: function(done) { } },
         queueableFn = { fn: jasmine.createSpy('fn') },
