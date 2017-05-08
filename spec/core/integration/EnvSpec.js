@@ -1260,7 +1260,8 @@ describe("Env integration", function() {
 
       reporter.jasmineDone.and.callFake(function() {
         expect(reporter.jasmineStarted).toHaveBeenCalledWith({
-          totalSpecsDefined: 1
+          totalSpecsDefined: 1,
+          order: jasmine.any(jasmineUnderTest.Order)
         });
 
         expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
@@ -1295,7 +1296,8 @@ describe("Env integration", function() {
 
       reporter.jasmineDone.and.callFake(function() {
         expect(reporter.jasmineStarted).toHaveBeenCalledWith({
-          totalSpecsDefined: 1
+          totalSpecsDefined: 1,
+          order: jasmine.any(jasmineUnderTest.Order)
         });
 
         expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
@@ -1333,7 +1335,8 @@ describe("Env integration", function() {
 
     reporter.jasmineDone.and.callFake(function() {
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
-        totalSpecsDefined: 5
+        totalSpecsDefined: 5,
+        order: jasmine.any(jasmineUnderTest.Order)
       });
 
       expect(reporter.specDone.calls.count()).toBe(5);
@@ -1387,6 +1390,34 @@ describe("Env integration", function() {
       });
     });
 
+    env.execute();
+  });
+
+  it("should report the random seed at the beginning and end of execution", function(done) {
+    var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
+          "jasmineStarted",
+          "jasmineDone",
+          "suiteStarted",
+          "suiteDone",
+          "specStarted",
+          "specDone"
+        ]);
+    env.randomizeTests(true);
+    env.seed('123456');
+
+    reporter.jasmineDone.and.callFake(function(doneArg) {
+      expect(reporter.jasmineStarted).toHaveBeenCalled();
+      var startedArg = reporter.jasmineStarted.calls.argsFor(0)[0];
+      expect(startedArg.order.random).toEqual(true);
+      expect(startedArg.order.seed).toEqual('123456');
+
+      expect(doneArg.order.random).toEqual(true);
+      expect(doneArg.order.seed).toEqual('123456');
+      done();
+    });
+
+    env.addReporter(reporter);
     env.execute();
   });
 
@@ -1449,7 +1480,8 @@ describe("Env integration", function() {
 
     reporter.jasmineDone.and.callFake(function() {
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
-        totalSpecsDefined: 1
+        totalSpecsDefined: 1,
+        order: jasmine.any(jasmineUnderTest.Order)
       });
 
       expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ status: 'disabled' }));

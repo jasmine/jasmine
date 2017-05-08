@@ -254,7 +254,8 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       reporter.jasmineStarted({
-        totalSpecsDefined: totalSpecsDefined
+        totalSpecsDefined: totalSpecsDefined,
+        order: order
       });
 
       currentlyExecutingSuites.push(topSuite);
