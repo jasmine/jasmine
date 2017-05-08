@@ -62,6 +62,22 @@ describe("GlobalErrors", function() {
     expect(fakeGlobal.onerror).toBe(originalCallback);
   });
 
+  it("rethrows the original error when there is no handler", function() {
+    var fakeGlobal = { },
+        errors = new jasmineUnderTest.GlobalErrors(fakeGlobal),
+        originalError = new Error('nope');
+
+    errors.install();
+
+    try {
+      fakeGlobal.onerror(originalError);
+    } catch (e) {
+      expect(e).toBe(originalError);
+    }
+
+    errors.uninstall();
+  });
+
   it("works in node.js", function() {
     var fakeGlobal = {
           process: {
