@@ -252,7 +252,7 @@ describe("QueueRunner", function() {
 
       nextQueueableFn.fn.and.callFake(function() {
         // should remove the same function that was added
-        expect(globalErrors.popListener).toHaveBeenCalledWith(globalErrors.pushListener.calls.argsFor(0)[0]);
+        expect(globalErrors.popListener).toHaveBeenCalledWith(globalErrors.pushListener.calls.argsFor(1)[0]);
       });
 
       queueRunner.execute();
@@ -314,6 +314,32 @@ describe("QueueRunner", function() {
     expect(nextQueueableFn.fn).toHaveBeenCalled();
   });
 
+  it("handles exceptions thrown while waiting for the stack to clear", function() {
+    var queueableFn = { fn: function(done) { done() } },
+      global = {},
+      errorListeners = [],
+      globalErrors = {
+        pushListener: function(f) { errorListeners.push(f); },
+        popListener: function() { errorListeners.pop(); }
+      },
+      clearStack = jasmine.createSpy('clearStack'),
+      onException = jasmine.createSpy('onException'),
+      queueRunner = new jasmineUnderTest.QueueRunner({
+        queueableFns: [queueableFn],
+        globalErrors: globalErrors,
+        clearStack: clearStack,
+        onException: onException
+      }),
+      error = new Error('nope');
+
+    queueRunner.execute();
+    expect(clearStack).toHaveBeenCalled();
+    expect(errorListeners.length).toEqual(1);
+    errorListeners[0](error);
+    clearStack.calls.argsFor(0)[0]();
+    expect(onException).toHaveBeenCalledWith(error);
+  });
+
   it("calls a provided complete callback when done", function() {
     var queueableFn = { fn: jasmine.createSpy('fn') },
       completeCallback = jasmine.createSpy('completeCallback'),
@@ -342,6 +368,8 @@ describe("QueueRunner", function() {
 
     queueRunner.execute();
     expect(afterFn.fn).toHaveBeenCalled();
-    expect(clearStack).toHaveBeenCalledWith(completeCallback);
+    expect(clearStack).toHaveBeenCalled();
+    clearStack.calls.argsFor(0)[0]();
+    expect(completeCallback).toHaveBeenCalled();
   });
 });
