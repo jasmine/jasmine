@@ -87,7 +87,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
       try {
         if (queueableFn.fn.length === 0) {
-          queueableFn.fn.call(self.userContext);
+          var maybeThenable = queueableFn.fn.call(self.userContext);
+
+          if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
+            maybeThenable.then(next, next.fail);
+            return false;
+          }
         } else {
           queueableFn.fn.call(self.userContext, next);
           return false;

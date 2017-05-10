@@ -273,6 +273,84 @@ describe("QueueRunner", function() {
     });
   });
 
+  describe("with a function that returns a promise", function() {
+    function StubPromise() {}
+
+    StubPromise.prototype.then = function(resolve, reject) {
+      this.resolveHandler = resolve;
+      this.rejectHandler = reject;
+    };
+
+    beforeEach(function() {
+      jasmine.clock().install();
+    });
+
+    afterEach(function() {
+      jasmine.clock().uninstall();
+    });
+
+    it("runs the function asynchronously, advancing once the promise is settled", function() {
+      var onComplete = jasmine.createSpy('onComplete'),
+        fnCallback =  jasmine.createSpy('fnCallback'),
+        p1 = new StubPromise(),
+        p2 = new StubPromise(),
+        queueableFn1 = { fn: function() {
+          setTimeout(function() {
+            p1.resolveHandler();
+          }, 100);
+          return p1;
+        } };
+        queueableFn2 = { fn: function() {
+          fnCallback();
+          setTimeout(function() {
+            p2.resolveHandler();
+          }, 100);
+          return p2;
+        } },
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn1, queueableFn2],
+          onComplete: onComplete
+        });
+
+      queueRunner.execute();
+      expect(fnCallback).not.toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(fnCallback).toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(onComplete).toHaveBeenCalled();
+    });
+
+    it("fails the function when the promise is rejected", function() {
+      var promise = new StubPromise(),
+        queueableFn1 = { fn: function() {
+          setTimeout(function() { promise.rejectHandler('foo'); }, 100);
+          return promise;
+        } },
+        queueableFn2 = { fn: jasmine.createSpy('fn2') },
+        failFn = jasmine.createSpy('fail'),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn1, queueableFn2],
+          fail: failFn
+        });
+
+      queueRunner.execute();
+
+      expect(failFn).not.toHaveBeenCalled();
+      expect(queueableFn2.fn).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(failFn).toHaveBeenCalledWith('foo');
+      expect(queueableFn2.fn).toHaveBeenCalled();
+    });
+  });
+
   it("calls exception handlers when an exception is thrown in a fn", function() {
     var queueableFn = { type: 'queueable',
       fn: function() {
