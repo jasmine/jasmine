@@ -238,6 +238,10 @@ getJasmineRequireObj().Env = function(j$) {
           reporter.suiteStarted(suite.result);
         },
         nodeComplete: function(suite, result) {
+          if (suite !== currentSuite()) {
+            throw new Error('Tried to complete the wrong suite');
+          }
+
           if (!suite.markedPending) {
             clearResourcesForRunnable(suite.id);
           }

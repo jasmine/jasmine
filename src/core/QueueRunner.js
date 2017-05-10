@@ -24,6 +24,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   }
 
   QueueRunner.prototype.execute = function() {
+    var self = this;
+    this.handleFinalError = function(error) {
+      self.onException(error);
+    };
+    this.globalErrors.pushListener(this.handleFinalError);
     this.run(this.queueableFns, 0);
   };
 
@@ -43,7 +48,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }
     }
 
-    this.clearStack(this.onComplete);
+    this.clearStack(function() {
+      self.globalErrors.popListener(self.handleFinalError);
+      self.onComplete();
+    });
 
     function attemptSync(queueableFn) {
       try {
