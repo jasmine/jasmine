@@ -6,6 +6,7 @@
     "npmPackage/**/*.js"
   ],
   "helpers": [
+    "helpers/asyncAwait.js",
     "helpers/checkForSet.js",
     "helpers/nodeDefineJasmineUnderTest.js"
   ],

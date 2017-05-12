@@ -16,6 +16,7 @@ src_files:
   - '**/*.js'
 stylesheets:
 helpers:
+  - 'helpers/asyncAwait.js'
   - 'helpers/BrowserFlags.js'
   - 'helpers/checkForSet.js'
   - 'helpers/defineJasmineUnderTest.js'
