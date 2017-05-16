@@ -4,11 +4,22 @@ getJasmineRequireObj().clearStack = function(j$) {
         head = {},
         tail = head;
 
+    var taskRunning = false;
     channel.port1.onmessage = function() {
       head = head.next;
       var task = head.task;
       delete head.task;
-      task();
+
+      if (taskRunning) {
+        global.setTimeout(task, 0);
+      } else {
+        try {
+          taskRunning = true;
+          task();
+        } finally {
+          taskRunning = false;
+        }
+      }
     };
 
     return function clearStack(fn) {
