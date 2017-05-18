@@ -313,6 +313,12 @@ getJasmineRequireObj().Env = function(j$) {
       return spyRegistry.spyOnProperty.apply(spyRegistry, arguments);
     };
 
+    var ensureIsFunctionOrAsyncFunction = function(fn, caller) {
+      if (!j$.isFunction_(fn) && !j$.isAsyncFunction_(fn)) {
+        throw new Error(caller + ' expects a function or async function argument; received ' + j$.getType_(fn));
+      }
+    };
+
     var ensureIsFunction = function(fn, caller) {
       if (!j$.isFunction_(fn)) {
         throw new Error(caller + ' expects a function argument; received ' + j$.getType_(fn));
@@ -496,7 +502,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.beforeEach = function(beforeEachFunction, timeout) {
-      ensureIsFunction(beforeEachFunction, 'beforeEach');
+      ensureIsFunctionOrAsyncFunction(beforeEachFunction, 'beforeEach');
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
@@ -504,7 +510,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.beforeAll = function(beforeAllFunction, timeout) {
-      ensureIsFunction(beforeAllFunction, 'beforeAll');
+      ensureIsFunctionOrAsyncFunction(beforeAllFunction, 'beforeAll');
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
@@ -512,7 +518,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.afterEach = function(afterEachFunction, timeout) {
-      ensureIsFunction(afterEachFunction, 'afterEach');
+      ensureIsFunctionOrAsyncFunction(afterEachFunction, 'afterEach');
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
@@ -520,7 +526,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.afterAll = function(afterAllFunction, timeout) {
-      ensureIsFunction(afterAllFunction, 'afterAll');
+      ensureIsFunctionOrAsyncFunction(afterAllFunction, 'afterAll');
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
