@@ -40,7 +40,10 @@ When ready to release - specs are all green and the stories are done:
 
 ### Release the Python egg
 
-1. `python setup.py register sdist upload` You will need pypi credentials to upload the egg.
+Install [twine](https://github.com/pypa/twine)
+
+1. `python setup.py sdist`
+1. `twine upload dist/jasmine-core-<version>.tar.gz` You will need pypi credentials to upload the egg.
 
 ### Release the Ruby gem
 
