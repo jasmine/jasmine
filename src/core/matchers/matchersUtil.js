@@ -239,12 +239,12 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       if (!result) {
         return false;
       }
-    } else if (className == '[object Set]') {
+    } else if (className == '[object Set]' || className == '[object Map]') {
       if (a.size != b.size) {
         diffBuilder.record(a, b);
         return false;
       }
-      var iterA = a.values(), iterB = b.values();
+      var iterA = a.entries(), iterB = b.entries();
       var valA, valB;
       do {
         valA = iterA.next();

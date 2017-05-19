@@ -33,6 +33,26 @@ describe("jasmineUnderTest.pp", function () {
     })
   });
 
+  describe('stringify maps', function() {
+    it("should stringify maps properly", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      expect(jasmineUnderTest.pp(new Map([[1, 2]]))).toEqual("Map( [ 1, 2 ] )");
+    });
+
+    it("should truncate maps with more elments than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+
+      try {
+        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+        expect(jasmineUnderTest.pp(new Map([["a", 1], ["b", 2], ["c", 3]]))).toEqual("Map( [ 'a', 1 ], [ 'b', 2 ], ... )");
+      } finally {
+        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxSize;
+      }
+    })
+  });
+
+
   describe('stringify arrays', function() {
     it("should stringify arrays properly", function() {
       expect(jasmineUnderTest.pp([1, 2])).toEqual("[ 1, 2 ]");

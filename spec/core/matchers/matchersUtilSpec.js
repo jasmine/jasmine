@@ -414,6 +414,40 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
     });
 
+    it("passes when comparing two empty maps", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      expect(jasmineUnderTest.matchersUtil.equals(new Map(), new Map())).toBe(true);
+    });
+
+    it("passes when comparing identical maps", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var mapA = new Map([[6, 5]]);
+      var mapB = new Map();
+      mapB.set(6, 5);
+      expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(true);
+    });
+
+    it("fails for maps with different elements", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var mapA = new Map([[6, 3], [5, 1]]);
+      var mapB = new Map([[6, 4], [5, 1]]);
+      expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(false);
+    });
+
+    it("fails for maps of different size", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var mapA = new Map([[6, 3]]);
+      var mapB = new Map([[6, 4], [5, 1]]);
+      expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(false);
+    });
+
+    it("fails for maps with different insertion order", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var mapA = new Map([['a', 3], [6, 1]]);
+      var mapB = new Map([[6, 1], ['a', 3]]);
+      expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(false);
+    });
+
     describe("when running in an environment with array polyfills", function() {
       // IE 8 doesn't support `definePropery` on non-DOM nodes
       if (jasmine.getEnv().ieVersion < 9) { return; }
