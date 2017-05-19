@@ -40,11 +40,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
       var queueableFn = queueableFns[iterativeIndex];
-      if (queueableFn.fn.length > 0) {
-        attemptAsync(queueableFn);
+      var completedSynchronously = attempt(queueableFn);
+
+      if (!completedSynchronously) {
         return;
-      } else {
-        attemptSync(queueableFn);
       }
     }
 
@@ -53,15 +52,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self.onComplete();
     });
 
-    function attemptSync(queueableFn) {
-      try {
-        queueableFn.fn.call(self.userContext);
-      } catch (e) {
-        handleException(e, queueableFn);
-      }
-    }
-
-    function attemptAsync(queueableFn) {
+    function attempt(queueableFn) {
       var clearTimeout = function () {
           Function.prototype.apply.apply(self.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
         },
@@ -69,9 +60,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
           onException(error);
           next();
         },
-        next = once(function () {
+        cleanup = once(function() {
           clearTimeout(timeoutId);
           self.globalErrors.popListener(handleError);
+        }),
+        next = once(function () {
+          cleanup();
           self.run(queueableFns, iterativeIndex + 1);
         }),
         timeoutId;
@@ -92,11 +86,23 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }
 
       try {
-        queueableFn.fn.call(self.userContext, next);
+        if (queueableFn.fn.length === 0) {
+          var maybeThenable = queueableFn.fn.call(self.userContext);
+
+          if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
+            maybeThenable.then(next, next.fail);
+            return false;
+          }
+        } else {
+          queueableFn.fn.call(self.userContext, next);
+          return false;
+        }
       } catch (e) {
         handleException(e, queueableFn);
-        next();
       }
+
+      cleanup();
+      return true;
     }
 
     function onException(e) {
