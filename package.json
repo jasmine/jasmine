@@ -1,5 +1,6 @@
 {
-  "name": "jasmine-core",
+  "name": "jasmine",
+  "main": "lib/jasmine-core/jasmine.js",
   "license": "MIT",
   "version": "2.6.2",
   "repository": {
