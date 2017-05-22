@@ -1067,7 +1067,6 @@ describe("Env integration", function() {
         env.afterAll(function(innerDone) {
           jasmine.clock().tick(3001);
           innerDone();
-          jasmine.clock().tick(1);
         });
       });
 
