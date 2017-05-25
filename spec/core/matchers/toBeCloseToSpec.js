@@ -29,6 +29,22 @@ describe("toBeCloseTo", function() {
     expect(result.pass).toBe(true);
   });
 
+  it("fails when one of the arguments is null", function() {
+    var matcher = jasmineUnderTest.matchers.toBeCloseTo();
+
+    expect(function() {
+      matcher.compare(null, null);
+    }).toThrowError('Cannot use toBeCloseTo with null. Arguments evaluated to: expect(null).toBeCloseTo(null).');
+
+    expect(function() {
+      matcher.compare(0, null);
+    }).toThrowError('Cannot use toBeCloseTo with null. Arguments evaluated to: expect(0).toBeCloseTo(null).');
+
+    expect(function() {
+      matcher.compare(null, 0);
+    }).toThrowError('Cannot use toBeCloseTo with null. Arguments evaluated to: expect(null).toBeCloseTo(0).');
+  });
+
   it("rounds expected values", function() {
     var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
       result;
