@@ -19,7 +19,8 @@ getJasmineRequireObj().Suite = function(j$) {
       id: this.id,
       description: this.description,
       fullName: this.getFullName(),
-      failedExpectations: []
+      failedExpectations: [],
+      pendingReason: ''
     };
   }
 
@@ -39,6 +40,9 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.pend = function() {
     this.markedPending = true;
+    if (message) {
+      this.result.pendingReason = message;
+    }
   };
 
   Suite.prototype.beforeEach = function(fn) {

@@ -88,6 +88,15 @@ describe("Suite", function() {
     suite.pend();
 
     expect(suite.getResult().status).toBe('pending');
+    expect(suite.getResult().pendingReason).toBe('');
+  });
+
+  it("should set the pendingReason", function() {
+    var suite = new jasmineUnderTest.Suite({});
+    suite.pend('custom message');
+
+    expect(suite.getResult().status).toBe('pending');
+    expect(suite.getResult().pendingReason).toBe('custom message');
   });
 
   it("is executable if not pending", function() {
