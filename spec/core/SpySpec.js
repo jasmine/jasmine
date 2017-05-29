@@ -124,4 +124,34 @@ describe('Spies', function () {
       }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
     });
   });
+
+  describe("createSpyForClass", function() {
+
+    // transpiled Typescript class using tsc targeting ES5
+    var TscClassTranspiledToES5 = (function () {
+      function TestClass() {
+      }
+      TestClass.prototype.testMethod1 = function () {
+        return "";
+      };
+      TestClass.prototype.testMethod2 = function () {
+        return "";
+      };
+      return TestClass;
+    }());
+
+
+    it("should create an object with spy methods when you call jasmine.createSpyForClass() with a Typescript class", function () {
+      var spyObj = jasmineUnderTest.createSpyForClass(TscClassTranspiledToES5);
+
+      spyObj.testMethod1.and.returnValue(42);
+      spyObj.testMethod2.and.returnValue("special sauce");
+
+      expect(spyObj.testMethod1()).toEqual(42);
+      expect(spyObj.testMethod1.and.identity()).toEqual('TestClass.testMethod1');
+
+      expect(spyObj.testMethod2()).toEqual("special sauce");
+      expect(spyObj.testMethod2.and.identity()).toEqual('TestClass.testMethod2');
+    });
+  });
 });
