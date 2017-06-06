@@ -43,12 +43,12 @@ To install Jasmine standalone on your local box (where **_{#.#.#}_** below is su
 Add the following to your HTML file:
 
 ```html
-<link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-core/jasmine_favicon.png">
-<link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-core/jasmine.css">
+<link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-{#.#.#}/jasmine_favicon.png">
+<link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-{#.#.#}/jasmine.css">
 
-<script type="text/javascript" src="jasmine/lib/jasmine-core/jasmine.js"></script>
-<script type="text/javascript" src="jasmine/lib/jasmine-core/jasmine-html.js"></script>
-<script type="text/javascript" src="jasmine/lib/jasmine-core/boot.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-{#.#.#}/jasmine.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-{#.#.#}/jasmine-html.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-{#.#.#}/boot.js"></script>
 ```
 
 ## Supported environments
