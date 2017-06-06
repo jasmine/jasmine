@@ -56,6 +56,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       var clearTimeout = function () {
           Function.prototype.apply.apply(self.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
         },
+        setTimeout = function(delayedFn, delay) {
+          return Function.prototype.apply.apply(self.timeout.setTimeout, [j$.getGlobal(), [delayedFn, delay]]);
+        },
+        completedSynchronously = true,
         handleError = function(error) {
           onException(error);
           next();
@@ -66,7 +70,13 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         }),
         next = once(function () {
           cleanup();
-          self.run(queueableFns, iterativeIndex + 1);
+          if (completedSynchronously) {
+            setTimeout(function() {
+              self.run(queueableFns, iterativeIndex + 1);
+            });
+          } else {
+            self.run(queueableFns, iterativeIndex + 1);
+          }
         }),
         timeoutId;
 
@@ -78,11 +88,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self.globalErrors.pushListener(handleError);
 
       if (queueableFn.timeout) {
-        timeoutId = Function.prototype.apply.apply(self.timeout.setTimeout, [j$.getGlobal(), [function() {
+        timeoutId = setTimeout(function() {
           var error = new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.');
           onException(error);
           next();
-        }, queueableFn.timeout()]]);
+        }, queueableFn.timeout());
       }
 
       try {
@@ -91,10 +101,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
           if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
             maybeThenable.then(next, next.fail);
+            completedSynchronously = false;
             return false;
           }
         } else {
           queueableFn.fn.call(self.userContext, next);
+          completedSynchronously = false;
           return false;
         }
       } catch (e) {
