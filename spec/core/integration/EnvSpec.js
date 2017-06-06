@@ -456,7 +456,7 @@ describe("Env integration", function() {
     env.execute();
   });
 
-  it("copes with late async failures", function(done) {
+  it("copes with async failures after done has been called", function(done) {
     var global = {
       setTimeout: function(fn, delay) { setTimeout(fn, delay) },
       clearTimeout: function(fn, delay) { clearTimeout(fn, delay) },
@@ -466,6 +466,7 @@ describe("Env integration", function() {
       reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone", "suiteDone" ]);
 
     reporter.jasmineDone.and.callFake(function() {
+      expect(reporter.specDone).not.toHaveFailedExpecationsForRunnable('A suite fails', ['fail thrown']);
       expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('A suite', ['fail thrown']);
       done();
     });
@@ -474,9 +475,11 @@ describe("Env integration", function() {
 
     env.fdescribe('A suite', function() {
       env.it('fails', function(specDone) {
-        specDone();
         setTimeout(function() {
-          global.onerror('fail');
+          specDone();
+          setTimeout(function() {
+            global.onerror('fail');
+          });
         });
       });
     });
