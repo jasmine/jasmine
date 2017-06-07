@@ -115,6 +115,30 @@ describe("QueueRunner", function() {
       expect(queueableFn2.fn).toHaveBeenCalled();
     });
 
+    it("throwOnExpectationFailure works with an async function", function() {
+      var asyncFn = { fn: function(done) {
+          setTimeout(function() { done.fail('foo'); }, 100);
+        } },
+        afterFn = jasmine.createSpy('afterFn'),
+        failFn = jasmine.createSpy('fail').and.throwError(new jasmineUnderTest.errors.ExpectationFailed()),
+        completeCallback = jasmine.createSpy('completeCallback'),
+        clearStack = jasmine.createSpy('clearStack').and.callFake(function(fn) { fn(); }),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [asyncFn, afterFn],
+          fail: failFn,
+          clearStack: clearStack,
+          onComplete: completeCallback
+        });
+
+      queueRunner.execute();
+      jasmine.clock().tick(100);
+      queueRunner.execute();
+
+      expect(failFn).toHaveBeenCalledWith('foo');
+      expect(afterFn).not.toHaveBeenCalled();
+      expect(clearStack).toHaveBeenCalledWith(completeCallback);
+    });
+
     it("sets a timeout if requested for asynchronous functions so they don't go on forever", function() {
       var timeout = 3,
         beforeFn = { fn: function(done) { }, type: 'before', timeout: function() { return timeout; } },
