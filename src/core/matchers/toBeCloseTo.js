@@ -15,6 +15,12 @@ getJasmineRequireObj().toBeCloseTo = function() {
           precision = precision || 2;
         }
 
+        if (expected === null || actual === null) {
+          throw new Error('Cannot use toBeCloseTo with null. Arguments evaluated to: ' +
+            'expect(' + actual + ').toBeCloseTo(' + expected + ').'
+          );
+        }
+
         return {
           pass: Math.abs(expected - actual) < (Math.pow(10, -precision) / 2)
         };
