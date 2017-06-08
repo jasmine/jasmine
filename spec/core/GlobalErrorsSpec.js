@@ -1,4 +1,22 @@
 describe("GlobalErrors", function() {
+  it("is installed only when there are listeners", function() {
+    var fakeGlobal = { onerror: null },
+      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+    errors.install();
+    expect(fakeGlobal.onerror).toBeNull();
+
+    errors.pushListener(function() {});
+    expect(fakeGlobal.onerror).not.toBeNull();
+
+    errors.pushListener(function() {});
+    errors.popListener();
+    expect(fakeGlobal.onerror).not.toBeNull();
+
+    errors.popListener();
+    expect(fakeGlobal.onerror).toBeNull();
+  });
+
   it("calls the added handler on error", function() {
     var fakeGlobal = { onerror: null },
         handler = jasmine.createSpy('errorHandler'),
@@ -54,6 +72,7 @@ describe("GlobalErrors", function() {
     expect(fakeGlobal.onerror).toBe(originalCallback);
 
     errors.install();
+    errors.pushListener(function() {});
 
     expect(fakeGlobal.onerror).not.toBe(originalCallback);
 
@@ -91,11 +110,10 @@ describe("GlobalErrors", function() {
         errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
     errors.install();
+    errors.pushListener(handler);
     expect(fakeGlobal.process.on).toHaveBeenCalledWith('uncaughtException', jasmine.any(Function));
     expect(fakeGlobal.process.listeners).toHaveBeenCalledWith('uncaughtException');
     expect(fakeGlobal.process.removeAllListeners).toHaveBeenCalledWith('uncaughtException');
-
-    errors.pushListener(handler);
 
     var addedListener = fakeGlobal.process.on.calls.argsFor(0)[1];
     addedListener(new Error('bar'));
