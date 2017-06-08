@@ -78,11 +78,11 @@ getJasmineRequireObj().Spec = function(j$) {
   Spec.prototype.onException = function onException(e) {
     if (Spec.isPendingSpecException(e)) {
       this.pend(extractCustomPendingMessage(e));
-      return;
+      return true;
     }
 
     if (e instanceof j$.errors.ExpectationFailed) {
-      return;
+      return false;
     }
 
     this.addExpectationResult(false, {
@@ -92,6 +92,7 @@ getJasmineRequireObj().Spec = function(j$) {
       actual: '',
       error: e
     }, true);
+    return true;
   };
 
   Spec.prototype.disable = function() {

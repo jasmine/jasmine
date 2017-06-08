@@ -104,19 +104,22 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     if(isAfterAll(this.children)) {
-      var data = {
-        matcherName: '',
-        passed: false,
-        expected: '',
-        actual: '',
-        error: arguments[0]
-      };
-      this.result.failedExpectations.push(this.expectationResultFactory(data));
+      recordException(this, arguments[0]);
+      return true;
     } else {
+      var wasHandled = false;
       for (var i = 0; i < this.children.length; i++) {
         var child = this.children[i];
-        child.onException.apply(child, arguments);
+        if (child.onException.apply(child, arguments)) {
+          wasHandled = true;
+        }
       }
+
+      if (!wasHandled && !this.parentSuite) {
+        recordException(this, arguments[0]);
+      }
+
+      return wasHandled;
     }
   };
 
@@ -140,7 +143,7 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   function isAfterAll(children) {
-    return children && children[0].result.status;
+    return children && children[0] && children[0].result.status;
   }
 
   function isFailure(args) {
@@ -156,6 +159,17 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     return clonedObj;
+  }
+
+  function recordException(suite, exception) {
+    var data = {
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: '',
+      error: exception
+    };
+    suite.result.failedExpectations.push(suite.expectationResultFactory(data));
   }
 
   return Suite;

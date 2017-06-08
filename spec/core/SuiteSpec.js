@@ -141,5 +141,76 @@ describe("Suite", function() {
     suite.onException(new jasmineUnderTest.errors.ExpectationFailed());
 
     expect(suite.getResult().failedExpectations).toEqual([]);
-  })
+  });
+
+  describe("At the top level", function() {
+    it("records failures that aren't handled by any children", function() {
+      var suite = new jasmineUnderTest.Suite({
+        expectationResultFactory: function(data) { return data; }
+      });
+      var error = new Error('nope');
+
+      suite.onException(error);
+
+      expect(suite.status()).toBe('failed');
+      expect(suite.result.failedExpectations[0].error).toEqual(error);
+    });
+
+    it("does not record failures that are handled by a child", function() {
+      var suite = new jasmineUnderTest.Suite({
+        expectationResultFactory: function(data) { return data; }
+      });
+      suite.addChild({
+        onException: function() { return true; },
+        result: {}
+      });
+
+      suite.onException(new Error('nope'));
+
+      expect(suite.result.failedExpectations).toEqual([]);
+    });
+  });
+
+  describe("Below the top level", function() {
+    it("does not record failures that aren't handled by any children", function() {
+      var child = new jasmineUnderTest.Suite({
+        expectationResultFactory: function(data) { return data; },
+        parentSuite: {}
+      });
+
+      child.onException(new Error('nope'));
+
+      expect(child.result.failedExpectations).toEqual([]);
+    });
+  });
+
+
+  it("indicates that an exception was handled by an afterAll", function() {
+    var suite = new jasmineUnderTest.Suite({
+      expectationResultFactory: function() { return 'hi'; }
+    });
+    suite.addChild({ result: { status: 'done' } });
+
+    expect(suite.onException(new Error())).toEqual(true);
+  });
+
+  it("indicates that an exception was handled by a spec", function() {
+    var suite = new jasmineUnderTest.Suite({
+      expectationResultFactory: function() { return 'hi'; }
+    });
+    suite.addChild({
+      onException: function() { return true; },
+      result: {}
+    });
+
+    expect(suite.onException(new Error())).toEqual(true);
+  });
+
+  it("indicates that an exception was not handled when there are no children", function() {
+    var suite = new jasmineUnderTest.Suite({
+      expectationResultFactory: function() { return 'hi'; }
+    });
+
+    expect(suite.onException(new Error())).toEqual(false);
+  });
 });
