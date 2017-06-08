@@ -15,7 +15,7 @@ Please attempt to keep commits to `master` small, but cohesive. If a feature is 
 
 We attempt to stick to [Semantic Versioning](http://semver.org/). Most of the time, development should be against a new minor version - fixing bugs and adding new features that are backwards compatible.
 
-The current version lives in the file `/package.json`. This version will be the version number that is currently released. When releasing a new version, update `package.json` with the new version and `grunt build:copyVersionToGem` to update the gem version number.
+The current version lives in the file `/package.json`. This version will be the version number that is currently released. When releasing a new version, update `package.json` with the new version and `npm run build:rubygem` to update the gem version number.
 
 This version is used by both `jasmine.js` and the `jasmine-core` Ruby gem.
 
@@ -36,7 +36,7 @@ When ready to release - specs are all green and the stories are done:
 
 ### Build standalone distribution
 
-1. Build the standalone distribution with `grunt buildStandaloneDist`
+1. Build the standalone distribution with `npm run build:standalone`
 
 ### Release the Python egg
 
@@ -47,7 +47,7 @@ Install [twine](https://github.com/pypa/twine)
 
 ### Release the Ruby gem
 
-1. Copy version to the Ruby gem with `grunt build:copyVersionToGem`
+1. Copy version to the Ruby gem with `npm run build:rubygem`
 1. __NOTE__: You will likely need to point to a local jasmine gem in order to run tests locally. _Do not_ push this version of the Gemfile.
 1. __NOTE__: You will likely need to push a new jasmine gem with a dependent version right after this release.
 1. Push these changes to GitHub and verify that this SHA is green
