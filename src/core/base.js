@@ -11,6 +11,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   j$.MAX_PRETTY_PRINT_DEPTH = 40;
   /**
    * Maximum number of array elements to display when pretty printing objects.
+   * This will also limit the number of keys and values displayed for an object.
    * Elements past this number will be ellipised.
    * @name jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH
    */

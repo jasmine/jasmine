@@ -119,6 +119,18 @@ describe("jasmineUnderTest.pp", function () {
     }, bar: [1, 2, 3]})).toEqual("Object({ foo: Function, bar: [ 1, 2, 3 ] })");
   });
 
+  it("should truncate objects with too many keys", function () {
+      var originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+      var long = {a: 1, b: 2, c: 3};
+
+      try {
+        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+        expect(jasmineUnderTest.pp(long)).toEqual("Object({ a: 1, b: 2, ... })");
+      } finally {
+        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
+      }
+  });
+
   it("should print 'null' as the constructor of an object with its own constructor property", function() {
     expect(jasmineUnderTest.pp({constructor: function() {}})).toContain("null({");
     expect(jasmineUnderTest.pp({constructor: 'foo'})).toContain("null({");
