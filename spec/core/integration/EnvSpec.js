@@ -952,16 +952,15 @@ describe("Env integration", function() {
   });
 
   describe("with a mock clock", function() {
-    var originalTimeout;
-
     beforeEach(function() {
-      originalTimeout = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
+      this.originalTimeout = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
+      this.realSetTimeout = window.setTimeout;
       jasmine.clock().install();
     });
 
     afterEach(function() {
       jasmine.clock().uninstall();
-      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = this.originalTimeout;
     });
 
     it("should wait a specified interval before failing specs haven't called done yet", function(done) {
@@ -1079,7 +1078,8 @@ describe("Env integration", function() {
 
     it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
       var env = new jasmineUnderTest.Env(),
-          reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']);
+          reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']),
+          realSetTimeout = this.realSetTimeout;
 
       reporter.jasmineDone.and.callFake(function() {
         expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite beforeAll times out', [
@@ -1109,6 +1109,11 @@ describe("Env integration", function() {
       jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
       env.describe('suite', function() {
+        env.afterAll(function() {
+          realSetTimeout(function() {
+            jasmine.clock().tick(10);
+          }, 100);
+        });
         env.describe('beforeAll', function() {
           env.beforeAll(function(innerDone) {
             jasmine.clock().tick(5001);
