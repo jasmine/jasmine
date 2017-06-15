@@ -21,6 +21,30 @@ describe("ClearStack", function() {
     expect(setImmediate).toHaveBeenCalled();
   });
 
+  it("uses setTimeout instead of setImmediate every 10 calls to make sure we release the CPU", function() {
+    var setImmediate = jasmine.createSpy('setImmediate'),
+        setTimeout = jasmine.createSpy('setTimeout'),
+        global = { setImmediate: setImmediate, setTimeout: setTimeout },
+        clearStack = jasmineUnderTest.getClearStack(global);
+
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+
+    expect(setImmediate).toHaveBeenCalled();
+    expect(setTimeout).not.toHaveBeenCalled();
+
+    clearStack(function() { });
+    expect(setImmediate.calls.count()).toEqual(9);
+    expect(setTimeout).toHaveBeenCalled();
+  });
+
   it("uses MessageChannels when available", function() {
     var fakeChannel = {
           port1: {},
@@ -35,6 +59,37 @@ describe("ClearStack", function() {
     });
 
     expect(called).toBe(true);
+  });
+
+  it("uses setTimeout instead of MessageChannel every 10 calls to make sure we release the CPU", function() {
+    var fakeChannel = {
+          port1: {},
+          port2: {
+            postMessage: jasmine.createSpy('postMessage').and.callFake(function() {
+              fakeChannel.port1.onmessage();
+            })
+          }
+        },
+        setTimeout = jasmine.createSpy('setTimeout'),
+        global = { MessageChannel: function() { return fakeChannel; }, setTimeout: setTimeout },
+        clearStack = jasmineUnderTest.getClearStack(global);
+
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+
+    expect(fakeChannel.port2.postMessage).toHaveBeenCalled();
+    expect(setTimeout).not.toHaveBeenCalled();
+
+    clearStack(function() { });
+    expect(fakeChannel.port2.postMessage.calls.count()).toEqual(9);
+    expect(setTimeout).toHaveBeenCalled();
   });
 
   it("calls setTimeout when onmessage is called recursively", function() {
