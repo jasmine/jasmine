@@ -954,7 +954,7 @@ describe("Env integration", function() {
   describe("with a mock clock", function() {
     beforeEach(function() {
       this.originalTimeout = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
-      this.realSetTimeout = window.setTimeout;
+      this.realSetTimeout = setTimeout;
       jasmine.clock().install();
     });
 
