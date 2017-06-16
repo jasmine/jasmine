@@ -32,6 +32,7 @@ getJasmineRequireObj().clearStack = function(j$) {
         tail = tail.next = { task: fn };
         channel.port2.postMessage(0);
       } else {
+        currentCallCount = 0;
         setTimeout(fn);
       }
     };
