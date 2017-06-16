@@ -42,7 +42,11 @@ describe("ClearStack", function() {
 
     clearStack(function() { });
     expect(setImmediate.calls.count()).toEqual(9);
-    expect(setTimeout).toHaveBeenCalled();
+    expect(setTimeout.calls.count()).toEqual(1);
+
+    clearStack(function() { });
+    expect(setImmediate.calls.count()).toEqual(10);
+    expect(setTimeout.calls.count()).toEqual(1);
   });
 
   it("uses MessageChannels when available", function() {
@@ -89,7 +93,11 @@ describe("ClearStack", function() {
 
     clearStack(function() { });
     expect(fakeChannel.port2.postMessage.calls.count()).toEqual(9);
-    expect(setTimeout).toHaveBeenCalled();
+    expect(setTimeout.calls.count()).toEqual(1);
+
+    clearStack(function() { });
+    expect(fakeChannel.port2.postMessage.calls.count()).toEqual(10);
+    expect(setTimeout.calls.count()).toEqual(1);
   });
 
   it("calls setTimeout when onmessage is called recursively", function() {
