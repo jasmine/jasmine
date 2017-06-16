@@ -196,6 +196,7 @@ getJasmineRequireObj().Env = function(j$) {
       options.timeout = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
       options.fail = self.fail;
       options.globalErrors = globalErrors;
+      options.completeOnFirstError = throwOnExpectationFailure && options.isLeaf;
 
       new j$.QueueRunner(options).execute();
     };
@@ -520,6 +521,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.afterEach = function(afterEachFunction, timeout) {
       ensureIsFunctionOrAsync(afterEachFunction, 'afterEach');
+      afterEachFunction.isCleanup = true;
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
         timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
@@ -568,6 +570,10 @@ getJasmineRequireObj().Env = function(j$) {
         message: message,
         error: error && error.message ? error : null
       });
+
+      if (self.throwingExpectationFailures()) {
+        throw new Error(message);
+      }
     };
   }
 

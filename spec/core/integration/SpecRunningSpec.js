@@ -836,4 +836,127 @@ describe("jasmine spec running", function () {
     env.execute();
   });
 
+  describe("When throwOnExpectationFailure is set", function() {
+    it("skips to cleanup functions after an error", function(done) {
+      var actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          throw new Error("error");
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it' , function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      env.throwOnExpectationFailure(true);
+
+      var assertions = function() {
+        expect(actions).toEqual([
+          'outer beforeEach',
+          'inner afterEach',
+          'outer afterEach'
+        ]);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+
+      env.execute();
+    });
+
+    it("skips to cleanup functions after done.fail is called", function(done) {
+      var actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function(done) {
+          actions.push('beforeEach');
+          done.fail('error');
+          actions.push('after done.fail');
+        });
+
+        env.afterEach(function() {
+          actions.push('afterEach');
+        });
+
+        env.it('does it' , function() {
+          actions.push('it');
+        });
+      });
+
+      env.throwOnExpectationFailure(true);
+
+      var assertions = function() {
+        expect(actions).toEqual([
+          'beforeEach',
+          'afterEach'
+        ]);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+
+      env.execute();
+    });
+
+    describe("When an async function times out", function() {
+      beforeEach(function() {
+        jasmine.clock().install();
+        env = new jasmineUnderTest.Env();
+      });
+
+      afterEach(function() {
+        jasmine.clock().uninstall();
+      });
+
+      it("skips to cleanup functions", function(done) {
+        var actions = [];
+
+        env.describe('Something', function() {
+          env.beforeEach(function(done) {
+            actions.push('beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('afterEach');
+          });
+
+          env.it('does it' , function() {
+            actions.push('it');
+          });
+        });
+
+        env.throwOnExpectationFailure(true);
+
+        var assertions = function() {
+          expect(actions).toEqual([
+            'beforeEach',
+            'afterEach'
+          ]);
+          done();
+        };
+
+        env.addReporter({jasmineDone: assertions});
+
+        env.execute();
+        jasmine.clock().tick(jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL);
+      });
+    });
+  });
 });

@@ -12,7 +12,9 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   }
 
   function QueueRunner(attrs) {
-    this.queueableFns = attrs.queueableFns || [];
+    var queueableFns = attrs.queueableFns || [];
+    this.queueableFns = queueableFns.concat(attrs.cleanupFns || []);
+    this.firstCleanupIx = queueableFns.length;
     this.onComplete = attrs.onComplete || function() {};
     this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.onException = attrs.onException || function() {};
@@ -21,6 +23,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
     this.fail = attrs.fail || function() {};
     this.globalErrors = attrs.globalErrors || { pushListener: function() {}, popListener: function() {} };
+    this.completeOnFirstError = !!attrs.completeOnFirstError;
   }
 
   QueueRunner.prototype.execute = function() {
@@ -29,20 +32,32 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self.onException(error);
     };
     this.globalErrors.pushListener(this.handleFinalError);
-    this.run(this.queueableFns, 0);
+    this.run(0);
   };
 
-  QueueRunner.prototype.run = function(queueableFns, recursiveIndex) {
-    var length = queueableFns.length,
+  QueueRunner.prototype.skipToCleanup = function(lastRanIndex) {
+    if (lastRanIndex < this.firstCleanupIx) {
+      this.run(this.firstCleanupIx);
+    } else {
+      this.run(lastRanIndex + 1);
+    }
+  };
+
+  QueueRunner.prototype.run = function(recursiveIndex) {
+    var length = this.queueableFns.length,
       self = this,
       iterativeIndex;
 
 
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
-      var queueableFn = queueableFns[iterativeIndex];
-      var completedSynchronously = attempt(queueableFn);
+      var result = attempt(iterativeIndex);
 
-      if (!completedSynchronously) {
+      if (!result.completedSynchronously) {
+        return;
+      }
+
+      if (this.completeOnFirstError && result.errored) {
+        this.skipToCleanup(iterativeIndex);
         return;
       }
     }
@@ -52,7 +67,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self.onComplete();
     });
 
-    function attempt(queueableFn) {
+    function attempt() {
       var clearTimeout = function () {
           Function.prototype.apply.apply(self.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
         },
@@ -70,18 +85,28 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         }),
         next = once(function () {
           cleanup();
+
+          function runNext() {
+            if (self.completeOnFirstError && errored) {
+              self.skipToCleanup(iterativeIndex);
+            } else {
+              self.run(iterativeIndex + 1);
+            }
+          }
+
           if (completedSynchronously) {
-            setTimeout(function() {
-              self.run(queueableFns, iterativeIndex + 1);
-            });
+            setTimeout(runNext);
           } else {
-            self.run(queueableFns, iterativeIndex + 1);
+            runNext();
           }
         }),
+        errored = false,
+        queueableFn = self.queueableFns[iterativeIndex],
         timeoutId;
 
       next.fail = function() {
         self.fail.apply(null, arguments);
+        errored = true;
         next();
       };
 
@@ -102,31 +127,33 @@ getJasmineRequireObj().QueueRunner = function(j$) {
           if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
             maybeThenable.then(next, next.fail);
             completedSynchronously = false;
-            return false;
+            return { completedSynchronously: false };
           }
         } else {
           queueableFn.fn.call(self.userContext, next);
           completedSynchronously = false;
-          return false;
+          return { completedSynchronously: false };
         }
       } catch (e) {
         handleException(e, queueableFn);
+        errored = true;
       }
 
       cleanup();
-      return true;
-    }
+      return { completedSynchronously: true, errored: errored };
 
-    function onException(e) {
-      self.onException(e);
-    }
+      function onException(e) {
+        self.onException(e);
+        errored = true;
+      }
 
-    function handleException(e, queueableFn) {
-      onException(e);
-      if (!self.catchException(e)) {
-        //TODO: set a var when we catch an exception and
-        //use a finally block to close the loop in a nice way..
-        throw e;
+      function handleException(e, queueableFn) {
+        onException(e);
+        if (!self.catchException(e)) {
+          //TODO: set a var when we catch an exception and
+          //use a finally block to close the loop in a nice way..
+          throw e;
+        }
       }
     }
   };

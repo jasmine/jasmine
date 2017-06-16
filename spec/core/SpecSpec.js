@@ -103,8 +103,26 @@ describe("Spec", function() {
 
     spec.execute();
 
-    var allSpecFns = fakeQueueRunner.calls.mostRecent().args[0].queueableFns;
-    expect(allSpecFns).toEqual([before, queueableFn, after]);
+    var options = fakeQueueRunner.calls.mostRecent().args[0];
+    expect(options.queueableFns).toEqual([before, queueableFn]);
+    expect(options.cleanupFns).toEqual([after]);
+  });
+
+  it("tells the queue runner that it's a leaf node", function() {
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+      spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: function() {} },
+        beforeAndAfterFns: function() {
+          return {befores: [], afters: []}
+        },
+        queueRunnerFactory: fakeQueueRunner
+      });
+
+    spec.execute();
+
+    expect(fakeQueueRunner).toHaveBeenCalledWith(jasmine.objectContaining({
+      isLeaf: true
+    }));
   });
 
   it("is marked pending if created without a function body", function() {

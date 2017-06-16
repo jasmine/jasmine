@@ -56,10 +56,12 @@ getJasmineRequireObj().Spec = function(j$) {
     }
 
     var fns = this.beforeAndAfterFns();
-    var allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
+    var regularFns = fns.befores.concat(this.queueableFn);
 
     this.queueRunnerFactory({
-      queueableFns: allFns,
+      isLeaf: true,
+      queueableFns: regularFns,
+      cleanupFns: fns.afters,
       onException: function() { self.onException.apply(self, arguments); },
       onComplete: complete,
       userContext: this.userContext()
