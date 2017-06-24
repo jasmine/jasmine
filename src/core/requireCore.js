@@ -1,7 +1,7 @@
 var getJasmineRequireObj = (function (jasmineGlobal) {
   var jasmineRequire;
 
-  if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined' && module.require) {
     if (typeof global !== 'undefined') {
       jasmineGlobal = global;
     } else {
@@ -9,9 +9,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     }
     jasmineRequire = exports;
   } else {
-    if (typeof window !== 'undefined' && typeof window.toString === 'function' && window.toString() === '[object GjsGlobal]') {
-      jasmineGlobal = window;
-    }
+    jasmineGlobal = window;
     jasmineRequire = jasmineGlobal.jasmineRequire = jasmineGlobal.jasmineRequire || {};
   }
 
