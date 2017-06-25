@@ -8,6 +8,9 @@ describe("toBeCloseTo", function() {
 
     result = matcher.compare(0, 0.001);
     expect(result.pass).toBe(true);
+
+    result = matcher.compare(0, 0.005);
+    expect(result.pass).toBe(true);
   });
 
   it("fails when not within two decimal places by default", function() {
@@ -15,6 +18,9 @@ describe("toBeCloseTo", function() {
       result;
 
     result = matcher.compare(0, 0.01);
+    expect(result.pass).toBe(false);
+
+    result = matcher.compare(0, 0.05);
     expect(result.pass).toBe(false);
   });
 
@@ -25,7 +31,19 @@ describe("toBeCloseTo", function() {
     result = matcher.compare(0, 0.1, 0);
     expect(result.pass).toBe(true);
 
+    result = matcher.compare(0, 0.5, 0);
+    expect(result.pass).toBe(true);
+
     result = matcher.compare(0, 0.0001, 3);
+    expect(result.pass).toBe(true);
+
+    result = matcher.compare(0, 0.0005, 3);
+    expect(result.pass).toBe(true);
+
+    result = matcher.compare(0, 0.00001, 4);
+    expect(result.pass).toBe(true);
+
+    result = matcher.compare(0, 0.00005, 4);
     expect(result.pass).toBe(true);
   });
 
@@ -58,7 +76,15 @@ describe("toBeCloseTo", function() {
     result = matcher.compare(1.23, 1.225);
     expect(result.pass).toBe(true);
 
+    result = matcher.compare(1.23, 1.235);
+    expect(result.pass).toBe(true);
+
+    // 1.2249999 will be rounded to 1.225
     result = matcher.compare(1.23, 1.2249999);
+    expect(result.pass).toBe(true);
+
+    // 1.2249999 will be rounded to 1.224
+    result = matcher.compare(1.23, 1.2244999);
     expect(result.pass).toBe(false);
 
     result = matcher.compare(1.23, 1.234);
