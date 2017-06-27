@@ -35,4 +35,8 @@ describe("toBeFalsy", function() {
     result = matcher.compare({});
     expect(result.pass).toBe(false);
   });
+
+  it("has 'falsy' aliases", function() {
+    expect(jasmineUnderTest.matchers.toBeFalsey).toBe(jasmineUnderTest.matchers.toBeFalsy);
+  });
 });

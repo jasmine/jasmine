@@ -35,4 +35,8 @@ describe("toBeTruthy", function() {
     result = matcher.compare(void 0);
     expect(result.pass).toBe(false);
   });
+
+  it("has 'truthy' aliases", function() {
+    expect(jasmineUnderTest.matchers.toBeTruthy).toBe(jasmineUnderTest.matchers.toBeTruey);
+  });
 });
