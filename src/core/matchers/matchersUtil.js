@@ -228,9 +228,16 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       var aLength = a.length;
       var bLength = b.length;
 
+      diffBuilder.withPath('length', function() {
+        if (aLength !== bLength) {
+          diffBuilder.record(aLength, bLength);
+          result = false;
+        }
+      });
+
       for (i = 0; i < aLength || i < bLength; i++) {
         diffBuilder.withPath(i, function() {
-          result = eq(i < aLength ? a[i] : undefined, i < bLength ? b[i] : undefined, aStack, bStack, customTesters, diffBuilder) && result;
+          result = eq(i < aLength ? a[i] : void 0, i < bLength ? b[i] : void 0, aStack, bStack, customTesters, diffBuilder) && result;
         });
       }
       if (!result) {
