@@ -166,6 +166,16 @@ describe("matchersUtil", function() {
 
       expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(true);
     });
+    
+    it("passes for equivalent Promises (GitHub issue #1314)", function() {
+      if (typeof Promise === 'undefined') { return; }
+
+      var p1 = new Promise(function () {}),
+        p2 = new Promise(function () {});
+
+      expect(jasmineUnderTest.matchersUtil.equals(p1, p1)).toBe(true);
+      expect(jasmineUnderTest.matchersUtil.equals(p1, p2)).toBe(false);
+    });
 
     describe("when running in a browser", function() {
       function isNotRunningInBrowser() {

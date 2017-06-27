@@ -209,6 +209,12 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       diffBuilder.record(a, b);
       return false;
     }
+    
+    var aIsPromise = j$.isPromise(a);
+    var bIsPromise = j$.isPromise(b);
+    if (aIsPromise && bIsPromise) {
+      return a === b;
+    }
 
     // Assume equality for cyclic structures. The algorithm for detecting cyclic
     // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
