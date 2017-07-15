@@ -70,8 +70,9 @@ getJasmineRequireObj().toThrowError = function(j$) {
     function getMatcher() {
       var expected = null,
           errorType = null;
-
-      if (arguments.length == 2) {
+	    if (arguments.length == 1) {
+		    errorType = Error;
+	    } else if (arguments.length == 2) {
         expected = arguments[1];
         if (isAnErrorType(expected)) {
           errorType = expected;
