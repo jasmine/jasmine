@@ -8,7 +8,7 @@ getJasmineRequireObj().pp = function(j$) {
   function hasCustomToString(value) {
     // value.toString !== Object.prototype.toString if value has no custom toString but is from another context (e.g.
     // iframe, web worker)
-    return value.toString !== Object.prototype.toString && (value.toString() !== Object.prototype.toString.call(value));
+    return j$.isFunction_(value.toString) && value.toString !== Object.prototype.toString && (value.toString() !== Object.prototype.toString.call(value));
   }
 
   PrettyPrinter.prototype.format = function(value) {
@@ -36,9 +36,9 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitScalar('HTMLNode');
       } else if (value instanceof Date) {
         this.emitScalar('Date(' + value + ')');
-      } else if (value.toString && value.toString() == '[object Set]') {
+      } else if (j$.getType_(value) == '[object Set]') {
         this.emitSet(value);
-      } else if (value.toString && value.toString() == '[object Map]') {
+      } else if (j$.getType_(value) == '[object Map]') {
         this.emitMap(value);
       } else if (value.toString && typeof value === 'object' && !j$.isArray_(value) && hasCustomToString(value)) {
         this.emitScalar(value.toString());

@@ -257,6 +257,14 @@ describe("jasmineUnderTest.pp", function () {
     }
   });
 
+  it("should stringify objects have have a toString that isn't a function", function() {
+    var obj = {
+      toString: "foo"
+    };
+
+    expect(jasmineUnderTest.pp(obj)).toEqual("Object({ toString: 'foo' })");
+  });
+
   it("should stringify objects from anonymous constructors with custom toString", function () {
     var MyAnonymousConstructor = (function() { return function () {}; })();
     MyAnonymousConstructor.toString = function () { return ''; };
