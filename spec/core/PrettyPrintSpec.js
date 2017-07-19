@@ -263,9 +263,9 @@ describe("jasmineUnderTest.pp", function () {
     };
 
     if (jasmine.getEnv().ieVersion < 9) {
-      expect(jasmineUnderTest.pp(obj)).toEqual("Object({ toString: 'foo' })");
-    } else {
       expect(jasmineUnderTest.pp(obj)).toEqual("Object({  })");
+    } else {
+      expect(jasmineUnderTest.pp(obj)).toEqual("Object({ toString: 'foo' })");
     }
   });
 
