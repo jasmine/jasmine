@@ -121,10 +121,10 @@ describe("toThrowError", function() {
       },
       result;
 
-    result = matcher.compare(fn);
+    result = matcher.compare(fn, TypeError, "");
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected function not to throw an Error, but it threw TypeError.");
+    expect(result.message()).toEqual("Expected function not to throw TypeError with message ''.");
   });
 
   it("passes if thrown is an Error and the expected is the same message", function() {
