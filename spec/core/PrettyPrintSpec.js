@@ -262,7 +262,11 @@ describe("jasmineUnderTest.pp", function () {
       toString: "foo"
     };
 
-    expect(jasmineUnderTest.pp(obj)).toEqual("Object({ toString: 'foo' })");
+    if (jasmine.getEnv().ieVersion < 9) {
+      expect(jasmineUnderTest.pp(obj)).toEqual("Object({ toString: 'foo' })");
+    } else {
+      expect(jasmineUnderTest.pp(obj)).toEqual("Object({  })");
+    }
   });
 
   it("should stringify objects from anonymous constructors with custom toString", function () {
