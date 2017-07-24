@@ -88,14 +88,14 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.sharedUserContext = function() {
     if (!this.sharedContext) {
-      this.sharedContext = this.parentSuite ? clone(this.parentSuite.sharedUserContext()) : {};
+      this.sharedContext = this.parentSuite ? this.parentSuite.clonedSharedUserContext() : new j$.UserContext();
     }
 
     return this.sharedContext;
   };
 
   Suite.prototype.clonedSharedUserContext = function() {
-    return clone(this.sharedUserContext());
+    return j$.UserContext.fromExisting(this.sharedUserContext());
   };
 
   Suite.prototype.onException = function() {
@@ -145,17 +145,6 @@ getJasmineRequireObj().Suite = function(j$) {
 
   function isFailure(args) {
     return !args[0];
-  }
-
-  function clone(obj) {
-    var clonedObj = {};
-    for (var prop in obj) {
-      if (obj.hasOwnProperty(prop)) {
-        clonedObj[prop] = obj[prop];
-      }
-    }
-
-    return clonedObj;
   }
 
   return Suite;

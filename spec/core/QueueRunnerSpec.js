@@ -51,7 +51,7 @@ describe("QueueRunner", function() {
     queueRunner.execute();
 
     var context = queueableFn1.fn.calls.first().object;
-    expect(context).toEqual({});
+    expect(context).toEqual(new jasmineUnderTest.UserContext());
     expect(queueableFn2.fn.calls.first().object).toBe(context);
     expect(asyncContext).toBe(context);
   });
@@ -563,6 +563,55 @@ describe("QueueRunner", function() {
       expect(clearStack).toHaveBeenCalled();
       clearStack.calls.argsFor(0)[0]();
       expect(completeCallback).toHaveBeenCalled();
+    });
+  });
+
+  describe('when user context has not been defined', function() {
+    beforeEach(function() {
+      var fn;
+
+      this.fn = fn = jasmine.createSpy('fn1');
+      this.queueRunner = new jasmineUnderTest.QueueRunner({
+        queueableFns: [{ fn: fn }]
+      });
+    });
+
+    it('runs the functions on the scope of a UserContex', function() {
+      var calls = [],
+          context;
+
+      this.fn.and.callFake(function() {
+        context = this;
+      });
+
+      this.queueRunner.execute();
+
+      expect(context.constructor).toBe(jasmineUnderTest.UserContext);
+    });
+  });
+
+  describe('when user context has been defined', function() {
+    beforeEach(function() {
+      var fn, context;
+
+      this.fn = fn = jasmine.createSpy('fn1');
+      this.context = context = new jasmineUnderTest.UserContext();
+      this.queueRunner = new jasmineUnderTest.QueueRunner({
+        queueableFns: [{ fn: fn }],
+        userContext: context
+      });
+    });
+
+    it('runs the functions on the scope of a UserContex', function() {
+      var calls = [],
+          context;
+      this.fn.and.callFake(function() {
+        context = this;
+      });
+
+      this.queueRunner.execute();
+
+      expect(context).toBe(this.context);
     });
   });
 });
