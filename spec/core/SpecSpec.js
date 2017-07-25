@@ -141,7 +141,8 @@ describe("Spec", function() {
   });
 
   it("can be disabled, but still calls callbacks", function() {
-    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner')
+        .and.callFake(function(attrs) { attrs.onComplete(); }),
       startCallback = jasmine.createSpy('startCallback'),
       specBody = jasmine.createSpy('specBody'),
       resultCallback = jasmine.createSpy('resultCallback'),
@@ -158,7 +159,7 @@ describe("Spec", function() {
 
     spec.execute();
 
-    expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(fakeQueueRunner).toHaveBeenCalled();
     expect(specBody).not.toHaveBeenCalled();
 
     expect(startCallback).toHaveBeenCalled();
@@ -166,7 +167,8 @@ describe("Spec", function() {
   });
 
   it("can be disabled at execution time by a parent", function() {
-    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner')
+        .and.callFake(function(attrs) { attrs.onComplete(); }),
       startCallback = jasmine.createSpy('startCallback'),
       specBody = jasmine.createSpy('specBody'),
       resultCallback = jasmine.createSpy('resultCallback'),
@@ -181,7 +183,7 @@ describe("Spec", function() {
 
     expect(spec.result.status).toBe('disabled');
 
-    expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(fakeQueueRunner).toHaveBeenCalled();
     expect(specBody).not.toHaveBeenCalled();
 
     expect(startCallback).toHaveBeenCalled();
@@ -189,7 +191,8 @@ describe("Spec", function() {
   });
 
   it("can be marked pending, but still calls callbacks when executed", function() {
-    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner')
+        .and.callFake(function(attrs) { attrs.onComplete(); }),
       startCallback = jasmine.createSpy('startCallback'),
       resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
@@ -209,7 +212,7 @@ describe("Spec", function() {
 
     spec.execute();
 
-    expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(fakeQueueRunner).toHaveBeenCalled();
 
     expect(startCallback).toHaveBeenCalled();
     expect(resultCallback).toHaveBeenCalledWith({
