@@ -300,7 +300,11 @@ getJasmineRequireObj().Env = function(j$) {
       if(!currentRunnable()) {
         throw new Error('Spies must be created in a before function or a spec');
       }
-      return runnableResources[currentRunnable().id].spies;
+      if(runnableResources[currentRunnable().id]){
+        return runnableResources[currentRunnable().id].spies;
+      }else{
+        return [];
+      }
     }});
 
     this.allowRespy = function(allow){
