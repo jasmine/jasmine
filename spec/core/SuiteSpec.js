@@ -141,5 +141,15 @@ describe("Suite", function() {
     suite.onException(new jasmineUnderTest.errors.ExpectationFailed());
 
     expect(suite.getResult().failedExpectations).toEqual([]);
-  })
+  });
+
+  describe('#sharedUserContext', function() {
+    beforeEach(function() {
+      this.suite = new jasmineUnderTest.Suite({});
+    });
+
+    it('returns a UserContext', function() {
+      expect(this.suite.sharedUserContext().constructor).toBe(jasmineUnderTest.UserContext);
+    });
+  });
 });

@@ -243,7 +243,7 @@ describe("Env integration", function() {
         } else {
           secondSpecContext = this;
         }
-        expect(this).toEqual({});
+        expect(this).toEqual(new jasmineUnderTest.UserContext());
       });
 
       env.it("sync spec", function() {
@@ -277,7 +277,7 @@ describe("Env integration", function() {
 
       env.beforeEach(function() {
         specContext = this;
-        expect(this).toEqual({});
+        expect(this).toEqual(new jasmineUnderTest.UserContext());
       });
 
       env.it("sync spec", function(underTestCallback) {
