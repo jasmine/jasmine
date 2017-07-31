@@ -1,0 +1,38 @@
+getJasmineRequireObj().toHaveBeenCalled = function(j$) {
+
+  var getErrorMsg = j$.formatErrorMsg('<toHaveBeenCalled>', 'expect(<spyObj>).toHaveBeenCalled()');
+
+  /**
+   * {@link expect} the actual (a {@link Spy}) to have been called.
+   * @function
+   * @name matchers#toHaveBeenCalled
+   * @example
+   * expect(mySpy).toHaveBeenCalled();
+   * expect(mySpy).not.toHaveBeenCalled();
+   */
+  function toHaveBeenCalled() {
+    return {
+      compare: function(actual) {
+        var result = {};
+
+        if (!j$.isSpy(actual)) {
+          throw new Error(getErrorMsg('Expected a spy, but got ' + j$.pp(actual) + '.'));
+        }
+
+        if (arguments.length > 1) {
+          throw new Error(getErrorMsg('Does not take arguments, use toHaveBeenCalledWith'));
+        }
+
+        result.pass = actual.calls.any();
+
+        result.message = result.pass ?
+          'Expected spy ' + actual.and.identity() + ' not to have been called.' :
+          'Expected spy ' + actual.and.identity() + ' to have been called.';
+
+        return result;
+      }
+    };
+  }
+
+  return toHaveBeenCalled;
+};

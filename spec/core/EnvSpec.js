@@ -1,159 +1,200 @@
-describe("jasmine.Env", function() {
+// TODO: Fix these unit tests!
+describe("Env", function() {
   var env;
   beforeEach(function() {
-    env = new jasmine.Env();
-    env.updateInterval = 0;
+    env = new jasmineUnderTest.Env();
   });
 
-  describe('ids', function () {
-    it('nextSpecId should return consecutive integers, starting at 0', function () {
-      expect(env.nextSpecId()).toEqual(0);
-      expect(env.nextSpecId()).toEqual(1);
-      expect(env.nextSpecId()).toEqual(2);
-    });
-  });
-
-  describe("reporting", function() {
-    var fakeReporter;
-
-    beforeEach(function() {
-      fakeReporter = jasmine.createSpyObj("fakeReporter", ["log"]);
+  describe("#pending", function() {
+    it("throws the Pending Spec exception", function() {
+      expect(function() {
+        env.pending();
+      }).toThrow(jasmineUnderTest.Spec.pendingSpecExceptionMessage);
     });
 
-    describe('version', function () {
-      var oldVersion;
-
-      beforeEach(function () {
-        oldVersion = jasmine.version_;
-      });
-
-      afterEach(function () {
-        jasmine.version_ = oldVersion;
-      });
-
-      it('should raise an error if version is not set', function () {
-        jasmine.version_ = null;
-        var exception;
-        try {
-          env.version();
-        }
-        catch (e) {
-          exception = e;
-        }
-        expect(exception.message).toEqual('Version not set');
-      });
-
-      it("version should return the current version as an int", function() {
-        jasmine.version_ = {
-          "major": 1,
-          "minor": 9,
-          "build": 7,
-          "revision": 8
-        };
-        expect(env.version()).toEqual({
-          "major": 1,
-          "minor": 9,
-          "build": 7,
-          "revision": 8
-        });
-      });
-
-      describe("versionString", function() {
-        it("should return a stringified version number", function() {
-          jasmine.version_ = {
-            "major": 1,
-            "minor": 9,
-            "build": 7,
-            "release_candidate": "1",
-            "revision": 8
-          };
-          expect(env.versionString()).toEqual("1.9.7.rc1 revision 8");
-        });
-
-        it("should return a nice string when version is unknown", function() {
-          jasmine.version_ = null;
-          expect(env.versionString()).toEqual("version unknown");
-        });
-      });
-    });
-
-    it("should allow reporters to be registered", function() {
-      env.addReporter(fakeReporter);
-      env.reporter.log("message");
-      expect(fakeReporter.log).toHaveBeenCalledWith("message");
+    it("throws the Pending Spec exception with a custom message", function() {
+      expect(function() {
+        env.pending('custom message');
+      }).toThrow(jasmineUnderTest.Spec.pendingSpecExceptionMessage + 'custom message');
     });
   });
 
-  describe("equality testing", function() {
-    describe("with custom equality testers", function() {
-      var aObj, bObj, isEqual;
+  describe("#topSuite", function() {
+    it("returns the Jasmine top suite for users to traverse the spec tree", function() {
+      var suite = env.topSuite();
+      expect(suite.description).toEqual('Jasmine__TopLevel__Suite');
+    });
+  });
 
-      beforeEach(function() {
-        env.addEqualityTester(function(a, b) {
-          aObj = a;
-          bObj = b;
-          return isEqual;
-        });
+  it('can configure specs to throw errors on expectation failures', function() {
+    env.throwOnExpectationFailure(true);
+
+    spyOn(jasmineUnderTest, 'Spec');
+    env.it('foo', function() {});
+    expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(jasmine.objectContaining({
+      throwOnExpectationFailure: true
+    }));
+  });
+
+  it('can configure suites to throw errors on expectation failures', function() {
+    env.throwOnExpectationFailure(true);
+
+    spyOn(jasmineUnderTest, 'Suite');
+    env.describe('foo', function() {});
+    expect(jasmineUnderTest.Suite).toHaveBeenCalledWith(jasmine.objectContaining({
+      throwOnExpectationFailure: true
+    }));
+  });
+
+  describe('#describe', function () {
+    it("throws an error when given arguments", function() {
+      expect(function() {
+        env.describe('done method', function(done) {});
+      }).toThrowError('describe does not expect any arguments');
+    });
+
+    it('throws an error when it receives a non-fn argument', function() {
+      // Some versions of PhantomJS return [object DOMWindow] when
+      // Object.prototype.toString.apply is called with `undefined` or `null`.
+      // In a similar fashion, IE8 gives [object Object] for both `undefined`
+      // and `null`. We mostly just want these tests to check that using
+      // anything other than a function throws an error.
+      expect(function() {
+        env.describe('undefined arg', undefined);
+      }).toThrowError(/describe expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      expect(function() {
+        env.describe('null arg', null);
+      }).toThrowError(/describe expects a function argument; received \[object (Null|DOMWindow|Object)\]/);
+
+      expect(function() {
+        env.describe('array arg', []);
+      }).toThrowError('describe expects a function argument; received [object Array]');
+      expect(function() {
+        env.describe('object arg', {});
+      }).toThrowError('describe expects a function argument; received [object Object]');
+
+      expect(function() {
+        env.describe('fn arg', function() {});
+      }).not.toThrowError('describe expects a function argument; received [object Function]');
+    });
+  });
+
+  describe('#it', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.it('undefined arg', null);
+      }).toThrowError(/it expects a function argument; received \[object (Null|DOMWindow|Object)\]/);
+    });
+
+    it('does not throw when it is not given a fn argument', function() {
+      expect(function() {
+        env.it('pending spec');
+      }).not.toThrow();
+    });
+
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.it('async', jasmine.getEnv().makeAsyncAwaitFunction());
+      }).not.toThrow();
+    });
+  });
+
+  describe('#xit', function() {
+    it('calls spec.pend with "Temporarily disabled with xit"', function() {
+      var pendSpy = jasmine.createSpy();
+      spyOn(env, 'it').and.returnValue({
+        pend: pendSpy
       });
+      env.xit('foo', function() {});
+      expect(pendSpy).toHaveBeenCalledWith('Temporarily disabled with xit');
+    });
 
-      it("should call the custom equality tester with two objects for comparison", function() {
-        env.equals_("1", "2");
-        expect(aObj).toEqual("1");
-        expect(bObj).toEqual("2");
-      });
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.xit('undefined arg', null);
+      }).toThrowError(/xit expects a function argument; received \[object (Null|DOMWindow|Object)\]/);
+    });
 
-      describe("when the custom equality tester returns false", function() {
-        beforeEach(function() {
-          isEqual = false;
-        });
+    it('does not throw when it is not given a fn argument', function() {
+      expect(function() {
+        env.xit('pending spec');
+      }).not.toThrow();
+    });
 
-        it("should give custom equality testers precedence", function() {
-          expect(env.equals_('abc', 'abc')).toBeFalsy();
-          var o = {};
-          expect(env.equals_(o, o)).toBeFalsy();
-        });
-      });
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.xit('async', jasmine.getEnv().makeAsyncAwaitFunction());
+      }).not.toThrow();
+    });
+  });
 
+  describe('#fit', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.fit('undefined arg', undefined);
+      }).toThrowError(/fit expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+  });
 
-      describe("when the custom equality tester returns true", function() {
-        beforeEach(function() {
-          isEqual = true;
-        });
+  describe('#beforeEach', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.beforeEach(undefined);
+      }).toThrowError(/beforeEach expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
 
-        it("should give custom equality testers precedence", function() {
-          expect(env.equals_('abc', 'def')).toBeTruthy();
-          expect(env.equals_(true, false)).toBeTruthy();
-        });
-      });
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.beforeEach(jasmine.getEnv().makeAsyncAwaitFunction());
+      }).not.toThrow();
+    });
+  });
 
-      describe("when the custom equality tester returns undefined", function() {
-        beforeEach(function() {
-          isEqual = jasmine.undefined;
-        });
+  describe('#beforeAll', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.beforeAll(undefined);
+      }).toThrowError(/beforeAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
 
-        it("should use normal equality rules", function() {
-          expect(env.equals_('abc', 'abc')).toBeTruthy();
-          expect(env.equals_('abc', 'def')).toBeFalsy();
-        });
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.beforeAll(jasmine.getEnv().makeAsyncAwaitFunction());
+      }).not.toThrow();
+    });
+  });
 
-        describe("even if there are several", function() {
-          beforeEach(function() {
-            env.addEqualityTester(function(a, b) { return jasmine.undefined; });
-            env.addEqualityTester(function(a, b) { return jasmine.undefined; });
-          });
+  describe('#afterEach', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.afterEach(undefined);
+      }).toThrowError(/afterEach expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
 
-          it("should use normal equality rules", function() {
-            expect(env.equals_('abc', 'abc')).toBeTruthy();
-            expect(env.equals_('abc', 'def')).toBeFalsy();
-          });
-        });
-      });
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.afterEach(jasmine.getEnv().makeAsyncAwaitFunction());
+      }).not.toThrow();
+    });
+  });
 
-      it("should evaluate custom equality testers in the order they are declared", function() {
-        isEqual = false;
-        env.addEqualityTester(function(a, b) { return true; });
-        expect(env.equals_('abc', 'abc')).toBeFalsy();
-      });
+  describe('#afterAll', function () {
+    it('throws an error when it receives a non-fn argument', function() {
+      expect(function() {
+        env.afterAll(undefined);
+      }).toThrowError(/afterAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.afterAll(jasmine.getEnv().makeAsyncAwaitFunction());
+      }).not.toThrow();
     });
   });
 });

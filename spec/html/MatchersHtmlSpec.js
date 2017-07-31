@@ -2,21 +2,20 @@ describe("MatchersSpec - HTML Dependent", function () {
   var env, spec;
 
   beforeEach(function() {
-    env = new jasmine.Env();
-    env.updateInterval = 0;
+    env = new jasmineUnderTest.Env();
 
     var suite = env.describe("suite", function() {
       spec = env.it("spec", function() {
       });
     });
-    spyOn(spec, 'addMatcherResult');
+    spyOn(spec, 'addExpectationResult');
 
-    this.addMatchers({
+    addMatchers({
       toPass: function() {
-        return lastResult().passed();
+        return lastResult().passed;
       },
       toFail: function() {
-        return !lastResult().passed();
+        return !lastResult().passed;
       }
     });
   });
@@ -26,10 +25,10 @@ describe("MatchersSpec - HTML Dependent", function () {
   }
 
   function lastResult() {
-    return spec.addMatcherResult.mostRecentCall.args[0];
+    return spec.addExpectationResult.mostRecentCall.args[1];
   }
 
-  it("toEqual with DOM nodes", function() {
+  xit("toEqual with DOM nodes", function() {
     var nodeA = document.createElement('div');
     var nodeB = document.createElement('div');
     expect((match(nodeA).toEqual(nodeA))).toPass();

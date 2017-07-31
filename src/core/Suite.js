@@ -1,82 +1,155 @@
-/**
- * Internal representation of a Jasmine suite.
- *
- * @constructor
- * @param {jasmine.Env} env
- * @param {String} description
- * @param {Function} specDefinitions
- * @param {jasmine.Suite} parentSuite
- */
-jasmine.Suite = function(env, description, specDefinitions, parentSuite) {
-  var self = this;
-  self.id = env.nextSuiteId ? env.nextSuiteId() : null;
-  self.description = description;
-  self.queue = new jasmine.Queue(env);
-  self.parentSuite = parentSuite;
-  self.env = env;
-  self.before_ = [];
-  self.after_ = [];
-  self.children_ = [];
-  self.suites_ = [];
-  self.specs_ = [];
-};
+getJasmineRequireObj().Suite = function(j$) {
+  function Suite(attrs) {
+    this.env = attrs.env;
+    this.id = attrs.id;
+    this.parentSuite = attrs.parentSuite;
+    this.description = attrs.description;
+    this.expectationFactory = attrs.expectationFactory;
+    this.expectationResultFactory = attrs.expectationResultFactory;
+    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
-jasmine.Suite.prototype.getFullName = function() {
-  var fullName = this.description;
-  for (var parentSuite = this.parentSuite; parentSuite; parentSuite = parentSuite.parentSuite) {
-    fullName = parentSuite.description + ' ' + fullName;
+    this.beforeFns = [];
+    this.afterFns = [];
+    this.beforeAllFns = [];
+    this.afterAllFns = [];
+
+    this.children = [];
+
+    this.result = {
+      id: this.id,
+      description: this.description,
+      fullName: this.getFullName(),
+      failedExpectations: []
+    };
   }
-  return fullName;
-};
 
-jasmine.Suite.prototype.finish = function(onComplete) {
-  this.env.reporter.reportSuiteResults(this);
-  this.finished = true;
-  if (typeof(onComplete) == 'function') {
-    onComplete();
+  Suite.prototype.expect = function(actual) {
+    return this.expectationFactory(actual, this);
+  };
+
+  Suite.prototype.getFullName = function() {
+    var fullName = [];
+    for (var parentSuite = this; parentSuite; parentSuite = parentSuite.parentSuite) {
+      if (parentSuite.parentSuite) {
+        fullName.unshift(parentSuite.description);
+      }
+    }
+    return fullName.join(' ');
+  };
+
+  Suite.prototype.pend = function() {
+    this.markedPending = true;
+  };
+
+  Suite.prototype.beforeEach = function(fn) {
+    this.beforeFns.unshift(fn);
+  };
+
+  Suite.prototype.beforeAll = function(fn) {
+    this.beforeAllFns.push(fn);
+  };
+
+  Suite.prototype.afterEach = function(fn) {
+    this.afterFns.unshift(fn);
+  };
+
+  Suite.prototype.afterAll = function(fn) {
+    this.afterAllFns.unshift(fn);
+  };
+
+  Suite.prototype.addChild = function(child) {
+    this.children.push(child);
+  };
+
+  Suite.prototype.status = function() {
+    if (this.markedPending) {
+      return 'pending';
+    }
+
+    if (this.result.failedExpectations.length > 0) {
+      return 'failed';
+    } else {
+      return 'finished';
+    }
+  };
+
+  Suite.prototype.isExecutable = function() {
+    return !this.markedPending;
+  };
+
+  Suite.prototype.canBeReentered = function() {
+    return this.beforeAllFns.length === 0 && this.afterAllFns.length === 0;
+  };
+
+  Suite.prototype.getResult = function() {
+    this.result.status = this.status();
+    return this.result;
+  };
+
+  Suite.prototype.sharedUserContext = function() {
+    if (!this.sharedContext) {
+      this.sharedContext = this.parentSuite ? this.parentSuite.clonedSharedUserContext() : new j$.UserContext();
+    }
+
+    return this.sharedContext;
+  };
+
+  Suite.prototype.clonedSharedUserContext = function() {
+    return j$.UserContext.fromExisting(this.sharedUserContext());
+  };
+
+  Suite.prototype.onException = function() {
+    if (arguments[0] instanceof j$.errors.ExpectationFailed) {
+      return;
+    }
+
+    if(isAfterAll(this.children)) {
+      var data = {
+        matcherName: '',
+        passed: false,
+        expected: '',
+        actual: '',
+        error: arguments[0]
+      };
+      this.result.failedExpectations.push(this.expectationResultFactory(data));
+    } else {
+      for (var i = 0; i < this.children.length; i++) {
+        var child = this.children[i];
+        child.onException.apply(child, arguments);
+      }
+    }
+  };
+
+  Suite.prototype.addExpectationResult = function () {
+    if(isAfterAll(this.children) && isFailure(arguments)){
+      var data = arguments[1];
+      this.result.failedExpectations.push(this.expectationResultFactory(data));
+      if(this.throwOnExpectationFailure) {
+        throw new j$.errors.ExpectationFailed();
+      }
+    } else {
+      for (var i = 0; i < this.children.length; i++) {
+        var child = this.children[i];
+        try {
+          child.addExpectationResult.apply(child, arguments);
+        } catch(e) {
+          // keep going
+        }
+      }
+    }
+  };
+
+  function isAfterAll(children) {
+    return children && children[0].result.status;
   }
-};
 
-jasmine.Suite.prototype.beforeEach = function(beforeEachFunction) {
-  beforeEachFunction.typeName = 'beforeEach';
-  this.before_.unshift(beforeEachFunction);
-};
-
-jasmine.Suite.prototype.afterEach = function(afterEachFunction) {
-  afterEachFunction.typeName = 'afterEach';
-  this.after_.unshift(afterEachFunction);
-};
-
-jasmine.Suite.prototype.results = function() {
-  return this.queue.results();
-};
-
-jasmine.Suite.prototype.add = function(suiteOrSpec) {
-  this.children_.push(suiteOrSpec);
-  if (suiteOrSpec instanceof jasmine.Suite) {
-    this.suites_.push(suiteOrSpec);
-    this.env.currentRunner().addSuite(suiteOrSpec);
-  } else {
-    this.specs_.push(suiteOrSpec);
+  function isFailure(args) {
+    return !args[0];
   }
-  this.queue.add(suiteOrSpec);
+
+  return Suite;
 };
 
-jasmine.Suite.prototype.specs = function() {
-  return this.specs_;
-};
-
-jasmine.Suite.prototype.suites = function() {
-  return this.suites_;
-};
-
-jasmine.Suite.prototype.children = function() {
-  return this.children_;
-};
-
-jasmine.Suite.prototype.execute = function(onComplete) {
-  var self = this;
-  this.queue.start(function () {
-    self.finish(onComplete);
-  });
-};
+if (typeof window == void 0 && typeof exports == 'object') {
+  exports.Suite = jasmineRequire.Suite;
+}

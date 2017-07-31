@@ -1,0 +1,16 @@
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+[*.{js, json, sh, yml, gemspec}]
+indent_style = space
+indent_size = 2
+
+[{Rakefile, .jshintrc}]
+indent_style = space
+indent_size = 2
+
+[*.{py}]
+indent_style = space
+indent_size = 4

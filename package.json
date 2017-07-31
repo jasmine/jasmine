@@ -1,0 +1,34 @@
+{
+  "name": "jasmine-core",
+  "license": "MIT",
+  "version": "2.7.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jasmine/jasmine.git"
+  },
+  "keywords": [
+    "test",
+    "jasmine",
+    "tdd",
+    "bdd"
+  ],
+  "scripts": {
+    "test": "grunt jshint execSpecsInNode"
+  },
+  "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
+  "homepage": "http://jasmine.github.io",
+  "main": "./lib/jasmine-core.js",
+  "devDependencies": {
+    "glob": "~7.1.2",
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-compass": "^1.1.1",
+    "grunt-contrib-compress": "^1.3.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "jasmine": "^2.5.0",
+    "load-grunt-tasks": "^0.4.0",
+    "shelljs": "^0.7.0",
+    "temp": "~0.8.1"
+  }
+}

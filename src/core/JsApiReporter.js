@@ -1,102 +1,131 @@
-/** JavaScript API reporter.
- *
- * @constructor
- */
-jasmine.JsApiReporter = function() {
-  this.started = false;
-  this.finished = false;
-  this.suites_ = [];
-  this.results_ = {};
-};
+getJasmineRequireObj().JsApiReporter = function() {
 
-jasmine.JsApiReporter.prototype.reportRunnerStarting = function(runner) {
-  this.started = true;
-  var suites = runner.topLevelSuites();
-  for (var i = 0; i < suites.length; i++) {
-    var suite = suites[i];
-    this.suites_.push(this.summarize_(suite));
-  }
-};
-
-jasmine.JsApiReporter.prototype.suites = function() {
-  return this.suites_;
-};
-
-jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
-  var isSuite = suiteOrSpec instanceof jasmine.Suite;
-  var summary = {
-    id: suiteOrSpec.id,
-    name: suiteOrSpec.description,
-    type: isSuite ? 'suite' : 'spec',
-    children: []
+  var noopTimer = {
+    start: function(){},
+    elapsed: function(){ return 0; }
   };
-  
-  if (isSuite) {
-    var children = suiteOrSpec.children();
-    for (var i = 0; i < children.length; i++) {
-      summary.children.push(this.summarize_(children[i]));
+
+  /**
+   * _Note:_ Do not construct this directly, use the global `jsApiReporter` to retrieve the instantiated object.
+   *
+   * @name jsApiReporter
+   * @classdesc Reporter added by default in `boot.js` to record results for retrieval in javascript code.
+   * @class
+   */
+  function JsApiReporter(options) {
+    var timer = options.timer || noopTimer,
+        status = 'loaded';
+
+    this.started = false;
+    this.finished = false;
+    this.runDetails = {};
+
+    this.jasmineStarted = function() {
+      this.started = true;
+      status = 'started';
+      timer.start();
+    };
+
+    var executionTime;
+
+    this.jasmineDone = function(runDetails) {
+      this.finished = true;
+      this.runDetails = runDetails;
+      executionTime = timer.elapsed();
+      status = 'done';
+    };
+
+    /**
+     * Get the current status for the Jasmine environment.
+     * @name jsApiReporter#status
+     * @function
+     * @return {String} - One of `loaded`, `started`, or `done`
+     */
+    this.status = function() {
+      return status;
+    };
+
+    var suites = [],
+      suites_hash = {};
+
+    this.suiteStarted = function(result) {
+      suites_hash[result.id] = result;
+    };
+
+    this.suiteDone = function(result) {
+      storeSuite(result);
+    };
+
+    /**
+     * Get the results for a set of suites.
+     *
+     * Retrievable in slices for easier serialization.
+     * @name jsApiReporter#suiteResults
+     * @function
+     * @param {Number} index - The position in the suites list to start from.
+     * @param {Number} length - Maximum number of suite results to return.
+     * @return {Object[]}
+     */
+    this.suiteResults = function(index, length) {
+      return suites.slice(index, index + length);
+    };
+
+    function storeSuite(result) {
+      suites.push(result);
+      suites_hash[result.id] = result;
     }
-  }
-  return summary;
-};
 
-jasmine.JsApiReporter.prototype.results = function() {
-  return this.results_;
-};
+    /**
+     * Get all of the suites in a single object, with their `id` as the key.
+     * @name jsApiReporter#suites
+     * @function
+     * @return {Object}
+     */
+    this.suites = function() {
+      return suites_hash;
+    };
 
-jasmine.JsApiReporter.prototype.resultsForSpec = function(specId) {
-  return this.results_[specId];
-};
+    var specs = [];
 
-//noinspection JSUnusedLocalSymbols
-jasmine.JsApiReporter.prototype.reportRunnerResults = function(runner) {
-  this.finished = true;
-};
+    this.specDone = function(result) {
+      specs.push(result);
+    };
 
-//noinspection JSUnusedLocalSymbols
-jasmine.JsApiReporter.prototype.reportSuiteResults = function(suite) {
-};
+    /**
+     * Get the results for a set of specs.
+     *
+     * Retrievable in slices for easier serialization.
+     * @name jsApiReporter#specResults
+     * @function
+     * @param {Number} index - The position in the specs list to start from.
+     * @param {Number} length - Maximum number of specs results to return.
+     * @return {Object[]}
+     */
+    this.specResults = function(index, length) {
+      return specs.slice(index, index + length);
+    };
 
-//noinspection JSUnusedLocalSymbols
-jasmine.JsApiReporter.prototype.reportSpecResults = function(spec) {
-  this.results_[spec.id] = {
-    messages: spec.results().getItems(),
-    result: spec.results().failedCount > 0 ? "failed" : "passed"
-  };
-};
+    /**
+     * Get all spec results.
+     * @name jsApiReporter#specs
+     * @function
+     * @return {Object[]}
+     */
+    this.specs = function() {
+      return specs;
+    };
 
-//noinspection JSUnusedLocalSymbols
-jasmine.JsApiReporter.prototype.log = function(str) {
-};
+    /**
+     * Get the number of milliseconds it took for the full Jasmine suite to run.
+     * @name jsApiReporter#executionTime
+     * @function
+     * @return {Number}
+     */
+    this.executionTime = function() {
+      return executionTime;
+    };
 
-jasmine.JsApiReporter.prototype.resultsForSpecs = function(specIds){
-  var results = {};
-  for (var i = 0; i < specIds.length; i++) {
-    var specId = specIds[i];
-    results[specId] = this.summarizeResult_(this.results_[specId]);
-  }
-  return results;
-};
-
-jasmine.JsApiReporter.prototype.summarizeResult_ = function(result){
-  var summaryMessages = [];
-  var messagesLength = result.messages.length;
-  for (var messageIndex = 0; messageIndex < messagesLength; messageIndex++) {
-    var resultMessage = result.messages[messageIndex];
-    summaryMessages.push({
-      text: resultMessage.type == 'log' ? resultMessage.toString() : jasmine.undefined,
-      passed: resultMessage.passed ? resultMessage.passed() : true,
-      type: resultMessage.type,
-      message: resultMessage.message,
-      trace: {
-        stack: resultMessage.passed && !resultMessage.passed() ? resultMessage.trace.stack : jasmine.undefined
-      }
-    });
   }
 
-  return {
-    result : result.result,
-    messages : summaryMessages
-  };
+  return JsApiReporter;
 };
-

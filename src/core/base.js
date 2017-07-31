@@ -1,632 +1,201 @@
-var isCommonJS = typeof window == "undefined";
+getJasmineRequireObj().base = function(j$, jasmineGlobal) {
+  j$.unimplementedMethod_ = function() {
+    throw new Error('unimplemented method');
+  };
 
-/**
- * Top level namespace for Jasmine, a lightweight JavaScript BDD/spec/testing framework.
- *
- * @namespace
- */
-var jasmine = {};
-if (isCommonJS) exports.jasmine = jasmine;
-/**
- * @private
- */
-jasmine.unimplementedMethod_ = function() {
-  throw new Error("unimplemented method");
-};
+  /**
+   * Maximum object depth the pretty printer will print to.
+   * Set this to a lower value to speed up pretty printing if you have large objects.
+   * @name jasmine.MAX_PRETTY_PRINT_DEPTH
+   */
+  j$.MAX_PRETTY_PRINT_DEPTH = 40;
+  /**
+   * Maximum number of array elements to display when pretty printing objects.
+   * This will also limit the number of keys and values displayed for an object.
+   * Elements past this number will be ellipised.
+   * @name jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH
+   */
+  j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 100;
+  /**
+   * Default number of milliseconds Jasmine will wait for an asynchronous spec to complete.
+   * @name jasmine.DEFAULT_TIMEOUT_INTERVAL
+   */
+  j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
-/**
- * Use <code>jasmine.undefined</code> instead of <code>undefined</code>, since <code>undefined</code> is just
- * a plain old variable and may be redefined by somebody else.
- *
- * @private
- */
-jasmine.undefined = jasmine.___undefined___;
+  j$.getGlobal = function() {
+    return jasmineGlobal;
+  };
 
-/**
- * Show diagnostic messages in the console if set to true
- *
- */
-jasmine.VERBOSE = false;
+  /**
+   * Get the currently booted Jasmine Environment.
+   *
+   * @name jasmine.getEnv
+   * @function
+   * @return {Env}
+   */
+  j$.getEnv = function(options) {
+    var env = j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options);
+    //jasmine. singletons in here (setTimeout blah blah).
+    return env;
+  };
 
-/**
- * Default interval in milliseconds for event loop yields (e.g. to allow network activity or to refresh the screen with the HTML-based runner). Small values here may result in slow test running. Zero means no updates until all tests have completed.
- *
- */
-jasmine.DEFAULT_UPDATE_INTERVAL = 250;
+  j$.isArray_ = function(value) {
+    return j$.isA_('Array', value);
+  };
 
-/**
- * Default timeout interval in milliseconds for waitsFor() blocks.
- */
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+  j$.isObject_ = function(value) {
+    return !j$.util.isUndefined(value) && value !== null && j$.isA_('Object', value);
+  };
 
-jasmine.getGlobal = function() {
-  function getGlobal() {
-    return this;
-  }
+  j$.isString_ = function(value) {
+    return j$.isA_('String', value);
+  };
 
-  return getGlobal();
-};
+  j$.isNumber_ = function(value) {
+    return j$.isA_('Number', value);
+  };
 
-/**
- * Allows for bound functions to be compared.  Internal use only.
- *
- * @ignore
- * @private
- * @param base {Object} bound 'this' for the function
- * @param name {Function} function to find
- */
-jasmine.bindOriginal_ = function(base, name) {
-  var original = base[name];
-  if (original.apply) {
-    return function() {
-      return original.apply(base, arguments);
-    };
-  } else {
-    // IE support
-    return jasmine.getGlobal()[name];
-  }
-};
+  j$.isFunction_ = function(value) {
+    return j$.isA_('Function', value);
+  };
 
-jasmine.setTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'setTimeout');
-jasmine.clearTimeout = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearTimeout');
-jasmine.setInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'setInterval');
-jasmine.clearInterval = jasmine.bindOriginal_(jasmine.getGlobal(), 'clearInterval');
+  j$.isAsyncFunction_ = function(value) {
+    return j$.isA_('AsyncFunction', value);
+  };
 
-jasmine.MessageResult = function(values) {
-  this.type = 'log';
-  this.values = values;
-  this.trace = new Error(); // todo: test better
-};
+  j$.isA_ = function(typeName, value) {
+    return j$.getType_(value) === '[object ' + typeName + ']';
+  };
 
-jasmine.MessageResult.prototype.toString = function() {
-  var text = "";
-  for (var i = 0; i < this.values.length; i++) {
-    if (i > 0) text += " ";
-    if (jasmine.isString_(this.values[i])) {
-      text += this.values[i];
-    } else {
-      text += jasmine.pp(this.values[i]);
+  j$.getType_ = function(value) {
+    return Object.prototype.toString.apply(value);
+  };
+
+  j$.isDomNode = function(obj) {
+    return obj.nodeType > 0;
+  };
+
+  j$.fnNameFor = function(func) {
+    if (func.name) {
+      return func.name;
     }
-  }
-  return text;
-};
 
-jasmine.ExpectationResult = function(params) {
-  this.type = 'expect';
-  this.matcherName = params.matcherName;
-  this.passed_ = params.passed;
-  this.expected = params.expected;
-  this.actual = params.actual;
-  this.message = this.passed_ ? 'Passed.' : params.message;
-
-  var trace = (params.trace || new Error(this.message));
-  this.trace = this.passed_ ? '' : trace;
-};
-
-jasmine.ExpectationResult.prototype.toString = function () {
-  return this.message;
-};
-
-jasmine.ExpectationResult.prototype.passed = function () {
-  return this.passed_;
-};
-
-/**
- * Getter for the Jasmine environment. Ensures one gets created
- */
-jasmine.getEnv = function() {
-  var env = jasmine.currentEnv_ = jasmine.currentEnv_ || new jasmine.Env();
-  return env;
-};
-
-/**
- * @ignore
- * @private
- * @param value
- * @returns {Boolean}
- */
-jasmine.isArray_ = function(value) {
-  return jasmine.isA_("Array", value);
-};
-
-/**
- * @ignore
- * @private
- * @param value
- * @returns {Boolean}
- */
-jasmine.isString_ = function(value) {
-  return jasmine.isA_("String", value);
-};
-
-/**
- * @ignore
- * @private
- * @param value
- * @returns {Boolean}
- */
-jasmine.isNumber_ = function(value) {
-  return jasmine.isA_("Number", value);
-};
-
-/**
- * @ignore
- * @private
- * @param {String} typeName
- * @param value
- * @returns {Boolean}
- */
-jasmine.isA_ = function(typeName, value) {
-  return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
-};
-
-/**
- * Pretty printer for expecations.  Takes any object and turns it into a human-readable string.
- *
- * @param value {Object} an object to be outputted
- * @returns {String}
- */
-jasmine.pp = function(value) {
-  var stringPrettyPrinter = new jasmine.StringPrettyPrinter();
-  stringPrettyPrinter.format(value);
-  return stringPrettyPrinter.string;
-};
-
-/**
- * Returns true if the object is a DOM Node.
- *
- * @param {Object} obj object to check
- * @returns {Boolean}
- */
-jasmine.isDomNode = function(obj) {
-  return obj.nodeType > 0;
-};
-
-/**
- * Returns a matchable 'generic' object of the class type.  For use in expecations of type when values don't matter.
- *
- * @example
- * // don't care about which function is passed in, as long as it's a function
- * expect(mySpy).toHaveBeenCalledWith(jasmine.any(Function));
- *
- * @param {Class} clazz
- * @returns matchable object of the type clazz
- */
-jasmine.any = function(clazz) {
-  return new jasmine.Matchers.Any(clazz);
-};
-
-/**
- * Returns a matchable subset of a JSON object. For use in expectations when you don't care about all of the
- * attributes on the object.
- *
- * @example
- * // don't care about any other attributes than foo.
- * expect(mySpy).toHaveBeenCalledWith(jasmine.objectContaining({foo: "bar"});
- *
- * @param sample {Object} sample
- * @returns matchable object for the sample
- */
-jasmine.objectContaining = function (sample) {
-    return new jasmine.Matchers.ObjectContaining(sample);
-};
-
-/**
- * Jasmine Spies are test doubles that can act as stubs, spies, fakes or when used in an expecation, mocks.
- *
- * Spies should be created in test setup, before expectations.  They can then be checked, using the standard Jasmine
- * expectation syntax. Spies can be checked if they were called or not and what the calling params were.
- *
- * A Spy has the following fields: wasCalled, callCount, mostRecentCall, and argsForCall (see docs).
- *
- * Spies are torn down at the end of every spec.
- *
- * Note: Do <b>not</b> call new jasmine.Spy() directly - a spy must be created using spyOn, jasmine.createSpy or jasmine.createSpyObj.
- *
- * @example
- * // a stub
- * var myStub = jasmine.createSpy('myStub');  // can be used anywhere
- *
- * // spy example
- * var foo = {
- *   not: function(bool) { return !bool; }
- * }
- *
- * // actual foo.not will not be called, execution stops
- * spyOn(foo, 'not');
-
- // foo.not spied upon, execution will continue to implementation
- * spyOn(foo, 'not').andCallThrough();
- *
- * // fake example
- * var foo = {
- *   not: function(bool) { return !bool; }
- * }
- *
- * // foo.not(val) will return val
- * spyOn(foo, 'not').andCallFake(function(value) {return value;});
- *
- * // mock example
- * foo.not(7 == 7);
- * expect(foo.not).toHaveBeenCalled();
- * expect(foo.not).toHaveBeenCalledWith(true);
- *
- * @constructor
- * @see spyOn, jasmine.createSpy, jasmine.createSpyObj
- * @param {String} name
- */
-jasmine.Spy = function(name) {
-  /**
-   * The name of the spy, if provided.
-   */
-  this.identity = name || 'unknown';
-  /**
-   *  Is this Object a spy?
-   */
-  this.isSpy = true;
-  /**
-   * The actual function this spy stubs.
-   */
-  this.plan = function() {
-  };
-  /**
-   * Tracking of the most recent call to the spy.
-   * @example
-   * var mySpy = jasmine.createSpy('foo');
-   * mySpy(1, 2);
-   * mySpy.mostRecentCall.args = [1, 2];
-   */
-  this.mostRecentCall = {};
-
-  /**
-   * Holds arguments for each call to the spy, indexed by call count
-   * @example
-   * var mySpy = jasmine.createSpy('foo');
-   * mySpy(1, 2);
-   * mySpy(7, 8);
-   * mySpy.mostRecentCall.args = [7, 8];
-   * mySpy.argsForCall[0] = [1, 2];
-   * mySpy.argsForCall[1] = [7, 8];
-   */
-  this.argsForCall = [];
-  this.calls = [];
-};
-
-/**
- * Tells a spy to call through to the actual implemenatation.
- *
- * @example
- * var foo = {
- *   bar: function() { // do some stuff }
- * }
- *
- * // defining a spy on an existing property: foo.bar
- * spyOn(foo, 'bar').andCallThrough();
- */
-jasmine.Spy.prototype.andCallThrough = function() {
-  this.plan = this.originalValue;
-  return this;
-};
-
-/**
- * For setting the return value of a spy.
- *
- * @example
- * // defining a spy from scratch: foo() returns 'baz'
- * var foo = jasmine.createSpy('spy on foo').andReturn('baz');
- *
- * // defining a spy on an existing property: foo.bar() returns 'baz'
- * spyOn(foo, 'bar').andReturn('baz');
- *
- * @param {Object} value
- */
-jasmine.Spy.prototype.andReturn = function(value) {
-  this.plan = function() {
-    return value;
-  };
-  return this;
-};
-
-/**
- * For throwing an exception when a spy is called.
- *
- * @example
- * // defining a spy from scratch: foo() throws an exception w/ message 'ouch'
- * var foo = jasmine.createSpy('spy on foo').andThrow('baz');
- *
- * // defining a spy on an existing property: foo.bar() throws an exception w/ message 'ouch'
- * spyOn(foo, 'bar').andThrow('baz');
- *
- * @param {String} exceptionMsg
- */
-jasmine.Spy.prototype.andThrow = function(exceptionMsg) {
-  this.plan = function() {
-    throw exceptionMsg;
-  };
-  return this;
-};
-
-/**
- * Calls an alternate implementation when a spy is called.
- *
- * @example
- * var baz = function() {
- *   // do some stuff, return something
- * }
- * // defining a spy from scratch: foo() calls the function baz
- * var foo = jasmine.createSpy('spy on foo').andCall(baz);
- *
- * // defining a spy on an existing property: foo.bar() calls an anonymnous function
- * spyOn(foo, 'bar').andCall(function() { return 'baz';} );
- *
- * @param {Function} fakeFunc
- */
-jasmine.Spy.prototype.andCallFake = function(fakeFunc) {
-  this.plan = fakeFunc;
-  return this;
-};
-
-/**
- * Resets all of a spy's the tracking variables so that it can be used again.
- *
- * @example
- * spyOn(foo, 'bar');
- *
- * foo.bar();
- *
- * expect(foo.bar.callCount).toEqual(1);
- *
- * foo.bar.reset();
- *
- * expect(foo.bar.callCount).toEqual(0);
- */
-jasmine.Spy.prototype.reset = function() {
-  this.wasCalled = false;
-  this.callCount = 0;
-  this.argsForCall = [];
-  this.calls = [];
-  this.mostRecentCall = {};
-};
-
-jasmine.createSpy = function(name) {
-
-  var spyObj = function() {
-    spyObj.wasCalled = true;
-    spyObj.callCount++;
-    var args = jasmine.util.argsToArray(arguments);
-    spyObj.mostRecentCall.object = this;
-    spyObj.mostRecentCall.args = args;
-    spyObj.argsForCall.push(args);
-    spyObj.calls.push({object: this, args: args});
-    return spyObj.plan.apply(this, arguments);
+    var matches = func.toString().match(/^\s*function\s*(\w*)\s*\(/);
+    return matches ? matches[1] : '<anonymous>';
   };
 
-  var spy = new jasmine.Spy(name);
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value being compared is an instance of the specified class/constructor.
+   * @name jasmine.any
+   * @function
+   * @param {Constructor} clazz - The constructor to check against.
+   */
+  j$.any = function(clazz) {
+    return new j$.Any(clazz);
+  };
 
-  for (var prop in spy) {
-    spyObj[prop] = spy[prop];
-  }
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value being compared is not `null` and not `undefined`.
+   * @name jasmine.anything
+   * @function
+   */
+  j$.anything = function() {
+    return new j$.Anything();
+  };
 
-  spyObj.reset();
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value being compared contains at least the keys and values.
+   * @name jasmine.objectContaining
+   * @function
+   * @param {Object} sample - The subset of properties that _must_ be in the actual.
+   */
+  j$.objectContaining = function(sample) {
+    return new j$.ObjectContaining(sample);
+  };
 
-  return spyObj;
-};
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value is a `String` that matches the `RegExp` or `String`.
+   * @name jasmine.stringMatching
+   * @function
+   * @param {RegExp|String} expected
+   */
+  j$.stringMatching = function(expected) {
+    return new j$.StringMatching(expected);
+  };
 
-/**
- * Determines whether an object is a spy.
- *
- * @param {jasmine.Spy|Object} putativeSpy
- * @returns {Boolean}
- */
-jasmine.isSpy = function(putativeSpy) {
-  return putativeSpy && putativeSpy.isSpy;
-};
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value is an `Array` that contains at least the elements in the sample.
+   * @name jasmine.arrayContaining
+   * @function
+   * @param {Array} sample
+   */
+  j$.arrayContaining = function(sample) {
+    return new j$.ArrayContaining(sample);
+  };
 
-/**
- * Creates a more complicated spy: an Object that has every property a function that is a spy.  Used for stubbing something
- * large in one call.
- *
- * @param {String} baseName name of spy class
- * @param {Array} methodNames array of names of methods to make spies
- */
-jasmine.createSpyObj = function(baseName, methodNames) {
-  if (!jasmine.isArray_(methodNames) || methodNames.length === 0) {
-    throw new Error('createSpyObj requires a non-empty array of method names to create spies for');
-  }
-  var obj = {};
-  for (var i = 0; i < methodNames.length; i++) {
-    obj[methodNames[i]] = jasmine.createSpy(baseName + '.' + methodNames[i]);
-  }
-  return obj;
-};
+  /**
+   * Create a bare {@link Spy} object. This won't be installed anywhere and will not have any implementation behind it.
+   * @name jasmine.createSpy
+   * @function
+   * @param {String} [name] - Name to give the spy. This will be displayed in failure messages.
+   * @param {Function} [originalFn] - Function to act as the real implementation.
+   * @return {Spy}
+   */
+  j$.createSpy = function(name, originalFn) {
+    return j$.Spy(name, originalFn);
+  };
 
-/**
- * All parameters are pretty-printed and concatenated together, then written to the current spec's output.
- *
- * Be careful not to leave calls to <code>jasmine.log</code> in production code.
- */
-jasmine.log = function() {
-  var spec = jasmine.getEnv().currentSpec;
-  spec.log.apply(spec, arguments);
-};
-
-/**
- * Function that installs a spy on an existing object's method name.  Used within a Spec to create a spy.
- *
- * @example
- * // spy example
- * var foo = {
- *   not: function(bool) { return !bool; }
- * }
- * spyOn(foo, 'not'); // actual foo.not will not be called, execution stops
- *
- * @see jasmine.createSpy
- * @param obj
- * @param methodName
- * @returns a Jasmine spy that can be chained with all spy methods
- */
-var spyOn = function(obj, methodName) {
-  return jasmine.getEnv().currentSpec.spyOn(obj, methodName);
-};
-if (isCommonJS) exports.spyOn = spyOn;
-
-/**
- * Creates a Jasmine spec that will be added to the current suite.
- *
- * // TODO: pending tests
- *
- * @example
- * it('should be true', function() {
- *   expect(true).toEqual(true);
- * });
- *
- * @param {String} desc description of this specification
- * @param {Function} func defines the preconditions and expectations of the spec
- */
-var it = function(desc, func) {
-  return jasmine.getEnv().it(desc, func);
-};
-if (isCommonJS) exports.it = it;
-
-/**
- * Creates a <em>disabled</em> Jasmine spec.
- *
- * A convenience method that allows existing specs to be disabled temporarily during development.
- *
- * @param {String} desc description of this specification
- * @param {Function} func defines the preconditions and expectations of the spec
- */
-var xit = function(desc, func) {
-  return jasmine.getEnv().xit(desc, func);
-};
-if (isCommonJS) exports.xit = xit;
-
-/**
- * Starts a chain for a Jasmine expectation.
- *
- * It is passed an Object that is the actual value and should chain to one of the many
- * jasmine.Matchers functions.
- *
- * @param {Object} actual Actual value to test against and expected value
- */
-var expect = function(actual) {
-  return jasmine.getEnv().currentSpec.expect(actual);
-};
-if (isCommonJS) exports.expect = expect;
-
-/**
- * Defines part of a jasmine spec.  Used in cominbination with waits or waitsFor in asynchrnous specs.
- *
- * @param {Function} func Function that defines part of a jasmine spec.
- */
-var runs = function(func) {
-  jasmine.getEnv().currentSpec.runs(func);
-};
-if (isCommonJS) exports.runs = runs;
-
-/**
- * Waits a fixed time period before moving to the next block.
- *
- * @deprecated Use waitsFor() instead
- * @param {Number} timeout milliseconds to wait
- */
-var waits = function(timeout) {
-  jasmine.getEnv().currentSpec.waits(timeout);
-};
-if (isCommonJS) exports.waits = waits;
-
-/**
- * Waits for the latchFunction to return true before proceeding to the next block.
- *
- * @param {Function} latchFunction
- * @param {String} optional_timeoutMessage
- * @param {Number} optional_timeout
- */
-var waitsFor = function(latchFunction, optional_timeoutMessage, optional_timeout) {
-  jasmine.getEnv().currentSpec.waitsFor.apply(jasmine.getEnv().currentSpec, arguments);
-};
-if (isCommonJS) exports.waitsFor = waitsFor;
-
-/**
- * A function that is called before each spec in a suite.
- *
- * Used for spec setup, including validating assumptions.
- *
- * @param {Function} beforeEachFunction
- */
-var beforeEach = function(beforeEachFunction) {
-  jasmine.getEnv().beforeEach(beforeEachFunction);
-};
-if (isCommonJS) exports.beforeEach = beforeEach;
-
-/**
- * A function that is called after each spec in a suite.
- *
- * Used for restoring any state that is hijacked during spec execution.
- *
- * @param {Function} afterEachFunction
- */
-var afterEach = function(afterEachFunction) {
-  jasmine.getEnv().afterEach(afterEachFunction);
-};
-if (isCommonJS) exports.afterEach = afterEach;
-
-/**
- * Defines a suite of specifications.
- *
- * Stores the description and all defined specs in the Jasmine environment as one suite of specs. Variables declared
- * are accessible by calls to beforeEach, it, and afterEach. Describe blocks can be nested, allowing for specialization
- * of setup in some tests.
- *
- * @example
- * // TODO: a simple suite
- *
- * // TODO: a simple suite with a nested describe block
- *
- * @param {String} description A string, usually the class under test.
- * @param {Function} specDefinitions function that defines several specs.
- */
-var describe = function(description, specDefinitions) {
-  return jasmine.getEnv().describe(description, specDefinitions);
-};
-if (isCommonJS) exports.describe = describe;
-
-/**
- * Disables a suite of specifications.  Used to disable some suites in a file, or files, temporarily during development.
- *
- * @param {String} description A string, usually the class under test.
- * @param {Function} specDefinitions function that defines several specs.
- */
-var xdescribe = function(description, specDefinitions) {
-  return jasmine.getEnv().xdescribe(description, specDefinitions);
-};
-if (isCommonJS) exports.xdescribe = xdescribe;
-
-
-// Provide the XMLHttpRequest class for IE 5.x-6.x:
-jasmine.XmlHttpRequest = (typeof XMLHttpRequest == "undefined") ? function() {
-  function tryIt(f) {
-    try {
-      return f();
-    } catch(e) {
+  j$.isSpy = function(putativeSpy) {
+    if (!putativeSpy) {
+      return false;
     }
-    return null;
-  }
+    return putativeSpy.and instanceof j$.SpyStrategy &&
+      putativeSpy.calls instanceof j$.CallTracker;
+  };
 
-  var xhr = tryIt(function() {
-    return new ActiveXObject("Msxml2.XMLHTTP.6.0");
-  }) ||
-    tryIt(function() {
-      return new ActiveXObject("Msxml2.XMLHTTP.3.0");
-    }) ||
-    tryIt(function() {
-      return new ActiveXObject("Msxml2.XMLHTTP");
-    }) ||
-    tryIt(function() {
-      return new ActiveXObject("Microsoft.XMLHTTP");
-    });
+  /**
+   * Create an object with multiple {@link Spy}s as its members.
+   * @name jasmine.createSpyObj
+   * @function
+   * @param {String} [baseName] - Base name for the spies in the object.
+   * @param {String[]|Object} methodNames - Array of method names to create spies for, or Object whose keys will be method names and values the {@link Spy#and#returnValue|returnValue}.
+   * @return {Object}
+   */
+  j$.createSpyObj = function(baseName, methodNames) {
+    var baseNameIsCollection = j$.isObject_(baseName) || j$.isArray_(baseName);
 
-  if (!xhr) throw new Error("This browser does not support XMLHttpRequest.");
+    if (baseNameIsCollection && j$.util.isUndefined(methodNames)) {
+      methodNames = baseName;
+      baseName = 'unknown';
+    }
 
-  return xhr;
-} : XMLHttpRequest;
+    var obj = {};
+    var spiesWereSet = false;
+
+    if (j$.isArray_(methodNames)) {
+      for (var i = 0; i < methodNames.length; i++) {
+        obj[methodNames[i]] = j$.createSpy(baseName + '.' + methodNames[i]);
+        spiesWereSet = true;
+      }
+    } else if (j$.isObject_(methodNames)) {
+      for (var key in methodNames) {
+        if (methodNames.hasOwnProperty(key)) {
+          obj[key] = j$.createSpy(baseName + '.' + key);
+          obj[key].and.returnValue(methodNames[key]);
+          spiesWereSet = true;
+        }
+      }
+    }
+
+    if (!spiesWereSet) {
+      throw 'createSpyObj requires a non-empty array or object of method names to create spies for';
+    }
+
+    return obj;
+  };
+};
