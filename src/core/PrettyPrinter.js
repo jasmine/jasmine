@@ -40,6 +40,8 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitSet(value);
       } else if (j$.getType_(value) == '[object Map]') {
         this.emitMap(value);
+      } else if (j$.isTypedArray_(value)) {
+        this.emitTypedArray(value);
       } else if (value.toString && typeof value === 'object' && !j$.isArray_(value) && hasCustomToString(value)) {
         this.emitScalar(value.toString());
       } else if (j$.util.arrayContains(this.seen, value)) {
@@ -208,6 +210,13 @@ getJasmineRequireObj().pp = function(j$) {
     if (truncated) { this.append(', ...'); }
 
     this.append(' })');
+  };
+
+  StringPrettyPrinter.prototype.emitTypedArray = function(obj) {
+    var constructorName = j$.fnNameFor(obj.constructor);
+    var stringifiedArray = Array.prototype.join.call(obj);
+
+    this.append(constructorName + ' ' + stringifiedArray);
   };
 
   StringPrettyPrinter.prototype.formatProperty = function(obj, property, isGetter) {
