@@ -20,6 +20,7 @@ helpers:
   - 'helpers/BrowserFlags.js'
   - 'helpers/checkForSet.js'
   - 'helpers/checkForMap.js'
+  - 'helpers/checkForTypedArrays.js'
   - 'helpers/defineJasmineUnderTest.js'
 spec_files:
   - '**/*[Ss]pec.js'
