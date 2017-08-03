@@ -216,7 +216,7 @@ describe("toEqual", function() {
 
     var actual = new Uint32Array([1, 2, 3]),
       expected = new Uint16Array([1, 2, 3]),
-      message = "Expected Uint32Array 1,2,3 to equal Uint16Array 1,2,3.";
+      message = "Expected Uint32Array [ 1, 2, 3 ] to equal Uint16Array [ 1, 2, 3 ].";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });

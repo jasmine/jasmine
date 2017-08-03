@@ -212,11 +212,16 @@ getJasmineRequireObj().pp = function(j$) {
     this.append(' })');
   };
 
-  StringPrettyPrinter.prototype.emitTypedArray = function(obj) {
-    var constructorName = j$.fnNameFor(obj.constructor);
-    var stringifiedArray = Array.prototype.join.call(obj);
+  StringPrettyPrinter.prototype.emitTypedArray = function(arr) {
+    var constructorName = j$.fnNameFor(arr.constructor),
+      limitedArray = Array.prototype.slice.call(arr, 0, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH),
+      itemsString = Array.prototype.join.call(limitedArray, ', ');
 
-    this.append(constructorName + ' ' + stringifiedArray);
+    if (limitedArray.length !== arr.length) {
+      itemsString += ', ...';
+    }
+
+    this.append(constructorName + ' [ ' + itemsString + ' ]');
   };
 
   StringPrettyPrinter.prototype.formatProperty = function(obj, property, isGetter) {
