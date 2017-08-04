@@ -9,6 +9,7 @@
     "helpers/asyncAwait.js",
     "helpers/checkForSet.js",
     "helpers/checkForMap.js",
+    "helpers/checkForTypedArrays.js",
     "helpers/nodeDefineJasmineUnderTest.js"
   ],
   "random": true

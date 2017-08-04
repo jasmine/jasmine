@@ -63,6 +63,18 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return j$.isA_('AsyncFunction', value);
   };
 
+  j$.isTypedArray_ = function(value) {
+    return j$.isA_('Float32Array', value) ||
+      j$.isA_('Float64Array', value) ||
+      j$.isA_('Int16Array', value) ||
+      j$.isA_('Int32Array', value) ||
+      j$.isA_('Int8Array', value) ||
+      j$.isA_('Uint16Array', value) ||
+      j$.isA_('Uint32Array', value) ||
+      j$.isA_('Uint8Array', value) ||
+      j$.isA_('Uint8ClampedArray', value);
+  };
+
   j$.isA_ = function(typeName, value) {
     return j$.getType_(value) === '[object ' + typeName + ']';
   };
@@ -80,7 +92,9 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       return func.name;
     }
 
-    var matches = func.toString().match(/^\s*function\s*(\w*)\s*\(/);
+    var matches = func.toString().match(/^\s*function\s*(\w*)\s*\(/) ||
+      func.toString().match(/^\s*\[object\s*(\w*)Constructor\]/);
+
     return matches ? matches[1] : '<anonymous>';
   };
 
