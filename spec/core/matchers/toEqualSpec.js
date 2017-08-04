@@ -211,6 +211,16 @@ describe("toEqual", function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
+  it("reports mismatches between arrays of different types", function() {
+    jasmine.getEnv().requireFunctioningTypedArrays();
+
+    var actual = new Uint32Array([1, 2, 3]),
+      expected = new Uint16Array([1, 2, 3]),
+      message = "Expected Uint32Array [ 1, 2, 3 ] to equal Uint16Array [ 1, 2, 3 ].";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
   it("reports mismatches involving NaN", function() {
     var actual = {x: 0},
       expected = {x: 0/0},
