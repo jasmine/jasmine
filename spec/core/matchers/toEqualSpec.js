@@ -487,9 +487,9 @@ describe("toEqual", function() {
 
   it("does not report a mismatch when asymmetric matchers are satisfied", function() {
     var actual = {a: 'a'},
-      expected = {a: jasmineUnderTest.any(String)},
-      message = 'Expected $.a = 1 to equal <jasmine.any(String)>.';
+      expected = {a: jasmineUnderTest.any(String)};
 
+    expect(compareEquals(actual, expected).message).toEqual('');
     expect(compareEquals(actual, expected).pass).toBe(true)
   });
 
