@@ -64,15 +64,15 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       return undefined;
     }
 
-    if (asymmetricA) {
-      result = a.asymmetricMatch(b, customTesters);
-      diffBuilder.record(a, b);
-      return result;
-    }
+    if (asymmetricA || asymmetricB) {
+      result = asymmetricA ?
+        a.asymmetricMatch(b, customTesters) :
+        b.asymmetricMatch(a, customTesters);
+      
+      if (!result) {
+        diffBuilder.record(a, b);
+      }
 
-    if (asymmetricB) {
-      result = b.asymmetricMatch(a, customTesters);
-      diffBuilder.record(a, b);
       return result;
     }
   }
