@@ -153,6 +153,17 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if the actual value is an `Array` that contains all of the elements in the sample in any order.
+   * @name jasmine.arrayWithExactContents
+   * @function
+   * @param {Array} sample
+   */
+  j$.arrayWithExactContents = function(sample) {
+    return new j$.ArrayWithExactContents(sample);
+  };
+
+  /**
    * Create a bare {@link Spy} object. This won't be installed anywhere and will not have any implementation behind it.
    * @name jasmine.createSpy
    * @function

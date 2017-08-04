@@ -41,6 +41,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.matchersUtil = jRequire.matchersUtil(j$);
     j$.ObjectContaining = jRequire.ObjectContaining(j$);
     j$.ArrayContaining = jRequire.ArrayContaining(j$);
+    j$.ArrayWithExactContents = jRequire.ArrayWithExactContents(j$);
     j$.pp = jRequire.pp(j$);
     j$.QueueRunner = jRequire.QueueRunner(j$);
     j$.ReportDispatcher = jRequire.ReportDispatcher();

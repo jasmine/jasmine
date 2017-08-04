@@ -67,8 +67,9 @@ describe("Custom Matchers (Integration)", function() {
       };
 
       env.addCustomEqualityTester(customEqualityFn);
-      env.expect({foo: 'fooValue'}).toEqual(jasmine.objectContaining({foo: 'fooBar'}));
-      env.expect(['fooValue']).toEqual(jasmine.arrayContaining(['fooBar']));
+      env.expect({foo: 'fooValue'}).toEqual(jasmineUnderTest.objectContaining({foo: 'fooBar'}));
+      env.expect(['fooValue', 'things']).toEqual(jasmineUnderTest.arrayContaining(['fooBar']));
+      env.expect(['fooValue']).toEqual(jasmineUnderTest.arrayWithExactContents(['fooBar']));
     });
 
     var specExpectations = function(result) {
