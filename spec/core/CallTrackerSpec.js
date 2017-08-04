@@ -117,4 +117,14 @@ describe("CallTracker", function() {
     expect(callTracker.mostRecent().args[1]).not.toBe(arrayArg);
     expect(callTracker.mostRecent().args[1]).toEqual(arrayArg);
   });
+
+  it('saves primitive arguments by value', function() {
+    var callTracker = new jasmineUnderTest.CallTracker(),
+      args = [undefined, null, false, '', /\s/, 0, 1.2, NaN];
+
+    callTracker.saveArgumentsByValue();
+    callTracker.track({ object: {}, args: args });
+
+    expect(callTracker.mostRecent().args).toEqual(args);
+  });
 });
