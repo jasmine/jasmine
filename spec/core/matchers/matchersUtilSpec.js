@@ -393,6 +393,13 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
+    it("passes when comparing identical sets with different insertion order", function() {
+      jasmine.getEnv().requireFunctioningSets();
+      var setA = new Set([3, 6]);
+      var setB = new Set([6, 3]);
+      expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
+    });
+
     it("fails for sets with different elements", function() {
       jasmine.getEnv().requireFunctioningSets();
       var setA = new Set([6, 3, 5]);
@@ -404,13 +411,6 @@ describe("matchersUtil", function() {
       jasmine.getEnv().requireFunctioningSets();
       var setA = new Set([6, 3]);
       var setB = new Set([6, 4, 5]);
-      expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
-    });
-
-    it("fails for sets with different insertion order", function() {
-      jasmine.getEnv().requireFunctioningSets();
-      var setA = new Set([3, 6]);
-      var setB = new Set([6, 3]);
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
     });
 
@@ -427,6 +427,13 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(true);
     });
 
+    it("passes when comparing identical maps with different insertion order", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var mapA = new Map([['a', 3], [6, 1]]);
+      var mapB = new Map([[6, 1], ['a', 3]]);
+      expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(true);
+    });
+
     it("fails for maps with different elements", function() {
       jasmine.getEnv().requireFunctioningMaps();
       var mapA = new Map([[6, 3], [5, 1]]);
@@ -438,13 +445,6 @@ describe("matchersUtil", function() {
       jasmine.getEnv().requireFunctioningMaps();
       var mapA = new Map([[6, 3]]);
       var mapB = new Map([[6, 4], [5, 1]]);
-      expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(false);
-    });
-
-    it("fails for maps with different insertion order", function() {
-      jasmine.getEnv().requireFunctioningMaps();
-      var mapA = new Map([['a', 3], [6, 1]]);
-      var mapB = new Map([[6, 1], ['a', 3]]);
       expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(false);
     });
 
