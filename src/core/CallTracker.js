@@ -11,10 +11,13 @@ getJasmineRequireObj().CallTracker = function(j$) {
       var clonedArgs = [];
       var argsAsArray = j$.util.argsToArray(context.args);
       for(var i = 0; i < argsAsArray.length; i++) {
-        if(Object.prototype.toString.apply(argsAsArray[i]).match(/^\[object/)) {
-          clonedArgs.push(j$.util.clone(argsAsArray[i]));
-        } else {
+        var str = Object.prototype.toString.apply(argsAsArray[i]),
+          primitives = /^\[object (Boolean|String|RegExp|Number)/;
+
+        if (argsAsArray[i] == null || str.match(primitives)) {
           clonedArgs.push(argsAsArray[i]);
+        } else {
+          clonedArgs.push(j$.util.clone(argsAsArray[i]));
         }
       }
       context.args = clonedArgs;
