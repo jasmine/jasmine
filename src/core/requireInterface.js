@@ -126,7 +126,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     /**
-     * Run some shared teardown once before all of the specs in the {@link describe} are run.
+     * Run some shared teardown once after all of the specs in the {@link describe} are run.
      *
      * _Note:_ Be careful, sharing the teardown from a afterAll makes it easy to accidentally leak state between your specs so that they erroneously pass or fail.
      * @name afterAll
