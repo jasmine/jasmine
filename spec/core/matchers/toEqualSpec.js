@@ -161,8 +161,8 @@ describe("toEqual", function() {
   it("uses the default failure message given arrays with different lengths", function() {
     var actual = [1, 2],
       expected = [1, 2, 3],
-      message =
-        "Expected [ 1, 2 ] to equal [ 1, 2, 3 ].";
+      message = 'Expected $.length = 2 to equal 3.\n' +
+        'Expected $[2] = undefined to equal 3.';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -613,7 +613,8 @@ describe("toEqual", function() {
 
     var message =
       'Expected $.foo[0].bar = 1 to equal 2.\n' +
-      "Expected $.foo[0].things = [ 'a', 'b' ] to equal [ 'a', 'b', 'c' ].\n" +
+      'Expected $.foo[0].things.length = 2 to equal 3.\n' +
+      "Expected $.foo[0].things[2] = undefined to equal 'c'.\n" +
       "Expected $.foo[1].things[1] = 'b' to equal 'd'.\n" +
       'Expected $.baz[0].a to have properties\n' +
       '    c: 1\n' +
@@ -626,5 +627,93 @@ describe("toEqual", function() {
       'Expected $.aNull = undefined to equal null.'
 
     expect(compareEquals(actual, expected).message).toEqual(message);
+  })
+
+  describe("different length arrays", function() {
+    it("actual array is longer", function() {
+      var actual = [1, 1, 2, 3, 5],
+        expected = [1, 1, 2, 3],
+        message = 'Expected $.length = 5 to equal 4.\n' +
+          'Expected $[4] = 5 to equal undefined.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("expected array is longer", function() {
+      var actual = [1, 1, 2, 3],
+        expected = [1, 1, 2, 3, 5],
+        message = 'Expected $.length = 4 to equal 5.\n' +
+          'Expected $[4] = undefined to equal 5.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("expected array is longer by 4 elements", function() {
+      var actual = [1, 1, 2],
+        expected = [1, 1, 2, 3, 5, 8, 13],
+        message = 'Expected $.length = 3 to equal 7.\n' +
+          'Expected $[3] = undefined to equal 3.\n' +
+          'Expected $[4] = undefined to equal 5.\n' +
+          'Expected $[5] = undefined to equal 8.\n' +
+          'Expected $[6] = undefined to equal 13.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("different length and different elements", function() {
+      var actual = [1],
+        expected = [2, 3],
+        message = 'Expected $.length = 1 to equal 2.\n' +
+          'Expected $[0] = 1 to equal 2.\n' +
+          'Expected $[1] = undefined to equal 3.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("object with nested array", function() {
+      var actual = { values: [1, 1, 2, 3] },
+        expected = { values: [1, 1, 2] },
+        message = 'Expected $.values.length = 4 to equal 3.\n' +
+          'Expected $.values[3] = 3 to equal undefined.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("array with nested object", function() {
+      var actual = [1, 1, 2, { value: 3 }],
+        expected = [1, 1, 2],
+        message = 'Expected $.length = 4 to equal 3.\n' +
+          'Expected $[3] = Object({ value: 3 }) to equal undefined.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("array with nested different length array", function() {
+      var actual = [[1], [1, 2]],
+        expected = [[1, 1], [2]],
+        message = 'Expected $[0].length = 1 to equal 2.\n' +
+          'Expected $[0][1] = undefined to equal 1.\n' +
+          'Expected $[1].length = 2 to equal 1.\n' +
+          'Expected $[1][0] = 1 to equal 2.\n' +
+          'Expected $[1][1] = 2 to equal undefined.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("last element of longer array is undefined", function() {
+      var actual = [1, 2],
+        expected = [1, 2, void 0],
+        message = 'Expected $.length = 2 to equal 3.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
   })
 });
