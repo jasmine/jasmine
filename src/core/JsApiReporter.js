@@ -63,7 +63,7 @@ getJasmineRequireObj().JsApiReporter = function() {
      * @function
      * @param {Number} index - The position in the suites list to start from.
      * @param {Number} length - Maximum number of suite results to return.
-     * @return {Object[]}
+     * @return {SuiteResult[]}
      */
     this.suiteResults = function(index, length) {
       return suites.slice(index, index + length);
@@ -78,7 +78,7 @@ getJasmineRequireObj().JsApiReporter = function() {
      * Get all of the suites in a single object, with their `id` as the key.
      * @name jsApiReporter#suites
      * @function
-     * @return {Object}
+     * @return {Object} - Map of suite id to {@link SuiteResult}
      */
     this.suites = function() {
       return suites_hash;
@@ -98,7 +98,7 @@ getJasmineRequireObj().JsApiReporter = function() {
      * @function
      * @param {Number} index - The position in the specs list to start from.
      * @param {Number} length - Maximum number of specs results to return.
-     * @return {Object[]}
+     * @return {SpecResult[]}
      */
     this.specResults = function(index, length) {
       return specs.slice(index, index + length);
@@ -108,7 +108,7 @@ getJasmineRequireObj().JsApiReporter = function() {
      * Get all spec results.
      * @name jsApiReporter#specs
      * @function
-     * @return {Object[]}
+     * @return {SpecResult[]}
      */
     this.specs = function() {
       return specs;
