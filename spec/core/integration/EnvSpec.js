@@ -928,7 +928,14 @@ describe("Env integration", function() {
   });
 
   it("should run async specs in order, waiting for them to complete", function(done) {
-    var env = new jasmineUnderTest.Env(), mutatedVar;
+    var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('reporter', ['jasmineDone']),
+        mutatedVar;
+
+    reporter.jasmineDone.and.callFake(function() {
+      done();
+    });
+    env.addReporter(reporter);
 
     env.describe("tests", function() {
       env.beforeEach(function() {
@@ -939,7 +946,6 @@ describe("Env integration", function() {
         setTimeout(function() {
           expect(mutatedVar).toEqual(2);
           underTestCallback();
-          done();
         }, 0);
       });
 
