@@ -1,6 +1,16 @@
 getJasmineRequireObj().interface = function(jasmine, env) {
   var jasmineInterface = {
     /**
+     * Callback passed to parts of the Jasmine base interface.
+     *
+     * By default Jasmine assumes this function completes synchronously.
+     * If you have code that you need to test asynchronously, you can declare that you receive a `done` callback, return a Promise, or use the `async` keyword if it is supported in your environment.
+     * @callback implementationCallback
+     * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
+     * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+     */
+
+    /**
      * Create a group of specs (often called a suite).
      *
      * Calls to `describe` can be nested within other calls to compose your suite as a tree.
@@ -8,7 +18,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {String} description Textual description of the group
-     * @param {Function} specDefinitions Function for Jasmine to invoke that will define inner suites a specs
+     * @param {Function} specDefinitions Function for Jasmine to invoke that will define inner suites and specs
      */
     describe: function(description, specDefinitions) {
       return env.describe(description, specDefinitions);
@@ -22,7 +32,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {String} description Textual description of the group
-     * @param {Function} specDefinitions Function for Jasmine to invoke that will define inner suites a specs
+     * @param {Function} specDefinitions Function for Jasmine to invoke that will define inner suites and specs
      */
     xdescribe: function(description, specDefinitions) {
       return env.xdescribe(description, specDefinitions);
@@ -37,7 +47,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {String} description Textual description of the group
-     * @param {Function} specDefinitions Function for Jasmine to invoke that will define inner suites a specs
+     * @param {Function} specDefinitions Function for Jasmine to invoke that will define inner suites and specs
      */
     fdescribe: function(description, specDefinitions) {
       return env.fdescribe(description, specDefinitions);
@@ -51,7 +61,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {String} description Textual description of what this spec is checking
-     * @param {Function} [testFunction] Function that contains the code of your test. If not provided the test will be `pending`.
+     * @param {implementationCallback} [testFunction] Function that contains the code of your test. If not provided the test will be `pending`.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
      */
     it: function() {
@@ -66,7 +76,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {String} description Textual description of what this spec is checking.
-     * @param {Function} [testFunction] Function that contains the code of your test. Will not be executed.
+     * @param {implementationCallback} [testFunction] Function that contains the code of your test. Will not be executed.
      */
     xit: function() {
       return env.xit.apply(env, arguments);
@@ -80,7 +90,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {String} description Textual description of what this spec is checking.
-     * @param {Function} testFunction Function that contains the code of your test.
+     * @param {implementationCallback} testFunction Function that contains the code of your test.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
      */
     fit: function() {
@@ -92,7 +102,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @name beforeEach
      * @function
      * @global
-     * @param {Function} [function] Function that contains the code to setup your specs.
+     * @param {implementationCallback} [function] Function that contains the code to setup your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeEach.
      */
     beforeEach: function() {
@@ -104,7 +114,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @name afterEach
      * @function
      * @global
-     * @param {Function} [function] Function that contains the code to teardown your specs.
+     * @param {implementationCallback} [function] Function that contains the code to teardown your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterEach.
      */
     afterEach: function() {
@@ -118,7 +128,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @name beforeAll
      * @function
      * @global
-     * @param {Function} [function] Function that contains the code to setup your specs.
+     * @param {implementationCallback} [function] Function that contains the code to setup your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeAll.
      */
     beforeAll: function() {
@@ -132,7 +142,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @name afterAll
      * @function
      * @global
-     * @param {Function} [function] Function that contains the code to teardown your specs.
+     * @param {implementationCallback} [function] Function that contains the code to teardown your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterAll.
      */
     afterAll: function() {
