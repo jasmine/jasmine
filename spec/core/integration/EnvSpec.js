@@ -786,7 +786,7 @@ describe("Env integration", function() {
     env.execute();
   });
 
-  it('can be configured to allow respying on functions', function () {
+  it('can be configured to allow respying on functions', function (done) {
     var env = new jasmineUnderTest.Env(),
         foo = {
           bar: function () {
@@ -795,6 +795,7 @@ describe("Env integration", function() {
         };
 
     env.allowRespy(true);
+    env.addReporter({ jasmineDone: done });
 
     env.describe('test suite', function(){
       env.it('spec 0', function(){
