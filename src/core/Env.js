@@ -37,12 +37,56 @@ getJasmineRequireObj().Env = function(j$) {
       return currentSpec || currentSuite();
     };
 
+    /**
+     * This represents the available reporter callback for an object passed to {@link Env#addReporter}.
+     * @interface Reporter
+     */
     var reporter = new j$.ReportDispatcher([
+      /**
+       * `jasmineStarted` is called after all of the specs have been loaded, but just before execution starts.
+       * @function
+       * @name Reporter#jasmineStarted
+       * @param {JasmineStartedInfo} suiteInfo Information about the full Jasmine suite that is being run
+       */
       'jasmineStarted',
+      /**
+       * When the entire suite has finished execution `jasmineDone` is called
+       * @function
+       * @name Reporter#jasmineDone
+       * @param {JasmineDoneInfo} suiteInfo Information about the full Jasmine suite that just finished running.
+       */
       'jasmineDone',
+      /**
+       * `suiteStarted` is invoked when a `describe` starts to run
+       * @function
+       * @name Reporter#suiteStarted
+       * @param {SuiteResult} result Information about the individual {@link describe} being run
+       */
       'suiteStarted',
+      /**
+       * `suiteDone` is invoked when all of the child specs and suites for a given suite have been run
+       *
+       * While jasmine doesn't require any specific functions, not defining a `suiteDone` will make it impossible for a reporter to know when a suite has failures in an `afterAll`.
+       * @function
+       * @name Reporter#suiteDone
+       * @param {SuiteResult} result
+       */
       'suiteDone',
+      /**
+       * `specStarted` is invoked when an `it` starts to run (including associated `beforeEach` functions)
+       * @function
+       * @name Reporter#specStarted
+       * @param {SpecResult} result Information about the individual {@link it} being run
+       */
       'specStarted',
+      /**
+       * `specDone` is invoked when an `it` and its associated `beforeEach` and `afterEach` functions have been run.
+       *
+       * While jasmine doesn't require any specific functions, not defining a `specDone` will make it impossible for a reporter to know when a spec has failed.
+       * @function
+       * @name Reporter#specDone
+       * @param {SpecResult} result
+       */
       'specDone'
     ]);
 
@@ -258,6 +302,12 @@ getJasmineRequireObj().Env = function(j$) {
         throw new Error('Invalid order: would cause a beforeAll or afterAll to be run multiple times');
       }
 
+      /**
+       * Information passed to the {@link Reporter#jasmineStarted} event.
+       * @typedef JasmineStartedInfo
+       * @property {Int} totalSpecsDefined - The total number of specs defined in this suite.
+       * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
+       */
       reporter.jasmineStarted({
         totalSpecsDefined: totalSpecsDefined,
         order: order
@@ -271,6 +321,12 @@ getJasmineRequireObj().Env = function(j$) {
         currentlyExecutingSuites.pop();
         globalErrors.uninstall();
 
+        /**
+         * Information passed to the {@link Reporter#jasmineDone} event.
+         * @typedef JasmineDoneInfo
+         * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
+         * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
+         */
         reporter.jasmineDone({
           order: order,
           failedExpectations: topSuite.result.failedExpectations
@@ -282,6 +338,7 @@ getJasmineRequireObj().Env = function(j$) {
      * Add a custom reporter to the Jasmine environment.
      * @name Env#addReporter
      * @function
+     * @param {Reporter} reporterToAdd The reporter to be added.
      * @see custom_reporter
      */
     this.addReporter = function(reporterToAdd) {

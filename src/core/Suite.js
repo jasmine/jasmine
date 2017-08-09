@@ -15,6 +15,14 @@ getJasmineRequireObj().Suite = function(j$) {
 
     this.children = [];
 
+    /**
+     * @typedef SuiteResult
+     * @property {Int} id - The unique id of this suite.
+     * @property {String} description - The description text passed to the {@link describe} that made this suite.
+     * @property {String} fullName - The full description including all ancestors of this suite.
+     * @property {Expectation[]} failedExpectations - The list of expectations that failed in an {@link afterAll} for this suite.
+     * @property {String} status - Once the suite has completed, this string represents the pass/fail status of this suite.
+     */
     this.result = {
       id: this.id,
       description: this.description,

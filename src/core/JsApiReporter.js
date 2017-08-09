@@ -6,11 +6,10 @@ getJasmineRequireObj().JsApiReporter = function() {
   };
 
   /**
-   * _Note:_ Do not construct this directly, use the global `jsApiReporter` to retrieve the instantiated object.
-   *
    * @name jsApiReporter
-   * @classdesc Reporter added by default in `boot.js` to record results for retrieval in javascript code.
+   * @classdesc {@link Reporter} added by default in `boot.js` to record results for retrieval in javascript code. An instance is made available as `jsApiReporter` on the global object.
    * @class
+   * @hideconstructor
    */
   function JsApiReporter(options) {
     var timer = options.timer || noopTimer,

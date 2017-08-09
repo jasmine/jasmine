@@ -18,6 +18,16 @@ getJasmineRequireObj().Spec = function(j$) {
       this.pend();
     }
 
+    /**
+     * @typedef SpecResult
+     * @property {Int} id - The unique id of this spec.
+     * @property {String} description - The description passed to the {@link it} that created this spec.
+     * @property {String} fullName - The full description including all ancestors of this spec.
+     * @property {Expectation[]} failedExpectations - The list of expectations that failed during execution of this spec.
+     * @property {Expectation[]} passedExpectations - The list of expectations that passed during execution of this spec.
+     * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
+     * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
+     */
     this.result = {
       id: this.id,
       description: this.description,
