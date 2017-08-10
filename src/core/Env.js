@@ -384,7 +384,8 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
-    function ensureIsNotNested(method, runnable) {
+    function ensureIsNotNested(method) {
+      var runnable = currentRunnable();
       if (runnable !== null && runnable !== undefined) {
         throw new Error('\'' + method + '\' should only be used in \'describe\' function');
       }
@@ -405,7 +406,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.describe = function(description, specDefinitions) {
-      ensureIsNotNested('describe', currentRunnable());
+      ensureIsNotNested('describe');
       ensureIsFunction(specDefinitions, 'describe');
       var suite = suiteFactory(description);
       if (specDefinitions.length > 0) {
@@ -419,7 +420,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.xdescribe = function(description, specDefinitions) {
-      ensureIsNotNested('xdescribe', currentRunnable());
+      ensureIsNotNested('xdescribe');
       ensureIsFunction(specDefinitions, 'xdescribe');
       var suite = suiteFactory(description);
       suite.pend();
@@ -430,7 +431,7 @@ getJasmineRequireObj().Env = function(j$) {
     var focusedRunnables = [];
 
     this.fdescribe = function(description, specDefinitions) {
-      ensureIsNotNested('fdescribe', currentRunnable());
+      ensureIsNotNested('fdescribe');
       ensureIsFunction(specDefinitions, 'fdescribe');
       var suite = suiteFactory(description);
       suite.isFocused = true;
@@ -528,7 +529,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.it = function(description, fn, timeout) {
-      ensureIsNotNested('it', currentRunnable());
+      ensureIsNotNested('it');
       // it() sometimes doesn't have a fn argument, so only check the type if
       // it's given.
       if (arguments.length > 1 && typeof fn !== 'undefined') {
@@ -543,7 +544,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.xit = function(description, fn, timeout) {
-      ensureIsNotNested('xit', currentRunnable());
+      ensureIsNotNested('xit');
       // xit(), like it(), doesn't always have a fn argument, so only check the
       // type when needed.
       if (arguments.length > 1 && typeof fn !== 'undefined') {
@@ -555,7 +556,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.fit = function(description, fn, timeout){
-      ensureIsNotNested('fit', currentRunnable());
+      ensureIsNotNested('fit');
       ensureIsFunctionOrAsync(fn, 'fit');
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
       currentDeclarationSuite.addChild(spec);
@@ -573,7 +574,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.beforeEach = function(beforeEachFunction, timeout) {
-      ensureIsNotNested('beforeEach', currentRunnable());
+      ensureIsNotNested('beforeEach');
       ensureIsFunctionOrAsync(beforeEachFunction, 'beforeEach');
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
@@ -582,7 +583,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.beforeAll = function(beforeAllFunction, timeout) {
-      ensureIsNotNested('beforeAll', currentRunnable());
+      ensureIsNotNested('beforeAll');
       ensureIsFunctionOrAsync(beforeAllFunction, 'beforeAll');
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
@@ -591,7 +592,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.afterEach = function(afterEachFunction, timeout) {
-      ensureIsNotNested('afterEach', currentRunnable());
+      ensureIsNotNested('afterEach');
       ensureIsFunctionOrAsync(afterEachFunction, 'afterEach');
       afterEachFunction.isCleanup = true;
       currentDeclarationSuite.afterEach({
@@ -601,7 +602,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.afterAll = function(afterAllFunction, timeout) {
-      ensureIsNotNested('afterAll', currentRunnable());
+      ensureIsNotNested('afterAll');
       ensureIsFunctionOrAsync(afterAllFunction, 'afterAll');
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
