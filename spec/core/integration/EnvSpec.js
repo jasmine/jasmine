@@ -1117,14 +1117,18 @@ describe("Env integration", function() {
 
       env.describe('suite', function() {
         env.afterAll(function() {
-          realSetTimeout(function() {
-            jasmine.clock().tick(10);
-          }, 100);
+          if (jasmine.getEnv().ieVersion < 9) {
+          } else {
+            realSetTimeout(function() {
+              jasmine.clock().tick(10);
+            }, 100);
+          }
         });
         env.describe('beforeAll', function() {
           env.beforeAll(function(innerDone) {
-            jasmine.clock().tick(5001);
-            innerDone();
+            realSetTimeout(function() {
+              jasmine.clock().tick(5001);
+            }, 0);
           }, 5000);
 
           env.it('times out', function() {});
@@ -1132,8 +1136,9 @@ describe("Env integration", function() {
 
         env.describe('afterAll', function() {
           env.afterAll(function(innerDone) {
-            jasmine.clock().tick(2001);
-            innerDone();
+            realSetTimeout(function() {
+              jasmine.clock().tick(2001);
+            }, 0);
           }, 2000);
 
           env.it('times out', function() {});
@@ -1141,8 +1146,9 @@ describe("Env integration", function() {
 
         env.describe('beforeEach', function() {
           env.beforeEach(function(innerDone) {
-            jasmine.clock().tick(1001);
-            innerDone();
+            realSetTimeout(function() {
+              jasmine.clock().tick(1001);
+            }, 0);
           }, 1000);
 
           env.it('times out', function() {});
@@ -1150,16 +1156,18 @@ describe("Env integration", function() {
 
         env.describe('afterEach', function() {
           env.afterEach(function(innerDone) {
-            jasmine.clock().tick(4001);
-            innerDone();
+            realSetTimeout(function() {
+              jasmine.clock().tick(4001);
+            }, 0);
           }, 4000);
 
           env.it('times out', function() {});
         });
 
         env.it('it times out', function(innerDone) {
-          jasmine.clock().tick(6001);
-          innerDone();
+          realSetTimeout(function() {
+            jasmine.clock().tick(6001);
+          }, 0);
         }, 6000);
       });
 
