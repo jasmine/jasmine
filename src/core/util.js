@@ -1,4 +1,4 @@
-getJasmineRequireObj().util = function() {
+getJasmineRequireObj().util = function(j$) {
 
   var util = {};
 
@@ -53,6 +53,22 @@ getJasmineRequireObj().util = function() {
     }
 
     return cloned;
+  };
+
+  util.cloneArgs = function(args) {
+    var clonedArgs = [];
+    var argsAsArray = j$.util.argsToArray(args);
+    for(var i = 0; i < argsAsArray.length; i++) {
+      var str = Object.prototype.toString.apply(argsAsArray[i]),
+        primitives = /^\[object (Boolean|String|RegExp|Number)/;
+
+      if (argsAsArray[i] == null || str.match(primitives)) {
+        clonedArgs.push(argsAsArray[i]);
+      } else {
+        clonedArgs.push(j$.util.clone(argsAsArray[i]));
+      }
+    }
+    return clonedArgs;
   };
 
   util.getPropertyDescriptor = function(obj, methodName) {

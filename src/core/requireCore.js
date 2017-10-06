@@ -23,7 +23,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     var j$ = {};
 
     jRequire.base(j$, jasmineGlobal);
-    j$.util = jRequire.util();
+    j$.util = jRequire.util(j$);
     j$.errors = jRequire.errors();
     j$.formatErrorMsg = jRequire.formatErrorMsg();
     j$.Any = jRequire.Any(j$);
@@ -44,7 +44,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.ArrayWithExactContents = jRequire.ArrayWithExactContents(j$);
     j$.pp = jRequire.pp(j$);
     j$.QueueRunner = jRequire.QueueRunner(j$);
-    j$.ReportDispatcher = jRequire.ReportDispatcher();
+    j$.ReportDispatcher = jRequire.ReportDispatcher(j$);
     j$.Spec = jRequire.Spec(j$);
     j$.Spy = jRequire.Spy(j$);
     j$.SpyRegistry = jRequire.SpyRegistry(j$);
