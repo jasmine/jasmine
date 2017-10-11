@@ -5,6 +5,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
     var scheduledFunctions = {};
     var currentTime = 0;
     var delayedFnCount = 0;
+    var deletedKeys = [];
 
     self.tick = function(millis, tickDate) {
       millis = millis || 0;
@@ -51,6 +52,8 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
     };
 
     self.removeFunctionWithId = function(timeoutKey) {
+      deletedKeys.push(timeoutKey);
+
       for (var runAtMillis in scheduledFunctions) {
         var funcs = scheduledFunctions[runAtMillis];
         var i = indexOfFirstToPass(funcs, function (func) {
@@ -126,7 +129,10 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
 
         currentTime = newCurrentTime;
 
-        var funcsToRun = scheduledFunctions[currentTime];
+        var funcsToRun = scheduledFunctions[currentTime].sort(function (a, b) {
+          return a.millis > b.millis;
+        });
+
         delete scheduledFunctions[currentTime];
 
         forEachFunction(funcsToRun, function(funcToRun) {
@@ -136,8 +142,13 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
         });
 
         forEachFunction(funcsToRun, function(funcToRun) {
+          if (deletedKeys.indexOf(funcToRun.timeoutKey) !== -1) {
+            // skip a timeoutKey deleted whilst we were running
+            return;
+          }
           funcToRun.funcToCall.apply(null, funcToRun.params || []);
         });
+        deletedKeys = [];
       } while (scheduledLookup.length > 0 &&
               // checking first if we're out of time prevents setTimeout(0)
               // scheduled in a funcToRun from forcing an extra iteration
