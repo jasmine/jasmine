@@ -129,11 +129,9 @@ The easiest way to run the tests in **Internet Explorer** is to run a VM that ha
 1. Ensure all specs are green in browser *and* node
 1. Ensure JSHint is green with `grunt jshint`
 1. Build `jasmine.js` with `grunt buildDistribution` and run all specs again - this ensures that your changes self-test well
-
-## Submitting a Pull Request
 1. Revert your changes to `jasmine.js` and `jasmine-html.js`
-  * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches
-1. When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into master
+    * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches
+    * When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into master
 
 Note that we use Travis for Continuous Integration. We only accept green pull requests.
 
