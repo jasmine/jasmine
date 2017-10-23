@@ -1903,4 +1903,65 @@ describe("Env integration", function() {
 
     env.execute();
   });
+
+  it('should throw on suites/specs/befores/afters nested in methods other than \'describe\'', function(done) {
+    var env = new jasmineUnderTest.Env(),
+      reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+    reporter.jasmineDone.and.callFake(function() {
+      var msg = /\'.*\' should only be used in \'describe\' function/;
+
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite describe', [msg]);
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite xdescribe', [msg]);
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite fdescribe', [msg]);
+
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('spec it', [msg]);
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('spec xit', [msg]);
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('spec fit', [msg]);
+
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('beforeAll spec', [msg]);
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('beforeEach spec', [msg]);
+
+      expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('afterAll', [msg]);
+      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('afterEach spec', [msg]);
+
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.describe('suite', function() {
+      env.it('describe', function() { env.describe('inner suite', function() {}); });
+      env.it('xdescribe', function() { env.xdescribe('inner suite', function() {}); });
+      env.it('fdescribe', function() { env.fdescribe('inner suite', function() {}); });
+    });
+
+    env.describe('spec', function() {
+      env.it('it', function() { env.it('inner spec', function() {}); });
+      env.it('xit', function() { env.xit('inner spec', function() {}); });
+      env.it('fit', function() { env.fit('inner spec', function() {}); });
+    });
+
+    env.describe('beforeAll', function() {
+      env.beforeAll(function() { env.beforeAll(function() {}); });
+      env.it('spec', function() {});
+    });
+
+    env.describe('beforeEach', function() {
+      env.beforeEach(function() { env.beforeEach(function() {}); });
+      env.it('spec', function() {});
+    });
+
+    env.describe('afterAll', function() {
+      env.afterAll(function() { env.afterAll(function() {}); });
+      env.it('spec', function() {});
+    });
+
+    env.describe('afterEach', function() {
+      env.afterEach(function() { env.afterEach(function() {}); });
+      env.it('spec', function() {});
+    });
+
+    env.execute();
+  });
 });
