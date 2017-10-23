@@ -7,26 +7,9 @@ getJasmineRequireObj().CallTracker = function(j$) {
     var calls = [];
     var opts = {};
 
-    function argCloner(context) {
-      var clonedArgs = [];
-      var argsAsArray = j$.util.argsToArray(context.args);
-      for(var i = 0; i < argsAsArray.length; i++) {
-        var str = Object.prototype.toString.apply(argsAsArray[i]),
-          primitives = /^\[object (Boolean|String|RegExp|Number)/;
-
-        // All falsey values are either primitives, `null`, or `undefined.
-        if (!argsAsArray[i] || str.match(primitives)) {
-          clonedArgs.push(argsAsArray[i]);
-        } else {
-          clonedArgs.push(j$.util.clone(argsAsArray[i]));
-        }
-      }
-      context.args = clonedArgs;
-    }
-
     this.track = function(context) {
       if(opts.cloneArgs) {
-        argCloner(context);
+        context.args = j$.util.cloneArgs(context.args);
       }
       calls.push(context);
     };

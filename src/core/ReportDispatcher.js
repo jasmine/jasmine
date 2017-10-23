@@ -1,4 +1,4 @@
-getJasmineRequireObj().ReportDispatcher = function() {
+getJasmineRequireObj().ReportDispatcher = function(j$) {
   function ReportDispatcher(methods) {
 
     var dispatchedMethods = methods || [];
@@ -36,7 +36,7 @@ getJasmineRequireObj().ReportDispatcher = function() {
       for (var i = 0; i < reporters.length; i++) {
         var reporter = reporters[i];
         if (reporter[method]) {
-          reporter[method].apply(reporter, args);
+          reporter[method].apply(reporter, j$.util.cloneArgs(args));
         }
       }
     }
