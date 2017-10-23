@@ -11,6 +11,7 @@ site/
 .bundle
 tags
 Gemfile.lock
+package-lock.json
 pkg/*
 .sass-cache/*
 src/html/.sass-cache/*
