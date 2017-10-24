@@ -31,6 +31,12 @@ getJasmineRequireObj().Any = function(j$) {
       return typeof other == 'boolean';
     }
 
+    /* jshint -W122 */
+    if (typeof Symbol != 'undefined' && this.expectedObject == Symbol) {
+      return typeof other == 'symbol';
+    }
+    /* jshint +W122 */
+
     return other instanceof this.expectedObject;
   };
 
