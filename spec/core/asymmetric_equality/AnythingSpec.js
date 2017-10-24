@@ -23,6 +23,22 @@ describe("Anything", function() {
     expect(anything.asymmetricMatch([1,2,3])).toBe(true);
   });
 
+  it("matches a Map", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var anything = new jasmineUnderTest.Anything();
+
+    expect(anything.asymmetricMatch(new Map())).toBe(true);
+  });
+
+  it("matches a Set", function() {
+    jasmine.getEnv().requireFunctioningSets();
+
+    var anything = new jasmineUnderTest.Anything();
+
+    expect(anything.asymmetricMatch(new Set())).toBe(true);
+  });
+
   it("doesn't match undefined", function() {
     var anything = new jasmineUnderTest.Anything();
 
