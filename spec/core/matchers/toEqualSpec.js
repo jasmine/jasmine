@@ -504,6 +504,14 @@ describe("toEqual", function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
+  it("does not report mismatches when comparing Map key to jasmine.anything()", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var actual = new Map([['a', 1]]),
+      expected = new Map([[jasmineUnderTest.anything(), 1]]);
+    expect(compareEquals(actual, expected).pass).toBe(true);
+  });
+
   function isNotRunningInBrowser() {
     return typeof document === 'undefined'
   }
