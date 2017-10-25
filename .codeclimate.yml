@@ -4,6 +4,7 @@ ratings:
   paths:
   - "src/**/*.js"
 exclude_paths:
+- "spec/**/*.js"
 - "lib/**"
 - "dist/*"
 - "grunt/**"
