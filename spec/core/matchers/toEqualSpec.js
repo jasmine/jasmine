@@ -512,6 +512,36 @@ describe("toEqual", function() {
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
 
+  it("does not report mismatches when comparing Maps with the same symbol keys", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+    jasmine.getEnv().requireFunctioningSymbols();
+
+    var key = Symbol(),
+      actual = new Map([[key, 1]]),
+      expected = new Map([[key, 1]]);
+    expect(compareEquals(actual, expected).pass).toBe(true);
+  });
+
+  it("reports mismatches between Maps with different symbol keys", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+    jasmine.getEnv().requireFunctioningSymbols();
+
+    var actual = new Map([[Symbol(), 1]]),
+      expected = new Map([[Symbol(), 1]]),
+      message = "Expected Map( [ Symbol(), 1 ] ) to equal Map( [ Symbol(), 1 ] ).";
+
+    expect(compareEquals(actual, expected).message).toBe(message);
+  });
+
+  it("does not report mismatches when comparing Map symbol key to jasmine.anything()", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+    jasmine.getEnv().requireFunctioningSymbols();
+
+    var actual = new Map([[Symbol(), 1]]),
+      expected = new Map([[jasmineUnderTest.anything(), 1]]);
+    expect(compareEquals(actual, expected).pass).toBe(true);
+  });
+
   function isNotRunningInBrowser() {
     return typeof document === 'undefined'
   }
