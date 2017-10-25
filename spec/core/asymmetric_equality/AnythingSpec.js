@@ -39,6 +39,22 @@ describe("Anything", function() {
     expect(anything.asymmetricMatch(new Set())).toBe(true);
   });
 
+  it("matches a TypedArray", function() {
+    jasmine.getEnv().requireFunctioningTypedArrays();
+
+    var anything = new jasmineUnderTest.Anything();
+
+    expect(anything.asymmetricMatch(new Uint32Array([]))).toBe(true);
+  });
+
+  it("matches a Symbol", function() {
+    jasmine.getEnv().requireFunctioningSets();
+
+    var anything = new jasmineUnderTest.Anything();
+
+    expect(anything.asymmetricMatch(Symbol())).toBe(true);
+  });
+
   it("doesn't match undefined", function() {
     var anything = new jasmineUnderTest.Anything();
 
