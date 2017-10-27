@@ -1,4 +1,4 @@
-describe("New HtmlReporter", function() {
+describe("HtmlReporter", function() {
   it("builds the initial DOM elements, including the title banner", function() {
     var env = new jasmineUnderTest.Env(),
       container = document.createElement("div"),
@@ -575,6 +575,7 @@ describe("New HtmlReporter", function() {
             }
           });
 
+        env.randomizeTests(false);
         reporter.initialize();
         reporter.jasmineDone({});
 

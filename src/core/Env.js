@@ -26,7 +26,7 @@ getJasmineRequireObj().Env = function(j$) {
     var currentlyExecutingSuites = [];
     var currentDeclarationSuite = null;
     var throwOnExpectationFailure = false;
-    var random = false;
+    var random = true;
     var seed = null;
 
     var currentSuite = function() {

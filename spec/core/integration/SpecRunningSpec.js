@@ -1,8 +1,9 @@
-describe("jasmine spec running", function () {
+describe("spec running", function () {
   var env;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
+    env.randomizeTests(false);
   });
 
   it('should assign spec ids sequentially', function() {
@@ -740,8 +741,8 @@ describe("jasmine spec running", function () {
 
   it("should run the tests in a consistent order when a seed is supplied", function(done) {
     var actions = [];
-    env.randomizeTests(true);
     env.seed('123456');
+    env.randomizeTests(true);
 
     env.beforeEach(function () {
       actions.push('topSuite beforeEach');

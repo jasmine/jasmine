@@ -54,6 +54,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions});
+    env.randomizeTests(false);
 
     env.describe("A Suite", function() {
       env.it("with a spec", function() {
@@ -82,6 +83,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions });
+    env.randomizeTests(false);
 
     env.describe("Outer suite", function() {
       env.it("an outer spec", function() {
@@ -116,6 +118,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions });
+    env.randomizeTests(false);
 
 
     env.describe("Outer suite", function() {
@@ -234,6 +237,7 @@ describe("Env integration", function() {
     var env = new jasmineUnderTest.Env();
 
     env.addReporter({jasmineDone: done});
+    env.randomizeTests(false);
     env.describe("tests", function() {
       var firstTimeThrough = true, firstSpecContext, secondSpecContext;
 
@@ -909,6 +913,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions });
+    env.randomizeTests(false);
 
     env.describe("tests", function() {
       env.it("test with mock clock", function() {
@@ -1472,6 +1477,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
+    env.randomizeTests(true);
     env.execute();
   });
 
@@ -1602,6 +1608,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
+    env.randomizeTests(false);
 
     env.describe("testing custom equality testers", function() {
       env.it("with a custom tester", function() {
@@ -1637,6 +1644,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
+    env.randomizeTests(false);
 
     env.describe("testing custom equality testers", function() {
       env.beforeAll(function() { env.addCustomEqualityTester(function(a, b) { return true; }); });
@@ -1677,6 +1685,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
+    env.randomizeTests(false);
 
     env.describe("testing custom equality testers", function() {
       env.it("with a custom tester", function() {
@@ -1729,6 +1738,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
+    env.randomizeTests(false);
 
     env.describe("testing custom equality testers", function() {
       env.beforeAll(function() { env.addCustomEqualityTester(function(a, b) { return true; })});
