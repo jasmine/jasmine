@@ -50,13 +50,16 @@ getJasmineRequireObj().toThrowError = function(j$) {
           throw new Error(getErrorMsg('Expected error type is not an Error.'));
         }
 
-        return conditionalMatcher(expected, errorType);
+        return exactMatcher(expected, errorType);
       } else if (arguments[1]) {
         expected = arguments[1];
+
         if (isAnErrorType(arguments[1])) {
-          return conditionalMatcher(null, arguments[1]);
+          return exactMatcher(null, arguments[1]);
+        } else if (j$.isFunction_(arguments[1])) {
+          return predicateMatcher(arguments[1]);
         } else {
-          return conditionalMatcher(arguments[1], null);
+          return exactMatcher(arguments[1], null);
         }
       } else {
         return anyMatcher();
@@ -71,12 +74,30 @@ getJasmineRequireObj().toThrowError = function(j$) {
       };
     }
 
-    function conditionalMatcher(expected, errorType) {
+    function predicateMatcher(predicate) {
+      return {
+        match: function(thrown) {
+          if (predicate(thrown)) {
+            return pass(function() {
+              return 'Expected function not to throw an exception matching a predicate.';
+            });
+          } else {
+            return fail(function() {
+              return 'Expected function to throw an exception matching a predicate, ' +
+                'but it threw ' + j$.fnNameFor(thrown.constructor) + ' with message ' +
+                j$.pp(thrown.message) + '.';
+            });
+          }
+        }
+      };
+    }
+
+    function exactMatcher(expected, errorType) {
       if (expected && !isStringOrRegExp(expected)) {
         if (errorType) {
           throw new Error(getErrorMsg('Expected error message is not a string or RegExp.'));
         } else {
-          throw new Error(getErrorMsg('Expected is not an Error, string, or RegExp.'));
+          throw new Error(getErrorMsg('Expected is not an Error, string, RegExp, or Function.'));
         }
       }
 
