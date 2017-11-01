@@ -733,6 +733,58 @@ describe("HtmlReporter", function() {
       expect(alertBars[0].innerHTML).toMatch(/No specs found/);
     });
 
+    it("reports failure if there are global errors and no specs", function() {
+      var env = new jasmineUnderTest.Env(),
+        container = document.createElement("div"),
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: function() { return container; },
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
+      reporter.initialize();
+      reporter.jasmineStarted({ totalSpecsDefined: 0 });
+      reporter.jasmineDone({
+        failedExpectations: [{
+          passed: false,
+          message: 'nope'
+        }]
+      });
+
+      var alertBar = container.querySelector(".jasmine-overall-result");
+      expect(alertBar.getAttribute('class')).toMatch(/jasmine-failed/);
+    });
+
+    it("reports failure if there are global errors and some specs", function() {
+      var env = new jasmineUnderTest.Env(),
+        container = document.createElement("div"),
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: function() { return container; },
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
+      reporter.initialize();
+      reporter.jasmineStarted({ totalSpecsDefined: 0 });
+      reporter.specDone({
+        id: 123,
+        description: "with a spec",
+        fullName: "A Suite with a spec",
+        status: "passed",
+        passedExpectations: [{passed: true}],
+        failedExpectations: []
+      });
+      reporter.jasmineDone({
+        failedExpectations: [{
+          passed: false,
+          message: 'nope'
+        }]
+      });
+
+      var alertBar = container.querySelector(".jasmine-overall-result");
+      expect(alertBar.getAttribute('class')).toMatch(/jasmine-failed/);
+    });
+
     describe("and all specs pass", function() {
       var env, container, reporter;
       beforeEach(function() {
