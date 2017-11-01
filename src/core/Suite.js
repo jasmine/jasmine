@@ -119,7 +119,13 @@ getJasmineRequireObj().Suite = function(j$) {
         actual: '',
         error: arguments[0]
       };
-      this.result.failedExpectations.push(this.expectationResultFactory(data));
+      var failedExpectation = this.expectationResultFactory(data);
+
+      if (!this.parentSuite) {
+        failedExpectation.globalErrorType = 'afterAll';
+      }
+
+      this.result.failedExpectations.push(failedExpectation);
     } else {
       for (var i = 0; i < this.children.length; i++) {
         var child = this.children[i];

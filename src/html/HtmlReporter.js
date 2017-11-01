@@ -213,18 +213,19 @@ jasmineRequire.HtmlReporter = function(j$) {
       alert.appendChild(createDom('span', {className: statusBarClassName}, statusBarMessage, seedBar));
 
       var errorBarClassName = 'jasmine-bar jasmine-errored';
-      var errorBarMessagePrefix = 'AfterAll ';
+      var afterAllMessagePrefix = 'AfterAll ';
 
       for(var i = 0; i < failedSuites.length; i++) {
         var failedSuite = failedSuites[i];
         for(var j = 0; j < failedSuite.failedExpectations.length; j++) {
-          alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessagePrefix + failedSuite.failedExpectations[j].message));
+          alert.appendChild(createDom('span', {className: errorBarClassName}, afterAllMessagePrefix + failedSuite.failedExpectations[j].message));
         }
       }
 
       for(i = 0; i < globalFailures.length; i++) {
         var failure = globalFailures[i];
-        alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessagePrefix + failure.message));
+        var prefix = failure.globalErrorType === 'load' ? 'Error during loading: ' : afterAllMessagePrefix;
+        alert.appendChild(createDom('span', {className: errorBarClassName}, prefix + failure.message));
       }
 
       var results = find('.jasmine-results');

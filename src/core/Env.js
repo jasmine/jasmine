@@ -97,6 +97,7 @@ getJasmineRequireObj().Env = function(j$) {
       if (!suppressLoadErrors) {
         topSuite.result.failedExpectations.push({
           passed: false,
+          globalErrorType: 'load',
           message: message
         });
       }

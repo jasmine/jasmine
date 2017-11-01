@@ -422,6 +422,49 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it("tags top-level afterAll failures with a type", function(done) {
+    var env = new jasmineUnderTest.Env();
+
+    env.addReporter({jasmineDone: function(result) {
+      expect(result.failedExpectations[0].globalErrorType).toEqual('afterAll');
+      done();
+    }});
+
+    env.it('has a spec', function() {});
+
+    env.afterAll(function() {
+      debugger;
+      throw 'nope';
+    });
+
+    env.execute();
+  });
+
+  it("does not tag suite afterAll failures with a type", function(done) {
+    var env = new jasmineUnderTest.Env(),
+      reporter = {
+        jasmineDone: function() {
+          expect(reporter.suiteDone).toHaveBeenCalled();
+          done();
+        },
+        suiteDone: jasmine.createSpy('suiteDone').and.callFake(function(result) {
+          expect(result.failedExpectations[0].globalErrorType).toBeFalsy();
+        })
+      }
+
+    env.addReporter(reporter);
+
+    env.describe('a suite', function() {
+      env.it('has a spec', function() {});
+  
+      env.afterAll(function() {
+        throw 'nope';
+      });
+    });
+
+    env.execute();
+  });
+
   it("fails all underlying specs when the beforeAll fails", function (done) {
     var env = new jasmineUnderTest.Env(),
       reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
@@ -1991,10 +2034,12 @@ describe("Env integration", function() {
           expect(e.failedExpectations).toEqual([
             {
               passed: false,
+              globalErrorType: 'load',
               message: 'Uncaught SyntaxError: Unexpected end of input'
             },
             {
               passed: false,
+              globalErrorType: 'load',
               message: 'Uncaught Error: ENOCHEESE'
             }
           ]);
