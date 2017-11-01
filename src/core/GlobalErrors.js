@@ -13,8 +13,6 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       }
     };
 
-    this.uninstall = function noop() {};
-
     this.install = function install() {
       if (global.process && global.process.listeners && j$.isFunction_(global.process.on)) {
         var originalHandlers = global.process.listeners('uncaughtException');

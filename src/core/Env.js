@@ -28,6 +28,7 @@ getJasmineRequireObj().Env = function(j$) {
     var throwOnExpectationFailure = false;
     var random = true;
     var seed = null;
+    var suppressLoadErrors = false;
 
     var currentSuite = function() {
       return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
@@ -91,6 +92,15 @@ getJasmineRequireObj().Env = function(j$) {
     ]);
 
     var globalErrors = new j$.GlobalErrors();
+    globalErrors.install();
+    globalErrors.pushListener(function(message) {
+      if (!suppressLoadErrors) {
+        topSuite.result.failedExpectations.push({
+          passed: false,
+          message: message
+        });
+      }
+    });
 
     this.specFilter = function() {
       return true;
@@ -234,6 +244,10 @@ getJasmineRequireObj().Env = function(j$) {
       return seed;
     };
 
+    this.suppressLoadErrors = function() {
+      suppressLoadErrors = true;
+    };
+
     var queueRunnerFactory = function(options) {
       options.catchException = catchException;
       options.clearStack = options.clearStack || clearStack;
@@ -260,6 +274,8 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.execute = function(runnablesToRun) {
+      globalErrors.popListener();
+
       if(!runnablesToRun) {
         if (focusedRunnables.length) {
           runnablesToRun = focusedRunnables;
@@ -315,11 +331,9 @@ getJasmineRequireObj().Env = function(j$) {
 
       currentlyExecutingSuites.push(topSuite);
 
-      globalErrors.install();
       processor.execute(function() {
         clearResourcesForRunnable(topSuite.id);
         currentlyExecutingSuites.pop();
-        globalErrors.uninstall();
 
         /**
          * Information passed to the {@link Reporter#jasmineDone} event.

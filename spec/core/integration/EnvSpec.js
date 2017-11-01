@@ -1974,4 +1974,64 @@ describe("Env integration", function() {
 
     env.execute();
   });
+
+  describe("In a browser", function() {
+    if (typeof document !== 'undefined') {
+      it('reports errors that occur during loading', function(done) {
+        var global = {
+          setTimeout: function(fn, delay) { setTimeout(fn, delay) },
+          clearTimeout: function(fn, delay) { clearTimeout(fn, delay) },
+        };
+        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.failedExpectations).toEqual([
+            {
+              passed: false,
+              message: 'Uncaught SyntaxError: Unexpected end of input'
+            },
+            {
+              passed: false,
+              message: 'Uncaught Error: ENOCHEESE'
+            }
+          ]);
+
+          done();
+        });
+
+        env.addReporter(reporter);
+        global.onerror('Uncaught SyntaxError: Unexpected end of input');
+        global.onerror('Uncaught Error: ENOCHEESE');
+
+        env.execute();
+      });
+    }
+
+    describe('If suppressLoadErrors was called', function() {
+      it('does not report errors that occur during loading', function(done) {
+        var global = {
+          setTimeout: function(fn, delay) { setTimeout(fn, delay) },
+          clearTimeout: function(fn, delay) { clearTimeout(fn, delay) },
+        };
+        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.failedExpectations).toEqual([]);
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.suppressLoadErrors(true);
+        global.onerror('Uncaught Error: ENOCHEESE');
+
+        env.execute();
+      });
+    });
+  });
 });
