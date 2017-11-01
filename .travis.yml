@@ -38,6 +38,10 @@ matrix:
       - SAUCE_OS="OS X 10.9"
       - SAUCE_BROWSER_VERSION=7
     - env:
+      - JASMINE_BROWSER="MicrosoftEdge"
+      - SAUCE_OS="Windows 10"
+      - SAUCE_BROWSER_VERSION="15"
+    - env:
       - JASMINE_BROWSER="internet explorer"
       - SAUCE_OS="Windows 8.1"
       - SAUCE_BROWSER_VERSION=11
