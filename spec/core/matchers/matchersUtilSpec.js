@@ -393,10 +393,24 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
-    it("passes when comparing identical sets with different insertion order", function() {
+    it("passes when comparing identical sets with different insertion order and simple elements", function() {
       jasmine.getEnv().requireFunctioningSets();
       var setA = new Set([3, 6]);
       var setB = new Set([6, 3]);
+      expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
+    });
+
+    it("passes when comparing identical sets with different insertion order and complex elements 1", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var setA = new Set([new Set([['a', 3], [6, 1]]), new Set([['y', 3], [6, 1]])]);
+      var setB = new Set([new Set([[6, 1], ['a', 3]]), new Set([[6, 1], ['y', 3]])]);
+      expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
+    });
+
+    it("passes when comparing identical sets with different insertion order and complex elements 2", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var setA = new Set([[[1,2], [3,4]], [[5,6], [7,8]]]);
+      var setB = new Set([[[5,6], [7,8]], [[1,2], [3,4]]]);
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
