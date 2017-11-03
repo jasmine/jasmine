@@ -87,6 +87,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return obj.nodeType > 0;
   };
 
+  j$.isPromise = function(obj) {
+    return typeof jasmineGlobal.Promise !== 'undefined' && obj.constructor === jasmineGlobal.Promise;
+  };
+
   j$.fnNameFor = function(func) {
     if (func.name) {
       return func.name;
