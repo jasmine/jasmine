@@ -200,8 +200,9 @@ body {
     display: block;
     color: #eee;
 
-    &.jasmine-failed {
+    &.jasmine-failed, &.jasmine-errored {
       background-color: $failing-color;
+      border-bottom: 1px solid $page-background-color;
     }
 
     &.jasmine-passed {
@@ -210,10 +211,6 @@ body {
 
     &.jasmine-skipped {
       background-color: $neutral-color;
-    }
-
-    &.jasmine-errored {
-      background-color: $failing-color;
     }
 
     &.jasmine-menu {

@@ -197,21 +197,47 @@ describe("HtmlReporter", function() {
       reporter.suiteDone({ status: 'failed', failedExpectations: [{ message: 'My Other Exception' }] });
       reporter.jasmineDone({ failedExpectations: [
         { message: 'Global After All Failure', globalErrorType: 'afterAll' },
-        { message: 'Other Global' },
         { message: 'Your JS is borken', globalErrorType: 'load' }
       ] });
 
       var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
 
-      expect(alertBars.length).toEqual(6);
+      expect(alertBars.length).toEqual(5);
       expect(alertBars[1].innerHTML).toMatch(/My After All Exception/);
       expect(alertBars[1].getAttribute("class")).toEqual('jasmine-bar jasmine-errored');
       expect(alertBars[2].innerHTML).toMatch(/My Other Exception/);
       expect(alertBars[3].innerHTML).toMatch(/AfterAll Global After All Failure/);
-      // TODO: What about this?
-      expect(alertBars[4].innerHTML).toMatch(/Other Global/);
+      expect(alertBars[4].innerHTML).toMatch(/Error during loading: Your JS is borken/);
+      expect(alertBars[4].innerHTML).not.toMatch(/line/);
+    });
 
-      expect(alertBars[5].innerHTML).toMatch(/Error during loading: Your JS is borken/);
+    it("displays file and line information if available", function() {
+      var env = new jasmineUnderTest.Env(),
+        container = document.createElement("div"),
+        getContainer = function() { return container; },
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
+
+      reporter.initialize();
+
+      reporter.jasmineStarted({});
+      reporter.jasmineDone({ failedExpectations: [
+        {
+          message: 'Your JS is borken',
+          globalErrorType: 'load',
+          filename: 'some/file.js',
+          lineno: 42
+        }
+      ] });
+
+      var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
+
+      expect(alertBars.length).toEqual(2);
+      expect(alertBars[1].innerHTML).toMatch(/Error during loading: Your JS is borken in some\/file.js line 42/);
     });
   });
 
