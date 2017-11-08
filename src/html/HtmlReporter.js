@@ -191,7 +191,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       var statusBarMessage = '';
       var statusBarClassName = 'jasmine-overall-result jasmine-bar ';
       var globalFailures = (doneResult && doneResult.failedExpectations) || [];
-      var failed = failureCount + globalFailures.length > 0;
+      var failed = failureCount + globalFailures.length  + failedSuites.length > 0;
 
       if (totalSpecsDefined > 0 || failed) {
         statusBarMessage += pluralize('spec', specsExecuted) + ', ' + pluralize('failure', failureCount);

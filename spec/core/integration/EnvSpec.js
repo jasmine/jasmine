@@ -433,7 +433,6 @@ describe("Env integration", function() {
     env.it('has a spec', function() {});
 
     env.afterAll(function() {
-      debugger;
       throw 'nope';
     });
 

@@ -179,6 +179,27 @@ describe("HtmlReporter", function() {
   });
 
   describe("when there are suite failures", function () {
+    it("displays an overall result of failure even if no other failures occurred", function() {
+      var env = new jasmineUnderTest.Env(),
+        container = document.createElement("div"),
+        getContainer = function() { return container; },
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
+
+      reporter.initialize();
+
+      reporter.jasmineStarted({});
+      reporter.suiteDone({ status: 'failed', failedExpectations: [{ message: 'My After All Exception' }] });
+      reporter.jasmineDone({ failedExpectations: [] });
+
+      var alertBar = container.querySelector(".jasmine-overall-result");
+      expect(alertBar.classList).toContain("jasmine-failed");
+    });
+
     it("displays the exceptions in their own alert bars", function(){
       var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
