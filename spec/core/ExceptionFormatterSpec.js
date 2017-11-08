@@ -48,8 +48,6 @@ describe("ExceptionFormatter", function() {
 
   describe("#stack", function() {
     it("formats stack traces", function() {
-      if (jasmine.getEnv().safariVersion < 6) { return; }
-
       var error;
       try { throw new Error("an error") } catch(e) { error = e; }
 
