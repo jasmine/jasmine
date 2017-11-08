@@ -24,6 +24,15 @@ matrix:
   include:
     - env:
       - USE_SAUCE=false
+      - NODE_VERSION="4.8.6"
+      - TEST_COMMAND="bash travis-node-script.sh"
+    - env:
+      - USE_SAUCE=false
+      - NODE_VERSION="8.9.1"
+      - TEST_COMMAND="bash travis-node-script.sh"
+    - env:
+      - USE_SAUCE=false
+      - NODE_VERSION="9.1.0"
       - TEST_COMMAND="bash travis-node-script.sh"
     - env:
       - JASMINE_BROWSER="safari"
