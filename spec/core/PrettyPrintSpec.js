@@ -250,11 +250,7 @@ describe("jasmineUnderTest.pp", function () {
       toString: function () { return Object.prototype.toString.call(this); }
     };
 
-    if (jasmine.getEnv().ieVersion < 9) {
-      expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar' })");
-    } else {
-      expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar', toString: Function })");
-    }
+    expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar', toString: Function })");
   });
 
   it("should stringify objects have have a toString that isn't a function", function() {
@@ -262,11 +258,7 @@ describe("jasmineUnderTest.pp", function () {
       toString: "foo"
     };
 
-    if (jasmine.getEnv().ieVersion < 9) {
-      expect(jasmineUnderTest.pp(obj)).toEqual("Object({  })");
-    } else {
-      expect(jasmineUnderTest.pp(obj)).toEqual("Object({ toString: 'foo' })");
-    }
+    expect(jasmineUnderTest.pp(obj)).toEqual("Object({ toString: 'foo' })");
   });
 
   it("should stringify objects from anonymous constructors with custom toString", function () {
@@ -279,8 +271,6 @@ describe("jasmineUnderTest.pp", function () {
   });
 
   it("should handle objects with null prototype", function() {
-    if (jasmine.getEnv().ieVersion < 9) { return; }
-
     var obj = Object.create(null);
     obj.foo = 'bar';
 

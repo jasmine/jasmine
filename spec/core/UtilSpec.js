@@ -43,9 +43,6 @@ describe("jasmineUnderTest.util", function() {
   });
 
   describe("getPropertyDescriptor", function() {
-    // IE 8 doesn't support `definePropery` on non-DOM nodes
-    if (jasmine.getEnv().ieVersion < 9) { return; }
-
     it("get property descriptor from object", function() {
       var obj = {prop: 1},
         actual = jasmineUnderTest.util.getPropertyDescriptor(obj, 'prop'),

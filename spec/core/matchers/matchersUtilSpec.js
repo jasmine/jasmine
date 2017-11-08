@@ -156,8 +156,6 @@ describe("matchersUtil", function() {
     });
 
     it("passes for equivalent frozen objects (GitHub issue #266)", function() {
-      if (jasmine.getEnv().ieVersion < 9) { return; }
-
       var a = { foo: 1 },
         b = {foo: 1 };
 
@@ -189,10 +187,6 @@ describe("matchersUtil", function() {
 
       it("passes for equivalent objects from different frames", function() {
         if (isNotRunningInBrowser()) {
-          return;
-        }
-        // iframe.contentWindow.eval isn't supported in ie8
-        if (jasmine.getEnv().ieVersion < 9) {
           return;
         }
         var iframe = document.createElement('iframe');
@@ -356,8 +350,6 @@ describe("matchersUtil", function() {
     });
 
     it("passes for null prototype objects with same properties", function () {
-      if (jasmine.getEnv().ieVersion < 9) { return; }
-
       var objA = Object.create(null),
           objB = Object.create(null);
 
@@ -368,8 +360,6 @@ describe("matchersUtil", function() {
     });
 
     it("fails for null prototype objects with different properties", function () {
-      if (jasmine.getEnv().ieVersion < 9) { return; }
-
       var objA = Object.create(null),
           objB = Object.create(null);
 
@@ -449,9 +439,6 @@ describe("matchersUtil", function() {
     });
 
     describe("when running in an environment with array polyfills", function() {
-      // IE 8 doesn't support `definePropery` on non-DOM nodes
-      if (jasmine.getEnv().ieVersion < 9) { return; }
-
       var findIndexDescriptor = Object.getOwnPropertyDescriptor(Array.prototype, 'findIndex');
       if (!findIndexDescriptor) {
         return;

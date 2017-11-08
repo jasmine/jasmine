@@ -57,9 +57,6 @@ describe("ObjectContaining", function() {
   });
 
   it("matches defined properties", function(){
-    // IE 8 doesn't support `definePropery` on non-DOM nodes
-    if (jasmine.getEnv().ieVersion < 9) { return; }
-
     var containing = new jasmineUnderTest.ObjectContaining({ foo: "fooVal" });
 
     var definedPropertyObject = {};

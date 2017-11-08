@@ -54,9 +54,6 @@ describe("SpyRegistry", function() {
     });
 
     it("checks if it can be spied upon", function() {
-      // IE 8 doesn't support `definePropery` on non-DOM nodes
-      if (jasmine.getEnv().ieVersion < 9) { return; }
-
       var scope = {};
 
       function myFunc() {
@@ -94,9 +91,6 @@ describe("SpyRegistry", function() {
   });
 
   describe("#spyOnProperty", function() {
-    // IE 8 doesn't support `definePropery` on non-DOM nodes
-    if (jasmine.getEnv().ieVersion < 9) { return; }
-
     it("checks for the existence of the object", function() {
       var spyRegistry = new jasmineUnderTest.SpyRegistry();
       expect(function() {
@@ -246,9 +240,6 @@ describe("SpyRegistry", function() {
     });
 
     it("does not add a property that the spied-upon object didn't originally have", function() {
-      // IE 8 doesn't support `Object.create`
-      if (jasmine.getEnv().ieVersion < 9) { return; }
-
       var spies = [],
         spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
         originalFunction = function() {},
@@ -266,9 +257,6 @@ describe("SpyRegistry", function() {
     });
 
     it("restores the original function when it\'s inherited and cannot be deleted", function() {
-      // IE 8 doesn't support `Object.create` or `Object.defineProperty`
-      if (jasmine.getEnv().ieVersion < 9) { return; }
-
       var spies = [],
         spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
         originalFunction = function() {},
@@ -291,9 +279,6 @@ describe("SpyRegistry", function() {
 
     describe('spying on properties', function() {
       it("restores the original properties on the spied-upon objects", function() {
-        // IE 8 doesn't support `definePropery` on non-DOM nodes
-        if (jasmine.getEnv().ieVersion < 9) { return; }
-
         var spies = [],
           spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
           originalReturn = 1,
@@ -311,9 +296,6 @@ describe("SpyRegistry", function() {
       });
 
       it("does not add a property that the spied-upon object didn't originally have", function() {
-        // IE 8 doesn't support `Object.create`
-        if (jasmine.getEnv().ieVersion < 9) { return; }
-
         var spies = [],
           spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
           originalReturn = 1,

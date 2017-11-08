@@ -1164,12 +1164,9 @@ describe("Env integration", function() {
 
       env.describe('suite', function() {
         env.afterAll(function() {
-          if (jasmine.getEnv().ieVersion < 9) {
-          } else {
-            realSetTimeout(function() {
-              jasmine.clock().tick(10);
-            }, 100);
-          }
+          realSetTimeout(function() {
+            jasmine.clock().tick(10);
+          }, 100);
         });
         env.describe('beforeAll', function() {
           env.beforeAll(function(innerDone) {

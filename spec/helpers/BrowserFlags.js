@@ -8,10 +8,6 @@
     return match ? parseFloat(match[1]) : void 0;
   }
 
-  env.ieVersion = browserVersion(function(userAgent) {
-    return /MSIE ([0-9]{1,}[\.0-9]{0,})/.exec(userAgent);
-  });
-
   env.safariVersion = browserVersion(function(userAgent) {
     return /Safari/.exec(userAgent) && /Version\/([0-9]{0,})/.exec(userAgent);
   });
