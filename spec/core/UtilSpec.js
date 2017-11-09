@@ -91,6 +91,13 @@ describe("jasmineUnderTest.util", function() {
 
       expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual({x: 1});
       expect(jasmineUnderTest.util.objectDifference(b, a)).toEqual({y: 2});
-    })
-  })
+    });
+  });
+
+  describe("jasmineFile", function() {
+    it("returns the file containing jasmine.util", function() {
+      expect(jasmineUnderTest.util.jasmineFile()).toMatch(/util.js$/);
+      expect(jasmine.util.jasmineFile()).toMatch(/jasmine.js$/);
+    });
+  });
 });

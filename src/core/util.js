@@ -100,5 +100,53 @@ getJasmineRequireObj().util = function(j$) {
     return Object.prototype.hasOwnProperty.call(obj, key);
   };
 
+  function anyMatch(pattern, lines) {
+    var i;
+
+    for (i = 0; i < lines.length; i++) {
+      if (lines[i].match(pattern)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function errorWithStack() {
+    // Don't throw and catch if we don't have to, because it makes it harder
+    // for users to debug their code with exception breakpoints.
+    var error = new Error();
+
+    if (error.stack) {
+      return error;
+    }
+
+    // But some browsers (e.g. Phantom) only provide a stack trace if we throw.
+    try {
+      throw new Error();
+    } catch (e) {
+      return e;
+    }
+  }
+
+  function callerFile() {
+    var trace = new j$.StackTrace(errorWithStack().stack);
+    return trace.frames[2].file;
+  }
+
+  util.jasmineFile = (function() {
+    var result;
+
+    return function() {
+      var trace;
+
+      if (!result) {
+        result = callerFile();
+      }
+
+      return result;
+    };
+  }());
+
   return util;
 };
