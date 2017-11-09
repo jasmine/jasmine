@@ -79,7 +79,7 @@ describe("toThrowError", function() {
     });
 
     it("passes if thrown is an instanceof Error regardless of global that contains its constructor", function() {
-      if (isNotRunningInBrowser() || jasmine.getEnv().phantomVersion < 2) {
+      if (isNotRunningInBrowser()) {
         return;
       }
 
