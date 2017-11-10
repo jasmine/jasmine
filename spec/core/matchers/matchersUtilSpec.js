@@ -164,6 +164,16 @@ describe("matchersUtil", function() {
 
       expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(true);
     });
+    
+    it("passes for equivalent Promises (GitHub issue #1314)", function() {
+      if (typeof Promise === 'undefined') { return; }
+
+      var p1 = new Promise(function () {}),
+        p2 = new Promise(function () {});
+
+      expect(jasmineUnderTest.matchersUtil.equals(p1, p1)).toBe(true);
+      expect(jasmineUnderTest.matchersUtil.equals(p1, p2)).toBe(false);
+    });
 
     describe("when running in a browser", function() {
       function isNotRunningInBrowser() {
@@ -383,10 +393,24 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
-    it("passes when comparing identical sets with different insertion order", function() {
+    it("passes when comparing identical sets with different insertion order and simple elements", function() {
       jasmine.getEnv().requireFunctioningSets();
       var setA = new Set([3, 6]);
       var setB = new Set([6, 3]);
+      expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
+    });
+
+    it("passes when comparing identical sets with different insertion order and complex elements 1", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var setA = new Set([new Set([['a', 3], [6, 1]]), new Set([['y', 3], [6, 1]])]);
+      var setB = new Set([new Set([[6, 1], ['a', 3]]), new Set([[6, 1], ['y', 3]])]);
+      expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
+    });
+
+    it("passes when comparing identical sets with different insertion order and complex elements 2", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var setA = new Set([[[1,2], [3,4]], [[5,6], [7,8]]]);
+      var setB = new Set([[[5,6], [7,8]], [[1,2], [3,4]]]);
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 

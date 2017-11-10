@@ -192,6 +192,12 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       diffBuilder.record(a, b);
       return false;
     }
+    
+    var aIsPromise = j$.isPromise(a);
+    var bIsPromise = j$.isPromise(b);
+    if (aIsPromise && bIsPromise) {
+      return a === b;
+    }
 
     // Assume equality for cyclic structures. The algorithm for detecting cyclic
     // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
@@ -275,24 +281,36 @@ getJasmineRequireObj().matchersUtil = function(j$) {
 
       // For both sets, check they are all contained in the other set
       var setPairs = [[a, b], [b, a]];
-      var baseIter, baseValueIt, baseValue;
-      var otherSet, otherIter, otherValueIt, otherValue, found;
+      var stackPairs = [[aStack, bStack], [bStack, aStack]];
+      var baseIter, baseValueIt, baseValue, baseStack;
+      var otherSet, otherIter, otherValueIt, otherValue, otherStack;
+      var found;
+      var prevStackSize;
       for (i = 0; result && i < setPairs.length; i++) {
         baseIter = setPairs[i][0].values();
         otherSet = setPairs[i][1];
+        baseStack = stackPairs[i][0];
+        otherStack = stackPairs[i][1];
         // For each value in the base set...
         baseValueIt = baseIter.next();
         while (result && !baseValueIt.done) {
           baseValue = baseValueIt.value;
           // ... test that it is present in the other set
-          otherIter = otherSet.values();
-          otherValueIt = otherIter.next();
           // Optimisation: start looking for value by object identity
           found = otherSet.has(baseValue);
+          if (!found) {
+            otherIter = otherSet.values();
+            otherValueIt = otherIter.next();
+          }
           // If not found, compare by value equality
           while (!found && !otherValueIt.done) {
             otherValue = otherValueIt.value;
-            found = eq(baseValue, otherValue, aStack, bStack, customTesters, j$.NullDiffBuilder());
+            prevStackSize = baseStack.length;
+            found = eq(baseValue, otherValue, baseStack, otherStack, customTesters, j$.NullDiffBuilder());
+            if (!found && prevStackSize !== baseStack.length) {
+              baseStack.splice(prevStackSize);
+              otherStack.splice(prevStackSize);
+            }
             otherValueIt = otherIter.next();
           }
           result = result && found;

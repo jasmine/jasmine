@@ -16,7 +16,8 @@ Please submit pull requests via feature branches using the semi-standard workflo
 git clone git@github.com:yourUserName/jasmine.git              # Clone your fork
 cd jasmine                                                     # Change directory
 git remote add upstream https://github.com/jasmine/jasmine.git # Assign original repository to a remote named 'upstream'
-git fetch upstream                                             # Pull in changes not present in your local repository
+git fetch upstream                                             # Fetch changes not present in your local repository
+git merge upstream/master                                      # Sync local master with upstream repository
 git checkout -b my-new-feature                                 # Create your feature branch
 git commit -am 'Add some feature'                              # Commit your changes
 git push origin my-new-feature                                 # Push to the branch
