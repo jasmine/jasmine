@@ -2075,4 +2075,215 @@ describe("Env integration", function() {
       env.execute();
     });
   });
+
+  describe('Overall status in the jasmineDone event', function() {
+    describe('When everything passes', function() {
+      it('is "passed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('passed');
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.it('passes', function() {});
+        env.execute();
+      });
+    });
+
+    describe('When a spec fails', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.it('fails', function() {
+          env.expect(true).toBe(false);
+        });
+        env.execute();
+      });
+    });
+
+    describe('When a top-level beforeAll fails', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.beforeAll(function() {
+          throw new Error('nope');
+        });
+        env.it('does not run', function() {});
+        env.execute();
+      });
+    });
+
+    describe('When a suite beforeAll fails', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.describe('something', function() {
+          env.beforeAll(function() {
+            throw new Error('nope');
+          });
+          env.it('does not run', function() {});
+        });
+        env.execute();
+      });
+    });
+
+    describe('When a top-level afterAll fails', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.afterAll(function() {
+          throw new Error('nope');
+        });
+        env.it('does not run', function() {});
+        env.execute();
+      });
+    });
+
+    describe('When a suite afterAll fails', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.describe('something', function() {
+          env.afterAll(function() {
+            throw new Error('nope');
+          });
+          env.it('does not run', function() {});
+        });
+        env.execute();
+      });
+    });
+
+    describe("When there are load errors", function() {
+      it('is "failed"', function(done) {
+        var global = {
+          setTimeout: function(fn, delay) { setTimeout(fn, delay) },
+          clearTimeout: function(fn, delay) { clearTimeout(fn, delay) },
+        };
+        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+        var env = new jasmineUnderTest.Env();
+        var reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          debugger;
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.it('passes', function() {});
+        global.onerror('Uncaught Error: ENOCHEESE');
+        env.execute();
+      });
+    });
+
+    describe('When there are no specs', function() {
+      it('is "incomplete"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('incomplete');
+          expect(e.incompleteReason).toEqual('No specs found');
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.execute();
+      });
+    });
+
+    describe('When a spec is focused', function() {
+      it('is "incomplete"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('incomplete');
+          expect(e.incompleteReason).toEqual('fit() or fdescribe() was found');
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.fit('is focused', function() {});
+        env.execute();
+      });
+    });
+
+    describe('When a suite is focused', function() {
+      it('is "incomplete"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('incomplete');
+          expect(e.incompleteReason).toEqual('fit() or fdescribe() was found');
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.fdescribe('something focused', function() {
+          env.it('does a thing', function() {});
+        });
+        env.execute();
+      });
+    });
+
+    describe('When there are both failures and focused specs', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+    
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          expect(e.incompleteReason).toBeUndefined();
+          done();
+        });
+    
+        env.addReporter(reporter);
+        env.fit('is focused', function() {
+          env.expect(true).toBe(false);
+        });
+        env.execute();
+      });
+    });
+  });
 });

@@ -179,27 +179,6 @@ describe("HtmlReporter", function() {
   });
 
   describe("when there are suite failures", function () {
-    it("displays an overall result of failure even if no other failures occurred", function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement("div"),
-        getContainer = function() { return container; },
-        reporter = new jasmineUnderTest.HtmlReporter({
-          env: env,
-          getContainer: getContainer,
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        });
-
-      reporter.initialize();
-
-      reporter.jasmineStarted({});
-      reporter.suiteDone({ status: 'failed', failedExpectations: [{ message: 'My After All Exception' }] });
-      reporter.jasmineDone({ failedExpectations: [] });
-
-      var alertBar = container.querySelector(".jasmine-overall-result");
-      expect(alertBar.classList).toContain("jasmine-failed");
-    });
-
     it("displays the exceptions in their own alert bars", function(){
       var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
@@ -319,7 +298,7 @@ describe("HtmlReporter", function() {
       reporter.jasmineStarted({});
 
       timer.elapsed.and.returnValue(100);
-      reporter.jasmineDone();
+      reporter.jasmineDone({});
 
       var duration = container.querySelector(".jasmine-alert .jasmine-duration");
       expect(duration.innerHTML).toMatch(/finished in 0.1s/);
@@ -740,7 +719,7 @@ describe("HtmlReporter", function() {
             });
 
         reporter.initialize();
-        reporter.jasmineDone();
+        reporter.jasmineDone({});
 
         var seedBar = container.querySelector(".jasmine-seed-bar");
         expect(seedBar).toBeNull();
@@ -764,79 +743,6 @@ describe("HtmlReporter", function() {
         var skippedLink = container.querySelector(".jasmine-skipped a");
         expect(skippedLink.getAttribute('href')).toEqual('?foo=bar&spec=');
       });
-    });
-
-    it("shows a message if no specs are run", function(){
-      var env, container, reporter;
-      env = new jasmineUnderTest.Env();
-      container = document.createElement("div");
-      var getContainer = function() { return container; },
-      reporter = new jasmineUnderTest.HtmlReporter({
-        env: env,
-        getContainer: getContainer,
-        createElement: function() { return document.createElement.apply(document, arguments); },
-        createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-      });
-      reporter.initialize();
-
-      reporter.jasmineStarted({});
-      reporter.jasmineDone({});
-
-      var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
-      expect(alertBars[0].getAttribute('class')).toMatch(/jasmine-skipped/);
-      expect(alertBars[0].innerHTML).toMatch(/No specs found/);
-    });
-
-    it("reports failure if there are global errors and no specs", function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement("div"),
-        reporter = new jasmineUnderTest.HtmlReporter({
-          env: env,
-          getContainer: function() { return container; },
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        });
-      reporter.initialize();
-      reporter.jasmineStarted({ totalSpecsDefined: 0 });
-      reporter.jasmineDone({
-        failedExpectations: [{
-          passed: false,
-          message: 'nope'
-        }]
-      });
-
-      var alertBar = container.querySelector(".jasmine-overall-result");
-      expect(alertBar.getAttribute('class')).toMatch(/jasmine-failed/);
-    });
-
-    it("reports failure if there are global errors and some specs", function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement("div"),
-        reporter = new jasmineUnderTest.HtmlReporter({
-          env: env,
-          getContainer: function() { return container; },
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        });
-      reporter.initialize();
-      reporter.jasmineStarted({ totalSpecsDefined: 0 });
-      reporter.specDone({
-        id: 123,
-        description: "with a spec",
-        fullName: "A Suite with a spec",
-        status: "passed",
-        passedExpectations: [{passed: true}],
-        failedExpectations: []
-      });
-      reporter.jasmineDone({
-        failedExpectations: [{
-          passed: false,
-          message: 'nope'
-        }]
-      });
-
-      var alertBar = container.querySelector(".jasmine-overall-result");
-      expect(alertBar.getAttribute('class')).toMatch(/jasmine-failed/);
     });
 
     describe("and all specs pass", function() {
@@ -877,7 +783,6 @@ describe("HtmlReporter", function() {
         var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
 
         expect(alertBars.length).toEqual(1);
-        expect(alertBars[0].getAttribute('class')).toMatch(/jasmine-passed/);
         expect(alertBars[0].innerHTML).toMatch(/2 specs, 0 failures/);
       });
 
@@ -1042,8 +947,6 @@ describe("HtmlReporter", function() {
 
       it("reports the specs counts", function() {
         var alertBar = container.querySelector(".jasmine-alert .jasmine-bar");
-
-        expect(alertBar.getAttribute('class')).toMatch(/jasmine-failed/);
         expect(alertBar.innerHTML).toMatch(/2 specs, 1 failure/);
       });
 
@@ -1083,6 +986,85 @@ describe("HtmlReporter", function() {
       it("sets the reporter to 'Failures List' mode", function() {
         var reporterNode = container.querySelector(".jasmine_html-reporter");
         expect(reporterNode.getAttribute("class")).toMatch("jasmine-failure-list");
+      });
+    });
+  });
+
+  describe("The overall result bar", function() {
+    describe("When the jasmineDone event's overallStatus is 'passed'", function() {
+      it("has class jasmine-passed", function() {
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement("div"),
+          getContainer = function() { return container; },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() { return document.createElement.apply(document, arguments); },
+            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          });
+  
+        reporter.initialize();
+  
+        reporter.jasmineStarted({});
+        reporter.jasmineDone({
+          overallStatus: 'passed',
+          failedExpectations: []
+        });
+  
+        var alertBar = container.querySelector(".jasmine-overall-result");
+        expect(alertBar.classList).toContain("jasmine-passed");
+      });
+    });
+
+    describe("When the jasmineDone event's overallStatus is 'failed'", function() {
+      it("has class jasmine-failed", function() {
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement("div"),
+          getContainer = function() { return container; },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() { return document.createElement.apply(document, arguments); },
+            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          });
+  
+        reporter.initialize();
+  
+        reporter.jasmineStarted({});
+        reporter.jasmineDone({
+          overallStatus: 'failed',
+          failedExpectations: []
+        });
+  
+        var alertBar = container.querySelector(".jasmine-overall-result");
+        expect(alertBar.classList).toContain("jasmine-failed");
+      });
+    });
+
+    describe("When the jasmineDone event's overallStatus is 'failed'", function() {
+      it("has class jasmine-incomplete", function() {
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement("div"),
+          getContainer = function() { return container; },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() { return document.createElement.apply(document, arguments); },
+            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          });
+  
+        reporter.initialize();
+  
+        reporter.jasmineStarted({});
+        reporter.jasmineDone({
+          overallStatus: 'incomplete',
+          incompleteReason: 'because nope',
+          failedExpectations: []
+        });
+  
+        var alertBar = container.querySelector(".jasmine-overall-result");
+        expect(alertBar.classList).toContain("jasmine-incomplete");
+        expect(alertBar.textContent).toContain("Incomplete: because nope");
       });
     });
   });

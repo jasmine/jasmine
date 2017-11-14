@@ -209,6 +209,11 @@ body {
       background-color: $passing-color;
     }
 
+    &.jasmine-incomplete {
+      background-color: $neutral-color;
+    }
+
+
     &.jasmine-skipped {
       background-color: $neutral-color;
     }

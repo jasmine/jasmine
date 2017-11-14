@@ -31,6 +31,7 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .jasmine-bar { line-height: 28px; font-size: 14px; display: block; color: #eee; }
 .jasmine_html-reporter .jasmine-bar.jasmine-failed, .jasmine_html-reporter .jasmine-bar.jasmine-errored { background-color: #ca3a11; border-bottom: 1px solid #eee; }
 .jasmine_html-reporter .jasmine-bar.jasmine-passed { background-color: #007069; }
+.jasmine_html-reporter .jasmine-bar.jasmine-incomplete { background-color: #bababa; }
 .jasmine_html-reporter .jasmine-bar.jasmine-skipped { background-color: #bababa; }
 .jasmine_html-reporter .jasmine-bar.jasmine-menu { background-color: #fff; color: #aaa; }
 .jasmine_html-reporter .jasmine-bar.jasmine-menu a { color: #333; }
