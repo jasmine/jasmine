@@ -7,7 +7,7 @@ describe("toThrowError", function() {
     }).toThrowError(/Actual is not a Function/);
   });
 
-  it("throws an error when the expected is not an Error, string, RegExp, or function", function() {
+  it("throws an error when the expected is not an Error, string, or RegExp", function() {
     var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {
         throw new Error("foo");
@@ -15,7 +15,7 @@ describe("toThrowError", function() {
 
     expect(function() {
       matcher.compare(fn, 1);
-    }).toThrowError(/Expected is not an Error, string, RegExp, or Function./);
+    }).toThrowError(/Expected is not an Error, string, or RegExp./);
   });
 
   it("throws an error when the expected error type is not an Error", function() {
@@ -311,33 +311,5 @@ describe("toThrowError", function() {
 
     expect(result.pass).toBe(false);
     expect(result.message()).toEqual("Expected function to throw TypeError with a message matching /bar/, but it threw TypeError with message 'foo'.");
-  });
-
-  it("passes if the argument is a function that returns true when called with the error", function() {
-    var matcher = jasmineUnderTest.matchers.toThrowError(),
-    predicate = function(e) { return e.message === "nope" },
-      fn = function() {
-        throw new TypeError("nope");
-      },
-      result;
-
-    result = matcher.compare(fn, predicate);
-
-    expect(result.pass).toBe(true);
-    expect(result.message()).toEqual("Expected function not to throw an exception matching a predicate.");
-  });
-
-  it("fails if the argument is a function that returns false when called with the error", function() {
-    var matcher = jasmineUnderTest.matchers.toThrowError(),
-    predicate = function(e) { return e.message === "oh no" },
-      fn = function() {
-        throw new TypeError("nope");
-      },
-      result;
-
-    result = matcher.compare(fn, predicate);
-
-    expect(result.pass).toBe(false);
-    expect(result.message()).toEqual("Expected function to throw an exception matching a predicate, but it threw TypeError with message 'nope'.");
   });
 });
