@@ -1500,8 +1500,18 @@ describe("Env integration", function() {
     env.execute();
   });
 
-  it('should report pending spec messages from async functions', function(done) {
-    jasmine.getEnv().requireAsyncAwait();
+  it('should report pending spec messages from promise-returning functions', function(done) {
+    function StubPromise(fn) {
+      try {
+        fn();
+      } catch (e) {
+        this.exception = e;
+      }
+    }
+
+    StubPromise.prototype.then = function(resolve, reject) {
+      reject(this.exception);
+    };
 
     var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [
@@ -1520,9 +1530,10 @@ describe("Env integration", function() {
 
     env.addReporter(reporter);
 
-    env.it('will be pending', async function() {
-      debugger;
-      env.pending('with a message');
+    env.it('will be pending', function() {
+      return new StubPromise(function() {
+        env.pending('with a message');
+      });
     });
 
     env.execute();
