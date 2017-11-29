@@ -1485,6 +1485,7 @@ describe("Env integration", function() {
     reporter.jasmineDone.and.callFake(function() {
       var specStatus = reporter.specDone.calls.argsFor(0)[0];
 
+      expect(specStatus.status).toBe('pending');
       expect(specStatus.pendingReason).toBe('with a message');
 
       done();
@@ -1493,6 +1494,34 @@ describe("Env integration", function() {
     env.addReporter(reporter);
 
     env.it('will be pending', function() {
+      env.pending('with a message');
+    });
+
+    env.execute();
+  });
+
+  it('should report pending spec messages from async functions', function(done) {
+    jasmine.getEnv().requireAsyncAwait();
+
+    var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
+          'specDone',
+          'jasmineDone'
+        ]);
+
+    reporter.jasmineDone.and.callFake(function() {
+      var specStatus = reporter.specDone.calls.argsFor(0)[0];
+
+      expect(specStatus.status).toBe('pending');
+      expect(specStatus.pendingReason).toBe('with a message');
+
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.it('will be pending', async function() {
+      debugger;
       env.pending('with a message');
     });
 

@@ -125,7 +125,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
           var maybeThenable = queueableFn.fn.call(self.userContext);
 
           if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
-            maybeThenable.then(next, next.fail);
+            maybeThenable.then(next, onPromiseRejection);
             completedSynchronously = false;
             return { completedSynchronously: false };
           }
@@ -145,6 +145,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       function onException(e) {
         self.onException(e);
         errored = true;
+      }
+
+      function onPromiseRejection(e) {
+        onException(e);
+        next();
       }
 
       function handleException(e, queueableFn) {
