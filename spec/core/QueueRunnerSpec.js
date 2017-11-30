@@ -379,7 +379,6 @@ describe("QueueRunner", function() {
       var promise = new StubPromise(),
         queueableFn1 = { fn: function() {
           setTimeout(function() {
-            debugger;
             promise.rejectHandler('foo')
           }, 100);
           return promise;
