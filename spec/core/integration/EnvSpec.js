@@ -2201,13 +2201,12 @@ describe("Env integration", function() {
 
         var env = new jasmineUnderTest.Env();
         var reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
-    
+
         reporter.jasmineDone.and.callFake(function(e) {
-          debugger;
           expect(e.overallStatus).toEqual('failed');
           done();
         });
-    
+
         env.addReporter(reporter);
         env.it('passes', function() {});
         global.onerror('Uncaught Error: ENOCHEESE');
