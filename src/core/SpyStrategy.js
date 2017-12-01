@@ -12,9 +12,9 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
      * @member
      * @type {String}
      */
-    this.identity = options.name || 'unknown',
-    this.originalFn = options.fn || function() {},
-    this.getSpy = options.getSpy || function() {},
+    this.identity = options.name || 'unknown';
+    this.originalFn = options.fn || function() {};
+    this.getSpy = options.getSpy || function() {};
     this.plan = function() {};
   }
 
