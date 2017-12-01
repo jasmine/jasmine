@@ -40,7 +40,7 @@ getJasmineRequireObj().Spy = function (j$) {
         };
 
         callTracker.track(callData);
-        var returnValue = spyStrategy.exec.apply(this, arguments);
+        var returnValue = spyStrategy.exec(this, arguments);
         callData.returnValue = returnValue;
 
         return returnValue;

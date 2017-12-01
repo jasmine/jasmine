@@ -83,10 +83,10 @@ describe('Spies', function () {
       var spyObj = jasmineUnderTest.createSpyObj('BaseName', {'method1': 42, 'method2': 'special sauce' });
 
       expect(spyObj.method1()).toEqual(42);
-      expect(spyObj.method1.and.identity()).toEqual('BaseName.method1');
+      expect(spyObj.method1.and.identity).toEqual('BaseName.method1');
 
       expect(spyObj.method2()).toEqual('special sauce');
-      expect(spyObj.method2.and.identity()).toEqual('BaseName.method2');
+      expect(spyObj.method2.and.identity).toEqual('BaseName.method2');
     });
 
 
@@ -94,16 +94,16 @@ describe('Spies', function () {
       var spyObj = jasmineUnderTest.createSpyObj('BaseName', ['method1', 'method2']);
 
       expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
-      expect(spyObj.method1.and.identity()).toEqual('BaseName.method1');
-      expect(spyObj.method2.and.identity()).toEqual('BaseName.method2');
+      expect(spyObj.method1.and.identity).toEqual('BaseName.method1');
+      expect(spyObj.method2.and.identity).toEqual('BaseName.method2');
     });
 
     it("should allow you to omit the baseName", function() {
       var spyObj = jasmineUnderTest.createSpyObj(['method1', 'method2']);
 
       expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
-      expect(spyObj.method1.and.identity()).toEqual('unknown.method1');
-      expect(spyObj.method2.and.identity()).toEqual('unknown.method2');
+      expect(spyObj.method1.and.identity).toEqual('unknown.method1');
+      expect(spyObj.method2.and.identity).toEqual('unknown.method2');
     });
 
     it("should throw if you do not pass an array or object argument", function() {

@@ -29,8 +29,8 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
         var timesMessage = expected === 1 ? 'once' : expected + ' times';
         result.pass = calls === expected;
         result.message = result.pass ?
-          'Expected spy ' + actual.and.identity() + ' not to have been called ' + timesMessage + '. It was called ' +  calls + ' times.' :
-          'Expected spy ' + actual.and.identity() + ' to have been called ' + timesMessage + '. It was called ' +  calls + ' times.';
+          'Expected spy ' + actual.and.identity + ' not to have been called ' + timesMessage + '. It was called ' +  calls + ' times.' :
+          'Expected spy ' + actual.and.identity + ' to have been called ' + timesMessage + '. It was called ' +  calls + ' times.';
         return result;
       }
     };

@@ -3,13 +3,13 @@ describe("SpyStrategy", function() {
   it("defaults its name to unknown", function() {
     var spyStrategy = new jasmineUnderTest.SpyStrategy();
 
-    expect(spyStrategy.identity()).toEqual("unknown");
+    expect(spyStrategy.identity).toEqual("unknown");
   });
 
   it("takes a name", function() {
     var spyStrategy = new jasmineUnderTest.SpyStrategy({name: "foo"});
 
-    expect(spyStrategy.identity()).toEqual("foo");
+    expect(spyStrategy.identity).toEqual("foo");
   });
 
   it("stubs an original function, if provided", function() {
@@ -27,7 +27,7 @@ describe("SpyStrategy", function() {
         returnValue;
 
     spyStrategy.callThrough();
-    returnValue = spyStrategy.exec("foo");
+    returnValue = spyStrategy.exec(null, ["foo"]);
 
     expect(originalFn).toHaveBeenCalled();
     expect(originalFn.calls.mostRecent().args).toEqual(["foo"]);
