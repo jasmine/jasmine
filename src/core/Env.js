@@ -28,7 +28,7 @@ getJasmineRequireObj().Env = function(j$) {
     var throwOnExpectationFailure = false;
     var random = true;
     var seed = null;
-    var suppressLoadErrors = false;
+    var handlingLoadErrors = true;
     var hasFailures = false;
 
     var currentSuite = function() {
@@ -95,15 +95,13 @@ getJasmineRequireObj().Env = function(j$) {
     var globalErrors = new j$.GlobalErrors();
     globalErrors.install();
     globalErrors.pushListener(function(message, filename, lineno) {
-      if (!suppressLoadErrors) {
-        topSuite.result.failedExpectations.push({
-          passed: false,
-          globalErrorType: 'load',
-          message: message,
-          filename: filename,
-          lineno: lineno
-        });
-      }
+      topSuite.result.failedExpectations.push({
+        passed: false,
+        globalErrorType: 'load',
+        message: message,
+        filename: filename,
+        lineno: lineno
+      });
     });
 
     this.specFilter = function() {
@@ -249,7 +247,10 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.suppressLoadErrors = function() {
-      suppressLoadErrors = true;
+      if (handlingLoadErrors) {
+        globalErrors.popListener();
+      }
+      handlingLoadErrors = false;
     };
 
     var queueRunnerFactory = function(options) {
@@ -278,7 +279,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.execute = function(runnablesToRun) {
-      globalErrors.popListener();
+      this.suppressLoadErrors();
 
       if(!runnablesToRun) {
         if (focusedRunnables.length) {

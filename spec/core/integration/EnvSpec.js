@@ -2053,18 +2053,23 @@ describe("Env integration", function() {
   });
 
   describe('If suppressLoadErrors was called', function() {
-    it('does not report errors that occur during loading', function(done) {
+    it('does not report or handle errors that occur during loading', function(done) {
       var global = {
         setTimeout: function(fn, delay) { setTimeout(fn, delay) },
-        clearTimeout: function(fn, delay) { clearTimeout(fn, delay) },
+        clearTimeout: function(fn, delay) { clearTimeout(fn, delay) }
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+      var globalErrors = new jasmineUnderTest.GlobalErrors(global);
+      var onerror = jasmine.createSpy('onerror');
+      globalErrors.pushListener(onerror);
+      spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
 
       var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
 
       reporter.jasmineDone.and.callFake(function(e) {
         expect(e.failedExpectations).toEqual([]);
+        expect(onerror).toHaveBeenCalledWith('Uncaught Error: ENOCHEESE');
         done();
       });
 
