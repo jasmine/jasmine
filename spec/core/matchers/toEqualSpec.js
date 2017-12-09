@@ -534,7 +534,7 @@ describe("toEqual", function() {
 
     var actual = {a: document.createElement('div')},
       expected = {a: document.createElement('p')},
-      message = 'Expected $.a = HTMLNode to equal HTMLNode.';
+      message = 'Expected $.a = <div> to equal <p>.';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -552,7 +552,7 @@ describe("toEqual", function() {
 
     var actual = {a: nodeA},
       expected = {a: nodeB},
-      message = 'Expected $.a = HTMLNode to equal HTMLNode.';
+      message = 'Expected $.a = <div>...</div> to equal <div>...</div>.';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   })
@@ -564,7 +564,7 @@ describe("toEqual", function() {
 
     var actual = {a: document.createElement('div')},
       expected = {a: {}},
-      message = 'Expected $.a = HTMLNode to equal Object({  }).';
+      message = 'Expected $.a = <div> to equal Object({  }).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });

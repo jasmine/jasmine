@@ -32,6 +32,8 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitScalar(value.toString());
       } else if (typeof value === 'function') {
         this.emitScalar('Function');
+      } else if (value.nodeType === 1) {
+        this.emitDomElement(value);
       } else if (typeof value.nodeType === 'number') {
         this.emitScalar('HTMLNode');
       } else if (value instanceof Date) {
@@ -88,6 +90,7 @@ getJasmineRequireObj().pp = function(j$) {
   PrettyPrinter.prototype.emitObject = j$.unimplementedMethod_;
   PrettyPrinter.prototype.emitScalar = j$.unimplementedMethod_;
   PrettyPrinter.prototype.emitString = j$.unimplementedMethod_;
+  PrettyPrinter.prototype.emitDomElement = j$.unimplementedMethod_;
 
   function StringPrettyPrinter() {
     PrettyPrinter.call(this);
@@ -222,6 +225,18 @@ getJasmineRequireObj().pp = function(j$) {
     }
 
     this.append(constructorName + ' [ ' + itemsString + ' ]');
+  };
+
+  StringPrettyPrinter.prototype.emitDomElement = function(el) {
+    var closingTag = '</' + el.tagName.toLowerCase() + '>';
+
+    if (el.innerHTML === '') {
+      this.append(el.outerHTML.replace(closingTag, ''));
+    } else {
+      var tagEnd = el.outerHTML.indexOf(el.innerHTML);
+      this.append(el.outerHTML.substring(0, tagEnd));
+      this.append('...' + closingTag);
+    }
   };
 
   StringPrettyPrinter.prototype.formatProperty = function(obj, property, isGetter) {
