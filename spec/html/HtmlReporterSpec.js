@@ -421,15 +421,15 @@ describe("HtmlReporter", function() {
       var trigger = container.querySelector('.jasmine-run-options .jasmine-trigger'),
           payload = container.querySelector('.jasmine-run-options .jasmine-payload');
 
-      expect(payload.className).not.toContain('jasmine-open');
+      expect(payload).not.toHaveClass('jasmine-open');
 
       trigger.onclick();
 
-      expect(payload.className).toContain('jasmine-open');
+      expect(payload).toHaveClass('jasmine-open');
 
       trigger.onclick();
 
-      expect(payload.className).not.toContain('jasmine-open');
+      expect(payload).not.toHaveClass('jasmine-open');
     });
 
     describe("UI for raising/catching exceptions", function() {
@@ -1002,17 +1002,17 @@ describe("HtmlReporter", function() {
             createElement: function() { return document.createElement.apply(document, arguments); },
             createTextNode: function() { return document.createTextNode.apply(document, arguments); }
           });
-  
+
         reporter.initialize();
-  
+
         reporter.jasmineStarted({});
         reporter.jasmineDone({
           overallStatus: 'passed',
           failedExpectations: []
         });
-  
+
         var alertBar = container.querySelector(".jasmine-overall-result");
-        expect(alertBar.classList).toContain("jasmine-passed");
+        expect(alertBar).toHaveClass("jasmine-passed");
       });
     });
 
@@ -1027,17 +1027,17 @@ describe("HtmlReporter", function() {
             createElement: function() { return document.createElement.apply(document, arguments); },
             createTextNode: function() { return document.createTextNode.apply(document, arguments); }
           });
-  
+
         reporter.initialize();
-  
+
         reporter.jasmineStarted({});
         reporter.jasmineDone({
           overallStatus: 'failed',
           failedExpectations: []
         });
-  
+
         var alertBar = container.querySelector(".jasmine-overall-result");
-        expect(alertBar.classList).toContain("jasmine-failed");
+        expect(alertBar).toHaveClass("jasmine-failed");
       });
     });
 
@@ -1052,18 +1052,18 @@ describe("HtmlReporter", function() {
             createElement: function() { return document.createElement.apply(document, arguments); },
             createTextNode: function() { return document.createTextNode.apply(document, arguments); }
           });
-  
+
         reporter.initialize();
-  
+
         reporter.jasmineStarted({});
         reporter.jasmineDone({
           overallStatus: 'incomplete',
           incompleteReason: 'because nope',
           failedExpectations: []
         });
-  
+
         var alertBar = container.querySelector(".jasmine-overall-result");
-        expect(alertBar.classList).toContain("jasmine-incomplete");
+        expect(alertBar).toHaveClass("jasmine-incomplete");
         expect(alertBar.textContent).toContain("Incomplete: because nope");
       });
     });
