@@ -12,7 +12,7 @@ src_files:
   - 'core/PrettyPrinter.js'
   - 'core/Suite.js'
   - 'core/**/*.js'
-  - 'html/**.js'
+  - 'html/**/*.js'
   - '**/*.js'
 stylesheets:
 helpers:

@@ -15,7 +15,8 @@ module.exports = {
       'src/html/HtmlReporter.js',
       'src/html/HtmlSpecFilter.js',
       'src/html/ResultsNode.js',
-      'src/html/QueryString.js'
+      'src/html/QueryString.js',
+      'src/html/**/*.js'
     ],
     dest: 'lib/jasmine-core/jasmine-html.js'
   },
