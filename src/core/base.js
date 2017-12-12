@@ -8,14 +8,14 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Set this to a lower value to speed up pretty printing if you have large objects.
    * @name jasmine.MAX_PRETTY_PRINT_DEPTH
    */
-  j$.MAX_PRETTY_PRINT_DEPTH = 40;
+  j$.MAX_PRETTY_PRINT_DEPTH = 8;
   /**
    * Maximum number of array elements to display when pretty printing objects.
    * This will also limit the number of keys and values displayed for an object.
    * Elements past this number will be ellipised.
    * @name jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH
    */
-  j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 100;
+  j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 50;
   /**
    * Default number of milliseconds Jasmine will wait for an asynchronous spec to complete.
    * @name jasmine.DEFAULT_TIMEOUT_INTERVAL
