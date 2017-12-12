@@ -17,6 +17,12 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    */
   j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 50;
   /**
+   * Maximum number of charasters to display when pretty printing objects.
+   * Characters past this number will be ellipised.
+   * @name jasmine.MAX_PRETTY_PRINT_CHARS
+   */
+  j$.MAX_PRETTY_PRINT_CHARS = 1000;
+  /**
    * Default number of milliseconds Jasmine will wait for an asynchronous spec to complete.
    * @name jasmine.DEFAULT_TIMEOUT_INTERVAL
    */

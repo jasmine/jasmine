@@ -92,6 +92,7 @@ getJasmineRequireObj().pp = function(j$) {
   function StringPrettyPrinter() {
     PrettyPrinter.call(this);
 
+    this.length = 0;
     this.stringParts = [];
   }
 
@@ -235,8 +236,21 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   StringPrettyPrinter.prototype.append = function(value) {
-    this.stringParts.push(value);
+    if (this.length < j$.MAX_PRETTY_PRINT_CHARS) {
+      value = truncate(value, j$.MAX_PRETTY_PRINT_CHARS - this.length);
+      this.length += value.length;
+      this.stringParts.push(value);
+    }
   };
+
+  function truncate(s, maxlen) {
+    if (s.length <= maxlen) {
+      return s;
+    }
+
+    s = s.substring(0, maxlen - 4);
+    return s +  ' ...';
+  }
 
   function keys(obj, isArray) {
     var allKeys = Object.keys ? Object.keys(obj) :

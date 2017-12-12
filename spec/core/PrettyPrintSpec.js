@@ -131,6 +131,21 @@ describe("jasmineUnderTest.pp", function () {
       }
   });
 
+  it("should truncate outputs that are too long", function() {
+    var originalMaxChars = jasmineUnderTest.MAX_PRETTY_PRINT_CHARS;
+    var big = [
+      { a: 1, b: "a long string" },
+      {}
+    ];
+
+    try {
+      jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = 34;
+      expect(jasmineUnderTest.pp(big)).toEqual("[ Object({ a: 1, b: 'a long st ...");
+    } finally {
+      jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = originalMaxChars;
+    }
+  });
+
   it("should print 'null' as the constructor of an object with its own constructor property", function() {
     expect(jasmineUnderTest.pp({constructor: function() {}})).toContain("null({");
     expect(jasmineUnderTest.pp({constructor: 'foo'})).toContain("null({");
