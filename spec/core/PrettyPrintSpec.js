@@ -131,19 +131,39 @@ describe("jasmineUnderTest.pp", function () {
       }
   });
 
-  it("should truncate outputs that are too long", function() {
+  function withMaxChars(maxChars, fn) {
     var originalMaxChars = jasmineUnderTest.MAX_PRETTY_PRINT_CHARS;
+
+    try {
+      jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = maxChars;
+      fn();
+    } finally {
+      jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = originalMaxChars;
+    }
+  }
+
+  it("should truncate outputs that are too long", function() {
     var big = [
       { a: 1, b: "a long string" },
       {}
     ];
 
-    try {
-      jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = 34;
+    withMaxChars(34, function() {
       expect(jasmineUnderTest.pp(big)).toEqual("[ Object({ a: 1, b: 'a long st ...");
-    } finally {
-      jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = originalMaxChars;
-    }
+    });
+  });
+
+  it("should not serialize more objects after hitting MAX_PRETTY_PRINT_CHARS", function() {
+    var a = { jasmineToString: function() { return 'object a'; } },
+      b = { jasmineToString: function() { return 'object b'; } },
+      c = { jasmineToString: jasmine.createSpy('c jasmineToString').and.returnValue('') },
+      d = { jasmineToString: jasmine.createSpy('d jasmineToString').and.returnValue('') };
+
+    withMaxChars(30, function() {
+      jasmineUnderTest.pp([{a: a, b: b, c: c}, d]);
+      expect(c.jasmineToString).not.toHaveBeenCalled();
+      expect(d.jasmineToString).not.toHaveBeenCalled();
+    });
   });
 
   it("should print 'null' as the constructor of an object with its own constructor property", function() {
