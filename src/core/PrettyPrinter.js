@@ -3,6 +3,8 @@ getJasmineRequireObj().pp = function(j$) {
   function PrettyPrinter() {
     this.ppNestLevel_ = 0;
     this.seen = [];
+    this.length = 0;
+    this.stringParts = [];
   }
 
   function hasCustomToString(value) {
@@ -86,31 +88,15 @@ getJasmineRequireObj().pp = function(j$) {
     return objKeys.length > length;
   };
 
-  PrettyPrinter.prototype.emitArray = j$.unimplementedMethod_;
-  PrettyPrinter.prototype.emitSet = j$.unimplementedMethod_;
-  PrettyPrinter.prototype.emitMap = j$.unimplementedMethod_;
-  PrettyPrinter.prototype.emitObject = j$.unimplementedMethod_;
-  PrettyPrinter.prototype.emitScalar = j$.unimplementedMethod_;
-  PrettyPrinter.prototype.emitString = j$.unimplementedMethod_;
-
-  function StringPrettyPrinter() {
-    PrettyPrinter.call(this);
-
-    this.length = 0;
-    this.stringParts = [];
-  }
-
-  j$.util.inherit(StringPrettyPrinter, PrettyPrinter);
-
-  StringPrettyPrinter.prototype.emitScalar = function(value) {
+  PrettyPrinter.prototype.emitScalar = function(value) {
     this.append(value);
   };
 
-  StringPrettyPrinter.prototype.emitString = function(value) {
+  PrettyPrinter.prototype.emitString = function(value) {
     this.append('\'' + value + '\'');
   };
 
-  StringPrettyPrinter.prototype.emitArray = function(array) {
+  PrettyPrinter.prototype.emitArray = function(array) {
     if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
       this.append('Array');
       return;
@@ -144,7 +130,7 @@ getJasmineRequireObj().pp = function(j$) {
     this.append(' ]');
   };
 
-  StringPrettyPrinter.prototype.emitSet = function(set) {
+  PrettyPrinter.prototype.emitSet = function(set) {
     if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
       this.append('Set');
       return;
@@ -164,7 +150,7 @@ getJasmineRequireObj().pp = function(j$) {
     this.append(' )');
   };
 
-  StringPrettyPrinter.prototype.emitMap = function(map) {
+  PrettyPrinter.prototype.emitMap = function(map) {
     if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
       this.append('Map');
       return;
@@ -184,7 +170,7 @@ getJasmineRequireObj().pp = function(j$) {
     this.append(' )');
   };
 
-  StringPrettyPrinter.prototype.emitObject = function(obj) {
+  PrettyPrinter.prototype.emitObject = function(obj) {
     var ctor = obj.constructor,
         constructorName;
 
@@ -217,7 +203,7 @@ getJasmineRequireObj().pp = function(j$) {
     this.append(' })');
   };
 
-  StringPrettyPrinter.prototype.emitTypedArray = function(arr) {
+  PrettyPrinter.prototype.emitTypedArray = function(arr) {
     var constructorName = j$.fnNameFor(arr.constructor),
       limitedArray = Array.prototype.slice.call(arr, 0, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH),
       itemsString = Array.prototype.join.call(limitedArray, ', ');
@@ -229,7 +215,7 @@ getJasmineRequireObj().pp = function(j$) {
     this.append(constructorName + ' [ ' + itemsString + ' ]');
   };
 
-  StringPrettyPrinter.prototype.formatProperty = function(obj, property, isGetter) {
+  PrettyPrinter.prototype.formatProperty = function(obj, property, isGetter) {
       this.append(property);
       this.append(': ');
       if (isGetter) {
@@ -239,7 +225,7 @@ getJasmineRequireObj().pp = function(j$) {
       }
   };
 
-  StringPrettyPrinter.prototype.append = function(value) {
+  PrettyPrinter.prototype.append = function(value) {
     var result = truncate(value, j$.MAX_PRETTY_PRINT_CHARS - this.length);
     this.length += result.value.length;
     this.stringParts.push(result.value);
@@ -248,6 +234,7 @@ getJasmineRequireObj().pp = function(j$) {
       throw new MaxCharsReachedError();
     }
   };
+
 
   function truncate(s, maxlen) {
     if (s.length <= maxlen) {
@@ -295,8 +282,8 @@ getJasmineRequireObj().pp = function(j$) {
     return extraKeys;
   }
   return function(value) {
-    var stringPrettyPrinter = new StringPrettyPrinter();
-    stringPrettyPrinter.format(value);
-    return stringPrettyPrinter.stringParts.join('');
+    var prettyPrinter = new PrettyPrinter();
+    prettyPrinter.format(value);
+    return prettyPrinter.stringParts.join('');
   };
 };
