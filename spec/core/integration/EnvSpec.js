@@ -1530,6 +1530,7 @@ describe("Env integration", function() {
     reporter.jasmineDone.and.callFake(function() {
       var specStatus = reporter.specDone.calls.argsFor(0)[0];
 
+      expect(specStatus.status).toBe('pending');
       expect(specStatus.pendingReason).toBe('with a message');
 
       done();
@@ -1539,6 +1540,45 @@ describe("Env integration", function() {
 
     env.it('will be pending', function() {
       env.pending('with a message');
+    });
+
+    env.execute();
+  });
+
+  it('should report pending spec messages from promise-returning functions', function(done) {
+    function StubPromise(fn) {
+      try {
+        fn();
+      } catch (e) {
+        this.exception = e;
+      }
+    }
+
+    StubPromise.prototype.then = function(resolve, reject) {
+      reject(this.exception);
+    };
+
+    var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', [
+          'specDone',
+          'jasmineDone'
+        ]);
+
+    reporter.jasmineDone.and.callFake(function() {
+      var specStatus = reporter.specDone.calls.argsFor(0)[0];
+
+      expect(specStatus.status).toBe('pending');
+      expect(specStatus.pendingReason).toBe('with a message');
+
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.it('will be pending', function() {
+      return new StubPromise(function() {
+        env.pending('with a message');
+      });
     });
 
     env.execute();

@@ -59,6 +59,10 @@ getJasmineRequireObj().pp = function(j$) {
       } else {
         this.emitScalar(value.toString());
       }
+    } catch (e) {
+      if (this.ppNestLevel_ > 1 || !(e instanceof MaxCharsReachedError)) {
+        throw e;
+      }
     } finally {
       this.ppNestLevel_--;
     }
@@ -95,6 +99,7 @@ getJasmineRequireObj().pp = function(j$) {
   function StringPrettyPrinter() {
     PrettyPrinter.call(this);
 
+    this.length = 0;
     this.stringParts = [];
   }
 
@@ -250,8 +255,30 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   StringPrettyPrinter.prototype.append = function(value) {
-    this.stringParts.push(value);
+    var result = truncate(value, j$.MAX_PRETTY_PRINT_CHARS - this.length);
+    this.length += result.value.length;
+    this.stringParts.push(result.value);
+
+    if (result.truncated) {
+      throw new MaxCharsReachedError();
+    }
   };
+
+  function truncate(s, maxlen) {
+    if (s.length <= maxlen) {
+      return { value: s, truncated: false };
+    }
+
+    s = s.substring(0, maxlen - 4) + ' ...';
+    return { value: s, truncated: true };
+  }
+
+  function MaxCharsReachedError() {
+    this.message = 'Exceeded ' + j$.MAX_PRETTY_PRINT_CHARS +
+      ' characters while pretty-printing a value';
+  }
+
+  MaxCharsReachedError.prototype = new Error();
 
   function keys(obj, isArray) {
     var allKeys = Object.keys ? Object.keys(obj) :

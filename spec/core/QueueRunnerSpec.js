@@ -375,27 +375,30 @@ describe("QueueRunner", function() {
       expect(onComplete).toHaveBeenCalled();
     });
 
-    it("fails the function when the promise is rejected", function() {
+    it("handles a rejected promise like an unhandled exception", function() {
       var promise = new StubPromise(),
         queueableFn1 = { fn: function() {
-          setTimeout(function() { promise.rejectHandler('foo'); }, 100);
+          setTimeout(function() {
+            promise.rejectHandler('foo')
+          }, 100);
           return promise;
         } },
         queueableFn2 = { fn: jasmine.createSpy('fn2') },
         failFn = jasmine.createSpy('fail'),
+        onExceptionCallback = jasmine.createSpy('on exception callback'),
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn1, queueableFn2],
-          fail: failFn
+          onException: onExceptionCallback
         });
 
       queueRunner.execute();
 
-      expect(failFn).not.toHaveBeenCalled();
+      expect(onExceptionCallback).not.toHaveBeenCalled();
       expect(queueableFn2.fn).not.toHaveBeenCalled();
 
       jasmine.clock().tick(100);
 
-      expect(failFn).toHaveBeenCalledWith('foo');
+      expect(onExceptionCallback).toHaveBeenCalledWith('foo');
       expect(queueableFn2.fn).toHaveBeenCalled();
     });
   });
