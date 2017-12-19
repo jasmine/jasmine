@@ -287,6 +287,24 @@ describe("SpyRegistry", function() {
 
       expect(jasmineUnderTest.isSpy(subject.spiedFunc)).toBe(false);
     });
+
+    it("restores window.onerror by overwriting, not deleting", function() {
+      function FakeWindow() {
+      }
+      FakeWindow.prototype.onerror = function() {};
+
+      var spies = [],
+        global = new FakeWindow(),
+        spyRegistry = new jasmineUnderTest.SpyRegistry({
+          currentSpies: function() { return spies; },
+          global: global
+        });
+
+      spyRegistry.spyOn(global, 'onerror');
+      spyRegistry.clearSpies();
+      expect(global.onerror).toBe(FakeWindow.prototype.onerror);
+      expect(global.hasOwnProperty('onerror')).toBe(true);
+    });
   });
 
     describe('spying on properties', function() {
