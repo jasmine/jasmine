@@ -51,7 +51,7 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .jasmine-suite { margin-top: 14px; }
 .jasmine_html-reporter .jasmine-suite a { color: #333; }
 .jasmine_html-reporter .jasmine-failures .jasmine-spec-detail { margin-bottom: 28px; }
-.jasmine_html-reporter .jasmine-failures .jasmine-spec-detail .jasmine-description { background-color: #ca3a11; }
+.jasmine_html-reporter .jasmine-failures .jasmine-spec-detail .jasmine-description { background-color: #ca3a11; color: white; }
 .jasmine_html-reporter .jasmine-failures .jasmine-spec-detail .jasmine-description a { color: white; }
 .jasmine_html-reporter .jasmine-result-message { padding-top: 14px; color: #333; white-space: pre; }
 .jasmine_html-reporter .jasmine-result-message span.jasmine-result { display: block; }

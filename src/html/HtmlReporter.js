@@ -98,9 +98,7 @@ jasmineRequire.HtmlReporter = function(j$) {
 
         var failure =
           createDom('div', {className: 'jasmine-spec-detail jasmine-failed'},
-            createDom('div', {className: 'jasmine-description'},
-              createDom('a', {title: result.fullName, href: specHref(result)}, result.fullName)
-            ),
+            failureDescription(result, currentParent),
             createDom('div', {className: 'jasmine-messages'})
           );
         var messages = failure.childNodes[1];
@@ -318,6 +316,34 @@ jasmineRequire.HtmlReporter = function(j$) {
     };
 
     return this;
+
+    function failureDescription(result, suite) {
+      var wrapper = createDom('div', {className: 'jasmine-description'},
+        createDom('a', {title: result.description, href: specHref(result)}, result.description)
+      );
+      var suiteLink;
+
+      while (suite && suite.parent) {
+        wrapper.insertBefore(createTextNode(' > '), wrapper.firstChild);
+        suiteLink = createDom('a', {href: suiteHref(suite)}, suite.result.description);
+        wrapper.insertBefore(suiteLink, wrapper.firstChild);
+
+        suite = suite.parent;
+      }
+
+      return wrapper;
+    }
+
+    function suiteHref(suite) {
+      var els = [];
+
+      while (suite && suite.parent) {
+        els.unshift(suite.result.description);
+        suite = suite.parent;
+      }
+
+      return addToExistingQueryString('spec', els.join(' '));
+    }
 
     function find(selector) {
       return getContainer().querySelector('.jasmine_html-reporter ' + selector);
