@@ -26,9 +26,8 @@ describe("HtmlReporter", function() {
     expect(title.getAttribute('href')).toEqual('http://jasmine.github.io/');
     expect(title.getAttribute('target')).toEqual('_blank');
 
-    var version = banner.querySelector(".jasmine-version"),
-      versionText = 'textContent' in version ? version.textContent : version.innerText;
-    expect(versionText).toEqual(jasmineUnderTest.version);
+    var version = banner.querySelector(".jasmine-version");
+    expect(version.textContent).toEqual(jasmineUnderTest.version);
   });
 
   it("builds a single reporter even if initialized multiple times", function() {
@@ -694,8 +693,7 @@ describe("HtmlReporter", function() {
         });
 
         var seedBar = container.querySelector(".jasmine-seed-bar");
-        var seedBarText = 'textContent' in seedBar ? seedBar.textContent : seedBar.innerText;
-        expect(seedBarText).toBe(', randomized with seed 424242');
+        expect(seedBar.textContent).toBe(', randomized with seed 424242');
         var seedLink = container.querySelector(".jasmine-seed-bar a");
         expect(seedLink.getAttribute('href')).toBe('?seed=424242');
       });
