@@ -12,7 +12,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     if (typeof window !== 'undefined' && typeof window.toString === 'function' && window.toString() === '[object GjsGlobal]') {
       jasmineGlobal = window;
     }
-    jasmineRequire = jasmineGlobal.jasmineRequire = jasmineGlobal.jasmineRequire || {};
+    jasmineRequire = jasmineGlobal.jasmineRequire = {};
   }
 
   function getJasmineRequire() {
