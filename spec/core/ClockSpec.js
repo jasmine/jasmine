@@ -1,5 +1,7 @@
 describe("Clock", function() {
 
+  var NODE_JS = typeof process !== 'undefined' && process.versions && typeof process.versions.node === 'string';
+
   it("does not replace setTimeout until it is installed", function() {
     var fakeSetTimeout = jasmine.createSpy("global setTimeout"),
       fakeGlobal = { setTimeout: fakeSetTimeout },
@@ -294,13 +296,19 @@ describe("Clock", function() {
       fakeGlobal = { setTimeout: fakeSetTimeout },
       delayedFn = jasmine.createSpy('delayedFn'),
       mockDate = { install: function() {}, tick: function() {}, uninstall: function() {} },
-      clock = new jasmineUnderTest.Clock(fakeGlobal, function () { return delayedFunctionScheduler; }, mockDate);
+      clock = new jasmineUnderTest.Clock(fakeGlobal, function () { return delayedFunctionScheduler; }, mockDate),
+      timeout = new clock.FakeTimeout();
 
     clock.install();
     clock.setTimeout(delayedFn, 0, 'a', 'b');
 
     expect(fakeSetTimeout).not.toHaveBeenCalled();
-    expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(delayedFn, 0, ['a', 'b']);
+
+    if (!NODE_JS) {
+      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(delayedFn, 0, ['a', 'b']);
+    } else {
+      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(delayedFn, 0, ['a', 'b'], false, timeout);
+    }
   });
 
   it("returns an id for the delayed function", function() {
@@ -312,12 +320,16 @@ describe("Clock", function() {
       delayedFn = jasmine.createSpy('delayedFn'),
       mockDate = { install: function() {}, tick: function() {}, uninstall: function() {} },
       clock = new jasmineUnderTest.Clock(fakeGlobal, function () { return delayedFunctionScheduler; }, mockDate),
-      timeoutId;
+      timeout;
 
     clock.install();
-    timeoutId = clock.setTimeout(delayedFn, 0);
+    timeout = clock.setTimeout(delayedFn, 0);
 
-    expect(timeoutId).toEqual(123);
+    if (!NODE_JS) {
+      expect(timeout).toEqual(123);
+    } else {
+      expect(timeout.constructor.name).toEqual('FakeTimeout');
+    }
   });
 
   it("clears the scheduled function with the scheduler", function() {
@@ -342,13 +354,19 @@ describe("Clock", function() {
       fakeGlobal = { setInterval: fakeSetInterval },
       delayedFn = jasmine.createSpy('delayedFn'),
       mockDate = { install: function() {}, tick: function() {}, uninstall: function() {} },
-      clock = new jasmineUnderTest.Clock(fakeGlobal, function () { return delayedFunctionScheduler; }, mockDate);
+      clock = new jasmineUnderTest.Clock(fakeGlobal, function () { return delayedFunctionScheduler; }, mockDate),
+      timeout = new clock.FakeTimeout;
 
     clock.install();
     clock.setInterval(delayedFn, 0, 'a', 'b');
 
     expect(fakeSetInterval).not.toHaveBeenCalled();
-    expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(delayedFn, 0, ['a', 'b'], true);
+
+    if (!NODE_JS) {
+      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(delayedFn, 0, ['a', 'b'], true);
+    } else {
+      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(delayedFn, 0, ['a', 'b'], true, timeout);
+    }
   });
 
   it("returns an id for the delayed function", function() {
@@ -360,12 +378,16 @@ describe("Clock", function() {
       delayedFn = jasmine.createSpy('delayedFn'),
       mockDate = { install: function() {}, tick: function() {}, uninstall: function() {} },
       clock = new jasmineUnderTest.Clock(fakeGlobal, function () { return delayedFunctionScheduler; }, mockDate),
-      intervalId;
+      interval;
 
     clock.install();
-    intervalId = clock.setInterval(delayedFn, 0);
+    interval = clock.setInterval(delayedFn, 0);
 
-    expect(intervalId).toEqual(123);
+    if (!NODE_JS) {
+      expect(interval).toEqual(123);
+    } else {
+      expect(interval.constructor.name).toEqual('FakeTimeout');
+    }
   });
 
   it("clears the scheduled function with the scheduler", function() {
@@ -401,7 +423,8 @@ describe("Clock", function() {
         setInterval: fakeSetInterval
       },
       mockDate = { install: function() {}, tick: function() {}, uninstall: function() {} },
-      clock = new jasmineUnderTest.Clock(fakeGlobal, function () { return delayedFunctionScheduler; }, mockDate);
+      clock = new jasmineUnderTest.Clock(fakeGlobal, function () { return delayedFunctionScheduler; }, mockDate),
+      timeout = new clock.FakeTimeout();
 
     fakeSetTimeout.apply = null;
     fakeSetInterval.apply = null;
@@ -409,13 +432,25 @@ describe("Clock", function() {
     clock.install();
 
     clock.setTimeout(fn, 0);
-    expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(fn, 0, []);
+
+    if (!NODE_JS) {
+      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(fn, 0, []);
+    } else {
+      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(fn, 0, [], false, timeout);
+    }
+
     expect(function() {
       clock.setTimeout(fn, 0, 'extra');
     }).toThrow();
 
     clock.setInterval(fn, 0);
-    expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(fn, 0, [], true);
+    
+    if (!NODE_JS) {
+      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(fn, 0, [], true);
+    } else {
+      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(fn, 0, [], true, timeout);
+    }
+
     expect(function() {
       clock.setInterval(fn, 0, 'extra');
     }).toThrow();
