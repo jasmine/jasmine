@@ -209,7 +209,7 @@ describe("New HtmlReporter", function() {
   });
 
   describe("when Jasmine is done", function() {
-    it("adds EMPTY to the link title of specs that have no expectations", function() {
+    it("adds a warning to the link title of specs that have no expectations", function() {
       if (!window.console) {
         window.console = { error: function(){} };
       }
@@ -228,7 +228,7 @@ describe("New HtmlReporter", function() {
       reporter.initialize();
       reporter.jasmineStarted({});
       reporter.suiteStarted({id: 1});
-      reporter.specStarted({id: 1, status: 'passed', passedExpectations: [], failedExpectations: []});
+      reporter.specStarted({id: 1, passedExpectations: [], failedExpectations: []});
       reporter.specDone({
         id: 1,
         status: 'passed',
