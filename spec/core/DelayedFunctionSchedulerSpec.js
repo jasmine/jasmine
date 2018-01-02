@@ -216,21 +216,23 @@ describe("DelayedFunctionScheduler", function() {
 
   it("removes functions during a tick that runs the function", function() {
     var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
-      fn = jasmine.createSpy('fn'),
+      spy = jasmine.createSpy('fn'),
+      spyAndRemove = jasmine.createSpy('fn'),
       fnDelay = 10,
       timeoutKey;
 
-    timeoutKey = scheduler.scheduleFunction(fn, fnDelay, [], true);
-    scheduler.scheduleFunction(function () {
+    spyAndRemove.and.callFake(function() {
       scheduler.removeFunctionWithId(timeoutKey);
-    }, 2 * fnDelay);
+    });
 
-    expect(fn).not.toHaveBeenCalled();
+    scheduler.scheduleFunction(spyAndRemove, fnDelay);
 
-    scheduler.tick(3 * fnDelay);
+    timeoutKey = scheduler.scheduleFunction(spy, fnDelay, [], true);
 
-    expect(fn).toHaveBeenCalled();
-    expect(fn.calls.count()).toBe(2);
+    scheduler.tick(2 * fnDelay);
+
+    expect(spy).not.toHaveBeenCalled();
+    expect(spyAndRemove).toHaveBeenCalled();
   });
 
   it("removes functions during the first tick that runs the function", function() {

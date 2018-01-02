@@ -714,4 +714,41 @@ describe("Clock (acceptance)", function() {
 
     expect(actualTimes).toEqual([baseTime.getTime(), baseTime.getTime() + 1, baseTime.getTime() + 3]);
   })
+
+  it('correctly clears a scheduled timeout while the Clock is advancing', function () {
+    var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      global = {Date: Date, setTimeout: undefined},
+      mockDate = new jasmineUnderTest.MockDate(global),
+      clock = new jasmineUnderTest.Clock(global, function () { return delayedFunctionScheduler; }, mockDate);
+
+    clock.install();
+
+    var timerId2;
+
+    global.setTimeout(function () {
+      global.clearTimeout(timerId2);
+    }, 100);
+
+    timerId2 = global.setTimeout(fail, 100);
+
+    clock.tick(100);
+  });
+
+  it('correctly clears a scheduled interval while the Clock is advancing', function () {
+    var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      global = {Date: Date, setTimeout: undefined},
+      mockDate = new jasmineUnderTest.MockDate(global),
+      clock = new jasmineUnderTest.Clock(global, function () { return delayedFunctionScheduler; }, mockDate);
+
+    clock.install();
+
+    var timerId2;
+    var timerId1 = global.setInterval(function () {
+      global.clearInterval(timerId2);
+    }, 100);
+
+    timerId2 = global.setInterval(fail, 100);
+
+    clock.tick(400);
+  });
 });
