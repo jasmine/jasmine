@@ -129,9 +129,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
 
         currentTime = newCurrentTime;
 
-        var funcsToRun = scheduledFunctions[currentTime].sort(function (a, b) {
-          return a.millis > b.millis;
-        });
+        var funcsToRun = scheduledFunctions[currentTime];
 
         delete scheduledFunctions[currentTime];
 
