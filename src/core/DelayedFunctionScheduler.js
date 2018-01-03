@@ -1,4 +1,4 @@
-getJasmineRequireObj().DelayedFunctionScheduler = function() {
+getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
   function DelayedFunctionScheduler() {
     var self = this;
     var scheduledLookup = [];
@@ -140,7 +140,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
         });
 
         forEachFunction(funcsToRun, function(funcToRun) {
-          if (deletedKeys.indexOf(funcToRun.timeoutKey) !== -1) {
+          if (j$.util.arrayContains(deletedKeys, funcToRun.timeoutKey)) {
             // skip a timeoutKey deleted whilst we were running
             return;
           }
