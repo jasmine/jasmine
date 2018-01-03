@@ -124,4 +124,48 @@ describe('Spies', function () {
       }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
     });
   });
+
+  it("can use different strategies for different arguments", function() {
+    var spy = jasmineUnderTest.createSpy('foo');
+    spy.and.returnValue(42);
+    spy.withArgs('baz', 'grault').and.returnValue(-1);
+    spy.withArgs('thud').and.returnValue('bob');
+
+    expect(spy('foo')).toEqual(42);
+    expect(spy('baz', 'grault')).toEqual(-1);
+    expect(spy('thud')).toEqual('bob');
+    expect(spy('baz', 'grault', 'waldo')).toEqual(42);
+  });
+
+  it("uses custom equality testers when selecting a strategy", function() {
+    var spy = jasmineUnderTest.createSpy('foo');
+    spy.and.returnValue(42);
+    spy.withArgs(jasmineUnderTest.any(String)).and.returnValue(-1);
+
+    expect(spy('foo')).toEqual(-1);
+    expect(spy({})).toEqual(42);
+  });
+
+  it("can reconfigure an argument-specific strategy", function() {
+    var spy = jasmineUnderTest.createSpy('foo');
+    spy.withArgs('foo').and.returnValue(42);
+    spy.withArgs('foo').and.returnValue(17);
+    expect(spy('foo')).toEqual(17);
+  });
+
+  describe("When withArgs is used without a base strategy", function() {
+    it("uses the matching strategy", function() {
+      var spy = jasmineUnderTest.createSpy('foo');
+      spy.withArgs('baz').and.returnValue(-1);
+
+      expect(spy('baz')).toEqual(-1);
+    });
+
+    it("throws if the args don't match", function() {
+      var spy = jasmineUnderTest.createSpy('foo');
+      spy.withArgs('bar').and.returnValue(-1);
+
+      expect(function() { spy('baz', {qux: 42}); }).toThrowError('Spy \'foo\' receieved a call with arguments [ \'baz\', Object({ qux: 42 }) ] but all configured strategies specify other arguments.');
+    });
+  });
 });
