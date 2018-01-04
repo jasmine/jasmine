@@ -1400,7 +1400,7 @@ describe("Env integration", function() {
         status: 'passed'
       }));
 
-      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+      expect(reporter.specDone).not.toHaveBeenCalledWith(jasmine.objectContaining({
         description: "with an x'ed spec",
         status: 'pending'
       }));
@@ -1410,7 +1410,7 @@ describe("Env integration", function() {
         status: 'failed'
       }));
 
-      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+      expect(reporter.specDone).not.toHaveBeenCalledWith(jasmine.objectContaining({
         description: 'is pending',
         status: 'pending'
       }));

@@ -90,8 +90,9 @@ describe("Suite", function() {
     expect(suite.getResult().status).toBe('pending');
   });
 
-  it("is executable if not pending", function() {
+  it("is executable if it has any executable children", function() {
     var suite = new jasmineUnderTest.Suite({});
+    suite.addChild({ isExecutable: function() { return true ; } });
 
     expect(suite.isExecutable()).toBe(true);
   });

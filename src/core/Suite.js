@@ -82,7 +82,7 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.isExecutable = function() {
-    return !this.markedPending;
+    return !this.markedPending && this.children.some(function(child) { return child.isExecutable(); });
   };
 
   Suite.prototype.canBeReentered = function() {
