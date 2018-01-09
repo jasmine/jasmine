@@ -1,7 +1,11 @@
 describe("SpyRegistry", function() {
+  function createSpy(name, originalFn) {
+    return jasmineUnderTest.Spy(name, originalFn);
+  }
+
   describe("#spyOn", function() {
     it("checks for the existence of the object", function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry();
+      var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: createSpy});
       expect(function() {
         spyRegistry.spyOn(void 0, 'pants');
       }).toThrowError(/could not find an object/);
@@ -43,7 +47,10 @@ describe("SpyRegistry", function() {
 
     it("checks if it has already been spied upon", function() {
       var spies = [],
-        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        spyRegistry = new jasmineUnderTest.SpyRegistry({
+          currentSpies: function() { return spies; },
+          createSpy: createSpy
+        }),
         subject = { spiedFunc: function() {} };
 
       spyRegistry.spyOn(subject, 'spiedFunc');
@@ -81,7 +88,7 @@ describe("SpyRegistry", function() {
 
     it("overrides the method on the object and returns the spy", function() {
       var originalFunctionWasCalled = false,
-        spyRegistry = new jasmineUnderTest.SpyRegistry(),
+        spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: createSpy}),
         subject = { spiedFunc: function() { originalFunctionWasCalled = true; } };
 
       var spy = spyRegistry.spyOn(subject, 'spiedFunc');
@@ -131,7 +138,7 @@ describe("SpyRegistry", function() {
     });
 
     it("checks if it has already been spied upon", function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: createSpy}),
         subject = {};
 
       Object.defineProperty(subject, 'spiedProp', {
@@ -170,7 +177,7 @@ describe("SpyRegistry", function() {
     });
 
     it("overrides the property getter on the object and returns the spy", function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: createSpy}),
         subject = {},
         returnValue = 1;
 
@@ -189,7 +196,7 @@ describe("SpyRegistry", function() {
     });
 
     it("overrides the property setter on the object and returns the spy", function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: createSpy}),
         subject = {},
         returnValue = 1;
 
@@ -210,7 +217,10 @@ describe("SpyRegistry", function() {
   describe("#clearSpies", function() {
     it("restores the original functions on the spied-upon objects", function() {
       var spies = [],
-        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        spyRegistry = new jasmineUnderTest.SpyRegistry({
+          currentSpies: function() { return spies; },
+          createSpy: createSpy
+        }),
         originalFunction = function() {},
         subject = { spiedFunc: originalFunction };
 
@@ -222,7 +232,10 @@ describe("SpyRegistry", function() {
 
     it("restores the original functions, even when that spy has been replace and re-spied upon", function() {
       var spies = [],
-        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        spyRegistry = new jasmineUnderTest.SpyRegistry({
+          currentSpies: function() { return spies; },
+          createSpy: createSpy
+        }),
         originalFunction = function() {},
         subject = { spiedFunc: originalFunction };
 
@@ -241,7 +254,10 @@ describe("SpyRegistry", function() {
 
     it("does not add a property that the spied-upon object didn't originally have", function() {
       var spies = [],
-        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        spyRegistry = new jasmineUnderTest.SpyRegistry({
+          currentSpies: function() { return spies; },
+          createSpy: createSpy
+        }),
         originalFunction = function() {},
         subjectParent = {spiedFunc: originalFunction};
 
@@ -258,7 +274,10 @@ describe("SpyRegistry", function() {
 
     it("restores the original function when it\'s inherited and cannot be deleted", function() {
       var spies = [],
-        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        spyRegistry = new jasmineUnderTest.SpyRegistry({
+          currentSpies: function() { return spies; },
+          createSpy: createSpy
+        }),
         originalFunction = function() {},
         subjectParent = {spiedFunc: originalFunction};
 
@@ -280,7 +299,10 @@ describe("SpyRegistry", function() {
     describe('spying on properties', function() {
       it("restores the original properties on the spied-upon objects", function() {
         var spies = [],
-          spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+          spyRegistry = new jasmineUnderTest.SpyRegistry({
+            currentSpies: function() { return spies; },
+            createSpy: createSpy
+          }),
           originalReturn = 1,
           subject = {};
 
@@ -297,7 +319,10 @@ describe("SpyRegistry", function() {
 
       it("does not add a property that the spied-upon object didn't originally have", function() {
         var spies = [],
-          spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+          spyRegistry = new jasmineUnderTest.SpyRegistry({
+            currentSpies: function() { return spies; },
+            createSpy: createSpy
+          }),
           originalReturn = 1,
           subjectParent = {};
 

@@ -257,6 +257,18 @@ getJasmineRequireObj().interface = function(jasmine, env) {
   };
 
   /**
+   * Create a bare {@link Spy} object. This won't be installed anywhere and will not have any implementation behind it.
+   * @name jasmine.createSpy
+   * @function
+   * @param {String} [name] - Name to give the spy. This will be displayed in failure messages.
+   * @param {Function} [originalFn] - Function to act as the real implementation.
+   * @return {Spy}
+   */
+  jasmine.createSpy = function(name, originalFn) {
+    return env.createSpy(name, originalFn);
+  };
+
+  /**
    * Create an object with multiple {@link Spy}s as its members.
    * @name jasmine.createSpyObj
    * @function

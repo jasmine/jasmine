@@ -173,18 +173,6 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return new j$.ArrayWithExactContents(sample);
   };
 
-  /**
-   * Create a bare {@link Spy} object. This won't be installed anywhere and will not have any implementation behind it.
-   * @name jasmine.createSpy
-   * @function
-   * @param {String} [name] - Name to give the spy. This will be displayed in failure messages.
-   * @param {Function} [originalFn] - Function to act as the real implementation.
-   * @return {Spy}
-   */
-  j$.createSpy = function(name, originalFn) {
-    return j$.Spy(name, originalFn);
-  };
-
   j$.isSpy = function(putativeSpy) {
     if (!putativeSpy) {
       return false;

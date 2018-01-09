@@ -1,7 +1,7 @@
 describe("toHaveBeenCalled", function() {
   it("passes when the actual was called, with a custom .not fail message", function() {
     var matcher = jasmineUnderTest.matchers.toHaveBeenCalled(),
-      calledSpy = jasmineUnderTest.createSpy('called-spy'),
+      calledSpy = new jasmineUnderTest.Env().createSpy('called-spy'),
       result;
 
     calledSpy();
@@ -13,7 +13,7 @@ describe("toHaveBeenCalled", function() {
 
   it("fails when the actual was not called", function() {
     var matcher = jasmineUnderTest.matchers.toHaveBeenCalled(),
-      uncalledSpy = jasmineUnderTest.createSpy('uncalled spy'),
+      uncalledSpy = new jasmineUnderTest.Env().createSpy('uncalled spy'),
       result;
 
     result = matcher.compare(uncalledSpy);
@@ -29,14 +29,14 @@ describe("toHaveBeenCalled", function() {
 
   it("throws an exception when invoked with any arguments", function() {
     var matcher = jasmineUnderTest.matchers.toHaveBeenCalled(),
-      spy = jasmineUnderTest.createSpy('sample spy');
+      spy = new jasmineUnderTest.Env().createSpy('sample spy');
 
     expect(function() { matcher.compare(spy, 'foo') }).toThrowError(Error, /Does not take arguments, use toHaveBeenCalledWith/);
   });
 
   it("has a custom message on failure", function() {
     var matcher = jasmineUnderTest.matchers.toHaveBeenCalled(),
-      spy = jasmineUnderTest.createSpy('sample-spy'),
+      spy = new jasmineUnderTest.Env().createSpy('sample-spy'),
       result;
 
     result = matcher.compare(spy);

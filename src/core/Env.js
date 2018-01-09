@@ -393,12 +393,17 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.clearReporters();
     };
 
-    var spyRegistry = new j$.SpyRegistry({currentSpies: function() {
-      if(!currentRunnable()) {
-        throw new Error('Spies must be created in a before function or a spec');
+    var spyRegistry = new j$.SpyRegistry({
+      currentSpies: function() {
+        if(!currentRunnable()) {
+          throw new Error('Spies must be created in a before function or a spec');
+        }
+        return runnableResources[currentRunnable().id].spies;
+      },
+      createSpy: function(name, originalFn) {
+        return self.createSpy(name, originalFn);
       }
-      return runnableResources[currentRunnable().id].spies;
-    }});
+    });
 
     this.allowRespy = function(allow){
       spyRegistry.allowRespy(allow);
@@ -410,6 +415,10 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.spyOnProperty = function() {
       return spyRegistry.spyOnProperty.apply(spyRegistry, arguments);
+    };
+
+    this.createSpy = function(name, originalFn) {
+      return j$.Spy(name, originalFn);
     };
 
     this.createSpyObj = function(baseName, methodNames) {
@@ -425,13 +434,13 @@ getJasmineRequireObj().Env = function(j$) {
  
       if (j$.isArray_(methodNames)) {
         for (var i = 0; i < methodNames.length; i++) {
-          obj[methodNames[i]] = j$.createSpy(baseName + '.' + methodNames[i]);
+          obj[methodNames[i]] = self.createSpy(baseName + '.' + methodNames[i]);
           spiesWereSet = true;
         }
       } else if (j$.isObject_(methodNames)) {
         for (var key in methodNames) {
           if (methodNames.hasOwnProperty(key)) {
-            obj[key] = j$.createSpy(baseName + '.' + key);
+            obj[key] = self.createSpy(baseName + '.' + key);
             obj[key].and.returnValue(methodNames[key]);
             spiesWereSet = true;
           }

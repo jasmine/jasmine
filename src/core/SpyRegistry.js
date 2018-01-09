@@ -4,6 +4,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
 
   function SpyRegistry(options) {
     options = options || {};
+    var createSpy = options.createSpy;
     var currentSpies = options.currentSpies || function() { return []; };
 
     this.allowRespy = function(allow){
@@ -39,7 +40,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       var originalMethod = obj[methodName],
-        spiedMethod = j$.createSpy(methodName, originalMethod),
+        spiedMethod = createSpy(methodName, originalMethod),
         restoreStrategy;
 
       if (Object.prototype.hasOwnProperty.call(obj, methodName)) {
@@ -94,7 +95,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       var originalDescriptor = j$.util.clone(descriptor),
-        spy = j$.createSpy(propertyName, descriptor[accessType]),
+        spy = createSpy(propertyName, descriptor[accessType]),
         restoreStrategy;
 
       if (Object.prototype.hasOwnProperty.call(obj, propertyName)) {

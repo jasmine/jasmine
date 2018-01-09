@@ -15,7 +15,7 @@ describe('Spies', function () {
     });
 
     it("preserves the properties of the spied function", function() {
-      var spy = jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var spy = env.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
 
       expect(spy.bob).toEqual("test");
     });
@@ -24,19 +24,19 @@ describe('Spies', function () {
       TestClass.prototype.someFunction.and = "turkey";
 
       expect(function() {
-        jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+        env.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
       }).toThrowError("Jasmine spies would overwrite the 'and' and 'calls' properties on the object being spied upon");
     });
 
     it("adds a spyStrategy and callTracker to the spy", function() {
-      var spy = jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var spy = env.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
 
       expect(spy.and).toEqual(jasmine.any(jasmineUnderTest.SpyStrategy));
       expect(spy.calls).toEqual(jasmine.any(jasmineUnderTest.CallTracker));
     });
 
     it("tracks the argument of calls", function () {
-      var spy = jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var spy = env.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
       var trackSpy = spyOn(spy.calls, "track");
 
       spy("arg");
@@ -45,7 +45,7 @@ describe('Spies', function () {
     });
 
     it("tracks the context of calls", function () {
-      var spy = jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var spy = env.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
       var trackSpy = spyOn(spy.calls, "track");
 
       var contextObject = { spyMethod: spy };
@@ -55,7 +55,7 @@ describe('Spies', function () {
     });
 
     it("tracks the return value of calls", function () {
-      var spy = jasmineUnderTest.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
+      var spy = env.createSpy(TestClass.prototype, TestClass.prototype.someFunction);
       var trackSpy = spyOn(spy.calls, "track");
 
       spy.and.returnValue("return value");
@@ -77,7 +77,7 @@ describe('Spies', function () {
 
       for (var arity = 0; arity < functions.length; arity++) {
         var someFunction = functions[arity],
-            spy = jasmineUnderTest.createSpy(someFunction.name, someFunction);
+            spy = env.createSpy(someFunction.name, someFunction);
 
         expect(spy.length).toEqual(arity);
       }
@@ -132,7 +132,7 @@ describe('Spies', function () {
   });
 
   it("can use different strategies for different arguments", function() {
-    var spy = jasmineUnderTest.createSpy('foo');
+    var spy = env.createSpy('foo');
     spy.and.returnValue(42);
     spy.withArgs('baz', 'grault').and.returnValue(-1);
     spy.withArgs('thud').and.returnValue('bob');
@@ -144,7 +144,7 @@ describe('Spies', function () {
   });
 
   it("uses custom equality testers when selecting a strategy", function() {
-    var spy = jasmineUnderTest.createSpy('foo');
+    var spy = env.createSpy('foo');
     spy.and.returnValue(42);
     spy.withArgs(jasmineUnderTest.any(String)).and.returnValue(-1);
 
@@ -153,7 +153,7 @@ describe('Spies', function () {
   });
 
   it("can reconfigure an argument-specific strategy", function() {
-    var spy = jasmineUnderTest.createSpy('foo');
+    var spy = env.createSpy('foo');
     spy.withArgs('foo').and.returnValue(42);
     spy.withArgs('foo').and.returnValue(17);
     expect(spy('foo')).toEqual(17);
@@ -161,14 +161,14 @@ describe('Spies', function () {
 
   describe("When withArgs is used without a base strategy", function() {
     it("uses the matching strategy", function() {
-      var spy = jasmineUnderTest.createSpy('foo');
+      var spy = env.createSpy('foo');
       spy.withArgs('baz').and.returnValue(-1);
 
       expect(spy('baz')).toEqual(-1);
     });
 
     it("throws if the args don't match", function() {
-      var spy = jasmineUnderTest.createSpy('foo');
+      var spy = env.createSpy('foo');
       spy.withArgs('bar').and.returnValue(-1);
 
       expect(function() { spy('baz', {qux: 42}); }).toThrowError('Spy \'foo\' receieved a call with arguments [ \'baz\', Object({ qux: 42 }) ] but all configured strategies specify other arguments.');
