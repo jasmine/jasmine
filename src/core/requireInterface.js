@@ -256,5 +256,17 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     return env.clock;
   };
 
+  /**
+   * Create an object with multiple {@link Spy}s as its members.
+   * @name jasmine.createSpyObj
+   * @function
+   * @param {String} [baseName] - Base name for the spies in the object.
+   * @param {String[]|Object} methodNames - Array of method names to create spies for, or Object whose keys will be method names and values the {@link Spy#and#returnValue|returnValue}.
+   * @return {Object}
+   */
+  jasmine.createSpyObj = function(baseName, methodNames) {
+    return env.createSpyObj(baseName, methodNames);
+  };
+
   return jasmineInterface;
 };

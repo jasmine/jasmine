@@ -1,4 +1,10 @@
 describe('Spies', function () {
+  var env;
+
+  beforeEach(function() {
+    env = new jasmineUnderTest.Env();
+  });
+
   describe("createSpy", function() {
     var TestClass;
 
@@ -80,7 +86,7 @@ describe('Spies', function () {
 
   describe("createSpyObj", function() {
     it("should create an object with spy methods and corresponding return values when you call jasmine.createSpyObj() with an object", function () {
-      var spyObj = jasmineUnderTest.createSpyObj('BaseName', {'method1': 42, 'method2': 'special sauce' });
+      var spyObj = env.createSpyObj('BaseName', {'method1': 42, 'method2': 'special sauce' });
 
       expect(spyObj.method1()).toEqual(42);
       expect(spyObj.method1.and.identity).toEqual('BaseName.method1');
@@ -91,7 +97,7 @@ describe('Spies', function () {
 
 
     it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
-      var spyObj = jasmineUnderTest.createSpyObj('BaseName', ['method1', 'method2']);
+      var spyObj = env.createSpyObj('BaseName', ['method1', 'method2']);
 
       expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
       expect(spyObj.method1.and.identity).toEqual('BaseName.method1');
@@ -99,7 +105,7 @@ describe('Spies', function () {
     });
 
     it("should allow you to omit the baseName", function() {
-      var spyObj = jasmineUnderTest.createSpyObj(['method1', 'method2']);
+      var spyObj = env.createSpyObj(['method1', 'method2']);
 
       expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
       expect(spyObj.method1.and.identity).toEqual('unknown.method1');
@@ -108,19 +114,19 @@ describe('Spies', function () {
 
     it("should throw if you do not pass an array or object argument", function() {
       expect(function() {
-        jasmineUnderTest.createSpyObj('BaseName');
+        env.createSpyObj('BaseName');
       }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
     });
 
     it("should throw if you pass an empty array argument", function() {
       expect(function() {
-        jasmineUnderTest.createSpyObj('BaseName', []);
+        env.createSpyObj('BaseName', []);
       }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
     });
 
     it("should throw if you pass an empty object argument", function() {
       expect(function() {
-        jasmineUnderTest.createSpyObj('BaseName', {});
+        env.createSpyObj('BaseName', {});
       }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
     });
   });
