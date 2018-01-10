@@ -3,6 +3,7 @@
 src_dir:
   - 'src'
 src_files:
+  - 'core/requireCore.js'
   - 'core/base.js'
   - 'core/util.js'
   #end of known dependencies

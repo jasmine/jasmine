@@ -12,7 +12,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     if (typeof window !== 'undefined' && typeof window.toString === 'function' && window.toString() === '[object GjsGlobal]') {
       jasmineGlobal = window;
     }
-    jasmineRequire = jasmineGlobal.jasmineRequire = jasmineGlobal.jasmineRequire || {};
+    jasmineRequire = jasmineGlobal.jasmineRequire = {};
   }
 
   function getJasmineRequire() {
@@ -32,7 +32,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.MockDate = jRequire.MockDate();
     j$.getClearStack = jRequire.clearStack(j$);
     j$.Clock = jRequire.Clock();
-    j$.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler();
+    j$.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler(j$);
     j$.Env = jRequire.Env(j$);
     j$.StackTrace = jRequire.StackTrace(j$);
     j$.ExceptionFormatter = jRequire.ExceptionFormatter(j$);

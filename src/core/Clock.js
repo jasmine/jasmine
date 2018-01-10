@@ -1,4 +1,7 @@
 getJasmineRequireObj().Clock = function() {
+
+  var NODE_JS = typeof process !== 'undefined' && process.versions && typeof process.versions.node === 'string';
+
   /**
    * _Note:_ Do not construct this directly, Jasmine will make one during booting. You can get the current clock with {@link jasmine.clock}.
    * @class Clock
@@ -22,6 +25,7 @@ getJasmineRequireObj().Clock = function() {
       delayedFunctionScheduler,
       timer;
 
+    self.FakeTimeout = FakeTimeout;
 
     /**
      * Install the mock clock over the built-in methods.
@@ -128,7 +132,15 @@ getJasmineRequireObj().Clock = function() {
     }
 
     function setTimeout(fn, delay) {
-      return delayedFunctionScheduler.scheduleFunction(fn, delay, argSlice(arguments, 2));
+      if (!NODE_JS) {
+        return delayedFunctionScheduler.scheduleFunction(fn, delay, argSlice(arguments, 2));
+      }
+
+      var timeout = new FakeTimeout();
+
+      delayedFunctionScheduler.scheduleFunction(fn, delay, argSlice(arguments, 2), false, timeout);
+
+      return timeout;
     }
 
     function clearTimeout(id) {
@@ -136,7 +148,15 @@ getJasmineRequireObj().Clock = function() {
     }
 
     function setInterval(fn, interval) {
-      return delayedFunctionScheduler.scheduleFunction(fn, interval, argSlice(arguments, 2), true);
+      if (!NODE_JS) {
+        return delayedFunctionScheduler.scheduleFunction(fn, interval, argSlice(arguments, 2), true);
+      }
+
+      var timeout = new FakeTimeout();
+
+      delayedFunctionScheduler.scheduleFunction(fn, interval, argSlice(arguments, 2), true, timeout);
+
+      return timeout;
     }
 
     function clearInterval(id) {
@@ -147,6 +167,19 @@ getJasmineRequireObj().Clock = function() {
       return Array.prototype.slice.call(argsObj, n);
     }
   }
+
+  /**
+   * Mocks Node.js Timeout class
+   */
+  function FakeTimeout() {}
+
+  FakeTimeout.prototype.ref = function () {
+    return this;
+  };
+
+  FakeTimeout.prototype.unref = function () {
+    return this;
+  };
 
   return Clock;
 };
