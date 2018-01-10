@@ -7,21 +7,21 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows adding more strategies local to a suite', function(done) {
-    var strategyInstance = jasmine.createSpy('custom strategy instance')
+    var plan = jasmine.createSpy('custom strategy plan')
       .and.returnValue(42);
-    var strategyFactory = jasmine.createSpy('custom strategy factory')
-      .and.returnValue(strategyInstance);
+    var strategy = jasmine.createSpy('custom strategy')
+      .and.returnValue(plan);
 
     env.describe('suite defining a custom spy strategy', function() {
       env.beforeEach(function() {
-        env.addSpyStrategy('frobnicate', strategyFactory);
+        env.addSpyStrategy('frobnicate', strategy);
       });
 
       env.it('spec in the suite', function() {
         var spy = env.createSpy('something').and.frobnicate(17);
         expect(spy(1, 2, 3)).toEqual(42);
-        expect(strategyFactory).toHaveBeenCalledWith(17);
-        expect(strategyInstance).toHaveBeenCalledWith(1, 2, 3);
+        expect(strategy).toHaveBeenCalledWith(17);
+        expect(plan).toHaveBeenCalledWith(1, 2, 3);
       });
     });
 
@@ -39,17 +39,17 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows adding more strategies local to a spec', function(done) {
-    var strategyInstance = jasmine.createSpy('custom strategy instance')
+    var plan = jasmine.createSpy('custom strategy plan')
       .and.returnValue(42);
-    var strategyFactory = jasmine.createSpy('custom strategy factory')
-      .and.returnValue(strategyInstance);
+    var strategy = jasmine.createSpy('custom strategy')
+      .and.returnValue(plan);
 
     env.it('spec defining a custom spy strategy', function() {
-      env.addSpyStrategy('frobnicate', strategyFactory);
+      env.addSpyStrategy('frobnicate', strategy);
       var spy = env.createSpy('something').and.frobnicate(17);
       expect(spy(1, 2, 3)).toEqual(42);
-      expect(strategyFactory).toHaveBeenCalledWith(17);
-      expect(strategyInstance).toHaveBeenCalledWith(1, 2, 3);
+      expect(strategy).toHaveBeenCalledWith(17);
+      expect(plan).toHaveBeenCalledWith(1, 2, 3);
     });
 
     env.it('spec without custom strategy defined', function() {
@@ -66,21 +66,21 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows using custom strategies on a per-argument basis', function(done) {
-    var strategyInstance = jasmine.createSpy('custom strategy instance')
+    var plan = jasmine.createSpy('custom strategy plan')
       .and.returnValue(42);
-    var strategyFactory = jasmine.createSpy('custom strategy factory')
-      .and.returnValue(strategyInstance);
+    var strategy = jasmine.createSpy('custom strategy')
+      .and.returnValue(plan);
 
     env.it('spec defining a custom spy strategy', function() {
-      env.addSpyStrategy('frobnicate', strategyFactory);
+      env.addSpyStrategy('frobnicate', strategy);
       var spy = env.createSpy('something')
         .and.returnValue('no args return')
         .withArgs(1, 2, 3).and.frobnicate(17);
 
       expect(spy()).toEqual('no args return');
-      expect(strategyInstance).not.toHaveBeenCalled();
+      expect(plan).not.toHaveBeenCalled();
       expect(spy(1, 2, 3)).toEqual(42);
-      expect(strategyInstance).toHaveBeenCalledWith(1, 2, 3);
+      expect(plan).toHaveBeenCalledWith(1, 2, 3);
     });
 
     env.it('spec without custom strategy defined', function() {

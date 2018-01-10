@@ -111,23 +111,23 @@ describe("SpyStrategy", function() {
   });
 
   it("allows a custom strategy to be used", function() {
-    var customStrategy = jasmine.createSpy('custom strategy')
+    var plan = jasmine.createSpy('custom strategy')
         .and.returnValue('custom strategy result'),
-      factory = jasmine.createSpy('custom strategy factory')
-        .and.returnValue(customStrategy),
+      customStrategy = jasmine.createSpy('custom strategy')
+        .and.returnValue(plan),
       originalFn = jasmine.createSpy('original'),
       spyStrategy = new jasmineUnderTest.SpyStrategy({
         fn: originalFn,
         customStrategies: {
-          doSomething: factory
+          doSomething: customStrategy
         }
       });
 
     spyStrategy.doSomething(1, 2, 3);
-    expect(factory).toHaveBeenCalledWith(1, 2, 3);
+    expect(customStrategy).toHaveBeenCalledWith(1, 2, 3);
     expect(spyStrategy.exec(null, ['some', 'args']))
       .toEqual('custom strategy result');
-    expect(customStrategy).toHaveBeenCalledWith('some', 'args');
+    expect(plan).toHaveBeenCalledWith('some', 'args');
   });
 
   it("throws an error if a custom strategy doesn't return a function", function() {
