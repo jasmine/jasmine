@@ -108,6 +108,13 @@ getJasmineRequireObj().Env = function(j$) {
       return true;
     };
 
+    this.addSpyStrategy = function(name, fn) {
+      if(!currentRunnable()) {
+        throw new Error('Custom spy strategies must be added in a before function or a spec');
+      }
+      runnableResources[currentRunnable().id].customSpyStrategies[name] = fn;
+    };
+
     this.addCustomEqualityTester = function(tester) {
       if(!currentRunnable()) {
         throw new Error('Custom Equalities must be added in a before function or a spec');
@@ -152,7 +159,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var defaultResourcesForRunnable = function(id, parentRunnableId) {
-      var resources = {spies: [], customEqualityTesters: [], customMatchers: {}};
+      var resources = {spies: [], customEqualityTesters: [], customMatchers: {}, customSpyStrategies: {}};
 
       if(runnableResources[parentRunnableId]){
         resources.customEqualityTesters = j$.util.clone(runnableResources[parentRunnableId].customEqualityTesters);
@@ -393,7 +400,15 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.clearReporters();
     };
 
-    var spyFactory = new j$.SpyFactory();
+    var spyFactory = new j$.SpyFactory(function() {
+      var runnable = currentRunnable();
+
+      if (runnable) {
+        return runnableResources[runnable.id].customSpyStrategies;
+      }
+
+      return {};
+    });
 
     var spyRegistry = new j$.SpyRegistry({
       currentSpies: function() {

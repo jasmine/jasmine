@@ -16,6 +16,22 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     this.originalFn = options.fn || function() {};
     this.getSpy = options.getSpy || function() {};
     this.plan = this._defaultPlan = function() {};
+
+    var k, cs = options.customStrategies || {};
+    for (k in cs) {
+      if (j$.util.has(cs, k) && !this[k]) {
+        this[k] = function() {
+          var plan = cs[k].apply(null, arguments);
+
+          if (!j$.isFunction_(plan)) {
+            throw new Error('Spy strategy must return a function');
+          }
+
+          this.plan = plan;
+          return this.getSpy();
+        };
+      }
+    }
   }
 
   /**
