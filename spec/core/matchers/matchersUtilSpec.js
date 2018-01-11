@@ -445,7 +445,8 @@ describe("matchersUtil", function() {
 
     it("passes when comparing identical maps", function() {
       jasmine.getEnv().requireFunctioningMaps();
-      var mapA = new Map([[6, 5]]);
+			var mapA = new Map();
+			mapA.set(6, 5);
       var mapB = new Map();
       mapB.set(6, 5);
       expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(true);
@@ -453,22 +454,34 @@ describe("matchersUtil", function() {
 
     it("passes when comparing identical maps with different insertion order", function() {
       jasmine.getEnv().requireFunctioningMaps();
-      var mapA = new Map([['a', 3], [6, 1]]);
-      var mapB = new Map([[6, 1], ['a', 3]]);
+			var mapA = new Map();
+			mapA.set("a", 3);
+			mapA.set(6, 1);
+			var mapB = new Map();
+			mapB.set(6, 1);
+			mapB.set("a", 3);
       expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(true);
     });
 
     it("fails for maps with different elements", function() {
       jasmine.getEnv().requireFunctioningMaps();
-      var mapA = new Map([[6, 3], [5, 1]]);
-      var mapB = new Map([[6, 4], [5, 1]]);
+			var mapA = new Map();
+			mapA.set(6, 3);
+			mapA.set(5, 1);
+			var mapB = new Map();
+			mapB.set(6, 4);
+			mapB.set(5, 1);
+			
       expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(false);
     });
 
     it("fails for maps of different size", function() {
       jasmine.getEnv().requireFunctioningMaps();
-      var mapA = new Map([[6, 3]]);
-      var mapB = new Map([[6, 4], [5, 1]]);
+			var mapA = new Map();
+			mapA.set(6, 3);
+			var mapB = new Map();
+			mapB.set(6, 4);
+			mapB.set(5, 1);
       expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(false);
     });
 

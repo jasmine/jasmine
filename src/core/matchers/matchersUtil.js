@@ -253,42 +253,48 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       if (!result) {
         return false;
       }
-    } else if (className == '[object Map]') {
+    } else if (j$.isMap(a) && j$.isMap(b)) {
       if (a.size != b.size) {
         diffBuilder.record(a, b);
         return false;
-      }
+			}
+			
+			var keysA = [];
+			var keysB = [];
+			a.forEach( function( valueA, keyA ) {
+				keysA.push( keyA );
+			});
+			b.forEach( function( valueB, keyB ) {
+				keysB.push( keyB );
+			});
 
-      // For both sets of keys, check they map to equal values in both maps.
-      // Keep track of corresponding keys (in insertion order) in order to handle asymmetric obj keys.
-      var mapKeys = [a.keys(), b.keys()];
-      var cmpKeys = [b.keys(), a.keys()];
-      var mapIter, mapKeyIt, mapKey, mapValueA, mapValueB;
-      var cmpIter, cmpKeyIt, cmpKey;
-      for (i = 0; result && i < mapKeys.length; i++) {
-        mapIter = mapKeys[i];
-        cmpIter = cmpKeys[i];
-        mapKeyIt = mapIter.next();
-        cmpKeyIt = cmpIter.next();
-        while (result && !mapKeyIt.done) {
-          mapKey = mapKeyIt.value;
-          cmpKey = cmpKeyIt.value;
-          mapValueA = a.get(mapKey);
+			// For both sets of keys, check they map to equal values in both maps.
+			// Keep track of corresponding keys (in insertion order) in order to handle asymmetric obj keys.
+			var mapKeys = [keysA, keysB];
+			var cmpKeys = [keysB, keysA];
+			var mapIter, mapKey, mapValueA, mapValueB;
+			var cmpIter, cmpKey;
+			for (i = 0; result && i < mapKeys.length; i++) {
+				mapIter = mapKeys[i];
+				cmpIter = cmpKeys[i];
+				
+				for (var j = 0; result && j < mapIter.length; j++) {
+					mapKey = mapIter[j];
+					cmpKey = cmpIter[j];
+					mapValueA = a.get(mapKey);
 
-          // Only use the cmpKey when one of the keys is asymmetric and the corresponding key matches,
-          // otherwise explicitly look up the mapKey in the other Map since we want keys with unique
-          // obj identity (that are otherwise equal) to not match.
-          if (isAsymmetric(mapKey) || isAsymmetric(cmpKey) &&
-              eq(mapKey, cmpKey, aStack, bStack, customTesters, j$.NullDiffBuilder())) {
-            mapValueB = b.get(cmpKey);
-          } else {
-            mapValueB = b.get(mapKey);
-          }
-          result = eq(mapValueA, mapValueB, aStack, bStack, customTesters, j$.NullDiffBuilder());
-          mapKeyIt = mapIter.next();
-          cmpKeyIt = cmpIter.next();
-        }
-      }
+					// Only use the cmpKey when one of the keys is asymmetric and the corresponding key matches,
+					// otherwise explicitly look up the mapKey in the other Map since we want keys with unique
+					// obj identity (that are otherwise equal) to not match.
+					if (isAsymmetric(mapKey) || isAsymmetric(cmpKey) &&
+							eq(mapKey, cmpKey, aStack, bStack, customTesters, j$.NullDiffBuilder())) {
+						mapValueB = b.get(cmpKey);
+					} else {
+						mapValueB = b.get(mapKey);
+					}
+					result = eq(mapValueA, mapValueB, aStack, bStack, customTesters, j$.NullDiffBuilder());
+				}
+			}
 
       if (!result) {
         diffBuilder.record(a, b);
