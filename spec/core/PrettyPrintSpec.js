@@ -36,7 +36,9 @@ describe("jasmineUnderTest.pp", function () {
   describe('stringify maps', function() {
     it("should stringify maps properly", function() {
       jasmine.getEnv().requireFunctioningMaps();
-      expect(jasmineUnderTest.pp(new Map([[1, 2]]))).toEqual("Map( [ 1, 2 ] )");
+      var map = new Map();
+      map.set(1,2);
+      expect(jasmineUnderTest.pp(map)).toEqual("Map( [ 1, 2 ] )");
     });
 
     it("should truncate maps with more elments than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
@@ -45,7 +47,11 @@ describe("jasmineUnderTest.pp", function () {
 
       try {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        expect(jasmineUnderTest.pp(new Map([["a", 1], ["b", 2], ["c", 3]]))).toEqual("Map( [ 'a', 1 ], [ 'b', 2 ], ... )");
+        var map = new Map();
+        map.set("a",1);
+        map.set("b",2);
+        map.set("c",3);
+        expect(jasmineUnderTest.pp(map)).toEqual("Map( [ 'a', 1 ], [ 'b', 2 ], ... )");
       } finally {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxSize;
       }
@@ -120,15 +126,15 @@ describe("jasmineUnderTest.pp", function () {
   });
 
   it("should truncate objects with too many keys", function () {
-      var originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
-      var long = {a: 1, b: 2, c: 3};
+    var originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+    var long = {a: 1, b: 2, c: 3};
 
-      try {
-        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        expect(jasmineUnderTest.pp(long)).toEqual("Object({ a: 1, b: 2, ... })");
-      } finally {
-        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
-      }
+    try {
+      jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+      expect(jasmineUnderTest.pp(long)).toEqual("Object({ a: 1, b: 2, ... })");
+    } finally {
+      jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
+    }
   });
 
   function withMaxChars(maxChars, fn) {
@@ -251,9 +257,9 @@ describe("jasmineUnderTest.pp", function () {
 
   it("should stringify spy objects properly", function() {
     var TestObject = {
-          someFunction: function() {}
-        },
-        env = new jasmineUnderTest.Env();
+      someFunction: function() {}
+    },
+    env = new jasmineUnderTest.Env();
 
     var spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() {return [];}});
 
