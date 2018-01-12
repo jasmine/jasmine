@@ -43,6 +43,103 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     }
   };
 
+  QueueRunner.prototype.clearTimeout = function(timeoutId) {
+    Function.prototype.apply.apply(this.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
+  };
+
+  QueueRunner.prototype.setTimeout = function(fn, timeout) {
+    return Function.prototype.apply.apply(this.timeout.setTimeout, [j$.getGlobal(), [fn, timeout]]);
+  };
+
+  QueueRunner.prototype.attempt = function attempt(iterativeIndex) {
+    var self = this, completedSynchronously = true,
+      handleError = function(error) {
+        onException(error);
+        next();
+      },
+      cleanup = once(function() {
+        self.clearTimeout(timeoutId);
+        self.globalErrors.popListener(handleError);
+      }),
+      next = once(function () {
+        cleanup();
+
+        function runNext() {
+          if (self.completeOnFirstError && errored) {
+            self.skipToCleanup(iterativeIndex);
+          } else {
+            self.run(iterativeIndex + 1);
+          }
+        }
+
+        if (completedSynchronously) {
+          self.setTimeout(runNext);
+        } else {
+          runNext();
+        }
+      }),
+      errored = false,
+      queueableFn = self.queueableFns[iterativeIndex],
+      timeoutId;
+
+    next.fail = function() {
+      self.fail.apply(null, arguments);
+      errored = true;
+      next();
+    };
+
+    self.globalErrors.pushListener(handleError);
+
+    if (queueableFn.timeout) {
+      timeoutId = self.setTimeout(function() {
+        var error = new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.');
+        onException(error);
+        next();
+      }, queueableFn.timeout());
+    }
+
+    try {
+      if (queueableFn.fn.length === 0) {
+        var maybeThenable = queueableFn.fn.call(self.userContext);
+
+        if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
+          maybeThenable.then(next, onPromiseRejection);
+          completedSynchronously = false;
+          return { completedSynchronously: false };
+        }
+      } else {
+        queueableFn.fn.call(self.userContext, next);
+        completedSynchronously = false;
+        return { completedSynchronously: false };
+      }
+    } catch (e) {
+      handleException(e, queueableFn);
+      errored = true;
+    }
+
+    cleanup();
+    return { completedSynchronously: true, errored: errored };
+
+    function onException(e) {
+      self.onException(e);
+      errored = true;
+    }
+
+    function onPromiseRejection(e) {
+      onException(e);
+      next();
+    }
+
+    function handleException(e, queueableFn) {
+      onException(e);
+      if (!self.catchException(e)) {
+        //TODO: set a var when we catch an exception and
+        //use a finally block to close the loop in a nice way..
+        throw e;
+      }
+    }
+  };
+
   QueueRunner.prototype.run = function(recursiveIndex) {
     var length = this.queueableFns.length,
       self = this,
@@ -50,7 +147,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
 
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
-      var result = attempt(iterativeIndex);
+      var result = this.attempt(iterativeIndex);
 
       if (!result.completedSynchronously) {
         return;
@@ -67,100 +164,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self.onComplete();
     });
 
-    function attempt() {
-      var clearTimeout = function () {
-          Function.prototype.apply.apply(self.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
-        },
-        setTimeout = function(delayedFn, delay) {
-          return Function.prototype.apply.apply(self.timeout.setTimeout, [j$.getGlobal(), [delayedFn, delay]]);
-        },
-        completedSynchronously = true,
-        handleError = function(error) {
-          onException(error);
-          next();
-        },
-        cleanup = once(function() {
-          clearTimeout(timeoutId);
-          self.globalErrors.popListener(handleError);
-        }),
-        next = once(function () {
-          cleanup();
-
-          function runNext() {
-            if (self.completeOnFirstError && errored) {
-              self.skipToCleanup(iterativeIndex);
-            } else {
-              self.run(iterativeIndex + 1);
-            }
-          }
-
-          if (completedSynchronously) {
-            setTimeout(runNext);
-          } else {
-            runNext();
-          }
-        }),
-        errored = false,
-        queueableFn = self.queueableFns[iterativeIndex],
-        timeoutId;
-
-      next.fail = function() {
-        self.fail.apply(null, arguments);
-        errored = true;
-        next();
-      };
-
-      self.globalErrors.pushListener(handleError);
-
-      if (queueableFn.timeout) {
-        timeoutId = setTimeout(function() {
-          var error = new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.');
-          onException(error);
-          next();
-        }, queueableFn.timeout());
-      }
-
-      try {
-        if (queueableFn.fn.length === 0) {
-          var maybeThenable = queueableFn.fn.call(self.userContext);
-
-          if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
-            maybeThenable.then(next, onPromiseRejection);
-            completedSynchronously = false;
-            return { completedSynchronously: false };
-          }
-        } else {
-          queueableFn.fn.call(self.userContext, next);
-          completedSynchronously = false;
-          return { completedSynchronously: false };
-        }
-      } catch (e) {
-        handleException(e, queueableFn);
-        errored = true;
-      }
-
-      cleanup();
-      return { completedSynchronously: true, errored: errored };
-
-      function onException(e) {
-        self.onException(e);
-        errored = true;
-      }
-
-      function onPromiseRejection(e) {
-        onException(e);
-        next();
-      }
-
-      function handleException(e, queueableFn) {
-        onException(e);
-        if (!self.catchException(e)) {
-          //TODO: set a var when we catch an exception and
-          //use a finally block to close the loop in a nice way..
-          throw e;
-        }
-      }
-    }
   };
 
   return QueueRunner;

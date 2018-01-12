@@ -168,6 +168,7 @@ getJasmineRequireObj().TreeProcessor = function() {
 
             queueRunnerFactory({
               onComplete: function() {
+                node.cleanupBeforeAfter();
                 nodeComplete(node, node.getResult());
                 done();
               },

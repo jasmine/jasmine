@@ -17,6 +17,7 @@ describe("TreeProcessor", function() {
     this.getResult = jasmine.createSpy(this.id + '#execute');
     this.beforeAllFns = attrs.beforeAllFns || [];
     this.afterAllFns = attrs.afterAllFns || [];
+    this.cleanupBeforeAfter = function() { };
   }
 
   function Leaf(attrs) {

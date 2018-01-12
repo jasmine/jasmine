@@ -81,6 +81,7 @@ getJasmineRequireObj().Spec = function(j$) {
     this.queueRunnerFactory(runnerConfig);
 
     function complete(enabledAgain) {
+      self.queueableFn.fn = null;
       self.result.status = self.status(enabledAgain);
       self.resultCallback(self.result);
 

@@ -65,6 +65,19 @@ getJasmineRequireObj().Suite = function(j$) {
     this.afterAllFns.unshift(fn);
   };
 
+  function removeFns(queueableFns) {
+    for(var i = 0; i < queueableFns.length; i++) {
+      queueableFns[i].fn = null;
+    }
+  }
+
+  Suite.prototype.cleanupBeforeAfter = function() {
+    removeFns(this.beforeAllFns);
+    removeFns(this.afterAllFns);
+    removeFns(this.beforeFns);
+    removeFns(this.afterFns);
+  };
+
   Suite.prototype.addChild = function(child) {
     this.children.push(child);
   };
