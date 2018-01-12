@@ -396,45 +396,94 @@ describe("matchersUtil", function() {
 
     it("passes when comparing identical sets", function() {
       jasmine.getEnv().requireFunctioningSets();
-      var setA = new Set([6, 5]);
+
+      var setA = new Set();
+      setA.add(6);
+      setA.add(5);
       var setB = new Set();
       setB.add(6);
       setB.add(5);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
     it("passes when comparing identical sets with different insertion order and simple elements", function() {
       jasmine.getEnv().requireFunctioningSets();
-      var setA = new Set([3, 6]);
-      var setB = new Set([6, 3]);
+
+      var setA = new Set();
+      setA.add(3);
+      setA.add(6);
+      var setB = new Set();
+      setB.add(6);
+      setB.add(3);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
     it("passes when comparing identical sets with different insertion order and complex elements 1", function() {
-      jasmine.getEnv().requireFunctioningMaps();
-      var setA = new Set([new Set([['a', 3], [6, 1]]), new Set([['y', 3], [6, 1]])]);
-      var setB = new Set([new Set([[6, 1], ['a', 3]]), new Set([[6, 1], ['y', 3]])]);
+			jasmine.getEnv().requireFunctioningSets();
+			
+      var setA1 = new Set();
+      setA1.add(['a',3]);
+      setA1.add([6,1]);
+      var setA2 = new Set();
+      setA1.add(['y',3]);
+      setA1.add([6,1]);
+      var setA = new Set();
+      setA.add(setA1);
+      setA.add(setA2);
+
+
+      var setB1 = new Set();
+      setB1.add([6,1]);
+      setB1.add(['a',3]);
+      var setB2 = new Set();
+      setB1.add([6,1]);
+      setB1.add(['y',3]);
+      var setB = new Set();
+      setB.add(setB1);
+      setB.add(setB2);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
     it("passes when comparing identical sets with different insertion order and complex elements 2", function() {
-      jasmine.getEnv().requireFunctioningMaps();
-      var setA = new Set([[[1,2], [3,4]], [[5,6], [7,8]]]);
-      var setB = new Set([[[5,6], [7,8]], [[1,2], [3,4]]]);
+			jasmine.getEnv().requireFunctioningSets();
+
+      var setA = new Set();
+      setA.add([[1,2], [3,4]]);
+      setA.add([[5,6], [7,8]]);
+      var setB = new Set();
+      setB.add([[5,6], [7,8]]);
+      setB.add([[1,2], [3,4]]);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
     it("fails for sets with different elements", function() {
       jasmine.getEnv().requireFunctioningSets();
-      var setA = new Set([6, 3, 5]);
-      var setB = new Set([6, 4, 5]);
+      var setA = new Set();
+      setA.add(6);
+      setA.add(3);
+      setA.add(5);
+      var setB = new Set();
+      setB.add(6);
+      setB.add(4);
+      setB.add(5);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
     });
 
     it("fails for sets of different size", function() {
       jasmine.getEnv().requireFunctioningSets();
-      var setA = new Set([6, 3]);
-      var setB = new Set([6, 4, 5]);
+      var setA = new Set();
+      setA.add(6);
+      setA.add(3);
+      var setB = new Set();
+      setB.add(6);
+      setB.add(4);
+      setB.add(5);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
     });
 

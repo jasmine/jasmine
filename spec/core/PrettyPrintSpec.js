@@ -16,8 +16,11 @@ describe("jasmineUnderTest.pp", function () {
 
   describe('stringify sets', function() {
     it("should stringify sets properly", function() {
-      jasmine.getEnv().requireFunctioningSets();
-      expect(jasmineUnderTest.pp(new Set([1, 2]))).toEqual("Set( 1, 2 )");
+			jasmine.getEnv().requireFunctioningSets();
+			var set = new Set();
+			set.add(1);
+			set.add(2);
+      expect(jasmineUnderTest.pp(set)).toEqual("Set( 1, 2 )");
     });
 
     it("should truncate sets with more elments than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
@@ -25,8 +28,12 @@ describe("jasmineUnderTest.pp", function () {
       var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
 
       try {
-        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        expect(jasmineUnderTest.pp(new Set(["a", "b", "c"]))).toEqual("Set( 'a', 'b', ... )");
+				jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+				var set = new Set();
+				set.add('a');
+				set.add('b');
+				set.add('c');
+        expect(jasmineUnderTest.pp(set)).toEqual("Set( 'a', 'b', ... )");
       } finally {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxSize;
       }

@@ -374,9 +374,11 @@ describe("toEqual", function() {
   it("reports mismatches between Sets", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = new Set([1]),
-      expected = new Set([2]),
-      message = 'Expected Set( 1 ) to equal Set( 2 ).';
+    var actual = new Set();
+    actual.add(1);
+    var expected = new Set();
+    expected.add(2);
+    var message = 'Expected Set( 1 ) to equal Set( 2 ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -384,9 +386,11 @@ describe("toEqual", function() {
   it("reports deep mismatches within Sets", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = new Set([{x: 1}]),
-      expected = new Set([{x: 2}]),
-       message = 'Expected Set( Object({ x: 1 }) ) to equal Set( Object({ x: 2 }) ).';
+    var actual = new Set();
+    actual.add({x: 1});
+    var expected = new Set();
+    expected.add({x: 2});
+    var message = 'Expected Set( Object({ x: 1 }) ) to equal Set( Object({ x: 2 }) ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -394,9 +398,14 @@ describe("toEqual", function() {
   it("reports mismatches between Sets nested in objects", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = {sets: [new Set([1])]},
-      expected = {sets: [new Set([2])]},
-      message = "Expected $.sets[0] = Set( 1 ) to equal Set( 2 ).";
+    var actualSet = new Set();
+    actualSet.add(1);
+    var expectedSet = new Set();
+    expectedSet.add(2);
+
+    var actual = { sets: [actualSet] };
+    var expected = { sets: [expectedSet] };
+    var message = "Expected $.sets[0] = Set( 1 ) to equal Set( 2 ).";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -404,9 +413,12 @@ describe("toEqual", function() {
   it("reports mismatches between Sets of different lengths", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = new Set([1, 2]),
-      expected = new Set([2]),
-      message = 'Expected Set( 1, 2 ) to equal Set( 2 ).';
+    var actual = new Set();
+    actual.add(1);
+    actual.add(2);
+    var expected = new Set();
+    expected.add(2);
+    var message = 'Expected Set( 1, 2 ) to equal Set( 2 ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -415,9 +427,13 @@ describe("toEqual", function() {
     jasmine.getEnv().requireFunctioningSets();
 
     // Use 'duplicate' object in actual so sizes match
-    var actual = new Set([{x: 1}, {x: 1}]),
-      expected = new Set([{x: 1}, {x: 2}]),
-      message = 'Expected Set( Object({ x: 1 }), Object({ x: 1 }) ) to equal Set( Object({ x: 1 }), Object({ x: 2 }) ).';
+    var actual = new Set();
+    actual.add({x: 1});
+    actual.add({x: 1});
+    var expected = new Set();
+    expected.add({x: 1});
+    expected.add({x: 2});
+    var message = 'Expected Set( Object({ x: 1 }), Object({ x: 1 }) ) to equal Set( Object({ x: 1 }), Object({ x: 2 }) ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -426,9 +442,13 @@ describe("toEqual", function() {
     jasmine.getEnv().requireFunctioningSets();
 
     // Use 'duplicate' object in expected so sizes match
-    var actual = new Set([{x: 1}, {x: 2}]),
-      expected = new Set([{x: 1}, {x: 1}]),
-      message = 'Expected Set( Object({ x: 1 }), Object({ x: 2 }) ) to equal Set( Object({ x: 1 }), Object({ x: 1 }) ).';
+    var actual = new Set();
+    actual.add({x: 1});
+    actual.add({x: 2});
+    var expected = new Set();
+    expected.add({x: 1});
+    expected.add({x: 1});
+    var message = 'Expected Set( Object({ x: 1 }), Object({ x: 2 }) ) to equal Set( Object({ x: 1 }), Object({ x: 1 }) ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
