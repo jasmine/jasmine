@@ -38,7 +38,7 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitScalar('HTMLNode');
       } else if (value instanceof Date) {
         this.emitScalar('Date(' + value + ')');
-      } else if (j$.getType_(value) == '[object Set]') {
+      } else if (j$.isSet(value)) {
         this.emitSet(value);
       } else if (j$.isMap(value)) {
         this.emitMap(value);
@@ -137,13 +137,18 @@ getJasmineRequireObj().pp = function(j$) {
     }
     this.append('Set( ');
     var size = Math.min(set.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
-    var iter = set.values();
-    for (var i = 0; i < size; i++) {
+    var i = 0;
+    set.forEach( function( value, key ) {
+      if (i >= size) {
+        return;
+      }
       if (i > 0) {
         this.append(', ');
       }
-      this.format(iter.next().value);
-    }
+      this.format(value);
+
+      i++;
+    }, this );
     if (set.size > size){
       this.append(', ...');
     }

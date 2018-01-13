@@ -97,6 +97,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return typeof jasmineGlobal.Map !== 'undefined' && obj.constructor === jasmineGlobal.Map;
   };
 
+  j$.isSet = function(obj) {
+    return typeof jasmineGlobal.Set !== 'undefined' && obj.constructor === jasmineGlobal.Set;
+  };
+
   j$.isPromise = function(obj) {
     return typeof jasmineGlobal.Promise !== 'undefined' && obj.constructor === jasmineGlobal.Promise;
   };
