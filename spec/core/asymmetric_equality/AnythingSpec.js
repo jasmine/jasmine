@@ -48,7 +48,7 @@ describe("Anything", function() {
   });
 
   it("matches a Symbol", function() {
-    jasmine.getEnv().requireFunctioningSets();
+    jasmine.getEnv().requireFunctioningSymbols();
 
     var anything = new jasmineUnderTest.Anything();
 
