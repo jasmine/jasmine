@@ -16,6 +16,8 @@ getJasmineRequireObj().Spec = function(j$) {
 
     if (!this.queueableFn.fn) {
       this.pend();
+    } else {
+      this.markedPending = false;
     }
 
     /**
@@ -25,7 +27,8 @@ getJasmineRequireObj().Spec = function(j$) {
      * @property {String} fullName - The full description including all ancestors of this spec.
      * @property {Expectation[]} failedExpectations - The list of expectations that failed during execution of this spec.
      * @property {Expectation[]} passedExpectations - The list of expectations that passed during execution of this spec.
-     * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
+     * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason; may be empty string.
+     * @property {boolean} markedPending - If the spec is {@link pending}. status may be 'disabled' or 'pending'
      * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
      */
     this.result = {
@@ -34,7 +37,8 @@ getJasmineRequireObj().Spec = function(j$) {
       fullName: this.getFullName(),
       failedExpectations: [],
       passedExpectations: [],
-      pendingReason: ''
+      pendingReason: '',
+      markedPending: false
     };
   }
 
@@ -126,6 +130,8 @@ getJasmineRequireObj().Spec = function(j$) {
   };
 
   Spec.prototype.status = function(enabled) {
+    this.result.markedPending = this.markedPending;
+
     if (this.disabled || enabled === false) {
       return 'disabled';
     }

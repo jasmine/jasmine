@@ -1397,12 +1397,15 @@ describe("Env integration", function() {
 
       expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
         description: 'with a top level spec',
-        status: 'passed'
+        status: 'passed',
+        markedPending: false
       }));
 
       expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
         description: "with an x'ed spec",
-        status: 'pending'
+        status: 'pending',
+        pendingReason: 'Temporarily disabled with xit',
+        markedPending: true
       }));
 
       expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
@@ -1487,6 +1490,7 @@ describe("Env integration", function() {
 
       expect(specStatus.status).toBe('pending');
       expect(specStatus.pendingReason).toBe('with a message');
+      expect(specStatus.markedPending).toBe(true);
 
       done();
     });
@@ -1578,6 +1582,8 @@ describe("Env integration", function() {
         order: jasmine.any(jasmineUnderTest.Order)
       });
 
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ pendingReason: '' }));
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ markedPending: true }));
       expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ status: 'disabled' }));
       expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({ description: 'xd out', status: 'pending' }));
       expect(reporter.suiteDone.calls.count()).toBe(4);

@@ -222,7 +222,8 @@ describe("Spec", function() {
       fullName: 'a suite with a spec',
       failedExpectations: [],
       passedExpectations: [],
-      pendingReason: ''
+      pendingReason: '',
+      markedPending: true
     });
   });
 
@@ -321,6 +322,19 @@ describe("Spec", function() {
     expect(specNameSpy.calls.mostRecent().args[0].id).toEqual(spec.id);
   });
 
+  it("should have false markedPending by default", function() {
+    var spec = new jasmineUnderTest.Spec({
+        description: 'my test',
+        id: 'some-id',
+        queueableFn: { fn: function() { } },
+        queueRunnerFactory: function(attrs) { attrs.onComplete(); },
+      });
+
+    spec.execute();
+
+    expect(spec.result.markedPending).toBe(false)
+  });
+
   describe("when a spec is marked pending during execution", function() {
     it("should mark the spec as pending", function() {
       var fakeQueueRunner = function(opts) {
@@ -336,7 +350,7 @@ describe("Spec", function() {
       spec.execute();
 
       expect(spec.status()).toEqual("pending");
-      expect(spec.result.pendingReason).toEqual('');
+      expect(spec.result.markedPending).toBe(true);
     });
 
     it("should set the pendingReason", function() {
