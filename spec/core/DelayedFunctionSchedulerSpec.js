@@ -254,6 +254,22 @@ describe("DelayedFunctionScheduler", function() {
     expect(fn.calls.count()).toBe(1);
   });
 
+  it("does not remove a function that hasn't been added yet", function() {
+    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      fn = jasmine.createSpy('fn'),
+      fnDelay = 10,
+      timeoutKey;
+
+    scheduler.removeFunctionWithId('foo');
+    scheduler.scheduleFunction(fn, fnDelay, [], false, 'foo');
+
+    expect(fn).not.toHaveBeenCalled();
+
+    scheduler.tick(fnDelay + 1);
+
+    expect(fn).toHaveBeenCalled();
+  });
+
   it("updates the mockDate per scheduled time", function () {
     var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       tickDate = jasmine.createSpy('tickDate');
