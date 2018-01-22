@@ -1,12 +1,17 @@
 describe('Spy Registry browser-specific behavior', function() {
+  function createSpy(name, originalFn) {
+    return jasmineUnderTest.Spy(name, originalFn);
+  }
+
   it('can spy on and unspy window.onerror', function() {
     requireWriteableOnerror();
 
     var spies = [],
       spyRegistry = new jasmineUnderTest.SpyRegistry({
-		  currentSpies: function() { return spies; },
-		  global: window
-		  }),
+        currentSpies: function() { return spies; },
+        createSpy: createSpy,
+        global: window
+      }),
       originalHandler = window.onerror;
 
     try {

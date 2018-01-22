@@ -290,7 +290,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
    * @param {Function} factory - Factory function that returns the plan to be executed.
    */
   jasmine.addSpyStrategy = function(name, factory) {
-    return env.addSpyStrategy(identifier, factory);
+    return env.addSpyStrategy(name, factory);
   };
 
   return jasmineInterface;

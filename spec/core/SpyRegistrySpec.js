@@ -304,6 +304,7 @@ describe("SpyRegistry", function() {
         global = new FakeWindow(),
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           currentSpies: function() { return spies; },
+          createSpy: createSpy,
           global: global
         });
 
