@@ -20,18 +20,22 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     var k, cs = options.customStrategies || {};
     for (k in cs) {
       if (j$.util.has(cs, k) && !this[k]) {
-        this[k] = function() {
-          var plan = cs[k].apply(null, arguments);
-
-          if (!j$.isFunction_(plan)) {
-            throw new Error('Spy strategy must return a function');
-          }
-
-          this.plan = plan;
-          return this.getSpy();
-        };
+        this[k] = createCustomPlan(cs[k]);
       }
     }
+  }
+
+  function createCustomPlan(factory) {
+    return function() {
+      var plan = factory.apply(null, arguments);
+
+      if (!j$.isFunction_(plan)) {
+        throw new Error('Spy strategy must return a function');
+      }
+
+      this.plan = plan;
+      return this.getSpy();
+    };
   }
 
   /**

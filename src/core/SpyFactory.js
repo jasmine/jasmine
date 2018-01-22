@@ -6,18 +6,18 @@ getJasmineRequireObj().SpyFactory = function(j$) {
     this.createSpy = function(name, originalFn) {
       return j$.Spy(name, originalFn, getCustomStrategies());
     };
-  
+
     this.createSpyObj = function(baseName, methodNames) {
       var baseNameIsCollection = j$.isObject_(baseName) || j$.isArray_(baseName);
-  
+
       if (baseNameIsCollection && j$.util.isUndefined(methodNames)) {
         methodNames = baseName;
         baseName = 'unknown';
       }
-   
+
       var obj = {};
       var spiesWereSet = false;
-   
+
       if (j$.isArray_(methodNames)) {
         for (var i = 0; i < methodNames.length; i++) {
           obj[methodNames[i]] = self.createSpy(baseName + '.' + methodNames[i]);
@@ -32,11 +32,11 @@ getJasmineRequireObj().SpyFactory = function(j$) {
           }
         }
       }
-   
+
       if (!spiesWereSet) {
         throw 'createSpyObj requires a non-empty array or object of method names to create spies for';
       }
-   
+
       return obj;
     };
   }

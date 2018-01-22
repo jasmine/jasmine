@@ -95,4 +95,44 @@ describe('Custom Spy Strategies (Integration)', function() {
     env.addReporter({ jasmineDone: jasmineDone });
     env.execute();
   });
+
+  it('allows multiple custom strategies to be used', function(done) {
+    var plan1 = jasmine.createSpy('plan 1').and.returnValue(42),
+      strategy1 = jasmine.createSpy('strat 1').and.returnValue(plan1),
+      plan2 = jasmine.createSpy('plan 2').and.returnValue(24),
+      strategy2 = jasmine.createSpy('strat 2').and.returnValue(plan2),
+      specDone = jasmine.createSpy('specDone');
+
+    env.beforeEach(function() {
+      env.addSpyStrategy('frobnicate', strategy1);
+      env.addSpyStrategy('jiggle', strategy2);
+    });
+
+    env.it('frobnicates', function() {
+      plan1.calls.reset();
+      plan2.calls.reset();
+      var spy = env.createSpy('spy').and.frobnicate();
+      expect(spy()).toEqual(42);
+      expect(plan1).toHaveBeenCalled();
+      expect(plan2).not.toHaveBeenCalled();
+    });
+
+    env.it('jiggles', function() {
+      plan1.calls.reset();
+      plan2.calls.reset();
+      var spy = env.createSpy('spy').and.jiggle();
+      expect(spy()).toEqual(24);
+      expect(plan1).not.toHaveBeenCalled();
+      expect(plan2).toHaveBeenCalled();
+    });
+
+    function jasmineDone(result) {
+      expect(result.overallStatus).toEqual('passed');
+      expect(specDone.calls.count()).toBe(2);
+      done();
+    }
+
+    env.addReporter({ jasmineDone: jasmineDone, specDone: specDone });
+    env.execute();
+  });
 });

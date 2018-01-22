@@ -280,5 +280,18 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     return env.createSpyObj(baseName, methodNames);
   };
 
+  /**
+   * Add a custom spy strategy for the current scope of specs.
+   *
+   * _Note:_ This is only callable from within a {@link beforeEach}, {@link it}, or {@link beforeAll}.
+   * @name jasmine.addSpyStrategy
+   * @function
+   * @param {String} name - The name of the strategy (i.e. what you call from `and`)
+   * @param {Function} factory - Factory function that returns the plan to be executed.
+   */
+  jasmine.addSpyStrategy = function(name, factory) {
+    return env.addSpyStrategy(identifier, factory);
+  };
+
   return jasmineInterface;
 };
