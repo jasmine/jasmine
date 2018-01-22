@@ -108,6 +108,13 @@ getJasmineRequireObj().Env = function(j$) {
       return true;
     };
 
+    this.addSpyStrategy = function(name, fn) {
+      if(!currentRunnable()) {
+        throw new Error('Custom spy strategies must be added in a before function or a spec');
+      }
+      runnableResources[currentRunnable().id].customSpyStrategies[name] = fn;
+    };
+
     this.addCustomEqualityTester = function(tester) {
       if(!currentRunnable()) {
         throw new Error('Custom Equalities must be added in a before function or a spec');
@@ -152,7 +159,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var defaultResourcesForRunnable = function(id, parentRunnableId) {
-      var resources = {spies: [], customEqualityTesters: [], customMatchers: {}};
+      var resources = {spies: [], customEqualityTesters: [], customMatchers: {}, customSpyStrategies: {}};
 
       if(runnableResources[parentRunnableId]){
         resources.customEqualityTesters = j$.util.clone(runnableResources[parentRunnableId].customEqualityTesters);
@@ -393,12 +400,27 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.clearReporters();
     };
 
-    var spyRegistry = new j$.SpyRegistry({currentSpies: function() {
-      if(!currentRunnable()) {
-        throw new Error('Spies must be created in a before function or a spec');
+    var spyFactory = new j$.SpyFactory(function() {
+      var runnable = currentRunnable();
+
+      if (runnable) {
+        return runnableResources[runnable.id].customSpyStrategies;
       }
-      return runnableResources[currentRunnable().id].spies;
-    }});
+
+      return {};
+    });
+
+    var spyRegistry = new j$.SpyRegistry({
+      currentSpies: function() {
+        if(!currentRunnable()) {
+          throw new Error('Spies must be created in a before function or a spec');
+        }
+        return runnableResources[currentRunnable().id].spies;
+      },
+      createSpy: function(name, originalFn) {
+        return self.createSpy(name, originalFn);
+      }
+    });
 
     this.allowRespy = function(allow){
       spyRegistry.allowRespy(allow);
@@ -410,6 +432,14 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.spyOnProperty = function() {
       return spyRegistry.spyOnProperty.apply(spyRegistry, arguments);
+    };
+
+    this.createSpy = function(name, originalFn) {
+      return spyFactory.createSpy(name, originalFn);
+    };
+
+    this.createSpyObj = function(baseName, methodNames) {
+      return spyFactory.createSpyObj(baseName, methodNames);
     };
 
     var ensureIsFunction = function(fn, caller) {
