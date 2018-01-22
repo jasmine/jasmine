@@ -65,6 +65,43 @@ describe("toThrowError", function() {
     expect(result.message()).toEqual("Expected function to throw an Error, but it threw 4.");
   });
 
+  describe("when error is from another frame", function() {
+    function isNotRunningInBrowser() {
+      return typeof document === 'undefined'
+    }
+
+    var iframe = null;
+
+    afterEach(function() {
+      if (iframe !== null) {
+        document.body.removeChild(iframe);
+      }
+    });
+
+    it("passes if thrown is an instanceof Error regardless of global that contains its constructor", function() {
+      if (isNotRunningInBrowser() || jasmine.getEnv().phantomVersion < 2 || jasmine.getEnv().ieVersion < 10) {
+        return;
+      }
+
+      var matcher = jasmineUnderTest.matchers.toThrowError();
+      iframe = document.body.appendChild(document.createElement("iframe"));
+      iframe.src = "about:blank";
+      var iframeDocument = iframe.contentWindow.document;
+
+      if (iframeDocument.body) {
+        iframeDocument.body.appendChild(iframeDocument.createElement("script"))
+        .textContent = "function method() { throw new Error('foo'); }";
+      } else {
+        // older IE
+        iframeDocument.write("<html><head><script>function method() { throw new Error('foo'); }</script></head></html>");
+      }
+
+      var result = matcher.compare(iframe.contentWindow.method);
+      expect(result.pass).toBe(true);
+      expect(result.message).toEqual("Expected function not to throw an Error, but it threw Error.");
+    });
+  });
+
   it("fails with the correct message if thrown is a falsy value", function() {
     var matcher = jasmineUnderTest.matchers.toThrowError(),
       fn = function() {

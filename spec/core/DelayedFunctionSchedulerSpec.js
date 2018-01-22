@@ -216,21 +216,23 @@ describe("DelayedFunctionScheduler", function() {
 
   it("removes functions during a tick that runs the function", function() {
     var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
-      fn = jasmine.createSpy('fn'),
+      spy = jasmine.createSpy('fn'),
+      spyAndRemove = jasmine.createSpy('fn'),
       fnDelay = 10,
       timeoutKey;
 
-    timeoutKey = scheduler.scheduleFunction(fn, fnDelay, [], true);
-    scheduler.scheduleFunction(function () {
+    spyAndRemove.and.callFake(function() {
       scheduler.removeFunctionWithId(timeoutKey);
-    }, 2 * fnDelay);
+    });
 
-    expect(fn).not.toHaveBeenCalled();
+    scheduler.scheduleFunction(spyAndRemove, fnDelay);
 
-    scheduler.tick(3 * fnDelay);
+    timeoutKey = scheduler.scheduleFunction(spy, fnDelay, [], true);
 
-    expect(fn).toHaveBeenCalled();
-    expect(fn.calls.count()).toBe(2);
+    scheduler.tick(2 * fnDelay);
+
+    expect(spy).not.toHaveBeenCalled();
+    expect(spyAndRemove).toHaveBeenCalled();
   });
 
   it("removes functions during the first tick that runs the function", function() {
@@ -250,6 +252,22 @@ describe("DelayedFunctionScheduler", function() {
 
     expect(fn).toHaveBeenCalled();
     expect(fn.calls.count()).toBe(1);
+  });
+
+  it("does not remove a function that hasn't been added yet", function() {
+    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      fn = jasmine.createSpy('fn'),
+      fnDelay = 10,
+      timeoutKey;
+
+    scheduler.removeFunctionWithId('foo');
+    scheduler.scheduleFunction(fn, fnDelay, [], false, 'foo');
+
+    expect(fn).not.toHaveBeenCalled();
+
+    scheduler.tick(fnDelay + 1);
+
+    expect(fn).toHaveBeenCalled();
   });
 
   it("updates the mockDate per scheduled time", function () {

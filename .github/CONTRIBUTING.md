@@ -16,7 +16,8 @@ Please submit pull requests via feature branches using the semi-standard workflo
 git clone git@github.com:yourUserName/jasmine.git              # Clone your fork
 cd jasmine                                                     # Change directory
 git remote add upstream https://github.com/jasmine/jasmine.git # Assign original repository to a remote named 'upstream'
-git fetch upstream                                             # Pull in changes not present in your local repository
+git fetch upstream                                             # Fetch changes not present in your local repository
+git merge upstream/master                                      # Sync local master with upstream repository
 git checkout -b my-new-feature                                 # Create your feature branch
 git commit -am 'Add some feature'                              # Commit your changes
 git push origin my-new-feature                                 # Push to the branch
@@ -40,9 +41,9 @@ Once you've pushed a feature branch to your forked repo, you're ready to open a 
 
 ### Self-testing
 
-Note that Jasmine tests itself. The files in `lib` are loaded first, defining the reference `jasmine`. Then the files in `src` are loaded, defining the reference `j$`. So there are two copies of the code loaded under test.
+Note that Jasmine tests itself. The files in `lib` are loaded first, defining the reference `jasmine`. Then the files in `src` are loaded, defining the reference `jasmineUnderTest`. So there are two copies of the code loaded under test.
 
-The tests should always use `j$` to refer to the objects and functions that are being tested. But the tests can use functions on `jasmine` as needed. _Be careful how you structure any new test code_. Copy the patterns you see in the existing code - this ensures that the code you're testing is not leaking into the `jasmine` reference and vice-versa.
+The tests should always use `jasmineUnderTest` to refer to the objects and functions that are being tested. But the tests can use functions on `jasmine` as needed. _Be careful how you structure any new test code_. Copy the patterns you see in the existing code - this ensures that the code you're testing is not leaking into the `jasmine` reference and vice-versa.
 
 ### `boot.js`
 
@@ -129,11 +130,9 @@ The easiest way to run the tests in **Internet Explorer** is to run a VM that ha
 1. Ensure all specs are green in browser *and* node
 1. Ensure JSHint is green with `grunt jshint`
 1. Build `jasmine.js` with `grunt buildDistribution` and run all specs again - this ensures that your changes self-test well
-
-## Submitting a Pull Request
 1. Revert your changes to `jasmine.js` and `jasmine-html.js`
-  * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches
-1. When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into master
+    * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches
+    * When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into master
 
 Note that we use Travis for Continuous Integration. We only accept green pull requests.
 

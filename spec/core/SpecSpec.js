@@ -103,8 +103,26 @@ describe("Spec", function() {
 
     spec.execute();
 
-    var allSpecFns = fakeQueueRunner.calls.mostRecent().args[0].queueableFns;
-    expect(allSpecFns).toEqual([before, queueableFn, after]);
+    var options = fakeQueueRunner.calls.mostRecent().args[0];
+    expect(options.queueableFns).toEqual([before, queueableFn]);
+    expect(options.cleanupFns).toEqual([after]);
+  });
+
+  it("tells the queue runner that it's a leaf node", function() {
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+      spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: function() {} },
+        beforeAndAfterFns: function() {
+          return {befores: [], afters: []}
+        },
+        queueRunnerFactory: fakeQueueRunner
+      });
+
+    spec.execute();
+
+    expect(fakeQueueRunner).toHaveBeenCalledWith(jasmine.objectContaining({
+      isLeaf: true
+    }));
   });
 
   it("is marked pending if created without a function body", function() {
@@ -123,7 +141,8 @@ describe("Spec", function() {
   });
 
   it("can be disabled, but still calls callbacks", function() {
-    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner')
+        .and.callFake(function(attrs) { attrs.onComplete(); }),
       startCallback = jasmine.createSpy('startCallback'),
       specBody = jasmine.createSpy('specBody'),
       resultCallback = jasmine.createSpy('resultCallback'),
@@ -140,7 +159,7 @@ describe("Spec", function() {
 
     spec.execute();
 
-    expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(fakeQueueRunner).toHaveBeenCalled();
     expect(specBody).not.toHaveBeenCalled();
 
     expect(startCallback).toHaveBeenCalled();
@@ -148,7 +167,8 @@ describe("Spec", function() {
   });
 
   it("can be disabled at execution time by a parent", function() {
-    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner')
+        .and.callFake(function(attrs) { attrs.onComplete(); }),
       startCallback = jasmine.createSpy('startCallback'),
       specBody = jasmine.createSpy('specBody'),
       resultCallback = jasmine.createSpy('resultCallback'),
@@ -163,7 +183,7 @@ describe("Spec", function() {
 
     expect(spec.result.status).toBe('disabled');
 
-    expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(fakeQueueRunner).toHaveBeenCalled();
     expect(specBody).not.toHaveBeenCalled();
 
     expect(startCallback).toHaveBeenCalled();
@@ -171,7 +191,8 @@ describe("Spec", function() {
   });
 
   it("can be marked pending, but still calls callbacks when executed", function() {
-    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner')
+        .and.callFake(function(attrs) { attrs.onComplete(); }),
       startCallback = jasmine.createSpy('startCallback'),
       resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
@@ -191,7 +212,7 @@ describe("Spec", function() {
 
     spec.execute();
 
-    expect(fakeQueueRunner).not.toHaveBeenCalled();
+    expect(fakeQueueRunner).toHaveBeenCalled();
 
     expect(startCallback).toHaveBeenCalled();
     expect(resultCallback).toHaveBeenCalledWith({

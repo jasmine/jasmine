@@ -1,7 +1,6 @@
 <a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/master/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a>
 
 [![Build Status](https://travis-ci.org/jasmine/jasmine.svg?branch=master)](https://travis-ci.org/jasmine/jasmine)
-[![Code Climate](https://codeclimate.com/github/pivotal/jasmine.svg)](https://codeclimate.com/github/pivotal/jasmine)
 
 =======
 
@@ -10,7 +9,7 @@
 Jasmine is a Behavior Driven Development testing framework for JavaScript. It does not rely on browsers, DOM, or any JavaScript framework. Thus it's suited for websites, [Node.js](http://nodejs.org) projects, or anywhere that JavaScript can run.
 
 Documentation & guides live here: [http://jasmine.github.io](http://jasmine.github.io/)
-For a quick start guide of Jasmine 2.0, see the beginning of [http://jasmine.github.io/2.0/introduction.html](http://jasmine.github.io/2.0/introduction.html)
+For a quick start guide of Jasmine 2.x, see the beginning of [http://jasmine.github.io/edge/introduction.html](http://jasmine.github.io/edge/introduction.html)
 
 Upgrading from Jasmine 1.x? Check out the [2.0 release notes](https://github.com/jasmine/jasmine/blob/v2.0.0/release_notes/20.md) for a list of what's new (including breaking interface changes). You can also read the [upgrade guide](http://jasmine.github.io/2.0/upgrading.html).
 
@@ -32,23 +31,23 @@ For the Jasmine Python Egg:<br>
 For the Jasmine headless browser gulp plugin:<br>
 [https://github.com/jasmine/gulp-jasmine-browser](https://github.com/jasmine/gulp-jasmine-browser)
 
-To install Jasmine standalone on your local box:
+To install Jasmine standalone on your local box (where **_{#.#.#}_** below is substituted by the release number downloaded):
 
 * Download the standalone distribution for your desired release from the [releases page](https://github.com/jasmine/jasmine/releases)
 * Create a Jasmine directory in your project - `mkdir my-project/jasmine`
-* Move the dist to your project directory - `mv jasmine/dist/jasmine-standalone-2.0.0.zip my-project/jasmine`
+* Move the dist to your project directory - `mv jasmine/dist/jasmine-standalone-{#.#.#}.zip my-project/jasmine`
 * Change directory - `cd my-project/jasmine`
-* Unzip the dist - `unzip jasmine-standalone-2.0.0.zip`
+* Unzip the dist - `unzip jasmine-standalone-{#.#.#}.zip`
 
 Add the following to your HTML file:
 
 ```html
-<link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-2.0.0/jasmine_favicon.png">
-<link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-2.0.0/jasmine.css">
+<link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-{#.#.#}/jasmine_favicon.png">
+<link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-{#.#.#}/jasmine.css">
 
-<script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine.js"></script>
-<script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/jasmine-html.js"></script>
-<script type="text/javascript" src="jasmine/lib/jasmine-2.0.0/boot.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-{#.#.#}/jasmine.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-{#.#.#}/jasmine-html.js"></script>
+<script type="text/javascript" src="jasmine/lib/jasmine-{#.#.#}/boot.js"></script>
 ```
 
 ## Supported environments

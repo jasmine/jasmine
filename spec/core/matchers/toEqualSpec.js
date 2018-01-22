@@ -161,8 +161,8 @@ describe("toEqual", function() {
   it("uses the default failure message given arrays with different lengths", function() {
     var actual = [1, 2],
       expected = [1, 2, 3],
-      message =
-        "Expected [ 1, 2 ] to equal [ 1, 2, 3 ].";
+      message = 'Expected $.length = 2 to equal 3.\n' +
+        'Expected $[2] = undefined to equal 3.';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -207,6 +207,16 @@ describe("toEqual", function() {
       expected = [[2]],
       message =
         "Expected $[0][0] = 1 to equal 2.";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("reports mismatches between arrays of different types", function() {
+    jasmine.getEnv().requireFunctioningTypedArrays();
+
+    var actual = new Uint32Array([1, 2, 3]),
+      expected = new Uint16Array([1, 2, 3]),
+      message = "Expected Uint32Array [ 1, 2, 3 ] to equal Uint16Array [ 1, 2, 3 ].";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -359,13 +369,28 @@ describe("toEqual", function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
-  it("does not report deep mismatches within Sets", function() {
-    // TODO: implement deep comparison of set elements
+  // == Sets ==
+
+  it("reports mismatches between Sets", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = new Set([1]),
-      expected = new Set([2]),
-      message = 'Expected Set( 1 ) to equal Set( 2 ).';
+    var actual = new Set();
+    actual.add(1);
+    var expected = new Set();
+    expected.add(2);
+    var message = 'Expected Set( 1 ) to equal Set( 2 ).';
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("reports deep mismatches within Sets", function() {
+    jasmine.getEnv().requireFunctioningSets();
+
+    var actual = new Set();
+    actual.add({x: 1});
+    var expected = new Set();
+    expected.add({x: 2});
+    var message = 'Expected Set( Object({ x: 1 }) ) to equal Set( Object({ x: 2 }) ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -373,9 +398,14 @@ describe("toEqual", function() {
   it("reports mismatches between Sets nested in objects", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = {sets: [new Set([1])]},
-      expected = {sets: [new Set([2])]},
-      message = "Expected $.sets[0] = Set( 1 ) to equal Set( 2 ).";
+    var actualSet = new Set();
+    actualSet.add(1);
+    var expectedSet = new Set();
+    expectedSet.add(2);
+
+    var actual = { sets: [actualSet] };
+    var expected = { sets: [expectedSet] };
+    var message = "Expected $.sets[0] = Set( 1 ) to equal Set( 2 ).";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -383,11 +413,180 @@ describe("toEqual", function() {
   it("reports mismatches between Sets of different lengths", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = new Set([1, 2]),
-      expected = new Set([2]),
-      message = 'Expected Set( 1, 2 ) to equal Set( 2 ).';
+    var actual = new Set();
+    actual.add(1);
+    actual.add(2);
+    var expected = new Set();
+    expected.add(2);
+    var message = 'Expected Set( 1, 2 ) to equal Set( 2 ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("reports mismatches between Sets where actual is missing a value from expected", function() {
+    jasmine.getEnv().requireFunctioningSets();
+
+    // Use 'duplicate' object in actual so sizes match
+    var actual = new Set();
+    actual.add({x: 1});
+    actual.add({x: 1});
+    var expected = new Set();
+    expected.add({x: 1});
+    expected.add({x: 2});
+    var message = 'Expected Set( Object({ x: 1 }), Object({ x: 1 }) ) to equal Set( Object({ x: 1 }), Object({ x: 2 }) ).';
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("reports mismatches between Sets where actual has a value missing from expected", function() {
+    jasmine.getEnv().requireFunctioningSets();
+
+    // Use 'duplicate' object in expected so sizes match
+    var actual = new Set();
+    actual.add({x: 1});
+    actual.add({x: 2});
+    var expected = new Set();
+    expected.add({x: 1});
+    expected.add({x: 1});
+    var message = 'Expected Set( Object({ x: 1 }), Object({ x: 2 }) ) to equal Set( Object({ x: 1 }), Object({ x: 1 }) ).';
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  // == Maps ==
+
+  it("does not report mismatches between deep equal Maps", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    // values are the same but with different object identity
+    var actual = new Map();
+    actual.set('a',{x:1});
+    var expected = new Map();
+    expected.set('a',{x:1});
+
+    expect(compareEquals(actual, expected).pass).toBe(true);
+  });
+
+  it("reports deep mismatches within Maps", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var actual = new Map();
+    actual.set('a',{x:1});
+    var expected = new Map();
+    expected.set('a',{x:2});
+    var message = "Expected Map( [ 'a', Object({ x: 1 }) ] ) to equal Map( [ 'a', Object({ x: 2 }) ] ).";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("reports mismatches between Maps nested in objects", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var actual = {Maps:[new Map()]};
+    actual.Maps[0].set('a',1);
+    var expected = {Maps:[new Map()]};
+    expected.Maps[0].set('a',2);
+
+    var message = "Expected $.Maps[0] = Map( [ 'a', 1 ] ) to equal Map( [ 'a', 2 ] ).";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("reports mismatches between Maps of different lengths", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var actual = new Map();
+    actual.set('a',1);
+    var expected = new Map();
+    expected.set('a',2);
+    expected.set('b',1);
+    var message = "Expected Map( [ 'a', 1 ] ) to equal Map( [ 'a', 2 ], [ 'b', 1 ] ).";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("reports mismatches between Maps with equal values but differing keys", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var actual = new Map();
+    actual.set('a',1);
+    var expected = new Map();
+    expected.set('b',1);
+    var message = "Expected Map( [ 'a', 1 ] ) to equal Map( [ 'b', 1 ] ).";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("does not report mismatches between Maps with keys with same object identity", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+    var  key = {x: 1};
+    var actual = new Map();
+    actual.set(key,2);
+    var expected = new Map();
+    expected.set(key,2);
+
+    expect(compareEquals(actual, expected).pass).toBe(true);
+  });
+
+  it("reports mismatches between Maps with identical keys with different object identity", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var actual = new Map();
+    actual.set({x:1},2);
+    var expected = new Map();
+    expected.set({x:1},2);
+    var message = "Expected Map( [ Object({ x: 1 }), 2 ] ) to equal Map( [ Object({ x: 1 }), 2 ] ).";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("does not report mismatches when comparing Map key to jasmine.anything()", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var actual = new Map();
+    actual.set('a',1);
+    var expected = new Map();
+    expected.set(jasmineUnderTest.anything(),1);
+
+    expect(compareEquals(actual, expected).pass).toBe(true);
+  });
+
+  it("does not report mismatches when comparing Maps with the same symbol keys", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+    jasmine.getEnv().requireFunctioningSymbols();
+
+    var key = Symbol();
+    var actual = new Map();
+    actual.set(key,1);
+    var expected = new Map();
+    expected.set(key,1);
+
+    expect(compareEquals(actual, expected).pass).toBe(true);
+  });
+
+  it("reports mismatches between Maps with different symbol keys", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+    jasmine.getEnv().requireFunctioningSymbols();
+
+    var actual = new Map();
+    actual.set(Symbol(),1);
+    var expected = new Map();
+    expected.set(Symbol(),1);
+    var message = "Expected Map( [ Symbol(), 1 ] ) to equal Map( [ Symbol(), 1 ] ).";
+
+    expect(compareEquals(actual, expected).message).toBe(message);
+  });
+
+  it("does not report mismatches when comparing Map symbol key to jasmine.anything()", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+    jasmine.getEnv().requireFunctioningSymbols();
+
+    var actual = new Map();
+    actual.set(Symbol(),1);
+    var expected = new Map();
+    expected.set(jasmineUnderTest.anything(),1);
+
+    expect(compareEquals(actual, expected).pass).toBe(true);
   });
 
   function isNotRunningInBrowser() {
@@ -456,9 +655,9 @@ describe("toEqual", function() {
 
   it("does not report a mismatch when asymmetric matchers are satisfied", function() {
     var actual = {a: 'a'},
-      expected = {a: jasmineUnderTest.any(String)},
-      message = 'Expected $.a = 1 to equal <jasmine.any(String)>.';
+      expected = {a: jasmineUnderTest.any(String)};
 
+    expect(compareEquals(actual, expected).message).toEqual('');
     expect(compareEquals(actual, expected).pass).toBe(true)
   });
 
@@ -499,7 +698,8 @@ describe("toEqual", function() {
 
     var message =
       'Expected $.foo[0].bar = 1 to equal 2.\n' +
-      "Expected $.foo[0].things = [ 'a', 'b' ] to equal [ 'a', 'b', 'c' ].\n" +
+      'Expected $.foo[0].things.length = 2 to equal 3.\n' +
+      "Expected $.foo[0].things[2] = undefined to equal 'c'.\n" +
       "Expected $.foo[1].things[1] = 'b' to equal 'd'.\n" +
       'Expected $.baz[0].a to have properties\n' +
       '    c: 1\n' +
@@ -512,5 +712,93 @@ describe("toEqual", function() {
       'Expected $.aNull = undefined to equal null.'
 
     expect(compareEquals(actual, expected).message).toEqual(message);
+  })
+
+  describe("different length arrays", function() {
+    it("actual array is longer", function() {
+      var actual = [1, 1, 2, 3, 5],
+        expected = [1, 1, 2, 3],
+        message = 'Expected $.length = 5 to equal 4.\n' +
+          'Expected $[4] = 5 to equal undefined.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("expected array is longer", function() {
+      var actual = [1, 1, 2, 3],
+        expected = [1, 1, 2, 3, 5],
+        message = 'Expected $.length = 4 to equal 5.\n' +
+          'Expected $[4] = undefined to equal 5.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("expected array is longer by 4 elements", function() {
+      var actual = [1, 1, 2],
+        expected = [1, 1, 2, 3, 5, 8, 13],
+        message = 'Expected $.length = 3 to equal 7.\n' +
+          'Expected $[3] = undefined to equal 3.\n' +
+          'Expected $[4] = undefined to equal 5.\n' +
+          'Expected $[5] = undefined to equal 8.\n' +
+          'Expected $[6] = undefined to equal 13.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("different length and different elements", function() {
+      var actual = [1],
+        expected = [2, 3],
+        message = 'Expected $.length = 1 to equal 2.\n' +
+          'Expected $[0] = 1 to equal 2.\n' +
+          'Expected $[1] = undefined to equal 3.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("object with nested array", function() {
+      var actual = { values: [1, 1, 2, 3] },
+        expected = { values: [1, 1, 2] },
+        message = 'Expected $.values.length = 4 to equal 3.\n' +
+          'Expected $.values[3] = 3 to equal undefined.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("array with nested object", function() {
+      var actual = [1, 1, 2, { value: 3 }],
+        expected = [1, 1, 2],
+        message = 'Expected $.length = 4 to equal 3.\n' +
+          'Expected $[3] = Object({ value: 3 }) to equal undefined.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("array with nested different length array", function() {
+      var actual = [[1], [1, 2]],
+        expected = [[1, 1], [2]],
+        message = 'Expected $[0].length = 1 to equal 2.\n' +
+          'Expected $[0][1] = undefined to equal 1.\n' +
+          'Expected $[1].length = 2 to equal 1.\n' +
+          'Expected $[1][0] = 1 to equal 2.\n' +
+          'Expected $[1][1] = 2 to equal undefined.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("last element of longer array is undefined", function() {
+      var actual = [1, 2],
+        expected = [1, 2, void 0],
+        message = 'Expected $.length = 2 to equal 3.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
   })
 });

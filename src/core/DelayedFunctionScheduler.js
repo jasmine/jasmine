@@ -1,10 +1,11 @@
-getJasmineRequireObj().DelayedFunctionScheduler = function() {
+getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
   function DelayedFunctionScheduler() {
     var self = this;
     var scheduledLookup = [];
     var scheduledFunctions = {};
     var currentTime = 0;
     var delayedFnCount = 0;
+    var deletedKeys = [];
 
     self.tick = function(millis, tickDate) {
       millis = millis || 0;
@@ -51,6 +52,8 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
     };
 
     self.removeFunctionWithId = function(timeoutKey) {
+      deletedKeys.push(timeoutKey);
+
       for (var runAtMillis in scheduledFunctions) {
         var funcs = scheduledFunctions[runAtMillis];
         var i = indexOfFirstToPass(funcs, function (func) {
@@ -121,12 +124,14 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
       }
 
       do {
+        deletedKeys = [];
         var newCurrentTime = scheduledLookup.shift();
         tickDate(newCurrentTime - currentTime);
 
         currentTime = newCurrentTime;
 
         var funcsToRun = scheduledFunctions[currentTime];
+
         delete scheduledFunctions[currentTime];
 
         forEachFunction(funcsToRun, function(funcToRun) {
@@ -136,6 +141,10 @@ getJasmineRequireObj().DelayedFunctionScheduler = function() {
         });
 
         forEachFunction(funcsToRun, function(funcToRun) {
+          if (j$.util.arrayContains(deletedKeys, funcToRun.timeoutKey)) {
+            // skip a timeoutKey deleted whilst we were running
+            return;
+          }
           funcToRun.funcToCall.apply(null, funcToRun.params || []);
         });
       } while (scheduledLookup.length > 0 &&

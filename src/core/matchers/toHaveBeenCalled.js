@@ -2,6 +2,14 @@ getJasmineRequireObj().toHaveBeenCalled = function(j$) {
 
   var getErrorMsg = j$.formatErrorMsg('<toHaveBeenCalled>', 'expect(<spyObj>).toHaveBeenCalled()');
 
+  /**
+   * {@link expect} the actual (a {@link Spy}) to have been called.
+   * @function
+   * @name matchers#toHaveBeenCalled
+   * @example
+   * expect(mySpy).toHaveBeenCalled();
+   * expect(mySpy).not.toHaveBeenCalled();
+   */
   function toHaveBeenCalled() {
     return {
       compare: function(actual) {

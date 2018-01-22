@@ -20,4 +20,8 @@
     return /Firefox\/([0-9]{0,})/.exec(userAgent);
   });
 
+  env.phantomVersion = browserVersion(function(userAgent) {
+    return /PhantomJS\/([0-9]{0,})/.exec(userAgent);
+  });
+
 })(jasmine.getEnv());

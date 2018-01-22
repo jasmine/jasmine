@@ -66,13 +66,17 @@ getJasmineRequireObj().matchersUtil = function(j$) {
 
     if (asymmetricA) {
       result = a.asymmetricMatch(b, customTesters);
-      diffBuilder.record(a, b);
+      if (!result) {
+        diffBuilder.record(a, b);
+      }
       return result;
     }
 
     if (asymmetricB) {
       result = b.asymmetricMatch(a, customTesters);
-      diffBuilder.record(a, b);
+      if (!result) {
+        diffBuilder.record(a, b);
+      }
       return result;
     }
   }
@@ -210,6 +214,12 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       return false;
     }
 
+    var aIsPromise = j$.isPromise(a);
+    var bIsPromise = j$.isPromise(b);
+    if (aIsPromise && bIsPromise) {
+      return a === b;
+    }
+
     // Assume equality for cyclic structures. The algorithm for detecting cyclic
     // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
     var length = aStack.length;
@@ -225,35 +235,121 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     // Recursively compare objects and arrays.
     // Compare array lengths to determine if a deep comparison is necessary.
     if (className == '[object Array]') {
-      size = a.length;
-      if (size !== b.length) {
-        diffBuilder.record(a, b);
-        return false;
-      }
+      var aLength = a.length;
+      var bLength = b.length;
 
-      for (i = 0; i < size; i++) {
+      diffBuilder.withPath('length', function() {
+        if (aLength !== bLength) {
+          diffBuilder.record(aLength, bLength);
+          result = false;
+        }
+      });
+
+      for (i = 0; i < aLength || i < bLength; i++) {
         diffBuilder.withPath(i, function() {
-          result = eq(a[i], b[i], aStack, bStack, customTesters, diffBuilder) && result;
+          result = eq(i < aLength ? a[i] : void 0, i < bLength ? b[i] : void 0, aStack, bStack, customTesters, diffBuilder) && result;
         });
       }
       if (!result) {
         return false;
       }
-    } else if (className == '[object Set]') {
+    } else if (j$.isMap(a) && j$.isMap(b)) {
       if (a.size != b.size) {
         diffBuilder.record(a, b);
         return false;
       }
-      var iterA = a.values(), iterB = b.values();
-      var valA, valB;
-      do {
-        valA = iterA.next();
-        valB = iterB.next();
-        if (!eq(valA.value, valB.value, aStack, bStack, customTesters, j$.NullDiffBuilder())) {
-          diffBuilder.record(a, b);
-          return false;
+
+      var keysA = [];
+      var keysB = [];
+      a.forEach( function( valueA, keyA ) {
+        keysA.push( keyA );
+      });
+      b.forEach( function( valueB, keyB ) {
+        keysB.push( keyB );
+      });
+
+      // For both sets of keys, check they map to equal values in both maps.
+      // Keep track of corresponding keys (in insertion order) in order to handle asymmetric obj keys.
+      var mapKeys = [keysA, keysB];
+      var cmpKeys = [keysB, keysA];
+      var mapIter, mapKey, mapValueA, mapValueB;
+      var cmpIter, cmpKey;
+      for (i = 0; result && i < mapKeys.length; i++) {
+        mapIter = mapKeys[i];
+        cmpIter = cmpKeys[i];
+
+        for (var j = 0; result && j < mapIter.length; j++) {
+          mapKey = mapIter[j];
+          cmpKey = cmpIter[j];
+          mapValueA = a.get(mapKey);
+
+          // Only use the cmpKey when one of the keys is asymmetric and the corresponding key matches,
+          // otherwise explicitly look up the mapKey in the other Map since we want keys with unique
+          // obj identity (that are otherwise equal) to not match.
+          if (isAsymmetric(mapKey) || isAsymmetric(cmpKey) &&
+              eq(mapKey, cmpKey, aStack, bStack, customTesters, j$.NullDiffBuilder())) {
+            mapValueB = b.get(cmpKey);
+          } else {
+            mapValueB = b.get(mapKey);
+          }
+          result = eq(mapValueA, mapValueB, aStack, bStack, customTesters, j$.NullDiffBuilder());
         }
-      } while (!valA.done && !valB.done);
+      }
+
+      if (!result) {
+        diffBuilder.record(a, b);
+        return false;
+      }
+    } else if (j$.isSet(a) && j$.isSet(b)) {
+      if (a.size != b.size) {
+        diffBuilder.record(a, b);
+        return false;
+      }
+
+      var valuesA = [];
+      a.forEach( function( valueA ) {
+        valuesA.push( valueA );
+      });
+      var valuesB = [];
+      b.forEach( function( valueB ) {
+        valuesB.push( valueB );
+      });
+
+      // For both sets, check they are all contained in the other set
+      var setPairs = [[valuesA, valuesB], [valuesB, valuesA]];
+      var stackPairs = [[aStack, bStack], [bStack, aStack]];
+      var baseValues, baseValue, baseStack;
+      var otherValues, otherValue, otherStack;
+      var found;
+      var prevStackSize;
+      for (i = 0; result && i < setPairs.length; i++) {
+        baseValues = setPairs[i][0];
+        otherValues = setPairs[i][1];
+        baseStack = stackPairs[i][0];
+        otherStack = stackPairs[i][1];
+        // For each value in the base set...
+        for (var k = 0; result && k < baseValues.length; k++) {
+          baseValue = baseValues[k];
+          found = false;
+          // ... test that it is present in the other set
+          for (var l = 0; !found && l < otherValues.length; l++) {
+            otherValue = otherValues[l];
+            prevStackSize = baseStack.length;
+            // compare by value equality
+            found = eq(baseValue, otherValue, baseStack, otherStack, customTesters, j$.NullDiffBuilder());
+            if (!found && prevStackSize !== baseStack.length) {
+              baseStack.splice(prevStackSize);
+              otherStack.splice(prevStackSize);
+            }
+          }
+          result = result && found;
+        }
+      }
+
+      if (!result) {
+        diffBuilder.record(a, b);
+        return false;
+      }
     } else {
 
       // Objects with different constructors are not equivalent, but `Object`s
@@ -327,8 +423,8 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     }
 
     var extraKeys = [];
-    for (var i in allKeys) {
-      if (!allKeys[i].match(/^[0-9]+$/)) {
+    for (var i = 0; i < allKeys.length; i++) {
+      if (!/^[0-9]+$/.test(allKeys[i])) {
         extraKeys.push(allKeys[i]);
       }
     }

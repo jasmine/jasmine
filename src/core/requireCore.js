@@ -12,7 +12,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     if (typeof window !== 'undefined' && typeof window.toString === 'function' && window.toString() === '[object GjsGlobal]') {
       jasmineGlobal = window;
     }
-    jasmineRequire = jasmineGlobal.jasmineRequire = jasmineGlobal.jasmineRequire || {};
+    jasmineRequire = jasmineGlobal.jasmineRequire = {};
   }
 
   function getJasmineRequire() {
@@ -23,7 +23,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     var j$ = {};
 
     jRequire.base(j$, jasmineGlobal);
-    j$.util = jRequire.util();
+    j$.util = jRequire.util(j$);
     j$.errors = jRequire.errors();
     j$.formatErrorMsg = jRequire.formatErrorMsg();
     j$.Any = jRequire.Any(j$);
@@ -32,7 +32,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.MockDate = jRequire.MockDate();
     j$.getClearStack = jRequire.clearStack(j$);
     j$.Clock = jRequire.Clock();
-    j$.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler();
+    j$.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler(j$);
     j$.Env = jRequire.Env(j$);
     j$.ExceptionFormatter = jRequire.ExceptionFormatter();
     j$.Expectation = jRequire.Expectation();
@@ -41,14 +41,16 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.matchersUtil = jRequire.matchersUtil(j$);
     j$.ObjectContaining = jRequire.ObjectContaining(j$);
     j$.ArrayContaining = jRequire.ArrayContaining(j$);
+    j$.ArrayWithExactContents = jRequire.ArrayWithExactContents(j$);
     j$.pp = jRequire.pp(j$);
     j$.QueueRunner = jRequire.QueueRunner(j$);
-    j$.ReportDispatcher = jRequire.ReportDispatcher();
+    j$.ReportDispatcher = jRequire.ReportDispatcher(j$);
     j$.Spec = jRequire.Spec(j$);
     j$.Spy = jRequire.Spy(j$);
     j$.SpyRegistry = jRequire.SpyRegistry(j$);
     j$.SpyStrategy = jRequire.SpyStrategy(j$);
     j$.StringMatching = jRequire.StringMatching(j$);
+    j$.UserContext = jRequire.UserContext(j$);
     j$.Suite = jRequire.Suite(j$);
     j$.Timer = jRequire.Timer();
     j$.TreeProcessor = jRequire.TreeProcessor();
@@ -57,6 +59,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.DiffBuilder = jRequire.DiffBuilder(j$);
     j$.NullDiffBuilder = jRequire.NullDiffBuilder(j$);
     j$.ObjectPath = jRequire.ObjectPath(j$);
+    j$.GlobalErrors = jRequire.GlobalErrors(j$);
 
     j$.matchers = jRequire.requireMatchers(jRequire, j$);
 

@@ -2,6 +2,19 @@ getJasmineRequireObj().toThrowError = function(j$) {
 
   var getErrorMsg =  j$.formatErrorMsg('<toThrowError>', 'expect(function() {<expectation>}).toThrowError(<ErrorConstructor>, <message>)');
 
+  /**
+   * {@link expect} a function to `throw` an `Error`.
+   * @function
+   * @name matchers#toThrowError
+   * @param {Error} [expected] - `Error` constructor the object that was thrown needs to be an instance of. If not provided, `Error` will be used.
+   * @param {RegExp|String} [message] - The message that should be set on the thrown `Error`
+   * @example
+   * expect(function() { return 'things'; }).toThrowError(MyCustomError, 'message');
+   * expect(function() { return 'things'; }).toThrowError(MyCustomError, /bar/);
+   * expect(function() { return 'stuff'; }).toThrowError(MyCustomError);
+   * expect(function() { return 'other'; }).toThrowError(/foo/);
+   * expect(function() { return 'other'; }).toThrowError();
+   */
   function toThrowError () {
     return {
       compare: function(actual) {
@@ -28,7 +41,8 @@ getJasmineRequireObj().toThrowError = function(j$) {
           return fail;
         }
 
-        if (!(thrown instanceof Error)) {
+        // Get Error constructor of thrown
+        if (!isErrorObject(thrown)) {
           fail.message = function() { return 'Expected function to throw an Error, but it threw ' + j$.pp(thrown) + '.'; };
           return fail;
         }
@@ -129,7 +143,18 @@ getJasmineRequireObj().toThrowError = function(j$) {
 
       var Surrogate = function() {};
       Surrogate.prototype = type.prototype;
-      return (new Surrogate()) instanceof Error;
+      return isErrorObject(new Surrogate());
+    }
+
+    function isErrorObject(thrown) {
+      if (thrown instanceof Error) {
+        return true;
+      }
+      if (thrown && thrown.constructor && thrown.constructor.constructor &&
+          (thrown instanceof (thrown.constructor.constructor('return this')()).Error)) {
+        return true;
+      }
+      return false;
     }
   }
 

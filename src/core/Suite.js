@@ -15,6 +15,14 @@ getJasmineRequireObj().Suite = function(j$) {
 
     this.children = [];
 
+    /**
+     * @typedef SuiteResult
+     * @property {Int} id - The unique id of this suite.
+     * @property {String} description - The description text passed to the {@link describe} that made this suite.
+     * @property {String} fullName - The full description including all ancestors of this suite.
+     * @property {Expectation[]} failedExpectations - The list of expectations that failed in an {@link afterAll} for this suite.
+     * @property {String} status - Once the suite has completed, this string represents the pass/fail status of this suite.
+     */
     this.result = {
       id: this.id,
       description: this.description,
@@ -54,7 +62,7 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.afterAll = function(fn) {
-    this.afterAllFns.push(fn);
+    this.afterAllFns.unshift(fn);
   };
 
   Suite.prototype.addChild = function(child) {
@@ -88,14 +96,14 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.sharedUserContext = function() {
     if (!this.sharedContext) {
-      this.sharedContext = this.parentSuite ? clone(this.parentSuite.sharedUserContext()) : {};
+      this.sharedContext = this.parentSuite ? this.parentSuite.clonedSharedUserContext() : new j$.UserContext();
     }
 
     return this.sharedContext;
   };
 
   Suite.prototype.clonedSharedUserContext = function() {
-    return clone(this.sharedUserContext());
+    return j$.UserContext.fromExisting(this.sharedUserContext());
   };
 
   Suite.prototype.onException = function() {
@@ -145,17 +153,6 @@ getJasmineRequireObj().Suite = function(j$) {
 
   function isFailure(args) {
     return !args[0];
-  }
-
-  function clone(obj) {
-    var clonedObj = {};
-    for (var prop in obj) {
-      if (obj.hasOwnProperty(prop)) {
-        clonedObj[prop] = obj[prop];
-      }
-    }
-
-    return clonedObj;
   }
 
   return Suite;

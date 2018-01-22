@@ -7,20 +7,6 @@ describe("ClearStack", function() {
     });
   });
 
-  it("uses nextTick when available", function() {
-    var nextTick = jasmine.createSpy('nextTick').and.callFake(function(fn) { fn() }),
-        global = { process: { nextTick: nextTick } },
-        clearStack = jasmineUnderTest.getClearStack(global),
-        called = false;
-
-    clearStack(function() {
-      called = true;
-    });
-
-    expect(called).toBe(true);
-    expect(nextTick).toHaveBeenCalled();
-  });
-
   it("uses setImmediate when available", function() {
     var setImmediate = jasmine.createSpy('setImmediate').and.callFake(function(fn) { fn() }),
         global = { setImmediate: setImmediate },
@@ -33,6 +19,34 @@ describe("ClearStack", function() {
 
     expect(called).toBe(true);
     expect(setImmediate).toHaveBeenCalled();
+  });
+
+  it("uses setTimeout instead of setImmediate every 10 calls to make sure we release the CPU", function() {
+    var setImmediate = jasmine.createSpy('setImmediate'),
+        setTimeout = jasmine.createSpy('setTimeout'),
+        global = { setImmediate: setImmediate, setTimeout: setTimeout },
+        clearStack = jasmineUnderTest.getClearStack(global);
+
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+
+    expect(setImmediate).toHaveBeenCalled();
+    expect(setTimeout).not.toHaveBeenCalled();
+
+    clearStack(function() { });
+    expect(setImmediate.calls.count()).toEqual(9);
+    expect(setTimeout.calls.count()).toEqual(1);
+
+    clearStack(function() { });
+    expect(setImmediate.calls.count()).toEqual(10);
+    expect(setTimeout.calls.count()).toEqual(1);
   });
 
   it("uses MessageChannels when available", function() {
@@ -49,6 +63,62 @@ describe("ClearStack", function() {
     });
 
     expect(called).toBe(true);
+  });
+
+  it("uses setTimeout instead of MessageChannel every 10 calls to make sure we release the CPU", function() {
+    var fakeChannel = {
+          port1: {},
+          port2: {
+            postMessage: jasmine.createSpy('postMessage').and.callFake(function() {
+              fakeChannel.port1.onmessage();
+            })
+          }
+        },
+        setTimeout = jasmine.createSpy('setTimeout'),
+        global = { MessageChannel: function() { return fakeChannel; }, setTimeout: setTimeout },
+        clearStack = jasmineUnderTest.getClearStack(global);
+
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+    clearStack(function() { });
+
+    expect(fakeChannel.port2.postMessage).toHaveBeenCalled();
+    expect(setTimeout).not.toHaveBeenCalled();
+
+    clearStack(function() { });
+    expect(fakeChannel.port2.postMessage.calls.count()).toEqual(9);
+    expect(setTimeout.calls.count()).toEqual(1);
+
+    clearStack(function() { });
+    expect(fakeChannel.port2.postMessage.calls.count()).toEqual(10);
+    expect(setTimeout.calls.count()).toEqual(1);
+  });
+
+  it("calls setTimeout when onmessage is called recursively", function() {
+    var fakeChannel = {
+          port1: {},
+          port2: { postMessage: function() { fakeChannel.port1.onmessage(); } }
+        },
+        setTimeout = jasmine.createSpy('setTimeout'),
+        global = {
+          MessageChannel: function() { return fakeChannel; },
+          setTimeout: setTimeout,
+        },
+        clearStack = jasmineUnderTest.getClearStack(global),
+        fn = jasmine.createSpy("second clearStack function");
+
+    clearStack(function() {
+      clearStack(fn);
+    });
+
+    expect(fn).not.toHaveBeenCalled();
+    expect(setTimeout).toHaveBeenCalledWith(fn, 0);
   });
 
   it("falls back to setTimeout", function() {

@@ -17,7 +17,10 @@ describe("jasmineUnderTest.pp", function () {
   describe('stringify sets', function() {
     it("should stringify sets properly", function() {
       jasmine.getEnv().requireFunctioningSets();
-      expect(jasmineUnderTest.pp(new Set([1, 2]))).toEqual("Set( 1, 2 )");
+      var set = new Set();
+      set.add(1);
+      set.add(2);
+      expect(jasmineUnderTest.pp(set)).toEqual("Set( 1, 2 )");
     });
 
     it("should truncate sets with more elments than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
@@ -26,12 +29,42 @@ describe("jasmineUnderTest.pp", function () {
 
       try {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        expect(jasmineUnderTest.pp(new Set(["a", "b", "c"]))).toEqual("Set( 'a', 'b', ... )");
+        var set = new Set();
+        set.add('a');
+        set.add('b');
+        set.add('c');
+        expect(jasmineUnderTest.pp(set)).toEqual("Set( 'a', 'b', ... )");
       } finally {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxSize;
       }
     })
   });
+
+  describe('stringify maps', function() {
+    it("should stringify maps properly", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var map = new Map();
+      map.set(1,2);
+      expect(jasmineUnderTest.pp(map)).toEqual("Map( [ 1, 2 ] )");
+    });
+
+    it("should truncate maps with more elments than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+      var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+
+      try {
+        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+        var map = new Map();
+        map.set("a",1);
+        map.set("b",2);
+        map.set("c",3);
+        expect(jasmineUnderTest.pp(map)).toEqual("Map( [ 'a', 1 ], [ 'b', 2 ], ... )");
+      } finally {
+        jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxSize;
+      }
+    })
+  });
+
 
   describe('stringify arrays', function() {
     it("should stringify arrays properly", function() {
@@ -97,6 +130,53 @@ describe("jasmineUnderTest.pp", function () {
     expect(jasmineUnderTest.pp({foo:'bar', baz:3, nullValue: null, undefinedValue: jasmine.undefined})).toEqual("Object({ foo: 'bar', baz: 3, nullValue: null, undefinedValue: undefined })");
     expect(jasmineUnderTest.pp({foo: function () {
     }, bar: [1, 2, 3]})).toEqual("Object({ foo: Function, bar: [ 1, 2, 3 ] })");
+  });
+
+  it("should truncate objects with too many keys", function () {
+    var originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+    var long = {a: 1, b: 2, c: 3};
+
+    try {
+      jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
+      expect(jasmineUnderTest.pp(long)).toEqual("Object({ a: 1, b: 2, ... })");
+    } finally {
+      jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxLength;
+    }
+  });
+
+  function withMaxChars(maxChars, fn) {
+    var originalMaxChars = jasmineUnderTest.MAX_PRETTY_PRINT_CHARS;
+
+    try {
+      jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = maxChars;
+      fn();
+    } finally {
+      jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = originalMaxChars;
+    }
+  }
+
+  it("should truncate outputs that are too long", function() {
+    var big = [
+      { a: 1, b: "a long string" },
+      {}
+    ];
+
+    withMaxChars(34, function() {
+      expect(jasmineUnderTest.pp(big)).toEqual("[ Object({ a: 1, b: 'a long st ...");
+    });
+  });
+
+  it("should not serialize more objects after hitting MAX_PRETTY_PRINT_CHARS", function() {
+    var a = { jasmineToString: function() { return 'object a'; } },
+      b = { jasmineToString: function() { return 'object b'; } },
+      c = { jasmineToString: jasmine.createSpy('c jasmineToString').and.returnValue('') },
+      d = { jasmineToString: jasmine.createSpy('d jasmineToString').and.returnValue('') };
+
+    withMaxChars(30, function() {
+      jasmineUnderTest.pp([{a: a, b: b, c: c}, d]);
+      expect(c.jasmineToString).not.toHaveBeenCalled();
+      expect(d.jasmineToString).not.toHaveBeenCalled();
+    });
   });
 
   it("should print 'null' as the constructor of an object with its own constructor property", function() {
@@ -184,9 +264,9 @@ describe("jasmineUnderTest.pp", function () {
 
   it("should stringify spy objects properly", function() {
     var TestObject = {
-          someFunction: function() {}
-        },
-        env = new jasmineUnderTest.Env();
+      someFunction: function() {}
+    },
+    env = new jasmineUnderTest.Env();
 
     var spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() {return [];}});
 
@@ -222,6 +302,18 @@ describe("jasmineUnderTest.pp", function () {
       expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar' })");
     } else {
       expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar', toString: Function })");
+    }
+  });
+
+  it("should stringify objects have have a toString that isn't a function", function() {
+    var obj = {
+      toString: "foo"
+    };
+
+    if (jasmine.getEnv().ieVersion < 9) {
+      expect(jasmineUnderTest.pp(obj)).toEqual("Object({  })");
+    } else {
+      expect(jasmineUnderTest.pp(obj)).toEqual("Object({ toString: 'foo' })");
     }
   });
 

@@ -2,6 +2,15 @@ getJasmineRequireObj().toThrow = function(j$) {
 
   var getErrorMsg = j$.formatErrorMsg('<toThrow>', 'expect(function() {<expectation>}).toThrow()');
 
+  /**
+   * {@link expect} a function to `throw` something.
+   * @function
+   * @name matchers#toThrow
+   * @param {Object} [expected] - Value that should be thrown. If not provided, simply the fact that something was thrown will be checked.
+   * @example
+   * expect(function() { return 'things'; }).toThrow('foo');
+   * expect(function() { return 'stuff'; }).toThrow();
+   */
   function toThrow(util) {
     return {
       compare: function(actual, expected) {

@@ -82,13 +82,20 @@ describe("Env", function() {
   describe('#it', function () {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
-        env.it('undefined arg', undefined);
-      }).toThrowError(/it expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+        env.it('undefined arg', null);
+      }).toThrowError(/it expects a function argument; received \[object (Null|DOMWindow|Object)\]/);
     });
 
     it('does not throw when it is not given a fn argument', function() {
       expect(function() {
         env.it('pending spec');
+      }).not.toThrow();
+    });
+
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.it('async', jasmine.getEnv().makeAsyncAwaitFunction());
       }).not.toThrow();
     });
   });
@@ -105,13 +112,20 @@ describe("Env", function() {
 
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
-        env.xit('undefined arg', undefined);
-      }).toThrowError(/xit expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+        env.xit('undefined arg', null);
+      }).toThrowError(/xit expects a function argument; received \[object (Null|DOMWindow|Object)\]/);
     });
 
     it('does not throw when it is not given a fn argument', function() {
       expect(function() {
         env.xit('pending spec');
+      }).not.toThrow();
+    });
+
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.xit('async', jasmine.getEnv().makeAsyncAwaitFunction());
       }).not.toThrow();
     });
   });
@@ -130,6 +144,13 @@ describe("Env", function() {
         env.beforeEach(undefined);
       }).toThrowError(/beforeEach expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
     });
+
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.beforeEach(jasmine.getEnv().makeAsyncAwaitFunction());
+      }).not.toThrow();
+    });
   });
 
   describe('#beforeAll', function () {
@@ -137,6 +158,13 @@ describe("Env", function() {
       expect(function() {
         env.beforeAll(undefined);
       }).toThrowError(/beforeAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.beforeAll(jasmine.getEnv().makeAsyncAwaitFunction());
+      }).not.toThrow();
     });
   });
 
@@ -146,6 +174,13 @@ describe("Env", function() {
         env.afterEach(undefined);
       }).toThrowError(/afterEach expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
     });
+
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.afterEach(jasmine.getEnv().makeAsyncAwaitFunction());
+      }).not.toThrow();
+    });
   });
 
   describe('#afterAll', function () {
@@ -153,6 +188,13 @@ describe("Env", function() {
       expect(function() {
         env.afterAll(undefined);
       }).toThrowError(/afterAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+    });
+
+    it('accepts an async function', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      expect(function() {
+        env.afterAll(jasmine.getEnv().makeAsyncAwaitFunction());
+      }).not.toThrow();
     });
   });
 });

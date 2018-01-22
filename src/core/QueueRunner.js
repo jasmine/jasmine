@@ -12,87 +12,153 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   }
 
   function QueueRunner(attrs) {
-    this.queueableFns = attrs.queueableFns || [];
+    var queueableFns = attrs.queueableFns || [];
+    this.queueableFns = queueableFns.concat(attrs.cleanupFns || []);
+    this.firstCleanupIx = queueableFns.length;
     this.onComplete = attrs.onComplete || function() {};
     this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.onException = attrs.onException || function() {};
     this.catchException = attrs.catchException || function() { return true; };
-    this.userContext = attrs.userContext || {};
+    this.userContext = attrs.userContext || new j$.UserContext();
     this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
     this.fail = attrs.fail || function() {};
+    this.globalErrors = attrs.globalErrors || { pushListener: function() {}, popListener: function() {} };
+    this.completeOnFirstError = !!attrs.completeOnFirstError;
   }
 
   QueueRunner.prototype.execute = function() {
-    this.run(this.queueableFns, 0);
+    var self = this;
+    this.handleFinalError = function(error) {
+      self.onException(error);
+    };
+    this.globalErrors.pushListener(this.handleFinalError);
+    this.run(0);
   };
 
-  QueueRunner.prototype.run = function(queueableFns, recursiveIndex) {
-    var length = queueableFns.length,
+  QueueRunner.prototype.skipToCleanup = function(lastRanIndex) {
+    if (lastRanIndex < this.firstCleanupIx) {
+      this.run(this.firstCleanupIx);
+    } else {
+      this.run(lastRanIndex + 1);
+    }
+  };
+
+  QueueRunner.prototype.run = function(recursiveIndex) {
+    var length = this.queueableFns.length,
       self = this,
       iterativeIndex;
 
 
     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
-      var queueableFn = queueableFns[iterativeIndex];
-      if (queueableFn.fn.length > 0) {
-        attemptAsync(queueableFn);
+      var result = attempt(iterativeIndex);
+
+      if (!result.completedSynchronously) {
         return;
-      } else {
-        attemptSync(queueableFn);
+      }
+
+      if (this.completeOnFirstError && result.errored) {
+        this.skipToCleanup(iterativeIndex);
+        return;
       }
     }
 
-    this.clearStack(this.onComplete);
+    this.clearStack(function() {
+      self.globalErrors.popListener(self.handleFinalError);
+      self.onComplete();
+    });
 
-    function attemptSync(queueableFn) {
-      try {
-        queueableFn.fn.call(self.userContext);
-      } catch (e) {
-        handleException(e, queueableFn);
-      }
-    }
-
-    function attemptAsync(queueableFn) {
+    function attempt() {
       var clearTimeout = function () {
           Function.prototype.apply.apply(self.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
         },
-        next = once(function () {
+        setTimeout = function(delayedFn, delay) {
+          return Function.prototype.apply.apply(self.timeout.setTimeout, [j$.getGlobal(), [delayedFn, delay]]);
+        },
+        completedSynchronously = true,
+        handleError = function(error) {
+          onException(error);
+          next();
+        },
+        cleanup = once(function() {
           clearTimeout(timeoutId);
-          self.run(queueableFns, iterativeIndex + 1);
+          self.globalErrors.popListener(handleError);
         }),
+        next = once(function () {
+          cleanup();
+
+          function runNext() {
+            if (self.completeOnFirstError && errored) {
+              self.skipToCleanup(iterativeIndex);
+            } else {
+              self.run(iterativeIndex + 1);
+            }
+          }
+
+          if (completedSynchronously) {
+            setTimeout(runNext);
+          } else {
+            runNext();
+          }
+        }),
+        errored = false,
+        queueableFn = self.queueableFns[iterativeIndex],
         timeoutId;
 
       next.fail = function() {
         self.fail.apply(null, arguments);
+        errored = true;
         next();
       };
 
+      self.globalErrors.pushListener(handleError);
+
       if (queueableFn.timeout) {
-        timeoutId = Function.prototype.apply.apply(self.timeout.setTimeout, [j$.getGlobal(), [function() {
+        timeoutId = setTimeout(function() {
           var error = new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.');
           onException(error);
           next();
-        }, queueableFn.timeout()]]);
+        }, queueableFn.timeout());
       }
 
       try {
-        queueableFn.fn.call(self.userContext, next);
+        if (queueableFn.fn.length === 0) {
+          var maybeThenable = queueableFn.fn.call(self.userContext);
+
+          if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
+            maybeThenable.then(next, onPromiseRejection);
+            completedSynchronously = false;
+            return { completedSynchronously: false };
+          }
+        } else {
+          queueableFn.fn.call(self.userContext, next);
+          completedSynchronously = false;
+          return { completedSynchronously: false };
+        }
       } catch (e) {
         handleException(e, queueableFn);
+        errored = true;
+      }
+
+      cleanup();
+      return { completedSynchronously: true, errored: errored };
+
+      function onException(e) {
+        self.onException(e);
+        errored = true;
+      }
+
+      function onPromiseRejection(e) {
+        onException(e);
         next();
       }
-    }
 
-    function onException(e) {
-      self.onException(e);
-    }
-
-    function handleException(e, queueableFn) {
-      onException(e);
-      if (!self.catchException(e)) {
-        //TODO: set a var when we catch an exception and
-        //use a finally block to close the loop in a nice way..
-        throw e;
+      function handleException(e, queueableFn) {
+        onException(e);
+        if (!self.catchException(e)) {
+          //TODO: set a var when we catch an exception and
+          //use a finally block to close the loop in a nice way..
+          throw e;
+        }
       }
     }
   };

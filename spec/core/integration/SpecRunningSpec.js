@@ -172,6 +172,22 @@ describe("jasmine spec running", function () {
   it("should run multiple befores and afters ordered so functions declared later are treated as more specific", function(done) {
     var actions = [];
 
+    env.beforeAll(function() {
+      actions.push('runner beforeAll1');
+    });
+
+    env.afterAll(function() {
+      actions.push('runner afterAll1');
+    });
+
+    env.beforeAll(function() {
+      actions.push('runner beforeAll2');
+    });
+
+    env.afterAll(function() {
+      actions.push('runner afterAll2');
+    });
+
     env.beforeEach(function () {
       actions.push('runner beforeEach1');
     });
@@ -212,6 +228,8 @@ describe("jasmine spec running", function () {
 
     var assertions = function() {
       var expected = [
+        "runner beforeAll1",
+        "runner beforeAll2",
         "runner beforeEach1",
         "runner beforeEach2",
         "beforeEach1",
@@ -220,7 +238,9 @@ describe("jasmine spec running", function () {
         "afterEach2",
         "afterEach1",
         "runner afterEach2",
-        "runner afterEach1"
+        "runner afterEach1",
+        "runner afterAll2",
+        "runner afterAll1"
       ];
       expect(actions).toEqual(expected);
       done();
@@ -816,4 +836,115 @@ describe("jasmine spec running", function () {
     env.execute();
   });
 
+  describe("When throwOnExpectationFailure is set", function() {
+    it("skips to cleanup functions after an error", function(done) {
+      var actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          throw new Error("error");
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it' , function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      env.throwOnExpectationFailure(true);
+
+      var assertions = function() {
+        expect(actions).toEqual([
+          'outer beforeEach',
+          'inner afterEach',
+          'outer afterEach'
+        ]);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+
+      env.execute();
+    });
+
+    it("skips to cleanup functions after done.fail is called", function(done) {
+      var actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function(done) {
+          actions.push('beforeEach');
+          done.fail('error');
+          actions.push('after done.fail');
+        });
+
+        env.afterEach(function() {
+          actions.push('afterEach');
+        });
+
+        env.it('does it' , function() {
+          actions.push('it');
+        });
+      });
+
+      env.throwOnExpectationFailure(true);
+
+      var assertions = function() {
+        expect(actions).toEqual([
+          'beforeEach',
+          'afterEach'
+        ]);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+
+      env.execute();
+    });
+
+    it("skips to cleanup functions when an async function times out", function(done) {
+      var actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function(innerDone) {
+          actions.push('beforeEach');
+        }, 1);
+
+        env.afterEach(function() {
+          actions.push('afterEach');
+        });
+
+        env.it('does it' , function() {
+          actions.push('it');
+        });
+      });
+
+      env.throwOnExpectationFailure(true);
+
+      var assertions = function() {
+        expect(actions).toEqual([
+          'beforeEach',
+          'afterEach'
+        ]);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+
+      env.execute();
+    });
+  });
 });

@@ -6,7 +6,11 @@
     "npmPackage/**/*.js"
   ],
   "helpers": [
+    "helpers/asyncAwait.js",
+    "helpers/checkForMap.js",
     "helpers/checkForSet.js",
+    "helpers/checkForSymbol.js",
+    "helpers/checkForTypedArrays.js",
     "helpers/nodeDefineJasmineUnderTest.js"
   ],
   "random": true

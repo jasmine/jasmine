@@ -29,6 +29,38 @@ describe("Any", function() {
     expect(any.asymmetricMatch(true)).toBe(true);
   });
 
+  it("matches a Map", function() {
+    jasmine.getEnv().requireFunctioningMaps();
+
+    var any = new jasmineUnderTest.Any(Map);
+
+    expect(any.asymmetricMatch(new Map())).toBe(true);
+  });
+
+  it("matches a Set", function() {
+    jasmine.getEnv().requireFunctioningSets();
+
+    var any = new jasmineUnderTest.Any(Set);
+
+    expect(any.asymmetricMatch(new Set())).toBe(true);
+  });
+
+  it("matches a TypedArray", function() {
+    jasmine.getEnv().requireFunctioningTypedArrays();
+
+    var any = new jasmineUnderTest.Any(Uint32Array);
+
+    expect(any.asymmetricMatch(new Uint32Array([]))).toBe(true);
+  });
+
+  it("matches a Symbol", function() {
+    jasmine.getEnv().requireFunctioningSymbols();
+
+    var any = new jasmineUnderTest.Any(Symbol);
+
+    expect(any.asymmetricMatch(Symbol())).toBe(true);
+  });
+
   it("matches another constructed object", function() {
     var Thing = function() {},
       any = new jasmineUnderTest.Any(Thing);

@@ -92,12 +92,35 @@ describe("SpyStrategy", function() {
     expect(returnValue).toEqual(67);
   });
 
+  it("allows a fake async function to be called instead", function(done) {
+    jasmine.getEnv().requireAsyncAwait();
+    var originalFn = jasmine.createSpy("original"),
+        fakeFn = jasmine.createSpy("fake").and.callFake(eval("async () => { return 67; }")),
+        spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn}),
+        returnValue;
+
+    spyStrategy.callFake(fakeFn);
+    spyStrategy.exec().then(function (returnValue) {
+      expect(originalFn).not.toHaveBeenCalled();
+      expect(fakeFn).toHaveBeenCalled();
+      expect(returnValue).toEqual(67);
+      done();
+    }).catch(function (err) {
+      done.fail(err);
+    })
+  });
+
   it('throws an error when a non-function is passed to callFake strategy', function() {
     var originalFn = jasmine.createSpy('original'),
         spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn}),
         invalidFakes = [5, 'foo', {}, true, false, null, void 0, new Date(), /.*/];
 
     spyOn(jasmineUnderTest, 'isFunction_').and.returnValue(false);
+    spyOn(jasmineUnderTest, 'isAsyncFunction_').and.returnValue(false);
+
+    expect(function () {
+      spyStrategy.callFake(function() {});
+    }).toThrowError(/^Argument passed to callFake should be a function, got/);
 
     expect(function () {
       spyStrategy.callFake(function() {});

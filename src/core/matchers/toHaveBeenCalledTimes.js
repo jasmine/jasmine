@@ -2,6 +2,14 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
 
   var getErrorMsg = j$.formatErrorMsg('<toHaveBeenCalledTimes>', 'expect(<spyObj>).toHaveBeenCalledTimes(<Number>)');
 
+  /**
+   * {@link expect} the actual (a {@link Spy}) to have been called the specified number of times.
+   * @function
+   * @name matchers#toHaveBeenCalledTimes
+   * @param {Number} expected - The number of invocations to look for.
+   * @example
+   * expect(mySpy).toHaveBeenCalledTimes(3);
+   */
   function toHaveBeenCalledTimes() {
     return {
       compare: function(actual, expected) {

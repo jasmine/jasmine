@@ -4,8 +4,9 @@ getJasmineRequireObj().ArrayContaining = function(j$) {
   }
 
   ArrayContaining.prototype.asymmetricMatch = function(other, customTesters) {
-    var className = Object.prototype.toString.call(this.sample);
-    if (className !== '[object Array]') { throw new Error('You must provide an array to arrayContaining, not \'' + this.sample + '\'.'); }
+    if (!j$.isArray_(this.sample)) {
+      throw new Error('You must provide an array to arrayContaining, not ' + j$.pp(this.sample) + '.');
+    }
 
     for (var i = 0; i < this.sample.length; i++) {
       var item = this.sample[i];

@@ -4,6 +4,15 @@ getJasmineRequireObj().buildExpectationResult = function() {
     var messageFormatter = options.messageFormatter || function() {},
       stackFormatter = options.stackFormatter || function() {};
 
+    /**
+     * @typedef Expectation
+     * @property {String} matcherName - The name of the matcher that was executed for this expectation.
+     * @property {String} message - The failure message for the expectation.
+     * @property {String} stack - The stack trace for the failure if available.
+     * @property {Boolean} passed - Whether the expectation passed or failed.
+     * @property {Object} expected - If the expectation failed, what was the expected value.
+     * @property {Object} actual - If the expectation failed, what actual value was produced.
+     */
     var result = {
       matcherName: options.matcherName,
       message: message(),
