@@ -2,6 +2,7 @@ describe("spec running", function () {
   var env;
 
   beforeEach(function() {
+    jasmine.getEnv().registerIntegrationMatchers();
     env = new jasmineUnderTest.Env();
     env.randomizeTests(false);
   });
@@ -601,18 +602,16 @@ describe("spec running", function () {
 
   it("should recover gracefully when there are errors in describe functions", function(done) {
     var specs = [],
-      reporter = jasmine.createSpyObj(['specDone', 'jasmineDone']);
+      reporter = jasmine.createSpyObj(['specDone', 'suiteDone', 'jasmineDone']);
 
     reporter.specDone.and.callFake(function(result) {
       specs.push(result.fullName);
     });
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(specs).toContain('outer1 inner1 should thingy');
-      expect(specs).toContain('outer1 inner1 encountered a declaration exception');
-      expect(specs).toContain('outer1 inner2 should other thingy');
-      expect(specs).toContain('outer1 encountered a declaration exception');
-      expect(specs).toContain('outer2 should xxx');
+      expect(specs).toEqual(['outer1 inner1 should thingy', 'outer1 inner2 should other thingy', 'outer2 should xxx']);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer1 inner1', [/inner error/]);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer1', [/outer error/]);
       done();
     });
 
@@ -623,7 +622,7 @@ describe("spec running", function () {
             this.expect(true).toEqual(true);
           });
 
-          throw new Error("fake error");
+          throw new Error("inner error");
         });
 
         env.describe("inner2", function() {
@@ -632,7 +631,7 @@ describe("spec running", function () {
           });
         });
 
-        throw new Error("fake error");
+        throw new Error("outer error");
 
       });
     }).not.toThrow();

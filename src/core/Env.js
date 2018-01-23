@@ -526,9 +526,7 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       if (declarationError) {
-        self.it('encountered a declaration exception', function() {
-          throw declarationError;
-        });
+        suite.onException(declarationError);
       }
 
       currentDeclarationSuite = parentSuite;

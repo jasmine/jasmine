@@ -1,43 +1,6 @@
 describe("Env integration", function() {
   beforeEach(function() {
-    jasmine.addMatchers({
-      toHaveFailedExpecationsForRunnable: function(util, customeEqualityTesters) {
-        return {
-          compare: function(actual, fullName, expectedFailures) {
-            var foundRunnable = false, expectations = true, foundFailures = [];
-            for (var i = 0; i < actual.calls.count(); i++) {
-              var args = actual.calls.argsFor(i)[0];
-
-              if (args.fullName === fullName) {
-                foundRunnable = true;
-
-                for (var j = 0; j < args.failedExpectations.length; j++) {
-                  foundFailures.push(args.failedExpectations[j].message);
-                }
-
-                for (var j = 0; j < expectedFailures.length; j++) {
-                  var failure = foundFailures[j];
-                  var expectedFailure = expectedFailures[j];
-
-                  if (Object.prototype.toString.call(expectedFailure) === '[object RegExp]') {
-                    expectations = expectations && expectedFailure.test(failure);
-                  } else {
-                    expectations = expectations && failure === expectedFailure;
-                  }
-                }
-                break;
-              }
-            }
-
-            return {
-              pass: foundRunnable && expectations,
-              message: !foundRunnable ? 'The runnable "' + fullName + '" never finished' :
-                'Expected runnable "' + fullName + '" to have failures ' + jasmine.pp(expectedFailures) + ' but it had ' + jasmine.pp(foundFailures)
-            };
-          }
-        };
-      }
-    });
+    jasmine.getEnv().registerIntegrationMatchers();
   });
 
   it("Suites execute as expected (no nesting)", function(done) {
@@ -464,22 +427,16 @@ describe("Env integration", function() {
     env.execute();
   });
 
-  it("fails all underlying specs when the beforeAll fails", function (done) {
+  it("when the beforeAll fails, error at suite level", function (done) {
     var env = new jasmineUnderTest.Env(),
-      reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
+      reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "suiteDone", "jasmineDone" ]);
 
     reporter.jasmineDone.and.callFake(function() {
       expect(reporter.specDone.calls.count()).toEqual(2);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('A suite spec that will pass', []);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('A suite nesting another spec to pass', []);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('A suite', ['Expected 1 to be 2.']);
 
-      expect(reporter.specDone.calls.argsFor(0)[0])
-        .toEqual(jasmine.objectContaining({status: 'failed'}));
-      expect(reporter.specDone.calls.argsFor(0)[0].failedExpectations[0].message)
-        .toEqual("Expected 1 to be 2.");
-
-      expect(reporter.specDone.calls.argsFor(1)[0])
-        .toEqual(jasmine.objectContaining({status: 'failed'}));
-      expect(reporter.specDone.calls.argsFor(1)[0].failedExpectations[0].message)
-        .toEqual("Expected 1 to be 2.");
       done();
     });
 
@@ -490,11 +447,11 @@ describe("Env integration", function() {
         env.expect(1).toBe(2);
       });
 
-      env.it("spec that will be failed", function() {
+      env.it("spec that will pass", function() {
       });
 
       env.describe("nesting", function() {
-        env.it("another spec to fail", function() {
+        env.it("another spec to pass", function() {
         });
       });
     });
@@ -512,8 +469,8 @@ describe("Env integration", function() {
       reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone", "suiteDone" ]);
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.specDone).not.toHaveFailedExpecationsForRunnable('A suite fails', ['fail thrown']);
-      expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('A suite', ['fail thrown']);
+      expect(reporter.specDone).not.toHaveFailedExpectationsForRunnable('A suite fails', ['fail thrown']);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('A suite', ['fail thrown']);
       done();
     });
 
@@ -543,7 +500,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('my suite', [
           'Expected 1 to equal 2.',
           'Expected 2 to equal 3.'
         ]);
@@ -570,7 +527,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('outer suite', [
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer suite', [
           'Expected 1 to equal 2.',
           'Expected 2 to equal 3.'
         ]);
@@ -599,7 +556,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('my suite', [
           (/^Error: After All Exception/)
         ]);
         done();
@@ -624,7 +581,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('my suite', [
           'Expected 1 to equal 2.'
         ]);
         done();
@@ -652,7 +609,7 @@ describe("Env integration", function() {
 
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('my suite', [
           (/^Error: After All Exception/)
         ]);
         done();
@@ -673,15 +630,13 @@ describe("Env integration", function() {
     });
   });
 
-  it('cascades expecatation failures in global beforeAll down to children', function(done) {
+  it('reports expectation failures in global beforeAll', function(done) {
     var env = new jasmineUnderTest.Env(),
       reporter = jasmine.createSpyObj(['specDone', 'jasmineDone']);
 
     reporter.jasmineDone.and.callFake(function(results) {
-      expect(results.failedExpectations).toEqual([]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('is a spec', [
-        'Expected 1 to be 0.'
-      ]);
+      expect(results.failedExpectations).toEqual([jasmine.objectContaining({ message: 'Expected 1 to be 0.' })]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('is a spec', []);
       done();
     });
 
@@ -1041,35 +996,6 @@ describe("Env integration", function() {
       env.execute();
     });
 
-    it("should wait a specified interval before failing beforeAll's and their associated specs that haven't called done", function(done) {
-      var env = new jasmineUnderTest.Env(),
-        reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
-
-      reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.specDone.calls.count()).toEqual(2);
-        expect(reporter.specDone.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({status: 'failed'}));
-        expect(reporter.specDone.calls.argsFor(1)[0]).toEqual(jasmine.objectContaining({status: 'failed'}));
-        done();
-      });
-
-      env.addReporter(reporter);
-      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 1290;
-
-      env.beforeAll(function(innerDone) {
-        jasmine.clock().tick(1291);
-      });
-
-      env.it("spec that will be failed", function() {
-      });
-
-      env.describe("nesting", function() {
-        env.it("another spec to fail", function() {
-        });
-      });
-
-      env.execute();
-    });
-
     it("should not use the mock clock for asynchronous timeouts", function(done){
       var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]),
@@ -1102,59 +1028,18 @@ describe("Env integration", function() {
       env.execute();
     });
 
-    it("should wait the specified interval before reporting an afterAll that fails to call done", function(done) {
-      var env = new jasmineUnderTest.Env(),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
-
-      reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
-        done();
-      });
-
-      env.addReporter(reporter);
-      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 3000;
-
-      env.describe('my suite', function() {
-        env.it('my spec', function() {
-        });
-
-        env.afterAll(function(innerDone) {
-          jasmine.clock().tick(3001);
-          innerDone();
-        });
-      });
-
-      env.execute();
-      jasmine.clock().tick(1);
-    });
-
     it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
       var env = new jasmineUnderTest.Env(),
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']),
-          realSetTimeout = this.realSetTimeout;
+          realSetTimeout = this.realSetTimeout,
+          timeoutFailure = (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite beforeAll times out', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
-
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('suite afterAll', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
-
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite beforeEach times out', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
-
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite afterEach times out', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
-
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite it times out', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite beforeAll', [ timeoutFailure ]);
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite afterAll', [ timeoutFailure ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite beforeEach times out', [ timeoutFailure ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite afterEach times out', [ timeoutFailure ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite it times out', [ timeoutFailure ]);
 
         done();
       });
@@ -1965,10 +1850,10 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone','specDone']);
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('async suite', [
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('async suite', [
         /^(((Uncaught )?Error: suite( thrown)?)|(suite thrown))$/
       ]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite async spec', [
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite async spec', [
         /^(((Uncaught )?Error: spec( thrown)?)|(spec thrown))$/
       ]);
       done();
@@ -2000,19 +1885,19 @@ describe("Env integration", function() {
     reporter.jasmineDone.and.callFake(function() {
       var msg = /\'.*\' should only be used in \'describe\' function/;
 
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite describe', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite xdescribe', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite fdescribe', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite describe', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite xdescribe', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite fdescribe', [msg]);
 
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('spec it', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('spec xit', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('spec fit', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('spec it', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('spec xit', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('spec fit', [msg]);
 
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('beforeAll spec', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('beforeEach spec', [msg]);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('beforeAll', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('beforeEach spec', [msg]);
 
-      expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('afterAll', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('afterEach spec', [msg]);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('afterAll', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('afterEach spec', [msg]);
 
       done();
     });
