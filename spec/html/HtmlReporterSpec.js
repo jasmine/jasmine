@@ -177,69 +177,6 @@ describe("HtmlReporter", function() {
     });
   });
 
-  describe("when there are suite failures", function () {
-    it("displays the exceptions in their own alert bars", function(){
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement("div"),
-        getContainer = function() { return container; },
-        reporter = new jasmineUnderTest.HtmlReporter({
-          env: env,
-          getContainer: getContainer,
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        });
-
-      reporter.initialize();
-
-      reporter.jasmineStarted({});
-      reporter.suiteDone({ status: 'failed', failedExpectations: [{ message: 'My After All Exception' }] });
-      reporter.suiteDone({ status: 'failed', failedExpectations: [{ message: 'My Other Exception' }] });
-      reporter.jasmineDone({ failedExpectations: [
-        { message: 'Global After All Failure', globalErrorType: 'afterAll' },
-        { message: 'Your JS is borken', globalErrorType: 'load' }
-      ] });
-
-      var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
-
-      expect(alertBars.length).toEqual(5);
-      expect(alertBars[1].innerHTML).toMatch(/My After All Exception/);
-      expect(alertBars[1].getAttribute("class")).toEqual('jasmine-bar jasmine-errored');
-      expect(alertBars[2].innerHTML).toMatch(/My Other Exception/);
-      expect(alertBars[3].innerHTML).toMatch(/AfterAll Global After All Failure/);
-      expect(alertBars[4].innerHTML).toMatch(/Error during loading: Your JS is borken/);
-      expect(alertBars[4].innerHTML).not.toMatch(/line/);
-    });
-
-    it("displays file and line information if available", function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement("div"),
-        getContainer = function() { return container; },
-        reporter = new jasmineUnderTest.HtmlReporter({
-          env: env,
-          getContainer: getContainer,
-          createElement: function() { return document.createElement.apply(document, arguments); },
-          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
-        });
-
-      reporter.initialize();
-
-      reporter.jasmineStarted({});
-      reporter.jasmineDone({ failedExpectations: [
-        {
-          message: 'Your JS is borken',
-          globalErrorType: 'load',
-          filename: 'some/file.js',
-          lineno: 42
-        }
-      ] });
-
-      var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
-
-      expect(alertBars.length).toEqual(2);
-      expect(alertBars[1].innerHTML).toMatch(/Error during loading: Your JS is borken in some\/file.js line 42/);
-    });
-  });
-
   describe("when Jasmine is done", function() {
     it("adds a warning to the link title of specs that have no expectations", function() {
       if (!window.console) {
@@ -351,7 +288,12 @@ describe("HtmlReporter", function() {
       reporter.specStarted(specResult);
       reporter.specDone(specResult);
 
-      reporter.suiteDone({id: 2});
+      reporter.suiteDone({
+        id: 2,
+        status: 'things',
+        description: "inner suite",
+        fullName: "A Suite inner suite"
+      });
 
       specResult = {
         id: 209,
@@ -364,7 +306,12 @@ describe("HtmlReporter", function() {
       reporter.specStarted(specResult);
       reporter.specDone(specResult);
 
-      reporter.suiteDone({id: 1});
+      reporter.suiteDone({
+        id: 1,
+        status: 'things',
+        description: "A Suite",
+        fullName: "A Suite"
+      });
 
       reporter.jasmineDone({});
       var summary = container.querySelector(".jasmine-summary");
@@ -379,7 +326,7 @@ describe("HtmlReporter", function() {
         var node = outerSuite.childNodes[i];
         classes.push(node.getAttribute("class"));
       }
-      expect(classes).toEqual(["jasmine-suite-detail", "jasmine-specs", "jasmine-suite", "jasmine-specs"]);
+      expect(classes).toEqual(["jasmine-suite-detail jasmine-things", "jasmine-specs", "jasmine-suite", "jasmine-specs"]);
 
       var suiteDetail = outerSuite.childNodes[0];
       var suiteLink = suiteDetail.childNodes[0];
@@ -428,6 +375,65 @@ describe("HtmlReporter", function() {
       trigger.onclick();
 
       expect(payload).not.toHaveClass('jasmine-open');
+    });
+
+    describe("when there are global errors", function() {
+      it("displays the exceptions in their own alert bars", function(){
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement("div"),
+          getContainer = function() { return container; },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() { return document.createElement.apply(document, arguments); },
+            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          });
+
+        reporter.initialize();
+
+        reporter.jasmineStarted({});
+        reporter.jasmineDone({ failedExpectations: [
+            { message: 'Global After All Failure', globalErrorType: 'afterAll' },
+            { message: 'Your JS is borken', globalErrorType: 'load' }
+          ] });
+
+        var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
+
+        expect(alertBars.length).toEqual(3);
+        expect(alertBars[1].getAttribute("class")).toEqual('jasmine-bar jasmine-errored');
+        expect(alertBars[1].innerHTML).toMatch(/AfterAll Global After All Failure/);
+        expect(alertBars[2].innerHTML).toMatch(/Error during loading: Your JS is borken/);
+        expect(alertBars[2].innerHTML).not.toMatch(/line/);
+      });
+
+      it("displays file and line information if available", function() {
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement("div"),
+          getContainer = function() { return container; },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() { return document.createElement.apply(document, arguments); },
+            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          });
+
+        reporter.initialize();
+
+        reporter.jasmineStarted({});
+        reporter.jasmineDone({ failedExpectations: [
+            {
+              message: 'Your JS is borken',
+              globalErrorType: 'load',
+              filename: 'some/file.js',
+              lineno: 42
+            }
+          ] });
+
+        var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
+
+        expect(alertBars.length).toEqual(2);
+        expect(alertBars[1].innerHTML).toMatch(/Error during loading: Your JS is borken in some\/file.js line 42/);
+      });
     });
 
     describe("UI for raising/catching exceptions", function() {
@@ -928,11 +934,11 @@ describe("HtmlReporter", function() {
           description: "inner suite"
         });
 
-        var passingResult = {id: 123, status: "passed", passedExpectations: [{passed: true}], failedExpectations: []};
-        reporter.specStarted(passingResult);
-        reporter.specDone(passingResult);
+        var passingSpecResult = {id: 123, status: "passed", passedExpectations: [{passed: true}], failedExpectations: []};
+        reporter.specStarted(passingSpecResult);
+        reporter.specDone(passingSpecResult);
 
-        var failingResult = {
+        var failingSpecResult = {
           id: 124,
           status: "failed",
           description: "a failing spec",
@@ -945,36 +951,65 @@ describe("HtmlReporter", function() {
             }
           ]
         };
-        reporter.specStarted(failingResult);
-        reporter.specDone(failingResult);
-        reporter.suiteDone({});
-        reporter.suiteDone({});
-        reporter.suiteDone({});
+
+        var passingSuiteResult = {
+          id: 1,
+          description: "A suite"
+        };
+        var failingSuiteResult = {
+          id: 2,
+          description: 'a suite',
+          fullName: 'a suite',
+          status: 'failed',
+          failedExpectations: [{ message: 'My After All Exception' }]
+        };
+        reporter.specStarted(failingSpecResult);
+        reporter.specDone(failingSpecResult);
+        reporter.suiteDone(passingSuiteResult);
+        reporter.suiteDone(failingSuiteResult);
+        reporter.suiteDone(passingSuiteResult);
         reporter.jasmineDone({});
       });
 
       it("reports the specs counts", function() {
         var alertBar = container.querySelector(".jasmine-alert .jasmine-bar");
-        expect(alertBar.innerHTML).toMatch(/2 specs, 1 failure/);
+        expect(alertBar.innerHTML).toMatch(/2 specs, 2 failure/);
       });
 
       it("reports failure messages and stack traces", function() {
         var specFailures = container.querySelector(".jasmine-failures");
 
-        var failure = specFailures.childNodes[0];
-        expect(failure.getAttribute("class")).toMatch(/jasmine-failed/);
-        expect(failure.getAttribute("class")).toMatch(/jasmine-spec-detail/);
+        expect(specFailures.childNodes.length).toEqual(2);
 
-        var specDiv = failure.childNodes[0];
+        var specFailure = specFailures.childNodes[0];
+        expect(specFailure.getAttribute("class")).toMatch(/jasmine-failed/);
+        expect(specFailure.getAttribute("class")).toMatch(/jasmine-spec-detail/);
+
+        var specDiv = specFailure.childNodes[0];
         expect(specDiv.getAttribute("class")).toEqual("jasmine-description");
 
-        var message = failure.childNodes[1].childNodes[0];
+        var message = specFailure.childNodes[1].childNodes[0];
         expect(message.getAttribute("class")).toEqual("jasmine-result-message");
         expect(message.innerHTML).toEqual("a failure message");
 
-        var stackTrace = failure.childNodes[1].childNodes[1];
+        var stackTrace = specFailure.childNodes[1].childNodes[1];
         expect(stackTrace.getAttribute("class")).toEqual("jasmine-stack-trace");
         expect(stackTrace.innerHTML).toEqual("a stack trace");
+
+        var suiteFailure = specFailures.childNodes[0];
+        expect(suiteFailure.getAttribute("class")).toMatch(/jasmine-failed/);
+        expect(suiteFailure.getAttribute("class")).toMatch(/jasmine-spec-detail/);
+
+        var suiteDiv = suiteFailure.childNodes[0];
+        expect(suiteDiv.getAttribute("class")).toEqual("jasmine-description");
+
+        var suiteMessage = suiteFailure.childNodes[1].childNodes[0];
+        expect(suiteMessage.getAttribute("class")).toEqual("jasmine-result-message");
+        expect(suiteMessage.innerHTML).toEqual("a failure message");
+
+        var suiteStackTrace = suiteFailure.childNodes[1].childNodes[1];
+        expect(suiteStackTrace.getAttribute("class")).toEqual("jasmine-stack-trace");
+        expect(suiteStackTrace.innerHTML).toEqual("a stack trace");
       });
 
       it('provides links to focus on a failure and each containing suite', function() {
@@ -1063,7 +1098,7 @@ describe("HtmlReporter", function() {
       });
     });
 
-    describe("When the jasmineDone event's overallStatus is 'failed'", function() {
+    describe("When the jasmineDone event's overallStatus is 'incomplete'", function() {
       it("has class jasmine-incomplete", function() {
         var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
