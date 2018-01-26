@@ -286,6 +286,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.execute = function(runnablesToRun) {
+      var self = this;
       this.suppressLoadErrors();
 
       if(!runnablesToRun) {
@@ -315,9 +316,7 @@ getJasmineRequireObj().Env = function(j$) {
             throw new Error('Tried to complete the wrong suite');
           }
 
-          if (!suite.markedPending) {
-            clearResourcesForRunnable(suite.id);
-          }
+          clearResourcesForRunnable(suite.id);
           currentlyExecutingSuites.pop();
           reporter.suiteDone(result);
 
@@ -327,6 +326,9 @@ getJasmineRequireObj().Env = function(j$) {
         },
         orderChildren: function(node) {
           return order.sort(node.children);
+        },
+        excludeNode: function(spec) {
+          return !self.specFilter(spec);
         }
       });
 
@@ -576,10 +578,6 @@ getJasmineRequireObj().Env = function(j$) {
         },
         throwOnExpectationFailure: throwOnExpectationFailure
       });
-
-      if (!self.specFilter(spec)) {
-        spec.disable();
-      }
 
       return spec;
 

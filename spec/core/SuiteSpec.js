@@ -79,7 +79,7 @@ describe("Suite", function() {
   it("retrieves a result with updated status", function() {
     var suite = new jasmineUnderTest.Suite({});
 
-    expect(suite.getResult().status).toBe('finished');
+    expect(suite.getResult().status).toBe('passed');
   });
 
   it("retrieves a result with pending status", function() {
@@ -87,19 +87,6 @@ describe("Suite", function() {
     suite.pend();
 
     expect(suite.getResult().status).toBe('pending');
-  });
-
-  it("is executable if not pending", function() {
-    var suite = new jasmineUnderTest.Suite({});
-
-    expect(suite.isExecutable()).toBe(true);
-  });
-
-  it("is not executable if pending", function() {
-    var suite = new jasmineUnderTest.Suite({});
-    suite.pend();
-
-    expect(suite.isExecutable()).toBe(false);
   });
 
   it("throws an ExpectationFailed when receiving a failed expectation when throwOnExpectationFailure is set", function() {

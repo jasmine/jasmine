@@ -6,13 +6,14 @@ getJasmineRequireObj().TreeProcessor = function() {
         nodeStart = attrs.nodeStart || function() {},
         nodeComplete = attrs.nodeComplete || function() {},
         orderChildren = attrs.orderChildren || function(node) { return node.children; },
+        excludeNode = attrs.excludeNode || function(node) { return false; },
         stats = { valid: true },
         processed = false,
         defaultMin = Infinity,
         defaultMax = 1 - Infinity;
 
     this.processTree = function() {
-      processNode(tree, false);
+      processNode(tree, true);
       processed = true;
       return stats;
     };
@@ -46,18 +47,18 @@ getJasmineRequireObj().TreeProcessor = function() {
       }
     }
 
-    function processNode(node, parentEnabled) {
+    function processNode(node, parentExcluded) {
       var executableIndex = runnableIndex(node.id);
 
       if (executableIndex !== undefined) {
-        parentEnabled = true;
+        parentExcluded = false;
       }
 
-      parentEnabled = parentEnabled && node.isExecutable();
-
       if (!node.children) {
+        var excluded = parentExcluded || excludeNode(node);
         stats[node.id] = {
-          executable: parentEnabled && node.isExecutable(),
+          excluded: excluded,
+          willExecute: !excluded && !node.markedPending,
           segments: [{
             index: 0,
             owner: node,
@@ -74,7 +75,7 @@ getJasmineRequireObj().TreeProcessor = function() {
         for (var i = 0; i < orderedChildren.length; i++) {
           var child = orderedChildren[i];
 
-          processNode(child, parentEnabled);
+          processNode(child, parentExcluded);
 
           if (!stats.valid) {
             return;
@@ -82,11 +83,12 @@ getJasmineRequireObj().TreeProcessor = function() {
 
           var childStats = stats[child.id];
 
-          hasExecutableChild = hasExecutableChild || childStats.executable;
+          hasExecutableChild = hasExecutableChild || childStats.willExecute;
         }
 
         stats[node.id] = {
-          executable: hasExecutableChild
+          excluded: parentExcluded,
+          willExecute: hasExecutableChild
         };
 
         segmentChildren(node, orderedChildren, stats[node.id], executableIndex);
@@ -182,7 +184,7 @@ getJasmineRequireObj().TreeProcessor = function() {
         };
       } else {
         return {
-          fn: function(done) { node.execute(done, stats[node.id].executable); }
+          fn: function(done) { node.execute(done, stats[node.id].excluded); }
         };
       }
     }
@@ -195,7 +197,7 @@ getJasmineRequireObj().TreeProcessor = function() {
         result.push(executeNode(segmentChildren[i].owner, segmentChildren[i].index));
       }
 
-      if (!stats[node.id].executable) {
+      if (!stats[node.id].willExecute) {
         return result;
       }
 

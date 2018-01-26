@@ -55,7 +55,7 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.expectationFactory(actual, this);
   };
 
-  Spec.prototype.execute = function(onComplete, enabled) {
+  Spec.prototype.execute = function(onComplete, excluded) {
     var self = this;
 
     this.onStart(this);
@@ -72,17 +72,16 @@ getJasmineRequireObj().Spec = function(j$) {
       userContext: this.userContext()
     };
 
-    if (!this.isExecutable() || this.markedPending || enabled === false) {
+    if (this.markedPending || excluded === true) {
       runnerConfig.queueableFns = [];
       runnerConfig.cleanupFns = [];
-      runnerConfig.onComplete = function() { complete(enabled); };
     }
 
     this.queueRunnerFactory(runnerConfig);
 
-    function complete(enabledAgain) {
+    function complete() {
       self.queueableFn.fn = null;
-      self.result.status = self.status(enabledAgain);
+      self.result.status = self.status(excluded);
       self.resultCallback(self.result);
 
       if (onComplete) {
@@ -110,10 +109,6 @@ getJasmineRequireObj().Spec = function(j$) {
     }, true);
   };
 
-  Spec.prototype.disable = function() {
-    this.disabled = true;
-  };
-
   Spec.prototype.pend = function(message) {
     this.markedPending = true;
     if (message) {
@@ -126,9 +121,9 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.result;
   };
 
-  Spec.prototype.status = function(enabled) {
-    if (this.disabled || enabled === false) {
-      return 'disabled';
+  Spec.prototype.status = function(excluded) {
+    if (excluded === true) {
+      return 'excluded';
     }
 
     if (this.markedPending) {
@@ -140,10 +135,6 @@ getJasmineRequireObj().Spec = function(j$) {
     } else {
       return 'passed';
     }
-  };
-
-  Spec.prototype.isExecutable = function() {
-    return !this.disabled;
   };
 
   Spec.prototype.getFullName = function() {

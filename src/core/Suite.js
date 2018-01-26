@@ -90,12 +90,8 @@ getJasmineRequireObj().Suite = function(j$) {
     if (this.result.failedExpectations.length > 0) {
       return 'failed';
     } else {
-      return 'finished';
+      return 'passed';
     }
-  };
-
-  Suite.prototype.isExecutable = function() {
-    return !this.markedPending;
   };
 
   Suite.prototype.canBeReentered = function() {
