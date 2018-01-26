@@ -18,8 +18,8 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-passed:before { color: #007069; content: "\02022"; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-failed { line-height: 9px; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-failed:before { color: #ca3a11; content: "\d7"; font-weight: bold; margin-left: -1px; }
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-disabled { font-size: 14px; }
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-disabled:before { color: #bababa; content: "\02022"; }
+.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded { font-size: 14px; }
+.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded:before { color: #bababa; content: "\02022"; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-pending { line-height: 17px; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-pending:before { color: #ba9d37; content: "*"; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-empty { font-size: 14px; }
@@ -46,7 +46,7 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .jasmine-summary li.jasmine-failed a { color: #ca3a11; }
 .jasmine_html-reporter .jasmine-summary li.jasmine-empty a { color: #ba9d37; }
 .jasmine_html-reporter .jasmine-summary li.jasmine-pending a { color: #ba9d37; }
-.jasmine_html-reporter .jasmine-summary li.jasmine-disabled a { color: #bababa; }
+.jasmine_html-reporter .jasmine-summary li.jasmine-excluded a { color: #bababa; }
 .jasmine_html-reporter .jasmine-description + .jasmine-suite { margin-top: 0; }
 .jasmine_html-reporter .jasmine-suite { margin-top: 14px; }
 .jasmine_html-reporter .jasmine-suite a { color: #333; }
