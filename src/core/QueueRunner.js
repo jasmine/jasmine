@@ -24,6 +24,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.fail = attrs.fail || function() {};
     this.globalErrors = attrs.globalErrors || { pushListener: function() {}, popListener: function() {} };
     this.completeOnFirstError = !!attrs.completeOnFirstError;
+
+    if (typeof(this.onComplete) !== 'function') {
+      throw new Error('invalid onComplete ' + JSON.stringify(this.onComplete));
+    }
   }
 
   QueueRunner.prototype.execute = function() {
@@ -53,15 +57,15 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
   QueueRunner.prototype.attempt = function attempt(iterativeIndex) {
     var self = this, completedSynchronously = true,
-      handleError = function(error) {
+      handleError = function handleError(error) {
         onException(error);
         next();
       },
-      cleanup = once(function() {
+      cleanup = once(function cleanup() {
         self.clearTimeout(timeoutId);
         self.globalErrors.popListener(handleError);
       }),
-      next = once(function () {
+      next = once(function next() {
         cleanup();
 
         function runNext() {
@@ -82,7 +86,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       queueableFn = self.queueableFns[iterativeIndex],
       timeoutId;
 
-    next.fail = function() {
+    next.fail = function nextFail() {
       self.fail.apply(null, arguments);
       errored = true;
       next();

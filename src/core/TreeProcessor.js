@@ -166,17 +166,20 @@ getJasmineRequireObj().TreeProcessor = function() {
       if (node.children) {
         return {
           fn: function(done) {
-            nodeStart(node);
+            var onStart = {
+              fn: function(next) {
+                nodeStart(node, next);
+              }
+            };
 
             queueRunnerFactory({
-              onComplete: function() {
+              onComplete: function () {
                 node.cleanupBeforeAfter();
-                nodeComplete(node, node.getResult());
-                done();
+                nodeComplete(node, node.getResult(), done);
               },
-              queueableFns: wrapChildren(node, segmentNumber),
+              queueableFns: [onStart].concat(wrapChildren(node, segmentNumber)),
               userContext: node.sharedUserContext(),
-              onException: function() {
+              onException: function () {
                 node.onException.apply(node, arguments);
               }
             });

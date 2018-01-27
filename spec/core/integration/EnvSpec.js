@@ -412,7 +412,7 @@ describe("Env integration", function() {
         suiteDone: jasmine.createSpy('suiteDone').and.callFake(function(result) {
           expect(result.failedExpectations[0].globalErrorType).toBeFalsy();
         })
-      }
+      };
 
     env.addReporter(reporter);
 
@@ -481,7 +481,9 @@ describe("Env integration", function() {
         setTimeout(function() {
           specDone();
           setTimeout(function() {
+          setTimeout(function() {
             global.onerror('fail');
+          });
           });
         });
       });
@@ -1002,28 +1004,35 @@ describe("Env integration", function() {
   });
 
   describe("with a mock clock", function() {
+    var realSetTimeout;
     beforeEach(function() {
       this.originalTimeout = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
-      this.realSetTimeout = setTimeout;
+      realSetTimeout = setTimeout;
       jasmine.clock().install();
     });
 
     afterEach(function() {
+      jasmine.clock().tick(1);
+      jasmine.clock().tick(1);
       jasmine.clock().uninstall();
       jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = this.originalTimeout;
     });
 
-    it("should wait a specified interval before failing specs haven't called done yet", function(done) {
+    it("should wait a default interval before failing specs that haven't called done yet", function(done) {
       var env = new jasmineUnderTest.Env(),
           reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
 
-      reporter.specDone.and.callFake(function() {
-        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({status: 'failed'}));
+      reporter.specDone.and.callFake(function(result) {
+        expect(result).toEqual(jasmine.objectContaining({status: 'failed'}));
+        realSetTimeout(function() {
+          jasmine.clock().tick(1);
+        }, 0);
       });
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.jasmineDone.calls.count()).toEqual(1);
-        done();
+        expect(reporter.specDone.calls.count()).toEqual(1);
+        jasmine.clock().tick(1);
+        realSetTimeout(done);
       });
 
       env.addReporter(reporter);
@@ -1032,6 +1041,7 @@ describe("Env integration", function() {
       env.it("async spec that doesn't call done", function(underTestCallback) {
         env.expect(true).toBeTruthy();
         jasmine.clock().tick(8416);
+        jasmine.clock().tick(1);
       });
 
       env.execute();
@@ -1042,10 +1052,17 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]),
         clock = env.clock;
 
+      reporter.specDone.and.callFake(function() {
+        realSetTimeout(function() {
+          jasmine.clock().tick(1);
+        }, 0);
+      });
+
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.specDone.calls.count()).toEqual(1);
+        expect(reporter.specDone).toHaveBeenCalledTimes(1);
         expect(reporter.specDone.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({status: 'passed'}));
-        done();
+        jasmine.clock().tick(1);
+        realSetTimeout(done);
       });
 
       env.addReporter(reporter);
@@ -1062,8 +1079,7 @@ describe("Env integration", function() {
       env.it("spec that should not time out", function(innerDone) {
         clock.tick(6);
         expect(true).toEqual(true);
-        innerDone();
-        jasmine.clock().tick(1);
+        realSetTimeout(innerDone);
       });
 
       env.execute();
@@ -1072,8 +1088,19 @@ describe("Env integration", function() {
     it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
       var env = new jasmineUnderTest.Env(),
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']),
-          realSetTimeout = this.realSetTimeout,
           timeoutFailure = (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./);
+
+      reporter.specDone.and.callFake(function(r) {
+        realSetTimeout(function() {
+          jasmine.clock().tick(1);
+        }, 0);
+      });
+
+      reporter.suiteDone.and.callFake(function(r) {
+        realSetTimeout(function() {
+          jasmine.clock().tick(1);
+        }, 0);
+      });
 
       reporter.jasmineDone.and.callFake(function() {
         expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite beforeAll', [ timeoutFailure ]);
@@ -1082,18 +1109,19 @@ describe("Env integration", function() {
         expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite afterEach times out', [ timeoutFailure ]);
         expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite it times out', [ timeoutFailure ]);
 
-        done();
+        jasmine.clock().tick(1);
+        realSetTimeout(done);
       });
 
       env.addReporter(reporter);
       jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
       env.describe('suite', function() {
-        env.afterAll(function() {
-          realSetTimeout(function() {
-            jasmine.clock().tick(10);
-          }, 100);
-        });
+        // env.afterAll(function() {
+          // realSetTimeout(function() {
+            // jasmine.clock().tick(10);
+          // }, 100);
+        // });
         env.describe('beforeAll', function() {
           env.beforeAll(function(innerDone) {
             realSetTimeout(function() {
@@ -1101,7 +1129,12 @@ describe("Env integration", function() {
             }, 0);
           }, 5000);
 
-          env.it('times out', function() {});
+          env.it('times out', function(innerDone) {
+            realSetTimeout(function() {
+              jasmine.clock().tick(1);
+              innerDone();
+            }, 0);
+          });
         });
 
         env.describe('afterAll', function() {
@@ -1111,7 +1144,12 @@ describe("Env integration", function() {
             }, 0);
           }, 2000);
 
-          env.it('times out', function() {});
+          env.it('times out', function(innerDone) {
+            realSetTimeout(function() {
+              jasmine.clock().tick(1);
+              innerDone();
+            }, 0);
+          });
         });
 
         env.describe('beforeEach', function() {
@@ -1121,7 +1159,12 @@ describe("Env integration", function() {
             }, 0);
           }, 1000);
 
-          env.it('times out', function() {});
+          env.it('times out', function(innerDone) {
+            realSetTimeout(function() {
+              jasmine.clock().tick(1);
+              innerDone();
+            }, 0);
+          });
         });
 
         env.describe('afterEach', function() {
@@ -1131,7 +1174,12 @@ describe("Env integration", function() {
             }, 0);
           }, 4000);
 
-          env.it('times out', function() {});
+          env.it('times out', function(innerDone) {
+            realSetTimeout(function() {
+              jasmine.clock().tick(1);
+              innerDone();
+            }, 0);
+          });
         });
 
         env.it('it times out', function(innerDone) {
@@ -1147,6 +1195,12 @@ describe("Env integration", function() {
     it('explicitly fails an async spec', function(done) {
       var env = new jasmineUnderTest.Env(),
       specDone = jasmine.createSpy('specDone');
+
+      specDone.and.callFake(function() {
+        realSetTimeout(function() {
+          jasmine.clock().tick(1);
+        }, 0);
+      });
 
       env.addReporter({
         specDone: specDone,
@@ -1175,7 +1229,9 @@ describe("Env integration", function() {
               message: 'Failed: error message'
             })]
           }));
-          done();
+
+          jasmine.clock().tick(1);
+          realSetTimeout(done);
         }
       });
 
@@ -1187,6 +1243,7 @@ describe("Env integration", function() {
           }, 1);
           jasmine.clock().tick(1);
           jasmine.clock().tick(1);
+          jasmine.clock().tick(1);
         });
 
         env.it('specifies a message', function(innerDone) {
@@ -1194,6 +1251,7 @@ describe("Env integration", function() {
             env.fail('messy message');
             innerDone();
           }, 1);
+          jasmine.clock().tick(1);
           jasmine.clock().tick(1);
           jasmine.clock().tick(1);
         });
@@ -1204,6 +1262,7 @@ describe("Env integration", function() {
           }, 1);
           jasmine.clock().tick(1);
           jasmine.clock().tick(1);
+          jasmine.clock().tick(1);
         });
 
         env.it('has a message from an Error', function(innerDone) {
@@ -1211,6 +1270,7 @@ describe("Env integration", function() {
             env.fail(new Error('error message'));
             innerDone();
           }, 1);
+          jasmine.clock().tick(1);
           jasmine.clock().tick(1);
           jasmine.clock().tick(1);
         });

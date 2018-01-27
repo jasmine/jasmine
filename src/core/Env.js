@@ -39,59 +39,6 @@ getJasmineRequireObj().Env = function(j$) {
       return currentSpec || currentSuite();
     };
 
-    /**
-     * This represents the available reporter callback for an object passed to {@link Env#addReporter}.
-     * @interface Reporter
-     */
-    var reporter = new j$.ReportDispatcher([
-      /**
-       * `jasmineStarted` is called after all of the specs have been loaded, but just before execution starts.
-       * @function
-       * @name Reporter#jasmineStarted
-       * @param {JasmineStartedInfo} suiteInfo Information about the full Jasmine suite that is being run
-       */
-      'jasmineStarted',
-      /**
-       * When the entire suite has finished execution `jasmineDone` is called
-       * @function
-       * @name Reporter#jasmineDone
-       * @param {JasmineDoneInfo} suiteInfo Information about the full Jasmine suite that just finished running.
-       */
-      'jasmineDone',
-      /**
-       * `suiteStarted` is invoked when a `describe` starts to run
-       * @function
-       * @name Reporter#suiteStarted
-       * @param {SuiteResult} result Information about the individual {@link describe} being run
-       */
-      'suiteStarted',
-      /**
-       * `suiteDone` is invoked when all of the child specs and suites for a given suite have been run
-       *
-       * While jasmine doesn't require any specific functions, not defining a `suiteDone` will make it impossible for a reporter to know when a suite has failures in an `afterAll`.
-       * @function
-       * @name Reporter#suiteDone
-       * @param {SuiteResult} result
-       */
-      'suiteDone',
-      /**
-       * `specStarted` is invoked when an `it` starts to run (including associated `beforeEach` functions)
-       * @function
-       * @name Reporter#specStarted
-       * @param {SpecResult} result Information about the individual {@link it} being run
-       */
-      'specStarted',
-      /**
-       * `specDone` is invoked when an `it` and its associated `beforeEach` and `afterEach` functions have been run.
-       *
-       * While jasmine doesn't require any specific functions, not defining a `specDone` will make it impossible for a reporter to know when a spec has failed.
-       * @function
-       * @name Reporter#specDone
-       * @param {SpecResult} result
-       */
-      'specDone'
-    ]);
-
     var globalErrors = new j$.GlobalErrors();
     globalErrors.install();
     globalErrors.pushListener(function(message, filename, lineno) {
@@ -260,15 +207,18 @@ getJasmineRequireObj().Env = function(j$) {
       handlingLoadErrors = false;
     };
 
-    var queueRunnerFactory = function(options) {
+    var queueRunnerFactory = function(options, args) {
       options.catchException = catchException;
       options.clearStack = options.clearStack || clearStack;
       options.timeout = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
       options.fail = self.fail;
       options.globalErrors = globalErrors;
       options.completeOnFirstError = throwOnExpectationFailure && options.isLeaf;
+      options.onException = options.onException || function(e) {
+        (currentRunnable() || topSuite).onException(e);
+      };
 
-      new j$.QueueRunner(options).execute();
+      new j$.QueueRunner(options).execute(args);
     };
 
     var topSuite = new j$.Suite({
@@ -284,6 +234,59 @@ getJasmineRequireObj().Env = function(j$) {
     this.topSuite = function() {
       return topSuite;
     };
+
+    /**
+     * This represents the available reporter callback for an object passed to {@link Env#addReporter}.
+     * @interface Reporter
+     */
+    var reporter = new j$.ReportDispatcher([
+      /**
+       * `jasmineStarted` is called after all of the specs have been loaded, but just before execution starts.
+       * @function
+       * @name Reporter#jasmineStarted
+       * @param {JasmineStartedInfo} suiteInfo Information about the full Jasmine suite that is being run
+       */
+      'jasmineStarted',
+      /**
+       * When the entire suite has finished execution `jasmineDone` is called
+       * @function
+       * @name Reporter#jasmineDone
+       * @param {JasmineDoneInfo} suiteInfo Information about the full Jasmine suite that just finished running.
+       */
+      'jasmineDone',
+      /**
+       * `suiteStarted` is invoked when a `describe` starts to run
+       * @function
+       * @name Reporter#suiteStarted
+       * @param {SuiteResult} result Information about the individual {@link describe} being run
+       */
+      'suiteStarted',
+      /**
+       * `suiteDone` is invoked when all of the child specs and suites for a given suite have been run
+       *
+       * While jasmine doesn't require any specific functions, not defining a `suiteDone` will make it impossible for a reporter to know when a suite has failures in an `afterAll`.
+       * @function
+       * @name Reporter#suiteDone
+       * @param {SuiteResult} result
+       */
+      'suiteDone',
+      /**
+       * `specStarted` is invoked when an `it` starts to run (including associated `beforeEach` functions)
+       * @function
+       * @name Reporter#specStarted
+       * @param {SpecResult} result Information about the individual {@link it} being run
+       */
+      'specStarted',
+      /**
+       * `specDone` is invoked when an `it` and its associated `beforeEach` and `afterEach` functions have been run.
+       *
+       * While jasmine doesn't require any specific functions, not defining a `specDone` will make it impossible for a reporter to know when a spec has failed.
+       * @function
+       * @name Reporter#specDone
+       * @param {SpecResult} result
+       */
+      'specDone'
+    ], queueRunnerFactory);
 
     this.execute = function(runnablesToRun) {
       var self = this;
@@ -306,23 +309,24 @@ getJasmineRequireObj().Env = function(j$) {
         tree: topSuite,
         runnableIds: runnablesToRun,
         queueRunnerFactory: queueRunnerFactory,
-        nodeStart: function(suite) {
+        nodeStart: function(suite, next) {
           currentlyExecutingSuites.push(suite);
           defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
-          reporter.suiteStarted(suite.result);
+          reporter.suiteStarted(suite.result, next);
         },
-        nodeComplete: function(suite, result) {
+        nodeComplete: function(suite, result, next) {
           if (suite !== currentSuite()) {
             throw new Error('Tried to complete the wrong suite');
           }
 
           clearResourcesForRunnable(suite.id);
           currentlyExecutingSuites.pop();
-          reporter.suiteDone(result);
 
           if (result.status === 'failed') {
             hasFailures = true;
           }
+
+          reporter.suiteDone(result, next);
         },
         orderChildren: function(node) {
           return order.sort(node.children);
@@ -345,40 +349,40 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.jasmineStarted({
         totalSpecsDefined: totalSpecsDefined,
         order: order
-      });
+      }, function() {
+        currentlyExecutingSuites.push(topSuite);
 
-      currentlyExecutingSuites.push(topSuite);
+        processor.execute(function () {
+          clearResourcesForRunnable(topSuite.id);
+          currentlyExecutingSuites.pop();
+          var overallStatus, incompleteReason;
 
-      processor.execute(function() {
-        clearResourcesForRunnable(topSuite.id);
-        currentlyExecutingSuites.pop();
-        var overallStatus, incompleteReason;
+          if (hasFailures || topSuite.result.failedExpectations.length > 0) {
+            overallStatus = 'failed';
+          } else if (focusedRunnables.length > 0) {
+            overallStatus = 'incomplete';
+            incompleteReason = 'fit() or fdescribe() was found';
+          } else if (totalSpecsDefined === 0) {
+            overallStatus = 'incomplete';
+            incompleteReason = 'No specs found';
+          } else {
+            overallStatus = 'passed';
+          }
 
-        if (hasFailures || topSuite.result.failedExpectations.length > 0) {
-          overallStatus = 'failed';
-        } else if (focusedRunnables.length > 0) {
-          overallStatus = 'incomplete';
-          incompleteReason = 'fit() or fdescribe() was found';
-        } else if (totalSpecsDefined === 0) {
-          overallStatus = 'incomplete';
-          incompleteReason = 'No specs found';
-        } else {
-          overallStatus = 'passed';
-        }
-
-        /**
-         * Information passed to the {@link Reporter#jasmineDone} event.
-         * @typedef JasmineDoneInfo
-         * @property {OverallStatus} - The overall result of the sute: 'passed', 'failed', or 'incomplete'.
-         * @property {IncompleteReason} - Explanation of why the suite was incimplete.
-         * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
-         * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
-         */
-        reporter.jasmineDone({
-          overallStatus: overallStatus,
-          incompleteReason: incompleteReason,
-          order: order,
-          failedExpectations: topSuite.result.failedExpectations
+          /**
+           * Information passed to the {@link Reporter#jasmineDone} event.
+           * @typedef JasmineDoneInfo
+           * @property {OverallStatus} - The overall result of the sute: 'passed', 'failed', or 'incomplete'.
+           * @property {IncompleteReason} - Explanation of why the suite was incimplete.
+           * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
+           * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
+           */
+          reporter.jasmineDone({
+            overallStatus: overallStatus,
+            incompleteReason: incompleteReason,
+            order: order,
+            failedExpectations: topSuite.result.failedExpectations
+          }, function() {});
         });
       });
     };
@@ -581,20 +585,21 @@ getJasmineRequireObj().Env = function(j$) {
 
       return spec;
 
-      function specResultCallback(result) {
+      function specResultCallback(result, next) {
         clearResourcesForRunnable(spec.id);
         currentSpec = null;
-        reporter.specDone(result);
 
         if (result.status === 'failed') {
           hasFailures = true;
         }
+
+        reporter.specDone(result, next);
       }
 
-      function specStarted(spec) {
+      function specStarted(spec, next) {
         currentSpec = spec;
         defaultResourcesForRunnable(spec.id, suite.id);
-        reporter.specStarted(spec.result);
+        reporter.specStarted(spec.result, next);
       }
     };
 

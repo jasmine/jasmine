@@ -58,7 +58,19 @@ getJasmineRequireObj().Spec = function(j$) {
   Spec.prototype.execute = function(onComplete, excluded) {
     var self = this;
 
-    this.onStart(this);
+    var onStart = {
+      fn: function(done) {
+        self.onStart(self, done);
+      }
+    };
+
+    var complete = {
+      fn: function(done) {
+        self.queueableFn.fn = null;
+        self.result.status = self.status(excluded);
+        self.resultCallback(self.result, done);
+      }
+    };
 
     var fns = this.beforeAndAfterFns();
     var regularFns = fns.befores.concat(this.queueableFn);
@@ -67,8 +79,10 @@ getJasmineRequireObj().Spec = function(j$) {
       isLeaf: true,
       queueableFns: regularFns,
       cleanupFns: fns.afters,
-      onException: function() { self.onException.apply(self, arguments); },
-      onComplete: complete,
+      onException: function () {
+        self.onException.apply(self, arguments);
+      },
+      onComplete: onComplete,
       userContext: this.userContext()
     };
 
@@ -77,17 +91,10 @@ getJasmineRequireObj().Spec = function(j$) {
       runnerConfig.cleanupFns = [];
     }
 
+    runnerConfig.queueableFns.unshift(onStart);
+    runnerConfig.cleanupFns.push(complete);
+
     this.queueRunnerFactory(runnerConfig);
-
-    function complete() {
-      self.queueableFn.fn = null;
-      self.result.status = self.status(excluded);
-      self.resultCallback(self.result);
-
-      if (onComplete) {
-        onComplete();
-      }
-    }
   };
 
   Spec.prototype.onException = function onException(e) {
