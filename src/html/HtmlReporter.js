@@ -35,7 +35,7 @@ jasmineRequire.HtmlReporter = function(j$) {
   ResultsStateBuilder.prototype.specDone = function(result) {
     this.currentParent.addChild(result, 'spec');
 
-    if (result.status !== 'disabled') {
+    if (result.status !== 'excluded') {
       this.specsExecuted++;
     }
 
@@ -439,7 +439,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     function hasActiveSpec(resultNode) {
-      if (resultNode.type == 'spec' && resultNode.result.status != 'disabled') {
+      if (resultNode.type == 'spec' && resultNode.result.status != 'excluded') {
         return true;
       }
 

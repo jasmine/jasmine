@@ -92,7 +92,7 @@ describe("HtmlReporter", function() {
       expect(specEl.getAttribute("class")).toEqual("jasmine-empty");
     });
 
-    it("reports the status symbol of a disabled spec", function() {
+    it("reports the status symbol of a excluded spec", function() {
       var env = new jasmineUnderTest.Env(),
         container = document.createElement("div"),
         getContainer = function() { return container; },
@@ -104,10 +104,10 @@ describe("HtmlReporter", function() {
         });
       reporter.initialize();
 
-      reporter.specDone({id: 789, status: "disabled", fullName: "symbols should have titles", passedExpectations: [], failedExpectations: []});
+      reporter.specDone({id: 789, status: "excluded", fullName: "symbols should have titles", passedExpectations: [], failedExpectations: []});
 
       var specEl = container.querySelector('.jasmine-symbol-summary li');
-      expect(specEl.getAttribute("class")).toEqual("jasmine-disabled");
+      expect(specEl.getAttribute("class")).toEqual("jasmine-excluded");
       expect(specEl.getAttribute("id")).toEqual("spec_789");
       expect(specEl.getAttribute("title")).toEqual("symbols should have titles");
     });
@@ -802,7 +802,7 @@ describe("HtmlReporter", function() {
       });
     });
 
-    describe("and there are disabled specs", function() {
+    describe("and there are excluded specs", function() {
       var env, container, reporter, reporterConfig, specStatus;
       beforeEach(function() {
         env = new jasmineUnderTest.Env();
@@ -815,9 +815,9 @@ describe("HtmlReporter", function() {
         };
         specStatus = {
           id: 123,
-          description: "with a disabled spec",
-          fullName: "A Suite with a disabled spec",
-          status: "disabled",
+          description: "with a excluded spec",
+          fullName: "A Suite with a excluded spec",
+          status: "excluded",
           passedExpectations: [],
           failedExpectations: []
         };
@@ -834,10 +834,10 @@ describe("HtmlReporter", function() {
           reporter.jasmineDone({});
         });
 
-        it("shows the disabled spec in the spec list", function() {
+        it("shows the excluded spec in the spec list", function() {
           var specList = container.querySelector(".jasmine-summary");
 
-          expect(specList.innerHTML).toContain('with a disabled spec');
+          expect(specList.innerHTML).toContain('with a excluded spec');
         });
       });
 
@@ -852,7 +852,7 @@ describe("HtmlReporter", function() {
           reporter.jasmineDone({});
         });
 
-        it("doesn't show the disabled spec in the spec list", function() {
+        it("doesn't show the excluded spec in the spec list", function() {
           var specList = container.querySelector(".jasmine-summary");
 
           expect(specList.innerHTML).toEqual('');
