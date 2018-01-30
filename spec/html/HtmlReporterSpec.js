@@ -487,16 +487,44 @@ describe("HtmlReporter", function() {
         expect(stopOnFailureUI.checked).toBe(true);
       });
 
-      it("should trigger the callback when changed", function() {
+      it("should navigate and turn the setting on", function() {
         var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
-          failFastHandler = jasmine.createSpy('failFast'),
+          navigationHandler = jasmine.createSpy('navigate'),
           getContainer = function() {
             return container;
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            onStopExecutionClick: failFastHandler,
+            navigateWithNewParam: navigationHandler,
+            getContainer: getContainer,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var stopOnFailureUI = container.querySelector(".jasmine-fail-fast");
+        stopOnFailureUI.click();
+
+        expect(navigationHandler).toHaveBeenCalledWith('failFast', true);
+      });
+
+      it("should navigate and turn the setting off", function() {
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement("div"),
+          navigationHandler = jasmine.createSpy('navigate'),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            navigateWithNewParam: navigationHandler,
             getContainer: getContainer,
             createElement: function() {
               return document.createElement.apply(document, arguments);
@@ -514,7 +542,7 @@ describe("HtmlReporter", function() {
         var stopOnFailureUI = container.querySelector(".jasmine-fail-fast");
         stopOnFailureUI.click();
 
-        expect(failFastHandler).toHaveBeenCalled();
+        expect(navigationHandler).toHaveBeenCalledWith('failFast', false);
       });
     });
 
@@ -569,17 +597,17 @@ describe("HtmlReporter", function() {
         expect(throwingExpectationsUI.checked).toBe(true);
       });
 
-      it("should affect the query param for throw expectation failures", function() {
+      it("should navigate and change the setting to on", function() {
         var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
-          throwingExceptionHandler = jasmine.createSpy('throwingExceptions'),
+          navigateHandler = jasmine.createSpy('navigate'),
           getContainer = function() {
             return container;
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            onThrowExpectationsClick: throwingExceptionHandler,
+            navigateWithNewParam: navigateHandler,
             createElement: function() {
               return document.createElement.apply(document, arguments);
             },
@@ -594,7 +622,37 @@ describe("HtmlReporter", function() {
         var throwingExpectationsUI = container.querySelector(".jasmine-throw");
         throwingExpectationsUI.click();
 
-        expect(throwingExceptionHandler).toHaveBeenCalled();
+        expect(navigateHandler).toHaveBeenCalledWith('throwFailures', true);
+      });
+
+      it("should navigate and change the setting to off", function() {
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement("div"),
+          navigateHandler = jasmine.createSpy('navigate'),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            navigateWithNewParam: navigateHandler,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        env.throwOnExpectationFailure(true);
+
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var throwingExpectationsUI = container.querySelector(".jasmine-throw");
+        throwingExpectationsUI.click();
+
+        expect(navigateHandler).toHaveBeenCalledWith('throwFailures', false);
       });
     });
 
@@ -649,17 +707,17 @@ describe("HtmlReporter", function() {
         expect(randomUI.checked).toBe(true);
       });
 
-      it("should affect the query param for random tests", function() {
+      it("should navigate and change the setting to on", function() {
         var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
-          randomHandler = jasmine.createSpy('randomHandler'),
+          navigateHandler = jasmine.createSpy('navigate'),
           getContainer = function() {
             return container;
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            onRandomClick: randomHandler,
+            navigateWithNewParam: navigateHandler,
             createElement: function() {
               return document.createElement.apply(document, arguments);
             },
@@ -668,13 +726,43 @@ describe("HtmlReporter", function() {
             }
           });
 
+        env.randomizeTests(false);
         reporter.initialize();
         reporter.jasmineDone({});
 
         var randomUI = container.querySelector(".jasmine-random");
         randomUI.click();
 
-        expect(randomHandler).toHaveBeenCalled();
+        expect(navigateHandler).toHaveBeenCalledWith('random', true);
+      });
+
+      it("should navigate and change the setting to off", function() {
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement("div"),
+          navigateHandler = jasmine.createSpy('navigate'),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            navigateWithNewParam: navigateHandler,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        env.randomizeTests(true);
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var randomUI = container.querySelector(".jasmine-random");
+        randomUI.click();
+
+        expect(navigateHandler).toHaveBeenCalledWith('random', false);
       });
 
       it("should show the seed bar if randomizing", function() {
