@@ -1117,11 +1117,15 @@ describe("Env integration", function() {
       jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
       env.describe('suite', function() {
-        // env.afterAll(function() {
-          // realSetTimeout(function() {
-            // jasmine.clock().tick(10);
-          // }, 100);
-        // });
+        env.afterAll(function() {
+          realSetTimeout(function() {
+            try {
+              jasmine.clock().tick(10);
+            } catch(e) {
+              // don't worry if the clock is already uninstalled
+            }
+          }, 100);
+        });
         env.describe('beforeAll', function() {
           env.beforeAll(function(innerDone) {
             realSetTimeout(function() {
@@ -1191,93 +1195,71 @@ describe("Env integration", function() {
 
       env.execute();
     });
+  });
 
-    it('explicitly fails an async spec', function(done) {
-      var env = new jasmineUnderTest.Env(),
+  it('explicitly fails an async spec', function(done) {
+    var env = new jasmineUnderTest.Env(),
       specDone = jasmine.createSpy('specDone');
 
-      specDone.and.callFake(function() {
-        realSetTimeout(function() {
-          jasmine.clock().tick(1);
-        }, 0);
-      });
+    env.addReporter({
+      specDone: specDone,
+      jasmineDone: function() {
+        expect(specDone).toHaveFailedExpectationsForRunnable('failing has a default message',
+          ['Failed']
+        );
+        expect(specDone).toHaveFailedExpectationsForRunnable('failing specifies a message',
+          ['Failed: messy message']
+        );
+        expect(specDone).toHaveFailedExpectationsForRunnable('failing fails via the done callback',
+          ['Failed: done failed']
+        );
+        expect(specDone).toHaveFailedExpectationsForRunnable('failing has a message from an Error',
+          ['Failed: error message']
+        );
+        expect(specDone).toHaveFailedExpectationsForRunnable('failing has a message from an Error to done',
+          ['Failed: done error']
+        );
 
-      env.addReporter({
-        specDone: specDone,
-        jasmineDone: function() {
-          expect(specDone).toHaveFailedExpectationsForRunnable('failing has a default message',
-            ['Failed']
-          );
-          expect(specDone).toHaveFailedExpectationsForRunnable('failing specifies a message',
-            ['Failed: messy message']
-          );
-          expect(specDone).toHaveFailedExpectationsForRunnable('failing fails via the done callback',
-            ['Failed: done failed']
-          );
-          expect(specDone).toHaveFailedExpectationsForRunnable('failing has a message from an Error',
-            ['Failed: error message']
-          );
-          expect(specDone).toHaveFailedExpectationsForRunnable('failing has a message from an Error to done',
-            ['Failed: done error']
-          );
-
-          jasmine.clock().tick(1);
-          realSetTimeout(done);
-        }
-      });
-
-      env.describe('failing', function() {
-        env.it('has a default message', function(innerDone) {
-          setTimeout(function() {
-            env.fail();
-            innerDone();
-          }, 1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-        });
-
-        env.it('specifies a message', function(innerDone) {
-          setTimeout(function() {
-            env.fail('messy message');
-            innerDone();
-          }, 1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-        });
-
-        env.it('fails via the done callback', function(innerDone) {
-          setTimeout(function() {
-            innerDone.fail('done failed');
-          }, 1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-        });
-
-        env.it('has a message from an Error', function(innerDone) {
-          setTimeout(function() {
-            env.fail(new Error('error message'));
-            innerDone();
-          }, 1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-        });
-
-        env.it('has a message from an Error to done', function(innerDone) {
-          setTimeout(function() {
-            innerDone(new Error('done error'));
-          }, 1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-        });
-      });
-
-      env.execute();
+        setTimeout(done);
+      }
     });
+
+    env.describe('failing', function() {
+      env.it('has a default message', function(innerDone) {
+        setTimeout(function() {
+          env.fail();
+          innerDone();
+        }, 1);
+      });
+
+      env.it('specifies a message', function(innerDone) {
+        setTimeout(function() {
+          env.fail('messy message');
+          innerDone();
+        }, 1);
+      });
+
+      env.it('fails via the done callback', function(innerDone) {
+        setTimeout(function() {
+          innerDone.fail('done failed');
+        }, 1);
+      });
+
+      env.it('has a message from an Error', function(innerDone) {
+        setTimeout(function() {
+          env.fail(new Error('error message'));
+          innerDone();
+        }, 1);
+      });
+
+      env.it('has a message from an Error to done', function(innerDone) {
+        setTimeout(function() {
+          innerDone(new Error('done error'));
+        }, 1);
+      });
+    });
+
+    env.execute();
   });
 
   describe('focused tests', function() {
