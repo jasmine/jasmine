@@ -85,6 +85,17 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return j$.getType_(value) === '[object ' + typeName + ']';
   };
 
+  j$.isError_ = function(value) {
+    if (value instanceof Error) {
+      return true;
+    }
+    if (value && value.constructor && value.constructor.constructor &&
+      (value instanceof (value.constructor.constructor('return this')()).Error)) {
+      return true;
+    }
+    return false;
+  };
+
   j$.getType_ = function(value) {
     return Object.prototype.toString.apply(value);
   };

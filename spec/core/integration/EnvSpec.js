@@ -1205,30 +1205,21 @@ describe("Env integration", function() {
       env.addReporter({
         specDone: specDone,
         jasmineDone: function() {
-          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-            description: 'has a default message',
-            failedExpectations: [jasmine.objectContaining({
-              message: 'Failed'
-            })]
-          }));
-          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-            description: 'specifies a message',
-            failedExpectations: [jasmine.objectContaining({
-              message: 'Failed: messy message'
-            })]
-          }));
-          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-            description: 'fails via the done callback',
-            failedExpectations: [jasmine.objectContaining({
-              message: 'Failed: done failed'
-            })]
-          }));
-          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-            description: 'has a message from an Error',
-            failedExpectations: [jasmine.objectContaining({
-              message: 'Failed: error message'
-            })]
-          }));
+          expect(specDone).toHaveFailedExpectationsForRunnable('failing has a default message',
+            ['Failed']
+          );
+          expect(specDone).toHaveFailedExpectationsForRunnable('failing specifies a message',
+            ['Failed: messy message']
+          );
+          expect(specDone).toHaveFailedExpectationsForRunnable('failing fails via the done callback',
+            ['Failed: done failed']
+          );
+          expect(specDone).toHaveFailedExpectationsForRunnable('failing has a message from an Error',
+            ['Failed: error message']
+          );
+          expect(specDone).toHaveFailedExpectationsForRunnable('failing has a message from an Error to done',
+            ['Failed: done error']
+          );
 
           jasmine.clock().tick(1);
           realSetTimeout(done);
@@ -1269,6 +1260,15 @@ describe("Env integration", function() {
           setTimeout(function() {
             env.fail(new Error('error message'));
             innerDone();
+          }, 1);
+          jasmine.clock().tick(1);
+          jasmine.clock().tick(1);
+          jasmine.clock().tick(1);
+        });
+
+        env.it('has a message from an Error to done', function(innerDone) {
+          setTimeout(function() {
+            innerDone(new Error('done error'));
           }, 1);
           jasmine.clock().tick(1);
           jasmine.clock().tick(1);

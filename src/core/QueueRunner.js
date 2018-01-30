@@ -5,7 +5,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     return function() {
       if (!called) {
         called = true;
-        fn();
+        fn.apply(null, arguments);
       }
       return null;
     };
@@ -59,14 +59,19 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     var self = this, completedSynchronously = true,
       handleError = function handleError(error) {
         onException(error);
-        next();
+        next(error);
       },
       cleanup = once(function cleanup() {
         self.clearTimeout(timeoutId);
         self.globalErrors.popListener(handleError);
       }),
-      next = once(function next() {
+      next = once(function next(err) {
         cleanup();
+
+        if (j$.isError_(err)) {
+          self.fail(err);
+          errored = true;
+        }
 
         function runNext() {
           if (self.completeOnFirstError && errored) {

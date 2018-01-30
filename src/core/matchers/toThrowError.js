@@ -32,7 +32,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
           thrown = e;
         }
 
-        if (!isErrorObject(thrown)) {
+        if (!j$.isError_(thrown)) {
           return fail(function() { return 'Expected function to throw an Error, but it threw ' + j$.pp(thrown) + '.'; });
         }
 
@@ -144,18 +144,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
 
       var Surrogate = function() {};
       Surrogate.prototype = type.prototype;
-      return isErrorObject(new Surrogate());
-    }
-
-    function isErrorObject(thrown) {
-      if (thrown instanceof Error) {
-        return true;
-      }
-      if (thrown && thrown.constructor && thrown.constructor.constructor &&
-          (thrown instanceof (thrown.constructor.constructor('return this')()).Error)) {
-        return true;
-      }
-      return false;
+      return j$.isError_(new Surrogate());
     }
   }
 
