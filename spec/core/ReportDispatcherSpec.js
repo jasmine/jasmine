@@ -21,7 +21,8 @@ describe("ReportDispatcher", function() {
     dispatcher.foo(123, 456, completeCallback);
 
     expect(queueRunnerFactory).toHaveBeenCalledWith(jasmine.objectContaining({
-      queueableFns: [{fn: jasmine.any(Function)}, {fn: jasmine.any(Function)}]
+      queueableFns: [{fn: jasmine.any(Function)}, {fn: jasmine.any(Function)}],
+      isReporter: true
     }));
 
     var fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
@@ -38,7 +39,8 @@ describe("ReportDispatcher", function() {
     dispatcher.bar('a', 'b', completeCallback);
 
     expect(queueRunnerFactory).toHaveBeenCalledWith(jasmine.objectContaining({
-      queueableFns: [{fn: jasmine.any(Function)}, {fn: jasmine.any(Function)}]
+      queueableFns: [{fn: jasmine.any(Function)}, {fn: jasmine.any(Function)}],
+      isReporter: true
     }));
 
     fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
@@ -72,7 +74,8 @@ describe("ReportDispatcher", function() {
     dispatcher.foo(123, 456, completeCallback);
 
     expect(queueRunnerFactory).toHaveBeenCalledWith(jasmine.objectContaining({
-      queueableFns: [{fn: jasmine.any(Function)}]
+      queueableFns: [{fn: jasmine.any(Function)}],
+      isReporter: true
     }));
 
     var fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
@@ -92,7 +95,8 @@ describe("ReportDispatcher", function() {
     dispatcher.foo(123, 456, completeCallback);
 
     expect(queueRunnerFactory).toHaveBeenCalledWith(jasmine.objectContaining({
-      queueableFns: [{fn: jasmine.any(Function)}]
+      queueableFns: [{fn: jasmine.any(Function)}],
+      isReporter: true
     }));
 
     var fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
@@ -111,7 +115,8 @@ describe("ReportDispatcher", function() {
     dispatcher.addReporter(reporter1);
     dispatcher.foo(123, completeCallback);
     expect(queueRunnerFactory).toHaveBeenCalledWith(jasmine.objectContaining({
-      queueableFns: [{fn: jasmine.any(Function)}]
+      queueableFns: [{fn: jasmine.any(Function)}],
+      isReporter: true
     }));
 
     var fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
@@ -123,7 +128,8 @@ describe("ReportDispatcher", function() {
     dispatcher.bar(456, completeCallback);
 
     expect(queueRunnerFactory).toHaveBeenCalledWith(jasmine.objectContaining({
-      queueableFns: [{fn: jasmine.any(Function)}]
+      queueableFns: [{fn: jasmine.any(Function)}],
+      isReporter: true
     }));
 
     fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;

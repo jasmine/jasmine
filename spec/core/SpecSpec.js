@@ -157,7 +157,7 @@ describe("Spec", function() {
     spec.execute('cally-back', true);
 
     expect(fakeQueueRunner).toHaveBeenCalledWith(jasmine.objectContaining({
-      onComplete: 'cally-back',
+      onComplete: jasmine.any(Function),
       queueableFns: [{fn: jasmine.any(Function)}],
       cleanupFns: [{fn: jasmine.any(Function)}]
     }));
@@ -222,6 +222,23 @@ describe("Spec", function() {
     spec.execute(done);
 
     expect(done).toHaveBeenCalled();
+  });
+
+  it("should call the done callback with an error if the spec is failed", function() {
+    var done = jasmine.createSpy('done callback'),
+      spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: function() {} },
+        catchExceptions: function() { return false; },
+        resultCallback: function() {},
+        queueRunnerFactory: function(attrs) {
+          spec.result.status = 'failed';
+          attrs.onComplete();
+        }
+      });
+
+    spec.execute(done);
+
+    expect(done).toHaveBeenCalledWith(jasmine.any(jasmineUnderTest.StopExecutionError));
   });
 
   it("#status returns passing by default", function() {

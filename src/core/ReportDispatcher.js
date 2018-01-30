@@ -43,7 +43,8 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
 
       queueRunnerFactory({
         queueableFns: fns,
-        onComplete: onComplete
+        onComplete: onComplete,
+        isReporter: true
       });
     }
 

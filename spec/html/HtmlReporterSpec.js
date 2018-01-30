@@ -436,8 +436,8 @@ describe("HtmlReporter", function() {
       });
     });
 
-    describe("UI for raising/catching exceptions", function() {
-      it("should be unchecked if the env is catching", function() {
+    describe("UI for stop on spec failure", function() {
+      it("should be unchecked for full execution", function() {
         var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           getContainer = function() {
@@ -457,11 +457,11 @@ describe("HtmlReporter", function() {
         reporter.initialize();
         reporter.jasmineDone({});
 
-        var raisingExceptionsUI = container.querySelector(".jasmine-raise");
-        expect(raisingExceptionsUI.checked).toBe(false);
+        var stopOnFailureUI = container.querySelector(".jasmine-fail-fast");
+        expect(stopOnFailureUI.checked).toBe(false);
       });
 
-      it("should be checked if the env is not catching", function() {
+      it("should be checked if stopping short", function() {
         var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
           getContainer = function() {
@@ -478,25 +478,26 @@ describe("HtmlReporter", function() {
             }
           });
 
+        env.stopOnSpecFailure(true);
+
         reporter.initialize();
-        env.catchExceptions(false);
         reporter.jasmineDone({});
 
-        var raisingExceptionsUI = container.querySelector(".jasmine-raise");
-        expect(raisingExceptionsUI.checked).toBe(true);
+        var stopOnFailureUI = container.querySelector(".jasmine-fail-fast");
+        expect(stopOnFailureUI.checked).toBe(true);
       });
 
-      it("should affect the query param for catching exceptions", function() {
+      it("should trigger the callback when changed", function() {
         var env = new jasmineUnderTest.Env(),
           container = document.createElement("div"),
-          exceptionsClickHandler = jasmine.createSpy("raise exceptions checked"),
+          failFastHandler = jasmine.createSpy('failFast'),
           getContainer = function() {
             return container;
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
+            onStopExecutionClick: failFastHandler,
             getContainer: getContainer,
-            onRaiseExceptionsClick: exceptionsClickHandler,
             createElement: function() {
               return document.createElement.apply(document, arguments);
             },
@@ -505,12 +506,15 @@ describe("HtmlReporter", function() {
             }
           });
 
+        env.stopOnSpecFailure(true);
+
         reporter.initialize();
         reporter.jasmineDone({});
 
-        var input = container.querySelector(".jasmine-raise");
-        input.click();
-        expect(exceptionsClickHandler).toHaveBeenCalled();
+        var stopOnFailureUI = container.querySelector(".jasmine-fail-fast");
+        stopOnFailureUI.click();
+
+        expect(failFastHandler).toHaveBeenCalled();
       });
     });
 

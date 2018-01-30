@@ -13,8 +13,6 @@ getJasmineRequireObj().Env = function(j$) {
 
     var totalSpecsDefined = 0;
 
-    var catchExceptions = true;
-
     var realSetTimeout = j$.getGlobal().setTimeout;
     var realClearTimeout = j$.getGlobal().clearTimeout;
     var clearStack = j$.getClearStack(j$.getGlobal());
@@ -26,6 +24,7 @@ getJasmineRequireObj().Env = function(j$) {
     var currentlyExecutingSuites = [];
     var currentDeclarationSuite = null;
     var throwOnExpectationFailure = false;
+    var stopOnSpecFailure = false;
     var random = true;
     var seed = null;
     var handlingLoadErrors = true;
@@ -160,22 +159,8 @@ getJasmineRequireObj().Env = function(j$) {
           return buildExpectationResult(attrs);
         };
 
-    // TODO: fix this naming, and here's where the value comes in
-    this.catchExceptions = function(value) {
-      catchExceptions = !!value;
-      return catchExceptions;
-    };
-
-    this.catchingExceptions = function() {
-      return catchExceptions;
-    };
-
     var maximumSpecCallbackDepth = 20;
     var currentSpecCallbackDepth = 0;
-
-    var catchException = function(e) {
-      return j$.Spec.isPendingSpecException(e) || catchExceptions;
-    };
 
     this.throwOnExpectationFailure = function(value) {
       throwOnExpectationFailure = !!value;
@@ -183,6 +168,14 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.throwingExpectationFailures = function() {
       return throwOnExpectationFailure;
+    };
+
+    this.stopOnSpecFailure = function(value) {
+      stopOnSpecFailure = !!value;
+    };
+
+    this.stoppingOnSpecFailure = function() {
+      return stopOnSpecFailure;
     };
 
     this.randomizeTests = function(value) {
@@ -208,12 +201,17 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var queueRunnerFactory = function(options, args) {
-      options.catchException = catchException;
+      var failFast = false;
+      if (options.isLeaf) {
+        failFast = throwOnExpectationFailure;
+      } else if (!options.isReporter) {
+        failFast = stopOnSpecFailure;
+      }
       options.clearStack = options.clearStack || clearStack;
       options.timeout = {setTimeout: realSetTimeout, clearTimeout: realClearTimeout};
       options.fail = self.fail;
       options.globalErrors = globalErrors;
-      options.completeOnFirstError = throwOnExpectationFailure && options.isLeaf;
+      options.completeOnFirstError = failFast;
       options.onException = options.onException || function(e) {
         (currentRunnable() || topSuite).onException(e);
       };

@@ -1,4 +1,7 @@
 getJasmineRequireObj().QueueRunner = function(j$) {
+  function StopExecutionError() {}
+  StopExecutionError.prototype = new Error();
+  j$.StopExecutionError = StopExecutionError;
 
   function once(fn) {
     var called = false;
@@ -18,12 +21,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.onComplete = attrs.onComplete || function() {};
     this.clearStack = attrs.clearStack || function(fn) {fn();};
     this.onException = attrs.onException || function() {};
-    this.catchException = attrs.catchException || function() { return true; };
     this.userContext = attrs.userContext || new j$.UserContext();
     this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
     this.fail = attrs.fail || function() {};
     this.globalErrors = attrs.globalErrors || { pushListener: function() {}, popListener: function() {} };
     this.completeOnFirstError = !!attrs.completeOnFirstError;
+    this.errored = false;
 
     if (typeof(this.onComplete) !== 'function') {
       throw new Error('invalid onComplete ' + JSON.stringify(this.onComplete));
@@ -69,8 +72,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         cleanup();
 
         if (j$.isError_(err)) {
-          self.fail(err);
-          errored = true;
+          if (!(err instanceof StopExecutionError)) {
+            self.fail(err);
+          }
+          self.errored = errored = true;
         }
 
         function runNext() {
@@ -93,7 +98,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     next.fail = function nextFail() {
       self.fail.apply(null, arguments);
-      errored = true;
+      self.errored = errored = true;
       next();
     };
 
@@ -122,8 +127,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         return { completedSynchronously: false };
       }
     } catch (e) {
-      handleException(e, queueableFn);
-      errored = true;
+      onException(e);
+      self.errored = errored = true;
     }
 
     cleanup();
@@ -131,21 +136,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     function onException(e) {
       self.onException(e);
-      errored = true;
+      self.errored = errored = true;
     }
 
     function onPromiseRejection(e) {
       onException(e);
       next();
-    }
-
-    function handleException(e, queueableFn) {
-      onException(e);
-      if (!self.catchException(e)) {
-        //TODO: set a var when we catch an exception and
-        //use a finally block to close the loop in a nice way..
-        throw e;
-      }
     }
   };
 
@@ -162,6 +158,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         return;
       }
 
+      self.errored = result.errored;
+
       if (this.completeOnFirstError && result.errored) {
         this.skipToCleanup(iterativeIndex);
         return;
@@ -170,7 +168,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     this.clearStack(function() {
       self.globalErrors.popListener(self.handleFinalError);
-      self.onComplete();
+      self.onComplete(self.errored && new StopExecutionError());
     });
 
   };

@@ -55,7 +55,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       getContainer = options.getContainer,
       createElement = options.createElement,
       createTextNode = options.createTextNode,
-      onRaiseExceptionsClick = options.onRaiseExceptionsClick || function() {},
+      onStopExecutionClick = options.onStopExecutionClick || function() {},
       onThrowExpectationsClick = options.onThrowExpectationsClick || function() {},
       onRandomClick = options.onRandomClick || function() {},
       addToExistingQueryString = options.addToExistingQueryString || defaultQueryString,
@@ -292,13 +292,13 @@ jasmineRequire.HtmlReporter = function(j$) {
       var optionsMenuDom = createDom('div', { className: 'jasmine-run-options' },
         createDom('span', { className: 'jasmine-trigger' }, 'Options'),
         createDom('div', { className: 'jasmine-payload' },
-          createDom('div', { className: 'jasmine-exceptions' },
+          createDom('div', { className: 'jasmine-stop-on-failure' },
             createDom('input', {
-              className: 'jasmine-raise',
-              id: 'jasmine-raise-exceptions',
+              className: 'jasmine-fail-fast',
+              id: 'jasmine-fail-fast',
               type: 'checkbox'
             }),
-            createDom('label', { className: 'jasmine-label', 'for': 'jasmine-raise-exceptions' }, 'raise exceptions')),
+            createDom('label', { className: 'jasmine-label', 'for': 'jasmine-fail-fast' }, 'stop execution on spec failure')),
           createDom('div', { className: 'jasmine-throw-failures' },
             createDom('input', {
               className: 'jasmine-throw',
@@ -316,10 +316,9 @@ jasmineRequire.HtmlReporter = function(j$) {
         )
       );
 
-      var raiseCheckbox = optionsMenuDom.querySelector('#jasmine-raise-exceptions');
-
-      raiseCheckbox.checked = !env.catchingExceptions();
-      raiseCheckbox.onclick = onRaiseExceptionsClick;
+      var failFastCheckbox = optionsMenuDom.querySelector('#jasmine-fail-fast');
+      failFastCheckbox.checked = env.stoppingOnSpecFailure();
+      failFastCheckbox.onclick = onStopExecutionClick;
 
       var throwCheckbox = optionsMenuDom.querySelector('#jasmine-throw-failures');
       throwCheckbox.checked = env.throwingExpectationFailures();
