@@ -355,9 +355,11 @@ describe("toEqual", function() {
   it("reports mismatches between Sets", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = new Set([1]),
-      expected = new Set([2]),
-      message = 'Expected Set( 1 ) to equal Set( 2 ).';
+    var actual = new Set();
+    actual.add(1);
+    var expected = new Set();
+    expected.add(2);
+    var message = 'Expected Set( 1 ) to equal Set( 2 ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -365,9 +367,11 @@ describe("toEqual", function() {
   it("reports deep mismatches within Sets", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = new Set([{x: 1}]),
-      expected = new Set([{x: 2}]),
-       message = 'Expected Set( Object({ x: 1 }) ) to equal Set( Object({ x: 2 }) ).';
+    var actual = new Set();
+    actual.add({x: 1});
+    var expected = new Set();
+    expected.add({x: 2});
+    var message = 'Expected Set( Object({ x: 1 }) ) to equal Set( Object({ x: 2 }) ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -375,9 +379,14 @@ describe("toEqual", function() {
   it("reports mismatches between Sets nested in objects", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = {sets: [new Set([1])]},
-      expected = {sets: [new Set([2])]},
-      message = "Expected $.sets[0] = Set( 1 ) to equal Set( 2 ).";
+    var actualSet = new Set();
+    actualSet.add(1);
+    var expectedSet = new Set();
+    expectedSet.add(2);
+
+    var actual = { sets: [actualSet] };
+    var expected = { sets: [expectedSet] };
+    var message = "Expected $.sets[0] = Set( 1 ) to equal Set( 2 ).";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -385,9 +394,12 @@ describe("toEqual", function() {
   it("reports mismatches between Sets of different lengths", function() {
     jasmine.getEnv().requireFunctioningSets();
 
-    var actual = new Set([1, 2]),
-      expected = new Set([2]),
-      message = 'Expected Set( 1, 2 ) to equal Set( 2 ).';
+    var actual = new Set();
+    actual.add(1);
+    actual.add(2);
+    var expected = new Set();
+    expected.add(2);
+    var message = 'Expected Set( 1, 2 ) to equal Set( 2 ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -396,9 +408,13 @@ describe("toEqual", function() {
     jasmine.getEnv().requireFunctioningSets();
 
     // Use 'duplicate' object in actual so sizes match
-    var actual = new Set([{x: 1}, {x: 1}]),
-      expected = new Set([{x: 1}, {x: 2}]),
-      message = 'Expected Set( Object({ x: 1 }), Object({ x: 1 }) ) to equal Set( Object({ x: 1 }), Object({ x: 2 }) ).';
+    var actual = new Set();
+    actual.add({x: 1});
+    actual.add({x: 1});
+    var expected = new Set();
+    expected.add({x: 1});
+    expected.add({x: 2});
+    var message = 'Expected Set( Object({ x: 1 }), Object({ x: 1 }) ) to equal Set( Object({ x: 1 }), Object({ x: 2 }) ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -407,9 +423,13 @@ describe("toEqual", function() {
     jasmine.getEnv().requireFunctioningSets();
 
     // Use 'duplicate' object in expected so sizes match
-    var actual = new Set([{x: 1}, {x: 2}]),
-      expected = new Set([{x: 1}, {x: 1}]),
-      message = 'Expected Set( Object({ x: 1 }), Object({ x: 2 }) ) to equal Set( Object({ x: 1 }), Object({ x: 1 }) ).';
+    var actual = new Set();
+    actual.add({x: 1});
+    actual.add({x: 2});
+    var expected = new Set();
+    expected.add({x: 1});
+    expected.add({x: 1});
+    var message = 'Expected Set( Object({ x: 1 }), Object({ x: 2 }) ) to equal Set( Object({ x: 1 }), Object({ x: 1 }) ).';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -417,11 +437,13 @@ describe("toEqual", function() {
   // == Maps ==
 
   it("does not report mismatches between deep equal Maps", function() {
-    jasmine.getEnv().requireFunctioningSets();
+    jasmine.getEnv().requireFunctioningMaps();
 
     // values are the same but with different object identity
-    var actual = new Map([['a', {x: 1}]]),
-      expected = new Map([['a', {x: 1}]]);
+    var actual = new Map();
+    actual.set('a',{x:1});
+    var expected = new Map();
+    expected.set('a',{x:1});
 
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
@@ -429,9 +451,11 @@ describe("toEqual", function() {
   it("reports deep mismatches within Maps", function() {
     jasmine.getEnv().requireFunctioningMaps();
 
-    var actual = new Map([['a', {x: 1}]]),
-      expected = new Map([['a', {x: 2}]]),
-      message = "Expected Map( [ 'a', Object({ x: 1 }) ] ) to equal Map( [ 'a', Object({ x: 2 }) ] ).";
+    var actual = new Map();
+    actual.set('a',{x:1});
+    var expected = new Map();
+    expected.set('a',{x:2});
+    var message = "Expected Map( [ 'a', Object({ x: 1 }) ] ) to equal Map( [ 'a', Object({ x: 2 }) ] ).";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -439,9 +463,12 @@ describe("toEqual", function() {
   it("reports mismatches between Maps nested in objects", function() {
     jasmine.getEnv().requireFunctioningMaps();
 
-    var actual = {Maps: [new Map([['a', 1]])]},
-      expected = {Maps: [new Map([['a', 2]])]},
-      message = "Expected $.Maps[0] = Map( [ 'a', 1 ] ) to equal Map( [ 'a', 2 ] ).";
+    var actual = {Maps:[new Map()]};
+    actual.Maps[0].set('a',1);
+    var expected = {Maps:[new Map()]};
+    expected.Maps[0].set('a',2);
+
+    var message = "Expected $.Maps[0] = Map( [ 'a', 1 ] ) to equal Map( [ 'a', 2 ] ).";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -449,9 +476,12 @@ describe("toEqual", function() {
   it("reports mismatches between Maps of different lengths", function() {
     jasmine.getEnv().requireFunctioningMaps();
 
-    var actual = new Map([['a', 1]]),
-      expected = new Map([['a', 2], ['b', 1]]),
-       message = "Expected Map( [ 'a', 1 ] ) to equal Map( [ 'a', 2 ], [ 'b', 1 ] ).";
+    var actual = new Map();
+    actual.set('a',1);
+    var expected = new Map();
+    expected.set('a',2);
+    expected.set('b',1);
+    var message = "Expected Map( [ 'a', 1 ] ) to equal Map( [ 'a', 2 ], [ 'b', 1 ] ).";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -459,18 +489,22 @@ describe("toEqual", function() {
   it("reports mismatches between Maps with equal values but differing keys", function() {
     jasmine.getEnv().requireFunctioningMaps();
 
-    var actual = new Map([['a', 1]]),
-      expected = new Map([['b', 1]]),
-       message = "Expected Map( [ 'a', 1 ] ) to equal Map( [ 'b', 1 ] ).";
+    var actual = new Map();
+    actual.set('a',1);
+    var expected = new Map();
+    expected.set('b',1);
+    var message = "Expected Map( [ 'a', 1 ] ) to equal Map( [ 'b', 1 ] ).";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
   it("does not report mismatches between Maps with keys with same object identity", function() {
     jasmine.getEnv().requireFunctioningMaps();
-    var  key = {x: 1},
-      actual = new Map([[key, 2]]),
-    expected = new Map([[key, 2]]);
+    var  key = {x: 1};
+    var actual = new Map();
+    actual.set(key,2);
+    var expected = new Map();
+    expected.set(key,2);
 
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
@@ -478,9 +512,11 @@ describe("toEqual", function() {
   it("reports mismatches between Maps with identical keys with different object identity", function() {
     jasmine.getEnv().requireFunctioningMaps();
 
-    var actual = new Map([[{x: 1}, 2]]),
-      expected = new Map([[{x: 1}, 2]]),
-       message = "Expected Map( [ Object({ x: 1 }), 2 ] ) to equal Map( [ Object({ x: 1 }), 2 ] ).";
+    var actual = new Map();
+    actual.set({x:1},2);
+    var expected = new Map();
+    expected.set({x:1},2);
+    var message = "Expected Map( [ Object({ x: 1 }), 2 ] ) to equal Map( [ Object({ x: 1 }), 2 ] ).";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -488,8 +524,11 @@ describe("toEqual", function() {
   it("does not report mismatches when comparing Map key to jasmine.anything()", function() {
     jasmine.getEnv().requireFunctioningMaps();
 
-    var actual = new Map([['a', 1]]),
-      expected = new Map([[jasmineUnderTest.anything(), 1]]);
+    var actual = new Map();
+    actual.set('a',1);
+    var expected = new Map();
+    expected.set(jasmineUnderTest.anything(),1);
+
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
 
@@ -497,9 +536,12 @@ describe("toEqual", function() {
     jasmine.getEnv().requireFunctioningMaps();
     jasmine.getEnv().requireFunctioningSymbols();
 
-    var key = Symbol(),
-      actual = new Map([[key, 1]]),
-      expected = new Map([[key, 1]]);
+    var key = Symbol();
+    var actual = new Map();
+    actual.set(key,1);
+    var expected = new Map();
+    expected.set(key,1);
+
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
 
@@ -507,9 +549,11 @@ describe("toEqual", function() {
     jasmine.getEnv().requireFunctioningMaps();
     jasmine.getEnv().requireFunctioningSymbols();
 
-    var actual = new Map([[Symbol(), 1]]),
-      expected = new Map([[Symbol(), 1]]),
-      message = "Expected Map( [ Symbol(), 1 ] ) to equal Map( [ Symbol(), 1 ] ).";
+    var actual = new Map();
+    actual.set(Symbol(),1);
+    var expected = new Map();
+    expected.set(Symbol(),1);
+    var message = "Expected Map( [ Symbol(), 1 ] ) to equal Map( [ Symbol(), 1 ] ).";
 
     expect(compareEquals(actual, expected).message).toBe(message);
   });
@@ -518,8 +562,11 @@ describe("toEqual", function() {
     jasmine.getEnv().requireFunctioningMaps();
     jasmine.getEnv().requireFunctioningSymbols();
 
-    var actual = new Map([[Symbol(), 1]]),
-      expected = new Map([[jasmineUnderTest.anything(), 1]]);
+    var actual = new Map();
+    actual.set(Symbol(),1);
+    var expected = new Map();
+    expected.set(jasmineUnderTest.anything(),1);
+
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
 

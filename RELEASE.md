@@ -7,9 +7,7 @@ Follow the instructions in `CONTRIBUTING.md` during development.
 
 ### Git Rules
 
-Please work on feature branches.
-
-Please attempt to keep commits to `master` small, but cohesive. If a feature is contained in a bunch of small commits (e.g., it has several wip commits or small work), please squash them when merging back to `master`.
+Please attempt to keep commits to `master` small, but cohesive. If a feature is contained in a bunch of small commits (e.g., it has several wip commits or small work), please squash them when pushing to `master`.
 
 ### Version
 

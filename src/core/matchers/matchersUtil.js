@@ -192,7 +192,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       diffBuilder.record(a, b);
       return false;
     }
-    
+
     var aIsPromise = j$.isPromise(a);
     var bIsPromise = j$.isPromise(b);
     if (aIsPromise && bIsPromise) {
@@ -232,26 +232,34 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       if (!result) {
         return false;
       }
-    } else if (className == '[object Map]') {
+    } else if (j$.isMap(a) && j$.isMap(b)) {
       if (a.size != b.size) {
         diffBuilder.record(a, b);
         return false;
       }
 
+      var keysA = [];
+      var keysB = [];
+      a.forEach( function( valueA, keyA ) {
+        keysA.push( keyA );
+      });
+      b.forEach( function( valueB, keyB ) {
+        keysB.push( keyB );
+      });
+
       // For both sets of keys, check they map to equal values in both maps.
       // Keep track of corresponding keys (in insertion order) in order to handle asymmetric obj keys.
-      var mapKeys = [a.keys(), b.keys()];
-      var cmpKeys = [b.keys(), a.keys()];
-      var mapIter, mapKeyIt, mapKey, mapValueA, mapValueB;
-      var cmpIter, cmpKeyIt, cmpKey;
+      var mapKeys = [keysA, keysB];
+      var cmpKeys = [keysB, keysA];
+      var mapIter, mapKey, mapValueA, mapValueB;
+      var cmpIter, cmpKey;
       for (i = 0; result && i < mapKeys.length; i++) {
         mapIter = mapKeys[i];
         cmpIter = cmpKeys[i];
-        mapKeyIt = mapIter.next();
-        cmpKeyIt = cmpIter.next();
-        while (result && !mapKeyIt.done) {
-          mapKey = mapKeyIt.value;
-          cmpKey = cmpKeyIt.value;
+
+        for (var j = 0; result && j < mapIter.length; j++) {
+          mapKey = mapIter[j];
+          cmpKey = cmpIter[j];
           mapValueA = a.get(mapKey);
 
           // Only use the cmpKey when one of the keys is asymmetric and the corresponding key matches,
@@ -264,8 +272,6 @@ getJasmineRequireObj().matchersUtil = function(j$) {
             mapValueB = b.get(mapKey);
           }
           result = eq(mapValueA, mapValueB, aStack, bStack, customTesters, j$.NullDiffBuilder());
-          mapKeyIt = mapIter.next();
-          cmpKeyIt = cmpIter.next();
         }
       }
 
@@ -273,48 +279,49 @@ getJasmineRequireObj().matchersUtil = function(j$) {
         diffBuilder.record(a, b);
         return false;
       }
-    } else if (className == '[object Set]') {
+    } else if (j$.isSet(a) && j$.isSet(b)) {
       if (a.size != b.size) {
         diffBuilder.record(a, b);
         return false;
       }
 
+      var valuesA = [];
+      a.forEach( function( valueA ) {
+        valuesA.push( valueA );
+      });
+      var valuesB = [];
+      b.forEach( function( valueB ) {
+        valuesB.push( valueB );
+      });
+
       // For both sets, check they are all contained in the other set
-      var setPairs = [[a, b], [b, a]];
+      var setPairs = [[valuesA, valuesB], [valuesB, valuesA]];
       var stackPairs = [[aStack, bStack], [bStack, aStack]];
-      var baseIter, baseValueIt, baseValue, baseStack;
-      var otherSet, otherIter, otherValueIt, otherValue, otherStack;
+      var baseValues, baseValue, baseStack;
+      var otherValues, otherValue, otherStack;
       var found;
       var prevStackSize;
       for (i = 0; result && i < setPairs.length; i++) {
-        baseIter = setPairs[i][0].values();
-        otherSet = setPairs[i][1];
+        baseValues = setPairs[i][0];
+        otherValues = setPairs[i][1];
         baseStack = stackPairs[i][0];
         otherStack = stackPairs[i][1];
         // For each value in the base set...
-        baseValueIt = baseIter.next();
-        while (result && !baseValueIt.done) {
-          baseValue = baseValueIt.value;
+        for (var k = 0; result && k < baseValues.length; k++) {
+          baseValue = baseValues[k];
+          found = false;
           // ... test that it is present in the other set
-          // Optimisation: start looking for value by object identity
-          found = otherSet.has(baseValue);
-          if (!found) {
-            otherIter = otherSet.values();
-            otherValueIt = otherIter.next();
-          }
-          // If not found, compare by value equality
-          while (!found && !otherValueIt.done) {
-            otherValue = otherValueIt.value;
+          for (var l = 0; !found && l < otherValues.length; l++) {
+            otherValue = otherValues[l];
             prevStackSize = baseStack.length;
+            // compare by value equality
             found = eq(baseValue, otherValue, baseStack, otherStack, customTesters, j$.NullDiffBuilder());
             if (!found && prevStackSize !== baseStack.length) {
               baseStack.splice(prevStackSize);
               otherStack.splice(prevStackSize);
             }
-            otherValueIt = otherIter.next();
           }
           result = result && found;
-          baseValueIt = baseIter.next();
         }
       }
 

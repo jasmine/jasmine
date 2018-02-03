@@ -124,6 +124,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       }
 
       do {
+        deletedKeys = [];
         var newCurrentTime = scheduledLookup.shift();
         tickDate(newCurrentTime - currentTime);
 

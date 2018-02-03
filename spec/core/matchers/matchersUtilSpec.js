@@ -71,7 +71,7 @@ describe("matchersUtil", function() {
 
     it("fails for Arrays whose contents are equivalent, but have differing properties", function() {
       var one = [1,2,3],
-          two = [1,2,3];
+        two = [1,2,3];
 
       one.foo = 'bar';
       two.foo = 'baz';
@@ -81,7 +81,7 @@ describe("matchersUtil", function() {
 
     it("passes for Arrays with equivalent contents and properties", function() {
       var one = [1,2,3],
-          two = [1,2,3];
+        two = [1,2,3];
 
       one.foo = 'bar';
       two.foo = 'bar';
@@ -122,7 +122,7 @@ describe("matchersUtil", function() {
 
     it("passes for Objects that are equivalent (with cycles)", function() {
       var actual = { a: "foo" },
-        expected = { a: "foo" };
+      expected = { a: "foo" };
 
       actual.b = actual;
       expected.b = actual;
@@ -336,7 +336,7 @@ describe("matchersUtil", function() {
 
     it("passes for an asymmetric equality tester that returns true when a custom equality tester return false", function() {
       var asymmetricTester = { asymmetricMatch: function(other) { return true; } },
-          symmetricTester = function(a, b) { return false; };
+        symmetricTester = function(a, b) { return false; };
 
       expect(jasmineUnderTest.matchersUtil.equals(asymmetricTester, true, [symmetricTester])).toBe(true);
       expect(jasmineUnderTest.matchersUtil.equals(true, asymmetricTester, [symmetricTester])).toBe(true);
@@ -354,14 +354,14 @@ describe("matchersUtil", function() {
 
     it("passes when an Any is compared to an Any that checks for the same type", function() {
       var any1 = new jasmineUnderTest.Any(Function),
-          any2 = new jasmineUnderTest.Any(Function);
+        any2 = new jasmineUnderTest.Any(Function);
 
       expect(jasmineUnderTest.matchersUtil.equals(any1, any2)).toBe(true);
     });
 
     it("passes for null prototype objects with same properties", function () {
       var objA = Object.create(null),
-          objB = Object.create(null);
+        objB = Object.create(null);
 
       objA.name = 'test';
       objB.name = 'test';
@@ -371,7 +371,7 @@ describe("matchersUtil", function() {
 
     it("fails for null prototype objects with different properties", function () {
       var objA = Object.create(null),
-          objB = Object.create(null);
+        objB = Object.create(null);
 
       objA.name = 'test';
       objB.test = 'name';
@@ -386,45 +386,94 @@ describe("matchersUtil", function() {
 
     it("passes when comparing identical sets", function() {
       jasmine.getEnv().requireFunctioningSets();
-      var setA = new Set([6, 5]);
+
+      var setA = new Set();
+      setA.add(6);
+      setA.add(5);
       var setB = new Set();
       setB.add(6);
       setB.add(5);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
     it("passes when comparing identical sets with different insertion order and simple elements", function() {
       jasmine.getEnv().requireFunctioningSets();
-      var setA = new Set([3, 6]);
-      var setB = new Set([6, 3]);
+
+      var setA = new Set();
+      setA.add(3);
+      setA.add(6);
+      var setB = new Set();
+      setB.add(6);
+      setB.add(3);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
     it("passes when comparing identical sets with different insertion order and complex elements 1", function() {
-      jasmine.getEnv().requireFunctioningMaps();
-      var setA = new Set([new Set([['a', 3], [6, 1]]), new Set([['y', 3], [6, 1]])]);
-      var setB = new Set([new Set([[6, 1], ['a', 3]]), new Set([[6, 1], ['y', 3]])]);
+      jasmine.getEnv().requireFunctioningSets();
+
+      var setA1 = new Set();
+      setA1.add(['a',3]);
+      setA1.add([6,1]);
+      var setA2 = new Set();
+      setA1.add(['y',3]);
+      setA1.add([6,1]);
+      var setA = new Set();
+      setA.add(setA1);
+      setA.add(setA2);
+
+
+      var setB1 = new Set();
+      setB1.add([6,1]);
+      setB1.add(['a',3]);
+      var setB2 = new Set();
+      setB1.add([6,1]);
+      setB1.add(['y',3]);
+      var setB = new Set();
+      setB.add(setB1);
+      setB.add(setB2);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
     it("passes when comparing identical sets with different insertion order and complex elements 2", function() {
-      jasmine.getEnv().requireFunctioningMaps();
-      var setA = new Set([[[1,2], [3,4]], [[5,6], [7,8]]]);
-      var setB = new Set([[[5,6], [7,8]], [[1,2], [3,4]]]);
+      jasmine.getEnv().requireFunctioningSets();
+
+      var setA = new Set();
+      setA.add([[1,2], [3,4]]);
+      setA.add([[5,6], [7,8]]);
+      var setB = new Set();
+      setB.add([[5,6], [7,8]]);
+      setB.add([[1,2], [3,4]]);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(true);
     });
 
     it("fails for sets with different elements", function() {
       jasmine.getEnv().requireFunctioningSets();
-      var setA = new Set([6, 3, 5]);
-      var setB = new Set([6, 4, 5]);
+      var setA = new Set();
+      setA.add(6);
+      setA.add(3);
+      setA.add(5);
+      var setB = new Set();
+      setB.add(6);
+      setB.add(4);
+      setB.add(5);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
     });
 
     it("fails for sets of different size", function() {
       jasmine.getEnv().requireFunctioningSets();
-      var setA = new Set([6, 3]);
-      var setB = new Set([6, 4, 5]);
+      var setA = new Set();
+      setA.add(6);
+      setA.add(3);
+      var setB = new Set();
+      setB.add(6);
+      setB.add(4);
+      setB.add(5);
+
       expect(jasmineUnderTest.matchersUtil.equals(setA, setB)).toBe(false);
     });
 
@@ -435,7 +484,8 @@ describe("matchersUtil", function() {
 
     it("passes when comparing identical maps", function() {
       jasmine.getEnv().requireFunctioningMaps();
-      var mapA = new Map([[6, 5]]);
+      var mapA = new Map();
+      mapA.set(6, 5);
       var mapB = new Map();
       mapB.set(6, 5);
       expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(true);
@@ -443,22 +493,34 @@ describe("matchersUtil", function() {
 
     it("passes when comparing identical maps with different insertion order", function() {
       jasmine.getEnv().requireFunctioningMaps();
-      var mapA = new Map([['a', 3], [6, 1]]);
-      var mapB = new Map([[6, 1], ['a', 3]]);
+      var mapA = new Map();
+      mapA.set("a", 3);
+      mapA.set(6, 1);
+      var mapB = new Map();
+      mapB.set(6, 1);
+      mapB.set("a", 3);
       expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(true);
     });
 
     it("fails for maps with different elements", function() {
       jasmine.getEnv().requireFunctioningMaps();
-      var mapA = new Map([[6, 3], [5, 1]]);
-      var mapB = new Map([[6, 4], [5, 1]]);
+      var mapA = new Map();
+      mapA.set(6, 3);
+      mapA.set(5, 1);
+      var mapB = new Map();
+      mapB.set(6, 4);
+      mapB.set(5, 1);
+
       expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(false);
     });
 
     it("fails for maps of different size", function() {
       jasmine.getEnv().requireFunctioningMaps();
-      var mapA = new Map([[6, 3]]);
-      var mapB = new Map([[6, 4], [5, 1]]);
+      var mapA = new Map();
+      mapA.set(6, 3);
+      var mapB = new Map();
+      mapB.set(6, 4);
+      mapB.set(5, 1);
       expect(jasmineUnderTest.matchersUtil.equals(mapA, mapB)).toBe(false);
     });
 
@@ -472,28 +534,28 @@ describe("matchersUtil", function() {
         Object.defineProperty(Array.prototype, 'findIndex', {
           enumerable: true,
           value: function (predicate) {
-	            if (this === null) {
-	                throw new TypeError('Array.prototype.findIndex called on null or undefined');
-	            }
+            if (this === null) {
+              throw new TypeError('Array.prototype.findIndex called on null or undefined');
+            }
 
-	            if (typeof predicate !== 'function') {
-	                throw new TypeError('predicate must be a function');
-	            }
+            if (typeof predicate !== 'function') {
+              throw new TypeError('predicate must be a function');
+            }
 
-	            var list = Object(this);
-	            var length = list.length >>> 0;
-	            var thisArg = arguments[1];
-	            var value;
+            var list = Object(this);
+            var length = list.length >>> 0;
+            var thisArg = arguments[1];
+            var value;
 
-	            for (var i = 0; i < length; i++) {
-	                value = list[i];
-	                if (predicate.call(thisArg, value, i, list)) {
-	                    return i;
-	                }
-	            }
+            for (var i = 0; i < length; i++) {
+              value = list[i];
+              if (predicate.call(thisArg, value, i, list)) {
+                return i;
+              }
+            }
 
-	            return -1;
-	        }
+            return -1;
+          }
         });
       });
 
