@@ -560,6 +560,29 @@ describe("jasmine spec running", function () {
     env.execute();
   });
 
+  it("shouldn't run before/after functions in a suite without executable specs", function(done) {
+    var shouldNotRun = jasmine.createSpy("shouldNotRun"),
+
+    suite = env.describe('A Suite', function() {
+      // None of the before/after functions should run.
+      env.beforeAll(shouldNotRun);
+      env.beforeEach(shouldNotRun);
+      env.afterEach(shouldNotRun);
+      env.afterAll(shouldNotRun);
+
+      env.xit('pending spec', shouldNotRun);
+    });
+
+    var assertions = function() {
+      expect(shouldNotRun).not.toHaveBeenCalled();
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
+  });
+
   it("should allow top level suites to be disabled", function(done) {
     var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
       otherSpec = jasmine.createSpy("otherSpec");

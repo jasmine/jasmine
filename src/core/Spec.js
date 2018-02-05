@@ -144,7 +144,7 @@ getJasmineRequireObj().Spec = function(j$) {
   };
 
   Spec.prototype.isExecutable = function() {
-    return !this.disabled;
+    return !this.disabled && !this.markedPending;
   };
 
   Spec.prototype.getFullName = function() {

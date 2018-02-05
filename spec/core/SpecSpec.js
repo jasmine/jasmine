@@ -423,13 +423,13 @@ describe("Spec", function() {
     expect(spec.isExecutable()).toBe(false);
   });
 
-  it("should be executable when pending", function() {
+  it("should not be executable when pending", function() {
     var spec = new jasmineUnderTest.Spec({
       queueableFn: { fn: function() {} }
     });
     spec.pend();
 
-    expect(spec.isExecutable()).toBe(true);
+    expect(spec.isExecutable()).toBe(false);
   });
 
   it("should be executable when not disabled or pending", function() {
