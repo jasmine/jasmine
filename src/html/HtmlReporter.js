@@ -59,7 +59,8 @@ jasmineRequire.HtmlReporter = function(j$) {
       results = [],
       htmlReporterMain,
       symbols,
-      failedSuites = [];
+      failedSuites = [],
+      deprecationWarnings = [];
 
     this.initialize = function() {
       clearPrior();
@@ -97,6 +98,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       }
 
       stateBuilder.suiteDone(result);
+      addDeprecationWarnings(result);
     };
 
     this.specStarted = function(result) {
@@ -140,6 +142,8 @@ jasmineRequire.HtmlReporter = function(j$) {
 
         failures.push(failure);
       }
+
+      addDeprecationWarnings(result);
     };
 
     this.jasmineDone = function(doneResult) {
@@ -249,6 +253,14 @@ jasmineRequire.HtmlReporter = function(j$) {
         alert.appendChild(createDom('span', {className: errorBarClassName}, errorBarMessagePrefix + failure.message));
       }
 
+      addDeprecationWarnings(doneResult);
+
+      var warningBarClassName = 'jasmine-bar jasmine-warning';
+      for(i = 0; i < deprecationWarnings.length; i++) {
+        var warning = deprecationWarnings[i];
+        alert.appendChild(createDom('span', {className: warningBarClassName}, 'DEPRECATION: ' + warning.message));
+      }
+
       var results = find('.jasmine-results');
       results.appendChild(summary);
 
@@ -322,6 +334,12 @@ jasmineRequire.HtmlReporter = function(j$) {
     };
 
     return this;
+
+    function addDeprecationWarnings(result) {
+      if (result && result.deprecationWarnings && result.deprecationWarnings.length > 0) {
+        deprecationWarnings = deprecationWarnings.concat(result.deprecationWarnings);
+      }
+    }
 
     function find(selector) {
       return getContainer().querySelector('.jasmine_html-reporter ' + selector);

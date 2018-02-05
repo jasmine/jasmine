@@ -216,6 +216,10 @@ body {
       background-color: $failing-color;
     }
 
+    &.jasmine-warning {
+      background-color: $pending-color;
+    }
+
     &.jasmine-menu {
       background-color: #fff;
       color: $faint-text-color;

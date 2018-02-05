@@ -2011,29 +2011,20 @@ describe("Env integration", function() {
 
     reporter.jasmineDone.and.callFake(function(result) {
       expect(result.deprecationWarnings).toEqual([
-        jasmine.objectContaining({
-          message: 'top level deprecation',
-          stack: jasmine.any(String)
-        })
+        jasmine.objectContaining({ message: 'top level deprecation' })
       ]);
 
       expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
         fullName: 'suite',
         deprecationWarnings: [
-        jasmine.objectContaining({
-          message: 'suite level deprecation',
-          stack: jasmine.any(String)
-        })
+          jasmine.objectContaining({ message: 'suite level deprecation' })
         ]
       }));
 
       expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
         fullName: 'suite spec',
         deprecationWarnings: [
-        jasmine.objectContaining({
-          message: 'spec level deprecation',
-          stack: jasmine.any(String)
-        })
+          jasmine.objectContaining({ message: 'spec level deprecation' })
         ]
       }));
 
