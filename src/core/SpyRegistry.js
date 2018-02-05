@@ -61,6 +61,8 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       currentSpies().push({
+        obj: obj,
+        name: methodName,
         restoreObjectToOriginalState: restoreStrategy
       });
 
@@ -119,6 +121,9 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       currentSpies().push({
+        obj: obj,
+        name: propertyName,
+        accessType: accessType,
         restoreObjectToOriginalState: restoreStrategy
       });
 
@@ -134,6 +139,16 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       for (var i = spies.length - 1; i >= 0; i--) {
         var spyEntry = spies[i];
         spyEntry.restoreObjectToOriginalState();
+      }
+    };
+
+    this.clearSpy = function (obj, name, accessType) {
+      var spies = currentSpies();
+      for (var i = spies.length - 1; i >= 0; i--) {
+        var spyEntry = spies[i];
+        if (spyEntry.obj === obj && spyEntry.name === name && spyEntry.accessType === accessType) {
+          spyEntry.restoreObjectToOriginalState();
+        }
       }
     };
   }

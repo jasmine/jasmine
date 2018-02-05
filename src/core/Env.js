@@ -388,8 +388,17 @@ getJasmineRequireObj().Env = function(j$) {
       return spyRegistry.spyOn.apply(spyRegistry, arguments);
     };
 
+    this.unspy = function(obj, methodName) {
+    return spyRegistry.clearSpy.apply(spyRegistry, [obj, methodName]);
+    };
+
     this.spyOnProperty = function() {
       return spyRegistry.spyOnProperty.apply(spyRegistry, arguments);
+    };
+
+    this.unspyProperty = function(obj, propertyName, accessType) {
+      accessType = accessType || 'get';
+      return spyRegistry.clearSpy.apply(spyRegistry, [obj, propertyName, accessType]);
     };
 
     var ensureIsFunction = function(fn, caller) {

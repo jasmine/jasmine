@@ -305,7 +305,6 @@ describe("SpyRegistry", function() {
       expect(global.onerror).toBe(FakeWindow.prototype.onerror);
       expect(global.hasOwnProperty('onerror')).toBe(true);
     });
-  });
 
     describe('spying on properties', function() {
       it("restores the original properties on the spied-upon objects", function() {
@@ -353,4 +352,109 @@ describe("SpyRegistry", function() {
         expect(subject.spiedProp).toBe(originalReturn);
       });
     });
+  });
+
+  describe("#clearSpy", function () {
+    it('restores the original function to the object', function () {
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        originalFunction = function() {},
+        subject = { spiedFunc: originalFunction };
+
+      spyRegistry.spyOn(subject, 'spiedFunc');
+
+      spyRegistry.clearSpy(subject, 'spiedFunc');
+
+      expect(subject.spiedFunc).toBe(originalFunction);
+    });
+
+    it('restores the first original function to the object', function () {
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        originalFunction = function() {},
+        subject = { spiedFunc: originalFunction };
+
+      spyRegistry.spyOn(subject, 'spiedFunc');
+
+      // replace the original spy with some other function
+      subject.spiedFunc = function() {};
+
+      // spy on the function in that location again
+      spyRegistry.spyOn(subject, 'spiedFunc');
+
+      spyRegistry.clearSpy(subject, 'spiedFunc');
+
+      expect(subject.spiedFunc).toBe(originalFunction);
+    });
+
+    it('does not affect a non-spy object', function () {
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+        originalFunction = function() {},
+        subject = { spiedFunc: originalFunction };
+
+      spyRegistry.clearSpy(subject, 'spiedFunc');
+
+      expect(subject.spiedFunc).toBe(originalFunction);
+    });
+
+    describe('resotoring properties', function () {
+      it('restores the original getter to the property', function () {
+        var spies = [],
+          spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+          returnValue = 1,
+          subject = {};
+
+        Object.defineProperty(subject, 'spiedProperty', {
+          get: function () { return returnValue; },
+          configurable: true
+        });
+
+        spyRegistry.spyOnProperty(subject, 'spiedProperty');
+
+        spyRegistry.clearSpy(subject, 'spiedProperty', 'get');
+
+        expect(subject.spiedProperty).toBe(returnValue);
+      });
+
+      it('restores the original setter to the property', function () {
+        var spies = [],
+          spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+          setterValue,
+          setTo = 1,
+          subject = {};
+
+        Object.defineProperty(subject, 'spiedProperty', {
+          set: function (value) { setterValue = value; },
+          configurable: true
+        });
+
+        spyRegistry.spyOnProperty(subject, 'spiedProperty', 'set');
+
+        spyRegistry.clearSpy(subject, 'spiedProperty', 'set');
+
+        subject.spiedProperty = setTo;
+
+        expect(setterValue).toBe(setTo);
+      });
+
+      it('does not affect a non-spy property', function () {
+        var spies = [],
+          spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() { return spies; }}),
+          getterFunction = function () {},
+          subject = {};
+
+        Object.defineProperty(subject, 'spiedProperty', {
+          get: getterFunction,
+          configurable: true
+        });
+
+        spyRegistry.clearSpy(subject, 'spiedProperty', 'get');
+
+        var getter = Object.getOwnPropertyDescriptor(subject, 'spiedProperty').get
+
+        expect(getter).toBe(getterFunction);
+      });
+    })
+  });
 });
