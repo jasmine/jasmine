@@ -218,6 +218,7 @@ body {
 
     &.jasmine-warning {
       background-color: $pending-color;
+      color: $text-color;
     }
 
     &.jasmine-menu {

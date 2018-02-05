@@ -258,7 +258,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       var warningBarClassName = 'jasmine-bar jasmine-warning';
       for(i = 0; i < deprecationWarnings.length; i++) {
         var warning = deprecationWarnings[i];
-        alert.appendChild(createDom('span', {className: warningBarClassName}, 'DEPRECATION: ' + warning.message));
+        alert.appendChild(createDom('span', {className: warningBarClassName}, 'DEPRECATION: ' + warning));
       }
 
       var results = find('.jasmine-results');
@@ -336,8 +336,13 @@ jasmineRequire.HtmlReporter = function(j$) {
     return this;
 
     function addDeprecationWarnings(result) {
-      if (result && result.deprecationWarnings && result.deprecationWarnings.length > 0) {
-        deprecationWarnings = deprecationWarnings.concat(result.deprecationWarnings);
+      if (result && result.deprecationWarnings) {
+        for(var i = 0; i < result.deprecationWarnings.length; i++) {
+          var warning = result.deprecationWarnings[i].message;
+          if (deprecationWarnings.indexOf(warning) < 0) {
+            deprecationWarnings.push(warning);
+          }
+        }
       }
     }
 

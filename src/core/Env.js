@@ -11,6 +11,8 @@ getJasmineRequireObj().Env = function(j$) {
     var self = this;
     var global = options.global || j$.getGlobal();
 
+    var hasExecuted = false;
+
     var totalSpecsDefined = 0;
 
     var catchExceptions = true;
@@ -196,6 +198,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     // TODO: fix this naming, and here's where the value comes in
     this.catchExceptions = function(value) {
+      this.deprecated('The catchExceptions option is deprecated and will be replaced with stopOnSpecFailure in Jasmine 3.0');
       catchExceptions = !!value;
       return catchExceptions;
     };
@@ -249,6 +252,7 @@ getJasmineRequireObj().Env = function(j$) {
       options.fail = self.fail;
       options.globalErrors = globalErrors;
       options.completeOnFirstError = throwOnExpectationFailure && options.isLeaf;
+      options.deprecated = self.deprecated;
 
       new j$.QueueRunner(options).execute();
     };
@@ -268,6 +272,12 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.execute = function(runnablesToRun) {
+      if (hasExecuted) {
+        this.deprecated('Executing the same Jasmine multiple times will no longer work in Jasmine 3.0');
+      }
+
+      hasExecuted = true;
+
       if(!runnablesToRun) {
         if (focusedRunnables.length) {
           runnablesToRun = focusedRunnables;
@@ -441,6 +451,7 @@ getJasmineRequireObj().Env = function(j$) {
     var focusedRunnables = [];
 
     this.fdescribe = function(description, specDefinitions) {
+      this.deprecated('fit and fdescribe will cause your suite to report an \'incomplete\' status in Jasmine 3.0');
       ensureIsNotNested('fdescribe');
       ensureIsFunction(specDefinitions, 'fdescribe');
       var suite = suiteFactory(description);
@@ -566,6 +577,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.fit = function(description, fn, timeout){
+      this.deprecated('fit and fdescribe will cause your suite to report an \'incomplete\' status in Jasmine 3.0');
       ensureIsNotNested('fit');
       ensureIsFunctionOrAsync(fn, 'fit');
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);

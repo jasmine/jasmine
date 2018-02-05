@@ -24,6 +24,9 @@ getJasmineRequireObj().Any = function(j$) {
     }
 
     if (this.expectedObject == Object) {
+      if (other === null) {
+        j$.getEnv().deprecated('jasmine.Any(Object) will no longer match null in Jasmine 3.0');
+      }
       return typeof other == 'object';
     }
 

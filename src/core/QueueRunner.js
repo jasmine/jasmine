@@ -5,7 +5,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     return function() {
       if (!called) {
         called = true;
-        fn();
+        fn.apply(null, arguments);
       }
       return null;
     };
@@ -24,6 +24,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.fail = attrs.fail || function() {};
     this.globalErrors = attrs.globalErrors || { pushListener: function() {}, popListener: function() {} };
     this.completeOnFirstError = !!attrs.completeOnFirstError;
+    this.deprecated = attrs.deprecated;
   }
 
   QueueRunner.prototype.execute = function() {
@@ -83,8 +84,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
           clearTimeout(timeoutId);
           self.globalErrors.popListener(handleError);
         }),
-        next = once(function () {
+        next = once(function (err) {
           cleanup();
+
+          if (err instanceof Error) {
+            self.deprecated('done callback received an Error object. Jasmine 3.0 will treat this as a failure');
+          }
 
           function runNext() {
             if (self.completeOnFirstError && errored) {
