@@ -339,7 +339,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       if (result && result.deprecationWarnings) {
         for(var i = 0; i < result.deprecationWarnings.length; i++) {
           var warning = result.deprecationWarnings[i].message;
-          if (deprecationWarnings.indexOf(warning) < 0) {
+          if (!j$.util.arrayContains(warning)) {
             deprecationWarnings.push(warning);
           }
         }
