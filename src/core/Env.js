@@ -234,6 +234,14 @@ getJasmineRequireObj().Env = function(j$) {
       return seed;
     };
 
+    this.deprecated = function(msg) {
+      var runnable = currentRunnable() || topSuite;
+      runnable.addDeprecationWarning(msg);
+      if(typeof console !== 'undefined' && typeof console.warn !== 'undefined') {
+        console.error('DEPRECATION: ' + msg);
+      }
+    };
+
     var queueRunnerFactory = function(options) {
       options.catchException = catchException;
       options.clearStack = options.clearStack || clearStack;
@@ -326,10 +334,12 @@ getJasmineRequireObj().Env = function(j$) {
          * @typedef JasmineDoneInfo
          * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
          * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
+         * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
          */
         reporter.jasmineDone({
           order: order,
-          failedExpectations: topSuite.result.failedExpectations
+          failedExpectations: topSuite.result.failedExpectations,
+          deprecationWarnings: topSuite.result.deprecationWarnings
         });
       });
     };

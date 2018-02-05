@@ -25,6 +25,7 @@ getJasmineRequireObj().Spec = function(j$) {
      * @property {String} fullName - The full description including all ancestors of this spec.
      * @property {Expectation[]} failedExpectations - The list of expectations that failed during execution of this spec.
      * @property {Expectation[]} passedExpectations - The list of expectations that passed during execution of this spec.
+     * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred during execution this spec.
      * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
      * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
      */
@@ -34,6 +35,7 @@ getJasmineRequireObj().Spec = function(j$) {
       fullName: this.getFullName(),
       failedExpectations: [],
       passedExpectations: [],
+      deprecationWarnings: [],
       pendingReason: ''
     };
   }
@@ -147,6 +149,10 @@ getJasmineRequireObj().Spec = function(j$) {
 
   Spec.prototype.getFullName = function() {
     return this.getSpecName(this);
+  };
+
+  Spec.prototype.addDeprecationWarning = function(msg) {
+    this.result.deprecationWarnings.push(this.expectationResultFactory({ message: msg }));
   };
 
   var extractCustomPendingMessage = function(e) {

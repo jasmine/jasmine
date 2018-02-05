@@ -21,13 +21,15 @@ getJasmineRequireObj().Suite = function(j$) {
      * @property {String} description - The description text passed to the {@link describe} that made this suite.
      * @property {String} fullName - The full description including all ancestors of this suite.
      * @property {Expectation[]} failedExpectations - The list of expectations that failed in an {@link afterAll} for this suite.
+     * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred on this suite.
      * @property {String} status - Once the suite has completed, this string represents the pass/fail status of this suite.
      */
     this.result = {
       id: this.id,
       description: this.description,
       fullName: this.getFullName(),
-      failedExpectations: []
+      failedExpectations: [],
+      deprecationWarnings: []
     };
   }
 
@@ -145,6 +147,10 @@ getJasmineRequireObj().Suite = function(j$) {
         }
       }
     }
+  };
+
+  Suite.prototype.addDeprecationWarning = function(msg) {
+    this.result.deprecationWarnings.push(this.expectationResultFactory({ message: msg }));
   };
 
   function isAfterAll(children) {
