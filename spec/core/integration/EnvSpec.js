@@ -2298,4 +2298,47 @@ describe("Env integration", function() {
       });
     });
   });
+
+  it('should report deprecation warnings on the correct specs and suites', function(done) {
+    var env = new jasmineUnderTest.Env(),
+      reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+    reporter.jasmineDone.and.callFake(function(result) {
+      expect(result.deprecationWarnings).toEqual([
+        jasmine.objectContaining({ message: 'top level deprecation' })
+      ]);
+
+      expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        fullName: 'suite',
+        deprecationWarnings: [
+          jasmine.objectContaining({ message: 'suite level deprecation' })
+        ]
+      }));
+
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        fullName: 'suite spec',
+        deprecationWarnings: [
+          jasmine.objectContaining({ message: 'spec level deprecation' })
+        ]
+      }));
+
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.deprecated('top level deprecation');
+
+    env.describe('suite', function() {
+      env.beforeAll(function() {
+        env.deprecated('suite level deprecation');
+      });
+
+      env.it('spec', function() {
+        env.deprecated('spec level deprecation');
+      });
+    });
+
+    env.execute();
+  });
 });

@@ -177,6 +177,47 @@ describe("HtmlReporter", function() {
     });
   });
 
+  describe('when there are deprecation warnings', function() {
+    it('displays the messages in their own alert bars', function() {
+      var env = new jasmineUnderTest.Env(),
+        container = document.createElement('div'),
+        getContainer = function() { return container; },
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() { return document.createElement.apply(document, arguments); },
+          createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+        });
+
+      reporter.initialize();
+
+      reporter.jasmineStarted({});
+      reporter.specDone({
+        status: 'passed',
+        deprecationWarnings: [{ message: 'spec deprecation' }],
+        failedExpectations: [],
+        passedExpectations: []
+      });
+      reporter.suiteDone({
+        status: 'passed',
+        deprecationWarnings: [{ message: 'suite deprecation' }],
+        failedExpectations: []
+      });
+      reporter.jasmineDone({
+        deprecationWarnings: [{ message: 'global deprecation' }],
+        failedExpectations: []
+      });
+
+      var alertBars = container.querySelectorAll(".jasmine-alert .jasmine-bar");
+
+      expect(alertBars.length).toEqual(4);
+      expect(alertBars[1].innerHTML).toMatch(/spec deprecation/);
+      expect(alertBars[1].getAttribute("class")).toEqual('jasmine-bar jasmine-warning');
+      expect(alertBars[2].innerHTML).toMatch(/suite deprecation/);
+      expect(alertBars[3].innerHTML).toMatch(/global deprecation/);
+    });
+  });
+
   describe("when Jasmine is done", function() {
     it("adds a warning to the link title of specs that have no expectations", function() {
       if (!window.console) {

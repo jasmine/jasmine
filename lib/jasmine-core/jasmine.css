@@ -33,6 +33,13 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .jasmine-bar.jasmine-passed { background-color: #007069; }
 .jasmine_html-reporter .jasmine-bar.jasmine-incomplete { background-color: #bababa; }
 .jasmine_html-reporter .jasmine-bar.jasmine-skipped { background-color: #bababa; }
+<<<<<<< HEAD
+||||||| merged common ancestors
+.jasmine_html-reporter .jasmine-bar.jasmine-errored { background-color: #ca3a11; }
+=======
+.jasmine_html-reporter .jasmine-bar.jasmine-errored { background-color: #ca3a11; }
+.jasmine_html-reporter .jasmine-bar.jasmine-warning { background-color: #ba9d37; color: #333; }
+>>>>>>> master
 .jasmine_html-reporter .jasmine-bar.jasmine-menu { background-color: #fff; color: #aaa; }
 .jasmine_html-reporter .jasmine-bar.jasmine-menu a { color: #333; }
 .jasmine_html-reporter .jasmine-bar a { color: white; }

@@ -206,6 +206,7 @@ describe("Spec", function() {
       fullName: 'a suite with a spec',
       failedExpectations: [],
       passedExpectations: [],
+      deprecationWarnings: [],
       pendingReason: ''
     }, 'things');
   });

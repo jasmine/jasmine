@@ -200,6 +200,14 @@ getJasmineRequireObj().Env = function(j$) {
       handlingLoadErrors = false;
     };
 
+    this.deprecated = function(msg) {
+      var runnable = currentRunnable() || topSuite;
+      runnable.addDeprecationWarning(msg);
+      if(typeof console !== 'undefined' && typeof console.warn !== 'undefined') {
+        console.error('DEPRECATION: ' + msg);
+      }
+    };
+
     var queueRunnerFactory = function(options, args) {
       var failFast = false;
       if (options.isLeaf) {
@@ -215,6 +223,7 @@ getJasmineRequireObj().Env = function(j$) {
       options.onException = options.onException || function(e) {
         (currentRunnable() || topSuite).onException(e);
       };
+      options.deprecated = self.deprecated;
 
       new j$.QueueRunner(options).execute(args);
     };
@@ -374,12 +383,14 @@ getJasmineRequireObj().Env = function(j$) {
            * @property {IncompleteReason} - Explanation of why the suite was incimplete.
            * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
            * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
+           * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
            */
           reporter.jasmineDone({
             overallStatus: overallStatus,
             incompleteReason: incompleteReason,
             order: order,
-            failedExpectations: topSuite.result.failedExpectations
+            failedExpectations: topSuite.result.failedExpectations,
+            deprecationWarnings: topSuite.result.deprecationWarnings
           }, function() {});
         });
       });

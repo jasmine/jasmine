@@ -60,7 +60,8 @@ jasmineRequire.HtmlReporter = function(j$) {
       filterSpecs = options.filterSpecs,
       timer = options.timer || noopTimer,
       htmlReporterMain,
-      symbols;
+      symbols,
+      deprecationWarnings = [];
 
     this.initialize = function() {
       clearPrior();
@@ -98,6 +99,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       if (result.status === 'failed') {
         failures.push(failureDom(result));
       }
+      addDeprecationWarnings(result);
     };
 
     this.specStarted = function(result) {
@@ -126,6 +128,8 @@ jasmineRequire.HtmlReporter = function(j$) {
       if (result.status === 'failed') {
         failures.push(failureDom(result));
       }
+
+      addDeprecationWarnings(result);
     };
 
     this.jasmineDone = function(doneResult) {
@@ -193,6 +197,14 @@ jasmineRequire.HtmlReporter = function(j$) {
         } else {
           return afterAllMessagePrefix + failure.message;
         }
+      }
+
+      addDeprecationWarnings(doneResult);
+
+      var warningBarClassName = 'jasmine-bar jasmine-warning';
+      for(i = 0; i < deprecationWarnings.length; i++) {
+        var warning = deprecationWarnings[i];
+        alert.appendChild(createDom('span', {className: warningBarClassName}, 'DEPRECATION: ' + warning));
       }
 
       var results = find('.jasmine-results');
@@ -373,6 +385,17 @@ jasmineRequire.HtmlReporter = function(j$) {
       }
 
       return addToExistingQueryString('spec', els.join(' '));
+    }
+
+    function addDeprecationWarnings(result) {
+      if (result && result.deprecationWarnings) {
+        for(var i = 0; i < result.deprecationWarnings.length; i++) {
+          var warning = result.deprecationWarnings[i].message;
+          if (!j$.util.arrayContains(warning)) {
+            deprecationWarnings.push(warning);
+          }
+        }
+      }
     }
 
     function find(selector) {

@@ -218,6 +218,11 @@ body {
       background-color: $neutral-color;
     }
 
+    &.jasmine-warning {
+      background-color: $pending-color;
+      color: $text-color;
+    }
+
     &.jasmine-menu {
       background-color: #fff;
       color: $faint-text-color;
