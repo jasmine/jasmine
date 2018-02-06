@@ -1,5 +1,7 @@
-getJasmineRequireObj().ExceptionFormatter = function() {
-  function ExceptionFormatter() {
+getJasmineRequireObj().ExceptionFormatter = function(j$) {
+
+  function ExceptionFormatter(options) {
+    var jasmineFile = (options && options.jasmineFile) || j$.util.jasmineFile();
     this.message = function(error) {
       var message = '';
 
@@ -21,8 +23,34 @@ getJasmineRequireObj().ExceptionFormatter = function() {
     };
 
     this.stack = function(error) {
-      return error ? error.stack : null;
+      if (!error || !error.stack) {
+        return null;
+      }
+
+      var stackTrace = new j$.StackTrace(error.stack);
+      var lines = filterJasmine(stackTrace);
+
+      if (stackTrace.message) {
+        lines.unshift(stackTrace.message);
+      }
+
+      return lines.join('\n');
     };
+
+    function filterJasmine(stackTrace) {
+      var result = [],
+        jasmineMarker = stackTrace.style === 'webkit' ? '<Jasmine>' : '    at <Jasmine>';
+ 
+      stackTrace.frames.forEach(function(frame) {
+        if (frame.file && frame.file !== jasmineFile) {
+          result.push(frame.raw);
+        } else if (result[result.length - 1] !== jasmineMarker) {
+          result.push(jasmineMarker);
+        }
+      });
+ 
+      return result;
+    }
   }
 
   return ExceptionFormatter;

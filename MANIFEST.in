@@ -1,4 +1,5 @@
 recursive-include . *.py
+prune node_modules
 include lib/jasmine-core/*.js
 include lib/jasmine-core/*.css
 include images/*.png

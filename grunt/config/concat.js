@@ -15,7 +15,8 @@ module.exports = {
       'src/html/HtmlReporter.js',
       'src/html/HtmlSpecFilter.js',
       'src/html/ResultsNode.js',
-      'src/html/QueryString.js'
+      'src/html/QueryString.js',
+      'src/html/**/*.js'
     ],
     dest: 'lib/jasmine-core/jasmine-html.js'
   },
@@ -43,13 +44,6 @@ module.exports = {
   nodeBoot: {
     src: ['lib/jasmine-core/boot/node_boot.js'],
     dest: 'lib/jasmine-core/node_boot.js'
-  },
-  console: {
-    src: [
-      'src/console/requireConsole.js',
-      'src/console/ConsoleReporter.js'
-    ],
-    dest: 'lib/console/console.js'
   },
   options: {
     banner: license(),

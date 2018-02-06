@@ -1,43 +1,6 @@
 describe("Env integration", function() {
   beforeEach(function() {
-    jasmine.addMatchers({
-      toHaveFailedExpecationsForRunnable: function(util, customeEqualityTesters) {
-        return {
-          compare: function(actual, fullName, expectedFailures) {
-            var foundRunnable = false, expectations = true, foundFailures = [];
-            for (var i = 0; i < actual.calls.count(); i++) {
-              var args = actual.calls.argsFor(i)[0];
-
-              if (args.fullName === fullName) {
-                foundRunnable = true;
-
-                for (var j = 0; j < args.failedExpectations.length; j++) {
-                  foundFailures.push(args.failedExpectations[j].message);
-                }
-
-                for (var j = 0; j < expectedFailures.length; j++) {
-                  var failure = foundFailures[j];
-                  var expectedFailure = expectedFailures[j];
-
-                  if (Object.prototype.toString.call(expectedFailure) === '[object RegExp]') {
-                    expectations = expectations && expectedFailure.test(failure);
-                  } else {
-                    expectations = expectations && failure === expectedFailure;
-                  }
-                }
-                break;
-              }
-            }
-
-            return {
-              pass: foundRunnable && expectations,
-              message: !foundRunnable ? 'The runnable "' + fullName + '" never finished' :
-                'Expected runnable "' + fullName + '" to have failures ' + jasmine.pp(expectedFailures) + ' but it had ' + jasmine.pp(foundFailures)
-            };
-          }
-        };
-      }
-    });
+    jasmine.getEnv().registerIntegrationMatchers();
   });
 
   it("Suites execute as expected (no nesting)", function(done) {
@@ -54,6 +17,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions});
+    env.randomizeTests(false);
 
     env.describe("A Suite", function() {
       env.it("with a spec", function() {
@@ -82,6 +46,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions });
+    env.randomizeTests(false);
 
     env.describe("Outer suite", function() {
       env.it("an outer spec", function() {
@@ -116,6 +81,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions });
+    env.randomizeTests(false);
 
 
     env.describe("Outer suite", function() {
@@ -234,6 +200,7 @@ describe("Env integration", function() {
     var env = new jasmineUnderTest.Env();
 
     env.addReporter({jasmineDone: done});
+    env.randomizeTests(false);
     env.describe("tests", function() {
       var firstTimeThrough = true, firstSpecContext, secondSpecContext;
 
@@ -418,22 +385,58 @@ describe("Env integration", function() {
     env.execute();
   });
 
-  it("fails all underlying specs when the beforeAll fails", function (done) {
+  it("tags top-level afterAll failures with a type", function(done) {
+    var env = new jasmineUnderTest.Env();
+
+    env.addReporter({jasmineDone: function(result) {
+      expect(result.failedExpectations[0].globalErrorType).toEqual('afterAll');
+      done();
+    }});
+
+    env.it('has a spec', function() {});
+
+    env.afterAll(function() {
+      throw 'nope';
+    });
+
+    env.execute();
+  });
+
+  it("does not tag suite afterAll failures with a type", function(done) {
     var env = new jasmineUnderTest.Env(),
-      reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
+      reporter = {
+        jasmineDone: function() {
+          expect(reporter.suiteDone).toHaveBeenCalled();
+          done();
+        },
+        suiteDone: jasmine.createSpy('suiteDone').and.callFake(function(result) {
+          expect(result.failedExpectations[0].globalErrorType).toBeFalsy();
+        })
+      };
+
+    env.addReporter(reporter);
+
+    env.describe('a suite', function() {
+      env.it('has a spec', function() {});
+
+      env.afterAll(function() {
+        throw 'nope';
+      });
+    });
+
+    env.execute();
+  });
+
+  it("when the beforeAll fails, error at suite level", function (done) {
+    var env = new jasmineUnderTest.Env(),
+      reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "suiteDone", "jasmineDone" ]);
 
     reporter.jasmineDone.and.callFake(function() {
       expect(reporter.specDone.calls.count()).toEqual(2);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('A suite spec that will pass', []);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('A suite nesting another spec to pass', []);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('A suite', ['Expected 1 to be 2.']);
 
-      expect(reporter.specDone.calls.argsFor(0)[0])
-        .toEqual(jasmine.objectContaining({status: 'failed'}));
-      expect(reporter.specDone.calls.argsFor(0)[0].failedExpectations[0].message)
-        .toEqual("Expected 1 to be 2.");
-
-      expect(reporter.specDone.calls.argsFor(1)[0])
-        .toEqual(jasmine.objectContaining({status: 'failed'}));
-      expect(reporter.specDone.calls.argsFor(1)[0].failedExpectations[0].message)
-        .toEqual("Expected 1 to be 2.");
       done();
     });
 
@@ -444,11 +447,11 @@ describe("Env integration", function() {
         env.expect(1).toBe(2);
       });
 
-      env.it("spec that will be failed", function() {
+      env.it("spec that will pass", function() {
       });
 
       env.describe("nesting", function() {
-        env.it("another spec to fail", function() {
+        env.it("another spec to pass", function() {
         });
       });
     });
@@ -466,8 +469,8 @@ describe("Env integration", function() {
       reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone", "suiteDone" ]);
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.specDone).not.toHaveFailedExpecationsForRunnable('A suite fails', ['fail thrown']);
-      expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('A suite', ['fail thrown']);
+      expect(reporter.specDone).not.toHaveFailedExpectationsForRunnable('A suite fails', ['fail thrown']);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('A suite', ['fail thrown']);
       done();
     });
 
@@ -478,7 +481,9 @@ describe("Env integration", function() {
         setTimeout(function() {
           specDone();
           setTimeout(function() {
+          setTimeout(function() {
             global.onerror('fail');
+          });
           });
         });
       });
@@ -497,7 +502,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('my suite', [
           'Expected 1 to equal 2.',
           'Expected 2 to equal 3.'
         ]);
@@ -524,7 +529,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('outer suite', [
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer suite', [
           'Expected 1 to equal 2.',
           'Expected 2 to equal 3.'
         ]);
@@ -553,7 +558,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('my suite', [
           (/^Error: After All Exception/)
         ]);
         done();
@@ -578,7 +583,7 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('my suite', [
           'Expected 1 to equal 2.'
         ]);
         done();
@@ -606,7 +611,7 @@ describe("Env integration", function() {
 
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('my suite', [
           (/^Error: After All Exception/)
         ]);
         done();
@@ -627,15 +632,13 @@ describe("Env integration", function() {
     });
   });
 
-  it('cascades expecatation failures in global beforeAll down to children', function(done) {
+  it('reports expectation failures in global beforeAll', function(done) {
     var env = new jasmineUnderTest.Env(),
       reporter = jasmine.createSpyObj(['specDone', 'jasmineDone']);
 
     reporter.jasmineDone.and.callFake(function(results) {
-      expect(results.failedExpectations).toEqual([]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('is a spec', [
-        'Expected 1 to be 0.'
-      ]);
+      expect(results.failedExpectations).toEqual([jasmine.objectContaining({ message: 'Expected 1 to be 0.' })]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('is a spec', []);
       done();
     });
 
@@ -744,6 +747,47 @@ describe("Env integration", function() {
     });
 
     env.execute([first_spec.id, second_spec.id]);
+  });
+
+  it("Allows filtering out specs and suites to run programmatically", function(done) {
+    var env = new jasmineUnderTest.Env(),
+        calls = [],
+        suiteCallback = jasmine.createSpy('suite callback'),
+        firstSpec,
+        secondSuite;
+
+    var assertions = function() {
+      expect(calls.length).toEqual(2);
+      expect(calls).toEqual(jasmine.arrayContaining([
+        'first spec',
+        'second spec'
+      ]));
+      expect(suiteCallback).toHaveBeenCalled();
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions, suiteDone: suiteCallback});
+
+    env.describe("first suite", function() {
+      env.it("first spec", function() {
+        calls.push('first spec');
+      });
+      env.it("second spec", function() {
+        calls.push('second spec');
+      });
+    });
+
+    secondSuite = env.describe("second suite", function() {
+      env.it("third spec", function() {
+        calls.push('third spec');
+      });
+    });
+
+    env.specFilter = function(spec) {
+      return /^first suite/.test(spec.getFullName());
+    };
+
+    env.execute();
   });
 
   it("Functions can be spied on and have their calls tracked", function (done) {
@@ -909,6 +953,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions });
+    env.randomizeTests(false);
 
     env.describe("tests", function() {
       env.it("test with mock clock", function() {
@@ -959,28 +1004,35 @@ describe("Env integration", function() {
   });
 
   describe("with a mock clock", function() {
+    var realSetTimeout;
     beforeEach(function() {
       this.originalTimeout = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
-      this.realSetTimeout = setTimeout;
+      realSetTimeout = setTimeout;
       jasmine.clock().install();
     });
 
     afterEach(function() {
+      jasmine.clock().tick(1);
+      jasmine.clock().tick(1);
       jasmine.clock().uninstall();
       jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = this.originalTimeout;
     });
 
-    it("should wait a specified interval before failing specs haven't called done yet", function(done) {
+    it("should wait a default interval before failing specs that haven't called done yet", function(done) {
       var env = new jasmineUnderTest.Env(),
           reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
 
-      reporter.specDone.and.callFake(function() {
-        expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({status: 'failed'}));
+      reporter.specDone.and.callFake(function(result) {
+        expect(result).toEqual(jasmine.objectContaining({status: 'failed'}));
+        realSetTimeout(function() {
+          jasmine.clock().tick(1);
+        }, 0);
       });
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.jasmineDone.calls.count()).toEqual(1);
-        done();
+        expect(reporter.specDone.calls.count()).toEqual(1);
+        jasmine.clock().tick(1);
+        realSetTimeout(done);
       });
 
       env.addReporter(reporter);
@@ -989,35 +1041,7 @@ describe("Env integration", function() {
       env.it("async spec that doesn't call done", function(underTestCallback) {
         env.expect(true).toBeTruthy();
         jasmine.clock().tick(8416);
-      });
-
-      env.execute();
-    });
-
-    it("should wait a specified interval before failing beforeAll's and their associated specs that haven't called done", function(done) {
-      var env = new jasmineUnderTest.Env(),
-        reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
-
-      reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.specDone.calls.count()).toEqual(2);
-        expect(reporter.specDone.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({status: 'failed'}));
-        expect(reporter.specDone.calls.argsFor(1)[0]).toEqual(jasmine.objectContaining({status: 'failed'}));
-        done();
-      });
-
-      env.addReporter(reporter);
-      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 1290;
-
-      env.beforeAll(function(innerDone) {
-        jasmine.clock().tick(1291);
-      });
-
-      env.it("spec that will be failed", function() {
-      });
-
-      env.describe("nesting", function() {
-        env.it("another spec to fail", function() {
-        });
+        jasmine.clock().tick(1);
       });
 
       env.execute();
@@ -1028,10 +1052,17 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]),
         clock = env.clock;
 
+      reporter.specDone.and.callFake(function() {
+        realSetTimeout(function() {
+          jasmine.clock().tick(1);
+        }, 0);
+      });
+
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.specDone.calls.count()).toEqual(1);
+        expect(reporter.specDone).toHaveBeenCalledTimes(1);
         expect(reporter.specDone.calls.argsFor(0)[0]).toEqual(jasmine.objectContaining({status: 'passed'}));
-        done();
+        jasmine.clock().tick(1);
+        realSetTimeout(done);
       });
 
       env.addReporter(reporter);
@@ -1048,68 +1079,38 @@ describe("Env integration", function() {
       env.it("spec that should not time out", function(innerDone) {
         clock.tick(6);
         expect(true).toEqual(true);
-        innerDone();
-        jasmine.clock().tick(1);
+        realSetTimeout(innerDone);
       });
 
       env.execute();
-    });
-
-    it("should wait the specified interval before reporting an afterAll that fails to call done", function(done) {
-      var env = new jasmineUnderTest.Env(),
-      reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone']);
-
-      reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('my suite', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
-        done();
-      });
-
-      env.addReporter(reporter);
-      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 3000;
-
-      env.describe('my suite', function() {
-        env.it('my spec', function() {
-        });
-
-        env.afterAll(function(innerDone) {
-          jasmine.clock().tick(3001);
-          innerDone();
-        });
-      });
-
-      env.execute();
-      jasmine.clock().tick(1);
     });
 
     it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
       var env = new jasmineUnderTest.Env(),
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']),
-          realSetTimeout = this.realSetTimeout;
+          timeoutFailure = (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./);
+
+      reporter.specDone.and.callFake(function(r) {
+        realSetTimeout(function() {
+          jasmine.clock().tick(1);
+        }, 0);
+      });
+
+      reporter.suiteDone.and.callFake(function(r) {
+        realSetTimeout(function() {
+          jasmine.clock().tick(1);
+        }, 0);
+      });
 
       reporter.jasmineDone.and.callFake(function() {
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite beforeAll times out', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite beforeAll', [ timeoutFailure ]);
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite afterAll', [ timeoutFailure ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite beforeEach times out', [ timeoutFailure ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite afterEach times out', [ timeoutFailure ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite it times out', [ timeoutFailure ]);
 
-        expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('suite afterAll', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
-
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite beforeEach times out', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
-
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite afterEach times out', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
-
-        expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite it times out', [
-          (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./)
-        ]);
-
-        done();
+        jasmine.clock().tick(1);
+        realSetTimeout(done);
       });
 
       env.addReporter(reporter);
@@ -1117,12 +1118,13 @@ describe("Env integration", function() {
 
       env.describe('suite', function() {
         env.afterAll(function() {
-          if (jasmine.getEnv().ieVersion < 9) {
-          } else {
-            realSetTimeout(function() {
+          realSetTimeout(function() {
+            try {
               jasmine.clock().tick(10);
-            }, 100);
-          }
+            } catch(e) {
+              // don't worry if the clock is already uninstalled
+            }
+          }, 100);
         });
         env.describe('beforeAll', function() {
           env.beforeAll(function(innerDone) {
@@ -1131,7 +1133,12 @@ describe("Env integration", function() {
             }, 0);
           }, 5000);
 
-          env.it('times out', function() {});
+          env.it('times out', function(innerDone) {
+            realSetTimeout(function() {
+              jasmine.clock().tick(1);
+              innerDone();
+            }, 0);
+          });
         });
 
         env.describe('afterAll', function() {
@@ -1141,7 +1148,12 @@ describe("Env integration", function() {
             }, 0);
           }, 2000);
 
-          env.it('times out', function() {});
+          env.it('times out', function(innerDone) {
+            realSetTimeout(function() {
+              jasmine.clock().tick(1);
+              innerDone();
+            }, 0);
+          });
         });
 
         env.describe('beforeEach', function() {
@@ -1151,7 +1163,12 @@ describe("Env integration", function() {
             }, 0);
           }, 1000);
 
-          env.it('times out', function() {});
+          env.it('times out', function(innerDone) {
+            realSetTimeout(function() {
+              jasmine.clock().tick(1);
+              innerDone();
+            }, 0);
+          });
         });
 
         env.describe('afterEach', function() {
@@ -1161,7 +1178,12 @@ describe("Env integration", function() {
             }, 0);
           }, 4000);
 
-          env.it('times out', function() {});
+          env.it('times out', function(innerDone) {
+            realSetTimeout(function() {
+              jasmine.clock().tick(1);
+              innerDone();
+            }, 0);
+          });
         });
 
         env.it('it times out', function(innerDone) {
@@ -1173,81 +1195,71 @@ describe("Env integration", function() {
 
       env.execute();
     });
+  });
 
-    it('explicitly fails an async spec', function(done) {
-      var env = new jasmineUnderTest.Env(),
+  it('explicitly fails an async spec', function(done) {
+    var env = new jasmineUnderTest.Env(),
       specDone = jasmine.createSpy('specDone');
 
-      env.addReporter({
-        specDone: specDone,
-        jasmineDone: function() {
-          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-            description: 'has a default message',
-            failedExpectations: [jasmine.objectContaining({
-              message: 'Failed'
-            })]
-          }));
-          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-            description: 'specifies a message',
-            failedExpectations: [jasmine.objectContaining({
-              message: 'Failed: messy message'
-            })]
-          }));
-          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-            description: 'fails via the done callback',
-            failedExpectations: [jasmine.objectContaining({
-              message: 'Failed: done failed'
-            })]
-          }));
-          expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
-            description: 'has a message from an Error',
-            failedExpectations: [jasmine.objectContaining({
-              message: 'Failed: error message'
-            })]
-          }));
-          done();
-        }
-      });
+    env.addReporter({
+      specDone: specDone,
+      jasmineDone: function() {
+        expect(specDone).toHaveFailedExpectationsForRunnable('failing has a default message',
+          ['Failed']
+        );
+        expect(specDone).toHaveFailedExpectationsForRunnable('failing specifies a message',
+          ['Failed: messy message']
+        );
+        expect(specDone).toHaveFailedExpectationsForRunnable('failing fails via the done callback',
+          ['Failed: done failed']
+        );
+        expect(specDone).toHaveFailedExpectationsForRunnable('failing has a message from an Error',
+          ['Failed: error message']
+        );
+        expect(specDone).toHaveFailedExpectationsForRunnable('failing has a message from an Error to done',
+          ['Failed: done error']
+        );
 
-      env.describe('failing', function() {
-        env.it('has a default message', function(innerDone) {
-          setTimeout(function() {
-            env.fail();
-            innerDone();
-          }, 1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-        });
-
-        env.it('specifies a message', function(innerDone) {
-          setTimeout(function() {
-            env.fail('messy message');
-            innerDone();
-          }, 1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-        });
-
-        env.it('fails via the done callback', function(innerDone) {
-          setTimeout(function() {
-            innerDone.fail('done failed');
-          }, 1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-        });
-
-        env.it('has a message from an Error', function(innerDone) {
-          setTimeout(function() {
-            env.fail(new Error('error message'));
-            innerDone();
-          }, 1);
-          jasmine.clock().tick(1);
-          jasmine.clock().tick(1);
-        });
-      });
-
-      env.execute();
+        setTimeout(done);
+      }
     });
+
+    env.describe('failing', function() {
+      env.it('has a default message', function(innerDone) {
+        setTimeout(function() {
+          env.fail();
+          innerDone();
+        }, 1);
+      });
+
+      env.it('specifies a message', function(innerDone) {
+        setTimeout(function() {
+          env.fail('messy message');
+          innerDone();
+        }, 1);
+      });
+
+      env.it('fails via the done callback', function(innerDone) {
+        setTimeout(function() {
+          innerDone.fail('done failed');
+        }, 1);
+      });
+
+      env.it('has a message from an Error', function(innerDone) {
+        setTimeout(function() {
+          env.fail(new Error('error message'));
+          innerDone();
+        }, 1);
+      });
+
+      env.it('has a message from an Error to done', function(innerDone) {
+        setTimeout(function() {
+          innerDone(new Error('done error'));
+        }, 1);
+      });
+    });
+
+    env.execute();
   });
 
   describe('focused tests', function() {
@@ -1472,6 +1484,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
+    env.randomizeTests(true);
     env.execute();
   });
 
@@ -1578,7 +1591,7 @@ describe("Env integration", function() {
         order: jasmine.any(jasmineUnderTest.Order)
       });
 
-      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ status: 'disabled' }));
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({ status: 'pending' }));
       expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({ description: 'xd out', status: 'pending' }));
       expect(reporter.suiteDone.calls.count()).toBe(4);
 
@@ -1642,6 +1655,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
+    env.randomizeTests(false);
 
     env.describe("testing custom equality testers", function() {
       env.it("with a custom tester", function() {
@@ -1677,6 +1691,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
+    env.randomizeTests(false);
 
     env.describe("testing custom equality testers", function() {
       env.beforeAll(function() { env.addCustomEqualityTester(function(a, b) { return true; }); });
@@ -1717,6 +1732,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
+    env.randomizeTests(false);
 
     env.describe("testing custom equality testers", function() {
       env.it("with a custom tester", function() {
@@ -1769,6 +1785,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
+    env.randomizeTests(false);
 
     env.describe("testing custom equality testers", function() {
       env.beforeAll(function() { env.addCustomEqualityTester(function(a, b) { return true; })});
@@ -1916,10 +1933,10 @@ describe("Env integration", function() {
         reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone','specDone']);
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('async suite', [
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('async suite', [
         /^(((Uncaught )?Error: suite( thrown)?)|(suite thrown))$/
       ]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite async spec', [
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite async spec', [
         /^(((Uncaught )?Error: spec( thrown)?)|(spec thrown))$/
       ]);
       done();
@@ -1951,19 +1968,19 @@ describe("Env integration", function() {
     reporter.jasmineDone.and.callFake(function() {
       var msg = /\'.*\' should only be used in \'describe\' function/;
 
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite describe', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite xdescribe', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('suite fdescribe', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite describe', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite xdescribe', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite fdescribe', [msg]);
 
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('spec it', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('spec xit', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('spec fit', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('spec it', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('spec xit', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('spec fit', [msg]);
 
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('beforeAll spec', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('beforeEach spec', [msg]);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('beforeAll', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('beforeEach spec', [msg]);
 
-      expect(reporter.suiteDone).toHaveFailedExpecationsForRunnable('afterAll', [msg]);
-      expect(reporter.specDone).toHaveFailedExpecationsForRunnable('afterEach spec', [msg]);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('afterAll', [msg]);
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable('afterEach spec', [msg]);
 
       done();
     });
@@ -2003,6 +2020,283 @@ describe("Env integration", function() {
     });
 
     env.execute();
+  });
+
+  it('reports errors that occur during loading', function(done) {
+    var global = {
+      setTimeout: function(fn, delay) { setTimeout(fn, delay) },
+      clearTimeout: function(fn, delay) { clearTimeout(fn, delay) },
+    };
+    spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+    var env = new jasmineUnderTest.Env(),
+      reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+    reporter.jasmineDone.and.callFake(function(e) {
+      expect(e.failedExpectations).toEqual([
+        {
+          passed: false,
+          globalErrorType: 'load',
+          message: 'Uncaught SyntaxError: Unexpected end of input',
+          filename: 'borkenSpec.js',
+          lineno: 42
+        },
+        {
+          passed: false,
+          globalErrorType: 'load',
+          message: 'Uncaught Error: ENOCHEESE',
+          filename: undefined,
+          lineno: undefined
+        }
+      ]);
+
+      done();
+    });
+
+    env.addReporter(reporter);
+    global.onerror('Uncaught SyntaxError: Unexpected end of input', 'borkenSpec.js', 42);
+    global.onerror('Uncaught Error: ENOCHEESE');
+
+    env.execute();
+  });
+
+  describe('If suppressLoadErrors was called', function() {
+    it('does not report or handle errors that occur during loading', function(done) {
+      var global = {
+        setTimeout: function(fn, delay) { setTimeout(fn, delay) },
+        clearTimeout: function(fn, delay) { clearTimeout(fn, delay) }
+      };
+      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+      var globalErrors = new jasmineUnderTest.GlobalErrors(global);
+      var onerror = jasmine.createSpy('onerror');
+      globalErrors.pushListener(onerror);
+      spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
+
+      var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+      reporter.jasmineDone.and.callFake(function(e) {
+        expect(e.failedExpectations).toEqual([]);
+        expect(onerror).toHaveBeenCalledWith('Uncaught Error: ENOCHEESE');
+        done();
+      });
+
+      env.addReporter(reporter);
+      env.suppressLoadErrors(true);
+      global.onerror('Uncaught Error: ENOCHEESE');
+
+      env.execute();
+    });
+  });
+
+  describe('Overall status in the jasmineDone event', function() {
+    describe('When everything passes', function() {
+      it('is "passed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('passed');
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.it('passes', function() {});
+        env.execute();
+      });
+    });
+
+    describe('When a spec fails', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.it('fails', function() {
+          env.expect(true).toBe(false);
+        });
+        env.execute();
+      });
+    });
+
+    describe('When a top-level beforeAll fails', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.beforeAll(function() {
+          throw new Error('nope');
+        });
+        env.it('does not run', function() {});
+        env.execute();
+      });
+    });
+
+    describe('When a suite beforeAll fails', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.describe('something', function() {
+          env.beforeAll(function() {
+            throw new Error('nope');
+          });
+          env.it('does not run', function() {});
+        });
+        env.execute();
+      });
+    });
+
+    describe('When a top-level afterAll fails', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.afterAll(function() {
+          throw new Error('nope');
+        });
+        env.it('does not run', function() {});
+        env.execute();
+      });
+    });
+
+    describe('When a suite afterAll fails', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.describe('something', function() {
+          env.afterAll(function() {
+            throw new Error('nope');
+          });
+          env.it('does not run', function() {});
+        });
+        env.execute();
+      });
+    });
+
+    describe("When there are load errors", function() {
+      it('is "failed"', function(done) {
+        var global = {
+          setTimeout: function(fn, delay) { setTimeout(fn, delay) },
+          clearTimeout: function(fn, delay) { clearTimeout(fn, delay) },
+        };
+        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+        var env = new jasmineUnderTest.Env();
+        var reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.it('passes', function() {});
+        global.onerror('Uncaught Error: ENOCHEESE');
+        env.execute();
+      });
+    });
+
+    describe('When there are no specs', function() {
+      it('is "incomplete"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('incomplete');
+          expect(e.incompleteReason).toEqual('No specs found');
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.execute();
+      });
+    });
+
+    describe('When a spec is focused', function() {
+      it('is "incomplete"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('incomplete');
+          expect(e.incompleteReason).toEqual('fit() or fdescribe() was found');
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.fit('is focused', function() {});
+        env.execute();
+      });
+    });
+
+    describe('When a suite is focused', function() {
+      it('is "incomplete"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('incomplete');
+          expect(e.incompleteReason).toEqual('fit() or fdescribe() was found');
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.fdescribe('something focused', function() {
+          env.it('does a thing', function() {});
+        });
+        env.execute();
+      });
+    });
+
+    describe('When there are both failures and focused specs', function() {
+      it('is "failed"', function(done) {
+        var env = new jasmineUnderTest.Env(),
+          reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          expect(e.incompleteReason).toBeUndefined();
+          done();
+        });
+
+        env.addReporter(reporter);
+        env.fit('is focused', function() {
+          env.expect(true).toBe(false);
+        });
+        env.execute();
+      });
+    });
   });
 
   it('should report deprecation warnings on the correct specs and suites', function(done) {

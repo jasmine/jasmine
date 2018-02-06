@@ -8,27 +8,24 @@ describe("TreeProcessor", function() {
     this.canBeReentered = function() {
       return !attrs.noReenter;
     };
-    this.isExecutable = function() {
-      return attrs.executable !== false;
-    };
+    this.markedPending = attrs.markedPending || false;
     this.sharedUserContext = function() {
       return attrs.userContext || {};
     };
     this.getResult = jasmine.createSpy(this.id + '#execute');
     this.beforeAllFns = attrs.beforeAllFns || [];
     this.afterAllFns = attrs.afterAllFns || [];
+    this.cleanupBeforeAfter = function() { };
   }
 
   function Leaf(attrs) {
     attrs = attrs || {};
     this.id = 'leaf' + leafNumber++;
-    this.isExecutable = function() {
-      return attrs.executable !== false;
-    };
+    this.markedPending = attrs.markedPending || false;
     this.execute = jasmine.createSpy(this.id + '#execute');
   }
 
-  it("processes a single executable leaf", function() {
+  it("processes a single leaf", function() {
     var leaf = new Leaf(),
         processor = new jasmineUnderTest.TreeProcessor({ tree: leaf, runnableIds: [leaf.id] }),
         result = processor.processTree();
@@ -36,20 +33,22 @@ describe("TreeProcessor", function() {
     expect(result.valid).toBe(true);
 
     expect(result[leaf.id]).toEqual({
-      executable: true,
+      excluded: false,
+      willExecute: true,
       segments: jasmine.any(Array)
     });
   });
 
-  it("processes a single non-executable leaf", function() {
-    var leaf = new Leaf({ executable: false }),
+  it("processes a single pending leaf", function() {
+    var leaf = new Leaf({ markedPending: true }),
         processor = new jasmineUnderTest.TreeProcessor({ tree: leaf, runnableIds: [leaf.id] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
 
     expect(result[leaf.id]).toEqual({
-      executable: false,
+      excluded: false,
+      willExecute: false,
       segments: jasmine.any(Array)
     });
   });
@@ -62,7 +61,26 @@ describe("TreeProcessor", function() {
     expect(result.valid).toBe(true);
 
     expect(result[leaf.id]).toEqual({
-      executable: false,
+      excluded: true,
+      willExecute: false,
+      segments: jasmine.any(Array)
+    });
+  });
+
+  it("processes a single excluded leaf", function() {
+    var leaf = new Leaf(),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: leaf,
+          runnableIds: [leaf.id],
+          excludeNode: function(node) { return true; }
+        }),
+        result = processor.processTree();
+
+    expect(result.valid).toBe(true);
+
+    expect(result[leaf.id]).toEqual({
+      excluded: true,
+      willExecute: false,
       segments: jasmine.any(Array)
     });
   });
@@ -76,18 +94,20 @@ describe("TreeProcessor", function() {
     expect(result.valid).toBe(true);
 
     expect(result[parent.id]).toEqual({
-      executable: true,
+      excluded: false,
+      willExecute: true,
       segments: jasmine.any(Array)
     });
 
     expect(result[leaf.id]).toEqual({
-      executable: true,
+      excluded: false,
+      willExecute: true,
       segments: jasmine.any(Array)
     });
   });
 
-  it("processes a tree with a single non-executable leaf, with the root specified", function() {
-    var leaf = new Leaf({ executable: false }),
+  it("processes a tree with a single pending leaf, with the root specified", function() {
+    var leaf = new Leaf({ markedPending: true }),
         parent = new Node({ children: [leaf] }),
         processor = new jasmineUnderTest.TreeProcessor({ tree: parent, runnableIds: [parent.id] }),
         result = processor.processTree();
@@ -95,61 +115,77 @@ describe("TreeProcessor", function() {
     expect(result.valid).toBe(true);
 
     expect(result[parent.id]).toEqual({
-      executable: false,
+      excluded: false,
+      willExecute: false,
       segments: jasmine.any(Array)
     });
 
     expect(result[leaf.id]).toEqual({
-      executable: false,
+      excluded: false,
+      willExecute: false,
       segments: jasmine.any(Array)
     });
   });
 
   it("processes a complicated tree with the root specified", function() {
-    var nonExecutable = new Leaf({ executable: false }),
-        executable = new Leaf({ executable: true }),
-        parent = new Node({ children: [nonExecutable, executable] }),
+    var pendingLeaf = new Leaf({ markedPending: true }),
+        executableLeaf = new Leaf({ markedPending: false }),
+        parent = new Node({ children: [pendingLeaf, executableLeaf] }),
         childless = new Node(),
-        childOfDisabled = new Leaf({ executable: true }),
-        disabledNode = new Node({ executable: false, children: [childOfDisabled] }),
-        root = new Node({ children: [parent, childless, disabledNode] }),
+        childOfPending = new Leaf({ markedPending: true }),
+        pendingNode = new Node({ markedPending: true, children: [childOfPending] }),
+        parentOfPendings = new Node({ markedPending: false, children: [childless, pendingNode] }),
+        root = new Node({ children: [parent, parentOfPendings] }),
         processor = new jasmineUnderTest.TreeProcessor({ tree: root, runnableIds: [root.id] }),
         result = processor.processTree();
 
     expect(result.valid).toBe(true);
 
     expect(result[root.id]).toEqual({
-      executable: true,
+      excluded: false,
+      willExecute: true,
+      segments: jasmine.any(Array)
+    });
+
+    expect(result[parentOfPendings.id]).toEqual({
+      excluded: false,
+      willExecute: false,
       segments: jasmine.any(Array)
     });
 
     expect(result[childless.id]).toEqual({
-      executable: false,
+      excluded: false,
+      willExecute: false,
       segments: jasmine.any(Array)
     });
 
-    expect(result[nonExecutable.id]).toEqual({
-      executable: false,
+    expect(result[pendingLeaf.id]).toEqual({
+      excluded: false,
+      willExecute: false,
       segments: jasmine.any(Array)
     });
 
-    expect(result[executable.id]).toEqual({
-      executable: true,
+    expect(result[executableLeaf.id]).toEqual({
+      excluded: false,
+      willExecute: true,
       segments: jasmine.any(Array)
     });
 
     expect(result[parent.id]).toEqual({
-      executable: true,
+      excluded: false,
+      willExecute: true,
       segments: jasmine.any(Array)
     });
 
-    expect(result[disabledNode.id]).toEqual({
-      executable: false,
+    expect(result[pendingNode.id]).toEqual({
+      excluded: false,
+      willExecute: false,
       segments: jasmine.any(Array)
     });
 
-    expect(result[childOfDisabled.id]).toEqual({
-      executable: false,
+    expect(result[childOfPending.id]).toEqual({
+      excluded: false,
+      willExecute: false,
       segments: jasmine.any(Array)
     });
   });
@@ -218,7 +254,7 @@ describe("TreeProcessor", function() {
 
     queueRunner.calls.mostRecent().args[0].queueableFns[0].fn('foo');
 
-    expect(leaf.execute).toHaveBeenCalledWith('foo', true);
+    expect(leaf.execute).toHaveBeenCalledWith('foo', false);
   });
 
   it("runs a node with no children", function() {
@@ -248,19 +284,20 @@ describe("TreeProcessor", function() {
 
     queueRunner.calls.mostRecent().args[0].queueableFns[0].fn(nodeDone);
 
-    expect(nodeStart).toHaveBeenCalledWith(node);
     expect(queueRunner).toHaveBeenCalledWith({
       onComplete: jasmine.any(Function),
-      queueableFns: [],
+      queueableFns: [{ fn: jasmine.any(Function) }],
       userContext: { node: 'context' },
       onException: jasmine.any(Function)
     });
 
+    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn('foo');
+    expect(nodeStart).toHaveBeenCalledWith(node, 'foo');
+
     node.getResult.and.returnValue({ my: 'result' });
 
     queueRunner.calls.mostRecent().args[0].onComplete();
-    expect(nodeComplete).toHaveBeenCalledWith(node, { my: 'result' });
-    expect(nodeDone).toHaveBeenCalled();
+    expect(nodeComplete).toHaveBeenCalledWith(node, { my: 'result' }, nodeDone);
   });
 
   it("runs a node with children", function() {
@@ -282,25 +319,25 @@ describe("TreeProcessor", function() {
     queueableFns[0].fn(nodeDone);
 
     queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(2);
+    expect(queueableFns.length).toBe(3);
 
-    queueableFns[0].fn('foo');
-    expect(leaf1.execute).toHaveBeenCalledWith('foo', true);
+    queueableFns[1].fn('foo');
+    expect(leaf1.execute).toHaveBeenCalledWith('foo', false);
 
-    queueableFns[1].fn('bar');
-    expect(leaf2.execute).toHaveBeenCalledWith('bar', true);
+    queueableFns[2].fn('bar');
+    expect(leaf2.execute).toHaveBeenCalledWith('bar', false);
   });
 
-  it("runs a disabled node", function() {
+  it("runs an excluded node with leaf", function() {
     var leaf1 = new Leaf(),
-        node = new Node({ children: [leaf1], executable: false }),
+        node = new Node({ children: [leaf1] }),
         root = new Node({ children: [node] }),
         queueRunner = jasmine.createSpy('queueRunner'),
         nodeStart = jasmine.createSpy('nodeStart'),
         nodeComplete = jasmine.createSpy('nodeComplete'),
         processor = new jasmineUnderTest.TreeProcessor({
           tree: root,
-          runnableIds: [node.id],
+          runnableIds: [],
           queueRunnerFactory: queueRunner,
           nodeStart: nodeStart,
           nodeComplete: nodeComplete
@@ -312,18 +349,19 @@ describe("TreeProcessor", function() {
     var queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
     queueableFns[0].fn(nodeDone);
 
-    expect(nodeStart).toHaveBeenCalledWith(node);
-
     queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(1);
+    expect(queueableFns.length).toBe(2);
 
-    queueableFns[0].fn('foo');
-    expect(leaf1.execute).toHaveBeenCalledWith('foo', false);
+    queueableFns[0].fn('bar');
+    expect(nodeStart).toHaveBeenCalledWith(node, 'bar');
+
+    queueableFns[1].fn('foo');
+    expect(leaf1.execute).toHaveBeenCalledWith('foo', true);
 
     node.getResult.and.returnValue({ im: 'disabled' });
 
     queueRunner.calls.mostRecent().args[0].onComplete();
-    expect(nodeComplete).toHaveBeenCalledWith(node, { im: 'disabled' });
+    expect(nodeComplete).toHaveBeenCalledWith(node, { im: 'disabled' }, nodeDone);
   });
 
   it("runs beforeAlls for a node with children", function() {
@@ -348,7 +386,7 @@ describe("TreeProcessor", function() {
 
     queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
 
-    expect(queueableFns).toEqual(['beforeAll1', 'beforeAll2', { fn: jasmine.any(Function) }]);
+    expect(queueableFns).toEqual([{ fn: jasmine.any(Function) }, 'beforeAll1', 'beforeAll2', { fn: jasmine.any(Function) }]);
   });
 
   it("runs afterAlls for a node with children", function() {
@@ -373,7 +411,7 @@ describe("TreeProcessor", function() {
 
     queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
 
-    expect(queueableFns).toEqual([{ fn: jasmine.any(Function) }, 'afterAll1', 'afterAll2']);
+    expect(queueableFns).toEqual([{ fn: jasmine.any(Function) }, { fn: jasmine.any(Function) }, 'afterAll1', 'afterAll2']);
   });
 
   it("does not run beforeAlls or afterAlls for a node with no children", function() {
@@ -397,16 +435,16 @@ describe("TreeProcessor", function() {
 
     queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
 
-    expect(queueableFns).toEqual([]);
+    expect(queueableFns).toEqual([{fn: jasmine.any(Function)}]);
   });
 
-  it("does not run beforeAlls or afterAlls for a disabled node", function() {
-    var leaf = new Leaf(),
+  it("does not run beforeAlls or afterAlls for a node with only pending children", function() {
+    var leaf = new Leaf({ markedPending: true }),
         node = new Node({
           children: [leaf],
           beforeAllFns: ['before'],
           afterAllFns: ['after'],
-          executable: false
+          markedPending: false
         }),
         root = new Node({ children: [node] }),
         queueRunner = jasmine.createSpy('queueRunner'),
@@ -424,7 +462,7 @@ describe("TreeProcessor", function() {
 
     queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
 
-    expect(queueableFns).toEqual([{ fn: jasmine.any(Function) }]);
+    expect(queueableFns).toEqual([{ fn: jasmine.any(Function) }, { fn: jasmine.any(Function) }]);
   });
 
   it("runs leaves in the order specified", function() {
@@ -451,7 +489,7 @@ describe("TreeProcessor", function() {
     expect(leaf1.execute).toHaveBeenCalled();
   });
 
-  it("runs specified leaves before non-specified leaves", function() {
+  it("runs specified leaves before non-specified leaves within a parent node", function() {
     var specified = new Leaf(),
         nonSpecified = new Leaf(),
         root = new Node({ children: [nonSpecified, specified] }),
@@ -468,11 +506,11 @@ describe("TreeProcessor", function() {
     queueableFns[0].fn();
 
     expect(nonSpecified.execute).not.toHaveBeenCalled();
-    expect(specified.execute).toHaveBeenCalledWith(undefined, true);
+    expect(specified.execute).toHaveBeenCalledWith(undefined, false);
 
     queueableFns[1].fn();
 
-    expect(nonSpecified.execute).toHaveBeenCalledWith(undefined, false);
+    expect(nonSpecified.execute).toHaveBeenCalledWith(undefined, true);
   });
 
   it("runs nodes and leaves with a specified order", function() {
@@ -493,7 +531,7 @@ describe("TreeProcessor", function() {
 
     expect(specifiedLeaf.execute).not.toHaveBeenCalled();
     var nodeQueueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
-    nodeQueueableFns[0].fn();
+    nodeQueueableFns[1].fn();
 
     expect(childLeaf.execute).toHaveBeenCalled();
 
@@ -522,8 +560,8 @@ describe("TreeProcessor", function() {
     expect(queueableFns.length).toBe(5);
 
     queueableFns[0].fn();
-    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(2);
+    queueRunner.calls.mostRecent().args[0].queueableFns[1].fn();
     expect(leaf1.execute).toHaveBeenCalled();
 
     queueableFns[1].fn();
@@ -531,8 +569,8 @@ describe("TreeProcessor", function() {
 
     queueableFns[2].fn();
     expect(queueRunner.calls.count()).toBe(3);
-    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(2);
+    queueRunner.calls.mostRecent().args[0].queueableFns[1].fn();
     expect(leaf2.execute).toHaveBeenCalled();
 
     queueableFns[3].fn();
@@ -540,8 +578,8 @@ describe("TreeProcessor", function() {
 
     queueableFns[4].fn();
     expect(queueRunner.calls.count()).toBe(4);
-    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(2);
+    queueRunner.calls.mostRecent().args[0].queueableFns[1].fn();
     expect(leaf3.execute).toHaveBeenCalled();
   });
 
@@ -567,12 +605,12 @@ describe("TreeProcessor", function() {
 
     queueableFns[0].fn();
     expect(queueRunner.calls.count()).toBe(2);
-    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
+    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(2);
 
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    queueRunner.calls.mostRecent().args[0].queueableFns[1].fn();
     expect(queueRunner.calls.count()).toBe(3);
 
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    queueRunner.calls.mostRecent().args[0].queueableFns[1].fn();
     expect(leaf1.execute).toHaveBeenCalled();
 
     queueableFns[1].fn();
@@ -580,12 +618,12 @@ describe("TreeProcessor", function() {
 
     queueableFns[2].fn();
     expect(queueRunner.calls.count()).toBe(4);
-    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
+    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(2);
 
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    queueRunner.calls.mostRecent().args[0].queueableFns[1].fn();
     expect(queueRunner.calls.count()).toBe(5);
 
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    queueRunner.calls.mostRecent().args[0].queueableFns[1].fn();
     expect(leaf2.execute).toHaveBeenCalled();
 
     queueableFns[3].fn();
@@ -593,12 +631,12 @@ describe("TreeProcessor", function() {
 
     queueableFns[4].fn();
     expect(queueRunner.calls.count()).toBe(6);
-    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(1);
+    expect(queueRunner.calls.mostRecent().args[0].queueableFns.length).toBe(2);
 
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    queueRunner.calls.mostRecent().args[0].queueableFns[1].fn();
     expect(queueRunner.calls.count()).toBe(7);
 
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
+    queueRunner.calls.mostRecent().args[0].queueableFns[1].fn();
     expect(leaf3.execute).toHaveBeenCalled();
   });
 
@@ -625,11 +663,11 @@ describe("TreeProcessor", function() {
     queueableFns[1].fn();
 
     var childFns = queueRunner.calls.mostRecent().args[0].queueableFns;
-    expect(childFns.length).toBe(2);
-    childFns[0].fn();
+    expect(childFns.length).toBe(3);
+    childFns[1].fn();
     expect(leaf2.execute).toHaveBeenCalled();
 
-    childFns[1].fn();
+    childFns[2].fn();
     expect(leaf3.execute).toHaveBeenCalled();
   });
 
@@ -691,7 +729,7 @@ describe("TreeProcessor", function() {
     expect(leaf11.execute).toHaveBeenCalled();
   });
 
-  it("runs nodes in a custom order when orderChildren is overrided", function() {
+  it("runs nodes in a custom order when orderChildren is overridden", function() {
     var leaf1 = new Leaf(),
         leaf2 = new Leaf(),
         leaf3 = new Leaf(),

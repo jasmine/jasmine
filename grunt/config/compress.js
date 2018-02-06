@@ -2,7 +2,6 @@ var standaloneLibDir = "lib/jasmine-" + jasmineVersion;
 
 function root(path) { return "./" + path; }
 function libJasmineCore(path) { return root("lib/jasmine-core/" + path); }
-function libConsole() { return "lib/console/" }
 function dist(path) { return root("dist/" + path); }
 
 module.exports = {
@@ -28,14 +27,6 @@ module.exports = {
         dest: standaloneLibDir,
         expand: true,
         cwd: libJasmineCore("")
-      },
-      {
-        src: [
-          "console.js"
-        ],
-        dest: standaloneLibDir,
-        expand: true,
-        cwd: libConsole()
       },
       {
         src: [ "boot.js" ],

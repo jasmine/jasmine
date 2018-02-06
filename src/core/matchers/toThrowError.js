@@ -18,73 +18,61 @@ getJasmineRequireObj().toThrowError = function(j$) {
   function toThrowError () {
     return {
       compare: function(actual) {
-        var threw = false,
-          pass = {pass: true},
-          fail = {pass: false},
+        var errorMatcher = getMatcher.apply(null, arguments),
           thrown;
 
         if (typeof actual != 'function') {
           throw new Error(getErrorMsg('Actual is not a Function'));
         }
 
-        var errorMatcher = getMatcher.apply(null, arguments);
-
         try {
           actual();
+          return fail('Expected function to throw an Error.');
         } catch (e) {
-          threw = true;
           thrown = e;
         }
 
-        if (!threw) {
-          fail.message = 'Expected function to throw an Error.';
-          return fail;
+        if (!j$.isError_(thrown)) {
+          return fail(function() { return 'Expected function to throw an Error, but it threw ' + j$.pp(thrown) + '.'; });
         }
 
-        // Get Error constructor of thrown
-        if (!isErrorObject(thrown)) {
-          fail.message = function() { return 'Expected function to throw an Error, but it threw ' + j$.pp(thrown) + '.'; };
-          return fail;
-        }
-
-        if (errorMatcher.hasNoSpecifics()) {
-          pass.message = 'Expected function not to throw an Error, but it threw ' + j$.fnNameFor(thrown) + '.';
-          return pass;
-        }
-
-        if (errorMatcher.matches(thrown)) {
-          pass.message = function() {
-            return 'Expected function not to throw ' + errorMatcher.errorTypeDescription + errorMatcher.messageDescription() + '.';
-          };
-          return pass;
-        } else {
-          fail.message = function() {
-            return 'Expected function to throw ' + errorMatcher.errorTypeDescription + errorMatcher.messageDescription() +
-              ', but it threw ' + errorMatcher.thrownDescription(thrown) + '.';
-          };
-          return fail;
-        }
+        return errorMatcher.match(thrown);
       }
     };
 
     function getMatcher() {
-      var expected = null,
-          errorType = null;
+      var expected, errorType;
 
-      if (arguments.length == 2) {
-        expected = arguments[1];
-        if (isAnErrorType(expected)) {
-          errorType = expected;
-          expected = null;
-        }
-      } else if (arguments.length > 2) {
+      if (arguments[2]) {
         errorType = arguments[1];
         expected = arguments[2];
         if (!isAnErrorType(errorType)) {
           throw new Error(getErrorMsg('Expected error type is not an Error.'));
         }
-      }
 
+        return exactMatcher(expected, errorType);
+      } else if (arguments[1]) {
+        expected = arguments[1];
+
+        if (isAnErrorType(arguments[1])) {
+          return exactMatcher(null, arguments[1]);
+        } else {
+          return exactMatcher(arguments[1], null);
+        }
+      } else {
+        return anyMatcher();
+      }
+    }
+
+    function anyMatcher() {
+      return {
+        match: function(error) {
+          return pass('Expected function not to throw an Error, but it threw ' + j$.fnNameFor(error) + '.');
+        }
+      };
+    }
+
+    function exactMatcher(expected, errorType) {
       if (expected && !isStringOrRegExp(expected)) {
         if (errorType) {
           throw new Error(getErrorMsg('Expected error message is not a string or RegExp.'));
@@ -101,33 +89,46 @@ getJasmineRequireObj().toThrowError = function(j$) {
         }
       }
 
+      var errorTypeDescription = errorType ? j$.fnNameFor(errorType) : 'an exception';
+
+      function thrownDescription(thrown) {
+        var thrownName = errorType ? j$.fnNameFor(thrown.constructor) : 'an exception',
+            thrownMessage = '';
+
+        if (expected) {
+          thrownMessage = ' with message ' + j$.pp(thrown.message);
+        }
+
+        return thrownName + thrownMessage;
+      }
+
+      function messageDescription() {
+        if (expected === null) {
+          return '';
+        } else if (expected instanceof RegExp) {
+          return ' with a message matching ' + j$.pp(expected);
+        } else {
+          return ' with message ' + j$.pp(expected);
+        }
+      }
+
+      function matches(error) {
+        return (errorType === null || error instanceof errorType) &&
+          (expected === null || messageMatch(error.message));
+      }
+
       return {
-        errorTypeDescription: errorType ? j$.fnNameFor(errorType) : 'an exception',
-        thrownDescription: function(thrown) {
-          var thrownName = errorType ? j$.fnNameFor(thrown.constructor) : 'an exception',
-              thrownMessage = '';
-
-          if (expected) {
-            thrownMessage = ' with message ' + j$.pp(thrown.message);
-          }
-
-          return thrownName + thrownMessage;
-        },
-        messageDescription: function() {
-          if (expected === null) {
-            return '';
-          } else if (expected instanceof RegExp) {
-            return ' with a message matching ' + j$.pp(expected);
+        match: function(thrown) {
+          if (matches(thrown)) {
+            return pass(function() {
+              return 'Expected function not to throw ' + errorTypeDescription + messageDescription() + '.';
+            });
           } else {
-            return ' with message ' + j$.pp(expected);
+            return fail(function() {
+              return 'Expected function to throw ' + errorTypeDescription + messageDescription() +
+                ', but it threw ' + thrownDescription(thrown) + '.';
+            });
           }
-        },
-        hasNoSpecifics: function() {
-          return expected === null && errorType === null;
-        },
-        matches: function(error) {
-          return (errorType === null || error instanceof errorType) &&
-            (expected === null || messageMatch(error.message));
         }
       };
     }
@@ -143,19 +144,22 @@ getJasmineRequireObj().toThrowError = function(j$) {
 
       var Surrogate = function() {};
       Surrogate.prototype = type.prototype;
-      return isErrorObject(new Surrogate());
+      return j$.isError_(new Surrogate());
     }
+  }
 
-    function isErrorObject(thrown) {
-      if (thrown instanceof Error) {
-        return true;
-      }
-      if (thrown && thrown.constructor && thrown.constructor.constructor &&
-          (thrown instanceof (thrown.constructor.constructor('return this')()).Error)) {
-        return true;
-      }
-      return false;
-    }
+  function pass(message) {
+    return {
+      pass: true,
+      message: message
+    };
+  }
+
+  function fail(message) {
+    return {
+      pass: false,
+      message: message
+    };
   }
 
   return toThrowError;

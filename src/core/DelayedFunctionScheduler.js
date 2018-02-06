@@ -147,6 +147,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
           }
           funcToRun.funcToCall.apply(null, funcToRun.params || []);
         });
+        deletedKeys = [];
       } while (scheduledLookup.length > 0 &&
               // checking first if we're out of time prevents setTimeout(0)
               // scheduled in a funcToRun from forcing an extra iteration

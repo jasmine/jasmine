@@ -1,5 +1,5 @@
 getJasmineRequireObj().ReportDispatcher = function(j$) {
-  function ReportDispatcher(methods) {
+  function ReportDispatcher(methods, queueRunnerFactory) {
 
     var dispatchedMethods = methods || [];
 
@@ -33,11 +33,40 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
       if (reporters.length === 0 && fallbackReporter !== null) {
           reporters.push(fallbackReporter);
       }
+      var onComplete = args[args.length - 1];
+      args = j$.util.argsToArray(args).splice(0, args.length - 1);
+      var fns = [];
       for (var i = 0; i < reporters.length; i++) {
         var reporter = reporters[i];
-        if (reporter[method]) {
-          reporter[method].apply(reporter, j$.util.cloneArgs(args));
-        }
+        addFn(fns, reporter, method, args);
+      }
+
+      queueRunnerFactory({
+        queueableFns: fns,
+        onComplete: onComplete,
+        isReporter: true
+      });
+    }
+
+    function addFn(fns, reporter, method, args) {
+      var fn = reporter[method];
+      if (!fn) {
+        return;
+      }
+
+      var thisArgs = j$.util.cloneArgs(args);
+      if (fn.length <= 1) {
+        fns.push({
+          fn: function () {
+            return fn.apply(reporter, thisArgs);
+          }
+        });
+      } else {
+        fns.push({
+          fn: function (done) {
+            return fn.apply(reporter, thisArgs.concat([done]));
+          }
+        });
       }
     }
   }

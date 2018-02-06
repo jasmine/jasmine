@@ -192,7 +192,7 @@ describe("JsApiReporter", function() {
       };
       suiteResult2 = {
         id: 2,
-        status: 'finished'
+        status: 'passed'
       };
 
       reporter.suiteStarted(suiteStarted1);

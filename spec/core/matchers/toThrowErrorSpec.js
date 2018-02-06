@@ -79,7 +79,7 @@ describe("toThrowError", function() {
     });
 
     it("passes if thrown is an instanceof Error regardless of global that contains its constructor", function() {
-      if (isNotRunningInBrowser() || jasmine.getEnv().phantomVersion < 2 || jasmine.getEnv().ieVersion < 10) {
+      if (isNotRunningInBrowser()) {
         return;
       }
 
@@ -92,7 +92,7 @@ describe("toThrowError", function() {
         iframeDocument.body.appendChild(iframeDocument.createElement("script"))
         .textContent = "function method() { throw new Error('foo'); }";
       } else {
-        // older IE
+        // IE 10 and older
         iframeDocument.write("<html><head><script>function method() { throw new Error('foo'); }</script></head></html>");
       }
 

@@ -256,5 +256,42 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     return env.clock;
   };
 
+  /**
+   * Create a bare {@link Spy} object. This won't be installed anywhere and will not have any implementation behind it.
+   * @name jasmine.createSpy
+   * @function
+   * @param {String} [name] - Name to give the spy. This will be displayed in failure messages.
+   * @param {Function} [originalFn] - Function to act as the real implementation.
+   * @return {Spy}
+   */
+  jasmine.createSpy = function(name, originalFn) {
+    return env.createSpy(name, originalFn);
+  };
+
+  /**
+   * Create an object with multiple {@link Spy}s as its members.
+   * @name jasmine.createSpyObj
+   * @function
+   * @param {String} [baseName] - Base name for the spies in the object.
+   * @param {String[]|Object} methodNames - Array of method names to create spies for, or Object whose keys will be method names and values the {@link Spy#and#returnValue|returnValue}.
+   * @return {Object}
+   */
+  jasmine.createSpyObj = function(baseName, methodNames) {
+    return env.createSpyObj(baseName, methodNames);
+  };
+
+  /**
+   * Add a custom spy strategy for the current scope of specs.
+   *
+   * _Note:_ This is only callable from within a {@link beforeEach}, {@link it}, or {@link beforeAll}.
+   * @name jasmine.addSpyStrategy
+   * @function
+   * @param {String} name - The name of the strategy (i.e. what you call from `and`)
+   * @param {Function} factory - Factory function that returns the plan to be executed.
+   */
+  jasmine.addSpyStrategy = function(name, factory) {
+    return env.addSpyStrategy(name, factory);
+  };
+
   return jasmineInterface;
 };

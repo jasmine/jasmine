@@ -1,8 +1,10 @@
-describe("jasmine spec running", function () {
+describe("spec running", function () {
   var env;
 
   beforeEach(function() {
+    jasmine.getEnv().registerIntegrationMatchers();
     env = new jasmineUnderTest.Env();
+    env.randomizeTests(false);
   });
 
   it('should assign spec ids sequentially', function() {
@@ -600,18 +602,16 @@ describe("jasmine spec running", function () {
 
   it("should recover gracefully when there are errors in describe functions", function(done) {
     var specs = [],
-      reporter = jasmine.createSpyObj(['specDone', 'jasmineDone']);
+      reporter = jasmine.createSpyObj(['specDone', 'suiteDone', 'jasmineDone']);
 
     reporter.specDone.and.callFake(function(result) {
       specs.push(result.fullName);
     });
 
     reporter.jasmineDone.and.callFake(function() {
-      expect(specs).toContain('outer1 inner1 should thingy');
-      expect(specs).toContain('outer1 inner1 encountered a declaration exception');
-      expect(specs).toContain('outer1 inner2 should other thingy');
-      expect(specs).toContain('outer1 encountered a declaration exception');
-      expect(specs).toContain('outer2 should xxx');
+      expect(specs).toEqual(['outer1 inner1 should thingy', 'outer1 inner2 should other thingy', 'outer2 should xxx']);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer1 inner1', [/inner error/]);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer1', [/outer error/]);
       done();
     });
 
@@ -622,7 +622,7 @@ describe("jasmine spec running", function () {
             this.expect(true).toEqual(true);
           });
 
-          throw new Error("fake error");
+          throw new Error("inner error");
         });
 
         env.describe("inner2", function() {
@@ -631,7 +631,7 @@ describe("jasmine spec running", function () {
           });
         });
 
-        throw new Error("fake error");
+        throw new Error("outer error");
 
       });
     }).not.toThrow();
@@ -740,8 +740,8 @@ describe("jasmine spec running", function () {
 
   it("should run the tests in a consistent order when a seed is supplied", function(done) {
     var actions = [];
-    env.randomizeTests(true);
     env.seed('123456');
+    env.randomizeTests(true);
 
     env.beforeEach(function () {
       actions.push('topSuite beforeEach');
@@ -944,6 +944,32 @@ describe("jasmine spec running", function () {
 
       env.addReporter({jasmineDone: assertions});
 
+      env.execute();
+    });
+  });
+
+  describe("when stopOnSpecFailure is on", function() {
+    it("does not run further specs when one fails", function(done) {
+      var actions = [];
+
+      env.it('fails', function() {
+        actions.push('fails');
+        env.expect(1).toBe(2);
+      });
+
+      env.it('does not run', function() {
+        actions.push('does not run');
+      });
+
+      env.randomizeTests(false);
+      env.stopOnSpecFailure(true);
+
+      var assertions = function() {
+        expect(actions).toEqual(['fails']);
+        done();
+      };
+
+      env.addReporter({ jasmineDone: assertions });
       env.execute();
     });
   });

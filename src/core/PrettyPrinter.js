@@ -29,11 +29,13 @@ getJasmineRequireObj().pp = function(j$) {
       } else if (typeof value === 'string') {
         this.emitString(value);
       } else if (j$.isSpy(value)) {
-        this.emitScalar('spy on ' + value.and.identity());
+        this.emitScalar('spy on ' + value.and.identity);
       } else if (value instanceof RegExp) {
         this.emitScalar(value.toString());
       } else if (typeof value === 'function') {
         this.emitScalar('Function');
+      } else if (value.nodeType === 1) {
+        this.emitDomElement(value);
       } else if (typeof value.nodeType === 'number') {
         this.emitScalar('HTMLNode');
       } else if (value instanceof Date) {
@@ -223,6 +225,18 @@ getJasmineRequireObj().pp = function(j$) {
     }
 
     this.append(constructorName + ' [ ' + itemsString + ' ]');
+  };
+
+  PrettyPrinter.prototype.emitDomElement = function(el) {
+    var closingTag = '</' + el.tagName.toLowerCase() + '>';
+
+    if (el.innerHTML === '') {
+      this.append(el.outerHTML.replace(closingTag, ''));
+    } else {
+      var tagEnd = el.outerHTML.indexOf(el.innerHTML);
+      this.append(el.outerHTML.substring(0, tagEnd));
+      this.append('...' + closingTag);
+    }
   };
 
   PrettyPrinter.prototype.formatProperty = function(obj, property, isGetter) {

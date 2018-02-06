@@ -411,50 +411,6 @@ describe("Clock", function() {
       clock.tick(50);
     }).toThrow();
   });
-
-  it("on IE < 9, fails if extra args are passed to fake clock", function() {
-    //fail, because this would break in IE9.
-    var fakeSetTimeout = jasmine.createSpy('setTimeout'),
-      fakeSetInterval = jasmine.createSpy('setInterval'),
-      delayedFunctionScheduler = jasmine.createSpyObj('delayedFunctionScheduler', ['scheduleFunction']),
-      fn = jasmine.createSpy('fn'),
-      fakeGlobal = {
-        setTimeout: fakeSetTimeout,
-        setInterval: fakeSetInterval
-      },
-      mockDate = { install: function() {}, tick: function() {}, uninstall: function() {} },
-      clock = new jasmineUnderTest.Clock(fakeGlobal, function () { return delayedFunctionScheduler; }, mockDate),
-      timeout = new clock.FakeTimeout();
-
-    fakeSetTimeout.apply = null;
-    fakeSetInterval.apply = null;
-
-    clock.install();
-
-    clock.setTimeout(fn, 0);
-
-    if (!NODE_JS) {
-      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(fn, 0, []);
-    } else {
-      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(fn, 0, [], false, timeout);
-    }
-
-    expect(function() {
-      clock.setTimeout(fn, 0, 'extra');
-    }).toThrow();
-
-    clock.setInterval(fn, 0);
-    
-    if (!NODE_JS) {
-      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(fn, 0, [], true);
-    } else {
-      expect(delayedFunctionScheduler.scheduleFunction).toHaveBeenCalledWith(fn, 0, [], true, timeout);
-    }
-
-    expect(function() {
-      clock.setInterval(fn, 0, 'extra');
-    }).toThrow();
-  });
 });
 
 describe("Clock (acceptance)", function() {

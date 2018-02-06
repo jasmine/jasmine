@@ -87,22 +87,10 @@ getJasmineRequireObj().Clock = function() {
     };
 
     self.setTimeout = function(fn, delay, params) {
-      if (legacyIE()) {
-        if (arguments.length > 2) {
-          throw new Error('IE < 9 cannot support extra params to setTimeout without a polyfill');
-        }
-        return timer.setTimeout(fn, delay);
-      }
       return Function.prototype.apply.apply(timer.setTimeout, [global, arguments]);
     };
 
     self.setInterval = function(fn, delay, params) {
-      if (legacyIE()) {
-        if (arguments.length > 2) {
-          throw new Error('IE < 9 cannot support extra params to setInterval without a polyfill');
-        }
-        return timer.setInterval(fn, delay);
-      }
       return Function.prototype.apply.apply(timer.setInterval, [global, arguments]);
     };
 
@@ -135,11 +123,6 @@ getJasmineRequireObj().Clock = function() {
         global.clearTimeout === realTimingFunctions.clearTimeout &&
         global.setInterval === realTimingFunctions.setInterval &&
         global.clearInterval === realTimingFunctions.clearInterval;
-    }
-
-    function legacyIE() {
-      //if these methods are polyfilled, apply will be present
-      return !(realTimingFunctions.setTimeout || realTimingFunctions.setInterval).apply;
     }
 
     function replace(dest, source) {

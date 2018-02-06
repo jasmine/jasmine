@@ -182,28 +182,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     var bIsDomNode = j$.isDomNode(b);
     if (aIsDomNode && bIsDomNode) {
       // At first try to use DOM3 method isEqualNode
-      if (a.isEqualNode) {
-        result = a.isEqualNode(b);
-        if (!result) {
-          diffBuilder.record(a, b);
-        }
-        return result;
-      }
-      // IE8 doesn't support isEqualNode, try to use outerHTML && innerText
-      var aIsElement = a instanceof Element;
-      var bIsElement = b instanceof Element;
-      if (aIsElement && bIsElement) {
-        result = a.outerHTML == b.outerHTML;
-        if (!result) {
-          diffBuilder.record(a, b);
-        }
-        return result;
-      }
-      if (aIsElement || bIsElement) {
-        diffBuilder.record(a, b);
-        return false;
-      }
-      result = a.innerText == b.innerText && a.textContent == b.textContent;
+      result = a.isEqualNode(b);
       if (!result) {
         diffBuilder.record(a, b);
       }

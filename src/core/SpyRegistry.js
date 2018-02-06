@@ -5,6 +5,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
   function SpyRegistry(options) {
     options = options || {};
     var global = options.global || j$.getGlobal();
+    var createSpy = options.createSpy;
     var currentSpies = options.currentSpies || function() { return []; };
 
     this.allowRespy = function(allow){
@@ -33,19 +34,14 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         }
       }
 
-      var descriptor;
-      try {
-        descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
-      } catch(e) {
-        // IE 8 doesn't support `definePropery` on non-DOM nodes
-      }
+      var descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
 
       if (descriptor && !(descriptor.writable || descriptor.set)) {
         throw new Error(getErrorMsg(methodName + ' is not declared writable or has no setter'));
       }
 
       var originalMethod = obj[methodName],
-        spiedMethod = j$.createSpy(methodName, originalMethod),
+        spiedMethod = createSpy(methodName, originalMethod),
         restoreStrategy;
 
       if (Object.prototype.hasOwnProperty.call(obj, methodName) || (obj === global && methodName === 'onerror')) {
@@ -80,12 +76,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         throw new Error('No property name supplied');
       }
 
-      var descriptor;
-      try {
-        descriptor = j$.util.getPropertyDescriptor(obj, propertyName);
-      } catch(e) {
-        // IE 8 doesn't support `definePropery` on non-DOM nodes
-      }
+      var descriptor = j$.util.getPropertyDescriptor(obj, propertyName);
 
       if (!descriptor) {
         throw new Error(propertyName + ' property does not exist');
@@ -105,7 +96,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       var originalDescriptor = j$.util.clone(descriptor),
-        spy = j$.createSpy(propertyName, descriptor[accessType]),
+        spy = createSpy(propertyName, descriptor[accessType]),
         restoreStrategy;
 
       if (Object.prototype.hasOwnProperty.call(obj, propertyName)) {

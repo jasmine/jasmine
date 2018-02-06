@@ -135,7 +135,7 @@ body {
         }
       }
 
-        &.jasmine-disabled {
+        &.jasmine-excluded {
           font-size: 14px;
 
           &:before {
@@ -200,20 +200,22 @@ body {
     display: block;
     color: #eee;
 
-    &.jasmine-failed {
+    &.jasmine-failed, &.jasmine-errored {
       background-color: $failing-color;
+      border-bottom: 1px solid $page-background-color;
     }
 
     &.jasmine-passed {
       background-color: $passing-color;
     }
 
-    &.jasmine-skipped {
+    &.jasmine-incomplete {
       background-color: $neutral-color;
     }
 
-    &.jasmine-errored {
-      background-color: $failing-color;
+
+    &.jasmine-skipped {
+      background-color: $neutral-color;
     }
 
     &.jasmine-warning {
@@ -290,7 +292,7 @@ body {
         color: $pending-color;
       }
 
-      &.jasmine-disabled a {
+      &.jasmine-excluded a {
         color: $neutral-color;
       }
     }
@@ -316,6 +318,7 @@ body {
 
       .jasmine-description {
         background-color: $failing-color;
+        color: white;
 
         a {
           color: white;

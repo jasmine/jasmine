@@ -13,7 +13,7 @@ src_files:
   - 'core/PrettyPrinter.js'
   - 'core/Suite.js'
   - 'core/**/*.js'
-  - 'html/**.js'
+  - 'html/**/*.js'
   - '**/*.js'
 stylesheets:
 helpers:
@@ -23,6 +23,7 @@ helpers:
   - 'helpers/checkForSet.js'
   - 'helpers/checkForSymbol.js'
   - 'helpers/checkForTypedArrays.js'
+  - 'helpers/integrationMatchers.js'
   - 'helpers/defineJasmineUnderTest.js'
 spec_files:
   - '**/*[Ss]pec.js'

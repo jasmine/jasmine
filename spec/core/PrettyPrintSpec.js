@@ -268,12 +268,17 @@ describe("jasmineUnderTest.pp", function () {
     },
     env = new jasmineUnderTest.Env();
 
-    var spyRegistry = new jasmineUnderTest.SpyRegistry({currentSpies: function() {return [];}});
+    var spyRegistry = new jasmineUnderTest.SpyRegistry({
+      currentSpies: function() {return [];},
+      createSpy: function(name, originalFn) {
+        return jasmineUnderTest.Spy(name, originalFn);
+      }
+    });
 
     spyRegistry.spyOn(TestObject, 'someFunction');
     expect(jasmineUnderTest.pp(TestObject.someFunction)).toEqual("spy on someFunction");
 
-    expect(jasmineUnderTest.pp(jasmineUnderTest.createSpy("something"))).toEqual("spy on something");
+    expect(jasmineUnderTest.pp(env.createSpy("something"))).toEqual("spy on something");
   });
 
   it("should stringify objects that implement jasmineToString", function () {
@@ -298,11 +303,7 @@ describe("jasmineUnderTest.pp", function () {
       toString: function () { return Object.prototype.toString.call(this); }
     };
 
-    if (jasmine.getEnv().ieVersion < 9) {
-      expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar' })");
-    } else {
-      expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar', toString: Function })");
-    }
+    expect(jasmineUnderTest.pp(objFromOtherContext)).toEqual("Object({ foo: 'bar', toString: Function })");
   });
 
   it("should stringify objects have have a toString that isn't a function", function() {
@@ -310,11 +311,7 @@ describe("jasmineUnderTest.pp", function () {
       toString: "foo"
     };
 
-    if (jasmine.getEnv().ieVersion < 9) {
-      expect(jasmineUnderTest.pp(obj)).toEqual("Object({  })");
-    } else {
-      expect(jasmineUnderTest.pp(obj)).toEqual("Object({ toString: 'foo' })");
-    }
+    expect(jasmineUnderTest.pp(obj)).toEqual("Object({ toString: 'foo' })");
   });
 
   it("should stringify objects from anonymous constructors with custom toString", function () {
@@ -327,8 +324,6 @@ describe("jasmineUnderTest.pp", function () {
   });
 
   it("should handle objects with null prototype", function() {
-    if (jasmine.getEnv().ieVersion < 9) { return; }
-
     var obj = Object.create(null);
     obj.foo = 'bar';
 

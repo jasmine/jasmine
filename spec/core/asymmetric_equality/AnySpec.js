@@ -68,9 +68,16 @@ describe("Any", function() {
     expect(any.asymmetricMatch(new Thing())).toBe(true);
   });
 
+  it("does not treat null as an Object", function() {
+    var any = new jasmineUnderTest.Any(Object);
+
+    expect(any.asymmetricMatch(null)).toBe(false);
+  });
+
   it("jasmineToString's itself", function() {
     var any = new jasmineUnderTest.Any(Number);
 
+    expect(any.jasmineToString()).toEqual('<jasmine.any(Number)>');
     expect(any.jasmineToString()).toEqual('<jasmine.any(Number)>');
   });
 

@@ -67,6 +67,19 @@ getJasmineRequireObj().Suite = function(j$) {
     this.afterAllFns.unshift(fn);
   };
 
+  function removeFns(queueableFns) {
+    for(var i = 0; i < queueableFns.length; i++) {
+      queueableFns[i].fn = null;
+    }
+  }
+
+  Suite.prototype.cleanupBeforeAfter = function() {
+    removeFns(this.beforeAllFns);
+    removeFns(this.afterAllFns);
+    removeFns(this.beforeFns);
+    removeFns(this.afterFns);
+  };
+
   Suite.prototype.addChild = function(child) {
     this.children.push(child);
   };
@@ -79,12 +92,8 @@ getJasmineRequireObj().Suite = function(j$) {
     if (this.result.failedExpectations.length > 0) {
       return 'failed';
     } else {
-      return 'finished';
+      return 'passed';
     }
-  };
-
-  Suite.prototype.isExecutable = function() {
-    return !this.markedPending;
   };
 
   Suite.prototype.canBeReentered = function() {
@@ -113,38 +122,28 @@ getJasmineRequireObj().Suite = function(j$) {
       return;
     }
 
-    if(isAfterAll(this.children)) {
-      var data = {
-        matcherName: '',
-        passed: false,
-        expected: '',
-        actual: '',
-        error: arguments[0]
-      };
-      this.result.failedExpectations.push(this.expectationResultFactory(data));
-    } else {
-      for (var i = 0; i < this.children.length; i++) {
-        var child = this.children[i];
-        child.onException.apply(child, arguments);
-      }
+    var data = {
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: '',
+      error: arguments[0]
+    };
+    var failedExpectation = this.expectationResultFactory(data);
+
+    if (!this.parentSuite) {
+      failedExpectation.globalErrorType = 'afterAll';
     }
+
+    this.result.failedExpectations.push(failedExpectation);
   };
 
   Suite.prototype.addExpectationResult = function () {
-    if(isAfterAll(this.children) && isFailure(arguments)){
+    if(isFailure(arguments)) {
       var data = arguments[1];
       this.result.failedExpectations.push(this.expectationResultFactory(data));
       if(this.throwOnExpectationFailure) {
         throw new j$.errors.ExpectationFailed();
-      }
-    } else {
-      for (var i = 0; i < this.children.length; i++) {
-        var child = this.children[i];
-        try {
-          child.addExpectationResult.apply(child, arguments);
-        } catch(e) {
-          // keep going
-        }
       }
     }
   };
@@ -152,10 +151,6 @@ getJasmineRequireObj().Suite = function(j$) {
   Suite.prototype.addDeprecationWarning = function(msg) {
     this.result.deprecationWarnings.push(this.expectationResultFactory({ message: msg }));
   };
-
-  function isAfterAll(children) {
-    return children && children[0].result.status;
-  }
 
   function isFailure(args) {
     return !args[0];

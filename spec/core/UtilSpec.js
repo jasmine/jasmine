@@ -43,9 +43,6 @@ describe("jasmineUnderTest.util", function() {
   });
 
   describe("getPropertyDescriptor", function() {
-    // IE 8 doesn't support `definePropery` on non-DOM nodes
-    if (jasmine.getEnv().ieVersion < 9) { return; }
-
     it("get property descriptor from object", function() {
       var obj = {prop: 1},
         actual = jasmineUnderTest.util.getPropertyDescriptor(obj, 'prop'),
@@ -94,6 +91,15 @@ describe("jasmineUnderTest.util", function() {
 
       expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual({x: 1});
       expect(jasmineUnderTest.util.objectDifference(b, a)).toEqual({y: 2});
-    })
-  })
+    });
+  });
+
+  describe("jasmineFile", function() {
+    it("returns the file containing jasmine.util", function() {
+      // Chrome sometimes reports foo.js as foo.js/, so tolerate
+      // a trailing slash if present.
+      expect(jasmineUnderTest.util.jasmineFile()).toMatch(/util.js\/?$/);
+      expect(jasmine.util.jasmineFile()).toMatch(/jasmine.js\/?$/);
+    });
+  });
 });

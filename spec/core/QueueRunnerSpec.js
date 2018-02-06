@@ -135,6 +135,52 @@ describe("QueueRunner", function() {
       expect(queueableFn2.fn).toHaveBeenCalled();
     });
 
+    it("explicitly fails an async function when next is called with an Error and moves to the next function", function() {
+      var err = new Error('foo'),
+        queueableFn1 = { fn: function(done) {
+          setTimeout(function() { done(err); }, 100);
+        } },
+        queueableFn2 = { fn: jasmine.createSpy('fn2') },
+        failFn = jasmine.createSpy('fail'),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn1, queueableFn2],
+          fail: failFn
+        });
+
+      queueRunner.execute();
+
+      expect(failFn).not.toHaveBeenCalled();
+      expect(queueableFn2.fn).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(failFn).toHaveBeenCalledWith(err);
+      expect(queueableFn2.fn).toHaveBeenCalled();
+    });
+
+    it("does not cause an explicit fail if execution is being stopped", function() {
+      var err = new jasmineUnderTest.StopExecutionError('foo'),
+        queueableFn1 = { fn: function(done) {
+          setTimeout(function() { done(err); }, 100);
+        } },
+        queueableFn2 = { fn: jasmine.createSpy('fn2') },
+        failFn = jasmine.createSpy('fail'),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn1, queueableFn2],
+          fail: failFn
+        });
+
+      queueRunner.execute();
+
+      expect(failFn).not.toHaveBeenCalled();
+      expect(queueableFn2.fn).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(100);
+
+      expect(failFn).not.toHaveBeenCalled();
+      expect(queueableFn2.fn).toHaveBeenCalled();
+    });
+
     it("sets a timeout if requested for asynchronous functions so they don't go on forever", function() {
       var timeout = 3,
         beforeFn = { fn: function(done) { }, type: 'before', timeout: function() { return timeout; } },
@@ -419,20 +465,6 @@ describe("QueueRunner", function() {
     expect(onExceptionCallback).toHaveBeenCalledWith(jasmine.any(Error));
   });
 
-  it("rethrows an exception if told to", function() {
-    var queueableFn = { fn: function() {
-        throw new Error('fake error');
-      } },
-      queueRunner = new jasmineUnderTest.QueueRunner({
-        queueableFns: [queueableFn],
-        catchException: function(e) { return false; }
-      });
-
-    expect(function() {
-      queueRunner.execute();
-    }).toThrowError('fake error');
-  });
-
   it("continues running the functions even after an exception is thrown in an async spec", function() {
     var queueableFn = { fn: function(done) { throw new Error("error"); } },
       nextQueueableFn = { fn: jasmine.createSpy("nextFunction") },
@@ -508,6 +540,24 @@ describe("QueueRunner", function() {
       it("skips to cleanup functions when next.fail is called", function() {
         var queueableFn = { fn: function(done) {
             done.fail('nope');
+          } },
+          nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
+          cleanupFn = { fn: jasmine.createSpy('cleanup') },
+          queueRunner = new jasmineUnderTest.QueueRunner({
+            queueableFns: [queueableFn, nextQueueableFn],
+            cleanupFns: [cleanupFn],
+            completeOnFirstError: true,
+         });
+
+        queueRunner.execute();
+        jasmine.clock().tick();
+        expect(nextQueueableFn.fn).not.toHaveBeenCalled();
+        expect(cleanupFn.fn).toHaveBeenCalled();
+      });
+
+      it("skips to cleanup functions when next is called with an Error", function() {
+        var queueableFn = { fn: function(done) {
+            done(new Error('nope'));
           } },
           nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
           cleanupFn = { fn: jasmine.createSpy('cleanup') },

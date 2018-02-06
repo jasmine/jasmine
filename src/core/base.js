@@ -85,6 +85,17 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return j$.getType_(value) === '[object ' + typeName + ']';
   };
 
+  j$.isError_ = function(value) {
+    if (value instanceof Error) {
+      return true;
+    }
+    if (value && value.constructor && value.constructor.constructor &&
+      (value instanceof (value.constructor.constructor('return this')()).Error)) {
+      return true;
+    }
+    return false;
+  };
+
   j$.getType_ = function(value) {
     return Object.prototype.toString.apply(value);
   };
@@ -181,64 +192,11 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return new j$.ArrayWithExactContents(sample);
   };
 
-  /**
-   * Create a bare {@link Spy} object. This won't be installed anywhere and will not have any implementation behind it.
-   * @name jasmine.createSpy
-   * @function
-   * @param {String} [name] - Name to give the spy. This will be displayed in failure messages.
-   * @param {Function} [originalFn] - Function to act as the real implementation.
-   * @return {Spy}
-   */
-  j$.createSpy = function(name, originalFn) {
-    return j$.Spy(name, originalFn);
-  };
-
   j$.isSpy = function(putativeSpy) {
     if (!putativeSpy) {
       return false;
     }
     return putativeSpy.and instanceof j$.SpyStrategy &&
       putativeSpy.calls instanceof j$.CallTracker;
-  };
-
-  /**
-   * Create an object with multiple {@link Spy}s as its members.
-   * @name jasmine.createSpyObj
-   * @function
-   * @param {String} [baseName] - Base name for the spies in the object.
-   * @param {String[]|Object} methodNames - Array of method names to create spies for, or Object whose keys will be method names and values the {@link Spy#and#returnValue|returnValue}.
-   * @return {Object}
-   */
-  j$.createSpyObj = function(baseName, methodNames) {
-    var baseNameIsCollection = j$.isObject_(baseName) || j$.isArray_(baseName);
-
-    if (baseNameIsCollection && j$.util.isUndefined(methodNames)) {
-      methodNames = baseName;
-      baseName = 'unknown';
-    }
-
-    var obj = {};
-    var spiesWereSet = false;
-
-    if (j$.isArray_(methodNames)) {
-      for (var i = 0; i < methodNames.length; i++) {
-        obj[methodNames[i]] = j$.createSpy(baseName + '.' + methodNames[i]);
-        spiesWereSet = true;
-      }
-    } else if (j$.isObject_(methodNames)) {
-      for (var key in methodNames) {
-        if (methodNames.hasOwnProperty(key)) {
-          obj[key] = j$.createSpy(baseName + '.' + key);
-          obj[key].and.returnValue(methodNames[key]);
-          spiesWereSet = true;
-        }
-      }
-    }
-
-    if (!spiesWereSet) {
-      throw 'createSpyObj requires a non-empty array or object of method names to create spies for';
-    }
-
-    return obj;
   };
 };

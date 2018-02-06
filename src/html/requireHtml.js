@@ -3,4 +3,5 @@ jasmineRequire.html = function(j$) {
   j$.HtmlReporter = jasmineRequire.HtmlReporter(j$);
   j$.QueryString = jasmineRequire.QueryString();
   j$.HtmlSpecFilter = jasmineRequire.HtmlSpecFilter();
+  j$.matchers.toHaveClass = jasmineRequire.toHaveClass(j$);
 };

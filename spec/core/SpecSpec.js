@@ -55,6 +55,7 @@ describe("Spec", function() {
 
     spec.execute();
 
+    fakeQueueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
     // TODO: due to some issue with the Pretty Printer, this line fails, but the other two pass.
     // This means toHaveBeenCalledWith on IE8 will always be broken.
 
@@ -82,6 +83,7 @@ describe("Spec", function() {
 
     spec.execute();
 
+    fakeQueueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
     expect(startCallback).toHaveBeenCalled();
   });
 
@@ -104,8 +106,8 @@ describe("Spec", function() {
     spec.execute();
 
     var options = fakeQueueRunner.calls.mostRecent().args[0];
-    expect(options.queueableFns).toEqual([before, queueableFn]);
-    expect(options.cleanupFns).toEqual([after]);
+    expect(options.queueableFns).toEqual([{fn: jasmine.any(Function)}, before, queueableFn]);
+    expect(options.cleanupFns).toEqual([after, {fn: jasmine.any(Function)}]);
   });
 
   it("tells the queue runner that it's a leaf node", function() {
@@ -140,9 +142,8 @@ describe("Spec", function() {
     expect(spec.status()).toBe('pending');
   });
 
-  it("can be disabled, but still calls callbacks", function() {
-    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner')
-        .and.callFake(function(attrs) { attrs.onComplete(); }),
+  it("can be excluded at execution time by a parent", function() {
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
       startCallback = jasmine.createSpy('startCallback'),
       specBody = jasmine.createSpy('specBody'),
       resultCallback = jasmine.createSpy('resultCallback'),
@@ -153,46 +154,26 @@ describe("Spec", function() {
         queueRunnerFactory: fakeQueueRunner
       });
 
-    spec.disable();
+    spec.execute('cally-back', true);
 
-    expect(spec.status()).toBe('disabled');
-
-    spec.execute();
-
-    expect(fakeQueueRunner).toHaveBeenCalled();
+    expect(fakeQueueRunner).toHaveBeenCalledWith(jasmine.objectContaining({
+      onComplete: jasmine.any(Function),
+      queueableFns: [{fn: jasmine.any(Function)}],
+      cleanupFns: [{fn: jasmine.any(Function)}]
+    }));
     expect(specBody).not.toHaveBeenCalled();
 
+    var args = fakeQueueRunner.calls.mostRecent().args[0];
+    args.queueableFns[0].fn();
     expect(startCallback).toHaveBeenCalled();
+    args.cleanupFns[0].fn();
     expect(resultCallback).toHaveBeenCalled();
-  });
 
-  it("can be disabled at execution time by a parent", function() {
-    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner')
-        .and.callFake(function(attrs) { attrs.onComplete(); }),
-      startCallback = jasmine.createSpy('startCallback'),
-      specBody = jasmine.createSpy('specBody'),
-      resultCallback = jasmine.createSpy('resultCallback'),
-      spec = new jasmineUnderTest.Spec({
-        onStart:startCallback,
-        queueableFn: { fn: specBody },
-        resultCallback: resultCallback,
-        queueRunnerFactory: fakeQueueRunner
-      });
-
-    spec.execute(undefined, false);
-
-    expect(spec.result.status).toBe('disabled');
-
-    expect(fakeQueueRunner).toHaveBeenCalled();
-    expect(specBody).not.toHaveBeenCalled();
-
-    expect(startCallback).toHaveBeenCalled();
-    expect(resultCallback).toHaveBeenCalled();
+    expect(spec.result.status).toBe('excluded');
   });
 
   it("can be marked pending, but still calls callbacks when executed", function() {
-    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner')
-        .and.callFake(function(attrs) { attrs.onComplete(); }),
+    var fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
       startCallback = jasmine.createSpy('startCallback'),
       resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
@@ -214,7 +195,10 @@ describe("Spec", function() {
 
     expect(fakeQueueRunner).toHaveBeenCalled();
 
+    var args = fakeQueueRunner.calls.mostRecent().args[0];
+    args.queueableFns[0].fn();
     expect(startCallback).toHaveBeenCalled();
+    args.cleanupFns[0].fn('things');
     expect(resultCallback).toHaveBeenCalledWith({
       id: spec.id,
       status: 'pending',
@@ -224,7 +208,7 @@ describe("Spec", function() {
       passedExpectations: [],
       deprecationWarnings: [],
       pendingReason: ''
-    });
+    }, 'things');
   });
 
   it("should call the done callback on execution complete", function() {
@@ -239,6 +223,23 @@ describe("Spec", function() {
     spec.execute(done);
 
     expect(done).toHaveBeenCalled();
+  });
+
+  it("should call the done callback with an error if the spec is failed", function() {
+    var done = jasmine.createSpy('done callback'),
+      spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: function() {} },
+        catchExceptions: function() { return false; },
+        resultCallback: function() {},
+        queueRunnerFactory: function(attrs) {
+          spec.result.status = 'failed';
+          attrs.onComplete();
+        }
+      });
+
+    spec.execute(done);
+
+    expect(done).toHaveBeenCalledWith(jasmine.any(jasmineUnderTest.StopExecutionError));
   });
 
   it("#status returns passing by default", function() {
@@ -260,11 +261,12 @@ describe("Spec", function() {
   });
 
   it("keeps track of passed and failed expectations", function() {
-    var resultCallback = jasmine.createSpy('resultCallback'),
+    var fakeQueueRunner = jasmine.createSpy('queueRunner'),
+      resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: jasmine.createSpy("spec body") },
         expectationResultFactory: function (data) { return data; },
-        queueRunnerFactory: function(attrs) { attrs.onComplete(); },
+        queueRunnerFactory: fakeQueueRunner,
         resultCallback: resultCallback
       });
     spec.addExpectationResult(true, 'expectation1');
@@ -272,19 +274,21 @@ describe("Spec", function() {
 
     spec.execute();
 
+    fakeQueueRunner.calls.mostRecent().args[0].cleanupFns[0].fn();
     expect(resultCallback.calls.first().args[0].passedExpectations).toEqual(['expectation1']);
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual(['expectation2']);
   });
 
   it("throws an ExpectationFailed error upon receiving a failed expectation when 'throwOnExpectationFailure' is set", function() {
-    var resultCallback = jasmine.createSpy('resultCallback'),
+    var fakeQueueRunner = jasmine.createSpy('queueRunner'),
+      resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
-      queueableFn: { fn: function() {} },
-      expectationResultFactory: function(data) { return data; },
-      queueRunnerFactory: function(attrs) { attrs.onComplete(); },
-      resultCallback: resultCallback,
-      throwOnExpectationFailure: true
-    });
+        queueableFn: { fn: function() {} },
+        expectationResultFactory: function(data) { return data; },
+        queueRunnerFactory: fakeQueueRunner,
+        resultCallback: resultCallback,
+        throwOnExpectationFailure: true
+      });
 
     spec.addExpectationResult(true, 'passed');
     expect(function() {
@@ -293,6 +297,7 @@ describe("Spec", function() {
 
     spec.execute();
 
+    fakeQueueRunner.calls.mostRecent().args[0].cleanupFns[0].fn();
     expect(resultCallback.calls.first().args[0].passedExpectations).toEqual(['passed']);
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual(['failed']);
   });
@@ -359,17 +364,20 @@ describe("Spec", function() {
   });
 
   it("should log a failure when handling an exception", function() {
-    var resultCallback = jasmine.createSpy('resultCallback'),
+    var fakeQueueRunner = jasmine.createSpy('queueRunner'),
+      resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: function() {} },
         expectationResultFactory: function(data) { return data; },
-        queueRunnerFactory: function(attrs) { attrs.onComplete(); },
+        queueRunnerFactory: fakeQueueRunner,
         resultCallback: resultCallback
       });
 
     spec.onException('foo');
     spec.execute();
 
+    var args = fakeQueueRunner.calls.mostRecent().args[0];
+    args.cleanupFns[0].fn();
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual([{
       error: 'foo',
       matcherName: '',
@@ -380,63 +388,20 @@ describe("Spec", function() {
   });
 
   it("should not log an additional failure when handling an ExpectationFailed error", function() {
-    var resultCallback = jasmine.createSpy('resultCallback'),
+    var fakeQueueRunner = jasmine.createSpy('queueRunner'),
+      resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: function() {} },
         expectationResultFactory: function(data) { return data; },
-        queueRunnerFactory: function(attrs) { attrs.onComplete(); },
+        queueRunnerFactory: fakeQueueRunner,
         resultCallback: resultCallback
       });
 
     spec.onException(new jasmineUnderTest.errors.ExpectationFailed());
     spec.execute();
 
+    var args = fakeQueueRunner.calls.mostRecent().args[0];
+    args.cleanupFns[0].fn();
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual([]);
-  });
-
-  it("retrieves a result with updated status", function() {
-    var spec = new jasmineUnderTest.Spec({ queueableFn: { fn: function() {} } });
-
-    expect(spec.getResult().status).toBe('passed');
-  });
-
-  it("retrives a result with disabled status", function() {
-    var spec = new jasmineUnderTest.Spec({ queueableFn: { fn: function() {} } });
-    spec.disable();
-
-    expect(spec.getResult().status).toBe('disabled');
-  });
-
-  it("retrives a result with pending status", function() {
-    var spec = new jasmineUnderTest.Spec({ queueableFn: { fn: function() {} } });
-    spec.pend();
-
-    expect(spec.getResult().status).toBe('pending');
-  });
-
-  it("should not be executable when disabled", function() {
-    var spec = new jasmineUnderTest.Spec({
-      queueableFn: { fn: function() {} }
-    });
-    spec.disable();
-
-    expect(spec.isExecutable()).toBe(false);
-  });
-
-  it("should be executable when pending", function() {
-    var spec = new jasmineUnderTest.Spec({
-      queueableFn: { fn: function() {} }
-    });
-    spec.pend();
-
-    expect(spec.isExecutable()).toBe(true);
-  });
-
-  it("should be executable when not disabled or pending", function() {
-    var spec = new jasmineUnderTest.Spec({
-      queueableFn: { fn: function() {} }
-    });
-
-    expect(spec.isExecutable()).toBe(true);
   });
 });

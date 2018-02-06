@@ -57,10 +57,22 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.expectationFactory(actual, this);
   };
 
-  Spec.prototype.execute = function(onComplete, enabled) {
+  Spec.prototype.execute = function(onComplete, excluded) {
     var self = this;
 
-    this.onStart(this);
+    var onStart = {
+      fn: function(done) {
+        self.onStart(self, done);
+      }
+    };
+
+    var complete = {
+      fn: function(done) {
+        self.queueableFn.fn = null;
+        self.result.status = self.status(excluded);
+        self.resultCallback(self.result, done);
+      }
+    };
 
     var fns = this.beforeAndAfterFns();
     var regularFns = fns.befores.concat(this.queueableFn);
@@ -69,27 +81,24 @@ getJasmineRequireObj().Spec = function(j$) {
       isLeaf: true,
       queueableFns: regularFns,
       cleanupFns: fns.afters,
-      onException: function() { self.onException.apply(self, arguments); },
-      onComplete: complete,
+      onException: function () {
+        self.onException.apply(self, arguments);
+      },
+      onComplete: function() {
+        onComplete(self.result.status === 'failed' && new j$.StopExecutionError('spec failed'));
+      },
       userContext: this.userContext()
     };
 
-    if (!this.isExecutable() || this.markedPending || enabled === false) {
+    if (this.markedPending || excluded === true) {
       runnerConfig.queueableFns = [];
       runnerConfig.cleanupFns = [];
-      runnerConfig.onComplete = function() { complete(enabled); };
     }
+
+    runnerConfig.queueableFns.unshift(onStart);
+    runnerConfig.cleanupFns.push(complete);
 
     this.queueRunnerFactory(runnerConfig);
-
-    function complete(enabledAgain) {
-      self.result.status = self.status(enabledAgain);
-      self.resultCallback(self.result);
-
-      if (onComplete) {
-        onComplete();
-      }
-    }
   };
 
   Spec.prototype.onException = function onException(e) {
@@ -111,10 +120,6 @@ getJasmineRequireObj().Spec = function(j$) {
     }, true);
   };
 
-  Spec.prototype.disable = function() {
-    this.disabled = true;
-  };
-
   Spec.prototype.pend = function(message) {
     this.markedPending = true;
     if (message) {
@@ -127,9 +132,9 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.result;
   };
 
-  Spec.prototype.status = function(enabled) {
-    if (this.disabled || enabled === false) {
-      return 'disabled';
+  Spec.prototype.status = function(excluded) {
+    if (excluded === true) {
+      return 'excluded';
     }
 
     if (this.markedPending) {
@@ -141,10 +146,6 @@ getJasmineRequireObj().Spec = function(j$) {
     } else {
       return 'passed';
     }
-  };
-
-  Spec.prototype.isExecutable = function() {
-    return !this.disabled;
   };
 
   Spec.prototype.getFullName = function() {
