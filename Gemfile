@@ -4,6 +4,6 @@ gem "jasmine", :git => 'https://github.com/jasmine/jasmine-gem.git', :tag => 'v2
 
 gemspec
 
-gem "jasmine_selenium_runner", :github => 'jasmine/jasmine_selenium_runner'
+gem "jasmine_selenium_runner", :github => 'jasmine/jasmine_selenium_runner', :tag => 'v2.4.0'
 
 gem "anchorman"
