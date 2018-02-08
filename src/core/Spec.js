@@ -152,8 +152,11 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.getSpecName(this);
   };
 
-  Spec.prototype.addDeprecationWarning = function(msg) {
-    this.result.deprecationWarnings.push(this.expectationResultFactory({ message: msg }));
+  Spec.prototype.addDeprecationWarning = function(deprecation) {
+    if (typeof deprecation === 'string') {
+      deprecation = { message: deprecation };
+    }
+    this.result.deprecationWarnings.push(this.expectationResultFactory(deprecation));
   };
 
   var extractCustomPendingMessage = function(e) {
