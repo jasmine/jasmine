@@ -2349,11 +2349,11 @@ describe("Env integration", function() {
     var env = new jasmineUnderTest.Env(),
       exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
       reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']),
-      topLevelError = new Error('top level deprecation'),
-      suiteLevelError = new Error('suite level deprecation'),
-      specLevelError = new Error('spec level deprecation');
+      topLevelError, suiteLevelError, specLevelError;
 
-
+      try { throw new Error('top level deprecation') } catch (err) { topLevelError = err; }
+      try { throw new Error('suite level deprecation') } catch (err) { suiteLevelError = err; }
+      try { throw new Error('spec level deprecation') } catch (err) { specLevelError = err; }
 
     // prevent deprecation from being desplayed
     spyOn(console, "error");
@@ -2402,8 +2402,6 @@ describe("Env integration", function() {
         env.deprecated(specLevelError);
       });
     });
-
-    console.log(env.topSuite());
 
     env.execute();
   });
