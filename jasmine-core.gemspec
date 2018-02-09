@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "jasmine-core"
   s.license = "MIT"
 
-  s.files         = Dir.glob("./lib/**/*") + Dir.glob("./lib/jasmine-core/spec/**/*.js")
+  s.files         = Dir.glob("./lib/**/*")
   s.require_paths = ["lib"]
   s.add_development_dependency "rake"
   s.add_development_dependency "sauce-connect"
