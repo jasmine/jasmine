@@ -1,4 +1,4 @@
-jasmineRequire.toHaveClass = function(j$) {
+getJasmineRequireObj().toHaveClass = function(j$) {
   /**
    * {@link expect} the actual value to be a DOM element that has the expected class
    * @function

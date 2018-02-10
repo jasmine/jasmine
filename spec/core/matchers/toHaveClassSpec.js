@@ -1,16 +1,38 @@
 describe('toHaveClass', function() {
+  beforeEach(function(done) {
+    this.createElementWithClassName = function(className) {
+      var el = this.doc.createElement('div');
+      el.className = className;
+      return el;
+    }
+
+    if (typeof document !== 'undefined') {
+      this.doc = document;
+      done();
+    } else {
+      var jsdom = require('jsdom');
+      var self = this;
+      jsdom.env('', function(err, win) {
+        if (err) {
+          done.fail(err);
+        } else {
+          self.doc = win.document;
+          done();
+        }
+      });
+    }
+  });
+
   it('fails for a DOM element that lacks the expected class', function() {
     var matcher = jasmineUnderTest.matchers.toHaveClass(),
-      result = matcher.compare(document.createElement('div'), 'foo');
+      result = matcher.compare(this.createElementWithClassName(''), 'foo');
 
     expect(result.pass).toBe(false);
   });
 
   it('passes for a DOM element that has the expected class', function() {
     var matcher = jasmineUnderTest.matchers.toHaveClass(),
-      el = document.createElement('div');
-
-    el.className = 'foo bar baz';
+      el = this.createElementWithClassName('foo bar baz');
 
     expect(matcher.compare(el, 'foo').pass).toBe(true);
     expect(matcher.compare(el, 'bar').pass).toBe(true);
@@ -19,9 +41,7 @@ describe('toHaveClass', function() {
 
   it('fails for a DOM element that only has other classes', function() {
     var matcher = jasmineUnderTest.matchers.toHaveClass(),
-      el = document.createElement('div');
-
-    el.className = 'foo bar';
+      el = this.createElementWithClassName('foo bar');
 
     expect(matcher.compare(el, 'fo').pass).toBe(false);
   });
@@ -37,8 +57,9 @@ describe('toHaveClass', function() {
       matcher.compare(undefined, 'foo');
     }).toThrowError('undefined is not a DOM element');
 
+    var textNode = this.doc.createTextNode('');
     expect(function() {
-      matcher.compare(document.createTextNode(''), 'foo')
+      matcher.compare(textNode, 'foo')
     }).toThrowError('HTMLNode is not a DOM element');
 
     expect(function() {
