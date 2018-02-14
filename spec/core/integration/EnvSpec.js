@@ -2303,6 +2303,9 @@ describe("Env integration", function() {
     var env = new jasmineUnderTest.Env(),
       reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
 
+    // prevent deprecation from being desplayed
+    spyOn(console, "error");
+
     reporter.jasmineDone.and.callFake(function(result) {
       expect(result.deprecationWarnings).toEqual([
         jasmine.objectContaining({ message: 'top level deprecation' })
@@ -2336,6 +2339,67 @@ describe("Env integration", function() {
 
       env.it('spec', function() {
         env.deprecated('spec level deprecation');
+      });
+    });
+
+    env.execute();
+  });
+
+  it('should report deprecation stack with an error object', function(done) {
+    var env = new jasmineUnderTest.Env(),
+      exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
+      reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']),
+      topLevelError, suiteLevelError, specLevelError;
+
+      try { throw new Error('top level deprecation') } catch (err) { topLevelError = err; }
+      try { throw new Error('suite level deprecation') } catch (err) { suiteLevelError = err; }
+      try { throw new Error('spec level deprecation') } catch (err) { specLevelError = err; }
+
+    // prevent deprecation from being desplayed
+    spyOn(console, "error");
+
+    reporter.jasmineDone.and.callFake(function(result) {
+      expect(result.deprecationWarnings).toEqual([
+        jasmine.objectContaining({
+          message: topLevelError.message,
+          stack: exceptionFormatter.stack(topLevelError)
+        })
+      ]);
+
+      expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        fullName: 'suite',
+        deprecationWarnings: [
+          jasmine.objectContaining({
+            message: suiteLevelError.message,
+            stack: exceptionFormatter.stack(suiteLevelError)
+          })
+        ]
+      }));
+
+      expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+        fullName: 'suite spec',
+        deprecationWarnings: [
+          jasmine.objectContaining({
+            message: specLevelError.message,
+            stack: exceptionFormatter.stack(specLevelError)
+          })
+        ]
+      }));
+
+      done();
+    });
+
+    env.addReporter(reporter);
+
+    env.deprecated(topLevelError);
+
+    env.describe('suite', function() {
+      env.beforeAll(function() {
+        env.deprecated(suiteLevelError);
+      });
+
+      env.it('spec', function() {
+        env.deprecated(specLevelError);
       });
     });
 

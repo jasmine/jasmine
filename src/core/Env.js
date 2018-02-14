@@ -200,11 +200,11 @@ getJasmineRequireObj().Env = function(j$) {
       handlingLoadErrors = false;
     };
 
-    this.deprecated = function(msg) {
+    this.deprecated = function(deprecation) {
       var runnable = currentRunnable() || topSuite;
-      runnable.addDeprecationWarning(msg);
-      if(typeof console !== 'undefined' && typeof console.warn !== 'undefined') {
-        console.error('DEPRECATION: ' + msg);
+      runnable.addDeprecationWarning(deprecation);
+      if(typeof console !== 'undefined' && typeof console.error === 'function') {
+        console.error('DEPRECATION:', deprecation);
       }
     };
 
