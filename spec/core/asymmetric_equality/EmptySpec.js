@@ -31,7 +31,7 @@ describe("Empty", function () {
     expect(empty.asymmetricMatch(fullMap)).toBe(false);
   });
 
-  it("matches an empty map", function () {
+  it("matches an empty set", function () {
     jasmine.getEnv().requireFunctioningSets();
     var empty = new jasmineUnderTest.Empty();
     var fullSet = new Set();

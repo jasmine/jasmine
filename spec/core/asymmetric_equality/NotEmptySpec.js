@@ -33,7 +33,7 @@ describe("NotEmpty", function () {
   });
 
   it("matches a non empty set", function () {
-    jasmine.getEnv().requireFunctioningMaps();
+    jasmine.getEnv().requireFunctioningSets();
     var notEmpty = new jasmineUnderTest.NotEmpty();
     var filledSet = new Set();
     filledSet.add(1);
@@ -43,7 +43,7 @@ describe("NotEmpty", function () {
     expect(notEmpty.asymmetricMatch(emptySet)).toBe(false);
   });
 
-  it("matches an empty typed array", function() {
+  it("matches a non empty typed array", function() {
     jasmine.getEnv().requireFunctioningTypedArrays();
     var notEmpty = new jasmineUnderTest.NotEmpty();
 
