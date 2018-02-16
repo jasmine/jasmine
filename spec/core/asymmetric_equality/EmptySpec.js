@@ -24,15 +24,21 @@ describe("Empty", function () {
   it("matches an empty map", function () {
     jasmine.getEnv().requireFunctioningMaps();
     var empty = new jasmineUnderTest.Empty();
+    var fullMap = new Map();
+    fullMap.set('thing', 2);
 
     expect(empty.asymmetricMatch(new Map())).toBe(true);
+    expect(empty.asymmetricMatch(fullMap)).toBe(false);
   });
 
   it("matches an empty map", function () {
     jasmine.getEnv().requireFunctioningSets();
     var empty = new jasmineUnderTest.Empty();
+    var fullSet = new Set();
+    fullSet.add(3);
 
     expect(empty.asymmetricMatch(new Set())).toBe(true);
+    expect(empty.asymmetricMatch(fullSet)).toBe(false);
   });
 
   it("matches an empty typed array", function() {
@@ -40,5 +46,6 @@ describe("Empty", function () {
     var empty = new jasmineUnderTest.Empty();
 
     expect(empty.asymmetricMatch(new Int16Array())).toBe(true);
+    expect(empty.asymmetricMatch(new Int16Array([1,2]))).toBe(false);
   });
 });
