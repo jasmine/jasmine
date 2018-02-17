@@ -38,17 +38,29 @@ getJasmineRequireObj().Env = function(j$) {
       return currentSpec || currentSuite();
     };
 
-    var globalErrors = new j$.GlobalErrors();
-    globalErrors.install();
-    globalErrors.pushListener(function(message, filename, lineno) {
-      topSuite.result.failedExpectations.push({
-        passed: false,
-        globalErrorType: 'load',
-        message: message,
-        filename: filename,
-        lineno: lineno
+    var globalErrors = null;
+    
+    var installGlobalErrors = function() {
+      if (globalErrors) {
+        return;
+      }
+
+      globalErrors = new j$.GlobalErrors();
+      globalErrors.install();
+    };
+
+    if (!options.suppressLoadErrors) {
+      installGlobalErrors();
+      globalErrors.pushListener(function(message, filename, lineno) {
+        topSuite.result.failedExpectations.push({
+          passed: false,
+          globalErrorType: 'load',
+          message: message,
+          filename: filename,
+          lineno: lineno
+        });
       });
-    });
+    }
 
     this.specFilter = function() {
       return true;
@@ -193,13 +205,6 @@ getJasmineRequireObj().Env = function(j$) {
       return seed;
     };
 
-    this.suppressLoadErrors = function() {
-      if (handlingLoadErrors) {
-        globalErrors.popListener();
-      }
-      handlingLoadErrors = false;
-    };
-
     this.deprecated = function(deprecation) {
       var runnable = currentRunnable() || topSuite;
       runnable.addDeprecationWarning(deprecation);
@@ -309,7 +314,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.execute = function(runnablesToRun) {
       var self = this;
-      this.suppressLoadErrors();
+      installGlobalErrors();
 
       if(!runnablesToRun) {
         if (focusedRunnables.length) {

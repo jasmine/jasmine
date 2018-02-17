@@ -197,4 +197,24 @@ describe("Env", function() {
       }).not.toThrow();
     });
   });
+
+  describe('when not constructed with suppressLoadErrors: true', function() {
+    it('installs a global error handler on construction', function() {
+      var globalErrors = jasmine.createSpyObj('globalErrors', ['install', 'pushListener', 'popListener']);
+      spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
+      new jasmineUnderTest.Env();
+      expect(globalErrors.install).toHaveBeenCalled();
+    });
+  });
+
+  describe('when constructed with suppressLoadErrors: true', function() {
+    it('does not install a global error handler until execute is called', function() {
+      var globalErrors = jasmine.createSpyObj('globalErrors', ['install', 'pushListener', 'popListener']);
+      spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
+      env = new jasmineUnderTest.Env({suppressLoadErrors: true});
+      expect(globalErrors.install).not.toHaveBeenCalled();
+      env.execute();
+      expect(globalErrors.install).toHaveBeenCalled();
+    });
+  });
 });
