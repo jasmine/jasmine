@@ -8,9 +8,9 @@
 Jasmine is a Behavior Driven Development testing framework for JavaScript. It does not rely on browsers, DOM, or any JavaScript framework. Thus it's suited for websites, [Node.js](http://nodejs.org) projects, or anywhere that JavaScript can run.
 
 Documentation & guides live here: [http://jasmine.github.io](http://jasmine.github.io/)
-For a quick start guide of Jasmine 2.x, see the beginning of [http://jasmine.github.io/edge/introduction.html](http://jasmine.github.io/edge/introduction.html)
+For a quick start guide of Jasmine, see the beginning of [http://jasmine.github.io/edge/introduction.html](http://jasmine.github.io/edge/introduction.html)
 
-Upgrading from Jasmine 1.x? Check out the [2.0 release notes](https://github.com/jasmine/jasmine/blob/v2.0.0/release_notes/20.md) for a list of what's new (including breaking interface changes). You can also read the [upgrade guide](http://jasmine.github.io/2.0/upgrading.html).
+Upgrading from Jasmine 2.x? Check out the [3.0 release notes](https://github.com/jasmine/jasmine/blob/v3.0.0/release_notes/30.md) for a list of what's new (including breaking changes).
 
 ## Contributing
 
@@ -74,4 +74,4 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, PhantomJS, M
 * [Christian Williams](mailto:antixian666@gmail.com), Cloud Foundry
 * Sheel Choksi
 
-Copyright (c) 2008-2017 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2008-2018 Pivotal Labs. This software is licensed under the MIT License.
