@@ -4,8 +4,8 @@
 
     try {
       var a = new Uint32Array([1, 2, 3]);
-      if (a.length !== 3) { return false; }
-      return true;
+      return a.length === 3;
+
     } catch(e) {
       return false;
     }
