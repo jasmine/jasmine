@@ -24,9 +24,9 @@
         iterations++;
       });
       if (iterations !== 2) { return false; }
-      if (isForEachWorking !== true) { return false; }
+      return isForEachWorking === true;
 
-      return true;
+
     } catch(e) {
       return false;
     }

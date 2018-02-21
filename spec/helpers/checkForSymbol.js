@@ -10,10 +10,8 @@
       if (typeof s1 !== 'symbol') {
         return false;
       }
-      if (s1 === s2) {
-        return false;
-      }
-      return true;
+      return s1 !== s2;
+
     } catch (e) {
       return false;
     }

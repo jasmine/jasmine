@@ -401,7 +401,7 @@ describe("QueueRunner", function() {
             p2.resolveHandler();
           }, 100);
           return p2;
-        } },
+        } };
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn1, queueableFn2],
           onComplete: onComplete
