@@ -224,7 +224,7 @@ describe("jasmineUnderTest.pp", function () {
   });
 
   it("should stringify RegExp objects properly", function() {
-    expect(jasmineUnderTest.pp(/[xyz]/)).toEqual("/x|y|z/");
+    expect(jasmineUnderTest.pp(/x|y|z/)).toEqual("/x|y|z/");
   });
 
   it("should indicate circular object references", function() {
