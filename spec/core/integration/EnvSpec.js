@@ -1966,7 +1966,7 @@ describe("Env integration", function() {
       reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
 
     reporter.jasmineDone.and.callFake(function() {
-      var msg = /\'.*\' should only be used in \'describe\' function/;
+      var msg = /'.*' should only be used in 'describe' function/;
 
       expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite describe', [msg]);
       expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite xdescribe', [msg]);

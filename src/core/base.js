@@ -122,7 +122,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     }
 
     var matches = func.toString().match(/^\s*function\s*(\w+)\s*\(/) ||
-      func.toString().match(/^\s*\[object\s*(\w+)Constructor\]/);
+      func.toString().match(/^\s*\[object\s*(\w+)Constructor]/);
 
     return matches ? matches[1] : '<anonymous>';
   };

@@ -61,10 +61,10 @@ describe("Env", function() {
       // anything other than a function throws an error.
       expect(function() {
         env.describe('undefined arg', undefined);
-      }).toThrowError(/describe expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/describe expects a function argument; received \[object (Undefined|DOMWindow|Object)]/);
       expect(function() {
         env.describe('null arg', null);
-      }).toThrowError(/describe expects a function argument; received \[object (Null|DOMWindow|Object)\]/);
+      }).toThrowError(/describe expects a function argument; received \[object (Null|DOMWindow|Object)]/);
 
       expect(function() {
         env.describe('array arg', []);
@@ -83,7 +83,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.it('undefined arg', null);
-      }).toThrowError(/it expects a function argument; received \[object (Null|DOMWindow|Object)\]/);
+      }).toThrowError(/it expects a function argument; received \[object (Null|DOMWindow|Object)]/);
     });
 
     it('does not throw when it is not given a fn argument', function() {
@@ -113,7 +113,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.xit('undefined arg', null);
-      }).toThrowError(/xit expects a function argument; received \[object (Null|DOMWindow|Object)\]/);
+      }).toThrowError(/xit expects a function argument; received \[object (Null|DOMWindow|Object)]/);
     });
 
     it('does not throw when it is not given a fn argument', function() {
@@ -134,7 +134,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.fit('undefined arg', undefined);
-      }).toThrowError(/fit expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/fit expects a function argument; received \[object (Undefined|DOMWindow|Object)]/);
     });
   });
 
@@ -142,7 +142,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.beforeEach(undefined);
-      }).toThrowError(/beforeEach expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/beforeEach expects a function argument; received \[object (Undefined|DOMWindow|Object)]/);
     });
 
     it('accepts an async function', function() {
@@ -157,7 +157,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.beforeAll(undefined);
-      }).toThrowError(/beforeAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/beforeAll expects a function argument; received \[object (Undefined|DOMWindow|Object)]/);
     });
 
     it('accepts an async function', function() {
@@ -172,7 +172,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.afterEach(undefined);
-      }).toThrowError(/afterEach expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/afterEach expects a function argument; received \[object (Undefined|DOMWindow|Object)]/);
     });
 
     it('accepts an async function', function() {
@@ -187,7 +187,7 @@ describe("Env", function() {
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.afterAll(undefined);
-      }).toThrowError(/afterAll expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/);
+      }).toThrowError(/afterAll expects a function argument; received \[object (Undefined|DOMWindow|Object)]/);
     });
 
     it('accepts an async function', function() {
