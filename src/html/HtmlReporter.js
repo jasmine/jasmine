@@ -43,7 +43,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       this.failureCount++;
     }
 
-    if (result.status == 'pending') {
+    if (result.status === 'pending') {
       this.pendingSpecCount++;
     }
   };
@@ -427,7 +427,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       }
 
       for (var attr in attrs) {
-        if (attr == 'className') {
+        if (attr === 'className') {
           el[attr] = attrs[attr];
         } else {
           el.setAttribute(attr, attrs[attr]);
@@ -438,7 +438,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     function pluralize(singular, count) {
-      var word = (count == 1 ? singular : singular + 's');
+      var word = (count === 1 ? singular : singular + 's');
 
       return '' + count + ' ' + word;
     }
@@ -465,11 +465,11 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     function hasActiveSpec(resultNode) {
-      if (resultNode.type == 'spec' && resultNode.result.status != 'excluded') {
+      if (resultNode.type === 'spec' && resultNode.result.status !== 'excluded') {
         return true;
       }
 
-      if (resultNode.type == 'suite') {
+      if (resultNode.type === 'suite') {
         for (var i = 0, j = resultNode.children.length; i < j; i++) {
           if (hasActiveSpec(resultNode.children[i])) {
             return true;

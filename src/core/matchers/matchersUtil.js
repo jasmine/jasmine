@@ -109,7 +109,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     }
 
     if (a instanceof Error && b instanceof Error) {
-      result = a.message == b.message;
+      result = a.message === b.message;
       if (!result) {
         diffBuilder.record(a, b);
       }
@@ -119,7 +119,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     // Identical objects are equal. `0 === -0`, but they aren't identical.
     // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
     if (a === b) {
-      result = a !== 0 || 1 / a == 1 / b;
+      result = a !== 0 || 1 / a === 1 / b;
       if (!result) {
         diffBuilder.record(a, b);
       }
@@ -134,7 +134,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       return result;
     }
     var className = Object.prototype.toString.call(a);
-    if (className != Object.prototype.toString.call(b)) {
+    if (className !== Object.prototype.toString.call(b)) {
       diffBuilder.record(a, b);
       return false;
     }
@@ -143,7 +143,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       case '[object String]':
         // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
         // equivalent to `new String("5")`.
-        result = a == String(b);
+        result = a === String(b);
         if (!result) {
           diffBuilder.record(a, b);
         }
@@ -151,7 +151,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       case '[object Number]':
         // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for
         // other numeric values.
-        result = a != +a ? b != +b : (a === 0 ? 1 / a == 1 / b : a == +b);
+        result = a !== +a ? b !== +b : (a === 0 ? 1 / a === 1 / b : a === +b);
         if (!result) {
           diffBuilder.record(a, b);
         }
@@ -161,19 +161,19 @@ getJasmineRequireObj().matchersUtil = function(j$) {
         // Coerce dates and booleans to numeric primitive values. Dates are compared by their
         // millisecond representations. Note that invalid dates with millisecond representations
         // of `NaN` are not equivalent.
-        result = +a == +b;
+        result = +a === +b;
         if (!result) {
           diffBuilder.record(a, b);
         }
         return result;
       // RegExps are compared by their source patterns and flags.
       case '[object RegExp]':
-        return a.source == b.source &&
-          a.global == b.global &&
-          a.multiline == b.multiline &&
-          a.ignoreCase == b.ignoreCase;
+        return a.source === b.source &&
+          a.global === b.global &&
+          a.multiline === b.multiline &&
+          a.ignoreCase === b.ignoreCase;
     }
-    if (typeof a != 'object' || typeof b != 'object') {
+    if (typeof a !== 'object' || typeof b !== 'object') {
       diffBuilder.record(a, b);
       return false;
     }
@@ -205,7 +205,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     while (length--) {
       // Linear search. Performance is inversely proportional to the number of
       // unique nested structures.
-      if (aStack[length] == a) { return bStack[length] == b; }
+      if (aStack[length] === a) { return bStack[length] === b; }
     }
     // Add the first object to the stack of traversed objects.
     aStack.push(a);
@@ -213,7 +213,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     var size = 0;
     // Recursively compare objects and arrays.
     // Compare array lengths to determine if a deep comparison is necessary.
-    if (className == '[object Array]') {
+    if (className === '[object Array]') {
       var aLength = a.length;
       var bLength = b.length;
 
@@ -233,7 +233,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
         return false;
       }
     } else if (j$.isMap(a) && j$.isMap(b)) {
-      if (a.size != b.size) {
+      if (a.size !== b.size) {
         diffBuilder.record(a, b);
         return false;
       }
@@ -280,7 +280,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
         return false;
       }
     } else if (j$.isSet(a) && j$.isSet(b)) {
-      if (a.size != b.size) {
+      if (a.size !== b.size) {
         diffBuilder.record(a, b);
         return false;
       }
@@ -345,11 +345,11 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     }
 
     // Deep compare objects.
-    var aKeys = keys(a, className == '[object Array]'), key;
+    var aKeys = keys(a, className === '[object Array]'), key;
     size = aKeys.length;
 
     // Ensure that both objects contain the same number of properties before comparing deep equality.
-    if (keys(b, className == '[object Array]').length !== size) {
+    if (keys(b, className === '[object Array]').length !== size) {
       diffBuilder.record(a, b, objectKeysAreDifferentFormatter);
       return false;
     }

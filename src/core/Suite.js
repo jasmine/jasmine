@@ -162,6 +162,6 @@ getJasmineRequireObj().Suite = function(j$) {
   return Suite;
 };
 
-if (typeof window == void 0 && typeof exports == 'object') {
+if (typeof window === void 0 && typeof exports === 'object') {
   exports.Suite = jasmineRequire.Suite;
 }
