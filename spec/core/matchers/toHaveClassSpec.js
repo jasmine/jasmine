@@ -4,7 +4,7 @@ describe('toHaveClass', function() {
       var el = this.doc.createElement('div');
       el.className = className;
       return el;
-    }
+    };
 
     if (typeof document !== 'undefined') {
       this.doc = document;

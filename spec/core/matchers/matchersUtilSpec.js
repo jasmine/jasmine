@@ -145,7 +145,7 @@ describe("matchersUtil", function() {
         actual = { b: 1 };
 
       expect(jasmineUnderTest.matchersUtil.equals(actual, expected)).toBe(false);
-    })
+    });
 
     it("fails when comparing an empty object to an empty array (issue #114)", function() {
       var emptyObject = {},
@@ -211,11 +211,11 @@ describe("matchersUtil", function() {
           return;
         }
         var a = document.createElement("div");
-        a.setAttribute("test-attr", "attr-value")
+        a.setAttribute("test-attr", "attr-value");
         a.appendChild(document.createTextNode('test'));
 
         var b = document.createElement("div");
-        b.setAttribute("test-attr", "attr-value2")
+        b.setAttribute("test-attr", "attr-value2");
         b.appendChild(document.createTextNode('test'));
 
         expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(false);

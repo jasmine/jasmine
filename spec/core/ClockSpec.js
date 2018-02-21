@@ -669,7 +669,7 @@ describe("Clock (acceptance)", function() {
     expect(global.Date().getTime()).toEqual(baseTime.getTime() + 5);
 
     expect(actualTimes).toEqual([baseTime.getTime(), baseTime.getTime() + 1, baseTime.getTime() + 3]);
-  })
+  });
 
   it('correctly clears a scheduled timeout while the Clock is advancing', function () {
     var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),

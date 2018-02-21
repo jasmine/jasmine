@@ -1047,7 +1047,7 @@ describe("HtmlReporter", function() {
       beforeEach(function() {
         env = new jasmineUnderTest.Env();
         container = document.createElement("div");
-        var getContainer = function() { return container; }
+        var getContainer = function() { return container; };
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,

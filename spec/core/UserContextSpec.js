@@ -32,7 +32,7 @@ describe("UserContext", function() {
     describe('when using a regular object as parameter', function() {
       beforeEach(function() {
         this.context = {};
-        this.value = 'value'
+        this.value = 'value';
         this.context.key = this.value;
         this.cloned = jasmineUnderTest.UserContext.fromExisting(this.context);
       });

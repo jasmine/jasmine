@@ -121,7 +121,7 @@ describe("Custom Matchers (Integration)", function() {
 
     var specExpectations = function(result) {
       expect(result.status).toEqual('passed');
-    }
+    };
 
     env.addReporter({ specDone: specExpectations, jasmineDone: done });
     env.execute();
