@@ -116,5 +116,27 @@ describe("ExceptionFormatter", function() {
     it("returns null if no Error provided", function() {
       expect(new jasmineUnderTest.ExceptionFormatter().stack()).toBeNull();
     });
+
+    it("includes error properties in stack", function() {
+      var error;
+      try { throw new Error("an error") } catch(e) { error = e; }
+      error.someProperty = 'hello there';
+
+      var result = new jasmineUnderTest.ExceptionFormatter().stack(error);
+
+      expect(result).toMatch(/error properties: {/);
+      expect(result).toMatch(/"someProperty": "hello there"/);
+    });
+
+    it("drops error properties if there is a cycle", function() {
+      var error;
+      try { throw new Error("an error") } catch(e) { error = e; }
+      error.someProperty = error;
+
+      var result = new jasmineUnderTest.ExceptionFormatter().stack(error);
+
+      expect(result).not.toMatch(/error properties/);
+    });
+
   });
 });
