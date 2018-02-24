@@ -21,7 +21,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
         var errorMatcher = getMatcher.apply(null, arguments),
           thrown;
 
-        if (typeof actual != 'function') {
+        if (typeof actual !== 'function') {
           throw new Error(getErrorMsg('Actual is not a Function'));
         }
 
@@ -82,8 +82,8 @@ getJasmineRequireObj().toThrowError = function(j$) {
       }
 
       function messageMatch(message) {
-        if (typeof expected == 'string') {
-          return expected == message;
+        if (typeof expected === 'string') {
+          return expected === message;
         } else {
           return expected.test(message);
         }
@@ -134,7 +134,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
     }
 
     function isStringOrRegExp(potential) {
-      return potential instanceof RegExp || (typeof potential == 'string');
+      return potential instanceof RegExp || (typeof potential === 'string');
     }
 
     function isAnErrorType(type) {

@@ -11,29 +11,29 @@ getJasmineRequireObj().Any = function(j$) {
   }
 
   Any.prototype.asymmetricMatch = function(other) {
-    if (this.expectedObject == String) {
-      return typeof other == 'string' || other instanceof String;
+    if (this.expectedObject === String) {
+      return typeof other === 'string' || other instanceof String;
     }
 
-    if (this.expectedObject == Number) {
-      return typeof other == 'number' || other instanceof Number;
+    if (this.expectedObject === Number) {
+      return typeof other === 'number' || other instanceof Number;
     }
 
-    if (this.expectedObject == Function) {
-      return typeof other == 'function' || other instanceof Function;
+    if (this.expectedObject === Function) {
+      return typeof other === 'function' || other instanceof Function;
     }
 
-    if (this.expectedObject == Object) {
-      return other !== null && typeof other == 'object';
+    if (this.expectedObject === Object) {
+      return other !== null && typeof other === 'object';
     }
 
-    if (this.expectedObject == Boolean) {
-      return typeof other == 'boolean';
+    if (this.expectedObject === Boolean) {
+      return typeof other === 'boolean';
     }
 
     /* jshint -W122 */
-    if (typeof Symbol != 'undefined' && this.expectedObject == Symbol) {
-      return typeof other == 'symbol';
+    if (typeof Symbol !== 'undefined' && this.expectedObject === Symbol) {
+      return typeof other === 'symbol';
     }
     /* jshint +W122 */
 

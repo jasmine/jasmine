@@ -9,7 +9,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
       return Object.getPrototypeOf(obj);
     }
 
-    if (obj.constructor.prototype == obj) {
+    if (obj.constructor.prototype === obj) {
       return null;
     }
 

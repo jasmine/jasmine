@@ -54,7 +54,7 @@ getJasmineRequireObj().Expectation = function() {
         }
       }
 
-      if (expected.length == 1) {
+      if (expected.length === 1) {
         expected = expected[0];
       }
 

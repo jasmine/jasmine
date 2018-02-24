@@ -18,7 +18,7 @@ getJasmineRequireObj().toThrow = function(j$) {
           threw = false,
           thrown;
 
-        if (typeof actual != 'function') {
+        if (typeof actual !== 'function') {
           throw new Error(getErrorMsg('Actual is not a Function'));
         }
 
@@ -34,7 +34,7 @@ getJasmineRequireObj().toThrow = function(j$) {
           return result;
         }
 
-        if (arguments.length == 1) {
+        if (arguments.length === 1) {
           result.pass = true;
           result.message = function() { return 'Expected function not to throw, but it threw ' + j$.pp(thrown) + '.'; };
 
