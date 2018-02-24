@@ -95,7 +95,7 @@ describe("toEqual", function() {
       expected = {x: {}},
       message =
         "Expected $.x not to have properties\n" +
-        "    y: 'foo bar'"
+        "    y: 'foo bar'";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
@@ -594,15 +594,15 @@ describe("toEqual", function() {
     var nodeA = document.createElement('div'),
       nodeB = document.createElement('div');
 
-    nodeA.innerText = 'foo'
-    nodeB.innerText = 'bar'
+    nodeA.innerText = 'foo';
+    nodeB.innerText = 'bar';
 
     var actual = {a: nodeA},
       expected = {a: nodeB},
       message = 'Expected $.a = <div>...</div> to equal <div>...</div>.';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
-  })
+  });
 
   it("reports mismatches between a DOM node and a bare Object", function() {
     if(isNotRunningInBrowser()) {
@@ -658,7 +658,7 @@ describe("toEqual", function() {
       boolean: false,
       notDefined: 0,
       aNull: void 0
-    }
+    };
 
     var expected = {
       foo: [
@@ -675,7 +675,7 @@ describe("toEqual", function() {
       boolean: true,
       notDefined: void 0,
       aNull: null
-    }
+    };
 
     var message =
       'Expected $.foo[0].bar = 1 to equal 2.\n' +
@@ -690,10 +690,10 @@ describe("toEqual", function() {
       'Expected $.inf = -Infinity to equal Infinity.\n' +
       'Expected $.boolean = false to equal true.\n' +
       'Expected $.notDefined = 0 to equal undefined.\n' +
-      'Expected $.aNull = undefined to equal null.'
+      'Expected $.aNull = undefined to equal null.';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
-  })
+  });
 
   describe("different length arrays", function() {
     it("actual array is longer", function() {
@@ -702,7 +702,7 @@ describe("toEqual", function() {
         message = 'Expected $.length = 5 to equal 4.\n' +
           'Expected $[4] = 5 to equal undefined.';
 
-      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
 
@@ -712,7 +712,7 @@ describe("toEqual", function() {
         message = 'Expected $.length = 4 to equal 5.\n' +
           'Expected $[4] = undefined to equal 5.';
 
-      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
 
@@ -725,7 +725,7 @@ describe("toEqual", function() {
           'Expected $[5] = undefined to equal 8.\n' +
           'Expected $[6] = undefined to equal 13.';
 
-      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
 
@@ -736,7 +736,7 @@ describe("toEqual", function() {
           'Expected $[0] = 1 to equal 2.\n' +
           'Expected $[1] = undefined to equal 3.';
 
-      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
 
@@ -746,7 +746,7 @@ describe("toEqual", function() {
         message = 'Expected $.values.length = 4 to equal 3.\n' +
           'Expected $.values[3] = 3 to equal undefined.';
 
-      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
 
@@ -756,7 +756,7 @@ describe("toEqual", function() {
         message = 'Expected $.length = 4 to equal 3.\n' +
           'Expected $[3] = Object({ value: 3 }) to equal undefined.';
 
-      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
 
@@ -769,7 +769,7 @@ describe("toEqual", function() {
           'Expected $[1][0] = 1 to equal 2.\n' +
           'Expected $[1][1] = 2 to equal undefined.';
 
-      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
 
@@ -778,7 +778,7 @@ describe("toEqual", function() {
         expected = [1, 2, void 0],
         message = 'Expected $.length = 2 to equal 3.';
 
-      expect(compareEquals(actual, expected).pass).toBe(false)
+      expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
   })

@@ -892,7 +892,7 @@ describe("Env integration", function() {
       };
 
       env.describe('test suite', function() {
-        env.beforeAll(function() { env.spyOn(testObj, 'foo');})
+        env.beforeAll(function() { env.spyOn(testObj, 'foo');});
 
         env.it('spec 0', function() {
           expect(jasmineUnderTest.isSpy(testObj.foo)).toBe(true);
