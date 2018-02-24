@@ -40,7 +40,7 @@ getJasmineRequireObj().ObjectPath = function(j$) {
   }
 
   function isValidIdentifier(string) {
-    return /^[A-Za-z\$_][A-Za-z0-9\$_]*$/.test(string);
+    return /^[A-Za-z$_][A-Za-z0-9$_]*$/.test(string);
   }
 
   return ObjectPath;

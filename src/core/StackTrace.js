@@ -20,7 +20,7 @@ getJasmineRequireObj().StackTrace = function(j$) {
     // e.g. "   at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)"
     // Note that the "function name" can include a surprisingly large set of
     // characters, including angle brackets and square brackets.
-    { re: /^\s*at ([^\)]+) \(([^\)]+)\)$/, fnIx: 1, fileLineColIx: 2, style: 'v8' },
+    { re: /^\s*at ([^)]+) \(([^)]+)\)$/, fnIx: 1, fileLineColIx: 2, style: 'v8' },
 
     // NodeJS alternate form, often mixed in with the Chrome style
     // e.g. "  at /some/path:4320:20
