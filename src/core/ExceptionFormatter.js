@@ -61,7 +61,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
         return;
       }
 
-      var ignored = ['name', 'message', 'stack', 'fileName', 'sourceURL', 'line', 'lineNumber', 'stack'];
+      var ignored = ['name', 'message', 'stack', 'fileName', 'sourceURL', 'line', 'lineNumber'];
       var result = {};
       var empty = true;
 
