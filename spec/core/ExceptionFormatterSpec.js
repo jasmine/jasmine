@@ -124,18 +124,7 @@ describe("ExceptionFormatter", function() {
 
       var result = new jasmineUnderTest.ExceptionFormatter().stack(error);
 
-      expect(result).toMatch(/error properties: {/);
-      expect(result).toMatch(/"someProperty": "hello there"/);
-    });
-
-    it("drops error properties if there is a cycle", function() {
-      var error;
-      try { throw new Error("an error") } catch(e) { error = e; }
-      error.someProperty = error;
-
-      var result = new jasmineUnderTest.ExceptionFormatter().stack(error);
-
-      expect(result).not.toMatch(/error properties/);
+      expect(result).toMatch(/error properties:.*someProperty.*hello there/);
     });
 
   });

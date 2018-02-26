@@ -74,9 +74,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
       }
 
       if (!empty) {
-        try {
-          return 'error properties: ' + JSON.stringify(result, null, 2) + '\n';
-        } catch (_) {}
+        return 'error properties: ' + j$.pp(result) + '\n';
       }
 
       return '';
