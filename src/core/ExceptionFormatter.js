@@ -29,12 +29,16 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
 
       var stackTrace = new j$.StackTrace(error.stack);
       var lines = filterJasmine(stackTrace);
+      var result = '';
 
       if (stackTrace.message) {
         lines.unshift(stackTrace.message);
       }
 
-      return lines.join('\n');
+      result += formatProperties(error);
+      result += lines.join('\n');
+
+      return result;
     };
 
     function filterJasmine(stackTrace) {
@@ -50,6 +54,30 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
       });
  
       return result;
+    }
+
+    function formatProperties(error) {
+      if (!(error instanceof Object)) {
+        return;
+      }
+
+      var ignored = ['name', 'message', 'stack', 'fileName', 'sourceURL', 'line', 'lineNumber'];
+      var result = {};
+      var empty = true;
+
+      for (var prop in error) {
+        if (ignored.includes(prop)) {
+          continue;
+        }
+        result[prop] = error[prop];
+        empty = false;
+      }
+
+      if (!empty) {
+        return 'error properties: ' + j$.pp(result) + '\n';
+      }
+
+      return '';
     }
   }
 
