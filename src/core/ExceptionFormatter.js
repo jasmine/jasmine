@@ -44,7 +44,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
     function filterJasmine(stackTrace) {
       var result = [],
         jasmineMarker = stackTrace.style === 'webkit' ? '<Jasmine>' : '    at <Jasmine>';
- 
+
       stackTrace.frames.forEach(function(frame) {
         if (frame.file && frame.file !== jasmineFile) {
           result.push(frame.raw);
@@ -52,7 +52,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
           result.push(jasmineMarker);
         }
       });
- 
+
       return result;
     }
 
@@ -66,7 +66,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
       var empty = true;
 
       for (var prop in error) {
-        if (ignored.includes(prop)) {
+        if (j$.util.arrayContains(ignored, prop)) {
           continue;
         }
         result[prop] = error[prop];
