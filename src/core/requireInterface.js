@@ -63,6 +63,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @param {String} description Textual description of what this spec is checking
      * @param {implementationCallback} [testFunction] Function that contains the code of your test. If not provided the test will be `pending`.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
+     * @see async
      */
     it: function() {
       return env.it.apply(env, arguments);
@@ -92,6 +93,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @param {String} description Textual description of what this spec is checking.
      * @param {implementationCallback} testFunction Function that contains the code of your test.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
+     * @see async
      */
     fit: function() {
       return env.fit.apply(env, arguments);
@@ -104,6 +106,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {implementationCallback} [function] Function that contains the code to setup your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeEach.
+     * @see async
      */
     beforeEach: function() {
       return env.beforeEach.apply(env, arguments);
@@ -116,6 +119,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {implementationCallback} [function] Function that contains the code to teardown your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterEach.
+     * @see async
      */
     afterEach: function() {
       return env.afterEach.apply(env, arguments);
@@ -130,6 +134,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {implementationCallback} [function] Function that contains the code to setup your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeAll.
+     * @see async
      */
     beforeAll: function() {
       return env.beforeAll.apply(env, arguments);
@@ -144,6 +149,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {implementationCallback} [function] Function that contains the code to teardown your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterAll.
+     * @see async
      */
     afterAll: function() {
       return env.afterAll.apply(env, arguments);

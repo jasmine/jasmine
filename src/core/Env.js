@@ -39,7 +39,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var globalErrors = null;
-    
+
     var installGlobalErrors = function() {
       if (globalErrors) {
         return;
@@ -250,6 +250,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * This represents the available reporter callback for an object passed to {@link Env#addReporter}.
      * @interface Reporter
+     * @see custom_reporter
      */
     var reporter = new j$.ReportDispatcher([
       /**
@@ -259,6 +260,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {JasmineStartedInfo} suiteInfo Information about the full Jasmine suite that is being run
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'jasmineStarted',
       /**
@@ -268,6 +270,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {JasmineDoneInfo} suiteInfo Information about the full Jasmine suite that just finished running.
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'jasmineDone',
       /**
@@ -277,6 +280,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {SuiteResult} result Information about the individual {@link describe} being run
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'suiteStarted',
       /**
@@ -288,6 +292,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {SuiteResult} result
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'suiteDone',
       /**
@@ -297,6 +302,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {SpecResult} result Information about the individual {@link it} being run
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'specStarted',
       /**
@@ -308,6 +314,7 @@ getJasmineRequireObj().Env = function(j$) {
        * @param {SpecResult} result
        * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.
        * @returns {} Optionally return a Promise instead of using `done` to cause Jasmine to wait for completion.
+       * @see async
        */
       'specDone'
     ], queueRunnerFactory);
