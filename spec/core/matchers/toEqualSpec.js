@@ -700,7 +700,7 @@ describe("toEqual", function() {
       var actual = [1, 1, 2, 3, 5],
         expected = [1, 1, 2, 3],
         message = 'Expected $.length = 5 to equal 4.\n' +
-          'Expected $[4] = 5 to equal undefined.';
+          'Unexpected $[4] = 5 in array.';
 
       expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
@@ -711,6 +711,37 @@ describe("toEqual", function() {
         expected = [1, 1, 2, 3, 5],
         message = 'Expected $.length = 4 to equal 5.\n' +
           'Expected $[4] = undefined to equal 5.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false);
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("undefined in middle of actual array", function() {
+      var actual = [1, void 0, 3],
+        expected = [1, 2, 3],
+        message = 'Expected $[1] = undefined to equal 2.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false);
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("undefined in middle of expected array", function() {
+      var actual = [1, 2, 3],
+        expected = [1, void 0, 3],
+        message = 'Expected $[1] = 2 to equal undefined.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false);
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("actual array is longer by 4 elements", function() {
+      var actual = [1, 1, 2, 3, 5, 8, 13],
+        expected = [1, 1, 2],
+        message = 'Expected $.length = 7 to equal 3.\n' +
+          'Unexpected $[3] = 3 in array.\n' +
+          'Unexpected $[4] = 5 in array.\n' +
+          'Unexpected $[5] = 8 in array.\n' +
+          'Unexpected $[6] = 13 in array.';
 
       expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
@@ -740,21 +771,41 @@ describe("toEqual", function() {
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
 
-    it("object with nested array", function() {
+    it("object with nested array (actual longer than expected)", function() {
       var actual = { values: [1, 1, 2, 3] },
         expected = { values: [1, 1, 2] },
         message = 'Expected $.values.length = 4 to equal 3.\n' +
-          'Expected $.values[3] = 3 to equal undefined.';
+          'Unexpected $.values[3] = 3 in array.';
 
       expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
 
-    it("array with nested object", function() {
+    it("object with nested array (expected longer than actual)", function() {
+      var actual = { values: [1, 1, 2] },
+        expected = { values: [1, 1, 2, 3] },
+        message = 'Expected $.values.length = 3 to equal 4.\n' +
+          'Expected $.values[3] = undefined to equal 3.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false);
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("array with unexpected nested object", function() {
       var actual = [1, 1, 2, { value: 3 }],
         expected = [1, 1, 2],
         message = 'Expected $.length = 4 to equal 3.\n' +
-          'Expected $[3] = Object({ value: 3 }) to equal undefined.';
+          'Unexpected $[3] = Object({ value: 3 }) in array.';
+
+      expect(compareEquals(actual, expected).pass).toBe(false);
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("array with missing nested object", function() {
+      var actual = [1, 1, 2],
+        expected = [1, 1, 2, { value: 3 }],
+        message = 'Expected $.length = 3 to equal 4.\n' +
+          'Expected $[3] = undefined to equal Object({ value: 3 }).';
 
       expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
@@ -767,7 +818,7 @@ describe("toEqual", function() {
           'Expected $[0][1] = undefined to equal 1.\n' +
           'Expected $[1].length = 2 to equal 1.\n' +
           'Expected $[1][0] = 1 to equal 2.\n' +
-          'Expected $[1][1] = 2 to equal undefined.';
+          'Unexpected $[1][1] = 2 in array.';
 
       expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);

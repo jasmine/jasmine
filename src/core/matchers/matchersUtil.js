@@ -225,8 +225,14 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       });
 
       for (i = 0; i < aLength || i < bLength; i++) {
+        var formatter = false;
         diffBuilder.withPath(i, function() {
-          result = eq(i < aLength ? a[i] : void 0, i < bLength ? b[i] : void 0, aStack, bStack, customTesters, diffBuilder) && result;
+          if (i >= bLength) {
+            diffBuilder.record(a[i], void 0, actualArrayIsLongerFormatter);
+            result = false;
+          } else {
+            result = eq(i < aLength ? a[i] : void 0, i < bLength ? b[i] : void 0, aStack, bStack, customTesters, diffBuilder) && result;
+          }
         });
       }
       if (!result) {
@@ -450,6 +456,13 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       path + ' to be a kind of ' +
       j$.fnNameFor(expected.constructor) +
       ', but was ' + j$.pp(actual) + '.';
+  }
+
+  function actualArrayIsLongerFormatter(actual, expected, path) {
+    return 'Unexpected ' +
+      path + (path.depth() ? ' = ' : '') +
+      j$.pp(actual) +
+      ' in array.';
   }
 
   function formatKeyValuePairs(obj) {
