@@ -130,7 +130,7 @@ getJasmineRequireObj().util = function(j$) {
   }
 
   function callerFile() {
-    var trace = new j$.StackTrace(errorWithStack().stack);
+    var trace = new j$.StackTrace(errorWithStack());
     return trace.frames[2].file;
   }
 

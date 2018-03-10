@@ -56,6 +56,7 @@ describe("ExceptionFormatter", function() {
 
     it("filters Jasmine stack frames from V8 style traces", function() {
       var error = {
+        message: 'nope',
         stack: 'Error: nope\n' +
           '    at fn1 (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)\n' +
           '    at fn2 (http://localhost:8888/__jasmine__/jasmine.js:4320:20)\n' +
@@ -111,6 +112,25 @@ describe("ExceptionFormatter", function() {
       for (i = 2; i < lines.length; i++) {
         expect(lines[i]).not.toMatch(/jasmine.js/);
       }
+    });
+
+    it("handles multiline error messages in this environment", function() {
+      var error, i, msg = "an error\nwith two lines";
+      try { throw new Error(msg); } catch(e) { error = e; }
+
+      if (error.stack.indexOf(msg) === -1) {
+        pending("Stack traces don't have messages in this environment");
+      }
+      var subject = new jasmineUnderTest.ExceptionFormatter({
+        jasmineFile: jasmine.util.jasmineFile()
+      });
+      var result = subject.stack(error);
+      var lines = result.split('\n');
+
+      expect(lines[0]).toMatch(/an error/);
+      expect(lines[1]).toMatch(/with two lines/);
+      expect(lines[2]).toMatch(/ExceptionFormatterSpec.js/);
+      expect(lines[3]).toMatch(/<Jasmine>/);
     });
 
     it("returns null if no Error provided", function() {

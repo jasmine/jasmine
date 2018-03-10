@@ -27,7 +27,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
         return null;
       }
 
-      var stackTrace = new j$.StackTrace(error.stack);
+      var stackTrace = new j$.StackTrace(error);
       var lines = filterJasmine(stackTrace);
       var result = '';
 
