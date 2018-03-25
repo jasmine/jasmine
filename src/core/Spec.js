@@ -177,5 +177,6 @@ getJasmineRequireObj().Spec = function(j$) {
 };
 
 if (typeof window == void 0 && typeof exports == 'object') {
+  /* globals exports */
   exports.Spec = jasmineRequire.Spec;
 }

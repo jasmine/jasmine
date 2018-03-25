@@ -1,5 +1,6 @@
 getJasmineRequireObj().Clock = function() {
 
+  /* global process */
   var NODE_JS = typeof process !== 'undefined' && process.versions && typeof process.versions.node === 'string';
 
   /**

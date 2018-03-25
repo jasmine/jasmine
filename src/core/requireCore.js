@@ -1,4 +1,5 @@
 var getJasmineRequireObj = (function (jasmineGlobal) {
+  /* globals exports, global, module, window */
   var jasmineRequire;
 
   if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined') {

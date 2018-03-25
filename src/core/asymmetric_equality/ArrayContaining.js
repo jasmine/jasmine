@@ -19,7 +19,7 @@ getJasmineRequireObj().ArrayContaining = function(j$) {
   };
 
   ArrayContaining.prototype.jasmineToString = function () {
-    return '<jasmine.arrayContaining(' + jasmine.pp(this.sample) +')>';
+    return '<jasmine.arrayContaining(' + j$.pp(this.sample) +')>';
   };
 
   return ArrayContaining;

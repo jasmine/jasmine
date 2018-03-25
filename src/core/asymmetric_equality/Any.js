@@ -32,6 +32,7 @@ getJasmineRequireObj().Any = function(j$) {
     }
 
     /* jshint -W122 */
+    /* global Symbol */
     if (typeof Symbol != 'undefined' && this.expectedObject == Symbol) {
       return typeof other == 'symbol';
     }

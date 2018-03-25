@@ -736,11 +736,11 @@ getJasmineRequireObj().Env = function(j$) {
         message += ': ';
         if (error.message) {
           message += error.message;
-        } else if (jasmine.isString_(error)) {
+        } else if (j$.isString_(error)) {
           message += error;
         } else {
           // pretty print all kind of objects. This includes arrays.
-          message += jasmine.pp(error);
+          message += j$.pp(error);
         }
       }
 
