@@ -78,7 +78,7 @@ describe("GlobalErrors", function() {
     errors.uninstall();
   });
 
-  it("works in node.js", function() {
+  it("reports uncaughtException in node.js", function() {
     var fakeGlobal = {
           process: {
             on: jasmine.createSpy('process.on'),
@@ -106,5 +106,35 @@ describe("GlobalErrors", function() {
 
     expect(fakeGlobal.process.removeListener).toHaveBeenCalledWith('uncaughtException', addedListener);
     expect(fakeGlobal.process.on).toHaveBeenCalledWith('uncaughtException', 'foo');
+  });
+
+  it("reports unhandledRejection in node.js", function() {
+    var fakeGlobal = {
+          process: {
+            on: jasmine.createSpy('process.on'),
+            removeListener: jasmine.createSpy('process.removeListener'),
+            listeners: jasmine.createSpy('process.listeners').and.returnValue(['foo']),
+            removeAllListeners: jasmine.createSpy('process.removeAllListeners')
+          }
+        },
+        handler = jasmine.createSpy('errorHandler'),
+        errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+    errors.install();
+    expect(fakeGlobal.process.on).toHaveBeenCalledWith('unhandledRejection', jasmine.any(Function));
+    expect(fakeGlobal.process.listeners).toHaveBeenCalledWith('unhandledRejection');
+    expect(fakeGlobal.process.removeAllListeners).toHaveBeenCalledWith('unhandledRejection');
+
+    errors.pushListener(handler);
+
+    var addedListener = fakeGlobal.process.on.calls.argsFor(0)[1];
+    addedListener(new Error('bar'));
+
+    expect(handler).toHaveBeenCalledWith(new Error('bar'));
+
+    errors.uninstall();
+
+    expect(fakeGlobal.process.removeListener).toHaveBeenCalledWith('unhandledRejection', addedListener);
+    expect(fakeGlobal.process.on).toHaveBeenCalledWith('unhandledRejection', 'foo');
   });
 });
