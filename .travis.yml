@@ -4,7 +4,9 @@ sudo: false
 
 rvm: 2.5
 
-before_install: gem update --system
+before_install:
+  - gem update --system
+  - gem install bundler
 script: $TEST_COMMAND
 
 env:
@@ -12,9 +14,6 @@ env:
     - USE_SAUCE=true
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
     - TEST_COMMAND="bash travis-core-script.sh"
-    - JASMINE_BROWSER="firefox"
-    - SAUCE_OS="Linux"
-    - SAUCE_BROWSER_VERSION=''
     - secure: WSPWhlnC4mWSnSPquX+m1/BCu5ch5NygkaHuM2Nea7lD8oS3XLX8QncZZAsQ4lnNfqoDDuBOizG0AESiqNvE4y6x5qvLLTS6q+ce255ZEMZ71TBdZgDEEvGMEjOPPsVXiXyTQOP1lwOPlrbZvaPgWV7e11KIBab6DfFcQpnvDgo=
     - secure: SW7CJhZnwaNT749Gdnhvqb5rbXlAOsygUAzh9qhtyvbqXKkmJdBIEsO01YF6pbju1X2twE9JvWCOxeZju43NgQChJlPsGbjY2j3k/TdQeTAJesQe2K7ytwghunI30gjEovtRH0T3w1EmcKPH8yj5eBIcB2OYoJHx8KEC7e68q1g=
 
@@ -32,6 +31,10 @@ matrix:
     - env:
       - USE_SAUCE=false
       - TEST_COMMAND="bash travis-node-script.sh v9"
+    - env:
+      - JASMINE_BROWSER="firefox"
+      - SAUCE_OS="Linux"
+      - SAUCE_BROWSER_VERSION=''
     - env:
       - JASMINE_BROWSER="safari"
       - SAUCE_OS="OS X 10.12"
