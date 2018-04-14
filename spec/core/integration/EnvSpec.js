@@ -940,10 +940,10 @@ describe("Env integration", function() {
   });
 
   it("Mock clock can be installed and used in tests", function(done) {
-    var globalSetTimeout = jasmine.createSpy('globalSetTimeout'),
+    var globalSetTimeout = jasmine.createSpy('globalSetTimeout').and.callFake(function(cb, t) { setTimeout(cb, t); }),
         delayedFunctionForGlobalClock = jasmine.createSpy('delayedFunctionForGlobalClock'),
         delayedFunctionForMockClock = jasmine.createSpy('delayedFunctionForMockClock'),
-        env = new jasmineUnderTest.Env({global: { setTimeout: globalSetTimeout }});
+        env = new jasmineUnderTest.Env({global: { setTimeout: globalSetTimeout, clearTimeout: clearTimeout, setImmediate: function(cb) { setTimeout(cb, 0); } }});
 
     var assertions = function() {
       expect(delayedFunctionForMockClock).toHaveBeenCalled();
@@ -1616,7 +1616,7 @@ describe("Env integration", function() {
   });
 
   it("should be possible to get full name from a spec", function() {
-    var env = new jasmineUnderTest.Env({global: { setTimeout: setTimeout }}),
+    var env = new jasmineUnderTest.Env(),
         topLevelSpec, nestedSpec, doublyNestedSpec;
 
     env.describe("my tests", function() {
@@ -1638,7 +1638,7 @@ describe("Env integration", function() {
   });
 
   it("Custom equality testers should be per spec", function(done) {
-    var env = new jasmineUnderTest.Env({global: { setTimeout: setTimeout }}),
+    var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineDone",
           "specDone"
@@ -1672,7 +1672,7 @@ describe("Env integration", function() {
   });
 
   it("Custom equality testers should be per suite", function(done) {
-    var env = new jasmineUnderTest.Env({global: { setTimeout: setTimeout }}),
+    var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineDone",
           "specDone"
@@ -1715,7 +1715,7 @@ describe("Env integration", function() {
   });
 
   it("Custom equality testers for toContain should be per spec", function(done) {
-    var env = new jasmineUnderTest.Env({global: { setTimeout: setTimeout }}),
+    var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineDone",
           "specDone"
@@ -1766,7 +1766,7 @@ describe("Env integration", function() {
   });
 
   it("Custom equality testers for toContain should be per suite", function(done) {
-    var env = new jasmineUnderTest.Env({global: { setTimeout: setTimeout }}),
+    var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [
           "jasmineDone",
           "specDone"
@@ -1809,7 +1809,7 @@ describe("Env integration", function() {
   });
 
   it("Custom matchers should be per spec", function(done) {
-    var env = new jasmineUnderTest.Env({global: { setTimeout: setTimeout }}),
+    var env = new jasmineUnderTest.Env(),
         matchers = {
           toFoo: function() {}
         };
@@ -1831,7 +1831,7 @@ describe("Env integration", function() {
   });
 
   it("Custom matchers should be per suite", function(done) {
-    var env = new jasmineUnderTest.Env({global: { setTimeout: setTimeout }}),
+    var env = new jasmineUnderTest.Env(),
         matchers = {
           toFoo: function() {}
         };
