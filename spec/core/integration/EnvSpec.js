@@ -1005,6 +1005,25 @@ describe("Env integration", function() {
 
   describe("with a mock clock", function() {
     var realSetTimeout;
+    function createMockedEnv() {
+      // explicitly pass in timing functions so we can make sure that clear stack always works
+      // no matter how long the suite in the spec is
+      return new jasmineUnderTest.Env({ global: {
+          setTimeout: function(cb, t) {
+            var stack = jasmine.util.errorWithStack().stack;
+            if (stack.indexOf('ClearStack') >= 0) {
+              realSetTimeout(cb, t);
+            } else {
+              setTimeout(cb, t);
+            }
+          },
+          clearTimeout: clearTimeout,
+          setInterval: setInterval,
+          clearInterval: clearInterval,
+          setImmediate: function(cb) { realSetTimeout(cb, 0); }
+        }});
+    }
+
     beforeEach(function() {
       this.originalTimeout = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
       realSetTimeout = setTimeout;
@@ -1019,7 +1038,7 @@ describe("Env integration", function() {
     });
 
     it("should wait a default interval before failing specs that haven't called done yet", function(done) {
-      var env = new jasmineUnderTest.Env(),
+      var env = createMockedEnv(),
           reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
 
       reporter.specDone.and.callFake(function(result) {
@@ -1048,7 +1067,7 @@ describe("Env integration", function() {
     });
 
     it("should not use the mock clock for asynchronous timeouts", function(done){
-      var env = new jasmineUnderTest.Env(),
+      var env = createMockedEnv(),
         reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]),
         clock = env.clock;
 
@@ -1086,23 +1105,13 @@ describe("Env integration", function() {
     });
 
     it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
-      var env = new jasmineUnderTest.Env(),
+      var env = createMockedEnv(),
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']),
           timeoutFailure = (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./);
 
-      reporter.specDone.and.callFake(function(r) {
-        realSetTimeout(function() {
-          jasmine.clock().tick(1);
-        }, 0);
-      });
 
-      reporter.suiteDone.and.callFake(function(r) {
-        realSetTimeout(function() {
-          jasmine.clock().tick(1);
-        }, 0);
-      });
-
-      reporter.jasmineDone.and.callFake(function() {
+      reporter.jasmineDone.and.callFake(function(r) {
+        expect(r.failedExpectations).toEqual([]);
         expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite beforeAll', [ timeoutFailure ]);
         expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite afterAll', [ timeoutFailure ]);
         expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite beforeEach times out', [ timeoutFailure ]);
