@@ -20,6 +20,13 @@ describe('Spies', function () {
       expect(spy.bob).toEqual("test");
     });
 
+    it("should allow you to omit the name argument and only pass the originalFn argument", function() {
+      var fn = function test() {};
+      var spy = env.createSpy(fn);
+
+      expect(spy.and.identity).toEqual("test");
+    })
+
     it("warns the user that we intend to overwrite an existing property", function() {
       TestClass.prototype.someFunction.and = "turkey";
 
