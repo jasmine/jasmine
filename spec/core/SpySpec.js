@@ -24,7 +24,12 @@ describe('Spies', function () {
       var fn = function test() {};
       var spy = env.createSpy(fn);
 
-      expect(spy.and.identity).toEqual("test");
+      // IE doesn't do `.name`
+      if (fn.name === "test") {
+        expect(spy.and.identity).toEqual("test");
+      } else {
+        expect(spy.and.identity).toEqual("unknown");
+      }
     })
 
     it("warns the user that we intend to overwrite an existing property", function() {
