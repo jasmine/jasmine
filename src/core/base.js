@@ -101,7 +101,14 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isDomNode = function(obj) {
-    return obj.nodeType > 0;
+    // Node is a function, because constructors
+    return typeof jasmineGlobal.Node !== 'undefined' ?
+      obj instanceof jasmineGlobal.Node :
+          obj !== null &&
+          typeof obj === 'object' &&
+          typeof obj.nodeType === 'number' &&
+          typeof obj.nodeName === 'string';
+    // return obj.nodeType > 0;
   };
 
   j$.isMap = function(obj) {
