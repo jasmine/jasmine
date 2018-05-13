@@ -13,71 +13,80 @@ getJasmineRequireObj().Expectation = function() {
 
     var customMatchers = options.customMatchers || {};
     for (var matcherName in customMatchers) {
-      this[matcherName] = Expectation.prototype.wrapCompare(matcherName, customMatchers[matcherName]);
+      this[matcherName] = wrapCompare(matcherName, customMatchers[matcherName]);
     }
   }
 
-  Expectation.prototype.wrapCompare = function(name, matcherFactory) {
+  function wrapCompare(name, matcherFactory) {
     return function() {
       var args = Array.prototype.slice.call(arguments, 0),
-        expected = args.slice(0),
-        message = '';
+        expected = args.slice(0);
 
       args.unshift(this.actual);
 
-      var matcher = matcherFactory(this.util, this.customEqualityTesters),
-          matcherCompare = matcher.compare;
-
-      function defaultNegativeCompare() {
-        var result = matcher.compare.apply(null, args);
-        result.pass = !result.pass;
-        return result;
-      }
-
-      if (this.isNot) {
-        matcherCompare = matcher.negativeCompare || defaultNegativeCompare;
-      }
-
+      var matcherCompare = this.instantiateMatcher(matcherFactory);
       var result = matcherCompare.apply(null, args);
-
-      if (!result.pass) {
-        if (!result.message) {
-          args.unshift(this.isNot);
-          args.unshift(name);
-          message = this.util.buildFailureMessage.apply(null, args);
-        } else {
-          if (Object.prototype.toString.apply(result.message) === '[object Function]') {
-            message = result.message();
-          } else {
-            message = result.message;
-          }
-        }
-      }
-
-      if (expected.length == 1) {
-        expected = expected[0];
-      }
-
-      // TODO: how many of these params are needed?
-      this.addExpectationResult(
-        result.pass,
-        {
-          matcherName: name,
-          passed: result.pass,
-          message: message,
-          error: result.error,
-          actual: this.actual,
-          expected: expected // TODO: this may need to be arrayified/sliced
-        }
-      );
+      this.processResult(result, name, expected, args);
     };
+  }
+
+  Expectation.prototype.instantiateMatcher = function(matcherFactory) {
+    var matcher = matcherFactory(this.util, this.customEqualityTesters);
+
+    function defaultNegativeCompare() {
+      var result = matcher.compare.apply(null, arguments);
+      result.pass = !result.pass;
+      return result;
+    }
+
+    if (this.isNot) {
+      return matcher.negativeCompare || defaultNegativeCompare;
+    } else {
+      return matcher.compare;
+    }
+  };
+
+  Expectation.prototype.processResult = function(result, name, expected, args) {
+    var message = this.buildMessage(result, name, args);
+
+    if (expected.length == 1) {
+      expected = expected[0];
+    }
+
+    // TODO: how many of these params are needed?
+    this.addExpectationResult(
+      result.pass,
+      {
+        matcherName: name,
+        passed: result.pass,
+        message: message,
+        error: result.error,
+        actual: this.actual,
+        expected: expected // TODO: this may need to be arrayified/sliced
+      }
+    );
+  };
+
+  Expectation.prototype.buildMessage = function(result, name, args) {
+    if (result.pass) {
+      return '';
+    } else if (!result.message) {
+      args = args.slice();
+      args.unshift(this.isNot);
+      args.unshift(name);
+      return this.util.buildFailureMessage.apply(null, args);
+    } else if (Object.prototype.toString.apply(result.message) === '[object Function]') {
+      return result.message();
+    } else {
+      return result.message;
+    }
   };
 
   Expectation.addCoreMatchers = function(matchers) {
     var prototype = Expectation.prototype;
     for (var matcherName in matchers) {
       var matcher = matchers[matcherName];
-      prototype[matcherName] = prototype.wrapCompare(matcherName, matcher);
+      prototype[matcherName] = wrapCompare(matcherName, matcher);
     }
   };
 
