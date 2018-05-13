@@ -27,14 +27,6 @@ describe("Expectation", function() {
     expect(expectation.toQuux).toBeDefined();
   });
 
-  it("Factory builds an expectation/negative expectation", function() {
-    var builtExpectation = jasmineUnderTest.Expectation.Factory();
-
-    expect(builtExpectation instanceof jasmineUnderTest.Expectation).toBe(true);
-    expect(builtExpectation.not instanceof jasmineUnderTest.Expectation).toBe(true);
-    expect(builtExpectation.not.isNot).toBe(true);
-  });
-
   it("wraps matchers's compare functions, passing in matcher dependencies", function() {
     var fakeCompare = function() { return { pass: true }; },
       matcherFactory = jasmine.createSpy("matcher").and.returnValue({ compare: fakeCompare }),
@@ -235,12 +227,11 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.Factory({
       customMatchers: matchers,
       actual: "an actual",
-      addExpectationResult: addExpectationResult,
-      isNot: true
-    });
+      addExpectationResult: addExpectationResult
+    }).not;
 
     expectation.toFoo("hello");
 
@@ -269,13 +260,12 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.Factory({
       customMatchers: matchers,
       actual: "an actual",
       util: util,
       addExpectationResult: addExpectationResult,
-      isNot: true
-    });
+    }).not;
 
     expectation.toFoo("hello");
 
@@ -306,12 +296,11 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.Factory({
       customMatchers: matchers,
       actual: "an actual",
-      addExpectationResult: addExpectationResult,
-      isNot: true
-    });
+      addExpectationResult: addExpectationResult
+    }).not;
 
     expectation.toFoo("hello");
 
@@ -338,12 +327,11 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.Factory({
       customMatchers: matchers,
       actual: "an actual",
-      addExpectationResult: addExpectationResult,
-      isNot: true
-    });
+      addExpectationResult: addExpectationResult
+    }).not;
 
     expectation.toFoo("hello");
 
@@ -375,12 +363,11 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.Factory({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult,
-      isNot: true
-    });
+    }).not;
 
     expectation.toFoo("hello");
 
