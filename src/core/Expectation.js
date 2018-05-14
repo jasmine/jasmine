@@ -1,4 +1,4 @@
-getJasmineRequireObj().Expectation = function() {
+getJasmineRequireObj().Expectation = function(j$) {
 
   /**
    * Matchers that come with Jasmine out of the box.
@@ -33,17 +33,11 @@ getJasmineRequireObj().Expectation = function() {
   Expectation.prototype.instantiateMatcher = function(matcherFactory) {
     var matcher = matcherFactory(this.util, this.customEqualityTesters);
 
-    function defaultNegativeCompare() {
-      var result = matcher.compare.apply(null, arguments);
-      result.pass = !result.pass;
-      return result;
+    if (this.filter && this.filter.selectComparisonFunc) {
+      return this.filter.selectComparisonFunc(matcher);
     }
 
-    if (this.isNot) {
-      return matcher.negativeCompare || defaultNegativeCompare;
-    } else {
-      return matcher.compare;
-    }
+    return matcher.compare;
   };
 
   Expectation.prototype.processResult = function(result, name, expected, args) {
@@ -70,12 +64,14 @@ getJasmineRequireObj().Expectation = function() {
   Expectation.prototype.buildMessage = function(result, name, args) {
     if (result.pass) {
       return '';
+    } else if (this.filter && this.filter.buildFailureMessage) {
+      return this.filter.buildFailureMessage(result, name, args, this.util);
     } else if (!result.message) {
       args = args.slice();
-      args.unshift(this.isNot);
+      args.unshift(false);
       args.unshift(name);
       return this.util.buildFailureMessage.apply(null, args);
-    } else if (Object.prototype.toString.apply(result.message) === '[object Function]') {
+    } else if (j$.isFunction_(result.message)) {
       return result.message();
     } else {
       return result.message;
@@ -91,16 +87,37 @@ getJasmineRequireObj().Expectation = function() {
   };
 
   Expectation.Factory = function(options) {
-    options = options || {};
-
-    var expect = new Expectation(options);
-
-    // TODO: this would be nice as its own Object - NegativeExpectation
-    // TODO: copy instead of mutate options
-    options.isNot = true;
-    expect.not = new Expectation(options);
+    var expect = new Expectation(options || {});
+    expect.not = Object.create(expect);
+    expect.not.filter = negatingFilter;
 
     return expect;
+  };
+
+  var negatingFilter = {
+    selectComparisonFunc: function(matcher) {
+      function defaultNegativeCompare() {
+        var result = matcher.compare.apply(null, arguments);
+        result.pass = !result.pass;
+        return result;
+      }
+
+      return matcher.negativeCompare || defaultNegativeCompare;
+    },
+    buildFailureMessage: function(result, matcherName, args, util) {
+      if (result.message) {
+        if (j$.isFunction_(result.message)) {
+          return result.message();
+        } else {
+          return result.message;
+        }
+      }
+
+      args = args.slice();
+      args.unshift(true);
+      args.unshift(matcherName);
+      return util.buildFailureMessage.apply(null, args);
+    }
   };
 
   return Expectation;

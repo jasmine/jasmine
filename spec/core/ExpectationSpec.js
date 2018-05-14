@@ -488,6 +488,5 @@ describe("Expectation", function() {
       error: customError
     });
   });
-
 });
 
