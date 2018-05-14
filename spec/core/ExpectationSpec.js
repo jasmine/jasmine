@@ -430,5 +430,77 @@ describe("Expectation", function() {
     });
   });
 
+  it("reports a custom message to the spec when a 'not' comparison fails", function() {
+    var customError = new Error("I am a custom error");
+    var matchers = {
+        toFoo: function() {
+          return {
+            compare: function() {
+              return {
+                pass: true,
+                message: "I am a custom message",
+                error: customError
+              };
+            }
+          };
+        }
+      },
+      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      expectation;
+
+    expectation = jasmineUnderTest.Expectation.Factory({
+      actual: "an actual",
+      customMatchers: matchers,
+      addExpectationResult: addExpectationResult
+    }).not;
+
+    expectation.toFoo("hello");
+
+    expect(addExpectationResult).toHaveBeenCalledWith(false, {
+      matcherName: "toFoo",
+      passed: false,
+      expected: "hello",
+      actual: "an actual",
+      message: "I am a custom message",
+      error: customError
+    });
+  });
+
+  it("reports a custom message func to the spec when a 'not' comparison fails", function() {
+    var customError = new Error("I am a custom error");
+    var matchers = {
+        toFoo: function() {
+          return {
+            compare: function() {
+              return {
+                pass: true,
+                message: function() { return "I am a custom message"; },
+                error: customError
+              };
+            }
+          };
+        }
+      },
+      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      expectation;
+
+    expectation = jasmineUnderTest.Expectation.Factory({
+      actual: "an actual",
+      customMatchers: matchers,
+      addExpectationResult: addExpectationResult
+    }).not;
+
+    expectation.toFoo("hello");
+
+    expect(addExpectationResult).toHaveBeenCalledWith(false, {
+      matcherName: "toFoo",
+      passed: false,
+      expected: "hello",
+      actual: "an actual",
+      message: "I am a custom message",
+      error: customError
+    });
+  });
+
 });
 
