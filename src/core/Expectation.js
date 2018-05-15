@@ -62,19 +62,27 @@ getJasmineRequireObj().Expectation = function(j$) {
   };
 
   Expectation.prototype.buildMessage = function(result, name, args) {
+    var util = this.util;
+
     if (result.pass) {
       return '';
     } else if (this.filter && this.filter.buildFailureMessage) {
-      return this.filter.buildFailureMessage(result, name, args, this.util);
-    } else if (!result.message) {
-      args = args.slice();
-      args.unshift(false);
-      args.unshift(name);
-      return this.util.buildFailureMessage.apply(null, args);
-    } else if (j$.isFunction_(result.message)) {
-      return result.message();
+      return this.filter.buildFailureMessage(result, name, args, util, defaultMessage);
     } else {
-      return result.message;
+      return defaultMessage();
+    }
+
+    function defaultMessage() {
+      if (!result.message) {
+        args = args.slice();
+        args.unshift(false);
+        args.unshift(name);
+        return util.buildFailureMessage.apply(null, args);
+      } else if (j$.isFunction_(result.message)) {
+        return result.message();
+      } else {
+        return result.message;
+      }
     }
   };
 
@@ -91,8 +99,15 @@ getJasmineRequireObj().Expectation = function(j$) {
     expect.not = Object.create(expect);
     expect.not.filter = negatingFilter;
 
+    expect.withContext = function(message) {
+      var filteredExpect = Object.create(expect);
+      filteredExpect.filter = new ContextAddingFilter(message);
+      return filteredExpect;
+    };
+
     return expect;
   };
+
 
   var negatingFilter = {
     selectComparisonFunc: function(matcher) {
@@ -118,6 +133,15 @@ getJasmineRequireObj().Expectation = function(j$) {
       args.unshift(matcherName);
       return util.buildFailureMessage.apply(null, args);
     }
+  };
+
+
+  function ContextAddingFilter(message) {
+    this.message = message;
+  }
+
+  ContextAddingFilter.prototype.buildFailureMessage = function(result, matcherName, args, util, getDefaultMessage) {
+    return this.message + ': ' + getDefaultMessage();
   };
 
   return Expectation;

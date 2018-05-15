@@ -488,5 +488,88 @@ describe("Expectation", function() {
       error: customError
     });
   });
+
+  describe("#withContext", function() {
+    it("prepends the context to the generated failure message", function() {
+      var matchers = {
+          toFoo: function() {
+            return {
+              compare: function() { return { pass: false }; }
+            };
+          }
+        },
+        util = {
+          buildFailureMessage: function() { return "failure message"; }
+        },
+        addExpectationResult = jasmine.createSpy("addExpectationResult"),
+        expectation = jasmineUnderTest.Expectation.Factory({
+          customMatchers: matchers,
+          util: util,
+          actual: "an actual",
+          addExpectationResult: addExpectationResult
+        });
+  
+      expectation.withContext("Some context").toFoo("hello");
+  
+      expect(addExpectationResult).toHaveBeenCalledWith(false,
+        jasmine.objectContaining({
+          message: "Some context: failure message"
+        })
+      );
+    });
+
+    it("prepends the context to a custom failure message", function() {
+      var matchers = {
+          toFoo: function() {
+            return {
+              compare: function() { return { pass: false, message: "msg" }; }
+            };
+          }
+        },
+        addExpectationResult = jasmine.createSpy("addExpectationResult"),
+        expectation = jasmineUnderTest.Expectation.Factory({
+          customMatchers: matchers,
+          actual: "an actual",
+          addExpectationResult: addExpectationResult
+        });
+  
+      expectation.withContext("Some context").toFoo("hello");
+  
+      expect(addExpectationResult).toHaveBeenCalledWith(false,
+        jasmine.objectContaining({
+          message: "Some context: msg"
+        })
+      );
+    });
+
+    it("prepends the context to a custom failure message from a function", function() {
+      var matchers = {
+          toFoo: function() {
+            return {
+              compare: function() {
+                return {
+                  pass: false,
+                  message: function() { return "msg"; }
+                };
+              }
+            };
+          }
+        },
+        addExpectationResult = jasmine.createSpy("addExpectationResult"),
+        expectation = jasmineUnderTest.Expectation.Factory({
+          customMatchers: matchers,
+          actual: "an actual",
+          addExpectationResult: addExpectationResult
+        });
+  
+      expectation.withContext("Some context").toFoo("hello");
+  
+      expect(addExpectationResult).toHaveBeenCalledWith(false,
+        jasmine.objectContaining({
+          message: "Some context: msg"
+        })
+      );
+    });
+  });
 });
 
