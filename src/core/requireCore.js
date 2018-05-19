@@ -37,6 +37,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.Env = jRequire.Env(j$);
     j$.StackTrace = jRequire.StackTrace(j$);
     j$.ExceptionFormatter = jRequire.ExceptionFormatter(j$);
+    j$.ExpectationFilterChain = jRequire.ExpectationFilterChain();
     j$.Expectation = jRequire.Expectation(j$);
     j$.buildExpectationResult = jRequire.buildExpectationResult();
     j$.JsApiReporter = jRequire.JsApiReporter();
