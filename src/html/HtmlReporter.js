@@ -119,7 +119,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       }
 
       symbols.appendChild(createDom('li', {
-          className: noExpectations(result) ? 'jasmine-empty' : 'jasmine-' + result.status,
+          className: this.displaySpecInCorrectFormat(result),
           id: 'spec_' + result.id,
           title: result.fullName
         }
@@ -130,6 +130,17 @@ jasmineRequire.HtmlReporter = function(j$) {
       }
 
       addDeprecationWarnings(result);
+    };
+
+    this.displaySpecInCorrectFormat = function(result) {
+      return noExpectations(result) ? 'jasmine-empty' : this.resultStatus(result.status);
+    };
+
+    this.resultStatus = function(status) {
+      if(status === 'excluded') {
+        return env.hidingDisabled() ?  'jasmine-excluded-no-display' : 'jasmine-excluded';
+      } 
+      return 'jasmine-' + status; 
     };
 
     this.jasmineDone = function(doneResult) {
@@ -323,7 +334,14 @@ jasmineRequire.HtmlReporter = function(j$) {
               id: 'jasmine-random-order',
               type: 'checkbox'
             }),
-            createDom('label', { className: 'jasmine-label', 'for': 'jasmine-random-order' }, 'run tests in random order'))
+            createDom('label', { className: 'jasmine-label', 'for': 'jasmine-random-order' }, 'run tests in random order')),
+          createDom('div', { className: 'jasmine-hide-disabled' },
+            createDom('input', {
+              className: 'jasmine-disabled',
+              id: 'jasmine-hide-disabled',
+              type: 'checkbox'
+            }),
+            createDom('label', { className: 'jasmine-label', 'for': 'jasmine-hide-disabled' }, 'hide disabled tests'))
         )
       );
 
@@ -343,6 +361,12 @@ jasmineRequire.HtmlReporter = function(j$) {
       randomCheckbox.checked = env.randomTests();
       randomCheckbox.onclick = function() {
         navigateWithNewParam('random', !env.randomTests());
+      };
+
+      var hideDisabled = optionsMenuDom.querySelector('#jasmine-hide-disabled');
+      hideDisabled.checked = env.hidingDisabled();
+      hideDisabled.onclick = function() {
+        navigateWithNewParam('hideDisabled', !env.hidingDisabled());
       };
 
       var optionsTrigger = optionsMenuDom.querySelector('.jasmine-trigger'),
