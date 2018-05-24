@@ -26,6 +26,7 @@ getJasmineRequireObj().Env = function(j$) {
     var throwOnExpectationFailure = false;
     var stopOnSpecFailure = false;
     var random = true;
+    var hidingDisabled = false; 
     var seed = null;
     var handlingLoadErrors = true;
     var hasFailures = false;
@@ -192,6 +193,14 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.randomizeTests = function(value) {
       random = !!value;
+    };
+
+    this.hidingDisabled = function(value) { 
+      return hidingDisabled; 
+    };
+
+    this.hideDisabled = function(value) { 
+      hidingDisabled = !!value; 
     };
 
     this.randomTests = function() {

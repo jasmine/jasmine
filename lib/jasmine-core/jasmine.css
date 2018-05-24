@@ -20,6 +20,7 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-failed:before { color: #ca3a11; content: "\d7"; font-weight: bold; margin-left: -1px; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded { font-size: 14px; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded:before { color: #bababa; content: "\02022"; }
+.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded-no-display { font-size: 14px; display: none; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-pending { line-height: 17px; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-pending:before { color: #ba9d37; content: "*"; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-empty { font-size: 14px; }
