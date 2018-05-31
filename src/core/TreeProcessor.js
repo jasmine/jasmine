@@ -174,8 +174,11 @@ getJasmineRequireObj().TreeProcessor = function() {
 
             queueRunnerFactory({
               onComplete: function () {
+                var args = Array.prototype.slice.call(arguments, [0]);
                 node.cleanupBeforeAfter();
-                nodeComplete(node, node.getResult(), done);
+                nodeComplete(node, node.getResult(), function() {
+                  done.apply(undefined, args);
+                });
               },
               queueableFns: [onStart].concat(wrapChildren(node, segmentNumber)),
               userContext: node.sharedUserContext(),

@@ -297,7 +297,7 @@ describe("TreeProcessor", function() {
     node.getResult.and.returnValue({ my: 'result' });
 
     queueRunner.calls.mostRecent().args[0].onComplete();
-    expect(nodeComplete).toHaveBeenCalledWith(node, { my: 'result' }, nodeDone);
+    expect(nodeComplete).toHaveBeenCalledWith(node, { my: 'result' }, jasmine.any(Function));
   });
 
   it("runs a node with children", function() {
@@ -326,6 +326,37 @@ describe("TreeProcessor", function() {
 
     queueableFns[2].fn('bar');
     expect(leaf2.execute).toHaveBeenCalledWith('bar', false);
+  });
+
+  it("cascades errors up the tree", function() {
+    var leaf = new Leaf(),
+        node = new Node({ children: [leaf] }),
+        root = new Node({ children: [node] }),
+        queueRunner = jasmine.createSpy('queueRunner'),
+        nodeComplete = jasmine.createSpy('nodeComplete'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [node.id],
+          nodeComplete: nodeComplete,
+          queueRunnerFactory: queueRunner
+        }),
+        treeComplete = jasmine.createSpy('treeComplete'),
+        nodeDone = jasmine.createSpy('nodeDone');
+
+    processor.execute(treeComplete);
+    var queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
+    queueableFns[0].fn(nodeDone);
+
+    queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
+    expect(queueableFns.length).toBe(2);
+
+    queueableFns[1].fn('foo');
+    expect(leaf.execute).toHaveBeenCalledWith('foo', false);
+
+    queueRunner.calls.mostRecent().args[0].onComplete('things');
+    expect(nodeComplete).toHaveBeenCalled();
+    nodeComplete.calls.mostRecent().args[2]();
+    expect(nodeDone).toHaveBeenCalledWith('things');
   });
 
   it("runs an excluded node with leaf", function() {
@@ -361,7 +392,7 @@ describe("TreeProcessor", function() {
     node.getResult.and.returnValue({ im: 'disabled' });
 
     queueRunner.calls.mostRecent().args[0].onComplete();
-    expect(nodeComplete).toHaveBeenCalledWith(node, { im: 'disabled' }, nodeDone);
+    expect(nodeComplete).toHaveBeenCalledWith(node, { im: 'disabled' }, jasmine.any(Function));
   });
 
   it("runs beforeAlls for a node with children", function() {

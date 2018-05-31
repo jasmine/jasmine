@@ -481,15 +481,18 @@ describe("QueueRunner", function() {
       var queueableFn = { fn: function() { throw new Error("error"); } },
         nextQueueableFn = { fn: jasmine.createSpy("nextFunction") },
         cleanupFn = { fn: jasmine.createSpy("cleanup") },
+        onComplete = jasmine.createSpy("onComplete"),
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn, nextQueueableFn],
           cleanupFns: [cleanupFn],
+          onComplete: onComplete,
           completeOnFirstError: true
         });
 
       queueRunner.execute();
       expect(nextQueueableFn.fn).not.toHaveBeenCalled();
       expect(cleanupFn.fn).toHaveBeenCalled();
+      expect(onComplete).toHaveBeenCalledWith(jasmine.any(jasmineUnderTest.StopExecutionError));
     });
 
     it("does not skip when a cleanup function throws", function() {
