@@ -9,7 +9,7 @@ getJasmineRequireObj().Expectation = function(j$) {
     this.customEqualityTesters = options.customEqualityTesters || [];
     this.actual = options.actual;
     this.addExpectationResult = options.addExpectationResult || function(){};
-    this.isNot = options.isNot;
+    this.filters = new j$.ExpectationFilterChain();
 
     var customMatchers = options.customMatchers || {};
     for (var matcherName in customMatchers) {
@@ -32,12 +32,8 @@ getJasmineRequireObj().Expectation = function(j$) {
 
   Expectation.prototype.instantiateMatcher = function(matcherFactory) {
     var matcher = matcherFactory(this.util, this.customEqualityTesters);
-
-    if (this.filter && this.filter.selectComparisonFunc) {
-      return this.filter.selectComparisonFunc(matcher);
-    }
-
-    return matcher.compare;
+    var comparisonFunc = this.filters.selectComparisonFunc(matcher);
+    return comparisonFunc || matcher.compare;
   };
 
   Expectation.prototype.processResult = function(result, name, expected, args) {
@@ -62,15 +58,15 @@ getJasmineRequireObj().Expectation = function(j$) {
   };
 
   Expectation.prototype.buildMessage = function(result, name, args) {
-    var util = this.util;
+    var util = this.util,
+      msg;
 
     if (result.pass) {
       return '';
-    } else if (this.filter && this.filter.buildFailureMessage) {
-      return this.filter.buildFailureMessage(result, name, args, util, defaultMessage);
-    } else {
-      return defaultMessage();
     }
+
+    msg = this.filters.buildFailureMessage(result, name, args, util, defaultMessage);
+    return this.filters.modifyFailureMessage(msg || defaultMessage());
 
     function defaultMessage() {
       if (!result.message) {
@@ -86,6 +82,12 @@ getJasmineRequireObj().Expectation = function(j$) {
     }
   };
 
+  Expectation.prototype.addFilter = function(filter) {
+    var result = Object.create(this);
+    result.filters = this.filters.addFilter(filter);
+    return result;
+  };
+
   Expectation.addCoreMatchers = function(matchers) {
     var prototype = Expectation.prototype;
     for (var matcherName in matchers) {
@@ -96,13 +98,12 @@ getJasmineRequireObj().Expectation = function(j$) {
 
   Expectation.Factory = function(options) {
     var expect = new Expectation(options || {});
-    expect.not = Object.create(expect);
-    expect.not.filter = negatingFilter;
+    expect.not = expect.addFilter(negatingFilter);
 
     expect.withContext = function(message) {
-      var filteredExpect = Object.create(expect);
-      filteredExpect.filter = new ContextAddingFilter(message);
-      return filteredExpect;
+      var result = this.addFilter(new ContextAddingFilter(message));
+      result.not = result.addFilter(negatingFilter);
+      return result;
     };
 
     return expect;
@@ -140,8 +141,8 @@ getJasmineRequireObj().Expectation = function(j$) {
     this.message = message;
   }
 
-  ContextAddingFilter.prototype.buildFailureMessage = function(result, matcherName, args, util, getDefaultMessage) {
-    return this.message + ': ' + getDefaultMessage();
+  ContextAddingFilter.prototype.modifyFailureMessage = function(msg) {
+    return this.message + ': ' + msg;
   };
 
   return Expectation;

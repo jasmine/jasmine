@@ -570,6 +570,62 @@ describe("Expectation", function() {
         })
       );
     });
+
+    it("works with #not", function() {
+      var matchers = {
+          toFoo: function() {
+            return {
+              compare: function() { return { pass: true }; }
+            };
+          }
+        },
+        addExpectationResult = jasmine.createSpy("addExpectationResult"),
+        expectation = jasmineUnderTest.Expectation.Factory({
+          customMatchers: matchers,
+          util: jasmineUnderTest.matchersUtil,
+          actual: "an actual",
+          addExpectationResult: addExpectationResult
+        });
+  
+      expectation.withContext("Some context").not.toFoo();
+  
+      expect(addExpectationResult).toHaveBeenCalledWith(false,
+        jasmine.objectContaining({
+          message: "Some context: Expected 'an actual' not to foo."
+        })
+      );
+    });
+
+    it("works with #not and a custom message", function() {
+      var customError = new Error("I am a custom error");
+      var matchers = {
+          toFoo: function() {
+            return {
+              compare: function() {
+                return {
+                  pass: true,
+                  message: function() { return "I am a custom message"; },
+                  error: customError
+                };
+              }
+            };
+          }
+        },
+        addExpectationResult = jasmine.createSpy("addExpectationResult"),
+        expectation = jasmineUnderTest.Expectation.Factory({
+          actual: "an actual",
+          customMatchers: matchers,
+          addExpectationResult: addExpectationResult
+        });
+  
+      expectation.withContext("Some context").not.toFoo("hello");
+  
+      expect(addExpectationResult).toHaveBeenCalledWith(false, 
+        jasmine.objectContaining({
+          message: "Some context: I am a custom message",
+        })
+      );
+    });
   });
 });
 
