@@ -120,7 +120,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isPromise = function(obj) {
-    return typeof jasmineGlobal.Promise !== 'undefined' && obj.constructor === jasmineGlobal.Promise;
+    return typeof jasmineGlobal.Promise !== 'undefined' && obj && obj.constructor === jasmineGlobal.Promise;
   };
 
   j$.fnNameFor = function(func) {

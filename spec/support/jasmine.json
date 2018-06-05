@@ -11,6 +11,7 @@
     "helpers/checkForSymbol.js",
     "helpers/checkForTypedArrays.js",
     "helpers/integrationMatchers.js",
+    "helpers/promises.js",
     "helpers/nodeDefineJasmineUnderTest.js"
   ],
   "random": true
