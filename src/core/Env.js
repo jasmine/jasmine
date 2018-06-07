@@ -191,7 +191,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Sets whether Jasmine should throw an Error when an expectation fails.
      * This causes a spec to only have one expectation failure.
-     * @name throwOnExpectationFailure
+     * @name Env#throwOnExpectationFailure
      * @function
      * @param {Boolean} value Whether to throw when a expectation fails
      */
@@ -205,7 +205,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     /**
      * Set whether to stop suite execution when a spec fails
-     * @name stopOnSpecFailure
+     * @name Env#stopOnSpecFailure
      * @function
      * @param {Boolean} value Whether to stop suite execution when a spec fails
      */
@@ -219,7 +219,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     /**
      * Set whether to randomize test execution order
-     * @name randomizeTests
+     * @name Env#randomizeTests
      * @function
      * @param {Boolean} value Whether to randomize execution order
      */
@@ -233,7 +233,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     /**
      * Set the random number seed for spec randomization
-     * @name seed
+     * @name Env#seed
      * @function
      * @param {Number} value The seed value
      */
@@ -249,7 +249,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     /**
-     * @name hideDisabled
+     * @name Env#hideDisabled
      * @function
      */
     this.hideDisabled = function(value) {
@@ -485,7 +485,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     /**
      * Provide a fallback reporter if no other reporters have been specified.
-     * @name provideFallbackReporter
+     * @name Env#provideFallbackReporter
      * @function
      * @param {Reporter} reporterToAdd The reporter
      * @see custom_reporter
@@ -496,7 +496,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     /**
      * Clear all registered reporters
-     * @name clearReporters
+     * @name Env#clearReporters
      * @function
      */
     this.clearReporters = function() {
