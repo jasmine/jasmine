@@ -17,15 +17,8 @@ getJasmineRequireObj().ExpectationFilterChain = function() {
   };
 
   ExpectationFilterChain.prototype.modifyFailureMessage = function(msg) {
-    if (this.prev_) {
-      msg = this.prev_.modifyFailureMessage(msg);
-    }
-
-    if (this.filter_ && this.filter_.modifyFailureMessage) {
-      msg = this.filter_.modifyFailureMessage(msg);
-    }
-
-    return msg;
+    var result = this.callFirst_('modifyFailureMessage', arguments).result;
+    return result || msg;
   };
 
   ExpectationFilterChain.prototype.callFirst_ = function(fname, args) {

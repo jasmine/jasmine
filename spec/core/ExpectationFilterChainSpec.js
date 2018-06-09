@@ -85,20 +85,29 @@ describe('ExpectationFilterChain', function() {
   });
 
   describe('#modifyFailureMessage', function() {
-    it('calls each filter with the return value of the next previously added filter', function() {
+    describe('When no filters have #modifyFailureMessage', function() {
+      it('returns the original message', function() {
+        var chain = new jasmineUnderTest.ExpectationFilterChain();
+        chain.addFilter({});
+        expect(chain.modifyFailureMessage('msg')).toEqual('msg');
+      });
+    });
+
+    describe('When some filters have #modifyFailureMessage', function() {
+      it('calls the first filter that has #modifyFailureMessage', function() {
         var first = jasmine.createSpy('first').and.returnValue('first'),
-          third = jasmine.createSpy('third').and.returnValue('third'),
+          second = jasmine.createSpy('second').and.returnValue('second'),
           chain = new jasmineUnderTest.ExpectationFilterChain()
             .addFilter({modifyFailureMessage: first})
-            .addFilter({})
-            .addFilter({modifyFailureMessage: third}),
+            .addFilter({modifyFailureMessage: second}),
           result;
 
         result = chain.modifyFailureMessage('original');
 
         expect(first).toHaveBeenCalledWith('original');
-        expect(third).toHaveBeenCalledWith('first');
-        expect(result).toEqual('third');
+        expect(second).not.toHaveBeenCalled();
+        expect(result).toEqual('first');
+      });
     });
   });
 });
