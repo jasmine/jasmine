@@ -10,7 +10,6 @@ describe('ExpectationFilterChain', function() {
 
       added.modifyFailureMessage();
       expect(first).toHaveBeenCalled();
-      debugger;
       added.selectComparisonFunc();
       expect(second).toHaveBeenCalled();
     });
@@ -18,7 +17,6 @@ describe('ExpectationFilterChain', function() {
     it('does not modify the original filter chain', function() {
       var orig = new jasmineUnderTest.ExpectationFilterChain({}),
         f = jasmine.createSpy('f');
-
 
       orig.addFilter({selectComparisonFunc: f});
 
@@ -96,7 +94,6 @@ describe('ExpectationFilterChain', function() {
             .addFilter({modifyFailureMessage: third}),
           result;
 
-        debugger;
         result = chain.modifyFailureMessage('original');
 
         expect(first).toHaveBeenCalledWith('original');
