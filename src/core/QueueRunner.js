@@ -105,12 +105,16 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     self.globalErrors.pushListener(handleError);
 
-    if (queueableFn.timeout) {
+    if (queueableFn.timeout !== undefined) {
+      var timeoutInterval = queueableFn.timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
       timeoutId = self.setTimeout(function() {
-        var error = new Error('Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.');
+        var error = new Error(
+          'Timeout - Async callback was not invoked within ' + timeoutInterval + 'ms ' +
+          (queueableFn.timeout ? '(custom timeout)' : '(set by jasmine.DEFAULT_TIMEOUT_INTERVAL)')
+        );
         onException(error);
         next();
-      }, queueableFn.timeout());
+      }, timeoutInterval);
     }
 
     try {
