@@ -1105,7 +1105,6 @@ describe("Env integration", function() {
     });
 
     it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
-      var nodeVersion = typeof process !== 'undefined' && process.versions && process.versions.node.split(".").map(Number);
       var env = createMockedEnv(),
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']);
 
@@ -1113,15 +1112,9 @@ describe("Env integration", function() {
         expect(r.failedExpectations).toEqual([]);
         expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite beforeAll', [ 'Error: Timeout - Async callback was not invoked within 5000ms (custom timeout)' ]);
         expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite afterAll', [ 'Error: Timeout - Async callback was not invoked within 2000ms (custom timeout)' ]);
-        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite beforeEach times out',
-          (nodeVerArr[0] == 4) ? [
-            'Error: Timeout - Async callback was not invoked within 1000ms (custom timeout)',
-          ] : [
-            'Error: Timeout - Async callback was not invoked within 1000ms (custom timeout)',
-            'Error: Timeout - Async callback was not invoked within 10000ms (set by jasmine.DEFAULT_TIMEOUT_INTERVAL)'
-          ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite beforeEach times out', ['Error: Timeout - Async callback was not invoked within 1000ms (custom timeout)']);
         expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite afterEach times out', [ 'Error: Timeout - Async callback was not invoked within 4000ms (custom timeout)' ]);
-        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite it times out', [ 'Error: Timeout - Async callback was not invoked within 6000ms (custom timeout))' ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite it times out', [ 'Error: Timeout - Async callback was not invoked within 6000ms (custom timeout)' ]);
 
         jasmine.clock().tick(1);
         realSetTimeout(done);
