@@ -233,8 +233,8 @@ getJasmineRequireObj().pp = function(j$) {
     if (el.innerHTML === '') {
       this.append(el.outerHTML.replace(closingTag, ''));
     } else {
-      var tagEnd = el.outerHTML.indexOf(el.innerHTML);
-      this.append(el.outerHTML.substring(0, tagEnd));
+      var tagEnd = el.outerHTML.indexOf('>');
+      this.append(el.outerHTML.substring(0, tagEnd + 1));
       this.append('...' + closingTag);
     }
   };

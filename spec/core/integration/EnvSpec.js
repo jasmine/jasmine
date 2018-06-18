@@ -1005,6 +1005,25 @@ describe("Env integration", function() {
 
   describe("with a mock clock", function() {
     var realSetTimeout;
+    function createMockedEnv() {
+      // explicitly pass in timing functions so we can make sure that clear stack always works
+      // no matter how long the suite in the spec is
+      return new jasmineUnderTest.Env({ global: {
+          setTimeout: function(cb, t) {
+            var stack = jasmine.util.errorWithStack().stack;
+            if (stack.indexOf('ClearStack') >= 0) {
+              realSetTimeout(cb, t);
+            } else {
+              setTimeout(cb, t);
+            }
+          },
+          clearTimeout: clearTimeout,
+          setInterval: setInterval,
+          clearInterval: clearInterval,
+          setImmediate: function(cb) { realSetTimeout(cb, 0); }
+        }});
+    }
+
     beforeEach(function() {
       this.originalTimeout = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
       realSetTimeout = setTimeout;
@@ -1019,7 +1038,7 @@ describe("Env integration", function() {
     });
 
     it("should wait a default interval before failing specs that haven't called done yet", function(done) {
-      var env = new jasmineUnderTest.Env(),
+      var env = createMockedEnv(),
           reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]);
 
       reporter.specDone.and.callFake(function(result) {
@@ -1048,7 +1067,7 @@ describe("Env integration", function() {
     });
 
     it("should not use the mock clock for asynchronous timeouts", function(done){
-      var env = new jasmineUnderTest.Env(),
+      var env = createMockedEnv(),
         reporter = jasmine.createSpyObj('fakeReporter', [ "specDone", "jasmineDone" ]),
         clock = env.clock;
 
@@ -1086,23 +1105,13 @@ describe("Env integration", function() {
     });
 
     it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
-      var env = new jasmineUnderTest.Env(),
+      var env = createMockedEnv(),
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']),
           timeoutFailure = (/^Error: Timeout - Async callback was not invoked within timeout specified by jasmine\.DEFAULT_TIMEOUT_INTERVAL\./);
 
-      reporter.specDone.and.callFake(function(r) {
-        realSetTimeout(function() {
-          jasmine.clock().tick(1);
-        }, 0);
-      });
 
-      reporter.suiteDone.and.callFake(function(r) {
-        realSetTimeout(function() {
-          jasmine.clock().tick(1);
-        }, 0);
-      });
-
-      reporter.jasmineDone.and.callFake(function() {
+      reporter.jasmineDone.and.callFake(function(r) {
+        expect(r.failedExpectations).toEqual([]);
         expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite beforeAll', [ timeoutFailure ]);
         expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite afterAll', [ timeoutFailure ]);
         expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite beforeEach times out', [ timeoutFailure ]);
@@ -2402,6 +2411,108 @@ describe("Env integration", function() {
       env.it('spec', function() {
         env.deprecated(specLevelError);
       });
+    });
+
+    env.execute();
+  });
+
+  it('supports async matchers', function(done) {
+    jasmine.getEnv().requirePromises();
+
+    var env = new jasmineUnderTest.Env(),
+        specDone = jasmine.createSpy('specDone'),
+        suiteDone = jasmine.createSpy('suiteDone');
+
+    env.addReporter({
+      specDone: specDone,
+      suiteDone: suiteDone,
+      jasmineDone: function(result) {
+        expect(result.failedExpectations).toEqual([jasmine.objectContaining({
+            message: 'Expected a promise to be rejected.'
+        })]);
+
+        expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          description: 'has an async failure',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Expected a promise to be rejected.'
+          })]
+        }));
+
+        expect(suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          description: 'a suite',
+          failedExpectations: [jasmine.objectContaining({
+            message: 'Expected a promise to be rejected.'
+          })]
+        }));
+
+        done();
+      }
+    });
+
+    function fail(innerDone) {
+      var resolve;
+      var p = new Promise(function(res, rej) { resolve = res });
+      env.expectAsync(p).toBeRejected().then(innerDone);
+      resolve();
+    }
+
+    env.afterAll(fail);
+    env.describe('a suite', function() {
+      env.afterAll(fail);
+      env.it('has an async failure', fail);
+    });
+
+    env.execute();
+  });
+
+  it('provides custom equality testers to async matchers', function(done) {
+    jasmine.getEnv().requirePromises();
+
+    var env = new jasmineUnderTest.Env(),
+        specDone = jasmine.createSpy('specDone');
+
+    env.addReporter({
+      specDone: specDone,
+      jasmineDone: function() {
+        expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          description: 'has an async failure',
+          failedExpectations: []
+        }));
+        done();
+      }
+    });
+
+    env.it('has an async failure', function() {
+      env.addCustomEqualityTester(function() { return true; });
+      var p = Promise.resolve('something');
+      return env.expectAsync(p).toBeResolvedTo('something else');
+    });
+
+    env.execute();
+  });
+
+  it('includes useful stack frames in async matcher failures', function(done) {
+    jasmine.getEnv().requirePromises();
+
+    var env = new jasmineUnderTest.Env(),
+        specDone = jasmine.createSpy('specDone');
+
+    env.addReporter({
+      specDone: specDone,
+      jasmineDone: function() {
+        expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
+          failedExpectations: [jasmine.objectContaining({
+            stack: jasmine.stringMatching('EnvSpec.js')
+          })]
+        }));
+        done();
+      }
+    });
+
+    env.it('has an async failure', function() {
+      env.addCustomEqualityTester(function() { return true; });
+      var p = Promise.resolve();
+      return env.expectAsync(p).toBeRejected();
     });
 
     env.execute();

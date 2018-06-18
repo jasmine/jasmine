@@ -24,4 +24,11 @@ describe("jasmineUnderTest.pp (HTML Dependent)", function () {
       expect(jasmineUnderTest.pp(err)).toMatch(/Not enough arguments/);
     }
   });
+
+  it("should stringify HTML element with text and attributes", function() {
+    var el = document.createElement('div');
+    el.setAttribute('things', 'foo');
+    el.innerHTML = 'foo';
+    expect(jasmineUnderTest.pp(el)).toEqual('<div things="foo">...</div>');
+  });
 });

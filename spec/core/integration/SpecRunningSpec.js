@@ -952,13 +952,17 @@ describe("spec running", function () {
     it("does not run further specs when one fails", function(done) {
       var actions = [];
 
-      env.it('fails', function() {
-        actions.push('fails');
-        env.expect(1).toBe(2);
+      env.describe('wrapper', function() {
+        env.it('fails', function() {
+          actions.push('fails');
+          env.expect(1).toBe(2);
+        });
       });
 
-      env.it('does not run', function() {
-        actions.push('does not run');
+      env.describe('holder', function() {
+        env.it('does not run', function() {
+          actions.push('does not run');
+        });
       });
 
       env.randomizeTests(false);

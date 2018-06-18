@@ -5,6 +5,7 @@ getJasmineRequireObj().Suite = function(j$) {
     this.parentSuite = attrs.parentSuite;
     this.description = attrs.description;
     this.expectationFactory = attrs.expectationFactory;
+    this.asyncExpectationFactory = attrs.asyncExpectationFactory;
     this.expectationResultFactory = attrs.expectationResultFactory;
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
@@ -35,6 +36,10 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.expect = function(actual) {
     return this.expectationFactory(actual, this);
+  };
+
+  Suite.prototype.expectAsync = function(actual) {
+    return this.asyncExpectationFactory(actual, this);
   };
 
   Suite.prototype.getFullName = function() {

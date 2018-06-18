@@ -26,6 +26,7 @@ getJasmineRequireObj().Env = function(j$) {
     var throwOnExpectationFailure = false;
     var stopOnSpecFailure = false;
     var random = true;
+    var hidingDisabled = false;
     var seed = null;
     var handlingLoadErrors = true;
     var hasFailures = false;
@@ -116,6 +117,19 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
+    var asyncExpectationFactory = function(actual, spec) {
+      return j$.AsyncExpectation.factory({
+        util: j$.matchersUtil,
+        customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
+        actual: actual,
+        addExpectationResult: addExpectationResult
+      });
+
+      function addExpectationResult(passed, result) {
+        return spec.addExpectationResult(passed, result);
+      }
+    };
+
     var defaultResourcesForRunnable = function(id, parentRunnableId) {
       var resources = {spies: [], customEqualityTesters: [], customMatchers: {}, customSpyStrategies: {}};
 
@@ -174,6 +188,13 @@ getJasmineRequireObj().Env = function(j$) {
     var maximumSpecCallbackDepth = 20;
     var currentSpecCallbackDepth = 0;
 
+    /**
+     * Sets whether Jasmine should throw an Error when an expectation fails.
+     * This causes a spec to only have one expectation failure.
+     * @name Env#throwOnExpectationFailure
+     * @function
+     * @param {Boolean} value Whether to throw when a expectation fails
+     */
     this.throwOnExpectationFailure = function(value) {
       throwOnExpectationFailure = !!value;
     };
@@ -182,6 +203,12 @@ getJasmineRequireObj().Env = function(j$) {
       return throwOnExpectationFailure;
     };
 
+    /**
+     * Set whether to stop suite execution when a spec fails
+     * @name Env#stopOnSpecFailure
+     * @function
+     * @param {Boolean} value Whether to stop suite execution when a spec fails
+     */
     this.stopOnSpecFailure = function(value) {
       stopOnSpecFailure = !!value;
     };
@@ -190,6 +217,12 @@ getJasmineRequireObj().Env = function(j$) {
       return stopOnSpecFailure;
     };
 
+    /**
+     * Set whether to randomize test execution order
+     * @name Env#randomizeTests
+     * @function
+     * @param {Boolean} value Whether to randomize execution order
+     */
     this.randomizeTests = function(value) {
       random = !!value;
     };
@@ -198,11 +231,29 @@ getJasmineRequireObj().Env = function(j$) {
       return random;
     };
 
+    /**
+     * Set the random number seed for spec randomization
+     * @name Env#seed
+     * @function
+     * @param {Number} value The seed value
+     */
     this.seed = function(value) {
       if (value) {
         seed = value;
       }
       return seed;
+    };
+
+    this.hidingDisabled = function(value) {
+      return hidingDisabled;
+    };
+
+    /**
+     * @name Env#hideDisabled
+     * @function
+     */
+    this.hideDisabled = function(value) {
+      hidingDisabled = !!value;
     };
 
     this.deprecated = function(deprecation) {
@@ -238,6 +289,7 @@ getJasmineRequireObj().Env = function(j$) {
       id: getNextSuiteId(),
       description: 'Jasmine__TopLevel__Suite',
       expectationFactory: expectationFactory,
+      asyncExpectationFactory: asyncExpectationFactory,
       expectationResultFactory: expectationResultFactory
     });
     defaultResourcesForRunnable(topSuite.id);
@@ -404,7 +456,7 @@ getJasmineRequireObj().Env = function(j$) {
            * Information passed to the {@link Reporter#jasmineDone} event.
            * @typedef JasmineDoneInfo
            * @property {OverallStatus} overallStatus - The overall result of the sute: 'passed', 'failed', or 'incomplete'.
-           * @property {IncompleteReason} incompleteReason - Explanation of why the suite was incimplete.
+           * @property {IncompleteReason} incompleteReason - Explanation of why the suite was incomplete.
            * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
            * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
            * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
@@ -431,10 +483,22 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.addReporter(reporterToAdd);
     };
 
+    /**
+     * Provide a fallback reporter if no other reporters have been specified.
+     * @name Env#provideFallbackReporter
+     * @function
+     * @param {Reporter} reporterToAdd The reporter
+     * @see custom_reporter
+     */
     this.provideFallbackReporter = function(reporterToAdd) {
       reporter.provideFallbackReporter(reporterToAdd);
     };
 
+    /**
+     * Clear all registered reporters
+     * @name Env#clearReporters
+     * @function
+     */
     this.clearReporters = function() {
       reporter.clearReporters();
     };
@@ -474,6 +538,11 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.createSpy = function(name, originalFn) {
+      if (arguments.length === 1 && j$.isFunction_(name)) {
+        originalFn = name;
+        name = originalFn.name;
+      }
+
       return spyFactory.createSpy(name, originalFn);
     };
 
@@ -507,6 +576,7 @@ getJasmineRequireObj().Env = function(j$) {
         description: description,
         parentSuite: currentDeclarationSuite,
         expectationFactory: expectationFactory,
+        asyncExpectationFactory: asyncExpectationFactory,
         expectationResultFactory: expectationResultFactory,
         throwOnExpectationFailure: throwOnExpectationFailure
       });
@@ -600,6 +670,7 @@ getJasmineRequireObj().Env = function(j$) {
         id: getNextSpecId(),
         beforeAndAfterFns: beforeAndAfterFns(suite),
         expectationFactory: expectationFactory,
+        asyncExpectationFactory: asyncExpectationFactory,
         resultCallback: specResultCallback,
         getSpecName: function(spec) {
           return getSpecName(spec, suite);
@@ -679,6 +750,14 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       return currentRunnable().expect(actual);
+    };
+
+    this.expectAsync = function(actual) {
+      if (!currentRunnable()) {
+        throw new Error('\'expectAsync\' was used when there was no current spec, this could be because an asynchronous test timed out');
+      }
+
+      return currentRunnable().expectAsync(actual);
     };
 
     this.beforeEach = function(beforeEachFunction, timeout) {

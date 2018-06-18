@@ -135,13 +135,18 @@ body {
         }
       }
 
-        &.jasmine-excluded {
+       &.jasmine-excluded {
           font-size: 14px;
 
           &:before {
             color: $neutral-color;
             content: "\02022";
           }
+        }
+
+        &.jasmine-excluded-no-display {
+          font-size: 14px;
+          display: none;
         }
 
       &.jasmine-pending {
@@ -294,7 +299,7 @@ body {
 
       &.jasmine-excluded a {
         color: $neutral-color;
-      }
+      } 
     }
   }
 
@@ -332,7 +337,7 @@ body {
 
     color: $text-color;
 
-    white-space: pre;
+    white-space: pre-wrap;
   }
 
   .jasmine-result-message span.jasmine-result {

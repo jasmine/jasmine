@@ -570,50 +570,67 @@ describe("toEqual", function() {
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
 
-  function isNotRunningInBrowser() {
-    return typeof document === 'undefined'
-  }
-
-  it("reports mismatches between DOM nodes with different tags", function() {
-    if(isNotRunningInBrowser()) {
-      return;
+  describe('DOM nodes', function() {
+    function isNotRunningInBrowser() {
+      return typeof document === 'undefined'
     }
 
-    var actual = {a: document.createElement('div')},
-      expected = {a: document.createElement('p')},
+    beforeEach(function(done) {
+      this.nonBrowser = isNotRunningInBrowser();
+      if (this.nonBrowser) {
+        var jsdom = require('jsdom');
+        var self = this;
+        jsdom.env('', function(err, win) {
+          if (err) {
+            done.fail(err);
+          } else {
+            jasmineUnderTest.getGlobal().Node = win.Node;
+            self.doc = win.document;
+            done();
+          }
+        });
+      } else {
+        this.doc = document;
+        done();
+      }
+    });
+
+    afterEach(function() {
+      if (this.nonBrowser) {
+        delete jasmineUnderTest.getGlobal().Node;
+      }
+    });
+
+    it("reports mismatches between DOM nodes with different tags", function() {
+      var actual = {a: this.doc.createElement('div')},
+      expected = {a: this.doc.createElement('p')},
       message = 'Expected $.a = <div> to equal <p>.';
 
-    expect(compareEquals(actual, expected).message).toEqual(message);
-  });
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
 
-  it('reports mismatches between DOM nodes with different content', function() {
-    if(isNotRunningInBrowser()) {
-      return;
-    }
+    it('reports mismatches between DOM nodes with different content', function() {
+      var nodeA = this.doc.createElement('div'),
+      nodeB = this.doc.createElement('div');
 
-    var nodeA = document.createElement('div'),
-      nodeB = document.createElement('div');
+      nodeA.setAttribute('thing', 'foo');
+      nodeB.setAttribute('thing', 'bar');
 
-    nodeA.innerText = 'foo';
-    nodeB.innerText = 'bar';
-
-    var actual = {a: nodeA},
+      expect(nodeA.isEqualNode(nodeB)).toBe(false);
+      var actual = {a: nodeA},
       expected = {a: nodeB},
-      message = 'Expected $.a = <div>...</div> to equal <div>...</div>.';
+      message = 'Expected $.a = <div thing="foo"> to equal <div thing="bar">.';
 
-    expect(compareEquals(actual, expected).message).toEqual(message);
-  });
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
 
-  it("reports mismatches between a DOM node and a bare Object", function() {
-    if(isNotRunningInBrowser()) {
-      return;
-    }
-
-    var actual = {a: document.createElement('div')},
+    it("reports mismatches between a DOM node and a bare Object", function() {
+      var actual = {a: this.doc.createElement('div')},
       expected = {a: {}},
       message = 'Expected $.a = <div> to equal Object({  }).';
 
-    expect(compareEquals(actual, expected).message).toEqual(message);
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
   });
 
   it("reports asymmetric mismatches", function() {

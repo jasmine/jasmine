@@ -159,7 +159,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         return;
       }
 
-      self.errored = result.errored;
+      self.errored = self.errored || result.errored;
 
       if (this.completeOnFirstError && result.errored) {
         this.skipToCleanup(iterativeIndex);

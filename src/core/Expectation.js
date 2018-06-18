@@ -21,7 +21,7 @@ getJasmineRequireObj().Expectation = function() {
     return function() {
       var args = Array.prototype.slice.call(arguments, 0),
         expected = args.slice(0),
-        message = '';
+        message;
 
       args.unshift(this.actual);
 
@@ -39,20 +39,7 @@ getJasmineRequireObj().Expectation = function() {
       }
 
       var result = matcherCompare.apply(null, args);
-
-      if (!result.pass) {
-        if (!result.message) {
-          args.unshift(this.isNot);
-          args.unshift(name);
-          message = this.util.buildFailureMessage.apply(null, args);
-        } else {
-          if (Object.prototype.toString.apply(result.message) === '[object Function]') {
-            message = result.message();
-          } else {
-            message = result.message;
-          }
-        }
-      }
+      message = Expectation.finalizeMessage(this.util, name, this.isNot, args, result);
 
       if (expected.length == 1) {
         expected = expected[0];
@@ -71,6 +58,23 @@ getJasmineRequireObj().Expectation = function() {
         }
       );
     };
+  };
+
+  Expectation.finalizeMessage = function(util, name, isNot, args, result) {
+    if (result.pass) {
+      return '';
+    } else if (result.message) {
+      if (Object.prototype.toString.apply(result.message) === '[object Function]') {
+        return result.message();
+      } else {
+        return result.message;
+      }
+    } else {
+      args = args.slice();
+      args.unshift(isNot);
+      args.unshift(name);
+      return util.buildFailureMessage.apply(null, args);
+    }
   };
 
   Expectation.addCoreMatchers = function(matchers) {
