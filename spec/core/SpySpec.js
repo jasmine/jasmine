@@ -77,7 +77,7 @@ describe('Spies', function () {
 
       for (var arity = 0; arity < functions.length; arity++) {
         var someFunction = functions[arity],
-            spy = env.createSpy(someFunction.name, someFunction);
+          spy = env.createSpy(someFunction.name, someFunction);
 
         expect(spy.length).toEqual(arity);
       }
@@ -95,6 +95,22 @@ describe('Spies', function () {
       expect(spyObj.method2.and.identity).toEqual('BaseName.method2');
     });
 
+    it("should create an object with spy methods and properties and their corresponding return values when you call jasmine.createSpyObj() with objects", function () {
+      var spyObj = env.createSpyObj('BaseName', {'method1': 42, 'method2': 'special sauce' }, {'property1': 'sweet chilly', 'property2': 11 });
+
+      expect(spyObj.method1()).toEqual(42);
+      expect(spyObj.method1.and.identity).toEqual('BaseName.method1');
+
+      expect(spyObj.method2()).toEqual('special sauce');
+      expect(spyObj.method2.and.identity).toEqual('BaseName.method2');
+
+      expect(spyObj.property1()).toEqual('sweet chilly');
+      expect(spyObj.property1.and.identity).toEqual('BaseName.property1');
+
+      expect(spyObj.property2()).toEqual(11);
+      expect(spyObj.property2.and.identity).toEqual('BaseName.property2');
+    });
+
 
     it("should create an object with a bunch of spy methods when you call jasmine.createSpyObj()", function() {
       var spyObj = env.createSpyObj('BaseName', ['method1', 'method2']);
@@ -104,12 +120,22 @@ describe('Spies', function () {
       expect(spyObj.method2.and.identity).toEqual('BaseName.method2');
     });
 
-    it("should allow you to omit the baseName", function() {
-      var spyObj = env.createSpyObj(['method1', 'method2']);
+    it("should create an object with a bunch of spy methods and properties when you call jasmine.createSpyObj()", function() {
+      var spyObj = env.createSpyObj('BaseName', ['method1', 'method2'], ['property1', 'property2']);
 
-      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
+      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function), property1: jasmine.any(Function), property2: jasmine.any(Function)});
+      expect(spyObj.property1.and.identity).toEqual('BaseName.property1');
+      expect(spyObj.property2.and.identity).toEqual('BaseName.property2');
+    });
+
+    it("should allow you to omit the baseName", function() {
+      var spyObj = env.createSpyObj(['method1', 'method2'], ['property1', 'property2']);
+
+      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function), property1: jasmine.any(Function), property2: jasmine.any(Function)});
       expect(spyObj.method1.and.identity).toEqual('unknown.method1');
       expect(spyObj.method2.and.identity).toEqual('unknown.method2');
+      expect(spyObj.property1.and.identity).toEqual('unknown.property1');
+      expect(spyObj.property2.and.identity).toEqual('unknown.property2');
     });
 
     it("should throw if you do not pass an array or object argument", function() {
@@ -127,6 +153,18 @@ describe('Spies', function () {
     it("should throw if you pass an empty object argument", function() {
       expect(function() {
         env.createSpyObj('BaseName', {});
+      }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
+    });
+
+    it("should throw if you pass two empty arrays as arguments", function() {
+      expect(function() {
+        env.createSpyObj('BaseName', [], []);
+      }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
+    });
+
+    it("should throw if you pass two empty objects as arguments", function() {
+      expect(function() {
+        env.createSpyObj('BaseName', {}, {});
       }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
     });
   });
