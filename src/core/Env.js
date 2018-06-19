@@ -682,7 +682,7 @@ getJasmineRequireObj().Env = function(j$) {
         userContext: function() { return suite.clonedSharedUserContext(); },
         queueableFn: {
           fn: fn,
-          timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+          timeout: timeout || 0
         },
         throwOnExpectationFailure: throwOnExpectationFailure
       });
@@ -765,7 +765,7 @@ getJasmineRequireObj().Env = function(j$) {
       ensureIsFunctionOrAsync(beforeEachFunction, 'beforeEach');
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+        timeout: timeout || 0
       });
     };
 
@@ -774,7 +774,7 @@ getJasmineRequireObj().Env = function(j$) {
       ensureIsFunctionOrAsync(beforeAllFunction, 'beforeAll');
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+        timeout: timeout || 0
       });
     };
 
@@ -784,7 +784,7 @@ getJasmineRequireObj().Env = function(j$) {
       afterEachFunction.isCleanup = true;
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+        timeout: timeout || 0
       });
     };
 
@@ -793,7 +793,7 @@ getJasmineRequireObj().Env = function(j$) {
       ensureIsFunctionOrAsync(afterAllFunction, 'afterAll');
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
-        timeout: function() { return timeout || j$.DEFAULT_TIMEOUT_INTERVAL; }
+        timeout: timeout || 0
       });
     };
 
