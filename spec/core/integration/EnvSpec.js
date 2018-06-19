@@ -1110,11 +1110,11 @@ describe("Env integration", function() {
 
       reporter.jasmineDone.and.callFake(function(r) {
         expect(r.failedExpectations).toEqual([]);
-        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite beforeAll', [ 'Error: Timeout - Async callback was not invoked within 5000ms (custom timeout)' ]);
-        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite afterAll', [ 'Error: Timeout - Async callback was not invoked within 2000ms (custom timeout)' ]);
-        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite beforeEach times out', ['Error: Timeout - Async callback was not invoked within 1000ms (custom timeout)']);
-        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite afterEach times out', [ 'Error: Timeout - Async callback was not invoked within 4000ms (custom timeout)' ]);
-        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite it times out', [ 'Error: Timeout - Async callback was not invoked within 6000ms (custom timeout)' ]);
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite beforeAll', [ /^Error: Timeout - Async callback was not invoked within 5000ms \(custom timeout\)/ ]);
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite afterAll', [ /^Error: Timeout - Async callback was not invoked within 2000ms \(custom timeout\)/ ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite beforeEach times out', [/^Error: Timeout - Async callback was not invoked within 1000ms \(custom timeout\)/]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite afterEach times out', [ /^Error: Timeout - Async callback was not invoked within 4000ms \(custom timeout\)/ ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite it times out', [ /^Error: Timeout - Async callback was not invoked within 6000ms \(custom timeout\)/ ]);
 
         jasmine.clock().tick(1);
         realSetTimeout(done);
