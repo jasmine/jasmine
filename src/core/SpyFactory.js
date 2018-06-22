@@ -8,9 +8,9 @@ getJasmineRequireObj().SpyFactory = function(j$) {
         };
 
         this.createSpyObj = function(baseName, methodNames, propertyNames) {
-            var baseNameOrMethodNamesAreCollections = j$.isObject_(baseName) || j$.isArray_(baseName) || j$.isObject_(propertyNames) || j$.isArray_(propertyNames);
+            var baseNameIsCollection = j$.isObject_(baseName) || j$.isArray_(baseName);
 
-            if (baseNameOrMethodNamesAreCollections && j$.util.isUndefined(propertyNames)) {
+            if (baseNameIsCollection && j$.util.isUndefined(propertyNames)) {
                 propertyNames = methodNames;
                 methodNames = baseName;
                 baseName = 'unknown';

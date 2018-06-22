@@ -140,7 +140,15 @@ describe('Spies', function () {
       expect(spyObj.property2.and.identity).toEqual('BaseName.property2');
     });
 
-    it("should allow you to omit the baseName", function() {
+    it("should allow you to omit the baseName without propertyNames parameter", function() {
+      var spyObj = env.createSpyObj(['method1', 'method2']);
+
+      expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function)});
+      expect(spyObj.method1.and.identity).toEqual('unknown.method1');
+      expect(spyObj.method2.and.identity).toEqual('unknown.method2')
+    });
+
+    it("should allow you to omit the baseName with propertyNames parameter", function() {
       var spyObj = env.createSpyObj(['method1', 'method2'], ['property1', 'property2']);
 
       expect(spyObj).toEqual({ method1: jasmine.any(Function), method2: jasmine.any(Function), property1: jasmine.any(Function), property2: jasmine.any(Function)});
