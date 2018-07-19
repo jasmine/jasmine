@@ -214,6 +214,97 @@ describe("SpyRegistry", function() {
     });
   });
 
+  describe("#spyOnAllFunctions", function() {
+    it("checks for the existence of the object", function() {
+      var spyRegistry = new jasmineUnderTest.SpyRegistry();
+      expect(function() {
+        spyRegistry.spyOnAllFunctions(void 0);
+      }).toThrowError(/spyOnAllFunctions could not find an object to spy upon/);
+    });
+
+    it("overrides all writable and configurable functions of the object", function() {
+      var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: function() {
+        return 'I am a spy';
+      }});
+      var createNoop = function() { return function() { /**/}; };
+      var noop1 = createNoop();
+      var noop2 = createNoop();
+      var noop3 = createNoop();
+      var noop4 = createNoop();
+      var noop5 = createNoop();
+
+      var parent = {
+        notSpied1: noop1
+      };
+      var subject = Object.create(parent);
+      Object.defineProperty(subject, 'spied1', {
+        value: noop1,
+        writable: true,
+        configurable: true,
+        enumerable: true
+      });
+      Object.defineProperty(subject, 'spied2', {
+        value: noop2,
+        writable: true,
+        configurable: true,
+        enumerable: true
+      });
+      var _spied3 = noop3;
+      Object.defineProperty(subject, 'spied3', {
+        configurable: true,
+        set: function (val) {
+          _spied3 = val;
+        },
+        get: function() {
+          return _spied3;
+        },
+        enumerable: true
+      });
+      subject.spied4 = noop4;
+      Object.defineProperty(subject, 'notSpied2', {
+        value: noop2,
+        writable: false,
+        configurable: true,
+        enumerable: true
+      });
+      Object.defineProperty(subject, 'notSpied3', {
+        value: noop3,
+        writable: true,
+        configurable: false,
+        enumerable: true
+      });
+      Object.defineProperty(subject, 'notSpied4', {
+        configurable: false,
+        set: function(val) { /**/ },
+        get: function() {
+          return noop4;
+        },
+        enumerable: true
+      });
+      Object.defineProperty(subject, 'notSpied5', {
+        value: noop5,
+        writable: true,
+        configurable: true,
+        enumerable: false
+      });
+      subject.notSpied6 = 6;
+
+      var spiedObject = spyRegistry.spyOnAllFunctions(subject);
+
+      expect(subject.notSpied1).toBe(noop1);
+      expect(subject.notSpied2).toBe(noop2);
+      expect(subject.notSpied3).toBe(noop3);
+      expect(subject.notSpied4).toBe(noop4);
+      expect(subject.notSpied5).toBe(noop5);
+      expect(subject.notSpied6).toBe(6);
+      expect(subject.spied1).toBe('I am a spy');
+      expect(subject.spied2).toBe('I am a spy');
+      expect(subject.spied3).toBe('I am a spy');
+      expect(subject.spied4).toBe('I am a spy');
+      expect(spiedObject).toBe(subject);
+    });
+  });
+
   describe("#clearSpies", function() {
     it("restores the original functions on the spied-upon objects", function() {
       var spies = [],
