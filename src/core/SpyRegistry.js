@@ -120,6 +120,23 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       return spy;
     };
 
+    this.spyOnAllFunctions = function(obj) {
+      if (j$.util.isUndefined(obj)) {
+        throw new Error('spyOnAllFunctions could not find an object to spy upon');
+      }
+
+      for (var prop in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, prop) && obj[prop] instanceof Function) {
+          var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+          if ((descriptor.writable || descriptor.set) && descriptor.configurable) {
+            this.spyOn(obj, prop);
+          }
+        }
+      }
+
+      return obj;
+    };
+
     this.clearSpies = function() {
       var spies = currentSpies();
       for (var i = spies.length - 1; i >= 0; i--) {

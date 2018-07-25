@@ -235,6 +235,18 @@ getJasmineRequireObj().interface = function(jasmine, env) {
       return env.spyOnProperty(obj, methodName, accessType);
     },
 
+    /**
+     * Installs spies on all writable and configurable properties of an object.
+     * @name spyOnProperty
+     * @function
+     * @global
+     * @param {Object} obj - The object upon which to install the {@link Spy}s
+     * @returns {Object} the spied object
+     */
+    spyOnAllFunctions: function(obj) {
+      return env.spyOnAllFunctions(obj);
+    },
+
     jsApiReporter: new jasmine.JsApiReporter({
       timer: new jasmine.Timer()
     }),
