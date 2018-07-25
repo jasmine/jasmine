@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jasmine/jasmine.svg?branch=master)](https://travis-ci.org/jasmine/jasmine)
 [![Open Source Helpers](https://www.codetriage.com/jasmine/jasmine/badges/users.svg)](https://www.codetriage.com/jasmine/jasmine)
+[![Mentioned in Awesome JavaScript](https://awesome.re/mentioned-badge.svg)](https://github.com/sorrycc/awesome-javascript)
 
 # A JavaScript Testing Framework
 
