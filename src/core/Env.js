@@ -537,6 +537,10 @@ getJasmineRequireObj().Env = function(j$) {
       return spyRegistry.spyOnProperty.apply(spyRegistry, arguments);
     };
 
+    this.spyOnAllFunctions = function() {
+      return spyRegistry.spyOnAllFunctions.apply(spyRegistry, arguments);
+    };
+
     this.createSpy = function(name, originalFn) {
       if (arguments.length === 1 && j$.isFunction_(name)) {
         originalFn = name;

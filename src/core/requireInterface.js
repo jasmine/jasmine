@@ -237,7 +237,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
 
     /**
      * Installs spies on all writable and configurable properties of an object.
-     * @name spyOnProperty
+     * @name spyOnAllFunctions
      * @function
      * @global
      * @param {Object} obj - The object upon which to install the {@link Spy}s
