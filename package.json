@@ -16,7 +16,7 @@
     "test": "grunt jshint execSpecsInNode"
   },
   "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
-  "homepage": "http://jasmine.github.io",
+  "homepage": "https://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
   "devDependencies": {
     "glob": "~7.1.2",
