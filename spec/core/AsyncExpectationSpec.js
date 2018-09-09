@@ -178,40 +178,52 @@ describe('AsyncExpectation', function() {
       });
     });
 
-    it('builds its message correctly when negated', function() {
+  });
+
+  describe('#toBeRejectedWith', function() {
+    it('passes if the promise is resolved to the expected value', function() {
       jasmine.getEnv().requirePromises();
 
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = jasmineUnderTest.AsyncExpectation.factory({
-          util: jasmineUnderTest.matchersUtil,
-          actual: Promise.resolve(true),
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.not.toBeResolvedTo(true).then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(false,
-          jasmine.objectContaining({
-            passed: false,
-            message: 'Expected a promise not to be resolved to true.'
-          })
-        );
-      });
-    });
-
-    it('supports custom equality testers', function() {
-      jasmine.getEnv().requirePromises();
-
+      var actual = Promise.resolve({foo: 42});
       var addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = new jasmineUnderTest.AsyncExpectation({
           util: jasmineUnderTest.matchersUtil,
-          customEqualityTesters: [function() { return true; }],
-          actual: Promise.resolve('actual'),
+          actual: actual,
           addExpectationResult: addExpectationResult
         });
 
-      return expectation.toBeResolvedTo('expected').then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(true,
-          jasmine.objectContaining({passed: true}));
+      return expectation.toBeRejectedWith({foo: 42}).then(function() {
+        expect(addExpectationResult).toHaveBeenCalledWith(true, {
+          matcherName: 'toBeRejectedWith',
+          passed: true,
+          message: '',
+          error: undefined,
+          errorForStack: jasmine.any(Error),
+          actual: actual
+        });
+      });
+    });
+
+    it('fails if the promise is resolved to a different value', function() {
+      jasmine.getEnv().requirePromises();
+
+      var actual = Promise.resolve({foo: 17});
+      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        expectation = new jasmineUnderTest.AsyncExpectation({
+          util: jasmineUnderTest.matchersUtil,
+          actual: actual,
+          addExpectationResult: addExpectationResult
+        });
+
+      return expectation.toBeRejectedWith({foo: 42}).then(function() {
+        expect(addExpectationResult).toHaveBeenCalledWith(false, {
+          matcherName: 'toBeRejectedWith',
+          passed: false,
+          message: 'Expected a promise to be rejected with Object({ foo: 42 }) but it was rejected with Object({ foo: 17 }).',
+          error: undefined,
+          errorForStack: jasmine.any(Error),
+          actual: actual
+        });
       });
     });
   });
