@@ -40,8 +40,8 @@ describe("ExceptionFormatter", function() {
     it('formats thrown exceptions with message but no name', function() {
       var unnamedError = {message: 'This is an unnamed error message.'};
 
-      exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
-      message = exceptionFormatter.message(unnamedError);
+      var exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
+          message = exceptionFormatter.message(unnamedError);
 
       expect(message).toEqual('This is an unnamed error message.');
     });
