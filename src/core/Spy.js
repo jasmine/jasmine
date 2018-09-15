@@ -1,6 +1,4 @@
 getJasmineRequireObj().Spy = function (j$) {
-  // Allows copying objects even when spyOn(window, 'Object'); happened.
-  var copyObject = Object.assign;
 
   var nextOrder = (function() {
     var order = 0;
@@ -77,7 +75,7 @@ getJasmineRequireObj().Spy = function (j$) {
     // Jasmine to crash.
     if (!wrapper.prototype) wrapper.prototype = {};
     if (originalFn && originalFn.prototype) {
-      wrapper.prototype = copyObject(
+      wrapper.prototype = Object.assign(
         originalFn.prototype,
         wrapper.prototype,
       );
