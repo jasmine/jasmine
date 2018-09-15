@@ -24,7 +24,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     var j$ = {};
 
     jRequire.base(j$, jasmineGlobal);
-    if (Object) { j$.Object = Object; }
+    j$.Object = Object || {};
     j$.util = jRequire.util(j$);
     j$.errors = jRequire.errors();
     j$.formatErrorMsg = jRequire.formatErrorMsg();
