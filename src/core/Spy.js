@@ -73,12 +73,13 @@ getJasmineRequireObj().Spy = function (j$) {
     // Prototype must be delegated to the original function. If this is not done
     // spying on objects such as Array or Function may make the tests to fail or
     // Jasmine to crash.
-    if (!wrapper.prototype) wrapper.prototype = {};
+    if (!wrapper.prototype) {
+      wrapper.prototype = {};
+    }
+
     if (originalFn && originalFn.prototype) {
-      wrapper.prototype = Object.assign(
-        originalFn.prototype,
-        wrapper.prototype,
-      );
+      wrapper.prototype =
+        Object.assign(originalFn.prototype, wrapper.prototype);
     }
 
     /**
