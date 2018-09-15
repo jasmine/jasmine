@@ -77,9 +77,9 @@ getJasmineRequireObj().Spy = function (j$) {
       wrapper.prototype = {};
     }
 
-    if (originalFn && originalFn.prototype) {
+    if (originalFn && originalFn.prototype && j$.Object.assign) {
       wrapper.prototype =
-        Object.assign(originalFn.prototype, wrapper.prototype);
+        j$.Object.assign(originalFn.prototype, wrapper.prototype);
     }
 
     /**
