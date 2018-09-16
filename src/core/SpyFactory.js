@@ -32,13 +32,13 @@ getJasmineRequireObj().SpyFactory = function(j$) {
 
       if (j$.isArray_(methodNames)) {
         for (var i = 0; i < methodNames.length; i++) {
-          obj[methodNames[i]] = this.createSpy(baseName + '.' + methodNames[i]);
+          obj[methodNames[i]] = self.createSpy(baseName + '.' + methodNames[i]);
           spiesWereSet = true;
         }
       } else if (j$.isObject_(methodNames)) {
         for (var key in methodNames) {
           if (methodNames.hasOwnProperty(key)) {
-            obj[key] = this.createSpy(baseName + '.' + key);
+            obj[key] = self.createSpy(baseName + '.' + key);
             obj[key].and.returnValue(methodNames[key]);
             spiesWereSet = true;
           }
