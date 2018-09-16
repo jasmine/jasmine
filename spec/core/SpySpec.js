@@ -144,15 +144,17 @@ describe('Spies', function () {
 
     describe("spies", function() {
       it("counts all calls of spied methods", function() {
-        var spyObj = env.createSpyObj(['method1', 'method2']);
+        var spyObj = env.createSpyObj('BaseName', ['method1', 'method2']);
         spyObj.method1();
         spyObj.method2();
 
         expect(spyObj.spies.calls.count()).toEqual(2);
+        expect(spyObj.method1.calls.count()).toEqual(1);
+        expect(spyObj.method2.calls.count()).toEqual(1);
       });
 
       it("tracks the params from each execution", function() {
-        var spyObj = env.createSpyObj(['method1', 'method2']);
+        var spyObj = env.createSpyObj('BaseName', ['method1', 'method2']);
         spyObj.method1("a");
         spyObj.method2("b", "c");
 
