@@ -3,7 +3,6 @@ getJasmineRequireObj().SpyFactory = function(j$) {
   function SpyObject() {
     this.calls = new j$.CallTracker();
     this.methods = [];
-    this.spies = [];
   }
 
   function SpyFactory(getCustomStrategies) {
@@ -11,10 +10,9 @@ getJasmineRequireObj().SpyFactory = function(j$) {
     var spyObj = new SpyObject();
 
     this.createSpy = function(name, originalFn) {
-      var spy = j$.Spy(name, originalFn, getCustomStrategies(), spyObj);
-      spyObj.methods.push(name);
-      spyObj.spies.push(spy);
-      return spy;
+      var newSpy = j$.Spy(name, originalFn, getCustomStrategies(), spyObj);
+      spyObj.methods.push(newSpy);
+      return newSpy;
     };
 
     this.createSpyObj = function(baseName, methodNames) {
