@@ -3,15 +3,20 @@ getJasmineRequireObj().CallTracker = function(j$) {
   /**
    * @namespace Spy#calls
    */
-  function CallTracker() {
+  function CallTracker(spyObj) {
     var calls = [];
     var opts = {};
+    var spyObjCalls = (spyObj && spyObj.calls) ? spyObj.calls : null;
 
     this.track = function(context) {
       if(opts.cloneArgs) {
         context.args = j$.util.cloneArgs(context.args);
       }
       calls.push(context);
+
+      if (spyObjCalls && spyObjCalls.track) {
+        spyObjCalls.track(context);
+      }
     };
 
     /**

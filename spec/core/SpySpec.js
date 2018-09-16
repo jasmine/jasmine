@@ -141,6 +141,25 @@ describe('Spies', function () {
         env.createSpyObj('BaseName', {});
       }).toThrow("createSpyObj requires a non-empty array or object of method names to create spies for");
     });
+
+    describe("spies", function() {
+      it("counts all calls of spied methods", function() {
+        var spyObj = env.createSpyObj(['method1', 'method2']);
+        spyObj.method1();
+        spyObj.method2();
+
+        expect(spyObj.spies.calls.count()).toEqual(2);
+      });
+
+      it("tracks the params from each execution", function() {
+        var spyObj = env.createSpyObj(['method1', 'method2']);
+        spyObj.method1("a");
+        spyObj.method2("b", "c");
+
+        expect(spyObj.spies.calls.argsFor(0)).toEqual(["a"]);
+        expect(spyObj.spies.calls.argsFor(1)).toEqual(["b", "c"]);
+      });
+    });
   });
 
   it("can use different strategies for different arguments", function() {
