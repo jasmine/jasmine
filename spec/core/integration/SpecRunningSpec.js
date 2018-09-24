@@ -4,7 +4,7 @@ describe("spec running", function () {
   beforeEach(function() {
     jasmine.getEnv().registerIntegrationMatchers();
     env = new jasmineUnderTest.Env();
-    env.randomizeTests(false);
+    env.configure({random: false});
   });
 
   it('should assign spec ids sequentially', function() {
@@ -740,8 +740,7 @@ describe("spec running", function () {
 
   it("should run the tests in a consistent order when a seed is supplied", function(done) {
     var actions = [];
-    env.seed('123456');
-    env.randomizeTests(true);
+    env.configure({random: true, seed: '123456'});
 
     env.beforeEach(function () {
       actions.push('topSuite beforeEach');
@@ -865,7 +864,7 @@ describe("spec running", function () {
         });
       });
 
-      env.throwOnExpectationFailure(true);
+      env.configure({oneFailurePerSpec: true});
 
       var assertions = function() {
         expect(actions).toEqual([
@@ -900,7 +899,7 @@ describe("spec running", function () {
         });
       });
 
-      env.throwOnExpectationFailure(true);
+      env.configure({oneFailurePerSpec: true});
 
       var assertions = function() {
         expect(actions).toEqual([
@@ -932,6 +931,89 @@ describe("spec running", function () {
         });
       });
 
+      env.configure({oneFailurePerSpec: true});
+
+      var assertions = function() {
+        expect(actions).toEqual([
+          'beforeEach',
+          'afterEach'
+        ]);
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+
+      env.execute();
+    });
+
+    it("skips to cleanup functions after an error with deprecations", function(done) {
+      var actions = [];
+
+      spyOn(env, 'deprecated');
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          throw new Error("error");
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it' , function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      env.throwOnExpectationFailure(true);
+
+      var assertions = function() {
+        expect(actions).toEqual([
+          'outer beforeEach',
+          'inner afterEach',
+          'outer afterEach'
+        ]);
+        expect(env.deprecated).toHaveBeenCalled();
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+
+      env.execute();
+    });
+
+    it("skips to cleanup functions after done.fail is called with deprecations", function(done) {
+      var actions = [];
+
+      spyOn(env, 'deprecated');
+
+      env.describe('Something', function() {
+        env.beforeEach(function(done) {
+          actions.push('beforeEach');
+          done.fail('error');
+          actions.push('after done.fail');
+        });
+
+        env.afterEach(function() {
+          actions.push('afterEach');
+        });
+
+        env.it('does it' , function() {
+          actions.push('it');
+        });
+      });
+
       env.throwOnExpectationFailure(true);
 
       var assertions = function() {
@@ -939,6 +1021,42 @@ describe("spec running", function () {
           'beforeEach',
           'afterEach'
         ]);
+        expect(env.deprecated).toHaveBeenCalled();
+        done();
+      };
+
+      env.addReporter({jasmineDone: assertions});
+
+      env.execute();
+    });
+
+    it("skips to cleanup functions when an async function times out with deprecations", function(done) {
+      var actions = [];
+
+      spyOn(env, 'deprecated');
+
+      env.describe('Something', function() {
+        env.beforeEach(function(innerDone) {
+          actions.push('beforeEach');
+        }, 1);
+
+        env.afterEach(function() {
+          actions.push('afterEach');
+        });
+
+        env.it('does it' , function() {
+          actions.push('it');
+        });
+      });
+
+      env.throwOnExpectationFailure(true);
+
+      var assertions = function() {
+        expect(actions).toEqual([
+          'beforeEach',
+          'afterEach'
+        ]);
+        expect(env.deprecated).toHaveBeenCalled();
         done();
       };
 
@@ -965,11 +1083,41 @@ describe("spec running", function () {
         });
       });
 
-      env.randomizeTests(false);
+      env.configure({random: false, failFast: true});
+
+      var assertions = function() {
+        expect(actions).toEqual(['fails']);
+        done();
+      };
+
+      env.addReporter({ jasmineDone: assertions });
+      env.execute();
+    });
+
+    it("does not run further specs when one fails when configured with deprecated option", function(done) {
+      var actions = [];
+
+      spyOn(env, 'deprecated');
+
+      env.describe('wrapper', function() {
+        env.it('fails', function() {
+          actions.push('fails');
+          env.expect(1).toBe(2);
+        });
+      });
+
+      env.describe('holder', function() {
+        env.it('does not run', function() {
+          actions.push('does not run');
+        });
+      });
+
+      env.configure({random: false});
       env.stopOnSpecFailure(true);
 
       var assertions = function() {
         expect(actions).toEqual(['fails']);
+        expect(env.deprecated).toHaveBeenCalled();
         done();
       };
 

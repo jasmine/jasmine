@@ -4,7 +4,7 @@ describe("Custom Matchers (Integration)", function() {
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
-    env.randomizeTests(false);
+    env.configure({random: false});
   });
 
   it("allows adding more matchers local to a spec", function(done) {

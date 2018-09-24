@@ -17,7 +17,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions});
-    env.randomizeTests(false);
+    env.configure({random: false});
 
     env.describe("A Suite", function() {
       env.it("with a spec", function() {
@@ -46,7 +46,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions });
-    env.randomizeTests(false);
+    env.configure({random: false});
 
     env.describe("Outer suite", function() {
       env.it("an outer spec", function() {
@@ -81,7 +81,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions });
-    env.randomizeTests(false);
+    env.configure({random: false});
 
 
     env.describe("Outer suite", function() {
@@ -200,7 +200,7 @@ describe("Env integration", function() {
     var env = new jasmineUnderTest.Env();
 
     env.addReporter({jasmineDone: done});
-    env.randomizeTests(false);
+    env.configure({random: false});
     env.describe("tests", function() {
       var firstTimeThrough = true, firstSpecContext, secondSpecContext;
 
@@ -783,9 +783,11 @@ describe("Env integration", function() {
       });
     });
 
-    env.specFilter = function(spec) {
-      return /^first suite/.test(spec.getFullName());
-    };
+    env.configure({
+      specFilter: function(spec) {
+        return /^first suite/.test(spec.getFullName());
+      }
+    });
 
     env.execute();
   });
@@ -953,7 +955,7 @@ describe("Env integration", function() {
     };
 
     env.addReporter({ jasmineDone: assertions });
-    env.randomizeTests(false);
+    env.configure({random: false});
 
     env.describe("tests", function() {
       env.it("test with mock clock", function() {
@@ -1476,8 +1478,7 @@ describe("Env integration", function() {
           "specStarted",
           "specDone"
         ]);
-    env.randomizeTests(true);
-    env.seed('123456');
+    env.configure({random: true, seed: '123456'});
 
     reporter.jasmineDone.and.callFake(function(doneArg) {
       expect(reporter.jasmineStarted).toHaveBeenCalled();
@@ -1491,7 +1492,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
-    env.randomizeTests(true);
+    env.configure({random: true});
     env.execute();
   });
 
@@ -1662,7 +1663,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
-    env.randomizeTests(false);
+    env.configure({random: false});
 
     env.describe("testing custom equality testers", function() {
       env.it("with a custom tester", function() {
@@ -1698,7 +1699,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
-    env.randomizeTests(false);
+    env.configure({random: false});
 
     env.describe("testing custom equality testers", function() {
       env.beforeAll(function() { env.addCustomEqualityTester(function(a, b) { return true; }); });
@@ -1739,7 +1740,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
-    env.randomizeTests(false);
+    env.configure({random: false});
 
     env.describe("testing custom equality testers", function() {
       env.it("with a custom tester", function() {
@@ -1792,7 +1793,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
-    env.randomizeTests(false);
+    env.configure({random: false});
 
     env.describe("testing custom equality testers", function() {
       env.beforeAll(function() { env.addCustomEqualityTester(function(a, b) { return true; })});

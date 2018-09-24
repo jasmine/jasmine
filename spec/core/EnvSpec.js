@@ -27,7 +27,7 @@ describe("Env", function() {
   });
 
   it('can configure specs to throw errors on expectation failures', function() {
-    env.throwOnExpectationFailure(true);
+    env.configure({oneFailurePerSpec: true});
 
     spyOn(jasmineUnderTest, 'Spec');
     env.it('foo', function() {});
@@ -37,12 +37,28 @@ describe("Env", function() {
   });
 
   it('can configure suites to throw errors on expectation failures', function() {
-    env.throwOnExpectationFailure(true);
+    env.configure({oneFailurePerSpec: true});
 
     spyOn(jasmineUnderTest, 'Suite');
     env.describe('foo', function() {});
     expect(jasmineUnderTest.Suite).toHaveBeenCalledWith(jasmine.objectContaining({
       throwOnExpectationFailure: true
+    }));
+  });
+
+  it('defaults to multiple failures for specs', function() {
+    spyOn(jasmineUnderTest, 'Spec');
+      env.it('bar', function() {});
+    expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(jasmine.objectContaining({
+      throwOnExpectationFailure: false
+    }));
+  });
+
+  it('defaults to multiple failures for suites', function() {
+    spyOn(jasmineUnderTest, 'Suite');
+    env.describe('foo', function() {});
+    expect(jasmineUnderTest.Suite).toHaveBeenCalledWith(jasmine.objectContaining({
+      throwOnExpectationFailure: false
     }));
   });
 

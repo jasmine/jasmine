@@ -51,7 +51,7 @@ jasmineRequire.HtmlReporter = function(j$) {
 
 
   function HtmlReporter(options) {
-    var env = options.env || {},
+    var config = function() { return (options.env && options.env.configuration()) || {}; },
       getContainer = options.getContainer,
       createElement = options.createElement,
       createTextNode = options.createTextNode,
@@ -138,9 +138,9 @@ jasmineRequire.HtmlReporter = function(j$) {
 
     this.resultStatus = function(status) {
       if(status === 'excluded') {
-        return env.hidingDisabled() ?  'jasmine-excluded-no-display' : 'jasmine-excluded';
-      } 
-      return 'jasmine-' + status; 
+        return config().hideDisabled ? 'jasmine-excluded-no-display' : 'jasmine-excluded';
+      }
+      return 'jasmine-' + status;
     };
 
     this.jasmineDone = function(doneResult) {
@@ -150,7 +150,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       var i;
       alert.appendChild(createDom('span', {className: 'jasmine-duration'}, 'finished in ' + timer.elapsed() / 1000 + 's'));
 
-      banner.appendChild(optionsMenu(env));
+      banner.appendChild(optionsMenu(config()));
 
       if (stateBuilder.specsExecuted < totalSpecsDefined) {
         var skippedMessage = 'Ran ' + stateBuilder.specsExecuted + ' of ' + totalSpecsDefined + ' specs - run all';
@@ -310,7 +310,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       }
     }
 
-    function optionsMenu(env) {
+    function optionsMenu(config) {
       var optionsMenuDom = createDom('div', { className: 'jasmine-run-options' },
         createDom('span', { className: 'jasmine-trigger' }, 'Options'),
         createDom('div', { className: 'jasmine-payload' },
@@ -346,27 +346,27 @@ jasmineRequire.HtmlReporter = function(j$) {
       );
 
       var failFastCheckbox = optionsMenuDom.querySelector('#jasmine-fail-fast');
-      failFastCheckbox.checked = env.stoppingOnSpecFailure();
+      failFastCheckbox.checked = config.failFast;
       failFastCheckbox.onclick = function() {
-        navigateWithNewParam('failFast', !env.stoppingOnSpecFailure());
+        navigateWithNewParam('failFast', !config.failFast);
       };
 
       var throwCheckbox = optionsMenuDom.querySelector('#jasmine-throw-failures');
-      throwCheckbox.checked = env.throwingExpectationFailures();
+      throwCheckbox.checked = config.oneFailurePerSpec;
       throwCheckbox.onclick = function() {
-        navigateWithNewParam('throwFailures', !env.throwingExpectationFailures());
+        navigateWithNewParam('throwFailures', !config.oneFailurePerSpec);
       };
 
       var randomCheckbox = optionsMenuDom.querySelector('#jasmine-random-order');
-      randomCheckbox.checked = env.randomTests();
+      randomCheckbox.checked = config.random;
       randomCheckbox.onclick = function() {
-        navigateWithNewParam('random', !env.randomTests());
+        navigateWithNewParam('random', !config.random);
       };
 
       var hideDisabled = optionsMenuDom.querySelector('#jasmine-hide-disabled');
-      hideDisabled.checked = env.hidingDisabled();
+      hideDisabled.checked = config.hideDisabled;
       hideDisabled.onclick = function() {
-        navigateWithNewParam('hideDisabled', !env.hidingDisabled());
+        navigateWithNewParam('hideDisabled', !config.hideDisabled);
       };
 
       var optionsTrigger = optionsMenuDom.querySelector('.jasmine-trigger'),
