@@ -7,6 +7,8 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
 
       if (error.name && error.message) {
         message += error.name + ': ' + error.message;
+      } else if (error.message) {
+        message += error.message;
       } else {
         message += error.toString() + ' thrown';
       }
