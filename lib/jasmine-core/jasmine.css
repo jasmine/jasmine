@@ -1,3 +1,4 @@
+@charset "UTF-8";
 body { overflow-y: scroll; }
 
 .jasmine_html-reporter { background-color: #eee; padding: 5px; margin: -8px; font-size: 11px; font-family: Monaco, "Lucida Console", monospace; line-height: 14px; color: #333; }
@@ -15,16 +16,16 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .jasmine-symbol-summary { overflow: hidden; *zoom: 1; margin: 14px 0; }
 .jasmine_html-reporter .jasmine-symbol-summary li { display: inline-block; height: 10px; width: 14px; font-size: 16px; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-passed { font-size: 14px; }
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-passed:before { color: #007069; content: "\02022"; }
+.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-passed:before { color: #007069; content: "•"; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-failed { line-height: 9px; }
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-failed:before { color: #ca3a11; content: "\d7"; font-weight: bold; margin-left: -1px; }
+.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-failed:before { color: #ca3a11; content: "×"; font-weight: bold; margin-left: -1px; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded { font-size: 14px; }
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded:before { color: #bababa; content: "\02022"; }
+.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded:before { color: #bababa; content: "•"; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded-no-display { font-size: 14px; display: none; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-pending { line-height: 17px; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-pending:before { color: #ba9d37; content: "*"; }
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-empty { font-size: 14px; }
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-empty:before { color: #ba9d37; content: "\02022"; }
+.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-empty:before { color: #ba9d37; content: "•"; }
 .jasmine_html-reporter .jasmine-run-options { float: right; margin-right: 5px; border: 1px solid #8a4182; color: #8a4182; position: relative; line-height: 20px; }
 .jasmine_html-reporter .jasmine-run-options .jasmine-trigger { cursor: pointer; padding: 8px 16px; }
 .jasmine_html-reporter .jasmine-run-options .jasmine-payload { position: absolute; display: none; right: -1px; border: 1px solid #8a4182; background-color: #eee; white-space: nowrap; padding: 4px 8px; }
@@ -49,6 +50,11 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter .jasmine-summary li.jasmine-empty a { color: #ba9d37; }
 .jasmine_html-reporter .jasmine-summary li.jasmine-pending a { color: #ba9d37; }
 .jasmine_html-reporter .jasmine-summary li.jasmine-excluded a { color: #bababa; }
+.jasmine_html-reporter .jasmine-specs li.jasmine-passed a:before { content: "• "; }
+.jasmine_html-reporter .jasmine-specs li.jasmine-failed a:before { content: "× "; }
+.jasmine_html-reporter .jasmine-specs li.jasmine-empty a:before { content: "* "; }
+.jasmine_html-reporter .jasmine-specs li.jasmine-pending a:before { content: "• "; }
+.jasmine_html-reporter .jasmine-specs li.jasmine-excluded a:before { content: "• "; }
 .jasmine_html-reporter .jasmine-description + .jasmine-suite { margin-top: 0; }
 .jasmine_html-reporter .jasmine-suite { margin-top: 14px; }
 .jasmine_html-reporter .jasmine-suite a { color: #333; }
