@@ -19,7 +19,7 @@ getJasmineRequireObj().AsyncExpectation = function(j$) {
       throw new Error('expectAsync is unavailable because the environment does not support promises.');
     }
 
-    if (!j$.isPromise(this.actual)) {
+    if (!j$.isPromiseLike(this.actual)) {
       throw new Error('Expected expectAsync to be called with a promise.');
     }
 
