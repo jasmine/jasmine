@@ -108,6 +108,115 @@ describe('AsyncExpectation', function() {
     });
   });
 
+  describe('#toBeRejectedTo', function () {
+    it('should return true if the promise is rejected to the expected value', function () {
+      jasmine.getEnv().requirePromises();
+
+      var actual = Promise.reject({error: 'PEBCAK'});
+      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        expectation = new jasmineUnderTest.AsyncExpectation({
+          util: jasmineUnderTest.matchersUtil,
+          actual: actual,
+          addExpectationResult: addExpectationResult
+        });
+
+      return expectation.toBeRejectedTo({error: 'PEBCAK'}).then(function () {
+        expect(addExpectationResult).toHaveBeenCalledWith(true, {
+          matcherName: 'toBeRejectedTo',
+          passed: true,
+          message: '',
+          error: undefined,
+          errorForStack: jasmine.any(Error),
+          actual: actual
+        });
+      });
+
+    });
+
+    it('should fail if the promise resolves', function () {
+      jasmine.getEnv().requirePromises();
+
+      var actual = Promise.resolve('AsyncExpectation error');
+      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        expectation = new jasmineUnderTest.AsyncExpectation({
+          util: jasmineUnderTest.matchersUtil,
+          actual: actual,
+          addExpectationResult: addExpectationResult
+        });
+
+      return expectation.toBeRejectedTo('').then(function () {
+        expect(addExpectationResult).toHaveBeenCalledWith(false, {
+          matcherName: 'toBeRejectedTo',
+          passed: false,
+          message: "Expected a promise to be rejected to '' but it was resolved.",
+          error: undefined,
+          errorForStack: jasmine.any(Error),
+          actual: actual
+        });
+      });
+    });
+
+    it('should fail if the promise is rejected to a different value', function () {
+      jasmine.getEnv().requirePromises();
+
+      var actual = Promise.reject('A Bad Apple');
+      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        expectation = new jasmineUnderTest.AsyncExpectation({
+          util: jasmineUnderTest.matchersUtil,
+          actual: actual,
+          addExpectationResult: addExpectationResult
+        });
+
+      return expectation.toBeRejectedTo('Some Cool Thing').then(function () {
+        expect(addExpectationResult).toHaveBeenCalledWith(false, {
+          matcherName: 'toBeRejectedTo',
+          passed: false,
+          message: "Expected a promise to be rejected to 'Some Cool Thing' but it was rejected to 'A Bad Apple'.",
+          error: undefined,
+          errorForStack: jasmine.any(Error),
+          actual: actual
+        });
+      });
+    });
+
+    it('should build its error correctly when negated', function () {
+      jasmine.getEnv().requirePromises();
+
+      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        expectation = jasmineUnderTest.AsyncExpectation.factory({
+          util: jasmineUnderTest.matchersUtil,
+          actual: Promise.reject(true),
+          addExpectationResult: addExpectationResult
+        });
+
+      return expectation.not.toBeRejectedTo(true).then(function () {
+        expect(addExpectationResult).toHaveBeenCalledWith(false,
+          jasmine.objectContaining({
+            passed: false,
+            message: 'Expected a promise not to be rejected to true.'
+          })
+        );
+      });
+    });
+
+    it('should support custom equality testers', function () {
+      jasmine.getEnv().requirePromises();
+
+      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        expectation = new jasmineUnderTest.AsyncExpectation({
+          util: jasmineUnderTest.matchersUtil,
+          customEqualityTesters: [function() { return true; }],
+          actual: Promise.reject('actual'),
+          addExpectationResult: addExpectationResult
+        });
+
+      return expectation.toBeRejectedTo('expected').then(function() {
+        expect(addExpectationResult).toHaveBeenCalledWith(true,
+          jasmine.objectContaining({passed: true}));
+      });
+    });
+  });
+
   describe('#toBeResolvedTo', function() {
     it('passes if the promise is resolved to the expected value', function() {
       jasmine.getEnv().requirePromises();
