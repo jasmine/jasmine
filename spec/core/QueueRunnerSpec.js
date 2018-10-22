@@ -183,7 +183,7 @@ describe("QueueRunner", function() {
 
     it("sets a timeout if requested for asynchronous functions so they don't go on forever", function() {
       var timeout = 3,
-        beforeFn = { fn: function(done) { }, type: 'before', timeout: function() { return timeout; } },
+        beforeFn = { fn: function(done) { }, type: 'before', timeout: timeout },
         queueableFn = { fn: jasmine.createSpy('fn'), type: 'queueable' },
         onComplete = jasmine.createSpy('onComplete'),
         onException = jasmine.createSpy('onException'),
@@ -304,7 +304,7 @@ describe("QueueRunner", function() {
     });
 
     it("continues running functions when an exception is thrown in async code without timing out", function() {
-      var queueableFn = { fn: function(done) { throwAsync(); }, timeout: function() { return 1; } },
+      var queueableFn = { fn: function(done) { throwAsync(); }, timeout: 1 },
         nextQueueableFn = { fn: jasmine.createSpy("nextFunction") },
         onException = jasmine.createSpy('onException'),
         globalErrors = { pushListener: jasmine.createSpy('pushListener'), popListener: jasmine.createSpy('popListener') },
@@ -481,15 +481,18 @@ describe("QueueRunner", function() {
       var queueableFn = { fn: function() { throw new Error("error"); } },
         nextQueueableFn = { fn: jasmine.createSpy("nextFunction") },
         cleanupFn = { fn: jasmine.createSpy("cleanup") },
+        onComplete = jasmine.createSpy("onComplete"),
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn, nextQueueableFn],
           cleanupFns: [cleanupFn],
+          onComplete: onComplete,
           completeOnFirstError: true
         });
 
       queueRunner.execute();
       expect(nextQueueableFn.fn).not.toHaveBeenCalled();
       expect(cleanupFn.fn).toHaveBeenCalled();
+      expect(onComplete).toHaveBeenCalledWith(jasmine.any(jasmineUnderTest.StopExecutionError));
     });
 
     it("does not skip when a cleanup function throws", function() {

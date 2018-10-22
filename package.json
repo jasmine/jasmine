@@ -1,7 +1,7 @@
 {
   "name": "jasmine-core",
   "license": "MIT",
-  "version": "3.1.0",
+  "version": "3.2.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/jasmine/jasmine.git"
@@ -16,7 +16,7 @@
     "test": "grunt jshint execSpecsInNode"
   },
   "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
-  "homepage": "http://jasmine.github.io",
+  "homepage": "https://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
   "devDependencies": {
     "glob": "~7.1.2",

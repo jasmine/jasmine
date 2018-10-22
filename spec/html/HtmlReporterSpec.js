@@ -103,7 +103,6 @@ describe("HtmlReporter", function() {
           createTextNode: function() { return document.createTextNode.apply(document, arguments); }
         });
       reporter.initialize();
-
       reporter.specDone({id: 789, status: "excluded", fullName: "symbols should have titles", passedExpectations: [], failedExpectations: []});
 
       var specEl = container.querySelector('.jasmine-symbol-summary li');
@@ -519,7 +518,7 @@ describe("HtmlReporter", function() {
             }
           });
 
-        env.stopOnSpecFailure(true);
+        env.configure({failFast: true});
 
         reporter.initialize();
         reporter.jasmineDone({});
@@ -575,7 +574,7 @@ describe("HtmlReporter", function() {
             }
           });
 
-        env.stopOnSpecFailure(true);
+        env.configure({failFast: true});
 
         reporter.initialize();
         reporter.jasmineDone({});
@@ -629,7 +628,7 @@ describe("HtmlReporter", function() {
             }
           });
 
-        env.throwOnExpectationFailure(true);
+        env.configure({oneFailurePerSpec: true});
 
         reporter.initialize();
         reporter.jasmineDone({});
@@ -685,7 +684,7 @@ describe("HtmlReporter", function() {
             }
           });
 
-        env.throwOnExpectationFailure(true);
+        env.configure({oneFailurePerSpec: true});
 
         reporter.initialize();
         reporter.jasmineDone({});
@@ -696,7 +695,82 @@ describe("HtmlReporter", function() {
         expect(navigateHandler).toHaveBeenCalledWith('throwFailures', false);
       });
     });
+    describe("UI for hiding disabled specs", function() {
+      it("should be unchecked if not hiding disabled specs", function() {
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement("div"),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
 
+        env.configure({hideDisabled: false});
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var disabledUI = container.querySelector(".jasmine-disabled");
+        expect(disabledUI.checked).toBe(false);
+      });
+
+      it("should be checked if hiding disabled", function() {
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement("div"),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        env.configure({hideDisabled: true});
+        reporter.initialize();
+        reporter.jasmineDone({});
+
+        var disabledUI = container.querySelector(".jasmine-disabled");
+        expect(disabledUI.checked).toBe(true);
+      });
+
+      it("should not display specs that have been disabled", function() {
+        var env = new jasmineUnderTest.Env(),
+          container = document.createElement('div'),
+          getContainer = function() {return container;},
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() { return document.createElement.apply(document, arguments); },
+            createTextNode: function() { return document.createTextNode.apply(document, arguments); }
+          });
+
+        env.configure({hideDisabled: true});
+        reporter.initialize();
+        reporter.specDone({
+            id: 789,
+            status: "excluded",
+            fullName: "symbols should have titles",
+            passedExpectations: [],
+            failedExpectations: []
+          });
+
+        var specEl = container.querySelector('.jasmine-symbol-summary li');
+        expect(specEl.getAttribute("class")).toEqual("jasmine-excluded-no-display");
+      });
+    });
     describe("UI for running tests in random order", function() {
       it("should be unchecked if not randomizing", function() {
         var env = new jasmineUnderTest.Env(),
@@ -715,7 +789,7 @@ describe("HtmlReporter", function() {
             }
           });
 
-        env.randomizeTests(false);
+        env.configure({random: false});
         reporter.initialize();
         reporter.jasmineDone({});
 
@@ -740,7 +814,7 @@ describe("HtmlReporter", function() {
             }
           });
 
-        env.randomizeTests(true);
+        env.configure({random: true});
         reporter.initialize();
         reporter.jasmineDone({});
 
@@ -767,7 +841,7 @@ describe("HtmlReporter", function() {
             }
           });
 
-        env.randomizeTests(false);
+        env.configure({random: false});
         reporter.initialize();
         reporter.jasmineDone({});
 
@@ -796,7 +870,7 @@ describe("HtmlReporter", function() {
             }
           });
 
-        env.randomizeTests(true);
+        env.configure({random: true});
         reporter.initialize();
         reporter.jasmineDone({});
 

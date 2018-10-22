@@ -168,6 +168,25 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     /**
+     * Create an asynchronous expectation for a spec. Note that the matchers
+     * that are provided by an asynchronous expectation all return promises
+     * which must be either returned from the spec or waited for using `await`
+     * in order for Jasmine to associate them with the correct spec.
+     * @name expectAsync
+     * @function
+     * @global
+     * @param {Object} actual - Actual computed value to test expectations against.
+     * @return {async-matchers}
+     * @example
+     * await expectAsync(somePromise).toBeResolved();
+     * @example
+     * return expectAsync(somePromise).toBeResolved();
+     */
+    expectAsync: function(actual) {
+      return env.expectAsync(actual);
+    },
+
+    /**
      * Mark a spec as pending, expectation results will be ignored.
      * @name pending
      * @function
@@ -214,6 +233,18 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      */
     spyOnProperty: function(obj, methodName, accessType) {
       return env.spyOnProperty(obj, methodName, accessType);
+    },
+
+    /**
+     * Installs spies on all writable and configurable properties of an object.
+     * @name spyOnAllFunctions
+     * @function
+     * @global
+     * @param {Object} obj - The object upon which to install the {@link Spy}s
+     * @returns {Object} the spied object
+     */
+    spyOnAllFunctions: function(obj) {
+      return env.spyOnAllFunctions(obj);
     },
 
     jsApiReporter: new jasmine.JsApiReporter({

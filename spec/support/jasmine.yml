@@ -24,6 +24,7 @@ helpers:
   - 'helpers/checkForSymbol.js'
   - 'helpers/checkForTypedArrays.js'
   - 'helpers/integrationMatchers.js'
+  - 'helpers/promises.js'
   - 'helpers/defineJasmineUnderTest.js'
 spec_files:
   - '**/*[Ss]pec.js'

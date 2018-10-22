@@ -1,6 +1,7 @@
 getJasmineRequireObj().Spec = function(j$) {
   function Spec(attrs) {
     this.expectationFactory = attrs.expectationFactory;
+    this.asyncExpectationFactory = attrs.asyncExpectationFactory;
     this.resultCallback = attrs.resultCallback || function() {};
     this.id = attrs.id;
     this.description = attrs.description || '';
@@ -55,6 +56,10 @@ getJasmineRequireObj().Spec = function(j$) {
 
   Spec.prototype.expect = function(actual) {
     return this.expectationFactory(actual, this);
+  };
+
+  Spec.prototype.expectAsync = function(actual) {
+    return this.asyncExpectationFactory(actual, this);
   };
 
   Spec.prototype.execute = function(onComplete, excluded) {

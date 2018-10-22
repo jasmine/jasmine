@@ -16,6 +16,11 @@ $empty-color: #eff543;
 $neutral-color: #bababa;
 $jasmine-color: #8a4182;
 
+$passing-mark: "\02022";
+$failing-mark: "\d7";
+$pending-mark: "*";
+$space: "\0020";
+
 $font-size: 11px;
 $large-font-size: 14px;
 
@@ -120,7 +125,7 @@ body {
 
         &:before {
           color: $passing-color;
-          content: "\02022";
+          content: $passing-mark;
         }
       }
 
@@ -129,26 +134,31 @@ body {
 
         &:before {
           color: $failing-color;
-          content: "\d7";
+          content: $failing-mark;
           font-weight: bold;
           margin-left: -1px;
         }
       }
 
-        &.jasmine-excluded {
+       &.jasmine-excluded {
           font-size: 14px;
 
           &:before {
             color: $neutral-color;
-            content: "\02022";
+            content: $passing-mark;
           }
+        }
+
+        &.jasmine-excluded-no-display {
+          font-size: 14px;
+          display: none;
         }
 
       &.jasmine-pending {
         line-height: 17px;
         &:before {
           color: $pending-color;
-          content: "*";
+          content: $pending-mark;
         }
       }
 
@@ -157,7 +167,7 @@ body {
 
         &:before {
           color: $pending-color;
-          content: "\02022";
+          content: $passing-mark;
         }
       }
     }
@@ -294,7 +304,31 @@ body {
 
       &.jasmine-excluded a {
         color: $neutral-color;
+      } 
+    }
+  }
+
+  .jasmine-specs {
+    li {
+      &.jasmine-passed a:before {
+        content: $passing-mark + $space;
       }
+
+      &.jasmine-failed a:before {
+        content: $failing-mark + $space;
+      }
+
+      &.jasmine-empty a:before {
+        content: $pending-mark + $space;
+      }
+
+      &.jasmine-pending a:before {
+        content: $passing-mark + $space;
+      }
+
+      &.jasmine-excluded a:before {
+        content: $passing-mark + $space;
+      } 
     }
   }
 

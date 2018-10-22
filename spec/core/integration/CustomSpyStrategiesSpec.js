@@ -3,7 +3,7 @@ describe('Custom Spy Strategies (Integration)', function() {
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
-    env.randomizeTests(false);
+    env.configure({random: false});
   });
 
   it('allows adding more strategies local to a suite', function(done) {

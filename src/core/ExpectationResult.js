@@ -45,7 +45,9 @@ getJasmineRequireObj().buildExpectationResult = function() {
 
       var error = options.error;
       if (!error) {
-        if (options.stack) {
+        if (options.errorForStack) {
+          error = options.errorForStack;
+        } else if (options.stack) {
           error = options;
         } else {
           try {

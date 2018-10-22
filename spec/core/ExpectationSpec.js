@@ -33,7 +33,9 @@ describe("Expectation", function() {
       matchers = {
         toFoo: matcherFactory
       },
-      util = {},
+      util = {
+        buildFailureMessage: jasmine.createSpy('buildFailureMessage')
+      },
       customEqualityTesters = ['a'],
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
@@ -380,7 +382,7 @@ describe("Expectation", function() {
       error: undefined
     });
   });
-  
+
   it("reports a custom error message to the spec", function() {
     var customError = new Error("I am a custom error");
     var matchers = {
@@ -508,9 +510,9 @@ describe("Expectation", function() {
           actual: "an actual",
           addExpectationResult: addExpectationResult
         });
-  
+
       expectation.withContext("Some context").toFoo("hello");
-  
+
       expect(addExpectationResult).toHaveBeenCalledWith(false,
         jasmine.objectContaining({
           message: "Some context: failure message"
@@ -532,9 +534,9 @@ describe("Expectation", function() {
           actual: "an actual",
           addExpectationResult: addExpectationResult
         });
-  
+
       expectation.withContext("Some context").toFoo("hello");
-  
+
       expect(addExpectationResult).toHaveBeenCalledWith(false,
         jasmine.objectContaining({
           message: "Some context: msg"
@@ -561,9 +563,9 @@ describe("Expectation", function() {
           actual: "an actual",
           addExpectationResult: addExpectationResult
         });
-  
+
       expectation.withContext("Some context").toFoo("hello");
-  
+
       expect(addExpectationResult).toHaveBeenCalledWith(false,
         jasmine.objectContaining({
           message: "Some context: msg"
@@ -586,9 +588,9 @@ describe("Expectation", function() {
           actual: "an actual",
           addExpectationResult: addExpectationResult
         });
-  
+
       expectation.withContext("Some context").not.toFoo();
-  
+
       expect(addExpectationResult).toHaveBeenCalledWith(false,
         jasmine.objectContaining({
           message: "Some context: Expected 'an actual' not to foo."
@@ -617,10 +619,10 @@ describe("Expectation", function() {
           customMatchers: matchers,
           addExpectationResult: addExpectationResult
         });
-  
+
       expectation.withContext("Some context").not.toFoo("hello");
-  
-      expect(addExpectationResult).toHaveBeenCalledWith(false, 
+
+      expect(addExpectationResult).toHaveBeenCalledWith(false,
         jasmine.objectContaining({
           message: "Some context: I am a custom message",
         })

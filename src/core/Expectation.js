@@ -39,7 +39,7 @@ getJasmineRequireObj().Expectation = function(j$) {
   Expectation.prototype.processResult = function(result, name, expected, args) {
     var message = this.buildMessage(result, name, args);
 
-    if (expected.length == 1) {
+    if (expected.length === 1) {
       expected = expected[0];
     }
 
@@ -58,14 +58,13 @@ getJasmineRequireObj().Expectation = function(j$) {
   };
 
   Expectation.prototype.buildMessage = function(result, name, args) {
-    var util = this.util,
-      msg;
+    var util = this.util;
 
     if (result.pass) {
       return '';
     }
 
-    msg = this.filters.buildFailureMessage(result, name, args, util, defaultMessage);
+    var msg = this.filters.buildFailureMessage(result, name, args, util, defaultMessage);
     return this.filters.modifyFailureMessage(msg || defaultMessage());
 
     function defaultMessage() {

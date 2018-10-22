@@ -44,6 +44,21 @@ describe("buildExpectationResult", function() {
     expect(result.stack).toEqual('foo');
   });
 
+  it("delegates stack formatting to the provided formatter if there was a provided errorForStack", function() {
+    var fakeError = {stack: 'foo'},
+      stackFormatter = jasmine.createSpy("stack formatter").and.returnValue(fakeError.stack);
+
+    var result = jasmineUnderTest.buildExpectationResult(
+      {
+        passed: false,
+        errorForStack: fakeError,
+        stackFormatter: stackFormatter
+      });
+
+    expect(stackFormatter).toHaveBeenCalledWith(fakeError);
+    expect(result.stack).toEqual('foo');
+  });
+
   it("matcherName returns passed matcherName", function() {
     var result = jasmineUnderTest.buildExpectationResult({matcherName: 'some-value'});
     expect(result.matcherName).toBe('some-value');
