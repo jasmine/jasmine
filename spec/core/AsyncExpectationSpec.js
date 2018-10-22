@@ -108,7 +108,7 @@ describe('AsyncExpectation', function() {
     });
   });
 
-  describe('#toBeRejectedTo', function () {
+  describe('#toBeRejectedWith', function () {
     it('should return true if the promise is rejected to the expected value', function () {
       jasmine.getEnv().requirePromises();
 
@@ -120,9 +120,9 @@ describe('AsyncExpectation', function() {
           addExpectationResult: addExpectationResult
         });
 
-      return expectation.toBeRejectedTo({error: 'PEBCAK'}).then(function () {
+      return expectation.toBeRejectedWith({error: 'PEBCAK'}).then(function () {
         expect(addExpectationResult).toHaveBeenCalledWith(true, {
-          matcherName: 'toBeRejectedTo',
+          matcherName: 'toBeRejectedWith',
           passed: true,
           message: '',
           error: undefined,
@@ -144,9 +144,9 @@ describe('AsyncExpectation', function() {
           addExpectationResult: addExpectationResult
         });
 
-      return expectation.toBeRejectedTo('').then(function () {
+      return expectation.toBeRejectedWith('').then(function () {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
-          matcherName: 'toBeRejectedTo',
+          matcherName: 'toBeRejectedWith',
           passed: false,
           message: "Expected a promise to be rejected to '' but it was resolved.",
           error: undefined,
@@ -167,9 +167,9 @@ describe('AsyncExpectation', function() {
           addExpectationResult: addExpectationResult
         });
 
-      return expectation.toBeRejectedTo('Some Cool Thing').then(function () {
+      return expectation.toBeRejectedWith('Some Cool Thing').then(function () {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
-          matcherName: 'toBeRejectedTo',
+          matcherName: 'toBeRejectedWith',
           passed: false,
           message: "Expected a promise to be rejected to 'Some Cool Thing' but it was rejected to 'A Bad Apple'.",
           error: undefined,
@@ -189,7 +189,7 @@ describe('AsyncExpectation', function() {
           addExpectationResult: addExpectationResult
         });
 
-      return expectation.not.toBeRejectedTo(true).then(function () {
+      return expectation.not.toBeRejectedWith(true).then(function () {
         expect(addExpectationResult).toHaveBeenCalledWith(false,
           jasmine.objectContaining({
             passed: false,
@@ -210,7 +210,7 @@ describe('AsyncExpectation', function() {
           addExpectationResult: addExpectationResult
         });
 
-      return expectation.toBeRejectedTo('expected').then(function() {
+      return expectation.toBeRejectedWith('expected').then(function() {
         expect(addExpectationResult).toHaveBeenCalledWith(true,
           jasmine.objectContaining({passed: true}));
       });
@@ -324,7 +324,7 @@ describe('AsyncExpectation', function() {
       });
     });
   });
-  
+
   describe('#not', function() {
     it('converts a pass to a fail', function() {
       jasmine.getEnv().requirePromises();
@@ -338,7 +338,7 @@ describe('AsyncExpectation', function() {
         });
 
       return expectation.not.toBeResolved().then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(false, 
+        expect(addExpectationResult).toHaveBeenCalledWith(false,
           jasmine.objectContaining({
             passed: false,
             message: 'Expected a promise not to be resolved.'
@@ -359,7 +359,7 @@ describe('AsyncExpectation', function() {
         });
 
       return expectation.not.toBeResolved().then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(true, 
+        expect(addExpectationResult).toHaveBeenCalledWith(true,
           jasmine.objectContaining({
             passed: true,
             message: ''

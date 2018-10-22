@@ -23,7 +23,7 @@ getJasmineRequireObj().AsyncExpectation = function(j$) {
       throw new Error('Expected expectAsync to be called with a promise.');
     }
 
-    ['toBeResolved', 'toBeRejected', 'toBeResolvedTo', 'toBeRejectedTo'].forEach(wrapCompare.bind(this));
+    ['toBeResolved', 'toBeRejected', 'toBeResolvedTo', 'toBeRejectedWith'].forEach(wrapCompare.bind(this));
   }
 
   function wrapCompare(name) {
@@ -141,14 +141,14 @@ getJasmineRequireObj().AsyncExpectation = function(j$) {
    * Expect a promise to be rejected to a value equal to the expected, using deep equality comparison.
    * @function
    * @async
-   * @name async-matchers#toBeRejectedTo
+   * @name async-matchers#toBeRejectedWith
    * @param {Object} expected - Value that the promise is expected to reject to
    * @example
-   * await expectAsync(aPromise).toBeRejectedTo({prop: 'value'});
+   * await expectAsync(aPromise).toBeRejectedWith({prop: 'value'});
    * @example
-   * return expectAsync(aPromise).toBeRejectedTo({prop: 'value'});
+   * return expectAsync(aPromise).toBeRejectedWith({prop: 'value'});
    */
-  AsyncExpectation.prototype.toBeRejectedTo = function(actualPromise, expectedValue) {
+  AsyncExpectation.prototype.toBeRejectedWith = function(actualPromise, expectedValue) {
     var self = this;
 
     function prefix(passed) {
