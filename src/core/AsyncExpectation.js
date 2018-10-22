@@ -193,6 +193,12 @@ getJasmineRequireObj().AsyncExpectation = function(j$) {
     var expect = new AsyncExpectation(options);
     expect.not = expect.addFilter(negatingFilter);
 
+    expect.withContext = function(message) {
+      var result = this.addFilter(new ContextAddingFilter(message));
+      result.not = result.addFilter(negatingFilter);
+      return result;
+    };
+
     return expect;
   };
 
@@ -223,6 +229,14 @@ getJasmineRequireObj().AsyncExpectation = function(j$) {
     }
   };
 
+
+  function ContextAddingFilter(message) {
+    this.message = message;
+  }
+
+  ContextAddingFilter.prototype.modifyFailureMessage = function(msg) {
+    return this.message + ': ' + msg;
+  };
 
   return AsyncExpectation;
 };

@@ -390,6 +390,137 @@ describe('AsyncExpectation', function() {
       );
   });
 
+  describe('#withContext', function() {
+    it("prepends the context to the generated failure message", function() {
+      jasmine.getEnv().requirePromises();
+
+      spyOn(jasmineUnderTest.AsyncExpectation.prototype, 'toBeResolved')
+        .and.returnValue(Promise.resolve({pass: false}));
+
+      var util = {
+          buildFailureMessage: function() { return 'failure message'; }
+        },
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        actual = dummyPromise(),
+        expectation = jasmineUnderTest.AsyncExpectation.factory({
+          actual: actual,
+          addExpectationResult: addExpectationResult,
+          util: util
+        });
+
+      return expectation.withContext('Some context').toBeResolved()
+        .then(
+          function() {
+            expect(addExpectationResult).toHaveBeenCalledWith(false,
+              jasmine.objectContaining({
+                message: 'Some context: failure message'
+              }));
+          });
+    });
+
+    it("prepends the context to a custom failure message", function() {
+      jasmine.getEnv().requirePromises();
+
+      spyOn(jasmineUnderTest.AsyncExpectation.prototype, 'toBeResolved')
+        .and.returnValue(Promise.resolve({pass: false, message: 'msg'}));
+
+      var util = {
+          buildFailureMessage: function() { return 'failure message'; }
+        },
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        actual = dummyPromise(),
+        expectation = jasmineUnderTest.AsyncExpectation.factory({
+          actual: actual,
+          addExpectationResult: addExpectationResult,
+          util: util
+        });
+
+      return expectation.withContext('Some context').toBeResolved()
+        .then(
+          function() {
+            expect(addExpectationResult).toHaveBeenCalledWith(false,
+              jasmine.objectContaining({
+                message: 'Some context: msg'
+              }));
+          });
+    });
+
+    it("prepends the context to a custom failure message from a function", function() {
+      jasmine.getEnv().requirePromises();
+
+      spyOn(jasmineUnderTest.AsyncExpectation.prototype, 'toBeResolved')
+        .and.returnValue(Promise.resolve({pass: false, message: function() { return 'msg'; } }));
+
+      var util = {
+          buildFailureMessage: function() { return 'failure message'; }
+        },
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        actual = dummyPromise(),
+        expectation = jasmineUnderTest.AsyncExpectation.factory({
+          actual: actual,
+          addExpectationResult: addExpectationResult,
+          util: util
+        });
+
+      return expectation.withContext('Some context').toBeResolved()
+        .then(
+          function() {
+            expect(addExpectationResult).toHaveBeenCalledWith(false,
+              jasmine.objectContaining({
+                message: 'Some context: msg'
+              }));
+          });
+    });
+
+    it("works with #not", function() {
+      jasmine.getEnv().requirePromises();
+
+      spyOn(jasmineUnderTest.AsyncExpectation.prototype, 'toBeResolved')
+        .and.returnValue(Promise.resolve({pass: true}));
+
+      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        actual = dummyPromise(),
+        expectation = jasmineUnderTest.AsyncExpectation.factory({
+          actual: actual,
+          addExpectationResult: addExpectationResult,
+          util: jasmineUnderTest.matchersUtil
+        });
+
+      return expectation.withContext('Some context').not.toBeResolved()
+        .then(
+          function() {
+            expect(addExpectationResult).toHaveBeenCalledWith(false,
+              jasmine.objectContaining({
+                message: 'Some context: Expected a promise not to be resolved.'
+              }));
+          });
+    });
+
+    it("works with #not and a custom message", function() {
+      jasmine.getEnv().requirePromises();
+
+      spyOn(jasmineUnderTest.AsyncExpectation.prototype, 'toBeResolved')
+        .and.returnValue(Promise.resolve({pass: true, message: 'msg'}));
+
+      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        actual = dummyPromise(),
+        expectation = jasmineUnderTest.AsyncExpectation.factory({
+          actual: actual,
+          addExpectationResult: addExpectationResult,
+          util: jasmineUnderTest.matchersUtil
+        });
+
+      return expectation.withContext('Some context').not.toBeResolved()
+        .then(
+          function() {
+            expect(addExpectationResult).toHaveBeenCalledWith(false,
+              jasmine.objectContaining({
+                message: 'Some context: msg'
+              }));
+          });
+    });
+  });
+
   function dummyPromise() {
     return new Promise(function(resolve, reject) {
     });
