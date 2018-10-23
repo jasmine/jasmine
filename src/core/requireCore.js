@@ -72,6 +72,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.NotEmpty = jRequire.NotEmpty(j$);
 
     j$.matchers = jRequire.requireMatchers(jRequire, j$);
+    j$.asyncMatchers = jRequire.requireAsyncMatchers(jRequire, j$);
 
     return j$;
   };

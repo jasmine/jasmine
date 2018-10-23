@@ -43,7 +43,6 @@ getJasmineRequireObj().Expectation = function(j$) {
       expected = expected[0];
     }
 
-    // TODO: how many of these params are needed?
     this.addExpectationResult(
       result.pass,
       {

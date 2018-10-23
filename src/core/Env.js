@@ -193,6 +193,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     j$.Expectation.addCoreMatchers(j$.matchers);
+    j$.AsyncExpectation.addCoreMatchers(j$.asyncMatchers);
 
     var nextSpecId = 0;
     var getNextSpecId = function() {

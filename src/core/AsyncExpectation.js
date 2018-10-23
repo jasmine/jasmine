@@ -22,15 +22,14 @@ getJasmineRequireObj().AsyncExpectation = function(j$) {
     if (!j$.isPromiseLike(this.actual)) {
       throw new Error('Expected expectAsync to be called with a promise.');
     }
-
-    ['toBeResolved', 'toBeRejected', 'toBeResolvedTo', 'toBeRejectedWith'].forEach(wrapCompare.bind(this));
   }
 
-  function wrapCompare(name) {
-    var matcher = this[name];
-    this[name] = function() {
+  function wrapCompare(name, matcherFactory) {
+    return function() {
       var self = this;
-      var args = Array.prototype.slice.call(arguments);
+      var args = Array.prototype.slice.call(arguments),
+        expected = args.slice(0);
+
       args.unshift(this.actual);
 
       // Capture the call stack here, before we go async, so that it will
@@ -38,155 +37,48 @@ getJasmineRequireObj().AsyncExpectation = function(j$) {
       // of Jasmine.
       var errorForStack = j$.util.errorWithStack();
 
-      var matcherCompare = this.instantiateMatcher(matcher);
+      var matcherCompare = this.instantiateMatcher(matcherFactory);
 
       return matcherCompare.apply(self, args).then(function(result) {
-        var message;
-
         args[0] = promiseForMessage;
-        message = j$.Expectation.prototype.buildMessage.call(self, result, name, args);
-
-        self.addExpectationResult(result.pass, {
-          matcherName: name,
-          passed: result.pass,
-          message: message,
-          error: undefined,
-          errorForStack: errorForStack,
-          actual: self.actual
-        });
+        self.processResult(result, name, expected, args, errorForStack);
       });
     };
   }
 
-  AsyncExpectation.prototype.instantiateMatcher = function(matcher) {
-    var comparisonFunc = this.filters.selectComparisonFunc(matcher);
-    return comparisonFunc || matcher;
-  };
+  AsyncExpectation.prototype.processResult = function(result, name, expected, args, errorForStack) {
+    var message = this.buildMessage(result, name, args);
 
-  /**
-   * Expect a promise to be resolved.
-   * @function
-   * @async
-   * @name async-matchers#toBeResolved
-   * @example
-   * await expectAsync(aPromise).toBeResolved();
-   * @example
-   * return expectAsync(aPromise).toBeResolved();
-   */
-  AsyncExpectation.prototype.toBeResolved = function(actual) {
-    return actual.then(
-      function() { return {pass: true}; },
-      function() { return {pass: false}; }
-    );
-  };
-
-  /**
-   * Expect a promise to be rejected.
-   * @function
-   * @async
-   * @name async-matchers#toBeRejected
-   * @example
-   * await expectAsync(aPromise).toBeRejected();
-   * @example
-   * return expectAsync(aPromise).toBeRejected();
-   */
-  AsyncExpectation.prototype.toBeRejected = function(actual) {
-    return actual.then(
-      function() { return {pass: false}; },
-      function() { return {pass: true}; }
-    );
-  };
-
-  /**
-   * Expect a promise to be resolved to a value equal to the expected, using deep equality comparison.
-   * @function
-   * @async
-   * @name async-matchers#toBeResolvedTo
-   * @param {Object} expected - Value that the promise is expected to resolve to
-   * @example
-   * await expectAsync(aPromise).toBeResolvedTo({prop: 'value'});
-   * @example
-   * return expectAsync(aPromise).toBeResolvedTo({prop: 'value'});
-   */
-  AsyncExpectation.prototype.toBeResolvedTo = function(actualPromise, expectedValue) {
-    var self = this;
-
-    function prefix(passed) {
-      return 'Expected a promise ' +
-        (passed ? 'not ' : '') +
-        'to be resolved to ' + j$.pp(expectedValue);
+    if (expected.length === 1) {
+      expected = expected[0];
     }
 
-    return actualPromise.then(
-      function(actualValue) {
-        if (self.util.equals(actualValue, expectedValue, self.customEqualityTesters)) {
-          return {
-           pass: true,
-           message: prefix(true) + '.'
-         };
-        } else {
-          return {
-            pass: false,
-            message: prefix(false) + ' but it was resolved to ' + j$.pp(actualValue) + '.'
-          };
-        }
-      },
-      function() {
-        return {
-          pass: false,
-          message: prefix(false) + ' but it was rejected.'
-        };
+    this.addExpectationResult(
+      result.pass,
+      {
+        matcherName: name,
+        passed: result.pass,
+        message: message,
+        error: undefined,
+        errorForStack: errorForStack,
+        actual: this.actual,
+        expected: expected // TODO: this may need to be arrayified/sliced
       }
     );
   };
 
-  /**
-   * Expect a promise to be rejected with a value equal to the expected, using deep equality comparison.
-   * @function
-   * @async
-   * @name async-matchers#toBeRejectedWith
-   * @param {Object} expected - Value that the promise is expected to reject to
-   * @example
-   * await expectAsync(aPromise).toBeRejectedWith({prop: 'value'});
-   * @example
-   * return expectAsync(aPromise).toBeRejectedWith({prop: 'value'});
-   */
-  AsyncExpectation.prototype.toBeRejectedWith = function(actualPromise, expectedValue) {
-    var self = this;
+  AsyncExpectation.prototype.buildMessage = j$.Expectation.prototype.buildMessage;
 
-    function prefix(passed) {
-      return 'Expected a promise ' +
-        (passed ? 'not ' : '') +
-        'to be rejected with ' + j$.pp(expectedValue);
+  AsyncExpectation.prototype.instantiateMatcher = j$.Expectation.prototype.instantiateMatcher;
+
+  AsyncExpectation.prototype.addFilter = j$.Expectation.prototype.addFilter;
+
+  AsyncExpectation.addCoreMatchers = function(matchers) {
+    var prototype = AsyncExpectation.prototype;
+    for (var matcherName in matchers) {
+      var matcher = matchers[matcherName];
+      prototype[matcherName] = wrapCompare(matcherName, matcher);
     }
-
-    return actualPromise.then(
-      function() {
-        return {
-          pass: false,
-          message: prefix(false) + ' but it was resolved.'
-        };
-      },
-      function(actualValue) {
-        if (self.util.equals(actualValue, expectedValue, self.customEqualityTesters)) {
-          return {
-            pass: true,
-            message: prefix(true) + '.'
-          };
-        } else {
-          return {
-            pass: false,
-            message: prefix(false) + ' but it was rejected with ' + j$.pp(actualValue) + '.'
-          };
-        }
-      }
-    );
-  };
-
-  AsyncExpectation.prototype.addFilter = function(filter) {
-    var result = Object.create(this);
-    result.filters = this.filters.addFilter(filter);
-    return result;
   };
 
   AsyncExpectation.factory = function(options) {
@@ -205,7 +97,7 @@ getJasmineRequireObj().AsyncExpectation = function(j$) {
   var negatingFilter = {
     selectComparisonFunc: function(matcher) {
       function defaultNegativeCompare() {
-        return matcher.apply(this, arguments).then(function(result) {
+        return matcher.compare.apply(this, arguments).then(function(result) {
           result.pass = !result.pass;
           return result;
         });
