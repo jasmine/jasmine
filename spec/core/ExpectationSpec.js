@@ -6,7 +6,7 @@ describe("Expectation", function() {
       },
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers
     });
 
@@ -22,7 +22,7 @@ describe("Expectation", function() {
 
     jasmineUnderTest.Expectation.addCoreMatchers(coreMatchers);
 
-    expectation = new jasmineUnderTest.Expectation({});
+    expectation = jasmineUnderTest.Expectation.factory({});
 
     expect(expectation.toQuux).toBeDefined();
   });
@@ -40,7 +40,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.factory({
       util: util,
       customMatchers: matchers,
       customEqualityTesters: customEqualityTesters,
@@ -68,7 +68,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.factory({
       util: util,
       customMatchers: matchers,
       actual: "an actual",
@@ -94,7 +94,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       util: util,
       actual: "an actual",
@@ -109,7 +109,8 @@ describe("Expectation", function() {
       message: "",
       error: undefined,
       expected: "hello",
-      actual: "an actual"
+      actual: "an actual",
+      errorForStack: undefined
     });
   });
 
@@ -127,7 +128,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       util: util,
       actual: "an actual",
@@ -142,7 +143,8 @@ describe("Expectation", function() {
       expected: "hello",
       actual: "an actual",
       message: "",
-      error: undefined
+      error: undefined,
+      errorForStack: undefined
     });
   });
 
@@ -162,7 +164,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.factory({
       actual: "an actual",
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
@@ -176,7 +178,8 @@ describe("Expectation", function() {
       expected: "hello",
       actual: "an actual",
       message: "I am a custom message",
-      error: undefined
+      error: undefined,
+      errorForStack: undefined
     });
   });
 
@@ -196,7 +199,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult
@@ -210,7 +213,8 @@ describe("Expectation", function() {
       expected: "hello",
       actual: "an actual",
       message: "I am a custom message",
-      error: undefined
+      error: undefined,
+      errorForStack: undefined
     });
   });
 
@@ -229,7 +233,7 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = jasmineUnderTest.Expectation.Factory({
+    expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult
@@ -243,7 +247,8 @@ describe("Expectation", function() {
       message: "",
       error: undefined,
       expected: "hello",
-      actual: actual
+      actual: actual,
+      errorForStack: undefined
     });
   });
 
@@ -262,7 +267,7 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = jasmineUnderTest.Expectation.Factory({
+    expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: "an actual",
       util: util,
@@ -277,7 +282,8 @@ describe("Expectation", function() {
       expected: "hello",
       actual: actual,
       message: "default message",
-      error: undefined
+      error: undefined,
+      errorForStack: undefined
     });
   });
 
@@ -298,7 +304,7 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = jasmineUnderTest.Expectation.Factory({
+    expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult
@@ -312,7 +318,8 @@ describe("Expectation", function() {
       expected: "hello",
       actual: actual,
       message: "I am a custom message",
-      error: undefined
+      error: undefined,
+      errorForStack: undefined
     });
   });
 
@@ -329,7 +336,7 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = jasmineUnderTest.Expectation.Factory({
+    expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult
@@ -343,7 +350,8 @@ describe("Expectation", function() {
       expected: "hello",
       actual: actual,
       message: "",
-      error: undefined
+      error: undefined,
+      errorForStack: undefined
     });
   });
 
@@ -365,7 +373,7 @@ describe("Expectation", function() {
       actual = "an actual",
       expectation;
 
-    expectation = jasmineUnderTest.Expectation.Factory({
+    expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: "an actual",
       addExpectationResult: addExpectationResult,
@@ -379,7 +387,8 @@ describe("Expectation", function() {
       expected: "hello",
       actual: actual,
       message: "I'm a custom message",
-      error: undefined
+      error: undefined,
+      errorForStack: undefined
     });
   });
 
@@ -401,7 +410,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = new jasmineUnderTest.Expectation({
+    expectation = jasmineUnderTest.Expectation.factory({
       actual: "an actual",
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
@@ -415,7 +424,8 @@ describe("Expectation", function() {
       expected: "hello",
       actual: "an actual",
       message: "I am a custom message",
-      error: customError
+      error: customError,
+      errorForStack: undefined
     });
   });
 
@@ -437,7 +447,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = jasmineUnderTest.Expectation.Factory({
+    expectation = jasmineUnderTest.Expectation.factory({
       actual: "an actual",
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
@@ -451,7 +461,8 @@ describe("Expectation", function() {
       expected: "hello",
       actual: "an actual",
       message: "I am a custom message",
-      error: customError
+      error: customError,
+      errorForStack: undefined
     });
   });
 
@@ -473,7 +484,7 @@ describe("Expectation", function() {
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
 
-    expectation = jasmineUnderTest.Expectation.Factory({
+    expectation = jasmineUnderTest.Expectation.factory({
       actual: "an actual",
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
@@ -487,7 +498,8 @@ describe("Expectation", function() {
       expected: "hello",
       actual: "an actual",
       message: "I am a custom message",
-      error: customError
+      error: customError,
+      errorForStack: undefined
     });
   });
 
@@ -504,7 +516,7 @@ describe("Expectation", function() {
           buildFailureMessage: function() { return "failure message"; }
         },
         addExpectationResult = jasmine.createSpy("addExpectationResult"),
-        expectation = jasmineUnderTest.Expectation.Factory({
+        expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
           util: util,
           actual: "an actual",
@@ -529,7 +541,7 @@ describe("Expectation", function() {
           }
         },
         addExpectationResult = jasmine.createSpy("addExpectationResult"),
-        expectation = jasmineUnderTest.Expectation.Factory({
+        expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
           actual: "an actual",
           addExpectationResult: addExpectationResult
@@ -558,7 +570,7 @@ describe("Expectation", function() {
           }
         },
         addExpectationResult = jasmine.createSpy("addExpectationResult"),
-        expectation = jasmineUnderTest.Expectation.Factory({
+        expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
           actual: "an actual",
           addExpectationResult: addExpectationResult
@@ -582,7 +594,7 @@ describe("Expectation", function() {
           }
         },
         addExpectationResult = jasmine.createSpy("addExpectationResult"),
-        expectation = jasmineUnderTest.Expectation.Factory({
+        expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
           util: jasmineUnderTest.matchersUtil,
           actual: "an actual",
@@ -614,7 +626,7 @@ describe("Expectation", function() {
           }
         },
         addExpectationResult = jasmine.createSpy("addExpectationResult"),
-        expectation = jasmineUnderTest.Expectation.Factory({
+        expectation = jasmineUnderTest.Expectation.factory({
           actual: "an actual",
           customMatchers: matchers,
           addExpectationResult: addExpectationResult
