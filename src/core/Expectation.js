@@ -1,102 +1,154 @@
-getJasmineRequireObj().Expectation = function() {
+getJasmineRequireObj().Expectation = function(j$) {
+  var promiseForMessage = {
+    jasmineToString: function() { return 'a promise'; }
+  };
 
   /**
    * Matchers that come with Jasmine out of the box.
    * @namespace matchers
    */
   function Expectation(options) {
-    this.util = options.util || { buildFailureMessage: function() {} };
-    this.customEqualityTesters = options.customEqualityTesters || [];
-    this.actual = options.actual;
-    this.addExpectationResult = options.addExpectationResult || function(){};
-    this.isNot = options.isNot;
+    this.expector = new j$.Expector(options);
 
     var customMatchers = options.customMatchers || {};
     for (var matcherName in customMatchers) {
-      this[matcherName] = Expectation.prototype.wrapCompare(matcherName, customMatchers[matcherName]);
+      this[matcherName] = wrapSyncCompare(matcherName, customMatchers[matcherName]);
     }
   }
 
-  Expectation.prototype.wrapCompare = function(name, matcherFactory) {
-    return function() {
-      var args = Array.prototype.slice.call(arguments, 0),
-        expected = args.slice(0),
-        message;
-
-      args.unshift(this.actual);
-
-      var matcher = matcherFactory(this.util, this.customEqualityTesters),
-          matcherCompare = matcher.compare;
-
-      function defaultNegativeCompare() {
-        var result = matcher.compare.apply(null, args);
-        result.pass = !result.pass;
-        return result;
-      }
-
-      if (this.isNot) {
-        matcherCompare = matcher.negativeCompare || defaultNegativeCompare;
-      }
-
-      var result = matcherCompare.apply(null, args);
-      message = Expectation.finalizeMessage(this.util, name, this.isNot, args, result);
-
-      if (expected.length == 1) {
-        expected = expected[0];
-      }
-
-      // TODO: how many of these params are needed?
-      this.addExpectationResult(
-        result.pass,
-        {
-          matcherName: name,
-          passed: result.pass,
-          message: message,
-          error: result.error,
-          actual: this.actual,
-          expected: expected // TODO: this may need to be arrayified/sliced
-        }
-      );
-    };
+  Expectation.prototype.withContext = function withContext(message) {
+    return addFilter(this, new ContextAddingFilter(message));
   };
 
-  Expectation.finalizeMessage = function(util, name, isNot, args, result) {
-    if (result.pass) {
-      return '';
-    } else if (result.message) {
-      if (Object.prototype.toString.apply(result.message) === '[object Function]') {
+  Object.defineProperty(Expectation.prototype, 'not', {
+    get: function() {
+      return addFilter(this, syncNegatingFilter);
+    }
+  });
+
+  /**
+   * Asynchronous matchers.
+   * @namespace async-matchers
+   */
+  function AsyncExpectation(options) {
+    var global = options.global || j$.getGlobal();
+    this.expector = new j$.Expector(options);
+
+    if (!global.Promise) {
+      throw new Error('expectAsync is unavailable because the environment does not support promises.');
+    }
+
+    if (!j$.isPromiseLike(this.expector.actual)) {
+      throw new Error('Expected expectAsync to be called with a promise.');
+    }
+  }
+
+  AsyncExpectation.prototype.withContext = function withContext(message) {
+    return addFilter(this, new ContextAddingFilter(message));
+  };
+
+  Object.defineProperty(AsyncExpectation.prototype, 'not', {
+    get: function() {
+      return addFilter(this, asyncNegatingFilter);
+    }
+  });
+
+  function wrapSyncCompare(name, matcherFactory) {
+    return function() {
+      var result = this.expector.compare(name, matcherFactory, arguments);
+      this.expector.processResult(result);
+    };
+  }
+
+  function wrapAsyncCompare(name, matcherFactory) {
+    return function() {
+      var self = this;
+
+      // Capture the call stack here, before we go async, so that it will contain
+      // frames that are relevant to the user instead of just parts of Jasmine.
+      var errorForStack = j$.util.errorWithStack();
+
+      return this.expector.compare(name, matcherFactory, arguments).then(function(result) {
+        self.expector.processResult(result, errorForStack, promiseForMessage);
+      });
+    };
+  }
+
+  function addCoreMatchers(prototype, matchers, wrapper) {
+    for (var matcherName in matchers) {
+      var matcher = matchers[matcherName];
+      prototype[matcherName] = wrapper(matcherName, matcher);
+    }
+  }
+
+  function addFilter(source, filter) {
+    var result = Object.create(source);
+    result.expector = source.expector.addFilter(filter);
+    return result;
+  }
+
+  function negatedFailureMessage(result, matcherName, args, util) {
+    if (result.message) {
+      if (j$.isFunction_(result.message)) {
         return result.message();
       } else {
         return result.message;
       }
-    } else {
-      args = args.slice();
-      args.unshift(isNot);
-      args.unshift(name);
-      return util.buildFailureMessage.apply(null, args);
+    }
+
+    args = args.slice();
+    args.unshift(true);
+    args.unshift(matcherName);
+    return util.buildFailureMessage.apply(null, args);
+  }
+
+  function negate(result) {
+    result.pass = !result.pass;
+    return result;
+  }
+
+  var syncNegatingFilter = {
+    selectComparisonFunc: function(matcher) {
+      function defaultNegativeCompare() {
+        return negate(matcher.compare.apply(null, arguments));
+      }
+
+      return matcher.negativeCompare || defaultNegativeCompare;
+    },
+    buildFailureMessage: negatedFailureMessage
+  };
+
+  var asyncNegatingFilter = {
+    selectComparisonFunc: function(matcher) {
+      function defaultNegativeCompare() {
+        return matcher.compare.apply(this, arguments).then(negate);
+      }
+
+      return defaultNegativeCompare;
+    },
+    buildFailureMessage: negatedFailureMessage
+  };
+
+  function ContextAddingFilter(message) {
+    this.message = message;
+  }
+
+  ContextAddingFilter.prototype.modifyFailureMessage = function(msg) {
+    return this.message + ': ' + msg;
+  };
+
+  return {
+    factory: function(options) {
+      return new Expectation(options || {});
+    },
+    addCoreMatchers: function(matchers) {
+      addCoreMatchers(Expectation.prototype, matchers, wrapSyncCompare);
+    },
+    asyncFactory: function(options) {
+      return new AsyncExpectation(options || {});
+    },
+    addAsyncCoreMatchers: function(matchers) {
+      addCoreMatchers(AsyncExpectation.prototype, matchers, wrapAsyncCompare);
     }
   };
-
-  Expectation.addCoreMatchers = function(matchers) {
-    var prototype = Expectation.prototype;
-    for (var matcherName in matchers) {
-      var matcher = matchers[matcherName];
-      prototype[matcherName] = prototype.wrapCompare(matcherName, matcher);
-    }
-  };
-
-  Expectation.Factory = function(options) {
-    options = options || {};
-
-    var expect = new Expectation(options);
-
-    // TODO: this would be nice as its own Object - NegativeExpectation
-    // TODO: copy instead of mutate options
-    options.isNot = true;
-    expect.not = new Expectation(options);
-
-    return expect;
-  };
-
-  return Expectation;
 };

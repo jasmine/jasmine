@@ -1,327 +1,22 @@
 describe('AsyncExpectation', function() {
+  beforeEach(function() {
+    jasmineUnderTest.Expectation.addAsyncCoreMatchers(jasmineUnderTest.asyncMatchers);
+  });
+
   describe('Factory', function() {
     it('throws an Error if promises are not available', function() {
       var thenable = {then: function() {}},
         options = {global: {}, actual: thenable}
-      function f() { jasmineUnderTest.AsyncExpectation.factory(options); }
+      function f() { jasmineUnderTest.Expectation.asyncFactory(options); }
       expect(f).toThrowError('expectAsync is unavailable because the environment does not support promises.');
     });
 
     it('throws an Error if the argument is not a promise', function() {
       jasmine.getEnv().requirePromises();
       function f() {
-        jasmineUnderTest.AsyncExpectation.factory({actual: 'not a promise'});
+        jasmineUnderTest.Expectation.asyncFactory({actual: 'not a promise'});
       }
       expect(f).toThrowError('Expected expectAsync to be called with a promise.');
-    });
-  });
-
-  describe('#toBeResolved', function() {
-    it('passes if the actual is resolved', function() {
-      jasmine.getEnv().requirePromises();
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.resolve(),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeResolved().then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(true, {
-          matcherName: 'toBeResolved',
-          passed: true,
-          message: '',
-          error: undefined,
-          errorForStack: jasmine.any(Error),
-          actual: actual
-        });
-      });
-    });
-
-    it('fails if the actual is rejected', function() {
-      jasmine.getEnv().requirePromises();
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.reject('AsyncExpectationSpec rejection'),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeResolved().then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(false, {
-          matcherName: 'toBeResolved',
-          passed: false,
-          message: 'Expected a promise to be resolved.',
-          error: undefined,
-          errorForStack: jasmine.any(Error),
-          actual: actual
-        });
-      });
-    });
-  });
-
-  describe('#toBeRejected', function() {
-    it('passes if the actual is rejected', function() {
-      jasmine.getEnv().requirePromises();
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.reject('AsyncExpectationSpec rejection'),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeRejected().then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(true, {
-          matcherName: 'toBeRejected',
-          passed: true,
-          message: '',
-          error: undefined,
-          errorForStack: jasmine.any(Error),
-          actual: actual
-        });
-      });
-    });
-
-    it('fails if the actual is resolved', function() {
-      jasmine.getEnv().requirePromises();
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.resolve(),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeRejected().then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(false, {
-          matcherName: 'toBeRejected',
-          passed: false,
-          message: 'Expected a promise to be rejected.',
-          error: undefined,
-          errorForStack: jasmine.any(Error),
-          actual: actual
-        });
-      });
-    });
-  });
-
-  describe('#toBeRejectedWith', function () {
-    it('should return true if the promise is rejected to the expected value', function () {
-      jasmine.getEnv().requirePromises();
-
-      var actual = Promise.reject({error: 'PEBCAK'});
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeRejectedWith({error: 'PEBCAK'}).then(function () {
-        expect(addExpectationResult).toHaveBeenCalledWith(true, {
-          matcherName: 'toBeRejectedWith',
-          passed: true,
-          message: '',
-          error: undefined,
-          errorForStack: jasmine.any(Error),
-          actual: actual
-        });
-      });
-
-    });
-
-    it('should fail if the promise resolves', function () {
-      jasmine.getEnv().requirePromises();
-
-      var actual = Promise.resolve('AsyncExpectation error');
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeRejectedWith('').then(function () {
-        expect(addExpectationResult).toHaveBeenCalledWith(false, {
-          matcherName: 'toBeRejectedWith',
-          passed: false,
-          message: "Expected a promise to be rejected to '' but it was resolved.",
-          error: undefined,
-          errorForStack: jasmine.any(Error),
-          actual: actual
-        });
-      });
-    });
-
-    it('should fail if the promise is rejected to a different value', function () {
-      jasmine.getEnv().requirePromises();
-
-      var actual = Promise.reject('A Bad Apple');
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeRejectedWith('Some Cool Thing').then(function () {
-        expect(addExpectationResult).toHaveBeenCalledWith(false, {
-          matcherName: 'toBeRejectedWith',
-          passed: false,
-          message: "Expected a promise to be rejected to 'Some Cool Thing' but it was rejected to 'A Bad Apple'.",
-          error: undefined,
-          errorForStack: jasmine.any(Error),
-          actual: actual
-        });
-      });
-    });
-
-    it('should build its error correctly when negated', function () {
-      jasmine.getEnv().requirePromises();
-
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = jasmineUnderTest.AsyncExpectation.factory({
-          util: jasmineUnderTest.matchersUtil,
-          actual: Promise.reject(true),
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.not.toBeRejectedWith(true).then(function () {
-        expect(addExpectationResult).toHaveBeenCalledWith(false,
-          jasmine.objectContaining({
-            passed: false,
-            message: 'Expected a promise not to be rejected to true.'
-          })
-        );
-      });
-    });
-
-    it('should support custom equality testers', function () {
-      jasmine.getEnv().requirePromises();
-
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          customEqualityTesters: [function() { return true; }],
-          actual: Promise.reject('actual'),
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeRejectedWith('expected').then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(true,
-          jasmine.objectContaining({passed: true}));
-      });
-    });
-  });
-
-  describe('#toBeResolvedTo', function() {
-    it('passes if the promise is resolved to the expected value', function() {
-      jasmine.getEnv().requirePromises();
-
-      var actual = Promise.resolve({foo: 42});
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeResolvedTo({foo: 42}).then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(true, {
-          matcherName: 'toBeResolvedTo',
-          passed: true,
-          message: '',
-          error: undefined,
-          errorForStack: jasmine.any(Error),
-          actual: actual
-        });
-      });
-    });
-
-    it('fails if the promise is rejected', function() {
-      jasmine.getEnv().requirePromises();
-
-      var actual = Promise.reject('AsyncExpectationSpec error');
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeResolvedTo('').then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(false, {
-          matcherName: 'toBeResolvedTo',
-          passed: false,
-          message: "Expected a promise to be resolved to '' but it was rejected.",
-          error: undefined,
-          errorForStack: jasmine.any(Error),
-          actual: actual
-        });
-      });
-    });
-
-    it('fails if the promise is resolved to a different value', function() {
-      jasmine.getEnv().requirePromises();
-
-      var actual = Promise.resolve({foo: 17});
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeResolvedTo({foo: 42}).then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(false, {
-          matcherName: 'toBeResolvedTo',
-          passed: false,
-          message: 'Expected a promise to be resolved to Object({ foo: 42 }) but it was resolved to Object({ foo: 17 }).',
-          error: undefined,
-          errorForStack: jasmine.any(Error),
-          actual: actual
-        });
-      });
-    });
-
-    it('builds its message correctly when negated', function() {
-      jasmine.getEnv().requirePromises();
-
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = jasmineUnderTest.AsyncExpectation.factory({
-          util: jasmineUnderTest.matchersUtil,
-          actual: Promise.resolve(true),
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.not.toBeResolvedTo(true).then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(false,
-          jasmine.objectContaining({
-            passed: false,
-            message: 'Expected a promise not to be resolved to true.'
-          })
-        );
-      });
-    });
-
-    it('supports custom equality testers', function() {
-      jasmine.getEnv().requirePromises();
-
-      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = new jasmineUnderTest.AsyncExpectation({
-          util: jasmineUnderTest.matchersUtil,
-          customEqualityTesters: [function() { return true; }],
-          actual: Promise.resolve('actual'),
-          addExpectationResult: addExpectationResult
-        });
-
-      return expectation.toBeResolvedTo('expected').then(function() {
-        expect(addExpectationResult).toHaveBeenCalledWith(true,
-          jasmine.objectContaining({passed: true}));
-      });
     });
   });
 
@@ -331,7 +26,7 @@ describe('AsyncExpectation', function() {
 
       var addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.resolve(),
-        expectation = jasmineUnderTest.AsyncExpectation.factory({
+        expectation = jasmineUnderTest.Expectation.asyncFactory({
           util: jasmineUnderTest.matchersUtil,
           actual: actual,
           addExpectationResult: addExpectationResult
@@ -352,7 +47,7 @@ describe('AsyncExpectation', function() {
 
       var addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.reject(),
-        expectation = jasmineUnderTest.AsyncExpectation.factory({
+        expectation = jasmineUnderTest.Expectation.asyncFactory({
           util: jasmineUnderTest.matchersUtil,
           actual: actual,
           addExpectationResult: addExpectationResult
@@ -371,23 +66,139 @@ describe('AsyncExpectation', function() {
 
   it('propagates rejections from the comparison function', function() {
     jasmine.getEnv().requirePromises();
-    var error = new Error('AsyncExpectationSpec failure');
+    var error = new Error('ExpectationSpec failure');
 
-    spyOn(jasmineUnderTest.AsyncExpectation.prototype, 'toBeResolved')
-      .and.returnValue(Promise.reject(error));
 
     var addExpectationResult = jasmine.createSpy('addExpectationResult'),
       actual = dummyPromise(),
-      expectation = new jasmineUnderTest.AsyncExpectation({
+      expectation = jasmineUnderTest.Expectation.asyncFactory({
         actual: actual,
         addExpectationResult: addExpectationResult
       });
+
+    spyOn(expectation, 'toBeResolved')
+      .and.returnValue(Promise.reject(error));
 
     return expectation.toBeResolved()
       .then(
         function() { fail('Expected a rejection'); },
         function(e) { expect(e).toBe(error); }
       );
+  });
+
+  describe('#withContext', function() {
+    it("prepends the context to the generated failure message", function() {
+      jasmine.getEnv().requirePromises();
+
+      var util = {
+          buildFailureMessage: function() { return 'failure message'; }
+        },
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        expectation = jasmineUnderTest.Expectation.asyncFactory({
+          actual: Promise.reject('rejected'),
+          addExpectationResult: addExpectationResult,
+          util: util
+        });
+
+      return expectation.withContext('Some context').toBeResolved()
+        .then(
+          function() {
+            expect(addExpectationResult).toHaveBeenCalledWith(false,
+              jasmine.objectContaining({
+                message: 'Some context: failure message'
+              }));
+          });
+    });
+
+    it("prepends the context to a custom failure message", function() {
+      jasmine.getEnv().requirePromises();
+
+      var util = {
+          buildFailureMessage: function() { return 'failure message'; }
+        },
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        expectation = jasmineUnderTest.Expectation.asyncFactory({
+          actual: Promise.reject('b'),
+          addExpectationResult: addExpectationResult,
+          util: util
+        });
+
+      return expectation.withContext('Some context').toBeResolvedTo('a')
+        .then(
+          function() {
+            expect(addExpectationResult).toHaveBeenCalledWith(false,
+              jasmine.objectContaining({
+                message: "Some context: Expected a promise to be resolved to 'a' but it was rejected."
+              }));
+          });
+    });
+
+    it("prepends the context to a custom failure message from a function", function() {
+      pending('should actually work, but no custom matchers for async yet');
+      jasmine.getEnv().requirePromises();
+
+      var util = {
+          buildFailureMessage: function() { return 'failure message'; }
+        },
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        actual = Promise.reject(),
+        expectation = jasmineUnderTest.Expectation.asyncFactory({
+          actual: actual,
+          addExpectationResult: addExpectationResult,
+          util: util
+        });
+
+      return expectation.withContext('Some context').toBeResolved()
+        .then(
+          function() {
+            expect(addExpectationResult).toHaveBeenCalledWith(false,
+              jasmine.objectContaining({
+                message: 'Some context: msg'
+              }));
+          });
+    });
+
+    it("works with #not", function() {
+      jasmine.getEnv().requirePromises();
+
+      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        actual = Promise.resolve(),
+        expectation = jasmineUnderTest.Expectation.asyncFactory({
+          actual: actual,
+          addExpectationResult: addExpectationResult,
+          util: jasmineUnderTest.matchersUtil
+        });
+
+      return expectation.withContext('Some context').not.toBeResolved()
+        .then(
+          function() {
+            expect(addExpectationResult).toHaveBeenCalledWith(false,
+              jasmine.objectContaining({
+                message: 'Some context: Expected a promise not to be resolved.'
+              }));
+          });
+    });
+
+    it("works with #not and a custom message", function() {
+      jasmine.getEnv().requirePromises();
+
+      var addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        actual = Promise.resolve('a'),
+        expectation = jasmineUnderTest.Expectation.asyncFactory({
+          actual: actual,
+          addExpectationResult: addExpectationResult,
+          util: jasmineUnderTest.matchersUtil
+        });
+
+      return expectation.withContext('Some context').not.toBeResolvedTo('a')
+        .then(
+          function() {
+            expect(addExpectationResult).toHaveBeenCalledWith(false,
+              jasmine.objectContaining({
+                message: "Some context: Expected a promise not to be resolved to 'a'."
+              }));
+          });
+    });
   });
 
   function dummyPromise() {

@@ -37,8 +37,9 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.Env = jRequire.Env(j$);
     j$.StackTrace = jRequire.StackTrace(j$);
     j$.ExceptionFormatter = jRequire.ExceptionFormatter(j$);
-    j$.Expectation = jRequire.Expectation();
-    j$.AsyncExpectation = jRequire.AsyncExpectation(j$);
+    j$.ExpectationFilterChain = jRequire.ExpectationFilterChain();
+    j$.Expector = jRequire.Expector(j$);
+    j$.Expectation = jRequire.Expectation(j$);
     j$.buildExpectationResult = jRequire.buildExpectationResult();
     j$.JsApiReporter = jRequire.JsApiReporter();
     j$.matchersUtil = jRequire.matchersUtil(j$);
@@ -71,6 +72,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.NotEmpty = jRequire.NotEmpty(j$);
 
     j$.matchers = jRequire.requireMatchers(jRequire, j$);
+    j$.asyncMatchers = jRequire.requireAsyncMatchers(jRequire, j$);
 
     return j$;
   };
