@@ -240,7 +240,7 @@ getJasmineRequireObj().pp = function(j$) {
       out += ' ' + attr.name;
 
       if (attr.value !== '') {
-        out += '="' + attrs[i].value + '"';
+        out += '="' + attr.value + '"';
       }
     }
 
