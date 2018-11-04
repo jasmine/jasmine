@@ -624,6 +624,99 @@ describe("toEqual", function() {
       expect(compareEquals(actual, expected).message).toEqual(message);
     });
 
+    it("reports mismatches between SVG nodes", function () {
+      var nodeA = this.doc.createElementNS('http://www.w3.org/2000/svg', 'svg'),
+        nodeB = this.doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+      nodeA.setAttribute('height', '50');
+      nodeB.setAttribute('height', '30');
+
+      var rect = this.doc.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('width', '50');
+      nodeA.appendChild(rect);
+
+      expect(nodeA.isEqualNode(nodeB)).toBe(false);
+      var actual = {a: nodeA},
+        expected = {a: nodeB},
+        message = 'Expected $.a = <svg height="50">...</svg> to equal <svg height="30">.';
+
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("reports whole DOM node when attribute contains > character", function () {
+      var nodeA = this.doc.createElement('div'),
+        nodeB = this.doc.createElement('div');
+
+      nodeA.setAttribute('thing', '>>>');
+      nodeB.setAttribute('thing', 'bar');
+
+      expect(nodeA.isEqualNode(nodeB)).toBe(false);
+      var actual = {a: nodeA},
+        expected = {a: nodeB},
+        message = 'Expected $.a = <div thing=">>>"> to equal <div thing="bar">.';
+
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it('reports no content when DOM node has multiple empty text nodes', function () {
+      var nodeA = this.doc.createElement('div'),
+        nodeB = this.doc.createElement('div');
+
+      nodeA.appendChild(this.doc.createTextNode(''));
+      nodeA.appendChild(this.doc.createTextNode(''));
+      nodeA.appendChild(this.doc.createTextNode(''));
+      nodeA.appendChild(this.doc.createTextNode(''));
+
+      expect(nodeA.isEqualNode(nodeB)).toBe(false);
+      var actual = {a: nodeA},
+        expected = {a: nodeB},
+        message = 'Expected $.a = <div> to equal <div>.';
+
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it('reports content when DOM node has non empty text node', function () {
+      var nodeA = this.doc.createElement('div'),
+        nodeB = this.doc.createElement('div');
+
+      nodeA.appendChild(this.doc.createTextNode('Hello Jasmine!'));
+
+      expect(nodeA.isEqualNode(nodeB)).toBe(false);
+      var actual = {a: nodeA},
+        expected = {a: nodeB},
+        message = 'Expected $.a = <div>...</div> to equal <div>.';
+
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it('reports empty DOM attributes', function () {
+      var nodeA = this.doc.createElement('div'),
+        nodeB = this.doc.createElement('div');
+
+      nodeA.setAttribute('contenteditable', '');
+
+      expect(nodeA.isEqualNode(nodeB)).toBe(false);
+      var actual = {a: nodeA},
+        expected = {a: nodeB},
+        message = 'Expected $.a = <div contenteditable> to equal <div>.';
+
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it('reports 0 attr value as non empty DOM attribute', function () {
+      var nodeA = this.doc.createElement('div'),
+        nodeB = this.doc.createElement('div');
+
+      nodeA.setAttribute('contenteditable', 0);
+
+      expect(nodeA.isEqualNode(nodeB)).toBe(false);
+      var actual = {a: nodeA},
+        expected = {a: nodeB},
+        message = 'Expected $.a = <div contenteditable="0"> to equal <div>.';
+
+      expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
     it("reports mismatches between a DOM node and a bare Object", function() {
       var actual = {a: this.doc.createElement('div')},
       expected = {a: {}},
