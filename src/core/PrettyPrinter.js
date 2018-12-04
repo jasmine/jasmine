@@ -228,15 +228,29 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   PrettyPrinter.prototype.emitDomElement = function(el) {
-    var closingTag = '</' + el.tagName.toLowerCase() + '>';
+    var tagName = el.tagName.toLowerCase(),
+      attrs = el.attributes,
+      i,
+      len = attrs.length,
+      out = '<' + tagName,
+      attr;
 
-    if (el.innerHTML === '') {
-      this.append(el.outerHTML.replace(closingTag, ''));
-    } else {
-      var tagEnd = el.outerHTML.indexOf('>');
-      this.append(el.outerHTML.substring(0, tagEnd + 1));
-      this.append('...' + closingTag);
+    for (i = 0; i < len; i++) {
+      attr = attrs[i];
+      out += ' ' + attr.name;
+
+      if (attr.value !== '') {
+        out += '="' + attr.value + '"';
+      }
     }
+
+    out += '>';
+
+    if (el.childElementCount !== 0 || el.textContent !== '') {
+      out += '...</' + tagName + '>';
+    }
+
+    this.append(out);
   };
 
   PrettyPrinter.prototype.formatProperty = function(obj, property, isGetter) {
