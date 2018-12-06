@@ -78,7 +78,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         cleanup();
 
         if (j$.isError_(err)) {
-          if (!(err instanceof StopExecutionError)) {
+          if (!(err instanceof StopExecutionError) && !err.jasmineMessage) {
             self.fail(err);
           }
           self.errored = errored = true;

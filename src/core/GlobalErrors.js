@@ -14,28 +14,44 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     };
 
     this.originalHandlers = {};
-    this.installOne_ = function installOne_(errorType) {
+    this.jasmineHandlers = {};
+    this.installOne_ = function installOne_(errorType, jasmineMessage) {
+      function taggedOnError(error) {
+        error.jasmineMessage = jasmineMessage + ': ' + error;
+
+        var handler = handlers[handlers.length - 1];
+
+        if (handler) {
+          handler(error);
+        } else {
+          throw error;
+        }
+      }
+
       this.originalHandlers[errorType] = global.process.listeners(errorType);
+      this.jasmineHandlers[errorType] = taggedOnError;
+
       global.process.removeAllListeners(errorType);
-      global.process.on(errorType, onerror);
+      global.process.on(errorType, taggedOnError);
 
       this.uninstall = function uninstall() {
         var errorTypes = Object.keys(this.originalHandlers);
         for (var iType = 0; iType < errorTypes.length; iType++) {
           var errorType = errorTypes[iType];
-          global.process.removeListener(errorType, onerror);
+          global.process.removeListener(errorType, this.jasmineHandlers[errorType]);
           for (var i = 0; i < this.originalHandlers[errorType].length; i++) {
             global.process.on(errorType, this.originalHandlers[errorType][i]);
           }
           delete this.originalHandlers[errorType];
+          delete this.jasmineHandlers[errorType];
         }
       };
     };
 
     this.install = function install() {
       if (global.process && global.process.listeners && j$.isFunction_(global.process.on)) {
-        this.installOne_('uncaughtException');
-        this.installOne_('unhandledRejection');
+        this.installOne_('uncaughtException', 'Uncaught exception');
+        this.installOne_('unhandledRejection', 'Unhandled promise rejection');
       } else {
         var originalHandler = global.onerror;
         global.onerror = onerror;
