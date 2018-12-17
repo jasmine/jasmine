@@ -34,7 +34,7 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitScalar(value.toString());
       } else if (typeof value === 'function') {
         this.emitScalar('Function');
-      } else if (value.nodeType === 1) {
+      } else if (value.nodeType === 1 && !!value.tagName) {
         this.emitDomElement(value);
       } else if (typeof value.nodeType === 'number') {
         this.emitScalar('HTMLNode');
