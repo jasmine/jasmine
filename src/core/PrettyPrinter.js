@@ -34,10 +34,12 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitScalar(value.toString());
       } else if (typeof value === 'function') {
         this.emitScalar('Function');
-      } else if (value.nodeType === 1) {
-        this.emitDomElement(value);
-      } else if (typeof value.nodeType === 'number') {
-        this.emitScalar('HTMLNode');
+      } else if (j$.isDomNode(value)) {
+        if (value.tagName) {
+          this.emitDomElement(value);
+        } else {
+          this.emitScalar('HTMLNode');
+        }
       } else if (value instanceof Date) {
         this.emitScalar('Date(' + value + ')');
       } else if (j$.isSet(value)) {

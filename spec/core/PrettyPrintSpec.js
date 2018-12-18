@@ -132,6 +132,10 @@ describe("jasmineUnderTest.pp", function () {
     }, bar: [1, 2, 3]})).toEqual("Object({ foo: Function, bar: [ 1, 2, 3 ] })");
   });
 
+  it("should stringify objects that almost look like DOM nodes", function() {
+    expect(jasmineUnderTest.pp({nodeType: 1})).toEqual("Object({ nodeType: 1 })");
+  });
+
   it("should truncate objects with too many keys", function () {
     var originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
     var long = {a: 1, b: 2, c: 3};
