@@ -2046,6 +2046,7 @@ describe("Env integration", function() {
           passed: false,
           globalErrorType: 'load',
           message: 'Uncaught SyntaxError: Unexpected end of input',
+          stack: 'a stack',
           filename: 'borkenSpec.js',
           lineno: 42
         },
@@ -2053,6 +2054,7 @@ describe("Env integration", function() {
           passed: false,
           globalErrorType: 'load',
           message: 'Uncaught Error: ENOCHEESE',
+          stack: undefined,
           filename: undefined,
           lineno: undefined
         }
@@ -2062,7 +2064,7 @@ describe("Env integration", function() {
     });
 
     env.addReporter(reporter);
-    global.onerror('Uncaught SyntaxError: Unexpected end of input', 'borkenSpec.js', 42);
+    global.onerror('Uncaught SyntaxError: Unexpected end of input', 'borkenSpec.js', 42, undefined, {stack: 'a stack'});
     global.onerror('Uncaught Error: ENOCHEESE');
 
     env.execute();
