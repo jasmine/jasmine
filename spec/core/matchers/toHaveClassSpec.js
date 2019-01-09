@@ -1,5 +1,5 @@
 describe('toHaveClass', function() {
-  beforeEach(function(done) {
+  beforeEach(function() {
     this.createElementWithClassName = function(className) {
       var el = this.doc.createElement('div');
       el.className = className;
@@ -8,18 +8,10 @@ describe('toHaveClass', function() {
 
     if (typeof document !== 'undefined') {
       this.doc = document;
-      done();
     } else {
-      var jsdom = require('jsdom');
-      var self = this;
-      jsdom.env('', function(err, win) {
-        if (err) {
-          done.fail(err);
-        } else {
-          self.doc = win.document;
-          done();
-        }
-      });
+      var JSDOM = require('jsdom').JSDOM;
+      var dom = new JSDOM();
+      this.doc = dom.window.document;
     }
   });
 

@@ -575,23 +575,15 @@ describe("toEqual", function() {
       return typeof document === 'undefined'
     }
 
-    beforeEach(function(done) {
+    beforeEach(function() {
       this.nonBrowser = isNotRunningInBrowser();
       if (this.nonBrowser) {
-        var jsdom = require('jsdom');
-        var self = this;
-        jsdom.env('', function(err, win) {
-          if (err) {
-            done.fail(err);
-          } else {
-            jasmineUnderTest.getGlobal().Node = win.Node;
-            self.doc = win.document;
-            done();
-          }
-        });
+        var JSDOM = require('jsdom').JSDOM;
+        var dom = new JSDOM();
+        jasmineUnderTest.getGlobal().Node = dom.window.Node;
+        this.doc = dom.window.document;
       } else {
         this.doc = document;
-        done();
       }
     });
 
