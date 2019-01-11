@@ -22,10 +22,6 @@ getJasmineRequireObj().Expector = function(j$) {
   Expector.prototype.buildMessage = function(result) {
     var self = this;
 
-    if (result.pass) {
-      return '';
-    }
-
     var msg = this.filters.buildFailureMessage(result, this.matcherName, this.args, this.util, defaultMessage);
     return this.filters.modifyFailureMessage(msg || defaultMessage());
 

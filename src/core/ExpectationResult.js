@@ -29,7 +29,7 @@ getJasmineRequireObj().buildExpectationResult = function() {
 
     function message() {
       if (options.passed) {
-        return 'Passed.';
+        return 'Passed: ' + options.message;
       } else if (options.message) {
         return options.message;
       } else if (options.error) {
@@ -40,7 +40,7 @@ getJasmineRequireObj().buildExpectationResult = function() {
 
     function stack() {
       if (options.passed) {
-        return '';
+        return options.message;
       }
 
       var error = options.error;

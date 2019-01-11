@@ -6,7 +6,7 @@ describe("buildExpectationResult", function() {
 
   it("message defaults to Passed for passing specs", function() {
     var result = jasmineUnderTest.buildExpectationResult({passed: true, message: 'some-value'});
-    expect(result.message).toBe('Passed.');
+    expect(result.message).toBe('Passed: some-value');
   });
 
   it("message returns the message for failing expectations", function() {
