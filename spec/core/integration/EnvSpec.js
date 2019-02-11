@@ -1942,10 +1942,10 @@ describe("Env integration", function() {
 
     reporter.jasmineDone.and.callFake(function() {
       expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('async suite', [
-        /^(((Uncaught )?Error: suite( thrown)?)|(suite thrown))$/
+        /^(((Uncaught )?(exception: )?Error: suite( thrown)?)|(suite thrown))$/
       ]);
       expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite async spec', [
-        /^(((Uncaught )?Error: spec( thrown)?)|(spec thrown))$/
+        /^(((Uncaught )?(exception: )?Error: spec( thrown)?)|(spec thrown))$/
       ]);
       done();
     });

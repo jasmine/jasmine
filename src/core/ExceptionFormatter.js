@@ -1,11 +1,15 @@
 getJasmineRequireObj().ExceptionFormatter = function(j$) {
 
+  var ignoredProperties = ['name', 'message', 'stack', 'fileName', 'sourceURL', 'line', 'lineNumber', 'column', 'description', 'jasmineMessage'];
+
   function ExceptionFormatter(options) {
     var jasmineFile = (options && options.jasmineFile) || j$.util.jasmineFile();
     this.message = function(error) {
       var message = '';
 
-      if (error.name && error.message) {
+      if (error.jasmineMessage) {
+        message += error.jasmineMessage;
+      } else if (error.name && error.message) {
         message += error.name + ': ' + error.message;
       } else if (error.message) {
         message += error.message;
@@ -63,12 +67,11 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
         return;
       }
 
-      var ignored = ['name', 'message', 'stack', 'fileName', 'sourceURL', 'line', 'lineNumber', 'column', 'description'];
       var result = {};
       var empty = true;
 
       for (var prop in error) {
-        if (j$.util.arrayContains(ignored, prop)) {
+        if (j$.util.arrayContains(ignoredProperties, prop)) {
           continue;
         }
         result[prop] = error[prop];

@@ -101,6 +101,7 @@ describe("GlobalErrors", function() {
     addedListener(new Error('bar'));
 
     expect(handler).toHaveBeenCalledWith(new Error('bar'));
+    expect(handler.calls.argsFor(0)[0].jasmineMessage).toBe('Uncaught exception: Error: bar');
 
     errors.uninstall();
 
@@ -127,10 +128,11 @@ describe("GlobalErrors", function() {
 
     errors.pushListener(handler);
 
-    var addedListener = fakeGlobal.process.on.calls.argsFor(0)[1];
+    var addedListener = fakeGlobal.process.on.calls.argsFor(1)[1];
     addedListener(new Error('bar'));
 
     expect(handler).toHaveBeenCalledWith(new Error('bar'));
+    expect(handler.calls.argsFor(0)[0].jasmineMessage).toBe('Unhandled promise rejection: Error: bar');
 
     errors.uninstall();
 
