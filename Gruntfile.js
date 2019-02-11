@@ -16,6 +16,12 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['jshint:all']);
 
+  if (/^v4\./.test(process.version)) {
+    grunt.registerTask('jshint', function() {
+      console.log('Skipping jshint for older versions of Node');
+    });
+  }
+
   var version = require('./grunt/tasks/version.js');
 
   grunt.registerTask('build:copyVersionToGem',
