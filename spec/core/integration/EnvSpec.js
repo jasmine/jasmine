@@ -916,30 +916,6 @@ describe("Env integration", function() {
     env.execute();
   });
 
-  it('removes a spy from the top suite after the run is complete', function(done) {
-    var env = new jasmineUnderTest.Env(),
-      originalFoo = function() {},
-      testObj = {
-        foo: originalFoo
-      };
-
-    env.beforeAll(function() {
-      env.spyOn(testObj, 'foo');
-    });
-
-    env.it('spec', function() {
-      expect(jasmineUnderTest.isSpy(testObj.foo)).toBe(true);
-    });
-
-    env.addReporter({
-      jasmineDone: function() {
-        expect(jasmineUnderTest.isSpy(testObj.foo)).toBe(false);
-        done();
-      }
-    });
-
-    env.execute();
-  });
 
   it("Mock clock can be installed and used in tests", function(done) {
     var globalSetTimeout = jasmine.createSpy('globalSetTimeout').and.callFake(function(cb, t) { setTimeout(cb, t); }),

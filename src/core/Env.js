@@ -249,10 +249,11 @@ getJasmineRequireObj().Env = function(j$) {
         delete runnableResources[id];
     };
 
-    var beforeAndAfterFns = function(suite) {
+    var beforeAndAfterFns = function(_suite) {
       return function() {
         var befores = [],
           afters = [];
+        var suite = _suite;  // Allow this to be called multiple times.
 
         while(suite) {
           befores = befores.concat(suite.beforeFns);
@@ -552,7 +553,6 @@ getJasmineRequireObj().Env = function(j$) {
         currentlyExecutingSuites.push(topSuite);
 
         processor.execute(function () {
-          clearResourcesForRunnable(topSuite.id);
           currentlyExecutingSuites.pop();
           var overallStatus, incompleteReason;
 
