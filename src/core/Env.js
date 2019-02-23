@@ -511,6 +511,7 @@ getJasmineRequireObj().Env = function(j$) {
         nodeStart: function(suite, next) {
           currentlyExecutingSuites.push(suite);
           defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
+          suite.result.startedTimestamp = Date.now();
           reporter.suiteStarted(suite.result, next);
         },
         nodeComplete: function(suite, result, next) {
@@ -524,7 +525,7 @@ getJasmineRequireObj().Env = function(j$) {
           if (result.status === 'failed') {
             hasFailures = true;
           }
-
+          suite.result.endedTimestamp = Date.now();
           reporter.suiteDone(result, next);
         },
         orderChildren: function(node) {

@@ -37,9 +37,16 @@ getJasmineRequireObj().Spec = function(j$) {
       failedExpectations: [],
       passedExpectations: [],
       deprecationWarnings: [],
-      pendingReason: ''
+      pendingReason: '',
+      startedTimestamp: 0,
+      endedTimestamp: 0,
+      executionTime: this.executionTime
     };
   }
+
+  Spec.prototype.executionTime = function() {
+    return this.endedTimestamp - this.startedTimestamp;
+  };
 
   Spec.prototype.addExpectationResult = function(passed, data, isError) {
     var expectationResult = this.expectationResultFactory(data);
@@ -67,12 +74,14 @@ getJasmineRequireObj().Spec = function(j$) {
 
     var onStart = {
       fn: function(done) {
+        self.result.startedTimestamp = Date.now();
         self.onStart(self, done);
       }
     };
 
     var complete = {
       fn: function(done) {
+        self.result.endedTimestamp = Date.now();
         self.queueableFn.fn = null;
         self.result.status = self.status(excluded);
         self.resultCallback(self.result, done);

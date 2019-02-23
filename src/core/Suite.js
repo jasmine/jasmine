@@ -30,9 +30,16 @@ getJasmineRequireObj().Suite = function(j$) {
       description: this.description,
       fullName: this.getFullName(),
       failedExpectations: [],
-      deprecationWarnings: []
+      deprecationWarnings: [],
+      startedTimestamp: 0,
+      endedTimestamp: 0,
+      executionTime: this.executionTime
     };
   }
+
+  Suite.prototype.executionTime = function() {
+    return this.endedTimestamp - this.startedTimestamp;
+  };
 
   Suite.prototype.expect = function(actual) {
     return this.expectationFactory(actual, this);
