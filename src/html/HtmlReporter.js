@@ -280,7 +280,7 @@ jasmineRequire.HtmlReporter = function(j$) {
           var suiteListNode = createDom('ul', {className: 'jasmine-suite', id: 'suite-' + resultNode.result.id},
             createDom('li', {className: 'jasmine-suite-detail jasmine-' + resultNode.result.status},
               createDom('a', {href: specHref(resultNode.result)}, resultNode.result.description),
-              createDom('span', {}, ' (' + resultNode.result.executionTime() / 1000 + 's)')
+              createDom('span', {}, ' (' + resultNode.result.executionTime() + 'ms)')
             )
           );
 
@@ -305,7 +305,7 @@ jasmineRequire.HtmlReporter = function(j$) {
                 id: 'spec-' + resultNode.result.id
               },
               createDom('a', {href: specHref(resultNode.result)}, specDescription),
-              createDom('span', {}, ' (' + resultNode.result.executionTime() / 1000 + 's)')
+              createDom('span', {}, ' (' + resultNode.result.executionTime() + 'ms)')
             )
           );
         }
