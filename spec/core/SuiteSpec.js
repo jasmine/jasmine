@@ -111,6 +111,19 @@ describe("Suite", function() {
     expect(suite.getResult().failedExpectations).toEqual([]);
   });
 
+  it("calls timer to compute duration", function(){
+      var env = new jasmineUnderTest.Env(),
+      suite = new jasmineUnderTest.Suite({
+        env: env,
+        id: 456,
+        description: "I am a suite",
+        timer: jasmine.createSpyObj('timer', {'start': null, elapsed: 77000}),
+      });
+      suite.startTimer();
+      suite.endTimer();
+      expect(suite.getResult().duration).toEqual(77000);
+  });
+
   describe('#sharedUserContext', function() {
     beforeEach(function() {
       this.suite = new jasmineUnderTest.Suite({});

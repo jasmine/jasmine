@@ -14,6 +14,7 @@ getJasmineRequireObj().Spec = function(j$) {
     this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
     this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
+    this.timer = attrs.timer || j$.noopTimer;
 
     if (!this.queueableFn.fn) {
       this.pend();
@@ -29,6 +30,7 @@ getJasmineRequireObj().Spec = function(j$) {
      * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred during execution this spec.
      * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
      * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
+     * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
      */
     this.result = {
       id: this.id,
@@ -37,7 +39,8 @@ getJasmineRequireObj().Spec = function(j$) {
       failedExpectations: [],
       passedExpectations: [],
       deprecationWarnings: [],
-      pendingReason: ''
+      pendingReason: '',
+      duration: null,
     };
   }
 
@@ -67,6 +70,7 @@ getJasmineRequireObj().Spec = function(j$) {
 
     var onStart = {
       fn: function(done) {
+        self.timer.start();
         self.onStart(self, done);
       }
     };
@@ -90,6 +94,7 @@ getJasmineRequireObj().Spec = function(j$) {
         self.onException.apply(self, arguments);
       },
       onComplete: function() {
+        self.result.duration = self.timer.elapsed();
         onComplete(self.result.status === 'failed' && new j$.StopExecutionError('spec failed'));
       },
       userContext: this.userContext()

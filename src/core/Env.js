@@ -512,6 +512,7 @@ getJasmineRequireObj().Env = function(j$) {
           currentlyExecutingSuites.push(suite);
           defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
           reporter.suiteStarted(suite.result, next);
+          suite.startTimer();
         },
         nodeComplete: function(suite, result, next) {
           if (suite !== currentSuite()) {
@@ -524,7 +525,7 @@ getJasmineRequireObj().Env = function(j$) {
           if (result.status === 'failed') {
             hasFailures = true;
           }
-
+          suite.endTimer();
           reporter.suiteDone(result, next);
         },
         orderChildren: function(node) {
@@ -804,9 +805,9 @@ getJasmineRequireObj().Env = function(j$) {
           fn: fn,
           timeout: timeout || 0
         },
-        throwOnExpectationFailure: config.oneFailurePerSpec
+        throwOnExpectationFailure: config.oneFailurePerSpec,
+        timer: new j$.Timer(),
       });
-
       return spec;
 
       function specResultCallback(result, next) {
