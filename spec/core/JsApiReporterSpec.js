@@ -209,7 +209,7 @@ describe("JsApiReporter", function() {
       expect(reporter.suiteResults(1, 1)).toEqual([suiteResult2]);
     });
 
-    it("returns nothing for out of bounds indicies", function() {
+    it("returns nothing for out of bounds indices", function() {
       expect(reporter.suiteResults(0, 3)).toEqual([suiteResult1, suiteResult2]);
       expect(reporter.suiteResults(2, 3)).toEqual([]);
     });

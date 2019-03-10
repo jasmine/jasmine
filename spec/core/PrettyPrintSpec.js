@@ -23,7 +23,7 @@ describe("jasmineUnderTest.pp", function () {
       expect(jasmineUnderTest.pp(set)).toEqual("Set( 1, 2 )");
     });
 
-    it("should truncate sets with more elments than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
+    it("should truncate sets with more elements than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
       jasmine.getEnv().requireFunctioningSets();
       var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
 
@@ -48,7 +48,7 @@ describe("jasmineUnderTest.pp", function () {
       expect(jasmineUnderTest.pp(map)).toEqual("Map( [ 1, 2 ] )");
     });
 
-    it("should truncate maps with more elments than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
+    it("should truncate maps with more elements than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH", function() {
       jasmine.getEnv().requireFunctioningMaps();
       var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
 
