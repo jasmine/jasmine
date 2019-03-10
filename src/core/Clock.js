@@ -66,7 +66,7 @@ getJasmineRequireObj().Clock = function() {
      * The clock will be {@link Clock#install|install}ed before the function is called and {@link Clock#uninstall|uninstall}ed in a `finally` after the function completes.
      * @name Clock#withMock
      * @function
-     * @param {closure} Function The function to be called.
+     * @param {Function} closure The function to be called.
      */
     self.withMock = function(closure) {
       this.install();
