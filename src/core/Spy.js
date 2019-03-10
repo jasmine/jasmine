@@ -112,7 +112,7 @@ getJasmineRequireObj().Spy = function (j$) {
 
       if (!strategy) {
         if (argsStrategies.any() && !baseStrategy.isConfigured()) {
-          throw new Error('Spy \'' + strategyArgs.name + '\' receieved a call with arguments ' + j$.pp(Array.prototype.slice.call(args)) + ' but all configured strategies specify other arguments.');
+          throw new Error('Spy \'' + strategyArgs.name + '\' received a call with arguments ' + j$.pp(Array.prototype.slice.call(args)) + ' but all configured strategies specify other arguments.');
         } else {
           strategy = baseStrategy;
         }
