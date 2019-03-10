@@ -23,7 +23,7 @@ getJasmineRequireObj().Order = function() {
     }
 
     // Bob Jenkins One-at-a-Time Hash algorithm is a non-cryptographic hash function
-    // used to get a different output when the key changes slighly.
+    // used to get a different output when the key changes slightly.
     // We use your return to sort the children randomly in a consistent way when
     // used in conjunction with a seed
 

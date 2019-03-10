@@ -17,7 +17,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    */
   j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 50;
   /**
-   * Maximum number of charasters to display when pretty printing objects.
+   * Maximum number of characters to display when pretty printing objects.
    * Characters past this number will be ellipised.
    * @name jasmine.MAX_PRETTY_PRINT_CHARS
    */
