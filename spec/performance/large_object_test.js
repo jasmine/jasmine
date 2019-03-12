@@ -28,7 +28,7 @@ describe('Printing a big object', function(){
     return object;
   }
 
-  it('takes a resonable amount of time', function(){
+  it('takes a reasonable amount of time', function(){
     bigObject = generateObject(0);
     expect(jasmineUnderTest.pp(bigObject)).toMatch(/cycle/);
   });

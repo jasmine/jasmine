@@ -96,7 +96,7 @@ describe("ExceptionFormatter", function() {
       );
     });
 
-    it("filters Jamine stack frames from Webkit style traces", function() {
+    it("filters Jasmine stack frames from Webkit style traces", function() {
       var error = {
         stack: 'http://localhost:8888/__spec__/core/UtilSpec.js:115:28\n' +
           'fn1@http://localhost:8888/__jasmine__/jasmine.js:4320:27\n' +
