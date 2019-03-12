@@ -1,9 +1,6 @@
 jasmineRequire.HtmlReporter = function(j$) {
 
-  var noopTimer = {
-    start: function() {},
-    elapsed: function() { return 0; }
-  };
+  var noopTimer = j$.noopTimer;
 
   function ResultsStateBuilder() {
     this.topResults = new j$.ResultsNode({}, '', null);

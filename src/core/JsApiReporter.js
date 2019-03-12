@@ -1,9 +1,6 @@
-getJasmineRequireObj().JsApiReporter = function() {
+getJasmineRequireObj().JsApiReporter = function(j$) {
 
-  var noopTimer = {
-    start: function(){},
-    elapsed: function(){ return 0; }
-  };
+  var noopTimer = j$.noopTimer;
 
   /**
    * @name jsApiReporter
