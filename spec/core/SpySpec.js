@@ -183,7 +183,7 @@ describe('Spies', function () {
       var spy = env.createSpy('foo');
       spy.withArgs('bar').and.returnValue(-1);
 
-      expect(function() { spy('baz', {qux: 42}); }).toThrowError('Spy \'foo\' receieved a call with arguments [ \'baz\', Object({ qux: 42 }) ] but all configured strategies specify other arguments.');
+      expect(function() { spy('baz', {qux: 42}); }).toThrowError('Spy \'foo\' received a call with arguments [ \'baz\', Object({ qux: 42 }) ] but all configured strategies specify other arguments.');
     });
   });
 });
