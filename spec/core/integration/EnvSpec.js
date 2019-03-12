@@ -2314,7 +2314,7 @@ describe("Env integration", function() {
     var env = new jasmineUnderTest.Env(),
       reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
 
-    // prevent deprecation from being desplayed
+    // prevent deprecation from being displayed
     spyOn(console, "error");
 
     reporter.jasmineDone.and.callFake(function(result) {
@@ -2366,7 +2366,7 @@ describe("Env integration", function() {
       try { throw new Error('suite level deprecation') } catch (err) { suiteLevelError = err; }
       try { throw new Error('spec level deprecation') } catch (err) { specLevelError = err; }
 
-    // prevent deprecation from being desplayed
+    // prevent deprecation from being displayed
     spyOn(console, "error");
 
     reporter.jasmineDone.and.callFake(function(result) {

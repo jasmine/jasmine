@@ -571,7 +571,7 @@ getJasmineRequireObj().Env = function(j$) {
           /**
            * Information passed to the {@link Reporter#jasmineDone} event.
            * @typedef JasmineDoneInfo
-           * @property {OverallStatus} overallStatus - The overall result of the sute: 'passed', 'failed', or 'incomplete'.
+           * @property {OverallStatus} overallStatus - The overall result of the suite: 'passed', 'failed', or 'incomplete'.
            * @property {IncompleteReason} incompleteReason - Explanation of why the suite was incomplete.
            * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
            * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
