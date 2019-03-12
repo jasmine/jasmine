@@ -64,7 +64,7 @@ Jasmine supports the following environments:
 * Node.js
   * 8
   * 10
-  * 11
+  * 12
 
 ## Development
 
@@ -80,9 +80,9 @@ To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http:/
 
 ...will install all of the node modules locally. Now run
 
-    $ grunt
+    $ npm test
 
-...if you see that JSHint runs, your system is ready.
+...you should see tests run and eslint checking formatting.
 
 ### How to write new Jasmine code
 
@@ -93,7 +93,7 @@ Or, How to make a successful pull request
 * _Be browser agnostic_ - if you must rely on browser-specific functionality, please write it in a way that degrades gracefully
 * _Write specs_ - Jasmine's a testing framework; don't add functionality without test-driving it
 * _Write code in the style of the rest of the repo_ - Jasmine should look like a cohesive whole
-* _Ensure the *entire* test suite is green_ in all the big browsers, Node, and JSHint - your contribution shouldn't break Jasmine for other users
+* _Ensure the *entire* test suite is green_ in all the big browsers, Node, and ESLint - your contribution shouldn't break Jasmine for other users
 
 Follow these tips and your pull request, patch, or suggestion is much more likely to be integrated.
 
@@ -105,35 +105,19 @@ Jasmine uses some internal tooling to test itself in browser on Travis. This too
 
 You can also set the `JASMINE_BROWSER` environment variable to specify which browser should be used.
 
-Jasmine uses the [Jasmine NPM package](http://github.com/jasmine/jasmine-npm) to test itself in a Node.js/npm environment.
-
-    $ npm test
-
-...and then the results will print to the console. All specs run except those that expect a browser (the specs in `spec/html` are ignored).
-
 The easiest way to run the tests in **Internet Explorer** is to run a VM that has IE installed. It's easy to do this with VirtualBox.
-
-__Note__: these steps currently still rely on the Jasmine ruby gem and not the new Node.js based tooling. To install the Ruby dependencies, you will need Ruby, Rubygems, and Bundler available. Then:
-
-    $ bundle
-
-...will install all of the Ruby dependencies. If the ffi gem fails to build its native extensions, you may need to manually install some system dependencies. On Ubuntu:
-
-    $ apt-get install gcc ruby ruby-dev libxml2 libxml2-dev libxslt1-dev
-
-...should get you to the point that `bundle` can install everything.
 
 1. Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 1. Download a VM image [from Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/). Select "VirtualBox" as the platform.
 1. Unzip the downloaded archive. There should be an OVA file inside.
 1. In VirtualBox, choose `File > Import Appliance` and select the OVA file. Accept the default settings in the dialog that appears. Now you have a Windows VM!
 1. Run the VM and start IE.
-1. With `bundle exec rake jasmine` running on your host machine, navigate to `http://10.0.2.2:8888` in IE.
+1. With `npm run serve` running on your host machine, navigate to `http://10.0.2.2:8888` in IE.
 
 ## Before Committing or Submitting a Pull Request
 
 1. Ensure all specs are green in browser *and* node
-1. Ensure JSHint is green with `grunt jshint`
+1. Ensure eslint and prettier are clean as part of your `npm test` command. You can run `npm run cleanup` to have prettier re-write the files.
 1. Build `jasmine.js` with `grunt buildDistribution` and run all specs again - this ensures that your changes self-test well
 1. Revert your changes to `jasmine.js` and `jasmine-html.js`
     * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches

@@ -13,9 +13,10 @@
     "bdd"
   ],
   "scripts": {
-    "pretest": "eslint src/**/*.js spec/**/*.js && prettier --check src/**/*.js spec/**/*.js",
+    "posttest": "eslint src/**/*.js spec/**/*.js && prettier --check src/**/*.js spec/**/*.js",
     "test": "grunt execSpecsInNode",
-    "cleanup": "prettier --write src/**/*.js spec/**/*.js"
+    "cleanup": "prettier --write src/**/*.js spec/**/*.js",
+    "serve": "node spec/support/localJasmineBrowser.js"
   },
   "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
   "homepage": "https://jasmine.github.io",
@@ -32,6 +33,7 @@
     "grunt-css-url-embed": "^1.11.1",
     "grunt-sass": "^3.0.2",
     "jasmine": "^3.4.0",
+    "jasmine-browser-runner": "0.0.2",
     "jsdom": "^15.0.0",
     "load-grunt-tasks": "^4.0.0",
     "node-sass": "^4.11.0",
