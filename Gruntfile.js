@@ -17,6 +17,12 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['jshint:all', 'sass:dist', "imageEmbed:dist"]);
 
+  var version = require('./grunt/tasks/version.js');	
+
+  grunt.registerTask('build:copyVersionToGem',	
+    "Propagates the version from package.json to version.rb",	
+    version.copyToGem);
+
   grunt.registerTask('buildDistribution',
     'Builds and lints jasmine.js, jasmine-html.js, jasmine.css',
     [
