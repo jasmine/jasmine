@@ -9,4 +9,4 @@ then
   fi
 fi
 
-bundle exec rake jasmine:ci
+node ci.js

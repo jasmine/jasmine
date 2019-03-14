@@ -6,30 +6,25 @@ module.exports = function(grunt) {
     pkg: pkg,
     jshint: require('./grunt/config/jshint.js'),
     concat: require('./grunt/config/concat.js'),
-    compass: require('./grunt/config/compass.js'),
-    compress: require('./grunt/config/compress.js')
+    sass: require('./grunt/config/sass.js'),
+    compress: require('./grunt/config/compress.js'),
+    imageEmbed: require('./grunt/config/imageEmbed.js')
   });
 
   require('load-grunt-tasks')(grunt);
 
   grunt.loadTasks('grunt/tasks');
 
-  grunt.registerTask('default', ['jshint:all']);
-
-  var version = require('./grunt/tasks/version.js');
-
-  grunt.registerTask('build:copyVersionToGem',
-    "Propagates the version from package.json to version.rb",
-    version.copyToGem);
+  grunt.registerTask('default', ['jshint:all', 'sass:dist', "imageEmbed:dist"]);
 
   grunt.registerTask('buildDistribution',
     'Builds and lints jasmine.js, jasmine-html.js, jasmine.css',
     [
-      'compass',
+      'sass:dist',
+      "imageEmbed:dist",
       'jshint:beforeConcat',
       'concat',
-      'jshint:afterConcat',
-      'build:copyVersionToGem'
+      'jshint:afterConcat'
     ]
   );
 
