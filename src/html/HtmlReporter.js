@@ -1,10 +1,4 @@
 jasmineRequire.HtmlReporter = function(j$) {
-
-  var noopTimer = {
-    start: function() {},
-    elapsed: function() { return 0; }
-  };
-
   function ResultsStateBuilder() {
     this.topResults = new j$.ResultsNode({}, '', null);
     this.currentParent = this.topResults;
@@ -58,7 +52,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       navigateWithNewParam = options.navigateWithNewParam || function() {},
       addToExistingQueryString = options.addToExistingQueryString || defaultQueryString,
       filterSpecs = options.filterSpecs,
-      timer = options.timer || noopTimer,
+      timer = options.timer || j$.noopTimer,
       htmlReporterMain,
       symbols,
       deprecationWarnings = [];

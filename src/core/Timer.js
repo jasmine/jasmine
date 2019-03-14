@@ -20,3 +20,10 @@ getJasmineRequireObj().Timer = function() {
 
   return Timer;
 };
+
+getJasmineRequireObj().noopTimer = function() {
+  return {
+    start: function() {},
+    elapsed: function() { return 0; }
+  };
+};

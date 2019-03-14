@@ -1,10 +1,4 @@
-getJasmineRequireObj().JsApiReporter = function() {
-
-  var noopTimer = {
-    start: function(){},
-    elapsed: function(){ return 0; }
-  };
-
+getJasmineRequireObj().JsApiReporter = function(j$) {
   /**
    * @name jsApiReporter
    * @classdesc {@link Reporter} added by default in `boot.js` to record results for retrieval in javascript code. An instance is made available as `jsApiReporter` on the global object.
@@ -12,7 +6,7 @@ getJasmineRequireObj().JsApiReporter = function() {
    * @hideconstructor
    */
   function JsApiReporter(options) {
-    var timer = options.timer || noopTimer,
+    var timer = options.timer || j$.noopTimer,
         status = 'loaded';
 
     this.started = false;
