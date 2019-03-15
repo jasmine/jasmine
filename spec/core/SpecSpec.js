@@ -207,7 +207,8 @@ describe("Spec", function() {
       failedExpectations: [],
       passedExpectations: [],
       deprecationWarnings: [],
-      pendingReason: ''
+      pendingReason: '',
+      duration: null,
     }, 'things');
   });
 
@@ -240,6 +241,22 @@ describe("Spec", function() {
     spec.execute(done);
 
     expect(done).toHaveBeenCalledWith(jasmine.any(jasmineUnderTest.StopExecutionError));
+  });
+
+  it("should report the duration of the test", function() {
+    var done = jasmine.createSpy('done callback'),
+      timer = jasmine.createSpyObj('timer', {'start': null, elapsed: 77000}),
+      spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: jasmine.createSpy("spec body")},
+        catchExceptions: function() { return false; },
+        resultCallback: function() {},
+        queueRunnerFactory: function(attrs) {
+          attrs.onComplete();
+        },
+        timer: timer,
+      });
+    spec.execute(done);
+    expect(spec.result.duration).toBe(77000);
   });
 
   it("#status returns passing by default", function() {

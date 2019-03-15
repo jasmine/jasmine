@@ -14,6 +14,8 @@ getJasmineRequireObj().Suite = function(j$) {
     this.beforeAllFns = [];
     this.afterAllFns = [];
 
+    this.timer = attrs.timer || j$.noopTimer;
+
     this.children = [];
 
     /**
@@ -24,13 +26,15 @@ getJasmineRequireObj().Suite = function(j$) {
      * @property {Expectation[]} failedExpectations - The list of expectations that failed in an {@link afterAll} for this suite.
      * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred on this suite.
      * @property {String} status - Once the suite has completed, this string represents the pass/fail status of this suite.
+     * @property {number} duration - The time in ms for Suite execution, including any before/afterAll, before/afterEach.
      */
     this.result = {
       id: this.id,
       description: this.description,
       fullName: this.getFullName(),
       failedExpectations: [],
-      deprecationWarnings: []
+      deprecationWarnings: [],
+      duration: null,
     };
   }
 
@@ -70,6 +74,14 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.afterAll = function(fn) {
     this.afterAllFns.unshift(fn);
+  };
+
+  Suite.prototype.startTimer = function() {
+    this.timer.start();
+  };
+
+  Suite.prototype.endTimer = function() {
+    this.result.duration = this.timer.elapsed();
   };
 
   function removeFns(queueableFns) {

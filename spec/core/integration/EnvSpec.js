@@ -1436,6 +1436,9 @@ describe("Env integration", function() {
         status: 'pending'
       }));
 
+      var suiteDone = reporter.suiteDone.calls.argsFor(0)[0];
+      expect(typeof suiteDone.duration).toBe('number');
+
       var suiteResult = reporter.suiteStarted.calls.argsFor(0)[0];
       expect(suiteResult.description).toEqual("A Suite");
 
