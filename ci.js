@@ -57,7 +57,7 @@ const path = require("path"),
     console.log("Running the tests in browser...")
     const webdriver = require("selenium-webdriver"),
           driver = new webdriver.Builder()
-                    .forBrowser(process.env["JASMINE_BROWSER"] || "firefox")
+                    .forBrowser(process.env["JASMINE_BROWSER"] || "phantomjs")
                     .build();
 
     await driver.get(`${host}/?throwFailures=false&failFast=false&random=true`)
@@ -72,14 +72,14 @@ const path = require("path"),
 
   await (() => new Promise(resolve => (async () => {
     // output the summary
-    (await driver.executeScript("return jsApiReporter && jsApiReporter.specs().map(spec => spec.status)"))
+    (await driver.executeScript("return jsApiReporter && jsApiReporter.specs().map(function(spec) { return spec.status })"))
       .map(status => `${colors[status]}${symbols[status]}`).join("") + colors["none"];
     resolve();
   })()))();
 
   await (() => new Promise(resolve => (async () => {
     // output the pending and failure details
-    const result = (await driver.executeScript("return jsApiReporter && jsApiReporter.specs().filter(spec => spec.status !== \"passed\")"))
+    const result = (await driver.executeScript("return jsApiReporter && jsApiReporter.specs().filter(function(spec) { return spec.status !== \"passed\" })"))
       .reduce((result, spec) => {
         result[spec.status] = result[spec.status] || [];
         result[spec.status] = [...result[spec.status], spec];
@@ -129,8 +129,8 @@ const path = require("path"),
         random: jsApiReporter.runDetails.order.random,
         seed: jsApiReporter.runDetails.order.seed,
         specCount: jsApiReporter.specs().length,
-        failureCount: jsApiReporter.specs().filter(spec => spec.status === \"failed\").length,
-        pendingCount: jsApiReporter.specs().filter(spec => spec.status === \"pending\").length
+        failureCount: jsApiReporter.specs().filter(function (spec) { return spec.status === \"failed\" }).length,
+        pendingCount: jsApiReporter.specs().filter(function (spec) { return spec.status === \"pending\" }).length
       }`);
       
     if (result.specCount > 0) {
