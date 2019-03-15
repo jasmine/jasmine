@@ -11,4 +11,9 @@ if [ "$1" = "v4" ]; then
 fi
 
 npm install
+
+if [ "$1" = "v8" ] || [ "$1" = "v9" ]; then
+  npm rebuild node-sass --force
+fi
+
 npm test
