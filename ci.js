@@ -57,7 +57,7 @@ const path = require("path"),
     console.log("Running the tests in browser...")
     const webdriver = require("selenium-webdriver"),
           driver = new webdriver.Builder()
-                    .forBrowser(process.env["JASMINE_BROWSER"] || "phantomjs")
+                    .forBrowser(process.env["JASMINE_BROWSER"] || "firefox")
                     .build();
 
     await driver.get(`${host}/?throwFailures=false&failFast=false&random=true`)
