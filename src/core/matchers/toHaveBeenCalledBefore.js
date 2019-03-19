@@ -37,15 +37,20 @@ getJasmineRequireObj().toHaveBeenCalledBefore = function(j$) {
         result.pass = latest1stSpyCall < first2ndSpyCall;
 
         if (result.pass) {
-          result.message = 'Expected spy ' + firstSpy.and.identity + ' to not have been called before spy ' + latterSpy.and.identity + ', but it was';
+          result.message = 'Expected spy ' + firstSpy.and.identity + ' to have been called before spy ' + latterSpy.and.identity;
         } else {
           var first1stSpyCall = firstSpy.calls.first().invocationOrder;
           var latest2ndSpyCall = latterSpy.calls.mostRecent().invocationOrder;
-
-          if(first1stSpyCall < first2ndSpyCall) {
+          if (first1stSpyCall < first2ndSpyCall) {
             result.message = 'Expected latest call to spy ' + firstSpy.and.identity + ' to have been called before first call to spy ' + latterSpy.and.identity + ' (no interleaved calls)';
+            result.expectedQualifier = 'first call to';
+            result.actualQualifier = 'latest call to';
+            result.messageSuffix = ' (no interleaved calls)';
           } else if (latest2ndSpyCall > latest1stSpyCall) {
             result.message = 'Expected first call to spy ' + latterSpy.and.identity + ' to have been called after latest call to spy ' + firstSpy.and.identity + ' (no interleaved calls)';
+            result.expectedQualifier = 'latest call to';
+            result.actualQualifier = 'first call to';
+            result.messageSuffix = ' (no interleaved calls)';
           } else {
             result.message = 'Expected spy ' + firstSpy.and.identity + ' to have been called before spy ' + latterSpy.and.identity;
           }

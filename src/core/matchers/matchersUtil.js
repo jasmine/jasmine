@@ -29,14 +29,18 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       var args = Array.prototype.slice.call(arguments, 0),
         matcherName = args[0],
         isNot = args[1],
-        actual = args[2],
-        expected = args.slice(3),
-        englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
-
+        actualQualifier = args[2],
+        expectedQualifier = args[3],
+        messageSuffix = args[4],
+        actual = args[5],
+        expected = args.slice(6),
+        englishyPredicate = matcherName.replace(/[A-Z]/g, function (s) { return ' ' + s.toLowerCase(); }).replace(' na n', ' NaN');
       var message = 'Expected ' +
+        (actualQualifier ? actualQualifier  + ' ' : '') +
         j$.pp(actual) +
         (isNot ? ' not ' : ' ') +
-        englishyPredicate;
+        englishyPredicate +
+        (expectedQualifier ? ' ' + expectedQualifier : '');
 
       if (expected.length > 0) {
         for (var i = 0; i < expected.length; i++) {
@@ -47,6 +51,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
         }
       }
 
+      message += (messageSuffix ? messageSuffix : '');
       return message + '.';
     }
   };

@@ -929,9 +929,8 @@ getJasmineRequireObj().Env = function(j$) {
         throw new Error('\'fail\' was used when there was no current spec, this could be because an asynchronous test timed out');
       }
 
-      var message = 'Failed';
+      var message = '';
       if (error) {
-        message += ': ';
         if (error.message) {
           message += error.message;
         } else if (j$.isString_(error)) {

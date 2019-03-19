@@ -57,7 +57,7 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(true,
           jasmine.objectContaining({
             passed: true,
-            message: ''
+            message: 'Expected a promise not to be resolved.'
           })
         );
       });

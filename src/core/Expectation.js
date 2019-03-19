@@ -123,12 +123,13 @@ getJasmineRequireObj().Expectation = function(j$) {
     if (result.message) {
       if (j$.isFunction_(result.message)) {
         return result.message();
-      } else {
-        return result.message;
       }
     }
 
     args = args.slice();
+    args.unshift(result.messageSuffix);
+    args.unshift(result.expectedQualifier);
+    args.unshift(result.actualQualifier);
     args.unshift(true);
     args.unshift(matcherName);
     return util.buildFailureMessage.apply(null, args);

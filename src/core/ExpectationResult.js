@@ -27,11 +27,15 @@ getJasmineRequireObj().buildExpectationResult = function() {
 
     return result;
 
+    
     function message() {
       if (options.passed) {
-        return 'Passed.';
+        return 'Passed: ' + options.message;
       } else if (options.message) {
-        return options.message;
+        var localMessage = typeof options.message === 'function' ? 'Failed: ' + options.message() : 'Failed: ' + options.message;
+        // when formatting caught error messages, the 'Failed' prefix can be erroneously duplicated. Needs to be tidied.
+        localMessage = localMessage.replace ('Failed: Failed:', 'Failed:');
+        return localMessage;
       } else if (options.error) {
         return messageFormatter(options.error);
       }
@@ -40,7 +44,7 @@ getJasmineRequireObj().buildExpectationResult = function() {
 
     function stack() {
       if (options.passed) {
-        return '';
+        return options.message;
       }
 
       var error = options.error;

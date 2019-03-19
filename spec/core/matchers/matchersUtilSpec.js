@@ -620,7 +620,7 @@ describe("matchersUtil", function() {
     it("builds an English sentence for a failure case", function() {
       var actual = "foo",
         name = "toBar",
-        message = jasmineUnderTest.matchersUtil.buildFailureMessage(name, false, actual);
+        message = jasmineUnderTest.matchersUtil.buildFailureMessage(name, false, null, null, null, actual);
 
       expect(message).toEqual("Expected 'foo' to bar.");
     });
@@ -629,7 +629,7 @@ describe("matchersUtil", function() {
       var actual = "foo",
         name = "toBar",
         isNot = true,
-        message = message = jasmineUnderTest.matchersUtil.buildFailureMessage(name, isNot, actual);
+        message = message = jasmineUnderTest.matchersUtil.buildFailureMessage(name, isNot, null, null, null, actual);
 
       expect(message).toEqual("Expected 'foo' not to bar.");
     });
@@ -637,7 +637,7 @@ describe("matchersUtil", function() {
     it("builds an English sentence for an arbitrary array of expected arguments", function() {
       var actual = "foo",
         name = "toBar",
-        message = jasmineUnderTest.matchersUtil.buildFailureMessage(name, false, actual, "quux", "corge");
+        message = jasmineUnderTest.matchersUtil.buildFailureMessage(name, false, null, null, null, actual, "quux", "corge");
 
       expect(message).toEqual("Expected 'foo' to bar 'quux', 'corge'.");
     });

@@ -5,7 +5,7 @@ describe("toBeNaN", function() {
 
     result = matcher.compare(Number.NaN);
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected actual not to be NaN.");
+    expect(result.message()).toEqual("Expected NaN to be NaN.");
   });
 
   it("fails for anything not a NaN", function() {

@@ -13,12 +13,8 @@ getJasmineRequireObj().toBeNaN = function(j$) {
           pass: (actual !== actual)
         };
 
-        if (result.pass) {
-          result.message = 'Expected actual not to be NaN.';
-        } else {
-          result.message = function() { return 'Expected ' + j$.pp(actual) + ' to be NaN.'; };
-        }
-
+        result.message = function() {return 'Expected ' + j$.pp(actual) + ' to be NaN.';};
+        
         return result;
       }
     };

@@ -84,7 +84,12 @@ describe("Expectation", function() {
     var matchers = {
         toFoo: function() {
           return {
-            compare: function() { return { pass: true }; }
+            compare: function() { 
+              return { 
+                pass: true,
+                message: 'This test passed as expected' 
+              };
+            }
           };
         }
       },
@@ -98,6 +103,7 @@ describe("Expectation", function() {
       customMatchers: matchers,
       util: util,
       actual: "an actual",
+      message: "This test passed as expected",
       addExpectationResult: addExpectationResult
     });
 
@@ -106,7 +112,7 @@ describe("Expectation", function() {
     expect(addExpectationResult).toHaveBeenCalledWith(true, {
       matcherName: "toFoo",
       passed: true,
-      message: "",
+      message: "This test passed as expected",
       error: undefined,
       expected: "hello",
       actual: "an actual",
@@ -222,7 +228,12 @@ describe("Expectation", function() {
     var matchers = {
         toFoo: function() {
           return {
-            compare: function() { return { pass: false }; }
+            compare: function() { 
+              return { 
+                pass: false, 
+                message: "failed negated as pass"
+              };
+            }
           };
         }
       },
@@ -244,7 +255,7 @@ describe("Expectation", function() {
     expect(addExpectationResult).toHaveBeenCalledWith(true, {
       matcherName: "toFoo",
       passed: true,
-      message: "",
+      message: "failed negated as pass",
       error: undefined,
       expected: "hello",
       actual: actual,
@@ -327,8 +338,18 @@ describe("Expectation", function() {
     var matchers = {
         toFoo: function() {
           return {
-            compare: function() { return { pass: true }; },
-            negativeCompare: function() { return { pass: true }; }
+            compare: function() { 
+              return { 
+                pass: true,
+                message: "positive message" 
+              };
+            },
+            negativeCompare: function() { 
+              return { 
+                pass: true,
+                message: "negative message" 
+              };
+            }
           };
         }
       },
@@ -349,7 +370,7 @@ describe("Expectation", function() {
       passed: true,
       expected: "hello",
       actual: actual,
-      message: "",
+      message: "negative message",
       error: undefined,
       errorForStack: undefined
     });

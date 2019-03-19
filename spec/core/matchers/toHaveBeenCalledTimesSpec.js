@@ -67,7 +67,7 @@ describe("toHaveBeenCalledTimes", function() {
     spy();
 
     result = matcher.compare(spy, 1);
-    expect(result.message).toEqual('Expected spy sample-spy to have been called once. It was called ' +  4 + ' times.');
+    expect(result.message).toEqual('Expected spy sample-spy to have been called once. It was called ' +  4 + ' times');
   });
 
   it("has a custom message on failure that tells how many times it was called", function() {
@@ -80,7 +80,7 @@ describe("toHaveBeenCalledTimes", function() {
     spy();
 
     result = matcher.compare(spy, 2);
-    expect(result.message).toEqual('Expected spy sample-spy to have been called 2 times. It was called ' +  4 + ' times.');
+    expect(result.message).toEqual('Expected spy sample-spy to have been called 2 times. It was called ' +  4 + ' times');
   });
 });
 

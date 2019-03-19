@@ -13,12 +13,7 @@ getJasmineRequireObj().toBePositiveInfinity = function(j$) {
           pass: (actual === Number.POSITIVE_INFINITY)
         };
 
-        if (result.pass) {
-          result.message = 'Expected actual to be Infinity.';
-        } else {
-          result.message = function() { return 'Expected ' + j$.pp(actual) + ' not to be Infinity.'; };
-        }
-
+        result.message = function() {return 'Expected ' + j$.pp(actual) + ' to be Infinity.';};
         return result;
       }
     };

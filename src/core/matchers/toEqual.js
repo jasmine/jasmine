@@ -17,13 +17,10 @@ getJasmineRequireObj().toEqual = function(j$) {
           },
           diffBuilder = j$.DiffBuilder();
 
-        result.pass = util.equals(actual, expected, customEqualityTesters, diffBuilder);
-
-        // TODO: only set error message if test fails
-        result.message = diffBuilder.getMessage();
-
-        return result;
-      }
+          result.pass = util.equals(actual, expected, customEqualityTesters, diffBuilder);
+          result.message = diffBuilder.getMessage();
+          return result;
+        }
     };
   }
 

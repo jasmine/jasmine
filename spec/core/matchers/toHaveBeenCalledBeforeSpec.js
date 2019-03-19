@@ -94,6 +94,6 @@ describe("toHaveBeenCalledBefore", function() {
 
     result = matcher.compare(firstSpy, secondSpy);
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual('Expected spy first spy to not have been called before spy second spy, but it was');
+    expect(result.message).toEqual('Expected spy first spy to have been called before spy second spy');
   });
 });

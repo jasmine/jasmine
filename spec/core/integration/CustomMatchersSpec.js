@@ -30,7 +30,7 @@ describe("Custom Matchers (Integration)", function() {
     var expectations = function() {
       var firstSpecResult = specDoneSpy.calls.first().args[0];
       expect(firstSpecResult.status).toEqual("failed");
-      expect(firstSpecResult.failedExpectations[0].message).toEqual("matcherForSpec: actual: zzz; expected: yyy");
+      expect(firstSpecResult.failedExpectations[0].message).toEqual("Failed: matcherForSpec: actual: zzz; expected: yyy");
       done();
     };
     env.addReporter({ specDone:specDoneSpy, jasmineDone: expectations});
@@ -97,7 +97,7 @@ describe("Custom Matchers (Integration)", function() {
     var specExpectations = function(result) {
       expect(result.status).toEqual('failed');
       expect(result.failedExpectations[0].message).toEqual(
-        "Expected $.foo = 'foo' to equal 'foo'."
+        "Failed: Expected $.foo = 'foo' to equal 'foo'."
       );
     };
 
@@ -143,7 +143,7 @@ describe("Custom Matchers (Integration)", function() {
     });
 
     var specExpectations = function(result) {
-      expect(result.failedExpectations[0].message).toEqual("Expected 'a' to be real.");
+      expect(result.failedExpectations[0].message).toEqual("Failed: Expected 'a' to be real.");
     };
 
     env.addReporter({ specDone: specExpectations, jasmineDone: done });

@@ -16,8 +16,8 @@ describe("toBeNegativeInfinity", function() {
   it("has a custom message on failure", function() {
     var matcher = jasmineUnderTest.matchers.toBeNegativeInfinity(),
       result = matcher.compare(0);
-
-    expect(result.message()).toEqual("Expected 0 not to be -Infinity.")
+      expect(result.pass).toBe(false);
+    expect(result.message()).toEqual("Expected 0 to be -Infinity.")
   });
 
   it("succeeds for -Infinity", function() {
@@ -25,7 +25,7 @@ describe("toBeNegativeInfinity", function() {
       result = matcher.compare(Number.NEGATIVE_INFINITY);
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected actual to be -Infinity.")
+    expect(result.message()).toEqual("Expected -Infinity to be -Infinity.")
   });
 
 });
