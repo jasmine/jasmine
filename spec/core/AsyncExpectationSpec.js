@@ -91,7 +91,7 @@ describe('AsyncExpectation', function() {
       jasmine.getEnv().requirePromises();
 
       var util = {
-          buildFailureMessage: function() { return 'failure message'; }
+          buildOutputMessage: function() { return 'failure message'; }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = jasmineUnderTest.Expectation.asyncFactory({
@@ -114,7 +114,7 @@ describe('AsyncExpectation', function() {
       jasmine.getEnv().requirePromises();
 
       var util = {
-          buildFailureMessage: function() { return 'failure message'; }
+          buildOutputMessage: function() { return 'failure message'; }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = jasmineUnderTest.Expectation.asyncFactory({
@@ -138,7 +138,7 @@ describe('AsyncExpectation', function() {
       jasmine.getEnv().requirePromises();
 
       var util = {
-          buildFailureMessage: function() { return 'failure message'; }
+          buildOutputMessage: function() { return 'failure message'; }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.reject(),

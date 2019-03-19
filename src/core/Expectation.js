@@ -119,7 +119,7 @@ getJasmineRequireObj().Expectation = function(j$) {
     return result;
   }
 
-  function negatedFailureMessage(result, matcherName, args, util) {
+  function negatedOutputMessage(result, matcherName, args, util) {
     if (result.message) {
       if (j$.isFunction_(result.message)) {
         return result.message();
@@ -132,7 +132,7 @@ getJasmineRequireObj().Expectation = function(j$) {
     args.unshift(result.actualQualifier);
     args.unshift(true);
     args.unshift(matcherName);
-    return util.buildFailureMessage.apply(null, args);
+    return util.buildOutputMessage.apply(null, args);
   }
 
   function negate(result) {
@@ -148,7 +148,7 @@ getJasmineRequireObj().Expectation = function(j$) {
 
       return matcher.negativeCompare || defaultNegativeCompare;
     },
-    buildFailureMessage: negatedFailureMessage
+    buildOutputMessage: negatedOutputMessage
   };
 
   var asyncNegatingFilter = {
@@ -159,14 +159,14 @@ getJasmineRequireObj().Expectation = function(j$) {
 
       return defaultNegativeCompare;
     },
-    buildFailureMessage: negatedFailureMessage
+    buildOutputMessage: negatedOutputMessage
   };
 
   function ContextAddingFilter(message) {
     this.message = message;
   }
 
-  ContextAddingFilter.prototype.modifyFailureMessage = function(msg) {
+  ContextAddingFilter.prototype.modifyOutputMessage = function(msg) {
     return this.message + ': ' + msg;
   };
 

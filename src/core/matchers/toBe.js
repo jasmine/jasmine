@@ -17,7 +17,7 @@ getJasmineRequireObj().toBe = function(j$) {
         };
 
         if (typeof expected === 'object') {
-          result.message = util.buildFailureMessage('toBe', result.pass, undefined, undefined, undefined, actual, expected) + tip;
+          result.message = util.buildOutputMessage('toBe', result.pass, undefined, undefined, undefined, actual, expected) + tip;
         }
 
         return result;

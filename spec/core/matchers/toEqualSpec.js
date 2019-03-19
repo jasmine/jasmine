@@ -13,7 +13,7 @@ describe("toEqual", function() {
   it("delegates to equals function", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equals').and.returnValue(true),
-        buildFailureMessage: function() {
+        buildOutputMessage: function() {
           return 'does not matter'
         },
         DiffBuilder: jasmineUnderTest.matchersUtil.DiffBuilder
@@ -30,7 +30,7 @@ describe("toEqual", function() {
   it("delegates custom equality testers, if present", function() {
     var util = {
         equals: jasmine.createSpy('delegated-equals').and.returnValue(true),
-        buildFailureMessage: function() {
+        buildOutputMessage: function() {
           return 'does not matter'
         },
         DiffBuilder: jasmineUnderTest.matchersUtil.DiffBuilder

@@ -34,7 +34,7 @@ describe("Expectation", function() {
         toFoo: matcherFactory
       },
       util = {
-        buildFailureMessage: jasmine.createSpy('buildFailureMessage')
+        buildOutputMessage: jasmine.createSpy('buildOutputMessage')
       },
       customEqualityTesters = ['a'],
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
@@ -63,7 +63,7 @@ describe("Expectation", function() {
         }
       },
       util = {
-        buildFailureMessage: jasmine.createSpy('buildFailureMessage')
+        buildOutputMessage: jasmine.createSpy('buildOutputMessage')
       },
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
@@ -94,7 +94,7 @@ describe("Expectation", function() {
         }
       },
       util = {
-        buildFailureMessage: jasmine.createSpy('buildFailureMessage')
+        buildOutputMessage: jasmine.createSpy('buildOutputMessage')
       },
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
@@ -129,7 +129,7 @@ describe("Expectation", function() {
         }
       },
       util = {
-        buildFailureMessage: function() { return ""; }
+        buildOutputMessage: function() { return ""; }
       },
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       expectation;
@@ -238,7 +238,7 @@ describe("Expectation", function() {
         }
       },
       util = {
-        buildFailureMessage: function() { return ""; }
+        buildOutputMessage: function() { return ""; }
       },
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       actual = "an actual",
@@ -272,7 +272,7 @@ describe("Expectation", function() {
         }
       },
       util = {
-        buildFailureMessage: function() { return "default message"; }
+        buildOutputMessage: function() { return "default message"; }
       },
       addExpectationResult = jasmine.createSpy("addExpectationResult"),
       actual = "an actual",
@@ -534,7 +534,7 @@ describe("Expectation", function() {
           }
         },
         util = {
-          buildFailureMessage: function() { return "failure message"; }
+          buildOutputMessage: function() { return "failure message"; }
         },
         addExpectationResult = jasmine.createSpy("addExpectationResult"),
         expectation = jasmineUnderTest.Expectation.factory({

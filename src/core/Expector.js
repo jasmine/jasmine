@@ -1,6 +1,6 @@
 getJasmineRequireObj().Expector = function(j$) {
   function Expector(options) {
-    this.util = options.util || { buildFailureMessage: function() {} };
+    this.util = options.util || { buildOutputMessage: function() {} };
     this.customEqualityTesters = options.customEqualityTesters || [];
     this.actual = options.actual;
     this.addExpectationResult = options.addExpectationResult || function(){};
@@ -22,8 +22,8 @@ getJasmineRequireObj().Expector = function(j$) {
   Expector.prototype.buildMessage = function(result) {
     var self = this;
 
-    var msg = this.filters.buildFailureMessage(result, this.matcherName, this.args, this.util, defaultMessage);
-    return this.filters.modifyFailureMessage(msg || defaultMessage());
+    var msg = this.filters.buildOutputMessage(result, this.matcherName, this.args, this.util, defaultMessage);
+    return this.filters.modifyOutputMessage(msg || defaultMessage());
 
     function defaultMessage() {
       if (!result.message) {
@@ -33,7 +33,7 @@ getJasmineRequireObj().Expector = function(j$) {
         args.unshift(result.actualQualifier);
         args.unshift(false);
         args.unshift(self.matcherName);
-        return self.util.buildFailureMessage.apply(null, args);
+        return self.util.buildOutputMessage.apply(null, args);
       } else if (j$.isFunction_(result.message)) {
         return result.message();
       } else {

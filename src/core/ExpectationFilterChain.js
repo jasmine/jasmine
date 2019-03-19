@@ -12,12 +12,12 @@ getJasmineRequireObj().ExpectationFilterChain = function() {
     return this.callFirst_('selectComparisonFunc', arguments).result;
   };
 
-  ExpectationFilterChain.prototype.buildFailureMessage = function(result, matcherName, args, util) {
-    return this.callFirst_('buildFailureMessage', arguments).result;
+  ExpectationFilterChain.prototype.buildOutputMessage = function(result, matcherName, args, util) {
+    return this.callFirst_('buildOutputMessage', arguments).result;
   };
 
-  ExpectationFilterChain.prototype.modifyFailureMessage = function(msg) {
-    var result = this.callFirst_('modifyFailureMessage', arguments).result;
+  ExpectationFilterChain.prototype.modifyOutputMessage = function(msg) {
+    var result = this.callFirst_('modifyOutputMessage', arguments).result;
     return result || msg;
   };
 

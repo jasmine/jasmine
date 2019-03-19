@@ -4,11 +4,11 @@ describe('ExpectationFilterChain', function() {
       var first = jasmine.createSpy('first'),
         second = jasmine.createSpy('second'),
         orig = new jasmineUnderTest.ExpectationFilterChain({
-          modifyFailureMessage: first
+          modifyOutputMessage: first
         }),
         added = orig.addFilter({selectComparisonFunc: second});
 
-      added.modifyFailureMessage();
+      added.modifyOutputMessage();
       expect(first).toHaveBeenCalled();
       added.selectComparisonFunc();
       expect(second).toHaveBeenCalled();
@@ -53,29 +53,29 @@ describe('ExpectationFilterChain', function() {
     });
   });
 
-  describe('#buildFailureMessage', function() {
-    describe('When no filters have #buildFailureMessage', function() {
+  describe('#buildOutputMessage', function() {
+    describe('When no filters have #buildOutputMessage', function() {
       it('returns undefined', function() {
         var chain = new jasmineUnderTest.ExpectationFilterChain();
         chain.addFilter({});
-        expect(chain.buildFailureMessage()).toBeUndefined();
+        expect(chain.buildOutputMessage()).toBeUndefined();
       });
     });
 
-    describe('When some filters have #buildFailureMessage', function() {
-      it('calls the first filter that has #buildFailureMessage', function() {
+    describe('When some filters have #buildOutputMessage', function() {
+      it('calls the first filter that has #buildOutputMessage', function() {
         var first = jasmine.createSpy('first').and.returnValue('first'),
           second = jasmine.createSpy('second').and.returnValue('second'),
           chain = new jasmineUnderTest.ExpectationFilterChain()
-            .addFilter({buildFailureMessage: first})
-            .addFilter({buildFailureMessage: second}),
+            .addFilter({buildOutputMessage: first})
+            .addFilter({buildOutputMessage: second}),
           matcherResult = {pass: false},
           matcherName = 'foo',
           args = [],
           util = {},
           result;
 
-        result = chain.buildFailureMessage(matcherResult, matcherName, args, util);
+        result = chain.buildOutputMessage(matcherResult, matcherName, args, util);
 
         expect(first).toHaveBeenCalledWith(matcherResult, matcherName, args, util);
         expect(second).not.toHaveBeenCalled();
@@ -84,25 +84,25 @@ describe('ExpectationFilterChain', function() {
     });
   });
 
-  describe('#modifyFailureMessage', function() {
-    describe('When no filters have #modifyFailureMessage', function() {
+  describe('#modifyOutputMessage', function() {
+    describe('When no filters have #modifyOutputMessage', function() {
       it('returns the original message', function() {
         var chain = new jasmineUnderTest.ExpectationFilterChain();
         chain.addFilter({});
-        expect(chain.modifyFailureMessage('msg')).toEqual('msg');
+        expect(chain.modifyOutputMessage('msg')).toEqual('msg');
       });
     });
 
-    describe('When some filters have #modifyFailureMessage', function() {
-      it('calls the first filter that has #modifyFailureMessage', function() {
+    describe('When some filters have #modifyOutputMessage', function() {
+      it('calls the first filter that has #modifyOutputMessage', function() {
         var first = jasmine.createSpy('first').and.returnValue('first'),
           second = jasmine.createSpy('second').and.returnValue('second'),
           chain = new jasmineUnderTest.ExpectationFilterChain()
-            .addFilter({modifyFailureMessage: first})
-            .addFilter({modifyFailureMessage: second}),
+            .addFilter({modifyOutputMessage: first})
+            .addFilter({modifyOutputMessage: second}),
           result;
 
-        result = chain.modifyFailureMessage('original');
+        result = chain.modifyOutputMessage('original');
 
         expect(first).toHaveBeenCalledWith('original');
         expect(second).not.toHaveBeenCalled();

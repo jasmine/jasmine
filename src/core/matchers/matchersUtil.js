@@ -25,7 +25,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       return !!haystack && haystack.indexOf(needle) >= 0;
     },
 
-    buildFailureMessage: function() {
+    buildOutputMessage: function() {
       var args = Array.prototype.slice.call(arguments, 0),
         matcherName = args[0],
         isNot = args[1],
