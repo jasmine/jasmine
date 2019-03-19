@@ -1,8 +1,21 @@
 getJasmineRequireObj().StackTrace = function(j$) {
   function StackTrace(error) {
-    var lines = error.stack
-      .split('\n')
-      .filter(function(line) { return line !== ''; });
+
+    var lines = [ 'unknown result!' ];
+    if (typeof(error.stack) == 'string') {
+      /* normal handling */
+      lines = error.stack
+        .split('\n')
+        .filter(function(line) { return line !== ''; });
+      } else {
+      /** 
+       * node --experimental-modules (v11.9 at least)
+       * esm stackstraces are are composed of an array of "CallSite"
+       * 
+       * TODO: See later if this behavior need to be adapted again
+       */
+      lines = error.stack.map(function(site) { return site.toString(); });
+    }
 
     var extractResult = extractMessage(error.message, lines);
 
