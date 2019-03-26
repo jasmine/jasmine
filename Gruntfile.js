@@ -8,14 +8,14 @@ module.exports = function(grunt) {
     concat: require('./grunt/config/concat.js'),
     sass: require('./grunt/config/sass.js'),
     compress: require('./grunt/config/compress.js'),
-    imageEmbed: require('./grunt/config/imageEmbed.js')
+    cssUrlEmbed: require('./grunt/config/cssUrlEmbed.js')
   });
 
   require('load-grunt-tasks')(grunt);
 
   grunt.loadTasks('grunt/tasks');
 
-  grunt.registerTask('default', ['jshint:all', 'sass:dist', "imageEmbed:dist"]);
+  grunt.registerTask('default', ['jshint:all', 'sass:dist', "cssUrlEmbed"]);
 
   var version = require('./grunt/tasks/version.js');
 
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
     'Builds and lints jasmine.js, jasmine-html.js, jasmine.css',
     [
       'sass:dist',
-      "imageEmbed:dist",
+      "cssUrlEmbed",
       'jshint:beforeConcat',
       'concat',
       'jshint:afterConcat'
