@@ -62,7 +62,7 @@ function buildWebdriver() {
         [Capability.VERSION]: process.env['SAUCE_BROWSER_VERSION'],
         build: `Core ${process.env['TRAVIS_BUILD_NUMBER'] || 'Ran locally'}`,
         tags: ['Jasmine-Core'],
-        "tunnel-identifier": process.env['TRAVIS_JOB_NUMBER'] ? process.env['TRAVIS_BUILD_NUMBER'].toString() : null
+        "tunnel-identifier": process.env['TRAVIS_JOB_NUMBER'] ? process.env['TRAVIS_JOB_NUMBER'].toString() : null
       })
       .usingServer(`http://${username}:${accessKey}@localhost:4445/wd/hub`)
       .build();
