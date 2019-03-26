@@ -197,7 +197,7 @@ async function getResults(driver) {
   console.log(`Randomized with seed ${details.seed} ( ${host}/?random=${details.random}&seed=${details.seed} )`);
 
   if (useSauce) {
-    driver.executeScript(`sauce:job-result=${exitCode === 0}`);
+    driver.executeScript(`sauce:job-result=${process.exitCode === 0}`);
   }
 })().finally(() => {
   return Promise.all([driver.close(), new Promise(resolve => server.close(resolve))]);
