@@ -1,8 +1,6 @@
 (function() {
   var path = require("path"),
-    fs = require("fs");
-
-  var glob = require("glob");
+      fg = require("fast-glob");
 
   var jasmineUnderTestRequire = require(path.join(__dirname, "../../src/core/requireCore.js"));
 
@@ -16,12 +14,12 @@
   }
 
   function getSourceFiles() {
-    var src_files = ['core/**/*.js', 'version.js'];
-    src_files.forEach(function(file) {
-      var filePath = path.join(__dirname, "../../", 'src/', file);
-      glob.sync(filePath).forEach(function(resolvedFile) {
-        require(resolvedFile);
-      });
+    var src_files = ['core/**/*.js', 'version.js'].map(function(file) {
+      return path.join(__dirname, "../../", 'src/', file);
+    });
+
+    fg.sync(src_files).forEach(function(resolvedFile) {
+      require(resolvedFile);
     });
   }
 
