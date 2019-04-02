@@ -5,12 +5,14 @@ const path = require("path"),
         "passed" : "\x1B[32m",
         "failed": "\x1B[31m",
         "pending": "\x1B[33m",
+        "excluded": "\x1B[0m",
         "none": "\x1B[0m"
       },
       symbols = {
         "passed" : ".",
         "failed": "F",
         "pending": "*",
+        "excluded": "",
         "none": ""
       },
       host = `http://localhost:${port}`,
@@ -150,7 +152,7 @@ async function getResults(driver) {
   const result = specResults.reduce((result, spec) => {
     result[spec.status] = [...result[spec.status], spec];
     return result;
-  }, {pending: [], failed: [], passed: []});
+  }, {pending: [], failed: [], passed: [], excluded: []});
 
   if (result.pending.length) {
     console.log(`${colors["pending"]}Pending:`);
@@ -164,7 +166,6 @@ async function getResults(driver) {
   }
 
   if (result.failed.length) {
-    process.exitCode = 1
     console.log(`${colors["failed"]}Failed:`);
     result["failed"].forEach((spec, index) => {
       console.log(`${colors["none"]}${index}) ${spec.fullName}`)
@@ -187,6 +188,7 @@ async function getResults(driver) {
 
   const details = await driver.executeScript(`
       return {
+        overallStatus: jsApiReporter.runDetails.overallStatus,
         executionTime: jsApiReporter.executionTime(),
         random: jsApiReporter.runDetails.order.random,
         seed: jsApiReporter.runDetails.order.seed
@@ -195,6 +197,7 @@ async function getResults(driver) {
   console.log(`${colors["none"]}${specResults.length} spec(s), ${result.failed.length} failure(s), ${result.pending.length} pending spec(s)`);
   console.log(`Finished in ${details.executionTime / 1000} second(s)`);
   console.log(`Randomized with seed ${details.seed} ( ${host}/?random=${details.random}&seed=${details.seed} )`);
+  process.exitCode = details.overallStatus === 'passed' ? 0 : 1;
 
   if (useSauce) {
     driver.executeScript(`sauce:job-result=${process.exitCode === 0}`);
