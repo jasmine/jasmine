@@ -89,9 +89,15 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     if (value instanceof Error) {
       return true;
     }
-    if (value && value.constructor && value.constructor.constructor &&
-      (value instanceof (value.constructor.constructor('return this')()).Error)) {
-      return true;
+    if (value && value.constructor && value.constructor.constructor) {
+      var valueGlobal = value.constructor.constructor('return this');
+      if (j$.isFunction_(valueGlobal)) {
+        valueGlobal = valueGlobal();
+      }
+
+      if (valueGlobal.Error && value instanceof valueGlobal.Error) {
+        return true;
+      }
     }
     return false;
   };
