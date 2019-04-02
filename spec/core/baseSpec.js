@@ -1,6 +1,6 @@
 describe('base helpers', function() {
   describe('isError_', function() {
-    fit("correctly handles WebSocket events", function(done) {
+    it("correctly handles WebSocket events", function(done) {
       if (typeof jasmine.getGlobal().WebSocket === 'undefined') {
         done();
         return;
