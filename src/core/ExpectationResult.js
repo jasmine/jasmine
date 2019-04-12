@@ -23,6 +23,14 @@ getJasmineRequireObj().buildExpectationResult = function() {
     if(!result.passed) {
       result.expected = options.expected;
       result.actual = options.actual;
+
+      if(
+        options.error && options.error.code === 'ERR_ASSERTION' &&
+        options.expected === '' && options.actual === ''
+      ) {
+        result.expected = options.error.expected;
+        result.actual = options.error.actual;
+      }
     }
 
     return result;

@@ -80,6 +80,7 @@ describe("buildExpectationResult", function() {
     var value = true;
     var expectedValue = false;
     try { assert.equal(value, expectedValue) } catch(e) { error = e; }
+
     expect(Object.keys(error)).toContain(
       'code', 'actual', 'expected', 'operator'
     );
