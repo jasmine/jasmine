@@ -73,4 +73,29 @@ describe("buildExpectationResult", function() {
     var result = jasmineUnderTest.buildExpectationResult({actual: 'some-value'});
     expect(result.actual).toBe('some-value');
   });
+
+  it("handles nodejs assertions", function() {
+    var assert = require('assert');
+    var error;
+    var value = true;
+    var expectedValue = false;
+    try { assert.equal(value, expectedValue) } catch(e) { error = e; }
+    expect(Object.keys(error)).toContain(
+      'code', 'actual', 'expected', 'operator'
+    );
+    expect(error.code).toEqual('ERR_ASSERTION');
+    expect(error.expected).toEqual(expectedValue);
+    expect(error.actual).toEqual(value);
+    expect(error.operator).toEqual('==');
+
+    var result = jasmineUnderTest.buildExpectationResult({
+      passed: false,
+      matcherName: '',
+      expected: '',
+      actual: '',
+      error: error
+    });
+    expect(result.actual).toEqual(value);
+  });
+
 });
