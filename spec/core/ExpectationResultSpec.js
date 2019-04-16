@@ -75,10 +75,13 @@ describe("buildExpectationResult", function() {
   });
 
   it("handles nodejs assertions", function() {
+    if (typeof require === "undefined") {
+      return;
+    }
     var assert = require('assert');
     var error;
-    var value = true;
-    var expectedValue = false;
+    var value = 8421;
+    var expectedValue = "JasmineExpectationTestValue";
     try { assert.equal(value, expectedValue) } catch(e) { error = e; }
 
     expect(Object.keys(error)).toContain(
@@ -97,6 +100,7 @@ describe("buildExpectationResult", function() {
       error: error
     });
     expect(result.actual).toEqual(value);
+    expect(result.expected).toEqual(expectedValue);
   });
 
 });
