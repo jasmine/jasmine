@@ -26,3 +26,4 @@ lib/jasmine-core/spec
 lib/jasmine-core/version.rb
 lib/jasmine-core/*.py
 sauce_connect.log
+ci.js
