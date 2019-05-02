@@ -142,7 +142,25 @@ getJasmineRequireObj().Env = function(j$) {
       if (configuration.hasOwnProperty('hideDisabled')) {
         config.hideDisabled = configuration.hideDisabled;
       }
+
+      if (configuration.hasOwnProperty('promise')) {
+        if (typeof configuration.promise.resolve === 'function' &&
+            typeof configuration.promise.reject === 'function') {
+          config.promiseLibrary = configuration.promise;
+        } else {
+          throw new Error('Custom promise library missing `resolve`/`reject` functions');
+        }
+      }
     };
+
+    Object.defineProperty(this, 'Promise', {
+      get: function() {
+        return config.promiseLibrary || global.Promise;
+      },
+      set: function() {
+        throw new Error('To set a custom promise library, use `jasmine.getEnv().configure({ promise: ... })`');
+      }
+    });
 
     /**
      * Get the current configuration for your jasmine environment

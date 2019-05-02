@@ -233,4 +233,55 @@ describe("Env", function() {
       expect(globalErrors.install).toHaveBeenCalled();
     });
   });
+
+  describe("#Promise", function() {
+    it("defaults to global Promise, if available", function() {
+      var examplePromise = jasmine.createSpyObj('Promise', ['resolve', 'reject']);
+      var exampleGlobal = { Promise: examplePromise };
+      var exampleEnv = new jasmineUnderTest.Env({ global: exampleGlobal });
+      expect(exampleEnv.Promise).toBe(examplePromise);
+    });
+
+    it("defaults to undefined if no global Promise is available", function() {
+      var exampleGlobal = {};
+      var exampleEnv = new jasmineUnderTest.Env({ global: exampleGlobal });
+      expect(exampleEnv.Promise).toBeUndefined();
+    });
+
+    it("defaults to global Promise, if available", function() {
+      var examplePromise = jasmine.createSpyObj('Promise', ['resolve', 'reject']);
+      var exampleGlobal = { Promise: examplePromise };
+      var exampleEnv = new jasmineUnderTest.Env({ global: exampleGlobal });
+      expect(exampleEnv.Promise).toBe(examplePromise);
+    });
+
+    it('allows #configure to override the global Promise', function() {
+      var examplePromise = jasmine.createSpyObj('Promise', ['resolve', 'reject']);
+      var customPromise = jasmine.createSpyObj('Promise', ['resolve', 'reject']);
+      var exampleGlobal = { Promise: examplePromise };
+      var exampleEnv = new jasmineUnderTest.Env({ global: exampleGlobal });
+      expect(exampleEnv.Promise).toBe(examplePromise);
+
+      exampleEnv.configure({ promise: customPromise });
+      expect(exampleEnv.Promise).toBe(customPromise);
+    });
+
+    it('throws an error when attempting to set an invalid custom Promise library', function() {
+      var customPromise = jasmine.createSpy('Promise');
+      var exampleEnv = new jasmineUnderTest.Env();
+
+      expect(function () {
+        exampleEnv.configure({ promise: customPromise });
+      }).toThrowError('Custom promise library missing `resolve`/`reject` functions');
+    });
+
+    it('throws an error if user attempts to assign Promise library directly', function() {
+      var customPromise = jasmine.createSpy('Promise');
+      var exampleEnv = new jasmineUnderTest.Env();
+
+      expect(function () {
+        exampleEnv.Promise = customPromise;
+      }).toThrowError('To set a custom promise library, use `jasmine.getEnv().configure({ promise: ... })`');
+    });
+  });
 });
