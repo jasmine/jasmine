@@ -21,7 +21,8 @@ describe("jasmineUnderTest.pp (HTML Dependent)", function () {
   it("should print Firefox's wrapped native objects correctly", function() {
     if(jasmine.getEnv().firefoxVersion) {
       try { new CustomEvent(); } catch(e) { var err = e; };
-      expect(jasmineUnderTest.pp(err)).toMatch(/Not enough arguments/);
+      // Different versions of FF produce different error messages.
+      expect(jasmineUnderTest.pp(err)).toMatch(/Not enough arguments|CustomEvent requires at least 1 argument, but only 0 were passed/);
     }
   });
 
