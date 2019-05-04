@@ -186,4 +186,82 @@ describe('Spies', function () {
       expect(function() { spy('baz', {qux: 42}); }).toThrowError('Spy \'foo\' received a call with arguments [ \'baz\', Object({ qux: 42 }) ] but all configured strategies specify other arguments.');
     });
   });
+
+  describe("with future plans", function() {
+    it("can execute plans in series", function() {
+      var spy = env.createSpy('foo');
+      spy.and.returnValue(1)
+         .andThen.callFake(function() { return 1 + 1; })
+         .andThen.returnValue(3);
+
+      expect(spy()).toEqual(1);
+      expect(spy()).toEqual(2);
+      expect(spy()).toEqual(3);
+    });
+
+    it("can execute plans that raise errors in series", function() {
+      var spy = env.createSpy('foo');
+      spy.and.throwError('Error A')
+         .andThen.throwError('Error B');
+
+      expect(function() {
+        spy();
+      }).toThrowError('Error A');
+      expect(function() {
+        spy();
+      }).toThrowError('Error B');
+    });
+
+    it("retains the most recently configured plan", function() {
+      var spy = env.createSpy('foo');
+      spy.and.returnValue(1)
+         .andThen.returnValue(2);
+
+      expect(spy()).toEqual(1);
+      expect(spy()).toEqual(2);
+      expect(spy()).toEqual(2);
+      expect(spy()).toEqual(2);
+    });
+
+    it("adds a future plan even if there is no plan set yet", function() {
+      var spy = env.createSpy('foo');
+      spy.andThen.returnValue(1);
+
+      expect(spy()).toBeUndefined();
+      expect(spy()).toEqual(1);
+    });
+
+    it("allows external access to the current plan", function () {
+      var a = function() { },
+          b = function() { },
+          c = function() { };
+      var spy = env.createSpy('foo');
+      spy.and.callFake(a).andThen.callFake(b).andThen.callFake(c);
+
+      expect(spy.and.plan).toBe(a);
+      spy();
+      expect(spy.and.plan).toBe(b);
+      spy();
+      expect(spy.and.plan).toBe(c);
+    });
+
+    it("respects plan series based on withArgs", function () {
+      var spy = env.createSpy('foo');
+      spy.withArgs('animal').and.returnValue('cat');
+      spy.withArgs('animal').andThen.returnValue('dog');
+      spy.withArgs('mineral').and.returnValue('ruby');
+      spy.withArgs('mineral').andThen.returnValue('diamond');
+      spy.and.returnValue('bar');
+
+      expect(spy()).toEqual('bar');
+      expect(spy('animal')).toEqual('cat');
+      expect(spy('mineral')).toEqual('ruby');
+      expect(spy()).toEqual('bar');
+      expect(spy('animal')).toEqual('dog');
+      expect(spy('mineral')).toEqual('diamond');
+      expect(spy()).toEqual('bar');
+      expect(spy('animal')).toEqual('dog');
+      expect(spy('mineral')).toEqual('diamond');
+    });
+  });
 });

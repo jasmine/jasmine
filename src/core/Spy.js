@@ -79,6 +79,8 @@ getJasmineRequireObj().Spy = function (j$) {
      * spyOn(someObj, 'func').and.returnValue(42);
      */
     wrapper.and = strategyDispatcher.and;
+    wrapper.andThen = strategyDispatcher.andThen;
+
     /**
      * Specifies a strategy to be used for calls to the spy that have the
      * specified arguments.
@@ -106,6 +108,7 @@ getJasmineRequireObj().Spy = function (j$) {
     });
 
     this.and = baseStrategy;
+    this.andThen = baseStrategy.plannedProxy;
 
     this.exec = function(spy, args) {
       var strategy = argsStrategies.get(args);
@@ -122,7 +125,10 @@ getJasmineRequireObj().Spy = function (j$) {
     };
 
     this.withArgs = function() {
-      return { and: argsStrategies.getOrCreate(arguments) };
+      return {
+        and: argsStrategies.getOrCreate(arguments),
+        andThen: argsStrategies.getOrCreate(arguments).plannedProxy
+      };
     };
   }
 

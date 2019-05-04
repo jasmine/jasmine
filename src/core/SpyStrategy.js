@@ -15,7 +15,22 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     this.identity = options.name || 'unknown';
     this.originalFn = options.fn || function() {};
     this.getSpy = options.getSpy || function() {};
-    this.plan = this._defaultPlan = function() {};
+    this.deprecated = options.deprecated || j$.getEnv().deprecated;
+
+    this._defaultPlan = function() {};
+    this._planned = [this._defaultPlan];
+
+    Object.defineProperty(this, 'plan', {
+      get: function() {
+        return this._planned[0];
+      },
+      set: function(plan) {
+        if (this.deprecated) {
+          this.deprecated('Setting plan directly on a spy is deprecated, use `callFake` instead');
+        }
+        this._planned = [plan];
+      }
+    });
 
     var k, cs = options.customStrategies || {};
     for (k in cs) {
@@ -23,6 +38,8 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
         this[k] = createCustomPlan(cs[k]);
       }
     }
+
+    this.plannedProxy = createPlannedProxy(this);
   }
 
   function createCustomPlan(factory) {
@@ -33,10 +50,44 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
         throw new Error('Spy strategy must return a function');
       }
 
-      this.plan = plan;
+      this._applyPlan(plan);
       return this.getSpy();
     };
   }
+
+  function createPlannedProxy(obj) {
+    var k, proxy = {};
+
+    for (k in obj) {
+      if (typeof obj[k] === 'function') {
+        proxy[k] = obj[k];
+      }
+    }
+
+    Object.defineProperty(proxy, 'plan', {
+      get: function() {
+        return obj.plan;
+      },
+      set: function(plan) {
+        obj.plan = plan;
+      }
+    });
+
+    proxy.getSpy = obj.getSpy.bind(obj);
+    proxy.isConfigured = obj.isConfigured.bind(obj);
+    proxy._applyPlan = function(plan) {
+      obj._planned.push(plan);
+    };
+
+    return proxy;
+  }
+
+  /**
+   * Assign the provided plan to be the current spy strategy.
+   */
+  SpyStrategy.prototype._applyPlan = function(plan) {
+    this._planned = [plan];
+  };
 
   /**
    * Execute the current spy strategy.
@@ -44,7 +95,13 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @function
    */
   SpyStrategy.prototype.exec = function(context, args) {
-    return this.plan.apply(context, args);
+    try {
+      return this.plan.apply(context, args);
+    } finally {
+      if (this._planned.length > 1) {
+        this._planned.shift();
+      }
+    }
   };
 
   /**
@@ -53,7 +110,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @function
    */
   SpyStrategy.prototype.callThrough = function() {
-    this.plan = this.originalFn;
+    this._applyPlan(this.originalFn);
     return this.getSpy();
   };
 
@@ -64,9 +121,9 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @param {*} value The value to return.
    */
   SpyStrategy.prototype.returnValue = function(value) {
-    this.plan = function() {
+    this._applyPlan(function() {
       return value;
-    };
+    });
     return this.getSpy();
   };
 
@@ -78,9 +135,9 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    */
   SpyStrategy.prototype.returnValues = function() {
     var values = Array.prototype.slice.call(arguments);
-    this.plan = function () {
+    this._applyPlan(function() {
       return values.shift();
-    };
+    });
     return this.getSpy();
   };
 
@@ -92,9 +149,9 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    */
   SpyStrategy.prototype.throwError = function(something) {
     var error = (something instanceof Error) ? something : new Error(something);
-    this.plan = function() {
+    this._applyPlan(function() {
       throw error;
-    };
+    });
     return this.getSpy();
   };
 
@@ -108,7 +165,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     if(!(j$.isFunction_(fn) || j$.isAsyncFunction_(fn))) {
       throw new Error('Argument passed to callFake should be a function, got ' + fn);
     }
-    this.plan = fn;
+    this._applyPlan(fn);
     return this.getSpy();
   };
 
@@ -117,13 +174,18 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @name SpyStrategy#stub
    * @function
    */
-  SpyStrategy.prototype.stub = function(fn) {
-    this.plan = function() {};
+  SpyStrategy.prototype.stub = function() {
+    this._applyPlan(function() {});
     return this.getSpy();
   };
 
+  /**
+   * Return a boolean indicating whether the spy has been configured.
+   * @name SpyStrategy#isConfigured
+   * @function
+   */
   SpyStrategy.prototype.isConfigured = function() {
-    return this.plan !== this._defaultPlan;
+    return this._planned.length > 1 || this._planned[0] !== this._defaultPlan;
   };
 
   return SpyStrategy;

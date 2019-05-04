@@ -12,6 +12,12 @@ describe("SpyStrategy", function() {
     expect(spyStrategy.identity).toEqual("foo");
   });
 
+  it("defaults its deprecation handler to the environment's handler", function() {
+    var spyStrategy = new jasmineUnderTest.SpyStrategy();
+
+    expect(spyStrategy.deprecated).toBe(jasmineUnderTest.getEnv().deprecated);
+  });
+
   it("stubs an original function, if provided", function() {
     var originalFn = jasmine.createSpy("original"),
         spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
@@ -198,5 +204,72 @@ describe("SpyStrategy", function() {
     expect(spyStrategy.throwError()).toBe(spy);
     expect(spyStrategy.callFake(function() {})).toBe(spy);
     expect(spyStrategy.stub()).toBe(spy);
+  });
+
+  describe('plan', function() {
+    it('returns the current plan', function() {
+      var originalFn = jasmine.createSpy("original"),
+          fakeFn = jasmine.createSpy("fake").and.returnValue(37),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      spyStrategy.callThrough();
+      expect(spyStrategy.plan).toBe(originalFn);
+
+      spyStrategy.callFake(fakeFn);
+      expect(spyStrategy.plan).toBe(fakeFn);
+    });
+
+    it('sets the current plan, but issues a deprecation warning', function() {
+      var originalFn = jasmine.createSpy('original'),
+          fakeFn = jasmine.createSpy('fake').and.returnValue(37),
+          deprecated = jasmine.createSpy('deprecated'),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn, deprecated: deprecated});
+
+      spyStrategy.plan = fakeFn;
+      expect(spyStrategy.exec()).toEqual(37);
+      expect(deprecated).toHaveBeenCalledWith(
+        'Setting plan directly on a spy is deprecated, use `callFake` instead'
+      );
+    });
+  });
+
+  describe('plannedProxy', function() {
+    it('enqueues future plans to be consumed by exec', function() {
+      var originalFn = jasmine.createSpy('original'),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      spyStrategy.returnValue(1);
+      spyStrategy.plannedProxy.returnValue(2);
+      spyStrategy.plannedProxy.returnValue(3);
+
+      expect(spyStrategy.exec()).toEqual(1);
+      expect(spyStrategy.exec()).toEqual(2);
+      expect(spyStrategy.exec()).toEqual(3);
+    });
+  });
+
+  describe('isConfigured', function() {
+    it('returns false if no plan is configured yet', function() {
+      var originalFn = jasmine.createSpy('original'),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      expect(spyStrategy.isConfigured()).toBe(false);
+    });
+
+    it('returns true if a plan was configured', function() {
+      var originalFn = jasmine.createSpy('original'),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      spyStrategy.returnValue(3);
+      expect(spyStrategy.isConfigured()).toBe(true);
+    });
+
+    it('returns true if a future plan was configured', function() {
+      var originalFn = jasmine.createSpy('original'),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      spyStrategy.plannedProxy.returnValue(3);
+      expect(spyStrategy.isConfigured()).toBe(true);
+    });
   });
 });
