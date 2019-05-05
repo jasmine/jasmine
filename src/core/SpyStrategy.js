@@ -85,6 +85,44 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   };
 
   /**
+   * Tell the spy to return a promise resolving to the specified value when invoked.
+   * @name SpyStrategy#resolveValue
+   * @function
+   * @param {*} value The value to return.
+   */
+  SpyStrategy.prototype.resolveValue = function(value) {
+    var Promise = j$.getPromise();
+
+    if (!Promise) {
+      throw new Error('resolveValue is unavailable because the environment does not support promises.');
+    }
+
+    this.plan = function() {
+      return Promise.resolve(value);
+    };
+    return this.getSpy();
+  };
+
+  /**
+   * Tell the spy to return a promise rejecting with the specified value when invoked.
+   * @name SpyStrategy#rejectValue
+   * @function
+   * @param {*} value The value to return.
+   */
+  SpyStrategy.prototype.rejectValue = function(value) {
+    var Promise = j$.getPromise();
+
+    if (!Promise) {
+      throw new Error('rejectValue is unavailable because the environment does not support promises.');
+    }
+
+    this.plan = function() {
+      return Promise.reject(value);
+    };
+    return this.getSpy();
+  };
+
+  /**
    * Tell the spy to throw an error when invoked.
    * @name SpyStrategy#throwError
    * @function

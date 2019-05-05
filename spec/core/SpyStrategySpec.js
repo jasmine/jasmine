@@ -110,6 +110,62 @@ describe("SpyStrategy", function() {
     })
   });
 
+  describe("#resolveValue", function() {
+    it("allows a resolved promise to be returned", function(done) {
+      if (!jasmineUnderTest.getPromise()) {
+        pending('Environment does not support promises.');
+      }
+
+      var originalFn = jasmine.createSpy("original"),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      spyStrategy.resolveValue(37);
+      spyStrategy.exec().then(function (returnValue) {
+        expect(returnValue).toEqual(37);
+        done();
+      }).catch(done.fail);
+    });
+
+    it("fails if promises are not available", function() {
+      var originalFn = jasmine.createSpy("original"),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      spyOn(jasmineUnderTest, 'getPromise');
+
+      expect(function() {
+        spyStrategy.resolveValue(37);
+      }).toThrowError('resolveValue is unavailable because the environment does not support promises.');
+    });
+  });
+
+  describe("#rejectValue", function() {
+    it("allows a rejected promise to be returned", function(done) {
+      if (!jasmineUnderTest.getPromise()) {
+        pending('Environment does not support promises.');
+      }
+
+      var originalFn = jasmine.createSpy("original"),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      spyStrategy.rejectValue(new Error('oops'));
+      spyStrategy.exec().then(done.fail).catch(function (error) {
+        expect(error).toEqual(new Error('oops'));
+        done();
+      }).catch(done.fail);
+    });
+
+    it("fails if promises are not available", function() {
+      var originalFn = jasmine.createSpy("original"),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      spyOn(jasmineUnderTest, 'getPromise');
+
+      expect(function() {
+        spyStrategy.rejectValue(new Error('oops'));
+      }).toThrowError('rejectValue is unavailable because the environment does not support promises.');
+    });
+  });
+
   it("allows a custom strategy to be used", function() {
     var plan = jasmine.createSpy('custom strategy')
         .and.returnValue('custom strategy result'),

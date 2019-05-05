@@ -76,7 +76,16 @@ getJasmineRequireObj().Env = function(j$) {
        * @type Boolean
        * @default false
        */
-      hideDisabled: false
+      hideDisabled: false,
+      /**
+       * Set to provide a custom promise library that Jasmine will use if it needs
+       * to create a promise. If not set, it will default to whatever global promise
+       * library is available (if any).
+       * @name Configuration#promiseLibrary
+       * @type function
+       * @default undefined
+       */
+      promiseLibrary: undefined
     };
 
     var currentSuite = function() {
@@ -142,6 +151,15 @@ getJasmineRequireObj().Env = function(j$) {
       if (configuration.hasOwnProperty('hideDisabled')) {
         config.hideDisabled = configuration.hideDisabled;
       }
+
+      if (configuration.hasOwnProperty('promiseLibrary')) {
+        if (typeof configuration.promiseLibrary.resolve === 'function' &&
+            typeof configuration.promiseLibrary.reject === 'function') {
+          config.promiseLibrary = configuration.promiseLibrary;
+        } else {
+          throw new Error('Custom promise library missing `resolve`/`reject` functions');
+        }
+      }
     };
 
     /**
@@ -191,6 +209,10 @@ getJasmineRequireObj().Env = function(j$) {
       for (var matcherName in matchersToAdd) {
         customMatchers[matcherName] = matchersToAdd[matcherName];
       }
+    };
+
+    this.getPromise = function() {
+      return config.promiseLibrary;
     };
 
     j$.Expectation.addCoreMatchers(j$.matchers);

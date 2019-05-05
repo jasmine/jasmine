@@ -46,6 +46,23 @@ describe("Env", function() {
     }));
   });
 
+  it('can configure a custom promise library', function() {
+    var myLibrary = { resolve: jasmine.createSpy(), reject: jasmine.createSpy() };
+    expect(env.getPromise()).toBeUndefined();
+
+    env.configure({ promiseLibrary: myLibrary });
+    expect(env.getPromise()).toBe(myLibrary);
+  });
+
+  it('fails to configure a custom promise library if library is invalid', function() {
+    var myLibrary = {};
+    expect(env.getPromise()).toBeUndefined();
+
+    expect(function() {
+      env.configure({ promiseLibrary: myLibrary });
+    }).toThrowError('Custom promise library missing `resolve`/`reject` functions');
+  });
+
   it('defaults to multiple failures for specs', function() {
     spyOn(jasmineUnderTest, 'Spec');
       env.it('bar', function() {});
