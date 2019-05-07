@@ -76,7 +76,11 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     proxy.getSpy = obj.getSpy.bind(obj);
     proxy.isConfigured = obj.isConfigured.bind(obj);
     proxy._applyPlan = function(plan) {
-      obj._planned.push(plan);
+      if (obj.isConfigured()) {
+        obj._planned.push(plan);
+      } else {
+        obj._planned = [plan];
+      }
     };
 
     return proxy;

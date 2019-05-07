@@ -199,6 +199,17 @@ describe('Spies', function () {
       expect(spy()).toEqual(3);
     });
 
+    it("can execute plans in series after being set with separate calls to andThen", function() {
+      var spy = env.createSpy('foo');
+      spy.and.returnValue(1);
+      spy.andThen.callFake(function() { return 1 + 1; });
+      spy.andThen.returnValue(3);
+
+      expect(spy()).toEqual(1);
+      expect(spy()).toEqual(2);
+      expect(spy()).toEqual(3);
+    });
+
     it("can execute plans that raise errors in series", function() {
       var spy = env.createSpy('foo');
       spy.and.throwError('Error A')
@@ -223,11 +234,10 @@ describe('Spies', function () {
       expect(spy()).toEqual(2);
     });
 
-    it("adds a future plan even if there is no plan set yet", function() {
+    it("sets the current plan if no plan was configured yet", function() {
       var spy = env.createSpy('foo');
       spy.andThen.returnValue(1);
 
-      expect(spy()).toBeUndefined();
       expect(spy()).toEqual(1);
     });
 
