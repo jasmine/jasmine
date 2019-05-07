@@ -94,7 +94,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     var Promise = j$.getPromise();
 
     if (!Promise) {
-      throw new Error('resolveValue is unavailable because the environment does not support promises.');
+      throw new Error('resolveValue requires global Promise, or a `promiseLibrary` configured with `jasmine.getEnv().configure()`');
     }
 
     this.plan = function() {
@@ -113,7 +113,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     var Promise = j$.getPromise();
 
     if (!Promise) {
-      throw new Error('rejectValue is unavailable because the environment does not support promises.');
+      throw new Error('rejectValue requires global Promise, or a `promiseLibrary` configured with `jasmine.getEnv().configure()`');
     }
 
     this.plan = function() {

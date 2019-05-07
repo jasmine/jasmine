@@ -112,9 +112,7 @@ describe("SpyStrategy", function() {
 
   describe("#resolveValue", function() {
     it("allows a resolved promise to be returned", function(done) {
-      if (!jasmineUnderTest.getPromise()) {
-        pending('Environment does not support promises.');
-      }
+      jasmine.getEnv().requirePromises();
 
       var originalFn = jasmine.createSpy("original"),
           spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
@@ -134,15 +132,13 @@ describe("SpyStrategy", function() {
 
       expect(function() {
         spyStrategy.resolveValue(37);
-      }).toThrowError('resolveValue is unavailable because the environment does not support promises.');
+      }).toThrowError('resolveValue requires global Promise, or a `promiseLibrary` configured with `jasmine.getEnv().configure()`');
     });
   });
 
   describe("#rejectValue", function() {
     it("allows a rejected promise to be returned", function(done) {
-      if (!jasmineUnderTest.getPromise()) {
-        pending('Environment does not support promises.');
-      }
+      jasmine.getEnv().requirePromises();
 
       var originalFn = jasmine.createSpy("original"),
           spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
@@ -162,7 +158,7 @@ describe("SpyStrategy", function() {
 
       expect(function() {
         spyStrategy.rejectValue(new Error('oops'));
-      }).toThrowError('rejectValue is unavailable because the environment does not support promises.');
+      }).toThrowError('rejectValue requires global Promise, or a `promiseLibrary` configured with `jasmine.getEnv().configure()`');
     });
   });
 
