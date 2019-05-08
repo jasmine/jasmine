@@ -60,8 +60,10 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
      */
     this.rejectValue = function(value) {
       var Promise = requirePromise('rejectValue');
+      var error = (value instanceof Error) ? value : new Error(value);
+
       self.plan = function() {
-        return Promise.reject(value);
+        return Promise.reject(error);
       };
       return self.getSpy();
     };

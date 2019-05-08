@@ -150,6 +150,20 @@ describe("SpyStrategy", function() {
       }).catch(done.fail);
     });
 
+    it("allows a non-Error to be rejected, wrapping it in an exception when executed", function(done) {
+      jasmine.getEnv().requirePromises();
+
+      var originalFn = jasmine.createSpy("original"),
+          getPromise = function() { return Promise; },
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn, getPromise: getPromise});
+
+      spyStrategy.rejectValue('oops');
+      spyStrategy.exec().then(done.fail).catch(function (error) {
+        expect(error).toEqual(new Error('oops'));
+        done();
+      }).catch(done.fail);
+    });
+
     it("fails if promises are not available", function() {
       var originalFn = jasmine.createSpy("original"),
           spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
