@@ -160,11 +160,11 @@ getJasmineRequireObj().Env = function(j$) {
 
     Object.defineProperty(this, 'specFilter', {
       get: function() {
-        self.deprecated('Getting specFilter directly from Env is deprecated, please check the specFilter option from `configuration`');
+        self.deprecated('Getting specFilter directly from Env is deprecated and will be removed in a future version of Jasmine, please check the specFilter option from `configuration`');
         return config.specFilter;
       },
       set: function(val) {
-        self.deprecated('Setting specFilter directly on Env is deprecated, please use the specFilter option in `configure`');
+        self.deprecated('Setting specFilter directly on Env is deprecated and will be removed in a future version of Jasmine, please use the specFilter option in `configure`');
         config.specFilter = val;
       }
     });
@@ -300,12 +300,12 @@ getJasmineRequireObj().Env = function(j$) {
      * @deprecated Use the `oneFailurePerSpec` option with {@link Env#configure}
      */
     this.throwOnExpectationFailure = function(value) {
-      this.deprecated('Setting throwOnExpectationFailure directly on Env is deprecated, please use the oneFailurePerSpec option in `configure`');
+      this.deprecated('Setting throwOnExpectationFailure directly on Env is deprecated and will be removed in a future version of Jasmine, please use the oneFailurePerSpec option in `configure`');
       this.configure({oneFailurePerSpec: !!value});
     };
 
     this.throwingExpectationFailures = function() {
-      this.deprecated('Getting throwingExpectationFailures directly from Env is deprecated, please check the oneFailurePerSpec option from `configuration`');
+      this.deprecated('Getting throwingExpectationFailures directly from Env is deprecated and will be removed in a future version of Jasmine, please check the oneFailurePerSpec option from `configuration`');
       return config.oneFailurePerSpec;
     };
 
@@ -317,12 +317,12 @@ getJasmineRequireObj().Env = function(j$) {
      * @deprecated Use the `failFast` option with {@link Env#configure}
      */
     this.stopOnSpecFailure = function(value) {
-      this.deprecated('Setting stopOnSpecFailure directly is deprecated, please use the failFast option in `configure`');
+      this.deprecated('Setting stopOnSpecFailure directly is deprecated and will be removed in a future version of Jasmine, please use the failFast option in `configure`');
       this.configure({failFast: !!value});
     };
 
     this.stoppingOnSpecFailure = function() {
-      this.deprecated('Getting stoppingOnSpecFailure directly from Env is deprecated, please check the failFast option from `configuration`');
+      this.deprecated('Getting stoppingOnSpecFailure directly from Env is deprecated and will be removed in a future version of Jasmine, please check the failFast option from `configuration`');
       return config.failFast;
     };
 
@@ -334,12 +334,12 @@ getJasmineRequireObj().Env = function(j$) {
      * @deprecated Use the `random` option with {@link Env#configure}
      */
     this.randomizeTests = function(value) {
-      this.deprecated('Setting randomizeTests directly is deprecated, please use the random option in `configure`');
+      this.deprecated('Setting randomizeTests directly is deprecated and will be removed in a future version of Jasmine, please use the random option in `configure`');
       config.random = !!value;
     };
 
     this.randomTests = function() {
-      this.deprecated('Getting randomTests directly from Env is deprecated, please check the random option from `configuration`');
+      this.deprecated('Getting randomTests directly from Env is deprecated and will be removed in a future version of Jasmine, please check the random option from `configuration`');
       return config.random;
     };
 
@@ -351,7 +351,7 @@ getJasmineRequireObj().Env = function(j$) {
      * @deprecated Use the `seed` option with {@link Env#configure}
      */
     this.seed = function(value) {
-      this.deprecated('Setting seed directly is deprecated, please use the seed option in `configure`');
+      this.deprecated('Setting seed directly is deprecated and will be removed in a future version of Jasmine, please use the seed option in `configure`');
       if (value) {
         config.seed = value;
       }
@@ -359,7 +359,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.hidingDisabled = function(value) {
-      this.deprecated('Getting hidingDisabled directly from Env is deprecated, please check the hideDisabled option from `configuration`');
+      this.deprecated('Getting hidingDisabled directly from Env is deprecated and will be removed in a future version of Jasmine, please check the hideDisabled option from `configuration`');
       return config.hideDisabled;
     };
 
@@ -368,7 +368,7 @@ getJasmineRequireObj().Env = function(j$) {
      * @function
      */
     this.hideDisabled = function(value) {
-      this.deprecated('Setting hideDisabled directly is deprecated, please use the hideDisabled option in `configure`');
+      this.deprecated('Setting hideDisabled directly is deprecated and will be removed in a future version of Jasmine, please use the hideDisabled option in `configure`');
       config.hideDisabled = !!value;
     };
 
