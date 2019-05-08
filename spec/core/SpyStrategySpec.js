@@ -115,7 +115,8 @@ describe("SpyStrategy", function() {
       jasmine.getEnv().requirePromises();
 
       var originalFn = jasmine.createSpy("original"),
-          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+          getPromise = function() { return Promise; },
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn, getPromise: getPromise});
 
       spyStrategy.resolveValue(37);
       spyStrategy.exec().then(function (returnValue) {
@@ -128,11 +129,9 @@ describe("SpyStrategy", function() {
       var originalFn = jasmine.createSpy("original"),
           spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
 
-      spyOn(jasmineUnderTest, 'getPromise');
-
       expect(function() {
         spyStrategy.resolveValue(37);
-      }).toThrowError('resolveValue requires global Promise, or a `promiseLibrary` configured with `jasmine.getEnv().configure()`');
+      }).toThrowError('resolveValue requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
     });
   });
 
@@ -141,7 +140,8 @@ describe("SpyStrategy", function() {
       jasmine.getEnv().requirePromises();
 
       var originalFn = jasmine.createSpy("original"),
-          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+          getPromise = function() { return Promise; },
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn, getPromise: getPromise});
 
       spyStrategy.rejectValue(new Error('oops'));
       spyStrategy.exec().then(done.fail).catch(function (error) {
@@ -154,11 +154,9 @@ describe("SpyStrategy", function() {
       var originalFn = jasmine.createSpy("original"),
           spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
 
-      spyOn(jasmineUnderTest, 'getPromise');
-
       expect(function() {
         spyStrategy.rejectValue(new Error('oops'));
-      }).toThrowError('rejectValue requires global Promise, or a `promiseLibrary` configured with `jasmine.getEnv().configure()`');
+      }).toThrowError('rejectValue requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
     });
   });
 

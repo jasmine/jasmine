@@ -10,6 +10,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     var self = this;
     var global = options.global || j$.getGlobal();
+    var customPromise;
 
     var totalSpecsDefined = 0;
 
@@ -79,13 +80,13 @@ getJasmineRequireObj().Env = function(j$) {
       hideDisabled: false,
       /**
        * Set to provide a custom promise library that Jasmine will use if it needs
-       * to create a promise. If not set, it will default to whatever global promise
+       * to create a promise. If not set, it will default to whatever global Promise
        * library is available (if any).
-       * @name Configuration#promiseLibrary
+       * @name Configuration#Promise
        * @type function
        * @default undefined
        */
-      promiseLibrary: undefined
+      Promise: undefined
     };
 
     var currentSuite = function() {
@@ -152,10 +153,10 @@ getJasmineRequireObj().Env = function(j$) {
         config.hideDisabled = configuration.hideDisabled;
       }
 
-      if (configuration.hasOwnProperty('promiseLibrary')) {
-        if (typeof configuration.promiseLibrary.resolve === 'function' &&
-            typeof configuration.promiseLibrary.reject === 'function') {
-          config.promiseLibrary = configuration.promiseLibrary;
+      if (configuration.hasOwnProperty('Promise')) {
+        if (typeof configuration.Promise.resolve === 'function' &&
+            typeof configuration.Promise.reject === 'function') {
+          customPromise = configuration.Promise;
         } else {
           throw new Error('Custom promise library missing `resolve`/`reject` functions');
         }
@@ -209,10 +210,6 @@ getJasmineRequireObj().Env = function(j$) {
       for (var matcherName in matchersToAdd) {
         customMatchers[matcherName] = matchersToAdd[matcherName];
       }
-    };
-
-    this.getPromise = function() {
-      return config.promiseLibrary;
     };
 
     j$.Expectation.addCoreMatchers(j$.matchers);
@@ -642,15 +639,20 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.clearReporters();
     };
 
-    var spyFactory = new j$.SpyFactory(function() {
-      var runnable = currentRunnable();
+    var spyFactory = new j$.SpyFactory(
+      function getCustomStrategies() {
+        var runnable = currentRunnable();
 
-      if (runnable) {
-        return runnableResources[runnable.id].customSpyStrategies;
+        if (runnable) {
+          return runnableResources[runnable.id].customSpyStrategies;
+        }
+
+        return {};
+      },
+      function getPromise() {
+        return customPromise || global.Promise;
       }
-
-      return {};
-    });
+    );
 
     var spyRegistry = new j$.SpyRegistry({
       currentSpies: function() {

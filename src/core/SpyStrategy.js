@@ -6,6 +6,8 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   function SpyStrategy(options) {
     options = options || {};
 
+    var self = this;
+
     /**
      * Get the identifying information for the spy.
      * @name SpyStrategy#identity
@@ -23,6 +25,46 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
         this[k] = createCustomPlan(cs[k]);
       }
     }
+
+    var getPromise = (typeof options.getPromise === 'function') ? options.getPromise : function() {};
+
+    var requirePromise = function(name) {
+      var Promise = getPromise();
+
+      if (!Promise) {
+        throw new Error(name + ' requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
+      }
+
+      return Promise;
+    };
+
+    /**
+     * Tell the spy to return a promise resolving to the specified value when invoked.
+     * @name SpyStrategy#resolveValue
+     * @function
+     * @param {*} value The value to return.
+     */
+    this.resolveValue = function(value) {
+      var Promise = requirePromise('resolveValue');
+      self.plan = function() {
+        return Promise.resolve(value);
+      };
+      return self.getSpy();
+    };
+
+    /**
+     * Tell the spy to return a promise rejecting with the specified value when invoked.
+     * @name SpyStrategy#rejectValue
+     * @function
+     * @param {*} value The value to return.
+     */
+    this.rejectValue = function(value) {
+      var Promise = requirePromise('rejectValue');
+      self.plan = function() {
+        return Promise.reject(value);
+      };
+      return self.getSpy();
+    };
   }
 
   function createCustomPlan(factory) {
@@ -80,44 +122,6 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     var values = Array.prototype.slice.call(arguments);
     this.plan = function () {
       return values.shift();
-    };
-    return this.getSpy();
-  };
-
-  /**
-   * Tell the spy to return a promise resolving to the specified value when invoked.
-   * @name SpyStrategy#resolveValue
-   * @function
-   * @param {*} value The value to return.
-   */
-  SpyStrategy.prototype.resolveValue = function(value) {
-    var Promise = j$.getPromise();
-
-    if (!Promise) {
-      throw new Error('resolveValue requires global Promise, or a `promiseLibrary` configured with `jasmine.getEnv().configure()`');
-    }
-
-    this.plan = function() {
-      return Promise.resolve(value);
-    };
-    return this.getSpy();
-  };
-
-  /**
-   * Tell the spy to return a promise rejecting with the specified value when invoked.
-   * @name SpyStrategy#rejectValue
-   * @function
-   * @param {*} value The value to return.
-   */
-  SpyStrategy.prototype.rejectValue = function(value) {
-    var Promise = j$.getPromise();
-
-    if (!Promise) {
-      throw new Error('rejectValue requires global Promise, or a `promiseLibrary` configured with `jasmine.getEnv().configure()`');
-    }
-
-    this.plan = function() {
-      return Promise.reject(value);
     };
     return this.getSpy();
   };

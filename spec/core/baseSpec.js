@@ -27,19 +27,4 @@ describe('base helpers', function() {
       }, 100);
     });
   });
-
-  describe('getPromise', function() {
-    it('returns a custom library if configured', function() {
-      var myLibrary = { resolve: jasmine.createSpy(), reject: jasmine.createSpy() };
-      jasmineUnderTest.getEnv().configure({ promiseLibrary: myLibrary });
-      expect(jasmineUnderTest.getPromise()).toBe(myLibrary);
-    });
-
-    it('returns global library if not configured', function() {
-      var globalLibrary = {};
-      var global = { Promise: globalLibrary };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-      expect(jasmineUnderTest.getPromise()).toBe(globalLibrary);
-    });
-  });
 });

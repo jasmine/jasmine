@@ -171,7 +171,29 @@ describe('Spies', function () {
     expect(spy('foo')).toEqual(17);
   });
 
-  describe("When withArgs is used without a base strategy", function() {
+  describe('any promise-based strategy', function() {
+    it('works with global Promise library when available', function(done) {
+      jasmine.getEnv().requirePromises();
+
+      var spy = env.createSpy('foo').and.resolveValue(42);
+      spy().then(function(result) {
+        expect(result).toEqual(42);
+        done();
+      }).catch(done.fail);
+    });
+
+    it('works with a custom Promise library', function() {
+      var customPromise = { resolve: jasmine.createSpy(), reject: jasmine.createSpy() };
+      customPromise.resolve.and.returnValue('resolved');
+      env.configure({ Promise: customPromise });
+
+      var spy = env.createSpy('foo').and.resolveValue(42);
+      expect(spy()).toEqual('resolved');
+      expect(customPromise.resolve).toHaveBeenCalledWith(42);
+    });
+  });
+
+  describe("when withArgs is used without a base strategy", function() {
     it("uses the matching strategy", function() {
       var spy = env.createSpy('foo');
       spy.withArgs('baz').and.returnValue(-1);

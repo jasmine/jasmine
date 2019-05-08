@@ -45,10 +45,6 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return env;
   };
 
-  j$.getPromise = function() {
-    return j$.getEnv().getPromise() || j$.getGlobal().Promise;
-  };
-
   j$.isArray_ = function(value) {
     return j$.isA_('Array', value);
   };

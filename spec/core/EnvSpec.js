@@ -46,21 +46,19 @@ describe("Env", function() {
     }));
   });
 
-  it('can configure a custom promise library', function() {
-    var myLibrary = { resolve: jasmine.createSpy(), reject: jasmine.createSpy() };
-    expect(env.getPromise()).toBeUndefined();
+  describe('promise library', function() {
+    it('can be configured with a custom library', function() {
+      var myLibrary = { resolve: jasmine.createSpy(), reject: jasmine.createSpy() };
+      env.configure({ Promise: myLibrary });
+    });
 
-    env.configure({ promiseLibrary: myLibrary });
-    expect(env.getPromise()).toBe(myLibrary);
-  });
+    it('cannot be configured with an invalid promise library', function() {
+      var myLibrary = {};
 
-  it('fails to configure a custom promise library if library is invalid', function() {
-    var myLibrary = {};
-    expect(env.getPromise()).toBeUndefined();
-
-    expect(function() {
-      env.configure({ promiseLibrary: myLibrary });
-    }).toThrowError('Custom promise library missing `resolve`/`reject` functions');
+      expect(function() {
+        env.configure({ Promise: myLibrary });
+      }).toThrowError('Custom promise library missing `resolve`/`reject` functions');
+    });
   });
 
   it('defaults to multiple failures for specs', function() {
