@@ -110,7 +110,7 @@ describe("SpyStrategy", function() {
     })
   });
 
-  describe("#resolveValue", function() {
+  describe("#resolveWith", function() {
     it("allows a resolved promise to be returned", function(done) {
       jasmine.getEnv().requirePromises();
 
@@ -118,7 +118,7 @@ describe("SpyStrategy", function() {
           getPromise = function() { return Promise; },
           spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn, getPromise: getPromise});
 
-      spyStrategy.resolveValue(37);
+      spyStrategy.resolveWith(37);
       spyStrategy.exec().then(function (returnValue) {
         expect(returnValue).toEqual(37);
         done();
@@ -130,12 +130,12 @@ describe("SpyStrategy", function() {
           spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
 
       expect(function() {
-        spyStrategy.resolveValue(37);
-      }).toThrowError('resolveValue requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
+        spyStrategy.resolveWith(37);
+      }).toThrowError('resolveWith requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
     });
   });
 
-  describe("#rejectValue", function() {
+  describe("#rejectWith", function() {
     it("allows a rejected promise to be returned", function(done) {
       jasmine.getEnv().requirePromises();
 
@@ -143,7 +143,7 @@ describe("SpyStrategy", function() {
           getPromise = function() { return Promise; },
           spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn, getPromise: getPromise});
 
-      spyStrategy.rejectValue(new Error('oops'));
+      spyStrategy.rejectWith(new Error('oops'));
       spyStrategy.exec().then(done.fail).catch(function (error) {
         expect(error).toEqual(new Error('oops'));
         done();
@@ -157,7 +157,7 @@ describe("SpyStrategy", function() {
           getPromise = function() { return Promise; },
           spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn, getPromise: getPromise});
 
-      spyStrategy.rejectValue('oops');
+      spyStrategy.rejectWith('oops');
       spyStrategy.exec().then(done.fail).catch(function (error) {
         expect(error).toEqual(new Error('oops'));
         done();
@@ -169,8 +169,8 @@ describe("SpyStrategy", function() {
           spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
 
       expect(function() {
-        spyStrategy.rejectValue(new Error('oops'));
-      }).toThrowError('rejectValue requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
+        spyStrategy.rejectWith(new Error('oops'));
+      }).toThrowError('rejectWith requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
     });
   });
 

@@ -175,7 +175,7 @@ describe('Spies', function () {
     it('works with global Promise library when available', function(done) {
       jasmine.getEnv().requirePromises();
 
-      var spy = env.createSpy('foo').and.resolveValue(42);
+      var spy = env.createSpy('foo').and.resolveWith(42);
       spy().then(function(result) {
         expect(result).toEqual(42);
         done();
@@ -187,7 +187,7 @@ describe('Spies', function () {
       customPromise.resolve.and.returnValue('resolved');
       env.configure({ Promise: customPromise });
 
-      var spy = env.createSpy('foo').and.resolveValue(42);
+      var spy = env.createSpy('foo').and.resolveWith(42);
       expect(spy()).toEqual('resolved');
       expect(customPromise.resolve).toHaveBeenCalledWith(42);
     });
