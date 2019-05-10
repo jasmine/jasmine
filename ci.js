@@ -120,6 +120,17 @@ async function getResults(driver) {
   return {specResults: flatten(specResults), failedSuiteResults: flatten(failedSuiteResults)};
 }
 
+function cleanup() {
+  return Promise.resolve().then(() => {
+    return Promise.all([
+      driver ? driver.close() : true,
+      new Promise(resolve => server ? server.close(resolve) : resolve())
+    ]);
+  }).catch(error => {
+    console.error(error);
+  });
+}
+
 (async function () {
   await new Promise(resolve => {
     console.log("Creating an express app for browers to run the tests...")
@@ -202,7 +213,6 @@ async function getResults(driver) {
   if (useSauce) {
     driver.executeScript(`sauce:job-result=${process.exitCode === 0}`);
   }
-})().finally(() => {
-  return Promise.all([driver.close(), new Promise(resolve => server.close(resolve))]);
-});
-
+})().catch(error => {
+  console.error(error);
+}).then(cleanup);
