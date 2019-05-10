@@ -6,6 +6,8 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   function SpyStrategy(options) {
     options = options || {};
 
+    var self = this;
+
     /**
      * Get the identifying information for the spy.
      * @name SpyStrategy#identity
@@ -23,6 +25,48 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
         this[k] = createCustomPlan(cs[k]);
       }
     }
+
+    var getPromise = (typeof options.getPromise === 'function') ? options.getPromise : function() {};
+
+    var requirePromise = function(name) {
+      var Promise = getPromise();
+
+      if (!Promise) {
+        throw new Error(name + ' requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
+      }
+
+      return Promise;
+    };
+
+    /**
+     * Tell the spy to return a promise resolving to the specified value when invoked.
+     * @name SpyStrategy#resolveWith
+     * @function
+     * @param {*} value The value to return.
+     */
+    this.resolveWith = function(value) {
+      var Promise = requirePromise('resolveWith');
+      self.plan = function() {
+        return Promise.resolve(value);
+      };
+      return self.getSpy();
+    };
+
+    /**
+     * Tell the spy to return a promise rejecting with the specified value when invoked.
+     * @name SpyStrategy#rejectWith
+     * @function
+     * @param {*} value The value to return.
+     */
+    this.rejectWith = function(value) {
+      var Promise = requirePromise('rejectWith');
+      var error = (value instanceof Error) ? value : new Error(value);
+
+      self.plan = function() {
+        return Promise.reject(error);
+      };
+      return self.getSpy();
+    };
   }
 
   function createCustomPlan(factory) {

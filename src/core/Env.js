@@ -10,6 +10,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     var self = this;
     var global = options.global || j$.getGlobal();
+    var customPromise;
 
     var totalSpecsDefined = 0;
 
@@ -76,7 +77,16 @@ getJasmineRequireObj().Env = function(j$) {
        * @type Boolean
        * @default false
        */
-      hideDisabled: false
+      hideDisabled: false,
+      /**
+       * Set to provide a custom promise library that Jasmine will use if it needs
+       * to create a promise. If not set, it will default to whatever global Promise
+       * library is available (if any).
+       * @name Configuration#Promise
+       * @type function
+       * @default undefined
+       */
+      Promise: undefined
     };
 
     var currentSuite = function() {
@@ -141,6 +151,15 @@ getJasmineRequireObj().Env = function(j$) {
 
       if (configuration.hasOwnProperty('hideDisabled')) {
         config.hideDisabled = configuration.hideDisabled;
+      }
+
+      if (configuration.hasOwnProperty('Promise')) {
+        if (typeof configuration.Promise.resolve === 'function' &&
+            typeof configuration.Promise.reject === 'function') {
+          customPromise = configuration.Promise;
+        } else {
+          throw new Error('Custom promise library missing `resolve`/`reject` functions');
+        }
       }
     };
 
@@ -620,15 +639,20 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.clearReporters();
     };
 
-    var spyFactory = new j$.SpyFactory(function() {
-      var runnable = currentRunnable();
+    var spyFactory = new j$.SpyFactory(
+      function getCustomStrategies() {
+        var runnable = currentRunnable();
 
-      if (runnable) {
-        return runnableResources[runnable.id].customSpyStrategies;
+        if (runnable) {
+          return runnableResources[runnable.id].customSpyStrategies;
+        }
+
+        return {};
+      },
+      function getPromise() {
+        return customPromise || global.Promise;
       }
-
-      return {};
-    });
+    );
 
     var spyRegistry = new j$.SpyRegistry({
       currentSpies: function() {

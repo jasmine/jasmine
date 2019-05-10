@@ -1,10 +1,10 @@
 getJasmineRequireObj().SpyFactory = function(j$) {
 
-  function SpyFactory(getCustomStrategies) {
+  function SpyFactory(getCustomStrategies, getPromise) {
     var self = this;
 
     this.createSpy = function(name, originalFn) {
-      return j$.Spy(name, originalFn, getCustomStrategies());
+      return j$.Spy(name, originalFn, getCustomStrategies(), getPromise);
     };
 
     this.createSpyObj = function(baseName, methodNames) {

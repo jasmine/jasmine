@@ -110,6 +110,70 @@ describe("SpyStrategy", function() {
     })
   });
 
+  describe("#resolveWith", function() {
+    it("allows a resolved promise to be returned", function(done) {
+      jasmine.getEnv().requirePromises();
+
+      var originalFn = jasmine.createSpy("original"),
+          getPromise = function() { return Promise; },
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn, getPromise: getPromise});
+
+      spyStrategy.resolveWith(37);
+      spyStrategy.exec().then(function (returnValue) {
+        expect(returnValue).toEqual(37);
+        done();
+      }).catch(done.fail);
+    });
+
+    it("fails if promises are not available", function() {
+      var originalFn = jasmine.createSpy("original"),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      expect(function() {
+        spyStrategy.resolveWith(37);
+      }).toThrowError('resolveWith requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
+    });
+  });
+
+  describe("#rejectWith", function() {
+    it("allows a rejected promise to be returned", function(done) {
+      jasmine.getEnv().requirePromises();
+
+      var originalFn = jasmine.createSpy("original"),
+          getPromise = function() { return Promise; },
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn, getPromise: getPromise});
+
+      spyStrategy.rejectWith(new Error('oops'));
+      spyStrategy.exec().then(done.fail).catch(function (error) {
+        expect(error).toEqual(new Error('oops'));
+        done();
+      }).catch(done.fail);
+    });
+
+    it("allows a non-Error to be rejected, wrapping it in an exception when executed", function(done) {
+      jasmine.getEnv().requirePromises();
+
+      var originalFn = jasmine.createSpy("original"),
+          getPromise = function() { return Promise; },
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn, getPromise: getPromise});
+
+      spyStrategy.rejectWith('oops');
+      spyStrategy.exec().then(done.fail).catch(function (error) {
+        expect(error).toEqual(new Error('oops'));
+        done();
+      }).catch(done.fail);
+    });
+
+    it("fails if promises are not available", function() {
+      var originalFn = jasmine.createSpy("original"),
+          spyStrategy = new jasmineUnderTest.SpyStrategy({fn: originalFn});
+
+      expect(function() {
+        spyStrategy.rejectWith(new Error('oops'));
+      }).toThrowError('rejectWith requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
+    });
+  });
+
   it("allows a custom strategy to be used", function() {
     var plan = jasmine.createSpy('custom strategy')
         .and.returnValue('custom strategy result'),
