@@ -121,12 +121,10 @@ async function getResults(driver) {
 }
 
 function cleanup() {
-  return Promise.resolve().then(() => {
-    return Promise.all([
-      driver ? driver.close() : true,
-      new Promise(resolve => server ? server.close(resolve) : resolve())
-    ]);
-  }).catch(error => {
+  return Promise.all([
+    driver ? driver.close() : true,
+    new Promise(resolve => server ? server.close(resolve) : resolve())
+  ]).catch(error => {
     console.error(error);
   });
 }
