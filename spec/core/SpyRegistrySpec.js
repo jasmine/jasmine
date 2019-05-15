@@ -222,7 +222,7 @@ describe("SpyRegistry", function() {
       }).toThrowError(/spyOnAllFunctions could not find an object to spy upon/);
     });
 
-    it("overrides all writable and configurable functions of the object", function() {
+    it("overrides all writable and configurable functions of the object and its parents", function() {
       var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: function() {
         return 'I am a spy';
       }});
@@ -234,7 +234,7 @@ describe("SpyRegistry", function() {
       var noop5 = createNoop();
 
       var parent = {
-        notSpied1: noop1
+        parentSpied1: noop1
       };
       var subject = Object.create(parent);
       Object.defineProperty(subject, 'spied1', {
@@ -291,7 +291,7 @@ describe("SpyRegistry", function() {
 
       var spiedObject = spyRegistry.spyOnAllFunctions(subject);
 
-      expect(subject.notSpied1).toBe(noop1);
+      expect(subject.parentSpied1).toBe('I am a spy');
       expect(subject.notSpied2).toBe(noop2);
       expect(subject.notSpied3).toBe(noop3);
       expect(subject.notSpied4).toBe(noop4);
@@ -302,6 +302,42 @@ describe("SpyRegistry", function() {
       expect(subject.spied3).toBe('I am a spy');
       expect(subject.spied4).toBe('I am a spy');
       expect(spiedObject).toBe(subject);
+    });
+
+    it("overrides prototype methods on the object", function() {
+      var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: function() {
+        return 'I am a spy';
+      }});
+
+      var noop1 = function() { };
+      var noop2 = function() { };
+
+      var MyClass = function() {
+        this.spied1 = noop1;
+      };
+      MyClass.prototype.spied2 = noop2;
+
+      var subject = new MyClass();
+      spyRegistry.spyOnAllFunctions(subject);
+
+      expect(subject.spied1).toBe('I am a spy');
+      expect(subject.spied2).toBe('I am a spy');
+      expect(MyClass.prototype.spied2).toBe(noop2);
+    });
+
+    it("does not override non-enumerable properties (like Object.prototype methods)", function() {
+      var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: function() {
+        return 'I am a spy';
+      }});
+      var subject = {
+        spied1: function() { }
+      };
+
+      spyRegistry.spyOnAllFunctions(subject);
+
+      expect(subject.spied1).toBe('I am a spy');
+      expect(subject.toString).not.toBe('I am a spy');
+      expect(subject.hasOwnProperty).not.toBe('I am a spy');
     });
   });
 
