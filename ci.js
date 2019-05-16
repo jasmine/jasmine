@@ -198,6 +198,7 @@ function cleanup() {
   const details = await driver.executeScript(`
       return {
         overallStatus: jsApiReporter.runDetails.overallStatus,
+        overallFailures: jsApiReporter.runDetails.failedExpectations,
         executionTime: jsApiReporter.executionTime(),
         random: jsApiReporter.runDetails.order.random,
         seed: jsApiReporter.runDetails.order.seed
@@ -207,6 +208,12 @@ function cleanup() {
   console.log(`Finished in ${details.executionTime / 1000} second(s)`);
   console.log(`Randomized with seed ${details.seed} ( ${host}/?random=${details.random}&seed=${details.seed} )`);
   process.exitCode = details.overallStatus === 'passed' ? 0 : 1;
+
+  // Print details of global errors encountered during the test run. (Most likely,
+  // some type of file loading or syntax error.)
+  if (details.overallFailures && details.overallFailures.length > 0) {
+    console.error('Failures encountered during test run:', JSON.stringify(details.overallFailures, undefined, 2));
+  }
 
   if (useSauce) {
     driver.executeScript(`sauce:job-result=${process.exitCode === 0}`);
