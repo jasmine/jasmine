@@ -30,7 +30,6 @@ Once you've pushed a feature branch to your forked repo, you're ready to open a 
 ### Directory Structure
 
 * `/src` contains all of the source files
-    * `/src/console` - Node.js-specific files
     * `/src/core` - generic source files
     * `/src/html` - browser-specific files
 * `/spec` contains all of the tests
@@ -47,37 +46,33 @@ The tests should always use `jasmineUnderTest` to refer to the objects and funct
 
 ### `boot.js`
 
-__This is new for Jasmine 2.0.__
-
 This file does all of the setup necessary for Jasmine to work. It loads all of the code, creates an `Env`, attaches the global functions, and builds the reporter. It also sets up the execution of the `Env` - for browsers this is in `window.onload`. While the default in `lib` is appropriate for browsers, projects may wish to customize this file.
 
 For example, for Jasmine development there is a different `dev_boot.js` for Jasmine development that does more work.
 
 ### Compatibility
 
-* Browser Minimum
-  * IE8
-  * Firefox 3.x
-  * Chrome ??
-  * Safari 5
+Jasmine supports the following environments:
+
+* Browsers
+  * IE10+
+  * Edge Latest
+  * Firefox Latest
+  * Chrome Latest
+  * Safari 8+
+
+* Node.js
+  * 8
+  * 10
+  * 11
 
 ## Development
 
-All source code belongs in `src/`. The `core/` directory contains the bulk of Jasmine's functionality. This code should remain browser- and environment-agnostic. If your feature or fix cannot be, as mentioned above, please degrade gracefully. Any code that should only be in a non-browser environment should live in `src/console/`. Any code that depends on a browser (specifically, it expects `window` to be the global or `document` is present) should live in `src/html/`.
+All source code belongs in `src/`. The `core/` directory contains the bulk of Jasmine's functionality. This code should remain browser- and environment-agnostic. If your feature or fix cannot be, as mentioned above, please degrade gracefully. Any code that depends on a browser (specifically, it expects `window` to be the global or `document` is present) should live in `src/html/`.
 
 ### Install Dependencies
 
-Jasmine Core relies on Ruby and Node.js.
-
-To install the Ruby dependencies, you will need Ruby, Rubygems, and Bundler available. Then:
-
-    $ bundle
-
-...will install all of the Ruby dependencies. If the ffi gem fails to build its native extensions, you may need to manually install some system dependencies. On Ubuntu:
-
-    $ apt-get install gcc ruby ruby-dev libxml2 libxml2-dev libxslt1-dev
-
-...should get you to the point that `bundle` can install everything.
+Jasmine Core relies on Node.js.
 
 To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http://gruntjs.com/), the [grunt-cli](https://github.com/gruntjs/grunt-cli) and ensure that `grunt` is on your path.
 
@@ -104,19 +99,29 @@ Follow these tips and your pull request, patch, or suggestion is much more likel
 
 ### Running Specs
 
-Jasmine uses the [Jasmine Ruby gem](http://github.com/jasmine/jasmine-gem) to test itself in browser.
+Jasmine uses some internal tooling to test itself in browser on Travis. This tooling _should_ work locally as well.
 
-    $ bundle exec rake jasmine
+    $ node ci.js
 
-...and then visit `http://localhost:8888` to run specs.
+You can also set the `JASMINE_BROWSER` environment variable to specify which browser should be used.
 
 Jasmine uses the [Jasmine NPM package](http://github.com/jasmine/jasmine-npm) to test itself in a Node.js/npm environment.
 
-    $ grunt execSpecsInNode
+    $ npm test
 
 ...and then the results will print to the console. All specs run except those that expect a browser (the specs in `spec/html` are ignored).
 
 The easiest way to run the tests in **Internet Explorer** is to run a VM that has IE installed. It's easy to do this with VirtualBox.
+
+__Note__: these steps currently still rely on the Jasmine ruby gem and not the new Node.js based tooling. To install the Ruby dependencies, you will need Ruby, Rubygems, and Bundler available. Then:
+
+    $ bundle
+
+...will install all of the Ruby dependencies. If the ffi gem fails to build its native extensions, you may need to manually install some system dependencies. On Ubuntu:
+
+    $ apt-get install gcc ruby ruby-dev libxml2 libxml2-dev libxslt1-dev
+
+...should get you to the point that `bundle` can install everything.
 
 1. Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 1. Download a VM image [from Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/). Select "VirtualBox" as the platform.
