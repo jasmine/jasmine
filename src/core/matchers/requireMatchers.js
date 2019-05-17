@@ -4,6 +4,7 @@ getJasmineRequireObj().requireMatchers = function(jRequire, j$) {
       'toBe',
       'toBeCloseTo',
       'toBeDefined',
+      'toBeInstanceOf',
       'toBeFalse',
       'toBeFalsy',
       'toBeGreaterThan',
