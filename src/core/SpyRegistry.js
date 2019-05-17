@@ -1,6 +1,7 @@
 getJasmineRequireObj().SpyRegistry = function(j$) {
 
-  var getErrorMsg = j$.formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
+  var spyOnMsg = j$.formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
+  var spyOnPropertyMsg = j$.formatErrorMsg('<spyOnProperty>', 'spyOnProperty(<object>, <propName>, [accessType])');
 
   function SpyRegistry(options) {
     options = options || {};
@@ -8,11 +9,12 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
     var createSpy = options.createSpy;
     var currentSpies = options.currentSpies || function() { return []; };
 
-    this.allowRespy = function(allow){
+    this.allowRespy = function(allow) {
       this.respy = allow;
     };
 
     this.spyOn = function(obj, methodName) {
+      var getErrorMsg = spyOnMsg;
 
       if (j$.util.isUndefined(obj) || obj === null) {
         throw new Error(getErrorMsg('could not find an object to spy upon for ' + methodName + '()'));
@@ -66,35 +68,37 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
     };
 
     this.spyOnProperty = function (obj, propertyName, accessType) {
+      var getErrorMsg = spyOnPropertyMsg;
+
       accessType = accessType || 'get';
 
       if (j$.util.isUndefined(obj)) {
-        throw new Error('spyOn could not find an object to spy upon for ' + propertyName + '');
+        throw new Error(getErrorMsg('spyOn could not find an object to spy upon for ' + propertyName + ''));
       }
 
       if (j$.util.isUndefined(propertyName)) {
-        throw new Error('No property name supplied');
+        throw new Error(getErrorMsg('No property name supplied'));
       }
 
       var descriptor = j$.util.getPropertyDescriptor(obj, propertyName);
 
       if (!descriptor) {
-        throw new Error(propertyName + ' property does not exist');
+        throw new Error(getErrorMsg(propertyName + ' property does not exist'));
       }
 
       if (!descriptor.configurable) {
-        throw new Error(propertyName + ' is not declared configurable');
+        throw new Error(getErrorMsg(propertyName + ' is not declared configurable'));
       }
 
       if(!descriptor[accessType]) {
-        throw new Error('Property ' + propertyName + ' does not have access type ' + accessType);
+        throw new Error(getErrorMsg('Property ' + propertyName + ' does not have access type ' + accessType));
       }
 
       if (j$.isSpy(descriptor[accessType])) {
         if (this.respy) {
           return descriptor[accessType];
         } else {
-          throw new Error(propertyName + '#' + accessType + ' has already been spied upon');
+          throw new Error(getErrorMsg(propertyName + ' has already been spied upon'));
         }
       }
 
