@@ -137,22 +137,6 @@ describe("SpyRegistry", function() {
       }).toThrowError(/does not have access type/);
     });
 
-    it("checks if it has already been spied upon", function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: createSpy}),
-        subject = {};
-
-      Object.defineProperty(subject, 'spiedProp', {
-        get: function() { return 1; },
-        configurable: true
-      });
-
-      spyRegistry.spyOnProperty(subject, 'spiedProp');
-
-      expect(function() {
-        spyRegistry.spyOnProperty(subject, 'spiedProp');
-      }).toThrowError(/has already been spied upon/);
-    });
-
     it("checks if it can be spied upon", function() {
       var subject = {};
 
@@ -211,6 +195,40 @@ describe("SpyRegistry", function() {
 
       expect(subject.spiedProperty).toEqual(returnValue);
       expect(setter).toEqual(spy);
+    });
+
+    describe("when the property is already spied upon", function() {
+      it("throws an error if respy is not allowed", function() {
+        var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: createSpy}),
+          subject = {};
+
+        Object.defineProperty(subject, 'spiedProp', {
+          get: function() { return 1; },
+          configurable: true
+        });
+
+        spyRegistry.spyOnProperty(subject, 'spiedProp');
+
+        expect(function() {
+          spyRegistry.spyOnProperty(subject, 'spiedProp');
+        }).toThrowError(/spiedProp#get has already been spied upon/);
+      });
+
+      it("returns the original spy if respy is allowed", function() {
+        var spyRegistry = new jasmineUnderTest.SpyRegistry({createSpy: createSpy}),
+          subject = {};
+
+        spyRegistry.allowRespy(true);
+
+        Object.defineProperty(subject, 'spiedProp', {
+          get: function() { return 1; },
+          configurable: true
+        });
+
+        var originalSpy = spyRegistry.spyOnProperty(subject, 'spiedProp');
+
+        expect(spyRegistry.spyOnProperty(subject, 'spiedProp')).toBe(originalSpy);
+      });
     });
   });
 
