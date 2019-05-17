@@ -1,9 +1,4 @@
 describe('toBeInstanceOf', function() {
-  function setPrototypeOf(object, proto) {
-    // Support older environments
-    Object.setPrototypeOf ? Object.setPrototypeOf(object, proto) : object.__proto__ = proto;
-  }
-
   describe('when expecting Number', function() {
     it('passes for literal number', function() {
       var matcher = jasmineUnderTest.matchers.toBeInstanceOf();
@@ -159,8 +154,7 @@ describe('toBeInstanceOf', function() {
     });
 
     it('passes for objects with no constructor', function() {
-      var object = {};
-      setPrototypeOf(object, null);
+      var object = Object.create(null);
 
       var matcher = jasmineUnderTest.matchers.toBeInstanceOf();
       var result = matcher.compare(object, Object);
