@@ -40,7 +40,7 @@ getJasmineRequireObj().Spec = function(j$) {
       passedExpectations: [],
       deprecationWarnings: [],
       pendingReason: '',
-      duration: null,
+      duration: null
     };
   }
 

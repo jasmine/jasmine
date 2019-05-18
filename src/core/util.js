@@ -100,18 +100,6 @@ getJasmineRequireObj().util = function(j$) {
     return Object.prototype.hasOwnProperty.call(obj, key);
   };
 
-  function anyMatch(pattern, lines) {
-    var i;
-
-    for (i = 0; i < lines.length; i++) {
-      if (lines[i].match(pattern)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   util.errorWithStack = function errorWithStack () {
     // Don't throw and catch if we don't have to, because it makes it harder
     // for users to debug their code with exception breakpoints.
@@ -138,8 +126,6 @@ getJasmineRequireObj().util = function(j$) {
     var result;
 
     return function() {
-      var trace;
-
       if (!result) {
         result = callerFile();
       }

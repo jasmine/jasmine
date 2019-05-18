@@ -225,7 +225,6 @@ getJasmineRequireObj().matchersUtil = function(j$) {
       });
 
       for (i = 0; i < aLength || i < bLength; i++) {
-        var formatter = false;
         diffBuilder.withPath(i, function() {
           if (i >= bLength) {
             diffBuilder.record(a[i], void 0, actualArrayIsLongerFormatter);
@@ -415,10 +414,6 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     }
 
     return extraKeys;
-  }
-
-  function has(obj, key) {
-    return Object.prototype.hasOwnProperty.call(obj, key);
   }
 
   function isFunction(obj) {
