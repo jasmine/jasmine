@@ -98,7 +98,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         if (this.respy) {
           return descriptor[accessType];
         } else {
-          throw new Error(getErrorMsg(propertyName + ' has already been spied upon'));
+          throw new Error(getErrorMsg(propertyName + '#' + accessType + ' has already been spied upon'));
         }
       }
 
