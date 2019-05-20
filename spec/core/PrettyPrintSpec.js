@@ -333,4 +333,27 @@ describe("jasmineUnderTest.pp", function () {
 
     expect(jasmineUnderTest.pp(obj)).toEqual("null({ foo: 'bar' })");
   });
+
+  it("should gracefully handle objects with invalid toString implementations", function () {
+    var obj = {
+      foo: {
+        toString: function() {
+          // Invalid: toString returning a number
+          return 3;
+        }
+      },
+      bar: {
+        toString: function() {
+          // Invalid: toString returning an object
+          return new Error("bar");
+        }
+      },
+      // Valid: an actual number
+      baz: 3,
+      // Valid: an actual Error object
+      qux: new Error("bar")
+    };
+
+    expect(jasmineUnderTest.pp(obj)).toEqual("Object({ foo: [object Number], bar: [object Error], baz: 3, qux: Error: bar })");
+  });
 });
