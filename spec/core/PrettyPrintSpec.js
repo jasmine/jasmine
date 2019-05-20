@@ -344,8 +344,12 @@ describe("jasmineUnderTest.pp", function () {
       },
       bar: {
         toString: function() {
-          // Invalid: toString returning an object
-          return new Error("bar");
+          // Really invalid: a nested bad toString().
+          return {
+            toString: function() {
+              return new Date();
+            }
+          };
         }
       },
       // Valid: an actual number
@@ -354,6 +358,6 @@ describe("jasmineUnderTest.pp", function () {
       qux: new Error("bar")
     };
 
-    expect(jasmineUnderTest.pp(obj)).toEqual("Object({ foo: [object Number], bar: [object Error], baz: 3, qux: Error: bar })");
+    expect(jasmineUnderTest.pp(obj)).toEqual("Object({ foo: [object Number], bar: [object Object], baz: 3, qux: Error: bar })");
   });
 });
