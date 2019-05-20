@@ -285,6 +285,25 @@ describe("jasmineUnderTest.pp", function () {
     expect(jasmineUnderTest.pp(env.createSpy("something"))).toEqual("spy on something");
   });
 
+  it("should stringify spyOn toString properly", function() {
+    var TestObject = {
+      someFunction: function() {}
+    },
+    env = new jasmineUnderTest.Env();
+
+    var spyRegistry = new jasmineUnderTest.SpyRegistry({
+      currentSpies: function() {return [];},
+      createSpy: function(name, originalFn) {
+        return jasmineUnderTest.Spy(name, originalFn);
+      }
+    });
+
+    spyRegistry.spyOn(TestObject, 'toString');
+    const testSpyObj = env.createSpyObj('TheClassName', ['toString']);
+
+    expect(jasmineUnderTest.pp(testSpyObj)).toEqual("spy on TheClassName.toString");
+  });
+
   it("should stringify objects that implement jasmineToString", function () {
     var obj = {
       jasmineToString: function () { return "strung"; }
