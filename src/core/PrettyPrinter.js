@@ -30,6 +30,8 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitString(value);
       } else if (j$.isSpy(value)) {
         this.emitScalar('spy on ' + value.and.identity);
+      } else if (j$.isSpy(value.toString)) {
+        this.emitScalar('spy on ' + value.toString.and.identity);
       } else if (value instanceof RegExp) {
         this.emitScalar(value.toString());
       } else if (typeof value === 'function') {
