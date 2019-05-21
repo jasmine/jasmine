@@ -26,7 +26,7 @@ getJasmineRequireObj().toBeCloseTo = function() {
         var maxDelta = Math.pow(10, -precision) / 2;
 
         return {
-          pass: Math.round(delta * pow) / pow <= maxDelta
+          pass: Math.round(delta * pow) <= maxDelta * pow
         };
       }
     };

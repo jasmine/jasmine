@@ -90,4 +90,18 @@ describe("toBeCloseTo", function() {
     result = matcher.compare(1.23, 1.234);
     expect(result.pass).toBe(true);
   });
+
+  it("handles edge cases with rounding", function () {
+    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
+      result;
+
+    // these cases resulted in false negatives in version of V8 
+    // included in Node.js 12 and Chrome 74 (and Edge Chromium)
+    result = matcher.compare(4.030904708957288, 4.0309, 5);
+    expect(result.pass).toBe(true);
+    result = matcher.compare(4.82665525779431,4.82666, 5);
+    expect(result.pass).toBe(true);
+    result = matcher.compare(-2.82665525779431, -2.82666, 5);
+    expect(result.pass).toBe(true);
+  });
 });
