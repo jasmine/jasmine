@@ -299,7 +299,7 @@ describe("jasmineUnderTest.pp", function () {
     });
 
     spyRegistry.spyOn(TestObject, 'toString');
-    const testSpyObj = env.createSpyObj('TheClassName', ['toString']);
+    var testSpyObj = env.createSpyObj('TheClassName', ['toString']);
 
     expect(jasmineUnderTest.pp(testSpyObj)).toEqual("spy on TheClassName.toString");
   });
