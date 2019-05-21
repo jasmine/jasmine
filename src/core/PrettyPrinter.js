@@ -266,6 +266,12 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   PrettyPrinter.prototype.append = function(value) {
+    // This check protects us from the rare case where an object has overriden
+    // `toString()` with an invalid implementation (returning a non-string).
+    if (typeof value !== 'string') {
+      value = Object.prototype.toString.call(value);
+    }
+
     var result = truncate(value, j$.MAX_PRETTY_PRINT_CHARS - this.length);
     this.length += result.value.length;
     this.stringParts.push(result.value);
