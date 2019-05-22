@@ -171,7 +171,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @name jasmine.truthy
    * @function
    */
-  j$.truthy = function() {return new j$.Truthy();};
+  j$.truthy = function() { return new j$.Truthy(); };
 
   /**
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
@@ -179,7 +179,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @name jasmine.falsy
    * @function
    */
-  j$.falsy = function() {return new j$.Falsy();};
+  j$.falsy = function() { return new j$.Falsy(); };
 
   /**
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
@@ -187,7 +187,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @name jasmine.empty
    * @function
    */
-  j$.empty = function() {return new j$.Empty();};
+  j$.empty = function() { return new j$.Empty(); };
 
   /**
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
@@ -195,7 +195,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @name jasmine.notEmpty
    * @function
    */
-  j$.notEmpty = function() {return new j$.NotEmpty();};
+  j$.notEmpty = function() { return new j$.NotEmpty(); };
 
   /**
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),

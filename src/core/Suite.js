@@ -34,7 +34,7 @@ getJasmineRequireObj().Suite = function(j$) {
       fullName: this.getFullName(),
       failedExpectations: [],
       deprecationWarnings: [],
-      duration: null,
+      duration: null
     };
   }
 

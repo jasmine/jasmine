@@ -115,7 +115,7 @@ getJasmineRequireObj().pp = function(j$) {
       }
       this.format(array[i]);
     }
-    if(array.length > length){
+    if(array.length > length) {
       this.append(', ...');
     }
 
@@ -155,7 +155,7 @@ getJasmineRequireObj().pp = function(j$) {
 
       i++;
     }, this );
-    if (set.size > size){
+    if (set.size > size) {
       this.append(', ...');
     }
     this.append(' )');
@@ -180,7 +180,7 @@ getJasmineRequireObj().pp = function(j$) {
 
       i++;
     }, this );
-    if (map.size > size){
+    if (map.size > size) {
       this.append(', ...');
     }
     this.append(' )');

@@ -108,7 +108,7 @@ jasmineRequire.HtmlReporter = function(j$) {
         console.error('Spec \'' + result.fullName + '\' has no expectations.');
       }
 
-      if (!symbols){
+      if (!symbols) {
         symbols = find('.jasmine-symbol-summary');
       }
 

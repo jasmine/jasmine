@@ -13,7 +13,7 @@ getJasmineRequireObj().toBe = function(j$) {
     return {
       compare: function(actual, expected) {
         var result = {
-          pass: actual === expected,
+          pass: actual === expected
         };
 
         if (typeof expected === 'object') {

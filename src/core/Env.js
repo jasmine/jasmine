@@ -255,7 +255,7 @@ getJasmineRequireObj().Env = function(j$) {
     var defaultResourcesForRunnable = function(id, parentRunnableId) {
       var resources = {spies: [], customEqualityTesters: [], customMatchers: {}, customSpyStrategies: {}};
 
-      if(runnableResources[parentRunnableId]){
+      if(runnableResources[parentRunnableId]) {
         resources.customEqualityTesters = j$.util.clone(runnableResources[parentRunnableId].customEqualityTesters);
         resources.customMatchers = j$.util.clone(runnableResources[parentRunnableId].customMatchers);
       }
@@ -306,9 +306,6 @@ getJasmineRequireObj().Env = function(j$) {
 
           return buildExpectationResult(attrs);
         };
-
-    var maximumSpecCallbackDepth = 20;
-    var currentSpecCallbackDepth = 0;
 
     /**
      * Sets whether Jasmine should throw an Error when an expectation fails.
@@ -666,7 +663,7 @@ getJasmineRequireObj().Env = function(j$) {
       }
     });
 
-    this.allowRespy = function(allow){
+    this.allowRespy = function(allow) {
       spyRegistry.allowRespy(allow);
     };
 
@@ -830,7 +827,7 @@ getJasmineRequireObj().Env = function(j$) {
           timeout: timeout || 0
         },
         throwOnExpectationFailure: config.oneFailurePerSpec,
-        timer: new j$.Timer(),
+        timer: new j$.Timer()
       });
       return spec;
 
@@ -879,7 +876,7 @@ getJasmineRequireObj().Env = function(j$) {
       return spec;
     };
 
-    this.fit = function(description, fn, timeout){
+    this.fit = function(description, fn, timeout) {
       ensureIsNotNested('fit');
       ensureIsFunctionOrAsync(fn, 'fit');
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
