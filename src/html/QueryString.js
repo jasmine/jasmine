@@ -1,8 +1,10 @@
 jasmineRequire.QueryString = function() {
   function QueryString(options) {
-
     this.navigateWithNewParam = function(key, value) {
-      options.getWindowLocation().search = this.fullStringWithNewParam(key, value);
+      options.getWindowLocation().search = this.fullStringWithNewParam(
+        key,
+        value
+      );
     };
 
     this.fullStringWithNewParam = function(key, value) {
@@ -20,7 +22,9 @@ jasmineRequire.QueryString = function() {
     function toQueryString(paramMap) {
       var qStrPairs = [];
       for (var prop in paramMap) {
-        qStrPairs.push(encodeURIComponent(prop) + '=' + encodeURIComponent(paramMap[prop]));
+        qStrPairs.push(
+          encodeURIComponent(prop) + '=' + encodeURIComponent(paramMap[prop])
+        );
       }
       return '?' + qStrPairs.join('&');
     }
@@ -44,7 +48,6 @@ jasmineRequire.QueryString = function() {
 
       return paramMap;
     }
-
   }
 
   return QueryString;

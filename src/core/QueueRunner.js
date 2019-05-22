@@ -22,16 +22,26 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.queueableFns = queueableFns.concat(attrs.cleanupFns || []);
     this.firstCleanupIx = queueableFns.length;
     this.onComplete = attrs.onComplete || emptyFn;
-    this.clearStack = attrs.clearStack || function(fn) { fn(); };
+    this.clearStack =
+      attrs.clearStack ||
+      function(fn) {
+        fn();
+      };
     this.onException = attrs.onException || emptyFn;
     this.userContext = attrs.userContext || new j$.UserContext();
-    this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
+    this.timeout = attrs.timeout || {
+      setTimeout: setTimeout,
+      clearTimeout: clearTimeout
+    };
     this.fail = attrs.fail || emptyFn;
-    this.globalErrors = attrs.globalErrors || { pushListener: emptyFn, popListener: emptyFn };
+    this.globalErrors = attrs.globalErrors || {
+      pushListener: emptyFn,
+      popListener: emptyFn
+    };
     this.completeOnFirstError = !!attrs.completeOnFirstError;
     this.errored = false;
 
-    if (typeof(this.onComplete) !== 'function') {
+    if (typeof this.onComplete !== 'function') {
       throw new Error('invalid onComplete ' + JSON.stringify(this.onComplete));
     }
     this.deprecated = attrs.deprecated;
@@ -55,15 +65,22 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.clearTimeout = function(timeoutId) {
-    Function.prototype.apply.apply(this.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
+    Function.prototype.apply.apply(this.timeout.clearTimeout, [
+      j$.getGlobal(),
+      [timeoutId]
+    ]);
   };
 
   QueueRunner.prototype.setTimeout = function(fn, timeout) {
-    return Function.prototype.apply.apply(this.timeout.setTimeout, [j$.getGlobal(), [fn, timeout]]);
+    return Function.prototype.apply.apply(this.timeout.setTimeout, [
+      j$.getGlobal(),
+      [fn, timeout]
+    ]);
   };
 
   QueueRunner.prototype.attempt = function attempt(iterativeIndex) {
-    var self = this, completedSynchronously = true,
+    var self = this,
+      completedSynchronously = true,
       handleError = function handleError(error) {
         onException(error);
         next(error);
@@ -114,8 +131,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       var timeoutInterval = queueableFn.timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
       timeoutId = self.setTimeout(function() {
         var error = new Error(
-          'Timeout - Async callback was not invoked within ' + timeoutInterval + 'ms ' +
-          (queueableFn.timeout ? '(custom timeout)' : '(set by jasmine.DEFAULT_TIMEOUT_INTERVAL)')
+          'Timeout - Async callback was not invoked within ' +
+            timeoutInterval +
+            'ms ' +
+            (queueableFn.timeout
+              ? '(custom timeout)'
+              : '(set by jasmine.DEFAULT_TIMEOUT_INTERVAL)')
         );
         onException(error);
         next();
@@ -160,8 +181,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self = this,
       iterativeIndex;
 
-
-    for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
+    for (
+      iterativeIndex = recursiveIndex;
+      iterativeIndex < length;
+      iterativeIndex++
+    ) {
       var result = this.attempt(iterativeIndex);
 
       if (!result.completedSynchronously) {
@@ -180,7 +204,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self.globalErrors.popListener(self.handleFinalError);
       self.onComplete(self.errored && new StopExecutionError());
     });
-
   };
 
   return QueueRunner;

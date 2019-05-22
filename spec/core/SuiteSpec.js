@@ -1,47 +1,46 @@
-describe("Suite", function() {
-
-  it("keeps its id", function() {
+describe('Suite', function() {
+  it('keeps its id', function() {
     var env = new jasmineUnderTest.Env(),
       suite = new jasmineUnderTest.Suite({
         env: env,
         id: 456,
-        description: "I am a suite"
+        description: 'I am a suite'
       });
 
     expect(suite.id).toEqual(456);
   });
 
-  it("returns blank full name for top level suite", function() {
+  it('returns blank full name for top level suite', function() {
     var env = new jasmineUnderTest.Env(),
       suite = new jasmineUnderTest.Suite({
         env: env,
-        description: "I am a suite"
+        description: 'I am a suite'
       });
 
-    expect(suite.getFullName()).toEqual("");
+    expect(suite.getFullName()).toEqual('');
   });
 
-  it("returns its full name when it has parent suites", function() {
+  it('returns its full name when it has parent suites', function() {
     var env = new jasmineUnderTest.Env(),
       parentSuite = new jasmineUnderTest.Suite({
         env: env,
-        description: "I am a parent suite",
+        description: 'I am a parent suite',
         parentSuite: jasmine.createSpy('pretend top level suite')
       }),
       suite = new jasmineUnderTest.Suite({
         env: env,
-        description: "I am a suite",
+        description: 'I am a suite',
         parentSuite: parentSuite
       });
 
-    expect(suite.getFullName()).toEqual("I am a parent suite I am a suite");
+    expect(suite.getFullName()).toEqual('I am a parent suite I am a suite');
   });
 
-  it("adds before functions in order of needed execution", function() {
+  it('adds before functions in order of needed execution', function() {
     var env = new jasmineUnderTest.Env(),
       suite = new jasmineUnderTest.Suite({
         env: env,
-        description: "I am a suite"
+        description: 'I am a suite'
       }),
       outerBefore = jasmine.createSpy('outerBeforeEach'),
       innerBefore = jasmine.createSpy('insideBeforeEach');
@@ -52,11 +51,11 @@ describe("Suite", function() {
     expect(suite.beforeFns).toEqual([innerBefore, outerBefore]);
   });
 
-  it("adds after functions in order of needed execution", function() {
+  it('adds after functions in order of needed execution', function() {
     var env = new jasmineUnderTest.Env(),
       suite = new jasmineUnderTest.Suite({
         env: env,
-        description: "I am a suite"
+        description: 'I am a suite'
       }),
       outerAfter = jasmine.createSpy('outerAfterEach'),
       innerAfter = jasmine.createSpy('insideAfterEach');
@@ -69,29 +68,33 @@ describe("Suite", function() {
 
   it('has a status of failed if any expectations have failed', function() {
     var suite = new jasmineUnderTest.Suite({
-      expectationResultFactory: function() { return 'hi'; }
+      expectationResultFactory: function() {
+        return 'hi';
+      }
     });
 
     suite.addExpectationResult(false);
     expect(suite.status()).toBe('failed');
   });
 
-  it("retrieves a result with updated status", function() {
+  it('retrieves a result with updated status', function() {
     var suite = new jasmineUnderTest.Suite({});
 
     expect(suite.getResult().status).toBe('passed');
   });
 
-  it("retrieves a result with pending status", function() {
+  it('retrieves a result with pending status', function() {
     var suite = new jasmineUnderTest.Suite({});
     suite.pend();
 
     expect(suite.getResult().status).toBe('pending');
   });
 
-  it("throws an ExpectationFailed when receiving a failed expectation when throwOnExpectationFailure is set", function() {
+  it('throws an ExpectationFailed when receiving a failed expectation when throwOnExpectationFailure is set', function() {
     var suite = new jasmineUnderTest.Suite({
-      expectationResultFactory: function(data) { return data; },
+      expectationResultFactory: function(data) {
+        return data;
+      },
       throwOnExpectationFailure: true
     });
 
@@ -103,7 +106,7 @@ describe("Suite", function() {
     expect(suite.result.failedExpectations).toEqual(['failed']);
   });
 
-  it("does not add an additional failure when an expectation fails", function(){
+  it('does not add an additional failure when an expectation fails', function() {
     var suite = new jasmineUnderTest.Suite({});
 
     suite.onException(new jasmineUnderTest.errors.ExpectationFailed());
@@ -111,17 +114,17 @@ describe("Suite", function() {
     expect(suite.getResult().failedExpectations).toEqual([]);
   });
 
-  it("calls timer to compute duration", function(){
-      var env = new jasmineUnderTest.Env(),
+  it('calls timer to compute duration', function() {
+    var env = new jasmineUnderTest.Env(),
       suite = new jasmineUnderTest.Suite({
         env: env,
         id: 456,
-        description: "I am a suite",
-        timer: jasmine.createSpyObj('timer', {'start': null, elapsed: 77000}),
+        description: 'I am a suite',
+        timer: jasmine.createSpyObj('timer', { start: null, elapsed: 77000 })
       });
-      suite.startTimer();
-      suite.endTimer();
-      expect(suite.getResult().duration).toEqual(77000);
+    suite.startTimer();
+    suite.endTimer();
+    expect(suite.getResult().duration).toEqual(77000);
   });
 
   describe('#sharedUserContext', function() {
@@ -130,7 +133,9 @@ describe("Suite", function() {
     });
 
     it('returns a UserContext', function() {
-      expect(this.suite.sharedUserContext().constructor).toBe(jasmineUnderTest.UserContext);
+      expect(this.suite.sharedUserContext().constructor).toBe(
+        jasmineUnderTest.UserContext
+      );
     });
   });
 });

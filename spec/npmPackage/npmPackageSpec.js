@@ -1,19 +1,24 @@
 describe('npm package', function() {
   var path = require('path'),
-      temp = require('temp').track(),
-      fs = require('fs');
+    temp = require('temp').track(),
+    fs = require('fs');
 
   beforeAll(function() {
     var shell = require('shelljs'),
-        pack = shell.exec('npm pack', { silent: true});
+      pack = shell.exec('npm pack', { silent: true });
 
     this.tarball = pack.stdout.split('\n')[0];
     this.tmpDir = temp.mkdirSync(); // automatically deleted on exit
 
-    var untar = shell.exec('tar -xzf ' + this.tarball + ' -C ' + this.tmpDir, { silent: true });
+    var untar = shell.exec('tar -xzf ' + this.tarball + ' -C ' + this.tmpDir, {
+      silent: true
+    });
     expect(untar.code).toBe(0);
 
-    this.packagedCore = require(path.join(this.tmpDir, 'package/lib/jasmine-core.js'));
+    this.packagedCore = require(path.join(
+      this.tmpDir,
+      'package/lib/jasmine-core.js'
+    ));
   });
 
   beforeEach(function() {
@@ -32,25 +37,19 @@ describe('npm package', function() {
   });
 
   afterAll(function() {
-    var cleanup = function (parent, fileOrFolder) {
-      var fullPath = path.join(parent, fileOrFolder);
-      if (fs.statSync(fullPath).isFile()) {
-        fs.unlinkSync(fullPath);
-      } else {
-        fs.readdirSync(fullPath).forEach(cleanup.bind(null, fullPath));
-        fs.rmdirSync(fullPath);
-      }
-    };
-
     fs.unlinkSync(this.tarball);
   });
 
   it('has a root path', function() {
-    expect(this.packagedCore.files.path).toEqual(fs.realpathSync(path.resolve(this.tmpDir, 'package/lib/jasmine-core')));
+    expect(this.packagedCore.files.path).toEqual(
+      fs.realpathSync(path.resolve(this.tmpDir, 'package/lib/jasmine-core'))
+    );
   });
 
   it('has a bootDir', function() {
-    expect(this.packagedCore.files.bootDir).toEqual(fs.realpathSync(path.resolve(this.tmpDir, 'package/lib/jasmine-core')));
+    expect(this.packagedCore.files.bootDir).toEqual(
+      fs.realpathSync(path.resolve(this.tmpDir, 'package/lib/jasmine-core'))
+    );
   });
 
   it('has jsFiles', function() {
@@ -91,7 +90,9 @@ describe('npm package', function() {
   });
 
   it('has an imagesDir', function() {
-    expect(this.packagedCore.files.imagesDir).toEqual(fs.realpathSync(path.resolve(this.tmpDir, 'package/images')));
+    expect(this.packagedCore.files.imagesDir).toEqual(
+      fs.realpathSync(path.resolve(this.tmpDir, 'package/images'))
+    );
     var images = fs.readdirSync(path.resolve(this.tmpDir, 'package/images'));
 
     expect(images).toContain('jasmine-horizontal.png');

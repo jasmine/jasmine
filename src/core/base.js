@@ -40,7 +40,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @return {Env}
    */
   j$.getEnv = function(options) {
-    var env = j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options);
+    var env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
   };
@@ -50,7 +50,9 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isObject_ = function(value) {
-    return !j$.util.isUndefined(value) && value !== null && j$.isA_('Object', value);
+    return (
+      !j$.util.isUndefined(value) && value !== null && j$.isA_('Object', value)
+    );
   };
 
   j$.isString_ = function(value) {
@@ -70,7 +72,8 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isTypedArray_ = function(value) {
-    return j$.isA_('Float32Array', value) ||
+    return (
+      j$.isA_('Float32Array', value) ||
       j$.isA_('Float64Array', value) ||
       j$.isA_('Int16Array', value) ||
       j$.isA_('Int32Array', value) ||
@@ -78,7 +81,8 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       j$.isA_('Uint16Array', value) ||
       j$.isA_('Uint32Array', value) ||
       j$.isA_('Uint8Array', value) ||
-      j$.isA_('Uint8ClampedArray', value);
+      j$.isA_('Uint8ClampedArray', value)
+    );
   };
 
   j$.isA_ = function(typeName, value) {
@@ -108,9 +112,9 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
 
   j$.isDomNode = function(obj) {
     // Node is a function, because constructors
-    return typeof jasmineGlobal.Node !== 'undefined' ?
-      obj instanceof jasmineGlobal.Node :
-          obj !== null &&
+    return typeof jasmineGlobal.Node !== 'undefined'
+      ? obj instanceof jasmineGlobal.Node
+      : obj !== null &&
           typeof obj === 'object' &&
           typeof obj.nodeType === 'number' &&
           typeof obj.nodeName === 'string';
@@ -118,15 +122,25 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isMap = function(obj) {
-    return typeof jasmineGlobal.Map !== 'undefined' && obj.constructor === jasmineGlobal.Map;
+    return (
+      typeof jasmineGlobal.Map !== 'undefined' &&
+      obj.constructor === jasmineGlobal.Map
+    );
   };
 
   j$.isSet = function(obj) {
-    return typeof jasmineGlobal.Set !== 'undefined' && obj.constructor === jasmineGlobal.Set;
+    return (
+      typeof jasmineGlobal.Set !== 'undefined' &&
+      obj.constructor === jasmineGlobal.Set
+    );
   };
 
   j$.isPromise = function(obj) {
-    return typeof jasmineGlobal.Promise !== 'undefined' && !!obj && obj.constructor === jasmineGlobal.Promise;
+    return (
+      typeof jasmineGlobal.Promise !== 'undefined' &&
+      !!obj &&
+      obj.constructor === jasmineGlobal.Promise
+    );
   };
 
   j$.isPromiseLike = function(obj) {
@@ -138,7 +152,8 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       return func.name;
     }
 
-    var matches = func.toString().match(/^\s*function\s*(\w+)\s*\(/) ||
+    var matches =
+      func.toString().match(/^\s*function\s*(\w+)\s*\(/) ||
       func.toString().match(/^\s*\[object\s*(\w+)Constructor\]/);
 
     return matches ? matches[1] : '<anonymous>';
@@ -171,7 +186,9 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @name jasmine.truthy
    * @function
    */
-  j$.truthy = function() { return new j$.Truthy(); };
+  j$.truthy = function() {
+    return new j$.Truthy();
+  };
 
   /**
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
@@ -179,7 +196,9 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @name jasmine.falsy
    * @function
    */
-  j$.falsy = function() { return new j$.Falsy(); };
+  j$.falsy = function() {
+    return new j$.Falsy();
+  };
 
   /**
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
@@ -187,7 +206,9 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @name jasmine.empty
    * @function
    */
-  j$.empty = function() { return new j$.Empty(); };
+  j$.empty = function() {
+    return new j$.Empty();
+  };
 
   /**
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
@@ -195,7 +216,9 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @name jasmine.notEmpty
    * @function
    */
-  j$.notEmpty = function() { return new j$.NotEmpty(); };
+  j$.notEmpty = function() {
+    return new j$.NotEmpty();
+  };
 
   /**
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
@@ -245,7 +268,9 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     if (!putativeSpy) {
       return false;
     }
-    return putativeSpy.and instanceof j$.SpyStrategy &&
-      putativeSpy.calls instanceof j$.CallTracker;
+    return (
+      putativeSpy.and instanceof j$.SpyStrategy &&
+      putativeSpy.calls instanceof j$.CallTracker
+    );
   };
 };

@@ -203,7 +203,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {String|Error} [error] - Reason for the failure.
-    */
+     */
     fail: function() {
       return env.fail.apply(env, arguments);
     },

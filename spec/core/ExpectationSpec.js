@@ -1,5 +1,5 @@
-describe("Expectation", function() {
-  it("makes custom matchers available to this expectation", function() {
+describe('Expectation', function() {
+  it('makes custom matchers available to this expectation', function() {
     var matchers = {
         toFoo: function() {},
         toBar: function() {}
@@ -14,7 +14,7 @@ describe("Expectation", function() {
     expect(expectation.toBar).toBeDefined();
   });
 
-  it(".addCoreMatchers makes matchers available to any expectation", function() {
+  it('.addCoreMatchers makes matchers available to any expectation', function() {
     var coreMatchers = {
         toQuux: function() {}
       },
@@ -28,8 +28,12 @@ describe("Expectation", function() {
   });
 
   it("wraps matchers's compare functions, passing in matcher dependencies", function() {
-    var fakeCompare = function() { return { pass: true }; },
-      matcherFactory = jasmine.createSpy("matcher").and.returnValue({ compare: fakeCompare }),
+    var fakeCompare = function() {
+        return { pass: true };
+      },
+      matcherFactory = jasmine
+        .createSpy('matcher')
+        .and.returnValue({ compare: fakeCompare }),
       matchers = {
         toFoo: matcherFactory
       },
@@ -37,24 +41,26 @@ describe("Expectation", function() {
         buildFailureMessage: jasmine.createSpy('buildFailureMessage')
       },
       customEqualityTesters = ['a'],
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
       util: util,
       customMatchers: matchers,
       customEqualityTesters: customEqualityTesters,
-      actual: "an actual",
+      actual: 'an actual',
       addExpectationResult: addExpectationResult
     });
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
-    expect(matcherFactory).toHaveBeenCalledWith(util, customEqualityTesters)
+    expect(matcherFactory).toHaveBeenCalledWith(util, customEqualityTesters);
   });
 
   it("wraps matchers's compare functions, passing the actual and expected", function() {
-    var fakeCompare = jasmine.createSpy('fake-compare').and.returnValue({pass: true}),
+    var fakeCompare = jasmine
+        .createSpy('fake-compare')
+        .and.returnValue({ pass: true }),
       matchers = {
         toFoo: function() {
           return {
@@ -65,259 +71,270 @@ describe("Expectation", function() {
       util = {
         buildFailureMessage: jasmine.createSpy('buildFailureMessage')
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
       util: util,
       customMatchers: matchers,
-      actual: "an actual",
+      actual: 'an actual',
       addExpectationResult: addExpectationResult
     });
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
-    expect(fakeCompare).toHaveBeenCalledWith("an actual", "hello");
+    expect(fakeCompare).toHaveBeenCalledWith('an actual', 'hello');
   });
 
-  it("reports a passing result to the spec when the comparison passes", function() {
+  it('reports a passing result to the spec when the comparison passes', function() {
     var matchers = {
         toFoo: function() {
           return {
-            compare: function() { return { pass: true }; }
+            compare: function() {
+              return { pass: true };
+            }
           };
         }
       },
       util = {
         buildFailureMessage: jasmine.createSpy('buildFailureMessage')
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       util: util,
-      actual: "an actual",
+      actual: 'an actual',
       addExpectationResult: addExpectationResult
     });
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(true, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: true,
-      message: "",
+      message: '',
       error: undefined,
-      expected: "hello",
-      actual: "an actual",
+      expected: 'hello',
+      actual: 'an actual',
       errorForStack: undefined
     });
   });
 
-  it("reports a failing result to the spec when the comparison fails", function() {
+  it('reports a failing result to the spec when the comparison fails', function() {
     var matchers = {
         toFoo: function() {
           return {
-            compare: function() { return { pass: false }; }
+            compare: function() {
+              return { pass: false };
+            }
           };
         }
       },
       util = {
-        buildFailureMessage: function() { return ""; }
+        buildFailureMessage: function() {
+          return '';
+        }
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       util: util,
-      actual: "an actual",
+      actual: 'an actual',
       addExpectationResult: addExpectationResult
     });
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(false, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: false,
-      expected: "hello",
-      actual: "an actual",
-      message: "",
+      expected: 'hello',
+      actual: 'an actual',
+      message: '',
       error: undefined,
       errorForStack: undefined
     });
   });
 
-  it("reports a failing result and a custom fail message to the spec when the comparison fails", function() {
+  it('reports a failing result and a custom fail message to the spec when the comparison fails', function() {
     var matchers = {
         toFoo: function() {
           return {
             compare: function() {
               return {
                 pass: false,
-                message: "I am a custom message"
+                message: 'I am a custom message'
               };
             }
           };
         }
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
-      actual: "an actual",
+      actual: 'an actual',
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
     });
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(false, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: false,
-      expected: "hello",
-      actual: "an actual",
-      message: "I am a custom message",
+      expected: 'hello',
+      actual: 'an actual',
+      message: 'I am a custom message',
       error: undefined,
       errorForStack: undefined
     });
   });
 
-  it("reports a failing result with a custom fail message function to the spec when the comparison fails", function() {
+  it('reports a failing result with a custom fail message function to the spec when the comparison fails', function() {
     var matchers = {
         toFoo: function() {
           return {
             compare: function() {
               return {
                 pass: false,
-                message: function() { return "I am a custom message"; }
+                message: function() {
+                  return 'I am a custom message';
+                }
               };
             }
           };
         }
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
-      actual: "an actual",
+      actual: 'an actual',
       addExpectationResult: addExpectationResult
     });
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(false, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: false,
-      expected: "hello",
-      actual: "an actual",
-      message: "I am a custom message",
+      expected: 'hello',
+      actual: 'an actual',
+      message: 'I am a custom message',
       error: undefined,
       errorForStack: undefined
     });
   });
 
-  it("reports a passing result to the spec when the comparison fails for a negative expectation", function() {
+  it('reports a passing result to the spec when the comparison fails for a negative expectation', function() {
     var matchers = {
         toFoo: function() {
           return {
-            compare: function() { return { pass: false }; }
+            compare: function() {
+              return { pass: false };
+            }
           };
         }
       },
-      util = {
-        buildFailureMessage: function() { return ""; }
-      },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
-      actual = "an actual",
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
+      actual = 'an actual',
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
-      actual: "an actual",
+      actual: 'an actual',
       addExpectationResult: addExpectationResult
     }).not;
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(true, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: true,
-      message: "",
+      message: '',
       error: undefined,
-      expected: "hello",
+      expected: 'hello',
       actual: actual,
       errorForStack: undefined
     });
   });
 
-  it("reports a failing result to the spec when the comparison passes for a negative expectation", function() {
+  it('reports a failing result to the spec when the comparison passes for a negative expectation', function() {
     var matchers = {
         toFoo: function() {
           return {
-            compare: function() { return { pass: true }; }
+            compare: function() {
+              return { pass: true };
+            }
           };
         }
       },
       util = {
-        buildFailureMessage: function() { return "default message"; }
+        buildFailureMessage: function() {
+          return 'default message';
+        }
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
-      actual = "an actual",
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
+      actual = 'an actual',
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
-      actual: "an actual",
+      actual: 'an actual',
       util: util,
-      addExpectationResult: addExpectationResult,
+      addExpectationResult: addExpectationResult
     }).not;
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(false, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: false,
-      expected: "hello",
+      expected: 'hello',
       actual: actual,
-      message: "default message",
+      message: 'default message',
       error: undefined,
       errorForStack: undefined
     });
   });
 
-  it("reports a failing result and a custom fail message to the spec when the comparison passes for a negative expectation", function() {
+  it('reports a failing result and a custom fail message to the spec when the comparison passes for a negative expectation', function() {
     var matchers = {
         toFoo: function() {
           return {
             compare: function() {
               return {
                 pass: true,
-                message: "I am a custom message"
+                message: 'I am a custom message'
               };
             }
           };
         }
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
-      actual = "an actual",
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
+      actual = 'an actual',
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
-      actual: "an actual",
+      actual: 'an actual',
       addExpectationResult: addExpectationResult
     }).not;
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(false, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: false,
-      expected: "hello",
+      expected: 'hello',
       actual: actual,
-      message: "I am a custom message",
+      message: 'I am a custom message',
       error: undefined,
       errorForStack: undefined
     });
@@ -327,29 +344,33 @@ describe("Expectation", function() {
     var matchers = {
         toFoo: function() {
           return {
-            compare: function() { return { pass: true }; },
-            negativeCompare: function() { return { pass: true }; }
+            compare: function() {
+              return { pass: true };
+            },
+            negativeCompare: function() {
+              return { pass: true };
+            }
           };
         }
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
-      actual = "an actual",
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
+      actual = 'an actual',
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
-      actual: "an actual",
+      actual: 'an actual',
       addExpectationResult: addExpectationResult
     }).not;
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(true, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: true,
-      expected: "hello",
+      expected: 'hello',
       actual: actual,
-      message: "",
+      message: '',
       error: undefined,
       errorForStack: undefined
     });
@@ -359,7 +380,9 @@ describe("Expectation", function() {
     var matchers = {
         toFoo: function() {
           return {
-            compare: function() { return { pass: true }; },
+            compare: function() {
+              return { pass: true };
+            },
             negativeCompare: function() {
               return {
                 pass: false,
@@ -369,22 +392,22 @@ describe("Expectation", function() {
           };
         }
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
-      actual = "an actual",
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
+      actual = 'an actual',
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
-      actual: "an actual",
-      addExpectationResult: addExpectationResult,
+      actual: 'an actual',
+      addExpectationResult: addExpectationResult
     }).not;
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(false, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: false,
-      expected: "hello",
+      expected: 'hello',
       actual: actual,
       message: "I'm a custom message",
       error: undefined,
@@ -392,254 +415,272 @@ describe("Expectation", function() {
     });
   });
 
-  it("reports a custom error message to the spec", function() {
-    var customError = new Error("I am a custom error");
+  it('reports a custom error message to the spec', function() {
+    var customError = new Error('I am a custom error');
     var matchers = {
         toFoo: function() {
           return {
             compare: function() {
               return {
                 pass: false,
-                message: "I am a custom message",
+                message: 'I am a custom message',
                 error: customError
               };
             }
           };
         }
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
-      actual: "an actual",
+      actual: 'an actual',
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
     });
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(false, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: false,
-      expected: "hello",
-      actual: "an actual",
-      message: "I am a custom message",
+      expected: 'hello',
+      actual: 'an actual',
+      message: 'I am a custom message',
       error: customError,
       errorForStack: undefined
     });
   });
 
   it("reports a custom message to the spec when a 'not' comparison fails", function() {
-    var customError = new Error("I am a custom error");
+    var customError = new Error('I am a custom error');
     var matchers = {
         toFoo: function() {
           return {
             compare: function() {
               return {
                 pass: true,
-                message: "I am a custom message",
+                message: 'I am a custom message',
                 error: customError
               };
             }
           };
         }
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
-      actual: "an actual",
+      actual: 'an actual',
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
     }).not;
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(false, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: false,
-      expected: "hello",
-      actual: "an actual",
-      message: "I am a custom message",
+      expected: 'hello',
+      actual: 'an actual',
+      message: 'I am a custom message',
       error: customError,
       errorForStack: undefined
     });
   });
 
   it("reports a custom message func to the spec when a 'not' comparison fails", function() {
-    var customError = new Error("I am a custom error");
+    var customError = new Error('I am a custom error');
     var matchers = {
         toFoo: function() {
           return {
             compare: function() {
               return {
                 pass: true,
-                message: function() { return "I am a custom message"; },
+                message: function() {
+                  return 'I am a custom message';
+                },
                 error: customError
               };
             }
           };
         }
       },
-      addExpectationResult = jasmine.createSpy("addExpectationResult"),
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
-      actual: "an actual",
+      actual: 'an actual',
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
     }).not;
 
-    expectation.toFoo("hello");
+    expectation.toFoo('hello');
 
     expect(addExpectationResult).toHaveBeenCalledWith(false, {
-      matcherName: "toFoo",
+      matcherName: 'toFoo',
       passed: false,
-      expected: "hello",
-      actual: "an actual",
-      message: "I am a custom message",
+      expected: 'hello',
+      actual: 'an actual',
+      message: 'I am a custom message',
       error: customError,
       errorForStack: undefined
     });
   });
 
-  describe("#withContext", function() {
-    it("prepends the context to the generated failure message", function() {
+  describe('#withContext', function() {
+    it('prepends the context to the generated failure message', function() {
       var matchers = {
           toFoo: function() {
             return {
-              compare: function() { return { pass: false }; }
+              compare: function() {
+                return { pass: false };
+              }
             };
           }
         },
         util = {
-          buildFailureMessage: function() { return "failure message"; }
+          buildFailureMessage: function() {
+            return 'failure message';
+          }
         },
-        addExpectationResult = jasmine.createSpy("addExpectationResult"),
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
           util: util,
-          actual: "an actual",
+          actual: 'an actual',
           addExpectationResult: addExpectationResult
         });
 
-      expectation.withContext("Some context").toFoo("hello");
+      expectation.withContext('Some context').toFoo('hello');
 
-      expect(addExpectationResult).toHaveBeenCalledWith(false,
+      expect(addExpectationResult).toHaveBeenCalledWith(
+        false,
         jasmine.objectContaining({
-          message: "Some context: failure message"
+          message: 'Some context: failure message'
         })
       );
     });
 
-    it("prepends the context to a custom failure message", function() {
+    it('prepends the context to a custom failure message', function() {
       var matchers = {
           toFoo: function() {
             return {
-              compare: function() { return { pass: false, message: "msg" }; }
+              compare: function() {
+                return { pass: false, message: 'msg' };
+              }
             };
           }
         },
-        addExpectationResult = jasmine.createSpy("addExpectationResult"),
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
-          actual: "an actual",
+          actual: 'an actual',
           addExpectationResult: addExpectationResult
         });
 
-      expectation.withContext("Some context").toFoo("hello");
+      expectation.withContext('Some context').toFoo('hello');
 
-      expect(addExpectationResult).toHaveBeenCalledWith(false,
+      expect(addExpectationResult).toHaveBeenCalledWith(
+        false,
         jasmine.objectContaining({
-          message: "Some context: msg"
+          message: 'Some context: msg'
         })
       );
     });
 
-    it("prepends the context to a custom failure message from a function", function() {
+    it('prepends the context to a custom failure message from a function', function() {
       var matchers = {
           toFoo: function() {
             return {
               compare: function() {
                 return {
                   pass: false,
-                  message: function() { return "msg"; }
+                  message: function() {
+                    return 'msg';
+                  }
                 };
               }
             };
           }
         },
-        addExpectationResult = jasmine.createSpy("addExpectationResult"),
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
-          actual: "an actual",
+          actual: 'an actual',
           addExpectationResult: addExpectationResult
         });
 
-      expectation.withContext("Some context").toFoo("hello");
+      expectation.withContext('Some context').toFoo('hello');
 
-      expect(addExpectationResult).toHaveBeenCalledWith(false,
+      expect(addExpectationResult).toHaveBeenCalledWith(
+        false,
         jasmine.objectContaining({
-          message: "Some context: msg"
+          message: 'Some context: msg'
         })
       );
     });
 
-    it("works with #not", function() {
+    it('works with #not', function() {
       var matchers = {
           toFoo: function() {
             return {
-              compare: function() { return { pass: true }; }
+              compare: function() {
+                return { pass: true };
+              }
             };
           }
         },
-        addExpectationResult = jasmine.createSpy("addExpectationResult"),
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
           util: jasmineUnderTest.matchersUtil,
-          actual: "an actual",
+          actual: 'an actual',
           addExpectationResult: addExpectationResult
         });
 
-      expectation.withContext("Some context").not.toFoo();
+      expectation.withContext('Some context').not.toFoo();
 
-      expect(addExpectationResult).toHaveBeenCalledWith(false,
+      expect(addExpectationResult).toHaveBeenCalledWith(
+        false,
         jasmine.objectContaining({
           message: "Some context: Expected 'an actual' not to foo."
         })
       );
     });
 
-    it("works with #not and a custom message", function() {
-      var customError = new Error("I am a custom error");
+    it('works with #not and a custom message', function() {
+      var customError = new Error('I am a custom error');
       var matchers = {
           toFoo: function() {
             return {
               compare: function() {
                 return {
                   pass: true,
-                  message: function() { return "I am a custom message"; },
+                  message: function() {
+                    return 'I am a custom message';
+                  },
                   error: customError
                 };
               }
             };
           }
         },
-        addExpectationResult = jasmine.createSpy("addExpectationResult"),
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = jasmineUnderTest.Expectation.factory({
-          actual: "an actual",
+          actual: 'an actual',
           customMatchers: matchers,
           addExpectationResult: addExpectationResult
         });
 
-      expectation.withContext("Some context").not.toFoo("hello");
+      expectation.withContext('Some context').not.toFoo('hello');
 
-      expect(addExpectationResult).toHaveBeenCalledWith(false,
+      expect(addExpectationResult).toHaveBeenCalledWith(
+        false,
         jasmine.objectContaining({
-          message: "Some context: I am a custom message",
+          message: 'Some context: I am a custom message'
         })
       );
     });
   });
 });
-

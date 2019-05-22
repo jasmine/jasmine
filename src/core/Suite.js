@@ -48,7 +48,11 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.getFullName = function() {
     var fullName = [];
-    for (var parentSuite = this; parentSuite; parentSuite = parentSuite.parentSuite) {
+    for (
+      var parentSuite = this;
+      parentSuite;
+      parentSuite = parentSuite.parentSuite
+    ) {
       if (parentSuite.parentSuite) {
         fullName.unshift(parentSuite.description);
       }
@@ -85,7 +89,7 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   function removeFns(queueableFns) {
-    for(var i = 0; i < queueableFns.length; i++) {
+    for (var i = 0; i < queueableFns.length; i++) {
       queueableFns[i].fn = null;
     }
   }
@@ -124,7 +128,9 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.sharedUserContext = function() {
     if (!this.sharedContext) {
-      this.sharedContext = this.parentSuite ? this.parentSuite.clonedSharedUserContext() : new j$.UserContext();
+      this.sharedContext = this.parentSuite
+        ? this.parentSuite.clonedSharedUserContext()
+        : new j$.UserContext();
     }
 
     return this.sharedContext;
@@ -155,11 +161,11 @@ getJasmineRequireObj().Suite = function(j$) {
     this.result.failedExpectations.push(failedExpectation);
   };
 
-  Suite.prototype.addExpectationResult = function () {
-    if(isFailure(arguments)) {
+  Suite.prototype.addExpectationResult = function() {
+    if (isFailure(arguments)) {
       var data = arguments[1];
       this.result.failedExpectations.push(this.expectationResultFactory(data));
-      if(this.throwOnExpectationFailure) {
+      if (this.throwOnExpectationFailure) {
         throw new j$.errors.ExpectationFailed();
       }
     }
@@ -169,7 +175,9 @@ getJasmineRequireObj().Suite = function(j$) {
     if (typeof deprecation === 'string') {
       deprecation = { message: deprecation };
     }
-    this.result.deprecationWarnings.push(this.expectationResultFactory(deprecation));
+    this.result.deprecationWarnings.push(
+      this.expectationResultFactory(deprecation)
+    );
   };
 
   function isFailure(args) {

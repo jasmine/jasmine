@@ -1,5 +1,4 @@
 getJasmineRequireObj().SpyStrategy = function(j$) {
-
   /**
    * @interface SpyStrategy
    */
@@ -19,20 +18,27 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     this.getSpy = options.getSpy || function() {};
     this.plan = this._defaultPlan = function() {};
 
-    var k, cs = options.customStrategies || {};
+    var k,
+      cs = options.customStrategies || {};
     for (k in cs) {
       if (j$.util.has(cs, k) && !this[k]) {
         this[k] = createCustomPlan(cs[k]);
       }
     }
 
-    var getPromise = (typeof options.getPromise === 'function') ? options.getPromise : function() {};
+    var getPromise =
+      typeof options.getPromise === 'function'
+        ? options.getPromise
+        : function() {};
 
     var requirePromise = function(name) {
       var Promise = getPromise();
 
       if (!Promise) {
-        throw new Error(name + ' requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`');
+        throw new Error(
+          name +
+            ' requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`'
+        );
       }
 
       return Promise;
@@ -60,7 +66,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
      */
     this.rejectWith = function(value) {
       var Promise = requirePromise('rejectWith');
-      var error = (value instanceof Error) ? value : new Error(value);
+      var error = value instanceof Error ? value : new Error(value);
 
       self.plan = function() {
         return Promise.reject(error);
@@ -122,7 +128,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    */
   SpyStrategy.prototype.returnValues = function() {
     var values = Array.prototype.slice.call(arguments);
-    this.plan = function () {
+    this.plan = function() {
       return values.shift();
     };
     return this.getSpy();
@@ -135,7 +141,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @param {Error|String} something Thing to throw
    */
   SpyStrategy.prototype.throwError = function(something) {
-    var error = (something instanceof Error) ? something : new Error(something);
+    var error = something instanceof Error ? something : new Error(something);
     this.plan = function() {
       throw error;
     };
@@ -149,8 +155,10 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @param {Function} fn The function to invoke with the passed parameters.
    */
   SpyStrategy.prototype.callFake = function(fn) {
-    if(!(j$.isFunction_(fn) || j$.isAsyncFunction_(fn))) {
-      throw new Error('Argument passed to callFake should be a function, got ' + fn);
+    if (!(j$.isFunction_(fn) || j$.isAsyncFunction_(fn))) {
+      throw new Error(
+        'Argument passed to callFake should be a function, got ' + fn
+      );
     }
     this.plan = fn;
     return this.getSpy();

@@ -1,8 +1,12 @@
-var getJasmineRequireObj = (function (jasmineGlobal) {
-  /* globals exports, global, module, window */
+// eslint-disable-next-line no-unused-vars
+var getJasmineRequireObj = (function(jasmineGlobal) {
   var jasmineRequire;
 
-  if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined') {
+  if (
+    typeof module !== 'undefined' &&
+    module.exports &&
+    typeof exports !== 'undefined'
+  ) {
     if (typeof global !== 'undefined') {
       jasmineGlobal = global;
     } else {
@@ -10,7 +14,11 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     }
     jasmineRequire = exports;
   } else {
-    if (typeof window !== 'undefined' && typeof window.toString === 'function' && window.toString() === '[object GjsGlobal]') {
+    if (
+      typeof window !== 'undefined' &&
+      typeof window.toString === 'function' &&
+      window.toString() === '[object GjsGlobal]'
+    ) {
       jasmineGlobal = window;
     }
     jasmineRequire = jasmineGlobal.jasmineRequire = {};

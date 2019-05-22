@@ -1,10 +1,8 @@
 getJasmineRequireObj().util = function(j$) {
-
   var util = {};
 
   util.inherit = function(childClass, parentClass) {
-    var Subclass = function() {
-    };
+    var Subclass = function() {};
     Subclass.prototype = parentClass.prototype;
     childClass.prototype = new Subclass();
   };
@@ -13,7 +11,8 @@ getJasmineRequireObj().util = function(j$) {
     if (!str) {
       return str;
     }
-    return str.replace(/&/g, '&amp;')
+    return str
+      .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
   };
@@ -58,7 +57,7 @@ getJasmineRequireObj().util = function(j$) {
   util.cloneArgs = function(args) {
     var clonedArgs = [];
     var argsAsArray = j$.util.argsToArray(args);
-    for(var i = 0; i < argsAsArray.length; i++) {
+    for (var i = 0; i < argsAsArray.length; i++) {
       var str = Object.prototype.toString.apply(argsAsArray[i]),
         primitives = /^\[object (Boolean|String|RegExp|Number)/;
 
@@ -100,7 +99,7 @@ getJasmineRequireObj().util = function(j$) {
     return Object.prototype.hasOwnProperty.call(obj, key);
   };
 
-  util.errorWithStack = function errorWithStack () {
+  util.errorWithStack = function errorWithStack() {
     // Don't throw and catch if we don't have to, because it makes it harder
     // for users to debug their code with exception breakpoints.
     var error = new Error();
@@ -132,7 +131,7 @@ getJasmineRequireObj().util = function(j$) {
 
       return result;
     };
-  }());
+  })();
 
   return util;
 };

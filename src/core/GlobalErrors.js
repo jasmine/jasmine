@@ -38,7 +38,10 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         var errorTypes = Object.keys(this.originalHandlers);
         for (var iType = 0; iType < errorTypes.length; iType++) {
           var errorType = errorTypes[iType];
-          global.process.removeListener(errorType, this.jasmineHandlers[errorType]);
+          global.process.removeListener(
+            errorType,
+            this.jasmineHandlers[errorType]
+          );
           for (var i = 0; i < this.originalHandlers[errorType].length; i++) {
             global.process.on(errorType, this.originalHandlers[errorType][i]);
           }
@@ -49,7 +52,11 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     };
 
     this.install = function install() {
-      if (global.process && global.process.listeners && j$.isFunction_(global.process.on)) {
+      if (
+        global.process &&
+        global.process.listeners &&
+        j$.isFunction_(global.process.on)
+      ) {
         this.installOne_('uncaughtException', 'Uncaught exception');
         this.installOne_('unhandledRejection', 'Unhandled promise rejection');
       } else {

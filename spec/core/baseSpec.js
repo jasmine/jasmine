@@ -1,6 +1,6 @@
 describe('base helpers', function() {
   describe('isError_', function() {
-    it("correctly handles WebSocket events", function(done) {
+    it('correctly handles WebSocket events', function(done) {
       if (typeof jasmine.getGlobal().WebSocket === 'undefined') {
         done();
         return;
@@ -10,9 +10,11 @@ describe('base helpers', function() {
         var sock = new WebSocket('ws://localhost');
         var event;
         sock.onerror = function(e) {
-          event = e
+          event = e;
         };
-        return function() { return event };
+        return function() {
+          return event;
+        };
       })();
       var left = 20;
 
@@ -20,6 +22,7 @@ describe('base helpers', function() {
         if (obj() || left === 0) {
           var result = jasmineUnderTest.isError_(obj());
           expect(result).toBe(false);
+          clearInterval(int);
           done();
         } else {
           left--;

@@ -1,5 +1,4 @@
-getJasmineRequireObj().Spy = function (j$) {
-
+getJasmineRequireObj().Spy = function(j$) {
   var nextOrder = (function() {
     var order = 0;
 
@@ -14,21 +13,21 @@ getJasmineRequireObj().Spy = function (j$) {
    * @name Spy
    */
   function Spy(name, originalFn, customStrategies, getPromise) {
-    var numArgs = (typeof originalFn === 'function' ? originalFn.length : 0),
-      wrapper = makeFunc(numArgs, function () {
+    var numArgs = typeof originalFn === 'function' ? originalFn.length : 0,
+      wrapper = makeFunc(numArgs, function() {
         return spy.apply(this, Array.prototype.slice.call(arguments));
       }),
       strategyDispatcher = new SpyStrategyDispatcher({
         name: name,
         fn: originalFn,
-        getSpy: function () {
+        getSpy: function() {
           return wrapper;
         },
         customStrategies: customStrategies,
         getPromise: getPromise
       }),
       callTracker = new j$.CallTracker(),
-      spy = function () {
+      spy = function() {
         /**
          * @name Spy.callData
          * @property {object} object - `this` context for the invocation.
@@ -50,22 +49,54 @@ getJasmineRequireObj().Spy = function (j$) {
 
     function makeFunc(length, fn) {
       switch (length) {
-        case 1 : return function (a) { return fn.apply(this, arguments); };
-        case 2 : return function (a,b) { return fn.apply(this, arguments); };
-        case 3 : return function (a,b,c) { return fn.apply(this, arguments); };
-        case 4 : return function (a,b,c,d) { return fn.apply(this, arguments); };
-        case 5 : return function (a,b,c,d,e) { return fn.apply(this, arguments); };
-        case 6 : return function (a,b,c,d,e,f) { return fn.apply(this, arguments); };
-        case 7 : return function (a,b,c,d,e,f,g) { return fn.apply(this, arguments); };
-        case 8 : return function (a,b,c,d,e,f,g,h) { return fn.apply(this, arguments); };
-        case 9 : return function (a,b,c,d,e,f,g,h,i) { return fn.apply(this, arguments); };
-        default : return function () { return fn.apply(this, arguments); };
+        case 1:
+          return function(a) {
+            return fn.apply(this, arguments);
+          };
+        case 2:
+          return function(a, b) {
+            return fn.apply(this, arguments);
+          };
+        case 3:
+          return function(a, b, c) {
+            return fn.apply(this, arguments);
+          };
+        case 4:
+          return function(a, b, c, d) {
+            return fn.apply(this, arguments);
+          };
+        case 5:
+          return function(a, b, c, d, e) {
+            return fn.apply(this, arguments);
+          };
+        case 6:
+          return function(a, b, c, d, e, f) {
+            return fn.apply(this, arguments);
+          };
+        case 7:
+          return function(a, b, c, d, e, f, g) {
+            return fn.apply(this, arguments);
+          };
+        case 8:
+          return function(a, b, c, d, e, f, g, h) {
+            return fn.apply(this, arguments);
+          };
+        case 9:
+          return function(a, b, c, d, e, f, g, h, i) {
+            return fn.apply(this, arguments);
+          };
+        default:
+          return function() {
+            return fn.apply(this, arguments);
+          };
       }
     }
 
     for (var prop in originalFn) {
       if (prop === 'and' || prop === 'calls') {
-        throw new Error('Jasmine spies would overwrite the \'and\' and \'calls\' properties on the object being spied upon');
+        throw new Error(
+          "Jasmine spies would overwrite the 'and' and 'calls' properties on the object being spied upon"
+        );
       }
 
       wrapper[prop] = originalFn[prop];
@@ -112,7 +143,13 @@ getJasmineRequireObj().Spy = function (j$) {
 
       if (!strategy) {
         if (argsStrategies.any() && !baseStrategy.isConfigured()) {
-          throw new Error('Spy \'' + strategyArgs.name + '\' received a call with arguments ' + j$.pp(Array.prototype.slice.call(args)) + ' but all configured strategies specify other arguments.');
+          throw new Error(
+            "Spy '" +
+              strategyArgs.name +
+              "' received a call with arguments " +
+              j$.pp(Array.prototype.slice.call(args)) +
+              ' but all configured strategies specify other arguments.'
+          );
         } else {
           strategy = baseStrategy;
         }

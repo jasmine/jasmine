@@ -1,13 +1,19 @@
 getJasmineRequireObj().SpyRegistry = function(j$) {
-
   var spyOnMsg = j$.formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
-  var spyOnPropertyMsg = j$.formatErrorMsg('<spyOnProperty>', 'spyOnProperty(<object>, <propName>, [accessType])');
+  var spyOnPropertyMsg = j$.formatErrorMsg(
+    '<spyOnProperty>',
+    'spyOnProperty(<object>, <propName>, [accessType])'
+  );
 
   function SpyRegistry(options) {
     options = options || {};
     var global = options.global || j$.getGlobal();
     var createSpy = options.createSpy;
-    var currentSpies = options.currentSpies || function() { return []; };
+    var currentSpies =
+      options.currentSpies ||
+      function() {
+        return [];
+      };
 
     this.allowRespy = function(allow) {
       this.respy = allow;
@@ -17,7 +23,11 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       var getErrorMsg = spyOnMsg;
 
       if (j$.util.isUndefined(obj) || obj === null) {
-        throw new Error(getErrorMsg('could not find an object to spy upon for ' + methodName + '()'));
+        throw new Error(
+          getErrorMsg(
+            'could not find an object to spy upon for ' + methodName + '()'
+          )
+        );
       }
 
       if (j$.util.isUndefined(methodName) || methodName === null) {
@@ -28,25 +38,32 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         throw new Error(getErrorMsg(methodName + '() method does not exist'));
       }
 
-      if (obj[methodName] && j$.isSpy(obj[methodName])  ) {
+      if (obj[methodName] && j$.isSpy(obj[methodName])) {
         if (this.respy) {
           return obj[methodName];
-        }else {
-          throw new Error(getErrorMsg(methodName + ' has already been spied upon'));
+        } else {
+          throw new Error(
+            getErrorMsg(methodName + ' has already been spied upon')
+          );
         }
       }
 
       var descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
 
       if (descriptor && !(descriptor.writable || descriptor.set)) {
-        throw new Error(getErrorMsg(methodName + ' is not declared writable or has no setter'));
+        throw new Error(
+          getErrorMsg(methodName + ' is not declared writable or has no setter')
+        );
       }
 
       var originalMethod = obj[methodName],
         spiedMethod = createSpy(methodName, originalMethod),
         restoreStrategy;
 
-      if (Object.prototype.hasOwnProperty.call(obj, methodName) || (obj === global && methodName === 'onerror')) {
+      if (
+        Object.prototype.hasOwnProperty.call(obj, methodName) ||
+        (obj === global && methodName === 'onerror')
+      ) {
         restoreStrategy = function() {
           obj[methodName] = originalMethod;
         };
@@ -67,13 +84,19 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       return spiedMethod;
     };
 
-    this.spyOnProperty = function (obj, propertyName, accessType) {
+    this.spyOnProperty = function(obj, propertyName, accessType) {
       var getErrorMsg = spyOnPropertyMsg;
 
       accessType = accessType || 'get';
 
       if (j$.util.isUndefined(obj)) {
-        throw new Error(getErrorMsg('spyOn could not find an object to spy upon for ' + propertyName + ''));
+        throw new Error(
+          getErrorMsg(
+            'spyOn could not find an object to spy upon for ' +
+              propertyName +
+              ''
+          )
+        );
       }
 
       if (j$.util.isUndefined(propertyName)) {
@@ -87,18 +110,31 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       if (!descriptor.configurable) {
-        throw new Error(getErrorMsg(propertyName + ' is not declared configurable'));
+        throw new Error(
+          getErrorMsg(propertyName + ' is not declared configurable')
+        );
       }
 
-      if(!descriptor[accessType]) {
-        throw new Error(getErrorMsg('Property ' + propertyName + ' does not have access type ' + accessType));
+      if (!descriptor[accessType]) {
+        throw new Error(
+          getErrorMsg(
+            'Property ' +
+              propertyName +
+              ' does not have access type ' +
+              accessType
+          )
+        );
       }
 
       if (j$.isSpy(descriptor[accessType])) {
         if (this.respy) {
           return descriptor[accessType];
         } else {
-          throw new Error(getErrorMsg(propertyName + '#' + accessType + ' has already been spied upon'));
+          throw new Error(
+            getErrorMsg(
+              propertyName + '#' + accessType + ' has already been spied upon'
+            )
+          );
         }
       }
 
@@ -129,19 +165,27 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
 
     this.spyOnAllFunctions = function(obj) {
       if (j$.util.isUndefined(obj)) {
-        throw new Error('spyOnAllFunctions could not find an object to spy upon');
+        throw new Error(
+          'spyOnAllFunctions could not find an object to spy upon'
+        );
       }
 
       var pointer = obj,
-          props = [],
-          prop,
-          descriptor;
+        props = [],
+        prop,
+        descriptor;
 
       while (pointer) {
         for (prop in pointer) {
-          if (Object.prototype.hasOwnProperty.call(pointer, prop) && pointer[prop] instanceof Function) {
+          if (
+            Object.prototype.hasOwnProperty.call(pointer, prop) &&
+            pointer[prop] instanceof Function
+          ) {
             descriptor = Object.getOwnPropertyDescriptor(pointer, prop);
-            if ((descriptor.writable || descriptor.set) && descriptor.configurable) {
+            if (
+              (descriptor.writable || descriptor.set) &&
+              descriptor.configurable
+            ) {
               props.push(prop);
             }
           }

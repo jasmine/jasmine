@@ -1,5 +1,4 @@
 getJasmineRequireObj().pp = function(j$) {
-
   function PrettyPrinter() {
     this.ppNestLevel_ = 0;
     this.seen = [];
@@ -10,7 +9,11 @@ getJasmineRequireObj().pp = function(j$) {
   function hasCustomToString(value) {
     // value.toString !== Object.prototype.toString if value has no custom toString but is from another context (e.g.
     // iframe, web worker)
-    return j$.isFunction_(value.toString) && value.toString !== Object.prototype.toString && (value.toString() !== Object.prototype.toString.call(value));
+    return (
+      j$.isFunction_(value.toString) &&
+      value.toString !== Object.prototype.toString &&
+      value.toString() !== Object.prototype.toString.call(value)
+    );
   }
 
   PrettyPrinter.prototype.format = function(value) {
@@ -20,7 +23,7 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitScalar('undefined');
       } else if (value === null) {
         this.emitScalar('null');
-      } else if (value === 0 && 1/value === -Infinity) {
+      } else if (value === 0 && 1 / value === -Infinity) {
         this.emitScalar('-0');
       } else if (value === j$.getGlobal()) {
         this.emitScalar('<global>');
@@ -50,10 +53,19 @@ getJasmineRequireObj().pp = function(j$) {
         this.emitMap(value);
       } else if (j$.isTypedArray_(value)) {
         this.emitTypedArray(value);
-      } else if (value.toString && typeof value === 'object' && !j$.isArray_(value) && hasCustomToString(value)) {
+      } else if (
+        value.toString &&
+        typeof value === 'object' &&
+        !j$.isArray_(value) &&
+        hasCustomToString(value)
+      ) {
         this.emitScalar(value.toString());
       } else if (j$.util.arrayContains(this.seen, value)) {
-        this.emitScalar('<circular reference: ' + (j$.isArray_(value) ? 'Array' : 'Object') + '>');
+        this.emitScalar(
+          '<circular reference: ' +
+            (j$.isArray_(value) ? 'Array' : 'Object') +
+            '>'
+        );
       } else if (j$.isArray_(value) || j$.isA_('Object', value)) {
         this.seen.push(value);
         if (j$.isArray_(value)) {
@@ -83,7 +95,6 @@ getJasmineRequireObj().pp = function(j$) {
         var getter = obj.__lookupGetter__(prop);
         return !j$.util.isUndefined(getter) && getter !== null;
       };
-
     }
     var length = Math.min(objKeys.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
     for (var i = 0; i < length; i++) {
@@ -99,7 +110,7 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   PrettyPrinter.prototype.emitString = function(value) {
-    this.append('\'' + value + '\'');
+    this.append("'" + value + "'");
   };
 
   PrettyPrinter.prototype.emitArray = function(array) {
@@ -115,7 +126,7 @@ getJasmineRequireObj().pp = function(j$) {
       }
       this.format(array[i]);
     }
-    if(array.length > length) {
+    if (array.length > length) {
       this.append(', ...');
     }
 
@@ -131,7 +142,9 @@ getJasmineRequireObj().pp = function(j$) {
       self.formatProperty(array, property, isGetter);
     });
 
-    if (truncated) { this.append(', ...'); }
+    if (truncated) {
+      this.append(', ...');
+    }
 
     this.append(' ]');
   };
@@ -144,7 +157,7 @@ getJasmineRequireObj().pp = function(j$) {
     this.append('Set( ');
     var size = Math.min(set.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
     var i = 0;
-    set.forEach( function( value, key ) {
+    set.forEach(function(value, key) {
       if (i >= size) {
         return;
       }
@@ -154,7 +167,7 @@ getJasmineRequireObj().pp = function(j$) {
       this.format(value);
 
       i++;
-    }, this );
+    }, this);
     if (set.size > size) {
       this.append(', ...');
     }
@@ -169,17 +182,17 @@ getJasmineRequireObj().pp = function(j$) {
     this.append('Map( ');
     var size = Math.min(map.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
     var i = 0;
-    map.forEach( function( value, key ) {
+    map.forEach(function(value, key) {
       if (i >= size) {
         return;
       }
       if (i > 0) {
         this.append(', ');
       }
-      this.format([key,value]);
+      this.format([key, value]);
 
       i++;
-    }, this );
+    }, this);
     if (map.size > size) {
       this.append(', ...');
     }
@@ -188,11 +201,12 @@ getJasmineRequireObj().pp = function(j$) {
 
   PrettyPrinter.prototype.emitObject = function(obj) {
     var ctor = obj.constructor,
-        constructorName;
+      constructorName;
 
-    constructorName = typeof ctor === 'function' && obj instanceof ctor ?
-      j$.fnNameFor(obj.constructor) :
-      'null';
+    constructorName =
+      typeof ctor === 'function' && obj instanceof ctor
+        ? j$.fnNameFor(obj.constructor)
+        : 'null';
 
     this.append(constructorName);
 
@@ -214,14 +228,20 @@ getJasmineRequireObj().pp = function(j$) {
       self.formatProperty(obj, property, isGetter);
     });
 
-    if (truncated) { this.append(', ...'); }
+    if (truncated) {
+      this.append(', ...');
+    }
 
     this.append(' })');
   };
 
   PrettyPrinter.prototype.emitTypedArray = function(arr) {
     var constructorName = j$.fnNameFor(arr.constructor),
-      limitedArray = Array.prototype.slice.call(arr, 0, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH),
+      limitedArray = Array.prototype.slice.call(
+        arr,
+        0,
+        j$.MAX_PRETTY_PRINT_ARRAY_LENGTH
+      ),
       itemsString = Array.prototype.join.call(limitedArray, ', ');
 
     if (limitedArray.length !== arr.length) {
@@ -258,13 +278,13 @@ getJasmineRequireObj().pp = function(j$) {
   };
 
   PrettyPrinter.prototype.formatProperty = function(obj, property, isGetter) {
-      this.append(property);
-      this.append(': ');
-      if (isGetter) {
-        this.append('<getter>');
-      } else {
-        this.format(obj[property]);
-      }
+    this.append(property);
+    this.append(': ');
+    if (isGetter) {
+      this.append('<getter>');
+    } else {
+      this.format(obj[property]);
+    }
   };
 
   PrettyPrinter.prototype.append = function(value) {
@@ -283,7 +303,6 @@ getJasmineRequireObj().pp = function(j$) {
     }
   };
 
-
   function truncate(s, maxlen) {
     if (s.length <= maxlen) {
       return { value: s, truncated: false };
@@ -294,30 +313,33 @@ getJasmineRequireObj().pp = function(j$) {
   }
 
   function MaxCharsReachedError() {
-    this.message = 'Exceeded ' + j$.MAX_PRETTY_PRINT_CHARS +
+    this.message =
+      'Exceeded ' +
+      j$.MAX_PRETTY_PRINT_CHARS +
       ' characters while pretty-printing a value';
   }
 
   MaxCharsReachedError.prototype = new Error();
 
   function keys(obj, isArray) {
-    var allKeys = Object.keys ? Object.keys(obj) :
-      (function(o) {
+    var allKeys = Object.keys
+      ? Object.keys(obj)
+      : (function(o) {
           var keys = [];
           for (var key in o) {
-              if (j$.util.has(o, key)) {
-                  keys.push(key);
-              }
+            if (j$.util.has(o, key)) {
+              keys.push(key);
+            }
           }
           return keys;
-      })(obj);
+        })(obj);
 
     if (!isArray) {
       return allKeys;
     }
 
     if (allKeys.length === 0) {
-        return allKeys;
+      return allKeys;
     }
 
     var extraKeys = [];

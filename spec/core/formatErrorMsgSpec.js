@@ -1,4 +1,4 @@
-describe('formatErrorMsg', function () {
+describe('formatErrorMsg', function() {
   it('should format an error with a domain', function() {
     var formator = jasmineUnderTest.formatErrorMsg('api');
     expect(formator('message')).toBe('api : message');

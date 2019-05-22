@@ -6,13 +6,30 @@ getJasmineRequireObj().Spec = function(j$) {
     this.id = attrs.id;
     this.description = attrs.description || '';
     this.queueableFn = attrs.queueableFn;
-    this.beforeAndAfterFns = attrs.beforeAndAfterFns || function() { return {befores: [], afters: []}; };
-    this.userContext = attrs.userContext || function() { return {}; };
+    this.beforeAndAfterFns =
+      attrs.beforeAndAfterFns ||
+      function() {
+        return { befores: [], afters: [] };
+      };
+    this.userContext =
+      attrs.userContext ||
+      function() {
+        return {};
+      };
     this.onStart = attrs.onStart || function() {};
-    this.getSpecName = attrs.getSpecName || function() { return ''; };
-    this.expectationResultFactory = attrs.expectationResultFactory || function() { };
+    this.getSpecName =
+      attrs.getSpecName ||
+      function() {
+        return '';
+      };
+    this.expectationResultFactory =
+      attrs.expectationResultFactory || function() {};
     this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
-    this.catchingExceptions = attrs.catchingExceptions || function() { return true; };
+    this.catchingExceptions =
+      attrs.catchingExceptions ||
+      function() {
+        return true;
+      };
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
     this.timer = attrs.timer || j$.noopTimer;
 
@@ -90,12 +107,15 @@ getJasmineRequireObj().Spec = function(j$) {
       isLeaf: true,
       queueableFns: regularFns,
       cleanupFns: fns.afters,
-      onException: function () {
+      onException: function() {
         self.onException.apply(self, arguments);
       },
       onComplete: function() {
         self.result.duration = self.timer.elapsed();
-        onComplete(self.result.status === 'failed' && new j$.StopExecutionError('spec failed'));
+        onComplete(
+          self.result.status === 'failed' &&
+            new j$.StopExecutionError('spec failed')
+        );
       },
       userContext: this.userContext()
     };
@@ -121,13 +141,17 @@ getJasmineRequireObj().Spec = function(j$) {
       return;
     }
 
-    this.addExpectationResult(false, {
-      matcherName: '',
-      passed: false,
-      expected: '',
-      actual: '',
-      error: e
-    }, true);
+    this.addExpectationResult(
+      false,
+      {
+        matcherName: '',
+        passed: false,
+        expected: '',
+        actual: '',
+        error: e
+      },
+      true
+    );
   };
 
   Spec.prototype.pend = function(message) {
@@ -166,13 +190,16 @@ getJasmineRequireObj().Spec = function(j$) {
     if (typeof deprecation === 'string') {
       deprecation = { message: deprecation };
     }
-    this.result.deprecationWarnings.push(this.expectationResultFactory(deprecation));
+    this.result.deprecationWarnings.push(
+      this.expectationResultFactory(deprecation)
+    );
   };
 
   var extractCustomPendingMessage = function(e) {
     var fullMessage = e.toString(),
-        boilerplateStart = fullMessage.indexOf(Spec.pendingSpecExceptionMessage),
-        boilerplateEnd = boilerplateStart + Spec.pendingSpecExceptionMessage.length;
+      boilerplateStart = fullMessage.indexOf(Spec.pendingSpecExceptionMessage),
+      boilerplateEnd =
+        boilerplateStart + Spec.pendingSpecExceptionMessage.length;
 
     return fullMessage.substr(boilerplateEnd);
   };
@@ -180,7 +207,11 @@ getJasmineRequireObj().Spec = function(j$) {
   Spec.pendingSpecExceptionMessage = '=> marked Pending';
 
   Spec.isPendingSpecException = function(e) {
-    return !!(e && e.toString && e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1);
+    return !!(
+      e &&
+      e.toString &&
+      e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
+    );
   };
 
   return Spec;

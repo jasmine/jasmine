@@ -6,7 +6,7 @@ describe('ExpectationFilterChain', function() {
         orig = new jasmineUnderTest.ExpectationFilterChain({
           modifyFailureMessage: first
         }),
-        added = orig.addFilter({selectComparisonFunc: second});
+        added = orig.addFilter({ selectComparisonFunc: second });
 
       added.modifyFailureMessage();
       expect(first).toHaveBeenCalled();
@@ -18,7 +18,7 @@ describe('ExpectationFilterChain', function() {
       var orig = new jasmineUnderTest.ExpectationFilterChain({}),
         f = jasmine.createSpy('f');
 
-      orig.addFilter({selectComparisonFunc: f});
+      orig.addFilter({ selectComparisonFunc: f });
 
       orig.selectComparisonFunc();
       expect(f).not.toHaveBeenCalled();
@@ -39,8 +39,8 @@ describe('ExpectationFilterChain', function() {
         var first = jasmine.createSpy('first').and.returnValue('first'),
           second = jasmine.createSpy('second').and.returnValue('second'),
           chain = new jasmineUnderTest.ExpectationFilterChain()
-            .addFilter({selectComparisonFunc: first})
-            .addFilter({selectComparisonFunc: second}),
+            .addFilter({ selectComparisonFunc: first })
+            .addFilter({ selectComparisonFunc: second }),
           matcher = {},
           result;
 
@@ -67,17 +67,27 @@ describe('ExpectationFilterChain', function() {
         var first = jasmine.createSpy('first').and.returnValue('first'),
           second = jasmine.createSpy('second').and.returnValue('second'),
           chain = new jasmineUnderTest.ExpectationFilterChain()
-            .addFilter({buildFailureMessage: first})
-            .addFilter({buildFailureMessage: second}),
-          matcherResult = {pass: false},
+            .addFilter({ buildFailureMessage: first })
+            .addFilter({ buildFailureMessage: second }),
+          matcherResult = { pass: false },
           matcherName = 'foo',
           args = [],
           util = {},
           result;
 
-        result = chain.buildFailureMessage(matcherResult, matcherName, args, util);
+        result = chain.buildFailureMessage(
+          matcherResult,
+          matcherName,
+          args,
+          util
+        );
 
-        expect(first).toHaveBeenCalledWith(matcherResult, matcherName, args, util);
+        expect(first).toHaveBeenCalledWith(
+          matcherResult,
+          matcherName,
+          args,
+          util
+        );
         expect(second).not.toHaveBeenCalled();
         expect(result).toEqual('first');
       });
@@ -98,8 +108,8 @@ describe('ExpectationFilterChain', function() {
         var first = jasmine.createSpy('first').and.returnValue('first'),
           second = jasmine.createSpy('second').and.returnValue('second'),
           chain = new jasmineUnderTest.ExpectationFilterChain()
-            .addFilter({modifyFailureMessage: first})
-            .addFilter({modifyFailureMessage: second}),
+            .addFilter({ modifyFailureMessage: first })
+            .addFilter({ modifyFailureMessage: second }),
           result;
 
         result = chain.modifyFailureMessage('original');

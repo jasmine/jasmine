@@ -1,7 +1,7 @@
-describe("UserContext", function() {
-  it("Behaves just like an plain object", function() {
+describe('UserContext', function() {
+  it('Behaves just like an plain object', function() {
     var context = new jasmineUnderTest.UserContext(),
-        properties = [];
+      properties = [];
 
     for (var prop in context) {
       if (obj.hasOwnProperty(prop)) {
@@ -51,4 +51,3 @@ describe("UserContext", function() {
     });
   });
 });
-

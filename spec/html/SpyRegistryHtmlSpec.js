@@ -8,7 +8,9 @@ describe('Spy Registry browser-specific behavior', function() {
 
     var spies = [],
       spyRegistry = new jasmineUnderTest.SpyRegistry({
-        currentSpies: function() { return spies; },
+        currentSpies: function() {
+          return spies;
+        },
         createSpy: createSpy,
         global: window
       }),
@@ -28,7 +30,7 @@ describe('Spy Registry browser-specific behavior', function() {
 
     try {
       descriptor = Object.getOwnPropertyDescriptor(window, 'onerror');
-    } catch(e) {
+    } catch (e) {
       // IE 8 doesn't support `definePropery` on non-DOM nodes
     }
 

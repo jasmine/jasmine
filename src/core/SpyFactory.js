@@ -1,5 +1,4 @@
 getJasmineRequireObj().SpyFactory = function(j$) {
-
   function SpyFactory(getCustomStrategies, getPromise) {
     var self = this;
 
@@ -8,7 +7,8 @@ getJasmineRequireObj().SpyFactory = function(j$) {
     };
 
     this.createSpyObj = function(baseName, methodNames) {
-      var baseNameIsCollection = j$.isObject_(baseName) || j$.isArray_(baseName);
+      var baseNameIsCollection =
+        j$.isObject_(baseName) || j$.isArray_(baseName);
 
       if (baseNameIsCollection && j$.util.isUndefined(methodNames)) {
         methodNames = baseName;

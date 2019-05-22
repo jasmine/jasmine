@@ -1,5 +1,4 @@
 getJasmineRequireObj().CallTracker = function(j$) {
-
   /**
    * @namespace Spy#calls
    */
@@ -8,7 +7,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
     var opts = {};
 
     this.track = function(context) {
-      if(opts.cloneArgs) {
+      if (opts.cloneArgs) {
         context.args = j$.util.cloneArgs(context.args);
       }
       calls.push(context);
@@ -64,7 +63,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
      */
     this.allArgs = function() {
       var callArgs = [];
-      for(var i = 0; i < calls.length; i++) {
+      for (var i = 0; i < calls.length; i++) {
         callArgs.push(calls[i].args);
       }
 
@@ -108,7 +107,6 @@ getJasmineRequireObj().CallTracker = function(j$) {
     this.saveArgumentsByValue = function() {
       opts.cloneArgs = true;
     };
-
   }
 
   return CallTracker;

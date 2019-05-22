@@ -4,7 +4,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: pkg,
-    jshint: require('./grunt/config/jshint.js'),
     concat: require('./grunt/config/concat.js'),
     sass: require('./grunt/config/sass.js'),
     compress: require('./grunt/config/compress.js'),
@@ -15,7 +14,7 @@ module.exports = function(grunt) {
 
   grunt.loadTasks('grunt/tasks');
 
-  grunt.registerTask('default', ['jshint:all', 'sass:dist', "cssUrlEmbed"]);
+  grunt.registerTask('default', ['sass:dist', "cssUrlEmbed"]);
 
   var version = require('./grunt/tasks/version.js');
 
@@ -28,9 +27,7 @@ module.exports = function(grunt) {
     [
       'sass:dist',
       "cssUrlEmbed",
-      'jshint:beforeConcat',
-      'concat',
-      'jshint:afterConcat'
+      'concat'
     ]
   );
 

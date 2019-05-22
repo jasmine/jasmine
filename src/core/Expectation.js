@@ -1,6 +1,8 @@
 getJasmineRequireObj().Expectation = function(j$) {
   var promiseForMessage = {
-    jasmineToString: function() { return 'a promise'; }
+    jasmineToString: function() {
+      return 'a promise';
+    }
   };
 
   /**
@@ -12,7 +14,10 @@ getJasmineRequireObj().Expectation = function(j$) {
 
     var customMatchers = options.customMatchers || {};
     for (var matcherName in customMatchers) {
-      this[matcherName] = wrapSyncCompare(matcherName, customMatchers[matcherName]);
+      this[matcherName] = wrapSyncCompare(
+        matcherName,
+        customMatchers[matcherName]
+      );
     }
   }
 
@@ -50,7 +55,9 @@ getJasmineRequireObj().Expectation = function(j$) {
     this.expector = new j$.Expector(options);
 
     if (!global.Promise) {
-      throw new Error('expectAsync is unavailable because the environment does not support promises.');
+      throw new Error(
+        'expectAsync is unavailable because the environment does not support promises.'
+      );
     }
 
     if (!j$.isPromiseLike(this.expector.actual)) {
@@ -100,9 +107,11 @@ getJasmineRequireObj().Expectation = function(j$) {
       // frames that are relevant to the user instead of just parts of Jasmine.
       var errorForStack = j$.util.errorWithStack();
 
-      return this.expector.compare(name, matcherFactory, arguments).then(function(result) {
-        self.expector.processResult(result, errorForStack, promiseForMessage);
-      });
+      return this.expector
+        .compare(name, matcherFactory, arguments)
+        .then(function(result) {
+          self.expector.processResult(result, errorForStack, promiseForMessage);
+        });
     };
   }
 

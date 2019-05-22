@@ -20,7 +20,7 @@ getJasmineRequireObj().buildExpectationResult = function() {
       passed: options.passed
     };
 
-    if(!result.passed) {
+    if (!result.passed) {
       result.expected = options.expected;
       result.actual = options.actual;
     }

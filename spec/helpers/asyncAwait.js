@@ -1,7 +1,7 @@
 (function(env) {
   function getAsyncCtor() {
     try {
-      eval("var func = async function(){};");
+      eval('var func = async function(){};');
     } catch (e) {
       return null;
     }
@@ -15,13 +15,12 @@
 
   env.makeAsyncAwaitFunction = function() {
     var AsyncFunction = getAsyncCtor();
-    return new AsyncFunction("");
+    return new AsyncFunction('');
   };
 
   env.requireAsyncAwait = function() {
     if (!hasAsyncAwaitSupport()) {
-      env.pending("Environment does not support async/await functions");
+      env.pending('Environment does not support async/await functions');
     }
   };
 })(jasmine.getEnv());
-

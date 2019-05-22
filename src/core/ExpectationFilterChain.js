@@ -12,7 +12,12 @@ getJasmineRequireObj().ExpectationFilterChain = function() {
     return this.callFirst_('selectComparisonFunc', arguments).result;
   };
 
-  ExpectationFilterChain.prototype.buildFailureMessage = function(result, matcherName, args, util) {
+  ExpectationFilterChain.prototype.buildFailureMessage = function(
+    result,
+    matcherName,
+    args,
+    util
+  ) {
     return this.callFirst_('buildFailureMessage', arguments).result;
   };
 
@@ -39,7 +44,7 @@ getJasmineRequireObj().ExpectationFilterChain = function() {
       };
     }
 
-    return {found: false};
+    return { found: false };
   };
 
   return ExpectationFilterChain;

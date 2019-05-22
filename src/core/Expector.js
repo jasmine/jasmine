@@ -7,7 +7,11 @@ getJasmineRequireObj().Expector = function(j$) {
     this.filters = new j$.ExpectationFilterChain();
   }
 
-  Expector.prototype.instantiateMatcher = function(matcherName, matcherFactory, args) {
+  Expector.prototype.instantiateMatcher = function(
+    matcherName,
+    matcherFactory,
+    args
+  ) {
     this.matcherName = matcherName;
     this.args = Array.prototype.slice.call(args, 0);
     this.expected = this.args.slice(0);
@@ -26,7 +30,13 @@ getJasmineRequireObj().Expector = function(j$) {
       return '';
     }
 
-    var msg = this.filters.buildFailureMessage(result, this.matcherName, this.args, this.util, defaultMessage);
+    var msg = this.filters.buildFailureMessage(
+      result,
+      this.matcherName,
+      this.args,
+      this.util,
+      defaultMessage
+    );
     return this.filters.modifyFailureMessage(msg || defaultMessage());
 
     function defaultMessage() {
@@ -44,7 +54,11 @@ getJasmineRequireObj().Expector = function(j$) {
   };
 
   Expector.prototype.compare = function(matcherName, matcherFactory, args) {
-    var matcherCompare = this.instantiateMatcher(matcherName, matcherFactory, args);
+    var matcherCompare = this.instantiateMatcher(
+      matcherName,
+      matcherFactory,
+      args
+    );
     return matcherCompare.apply(null, this.args);
   };
 
@@ -54,7 +68,11 @@ getJasmineRequireObj().Expector = function(j$) {
     return result;
   };
 
-  Expector.prototype.processResult = function(result, errorForStack, actualOverride) {
+  Expector.prototype.processResult = function(
+    result,
+    errorForStack,
+    actualOverride
+  ) {
     this.args[0] = actualOverride || this.args[0];
     var message = this.buildMessage(result);
 
@@ -62,18 +80,15 @@ getJasmineRequireObj().Expector = function(j$) {
       this.expected = this.expected[0];
     }
 
-    this.addExpectationResult(
-      result.pass,
-      {
-        matcherName: this.matcherName,
-        passed: result.pass,
-        message: message,
-        error: errorForStack ? undefined : result.error,
-        errorForStack: errorForStack || undefined,
-        actual: this.actual,
-        expected: this.expected // TODO: this may need to be arrayified/sliced
-      }
-    );
+    this.addExpectationResult(result.pass, {
+      matcherName: this.matcherName,
+      passed: result.pass,
+      message: message,
+      error: errorForStack ? undefined : result.error,
+      errorForStack: errorForStack || undefined,
+      actual: this.actual,
+      expected: this.expected // TODO: this may need to be arrayified/sliced
+    });
   };
 
   return Expector;

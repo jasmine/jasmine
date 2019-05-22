@@ -1,5 +1,5 @@
-describe("StackTrace", function() {
-  it("understands Chrome/IE/Edge style traces", function() {
+describe('StackTrace', function() {
+  it('understands Chrome/IE/Edge style traces', function() {
     var error = {
       message: 'nope',
       stack:
@@ -14,13 +14,15 @@ describe("StackTrace", function() {
     expect(result.style).toEqual('v8');
     expect(result.frames).toEqual([
       {
-        raw: '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
+        raw:
+          '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
         func: 'UserContext.<anonymous>',
         file: 'http://localhost:8888/__spec__/core/UtilSpec.js',
         line: 115
       },
       {
-        raw: '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)',
+        raw:
+          '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)',
         func: 'QueueRunner.run',
         file: 'http://localhost:8888/__jasmine__/jasmine.js',
         line: 4320
@@ -28,7 +30,7 @@ describe("StackTrace", function() {
     ]);
   });
 
-  it("understands Chrome/IE/Edge style traces with multiline messages", function() {
+  it('understands Chrome/IE/Edge style traces with multiline messages', function() {
     var error = {
       message: 'line 1\nline 2',
       stack:
@@ -40,14 +42,16 @@ describe("StackTrace", function() {
     var result = new jasmineUnderTest.StackTrace(error);
 
     expect(result.message).toEqual('Error: line 1\nline 2');
-    var rawFrames = result.frames.map(function(f) { return f.raw; });
+    var rawFrames = result.frames.map(function(f) {
+      return f.raw;
+    });
     expect(rawFrames).toEqual([
       '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
-      '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)',
+      '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
     ]);
   });
 
-  it("understands Node style traces", function() {
+  it('understands Node style traces', function() {
     var error = {
       message: 'nope',
       stack:
@@ -69,13 +73,15 @@ describe("StackTrace", function() {
         line: 4255
       },
       {
-        raw: '  at QueueRunner.complete [as onComplete] (/somewhere/jasmine/lib/jasmine-core/jasmine.js:579:9)',
+        raw:
+          '  at QueueRunner.complete [as onComplete] (/somewhere/jasmine/lib/jasmine-core/jasmine.js:579:9)',
         func: 'QueueRunner.complete [as onComplete]',
         file: '/somewhere/jasmine/lib/jasmine-core/jasmine.js',
         line: 579
       },
       {
-        raw: '  at Immediate.<anonymous> (/somewhere/jasmine/lib/jasmine-core/jasmine.js:4314:12)',
+        raw:
+          '  at Immediate.<anonymous> (/somewhere/jasmine/lib/jasmine-core/jasmine.js:4314:12)',
         func: 'Immediate.<anonymous>',
         file: '/somewhere/jasmine/lib/jasmine-core/jasmine.js',
         line: 4314
@@ -89,7 +95,7 @@ describe("StackTrace", function() {
     ]);
   });
 
-  it("understands Safari/Firefox/Phantom-OS X style traces", function() {
+  it('understands Safari/Firefox/Phantom-OS X style traces', function() {
     var error = {
       message: 'nope',
       stack:
@@ -116,22 +122,20 @@ describe("StackTrace", function() {
     ]);
   });
 
-  it("does not mistake gibberish for Safari/Firefox/Phantom-OS X style traces", function() {
+  it('does not mistake gibberish for Safari/Firefox/Phantom-OS X style traces', function() {
     var error = {
       message: 'nope',
       stack: 'randomcharsnotincludingwhitespace'
     };
     var result = new jasmineUnderTest.StackTrace(error);
     expect(result.style).toBeNull();
-    expect(result.frames).toEqual([
-      { raw: error.stack }
-    ]);
+    expect(result.frames).toEqual([{ raw: error.stack }]);
   });
 
-  it("understands Phantom-Linux style traces", function() {
+  it('understands Phantom-Linux style traces', function() {
     var error = {
       message: 'nope',
-      stack: 
+      stack:
         '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)\n' +
         '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
     };
@@ -142,13 +146,15 @@ describe("StackTrace", function() {
     expect(result.style).toEqual('v8');
     expect(result.frames).toEqual([
       {
-        raw: '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
+        raw:
+          '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
         func: 'UserContext.<anonymous>',
         file: 'http://localhost:8888/__spec__/core/UtilSpec.js',
         line: 115
       },
       {
-        raw: '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)',
+        raw:
+          '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)',
         func: 'QueueRunner.run',
         file: 'http://localhost:8888/__jasmine__/jasmine.js',
         line: 4320
@@ -156,7 +162,7 @@ describe("StackTrace", function() {
     ]);
   });
 
-  it("ignores blank lines", function() {
+  it('ignores blank lines', function() {
     var error = {
       message: 'nope',
       stack:
@@ -167,7 +173,8 @@ describe("StackTrace", function() {
 
     expect(result.frames).toEqual([
       {
-        raw: '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
+        raw:
+          '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
         func: 'UserContext.<anonymous>',
         file: 'http://localhost:8888/__spec__/core/UtilSpec.js',
         line: 115
@@ -188,7 +195,8 @@ describe("StackTrace", function() {
     expect(result.style).toEqual('v8');
     expect(result.frames).toEqual([
       {
-        raw: '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
+        raw:
+          '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
         func: 'UserContext.<anonymous>',
         file: 'http://localhost:8888/__spec__/core/UtilSpec.js',
         line: 115
@@ -197,7 +205,8 @@ describe("StackTrace", function() {
         raw: '    but this is quite unexpected'
       },
       {
-        raw: '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)',
+        raw:
+          '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)',
         func: 'QueueRunner.run',
         file: 'http://localhost:8888/__jasmine__/jasmine.js',
         line: 4320

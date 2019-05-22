@@ -1,7 +1,7 @@
-describe("Timer", function() {
-  it("reports the time elapsed", function() {
+describe('Timer', function() {
+  it('reports the time elapsed', function() {
     var fakeNow = jasmine.createSpy('fake Date.now'),
-        timer = new jasmineUnderTest.Timer({now: fakeNow});
+      timer = new jasmineUnderTest.Timer({ now: fakeNow });
 
     fakeNow.and.returnValue(100);
     timer.start();
@@ -11,7 +11,7 @@ describe("Timer", function() {
     expect(timer.elapsed()).toEqual(100);
   });
 
-  describe("when date is stubbed, perhaps by other testing helpers", function() {
+  describe('when date is stubbed, perhaps by other testing helpers', function() {
     var origDate = Date;
     beforeEach(function() {
       Date = jasmine.createSpy('date spy');
@@ -21,7 +21,7 @@ describe("Timer", function() {
       Date = origDate;
     });
 
-    it("does not throw even though Date was taken away", function() {
+    it('does not throw even though Date was taken away', function() {
       var timer = new jasmineUnderTest.Timer();
 
       expect(timer.start).not.toThrow();
