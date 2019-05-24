@@ -46,12 +46,12 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
 
     /**
      * Tell the spy to return a promise resolving to the specified value when invoked.
-     * @name SpyStrategy#resolveWith
+     * @name SpyStrategy#resolveTo
      * @function
      * @param {*} value The value to return.
      */
-    this.resolveWith = function(value) {
-      var Promise = requirePromise('resolveWith');
+    this.resolveTo = function(value) {
+      var Promise = requirePromise('resolveTo');
       self.plan = function() {
         return Promise.resolve(value);
       };
@@ -66,10 +66,9 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
      */
     this.rejectWith = function(value) {
       var Promise = requirePromise('rejectWith');
-      var error = value instanceof Error ? value : new Error(value);
 
       self.plan = function() {
-        return Promise.reject(error);
+        return Promise.reject(value);
       };
       return self.getSpy();
     };

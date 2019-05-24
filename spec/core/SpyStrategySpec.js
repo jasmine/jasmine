@@ -117,7 +117,7 @@ describe('SpyStrategy', function() {
       });
   });
 
-  describe('#resolveWith', function() {
+  describe('#resolveTo', function() {
     it('allows a resolved promise to be returned', function(done) {
       jasmine.getEnv().requirePromises();
 
@@ -130,7 +130,7 @@ describe('SpyStrategy', function() {
           getPromise: getPromise
         });
 
-      spyStrategy.resolveWith(37);
+      spyStrategy.resolveTo(37);
       spyStrategy
         .exec()
         .then(function(returnValue) {
@@ -145,9 +145,9 @@ describe('SpyStrategy', function() {
         spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
 
       expect(function() {
-        spyStrategy.resolveWith(37);
+        spyStrategy.resolveTo(37);
       }).toThrowError(
-        'resolveWith requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`'
+        'resolveTo requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`'
       );
     });
   });
@@ -176,7 +176,7 @@ describe('SpyStrategy', function() {
         .catch(done.fail);
     });
 
-    it('allows a non-Error to be rejected, wrapping it in an exception when executed', function(done) {
+    it('allows a non-Error to be rejected', function(done) {
       jasmine.getEnv().requirePromises();
 
       var originalFn = jasmine.createSpy('original'),
@@ -193,7 +193,7 @@ describe('SpyStrategy', function() {
         .exec()
         .then(done.fail)
         .catch(function(error) {
-          expect(error).toEqual(new Error('oops'));
+          expect(error).toEqual('oops');
           done();
         })
         .catch(done.fail);
