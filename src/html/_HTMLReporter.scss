@@ -27,6 +27,7 @@ body {
 }
 
 .jasmine_html-reporter {
+  width: 100%;
   background-color: $page-background-color;
   padding: 5px;
   margin: -8px;
@@ -305,7 +306,7 @@ body {
 
       &.jasmine-excluded a {
         color: $neutral-color;
-      } 
+      }
     }
   }
 
@@ -329,7 +330,7 @@ body {
 
       &.jasmine-excluded a:before {
         content: $passing-mark + $space;
-      } 
+      }
     }
   }
 
