@@ -12,7 +12,7 @@ getJasmineRequireObj().Spy = function(j$) {
    * @constructor
    * @name Spy
    */
-  function Spy(name, originalFn, customStrategies, getPromise) {
+  function Spy(name, originalFn, customStrategies, defaultStrategyFn, getPromise) {
     var numArgs = typeof originalFn === 'function' ? originalFn.length : 0,
       wrapper = makeFunc(numArgs, function() {
         return spy.apply(this, Array.prototype.slice.call(arguments));
@@ -126,6 +126,10 @@ getJasmineRequireObj().Spy = function(j$) {
       return strategyDispatcher.withArgs.apply(strategyDispatcher, arguments);
     };
     wrapper.calls = callTracker;
+
+    if (defaultStrategyFn) {
+      defaultStrategyFn(wrapper.and);
+    }
 
     return wrapper;
   }

@@ -330,5 +330,21 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     return env.addSpyStrategy(name, factory);
   };
 
+  /**
+   * Set the default spy strategy for the current scope of specs.
+   *
+   * _Note:_ This is only callable from within a {@link beforeEach}, {@link it}, or {@link beforeAll}.
+   * @name jasmine.setDefaultSpyStrategy
+   * @function
+   * @param {Function} defaultStrategyFn - a function that assigns a strategy
+   * @example
+   * beforeEach(function() {
+   *   jasmine.setDefaultSpyStrategy(and => and.returnValue(true));
+   * });
+   */
+  jasmine.setDefaultSpyStrategy = function(defaultStrategyFn) {
+    return env.setDefaultSpyStrategy(defaultStrategyFn);
+  };
+
   return jasmineInterface;
 };
