@@ -1,6 +1,7 @@
 const path = require("path"),
       fs = require('fs'),
-      port = 5555,
+      jasmineBrowser = require('jasmine-browser-runner'),
+      jasmineCore = require('./lib/jasmine-core.js'),
       colors = {
         "passed" : "\x1B[32m",
         "failed": "\x1B[31m",
@@ -15,40 +16,13 @@ const path = require("path"),
         "excluded": "",
         "none": ""
       },
-      host = `http://localhost:${port}`,
       useSauce = process.env.USE_SAUCE === 'true';
+
+var config = require(path.resolve('spec/support/jasmine-browser.json'));
+config.jasmineCore = jasmineCore;
+config.port = 0;
+
 let driver, server;
-
-function pageGenerator() {
-  const ejs = require("ejs"),
-    fg = require("fast-glob"),
-    templatePath = path.resolve(__dirname, 'spec/support/index.html.ejs'),
-    template = ejs.compile(fs.readFileSync(templatePath).toString()),
-    patterns = [
-      "lib/jasmine-core/jasmine.js",
-      "lib/jasmine-core/json2.js",
-      "lib/jasmine-core/jasmine-html.js",
-      "lib/jasmine-core/boot.js",
-      "src/core/requireCore.js",
-      "src/core/base.js",
-      "src/core/util.js",
-      "src/core/Spec.js",
-      "src/core/Env.js",
-      "src/**/*.js",
-      "spec/helpers/*.js",
-      "spec/**/*[Ss]pec.js"
-    ],
-    ignore = [
-      "spec/helpers/nodeDefineJasmineUnderTest.js",
-      "spec/npmPackage/**/*",
-      "lib/jasmine-core/node_boot.js"
-    ];
-
-  return function toHtml() {
-    const files = fg.sync(patterns, {ignore});
-    return template({files});
-  }
-}
 
 function buildWebdriver() {
   const webdriver = require("selenium-webdriver"),
@@ -130,19 +104,10 @@ function cleanup() {
 }
 
 (async function () {
-  await new Promise(resolve => {
-    console.log("Creating an express app for browers to run the tests...")
-    const express = require("express"),
-          app = express(),
-          html = pageGenerator();
+  server = await jasmineBrowser.startServer(config);
+  const host = `http://localhost:${server.address().port}`;
 
-    app.use(express.static(__dirname));
-    app.get("/", (req, res) => res.send(html()));
-    server = app.listen(port, resolve);
-  });
-
-
-  console.log("Running the tests in browser...")
+  console.log("Running the tests in browser...");
   driver = buildWebdriver();
   await driver.get(`${host}/?throwFailures=false&failFast=false&random=true`)
   await new Promise(resolve => {
