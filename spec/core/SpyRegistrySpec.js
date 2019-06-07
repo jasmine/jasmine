@@ -64,6 +64,21 @@ describe('SpyRegistry', function() {
       }).toThrowError(/has already been spied upon/);
     });
 
+    it('allows overriding respy by passing respy option as true', function() {
+      var spies = [],
+        spyRegistry = new jasmineUnderTest.SpyRegistry({
+          currentSpies: function() {
+            return spies;
+          },
+          createSpy: createSpy
+        }),
+        subject = { spiedFunc: function() {} };
+
+      var originalSpy = spyRegistry.spyOn(subject, 'spiedFunc');
+
+      expect(spyRegistry.spyOn(subject, 'spiedFunc', true)).toBe(originalSpy);
+    });
+
     it('checks if it can be spied upon', function() {
       var scope = {};
 
@@ -264,6 +279,46 @@ describe('SpyRegistry', function() {
         var originalSpy = spyRegistry.spyOnProperty(subject, 'spiedProp');
 
         expect(spyRegistry.spyOnProperty(subject, 'spiedProp')).toBe(
+          originalSpy
+        );
+      });
+
+      it('returns the original spy if respy option is passed as true', function() {
+        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+            createSpy: createSpy
+          }),
+          subject = {};
+
+        Object.defineProperty(subject, 'spiedProp', {
+          get: function() {
+            return 1;
+          },
+          configurable: true
+        });
+
+        var originalSpy = spyRegistry.spyOnProperty(subject, 'spiedProp');
+
+        expect(spyRegistry.spyOnProperty(subject, 'spiedProp', 'get', true)).toBe(
+          originalSpy
+        );
+      });
+
+      it('returns the original spy if respy option is passed as third parameter', function() {
+        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+            createSpy: createSpy
+          }),
+          subject = {};
+
+        Object.defineProperty(subject, 'spiedProp', {
+          get: function() {
+            return 1;
+          },
+          configurable: true
+        });
+
+        var originalSpy = spyRegistry.spyOnProperty(subject, 'spiedProp');
+
+        expect(spyRegistry.spyOnProperty(subject, 'spiedProp', true)).toBe(
           originalSpy
         );
       });

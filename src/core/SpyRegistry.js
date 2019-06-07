@@ -1,8 +1,8 @@
 getJasmineRequireObj().SpyRegistry = function(j$) {
-  var spyOnMsg = j$.formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
+  var spyOnMsg = j$.formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>, [allowRespy])');
   var spyOnPropertyMsg = j$.formatErrorMsg(
     '<spyOnProperty>',
-    'spyOnProperty(<object>, <propName>, [accessType])'
+    'spyOnProperty(<object>, <propName>, [accessType], [allowRespy])'
   );
 
   function SpyRegistry(options) {
@@ -19,8 +19,11 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       this.respy = allow;
     };
 
-    this.spyOn = function(obj, methodName) {
+    this.spyOn = function(obj, methodName, allowRespy) {
       var getErrorMsg = spyOnMsg;
+      if (allowRespy === undefined) {
+        allowRespy = this.respy;
+      }
 
       if (j$.util.isUndefined(obj) || obj === null) {
         throw new Error(
@@ -39,7 +42,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       if (obj[methodName] && j$.isSpy(obj[methodName])) {
-        if (this.respy) {
+        if (allowRespy) {
           return obj[methodName];
         } else {
           throw new Error(
@@ -84,10 +87,18 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       return spiedMethod;
     };
 
-    this.spyOnProperty = function(obj, propertyName, accessType) {
+    this.spyOnProperty = function(obj, propertyName, accessType, allowRespy) {
       var getErrorMsg = spyOnPropertyMsg;
 
-      accessType = accessType || 'get';
+      if (typeof accessType === 'boolean') {
+        accessType = 'get';
+        allowRespy = accessType;
+      } else {
+        accessType = accessType || 'get';
+        if (allowRespy === undefined) {
+          allowRespy = this.respy;
+        }
+      }
 
       if (j$.util.isUndefined(obj)) {
         throw new Error(
@@ -127,7 +138,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       }
 
       if (j$.isSpy(descriptor[accessType])) {
-        if (this.respy) {
+        if (allowRespy) {
           return descriptor[accessType];
         } else {
           throw new Error(

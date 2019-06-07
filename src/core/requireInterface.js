@@ -215,10 +215,11 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {Object} obj - The object upon which to install the {@link Spy}.
      * @param {String} methodName - The name of the method to replace with a {@link Spy}.
+     * @param {boolean} [allowRespy] - Whether to allow respying if the method is already a {@link Spy}.
      * @returns {Spy}
      */
-    spyOn: function(obj, methodName) {
-      return env.spyOn(obj, methodName);
+    spyOn: function(obj, methodName, allowRespy) {
+      return env.spyOn(obj, methodName, allowRespy);
     },
 
     /**
@@ -229,10 +230,11 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @param {Object} obj - The object upon which to install the {@link Spy}
      * @param {String} propertyName - The name of the property to replace with a {@link Spy}.
      * @param {String} [accessType=get] - The access type (get|set) of the property to {@link Spy} on.
+     * @param {boolean} [allowRespy] - Whether to allow respying if the method is already a {@link Spy}.
      * @returns {Spy}
      */
-    spyOnProperty: function(obj, methodName, accessType) {
-      return env.spyOnProperty(obj, methodName, accessType);
+    spyOnProperty: function(obj, methodName, accessType, allowRespy) {
+      return env.spyOnProperty(obj, methodName, accessType, allowRespy);
     },
 
     /**
