@@ -298,9 +298,9 @@ describe('SpyRegistry', function() {
 
         var originalSpy = spyRegistry.spyOnProperty(subject, 'spiedProp');
 
-        expect(spyRegistry.spyOnProperty(subject, 'spiedProp', 'get', true)).toBe(
-          originalSpy
-        );
+        expect(
+          spyRegistry.spyOnProperty(subject, 'spiedProp', 'get', true)
+        ).toBe(originalSpy);
       });
 
       it('returns the original spy if respy option is passed as third parameter', function() {

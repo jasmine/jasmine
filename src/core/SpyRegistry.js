@@ -1,5 +1,8 @@
 getJasmineRequireObj().SpyRegistry = function(j$) {
-  var spyOnMsg = j$.formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>, [allowRespy])');
+  var spyOnMsg = j$.formatErrorMsg(
+    '<spyOn>',
+    'spyOn(<object>, <methodName>, [allowRespy])'
+  );
   var spyOnPropertyMsg = j$.formatErrorMsg(
     '<spyOnProperty>',
     'spyOnProperty(<object>, <propName>, [accessType], [allowRespy])'
