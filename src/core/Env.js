@@ -210,9 +210,13 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.setDefaultSpyStrategy = function(defaultStrategyFn) {
       if (!currentRunnable()) {
-        throw new Error('Default spy strategy must be set in a before function or a spec');
+        throw new Error(
+          'Default spy strategy must be set in a before function or a spec'
+        );
       }
-      runnableResources[currentRunnable().id].defaultStrategyFn = defaultStrategyFn;
+      runnableResources[
+        currentRunnable().id
+      ].defaultStrategyFn = defaultStrategyFn;
     };
 
     this.addSpyStrategy = function(name, fn) {
@@ -304,7 +308,8 @@ getJasmineRequireObj().Env = function(j$) {
         resources.customMatchers = j$.util.clone(
           runnableResources[parentRunnableId].customMatchers
         );
-        resources.defaultStrategyFn = runnableResources[parentRunnableId].defaultStrategyFn;
+        resources.defaultStrategyFn =
+          runnableResources[parentRunnableId].defaultStrategyFn;
       }
 
       runnableResources[id] = resources;
