@@ -18,7 +18,8 @@
     "cleanup": "prettier --write src/**/*.js spec/**/*.js",
     "serve": "node spec/support/localJasmineBrowser.js",
     "serve:performance": "node spec/support/localJasmineBrowser.js jasmine-browser-performance.json",
-    "ci": "node spec/support/ci.js"
+    "ci": "node spec/support/ci.js",
+    "ci:performance": "node spec/support/ci.js jasmine-browser-performance.json"
   },
   "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
   "homepage": "https://jasmine.github.io",
