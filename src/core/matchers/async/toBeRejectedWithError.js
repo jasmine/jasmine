@@ -4,6 +4,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
    * @function
    * @async
    * @name async-matchers#toBeRejectedWithError
+   * @since 3.5.0
    * @param {Error} [expected] - `Error` constructor the object that was thrown needs to be an instance of. If not provided, `Error` will be used.
    * @param {RegExp|String} [message] - The message that should be set on the thrown `Error`
    * @example

@@ -6,6 +6,7 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
    * {@link expect} the actual (a {@link Spy}) to have been called the specified number of times.
    * @function
    * @name matchers#toHaveBeenCalledTimes
+   * @since 2.4.0
    * @param {Number} expected - The number of invocations to look for.
    * @example
    * expect(mySpy).toHaveBeenCalledTimes(3);

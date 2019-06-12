@@ -31,6 +31,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
     /**
      * Get the current status for the Jasmine environment.
      * @name jsApiReporter#status
+     * @since 2.0.0
      * @function
      * @return {String} - One of `loaded`, `started`, or `done`
      */
@@ -54,6 +55,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
      *
      * Retrievable in slices for easier serialization.
      * @name jsApiReporter#suiteResults
+     * @since 2.1.0
      * @function
      * @param {Number} index - The position in the suites list to start from.
      * @param {Number} length - Maximum number of suite results to return.
@@ -71,6 +73,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
     /**
      * Get all of the suites in a single object, with their `id` as the key.
      * @name jsApiReporter#suites
+     * @since 2.0.0
      * @function
      * @return {Object} - Map of suite id to {@link SuiteResult}
      */
@@ -89,6 +92,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
      *
      * Retrievable in slices for easier serialization.
      * @name jsApiReporter#specResults
+     * @since 2.0.0
      * @function
      * @param {Number} index - The position in the specs list to start from.
      * @param {Number} length - Maximum number of specs results to return.
@@ -101,6 +105,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
     /**
      * Get all spec results.
      * @name jsApiReporter#specs
+     * @since 2.0.0
      * @function
      * @return {SpecResult[]}
      */
@@ -111,6 +116,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
     /**
      * Get the number of milliseconds it took for the full Jasmine suite to run.
      * @name jsApiReporter#executionTime
+     * @since 2.0.0
      * @function
      * @return {Number}
      */

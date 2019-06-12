@@ -4,6 +4,7 @@ getJasmineRequireObj().toBeResolvedTo = function(j$) {
    * @function
    * @async
    * @name async-matchers#toBeResolvedTo
+   * @since 3.1.0
    * @param {Object} expected - Value that the promise is expected to resolve to
    * @example
    * await expectAsync(aPromise).toBeResolvedTo({prop: 'value'});

@@ -25,6 +25,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * Add some context for an {@link expect}
    * @function
    * @name matchers#withContext
+   * @since 3.3.0
    * @param {String} message - Additional context to show when the matcher fails
    * @return {matchers}
    */
@@ -36,6 +37,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * Invert the matcher following this {@link expect}
    * @member
    * @name matchers#not
+   * @since 1.3.0
    * @type {matchers}
    * @example
    * expect(something).not.toBe(true);
@@ -69,6 +71,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * Add some context for an {@link expectAsync}
    * @function
    * @name async-matchers#withContext
+   * @since 3.3.0
    * @param {String} message - Additional context to show when the async matcher fails
    * @return {async-matchers}
    */

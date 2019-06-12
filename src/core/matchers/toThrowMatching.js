@@ -5,6 +5,7 @@ getJasmineRequireObj().toThrowMatching = function(j$) {
    * {@link expect} a function to `throw` something matching a predicate.
    * @function
    * @name matchers#toThrowMatching
+   * @since 3.0.0
    * @param {Function} predicate - A function that takes the thrown exception as its parameter and returns true if it matches.
    * @example
    * expect(function() { throw new Error('nope'); }).toThrowMatching(function(thrown) { return thrown.message === 'nope'; });

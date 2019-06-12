@@ -6,6 +6,7 @@ getJasmineRequireObj().toHaveBeenCalled = function(j$) {
    * {@link expect} the actual (a {@link Spy}) to have been called.
    * @function
    * @name matchers#toHaveBeenCalled
+   * @since 1.3.0
    * @example
    * expect(mySpy).toHaveBeenCalled();
    * expect(mySpy).not.toHaveBeenCalled();

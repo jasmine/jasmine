@@ -3,6 +3,7 @@ getJasmineRequireObj().toBeCloseTo = function() {
    * {@link expect} the actual value to be within a specified precision of the expected value.
    * @function
    * @name matchers#toBeCloseTo
+   * @since 1.3.0
    * @param {Object} expected - The expected value to compare against.
    * @param {Number} [precision=2] - The number of decimal points to check.
    * @example

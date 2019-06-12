@@ -2,6 +2,7 @@ getJasmineRequireObj().Env = function(j$) {
   /**
    * _Note:_ Do not construct this directly, Jasmine will make one during booting.
    * @name Env
+   * @since 2.0.0
    * @classdesc The Jasmine environment
    * @constructor
    */
@@ -36,11 +37,13 @@ getJasmineRequireObj().Env = function(j$) {
      * This represents the available options to configure Jasmine.
      * Options that are not provided will use their default values
      * @interface Configuration
+     * @since 3.3.0
      */
     var config = {
       /**
        * Whether to randomize spec execution order
        * @name Configuration#random
+       * @since 3.3.0
        * @type Boolean
        * @default true
        */
@@ -49,6 +52,7 @@ getJasmineRequireObj().Env = function(j$) {
        * Seed to use as the basis of randomization.
        * Null causes the seed to be determined randomly at the start of execution.
        * @name Configuration#seed
+       * @since 3.3.0
        * @type function
        * @default null
        */
@@ -56,6 +60,7 @@ getJasmineRequireObj().Env = function(j$) {
       /**
        * Whether to stop execution of the suite after the first spec failure
        * @name Configuration#failFast
+       * @since 3.3.0
        * @type Boolean
        * @default false
        */
@@ -63,6 +68,7 @@ getJasmineRequireObj().Env = function(j$) {
       /**
        * Whether to cause specs to only have one expectation failure.
        * @name Configuration#oneFailurePerSpec
+       * @since 3.3.0
        * @type Boolean
        * @default false
        */
@@ -70,6 +76,7 @@ getJasmineRequireObj().Env = function(j$) {
       /**
        * Function to use to filter specs
        * @name Configuration#specFilter
+       * @since 3.3.0
        * @type function
        * @default true
        */
@@ -80,6 +87,7 @@ getJasmineRequireObj().Env = function(j$) {
        * Whether or not reporters should hide disabled specs from their output.
        * Currently only supported by Jasmine's HTMLReporter
        * @name Configuration#hideDisabled
+       * @since 3.3.0
        * @type Boolean
        * @default false
        */
@@ -89,6 +97,7 @@ getJasmineRequireObj().Env = function(j$) {
        * to create a promise. If not set, it will default to whatever global Promise
        * library is available (if any).
        * @name Configuration#Promise
+       * @since 3.5.0
        * @type function
        * @default undefined
        */
@@ -137,6 +146,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Configure your jasmine environment
      * @name Env#configure
+     * @since 3.3.0
      * @argument {Configuration} configuration
      * @function
      */
@@ -182,6 +192,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Get the current configuration for your jasmine environment
      * @name Env#configuration
+     * @since 3.3.0
      * @function
      * @returns {Configuration}
      */
@@ -349,6 +360,7 @@ getJasmineRequireObj().Env = function(j$) {
      * Sets whether Jasmine should throw an Error when an expectation fails.
      * This causes a spec to only have one expectation failure.
      * @name Env#throwOnExpectationFailure
+     * @since 2.3.0
      * @function
      * @param {Boolean} value Whether to throw when a expectation fails
      * @deprecated Use the `oneFailurePerSpec` option with {@link Env#configure}
@@ -370,6 +382,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Set whether to stop suite execution when a spec fails
      * @name Env#stopOnSpecFailure
+     * @since 2.7.0
      * @function
      * @param {Boolean} value Whether to stop suite execution when a spec fails
      * @deprecated Use the `failFast` option with {@link Env#configure}
@@ -391,6 +404,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Set whether to randomize test execution order
      * @name Env#randomizeTests
+     * @since 2.4.0
      * @function
      * @param {Boolean} value Whether to randomize execution order
      * @deprecated Use the `random` option with {@link Env#configure}
@@ -412,6 +426,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Set the random number seed for spec randomization
      * @name Env#seed
+     * @since 2.4.0
      * @function
      * @param {Number} value The seed value
      * @deprecated Use the `seed` option with {@link Env#configure}
@@ -435,6 +450,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     /**
      * @name Env#hideDisabled
+     * @since 3.2.0
      * @function
      */
     this.hideDisabled = function(value) {
@@ -682,6 +698,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Add a custom reporter to the Jasmine environment.
      * @name Env#addReporter
+     * @since 2.0.0
      * @function
      * @param {Reporter} reporterToAdd The reporter to be added.
      * @see custom_reporter
@@ -693,6 +710,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Provide a fallback reporter if no other reporters have been specified.
      * @name Env#provideFallbackReporter
+     * @since 2.5.0
      * @function
      * @param {Reporter} reporterToAdd The reporter
      * @see custom_reporter
@@ -704,6 +722,7 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Clear all registered reporters
      * @name Env#clearReporters
+     * @since 2.5.2
      * @function
      */
     this.clearReporters = function() {

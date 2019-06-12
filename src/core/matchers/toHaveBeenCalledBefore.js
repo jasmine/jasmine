@@ -6,6 +6,7 @@ getJasmineRequireObj().toHaveBeenCalledBefore = function(j$) {
    * {@link expect} the actual value (a {@link Spy}) to have been called before another {@link Spy}.
    * @function
    * @name matchers#toHaveBeenCalledBefore
+   * @since 2.6.0
    * @param {Spy} expected - {@link Spy} that should have been called after the `actual` {@link Spy}.
    * @example
    * expect(mySpy).toHaveBeenCalledBefore(otherSpy);

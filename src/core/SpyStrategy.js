@@ -10,6 +10,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     /**
      * Get the identifying information for the spy.
      * @name SpyStrategy#identity
+     * @since 3.0.0
      * @member
      * @type {String}
      */
@@ -47,6 +48,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     /**
      * Tell the spy to return a promise resolving to the specified value when invoked.
      * @name SpyStrategy#resolveTo
+     * @since 3.5.0
      * @function
      * @param {*} value The value to return.
      */
@@ -61,6 +63,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     /**
      * Tell the spy to return a promise rejecting with the specified value when invoked.
      * @name SpyStrategy#rejectWith
+     * @since 3.5.0
      * @function
      * @param {*} value The value to return.
      */
@@ -90,6 +93,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   /**
    * Execute the current spy strategy.
    * @name SpyStrategy#exec
+   * @since 2.0.0
    * @function
    */
   SpyStrategy.prototype.exec = function(context, args) {
@@ -99,6 +103,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   /**
    * Tell the spy to call through to the real implementation when invoked.
    * @name SpyStrategy#callThrough
+   * @since 2.0.0
    * @function
    */
   SpyStrategy.prototype.callThrough = function() {
@@ -109,6 +114,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   /**
    * Tell the spy to return the value when invoked.
    * @name SpyStrategy#returnValue
+   * @since 2.0.0
    * @function
    * @param {*} value The value to return.
    */
@@ -122,6 +128,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   /**
    * Tell the spy to return one of the specified values (sequentially) each time the spy is invoked.
    * @name SpyStrategy#returnValues
+   * @since 2.1.0
    * @function
    * @param {...*} values - Values to be returned on subsequent calls to the spy.
    */
@@ -136,6 +143,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   /**
    * Tell the spy to throw an error when invoked.
    * @name SpyStrategy#throwError
+   * @since 2.0.0
    * @function
    * @param {Error|String} something Thing to throw
    */
@@ -150,6 +158,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   /**
    * Tell the spy to call a fake implementation when invoked.
    * @name SpyStrategy#callFake
+   * @since 2.0.0
    * @function
    * @param {Function} fn The function to invoke with the passed parameters.
    */
@@ -166,6 +175,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   /**
    * Tell the spy to do nothing when invoked. This is the default.
    * @name SpyStrategy#stub
+   * @since 2.0.0
    * @function
    */
   SpyStrategy.prototype.stub = function(fn) {

@@ -107,6 +107,7 @@ getJasmineRequireObj().Spy = function(j$) {
      * whenever the spy is called with arguments that don't match any strategy
      * created with {@link Spy#withArgs}.
      * @name Spy#and
+     * @since 2.0.0
      * @example
      * spyOn(someObj, 'func').and.returnValue(42);
      */
@@ -115,6 +116,7 @@ getJasmineRequireObj().Spy = function(j$) {
      * Specifies a strategy to be used for calls to the spy that have the
      * specified arguments.
      * @name Spy#withArgs
+     * @since 3.0.0
      * @function
      * @param {...*} args - The arguments to match
      * @type {SpyStrategy}

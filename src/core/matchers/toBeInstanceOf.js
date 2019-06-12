@@ -5,6 +5,7 @@ getJasmineRequireObj().toBeInstanceOf = function(j$) {
    * {@link expect} the actual to be an instance of the expected class
    * @function
    * @name matchers#toBeInstanceOf
+   * @since 3.5.0
    * @param {Object} expected - The class or constructor function to check for
    * @example
    * expect('foo').toBeInstanceOf(String);

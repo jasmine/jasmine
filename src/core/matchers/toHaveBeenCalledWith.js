@@ -6,6 +6,7 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
    * {@link expect} the actual (a {@link Spy}) to have been called with particular arguments at least once.
    * @function
    * @name matchers#toHaveBeenCalledWith
+   * @since 1.3.0
    * @param {...Object} - The arguments to look for
    * @example
    * expect(mySpy).toHaveBeenCalledWith('foo', 'bar', 2);

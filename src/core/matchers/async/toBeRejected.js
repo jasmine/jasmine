@@ -4,6 +4,7 @@ getJasmineRequireObj().toBeRejected = function(j$) {
    * @function
    * @async
    * @name async-matchers#toBeRejected
+   * @since 3.1.0
    * @example
    * await expectAsync(aPromise).toBeRejected();
    * @example

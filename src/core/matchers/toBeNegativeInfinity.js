@@ -3,6 +3,7 @@ getJasmineRequireObj().toBeNegativeInfinity = function(j$) {
    * {@link expect} the actual value to be `-Infinity` (-infinity).
    * @function
    * @name matchers#toBeNegativeInfinity
+   * @since 2.6.0
    * @example
    * expect(thing).toBeNegativeInfinity();
    */

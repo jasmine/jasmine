@@ -7,6 +7,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Maximum object depth the pretty printer will print to.
    * Set this to a lower value to speed up pretty printing if you have large objects.
    * @name jasmine.MAX_PRETTY_PRINT_DEPTH
+   * @since 1.3.0
    */
   j$.MAX_PRETTY_PRINT_DEPTH = 8;
   /**
@@ -14,17 +15,20 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * This will also limit the number of keys and values displayed for an object.
    * Elements past this number will be ellipised.
    * @name jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH
+   * @since 2.7.0
    */
   j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 50;
   /**
    * Maximum number of characters to display when pretty printing objects.
    * Characters past this number will be ellipised.
    * @name jasmine.MAX_PRETTY_PRINT_CHARS
+   * @since 2.9.0
    */
   j$.MAX_PRETTY_PRINT_CHARS = 1000;
   /**
    * Default number of milliseconds Jasmine will wait for an asynchronous spec to complete.
    * @name jasmine.DEFAULT_TIMEOUT_INTERVAL
+   * @since 1.3.0
    */
   j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
@@ -36,6 +40,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get the currently booted Jasmine Environment.
    *
    * @name jasmine.getEnv
+   * @since 1.3.0
    * @function
    * @return {Env}
    */
@@ -163,6 +168,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value being compared is an instance of the specified class/constructor.
    * @name jasmine.any
+   * @since 1.3.0
    * @function
    * @param {Constructor} clazz - The constructor to check against.
    */
@@ -174,6 +180,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value being compared is not `null` and not `undefined`.
    * @name jasmine.anything
+   * @since 2.2.0
    * @function
    */
   j$.anything = function() {
@@ -184,6 +191,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value being compared is `true` or anything truthy.
    * @name jasmine.truthy
+   * @since 3.1.0
    * @function
    */
   j$.truthy = function() {
@@ -194,6 +202,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value being compared is  `null`, `undefined`, `0`, `false` or anything falsey.
    * @name jasmine.falsy
+   * @since 3.1.0
    * @function
    */
   j$.falsy = function() {
@@ -204,6 +213,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value being compared is empty.
    * @name jasmine.empty
+   * @since 3.1.0
    * @function
    */
   j$.empty = function() {
@@ -214,6 +224,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value being compared is not empty.
    * @name jasmine.notEmpty
+   * @since 3.1.0
    * @function
    */
   j$.notEmpty = function() {
@@ -224,6 +235,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value being compared contains at least the keys and values.
    * @name jasmine.objectContaining
+   * @since 1.3.0
    * @function
    * @param {Object} sample - The subset of properties that _must_ be in the actual.
    */
@@ -235,6 +247,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value is a `String` that matches the `RegExp` or `String`.
    * @name jasmine.stringMatching
+   * @since 2.2.0
    * @function
    * @param {RegExp|String} expected
    */
@@ -246,6 +259,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value is an `Array` that contains at least the elements in the sample.
    * @name jasmine.arrayContaining
+   * @since 2.2.0
    * @function
    * @param {Array} sample
    */
@@ -257,6 +271,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value is an `Array` that contains all of the elements in the sample in any order.
    * @name jasmine.arrayWithExactContents
+   * @since 2.8.0
    * @function
    * @param {Array} sample
    */

@@ -3,6 +3,7 @@ getJasmineRequireObj().toBeNaN = function(j$) {
    * {@link expect} the actual value to be `NaN` (Not a Number).
    * @function
    * @name matchers#toBeNaN
+   * @since 1.3.0
    * @example
    * expect(thing).toBeNaN();
    */

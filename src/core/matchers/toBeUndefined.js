@@ -3,6 +3,7 @@ getJasmineRequireObj().toBeUndefined = function() {
    * {@link expect} the actual value to be `undefined`.
    * @function
    * @name matchers#toBeUndefined
+   * @since 1.3.0
    * @example
    * expect(result).toBeUndefined():
    */

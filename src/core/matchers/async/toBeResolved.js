@@ -4,6 +4,7 @@ getJasmineRequireObj().toBeResolved = function(j$) {
    * @function
    * @async
    * @name async-matchers#toBeResolved
+   * @since 3.1.0
    * @example
    * await expectAsync(aPromise).toBeResolved();
    * @example

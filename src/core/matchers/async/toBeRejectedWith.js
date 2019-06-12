@@ -4,6 +4,7 @@ getJasmineRequireObj().toBeRejectedWith = function(j$) {
    * @function
    * @async
    * @name async-matchers#toBeRejectedWith
+   * @since 3.3.0
    * @param {Object} expected - Value that the promise is expected to be rejected with
    * @example
    * await expectAsync(aPromise).toBeRejectedWith({prop: 'value'});

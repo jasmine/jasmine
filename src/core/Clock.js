@@ -33,6 +33,7 @@ getJasmineRequireObj().Clock = function() {
     /**
      * Install the mock clock over the built-in methods.
      * @name Clock#install
+     * @since 2.0.0
      * @function
      * @return {Clock}
      */
@@ -53,6 +54,7 @@ getJasmineRequireObj().Clock = function() {
     /**
      * Uninstall the mock clock, returning the built-in methods to their places.
      * @name Clock#uninstall
+     * @since 2.0.0
      * @function
      */
     self.uninstall = function() {
@@ -69,6 +71,7 @@ getJasmineRequireObj().Clock = function() {
      *
      * The clock will be {@link Clock#install|install}ed before the function is called and {@link Clock#uninstall|uninstall}ed in a `finally` after the function completes.
      * @name Clock#withMock
+     * @since 2.3.0
      * @function
      * @param {Function} closure The function to be called.
      */
@@ -84,6 +87,7 @@ getJasmineRequireObj().Clock = function() {
     /**
      * Instruct the installed Clock to also mock the date returned by `new Date()`
      * @name Clock#mockDate
+     * @since 2.1.0
      * @function
      * @param {Date} [initialDate=now] The `Date` to provide.
      */
@@ -116,6 +120,7 @@ getJasmineRequireObj().Clock = function() {
     /**
      * Tick the Clock forward, running any enqueued timeouts along the way
      * @name Clock#tick
+     * @since 1.3.0
      * @function
      * @param {int} millis The number of milliseconds to tick.
      */

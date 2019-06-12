@@ -6,6 +6,7 @@ getJasmineRequireObj().toThrow = function(j$) {
    * {@link expect} a function to `throw` something.
    * @function
    * @name matchers#toThrow
+   * @since 2.0.0
    * @param {Object} [expected] - Value that should be thrown. If not provided, simply the fact that something was thrown will be checked.
    * @example
    * expect(function() { return 'things'; }).toThrow('foo');
