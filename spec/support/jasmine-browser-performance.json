@@ -1,0 +1,11 @@
+{
+  "srcDir": "src",
+  "specDir": "spec",
+  "specFiles": [
+    "performance/performance_test.js"
+  ],
+  "helpers": [
+    "helpers/defineJasmineUnderTest.js"
+  ],
+  "random": true
+}
