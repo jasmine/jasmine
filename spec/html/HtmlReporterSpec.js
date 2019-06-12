@@ -80,7 +80,7 @@ describe('HtmlReporter', function() {
   describe('when a spec is done', function() {
     it('logs errors to the console and prints a special symbol if it is an empty spec', function() {
       if (typeof console === 'undefined') {
-        console = { error: function() {} };
+        console = { warn: function() {} };
       }
 
       var env = new jasmineUnderTest.Env(),
@@ -99,7 +99,7 @@ describe('HtmlReporter', function() {
           }
         });
 
-      spyOn(console, 'error');
+      spyOn(console, 'warn');
 
       reporter.initialize();
 
@@ -109,7 +109,7 @@ describe('HtmlReporter', function() {
         passedExpectations: [],
         failedExpectations: []
       });
-      expect(console.error).toHaveBeenCalledWith(
+      expect(console.warn).toHaveBeenCalledWith(
         "Spec 'Some Name' has no expectations."
       );
       var specEl = container.querySelector('.jasmine-symbol-summary li');

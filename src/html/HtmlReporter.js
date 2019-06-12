@@ -119,7 +119,7 @@ jasmineRequire.HtmlReporter = function(j$) {
         typeof console !== 'undefined' &&
         typeof console.error !== 'undefined'
       ) {
-        console.error("Spec '" + result.fullName + "' has no expectations.");
+        console.warn("Spec '" + result.fullName + "' has no expectations.");
       }
 
       if (!symbols) {
