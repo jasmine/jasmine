@@ -640,6 +640,9 @@ getJasmineRequireObj().Env = function(j$) {
         );
       }
 
+      var jasmineTimer = new j$.Timer();
+      jasmineTimer.start();
+
       /**
        * Information passed to the {@link Reporter#jasmineStarted} event.
        * @typedef JasmineStartedInfo
@@ -675,6 +678,7 @@ getJasmineRequireObj().Env = function(j$) {
              * Information passed to the {@link Reporter#jasmineDone} event.
              * @typedef JasmineDoneInfo
              * @property {OverallStatus} overallStatus - The overall result of the suite: 'passed', 'failed', or 'incomplete'.
+             * @property {Int} totalTime - The total time (in ms) that it took to execute the suite
              * @property {IncompleteReason} incompleteReason - Explanation of why the suite was incomplete.
              * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
              * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
@@ -683,6 +687,7 @@ getJasmineRequireObj().Env = function(j$) {
             reporter.jasmineDone(
               {
                 overallStatus: overallStatus,
+                totalTime: jasmineTimer.elapsed(),
                 incompleteReason: incompleteReason,
                 order: order,
                 failedExpectations: topSuite.result.failedExpectations,

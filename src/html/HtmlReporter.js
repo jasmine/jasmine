@@ -52,7 +52,6 @@ jasmineRequire.HtmlReporter = function(j$) {
       addToExistingQueryString =
         options.addToExistingQueryString || defaultQueryString,
       filterSpecs = options.filterSpecs,
-      timer = options.timer || j$.noopTimer,
       htmlReporterMain,
       symbols,
       deprecationWarnings = [];
@@ -86,7 +85,6 @@ jasmineRequire.HtmlReporter = function(j$) {
     var totalSpecsDefined;
     this.jasmineStarted = function(options) {
       totalSpecsDefined = options.totalSpecsDefined || 0;
-      timer.start();
     };
 
     var summary = createDom('div', { className: 'jasmine-summary' });
@@ -165,7 +163,7 @@ jasmineRequire.HtmlReporter = function(j$) {
         createDom(
           'span',
           { className: 'jasmine-duration' },
-          'finished in ' + timer.elapsed() / 1000 + 's'
+          'finished in ' + doneResult.totalTime / 1000 + 's'
         )
       );
 

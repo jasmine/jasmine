@@ -61,22 +61,6 @@ describe('HtmlReporter', function() {
     ).toEqual(1);
   });
 
-  it('starts the timer when jasmine begins', function() {
-    var env = new jasmine.Env(),
-      startTimerSpy = jasmine.createSpy('start-timer-spy'),
-      reporter = new jasmineUnderTest.HtmlReporter({
-        env: env,
-        createElement: function() {
-          return document.createElement.apply(document, arguments);
-        },
-        timer: { start: startTimerSpy }
-      });
-
-    reporter.jasmineStarted({});
-
-    expect(startTimerSpy).toHaveBeenCalled();
-  });
-
   describe('when a spec is done', function() {
     it('logs errors to the console and prints a special symbol if it is an empty spec', function() {
       if (typeof console === 'undefined') {
@@ -343,7 +327,6 @@ describe('HtmlReporter', function() {
     it('reports the run time', function() {
       var env = new jasmineUnderTest.Env(),
         container = document.createElement('div'),
-        timer = jasmine.createSpyObj('timer', ['start', 'elapsed']),
         getContainer = function() {
           return container;
         },
@@ -355,16 +338,14 @@ describe('HtmlReporter', function() {
           },
           createTextNode: function() {
             return document.createTextNode.apply(document, arguments);
-          },
-          timer: timer
+          }
         });
 
       reporter.initialize();
 
       reporter.jasmineStarted({});
 
-      timer.elapsed.and.returnValue(100);
-      reporter.jasmineDone({});
+      reporter.jasmineDone({ totalTime: 100 });
 
       var duration = container.querySelector(
         '.jasmine-alert .jasmine-duration'
