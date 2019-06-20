@@ -21,7 +21,9 @@ getJasmineRequireObj().SpyFactory = function(j$) {
 
       var methods = normalizeKeyValues(methodNames);
       for (var i = 0; i < methods.length; i++) {
-        spy = obj[methods[i][0]] = self.createSpy(baseName + '.' + methods[i][0]);
+        spy = obj[methods[i][0]] = self.createSpy(
+          baseName + '.' + methods[i][0]
+        );
         if (methods[i].length > 1) {
           spy.and.returnValue(methods[i][1]);
         }

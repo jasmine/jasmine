@@ -203,7 +203,9 @@ describe('Spies', function() {
       expect(spyObj.prop2).toEqual(37);
       spyObj.prop2 = 4;
       expect(spyObj.prop2).toEqual(37);
-      expect(Object.getOwnPropertyDescriptor(spyObj, 'prop2').set.calls.count()).toBe(1);
+      expect(
+        Object.getOwnPropertyDescriptor(spyObj, 'prop2').set.calls.count()
+      ).toBe(1);
     });
 
     it('allows base name to be ommitted when assigning methods and properties', function() {
@@ -211,7 +213,9 @@ describe('Spies', function() {
 
       expect(spyObj.m()).toEqual(3);
       expect(spyObj.p).toEqual(4);
-      expect(Object.getOwnPropertyDescriptor(spyObj, 'p').get.and.identity).toEqual('unknown.p.get');
+      expect(
+        Object.getOwnPropertyDescriptor(spyObj, 'p').get.and.identity
+      ).toEqual('unknown.p.get');
     });
   });
 
