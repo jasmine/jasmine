@@ -174,6 +174,49 @@ describe('Spies', function() {
         'createSpyObj requires a non-empty array or object of method names to create spies for'
       );
     });
+
+    it('creates an object with spy properties if a second list is passed', function() {
+      var spyObj = env.createSpyObj('base', ['method1'], ['prop1']);
+
+      expect(spyObj).toEqual({
+        method1: jasmine.any(Function)
+      });
+
+      var descriptor = Object.getOwnPropertyDescriptor(spyObj, 'prop1');
+      expect(descriptor.get.and.identity).toEqual('base.prop1.get');
+      expect(descriptor.set.and.identity).toEqual('base.prop1.set');
+
+      expect(spyObj.prop1).toBeUndefined();
+    });
+
+    it('creates an object with property names and return values if second object is passed', function() {
+      var spyObj = env.createSpyObj('base', ['method1'], {
+        prop1: 'foo',
+        prop2: 37
+      });
+
+      expect(spyObj).toEqual({
+        method1: jasmine.any(Function)
+      });
+
+      expect(spyObj.prop1).toEqual('foo');
+      expect(spyObj.prop2).toEqual(37);
+      spyObj.prop2 = 4;
+      expect(spyObj.prop2).toEqual(37);
+      expect(
+        Object.getOwnPropertyDescriptor(spyObj, 'prop2').set.calls.count()
+      ).toBe(1);
+    });
+
+    it('allows base name to be ommitted when assigning methods and properties', function() {
+      var spyObj = env.createSpyObj({ m: 3 }, { p: 4 });
+
+      expect(spyObj.m()).toEqual(3);
+      expect(spyObj.p).toEqual(4);
+      expect(
+        Object.getOwnPropertyDescriptor(spyObj, 'p').get.and.identity
+      ).toEqual('unknown.p.get');
+    });
   });
 
   it('can use different strategies for different arguments', function() {
