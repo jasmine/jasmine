@@ -457,11 +457,17 @@ describe('jasmineUnderTest.pp', function() {
       // Valid: an actual number
       baz: 3,
       // Valid: an actual Error object
-      qux: new Error('bar')
+      qux: new Error('bar'),
+      //
+      baddy: {
+        toString: function() {
+          throw new Error('I am a bad toString');
+        }
+      }
     };
 
     expect(jasmineUnderTest.pp(obj)).toEqual(
-      'Object({ foo: [object Number], bar: [object Object], baz: 3, qux: Error: bar })'
+      'Object({ foo: [object Number], bar: [object Object], baz: 3, qux: Error: bar, baddy: has-invalid-toString-method })'
     );
   });
 });
