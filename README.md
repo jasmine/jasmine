@@ -54,6 +54,7 @@ Add the following to your HTML file:
 
 Jasmine tests itself across many browsers (Safari, Chrome, Firefox, PhantomJS, Microsoft Edge, and new Internet Explorer) as well as nodejs. To see the exact version tests are run against look at our [.travis.yml](https://github.com/jasmine/jasmine/blob/master/.travis.yml)
 
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/jasmine-js.svg)](https://saucelabs.com/u/jasmine-js)
 
 ## Support
 
