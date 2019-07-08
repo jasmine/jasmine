@@ -16,16 +16,6 @@ describe('AsyncExpectation', function() {
         'expectAsync is unavailable because the environment does not support promises.'
       );
     });
-
-    it('throws an Error if the argument is not a promise', function() {
-      jasmine.getEnv().requirePromises();
-      function f() {
-        jasmineUnderTest.Expectation.asyncFactory({ actual: 'not a promise' });
-      }
-      expect(f).toThrowError(
-        'Expected expectAsync to be called with a promise.'
-      );
-    });
   });
 
   describe('#not', function() {

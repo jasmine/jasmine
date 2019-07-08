@@ -62,8 +62,12 @@ getJasmineRequireObj().Expectation = function(j$) {
       );
     }
 
-    if (!j$.isPromiseLike(this.expector.actual)) {
-      throw new Error('Expected expectAsync to be called with a promise.');
+    var customAsyncMatchers = options.customAsyncMatchers || {};
+    for (var matcherName in customAsyncMatchers) {
+      this[matcherName] = wrapAsyncCompare(
+        matcherName,
+        customAsyncMatchers[matcherName]
+      );
     }
   }
 
