@@ -2432,20 +2432,20 @@ describe("Env integration", function() {
       suiteDone: suiteDone,
       jasmineDone: function(result) {
         expect(result.failedExpectations).toEqual([jasmine.objectContaining({
-            message: 'Expected a promise to be rejected.'
+            message: 'Expected [object Promise] to be rejected.'
         })]);
 
         expect(specDone).toHaveBeenCalledWith(jasmine.objectContaining({
           description: 'has an async failure',
           failedExpectations: [jasmine.objectContaining({
-            message: 'Expected a promise to be rejected.'
+            message: 'Expected [object Promise] to be rejected.'
           })]
         }));
 
         expect(suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
           description: 'a suite',
           failedExpectations: [jasmine.objectContaining({
-            message: 'Expected a promise to be rejected.'
+            message: 'Expected [object Promise] to be rejected.'
           })]
         }));
 

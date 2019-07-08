@@ -266,6 +266,19 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
+    this.addAsyncMatchers = function(matchersToAdd) {
+      if (!currentRunnable()) {
+        throw new Error(
+          'Async Matchers must be added in a before function or a spec'
+        );
+      }
+      var customAsyncMatchers =
+        runnableResources[currentRunnable().id].customAsyncMatchers;
+      for (var matcherName in matchersToAdd) {
+        customAsyncMatchers[matcherName] = matchersToAdd[matcherName];
+      }
+    };
+
     j$.Expectation.addCoreMatchers(j$.matchers);
     j$.Expectation.addAsyncCoreMatchers(j$.asyncMatchers);
 
@@ -297,6 +310,7 @@ getJasmineRequireObj().Env = function(j$) {
       return j$.Expectation.asyncFactory({
         util: j$.matchersUtil,
         customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
+        customAsyncMatchers: runnableResources[spec.id].customAsyncMatchers,
         actual: actual,
         addExpectationResult: addExpectationResult
       });
@@ -311,6 +325,7 @@ getJasmineRequireObj().Env = function(j$) {
         spies: [],
         customEqualityTesters: [],
         customMatchers: {},
+        customAsyncMatchers: {},
         customSpyStrategies: {},
         defaultStrategyFn: undefined
       };
@@ -321,6 +336,9 @@ getJasmineRequireObj().Env = function(j$) {
         );
         resources.customMatchers = j$.util.clone(
           runnableResources[parentRunnableId].customMatchers
+        );
+        resources.customAsyncMatchers = j$.util.clone(
+          runnableResources[parentRunnableId].customAsyncMatchers
         );
         resources.defaultStrategyFn =
           runnableResources[parentRunnableId].defaultStrategyFn;

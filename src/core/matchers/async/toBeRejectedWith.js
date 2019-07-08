@@ -14,6 +14,10 @@ getJasmineRequireObj().toBeRejectedWith = function(j$) {
   return function toBeRejectedWith(util, customEqualityTesters) {
     return {
       compare: function(actualPromise, expectedValue) {
+        if (!j$.isPromiseLike(actualPromise)) {
+          throw new Error('Expected toBeRejectedWith to be called on a promise.');
+        }
+
         function prefix(passed) {
           return 'Expected a promise ' +
             (passed ? 'not ' : '') +

@@ -1,10 +1,4 @@
 getJasmineRequireObj().Expectation = function(j$) {
-  var promiseForMessage = {
-    jasmineToString: function() {
-      return 'a promise';
-    }
-  };
-
   /**
    * Matchers that come with Jasmine out of the box.
    * @namespace matchers
@@ -62,8 +56,12 @@ getJasmineRequireObj().Expectation = function(j$) {
       );
     }
 
-    if (!j$.isPromiseLike(this.expector.actual)) {
-      throw new Error('Expected expectAsync to be called with a promise.');
+    var customAsyncMatchers = options.customAsyncMatchers || {};
+    for (var matcherName in customAsyncMatchers) {
+      this[matcherName] = wrapAsyncCompare(
+        matcherName,
+        customAsyncMatchers[matcherName]
+      );
     }
   }
 
@@ -113,7 +111,7 @@ getJasmineRequireObj().Expectation = function(j$) {
       return this.expector
         .compare(name, matcherFactory, arguments)
         .then(function(result) {
-          self.expector.processResult(result, errorForStack, promiseForMessage);
+          self.expector.processResult(result, errorForStack);
         });
     };
   }
@@ -168,7 +166,7 @@ getJasmineRequireObj().Expectation = function(j$) {
         return matcher.compare.apply(this, arguments).then(negate);
       }
 
-      return defaultNegativeCompare;
+      return matcher.negativeCompare || defaultNegativeCompare;
     },
     buildFailureMessage: negatedFailureMessage
   };
