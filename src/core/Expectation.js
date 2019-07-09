@@ -101,10 +101,9 @@ getJasmineRequireObj().Expectation = function(j$) {
       if (j$.isPromiseLike(result)) {
         var self = this;
 
-        return result
-          .then(function(promiseResult) {
-            self.expector.processResult(promiseResult);
-          });
+        return result.then(function(promiseResult) {
+          self.expector.processResult(promiseResult);
+        });
       } else {
         this.expector.processResult(result);
       }

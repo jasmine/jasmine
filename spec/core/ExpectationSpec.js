@@ -218,18 +218,17 @@ describe('Expectation', function() {
       addExpectationResult: addExpectationResult
     });
 
-    return expectation.toFoo('hello')
-      .then(function () {
-        expect(addExpectationResult).toHaveBeenCalledWith(true, {
-          matcherName: 'toFoo',
-          passed: true,
-          message: '',
-          error: undefined,
-          expected: 'hello',
-          actual: 'an actual',
-          errorForStack: undefined
-        });
+    return expectation.toFoo('hello').then(function() {
+      expect(addExpectationResult).toHaveBeenCalledWith(true, {
+        matcherName: 'toFoo',
+        passed: true,
+        message: '',
+        error: undefined,
+        expected: 'hello',
+        actual: 'an actual',
+        errorForStack: undefined
       });
+    });
   });
 
   it('reports a failing result and a custom fail message to the spec when the promise comparison fails', function() {
@@ -254,18 +253,17 @@ describe('Expectation', function() {
       addExpectationResult: addExpectationResult
     });
 
-    return expectation.toFoo('hello')
-      .then(function () {
-        expect(addExpectationResult).toHaveBeenCalledWith(false, {
-          matcherName: 'toFoo',
-          passed: false,
-          expected: 'hello',
-          actual: 'an actual',
-          message: 'I am a custom message',
-          error: undefined,
-          errorForStack: undefined
-        });
+    return expectation.toFoo('hello').then(function() {
+      expect(addExpectationResult).toHaveBeenCalledWith(false, {
+        matcherName: 'toFoo',
+        passed: false,
+        expected: 'hello',
+        actual: 'an actual',
+        message: 'I am a custom message',
+        error: undefined,
+        errorForStack: undefined
       });
+    });
   });
 
   it('reports a failing result with a custom fail message function to the spec when the comparison fails', function() {
