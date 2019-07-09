@@ -195,6 +195,79 @@ describe('Expectation', function() {
     });
   });
 
+  it('reports a passing result to the spec when the promise comparison passes', function() {
+    var matchers = {
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({ pass: true });
+            }
+          };
+        }
+      },
+      util = {
+        buildFailureMessage: jasmine.createSpy('buildFailureMessage')
+      },
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
+      expectation;
+
+    expectation = jasmineUnderTest.Expectation.factory({
+      customMatchers: matchers,
+      util: util,
+      actual: 'an actual',
+      addExpectationResult: addExpectationResult
+    });
+
+    return expectation.toFoo('hello')
+      .then(function () {
+        expect(addExpectationResult).toHaveBeenCalledWith(true, {
+          matcherName: 'toFoo',
+          passed: true,
+          message: '',
+          error: undefined,
+          expected: 'hello',
+          actual: 'an actual',
+          errorForStack: undefined
+        });
+      });
+  });
+
+  it('reports a failing result and a custom fail message to the spec when the promise comparison fails', function() {
+    var matchers = {
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({
+                pass: false,
+                message: 'I am a custom message'
+              });
+            }
+          };
+        }
+      },
+      addExpectationResult = jasmine.createSpy('addExpectationResult'),
+      expectation;
+
+    expectation = jasmineUnderTest.Expectation.factory({
+      actual: 'an actual',
+      customMatchers: matchers,
+      addExpectationResult: addExpectationResult
+    });
+
+    return expectation.toFoo('hello')
+      .then(function () {
+        expect(addExpectationResult).toHaveBeenCalledWith(false, {
+          matcherName: 'toFoo',
+          passed: false,
+          expected: 'hello',
+          actual: 'an actual',
+          message: 'I am a custom message',
+          error: undefined,
+          errorForStack: undefined
+        });
+      });
+  });
+
   it('reports a failing result with a custom fail message function to the spec when the comparison fails', function() {
     var matchers = {
         toFoo: function() {

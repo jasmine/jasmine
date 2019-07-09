@@ -98,7 +98,16 @@ getJasmineRequireObj().Expectation = function(j$) {
   function wrapSyncCompare(name, matcherFactory) {
     return function() {
       var result = this.expector.compare(name, matcherFactory, arguments);
-      this.expector.processResult(result);
+      if (j$.isPromiseLike(result)) {
+        var self = this;
+
+        return result
+          .then(function(promiseResult) {
+            self.expector.processResult(promiseResult);
+          });
+      } else {
+        this.expector.processResult(result);
+      }
     };
   }
 
