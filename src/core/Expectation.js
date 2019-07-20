@@ -172,7 +172,7 @@ getJasmineRequireObj().Expectation = function(j$) {
         return matcher.compare.apply(this, arguments).then(negate);
       }
 
-      return defaultNegativeCompare;
+      return matcher.negativeCompare || defaultNegativeCompare;
     },
     buildFailureMessage: negatedFailureMessage
   };
