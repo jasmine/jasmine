@@ -290,6 +290,32 @@ describe("matchersUtil", function() {
       expect(jasmineUnderTest.matchersUtil.equals(containing, obj)).toBe(true);
     });
 
+    it("passes when MapContaining is used", function() {
+      jasmine.getEnv().requireFunctioningMaps();
+
+      var obj = new Map();
+      obj.set(1, 2);
+      obj.set('foo', 'bar');
+      var containing = new jasmineUnderTest.MapContaining(new Map());
+      containing.sample.set('foo', 'bar');
+
+      expect(jasmineUnderTest.matchersUtil.equals(obj, containing)).toBe(true);
+      expect(jasmineUnderTest.matchersUtil.equals(containing, obj)).toBe(true);
+    });
+
+    it("passes when SetContaining is used", function() {
+      jasmine.getEnv().requireFunctioningSets();
+
+      var obj = new Set();
+      obj.add(1);
+      obj.add('foo');
+      var containing = new jasmineUnderTest.SetContaining(new Set());
+      containing.sample.add(1);
+
+      expect(jasmineUnderTest.matchersUtil.equals(obj, containing)).toBe(true);
+      expect(jasmineUnderTest.matchersUtil.equals(containing, obj)).toBe(true);
+    });
+
     it("passes when an asymmetric equality tester returns true", function() {
       var tester = { asymmetricMatch: function(other) { return true; } };
 
@@ -612,6 +638,26 @@ describe("matchersUtil", function() {
       }
       testFunction('foo', 'bar');
       expect(jasmineUnderTest.matchersUtil.contains(capturedArgs, 'bar')).toBe(true);
+    });
+
+    it("passes for set members", function() {
+      jasmine.getEnv().requireFunctioningSets();
+
+      var setItem = {'foo': 'bar'};
+      var set = new Set();
+      set.add(setItem);
+
+      expect(jasmineUnderTest.matchersUtil.contains(set, setItem)).toBe(true);
+    });
+
+    // documenting current behavior
+    it("fails (!) for objects that equal to a set member", function() {
+      jasmine.getEnv().requireFunctioningSets();
+
+      var set = new Set();
+      set.add({'foo': 'bar'});
+
+      expect(jasmineUnderTest.matchersUtil.contains(set, {'foo': 'bar'})).toBe(false);
     });
   });
 
