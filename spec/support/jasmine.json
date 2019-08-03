@@ -1,8 +1,8 @@
 {
   "spec_dir": "spec",
   "spec_files": [
-    "core/**/*.js",
-    "npmPackage/**/*.js"
+    "core/**/*[Ss]pec.js",
+    "npmPackage/**/*[Ss]pec.js"
   ],
   "helpers": [
     "helpers/asyncAwait.js",
