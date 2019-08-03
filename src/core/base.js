@@ -128,6 +128,8 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
 
   j$.isMap = function(obj) {
     return (
+      obj !== null &&
+      typeof obj !== 'undefined' &&
       typeof jasmineGlobal.Map !== 'undefined' &&
       obj.constructor === jasmineGlobal.Map
     );
@@ -135,6 +137,8 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
 
   j$.isSet = function(obj) {
     return (
+      obj !== null &&
+      typeof obj !== 'undefined' &&
       typeof jasmineGlobal.Set !== 'undefined' &&
       obj.constructor === jasmineGlobal.Set
     );
@@ -277,6 +281,32 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    */
   j$.arrayWithExactContents = function(sample) {
     return new j$.ArrayWithExactContents(sample);
+  };
+
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if every key/value pair in the sample passes the deep equality comparison
+   * with at least one key/value pair in the actual value being compared
+   * @name jasmine.mapContaining
+   * @since
+   * @function
+   * @param {Map} sample - The subset of items that _must_ be in the actual.
+   */
+  j$.mapContaining = function(sample) {
+    return new j$.MapContaining(sample);
+  };
+
+  /**
+   * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
+   * that will succeed if every item in the sample passes the deep equality comparison
+   * with at least one item in the actual value being compared
+   * @name jasmine.mapContaining
+   * @since
+   * @function
+   * @param {Set} sample - The subset of items that _must_ be in the actual.
+   */
+  j$.setContaining = function(sample) {
+    return new j$.SetContaining(sample);
   };
 
   j$.isSpy = function(putativeSpy) {

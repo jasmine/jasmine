@@ -7,7 +7,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     contains: function(haystack, needle, customTesters) {
       customTesters = customTesters || [];
 
-      if ((Object.prototype.toString.apply(haystack) === '[object Set]')) {
+      if (j$.isSet(haystack)) {
         return haystack.has(needle);
       }
 
