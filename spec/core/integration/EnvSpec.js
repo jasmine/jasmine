@@ -1106,17 +1106,17 @@ describe("Env integration", function() {
       env.execute();
     });
 
-    it('should wait a custom interval before reporting async functions that fail to call done', function(done) {
+    it('should wait a custom interval before reporting async functions that fail to complete', function(done) {
       var env = createMockedEnv(),
           reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone', 'suiteDone', 'specDone']);
 
       reporter.jasmineDone.and.callFake(function(r) {
         expect(r.failedExpectations).toEqual([]);
-        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite beforeAll', [ /^Error: Timeout - Async callback was not invoked within 5000ms \(custom timeout\)/ ]);
-        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite afterAll', [ /^Error: Timeout - Async callback was not invoked within 2000ms \(custom timeout\)/ ]);
-        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite beforeEach times out', [/^Error: Timeout - Async callback was not invoked within 1000ms \(custom timeout\)/]);
-        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite afterEach times out', [ /^Error: Timeout - Async callback was not invoked within 4000ms \(custom timeout\)/ ]);
-        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite it times out', [ /^Error: Timeout - Async callback was not invoked within 6000ms \(custom timeout\)/ ]);
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite beforeAll', [ /^Error: Timeout - Async function did not complete within 5000ms \(custom timeout\)/ ]);
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('suite afterAll', [ /^Error: Timeout - Async function did not complete within 2000ms \(custom timeout\)/ ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite beforeEach times out', [/^Error: Timeout - Async function did not complete within 1000ms \(custom timeout\)/]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite afterEach times out', [ /^Error: Timeout - Async function did not complete within 4000ms \(custom timeout\)/ ]);
+        expect(reporter.specDone).toHaveFailedExpectationsForRunnable('suite it times out', [ /^Error: Timeout - Async function did not complete within 6000ms \(custom timeout\)/ ]);
 
         jasmine.clock().tick(1);
         realSetTimeout(done);

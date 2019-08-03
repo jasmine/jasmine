@@ -131,7 +131,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       var timeoutInterval = queueableFn.timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
       timeoutId = self.setTimeout(function() {
         var error = new Error(
-          'Timeout - Async callback was not invoked within ' +
+          'Timeout - Async function did not complete within ' +
             timeoutInterval +
             'ms ' +
             (queueableFn.timeout
