@@ -9,11 +9,16 @@ getJasmineRequireObj().pp = function(j$) {
   function hasCustomToString(value) {
     // value.toString !== Object.prototype.toString if value has no custom toString but is from another context (e.g.
     // iframe, web worker)
-    return (
-      j$.isFunction_(value.toString) &&
-      value.toString !== Object.prototype.toString &&
-      value.toString() !== Object.prototype.toString.call(value)
-    );
+    try {
+      return (
+        j$.isFunction_(value.toString) &&
+        value.toString !== Object.prototype.toString &&
+        value.toString() !== Object.prototype.toString.call(value)
+      );
+    } catch (e) {
+      // The custom toString() threw.
+      return true;
+    }
   }
 
   PrettyPrinter.prototype.format = function(value) {
@@ -59,7 +64,11 @@ getJasmineRequireObj().pp = function(j$) {
         !j$.isArray_(value) &&
         hasCustomToString(value)
       ) {
-        this.emitScalar(value.toString());
+        try {
+          this.emitScalar(value.toString());
+        } catch (e) {
+          this.emitScalar('has-invalid-toString-method');
+        }
       } else if (j$.util.arrayContains(this.seen, value)) {
         this.emitScalar(
           '<circular reference: ' +
