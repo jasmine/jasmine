@@ -30,7 +30,9 @@ describe('Exceptions:', function() {
   });
 
   it('should handle exceptions thrown directly in top-level describe blocks and continue', function(done) {
-    var secondDescribe = jasmine.createSpy('second describe');
+    var secondDescribe = jasmine.createSpy('second describe').and.callFake(function() {
+      env.it('is a test', function() {});
+    });
     env.describe('a suite that throws an exception', function() {
       env.it('is a test that should pass', function() {
         this.expect(true).toEqual(true);

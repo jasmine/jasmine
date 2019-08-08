@@ -133,6 +133,12 @@ describe('Env', function() {
         'describe expects a function argument; received [object Function]'
       );
     });
+
+    it('throws an error when it has no children', function() {
+      expect(function() {
+        env.describe('done method', function() {});
+      }).toThrowError('describe with no children (describe() or it())');
+    });
   });
 
   describe('#it', function() {

@@ -843,6 +843,9 @@ getJasmineRequireObj().Env = function(j$) {
         suite.pend();
       }
       addSpecsToSuite(suite, specDefinitions);
+      if (suite.parentSuite && !suite.children.length) {
+        throw new Error('describe with no children (describe() or it())');
+      }
       return suite;
     };
 
