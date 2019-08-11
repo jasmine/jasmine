@@ -12,7 +12,7 @@ describe('GlobalErrors', function() {
     expect(handler).toHaveBeenCalledWith('foo');
   });
 
-  it('prefers passing the error including stack to the handler', function() {
+  it('calls the global error handler with all parameters', function() {
     var fakeGlobal = { onerror: null },
       handler = jasmine.createSpy('errorHandler'),
       errors = new jasmineUnderTest.GlobalErrors(fakeGlobal),
@@ -23,7 +23,13 @@ describe('GlobalErrors', function() {
 
     fakeGlobal.onerror(fooError.message, 'foo.js', 1, 1, fooError);
 
-    expect(handler).toHaveBeenCalledWith(fooError);
+    expect(handler).toHaveBeenCalledWith(
+      fooError.message,
+      'foo.js',
+      1,
+      1,
+      fooError
+    );
   });
 
   it('only calls the most recent handler', function() {

@@ -3,14 +3,11 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     var handlers = [];
     global = global || j$.getGlobal();
 
-    var onerror = function onerror(message, source, lineno, colno, error) {
+    var onerror = function onerror() {
       var handler = handlers[handlers.length - 1];
 
       if (handler) {
-        var args = Array.prototype.slice.call(arguments, 0);
-        // Prefer passing the error to the error handler
-        // to be able to print the stack trace.
-        handler.apply(null, error instanceof Error ? [error] : args);
+        handler.apply(null, Array.prototype.slice.call(arguments, 0));
       } else {
         throw arguments[0];
       }
