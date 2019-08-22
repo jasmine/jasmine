@@ -16,6 +16,7 @@
     "posttest": "eslint src/**/*.js spec/**/*.js && prettier --check src/**/*.js spec/**/*.js",
     "test": "grunt execSpecsInNode",
     "cleanup": "prettier --write src/**/*.js spec/**/*.js",
+    "build": "grunt buildDistribution",
     "serve": "node spec/support/localJasmineBrowser.js",
     "serve:performance": "node spec/support/localJasmineBrowser.js jasmine-browser-performance.json",
     "ci": "node spec/support/ci.js",

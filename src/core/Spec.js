@@ -82,7 +82,7 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.asyncExpectationFactory(actual, this);
   };
 
-  Spec.prototype.execute = function(onComplete, excluded) {
+  Spec.prototype.execute = function(onComplete, excluded, failSpecWithNoExp) {
     var self = this;
 
     var onStart = {
@@ -95,7 +95,7 @@ getJasmineRequireObj().Spec = function(j$) {
     var complete = {
       fn: function(done) {
         self.queueableFn.fn = null;
-        self.result.status = self.status(excluded);
+        self.result.status = self.status(excluded, failSpecWithNoExp);
         self.resultCallback(self.result, done);
       }
     };
@@ -166,7 +166,7 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.result;
   };
 
-  Spec.prototype.status = function(excluded) {
+  Spec.prototype.status = function(excluded, failSpecWithNoExpectations) {
     if (excluded === true) {
       return 'excluded';
     }
@@ -175,11 +175,17 @@ getJasmineRequireObj().Spec = function(j$) {
       return 'pending';
     }
 
-    if (this.result.failedExpectations.length > 0) {
+    if (
+      this.result.failedExpectations.length > 0 ||
+      (failSpecWithNoExpectations &&
+        this.result.failedExpectations.length +
+          this.result.passedExpectations.length ===
+          0)
+    ) {
       return 'failed';
-    } else {
-      return 'passed';
     }
+
+    return 'passed';
   };
 
   Spec.prototype.getFullName = function() {
