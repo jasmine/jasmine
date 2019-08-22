@@ -2138,6 +2138,25 @@ describe("Env integration", function() {
       });
     });
 
+    describe('When failSpecWithNoExpectations is enabled and spec has no expectations', function() {
+      it('should report "failed" status', function(done) {
+        var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+
+        env.configure({ failSpecWithNoExpectations: true });
+        env.addReporter(reporter);
+        env.it('fails', function() {
+          // does nothing, no expectations
+        });
+        env.execute();
+      });
+    });
+
     describe('When a top-level beforeAll fails', function() {
       it('is "failed"', function(done) {
         var env = new jasmineUnderTest.Env(),
