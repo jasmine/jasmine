@@ -66,6 +66,16 @@ getJasmineRequireObj().Env = function(j$) {
        */
       failFast: false,
       /**
+       * Whether to fail the spec if it ran no expectations. By default
+       * a spec that ran no expectations is reported as passed. Setting this
+       * to true will report such spec as a failure.
+       * @name Configuration#failSpecWithNoExpectations
+       * @since 3.5.0
+       * @type Boolean
+       * @default false
+       */
+      failSpecWithNoExpectations: false,
+      /**
        * Whether to cause specs to only have one expectation failure.
        * @name Configuration#oneFailurePerSpec
        * @since 3.3.0
@@ -165,6 +175,11 @@ getJasmineRequireObj().Env = function(j$) {
 
       if (configuration.hasOwnProperty('failFast')) {
         config.failFast = configuration.failFast;
+      }
+
+      if (configuration.hasOwnProperty('failSpecWithNoExpectations')) {
+        config.failSpecWithNoExpectations =
+          configuration.failSpecWithNoExpectations;
       }
 
       if (configuration.hasOwnProperty('oneFailurePerSpec')) {
@@ -606,6 +621,7 @@ getJasmineRequireObj().Env = function(j$) {
         tree: topSuite,
         runnableIds: runnablesToRun,
         queueRunnerFactory: queueRunnerFactory,
+        failSpecWithNoExpectations: config.failSpecWithNoExpectations,
         nodeStart: function(suite, next) {
           currentlyExecutingSuites.push(suite);
           defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
