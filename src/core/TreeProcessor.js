@@ -5,6 +5,7 @@ getJasmineRequireObj().TreeProcessor = function() {
       queueRunnerFactory = attrs.queueRunnerFactory,
       nodeStart = attrs.nodeStart || function() {},
       nodeComplete = attrs.nodeComplete || function() {},
+      failSpecWithNoExpectations = !!attrs.failSpecWithNoExpectations,
       orderChildren =
         attrs.orderChildren ||
         function(node) {
@@ -222,7 +223,11 @@ getJasmineRequireObj().TreeProcessor = function() {
       } else {
         return {
           fn: function(done) {
-            node.execute(done, stats[node.id].excluded);
+            node.execute(
+              done,
+              stats[node.id].excluded,
+              failSpecWithNoExpectations
+            );
           }
         };
       }

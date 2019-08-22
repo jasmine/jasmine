@@ -2138,6 +2138,41 @@ describe("Env integration", function() {
       });
     });
 
+    describe('when spec has no expectations', function() {
+      var env, reporter;
+
+      beforeEach(function() {
+        env = new jasmineUnderTest.Env();
+        reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+        env.addReporter(reporter);
+        env.it('is a spec without any expectations', function() {
+          // does nothing, just a mock spec without expectations
+        });
+        
+      });
+
+      it('should report "failed" status if "failSpecWithNoExpectations" is enabled', function(done) {
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('failed');
+          done();
+        });
+
+        env.configure({ failSpecWithNoExpectations: true });
+        env.execute();
+      });
+
+      it('should report "passed" status if "failSpecWithNoExpectations" is disabled', function(done) {
+        reporter.jasmineDone.and.callFake(function(e) {
+          expect(e.overallStatus).toEqual('passed');
+          done();
+        });
+
+        env.configure({ failSpecWithNoExpectations: false });
+        env.execute();
+      });
+    });
+
     describe('When a top-level beforeAll fails', function() {
       it('is "failed"', function(done) {
         var env = new jasmineUnderTest.Env(),
