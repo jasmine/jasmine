@@ -16,6 +16,22 @@ getJasmineRequireObj().StackTrace = function(j$) {
     this.style = parseResult.style;
   }
 
+  StackTrace.prototype.applySourceMaps = function() {
+    this.frames.forEach(function(frame) {
+      // TODO: get the source maps injected somehow instead of using getEnv()
+      var sourceMap = jasmine.getEnv()._sourceMaps[frame.file],
+        // TODO: use the actual column number
+        original = sourceMap && sourceMap.originalPositionFor({line: frame.line, column: 0});
+
+      if (original) {
+        frame.file = original.source;
+        frame.line = original.line;
+        // TODO: This assumes & builds V8 style -- maybe not the right thing to do everywhere.
+        frame.raw = '    at ' + frame.func + '(' + frame.file + ':' + frame.line +/* ':' + frame.col + */')';
+      }
+    });
+  };
+
   var framePatterns = [
     // PhantomJS on Linux, Node, Chrome, IE, Edge
     // e.g. "   at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)"

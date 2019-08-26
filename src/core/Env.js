@@ -1,4 +1,5 @@
 getJasmineRequireObj().Env = function(j$) {
+
   /**
    * _Note:_ Do not construct this directly, Jasmine will make one during booting.
    * @name Env
@@ -27,6 +28,7 @@ getJasmineRequireObj().Env = function(j$) {
     );
 
     var runnableResources = {};
+    this._sourceMaps = {};
 
     var currentSpec = null;
     var currentlyExecutingSuites = [];
@@ -590,8 +592,22 @@ getJasmineRequireObj().Env = function(j$) {
     );
 
     this.execute = function(runnablesToRun) {
+      // TODO: Should we do this now or only when we're ready to for-real execute?
+      // Probably here if we're going to use callbacks to load source maps.
       installGlobalErrors();
 
+      if (!(this.useSourceMaps && document && document.querySelectorAll)) {
+        return this._execute(runnablesToRun);
+      }
+
+      // Note: This spike uses all the new toys. Production-ready code would
+      // need to avoid the use of promises, stabby lambdas, etc.
+      // Using callbacks vs promises might also make this easier to unit test
+      // by letting us mock out all the async-ness.
+      this._loadSourceMaps().then(() => this._execute(runnablesToRun));
+    };
+
+    this._execute = function(runnablesToRun) {
       if (!runnablesToRun) {
         if (focusedRunnables.length) {
           runnablesToRun = focusedRunnables;
@@ -701,6 +717,95 @@ getJasmineRequireObj().Env = function(j$) {
           });
         }
       );
+    };
+
+    this._loadSourceMaps = function() {
+      // TODO: figure out how to provide mappings.wasm
+      j$.SourceMapConsumer.initialize({"lib/mappings.wasm": "/mappings.wasm"});
+
+      // TODO: figure out how to support inline source maps
+      return Promise.all(this._discoverSources().map(u => this._loadSourceMapForSourceUrl(u)))
+        .then(sms => this._installSourceMaps(sms.filter(m => !!m)));
+    };
+
+    this._discoverSources = function() {
+      var scriptTags = document.querySelectorAll('script');
+      var result = Array.prototype.map.call(scriptTags, t => t.src);
+      result.push('http://localhost/bogus.js');
+      console.log("Found sources:", result);
+
+      return result;
+    };
+
+    this._loadSourceMapForSourceUrl = function(scriptUrl) {
+      // TODO: Can't use fetch if we do this for real
+      return fetch(scriptUrl)
+        .then(r => r.text())
+        .then(
+          scriptText => {
+            console.log("Loaded script " + scriptUrl + " ok.");
+
+            // if (scriptUrl.indexOf('jasmine.latest.js') !== -1) {
+            //   debugger;
+            // }
+
+            const sourceMapUrl = this._extractSourceMapUrl(scriptUrl, scriptText);
+
+            if (!sourceMapUrl) {
+              console.warn("Didn't find a source map URL in " + scriptUrl);
+              return null;
+            }
+
+            return fetch(sourceMapUrl)
+              .then(
+                r => r.text(),
+                () => {
+                  console.warn("Unable to fetch " + sourceMapUrl + ". Source maps for " + scriptUrl +  " will not be applied.");
+                  return null;
+                }
+              )
+              .then(text => {
+                return {scriptUrl: scriptUrl, sourceMapUrl: sourceMapUrl, text: text};
+              });
+          },
+          () => {
+            console.warn("Could not fetch " + scriptUrl + ". Source maps for that script will not be loaded.");
+            return null;
+          }
+        );
+    };
+
+    this._extractSourceMapUrl = function(scriptUrl, scriptText) {
+      // TODO: Other forms are possible but might be uncommon in the wild:
+      //   //@ sourceMappingURL=<url>
+      //   /*# sourceMappingURL=<url> */
+      //   /*@ sourceMappingURL=<url> */
+      //   a SourceMap HTTP header instead of an annotation in the code
+      const match = scriptText.match(/^\/\/# sourceMappingURL=([^$]+)$/m);
+
+      if (!match) {
+        console.log("No source map URL found in " + scriptUrl);
+        return null;
+      }
+
+      // TODO: this won't work if the source map URL is absolute or includes any ..
+      const mapUrl = scriptUrl.replace(/[^\/]+$/, match[1]);
+      console.log("Detected source map URL " + mapUrl + " for script " + scriptUrl);
+      return mapUrl;
+    };
+
+    this._installSourceMaps = function(sms) {
+      const promises = sms.map(sm => {
+        return new j$.SourceMapConsumer(sm.text, sm.sourceMapUrl)
+          .then(consumer => {
+            console.log("Built a source map from " + sm.url + "!")
+            this._sourceMaps[sm.scriptUrl] = consumer;
+          });
+      });
+
+      return Promise.all(promises).then(() => {
+        console.log("Done installing source maps.");
+      });
     };
 
     /**
