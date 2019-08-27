@@ -84,7 +84,7 @@ getJasmineRequireObj().Expector = function(j$) {
       matcherName: this.matcherName,
       passed: result.pass,
       message: message,
-      error: result.error,
+      error: errorForStack ? undefined : result.error,
       errorForStack: errorForStack || undefined,
       actual: this.actual,
       expected: this.expected // TODO: this may need to be arrayified/sliced

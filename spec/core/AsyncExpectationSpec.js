@@ -677,7 +677,7 @@ describe('AsyncExpectation', function() {
       });
     });
 
-    it('reports a custom error message to the spec', function() {
+    it('reports errorWithStack when a custom error message is returned', function() {
       var customError = new Error('I am a custom error');
       var matchers = {
           toFoo: function() {
@@ -713,22 +713,20 @@ describe('AsyncExpectation', function() {
           expected: 'hello',
           actual: 'an actual',
           message: 'I am a custom message',
-          error: customError,
+          error: undefined,
           errorForStack: errorWithStack
         });
       });
     });
 
     it("reports a custom message to the spec when a 'not' comparison fails", function() {
-      var customError = new Error('I am a custom error');
       var matchers = {
           toFoo: function() {
             return {
               compare: function() {
                 return Promise.resolve({
                   pass: true,
-                  message: 'I am a custom message',
-                  error: customError
+                  message: 'I am a custom message'
                 });
               }
             };
@@ -755,14 +753,13 @@ describe('AsyncExpectation', function() {
           expected: 'hello',
           actual: 'an actual',
           message: 'I am a custom message',
-          error: customError,
+          error: undefined,
           errorForStack: errorWithStack
         });
       });
     });
 
     it("reports a custom message func to the spec when a 'not' comparison fails", function() {
-      var customError = new Error('I am a custom error');
       var matchers = {
           toFoo: function() {
             return {
@@ -771,8 +768,7 @@ describe('AsyncExpectation', function() {
                   pass: true,
                   message: function() {
                     return 'I am a custom message';
-                  },
-                  error: customError
+                  }
                 });
               }
             };
@@ -799,7 +795,7 @@ describe('AsyncExpectation', function() {
           expected: 'hello',
           actual: 'an actual',
           message: 'I am a custom message',
-          error: customError,
+          error: undefined,
           errorForStack: errorWithStack
         });
       });
