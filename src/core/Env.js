@@ -222,6 +222,17 @@ getJasmineRequireObj().Env = function(j$) {
       }
     });
 
+    this.setDefaultSpyStrategy = function(defaultStrategyFn) {
+      if (!currentRunnable()) {
+        throw new Error(
+          'Default spy strategy must be set in a before function or a spec'
+        );
+      }
+      runnableResources[
+        currentRunnable().id
+      ].defaultStrategyFn = defaultStrategyFn;
+    };
+
     this.addSpyStrategy = function(name, fn) {
       if (!currentRunnable()) {
         throw new Error(
@@ -300,7 +311,8 @@ getJasmineRequireObj().Env = function(j$) {
         spies: [],
         customEqualityTesters: [],
         customMatchers: {},
-        customSpyStrategies: {}
+        customSpyStrategies: {},
+        defaultStrategyFn: undefined
       };
 
       if (runnableResources[parentRunnableId]) {
@@ -310,6 +322,8 @@ getJasmineRequireObj().Env = function(j$) {
         resources.customMatchers = j$.util.clone(
           runnableResources[parentRunnableId].customMatchers
         );
+        resources.defaultStrategyFn =
+          runnableResources[parentRunnableId].defaultStrategyFn;
       }
 
       runnableResources[id] = resources;
@@ -746,6 +760,15 @@ getJasmineRequireObj().Env = function(j$) {
         }
 
         return {};
+      },
+      function getDefaultStrategyFn() {
+        var runnable = currentRunnable();
+
+        if (runnable) {
+          return runnableResources[runnable.id].defaultStrategyFn;
+        }
+
+        return undefined;
       },
       function getPromise() {
         return customPromise || global.Promise;
