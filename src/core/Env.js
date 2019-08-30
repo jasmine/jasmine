@@ -297,7 +297,6 @@ getJasmineRequireObj().Env = function(j$) {
         util: j$.matchersUtil,
         customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
         customMatchers: runnableResources[spec.id].customMatchers,
-        customAsyncMatchers: runnableResources[spec.id].customAsyncMatchers,
         actual: actual,
         addExpectationResult: addExpectationResult
       });
@@ -311,6 +310,7 @@ getJasmineRequireObj().Env = function(j$) {
       return j$.Expectation.asyncFactory({
         util: j$.matchersUtil,
         customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
+        customAsyncMatchers: runnableResources[spec.id].customAsyncMatchers,
         actual: actual,
         addExpectationResult: addExpectationResult
       });

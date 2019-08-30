@@ -1,10 +1,4 @@
 getJasmineRequireObj().Expectation = function(j$) {
-  var promiseForMessage = {
-    jasmineToString: function() {
-      return 'a promise';
-    }
-  };
-
   /**
    * Matchers that come with Jasmine out of the box.
    * @namespace matchers
@@ -117,7 +111,7 @@ getJasmineRequireObj().Expectation = function(j$) {
       return this.expector
         .compare(name, matcherFactory, arguments)
         .then(function(result) {
-          self.expector.processResult(result, errorForStack, promiseForMessage);
+          self.expector.processResult(result, errorForStack);
         });
     };
   }
