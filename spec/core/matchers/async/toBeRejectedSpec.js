@@ -20,4 +20,17 @@ describe('toBeRejected', function() {
       expect(result).toEqual(jasmine.objectContaining({pass: false}));
     });
   });
+
+  it('fails if actual is not a promise', function() {
+    var matcher = jasmineUnderTest.asyncMatchers.toBeRejected(jasmineUnderTest.matchersUtil),
+      actual = 'not a promise';
+
+    function f() {
+      return matcher.compare(actual);
+    }
+
+    expect(f).toThrowError(
+      'Expected toBeRejected to be called on a promise.'
+    );
+  });
 });

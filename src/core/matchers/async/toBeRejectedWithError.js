@@ -17,6 +17,10 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
   return function toBeRejectedWithError() {
     return {
       compare: function(actualPromise, arg1, arg2) {
+        if (!j$.isPromiseLike(actualPromise)) {
+          throw new Error('Expected toBeRejectedWithError to be called on a promise.');
+        }
+
         var expected = getExpectedFromArgs(arg1, arg2);
 
         return actualPromise.then(

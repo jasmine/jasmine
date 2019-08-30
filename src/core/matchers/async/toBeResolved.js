@@ -13,6 +13,10 @@ getJasmineRequireObj().toBeResolved = function(j$) {
   return function toBeResolved(util) {
     return {
       compare: function(actual) {
+        if (!j$.isPromiseLike(actual)) {
+          throw new Error('Expected toBeResolved to be called on a promise.');
+        }
+
         return actual.then(
           function() { return {pass: true}; },
           function() { return {pass: false}; }
