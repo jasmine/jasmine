@@ -68,10 +68,7 @@ getJasmineRequireObj().Expector = function(j$) {
     return result;
   };
 
-  Expector.prototype.processResult = function(
-    result,
-    errorForStack
-  ) {
+  Expector.prototype.processResult = function(result, errorForStack) {
     var message = this.buildMessage(result);
 
     if (this.expected.length === 1) {

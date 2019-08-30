@@ -193,7 +193,8 @@ describe('AsyncExpectation', function() {
           expect(addExpectationResult).toHaveBeenCalledWith(
             false,
             jasmine.objectContaining({
-              message: 'Some context: Expected [object Promise] not to be resolved.'
+              message:
+                'Some context: Expected [object Promise] not to be resolved.'
             })
           );
         });
