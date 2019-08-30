@@ -228,6 +228,8 @@ describe('AsyncExpectation', function() {
 
   describe('async matchers', function() {
     it('makes custom matchers available to this expectation', function() {
+      jasmine.getEnv().requirePromises();
+
       var asyncMatchers = {
           toFoo: function() {},
           toBar: function() {}
