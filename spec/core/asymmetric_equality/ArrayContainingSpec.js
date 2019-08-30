@@ -31,6 +31,12 @@ describe("ArrayContaining", function() {
     expect(containing.asymmetricMatch(["bar"])).toBe(false);
   });
 
+  it("does not match when the actual is not an array", function() {
+    var containing = new jasmineUnderTest.ArrayContaining(["foo"]);
+
+    expect(containing.asymmetricMatch("foo")).toBe(false);
+  });
+
   it("jasmineToStrings itself", function() {
     var containing = new jasmineUnderTest.ArrayContaining([]);
 
