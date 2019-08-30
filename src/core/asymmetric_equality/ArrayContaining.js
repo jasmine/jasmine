@@ -8,6 +8,13 @@ getJasmineRequireObj().ArrayContaining = function(j$) {
       throw new Error('You must provide an array to arrayContaining, not ' + j$.pp(this.sample) + '.');
     }
 
+    // If the actual parameter is not an array, we can fail immediately, since it couldn't
+    // possibly be an "array containing" anything. However, we also want an empty sample
+    // array to match anything, so we need to double-check we aren't in that case
+    if (!j$.isArray_(other) && this.sample.length > 0) {
+      return false;
+    }
+
     for (var i = 0; i < this.sample.length; i++) {
       var item = this.sample[i];
       if (!j$.matchersUtil.contains(other, item, customTesters)) {
