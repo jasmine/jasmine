@@ -7,8 +7,7 @@ var config = require(path.resolve('spec/support/jasmine-browser.js'));
 config.clearReporters = true;
 config.jasmineCore = jasmineCore;
 
-jasmineBrowser.runSpecs(config)
-  .catch(function(error) {
-    console.error(error);
-    process.exit(1);
-  });
+jasmineBrowser.runSpecs(config).catch(function(error) {
+  console.error(error);
+  process.exit(1);
+});
