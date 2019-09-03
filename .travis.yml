@@ -18,7 +18,6 @@ env:
 
 matrix:
   include:
-    - env: JASMINE_BROWSER="phantomjs" USE_SAUCE=false
     - env: JASMINE_BROWSER="firefox" SAUCE_BROWSER_VERSION='' SAUCE_OS="Linux"
       if: type != pull_request
       addons:
