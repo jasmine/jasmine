@@ -514,6 +514,32 @@ describe('QueueRunner', function() {
     });
   });
 
+  it('passes the error instance to exception handlers in HTML browsers', function() {
+    var error = new Error('fake error'),
+      onExceptionCallback = jasmine.createSpy('on exception callback'),
+      queueRunner = new jasmineUnderTest.QueueRunner({
+        onException: onExceptionCallback
+      });
+
+    queueRunner.execute();
+    queueRunner.handleFinalError(error.message, 'fake.js', 1, 1, error);
+
+    expect(onExceptionCallback).toHaveBeenCalledWith(error);
+  });
+
+  it('passes the first argument to exception handlers for compatibility', function() {
+    var error = new Error('fake error'),
+      onExceptionCallback = jasmine.createSpy('on exception callback'),
+      queueRunner = new jasmineUnderTest.QueueRunner({
+        onException: onExceptionCallback
+      });
+
+    queueRunner.execute();
+    queueRunner.handleFinalError(error.message);
+
+    expect(onExceptionCallback).toHaveBeenCalledWith(error.message);
+  });
+
   it('calls exception handlers when an exception is thrown in a fn', function() {
     var queueableFn = {
         type: 'queueable',
