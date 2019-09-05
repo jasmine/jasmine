@@ -26,6 +26,7 @@
   "homepage": "https://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
   "devDependencies": {
+    "acorn": "^6.0.0",
     "ejs": "^2.5.5",
     "eslint": "^5.16.0",
     "express": "^4.16.4",

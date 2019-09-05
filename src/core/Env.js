@@ -190,7 +190,10 @@ getJasmineRequireObj().Env = function(j$) {
         config.hideDisabled = configuration.hideDisabled;
       }
 
-      if (configuration.hasOwnProperty('Promise')) {
+      // Don't use hasOwnProperty to check for Promise existence because Promise
+      // can be initialized to undefined, either explicitly or by using the
+      // object returned from Env#configuration. In particular, Karma does this.
+      if (configuration.Promise) {
         if (
           typeof configuration.Promise.resolve === 'function' &&
           typeof configuration.Promise.reject === 'function'
@@ -234,6 +237,17 @@ getJasmineRequireObj().Env = function(j$) {
       }
     });
 
+    this.setDefaultSpyStrategy = function(defaultStrategyFn) {
+      if (!currentRunnable()) {
+        throw new Error(
+          'Default spy strategy must be set in a before function or a spec'
+        );
+      }
+      runnableResources[
+        currentRunnable().id
+      ].defaultStrategyFn = defaultStrategyFn;
+    };
+
     this.addSpyStrategy = function(name, fn) {
       if (!currentRunnable()) {
         throw new Error(
@@ -264,6 +278,19 @@ getJasmineRequireObj().Env = function(j$) {
         runnableResources[currentRunnable().id].customMatchers;
       for (var matcherName in matchersToAdd) {
         customMatchers[matcherName] = matchersToAdd[matcherName];
+      }
+    };
+
+    this.addAsyncMatchers = function(matchersToAdd) {
+      if (!currentRunnable()) {
+        throw new Error(
+          'Async Matchers must be added in a before function or a spec'
+        );
+      }
+      var customAsyncMatchers =
+        runnableResources[currentRunnable().id].customAsyncMatchers;
+      for (var matcherName in matchersToAdd) {
+        customAsyncMatchers[matcherName] = matchersToAdd[matcherName];
       }
     };
 
@@ -298,6 +325,7 @@ getJasmineRequireObj().Env = function(j$) {
       return j$.Expectation.asyncFactory({
         util: j$.matchersUtil,
         customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
+        customAsyncMatchers: runnableResources[spec.id].customAsyncMatchers,
         actual: actual,
         addExpectationResult: addExpectationResult
       });
@@ -312,7 +340,9 @@ getJasmineRequireObj().Env = function(j$) {
         spies: [],
         customEqualityTesters: [],
         customMatchers: {},
-        customSpyStrategies: {}
+        customAsyncMatchers: {},
+        customSpyStrategies: {},
+        defaultStrategyFn: undefined
       };
 
       if (runnableResources[parentRunnableId]) {
@@ -322,6 +352,11 @@ getJasmineRequireObj().Env = function(j$) {
         resources.customMatchers = j$.util.clone(
           runnableResources[parentRunnableId].customMatchers
         );
+        resources.customAsyncMatchers = j$.util.clone(
+          runnableResources[parentRunnableId].customAsyncMatchers
+        );
+        resources.defaultStrategyFn =
+          runnableResources[parentRunnableId].defaultStrategyFn;
       }
 
       runnableResources[id] = resources;
@@ -759,6 +794,15 @@ getJasmineRequireObj().Env = function(j$) {
         }
 
         return {};
+      },
+      function getDefaultStrategyFn() {
+        var runnable = currentRunnable();
+
+        if (runnable) {
+          return runnableResources[runnable.id].defaultStrategyFn;
+        }
+
+        return undefined;
       },
       function getPromise() {
         return customPromise || global.Promise;

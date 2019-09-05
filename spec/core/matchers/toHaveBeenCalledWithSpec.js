@@ -43,19 +43,33 @@ describe("toHaveBeenCalledWith", function() {
   });
 
   it("fails when the actual was called with different parameters", function() {
-    var util = {
-          contains: jasmine.createSpy('delegated-contains').and.returnValue(false)
-        },
+    var util = jasmineUnderTest.matchersUtil,
         matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(util),
         calledSpy = new jasmineUnderTest.Env().createSpy('called spy'),
         result;
 
     calledSpy('a');
     calledSpy('c', 'd');
+    calledSpy('a', 'b', 'c');
     result = matcher.compare(calledSpy, 'a', 'b');
 
     expect(result.pass).toBe(false);
-    expect(result.message()).toEqual("Expected spy called spy to have been called with:\n  [ 'a', 'b' ]\nbut actual calls were:\n  [ 'a' ],\n  [ 'c', 'd' ].");
+    expect(result.message()).toEqual(
+      "Expected spy called spy to have been called with:\n" +
+      "  [ 'a', 'b' ]\n" +
+      "but actual calls were:\n" +
+      "  [ 'a' ],\n" +
+      "  [ 'c', 'd' ],\n" +
+      "  [ 'a', 'b', 'c' ].\n\n" +
+      "Call 0:\n" +
+      "  Expected $.length = 1 to equal 2.\n" +
+      "  Expected $[1] = undefined to equal 'b'.\n" +
+      "Call 1:\n" +
+      "  Expected $[0] = 'c' to equal 'a'.\n" +
+      "  Expected $[1] = 'd' to equal 'b'.\n" +
+      "Call 2:\n" +
+      "  Expected $.length = 3 to equal 2.\n" +
+      "  Unexpected $[2] = 'c' in array.");
   });
 
   it("throws an exception when the actual is not a spy", function() {

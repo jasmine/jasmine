@@ -28,6 +28,10 @@ describe('Env', function() {
     });
   });
 
+  it('accepts its own current configureation', function() {
+    env.configure(env.configuration());
+  });
+
   it('can configure specs to throw errors on expectation failures', function() {
     env.configure({ oneFailurePerSpec: true });
 
@@ -53,6 +57,11 @@ describe('Env', function() {
   });
 
   describe('promise library', function() {
+    it('can be configured without a custom library', function() {
+      env.configure({});
+      env.configure({ Promise: undefined });
+    });
+
     it('can be configured with a custom library', function() {
       var myLibrary = {
         resolve: jasmine.createSpy(),

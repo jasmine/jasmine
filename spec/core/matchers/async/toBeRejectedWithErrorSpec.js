@@ -138,4 +138,17 @@ describe('#toBeRejectedWithError', function () {
       }));
     });
   });
+
+  it('fails if actual is not a promise', function() {
+    var matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(jasmineUnderTest.matchersUtil),
+      actual = 'not a promise';
+
+    function f() {
+      return matcher.compare(actual);
+    }
+
+    expect(f).toThrowError(
+      'Expected toBeRejectedWithError to be called on a promise.'
+    );
+  });
 });
