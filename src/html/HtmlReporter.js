@@ -112,15 +112,12 @@ jasmineRequire.HtmlReporter = function(j$) {
     this.specDone = function(result) {
       stateBuilder.specDone(result);
 
-      if (noExpectations(result) && typeof console !== 'undefined') {
+      if (noExpectations(result)) {
         var noSpecMsg = "Spec '" + result.fullName + "' has no expectations.";
-        if (
-          result.status === 'failed' &&
-          typeof console.error !== 'undefined'
-        ) {
+        if (result.status === 'failed') {
           console.error(noSpecMsg);
-        } else if (typeof console.warn !== 'undefined') {
-          console.warn("Spec '" + result.fullName + "' has no expectations.");
+        } else {
+          console.warn(noSpecMsg);
         }
       }
 
