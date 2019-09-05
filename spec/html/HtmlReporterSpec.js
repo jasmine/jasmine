@@ -62,19 +62,19 @@ describe('HtmlReporter', function() {
   });
 
   describe('when a spec is done', function() {
-    it('logs errors to the console and prints a special symbol if it is an empty spec', function() {
-      if (typeof console === 'undefined') {
-        console = { warn: function() {} };
-      }
+    describe('and no expectations ran', function() {
+      var container, reporter;
+      beforeEach(function() {
+        if (typeof console === 'undefined') {
+          console = { warn: function() {}, error: function() {} };
+        }
 
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement('div'),
-        getContainer = function() {
-          return container;
-        },
+        container = document.createElement('div');
         reporter = new jasmineUnderTest.HtmlReporter({
-          env: env,
-          getContainer: getContainer,
+          env: new jasmineUnderTest.Env(),
+          getContainer: function() {
+            return container;
+          },
           createElement: function() {
             return document.createElement.apply(document, arguments);
           },
@@ -83,21 +83,39 @@ describe('HtmlReporter', function() {
           }
         });
 
-      spyOn(console, 'warn');
+        spyOn(console, 'warn');
+        spyOn(console, 'error');
 
-      reporter.initialize();
-
-      reporter.specDone({
-        status: 'passed',
-        fullName: 'Some Name',
-        passedExpectations: [],
-        failedExpectations: []
+        reporter.initialize();
       });
-      expect(console.warn).toHaveBeenCalledWith(
-        "Spec 'Some Name' has no expectations."
-      );
-      var specEl = container.querySelector('.jasmine-symbol-summary li');
-      expect(specEl.getAttribute('class')).toEqual('jasmine-empty');
+
+      it('should log warning to the console and print a special symbol when empty spec status is passed', function() {
+        reporter.specDone({
+          status: 'passed',
+          fullName: 'Some Name',
+          passedExpectations: [],
+          failedExpectations: []
+        });
+        expect(console.warn).toHaveBeenCalledWith(
+          "Spec 'Some Name' has no expectations."
+        );
+        var specEl = container.querySelector('.jasmine-symbol-summary li');
+        expect(specEl.getAttribute('class')).toEqual('jasmine-empty');
+      });
+
+      it('should log error to the console and print a failure symbol when empty spec status is failed', function() {
+        reporter.specDone({
+          status: 'failed',
+          fullName: 'Some Name',
+          passedExpectations: [],
+          failedExpectations: []
+        });
+        expect(console.error).toHaveBeenCalledWith(
+          "Spec 'Some Name' has no expectations."
+        );
+        var specEl = container.querySelector('.jasmine-symbol-summary li');
+        expect(specEl.getAttribute('class')).toEqual('jasmine-failed');
+      });
     });
 
     it('reports the status symbol of a excluded spec', function() {

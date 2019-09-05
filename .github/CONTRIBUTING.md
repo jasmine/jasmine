@@ -118,7 +118,7 @@ The easiest way to run the tests in **Internet Explorer** is to run a VM that ha
 
 1. Ensure all specs are green in browser *and* node
 1. Ensure eslint and prettier are clean as part of your `npm test` command. You can run `npm run cleanup` to have prettier re-write the files.
-1. Build `jasmine.js` with `grunt buildDistribution` and run all specs again - this ensures that your changes self-test well
+1. Build `jasmine.js` with `npm run build` and run all specs again - this ensures that your changes self-test well
 1. Revert your changes to `jasmine.js` and `jasmine-html.js`
     * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches
     * When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into master
