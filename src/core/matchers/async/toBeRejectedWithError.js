@@ -76,7 +76,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
   function getExpectedFromArgs(arg1, arg2) {
     var error, message;
 
-    if (typeof arg1 === 'function' && j$.isError_(arg1.prototype)) {
+    if (isErrorConstructor(arg1)) {
       error = arg1;
       message = arg2;
     } else {
@@ -89,5 +89,9 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
       message: message,
       printValue: j$.fnNameFor(error) + (typeof message === 'undefined' ? '' : ': ' + j$.pp(message))
     };
+  }
+
+  function isErrorConstructor(value) {
+    return typeof value === 'function' && (value === Error || j$.isError_(value.prototype));
   }
 };

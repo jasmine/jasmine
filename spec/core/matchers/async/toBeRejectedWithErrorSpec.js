@@ -27,6 +27,21 @@ describe('#toBeRejectedWithError', function () {
     });
   });
 
+  it('passes when Error matches and is exactly Error', function() {
+    jasmine.getEnv().requirePromises();
+
+    var matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(jasmineUnderTest.matchersUtil),
+      actual = Promise.reject(new Error());
+
+    return matcher.compare(actual, Error).then(function (result) {
+      expect(result).toEqual(jasmine.objectContaining({
+        pass: true,
+        message: 'Expected a promise not to be rejected with Error, but it was.'
+      }));
+    });
+
+  });
+
   it('passes when Error message matches a string', function () {
     jasmine.getEnv().requirePromises();
 

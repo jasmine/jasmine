@@ -294,15 +294,12 @@ describe('Matchers (Integration)', function() {
   });
 
   describe('toBeRejectedWithError', function() {
-    function MyCustomError() {}
-    MyCustomError.prototype = new Error();
-
     verifyPassesAsync(function(env) {
-      return env.expectAsync(Promise.reject(new MyCustomError())).toBeRejectedWithError(MyCustomError);
+      return env.expectAsync(Promise.reject(new Error())).toBeRejectedWithError(Error);
     });
 
     verifyFailsAsync(function(env) {
-      return env.expectAsync(Promise.resolve()).toBeRejectedWithError(MyCustomError);
+      return env.expectAsync(Promise.resolve()).toBeRejectedWithError(Error);
     });
   });
 
