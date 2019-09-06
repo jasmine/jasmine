@@ -1,30 +1,18 @@
 describe('toHaveClass', function() {
   beforeEach(function() {
-    this.createElementWithClassName = function(className) {
-      var el = this.doc.createElement('div');
-      el.className = className;
-      return el;
-    };
-
-    if (typeof document !== 'undefined') {
-      this.doc = document;
-    } else {
-      var JSDOM = require('jsdom').JSDOM;
-      var dom = new JSDOM();
-      this.doc = dom.window.document;
-    }
+    this.domHelpers = jasmine.getEnv().domHelpers();
   });
 
   it('fails for a DOM element that lacks the expected class', function() {
     var matcher = jasmineUnderTest.matchers.toHaveClass(),
-      result = matcher.compare(this.createElementWithClassName(''), 'foo');
+      result = matcher.compare(this.domHelpers.createElementWithClassName(''), 'foo');
 
     expect(result.pass).toBe(false);
   });
 
   it('passes for a DOM element that has the expected class', function() {
     var matcher = jasmineUnderTest.matchers.toHaveClass(),
-      el = this.createElementWithClassName('foo bar baz');
+      el = this.domHelpers.createElementWithClassName('foo bar baz');
 
     expect(matcher.compare(el, 'foo').pass).toBe(true);
     expect(matcher.compare(el, 'bar').pass).toBe(true);
@@ -33,7 +21,7 @@ describe('toHaveClass', function() {
 
   it('fails for a DOM element that only has other classes', function() {
     var matcher = jasmineUnderTest.matchers.toHaveClass(),
-      el = this.createElementWithClassName('foo bar');
+      el = this.domHelpers.createElementWithClassName('foo bar');
 
     expect(matcher.compare(el, 'fo').pass).toBe(false);
   });
@@ -49,7 +37,7 @@ describe('toHaveClass', function() {
       matcher.compare(undefined, 'foo');
     }).toThrowError('undefined is not a DOM element');
 
-    var textNode = this.doc.createTextNode('');
+    var textNode = this.domHelpers.document.createTextNode('');
     expect(function() {
       matcher.compare(textNode, 'foo')
     }).toThrowError('HTMLNode is not a DOM element');

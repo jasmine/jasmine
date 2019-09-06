@@ -23,6 +23,7 @@ module.exports = {
     'helpers/checkForSet.js',
     'helpers/checkForSymbol.js',
     'helpers/checkForTypedArrays.js',
+    'helpers/domHelpers.js',
     'helpers/integrationMatchers.js',
     'helpers/promises.js',
     'helpers/defineJasmineUnderTest.js'
