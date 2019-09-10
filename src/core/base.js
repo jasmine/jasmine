@@ -288,7 +288,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * that will succeed if every key/value pair in the sample passes the deep equality comparison
    * with at least one key/value pair in the actual value being compared
    * @name jasmine.mapContaining
-   * @since
+   * @since 3.5.0
    * @function
    * @param {Map} sample - The subset of items that _must_ be in the actual.
    */
@@ -300,8 +300,8 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get a matcher, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if every item in the sample passes the deep equality comparison
    * with at least one item in the actual value being compared
-   * @name jasmine.mapContaining
-   * @since
+   * @name jasmine.setContaining
+   * @since 3.5.0
    * @function
    * @param {Set} sample - The subset of items that _must_ be in the actual.
    */
