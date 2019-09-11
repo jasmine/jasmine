@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "posttest": "eslint src/**/*.js spec/**/*.js && prettier --check src/**/*.js spec/**/*.js",
-    "test": "grunt execSpecsInNode",
+    "test": "grunt --stack execSpecsInNode",
     "cleanup": "prettier --write src/**/*.js spec/**/*.js",
     "build": "grunt buildDistribution",
     "serve": "node spec/support/localJasmineBrowser.js",
