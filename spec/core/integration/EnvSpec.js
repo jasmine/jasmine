@@ -2149,7 +2149,7 @@ describe("Env integration", function() {
         env.it('is a spec without any expectations', function() {
           // does nothing, just a mock spec without expectations
         });
-        
+
       });
 
       it('should report "failed" status if "failSpecWithNoExpectations" is enabled', function(done) {
@@ -2554,6 +2554,35 @@ describe("Env integration", function() {
       return env.expectAsync(p).toBeRejected();
     });
 
+    env.execute();
+  });
+
+  it("supports asymmetric equality testers that take a matchersUtil", function(done) {
+    var env = new jasmineUnderTest.Env();
+
+    env.it("spec using custom asymmetric equality tester", function() {
+      var customEqualityFn = function(a, b) {
+        if (a === 2 && b === "two") {
+          return true;
+        }
+      };
+      var arrayWithFirstElement = function(sample) {
+        return {
+          asymmetricMatch: function (actual, matchersUtil) {
+            return matchersUtil.equals(sample, actual[0]);
+          }
+        };
+      };
+
+      env.addCustomEqualityTester(customEqualityFn);
+      env.expect(["two"]).toEqual(arrayWithFirstElement(2));
+    });
+
+    var specExpectations = function(result) {
+      expect(result.status).toEqual('passed');
+    };
+
+    env.addReporter({ specDone: specExpectations, jasmineDone: done });
     env.execute();
   });
 });

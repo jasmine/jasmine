@@ -11,7 +11,7 @@ getJasmineRequireObj().toBeResolvedTo = function(j$) {
    * @example
    * return expectAsync(aPromise).toBeResolvedTo({prop: 'value'});
    */
-  return function toBeResolvedTo(util, customEqualityTesters) {
+  return function toBeResolvedTo(util) {
     return {
       compare: function(actualPromise, expectedValue) {
         if (!j$.isPromiseLike(actualPromise)) {
@@ -26,7 +26,7 @@ getJasmineRequireObj().toBeResolvedTo = function(j$) {
 
         return actualPromise.then(
           function(actualValue) {
-            if (util.equals(actualValue, expectedValue, customEqualityTesters)) {
+            if (util.equals(actualValue, expectedValue)) {
               return {
                 pass: true,
                 message: prefix(true) + '.'

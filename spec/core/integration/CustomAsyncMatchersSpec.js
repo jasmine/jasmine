@@ -111,4 +111,36 @@ describe('Custom Async Matchers (Integration)', function() {
     env.addReporter({ specDone: specExpectations, jasmineDone: done });
     env.execute();
   });
+
+  it("provides custom equality testers to the matcher factory via matchersUtil", function(done) {
+    jasmine.getEnv().requirePromises();
+
+    var matcherFactory = function (matchersUtil) {
+        return {
+          compare: function (actual, expected) {
+            return Promise.resolve({pass: matchersUtil.equals(actual[0], expected)});
+          }
+        };
+      },
+      customEqualityFn = jasmine.createSpy("customEqualityFn").and.callFake(function (a, b) {
+        return a.toString() === b;
+      });
+
+    env.it("spec with expectation", function() {
+      env.addCustomEqualityTester(customEqualityFn);
+      env.addAsyncMatchers({
+        toBeArrayWithFirstElement: matcherFactory
+      });
+
+      return env.expectAsync([1, 2]).toBeArrayWithFirstElement("1");
+    });
+
+    var specExpectations = function(result) {
+      expect(customEqualityFn).toHaveBeenCalledWith(1, "1");
+      expect(result.failedExpectations).toEqual([]);
+    };
+
+    env.addReporter({ specDone: specExpectations, jasmineDone: done });
+    env.execute();
+  });
 });

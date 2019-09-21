@@ -9,14 +9,12 @@ getJasmineRequireObj().toContain = function() {
    * expect(array).toContain(anElement);
    * expect(string).toContain(substring);
    */
-  function toContain(util, customEqualityTesters) {
-    customEqualityTesters = customEqualityTesters || [];
-
+  function toContain(util) {
     return {
       compare: function(actual, expected) {
 
         return {
-          pass: util.contains(actual, expected, customEqualityTesters)
+          pass: util.contains(actual, expected)
         };
       }
     };

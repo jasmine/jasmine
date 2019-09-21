@@ -7,7 +7,7 @@ getJasmineRequireObj().MapContaining = function(j$) {
     this.sample = sample;
   }
 
-  MapContaining.prototype.asymmetricMatch = function(other, customTesters) {
+  MapContaining.prototype.asymmetricMatch = function(other, matchersUtil) {
     if (!j$.isMap(other)) return false;
 
     var hasAllMatches = true;
@@ -17,8 +17,8 @@ getJasmineRequireObj().MapContaining = function(j$) {
       var hasMatch = false;
       j$.util.forEachBreakable(other, function(oBreakLoop, oValue, oKey) {
         if (
-          j$.matchersUtil.equals(oKey, key, customTesters)
-          && j$.matchersUtil.equals(oValue, value, customTesters)
+          matchersUtil.equals(oKey, key)
+          && matchersUtil.equals(oValue, value)
         ) {
           hasMatch = true;
           oBreakLoop();

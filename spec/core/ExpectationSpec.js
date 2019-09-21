@@ -634,7 +634,7 @@ describe('Expectation', function() {
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
-          util: jasmineUnderTest.matchersUtil,
+          util: new jasmineUnderTest.MatchersUtil(),
           actual: 'an actual',
           addExpectationResult: addExpectationResult
         });

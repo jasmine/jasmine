@@ -12,7 +12,7 @@ getJasmineRequireObj().toBeInstanceOf = function(j$) {
    * expect(3).toBeInstanceOf(Number);
    * expect(new Error()).toBeInstanceOf(Error);
    */
-  function toBeInstanceOf(util, customEqualityTesters) {
+  function toBeInstanceOf() {
     return {
       compare: function(actual, expected) {
         var actualType = actual && actual.constructor ? j$.fnNameFor(actual.constructor) : j$.pp(actual),

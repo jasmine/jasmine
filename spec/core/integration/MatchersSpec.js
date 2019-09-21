@@ -449,7 +449,10 @@ describe('Matchers (Integration)', function() {
 
   describe('toThrow', function() {
     verifyPasses(function(env) {
-      env.expect(function() { throw new Error(); }).toThrow();
+      env.addCustomEqualityTester(function(a, b) {
+        return a.toString() === b.toString();
+      });
+      env.expect(function() { throw '5'; }).toThrow(5);
     });
 
     verifyFails(function(env) {

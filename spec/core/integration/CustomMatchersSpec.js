@@ -1,19 +1,19 @@
-describe("Custom Matchers (Integration)", function() {
+describe("Custom Matchers (Integration)", function () {
   var env;
   var fakeTimer;
 
-  beforeEach(function() {
+  beforeEach(function () {
     env = new jasmineUnderTest.Env();
     env.configure({random: false});
   });
 
-  it("allows adding more matchers local to a spec", function(done) {
-    env.it('spec defining a custom matcher', function() {
+  it("allows adding more matchers local to a spec", function (done) {
+    env.it('spec defining a custom matcher', function () {
       env.addMatchers({
-        matcherForSpec: function() {
+        matcherForSpec: function () {
           return {
-            compare: function(actual, expected) {
-              return { pass: false, message: "matcherForSpec: actual: " + actual + "; expected: " + expected };
+            compare: function (actual, expected) {
+              return {pass: false, message: "matcherForSpec: actual: " + actual + "; expected: " + expected};
             }
           }
         }
@@ -83,6 +83,8 @@ describe("Custom Matchers (Integration)", function() {
 
   it("supports asymmetric equality testers that take a list of custom equality testers", function(done) {
     // TODO: remove this in the next major release.
+    spyOn(jasmineUnderTest, 'getEnv').and.returnValue(env);
+
     env.it("spec using custom asymmetric equality tester", function() {
       var customEqualityFn = function(a, b) {
         if (a === 2 && b === "two") {
@@ -227,6 +229,36 @@ describe("Custom Matchers (Integration)", function() {
     };
 
     env.addReporter({ specDone: specExpectations, jasmineDone: done });
+    env.execute();
+  });
+
+  it("provides custom equality testers to the matcher factory via matchersUtil", function (done) {
+    var matcherFactory = function (matchersUtil) {
+        return {
+          compare: function (actual, expected) {
+            return {pass: matchersUtil.equals(actual[0], expected)};
+          }
+        };
+      },
+      customEqualityFn = jasmine.createSpy("customEqualityFn").and.callFake(function (a, b) {
+        return a.toString() === b;
+      });
+
+    env.it("spec with expectation", function () {
+      env.addCustomEqualityTester(customEqualityFn);
+      env.addMatchers({
+        toBeArrayWithFirstElement: matcherFactory
+      });
+
+      env.expect([1, 2]).toBeArrayWithFirstElement("1");
+    });
+
+    var specExpectations = function (result) {
+      expect(customEqualityFn).toHaveBeenCalledWith(1, "1");
+      expect(result.failedExpectations).toEqual([]);
+    };
+
+    env.addReporter({specDone: specExpectations, jasmineDone: done});
     env.execute();
   });
 });

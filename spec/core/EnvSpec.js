@@ -304,4 +304,62 @@ describe('Env', function() {
       expect(globalErrors.install).toHaveBeenCalled();
     });
   });
+
+  it('creates an expectationFactory that uses the current custom equality testers', function(done) {
+    function customEqualityTester() {}
+    var RealSpec = jasmineUnderTest.Spec,
+      specInstance,
+      expectationFactory;
+    spyOn(jasmineUnderTest, 'MatchersUtil');
+    spyOn(jasmineUnderTest, 'Spec').and.callFake(function(options) {
+      expectationFactory = options.expectationFactory;
+      specInstance = new RealSpec(options);
+      return specInstance;
+    });
+
+    env.it('spec', function() {
+      env.addCustomEqualityTester(customEqualityTester);
+      expectationFactory('actual', specInstance);
+    });
+
+    env.addReporter({
+      jasmineDone: function() {
+        expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
+          customTesters: [customEqualityTester]
+        });
+        done();
+      }
+    });
+
+    env.execute();
+  });
+
+  it('creates an asyncExpectationFactory that uses the current custom equality testers', function(done) {
+    function customEqualityTester() {}
+    var RealSpec = jasmineUnderTest.Spec,
+      specInstance,
+      asyncExpectationFactory;
+    spyOn(jasmineUnderTest, 'MatchersUtil');
+    spyOn(jasmineUnderTest, 'Spec').and.callFake(function(options) {
+      asyncExpectationFactory = options.asyncExpectationFactory;
+      specInstance = new RealSpec(options);
+      return specInstance;
+    });
+
+    env.it('spec', function() {
+      env.addCustomEqualityTester(customEqualityTester);
+      asyncExpectationFactory('actual', specInstance);
+    });
+
+    env.addReporter({
+      jasmineDone: function() {
+        expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
+          customTesters: [customEqualityTester]
+        });
+        done();
+      }
+    });
+
+    env.execute();
+  });
 });

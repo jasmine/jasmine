@@ -2,7 +2,7 @@ describe("toEqual", function() {
   "use strict";
 
   function compareEquals(actual, expected) {
-    var util = jasmineUnderTest.matchersUtil,
+    var util = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.matchers.toEqual(util);
 
     var result = matcher.compare(actual, expected);
@@ -16,32 +16,27 @@ describe("toEqual", function() {
         buildFailureMessage: function() {
           return 'does not matter'
         },
-        DiffBuilder: jasmineUnderTest.matchersUtil.DiffBuilder
+        DiffBuilder: new jasmineUnderTest.DiffBuilder()
       },
       matcher = jasmineUnderTest.matchers.toEqual(util),
       result;
 
     result = matcher.compare(1, 1);
 
-    expect(util.equals).toHaveBeenCalledWith(1, 1, [], jasmine.anything());
+    expect(util.equals).toHaveBeenCalledWith(1, 1, jasmine.anything());
     expect(result.pass).toBe(true);
   });
 
-  it("delegates custom equality testers, if present", function() {
-    var util = {
-        equals: jasmine.createSpy('delegated-equals').and.returnValue(true),
-        buildFailureMessage: function() {
-          return 'does not matter'
-        },
-        DiffBuilder: jasmineUnderTest.matchersUtil.DiffBuilder
+  it("works with custom equality testers", function() {
+    var tester = function (a, b) {
+        return a.toString() === b.toString();
       },
-      customEqualityTesters = ['a', 'b'],
-      matcher = jasmineUnderTest.matchers.toEqual(util, customEqualityTesters),
+      util = new jasmineUnderTest.MatchersUtil({customTesters: [tester]}),
+      matcher = jasmineUnderTest.matchers.toEqual(util),
       result;
 
-    result = matcher.compare(1, 1);
+    result = matcher.compare(1, '1');
 
-    expect(util.equals).toHaveBeenCalledWith(1, 1, ['a', 'b'], jasmine.anything());
     expect(result.pass).toBe(true);
   });
 

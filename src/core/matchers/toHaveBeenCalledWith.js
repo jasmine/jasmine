@@ -11,7 +11,7 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
    * @example
    * expect(mySpy).toHaveBeenCalledWith('foo', 'bar', 2);
    */
-  function toHaveBeenCalledWith(util, customEqualityTesters) {
+  function toHaveBeenCalledWith(util) {
     return {
       compare: function() {
         var args = Array.prototype.slice.call(arguments, 0),
@@ -32,7 +32,7 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
           return result;
         }
 
-        if (util.contains(actual.calls.allArgs(), expectedArgs, customEqualityTesters)) {
+        if (util.contains(actual.calls.allArgs(), expectedArgs)) {
           result.pass = true;
           result.message = function() {
             return 'Expected spy ' + actual.and.identity + ' not to have been called with:\n' +
@@ -47,7 +47,7 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
 
             var diffs = actual.calls.allArgs().map(function(argsForCall, callIx) {
             var diffBuilder = new j$.DiffBuilder();
-              util.equals(argsForCall, expectedArgs, customEqualityTesters, diffBuilder);
+              util.equals(argsForCall, expectedArgs, diffBuilder);
               return 'Call ' + callIx + ':\n' +
                 diffBuilder.getMessage().replace(/^/mg, '  ');
             });

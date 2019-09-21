@@ -11,7 +11,7 @@ getJasmineRequireObj().toBeRejectedWith = function(j$) {
    * @example
    * return expectAsync(aPromise).toBeRejectedWith({prop: 'value'});
    */
-  return function toBeRejectedWith(util, customEqualityTesters) {
+  return function toBeRejectedWith(util) {
     return {
       compare: function(actualPromise, expectedValue) {
         if (!j$.isPromiseLike(actualPromise)) {
@@ -32,7 +32,7 @@ getJasmineRequireObj().toBeRejectedWith = function(j$) {
           };
         },
         function(actualValue) {
-          if (util.equals(actualValue, expectedValue, customEqualityTesters)) {
+          if (util.equals(actualValue, expectedValue)) {
             return {
               pass: true,
               message: prefix(true) + '.'

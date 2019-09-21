@@ -31,8 +31,9 @@ describe('MapContaining', function() {
       ['foo', [1, 2, 3]],
     ]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
+    var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
-    expect(containing.asymmetricMatch(actualMap)).toBe(true);
+    expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(true);
   });
 
   it('does not match when a key is not in actual', function() {
@@ -46,8 +47,9 @@ describe('MapContaining', function() {
       ['foo', [1, 2, 3]],
     ]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
+    var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
-    expect(containing.asymmetricMatch(actualMap)).toBe(false);
+    expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(false);
   });
 
   it('does not match when a value is not in actual', function() {
@@ -61,8 +63,9 @@ describe('MapContaining', function() {
       ['foo', [1, 2]],
     ]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
+    var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
-    expect(containing.asymmetricMatch(actualMap)).toBe(false);
+    expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(false);
   });
 
   it('matches when all the key/value pairs in sample have asymmetric matches in actual', function() {
@@ -74,17 +77,18 @@ describe('MapContaining', function() {
 
     var containingMap = new MapI([
       [
-        jasmine.stringMatching(/^foo\d/),
+        jasmineUnderTest.stringMatching(/^foo\d/),
         'bar'
       ],
       [
         'baz',
-        jasmine.arrayContaining([2, 3])
+        jasmineUnderTest.arrayContaining([2, 3])
       ],
     ]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
+    var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
-    expect(containing.asymmetricMatch(actualMap)).toBe(true);
+    expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(true);
   });
 
   it('does not match when a key in sample has no asymmetric matches in actual', function() {
@@ -95,17 +99,18 @@ describe('MapContaining', function() {
 
     var containingMap = new MapI([
       [
-        jasmine.stringMatching(/^foo\d/),
+        jasmineUnderTest.stringMatching(/^foo\d/),
         'bar'
       ],
       [
         'baz',
-        jasmine.arrayContaining([2, 3])
+        jasmineUnderTest.arrayContaining([2, 3])
       ],
     ]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
+    var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
-    expect(containing.asymmetricMatch(actualMap)).toBe(false);
+    expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(false);
   });
 
   it('does not match when a value in sample has no asymmetric matches in actual', function() {
@@ -116,17 +121,18 @@ describe('MapContaining', function() {
 
     var containingMap = new MapI([
       [
-        jasmine.stringMatching(/^foo\d/),
+        jasmineUnderTest.stringMatching(/^foo\d/),
         'bar'
       ],
       [
         'baz',
-        jasmine.arrayContaining([4, 5])
+        jasmineUnderTest.arrayContaining([4, 5])
       ],
     ]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
+    var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
-    expect(containing.asymmetricMatch(actualMap)).toBe(false);
+    expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(false);
   });
 
   it('matches recursively', function() {
@@ -147,8 +153,9 @@ describe('MapContaining', function() {
       ],
     ]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
+    var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
-    expect(containing.asymmetricMatch(actualMap)).toBe(true);
+    expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(true);
   });
 
   it('uses custom equality testers', function() {
@@ -158,8 +165,9 @@ describe('MapContaining', function() {
     }
     var actualMap = new MapI([['foo', -1]]);
     var containing = new jasmineUnderTest.MapContaining(new MapI([['foo', -2]]));
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({customTesters: [tester]});
 
-    expect(containing.asymmetricMatch(actualMap, [tester])).toBe(true);
+    expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(true);
   });
 
   it('does not match when actual is not a map', function() {
