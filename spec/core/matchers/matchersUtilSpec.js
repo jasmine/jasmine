@@ -164,7 +164,7 @@ describe("matchersUtil", function() {
 
       expect(jasmineUnderTest.matchersUtil.equals(a,b)).toBe(true);
     });
-    
+
     it("passes for equivalent Promises (GitHub issue #1314)", function() {
       if (typeof Promise === 'undefined') { return; }
 
@@ -620,7 +620,7 @@ describe("matchersUtil", function() {
     it("uses custom equality testers if passed in and actual is an Array", function() {
       var customTester = function(a, b) {return true;};
 
-      expect(jasmineUnderTest.matchersUtil.contains([1, 2], 2, [customTester])).toBe(true);
+      expect(jasmineUnderTest.matchersUtil.contains([1, 2], 3, [customTester])).toBe(true);
     });
 
     it("fails when actual is undefined", function() {
