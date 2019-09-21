@@ -84,12 +84,9 @@ describe("buildExpectationResult", function() {
     var expectedValue = "JasmineExpectationTestValue";
     try { assert.equal(value, expectedValue) } catch(e) { error = e; }
 
-    expect(Object.keys(error)).toContain(
-      'code', 'actual', 'expected', 'operator'
-    );
     expect(error.code).toEqual('ERR_ASSERTION');
-    expect(error.expected).toEqual(expectedValue);
     expect(error.actual).toEqual(value);
+    expect(error.expected).toEqual(expectedValue);
     expect(error.operator).toEqual('==');
 
     var result = jasmineUnderTest.buildExpectationResult({
@@ -99,8 +96,11 @@ describe("buildExpectationResult", function() {
       actual: '',
       error: error
     });
+
+    expect(result.code).toEqual('ERR_ASSERTION');
     expect(result.actual).toEqual(value);
     expect(result.expected).toEqual(expectedValue);
+    expect(result.matcherName).toEqual('assert ==');
   });
 
 });
