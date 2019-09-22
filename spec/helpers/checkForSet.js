@@ -1,5 +1,5 @@
 (function(env) {
-  function hasFunctioningSets() {
+  env.hasFunctioningSets = function() {
     if (typeof Set === 'undefined') {
       return false;
     }
@@ -40,10 +40,10 @@
     } catch (e) {
       return false;
     }
-  }
+  };
 
   env.requireFunctioningSets = function() {
-    if (!hasFunctioningSets()) {
+    if (!env.hasFunctioningSets()) {
       env.pending('Browser has incomplete or missing support for Sets');
     }
   };
