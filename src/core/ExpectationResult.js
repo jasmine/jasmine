@@ -24,12 +24,12 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
       result.expected = options.expected;
       result.actual = options.actual;
 
-      if(options.error && !j$.isString_(options.error)) {
+      if (options.error && !j$.isString_(options.error)) {
         if ('code' in options.error) {
           result.code = options.error.code;
         }
 
-        if(
+        if (
           options.error.code === 'ERR_ASSERTION' &&
           options.expected === '' &&
           options.actual === ''

@@ -82,7 +82,11 @@ describe("buildExpectationResult", function() {
     var error;
     var value = 8421;
     var expectedValue = 'JasmineExpectationTestValue';
-    try { assert.equal(value, expectedValue); } catch(e) { error = e; }
+    try {
+      assert.equal(value, expectedValue);
+    } catch (e) {
+      error = e;
+    }
 
     expect(error.code).toEqual('ERR_ASSERTION');
     expect(error.actual).toEqual(value);
@@ -102,5 +106,4 @@ describe("buildExpectationResult", function() {
     expect(result.expected).toEqual(expectedValue);
     expect(result.matcherName).toEqual('assert ==');
   });
-
 });
