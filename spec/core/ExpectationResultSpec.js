@@ -74,15 +74,15 @@ describe("buildExpectationResult", function() {
     expect(result.actual).toBe('some-value');
   });
 
-  it("handles nodejs assertions", function() {
-    if (typeof require === "undefined") {
+  it('handles nodejs assertions', function() {
+    if (typeof require === 'undefined') {
       return;
     }
     var assert = require('assert');
     var error;
     var value = 8421;
-    var expectedValue = "JasmineExpectationTestValue";
-    try { assert.equal(value, expectedValue) } catch(e) { error = e; }
+    var expectedValue = 'JasmineExpectationTestValue';
+    try { assert.equal(value, expectedValue); } catch(e) { error = e; }
 
     expect(error.code).toEqual('ERR_ASSERTION');
     expect(error.actual).toEqual(value);
