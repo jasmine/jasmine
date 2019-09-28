@@ -589,6 +589,32 @@ describe('Expectation', function() {
       );
     });
 
+    it('indents a multiline failure message', function() {
+      var matchers = {
+          toFoo: function() {
+            return {
+              compare: function() {
+                return { pass: false, message: 'a\nmultiline\nmessage' };
+              }
+            };
+          }
+        },
+        addExpectationResult = jasmine.createSpy('addExpectationResult'),
+        expectation = jasmineUnderTest.Expectation.factory({
+          customMatchers: matchers,
+          actual: 'an actual',
+          addExpectationResult: addExpectationResult
+        }),
+        actualMessage;
+
+      expectation.withContext('Some context').toFoo('hello');
+
+      actualMessage = addExpectationResult.calls.argsFor(0)[1].message;
+      expect(actualMessage).toEqual(
+        'Some context:\n    a\n    multiline\n    message'
+      );
+    });
+
     it('prepends the context to a custom failure message from a function', function() {
       var matchers = {
           toFoo: function() {
