@@ -2149,7 +2149,7 @@ describe("Env integration", function() {
         env.it('is a spec without any expectations', function() {
           // does nothing, just a mock spec without expectations
         });
-        
+
       });
 
       it('should report "failed" status if "failSpecWithNoExpectations" is enabled', function(done) {
@@ -2552,6 +2552,95 @@ describe("Env integration", function() {
       env.addCustomEqualityTester(function() { return true; });
       var p = Promise.resolve();
       return env.expectAsync(p).toBeRejected();
+    });
+
+    env.execute();
+  });
+
+  it('reports an error when an async expectation occurs after the spec finishes', function(done) {
+    jasmine.getEnv().requirePromises();
+
+    var env = new jasmineUnderTest.Env(),
+      resolve,
+      promise = new Promise(function(res) { resolve = res; });
+
+    env.describe('a suite', function() {
+      env.it('does not wait', function() {
+        // Note: we intentionally don't return the result of each expectAsync.
+        // This causes the spec to finish before the expectations are evaluated.
+        env.expectAsync(promise).toBeResolved();
+        env.expectAsync(promise).toBeResolvedTo('something else');
+      });
+    });
+
+    env.addReporter({
+      specDone: function() {
+        resolve();
+      },
+      jasmineDone: function (result) {
+        expect(result.failedExpectations).toEqual([
+          jasmine.objectContaining({
+            passed: false,
+            globalErrorType: 'lateExpectation',
+            message: 'Spec "a suite does not wait" ran a "toBeResolved" expectation ' +
+              'after it finished.\n' +
+              'Did you forget to return or await the result of expectAsync?',
+            matcherName: 'toBeResolved'
+          }),
+          jasmine.objectContaining({
+            passed: false,
+            globalErrorType: 'lateExpectation',
+            message: 'Spec "a suite does not wait" ran a "toBeResolvedTo" expectation ' +
+              'after it finished.\n' +
+              'Message: "Expected a promise to be resolved to \'something else\' ' +
+              'but it was resolved to undefined."\n' +
+              'Did you forget to return or await the result of expectAsync?',
+            matcherName: 'toBeResolvedTo'
+          })
+        ]);
+
+        done();
+      }
+    });
+
+    env.execute();
+  });
+
+  it('reports an error when an async expectation occurs after the suite finishes', function(done) {
+    jasmine.getEnv().requirePromises();
+
+    var env = new jasmineUnderTest.Env(),
+      resolve,
+      promise = new Promise(function(res) { resolve = res; });
+
+    env.describe('a suite', function() {
+      env.afterAll(function() {
+        // Note: we intentionally don't return the result of expectAsync.
+        // This causes the suite to finish before the expectations are evaluated.
+        env.expectAsync(promise).toBeResolved();
+      });
+
+      env.it('is a spec', function() {});
+    });
+
+    env.addReporter({
+      suiteDone: function() {
+        resolve();
+      },
+      jasmineDone: function (result) {
+        expect(result.failedExpectations).toEqual([
+          jasmine.objectContaining({
+            passed: false,
+            globalErrorType: 'lateExpectation',
+            message: 'Suite "a suite" ran a "toBeResolved" expectation ' +
+              'after it finished.\n' +
+              'Did you forget to return or await the result of expectAsync?',
+            matcherName: 'toBeResolved'
+          })
+        ]);
+
+        done();
+      }
     });
 
     env.execute();
