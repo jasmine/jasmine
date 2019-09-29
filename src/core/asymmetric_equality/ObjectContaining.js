@@ -17,7 +17,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
   }
 
   function hasProperty(obj, property) {
-    if (!obj) {
+    if (!obj || typeof(obj) !== 'object') {
       return false;
     }
 
@@ -30,6 +30,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
 
   ObjectContaining.prototype.asymmetricMatch = function(other, customTesters) {
     if (typeof(this.sample) !== 'object') { throw new Error('You must provide an object to objectContaining, not \''+this.sample+'\'.'); }
+    // TODO: This succeeds when sample is an empty object and other is a non-object, but should probably fail
 
     for (var property in this.sample) {
       if (!hasProperty(other, property) ||
