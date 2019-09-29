@@ -593,6 +593,42 @@ describe("matchersUtil", function() {
         expect(['foo']).toEqual(['foo']);
       });
     });
+
+    describe("Building diffs for asymmetric equality testers", function() {
+      it("diffs the values returned by valuesForDiff_", function() {
+        var tester = {
+            asymmetricMatch: function() { return false; },
+            valuesForDiff_: function() {
+              return {
+                self: 'asymmetric tester value',
+                other: 'other value'
+              }
+            }
+          },
+          diffBuilder = jasmine.createSpyObj('diffBuilder', ['record', 'withPath']);
+        diffBuilder.withPath.and.callFake(function(p, block) { block() });
+        debugger;
+        jasmineUnderTest.matchersUtil.equals({x: 42}, {x: tester}, [], diffBuilder);
+
+        expect(diffBuilder.withPath).toHaveBeenCalledWith('x', jasmine.any(Function));
+        expect(diffBuilder.record). toHaveBeenCalledWith(
+          'other value', 'asymmetric tester value'
+        );
+      });
+
+      it("records both objects when the tester does not implement valuesForDiff", function() {
+        var tester = {
+            asymmetricMatch: function() { return false; },
+          },
+          diffBuilder = jasmine.createSpyObj('diffBuilder', ['record', 'withPath']);
+        diffBuilder.withPath.and.callFake(function(p, block) { block() });
+        debugger;
+        jasmineUnderTest.matchersUtil.equals({x: 42}, {x: tester}, [], diffBuilder);
+
+        expect(diffBuilder.withPath).toHaveBeenCalledWith('x', jasmine.any(Function));
+        expect(diffBuilder.record). toHaveBeenCalledWith(42, tester);
+      });
+    });
   });
 
   describe("contains", function() {

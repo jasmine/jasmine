@@ -55,7 +55,16 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     return obj && j$.isA_('Function', obj.asymmetricMatch);
   }
 
-  function asymmetricMatch(a, b, customTesters, diffBuilder) {
+  function asymmetricDiff(a, b, aStack, bStack, customTesters, diffBuilder) {
+    if (j$.isFunction_(b.valuesForDiff_)) {
+      var values = b.valuesForDiff_(a);
+      eq(values.other, values.self, aStack, bStack, customTesters, diffBuilder);
+    } else {
+      diffBuilder.record(a, b);
+    }
+  }
+
+  function asymmetricMatch(a, b, aStack, bStack, customTesters, diffBuilder) {
     var asymmetricA = isAsymmetric(a),
         asymmetricB = isAsymmetric(b),
         result;
@@ -67,6 +76,8 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     if (asymmetricA) {
       result = a.asymmetricMatch(b, customTesters);
       if (!result) {
+        // TODO: Do we want to build an asymmetric diff when the actual was an
+        // asymmeteric equality tester? Might be confusing.
         diffBuilder.record(a, b);
       }
       return result;
@@ -75,7 +86,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
     if (asymmetricB) {
       result = b.asymmetricMatch(a, customTesters);
       if (!result) {
-        diffBuilder.record(a, b);
+        asymmetricDiff(a, b, aStack, bStack, customTesters, diffBuilder);
       }
       return result;
     }
@@ -93,7 +104,7 @@ getJasmineRequireObj().matchersUtil = function(j$) {
   function eq(a, b, aStack, bStack, customTesters, diffBuilder) {
     var result = true, i;
 
-    var asymmetricResult = asymmetricMatch(a, b, customTesters, diffBuilder);
+    var asymmetricResult = asymmetricMatch(a, b, aStack, bStack, customTesters, diffBuilder);
     if (!j$.util.isUndefined(asymmetricResult)) {
       return asymmetricResult;
     }

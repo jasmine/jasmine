@@ -41,6 +41,27 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
     return true;
   };
 
+  ObjectContaining.prototype.valuesForDiff_ = function(other) {
+    if (!j$.isObject_(other)) {
+      return {
+        self: this.jasmineToString(),
+        other: other
+      };
+    }
+
+    var filteredOther = {};
+    Object.keys(this.sample).forEach(function (k) {
+      // eq short-circuits comparison of objects that have different key sets,
+      // so include all keys even if undefined.
+      filteredOther[k] = other[k];
+    });
+
+    return {
+      self: this.sample,
+      other: filteredOther
+    };
+  };
+
   ObjectContaining.prototype.jasmineToString = function() {
     return '<jasmine.objectContaining(' + j$.pp(this.sample) + ')>';
   };

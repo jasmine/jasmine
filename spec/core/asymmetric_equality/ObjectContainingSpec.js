@@ -96,4 +96,65 @@ describe("ObjectContaining", function() {
 
     expect(containing.asymmetricMatch({foo: "fooBar"}, [tester])).toBe(true);
   });
+
+  describe("valuesForDiff_", function() {
+    describe("when other is not an object", function() {
+      it("sets self to jasmineToString()", function () {
+        var containing = new jasmineUnderTest.ObjectContaining({}),
+          result = containing.valuesForDiff_('a');
+
+        expect(result).toEqual({
+          self: '<jasmine.objectContaining(Object({  }))>',
+          other: 'a'
+        });
+      });
+    });
+
+    describe("when other is an object", function() {
+      it("includes keys that are present in both other and sample", function() {
+        var sample = {a: 1, b: 2},
+          other = {a: 3, b: 4},
+          containing = new jasmineUnderTest.ObjectContaining(sample),
+          result = containing.valuesForDiff_(other);
+
+        expect(result.self).not.toBeInstanceOf(jasmineUnderTest.ObjectContaining);
+        expect(result).toEqual({
+          self: sample,
+          other: other
+        });
+      });
+
+      it("includes keys that are present in only sample", function() {
+        var sample = {a: 1, b: 2},
+          other = {a: 3},
+          containing = new jasmineUnderTest.ObjectContaining(sample),
+          result = containing.valuesForDiff_(other);
+
+        expect(result.self).not.toBeInstanceOf(jasmineUnderTest.ObjectContaining);
+        expect(containing.valuesForDiff_(other)).toEqual({
+          self: sample,
+          other: {
+            a: 3,
+            b: undefined
+          }
+        });
+      });
+
+      it("omits keys that are present only in other", function() {
+        var sample = {a: 1, b: 2},
+          other = {a: 3, b: 4, c: 5},
+          containing = new jasmineUnderTest.ObjectContaining(sample),
+          result = containing.valuesForDiff_(other);
+
+        expect(result.self).not.toBeInstanceOf(jasmineUnderTest.ObjectContaining);
+        expect(result).toEqual({
+          self: sample,
+          other: {
+            a: 3,
+            b: 4
+          }
+        });
+      });
+    });
+  });
 });
