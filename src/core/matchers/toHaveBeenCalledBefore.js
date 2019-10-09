@@ -11,14 +11,14 @@ getJasmineRequireObj().toHaveBeenCalledBefore = function(j$) {
    * @example
    * expect(mySpy).toHaveBeenCalledBefore(otherSpy);
    */
-  function toHaveBeenCalledBefore() {
+  function toHaveBeenCalledBefore(matchersUtil) {
     return {
       compare: function(firstSpy, latterSpy) {
         if (!j$.isSpy(firstSpy)) {
-          throw new Error(getErrorMsg('Expected a spy, but got ' + j$.pp(firstSpy) + '.'));
+          throw new Error(getErrorMsg('Expected a spy, but got ' + matchersUtil.pp(firstSpy) + '.'));
         }
         if (!j$.isSpy(latterSpy)) {
-          throw new Error(getErrorMsg('Expected a spy, but got ' + j$.pp(latterSpy) + '.'));
+          throw new Error(getErrorMsg('Expected a spy, but got ' + matchersUtil.pp(latterSpy) + '.'));
         }
 
         var result = { pass: false };

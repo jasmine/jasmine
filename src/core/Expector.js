@@ -44,7 +44,7 @@ getJasmineRequireObj().Expector = function(j$) {
         var args = self.args.slice();
         args.unshift(false);
         args.unshift(self.matcherName);
-        return self.util.buildFailureMessage.apply(null, args);
+        return self.util.buildFailureMessage.apply(self.util, args);
       } else if (j$.isFunction_(result.message)) {
         return result.message();
       } else {

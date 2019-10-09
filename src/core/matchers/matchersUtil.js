@@ -1,14 +1,11 @@
 getJasmineRequireObj().MatchersUtil = function(j$) {
-  // TODO: what to do about jasmine.pp not being inject? move to JSON.stringify? gut PrettyPrinter?
+  // TODO: convert all uses of j$.pp to use the injected pp
 
   function MatchersUtil(options) {
     options = options || {};
     this.customTesters_ = options.customTesters || [];
-
-    if (!j$.isArray_(this.customTesters_)) {
-      throw new Error("MatchersUtil requires custom equality testers");
-    }
-  }
+    this.pp = options.pp || function() {};
+  };
 
   MatchersUtil.prototype.contains = function(haystack, needle, customTesters) {
     if (j$.isSet(haystack)) {
@@ -30,6 +27,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
   };
 
   MatchersUtil.prototype.buildFailureMessage = function() {
+    var self = this;
     var args = Array.prototype.slice.call(arguments, 0),
       matcherName = args[0],
       isNot = args[1],
@@ -38,7 +36,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
 
     var message = 'Expected ' +
-      j$.pp(actual) +
+      self.pp(actual) +
       (isNot ? ' not ' : ' ') +
       englishyPredicate;
 
@@ -240,7 +238,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       for (i = 0; i < aLength || i < bLength; i++) {
         diffBuilder.withPath(i, function() {
           if (i >= bLength) {
-            diffBuilder.record(a[i], void 0, actualArrayIsLongerFormatter);
+            diffBuilder.record(a[i], void 0, actualArrayIsLongerFormatter.bind(null, self.pp));
             result = false;
           } else {
             result = self.eq_(i < aLength ? a[i] : void 0, i < bLength ? b[i] : void 0, aStack, bStack, customTesters, diffBuilder) && result;
@@ -357,7 +355,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
           a instanceof aCtor && b instanceof bCtor &&
           !(aCtor instanceof aCtor && bCtor instanceof bCtor)) {
 
-        diffBuilder.record(a, b, constructorsAreDifferentFormatter);
+        diffBuilder.record(a, b, constructorsAreDifferentFormatter.bind(null, this.pp));
         return false;
       }
     }
@@ -368,7 +366,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
 
     // Ensure that both objects contain the same number of properties before comparing deep equality.
     if (keys(b, className == '[object Array]').length !== size) {
-      diffBuilder.record(a, b, objectKeysAreDifferentFormatter);
+      diffBuilder.record(a, b, objectKeysAreDifferentFormatter.bind(null, this.pp));
       return false;
     }
 
@@ -376,7 +374,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       key = aKeys[i];
       // Deep compare each member
       if (!j$.util.has(b, key)) {
-        diffBuilder.record(a, b, objectKeysAreDifferentFormatter);
+        diffBuilder.record(a, b, objectKeysAreDifferentFormatter.bind(null, this.pp));
         result = false;
         continue;
       }
@@ -433,11 +431,11 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     return typeof obj === 'function';
   }
 
-  function objectKeysAreDifferentFormatter(actual, expected, path) {
+  function objectKeysAreDifferentFormatter(pp, actual, expected, path) {
     var missingProperties = j$.util.objectDifference(expected, actual),
         extraProperties = j$.util.objectDifference(actual, expected),
-        missingPropertiesMessage = formatKeyValuePairs(missingProperties),
-        extraPropertiesMessage = formatKeyValuePairs(extraProperties),
+        missingPropertiesMessage = formatKeyValuePairs(pp, missingProperties),
+        extraPropertiesMessage = formatKeyValuePairs(pp, extraProperties),
         messages = [];
 
     if (!path.depth()) {
@@ -455,7 +453,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     return messages.join('\n');
   }
 
-  function constructorsAreDifferentFormatter(actual, expected, path) {
+  function constructorsAreDifferentFormatter(pp, actual, expected, path) {
     if (!path.depth()) {
       path = 'object';
     }
@@ -463,20 +461,20 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     return 'Expected ' +
       path + ' to be a kind of ' +
       j$.fnNameFor(expected.constructor) +
-      ', but was ' + j$.pp(actual) + '.';
+      ', but was ' + pp(actual) + '.';
   }
 
-  function actualArrayIsLongerFormatter(actual, expected, path) {
+  function actualArrayIsLongerFormatter(pp, actual, expected, path) {
     return 'Unexpected ' +
       path + (path.depth() ? ' = ' : '') +
-      j$.pp(actual) +
+      pp(actual) +
       ' in array.';
   }
 
-  function formatKeyValuePairs(obj) {
+  function formatKeyValuePairs(pp, obj) {
     var formatted = '';
     for (var key in obj) {
-      formatted += '\n    ' + key + ': ' + j$.pp(obj[key]);
+      formatted += '\n    ' + key + ': ' + pp(obj[key]);
     }
     return formatted;
   }

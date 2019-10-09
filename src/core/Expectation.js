@@ -141,7 +141,7 @@ getJasmineRequireObj().Expectation = function(j$) {
     args = args.slice();
     args.unshift(true);
     args.unshift(matcherName);
-    return util.buildFailureMessage.apply(null, args);
+    return util.buildFailureMessage.apply(util, args);
   }
 
   function negate(result) {

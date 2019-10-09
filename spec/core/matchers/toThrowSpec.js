@@ -24,7 +24,8 @@ describe("toThrow", function() {
 
   it("passes if it throws but there is no expected", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
+        equals: jasmine.createSpy('delegated-equal').and.returnValue(true),
+        pp: jasmineUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toThrow(util),
       fn = function() {
@@ -39,7 +40,9 @@ describe("toThrow", function() {
   });
 
   it("passes even if what is thrown is falsy", function() {
-    var matcher = jasmineUnderTest.matchers.toThrow(),
+    var matcher = jasmineUnderTest.matchers.toThrow({
+        pp: jasmineUnderTest.makePrettyPrinter()
+      }),
       fn = function() {
         throw undefined;
       },
@@ -52,7 +55,8 @@ describe("toThrow", function() {
 
   it("passes if what is thrown is equivalent to what is expected", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').and.returnValue(true)
+        equals: jasmine.createSpy('delegated-equal').and.returnValue(true),
+        pp: jasmineUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toThrow(util),
       fn = function() {
@@ -68,7 +72,8 @@ describe("toThrow", function() {
 
   it("fails if what is thrown is not equivalent to what is expected", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
+        equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
+        pp: jasmineUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toThrow(util),
       fn = function() {
@@ -84,7 +89,8 @@ describe("toThrow", function() {
 
   it("fails if what is thrown is not equivalent to undefined", function() {
     var util = {
-        equals: jasmine.createSpy('delegated-equal').and.returnValue(false)
+        equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
+        pp: jasmineUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toThrow(util),
       fn = function() {

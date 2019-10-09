@@ -1,6 +1,8 @@
 describe("toHaveBeenCalledBefore", function() {
   it("throws an exception when the actual is not a spy", function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore({
+          pp: jasmineUnderTest.makePrettyPrinter()
+        }),
         fn = function() {},
         secondSpy = new jasmineUnderTest.Env().createSpy('second spy');
 
@@ -8,7 +10,9 @@ describe("toHaveBeenCalledBefore", function() {
   });
 
   it("throws an exception when the expected is not a spy", function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore({
+          pp: jasmineUnderTest.makePrettyPrinter()
+        }),
         firstSpy = new jasmineUnderTest.Env().createSpy('first spy'),
         fn = function() {};
 

@@ -7,7 +7,7 @@ getJasmineRequireObj().toBeNaN = function(j$) {
    * @example
    * expect(thing).toBeNaN();
    */
-  function toBeNaN() {
+  function toBeNaN(matchersUtil) {
     return {
       compare: function(actual) {
         var result = {
@@ -17,7 +17,7 @@ getJasmineRequireObj().toBeNaN = function(j$) {
         if (result.pass) {
           result.message = 'Expected actual not to be NaN.';
         } else {
-          result.message = function() { return 'Expected ' + j$.pp(actual) + ' to be NaN.'; };
+          result.message = function() { return 'Expected ' + matchersUtil.pp(actual) + ' to be NaN.'; };
         }
 
         return result;

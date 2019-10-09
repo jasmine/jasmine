@@ -49,7 +49,9 @@ describe("toHaveBeenCalledTimes", function() {
   });
 
   it("throws an exception when the actual is not a spy", function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes({
+        pp: jasmineUnderTest.makePrettyPrinter()
+      }),
       fn = function() {};
 
     expect(function() {

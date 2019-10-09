@@ -54,15 +54,19 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.asymmetricEqualityTesterArgCompatShim = jRequire.asymmetricEqualityTesterArgCompatShim(
       j$
     );
+    j$.makePrettyPrinter = jRequire.makePrettyPrinter(j$);
+    j$.pp = j$.makePrettyPrinter();
     j$.MatchersUtil = jRequire.MatchersUtil(j$);
-    j$.matchersUtil = new j$.MatchersUtil({ customTesters: [] });
+    j$.matchersUtil = new j$.MatchersUtil({
+      customTesters: [],
+      pp: j$.pp
+    });
 
     j$.ObjectContaining = jRequire.ObjectContaining(j$);
     j$.ArrayContaining = jRequire.ArrayContaining(j$);
     j$.ArrayWithExactContents = jRequire.ArrayWithExactContents(j$);
     j$.MapContaining = jRequire.MapContaining(j$);
     j$.SetContaining = jRequire.SetContaining(j$);
-    j$.pp = jRequire.pp(j$);
     j$.QueueRunner = jRequire.QueueRunner(j$);
     j$.ReportDispatcher = jRequire.ReportDispatcher(j$);
     j$.Spec = jRequire.Spec(j$);

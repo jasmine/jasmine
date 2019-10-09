@@ -16,7 +16,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
    * expect(function() { return 'other'; }).toThrowError(/foo/);
    * expect(function() { return 'other'; }).toThrowError();
    */
-  function toThrowError () {
+  function toThrowError(matchersUtil) {
     return {
       compare: function(actual) {
         var errorMatcher = getMatcher.apply(null, arguments),
@@ -34,7 +34,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
         }
 
         if (!j$.isError_(thrown)) {
-          return fail(function() { return 'Expected function to throw an Error, but it threw ' + j$.pp(thrown) + '.'; });
+          return fail(function() { return 'Expected function to throw an Error, but it threw ' + matchersUtil.pp(thrown) + '.'; });
         }
 
         return errorMatcher.match(thrown);
@@ -97,7 +97,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
             thrownMessage = '';
 
         if (expected) {
-          thrownMessage = ' with message ' + j$.pp(thrown.message);
+          thrownMessage = ' with message ' + matchersUtil.pp(thrown.message);
         }
 
         return thrownName + thrownMessage;
@@ -107,9 +107,9 @@ getJasmineRequireObj().toThrowError = function(j$) {
         if (expected === null) {
           return '';
         } else if (expected instanceof RegExp) {
-          return ' with a message matching ' + j$.pp(expected);
+          return ' with a message matching ' + matchersUtil.pp(expected);
         } else {
-          return ' with message ' + j$.pp(expected);
+          return ' with message ' + matchersUtil.pp(expected);
         }
       }
 

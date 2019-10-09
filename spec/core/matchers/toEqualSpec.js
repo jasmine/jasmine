@@ -2,7 +2,9 @@ describe("toEqual", function() {
   "use strict";
 
   function compareEquals(actual, expected) {
-    var util = new jasmineUnderTest.MatchersUtil(),
+    var util = new jasmineUnderTest.MatchersUtil({
+        pp: jasmineUnderTest.makePrettyPrinter()
+      }),
       matcher = jasmineUnderTest.matchers.toEqual(util);
 
     var result = matcher.compare(actual, expected);
@@ -103,8 +105,6 @@ describe("toEqual", function() {
         "    g: 3\n" +
         "Expected $.x not to have properties\n" +
         "    f: 4";
-
-    expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
   it("reports extra and missing properties of the root-level object", function() {

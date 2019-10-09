@@ -11,7 +11,7 @@ getJasmineRequireObj().toBeRejectedWith = function(j$) {
    * @example
    * return expectAsync(aPromise).toBeRejectedWith({prop: 'value'});
    */
-  return function toBeRejectedWith(util) {
+  return function toBeRejectedWith(matchersUtil) {
     return {
       compare: function(actualPromise, expectedValue) {
         if (!j$.isPromiseLike(actualPromise)) {
@@ -21,7 +21,7 @@ getJasmineRequireObj().toBeRejectedWith = function(j$) {
         function prefix(passed) {
           return 'Expected a promise ' +
             (passed ? 'not ' : '') +
-            'to be rejected with ' + j$.pp(expectedValue);
+            'to be rejected with ' + matchersUtil.pp(expectedValue);
         }
 
         return actualPromise.then(
@@ -32,7 +32,7 @@ getJasmineRequireObj().toBeRejectedWith = function(j$) {
           };
         },
         function(actualValue) {
-          if (util.equals(actualValue, expectedValue)) {
+          if (matchersUtil.equals(actualValue, expectedValue)) {
             return {
               pass: true,
               message: prefix(true) + '.'
@@ -40,7 +40,7 @@ getJasmineRequireObj().toBeRejectedWith = function(j$) {
           } else {
             return {
               pass: false,
-              message: prefix(false) + ' but it was rejected with ' + j$.pp(actualValue) + '.'
+              message: prefix(false) + ' but it was rejected with ' + matchersUtil.pp(actualValue) + '.'
             };
           }
         }

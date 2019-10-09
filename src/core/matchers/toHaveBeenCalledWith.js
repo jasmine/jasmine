@@ -11,7 +11,7 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
    * @example
    * expect(mySpy).toHaveBeenCalledWith('foo', 'bar', 2);
    */
-  function toHaveBeenCalledWith(util) {
+  function toHaveBeenCalledWith(matchersUtil) {
     return {
       compare: function() {
         var args = Array.prototype.slice.call(arguments, 0),
@@ -20,40 +20,40 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
           result = { pass: false };
 
         if (!j$.isSpy(actual)) {
-          throw new Error(getErrorMsg('Expected a spy, but got ' + j$.pp(actual) + '.'));
+          throw new Error(getErrorMsg('Expected a spy, but got ' + matchersUtil.pp(actual) + '.'));
         }
 
         if (!actual.calls.any()) {
           result.message = function() {
             return 'Expected spy ' + actual.and.identity + ' to have been called with:\n' +
-              '  ' + j$.pp(expectedArgs) +
+              '  ' + matchersUtil.pp(expectedArgs) +
               '\nbut it was never called.';
           };
           return result;
         }
 
-        if (util.contains(actual.calls.allArgs(), expectedArgs)) {
+        if (matchersUtil.contains(actual.calls.allArgs(), expectedArgs)) {
           result.pass = true;
           result.message = function() {
             return 'Expected spy ' + actual.and.identity + ' not to have been called with:\n' +
-              '  ' + j$.pp(expectedArgs) +
+              '  ' + matchersUtil.pp(expectedArgs) +
               '\nbut it was.';
           };
         } else {
           result.message = function() {
             var prettyPrintedCalls = actual.calls.allArgs().map(function(argsForCall) {
-              return '  ' + j$.pp(argsForCall);
+              return '  ' + matchersUtil.pp(argsForCall);
             });
 
             var diffs = actual.calls.allArgs().map(function(argsForCall, callIx) {
             var diffBuilder = new j$.DiffBuilder();
-              util.equals(argsForCall, expectedArgs, diffBuilder);
+              matchersUtil.equals(argsForCall, expectedArgs, diffBuilder);
               return 'Call ' + callIx + ':\n' +
                 diffBuilder.getMessage().replace(/^/mg, '  ');
             });
 
             return 'Expected spy ' + actual.and.identity + ' to have been called with:\n' +
-              '  ' + j$.pp(expectedArgs) + '\n' + '' +
+              '  ' + matchersUtil.pp(expectedArgs) + '\n' + '' +
               'but actual calls were:\n' +
               prettyPrintedCalls.join(',\n') + '.\n\n' +
               diffs.join('\n');

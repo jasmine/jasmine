@@ -10,11 +10,11 @@ getJasmineRequireObj().toHaveClass = function(j$) {
    * el.className = 'foo bar baz';
    * expect(el).toHaveClass('bar');
    */
-  function toHaveClass() {
+  function toHaveClass(matchersUtil) {
     return {
       compare: function(actual, expected) {
         if (!isElement(actual)) {
-          throw new Error(j$.pp(actual) + ' is not a DOM element');
+          throw new Error(matchersUtil.pp(actual) + ' is not a DOM element');
         }
 
         return {

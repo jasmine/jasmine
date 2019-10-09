@@ -309,12 +309,25 @@ getJasmineRequireObj().Env = function(j$) {
       return 'suite' + nextSuiteId++;
     };
 
+    var makePrettyPrinter = function() {
+      return j$.makePrettyPrinter();
+    };
+
+    var makeMatchersUtil = function() {
+      var customEqualityTesters =
+        runnableResources[currentRunnable().id].customEqualityTesters;
+      return new j$.MatchersUtil({
+        customTesters: customEqualityTesters,
+        pp: makePrettyPrinter()
+      });
+    };
+
     var expectationFactory = function(actual, spec) {
       var customEqualityTesters =
         runnableResources[spec.id].customEqualityTesters;
 
       return j$.Expectation.factory({
-        util: new j$.MatchersUtil({ customTesters: customEqualityTesters }),
+        util: makeMatchersUtil(),
         customEqualityTesters: customEqualityTesters,
         customMatchers: runnableResources[spec.id].customMatchers,
         actual: actual,
@@ -327,11 +340,8 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var asyncExpectationFactory = function(actual, spec) {
-      var customEqualityTesters =
-        runnableResources[spec.id].customEqualityTesters;
-
       return j$.Expectation.asyncFactory({
-        util: new j$.MatchersUtil({ customTesters: customEqualityTesters }),
+        util: makeMatchersUtil(),
         customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
         customAsyncMatchers: runnableResources[spec.id].customAsyncMatchers,
         actual: actual,
@@ -1143,7 +1153,7 @@ getJasmineRequireObj().Env = function(j$) {
           message += error;
         } else {
           // pretty print all kind of objects. This includes arrays.
-          message += j$.pp(error);
+          message += makePrettyPrinter()(error);
         }
       }
 
