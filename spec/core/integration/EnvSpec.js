@@ -1563,6 +1563,35 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it('should skip the rest of an "it" block when executed inside of one', function () {
+
+    var env = new jasmineUnderTest.Env(),
+      reporter = jasmine.createSpyObj('fakeReporter', ['specDone', 'jasmineDone']);
+
+    reporter.jasmineDone.and.callFake(function () {
+
+      var specStatus = reporter.specDone.calls.argsFor(0)[0];
+
+      expect(specStatus.skippedReason).toBe('with a cool message');
+      expect(specStatus.status).toBe('skipped');
+
+      done();
+
+    });
+
+    env.addReporter(reporter);
+
+    env.describe('a great skip test', function () {
+      env.it('will skip the failing test', function () {
+        env.expect(true).toEqual(true);
+        env.skip('with a cool message');
+        env.expect(true).toEqual(false);
+      });
+    });
+
+    env.execute();
+
+  });
   it('should report using fallback reporter', function(done) {
     var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [
