@@ -1592,6 +1592,34 @@ describe("Env integration", function() {
     env.execute();
 
   });
+
+  it('should still execute any expectations before skip is encountered', function () {
+
+    var env = new jasmineUnderTest.Env(),
+      reporter = jasmine.createSpyObj('fakeReporter', ['specDone', 'jasmineDone']);
+
+    reporter.jasmineDone.and.callFake(function () {
+
+      var specStatus = reporter.specDone.calls.argsFor(0)[0];
+
+      expect(specStatus.status).toBe('failed');
+
+      done();
+
+    });
+
+    env.addReporter(reporter);
+
+    env.it('will skip the failing test', function () {
+      env.expect(true).toEqual(false);
+      env.skip('with a message');
+      env.expect(true).toEqual(true);
+    });
+
+    env.execute();
+
+  });
+
   it('should report using fallback reporter', function(done) {
     var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [
