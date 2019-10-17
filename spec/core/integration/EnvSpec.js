@@ -1683,6 +1683,41 @@ describe("Env integration", function() {
       env.execute();
 
     });
+
+    it('should only call a beforeEach block once', function () {
+
+      var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', ['specDone', 'jasmineDone']);
+
+      reporter.jasmineDone.and.callFake(function () {
+        expect(timeBeforeEachCalled).toEqual(1);
+        done();
+      });
+
+      var timeBeforeEachCalled = 0;
+
+      env.addReporter(reporter);
+
+      env.describe('an example describe', function () {
+
+        env.beforeEach(function () {
+          timeBeforeEachCalled++;
+          skip();
+        });
+
+        env.it('example spec one', function () {
+          env.expect(true).toEqual(true);
+        });
+
+        env.it('example spec two', function () {
+          env.expect(true).toEqual(true);
+        });
+
+      });
+
+      env.execute();
+
+    });
   it('should report using fallback reporter', function(done) {
     var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [
