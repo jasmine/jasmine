@@ -1620,6 +1620,38 @@ describe("Env integration", function() {
 
   });
 
+    it('should skip the rest of a beforeEach block', function () {
+      var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('fakeReporter', ['specDone', 'jasmineDone']);
+
+      reporter.jasmineDone.and.callFake(function () {
+        expect(beforeSkipTriggered).toEqual(true);
+        expect(afterSkipTriggered).toEqual(false);
+        done();
+      });
+
+      var beforeSkipTriggered = false;
+      var afterSkipTriggered = false;
+
+      env.addReporter(reporter);
+
+      env.describe('an example describe', function () {
+
+        env.beforeEach(function () {
+          beforeSkipTriggered = true;
+          skip();
+          afterSkipTriggered = true;
+        });
+
+        env.it('will skip the failing test', function () {
+          env.expect(true).toEqual(true);
+        });
+
+      });
+
+      env.execute();
+
+    });
   it('should report using fallback reporter', function(done) {
     var env = new jasmineUnderTest.Env(),
         reporter = jasmine.createSpyObj('fakeReporter', [
