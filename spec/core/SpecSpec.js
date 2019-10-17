@@ -227,6 +227,7 @@ describe('Spec', function() {
         passedExpectations: [],
         deprecationWarnings: [],
         pendingReason: '',
+        skippedReason: '',
         duration: null
       },
       'things'

@@ -90,6 +90,12 @@ describe('Suite', function() {
     expect(suite.getResult().status).toBe('pending');
   });
 
+  it('retrieves a result with skipped status', function() {
+    var suite = new jasmineUnderTest.Suite({});
+    suite.skip();
+    expect(suite.getResult().status).toBe('skipped');
+  });
+
   it('throws an ExpectationFailed when receiving a failed expectation when throwOnExpectationFailure is set', function() {
     var suite = new jasmineUnderTest.Suite({
       expectationResultFactory: function(data) {

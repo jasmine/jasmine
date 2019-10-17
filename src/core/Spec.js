@@ -57,6 +57,7 @@ getJasmineRequireObj().Spec = function(j$) {
       passedExpectations: [],
       deprecationWarnings: [],
       pendingReason: '',
+      skippedReason: '',
       duration: null
     };
   }
@@ -137,6 +138,11 @@ getJasmineRequireObj().Spec = function(j$) {
       return;
     }
 
+    if (Spec.isSkipSpecException(e)) {
+      this.skip(extractCustomSkipMessage(e));
+      return;
+    }
+
     if (e instanceof j$.errors.ExpectationFailed) {
       return;
     }
@@ -158,6 +164,13 @@ getJasmineRequireObj().Spec = function(j$) {
     this.markedPending = true;
     if (message) {
       this.result.pendingReason = message;
+    }
+  };
+
+  Spec.prototype.skip = function(message) {
+    this.markedSkipped = true;
+    if (message) {
+      this.result.skippedReason = message;
     }
   };
 
@@ -183,6 +196,10 @@ getJasmineRequireObj().Spec = function(j$) {
           0)
     ) {
       return 'failed';
+    }
+
+    if (this.markedSkipped) {
+      return 'skipped';
     }
 
     return 'passed';
@@ -217,6 +234,24 @@ getJasmineRequireObj().Spec = function(j$) {
       e &&
       e.toString &&
       e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
+    );
+  };
+
+  var extractCustomSkipMessage = function(e) {
+    var fullMessage = e.toString(),
+      boilerplateStart = fullMessage.indexOf(Spec.skipSpecExceptionMessage),
+      boilerplateEnd = boilerplateStart + Spec.skipSpecExceptionMessage.length;
+
+    return fullMessage.substr(boilerplateEnd);
+  };
+
+  Spec.skipSpecExceptionMessage = '=> marked Skipped';
+
+  Spec.isSkipSpecException = function(e) {
+    return !!(
+      e &&
+      e.toString() &&
+      e.toString().indexOf(Spec.skipSpecExceptionMessage) !== -1
     );
   };
 

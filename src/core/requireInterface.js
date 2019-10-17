@@ -211,6 +211,18 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     /**
+     * Mark a spec as pending, expectation results will be ignored.
+     * @name skip
+     * @since ?.?.?
+     * @function
+     * @global
+     * @param {String} [message] - Reason the spec will be skipped.
+     */
+    skip: function() {
+      return env.skip.apply(env, arguments);
+    },
+
+    /**
      * Explicitly mark a spec as failed.
      * @name fail
      * @since 2.1.0

@@ -64,6 +64,10 @@ getJasmineRequireObj().Suite = function(j$) {
     this.markedPending = true;
   };
 
+  Suite.prototype.skip = function() {
+    this.markedSkipped = true;
+  };
+
   Suite.prototype.beforeEach = function(fn) {
     this.beforeFns.unshift(fn);
   };
@@ -112,9 +116,13 @@ getJasmineRequireObj().Suite = function(j$) {
 
     if (this.result.failedExpectations.length > 0) {
       return 'failed';
-    } else {
-      return 'passed';
     }
+
+    if (this.markedSkipped) {
+      return 'skipped';
+    }
+
+    return 'passed';
   };
 
   Suite.prototype.canBeReentered = function() {

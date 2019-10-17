@@ -935,6 +935,9 @@ getJasmineRequireObj().Env = function(j$) {
       if (specDefinitions.length > 0) {
         throw new Error('describe does not expect any arguments');
       }
+      if (currentDeclarationSuite.markedSkipped) {
+        suite.skip();
+      }
       if (currentDeclarationSuite.markedPending) {
         suite.pend();
       }
@@ -1061,6 +1064,9 @@ getJasmineRequireObj().Env = function(j$) {
         ensureIsFunctionOrAsync(fn, 'it');
       }
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
+      if (currentDeclarationSuite.markedSkipped) {
+        spec.skip();
+      }
       if (currentDeclarationSuite.markedPending) {
         spec.pend();
       }
@@ -1149,6 +1155,14 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.pending = function(message) {
       var fullMessage = j$.Spec.pendingSpecExceptionMessage;
+      if (message) {
+        fullMessage += message;
+      }
+      throw fullMessage;
+    };
+
+    this.skip = function(message) {
+      var fullMessage = j$.Spec.skipSpecExceptionMessage;
       if (message) {
         fullMessage += message;
       }
