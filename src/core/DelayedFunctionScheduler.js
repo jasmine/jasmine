@@ -8,12 +8,12 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     var deletedKeys = [];
 
     self.tick = function(millis, tickDate) {
-      runScheduledFunctions(millis, tickDate || noop, runImmediately, noop);
+      runScheduledFunctions(millis, tickDate);
     };
 
     self.asyncTick = function(millis, tickDate) {
       return new Promise(function(resolve) {
-        runScheduledFunctions(millis, tickDate || noop, clearStack, resolve);
+        runScheduledFunctions(millis, tickDate, clearStack, resolve);
       });
     };
 
@@ -88,12 +88,6 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
 
     return self;
 
-    function noop() {}
-
-    function runImmediately(f) {
-      f();
-    }
-
     function indexOfFirstToPass(array, testFn) {
       var index = -1;
 
@@ -134,20 +128,17 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
      *
      * @param {number} millis
      * @param {function} tickDate A function that advances the date.
-     * @param {function} maybeRunMicrotasks For .asyncTick() this function
+     * @param {function} runMicrotasks For .asyncTick() this function
      *     should empty the microtask queue, and then call its callback.
      *     For .tick() no microtasks are run, so this function should simply
      *     call its callback immediately.
      * @param {function} onFinish Function to call when we are finished running
      *     scheduled functions.
      */
-    function runScheduledFunctions(
-      millis,
-      tickDate,
-      maybeRunMicrotasks,
-      onFinish
-    ) {
+    function runScheduledFunctions(millis, tickDate, runMicrotasks, onFinish) {
       millis = millis || 0;
+      tickDate = tickDate || function() {};
+      onFinish = onFinish || function() {};
       var endTime = currentTime + millis;
 
       // Conceptually, this is a do-while loop, with a for loop inside. The
@@ -168,8 +159,10 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
         while (true) {
           switch (nextLabel) {
             case 'start':
-              nextLabel = 'after-microtasks-1';
-              return maybeRunMicrotasks(loop);
+              if (runMicrotasks) {
+                nextLabel = 'after-microtasks-1';
+                return runMicrotasks(loop);
+              }
 
             case 'after-microtasks-1':
               if (
@@ -216,8 +209,10 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
               }
 
               funcToRun.funcToCall.apply(null, funcToRun.params || []);
-              nextLabel = 'after-microtasks-2';
-              return maybeRunMicrotasks(loop);
+              if (runMicrotasks) {
+                nextLabel = 'after-microtasks-2';
+                return runMicrotasks(loop);
+              }
 
             case 'after-microtasks-2':
 
