@@ -633,7 +633,7 @@ describe('Clock', function() {
 
 describe('Clock (acceptance)', function() {
   function createDelayedFunctionScheduler() {
-    return new jasmineUnderTest.DelayedFunctionScheduler(Promise, setImmediate);
+    return new jasmineUnderTest.DelayedFunctionScheduler(Promise, setTimeout);
   }
 
   it('can run setTimeouts/setIntervals synchronously', function() {

@@ -1,6 +1,6 @@
 describe('DelayedFunctionScheduler', function() {
   function createDelayedFunctionScheduler() {
-    return new jasmineUnderTest.DelayedFunctionScheduler(Promise, setImmediate);
+    return new jasmineUnderTest.DelayedFunctionScheduler(Promise, setTimeout);
   }
 
   it('schedules a function for later execution', function() {
