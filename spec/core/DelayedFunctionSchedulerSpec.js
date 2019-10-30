@@ -283,7 +283,7 @@ describe('DelayedFunctionScheduler', function() {
     expect(tickDate).toHaveBeenCalledWith(1);
   });
 
-  it('runs pending microtasks before scheduled functions', async function() {
+  it('runs pending microtasks before scheduled functions', function() {
     var scheduler = createDelayedFunctionScheduler(),
       microtask = jasmine.createSpy('microtask'),
       fn = jasmine.createSpy('fn').and.callThrough(function() {
@@ -296,12 +296,12 @@ describe('DelayedFunctionScheduler', function() {
 
     expect(microtask).not.toHaveBeenCalled();
 
-    await scheduler.asyncTick();
-
-    expect(fn).toHaveBeenCalled();
+    return scheduler.asyncTick().then(function() {
+      expect(fn).toHaveBeenCalled();
+    });
   });
 
-  it('runs microtasks enqueued by scheduled functions', async function() {
+  it('runs microtasks enqueued by scheduled functions', function() {
     var scheduler = createDelayedFunctionScheduler(),
       microtask = jasmine.createSpy('microtask');
 
@@ -311,8 +311,8 @@ describe('DelayedFunctionScheduler', function() {
 
     expect(microtask).not.toHaveBeenCalled();
 
-    await scheduler.asyncTick();
-
-    expect(microtask).toHaveBeenCalled();
+    return scheduler.asyncTick().then(function() {
+      expect(microtask).toHaveBeenCalled();
+    });
   });
 });

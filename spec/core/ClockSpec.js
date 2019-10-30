@@ -696,7 +696,7 @@ describe('Clock (acceptance)', function() {
     expect(recurring1.calls.count()).toBe(4);
   });
 
-  it('can run setTimeouts/setIntervals asynchronously', async function() {
+  it('can run setTimeouts/setIntervals asynchronously', function() {
     var recurring = jasmine.createSpy('recurring'),
       fn1 = jasmine.createSpy('fn1'),
       fn2 = jasmine.createSpy('fn2'),
@@ -718,38 +718,59 @@ describe('Clock (acceptance)', function() {
     clock.install();
 
     var intervalId = clock.setInterval(recurring, 50);
-    Promise.resolve().then(async function() {
-      await new Promise(resolve => clock.setTimeout(resolve, 25));
-      fn1();
-      await new Promise(resolve => clock.setTimeout(resolve, 200));
-      fn2();
-      await new Promise(resolve => clock.setTimeout(resolve, 100));
-      fn3();
-    });
+    // In a microtask, add some timeouts.
+    Promise.resolve()
+      .then(function() {
+        return new Promise(function(resolve) {
+          clock.setTimeout(resolve, 25);
+        });
+      })
+      .then(function() {
+        fn1();
+        return new Promise(function(resolve) {
+          clock.setTimeout(resolve, 200);
+        });
+      })
+      .then(function() {
+        fn2();
+        return new Promise(function(resolve) {
+          clock.setTimeout(resolve, 100);
+        });
+      })
+      .then(function() {
+        fn3();
+      });
 
     expect(recurring).not.toHaveBeenCalled();
     expect(fn1).not.toHaveBeenCalled();
     expect(fn2).not.toHaveBeenCalled();
     expect(fn3).not.toHaveBeenCalled();
 
-    await clock.asyncTick(50);
-    expect(recurring).toHaveBeenCalledTimes(1);
-    expect(fn1).toHaveBeenCalled();
-    expect(fn2).not.toHaveBeenCalled();
-    expect(fn3).not.toHaveBeenCalled();
+    return clock
+      .asyncTick(50)
+      .then(function() {
+        expect(recurring).toHaveBeenCalledTimes(1);
+        expect(fn1).toHaveBeenCalled();
+        expect(fn2).not.toHaveBeenCalled();
+        expect(fn3).not.toHaveBeenCalled();
 
-    await clock.asyncTick(175);
-    expect(recurring).toHaveBeenCalledTimes(4);
-    expect(fn1).toHaveBeenCalled();
-    expect(fn2).toHaveBeenCalled();
-    expect(fn3).not.toHaveBeenCalled();
+        return clock.asyncTick(175);
+      })
+      .then(function() {
+        expect(recurring).toHaveBeenCalledTimes(4);
+        expect(fn1).toHaveBeenCalled();
+        expect(fn2).toHaveBeenCalled();
+        expect(fn3).not.toHaveBeenCalled();
 
-    clock.clearInterval(intervalId);
-    await clock.asyncTick(100);
-    expect(recurring).toHaveBeenCalledTimes(4);
-    expect(fn1).toHaveBeenCalled();
-    expect(fn2).toHaveBeenCalled();
-    expect(fn3).toHaveBeenCalled();
+        clock.clearInterval(intervalId);
+        return clock.asyncTick(100);
+      })
+      .then(function() {
+        expect(recurring).toHaveBeenCalledTimes(4);
+        expect(fn1).toHaveBeenCalled();
+        expect(fn2).toHaveBeenCalled();
+        expect(fn3).toHaveBeenCalled();
+      });
   });
 
   it('can clear a previously set timeout', function() {
