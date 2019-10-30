@@ -1971,6 +1971,77 @@ describe("Env integration", function() {
     env.execute();
   });
 
+  it('reports test properties on specs', function(done) {
+      var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+      reporter.specDone.and.callFake(function(e) {
+        expect(e.properties).toEqual({a: 'Bee'});
+        done();
+      });
+
+      env.addReporter(reporter);
+      env.it('calls setSpecProperty', function() {
+        env.setSpecProperty('a', 'Bee')
+      });
+      env.execute();
+  });
+
+  it('throws an exception if you try to setSpecProperty outside of a spec', function (done) {
+    var env = new jasmineUnderTest.Env(),
+       exception;
+
+    env.describe("a suite", function () {
+      try {
+        env.setSpecProperty('a prop', 'val');
+      } catch(e) {
+        exception = e;
+      }
+    });
+
+    var assertions = function() {
+      expect(exception.message).toBe(`'setSpecProperty' was used when there was no current spec`);
+      done();
+    };
+
+    env.addReporter({jasmineDone: assertions});
+
+    env.execute();
+  });
+
+  it('reports test properties on suites', function(done) {
+      var env = new jasmineUnderTest.Env(),
+        reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
+
+      reporter.suiteDone.and.callFake(function(e) {
+        expect(e.properties).toEqual({b: 'Sweet'});
+        done();
+      });
+
+      env.addReporter(reporter);
+      env.describe('calls setSuiteProperty', function() {
+        env.beforeEach(() => {
+          env.setSuiteProperty('b', 'Sweet');
+        });
+        env.it('a passing spec', () => {
+          expect.nothing();
+        });
+      });
+
+      env.execute();
+  });
+
+  it('throws an exception if you try to setSuiteProperty outside of a suite', function (done) {
+    var env = new jasmineUnderTest.Env();
+
+    try {
+      env.setSuiteProperty('a', 'Bee');
+    } catch(e) {
+      expect(e.message).toBe(`'setSuiteProperty' was used when there was no current suite`);
+      done();
+    }
+  });
+
   it("should associate errors thrown from async code with the correct runnable", function(done) {
     var reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone','suiteDone','specDone']);
 

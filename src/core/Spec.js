@@ -48,6 +48,7 @@ getJasmineRequireObj().Spec = function(j$) {
      * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
      * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
      * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
+     * @property {Object} properties - user-supplied key-value pairs.
      */
     this.result = {
       id: this.id,
@@ -57,7 +58,8 @@ getJasmineRequireObj().Spec = function(j$) {
       passedExpectations: [],
       deprecationWarnings: [],
       pendingReason: '',
-      duration: null
+      duration: null,
+      properties: null
     };
   }
 
@@ -72,6 +74,11 @@ getJasmineRequireObj().Spec = function(j$) {
         throw new j$.errors.ExpectationFailed();
       }
     }
+  };
+
+  Spec.prototype.setSpecProperty = function(key, value) {
+    this.result.properties = this.result.properties || {};
+    this.result.properties[key] = value;
   };
 
   Spec.prototype.expect = function(actual) {
