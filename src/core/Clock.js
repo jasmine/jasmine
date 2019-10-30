@@ -136,6 +136,27 @@ getJasmineRequireObj().Clock = function() {
       }
     };
 
+    /**
+     * Tick the Clock forward, running any pending microtasks and enqueued
+     * timeouts.
+     * @name Clock#asyncTick
+     * @since 3.5.1
+     * @function
+     * @param {int} millis The number of milliseconds to tick.
+     * @return {Promise}
+     */
+    self.asyncTick = function(millis) {
+      if (installed) {
+        return delayedFunctionScheduler.asyncTick(millis, function(millis) {
+          mockDate.tick(millis);
+        });
+      } else {
+        throw new Error(
+          'Mock clock is not installed, use jasmine.clock().install()'
+        );
+      }
+    };
+
     return self;
 
     function originalTimingFunctionsIntact() {

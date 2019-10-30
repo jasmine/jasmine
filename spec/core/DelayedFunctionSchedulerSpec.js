@@ -1,6 +1,10 @@
 describe('DelayedFunctionScheduler', function() {
+  function createDelayedFunctionScheduler() {
+    return new jasmineUnderTest.DelayedFunctionScheduler(Promise, setImmediate);
+  }
+
   it('schedules a function for later execution', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn, 0);
@@ -13,7 +17,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('schedules a string for later execution', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       strfn = 'horrible = true;';
 
     scheduler.scheduleFunction(strfn, 0);
@@ -24,7 +28,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('#tick defaults to 0', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn, 0);
@@ -37,7 +41,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('defaults delay to 0', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn);
@@ -50,7 +54,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('optionally passes params to scheduled functions', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn, 0, ['foo', 'bar']);
@@ -63,7 +67,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('scheduled fns can optionally reoccur', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
 
     scheduler.scheduleFunction(fn, 20, [], true);
@@ -95,7 +99,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('#removeFunctionWithId removes a previously scheduled function with a given id', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn'),
       timeoutKey;
 
@@ -111,7 +115,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('executes recurring functions interleaved with regular functions in the correct order', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn'),
       recurringCallCount = 0,
       recurring = jasmine.createSpy('recurring').and.callFake(function() {
@@ -132,7 +136,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('schedules a function for later execution during a tick', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn'),
       fnDelay = 10;
 
@@ -148,7 +152,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('#removeFunctionWithId removes a previously scheduled function with a given id during a tick', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn'),
       fnDelay = 10,
       timeoutKey;
@@ -166,7 +170,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('executes recurring functions interleaved with regular functions and functions scheduled during a tick in the correct order', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn'),
       recurringCallCount = 0,
       recurring = jasmine.createSpy('recurring').and.callFake(function() {
@@ -199,7 +203,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('executes recurring functions after rescheduling them', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       recurring = function() {
         expect(scheduler.scheduleFunction).toHaveBeenCalled();
       };
@@ -212,7 +216,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('removes functions during a tick that runs the function', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       spy = jasmine.createSpy('fn'),
       spyAndRemove = jasmine.createSpy('fn'),
       fnDelay = 10,
@@ -233,7 +237,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('removes functions during the first tick that runs the function', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn'),
       fnDelay = 10,
       timeoutKey;
@@ -252,7 +256,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it("does not remove a function that hasn't been added yet", function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn'),
       fnDelay = 10;
 
@@ -267,7 +271,7 @@ describe('DelayedFunctionScheduler', function() {
   });
 
   it('updates the mockDate per scheduled time', function() {
-    var scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var scheduler = createDelayedFunctionScheduler(),
       tickDate = jasmine.createSpy('tickDate');
 
     scheduler.scheduleFunction(function() {});
@@ -277,5 +281,38 @@ describe('DelayedFunctionScheduler', function() {
 
     expect(tickDate).toHaveBeenCalledWith(0);
     expect(tickDate).toHaveBeenCalledWith(1);
+  });
+
+  it('runs pending microtasks before scheduled functions', async function() {
+    var scheduler = createDelayedFunctionScheduler(),
+      microtask = jasmine.createSpy('microtask'),
+      fn = jasmine.createSpy('fn').and.callThrough(function() {
+        // Verify microtask was called *before* scheduled function.
+        expect(microtask).toHaveBeenCalled();
+      });
+
+    Promise.resolve().then(microtask);
+    scheduler.scheduleFunction(fn);
+
+    expect(microtask).not.toHaveBeenCalled();
+
+    await scheduler.asyncTick();
+
+    expect(fn).toHaveBeenCalled();
+  });
+
+  it('runs microtasks enqueued by scheduled functions', async function() {
+    var scheduler = createDelayedFunctionScheduler(),
+      microtask = jasmine.createSpy('microtask');
+
+    scheduler.scheduleFunction(function() {
+      Promise.resolve().then(microtask);
+    });
+
+    expect(microtask).not.toHaveBeenCalled();
+
+    await scheduler.asyncTick();
+
+    expect(microtask).toHaveBeenCalled();
   });
 });

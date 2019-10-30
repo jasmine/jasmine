@@ -1,5 +1,5 @@
 getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
-  function DelayedFunctionScheduler() {
+  function DelayedFunctionScheduler(Promise, clearStack) {
     var self = this;
     var scheduledLookup = [];
     var scheduledFunctions = {};
@@ -8,11 +8,13 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     var deletedKeys = [];
 
     self.tick = function(millis, tickDate) {
-      millis = millis || 0;
-      var endTime = currentTime + millis;
+      runScheduledFunctions(millis, tickDate || noop, runImmediately, noop);
+    };
 
-      runScheduledFunctions(endTime, tickDate);
-      currentTime = endTime;
+    self.asyncTick = function(millis, tickDate) {
+      return new Promise(function(resolve) {
+        runScheduledFunctions(millis, tickDate || noop, clearStack, resolve);
+      });
     };
 
     self.scheduleFunction = function(
@@ -86,6 +88,12 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
 
     return self;
 
+    function noop() {}
+
+    function runImmediately(f) {
+      f();
+    }
+
     function indexOfFirstToPass(array, testFn) {
       var index = -1;
 
@@ -121,55 +129,135 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       );
     }
 
-    function forEachFunction(funcsToRun, callback) {
-      for (var i = 0; i < funcsToRun.length; ++i) {
-        callback(funcsToRun[i]);
-      }
-    }
+    /**
+     * Runs scheduled functions, possibly asynchronously.
+     *
+     * @param {number} millis
+     * @param {function} tickDate A function that advances the date.
+     * @param {function} maybeRunMicrotasks For .asyncTick() this function
+     *     should empty the microtask queue, and then call its callback.
+     *     For .tick() no microtasks are run, so this function should simply
+     *     call its callback immediately.
+     * @param {function} onFinish Function to call when we are finished running
+     *     scheduled functions.
+     */
+    function runScheduledFunctions(
+      millis,
+      tickDate,
+      maybeRunMicrotasks,
+      onFinish
+    ) {
+      millis = millis || 0;
+      var endTime = currentTime + millis;
 
-    function runScheduledFunctions(endTime, tickDate) {
-      tickDate = tickDate || function() {};
-      if (scheduledLookup.length === 0 || scheduledLookup[0] > endTime) {
-        tickDate(endTime - currentTime);
-        return;
-      }
+      // Conceptually, this is a do-while loop, with a for loop inside. The
+      // problem is that it needs to execute asynchronously. If this were ES6,
+      // we would do this with async-await. But it's not. Instead this is
+      // manually transpiled as a while loop with a switch statement. This gives
+      // us something like goto in JS.
 
-      do {
-        deletedKeys = [];
-        var newCurrentTime = scheduledLookup.shift();
-        tickDate(newCurrentTime - currentTime);
+      // Variables in the for loop.
+      var i;
+      var funcsToRun;
 
-        currentTime = newCurrentTime;
+      // Start the asynchronous loop.
+      var nextLabel = 'start';
+      return loop();
 
-        var funcsToRun = scheduledFunctions[currentTime];
+      function loop() {
+        while (true) {
+          switch (nextLabel) {
+            case 'start':
+              nextLabel = 'after-microtasks-1';
+              return maybeRunMicrotasks(loop);
 
-        delete scheduledFunctions[currentTime];
+            case 'after-microtasks-1':
+              if (
+                scheduledLookup.length === 0 ||
+                scheduledLookup[0] > endTime
+              ) {
+                tickDate(endTime - currentTime);
+                currentTime = endTime;
+                return onFinish();
+              }
 
-        forEachFunction(funcsToRun, function(funcToRun) {
-          if (funcToRun.recurring) {
-            reschedule(funcToRun);
+            // DO
+            case 'do-body':
+              deletedKeys = [];
+              var newCurrentTime = scheduledLookup.shift();
+              tickDate(newCurrentTime - currentTime);
+              currentTime = newCurrentTime;
+
+              funcsToRun = scheduledFunctions[currentTime];
+
+              delete scheduledFunctions[currentTime];
+
+              for (i = 0; i < funcsToRun.length; i++) {
+                if (funcsToRun[i].recurring) {
+                  reschedule(funcsToRun[i]);
+                }
+              }
+
+              // FOR INITIALIZATION
+              i = 0;
+            case 'for-body':
+              // FOR CONDITION
+              if (!(i < funcsToRun.length)) {
+                nextLabel = 'for-end';
+                break;
+              }
+
+              var funcToRun = funcsToRun[i];
+              if (j$.util.arrayContains(deletedKeys, funcToRun.timeoutKey)) {
+                // skip a timeoutKey deleted whilst we were running
+                // CONTINUE FOR
+                nextLabel = 'for-increment';
+                break;
+              }
+
+              funcToRun.funcToCall.apply(null, funcToRun.params || []);
+              nextLabel = 'after-microtasks-2';
+              return maybeRunMicrotasks(loop);
+
+            case 'after-microtasks-2':
+
+            case 'for-increment':
+              // FOR INCREMENT
+              i++;
+              // END FOR
+              nextLabel = 'for-body';
+              break;
+
+            case 'for-end':
+              deletedKeys = [];
+
+            case 'do-condition':
+              // DO CONDITION
+              if (
+                scheduledLookup.length > 0 &&
+                // checking first if we're out of time prevents setTimeout(0)
+                // scheduled in a funcToRun from forcing an extra iteration
+                currentTime !== endTime &&
+                scheduledLookup[0] <= endTime
+              ) {
+                nextLabel = 'do-body';
+                break;
+              }
+
+            case 'do-end':
+              // END DO
+
+              // ran out of functions to call, but still time left on the clock
+              if (currentTime !== endTime) {
+                tickDate(endTime - currentTime);
+                currentTime = endTime;
+              }
+              return onFinish();
+
+            default:
+              throw new Error('IMPOSSIBLE');
           }
-        });
-
-        forEachFunction(funcsToRun, function(funcToRun) {
-          if (j$.util.arrayContains(deletedKeys, funcToRun.timeoutKey)) {
-            // skip a timeoutKey deleted whilst we were running
-            return;
-          }
-          funcToRun.funcToCall.apply(null, funcToRun.params || []);
-        });
-        deletedKeys = [];
-      } while (
-        scheduledLookup.length > 0 &&
-        // checking first if we're out of time prevents setTimeout(0)
-        // scheduled in a funcToRun from forcing an extra iteration
-        currentTime !== endTime &&
-        scheduledLookup[0] <= endTime
-      );
-
-      // ran out of functions to call, but still time left on the clock
-      if (currentTime !== endTime) {
-        tickDate(endTime - currentTime);
+        }
       }
     }
   }

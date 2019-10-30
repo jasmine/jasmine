@@ -620,21 +620,28 @@ describe('Clock', function() {
   it('gives you a friendly reminder if the Clock is not installed and you tick', function() {
     var clock = new jasmineUnderTest.Clock(
       {},
-      jasmine.createSpyObj('delayedFunctionScheduler', ['tick'])
+      jasmine.createSpyObj('delayedFunctionScheduler', ['tick', 'asyncTick'])
     );
     expect(function() {
       clock.tick(50);
+    }).toThrow();
+    expect(function() {
+      clock.asyncTick(50);
     }).toThrow();
   });
 });
 
 describe('Clock (acceptance)', function() {
+  function createDelayedFunctionScheduler() {
+    return new jasmineUnderTest.DelayedFunctionScheduler(Promise, setImmediate);
+  }
+
   it('can run setTimeouts/setIntervals synchronously', function() {
     var delayedFn1 = jasmine.createSpy('delayedFn1'),
       delayedFn2 = jasmine.createSpy('delayedFn2'),
       delayedFn3 = jasmine.createSpy('delayedFn3'),
       recurring1 = jasmine.createSpy('recurring1'),
-      delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      delayedFunctionScheduler = createDelayedFunctionScheduler(),
       mockDate = {
         install: function() {},
         tick: function() {},
@@ -689,9 +696,65 @@ describe('Clock (acceptance)', function() {
     expect(recurring1.calls.count()).toBe(4);
   });
 
+  it('can run setTimeouts/setIntervals asynchronously', async function() {
+    var recurring = jasmine.createSpy('recurring'),
+      fn1 = jasmine.createSpy('fn1'),
+      fn2 = jasmine.createSpy('fn2'),
+      fn3 = jasmine.createSpy('fn3'),
+      delayedFunctionScheduler = createDelayedFunctionScheduler(),
+      mockDate = {
+        install: function() {},
+        tick: function() {},
+        uninstall: function() {}
+      },
+      clock = new jasmineUnderTest.Clock(
+        { setTimeout: setTimeout },
+        function() {
+          return delayedFunctionScheduler;
+        },
+        mockDate
+      );
+
+    clock.install();
+
+    var intervalId = clock.setInterval(recurring, 50);
+    Promise.resolve().then(async function() {
+      await new Promise(resolve => clock.setTimeout(resolve, 25));
+      fn1();
+      await new Promise(resolve => clock.setTimeout(resolve, 200));
+      fn2();
+      await new Promise(resolve => clock.setTimeout(resolve, 100));
+      fn3();
+    });
+
+    expect(recurring).not.toHaveBeenCalled();
+    expect(fn1).not.toHaveBeenCalled();
+    expect(fn2).not.toHaveBeenCalled();
+    expect(fn3).not.toHaveBeenCalled();
+
+    await clock.asyncTick(50);
+    expect(recurring).toHaveBeenCalledTimes(1);
+    expect(fn1).toHaveBeenCalled();
+    expect(fn2).not.toHaveBeenCalled();
+    expect(fn3).not.toHaveBeenCalled();
+
+    await clock.asyncTick(175);
+    expect(recurring).toHaveBeenCalledTimes(4);
+    expect(fn1).toHaveBeenCalled();
+    expect(fn2).toHaveBeenCalled();
+    expect(fn3).not.toHaveBeenCalled();
+
+    clock.clearInterval(intervalId);
+    await clock.asyncTick(100);
+    expect(recurring).toHaveBeenCalledTimes(4);
+    expect(fn1).toHaveBeenCalled();
+    expect(fn2).toHaveBeenCalled();
+    expect(fn3).toHaveBeenCalled();
+  });
+
   it('can clear a previously set timeout', function() {
     var clearedFn = jasmine.createSpy('clearedFn'),
-      delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      delayedFunctionScheduler = createDelayedFunctionScheduler(),
       mockDate = {
         install: function() {},
         tick: function() {},
@@ -719,7 +782,7 @@ describe('Clock (acceptance)', function() {
 
   it("can clear a previously set interval using that interval's handler", function() {
     var spy = jasmine.createSpy('spy'),
-      delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      delayedFunctionScheduler = createDelayedFunctionScheduler(),
       mockDate = {
         install: function() {},
         tick: function() {},
@@ -747,7 +810,7 @@ describe('Clock (acceptance)', function() {
 
   it('correctly schedules functions after the Clock has advanced', function() {
     var delayedFn1 = jasmine.createSpy('delayedFn1'),
-      delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      delayedFunctionScheduler = createDelayedFunctionScheduler(),
       mockDate = {
         install: function() {},
         tick: function() {},
@@ -774,7 +837,7 @@ describe('Clock (acceptance)', function() {
   it('correctly schedules functions while the Clock is advancing', function() {
     var delayedFn1 = jasmine.createSpy('delayedFn1'),
       delayedFn2 = jasmine.createSpy('delayedFn2'),
-      delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      delayedFunctionScheduler = createDelayedFunctionScheduler(),
       mockDate = {
         install: function() {},
         tick: function() {},
@@ -805,7 +868,7 @@ describe('Clock (acceptance)', function() {
   it('correctly calls functions scheduled while the Clock is advancing', function() {
     var delayedFn1 = jasmine.createSpy('delayedFn1'),
       delayedFn2 = jasmine.createSpy('delayedFn2'),
-      delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      delayedFunctionScheduler = createDelayedFunctionScheduler(),
       mockDate = {
         install: function() {},
         tick: function() {},
@@ -833,7 +896,7 @@ describe('Clock (acceptance)', function() {
   it('correctly schedules functions scheduled while the Clock is advancing but after the Clock is uninstalled', function() {
     var delayedFn1 = jasmine.createSpy('delayedFn1'),
       delayedFn2 = jasmine.createSpy('delayedFn2'),
-      delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+      delayedFunctionScheduler = createDelayedFunctionScheduler(),
       mockDate = {
         install: function() {},
         tick: function() {},
@@ -865,7 +928,7 @@ describe('Clock (acceptance)', function() {
   });
 
   it('does not mock the Date object by default', function() {
-    var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var delayedFunctionScheduler = createDelayedFunctionScheduler(),
       global = { Date: Date },
       mockDate = new jasmineUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
@@ -888,7 +951,7 @@ describe('Clock (acceptance)', function() {
   });
 
   it('mocks the Date object and sets it to current time', function() {
-    var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var delayedFunctionScheduler = createDelayedFunctionScheduler(),
       global = { Date: Date },
       mockDate = new jasmineUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
@@ -918,7 +981,7 @@ describe('Clock (acceptance)', function() {
   });
 
   it('mocks the Date object and sets it to a given time', function() {
-    var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var delayedFunctionScheduler = createDelayedFunctionScheduler(),
       global = { Date: Date },
       mockDate = new jasmineUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
@@ -951,7 +1014,7 @@ describe('Clock (acceptance)', function() {
   });
 
   it('mocks the Date object and updates the date per delayed function', function() {
-    var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var delayedFunctionScheduler = createDelayedFunctionScheduler(),
       global = { Date: Date },
       mockDate = new jasmineUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
@@ -990,7 +1053,7 @@ describe('Clock (acceptance)', function() {
   });
 
   it('correctly clears a scheduled timeout while the Clock is advancing', function() {
-    var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var delayedFunctionScheduler = createDelayedFunctionScheduler(),
       global = { Date: Date, setTimeout: undefined },
       mockDate = new jasmineUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
@@ -1015,7 +1078,7 @@ describe('Clock (acceptance)', function() {
   });
 
   it('correctly clears a scheduled interval while the Clock is advancing', function() {
-    var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
+    var delayedFunctionScheduler = createDelayedFunctionScheduler(),
       global = { Date: Date, setTimeout: undefined },
       mockDate = new jasmineUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
