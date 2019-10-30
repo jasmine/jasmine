@@ -334,6 +334,14 @@ describe("toEqual", function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
+  it("reports mismatches between 0 and Number.MIN_VALUE", function() {
+    var actual = {x: 0},
+      expected = {x: Number.MIN_VALUE},
+      message = "Expected $.x = 0 to equal 5e-324.";
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
   it("reports mismatches between Errors", function() {
     var actual = {x: new Error("the error you got")},
       expected = {x: new Error("the error you want")},
