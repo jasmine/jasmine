@@ -1,9 +1,17 @@
 describe("ObjectContaining", function() {
 
-  it("matches any actual to an empty object", function() {
+  it("matches any object actual to an empty object", function() {
     var containing = new jasmineUnderTest.ObjectContaining({});
 
-    expect(containing.asymmetricMatch("foo")).toBe(true);
+    expect(containing.asymmetricMatch({foo: 1})).toBe(true);
+  });
+
+  it("does not match when the actual is not an object", function() {
+    var containing = new jasmineUnderTest.ObjectContaining({});
+
+    [1, true, undefined, "a string"].forEach(function(actual) {
+      expect(containing.asymmetricMatch(actual)).toBe(false);
+    });
   });
 
   it("does not match an empty object actual", function() {
