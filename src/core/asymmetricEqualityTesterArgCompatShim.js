@@ -56,10 +56,10 @@ getJasmineRequireObj().asymmetricEqualityTesterArgCompatShim = function(j$) {
       i,
       k;
 
-    copy(self, customEqualityTesters, 'length');
+    copyAndDeprecate(self, customEqualityTesters, 'length');
 
     for (i = 0; i < customEqualityTesters.length; i++) {
-      copy(self, customEqualityTesters, i);
+      copyAndDeprecate(self, customEqualityTesters, i);
     }
 
     var props = arrayProps();
@@ -67,16 +67,22 @@ getJasmineRequireObj().asymmetricEqualityTesterArgCompatShim = function(j$) {
     for (i = 0; i < props.length; i++) {
       k = props[i];
       if (k !== 'length') {
-        copy(self, Array.prototype, k);
+        copyAndDeprecate(self, Array.prototype, k);
       }
     }
 
     return self;
   }
 
-  function copy(dest, src, propName) {
+  function copyAndDeprecate(dest, src, propName) {
     Object.defineProperty(dest, propName, {
       get: function() {
+        j$.getEnv().deprecated(
+          'The second argument to asymmetricMatch is now a ' +
+            'MatchersUtil. Using it as an array of custom equality testers is ' +
+            'deprecated and will stop working in a future release. ' +
+            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+        );
         return src[propName];
       }
     });

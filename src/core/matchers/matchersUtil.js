@@ -1,6 +1,4 @@
 getJasmineRequireObj().MatchersUtil = function(j$) {
-  // TODO: convert all uses of j$.pp to use the injected pp
-
   /**
    * _Note:_ Do not construct this directly. Jasmine will construct one and
    * pass it to matchers and asymmetric equality testers.
@@ -30,10 +28,17 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
    * @name MatchersUtil#contains
    * @param {*} haystack The collection to search
    * @param {*} needle The value to search for
-   * @param [customTesters] An array of custom equality testers
+   * @param [customTesters] An array of custom equality testers. Deprecated.
+   * As of 3.6 this parameter no longer needs to be passed. It will be removed in 4.0.
    * @returns {boolean} True if `needle` was found in `haystack`
    */
   MatchersUtil.prototype.contains = function(haystack, needle, customTesters) {
+    if (customTesters) {
+      j$.getEnv().deprecated('Passing custom equality testers to ' +
+        'MatchersUtil#contains is deprecated. See ' +
+        '<https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.');
+    }
+
     if (j$.isSet(haystack)) {
       return haystack.has(needle);
     }
@@ -122,7 +127,8 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
    * @name MatchersUtil#equals
    * @param {*} a The first value to compare
    * @param {*} b The second value to compare
-   * @param [customTesters] An array of custom equality testers
+   * @param [customTesters] An array of custom equality testers. Deprecated.
+   * As of 3.6 this parameter no longer needs to be passed. It will be removed in 4.0.
    * @returns {boolean} True if the values are equal
    */
   MatchersUtil.prototype.equals = function(a, b, customTestersOrDiffBuilder, diffBuilderOrNothing) {
@@ -131,6 +137,18 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     if (isDiffBuilder(customTestersOrDiffBuilder)) {
       diffBuilder = customTestersOrDiffBuilder;
     } else {
+      if (customTestersOrDiffBuilder) {
+        j$.getEnv().deprecated('Passing custom equality testers to ' +
+          'MatchersUtil#equals is deprecated. See ' +
+          '<https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.');
+      }
+
+      if (diffBuilderOrNothing) {
+        j$.getEnv().deprecated('Diff builder should be passed as the third argument ' +
+          'to MatchersUtil#equals, not the fourth. ' +
+          'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.');
+      }
+
       customTesters = customTestersOrDiffBuilder;
       diffBuilder = diffBuilderOrNothing;
     }

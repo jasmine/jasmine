@@ -55,11 +55,34 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
       j$
     );
     j$.makePrettyPrinter = jRequire.makePrettyPrinter(j$);
-    j$.pp = j$.makePrettyPrinter();
+    j$.basicPrettyPrinter_ = j$.makePrettyPrinter();
+    Object.defineProperty(j$, 'pp', {
+      get: function() {
+        j$.getEnv().deprecated(
+          'jasmine.pp is deprecated and will be removed in a future release. ' +
+            'Use the pp method of the matchersUtil passed to the matcher factory ' +
+            "or the asymmetric equality tester's `asymmetricMatch` method " +
+            'instead. See ' +
+            '<https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+        );
+        return j$.basicPrettyPrinter_;
+      }
+    });
     j$.MatchersUtil = jRequire.MatchersUtil(j$);
-    j$.matchersUtil = new j$.MatchersUtil({
+    var staticMatchersUtil = new j$.MatchersUtil({
       customTesters: [],
-      pp: j$.pp
+      pp: j$.basicPrettyPrinter_
+    });
+    Object.defineProperty(j$, 'matchersUtil', {
+      get: function() {
+        j$.getEnv().deprecated(
+          'jasmine.matchersUtil is deprecated and will be removed ' +
+            'in a future release. Use the instance passed to the matcher factory or ' +
+            "the asymmetric equality tester's `asymmetricMatch` method instead. " +
+            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+        );
+        return staticMatchersUtil;
+      }
     });
 
     j$.ObjectContaining = jRequire.ObjectContaining(j$);

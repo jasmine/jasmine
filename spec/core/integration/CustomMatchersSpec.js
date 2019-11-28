@@ -88,6 +88,7 @@ describe("Custom Matchers (Integration)", function () {
   it("supports asymmetric equality testers that take a list of custom equality testers", function(done) {
     // TODO: remove this in the next major release.
     spyOn(jasmineUnderTest, 'getEnv').and.returnValue(env);
+    spyOn(env, 'deprecated'); // suppress warnings
 
     env.it("spec using custom asymmetric equality tester", function() {
       var customEqualityFn = function(a, b) {
@@ -263,6 +264,29 @@ describe("Custom Matchers (Integration)", function () {
     };
 
     env.addReporter({specDone: specExpectations, jasmineDone: done});
+    env.execute();
+  });
+
+  it('logs a deprecation warning if the matcher factory takes two arguments', function(done) {
+    var matcherFactory = function (matchersUtil, customEqualityTesters) {
+      return { compare: function() {} };
+    };
+
+    spyOn(env, 'deprecated');
+
+    env.it('a spec', function() {
+      env.addMatchers({toBeFoo: matcherFactory});
+    });
+
+    function jasmineDone() {
+      expect(env.deprecated).toHaveBeenCalledWith('The matcher factory for "toBeFoo" ' +
+        'accepts custom equality testers, but this parameter will no longer be passed ' +
+        'in a future release. ' +
+        'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.');
+      done();
+    }
+
+    env.addReporter({jasmineDone: jasmineDone});
     env.execute();
   });
 });

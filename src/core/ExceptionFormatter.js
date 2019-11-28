@@ -90,7 +90,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
       }
 
       if (!empty) {
-        return 'error properties: ' + j$.pp(result) + '\n';
+        return 'error properties: ' + j$.basicPrettyPrinter_(result) + '\n';
       }
 
       return '';
