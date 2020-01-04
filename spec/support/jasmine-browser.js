@@ -15,7 +15,7 @@ module.exports = {
     '**/*.js'
   ],
   specDir: 'spec',
-  specFiles: ['**/*[Ss]pec.js', '!npmPackage/**/*'],
+  specFiles: ['**/*[Ss]pec.js', '!npmPackage/**/*', '!property/**/*'],
   helpers: [
     'helpers/asyncAwait.js',
     'helpers/BrowserFlags.js',

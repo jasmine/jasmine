@@ -50,3 +50,4 @@ matrix:
       if: type != pull_request
       addons:
         sauce_connect: true
+    - env: JASMINE_LONG_PROPERTY_TESTS=y

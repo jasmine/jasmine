@@ -2,6 +2,7 @@
   "spec_dir": "spec",
   "spec_files": [
     "core/**/*[Ss]pec.js",
+    "property/**/*[Ss]pec.js",
     "npmPackage/**/*[Ss]pec.js"
   ],
   "helpers": [
