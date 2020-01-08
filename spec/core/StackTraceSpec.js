@@ -213,4 +213,46 @@ describe('StackTrace', function() {
       }
     ]);
   });
+
+  it('consideres different types of errors', function() {
+    var error = {
+      message: 'nope',
+      stack:
+        'TypeError: nope\n' +
+        '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)\n' +
+        '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
+    };
+
+    var result = new jasmineUnderTest.StackTrace(error);
+
+    expect(result.message).toEqual('TypeError: nope');
+    expect(result.frames).toEqual([
+      {
+        raw:
+          '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
+        func: 'UserContext.<anonymous>',
+        file: 'http://localhost:8888/__spec__/core/UtilSpec.js',
+        line: 115
+      },
+      {
+        raw:
+          '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)',
+        func: 'QueueRunner.run',
+        file: 'http://localhost:8888/__jasmine__/jasmine.js',
+        line: 4320
+      }
+    ]);
+
+    var no_error = {
+      message: 'nope',
+      stack:
+        'Type Error: nope\n' +
+        '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)\n' +
+        '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
+    };
+
+    var result_no_error = new jasmineUnderTest.StackTrace(no_error);
+
+    expect(result_no_error.message).not.toEqual(jasmine.anything());
+  });
 });
