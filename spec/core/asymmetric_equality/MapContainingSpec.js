@@ -184,8 +184,13 @@ describe('MapContaining', function() {
   });
 
   it('defines a `jasmineToString` method', function() {
-    var containing = new jasmineUnderTest.MapContaining(new Map());
+    var sample = new Map(),
+      containing = new jasmineUnderTest.MapContaining(sample),
+      pp = jasmine.createSpy('pp').and.returnValue('sample');
 
-    expect(containing.jasmineToString()).toMatch(/^<jasmine\.mapContaining/);
+    expect(containing.jasmineToString(pp)).toEqual(
+      '<jasmine.mapContaining(sample)>'
+    );
+    expect(pp).toHaveBeenCalledWith(sample);
   });
 });

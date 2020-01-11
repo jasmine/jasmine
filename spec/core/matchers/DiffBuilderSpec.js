@@ -44,4 +44,30 @@ describe("DiffBuilder", function() {
 
     expect(diffBuilder.getMessage()).toEqual("I find your lack of foo disturbing. (was bar, at $.x)");
   });
+
+  it("uses the injected pretty-printer", function() {
+    var prettyPrinter = function(val) {
+        return '|' + val + '|';
+      },
+      diffBuilder = jasmineUnderTest.DiffBuilder({prettyPrinter: prettyPrinter});
+
+    diffBuilder.withPath('foo', function() {
+      diffBuilder.record('actual', 'expected');
+    });
+
+    expect(diffBuilder.getMessage()).toEqual("Expected $.foo = |actual| to equal |expected|.");
+  });
+
+
+  it("passes the injected pretty-printer to the diff formatter", function() {
+    var diffFormatter = jasmine.createSpy('diffFormatter'),
+      prettyPrinter = function() {},
+      diffBuilder = jasmineUnderTest.DiffBuilder({prettyPrinter: prettyPrinter});
+
+    diffBuilder.withPath('x', function() {
+      diffBuilder.record('bar', 'foo', diffFormatter);
+    });
+
+    expect(diffFormatter).toHaveBeenCalledWith('bar', 'foo', jasmine.anything(), prettyPrinter);
+  });
 });

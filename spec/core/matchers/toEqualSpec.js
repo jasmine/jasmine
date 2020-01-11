@@ -97,14 +97,34 @@ describe("toEqual", function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
-  it("reports extra and missing properties together", function() {
+  it("uses custom object formatters to pretty-print properties", function() {
+    function formatter(x) { return '|' + x + '|'; }
+
     var actual = {x: {y: 1, z: 2, f: 4}},
       expected = {x: {y: 1, z: 2, g: 3}},
+      pp = jasmineUnderTest.makePrettyPrinter([formatter]),
+      util = new jasmineUnderTest.MatchersUtil({pp: pp}),
+      matcher = jasmineUnderTest.matchers.toEqual(util),
       message =
         "Expected $.x to have properties\n" +
-        "    g: 3\n" +
+        "    g: |3|\n" +
         "Expected $.x not to have properties\n" +
-        "    f: 4";
+        "    f: |4|";
+
+    expect(matcher.compare(actual, expected).message).toEqual(message);
+  });
+
+  it("uses custom object formatters to build diffs", function() {
+    function formatter(x) { return '|' + x + '|'; }
+
+    var actual = [{foo: 4}],
+      expected = [{foo: 5}],
+      prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]),
+      util = new jasmineUnderTest.MatchersUtil({pp: prettyPrinter}),
+      matcher = jasmineUnderTest.matchers.toEqual(util),
+      message = "Expected $[0].foo = |4| to equal |5|.";
+
+    expect(matcher.compare(actual, expected).message).toEqual(message);
   });
 
   it("reports extra and missing properties of the root-level object", function() {
@@ -277,10 +297,25 @@ describe("toEqual", function() {
     function Bar() {}
 
     var actual = {x: new Foo()},
-        expected = {x: new Bar()},
-        message = "Expected $.x to be a kind of Bar, but was Foo({  }).";
+      expected = {x: new Bar()},
+      message = "Expected $.x to be a kind of Bar, but was Foo({  }).";
 
     expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it("uses custom object formatters to report objects with different constructors", function () {
+    function Foo() {}
+    function Bar() {}
+    function formatter(x) { return '|' + x + '|'; }
+
+    var actual = {x: new Foo()},
+      expected = {x: new Bar()},
+      message = "Expected $.x to be a kind of Bar, but was |[object Object]|.",
+      pp = jasmineUnderTest.makePrettyPrinter([formatter]),
+      util = new jasmineUnderTest.MatchersUtil({pp: pp}),
+      matcher = jasmineUnderTest.matchers.toEqual(util);
+
+    expect(matcher.compare(actual, expected).message).toEqual(message);
   });
 
   it("reports type mismatches at the root level", function () {
@@ -801,6 +836,20 @@ describe("toEqual", function() {
 
       expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+
+    it("uses custom object formatters when the actual array is longer", function() {
+      function formatter(x) { return '|' + x + '|'; }
+
+      var actual = [1, 1, 2, 3, 5],
+        expected = [1, 1, 2, 3],
+        pp = jasmineUnderTest.makePrettyPrinter([formatter]),
+        util = new jasmineUnderTest.MatchersUtil({pp: pp}),
+        matcher = jasmineUnderTest.matchers.toEqual(util),
+        message = 'Expected $.length = |5| to equal |4|.\n' +
+          'Unexpected $[4] = |5| in array.';
+
+      expect(matcher.compare(actual, expected).message).toEqual(message);
     });
 
     it("expected array is longer", function() {

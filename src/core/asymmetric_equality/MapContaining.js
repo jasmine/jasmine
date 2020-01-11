@@ -33,8 +33,8 @@ getJasmineRequireObj().MapContaining = function(j$) {
     return hasAllMatches;
   };
 
-  MapContaining.prototype.jasmineToString = function() {
-    return '<jasmine.mapContaining(' + j$.pp(this.sample) + ')>';
+  MapContaining.prototype.jasmineToString = function(pp) {
+    return '<jasmine.mapContaining(' + pp(this.sample) + ')>';
   };
 
   return MapContaining;

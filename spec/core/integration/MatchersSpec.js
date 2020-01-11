@@ -48,6 +48,28 @@ describe('Matchers (Integration)', function() {
     });
   }
 
+  function verifyFailsWithCustomObjectFormatters(config) {
+    it('uses custom object formatters', function(done) {
+      var env = new jasmineUnderTest.Env();
+      env.it('a spec', function () {
+        env.addCustomObjectFormatter(config.formatter);
+        config.expectations(env);
+      });
+
+      var specExpectations = function (result) {
+        expect(result.status).toEqual('failed');
+        expect(result.failedExpectations.length)
+          .withContext('Number of failed expectations')
+          .toEqual(1);
+        expect(result.failedExpectations[0].message)
+          .toEqual(config.expectedMessage);
+      };
+
+      env.addReporter({specDone: specExpectations, jasmineDone: done});
+      env.execute();
+    });
+  }
+
   function verifyPassesAsync(expectations) {
     it('passes', function(done) {
       jasmine.getEnv().requirePromises();
@@ -100,6 +122,30 @@ describe('Matchers (Integration)', function() {
       env.execute();
     });
   }
+
+  function verifyFailsWithCustomObjectFormattersAsync(config) {
+    it('uses custom object formatters', function(done) {
+      var env = new jasmineUnderTest.Env();
+      jasmine.getEnv().requirePromises();
+      env.it('a spec', function () {
+        env.addCustomObjectFormatter(config.formatter);
+        return config.expectations(env);
+      });
+
+      var specExpectations = function (result) {
+        expect(result.status).toEqual('failed');
+        expect(result.failedExpectations.length)
+          .withContext('Number of failed expectations')
+          .toEqual(1);
+        expect(result.failedExpectations[0].message)
+          .toEqual(config.expectedMessage);
+      };
+
+      env.addReporter({specDone: specExpectations, jasmineDone: done});
+      env.execute();
+    });
+  }
+
 
   describe('nothing', function() {
     verifyPasses(function(env) {
@@ -217,6 +263,16 @@ describe('Matchers (Integration)', function() {
     verifyFails(function(env) {
       env.expect(2).toBeNaN();
     });
+
+    verifyFailsWithCustomObjectFormatters({
+      formatter: function(val) {
+        return '|' + val + '|';
+      },
+      expectations: function(env) {
+        env.expect(1).toBeNaN();
+      },
+      expectedMessage: 'Expected |1| to be NaN.'
+    });
   });
 
   describe('toBeNegativeInfinity', function() {
@@ -226,6 +282,16 @@ describe('Matchers (Integration)', function() {
 
     verifyFails(function(env) {
       env.expect(2).toBeNegativeInfinity();
+    });
+
+    verifyFailsWithCustomObjectFormatters({
+      formatter: function(val) {
+        return '|' + val + '|';
+      },
+      expectations: function(env) {
+        env.expect(1).toBeNegativeInfinity();
+      },
+      expectedMessage: 'Expected |1| to be -Infinity.'
     });
   });
 
@@ -247,6 +313,16 @@ describe('Matchers (Integration)', function() {
     verifyFails(function(env) {
       env.expect(2).toBePositiveInfinity();
     });
+
+    verifyFailsWithCustomObjectFormatters({
+      formatter: function(val) {
+        return '|' + val + '|';
+      },
+      expectations: function(env) {
+        env.expect(1).toBePositiveInfinity();
+      },
+      expectedMessage: 'Expected |1| to be Infinity.'
+    })
   });
 
   describe('toBeResolved', function() {
@@ -269,6 +345,17 @@ describe('Matchers (Integration)', function() {
 
     verifyFailsAsync(function(env) {
       return env.expectAsync(Promise.resolve('foo')).toBeResolvedTo('bar');
+    });
+
+    verifyFailsWithCustomObjectFormattersAsync({
+      formatter: function(val) {
+        return '|' + val + '|';
+      },
+      expectations: function(env) {
+        return env.expectAsync(Promise.resolve('x')).toBeResolvedTo('y');
+      },
+      expectedMessage: 'Expected a promise to be resolved to |y| ' +
+        'but it was resolved to |x|.'
     });
   });
 
@@ -293,6 +380,17 @@ describe('Matchers (Integration)', function() {
     verifyFailsAsync(function(env) {
       return env.expectAsync(Promise.resolve()).toBeRejectedWith('nope');
     });
+
+    verifyFailsWithCustomObjectFormattersAsync({
+      formatter: function(val) {
+        return '|' + val + '|';
+      },
+      expectations: function(env) {
+        return env.expectAsync(Promise.reject('x')).toBeRejectedWith('y');
+      },
+      expectedMessage: 'Expected a promise to be rejected with |y| ' +
+        'but it was rejected with |x|.'
+    });
   });
 
   describe('toBeRejectedWithError', function() {
@@ -302,6 +400,17 @@ describe('Matchers (Integration)', function() {
 
     verifyFailsAsync(function(env) {
       return env.expectAsync(Promise.resolve()).toBeRejectedWithError(Error);
+    });
+
+    verifyFailsWithCustomObjectFormattersAsync({
+      formatter: function(val) {
+        return '|' + val + '|';
+      },
+      expectations: function(env) {
+        return env.expectAsync(Promise.reject('foo')).toBeRejectedWithError('foo');
+      },
+      expectedMessage: 'Expected a promise to be rejected with Error: |foo| ' +
+        'but it was rejected with |foo|.'
     });
   });
 
@@ -358,6 +467,20 @@ describe('Matchers (Integration)', function() {
 
     verifyFails(function(env) {
       env.expect('a').toEqual('b');
+    });
+
+    verifyFailsWithCustomObjectFormatters({
+      formatter: function(val) {
+        if (val === 5) {
+          return "five"
+        } else if (val === 4) {
+          return "four"
+        }
+      },
+      expectations: function(env) {
+        env.expect([{foo: 4}]).toEqual([{foo: 5}]);
+      },
+      expectedMessage: 'Expected $[0].foo = four to equal five.'
     });
   });
 
@@ -417,6 +540,19 @@ describe('Matchers (Integration)', function() {
       var spy = env.createSpy();
       env.expect(spy).toHaveBeenCalledWith('foo');
     });
+
+    verifyFailsWithCustomObjectFormatters({
+      formatter: function(val) {
+        return '|' + val + '|';
+      },
+      expectations: function(env) {
+        var spy = env.createSpy('foo');
+        env.expect(spy).toHaveBeenCalledWith('x');
+      },
+      expectedMessage: 'Expected spy foo to have been called with:\n' +
+        '  |x|\n' +
+        'but it was never called.'
+    });
   });
 
   describe('toHaveClass', function() {
@@ -458,6 +594,19 @@ describe('Matchers (Integration)', function() {
     verifyFails(function(env) {
       env.expect(function() {}).toThrow();
     });
+
+    verifyFailsWithCustomObjectFormatters({
+      formatter: function(val) {
+        return '|' + val + '|';
+      },
+      expectations: function(env) {
+        var spy = env.createSpy('foo');
+        env.expect(function() {
+          throw 'x'
+        }).not.toThrow();
+      },
+      expectedMessage: 'Expected function not to throw, but it threw |x|.'
+    });
   });
 
   describe('toThrowError', function() {
@@ -467,6 +616,19 @@ describe('Matchers (Integration)', function() {
 
     verifyFails(function(env) {
       env.expect(function() { }).toThrowError();
+    });
+
+    verifyFailsWithCustomObjectFormatters({
+      formatter: function(val) {
+        return '|' + val + '|';
+      },
+      expectations: function(env) {
+        var spy = env.createSpy('foo');
+        env.expect(function() {
+          throw 'x'
+        }).toThrowError();
+      },
+      expectedMessage: 'Expected function to throw an Error, but it threw |x|.'
     });
   });
 
@@ -481,6 +643,22 @@ describe('Matchers (Integration)', function() {
 
     verifyFails(function(env) {
       env.expect(throws).toThrowMatching(function() { return false; });
+    });
+
+    verifyFailsWithCustomObjectFormatters({
+      formatter: function(val) {
+        return '|' + val + '|';
+      },
+      expectations: function(env) {
+        var spy = env.createSpy('foo');
+        env.expect(function() {
+          throw new Error('nope')
+        }).toThrowMatching(function() {
+          return false;
+        });
+      },
+      expectedMessage: 'Expected function to throw an exception matching ' +
+        'a predicate, but it threw Error with message |nope|.'
     });
   });
 });

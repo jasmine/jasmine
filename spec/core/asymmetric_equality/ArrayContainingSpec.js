@@ -42,9 +42,14 @@ describe("ArrayContaining", function() {
   });
 
   it("jasmineToStrings itself", function() {
-    var containing = new jasmineUnderTest.ArrayContaining([]);
+    var sample = [],
+      matcher = new jasmineUnderTest.ArrayContaining(sample),
+      pp = jasmine.createSpy('pp').and.returnValue('sample');
 
-    expect(containing.jasmineToString()).toMatch("<jasmine.arrayContaining");
+    expect(matcher.jasmineToString(pp)).toEqual(
+      '<jasmine.arrayContaining(sample)>'
+    );
+    expect(pp).toHaveBeenCalledWith(sample);
   });
 
   it("uses custom equality testers", function() {

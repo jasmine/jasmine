@@ -30,9 +30,14 @@ describe("ArrayWithExactContents", function() {
   });
 
   it("jasmineToStrings itself", function() {
-    var matcher = new jasmineUnderTest.ArrayWithExactContents([]);
+    var sample = [],
+      matcher = new jasmineUnderTest.ArrayWithExactContents(sample),
+      pp = jasmine.createSpy('pp').and.returnValue('sample');
 
-    expect(matcher.jasmineToString()).toMatch("<jasmine.arrayWithExactContents");
+    expect(matcher.jasmineToString(pp)).toEqual(
+      '<jasmine.arrayWithExactContents(sample)>'
+    );
+    expect(pp).toHaveBeenCalledWith(sample);
   });
 
   it("uses custom equality testers", function() {

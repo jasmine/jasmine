@@ -305,8 +305,9 @@ describe('Env', function() {
     });
   });
 
-  it('creates an expectationFactory that uses the current custom equality testers', function(done) {
+  it('creates an expectationFactory that uses the current custom equality testers and object formatters', function(done) {
     function customEqualityTester() {}
+    function customObjectFormatter() {}
     function prettyPrinter() {}
     var RealSpec = jasmineUnderTest.Spec,
       specInstance,
@@ -321,11 +322,15 @@ describe('Env', function() {
 
     env.it('spec', function() {
       env.addCustomEqualityTester(customEqualityTester);
+      env.addCustomObjectFormatter(customObjectFormatter);
       expectationFactory('actual', specInstance);
     });
 
     env.addReporter({
       jasmineDone: function() {
+        expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
+          customObjectFormatter
+        ]);
         expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
           customTesters: [customEqualityTester],
           pp: prettyPrinter
@@ -337,8 +342,9 @@ describe('Env', function() {
     env.execute();
   });
 
-  it('creates an asyncExpectationFactory that uses the current custom equality testers', function(done) {
+  it('creates an asyncExpectationFactory that uses the current custom equality testers and object formatters', function(done) {
     function customEqualityTester() {}
+    function customObjectFormatter() {}
     function prettyPrinter() {}
     var RealSpec = jasmineUnderTest.Spec,
       specInstance,
@@ -353,11 +359,15 @@ describe('Env', function() {
 
     env.it('spec', function() {
       env.addCustomEqualityTester(customEqualityTester);
+      env.addCustomObjectFormatter(customObjectFormatter);
       asyncExpectationFactory('actual', specInstance);
     });
 
     env.addReporter({
       jasmineDone: function() {
+        expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
+          customObjectFormatter
+        ]);
         expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
           customTesters: [customEqualityTester],
           pp: prettyPrinter

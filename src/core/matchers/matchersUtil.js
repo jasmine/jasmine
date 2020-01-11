@@ -45,7 +45,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
         if (i > 0) {
           message += ',';
         }
-        message += ' ' + j$.pp(expected[i]);
+        message += ' ' + self.pp(expected[i]);
       }
     }
 

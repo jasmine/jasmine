@@ -23,8 +23,8 @@ getJasmineRequireObj().ArrayWithExactContents = function(j$) {
     return true;
   };
 
-  ArrayWithExactContents.prototype.jasmineToString = function() {
-    return '<jasmine.arrayWithExactContents ' + j$.pp(this.sample) + '>';
+  ArrayWithExactContents.prototype.jasmineToString = function(pp) {
+    return '<jasmine.arrayWithExactContents(' + pp(this.sample) + ')>';
   };
 
   return ArrayWithExactContents;

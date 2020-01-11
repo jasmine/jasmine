@@ -296,6 +296,18 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
+    this.addCustomObjectFormatter = function(formatter) {
+      if (!currentRunnable()) {
+        throw new Error(
+          'Custom object formatters must be added in a before function or a spec'
+        );
+      }
+
+      runnableResources[currentRunnable().id].customObjectFormatters.push(
+        formatter
+      );
+    };
+
     j$.Expectation.addCoreMatchers(j$.matchers);
     j$.Expectation.addAsyncCoreMatchers(j$.asyncMatchers);
 
@@ -310,7 +322,9 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var makePrettyPrinter = function() {
-      return j$.makePrettyPrinter();
+      var customObjectFormatters =
+        runnableResources[currentRunnable().id].customObjectFormatters;
+      return j$.makePrettyPrinter(customObjectFormatters);
     };
 
     var makeMatchersUtil = function() {
@@ -360,7 +374,8 @@ getJasmineRequireObj().Env = function(j$) {
         customMatchers: {},
         customAsyncMatchers: {},
         customSpyStrategies: {},
-        defaultStrategyFn: undefined
+        defaultStrategyFn: undefined,
+        customObjectFormatters: []
       };
 
       if (runnableResources[parentRunnableId]) {

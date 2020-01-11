@@ -37,9 +37,15 @@ describe("ObjectContaining", function() {
   });
 
   it("jasmineToString's itself", function() {
-    var containing = new jasmineUnderTest.ObjectContaining({});
+    var sample = {},
+      matcher = new jasmineUnderTest.ObjectContaining(sample),
+      pp = jasmine.createSpy('pp').and.returnValue('sample');
 
-    expect(containing.jasmineToString()).toMatch("<jasmine.objectContaining");
+    expect(matcher.jasmineToString(pp)).toEqual(
+      '<jasmine.objectContaining(sample)>'
+    );
+    expect(pp).toHaveBeenCalledWith(sample);
+
   });
 
   it("matches recursively", function() {

@@ -31,8 +31,8 @@ getJasmineRequireObj().SetContaining = function(j$) {
     return hasAllMatches;
   };
 
-  SetContaining.prototype.jasmineToString = function() {
-    return '<jasmine.setContaining(' + j$.pp(this.sample) + ')>';
+  SetContaining.prototype.jasmineToString = function(pp) {
+    return '<jasmine.setContaining(' + pp(this.sample) + ')>';
   };
 
   return SetContaining;

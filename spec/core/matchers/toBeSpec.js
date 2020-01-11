@@ -59,4 +59,16 @@ describe("toBe", function() {
     expect(result.pass).toBe(false);
     expect(result.message).toBe("Expected Object({ foo: 'bar' }) to be Object({ foo: 'bar' }). Tip: To check for deep equality, use .toEqual() instead of .toBe().")
   });
+
+  it("works with custom object formatters when expected is an object", function() {
+    var formatter = function(x) { return '<' + x.foo + '>'; },
+      prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]),
+      util = new jasmineUnderTest.MatchersUtil({pp: prettyPrinter}),
+      matcher = jasmineUnderTest.matchers.toBe(util),
+      result;
+
+    result = matcher.compare({foo: "bar"}, {foo: "bar"});
+    expect(result.pass).toBe(false);
+    expect(result.message).toBe("Expected <bar> to be <bar>. Tip: To check for deep equality, use .toEqual() instead of .toBe().")
+  });
 });

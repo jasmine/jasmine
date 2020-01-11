@@ -1,12 +1,13 @@
 getJasmineRequireObj().DiffBuilder = function(j$) {
-  return function DiffBuilder() {
+  return function DiffBuilder(config) {
     var path = new j$.ObjectPath(),
-        mismatches = [];
+        mismatches = [],
+        prettyPrinter = (config || {}).prettyPrinter || j$.makePrettyPrinter();
 
     return {
       record: function (actual, expected, formatter) {
         formatter = formatter || defaultFormatter;
-        mismatches.push(formatter(actual, expected, path));
+        mismatches.push(formatter(actual, expected, path, prettyPrinter));
       },
 
       getMessage: function () {
@@ -21,12 +22,12 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
       }
     };
 
-    function defaultFormatter (actual, expected, path) {
+    function defaultFormatter (actual, expected, path, prettyPrinter) {
       return 'Expected ' +
         path + (path.depth() ? ' = ' : '') +
-        j$.pp(actual) +
+        prettyPrinter(actual) +
         ' to equal ' +
-        j$.pp(expected) +
+        prettyPrinter(expected) +
         '.';
     }
   };

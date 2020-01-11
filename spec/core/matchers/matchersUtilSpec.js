@@ -840,7 +840,7 @@ describe("matchersUtil", function() {
     });
   });
 
-  describe("buildMessage", function() {
+  describe("buildFailureMessage", function() {
 
     it("builds an English sentence for a failure case", function() {
       var actual = "foo",
@@ -873,15 +873,17 @@ describe("matchersUtil", function() {
       expect(message).toEqual("Expected 'foo' to bar 'quux', 'corge'.");
     });
 
-    it("uses the injected pretty-printer to format the expected", function() {
+    it("uses the injected pretty-printer to format the expecteds and actual", function() {
       var actual = "foo",
+        expected1 = "qux",
+        expected2 = "grault",
         name = "toBar",
         isNot = false,
         pp = function(value) { return '<' + value + '>'; },
         matchersUtil = new jasmineUnderTest.MatchersUtil({pp: pp}),
-        message = message = matchersUtil.buildFailureMessage(name, isNot, actual);
+        message = message = matchersUtil.buildFailureMessage(name, isNot, actual, expected1, expected2);
 
-      expect(message).toEqual("Expected <foo> to bar.");
+      expect(message).toEqual("Expected <foo> to bar <qux>, <grault>.");
     });
   });
 });

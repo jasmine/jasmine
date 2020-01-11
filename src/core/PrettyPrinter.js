@@ -1,9 +1,11 @@
 getJasmineRequireObj().makePrettyPrinter = function(j$) {
-  function SinglePrettyPrintRun() {
+  function SinglePrettyPrintRun(customObjectFormatters, pp) {
+    this.customObjectFormatters_ = customObjectFormatters;
     this.ppNestLevel_ = 0;
     this.seen = [];
     this.length = 0;
     this.stringParts = [];
+    this.pp_ = pp;
   }
 
   function hasCustomToString(value) {
@@ -24,7 +26,11 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   SinglePrettyPrintRun.prototype.format = function(value) {
     this.ppNestLevel_++;
     try {
-      if (j$.util.isUndefined(value)) {
+      var customFormatResult = this.applyCustomFormatters_(value);
+
+      if (customFormatResult) {
+        this.emitScalar(customFormatResult);
+      } else if (j$.util.isUndefined(value)) {
         this.emitScalar('undefined');
       } else if (value === null) {
         this.emitScalar('null');
@@ -33,7 +39,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
       } else if (value === j$.getGlobal()) {
         this.emitScalar('<global>');
       } else if (value.jasmineToString) {
-        this.emitScalar(value.jasmineToString());
+        this.emitScalar(value.jasmineToString(this.pp_));
       } else if (typeof value === 'string') {
         this.emitString(value);
       } else if (j$.isSpy(value)) {
@@ -92,6 +98,18 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
       }
     } finally {
       this.ppNestLevel_--;
+    }
+  };
+
+  SinglePrettyPrintRun.prototype.applyCustomFormatters_ = function(value) {
+    var i, result;
+
+    for (i = 0; i < this.customObjectFormatters_.length; i++) {
+      result = this.customObjectFormatters_[i](value);
+
+      if (result !== undefined) {
+        return result;
+      }
     }
   };
 
@@ -365,11 +383,16 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     return extraKeys;
   }
 
-  return function() {
-    return function(value) {
-      var prettyPrinter = new SinglePrettyPrintRun();
+  return function(customObjectFormatters) {
+    var pp = function(value) {
+      var prettyPrinter = new SinglePrettyPrintRun(
+        customObjectFormatters || [],
+        pp
+      );
       prettyPrinter.format(value);
       return prettyPrinter.stringParts.join('');
     };
+
+    return pp;
   };
 };

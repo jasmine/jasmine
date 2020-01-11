@@ -388,6 +388,16 @@ describe('PrettyPrinter', function() {
     expect(pp(obj)).toEqual('strung');
   });
 
+  it('should pass itself to jasmineToString', function() {
+    var pp = jasmineUnderTest.makePrettyPrinter([]);
+    var obj = {
+      jasmineToString: jasmine.createSpy('jasmineToString').and.returnValue('')
+    };
+
+    pp(obj);
+    expect(obj.jasmineToString).toHaveBeenCalledWith(pp);
+  });
+
   it('should stringify objects that implement custom toString', function() {
     var pp = jasmineUnderTest.makePrettyPrinter();
     var obj = {
@@ -477,5 +487,37 @@ describe('PrettyPrinter', function() {
     expect(pp(obj)).toEqual(
       'Object({ foo: [object Number], bar: [object Object], baz: 3, qux: Error: bar, baddy: has-invalid-toString-method })'
     );
+  });
+
+  describe('Custom object formatters', function() {
+    it('should use the first custom object formatter that does not return undefined', function() {
+      var customObjectFormatters = [
+          function(obj) {
+            return undefined;
+          },
+          function(obj) {
+            return '2nd: ' + obj.foo;
+          },
+          function(obj) {
+            return '3rd: ' + obj.foo;
+          }
+        ],
+        pp = jasmineUnderTest.makePrettyPrinter(customObjectFormatters),
+        obj = { foo: 'bar' };
+
+      expect(pp(obj, customObjectFormatters)).toEqual('2nd: bar');
+    });
+
+    it('should fall back to built in logic if all custom object formatters return undefined', function() {
+      var customObjectFormatters = [
+          function(obj) {
+            return undefined;
+          }
+        ],
+        pp = jasmineUnderTest.makePrettyPrinter(customObjectFormatters),
+        obj = { foo: 'bar' };
+
+      expect(pp(obj, customObjectFormatters)).toEqual("Object({ foo: 'bar' })");
+    });
   });
 });

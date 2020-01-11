@@ -117,8 +117,13 @@ describe('SetContaining', function() {
   });
 
   it('defines a `jasmineToString` method', function() {
-    var containing = new jasmineUnderTest.SetContaining(new Set());
+    var sample = new Set(),
+      containing = new jasmineUnderTest.SetContaining(sample),
+      pp = jasmine.createSpy('pp').and.returnValue('sample');
 
-    expect(containing.jasmineToString()).toMatch(/^<jasmine\.setContaining/);
+    expect(containing.jasmineToString(pp)).toEqual(
+      '<jasmine.setContaining(sample)>'
+    );
+    expect(pp).toHaveBeenCalledWith(sample);
   });
 });
