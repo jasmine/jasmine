@@ -2,7 +2,6 @@
   "spec_dir": "spec",
   "spec_files": [
     "core/**/*[Ss]pec.js",
-    "property/**/*[Ss]pec.js",
     "npmPackage/**/*[Ss]pec.js"
   ],
   "helpers": [
@@ -14,6 +13,7 @@
     "helpers/domHelpers.js",
     "helpers/integrationMatchers.js",
     "helpers/promises.js",
+    "helpers/requireFastCheck.js",
     "helpers/nodeDefineJasmineUnderTest.js"
   ],
   "random": true

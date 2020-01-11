@@ -15,7 +15,7 @@ module.exports = {
     '**/*.js'
   ],
   specDir: 'spec',
-  specFiles: ['**/*[Ss]pec.js', '!npmPackage/**/*', '!property/**/*'],
+  specFiles: ['**/*[Ss]pec.js', '!npmPackage/**/*'],
   helpers: [
     'helpers/asyncAwait.js',
     'helpers/BrowserFlags.js',
@@ -26,6 +26,7 @@ module.exports = {
     'helpers/domHelpers.js',
     'helpers/integrationMatchers.js',
     'helpers/promises.js',
+    'helpers/requireFastCheck.js',
     'helpers/defineJasmineUnderTest.js'
   ],
   random: true,
