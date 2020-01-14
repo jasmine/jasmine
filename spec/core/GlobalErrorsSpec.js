@@ -193,4 +193,34 @@ describe('GlobalErrors', function() {
       'foo'
     );
   });
+
+  it('reports unhandledRejection in browser', function() {
+    var fakeGlobal = {
+        addEventListener: jasmine.createSpy('addEventListener'),
+        removeEventListener: jasmine.createSpy('removeEventListener'),
+        onerror: jasmine.createSpy('onerror')
+      },
+      handler = jasmine.createSpy('errorHandler'),
+      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+    errors.install();
+    expect(fakeGlobal.addEventListener).toHaveBeenCalledWith(
+      'unhandledrejection',
+      jasmine.any(Function)
+    );
+
+    errors.pushListener(handler);
+
+    var addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
+    addedListener({ reason: new Error('bar') });
+
+    expect(handler).toHaveBeenCalledWith('Unhandled Rejection: Error: bar');
+
+    errors.uninstall();
+
+    expect(fakeGlobal.removeEventListener).toHaveBeenCalledWith(
+      'unhandledrejection',
+      addedListener
+    );
+  });
 });
