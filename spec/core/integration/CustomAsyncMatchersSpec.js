@@ -80,24 +80,19 @@ describe('Custom Async Matchers (Integration)', function() {
     env.execute();
   });
 
-  // TODO: remove this in the next major release.
-  it("passes the jasmine utility and current equality testers to the matcher factory", function(done) {
+  it("passes the jasmine utility to the matcher factory", function (done) {
     jasmine.getEnv().requirePromises();
 
-    var matcherFactory = function () {
+    var matcherFactory = function (util) {
         return {
           compare: function () {
             return Promise.resolve({pass: true});
           }
         };
       },
-      matcherFactorySpy = jasmine.createSpy("matcherFactorySpy").and.callFake(matcherFactory),
-      customEqualityFn = function () {
-        return true;
-      };
+      matcherFactorySpy = jasmine.createSpy("matcherFactorySpy", matcherFactory);
 
-    env.it("spec with expectation", function() {
-      env.addCustomEqualityTester(customEqualityFn);
+    env.it("spec with expectation", function () {
       env.addAsyncMatchers({
         toBeReal: matcherFactorySpy
       });
@@ -105,15 +100,53 @@ describe('Custom Async Matchers (Integration)', function() {
       return env.expectAsync(true).toBeReal();
     });
 
-    var specExpectations = function() {
+    var specExpectations = function () {
       expect(matcherFactorySpy).toHaveBeenCalledWith(
-        jasmine.any(jasmineUnderTest.MatchersUtil),
-        [customEqualityFn]
+        jasmine.any(jasmineUnderTest.MatchersUtil)
       );
     };
 
-    env.addReporter({ specDone: specExpectations, jasmineDone: done });
+    env.addReporter({specDone: specExpectations, jasmineDone: done});
     env.execute();
+  });
+
+  // TODO: remove this in the next major release.
+  describe('When a matcher factory takes at least two arguments', function() {
+    it("passes the jasmine utility and current equality testers to the matcher factory", function (done) {
+      jasmine.getEnv().requirePromises();
+
+      var matcherFactory = function (util, customTesters) {
+          return {
+            compare: function () {
+              return Promise.resolve({pass: true});
+            }
+          };
+        },
+        matcherFactorySpy = jasmine.createSpy("matcherFactorySpy", matcherFactory),
+        customEqualityFn = function () {
+          return true;
+        };
+
+      env.it("spec with expectation", function () {
+        env.addCustomEqualityTester(customEqualityFn);
+        env.addAsyncMatchers({
+          toBeReal: matcherFactorySpy
+        });
+
+        return env.expectAsync(true).toBeReal();
+      });
+
+      var specExpectations = function () {
+        expect(matcherFactorySpy).toHaveBeenCalledWith(
+          jasmine.any(jasmineUnderTest.MatchersUtil),
+          [customEqualityFn]
+        );
+      };
+
+      spyOn(env, 'deprecated');
+      env.addReporter({specDone: specExpectations, jasmineDone: done});
+      env.execute();
+    });
   });
 
   it("provides custom equality testers to the matcher factory via matchersUtil", function(done) {

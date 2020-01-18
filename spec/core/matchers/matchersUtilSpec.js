@@ -868,7 +868,6 @@ describe("matchersUtil", function() {
         deprecated = spyOn(jasmineUnderTest.getEnv(), 'deprecated');
 
 
-      debugger;
       matchersUtil.equals(0, 0, null, new jasmineUnderTest.NullDiffBuilder());
 
       expect(deprecated).toHaveBeenCalledWith(jasmine.stringMatching(
