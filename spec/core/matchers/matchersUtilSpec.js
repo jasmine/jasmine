@@ -856,20 +856,26 @@ describe("matchersUtil", function() {
 
       matchersUtil.equals(0, 0, []);
 
-      expect(deprecated).toHaveBeenCalledWith('Passing custom equality testers ' +
+      expect(deprecated).toHaveBeenCalledWith(jasmine.stringMatching(
+        'Passing custom equality testers ' +
         'to MatchersUtil#equals is deprecated. ' +
-        'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.');
+        'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+      ));
     });
 
     it('logs a deprecation warning when a diffBuilder is provided as the fourth argument', function() {
       var matchersUtil = new jasmineUnderTest.MatchersUtil(),
         deprecated = spyOn(jasmineUnderTest.getEnv(), 'deprecated');
 
+
+      debugger;
       matchersUtil.equals(0, 0, null, new jasmineUnderTest.NullDiffBuilder());
 
-      expect(deprecated).toHaveBeenCalledWith('Diff builder should be passed as the ' +
+      expect(deprecated).toHaveBeenCalledWith(jasmine.stringMatching(
+        'Diff builder should be passed as the ' +
         'third argument to MatchersUtil#equals, not the fourth. ' +
-        'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.');
+        'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+      ));
     });
 
     it('uses a diffBuilder if one is provided as the fourth argument', function() {
@@ -936,9 +942,10 @@ describe("matchersUtil", function() {
 
         expect(matchersUtil.contains([1, 2], 3, [customTester])).toBe(true);
 
-      expect(deprecated).toHaveBeenCalledWith('Passing custom equality testers ' +
-        'to MatchersUtil#contains is deprecated. ' +
-        'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.');
+      expect(deprecated).toHaveBeenCalledWith(jasmine.stringMatching(
+        'Passing custom equality testers to MatchersUtil#contains is deprecated. ' +
+        'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+      ));
     });
 
     it("uses custom equality testers if passed to the constructor and actual is an Array", function() {

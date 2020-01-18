@@ -27,7 +27,8 @@ module.exports = {
     'helpers/integrationMatchers.js',
     'helpers/promises.js',
     'helpers/requireFastCheck.js',
-    'helpers/defineJasmineUnderTest.js'
+    'helpers/defineJasmineUnderTest.js',
+    'helpers/resetEnv.js'
   ],
   random: true,
   browser: {

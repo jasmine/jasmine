@@ -58,7 +58,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.basicPrettyPrinter_ = j$.makePrettyPrinter();
     Object.defineProperty(j$, 'pp', {
       get: function() {
-        j$.getEnv().deprecated(
+        j$.getEnv().deprecatedOnceWithStack(
           'jasmine.pp is deprecated and will be removed in a future release. ' +
             'Use the pp method of the matchersUtil passed to the matcher factory ' +
             "or the asymmetric equality tester's `asymmetricMatch` method " +
@@ -75,7 +75,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     });
     Object.defineProperty(j$, 'matchersUtil', {
       get: function() {
-        j$.getEnv().deprecated(
+        j$.getEnv().deprecatedOnceWithStack(
           'jasmine.matchersUtil is deprecated and will be removed ' +
             'in a future release. Use the instance passed to the matcher factory or ' +
             "the asymmetric equality tester's `asymmetricMatch` method instead. " +

@@ -32,6 +32,7 @@ getJasmineRequireObj().Env = function(j$) {
     var currentlyExecutingSuites = [];
     var currentDeclarationSuite = null;
     var hasFailures = false;
+    var deprecationsToSuppress = [];
 
     /**
      * This represents the available options to configure Jasmine.
@@ -111,7 +112,19 @@ getJasmineRequireObj().Env = function(j$) {
        * @type function
        * @default undefined
        */
-      Promise: undefined
+      Promise: undefined,
+      /**
+       * Whether or not to issue warnings for certain deprecated functionality
+       * every time it's used. If not set or set to false, deprecation warnings
+       * for methods that tend to be called frequently will be issued only once
+       * or otherwise throttled to to prevent the suite output from being flooded
+       * with warnings.
+       * @name Configuration#verboseDeprecations
+       * @since 3.6.0
+       * @type Boolean
+       * @default false
+       */
+      verboseDeprecations: false
     };
 
     var currentSuite = function() {
@@ -205,6 +218,10 @@ getJasmineRequireObj().Env = function(j$) {
           );
         }
       }
+
+      if (configuration.hasOwnProperty('verboseDeprecations')) {
+        config.verboseDeprecations = configuration.verboseDeprecations;
+      }
     };
 
     /**
@@ -279,7 +296,7 @@ getJasmineRequireObj().Env = function(j$) {
 
       for (var matcherName in matchersToAdd) {
         if (matchersToAdd[matcherName].length > 1) {
-          self.deprecated(
+          self.deprecatedOnceWithStack(
             'The matcher factory for "' +
               matcherName +
               '" ' +
@@ -304,7 +321,7 @@ getJasmineRequireObj().Env = function(j$) {
 
       for (var matcherName in matchersToAdd) {
         if (matchersToAdd[matcherName].length > 1) {
-          self.deprecated(
+          self.deprecatedOnceWithStack(
             'The matcher factory for "' +
               matcherName +
               '" ' +
@@ -609,6 +626,29 @@ getJasmineRequireObj().Env = function(j$) {
         typeof console.error === 'function'
       ) {
         console.error('DEPRECATION:', deprecation);
+      }
+    };
+
+    this.deprecatedOnceWithStack = function(deprecation) {
+      var formatter = new j$.ExceptionFormatter(),
+        stackTrace = formatter
+          .stack(j$.util.errorWithStack())
+          .replace(/^Error\n/m, '');
+
+      if (config.verboseDeprecations) {
+        this.deprecated(deprecation + '\n' + stackTrace);
+      } else {
+        if (deprecationsToSuppress.indexOf(deprecation) === -1) {
+          this.deprecated(
+            deprecation +
+              '\n' +
+              'Note: This message will be shown only once. ' +
+              'Set config.verboseDeprecations to true to see every occurrence.\n' +
+              stackTrace
+          );
+        }
+
+        deprecationsToSuppress.push(deprecation);
       }
     };
 
