@@ -27,19 +27,19 @@ matrix:
       if: type != pull_request
       addons:
         sauce_connect: true
-    - env: JASMINE_BROWSER="firefox" SAUCE_BROWSER_VERSION='' SAUCE_OS="Linux"
+    - env: JASMINE_BROWSER="firefox" SAUCE_BROWSER_VERSION='' SAUCE_OS="Windows 10"
       if: type != pull_request
       addons:
         sauce_connect: true
-    - env: JASMINE_BROWSER="chrome" SAUCE_BROWSER_VERSION='' SAUCE_OS="Linux"
+    - env: JASMINE_BROWSER="firefox" SAUCE_BROWSER_VERSION='68' SAUCE_OS="Windows 10"
       if: type != pull_request
       addons:
         sauce_connect: true
-    - env: JASMINE_BROWSER="safari" SAUCE_BROWSER_VERSION="10" SAUCE_OS="OS X 10.12"
+    - env: JASMINE_BROWSER="chrome" SAUCE_BROWSER_VERSION='' SAUCE_OS="Windows 10"
       if: type != pull_request
       addons:
         sauce_connect: true
-    - env: JASMINE_BROWSER="safari" SAUCE_BROWSER_VERSION="9" SAUCE_OS="OS X 10.11"
+    - env: JASMINE_BROWSER="safari" SAUCE_BROWSER_VERSION="13" SAUCE_OS="OS X 10.13"
       if: type != pull_request
       addons:
         sauce_connect: true
@@ -47,7 +47,7 @@ matrix:
       if: type != pull_request
       addons:
         sauce_connect: true
-    - env: JASMINE_BROWSER="MicrosoftEdge" SAUCE_BROWSER_VERSION="15" SAUCE_OS="Windows 10"
+    - env: JASMINE_BROWSER="MicrosoftEdge" SAUCE_BROWSER_VERSION="" SAUCE_OS="Windows 10"
       if: type != pull_request
       addons:
         sauce_connect: true
