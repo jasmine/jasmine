@@ -249,11 +249,18 @@ describe('GlobalErrors', function() {
       errors.pushListener(handler);
 
       var addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
-      var reason = new Error('bar');
+      var reason;
+
+      try {
+        // Throwing ensures that we get a stack property in all browsers
+        throw new Error('bar');
+      } catch (e) {
+        reason = e;
+      }
+
       addedListener({ reason: reason });
 
-      var expectedError = Object.create(reason);
-      expectedError.jasmineMessage = expect(handler).toHaveBeenCalledWith(
+      expect(handler).toHaveBeenCalledWith(
         jasmine.objectContaining({
           jasmineMessage: 'Unhandled promise rejection: Error: bar',
           message: reason.message,
