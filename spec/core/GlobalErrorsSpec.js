@@ -194,33 +194,72 @@ describe('GlobalErrors', function() {
     );
   });
 
-  it('reports unhandledRejection in browser', function() {
-    var fakeGlobal = {
-        addEventListener: jasmine.createSpy('addEventListener'),
-        removeEventListener: jasmine.createSpy('removeEventListener'),
-        onerror: jasmine.createSpy('onerror')
-      },
-      handler = jasmine.createSpy('errorHandler'),
-      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+  describe('Reporting unhandled promise rejections in the browser', function() {
+    it('subscribes and unsubscribes from the unhandledrejection event', function() {
+      var fakeGlobal = jasmine.createSpyObj('globalErrors', [
+          'addEventListener',
+          'removeEventListener',
+          'onerror'
+        ]),
+        errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
-    errors.install();
-    expect(fakeGlobal.addEventListener).toHaveBeenCalledWith(
-      'unhandledrejection',
-      jasmine.any(Function)
-    );
+      errors.install();
+      expect(fakeGlobal.addEventListener).toHaveBeenCalledWith(
+        'unhandledrejection',
+        jasmine.any(Function)
+      );
 
-    errors.pushListener(handler);
+      var addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
+      errors.uninstall();
 
-    var addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
-    addedListener({ reason: new Error('bar') });
+      expect(fakeGlobal.removeEventListener).toHaveBeenCalledWith(
+        'unhandledrejection',
+        addedListener
+      );
+    });
 
-    expect(handler).toHaveBeenCalledWith('Unhandled Rejection: Error: bar');
+    it('reports rejections whose reason is a string', function() {
+      var fakeGlobal = jasmine.createSpyObj('globalErrors', [
+          'addEventListener',
+          'removeEventListener',
+          'onerror'
+        ]),
+        handler = jasmine.createSpy('errorHandler'),
+        errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
-    errors.uninstall();
+      errors.install();
+      errors.pushListener(handler);
 
-    expect(fakeGlobal.removeEventListener).toHaveBeenCalledWith(
-      'unhandledrejection',
-      addedListener
-    );
+      var addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
+      addedListener({ reason: 'nope' });
+
+      expect(handler).toHaveBeenCalledWith('Unhandled promise rejection: nope');
+    });
+
+    it('reports rejections whose reason is an Error', function() {
+      var fakeGlobal = jasmine.createSpyObj('globalErrors', [
+          'addEventListener',
+          'removeEventListener',
+          'onerror'
+        ]),
+        handler = jasmine.createSpy('errorHandler'),
+        errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+      errors.install();
+      errors.pushListener(handler);
+
+      var addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
+      var reason = new Error('bar');
+      addedListener({ reason: reason });
+
+      var expectedError = Object.create(reason);
+      expectedError.jasmineMessage = expect(handler).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          jasmineMessage: 'Unhandled promise rejection: Error: bar',
+          message: reason.message,
+          stack: reason.stack
+        })
+      );
+    });
   });
 });
