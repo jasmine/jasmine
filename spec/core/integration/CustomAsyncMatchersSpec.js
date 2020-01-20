@@ -6,6 +6,10 @@ describe('Custom Async Matchers (Integration)', function() {
     env.configure({random: false});
   });
 
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   it('passes the spec if the custom async matcher passes', function(done) {
     jasmine.getEnv().requirePromises();
 

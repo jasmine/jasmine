@@ -327,52 +327,62 @@ describe('jasmineUnderTest.pp', function() {
     expect(jasmineUnderTest.pp(now)).toEqual('Date(' + now.toString() + ')');
   });
 
-  it('should stringify spy objects properly', function() {
-    var TestObject = {
-        someFunction: function() {}
-      },
-      env = new jasmineUnderTest.Env();
+  describe('with a spy object', function() {
+    var env;
 
-    var spyRegistry = new jasmineUnderTest.SpyRegistry({
-      currentSpies: function() {
-        return [];
-      },
-      createSpy: function(name, originalFn) {
-        return jasmineUnderTest.Spy(name, originalFn);
-      }
+    beforeEach(function() {
+      env = new jasmineUnderTest.Env();
     });
 
-    spyRegistry.spyOn(TestObject, 'someFunction');
-    expect(jasmineUnderTest.pp(TestObject.someFunction)).toEqual(
-      'spy on someFunction'
-    );
-
-    expect(jasmineUnderTest.pp(env.createSpy('something'))).toEqual(
-      'spy on something'
-    );
-  });
-
-  it('should stringify spyOn toString properly', function() {
-    var TestObject = {
-        someFunction: function() {}
-      },
-      env = new jasmineUnderTest.Env();
-
-    var spyRegistry = new jasmineUnderTest.SpyRegistry({
-      currentSpies: function() {
-        return [];
-      },
-      createSpy: function(name, originalFn) {
-        return jasmineUnderTest.Spy(name, originalFn);
-      }
+    afterEach(function() {
+      env.cleanup_();
     });
 
-    spyRegistry.spyOn(TestObject, 'toString');
-    var testSpyObj = env.createSpyObj('TheClassName', ['toString']);
+    it('should stringify spy objects properly', function() {
+      var TestObject = {
+        someFunction: function() {}
+      };
 
-    expect(jasmineUnderTest.pp(testSpyObj)).toEqual(
-      'spy on TheClassName.toString'
-    );
+      var spyRegistry = new jasmineUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return [];
+        },
+        createSpy: function(name, originalFn) {
+          return jasmineUnderTest.Spy(name, originalFn);
+        }
+      });
+
+      spyRegistry.spyOn(TestObject, 'someFunction');
+      expect(jasmineUnderTest.pp(TestObject.someFunction)).toEqual(
+        'spy on someFunction'
+      );
+
+      expect(jasmineUnderTest.pp(env.createSpy('something'))).toEqual(
+        'spy on something'
+      );
+    });
+
+    it('should stringify spyOn toString properly', function() {
+      var TestObject = {
+        someFunction: function() {}
+      };
+
+      var spyRegistry = new jasmineUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return [];
+        },
+        createSpy: function(name, originalFn) {
+          return jasmineUnderTest.Spy(name, originalFn);
+        }
+      });
+
+      spyRegistry.spyOn(TestObject, 'toString');
+      var testSpyObj = env.createSpyObj('TheClassName', ['toString']);
+
+      expect(jasmineUnderTest.pp(testSpyObj)).toEqual(
+        'spy on TheClassName.toString'
+      );
+    });
   });
 
   it('should stringify objects that implement jasmineToString', function() {

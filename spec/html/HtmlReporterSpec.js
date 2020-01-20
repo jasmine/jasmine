@@ -1,7 +1,16 @@
 describe('HtmlReporter', function() {
+  var env;
+
+  beforeEach(function() {
+    env = new jasmineUnderTest.Env();
+  });
+
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   it('builds the initial DOM elements, including the title banner', function() {
-    var env = new jasmineUnderTest.Env(),
-      container = document.createElement('div'),
+    var container = document.createElement('div'),
       getContainer = function() {
         return container;
       },
@@ -37,8 +46,7 @@ describe('HtmlReporter', function() {
   });
 
   it('builds a single reporter even if initialized multiple times', function() {
-    var env = new jasmineUnderTest.Env(),
-      container = document.createElement('div'),
+    var container = document.createElement('div'),
       getContainer = function() {
         return container;
       },
@@ -71,7 +79,7 @@ describe('HtmlReporter', function() {
 
         container = document.createElement('div');
         reporter = new jasmineUnderTest.HtmlReporter({
-          env: new jasmineUnderTest.Env(),
+          env: env,
           getContainer: function() {
             return container;
           },
@@ -119,8 +127,7 @@ describe('HtmlReporter', function() {
     });
 
     it('reports the status symbol of a excluded spec', function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement('div'),
+      var container = document.createElement('div'),
         getContainer = function() {
           return container;
         },
@@ -152,8 +159,7 @@ describe('HtmlReporter', function() {
     });
 
     it('reports the status symbol of a pending spec', function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement('div'),
+      var container = document.createElement('div'),
         getContainer = function() {
           return container;
         },
@@ -182,8 +188,7 @@ describe('HtmlReporter', function() {
     });
 
     it('reports the status symbol of a passing spec', function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement('div'),
+      var container = document.createElement('div'),
         getContainer = function() {
           return container;
         },
@@ -213,8 +218,7 @@ describe('HtmlReporter', function() {
     });
 
     it('reports the status symbol of a failing spec', function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement('div'),
+      var container = document.createElement('div'),
         getContainer = function() {
           return container;
         },
@@ -246,8 +250,7 @@ describe('HtmlReporter', function() {
 
   describe('when there are deprecation warnings', function() {
     it('displays the messages in their own alert bars', function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement('div'),
+      var container = document.createElement('div'),
         getContainer = function() {
           return container;
         },
@@ -298,8 +301,7 @@ describe('HtmlReporter', function() {
       if (!window.console) {
         window.console = { error: function() {} };
       }
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement('div'),
+      var container = document.createElement('div'),
         getContainer = function() {
           return container;
         },
@@ -343,8 +345,7 @@ describe('HtmlReporter', function() {
     });
 
     it('reports the run time', function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement('div'),
+      var container = document.createElement('div'),
         getContainer = function() {
           return container;
         },
@@ -372,8 +373,7 @@ describe('HtmlReporter', function() {
     });
 
     it('reports the suite and spec names with status', function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement('div'),
+      var container = document.createElement('div'),
         getContainer = function() {
           return container;
         },
@@ -490,8 +490,7 @@ describe('HtmlReporter', function() {
     });
 
     it('has an options menu', function() {
-      var env = new jasmineUnderTest.Env(),
-        container = document.createElement('div'),
+      var container = document.createElement('div'),
         getContainer = function() {
           return container;
         },
@@ -529,8 +528,7 @@ describe('HtmlReporter', function() {
 
     describe('when there are global errors', function() {
       it('displays the exceptions in their own alert bars', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -576,8 +574,7 @@ describe('HtmlReporter', function() {
       });
 
       it('displays file and line information if available', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -619,8 +616,7 @@ describe('HtmlReporter', function() {
 
     describe('UI for stop on spec failure', function() {
       it('should be unchecked for full execution', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -643,8 +639,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should be checked if stopping short', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -669,8 +664,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should navigate and turn the setting on', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           navigationHandler = jasmine.createSpy('navigate'),
           getContainer = function() {
             return container;
@@ -697,8 +691,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should navigate and turn the setting off', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           navigationHandler = jasmine.createSpy('navigate'),
           getContainer = function() {
             return container;
@@ -729,8 +722,7 @@ describe('HtmlReporter', function() {
 
     describe('UI for throwing errors on expectation failures', function() {
       it('should be unchecked if not throwing', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -753,8 +745,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should be checked if throwing', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -779,8 +770,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should navigate and change the setting to on', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           navigateHandler = jasmine.createSpy('navigate'),
           getContainer = function() {
             return container;
@@ -807,8 +797,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should navigate and change the setting to off', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           navigateHandler = jasmine.createSpy('navigate'),
           getContainer = function() {
             return container;
@@ -838,8 +827,7 @@ describe('HtmlReporter', function() {
     });
     describe('UI for hiding disabled specs', function() {
       it('should be unchecked if not hiding disabled specs', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -863,8 +851,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should be checked if hiding disabled', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -888,8 +875,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should not display specs that have been disabled', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -922,8 +908,7 @@ describe('HtmlReporter', function() {
     });
     describe('UI for running tests in random order', function() {
       it('should be unchecked if not randomizing', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -947,8 +932,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should be checked if randomizing', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -972,8 +956,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should navigate and change the setting to on', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           navigateHandler = jasmine.createSpy('navigate'),
           getContainer = function() {
             return container;
@@ -1001,8 +984,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should navigate and change the setting to off', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           navigateHandler = jasmine.createSpy('navigate'),
           getContainer = function() {
             return container;
@@ -1030,8 +1012,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should show the seed bar if randomizing', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -1061,8 +1042,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should not show the current seed bar if not randomizing', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -1085,8 +1065,7 @@ describe('HtmlReporter', function() {
       });
 
       it('should include non-spec query params in the jasmine-skipped link when present', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: function() {
@@ -1113,9 +1092,8 @@ describe('HtmlReporter', function() {
     });
 
     describe('and all specs pass', function() {
-      var env, container;
+      var container;
       beforeEach(function() {
-        env = new jasmineUnderTest.Env();
         container = document.createElement('div');
         var getContainer = function() {
             return container;
@@ -1175,9 +1153,8 @@ describe('HtmlReporter', function() {
     });
 
     describe('and there are excluded specs', function() {
-      var env, container, reporter, reporterConfig, specStatus;
+      var container, reporter, reporterConfig, specStatus;
       beforeEach(function() {
-        env = new jasmineUnderTest.Env();
         container = document.createElement('div');
         reporterConfig = {
           env: env,
@@ -1239,9 +1216,8 @@ describe('HtmlReporter', function() {
     });
 
     describe('and there are pending specs', function() {
-      var env, container, reporter;
+      var container, reporter;
       beforeEach(function() {
-        env = new jasmineUnderTest.Env();
         container = document.createElement('div');
         var getContainer = function() {
           return container;
@@ -1297,10 +1273,9 @@ describe('HtmlReporter', function() {
     });
 
     describe('and some tests fail', function() {
-      var env, container, reporter;
+      var container, reporter;
 
       beforeEach(function() {
-        env = new jasmineUnderTest.Env();
         container = document.createElement('div');
         var getContainer = function() {
           return container;
@@ -1469,8 +1444,7 @@ describe('HtmlReporter', function() {
   describe('The overall result bar', function() {
     describe("When the jasmineDone event's overallStatus is 'passed'", function() {
       it('has class jasmine-passed', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -1500,8 +1474,7 @@ describe('HtmlReporter', function() {
 
     describe("When the jasmineDone event's overallStatus is 'failed'", function() {
       it('has class jasmine-failed', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },
@@ -1531,8 +1504,7 @@ describe('HtmlReporter', function() {
 
     describe("When the jasmineDone event's overallStatus is 'incomplete'", function() {
       it('has class jasmine-incomplete', function() {
-        var env = new jasmineUnderTest.Env(),
-          container = document.createElement('div'),
+        var container = document.createElement('div'),
           getContainer = function() {
             return container;
           },

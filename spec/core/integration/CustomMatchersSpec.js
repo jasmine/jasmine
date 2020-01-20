@@ -7,6 +7,10 @@ describe("Custom Matchers (Integration)", function() {
     env.configure({random: false});
   });
 
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   it("allows adding more matchers local to a spec", function(done) {
     env.it('spec defining a custom matcher', function() {
       env.addMatchers({

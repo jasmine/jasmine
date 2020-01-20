@@ -7,6 +7,10 @@ describe("spec running", function () {
     env.configure({random: false});
   });
 
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   it('should assign spec ids sequentially', function() {
     var it0, it1, it2, it3, it4;
     env.describe('test suite', function() {

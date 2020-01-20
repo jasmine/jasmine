@@ -5,6 +5,10 @@ describe('Exceptions:', function() {
     env = new jasmineUnderTest.Env();
   });
 
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   it('should handle exceptions thrown, but continue', function(done) {
     var secondTest = jasmine.createSpy('second test');
     env.describe('Suite for handles exceptions', function() {

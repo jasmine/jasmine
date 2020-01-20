@@ -1,7 +1,16 @@
 describe('Matchers (Integration)', function() {
+  var env;
+
+  beforeEach(function() {
+    env = new jasmineUnderTest.Env();
+  });
+
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   function verifyPasses(expectations) {
     it('passes', function(done) {
-      var env = new jasmineUnderTest.Env();
       env.it('a spec', function() {
         expectations(env);
       });
@@ -26,7 +35,6 @@ describe('Matchers (Integration)', function() {
 
   function verifyFails(expectations) {
     it('fails', function(done) {
-      var env = new jasmineUnderTest.Env();
       env.it('a spec', function() {
         expectations(env);
       });
@@ -51,7 +59,6 @@ describe('Matchers (Integration)', function() {
   function verifyPassesAsync(expectations) {
     it('passes', function(done) {
       jasmine.getEnv().requirePromises();
-      var env = new jasmineUnderTest.Env();
 
       env.it('a spec', function() {
         return expectations(env);
@@ -77,7 +84,6 @@ describe('Matchers (Integration)', function() {
 
   function verifyFailsAsync(expectations) {
     it('fails', function(done) {
-      var env = new jasmineUnderTest.Env();
       jasmine.getEnv().requirePromises();
 
       env.it('a spec', function() {

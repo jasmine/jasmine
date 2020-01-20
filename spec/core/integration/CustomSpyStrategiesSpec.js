@@ -6,6 +6,10 @@ describe('Custom Spy Strategies (Integration)', function() {
     env.configure({random: false});
   });
 
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   it('allows adding more strategies local to a suite', function(done) {
     var plan = jasmine.createSpy('custom strategy plan')
       .and.returnValue(42);

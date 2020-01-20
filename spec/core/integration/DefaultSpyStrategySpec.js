@@ -6,6 +6,10 @@ describe('Default Spy Strategy (Integration)', function() {
     env.configure({random: false});
   });
 
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   it('allows defining a default spy strategy', function(done) {
     env.describe('suite with default strategy', function() {
       env.beforeEach(function() {

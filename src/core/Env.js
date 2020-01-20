@@ -1188,6 +1188,12 @@ getJasmineRequireObj().Env = function(j$) {
         throw new Error(message);
       }
     };
+
+    this.cleanup_ = function() {
+      if (globalErrors) {
+        globalErrors.uninstall();
+      }
+    };
   }
 
   return Env;

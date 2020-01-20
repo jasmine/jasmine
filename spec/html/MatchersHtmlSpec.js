@@ -19,6 +19,10 @@ describe('MatchersSpec - HTML Dependent', function() {
     });
   });
 
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   function match(value) {
     return spec.expect(value);
   }

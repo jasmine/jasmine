@@ -1,28 +1,35 @@
 describe('Suite', function() {
+  var env;
+
+  beforeEach(function() {
+    env = new jasmineUnderTest.Env();
+  });
+
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   it('keeps its id', function() {
-    var env = new jasmineUnderTest.Env(),
-      suite = new jasmineUnderTest.Suite({
-        env: env,
-        id: 456,
-        description: 'I am a suite'
-      });
+    var suite = new jasmineUnderTest.Suite({
+      env: env,
+      id: 456,
+      description: 'I am a suite'
+    });
 
     expect(suite.id).toEqual(456);
   });
 
   it('returns blank full name for top level suite', function() {
-    var env = new jasmineUnderTest.Env(),
-      suite = new jasmineUnderTest.Suite({
-        env: env,
-        description: 'I am a suite'
-      });
+    var suite = new jasmineUnderTest.Suite({
+      env: env,
+      description: 'I am a suite'
+    });
 
     expect(suite.getFullName()).toEqual('');
   });
 
   it('returns its full name when it has parent suites', function() {
-    var env = new jasmineUnderTest.Env(),
-      parentSuite = new jasmineUnderTest.Suite({
+    var parentSuite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a parent suite',
         parentSuite: jasmine.createSpy('pretend top level suite')
@@ -37,8 +44,7 @@ describe('Suite', function() {
   });
 
   it('adds before functions in order of needed execution', function() {
-    var env = new jasmineUnderTest.Env(),
-      suite = new jasmineUnderTest.Suite({
+    var suite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
@@ -52,8 +58,7 @@ describe('Suite', function() {
   });
 
   it('adds after functions in order of needed execution', function() {
-    var env = new jasmineUnderTest.Env(),
-      suite = new jasmineUnderTest.Suite({
+    var suite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
@@ -115,13 +120,12 @@ describe('Suite', function() {
   });
 
   it('calls timer to compute duration', function() {
-    var env = new jasmineUnderTest.Env(),
-      suite = new jasmineUnderTest.Suite({
-        env: env,
-        id: 456,
-        description: 'I am a suite',
-        timer: jasmine.createSpyObj('timer', { start: null, elapsed: 77000 })
-      });
+    var suite = new jasmineUnderTest.Suite({
+      env: env,
+      id: 456,
+      description: 'I am a suite',
+      timer: jasmine.createSpyObj('timer', { start: null, elapsed: 77000 })
+    });
     suite.startTimer();
     suite.endTimer();
     expect(suite.getResult().duration).toEqual(77000);

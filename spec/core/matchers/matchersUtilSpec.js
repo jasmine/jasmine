@@ -678,7 +678,6 @@ describe("matchersUtil", function() {
           },
           diffBuilder = jasmine.createSpyObj('diffBuilder', ['record', 'withPath']);
         diffBuilder.withPath.and.callFake(function(p, block) { block() });
-        debugger;
         jasmineUnderTest.matchersUtil.equals({x: 42}, {x: tester}, [], diffBuilder);
 
         expect(diffBuilder.withPath).toHaveBeenCalledWith('x', jasmine.any(Function));
@@ -693,7 +692,6 @@ describe("matchersUtil", function() {
           },
           diffBuilder = jasmine.createSpyObj('diffBuilder', ['record', 'withPath']);
         diffBuilder.withPath.and.callFake(function(p, block) { block() });
-        debugger;
         jasmineUnderTest.matchersUtil.equals({x: 42}, {x: tester}, [], diffBuilder);
 
         expect(diffBuilder.withPath).toHaveBeenCalledWith('x', jasmine.any(Function));

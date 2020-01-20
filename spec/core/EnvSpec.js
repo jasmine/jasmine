@@ -5,6 +5,10 @@ describe('Env', function() {
     env = new jasmineUnderTest.Env();
   });
 
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   describe('#pending', function() {
     it('throws the Pending Spec exception', function() {
       expect(function() {
@@ -281,11 +285,13 @@ describe('Env', function() {
     it('installs a global error handler on construction', function() {
       var globalErrors = jasmine.createSpyObj('globalErrors', [
         'install',
+        'uninstall',
         'pushListener',
         'popListener'
       ]);
       spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
-      new jasmineUnderTest.Env();
+      env.cleanup_();
+      env = new jasmineUnderTest.Env();
       expect(globalErrors.install).toHaveBeenCalled();
     });
   });
@@ -294,10 +300,12 @@ describe('Env', function() {
     it('does not install a global error handler until execute is called', function() {
       var globalErrors = jasmine.createSpyObj('globalErrors', [
         'install',
+        'uninstall',
         'pushListener',
         'popListener'
       ]);
       spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
+      env.cleanup_();
       env = new jasmineUnderTest.Env({ suppressLoadErrors: true });
       expect(globalErrors.install).not.toHaveBeenCalled();
       env.execute();

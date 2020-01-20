@@ -5,6 +5,10 @@ describe('Spies', function() {
     env = new jasmineUnderTest.Env();
   });
 
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   describe('createSpy', function() {
     var TestClass;
 
