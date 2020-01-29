@@ -20,8 +20,8 @@ getJasmineRequireObj().Spy = function(j$) {
     getPromise
   ) {
     var numArgs = typeof originalFn === 'function' ? originalFn.length : 0,
-      wrapper = makeFunc(numArgs, function() {
-        return spy.apply(this, Array.prototype.slice.call(arguments));
+      wrapper = makeFunc(numArgs, function(context, args, isConstructor) {
+        return spy(context, args, isConstructor);
       }),
       strategyDispatcher = new SpyStrategyDispatcher({
         name: name,
@@ -33,7 +33,7 @@ getJasmineRequireObj().Spy = function(j$) {
         getPromise: getPromise
       }),
       callTracker = new j$.CallTracker(),
-      spy = function() {
+      spy = function(context, args, isConstructor) {
         /**
          * @name Spy.callData
          * @property {object} object - `this` context for the invocation.
@@ -41,13 +41,13 @@ getJasmineRequireObj().Spy = function(j$) {
          * @property {Array} args - The arguments passed for this invocation.
          */
         var callData = {
-          object: this,
+          object: context,
           invocationOrder: nextOrder(),
-          args: Array.prototype.slice.apply(arguments)
+          args: Array.prototype.slice.apply(args)
         };
 
         callTracker.track(callData);
-        var returnValue = strategyDispatcher.exec(this, arguments);
+        var returnValue = strategyDispatcher.exec(this, args, isConstructor);
         callData.returnValue = returnValue;
 
         return returnValue;
@@ -56,44 +56,44 @@ getJasmineRequireObj().Spy = function(j$) {
     function makeFunc(length, fn) {
       switch (length) {
         case 1:
-          return function(a) {
-            return fn.apply(this, arguments);
+          return function fnargs(a) {
+            return fn(this, arguments, this instanceof fnargs);
           };
         case 2:
-          return function(a, b) {
-            return fn.apply(this, arguments);
+          return function fnargs(a, b) {
+            return fn(this, arguments, this instanceof fnargs);
           };
         case 3:
-          return function(a, b, c) {
-            return fn.apply(this, arguments);
+          return function fnargs(a, b, c) {
+            return fn(this, arguments, this instanceof fnargs);
           };
         case 4:
-          return function(a, b, c, d) {
-            return fn.apply(this, arguments);
+          return function fnargs(a, b, c, d) {
+            return fn(this, arguments, this instanceof fnargs);
           };
         case 5:
-          return function(a, b, c, d, e) {
-            return fn.apply(this, arguments);
+          return function fnargs(a, b, c, d, e) {
+            return fn(this, arguments, this instanceof fnargs);
           };
         case 6:
-          return function(a, b, c, d, e, f) {
-            return fn.apply(this, arguments);
+          return function fnargs(a, b, c, d, e, f) {
+            return fn(this, arguments, this instanceof fnargs);
           };
         case 7:
-          return function(a, b, c, d, e, f, g) {
-            return fn.apply(this, arguments);
+          return function fnargs(a, b, c, d, e, f, g) {
+            return fn(this, arguments, this instanceof fnargs);
           };
         case 8:
-          return function(a, b, c, d, e, f, g, h) {
-            return fn.apply(this, arguments);
+          return function fnargs(a, b, c, d, e, f, g, h) {
+            return fn(this, arguments, this instanceof fnargs);
           };
         case 9:
-          return function(a, b, c, d, e, f, g, h, i) {
-            return fn.apply(this, arguments);
+          return function fnargs(a, b, c, d, e, f, g, h, i) {
+            return fn(this, arguments, this instanceof fnargs);
           };
         default:
-          return function() {
-            return fn.apply(this, arguments);
+          return function fnargs() {
+            return fn(this, arguments, this instanceof fnargs);
           };
       }
     }
@@ -150,7 +150,7 @@ getJasmineRequireObj().Spy = function(j$) {
 
     this.and = baseStrategy;
 
-    this.exec = function(spy, args) {
+    this.exec = function(spy, args, isConstructor) {
       var strategy = argsStrategies.get(args);
 
       if (!strategy) {
@@ -167,7 +167,7 @@ getJasmineRequireObj().Spy = function(j$) {
         }
       }
 
-      return strategy.exec(spy, args);
+      return strategy.exec(spy, args, isConstructor);
     };
 
     this.withArgs = function() {
