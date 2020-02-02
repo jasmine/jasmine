@@ -102,15 +102,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   };
 
   SinglePrettyPrintRun.prototype.applyCustomFormatters_ = function(value) {
-    var i, result;
-
-    for (i = 0; i < this.customObjectFormatters_.length; i++) {
-      result = this.customObjectFormatters_[i](value);
-
-      if (result !== undefined) {
-        return result;
-      }
-    }
+    return customFormat(value, this.customObjectFormatters_);
   };
 
   SinglePrettyPrintRun.prototype.iterateObject = function(obj, fn) {
@@ -383,14 +375,29 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     return extraKeys;
   }
 
+  function customFormat(value, customObjectFormatters) {
+    var i, result;
+
+    for (i = 0; i < customObjectFormatters.length; i++) {
+      result = customObjectFormatters[i](value);
+
+      if (result !== undefined) {
+        return result;
+      }
+    }
+  }
+
   return function(customObjectFormatters) {
+    customObjectFormatters = customObjectFormatters || [];
+
     var pp = function(value) {
-      var prettyPrinter = new SinglePrettyPrintRun(
-        customObjectFormatters || [],
-        pp
-      );
+      var prettyPrinter = new SinglePrettyPrintRun(customObjectFormatters, pp);
       prettyPrinter.format(value);
       return prettyPrinter.stringParts.join('');
+    };
+
+    pp.customFormat_ = function(value) {
+      return customFormat(value, customObjectFormatters);
     };
 
     return pp;

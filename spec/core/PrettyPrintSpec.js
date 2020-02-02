@@ -505,7 +505,7 @@ describe('PrettyPrinter', function() {
         pp = jasmineUnderTest.makePrettyPrinter(customObjectFormatters),
         obj = { foo: 'bar' };
 
-      expect(pp(obj, customObjectFormatters)).toEqual('2nd: bar');
+      expect(pp(obj)).toEqual('2nd: bar');
     });
 
     it('should fall back to built in logic if all custom object formatters return undefined', function() {
@@ -517,7 +517,39 @@ describe('PrettyPrinter', function() {
         pp = jasmineUnderTest.makePrettyPrinter(customObjectFormatters),
         obj = { foo: 'bar' };
 
-      expect(pp(obj, customObjectFormatters)).toEqual("Object({ foo: 'bar' })");
+      expect(pp(obj)).toEqual("Object({ foo: 'bar' })");
+    });
+  });
+
+  describe('#customFormat_', function() {
+    it('should use the first custom object formatter that does not return undefined', function() {
+      var customObjectFormatters = [
+          function(obj) {
+            return undefined;
+          },
+          function(obj) {
+            return '2nd: ' + obj.foo;
+          },
+          function(obj) {
+            return '3rd: ' + obj.foo;
+          }
+        ],
+        pp = jasmineUnderTest.makePrettyPrinter(customObjectFormatters),
+        obj = { foo: 'bar' };
+
+      expect(pp.customFormat_(obj)).toEqual('2nd: bar');
+    });
+
+    it('should return undefined if all custom object formatters return undefined', function() {
+      var customObjectFormatters = [
+          function(obj) {
+            return undefined;
+          }
+        ],
+        pp = jasmineUnderTest.makePrettyPrinter(customObjectFormatters),
+        obj = { foo: 'bar' };
+
+      expect(pp.customFormat_(obj)).toBeUndefined();
     });
   });
 });

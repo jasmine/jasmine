@@ -69,7 +69,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     if (asymmetricA) {
       result = a.asymmetricMatch(b, shim);
       if (!result) {
-        diffBuilder.record(a, b);
+        diffBuilder.recordMismatch();
       }
       return result;
     }
@@ -77,7 +77,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     if (asymmetricB) {
       result = b.asymmetricMatch(a, shim);
       if (!result) {
-        diffBuilder.record(a, b);
+        diffBuilder.recordMismatch();
       }
       return result;
     }
@@ -95,6 +95,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
 
     customTesters = customTesters || this.customTesters_;
     diffBuilder = diffBuilder || j$.NullDiffBuilder();
+    diffBuilder.setRoots(a, b);
 
     return this.eq_(a, b, [], [], customTesters, diffBuilder);
   };
@@ -113,7 +114,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       var customTesterResult = customTesters[i](a, b);
       if (!j$.util.isUndefined(customTesterResult)) {
         if (!customTesterResult) {
-          diffBuilder.record(a, b);
+          diffBuilder.recordMismatch();
         }
         return customTesterResult;
       }
@@ -122,7 +123,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     if (a instanceof Error && b instanceof Error) {
       result = a.message == b.message;
       if (!result) {
-        diffBuilder.record(a, b);
+        diffBuilder.recordMismatch();
       }
       return result;
     }
@@ -132,7 +133,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     if (a === b) {
       result = a !== 0 || 1 / a == 1 / b;
       if (!result) {
-        diffBuilder.record(a, b);
+        diffBuilder.recordMismatch();
       }
       return result;
     }
@@ -140,13 +141,13 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     if (a === null || b === null) {
       result = a === b;
       if (!result) {
-        diffBuilder.record(a, b);
+        diffBuilder.recordMismatch();
       }
       return result;
     }
     var className = Object.prototype.toString.call(a);
     if (className != Object.prototype.toString.call(b)) {
-      diffBuilder.record(a, b);
+      diffBuilder.recordMismatch();
       return false;
     }
     switch (className) {
@@ -156,7 +157,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
         // equivalent to `new String("5")`.
         result = a == String(b);
         if (!result) {
-          diffBuilder.record(a, b);
+          diffBuilder.recordMismatch();
         }
         return result;
       case '[object Number]':
@@ -164,7 +165,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
         // other numeric values.
         result = a != +a ? b != +b : (a === 0 ? 1 / a == 1 / b : a == +b);
         if (!result) {
-          diffBuilder.record(a, b);
+          diffBuilder.recordMismatch();
         }
         return result;
       case '[object Date]':
@@ -174,7 +175,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
         // of `NaN` are not equivalent.
         result = +a == +b;
         if (!result) {
-          diffBuilder.record(a, b);
+          diffBuilder.recordMismatch();
         }
         return result;
       // RegExps are compared by their source patterns and flags.
@@ -185,7 +186,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
           a.ignoreCase == b.ignoreCase;
     }
     if (typeof a != 'object' || typeof b != 'object') {
-      diffBuilder.record(a, b);
+      diffBuilder.recordMismatch();
       return false;
     }
 
@@ -195,12 +196,12 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       // At first try to use DOM3 method isEqualNode
       result = a.isEqualNode(b);
       if (!result) {
-        diffBuilder.record(a, b);
+        diffBuilder.recordMismatch();
       }
       return result;
     }
     if (aIsDomNode || bIsDomNode) {
-      diffBuilder.record(a, b);
+      diffBuilder.recordMismatch();
       return false;
     }
 
@@ -230,7 +231,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
 
       diffBuilder.withPath('length', function() {
         if (aLength !== bLength) {
-          diffBuilder.record(aLength, bLength);
+          diffBuilder.recordMismatch();
           result = false;
         }
       });
@@ -238,7 +239,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       for (i = 0; i < aLength || i < bLength; i++) {
         diffBuilder.withPath(i, function() {
           if (i >= bLength) {
-            diffBuilder.record(a[i], void 0, actualArrayIsLongerFormatter.bind(null, self.pp));
+            diffBuilder.recordMismatch(actualArrayIsLongerFormatter.bind(null, self.pp));
             result = false;
           } else {
             result = self.eq_(i < aLength ? a[i] : void 0, i < bLength ? b[i] : void 0, aStack, bStack, customTesters, diffBuilder) && result;
@@ -250,7 +251,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       }
     } else if (j$.isMap(a) && j$.isMap(b)) {
       if (a.size != b.size) {
-        diffBuilder.record(a, b);
+        diffBuilder.recordMismatch();
         return false;
       }
 
@@ -292,12 +293,12 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       }
 
       if (!result) {
-        diffBuilder.record(a, b);
+        diffBuilder.recordMismatch();
         return false;
       }
     } else if (j$.isSet(a) && j$.isSet(b)) {
       if (a.size != b.size) {
-        diffBuilder.record(a, b);
+        diffBuilder.recordMismatch();
         return false;
       }
 
@@ -342,7 +343,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       }
 
       if (!result) {
-        diffBuilder.record(a, b);
+        diffBuilder.recordMismatch();
         return false;
       }
     } else {
@@ -355,7 +356,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
           a instanceof aCtor && b instanceof bCtor &&
           !(aCtor instanceof aCtor && bCtor instanceof bCtor)) {
 
-        diffBuilder.record(a, b, constructorsAreDifferentFormatter.bind(null, this.pp));
+        diffBuilder.recordMismatch(constructorsAreDifferentFormatter.bind(null, this.pp));
         return false;
       }
     }
@@ -366,7 +367,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
 
     // Ensure that both objects contain the same number of properties before comparing deep equality.
     if (keys(b, className == '[object Array]').length !== size) {
-      diffBuilder.record(a, b, objectKeysAreDifferentFormatter.bind(null, this.pp));
+      diffBuilder.recordMismatch(objectKeysAreDifferentFormatter.bind(null, this.pp));
       return false;
     }
 
@@ -374,7 +375,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       key = aKeys[i];
       // Deep compare each member
       if (!j$.util.has(b, key)) {
-        diffBuilder.record(a, b, objectKeysAreDifferentFormatter.bind(null, this.pp));
+        diffBuilder.recordMismatch(objectKeysAreDifferentFormatter.bind(null, this.pp));
         result = false;
         continue;
       }
@@ -480,7 +481,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
   }
 
   function isDiffBuilder(obj) {
-    return obj && typeof obj.record === 'function';
+    return obj && typeof obj.recordMismatch === 'function';
   }
 
   return MatchersUtil;

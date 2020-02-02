@@ -730,26 +730,26 @@ describe("matchersUtil", function() {
       var diffBuilder = new jasmineUnderTest.DiffBuilder(),
         matchersUtil = new jasmineUnderTest.MatchersUtil();
 
-      spyOn(diffBuilder, 'record');
+      spyOn(diffBuilder, 'recordMismatch');
       spyOn(diffBuilder, 'withPath').and.callThrough();
 
       matchersUtil.equals([1], [2], [], diffBuilder);
       expect(diffBuilder.withPath).toHaveBeenCalledWith('length', jasmine.any(Function));
       expect(diffBuilder.withPath).toHaveBeenCalledWith(0, jasmine.any(Function));
-      expect(diffBuilder.record).toHaveBeenCalledWith(1, 2);
+      expect(diffBuilder.recordMismatch).toHaveBeenCalledWith();
     });
 
     it('uses a diffBuilder if one is provided as the third argument', function() {
       var diffBuilder = new jasmineUnderTest.DiffBuilder(),
         matchersUtil = new jasmineUnderTest.MatchersUtil();
 
-      spyOn(diffBuilder, 'record');
+      spyOn(diffBuilder, 'recordMismatch');
       spyOn(diffBuilder, 'withPath').and.callThrough();
 
       matchersUtil.equals([1], [2], diffBuilder);
       expect(diffBuilder.withPath).toHaveBeenCalledWith('length', jasmine.any(Function));
       expect(diffBuilder.withPath).toHaveBeenCalledWith(0, jasmine.any(Function));
-      expect(diffBuilder.record).toHaveBeenCalledWith(1, 2);
+      expect(diffBuilder.recordMismatch).toHaveBeenCalled();
     });
   });
 

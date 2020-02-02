@@ -39,5 +39,13 @@ describe('ObjectPath', function() {
 
     expect(path.toString()).toEqual('$.foo');
     expect(root.toString()).toEqual('');
-  })
+  });
+
+  describe('#dereference', function() {
+    it('returns the value corresponding to the path', function () {
+      var path = new ObjectPath().add('foo').add(1).add('bar');
+      var obj = {foo: ['', {bar: 42}]};
+      expect(path.dereference(obj)).toEqual(42);
+    });
+  });
 });

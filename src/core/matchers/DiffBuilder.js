@@ -1,17 +1,51 @@
-getJasmineRequireObj().DiffBuilder = function(j$) {
+getJasmineRequireObj().DiffBuilder = function (j$) {
   return function DiffBuilder(config) {
-    var path = new j$.ObjectPath(),
-        mismatches = [],
-        prettyPrinter = (config || {}).prettyPrinter || j$.makePrettyPrinter();
+    var prettyPrinter = (config || {}).prettyPrinter || j$.makePrettyPrinter(),
+      mismatches = new j$.MismatchTree(),
+      path = new j$.ObjectPath(),
+      actualRoot = undefined,
+      expectedRoot = undefined;
 
     return {
-      record: function (actual, expected, formatter) {
-        formatter = formatter || defaultFormatter;
-        mismatches.push(formatter(actual, expected, path, prettyPrinter));
+      setRoots: function (actual, expected) {
+        actualRoot = actual;
+        expectedRoot = expected;
+      },
+
+      recordMismatch: function (formatter) {
+        mismatches.add(path, formatter);
       },
 
       getMessage: function () {
-        return mismatches.join('\n');
+        var messages = [];
+
+        mismatches.traverse(function (path, isLeaf, formatter) {
+          var actualCustom, expectedCustom, useCustom,
+            actual = path.dereference(actualRoot),
+            expected = path.dereference(expectedRoot);
+
+          if (formatter) {
+            messages.push(formatter(actual, expected, path, prettyPrinter));
+            return true;
+          }
+
+          actualCustom = prettyPrinter.customFormat_(actual);
+          expectedCustom = prettyPrinter.customFormat_(expected);
+          useCustom = !(j$.util.isUndefined(actualCustom) && j$.util.isUndefined(expectedCustom));
+
+          if (useCustom) {
+            messages.push(wrapPrettyPrinted(actualCustom, expectedCustom, path));
+            return false; // don't recurse further
+          }
+
+          if (isLeaf) {
+            messages.push(defaultFormatter(actual, expected, path, prettyPrinter));
+          }
+
+          return true;
+        });
+
+        return messages.join('\n');
       },
 
       withPath: function (pathComponent, block) {
@@ -22,12 +56,16 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
       }
     };
 
-    function defaultFormatter (actual, expected, path, prettyPrinter) {
+    function defaultFormatter(actual, expected, path, prettyPrinter) {
+      return wrapPrettyPrinted(prettyPrinter(actual), prettyPrinter(expected), path);
+    }
+
+    function wrapPrettyPrinted(actual, expected, path) {
       return 'Expected ' +
         path + (path.depth() ? ' = ' : '') +
-        prettyPrinter(actual) +
+        actual +
         ' to equal ' +
-        prettyPrinter(expected) +
+        expected +
         '.';
     }
   };
