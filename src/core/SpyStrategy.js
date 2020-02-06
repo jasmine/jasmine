@@ -97,14 +97,12 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @function
    */
   SpyStrategy.prototype.exec = function(context, args, invokeNew) {
-    var list = [context].concat(args ? Array.prototype.slice.call(args) : []);
-    var target = this.plan.bind.apply(this.plan, list);
+    var contextArgs = [context].concat(
+      args ? Array.prototype.slice.call(args) : []
+    );
+    var target = this.plan.bind.apply(this.plan, contextArgs);
 
-    if (invokeNew) {
-      return new target();
-    } else {
-      return target();
-    }
+    return invokeNew ? new target() : target();
   };
 
   /**
