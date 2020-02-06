@@ -823,6 +823,12 @@ describe("Env integration", function() {
       }).not.toThrow();
 
       expect(function() {
+        var result = new spy('passing', 'extra', 'arguments', 'to', 'constructor');
+        expect(result instanceof MyClass).toBeTruthy();
+        expect(result.foo).toEqual('passing');
+      }).not.toThrow();
+
+      expect(function() {
         spy('hello world');
       }).toThrowError('You must use the new keyword.');
     });
@@ -840,8 +846,8 @@ describe("Env integration", function() {
     env.allowRespy(true);
     env.addReporter({ jasmineDone: done });
 
-    env.describe('test suite', function(){
-      env.it('spec 0', function(){
+    env.describe('test suite', function() {
+      env.it('spec 0', function() {
         env.spyOn(foo,'bar');
 
         var error = null;

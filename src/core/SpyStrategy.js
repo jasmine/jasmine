@@ -96,11 +96,11 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @since 2.0.0
    * @function
    */
-  SpyStrategy.prototype.exec = function(context, args, isConstructor) {
+  SpyStrategy.prototype.exec = function(context, args, invokeNew) {
     var list = [context].concat(args ? Array.prototype.slice.call(args) : []);
     var target = this.plan.bind.apply(this.plan, list);
 
-    if (isConstructor) {
+    if (invokeNew) {
       return new target();
     } else {
       return target();
