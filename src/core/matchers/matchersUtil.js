@@ -1,12 +1,38 @@
 getJasmineRequireObj().MatchersUtil = function(j$) {
   // TODO: convert all uses of j$.pp to use the injected pp
 
+  /**
+   * _Note:_ Do not construct this directly. Jasmine will construct one and
+   * pass it to matchers and asymmetric equality testers.
+   * @name MatchersUtil
+   * @since 2.0.0
+   * @classdesc Utilities for use in implementing matchers
+   * @constructor
+   */
   function MatchersUtil(options) {
     options = options || {};
     this.customTesters_ = options.customTesters || [];
+    /**
+     * Formats a value for use in matcher failure messages and similar contexts,
+     * taking into account the current set of custom value formatters.
+     * @function
+     * @name MatchersUtil#pp
+     * @param {*} value The value to pretty-print
+     * @return {string} The pretty-printed value
+     */
     this.pp = options.pp || function() {};
   };
 
+  /**
+   * Determines whether `haystack` contains `needle`, using the same comparison
+   * logic as {@link MatchersUtil#equals}.
+   * @function
+   * @name MatchersUtil#contains
+   * @param {*} haystack The collection to search
+   * @param {*} needle The value to search for
+   * @param [customTesters] An array of custom equality testers
+   * @returns {boolean} True if `needle` was found in `haystack`
+   */
   MatchersUtil.prototype.contains = function(haystack, needle, customTesters) {
     if (j$.isSet(haystack)) {
       return haystack.has(needle);
@@ -83,6 +109,15 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     }
   };
 
+  /**
+   * Determines whether two values are deeply equal to each other.
+   * @function
+   * @name MatchersUtil#equals
+   * @param {*} a The first value to compare
+   * @param {*} b The second value to compare
+   * @param [customTesters] An array of custom equality testers
+   * @returns {boolean} True if the values are equal
+   */
   MatchersUtil.prototype.equals = function(a, b, customTestersOrDiffBuilder, diffBuilderOrNothing) {
     var customTesters, diffBuilder;
 
