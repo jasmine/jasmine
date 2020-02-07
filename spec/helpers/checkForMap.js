@@ -1,5 +1,5 @@
 (function(env) {
-  function hasFunctioningMaps() {
+  env.hasFunctioningMaps = function() {
     if (typeof Map === 'undefined') {
       return false;
     }
@@ -36,10 +36,10 @@
     } catch (e) {
       return false;
     }
-  }
+  };
 
   env.requireFunctioningMaps = function() {
-    if (!hasFunctioningMaps()) {
+    if (!env.hasFunctioningMaps()) {
       env.pending('Browser has incomplete or missing support for Maps');
     }
   };

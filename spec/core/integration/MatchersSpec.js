@@ -267,7 +267,10 @@ describe('Matchers (Integration)', function() {
 
   describe('toBeResolvedTo', function() {
     verifyPassesAsync(function(env) {
-      return env.expectAsync(Promise.resolve('foo')).toBeResolvedTo('foo');
+      env.addCustomEqualityTester(function(a, b) {
+        return a.toString() === b.toString();
+      });
+      return env.expectAsync(Promise.resolve('5')).toBeResolvedTo(5);
     });
 
     verifyFailsAsync(function(env) {
@@ -287,7 +290,10 @@ describe('Matchers (Integration)', function() {
 
   describe('toBeRejectedWith', function() {
     verifyPassesAsync(function(env) {
-      return env.expectAsync(Promise.reject('nope')).toBeRejectedWith('nope');
+      env.addCustomEqualityTester(function(a, b) {
+        return a.toString() === b.toString();
+      });
+      return env.expectAsync(Promise.reject('5')).toBeRejectedWith(5);
     });
 
     verifyFailsAsync(function(env) {
@@ -337,7 +343,10 @@ describe('Matchers (Integration)', function() {
 
   describe('toContain', function() {
     verifyPasses(function(env) {
-      env.expect('foobar').toContain('oo');
+      env.addCustomEqualityTester(function(a, b) {
+        return a.toString() === b.toString();
+      });
+      env.expect(['1', '2', '3']).toContain(2);
     });
 
     verifyFails(function(env) {
@@ -347,7 +356,10 @@ describe('Matchers (Integration)', function() {
 
   describe('toEqual', function() {
     verifyPasses(function(env) {
-      env.expect('a').toEqual('a');
+      env.addCustomEqualityTester(function(a, b) {
+        return a.toString() === b.toString();
+      });
+      env.expect(5).toEqual('5');
     });
 
     verifyFails(function(env) {
@@ -400,8 +412,11 @@ describe('Matchers (Integration)', function() {
   describe('toHaveBeenCalledWith', function() {
     verifyPasses(function(env) {
       var spy = env.createSpy();
-      spy('foo');
-      env.expect(spy).toHaveBeenCalledWith('foo');
+      spy('5');
+      env.addCustomEqualityTester(function(a, b) {
+        return a.toString() === b.toString();
+      });
+      env.expect(spy).toHaveBeenCalledWith(5);
     });
 
     verifyFails(function(env) {

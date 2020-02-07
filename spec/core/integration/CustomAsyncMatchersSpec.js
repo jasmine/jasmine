@@ -79,4 +79,40 @@ describe('Custom Async Matchers (Integration)', function() {
     env.addReporter({ specDone: specExpectations, jasmineDone: done });
     env.execute();
   });
+
+  // TODO: remove this in the next major release.
+  it("passes the jasmine utility and current equality testers to the matcher factory", function(done) {
+    jasmine.getEnv().requirePromises();
+
+    var matcherFactory = function () {
+        return {
+          compare: function () {
+            return Promise.resolve({pass: true});
+          }
+        };
+      },
+      matcherFactorySpy = jasmine.createSpy("matcherFactorySpy").and.callFake(matcherFactory),
+      customEqualityFn = function () {
+        return true;
+      };
+
+    env.it("spec with expectation", function() {
+      env.addCustomEqualityTester(customEqualityFn);
+      env.addAsyncMatchers({
+        toBeReal: matcherFactorySpy
+      });
+
+      return env.expectAsync(true).toBeReal();
+    });
+
+    var specExpectations = function() {
+      expect(matcherFactorySpy).toHaveBeenCalledWith(
+        jasmine.any(jasmineUnderTest.MatchersUtil),
+        [customEqualityFn]
+      );
+    };
+
+    env.addReporter({ specDone: specExpectations, jasmineDone: done });
+    env.execute();
+  });
 });
