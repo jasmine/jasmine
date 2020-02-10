@@ -2,10 +2,10 @@ describe("toEqual", function() {
   "use strict";
 
   function compareEquals(actual, expected) {
-    var util = new jasmineUnderTest.MatchersUtil({
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.matchers.toEqual(util);
+      matcher = jasmineUnderTest.matchers.toEqual(matchersUtil);
 
     var result = matcher.compare(actual, expected);
 
@@ -13,19 +13,19 @@ describe("toEqual", function() {
   }
 
   it("delegates to equals function", function() {
-    var util = {
+    var matchersUtil = {
         equals: jasmine.createSpy('delegated-equals').and.returnValue(true),
         buildFailureMessage: function() {
-          return 'does not matter'
+          return 'does not matter';
         },
         DiffBuilder: new jasmineUnderTest.DiffBuilder()
       },
-      matcher = jasmineUnderTest.matchers.toEqual(util),
+      matcher = jasmineUnderTest.matchers.toEqual(matchersUtil),
       result;
 
     result = matcher.compare(1, 1);
 
-    expect(util.equals).toHaveBeenCalledWith(1, 1, jasmine.anything());
+    expect(matchersUtil.equals).toHaveBeenCalledWith(1, 1, jasmine.anything());
     expect(result.pass).toBe(true);
   });
 
@@ -33,8 +33,8 @@ describe("toEqual", function() {
     var tester = function (a, b) {
         return a.toString() === b.toString();
       },
-      util = new jasmineUnderTest.MatchersUtil({customTesters: [tester]}),
-      matcher = jasmineUnderTest.matchers.toEqual(util),
+      matchersUtil = new jasmineUnderTest.MatchersUtil({customTesters: [tester]}),
+      matcher = jasmineUnderTest.matchers.toEqual(matchersUtil),
       result;
 
     result = matcher.compare(1, '1');
@@ -107,8 +107,8 @@ describe("toEqual", function() {
     var actual = {x: {y: 1, z: 2, f: 4}},
       expected = {x: {y: 1, z: 2, g: 3}},
       pp = jasmineUnderTest.makePrettyPrinter([formatter]),
-      util = new jasmineUnderTest.MatchersUtil({pp: pp}),
-      matcher = jasmineUnderTest.matchers.toEqual(util),
+      matchersUtil = new jasmineUnderTest.MatchersUtil({pp: pp}),
+      matcher = jasmineUnderTest.matchers.toEqual(matchersUtil),
       message =
         "Expected $.x to have properties\n" +
         "    g: |3|\n" +
@@ -128,8 +128,8 @@ describe("toEqual", function() {
     var actual = [{foo: 4}],
       expected = [{foo: 5}],
       prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]),
-      util = new jasmineUnderTest.MatchersUtil({pp: prettyPrinter}),
-      matcher = jasmineUnderTest.matchers.toEqual(util),
+      matchersUtil = new jasmineUnderTest.MatchersUtil({pp: prettyPrinter}),
+      matcher = jasmineUnderTest.matchers.toEqual(matchersUtil),
       message = "Expected $[0].foo = |4| to equal |5|.";
 
     expect(matcher.compare(actual, expected).message).toEqual(message);
@@ -151,8 +151,8 @@ describe("toEqual", function() {
         bar: "shouldn't be pretty printed"
       }],
       prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]),
-      util = new jasmineUnderTest.MatchersUtil({pp: prettyPrinter}),
-      matcher = jasmineUnderTest.matchers.toEqual(util),
+      matchersUtil = new jasmineUnderTest.MatchersUtil({pp: prettyPrinter}),
+      matcher = jasmineUnderTest.matchers.toEqual(matchersUtil),
       message = "Expected $[0].foo = [thing with a=1, b=2] to equal [thing with a=5, b=2].\n" +
         "Expected $[0].bar = 'should not be pretty printed' to equal 'shouldn't be pretty printed'.";
 
@@ -348,8 +348,8 @@ describe("toEqual", function() {
       expected = {x: new Bar()},
       message = "Expected $.x to be a kind of Bar, but was |[object Object]|.",
       pp = jasmineUnderTest.makePrettyPrinter([formatter]),
-      util = new jasmineUnderTest.MatchersUtil({pp: pp}),
-      matcher = jasmineUnderTest.matchers.toEqual(util);
+      matchersUtil = new jasmineUnderTest.MatchersUtil({pp: pp}),
+      matcher = jasmineUnderTest.matchers.toEqual(matchersUtil);
 
     expect(matcher.compare(actual, expected).message).toEqual(message);
   });
@@ -889,8 +889,8 @@ describe("toEqual", function() {
       var actual = [1, 1, 2, 3, 5],
         expected = [1, 1, 2, 3],
         pp = jasmineUnderTest.makePrettyPrinter([formatter]),
-        util = new jasmineUnderTest.MatchersUtil({pp: pp}),
-        matcher = jasmineUnderTest.matchers.toEqual(util),
+        matchersUtil = new jasmineUnderTest.MatchersUtil({pp: pp}),
+        matcher = jasmineUnderTest.matchers.toEqual(matchersUtil),
         message = 'Expected $.length = |5| to equal |4|.\n' +
           'Unexpected $[4] = |5| in array.';
 

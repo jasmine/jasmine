@@ -37,7 +37,7 @@ describe('Expectation', function() {
       matchers = {
         toFoo: matcherFactory
       },
-      util = {
+      matchersUtil = {
         buildFailureMessage: jasmine.createSpy('buildFailureMessage')
       },
       customEqualityTesters = ['a'],
@@ -45,7 +45,7 @@ describe('Expectation', function() {
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
-      util: util,
+      matchersUtil: matchersUtil,
       customMatchers: matchers,
       customEqualityTesters: customEqualityTesters,
       actual: 'an actual',
@@ -54,7 +54,10 @@ describe('Expectation', function() {
 
     expectation.toFoo('hello');
 
-    expect(matcherFactory).toHaveBeenCalledWith(util, customEqualityTesters);
+    expect(matcherFactory).toHaveBeenCalledWith(
+      matchersUtil,
+      customEqualityTesters
+    );
   });
 
   it("wraps matchers's compare functions, passing the actual and expected", function() {
@@ -68,14 +71,14 @@ describe('Expectation', function() {
           };
         }
       },
-      util = {
+      matchersUtil = {
         buildFailureMessage: jasmine.createSpy('buildFailureMessage')
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult'),
       expectation;
 
     expectation = jasmineUnderTest.Expectation.factory({
-      util: util,
+      matchersUtil: matchersUtil,
       customMatchers: matchers,
       actual: 'an actual',
       addExpectationResult: addExpectationResult
@@ -96,7 +99,7 @@ describe('Expectation', function() {
           };
         }
       },
-      util = {
+      matchersUtil = {
         buildFailureMessage: jasmine.createSpy('buildFailureMessage')
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult'),
@@ -104,7 +107,7 @@ describe('Expectation', function() {
 
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
-      util: util,
+      matchersUtil: matchersUtil,
       actual: 'an actual',
       addExpectationResult: addExpectationResult
     });
@@ -132,7 +135,7 @@ describe('Expectation', function() {
           };
         }
       },
-      util = {
+      matchersUtil = {
         buildFailureMessage: function() {
           return '';
         }
@@ -142,7 +145,7 @@ describe('Expectation', function() {
 
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
-      util: util,
+      matchersUtil: matchersUtil,
       actual: 'an actual',
       addExpectationResult: addExpectationResult
     });
@@ -275,7 +278,7 @@ describe('Expectation', function() {
           };
         }
       },
-      util = {
+      matchersUtil = {
         buildFailureMessage: function() {
           return 'default message';
         }
@@ -287,7 +290,7 @@ describe('Expectation', function() {
     expectation = jasmineUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: 'an actual',
-      util: util,
+      matchersUtil: matchersUtil,
       addExpectationResult: addExpectationResult
     }).not;
 
@@ -539,7 +542,7 @@ describe('Expectation', function() {
             };
           }
         },
-        util = {
+        matchersUtil = {
           buildFailureMessage: function() {
             return 'failure message';
           }
@@ -547,7 +550,7 @@ describe('Expectation', function() {
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
-          util: util,
+          matchersUtil: matchersUtil,
           actual: 'an actual',
           addExpectationResult: addExpectationResult
         });
@@ -635,7 +638,7 @@ describe('Expectation', function() {
         pp = jasmineUnderTest.makePrettyPrinter(),
         expectation = jasmineUnderTest.Expectation.factory({
           customMatchers: matchers,
-          util: new jasmineUnderTest.MatchersUtil({ pp: pp }),
+          matchersUtil: new jasmineUnderTest.MatchersUtil({ pp: pp }),
           actual: 'an actual',
           addExpectationResult: addExpectationResult
         });

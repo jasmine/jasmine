@@ -1,7 +1,7 @@
 describe("toBe", function() {
   it("passes with no message when actual === expected", function() {
-    var util = new jasmineUnderTest.MatchersUtil(),
-      matcher = jasmineUnderTest.matchers.toBe(util),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
       result;
 
     result = matcher.compare(1, 1);
@@ -9,8 +9,8 @@ describe("toBe", function() {
   });
 
   it("passes with a custom message when expected is an array", function() {
-    var util = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
-      matcher = jasmineUnderTest.matchers.toBe(util),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
+      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
       result,
       array = [1];
 
@@ -20,8 +20,8 @@ describe("toBe", function() {
   });
 
   it("passes with a custom message when expected is an object", function() {
-    var util = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
-      matcher = jasmineUnderTest.matchers.toBe(util),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
+      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
       result,
       obj = {foo: "bar"};
 
@@ -31,8 +31,8 @@ describe("toBe", function() {
   });
 
   it("fails with no message when actual !== expected", function() {
-    var util = new jasmineUnderTest.MatchersUtil(),
-      matcher = jasmineUnderTest.matchers.toBe(util),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
       result;
 
     result = matcher.compare(1, 2);
@@ -41,8 +41,8 @@ describe("toBe", function() {
   });
 
   it("fails with a custom message when expected is an array", function() {
-    var util = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
-      matcher = jasmineUnderTest.matchers.toBe(util),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
+      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
       result;
 
     result = matcher.compare([1], [1]);
@@ -51,8 +51,8 @@ describe("toBe", function() {
   });
 
   it("fails with a custom message when expected is an object", function() {
-    var util = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
-      matcher = jasmineUnderTest.matchers.toBe(util),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
+      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
       result;
 
     result = matcher.compare({foo: "bar"}, {foo: "bar"});
@@ -63,8 +63,8 @@ describe("toBe", function() {
   it("works with custom object formatters when expected is an object", function() {
     var formatter = function(x) { return '<' + x.foo + '>'; },
       prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]),
-      util = new jasmineUnderTest.MatchersUtil({pp: prettyPrinter}),
-      matcher = jasmineUnderTest.matchers.toBe(util),
+      matchersUtil = new jasmineUnderTest.MatchersUtil({pp: prettyPrinter}),
+      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
       result;
 
     result = matcher.compare({foo: "bar"}, {foo: "bar"});

@@ -10,7 +10,7 @@ getJasmineRequireObj().toBeRejected = function(j$) {
    * @example
    * return expectAsync(aPromise).toBeRejected();
    */
-  return function toBeRejected(util) {
+  return function toBeRejected() {
     return {
       compare: function(actual) {
         if (!j$.isPromiseLike(actual)) {

@@ -1,13 +1,13 @@
 describe("toContain", function() {
   it("delegates to jasmineUnderTest.matchersUtil.contains", function() {
-    var util = {
+    var matchersUtil = {
         contains: jasmine.createSpy('delegated-contains').and.returnValue(true)
       },
-      matcher = jasmineUnderTest.matchers.toContain(util),
+      matcher = jasmineUnderTest.matchers.toContain(matchersUtil),
       result;
 
     result = matcher.compare("ABC", "B");
-    expect(util.contains).toHaveBeenCalledWith("ABC", "B");
+    expect(matchersUtil.contains).toHaveBeenCalledWith("ABC", "B");
     expect(result.pass).toBe(true);
   });
 
