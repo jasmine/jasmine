@@ -7,17 +7,17 @@ getJasmineRequireObj().SetContaining = function(j$) {
     this.sample = sample;
   }
 
-  SetContaining.prototype.asymmetricMatch = function(other, customTesters) {
+  SetContaining.prototype.asymmetricMatch = function(other, matchersUtil) {
     if (!j$.isSet(other)) return false;
 
     var hasAllMatches = true;
     j$.util.forEachBreakable(this.sample, function(breakLoop, item) {
       // for each item in `sample` there should be at least one matching item in `other`
-      // (not using `j$.matchersUtil.contains` because it compares set members by reference,
+      // (not using `matchersUtil.contains` because it compares set members by reference,
       // not by deep value equality)
       var hasMatch = false;
       j$.util.forEachBreakable(other, function(oBreakLoop, oItem) {
-        if (j$.matchersUtil.equals(oItem, item, customTesters)) {
+        if (matchersUtil.equals(oItem, item)) {
           hasMatch = true;
           oBreakLoop();
         }
@@ -31,8 +31,8 @@ getJasmineRequireObj().SetContaining = function(j$) {
     return hasAllMatches;
   };
 
-  SetContaining.prototype.jasmineToString = function() {
-    return '<jasmine.setContaining(' + j$.pp(this.sample) + ')>';
+  SetContaining.prototype.jasmineToString = function(pp) {
+    return '<jasmine.setContaining(' + pp(this.sample) + ')>';
   };
 
   return SetContaining;

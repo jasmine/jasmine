@@ -72,21 +72,21 @@ describe('ExpectationFilterChain', function() {
           matcherResult = { pass: false },
           matcherName = 'foo',
           args = [],
-          util = {},
+          matchersUtil = {},
           result;
 
         result = chain.buildFailureMessage(
           matcherResult,
           matcherName,
           args,
-          util
+          matchersUtil
         );
 
         expect(first).toHaveBeenCalledWith(
           matcherResult,
           matcherName,
           args,
-          util
+          matchersUtil
         );
         expect(second).not.toHaveBeenCalled();
         expect(result).toEqual('first');

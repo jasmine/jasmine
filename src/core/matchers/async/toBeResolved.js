@@ -10,7 +10,7 @@ getJasmineRequireObj().toBeResolved = function(j$) {
    * @example
    * return expectAsync(aPromise).toBeResolved();
    */
-  return function toBeResolved(util) {
+  return function toBeResolved() {
     return {
       compare: function(actual) {
         if (!j$.isPromiseLike(actual)) {

@@ -1,23 +1,25 @@
-describe("toHaveBeenCalledBefore", function () {
-  it("throws an exception when the actual is not a spy", function () {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
-      fn = function () {
-      },
-      spy = new jasmineUnderTest.Spy('a spy');
+describe("toHaveBeenCalledBefore", function() {
+  it("throws an exception when the actual is not a spy", function() {
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore({
+          pp: jasmineUnderTest.makePrettyPrinter()
+        }),
+        fn = function() {},
+        spy = new jasmineUnderTest.Env().createSpy('a spy');
 
     expect(function () {
-      matcher.compare(fn, spy)
+      matcher.compare(fn, spy);
     }).toThrowError(Error, /Expected a spy, but got Function./);
   });
 
-  it("throws an exception when the expected is not a spy", function () {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
-      spy = new jasmineUnderTest.Spy('a spy'),
-      fn = function () {
-      };
+  it("throws an exception when the expected is not a spy", function() {
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore({
+          pp: jasmineUnderTest.makePrettyPrinter()
+        }),
+        spy = new jasmineUnderTest.Env().createSpy('a spy'),
+        fn = function() {};
 
     expect(function () {
-      matcher.compare(spy, fn)
+      matcher.compare(spy, fn);
     }).toThrowError(Error, /Expected a spy, but got Function./);
   });
 

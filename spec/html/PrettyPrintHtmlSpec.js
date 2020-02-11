@@ -1,43 +1,46 @@
-describe('jasmineUnderTest.pp (HTML Dependent)', function() {
+describe('PrettyPrinter (HTML Dependent)', function() {
   it('should stringify non-element HTML nodes properly', function() {
     var sampleNode = document.createTextNode('');
-    expect(jasmineUnderTest.pp(sampleNode)).toEqual('HTMLNode');
-    expect(jasmineUnderTest.pp({ foo: sampleNode })).toEqual(
-      'Object({ foo: HTMLNode })'
-    );
+    var pp = jasmineUnderTest.makePrettyPrinter();
+    expect(pp(sampleNode)).toEqual('HTMLNode');
+    expect(pp({ foo: sampleNode })).toEqual('Object({ foo: HTMLNode })');
   });
 
   it('should stringify empty HTML elements as their opening tags', function() {
     var simple = document.createElement('div');
+    var pp = jasmineUnderTest.makePrettyPrinter();
     simple.className = 'foo';
-    expect(jasmineUnderTest.pp(simple)).toEqual('<div class="foo">');
+    expect(pp(simple)).toEqual('<div class="foo">');
   });
 
   it('should stringify non-empty HTML elements as tags with placeholders', function() {
+    var pp = jasmineUnderTest.makePrettyPrinter();
     var nonEmpty = document.createElement('div');
     nonEmpty.className = 'foo';
     nonEmpty.innerHTML = '<p>Irrelevant</p>';
-    expect(jasmineUnderTest.pp(nonEmpty)).toEqual('<div class="foo">...</div>');
+    expect(pp(nonEmpty)).toEqual('<div class="foo">...</div>');
   });
 
   it("should print Firefox's wrapped native objects correctly", function() {
     if (jasmine.getEnv().firefoxVersion) {
+      var pp = jasmineUnderTest.makePrettyPrinter();
       try {
         new CustomEvent();
       } catch (e) {
         var err = e;
       }
       // Different versions of FF produce different error messages.
-      expect(jasmineUnderTest.pp(err)).toMatch(
+      expect(pp(err)).toMatch(
         /Not enough arguments|CustomEvent requires at least 1 argument, but only 0 were passed/
       );
     }
   });
 
   it('should stringify HTML element with text and attributes', function() {
+    var pp = jasmineUnderTest.makePrettyPrinter();
     var el = document.createElement('div');
     el.setAttribute('things', 'foo');
     el.innerHTML = 'foo';
-    expect(jasmineUnderTest.pp(el)).toEqual('<div things="foo">...</div>');
+    expect(pp(el)).toEqual('<div things="foo">...</div>');
   });
 });
