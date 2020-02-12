@@ -125,7 +125,8 @@ describe("ObjectContaining", function() {
     describe("when other is not an object", function() {
       it("sets self to jasmineToString()", function () {
         var containing = new jasmineUnderTest.ObjectContaining({}),
-          result = containing.valuesForDiff_('a');
+          pp = jasmineUnderTest.makePrettyPrinter(),
+          result = containing.valuesForDiff_('a', pp);
 
         expect(result).toEqual({
           self: '<jasmine.objectContaining(Object({  }))>',

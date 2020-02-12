@@ -11,16 +11,6 @@ getJasmineRequireObj().ObjectPath = function(j$) {
     }
   };
 
-  ObjectPath.prototype.dereference = function(obj) {
-    var i;
-
-    for (i = 0; i < this.components.length; i++) {
-      obj = obj[this.components[i]];
-    }
-
-    return obj;
-  };
-
   ObjectPath.prototype.add = function(component) {
     return new ObjectPath(this.components.concat([component]));
   };

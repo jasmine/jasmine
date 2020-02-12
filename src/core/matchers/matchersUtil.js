@@ -78,13 +78,9 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     return message + '.';
   };
 
-  function isAsymmetric(obj) {
-    return obj && j$.isA_('Function', obj.asymmetricMatch);
-  }
-
   MatchersUtil.prototype.asymmetricDiff_ = function(a, b, aStack, bStack, customTesters, diffBuilder) {
     if (j$.isFunction_(b.valuesForDiff_)) {
-      var values = b.valuesForDiff_(a);
+      var values = b.valuesForDiff_(a, this.pp);
       this.eq_(values.other, values.self, aStack, bStack, customTesters, diffBuilder);
     } else {
       diffBuilder.recordMismatch();
@@ -92,8 +88,8 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
   };
 
   MatchersUtil.prototype.asymmetricMatch_ = function(a, b, aStack, bStack, customTesters, diffBuilder) {
-    var asymmetricA = isAsymmetric(a),
-        asymmetricB = isAsymmetric(b),
+    var asymmetricA = j$.isAsymmetricEqualityTester_(a),
+        asymmetricB = j$.isAsymmetricEqualityTester_(b),
         shim = j$.asymmetricEqualityTesterArgCompatShim(this, customTesters),
         result;
 
@@ -104,8 +100,6 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     if (asymmetricA) {
       result = a.asymmetricMatch(b, shim);
       if (!result) {
-        // TODO: Do we want to build an asymmetric diff when the actual was an
-        // asymmeteric equality tester? Might be confusing.
         diffBuilder.recordMismatch();
       }
       return result;
@@ -328,7 +322,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
           // Only use the cmpKey when one of the keys is asymmetric and the corresponding key matches,
           // otherwise explicitly look up the mapKey in the other Map since we want keys with unique
           // obj identity (that are otherwise equal) to not match.
-          if (isAsymmetric(mapKey) || isAsymmetric(cmpKey) &&
+          if (j$.isAsymmetricEqualityTester_(mapKey) || j$.isAsymmetricEqualityTester_(cmpKey) &&
               this.eq_(mapKey, cmpKey, aStack, bStack, customTesters, j$.NullDiffBuilder())) {
             mapValueB = b.get(cmpKey);
           } else {

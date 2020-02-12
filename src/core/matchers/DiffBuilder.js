@@ -21,8 +21,9 @@ getJasmineRequireObj().DiffBuilder = function (j$) {
 
         mismatches.traverse(function (path, isLeaf, formatter) {
           var actualCustom, expectedCustom, useCustom,
-            actual = path.dereference(actualRoot),
-            expected = path.dereference(expectedRoot);
+            derefResult = dereferencePath(path, actualRoot, expectedRoot, prettyPrinter),
+            actual = derefResult.actual,
+            expected = derefResult.expected;
 
           if (formatter) {
             messages.push(formatter(actual, expected, path, prettyPrinter));
@@ -69,4 +70,22 @@ getJasmineRequireObj().DiffBuilder = function (j$) {
         '.';
     }
   };
+
+  function dereferencePath(objectPath, actual, expected, pp) {
+    var i, asymmetricResult
+
+    for (i = 0; i < objectPath.components.length; i++) {
+      actual = actual[objectPath.components[i]];
+      expected = expected[objectPath.components[i]];
+
+      if (j$.isAsymmetricEqualityTester_(expected) && j$.isFunction_(expected.valuesForDiff_)) {
+        var asymmetricResult = expected.valuesForDiff_(actual, pp);
+        expected = asymmetricResult.self;
+        actual = asymmetricResult.other;
+      }
+    }
+
+    return {actual: actual, expected: expected};
+  }
+
 };

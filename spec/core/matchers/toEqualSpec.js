@@ -429,10 +429,10 @@ describe("toEqual", function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
-  it("reports mismatches involving objectContaining", function() {
+  it("reports mismatches involving objectContaining and an object", function() {
     var actual = {x: {a: 1, b: 4, c: 3, extra: 'ignored'}};
     var expected = {x: jasmineUnderTest.objectContaining({a: 1, b: 2, c: 3})};
-    expect(compareEquals(actual, expected).message).toEqual('Expected $.x.b = 4 to equal 2.')
+    expect(compareEquals(actual, expected).message).toEqual('Expected $.x.b = 4 to equal 2.');
   });
 
   it("reports mismatches between a non-object and objectContaining", function() {
