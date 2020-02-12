@@ -50,40 +50,9 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.Expectation = jRequire.Expectation(j$);
     j$.buildExpectationResult = jRequire.buildExpectationResult(j$);
     j$.JsApiReporter = jRequire.JsApiReporter(j$);
-    j$.asymmetricEqualityTesterArgCompatShim = jRequire.asymmetricEqualityTesterArgCompatShim(
-      j$
-    );
     j$.makePrettyPrinter = jRequire.makePrettyPrinter(j$);
     j$.basicPrettyPrinter_ = j$.makePrettyPrinter();
-    Object.defineProperty(j$, 'pp', {
-      get: function() {
-        j$.getEnv().deprecatedOnceWithStack(
-          'jasmine.pp is deprecated and will be removed in a future release. ' +
-            'Use the pp method of the matchersUtil passed to the matcher factory ' +
-            "or the asymmetric equality tester's `asymmetricMatch` method " +
-            'instead. See ' +
-            '<https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
-        );
-        return j$.basicPrettyPrinter_;
-      }
-    });
     j$.MatchersUtil = jRequire.MatchersUtil(j$);
-    var staticMatchersUtil = new j$.MatchersUtil({
-      customTesters: [],
-      pp: j$.basicPrettyPrinter_
-    });
-    Object.defineProperty(j$, 'matchersUtil', {
-      get: function() {
-        j$.getEnv().deprecatedOnceWithStack(
-          'jasmine.matchersUtil is deprecated and will be removed ' +
-            'in a future release. Use the instance passed to the matcher factory or ' +
-            "the asymmetric equality tester's `asymmetricMatch` method instead. " +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
-        );
-        return staticMatchersUtil;
-      }
-    });
-
     j$.ObjectContaining = jRequire.ObjectContaining(j$);
     j$.ArrayContaining = jRequire.ArrayContaining(j$);
     j$.ArrayWithExactContents = jRequire.ArrayWithExactContents(j$);

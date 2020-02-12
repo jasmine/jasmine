@@ -108,44 +108,7 @@ describe('Custom Matchers (Integration)', function() {
     env.execute(null, done);
   });
 
-  it('supports asymmetric equality testers that take a list of custom equality testers', function(done) {
-    // TODO: remove this in the next major release.
-    spyOn(jasmineUnderTest, 'getEnv').and.returnValue(env);
-    spyOn(env, 'deprecated'); // suppress warnings
-
-    env.it('spec using custom asymmetric equality tester', function() {
-      var customEqualityFn = function(a, b) {
-        if (a === 2 && b === 'two') {
-          return true;
-        }
-      };
-      var arrayWithFirstElement = function(sample) {
-        return {
-          asymmetricMatch: function(actual, customEqualityTesters) {
-            return jasmineUnderTest.matchersUtil.equals(
-              sample,
-              actual[0],
-              customEqualityTesters
-            );
-          }
-        };
-      };
-
-      env.addCustomEqualityTester(customEqualityFn);
-      env.expect(['two']).toEqual(arrayWithFirstElement(2));
-    });
-
-    var specExpectations = function(result) {
-      expect(result.status).toEqual('passed');
-    };
-
-    env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
-  });
-
   it('displays an appropriate failure message if a custom equality matcher fails', function(done) {
-    spyOn(env, 'deprecated');
-
     env.it('spec using custom equality matcher', function() {
       var customEqualityFn = function(a, b) {
         // "foo" is not equal to anything
@@ -277,47 +240,6 @@ describe('Custom Matchers (Integration)', function() {
     env.execute(null, done);
   });
 
-  // TODO: remove this in the next major release.
-  describe('When a matcher factory takes at least two arguments', function() {
-    it('passes the jasmine utility and current equality testers to the matcher factory', function(done) {
-      spyOn(env, 'deprecated');
-
-      var matcherFactory = function(util, customTesters) {
-          return {
-            compare: function() {
-              return { pass: true };
-            }
-          };
-        },
-        matcherFactorySpy = jasmine.createSpy(
-          'matcherFactorySpy',
-          matcherFactory
-        ),
-        customEqualityFn = function() {
-          return true;
-        };
-
-      env.it('spec with expectation', function() {
-        env.addCustomEqualityTester(customEqualityFn);
-        env.addMatchers({
-          toBeReal: matcherFactorySpy
-        });
-
-        env.expect(true).toBeReal();
-      });
-
-      var specExpectations = function() {
-        expect(matcherFactorySpy).toHaveBeenCalledWith(
-          jasmine.any(jasmineUnderTest.MatchersUtil),
-          [customEqualityFn]
-        );
-      };
-
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
-      env.execute();
-    });
-  });
-
   it('provides custom equality testers to the matcher factory via matchersUtil', function(done) {
     var matcherFactory = function(matchersUtil) {
         return {
@@ -348,43 +270,5 @@ describe('Custom Matchers (Integration)', function() {
 
     env.addReporter({ specDone: specExpectations });
     env.execute(null, done);
-  });
-
-  it('logs a deprecation once per matcher if the matcher factory takes two arguments', function(done) {
-    var matcherFactory = function(matchersUtil, customEqualityTesters) {
-      return { compare: function() {} };
-    };
-
-    spyOn(env, 'deprecated');
-
-    env.beforeEach(function() {
-      env.addMatchers({ toBeFoo: matcherFactory });
-      env.addMatchers({ toBeBar: matcherFactory });
-    });
-
-    env.it('a spec', function() {});
-    env.it('another spec', function() {});
-
-    function jasmineDone() {
-      expect(env.deprecated).toHaveBeenCalledWith(
-        jasmine.stringMatching(
-          'The matcher factory for "toBeFoo" accepts custom equality testers, ' +
-            'but this parameter will no longer be passed in a future release. ' +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
-        )
-      );
-      expect(env.deprecated).toHaveBeenCalledWith(
-        jasmine.stringMatching(
-          'The matcher factory for "toBeBar" accepts custom equality testers, ' +
-            'but this parameter will no longer be passed in a future release. ' +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
-        )
-      );
-      expect(env.deprecated).toHaveBeenCalledTimes(2);
-      done();
-    }
-
-    env.addReporter({ jasmineDone: jasmineDone });
-    env.execute();
   });
 });

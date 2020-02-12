@@ -55,43 +55,6 @@ describe('Expectation', function() {
     expect(matcherFactory).toHaveBeenCalledWith(matchersUtil);
   });
 
-  // TODO: remove this in the next major release
-  it('passes custom equality testers when the matcher factory takes two arguments', function() {
-    var fakeCompare = function() {
-        return { pass: true };
-      },
-      matcherFactory = function(matchersUtil, customTesters) {
-        return { compare: fakeCompare };
-      },
-      matcherFactorySpy = jasmine
-        .createSpy('matcher', matcherFactory)
-        .and.callThrough(),
-      matchers = {
-        toFoo: matcherFactorySpy
-      },
-      matchersUtil = {
-        buildFailureMessage: jasmine.createSpy('buildFailureMessage')
-      },
-      customEqualityTesters = ['a'],
-      addExpectationResult = jasmine.createSpy('addExpectationResult'),
-      expectation;
-
-    expectation = jasmineUnderTest.Expectation.factory({
-      matchersUtil: matchersUtil,
-      customMatchers: matchers,
-      customEqualityTesters: customEqualityTesters,
-      actual: 'an actual',
-      addExpectationResult: addExpectationResult
-    });
-
-    expectation.toFoo('hello');
-
-    expect(matcherFactorySpy).toHaveBeenCalledWith(
-      matchersUtil,
-      customEqualityTesters
-    );
-  });
-
   it("wraps matchers's compare functions, passing the actual and expected", function() {
     var fakeCompare = jasmine
         .createSpy('fake-compare')
