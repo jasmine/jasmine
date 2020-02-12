@@ -20,8 +20,8 @@ getJasmineRequireObj().Spy = function(j$) {
     getPromise
   ) {
     var numArgs = typeof originalFn === 'function' ? originalFn.length : 0,
-      wrapper = makeFunc(numArgs, function() {
-        return spy.apply(this, Array.prototype.slice.call(arguments));
+      wrapper = makeFunc(numArgs, function(context, args, invokeNew) {
+        return spy(context, args, invokeNew);
       }),
       strategyDispatcher = new SpyStrategyDispatcher({
         name: name,
@@ -33,7 +33,7 @@ getJasmineRequireObj().Spy = function(j$) {
         getPromise: getPromise
       }),
       callTracker = new j$.CallTracker(),
-      spy = function() {
+      spy = function(context, args, invokeNew) {
         /**
          * @name Spy.callData
          * @property {object} object - `this` context for the invocation.
@@ -41,13 +41,13 @@ getJasmineRequireObj().Spy = function(j$) {
          * @property {Array} args - The arguments passed for this invocation.
          */
         var callData = {
-          object: this,
+          object: context,
           invocationOrder: nextOrder(),
-          args: Array.prototype.slice.apply(arguments)
+          args: Array.prototype.slice.apply(args)
         };
 
         callTracker.track(callData);
-        var returnValue = strategyDispatcher.exec(this, arguments);
+        var returnValue = strategyDispatcher.exec(context, args, invokeNew);
         callData.returnValue = returnValue;
 
         return returnValue;
@@ -56,44 +56,44 @@ getJasmineRequireObj().Spy = function(j$) {
     function makeFunc(length, fn) {
       switch (length) {
         case 1:
-          return function(a) {
-            return fn.apply(this, arguments);
+          return function wrap1(a) {
+            return fn(this, arguments, this instanceof wrap1);
           };
         case 2:
-          return function(a, b) {
-            return fn.apply(this, arguments);
+          return function wrap2(a, b) {
+            return fn(this, arguments, this instanceof wrap2);
           };
         case 3:
-          return function(a, b, c) {
-            return fn.apply(this, arguments);
+          return function wrap3(a, b, c) {
+            return fn(this, arguments, this instanceof wrap3);
           };
         case 4:
-          return function(a, b, c, d) {
-            return fn.apply(this, arguments);
+          return function wrap4(a, b, c, d) {
+            return fn(this, arguments, this instanceof wrap4);
           };
         case 5:
-          return function(a, b, c, d, e) {
-            return fn.apply(this, arguments);
+          return function wrap5(a, b, c, d, e) {
+            return fn(this, arguments, this instanceof wrap5);
           };
         case 6:
-          return function(a, b, c, d, e, f) {
-            return fn.apply(this, arguments);
+          return function wrap6(a, b, c, d, e, f) {
+            return fn(this, arguments, this instanceof wrap6);
           };
         case 7:
-          return function(a, b, c, d, e, f, g) {
-            return fn.apply(this, arguments);
+          return function wrap7(a, b, c, d, e, f, g) {
+            return fn(this, arguments, this instanceof wrap7);
           };
         case 8:
-          return function(a, b, c, d, e, f, g, h) {
-            return fn.apply(this, arguments);
+          return function wrap8(a, b, c, d, e, f, g, h) {
+            return fn(this, arguments, this instanceof wrap8);
           };
         case 9:
-          return function(a, b, c, d, e, f, g, h, i) {
-            return fn.apply(this, arguments);
+          return function wrap9(a, b, c, d, e, f, g, h, i) {
+            return fn(this, arguments, this instanceof wrap9);
           };
         default:
-          return function() {
-            return fn.apply(this, arguments);
+          return function wrap() {
+            return fn(this, arguments, this instanceof wrap);
           };
       }
     }
@@ -150,7 +150,7 @@ getJasmineRequireObj().Spy = function(j$) {
 
     this.and = baseStrategy;
 
-    this.exec = function(spy, args) {
+    this.exec = function(spy, args, invokeNew) {
       var strategy = argsStrategies.get(args);
 
       if (!strategy) {
@@ -167,7 +167,7 @@ getJasmineRequireObj().Spy = function(j$) {
         }
       }
 
-      return strategy.exec(spy, args);
+      return strategy.exec(spy, args, invokeNew);
     };
 
     this.withArgs = function() {

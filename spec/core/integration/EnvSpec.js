@@ -808,6 +808,31 @@ describe("Env integration", function() {
       expect(originalFunctionWasCalled).toEqual(true);
     });
 
+    env.it("works with constructors when using callThrough spy strategy", function() {
+      function MyClass(foo) {
+        if (!(this instanceof MyClass)) throw new Error('You must use the new keyword.');
+        this.foo = foo;
+      }
+      var subject = { MyClass: MyClass };
+      var spy = env.spyOn(subject, 'MyClass').and.callThrough();
+
+      expect(function() {
+        var result = new spy('hello world');
+        expect(result instanceof MyClass).toBeTruthy();
+        expect(result.foo).toEqual('hello world');
+      }).not.toThrow();
+
+      expect(function() {
+        var result = new spy('passing', 'extra', 'arguments', 'to', 'constructor');
+        expect(result instanceof MyClass).toBeTruthy();
+        expect(result.foo).toEqual('passing');
+      }).not.toThrow();
+
+      expect(function() {
+        spy('hello world');
+      }).toThrowError('You must use the new keyword.');
+    });
+
     env.execute();
   });
 
@@ -821,8 +846,8 @@ describe("Env integration", function() {
     env.allowRespy(true);
     env.addReporter({ jasmineDone: done });
 
-    env.describe('test suite', function(){
-      env.it('spec 0', function(){
+    env.describe('test suite', function() {
+      env.it('spec 0', function() {
         env.spyOn(foo,'bar');
 
         var error = null;
