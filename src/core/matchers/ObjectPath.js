@@ -15,6 +15,10 @@ getJasmineRequireObj().ObjectPath = function(j$) {
     return new ObjectPath(this.components.concat([component]));
   };
 
+  ObjectPath.prototype.shift = function() {
+    return new ObjectPath(this.components.slice(1));
+  };
+
   ObjectPath.prototype.depth = function() {
     return this.components.length;
   };

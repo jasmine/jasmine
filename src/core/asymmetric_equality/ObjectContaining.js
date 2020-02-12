@@ -28,13 +28,13 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
     return hasProperty(getPrototype(obj), property);
   }
 
-  ObjectContaining.prototype.asymmetricMatch = function(other, customTesters) {
+  ObjectContaining.prototype.asymmetricMatch = function(other, matchersUtil) {
     if (typeof(this.sample) !== 'object') { throw new Error('You must provide an object to objectContaining, not \''+this.sample+'\'.'); }
     if (typeof(other) !== 'object') { return false; }
 
     for (var property in this.sample) {
       if (!hasProperty(other, property) ||
-          !j$.matchersUtil.equals(this.sample[property], other[property], customTesters)) {
+          !matchersUtil.equals(this.sample[property], other[property])) {
         return false;
       }
     }
@@ -42,10 +42,10 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
     return true;
   };
 
-  ObjectContaining.prototype.valuesForDiff_ = function(other) {
+  ObjectContaining.prototype.valuesForDiff_ = function(other, pp) {
     if (!j$.isObject_(other)) {
       return {
-        self: this.jasmineToString(),
+        self: this.jasmineToString(pp),
         other: other
       };
     }
@@ -63,8 +63,8 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
     };
   };
 
-  ObjectContaining.prototype.jasmineToString = function() {
-    return '<jasmine.objectContaining(' + j$.pp(this.sample) + ')>';
+  ObjectContaining.prototype.jasmineToString = function(pp) {
+    return '<jasmine.objectContaining(' + pp(this.sample) + ')>';
   };
 
   return ObjectContaining;

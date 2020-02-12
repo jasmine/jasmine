@@ -29,7 +29,9 @@ describe("toBeNaN", function() {
   });
 
   it("has a custom message on failure", function() {
-    var matcher = jasmineUnderTest.matchers.toBeNaN(),
+    var matcher = jasmineUnderTest.matchers.toBeNaN({
+        pp: jasmineUnderTest.makePrettyPrinter()
+      }),
       result = matcher.compare(0);
 
     expect(result.message()).toEqual("Expected 0 to be NaN.");

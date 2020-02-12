@@ -14,14 +14,14 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
    * await expectAsync(aPromise).toBeRejectedWithError('Error message');
    * return expectAsync(aPromise).toBeRejectedWithError(/Error message/);
    */
-  return function toBeRejectedWithError() {
+  return function toBeRejectedWithError(matchersUtil) {
     return {
       compare: function(actualPromise, arg1, arg2) {
         if (!j$.isPromiseLike(actualPromise)) {
           throw new Error('Expected toBeRejectedWithError to be called on a promise.');
         }
 
-        var expected = getExpectedFromArgs(arg1, arg2);
+        var expected = getExpectedFromArgs(arg1, arg2, matchersUtil);
 
         return actualPromise.then(
           function() {
@@ -30,15 +30,15 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
               message: 'Expected a promise to be rejected but it was resolved.'
             };
           },
-          function(actualValue) { return matchError(actualValue, expected); }
+          function(actualValue) { return matchError(actualValue, expected, matchersUtil); }
         );
       }
     };
   };
 
-  function matchError(actual, expected) {
+  function matchError(actual, expected, matchersUtil) {
     if (!j$.isError_(actual)) {
-      return fail(expected, 'rejected with ' + j$.pp(actual));
+      return fail(expected, 'rejected with ' + matchersUtil.pp(actual));
     }
 
     if (!(actual instanceof expected.error)) {
@@ -55,7 +55,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
       return pass(expected);
     }
 
-    return fail(expected, 'rejected with ' + j$.pp(actual));
+    return fail(expected, 'rejected with ' + matchersUtil.pp(actual));
   }
 
   function pass(expected) {
@@ -73,7 +73,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
   }
 
 
-  function getExpectedFromArgs(arg1, arg2) {
+  function getExpectedFromArgs(arg1, arg2, matchersUtil) {
     var error, message;
 
     if (isErrorConstructor(arg1)) {
@@ -87,7 +87,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
     return {
       error: error,
       message: message,
-      printValue: j$.fnNameFor(error) + (typeof message === 'undefined' ? '' : ': ' + j$.pp(message))
+      printValue: j$.fnNameFor(error) + (typeof message === 'undefined' ? '' : ': ' + matchersUtil.pp(message))
     };
   }
 
