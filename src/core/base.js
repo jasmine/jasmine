@@ -112,7 +112,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isAsymmetricEqualityTester_ = function(obj) {
-    return obj && j$.isA_('Function', obj.asymmetricMatch);
+    return obj ? j$.isA_('Function', obj.asymmetricMatch) : false;
   };
 
   j$.getType_ = function(value) {
