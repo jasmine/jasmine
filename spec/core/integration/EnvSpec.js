@@ -1863,6 +1863,7 @@ describe("Env integration", function() {
       } catch(e) {
         exception = e;
       }
+      env.it('has a test', function() {});
     });
 
     var assertions = function() {
@@ -1885,6 +1886,7 @@ describe("Env integration", function() {
       } catch(e) {
         exception = e;
       }
+      env.it('has a test', function() {});
     });
 
     var assertions = function() {
@@ -1907,6 +1909,7 @@ describe("Env integration", function() {
       } catch(e) {
         exception = e;
       }
+      env.it('has a test', function() {});
     });
 
     var assertions = function() {

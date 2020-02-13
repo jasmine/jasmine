@@ -1034,6 +1034,13 @@ getJasmineRequireObj().Env = function(j$) {
         suite.pend();
       }
       addSpecsToSuite(suite, specDefinitions);
+      if (suite.parentSuite && !suite.children.length) {
+        this.deprecated(
+          'describe with no children (describe() or it()) is ' +
+            'deprecated and will be removed in a future version of Jasmine. ' +
+            'Please either remove the describe or add children to it.'
+        );
+      }
       return suite;
     };
 

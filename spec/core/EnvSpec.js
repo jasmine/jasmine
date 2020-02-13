@@ -141,9 +141,22 @@ describe('Env', function() {
       );
 
       expect(function() {
-        env.describe('fn arg', function() {});
+        env.describe('fn arg', function() {
+          env.it('has a spec', function() {});
+        });
       }).not.toThrowError(
         'describe expects a function argument; received [object Function]'
+      );
+    });
+
+    it('logs a deprecation when it has no children', function() {
+      spyOn(env, 'deprecated');
+      env.describe('no children', function() {});
+      expect(env.deprecated).toHaveBeenCalledWith(
+        'describe with no children' +
+          ' (describe() or it()) is deprecated and will be removed in a future ' +
+          'version of Jasmine. Please either remove the describe or add ' +
+          'children to it.'
       );
     });
   });
