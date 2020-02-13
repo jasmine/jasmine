@@ -2,7 +2,7 @@ describe('#toBeRejectedWithError', function () {
   it('passes when Error type matches', function () {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.reject(new TypeError('foo'));
 
@@ -17,7 +17,7 @@ describe('#toBeRejectedWithError', function () {
   it('passes when Error type and message matches', function () {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.reject(new TypeError('foo'));
 
@@ -32,7 +32,7 @@ describe('#toBeRejectedWithError', function () {
   it('passes when Error matches and is exactly Error', function() {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.reject(new Error());
 
@@ -48,7 +48,7 @@ describe('#toBeRejectedWithError', function () {
   it('passes when Error message matches a string', function () {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.reject(new Error('foo'));
 
@@ -63,7 +63,7 @@ describe('#toBeRejectedWithError', function () {
   it('passes when Error message matches a RegExp', function () {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.reject(new Error('foo'));
 
@@ -78,7 +78,7 @@ describe('#toBeRejectedWithError', function () {
   it('passes when Error message is empty', function () {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.reject(new Error());
 
@@ -93,7 +93,7 @@ describe('#toBeRejectedWithError', function () {
   it('passes when no arguments', function () {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.reject(new Error());
 
@@ -108,7 +108,7 @@ describe('#toBeRejectedWithError', function () {
   it('fails when resolved', function () {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.resolve(new Error('foo'));
 
@@ -123,7 +123,7 @@ describe('#toBeRejectedWithError', function () {
   it('fails when rejected with non Error type', function () {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.reject('foo');
 
@@ -138,7 +138,7 @@ describe('#toBeRejectedWithError', function () {
   it('fails when Error type mismatches', function () {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.reject(new Error('foo'));
 
@@ -153,7 +153,7 @@ describe('#toBeRejectedWithError', function () {
   it('fails when Error message mismatches', function () {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = Promise.reject(new Error('foo'));
 
@@ -166,7 +166,7 @@ describe('#toBeRejectedWithError', function () {
   });
 
   it('fails if actual is not a promise', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(matchersUtil),
       actual = 'not a promise';
 

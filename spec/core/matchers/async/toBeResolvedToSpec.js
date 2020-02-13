@@ -14,7 +14,7 @@ describe('#toBeResolvedTo', function() {
   it('fails if the promise is rejected', function() {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = Promise.reject('AsyncExpectationSpec error');
 
@@ -29,7 +29,7 @@ describe('#toBeResolvedTo', function() {
   it('fails if the promise is resolved to a different value', function() {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = Promise.resolve({foo: 17});
 
@@ -44,7 +44,7 @@ describe('#toBeResolvedTo', function() {
   it('builds its message correctly when negated', function() {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: new jasmineUnderTest.makePrettyPrinter()}),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({pp: jasmineUnderTest.makePrettyPrinter()}),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = Promise.resolve(true);
 
