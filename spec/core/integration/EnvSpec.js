@@ -616,6 +616,58 @@ describe("Env integration", function() {
 
       env.execute();
     });
+
+    it('reports the duration of the suite', function(done) {
+      var duration;
+
+      env.addReporter({
+        suiteDone: function(result) {
+          expect(duration).toBeUndefined();
+          duration = result.duration;
+        },
+        jasmineDone: function() {
+          expect(duration).toBeGreaterThanOrEqual(10);
+          done();
+        }
+      });
+
+      env.describe('my suite', function() {
+        env.it('takes time', function(done) {
+          // We can't just use the mock clock here because the timer is designed
+          // to record real time even when the mock clock is installed.
+          setTimeout(done, 10);
+        })
+      });
+
+      env.execute();
+    });
+  });
+
+  describe('specDone reporting', function() {
+    it('reports the duration of the spec', function(done) {
+      var duration;
+
+      env.addReporter({
+        specDone: function(result) {
+          expect(duration).toBeUndefined();
+          duration = result.duration;
+        },
+        jasmineDone: function() {
+          expect(duration).toBeGreaterThanOrEqual(10);
+          done();
+        }
+      });
+
+      env.describe('my suite', function() {
+        env.it('takes time', function(done) {
+          // We can't just use the mock clock here because the timer is designed
+          // to record real time even when the mock clock is installed.
+          setTimeout(done, 10);
+        })
+      });
+
+      env.execute();
+    });
   });
 
   it('reports expectation failures in global beforeAll', function(done) {

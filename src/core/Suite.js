@@ -14,7 +14,7 @@ getJasmineRequireObj().Suite = function(j$) {
     this.beforeAllFns = [];
     this.afterAllFns = [];
 
-    this.timer = attrs.timer || j$.noopTimer;
+    this.timer = attrs.timer || new j$.Timer();
 
     this.children = [];
 
