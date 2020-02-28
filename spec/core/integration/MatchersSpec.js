@@ -477,9 +477,9 @@ describe('Matchers (Integration)', function() {
     verifyFailsWithCustomObjectFormatters({
       formatter: function(val) {
         if (val === 5) {
-          return "five"
+          return 'five';
         } else if (val === 4) {
-          return "four"
+          return 'four';
         }
       },
       expectations: function(env) {
@@ -487,6 +487,25 @@ describe('Matchers (Integration)', function() {
       },
       expectedMessage: 'Expected $[0].foo = four to equal five.'
     });
+  });
+
+  describe('toHaveSize', function() {
+    verifyPasses(function(env) {
+      env.expect(['a','b']).toHaveSize(2);
+    });
+
+    verifyFails(function(env) {
+      env.expect(['a','b']).toHaveSize(1);
+    });
+
+    verifyPasses(function(env) {
+      env.expect({a: 1, b: 2}).toHaveSize(2);
+    });
+
+    verifyFails(function(env) {
+      env.expect({a: 1, b: 2}).toHaveSize(1);
+    });
+
   });
 
   describe('toHaveBeenCalled', function() {
