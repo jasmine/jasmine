@@ -47,6 +47,9 @@ describe('Matchers (Integration)', function() {
         expect(result.failedExpectations[0].message)
           .withContext('Failed with a thrown error rather than a matcher failure')
           .not.toMatch(/^Error: /);
+        expect(result.failedExpectations[0].message)
+          .withContext('Failed with a thrown type error rather than a matcher failure')
+          .not.toMatch(/^TypeError: /);
         expect(result.failedExpectations[0].matcherName).withContext('Matcher name')
           .not.toEqual('');
       };
@@ -477,15 +480,81 @@ describe('Matchers (Integration)', function() {
     verifyFailsWithCustomObjectFormatters({
       formatter: function(val) {
         if (val === 5) {
-          return "five"
+          return 'five';
         } else if (val === 4) {
-          return "four"
+          return 'four';
         }
       },
       expectations: function(env) {
         env.expect([{foo: 4}]).toEqual([{foo: 5}]);
       },
       expectedMessage: 'Expected $[0].foo = four to equal five.'
+    });
+  });
+
+  describe('toHaveSize', function() {
+    verifyPasses(function(env) {
+      env.expect(['a','b']).toHaveSize(2);
+    });
+    verifyFails(function(env) {
+      env.expect(['a','b']).toHaveSize(1);
+    });
+
+    verifyPasses(function(env) {
+      env.expect({a: 1, b: 2}).toHaveSize(2);
+    });
+    verifyFails(function(env) {
+      env.expect({a: 1, b: 2}).toHaveSize(1);
+    });
+
+    verifyPasses(function(env) {
+      env.expect({a: 1, b: 2, length: 5}).toHaveSize(5);
+    });
+    verifyFails(function(env) {
+      env.expect({a: 1, b: 2, length: 5}).toHaveSize(1);
+    });
+
+    verifyPasses(function(env) {
+      env.expect('ab').toHaveSize(2);
+    });
+    verifyFails(function(env) {
+      env.expect('ab').toHaveSize(1);
+    });
+
+    verifyPasses(function(env) {
+      var map = new Map();
+      map.set('a',1);
+      map.set('b',2);
+      env.expect(map).toHaveSize(2);
+    });
+    verifyFails(function(env) {
+      var map = new Map();
+      map.set('a',1);
+      map.set('b',2);
+      env.expect(map).toHaveSize(1);
+    });
+
+    verifyPasses(function(env) {
+      var set = new Set();
+      set.add('a');
+      set.add('b');
+      env.expect(set).toHaveSize(2);
+    });
+    verifyFails(function(env) {
+      var set = new Set();
+      set.add('a');
+      set.add('b');
+      env.expect(set).toHaveSize(1);
+    });
+
+    verifyFails(function(env) {
+      env.expect(new WeakSet()).toHaveSize(1);
+    });
+    verifyFails(function(env) {
+      env.expect(new WeakMap()).toHaveSize(1);
+    });
+    verifyFails(function(env) {
+      env.expect(new DataView(new ArrayBuffer(128))).toHaveSize(1);
     });
   });
 
