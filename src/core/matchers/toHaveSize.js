@@ -18,7 +18,7 @@ getJasmineRequireObj().toHaveSize = function(j$) {
           simpleEqualityTesters = [function(a, b) {
             return a == b;
           }],
-          diffBuilder = j$.DiffBuilder({prettyPrinter: matchersUtil.pp});
+          diffBuilder = j$.DiffBuilder();
 
         // Avoid misleading collections size matching
         if (actual instanceof WeakSet
