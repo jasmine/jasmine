@@ -15,6 +15,9 @@ getJasmineRequireObj().toHaveSize = function(j$) {
         var result = {
             pass: false
           },
+          simpleEqualityTesters = [function(a, b) {
+            return a == b;
+          }],
           diffBuilder = j$.DiffBuilder({prettyPrinter: matchersUtil.pp});
 
         // Avoid misleading collections size matching
@@ -27,14 +30,14 @@ getJasmineRequireObj().toHaveSize = function(j$) {
 
         // Ref https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
         if (Array.isArray(actual) || isArrayLike(actual))
-          result.pass = matchersUtil.equals(actual.length, expected, diffBuilder);
+          result.pass = matchersUtil.equals(actual.length, expected, simpleEqualityTesters, diffBuilder);
         else if ( actual instanceof String || typeof actual === 'string')
-          result.pass =  matchersUtil.equals(actual.length, expected, diffBuilder);
+          result.pass =  matchersUtil.equals(actual.length, expected, simpleEqualityTesters, diffBuilder);
         else if (actual instanceof Set || actual instanceof Map)
-          result.pass = matchersUtil.equals(actual.size, expected, diffBuilder);
+          result.pass = matchersUtil.equals(actual.size, expected, simpleEqualityTesters, diffBuilder);
         // instanceof Object
         else
-          result.pass = matchersUtil.equals(Object.keys(actual).length, expected, diffBuilder);
+          result.pass = matchersUtil.equals(Object.keys(actual).length, expected, simpleEqualityTesters,  diffBuilder);
 
         if(!result.pass)
           result.message = diffBuilder.getMessage() ;

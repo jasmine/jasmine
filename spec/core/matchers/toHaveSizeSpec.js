@@ -14,7 +14,7 @@ describe('toHaveSize', function() {
 
     result = matcher.compare([1], 1);
 
-    expect(matchersUtil.equals).toHaveBeenCalledWith(1, 1, jasmine.anything());
+    expect(matchersUtil.equals).toHaveBeenCalledWith(1, 1, jasmine.anything(), jasmine.anything());
     expect(result.pass).toBe(true);
   });
 
