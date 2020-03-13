@@ -16,7 +16,7 @@ getJasmineRequireObj().toHaveSize = function(j$) {
             pass: false
           },
           simpleEqualityTesters = [function(a, b) {
-            return a == b;
+            return a === b;
           }],
           diffBuilder = j$.DiffBuilder();
 
