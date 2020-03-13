@@ -425,6 +425,22 @@ describe('Matchers (Integration)', function() {
     });
   });
 
+  describe('toHaveBeenCalledOnceWith', function() {
+    verifyPasses(function(env) {
+      var spy = env.createSpy();
+      spy('5', 3);
+      env.addCustomEqualityTester(function(a, b) {
+        return a.toString() === b.toString();
+      });
+      env.expect(spy).toHaveBeenCalledOnceWith(5, 3);
+    });
+
+    verifyFails(function(env) {
+      var spy = env.createSpy();
+      env.expect(spy).toHaveBeenCalledOnceWith(5, 3);
+    });
+  });
+
   describe('toHaveClass', function() {
     beforeEach(function() {
       this.domHelpers = jasmine.getEnv().domHelpers();
