@@ -496,65 +496,9 @@ describe('Matchers (Integration)', function() {
     verifyPasses(function(env) {
       env.expect(['a','b']).toHaveSize(2);
     });
+
     verifyFails(function(env) {
       env.expect(['a','b']).toHaveSize(1);
-    });
-
-    verifyPasses(function(env) {
-      env.expect({a: 1, b: 2}).toHaveSize(2);
-    });
-    verifyFails(function(env) {
-      env.expect({a: 1, b: 2}).toHaveSize(1);
-    });
-
-    verifyPasses(function(env) {
-      env.expect({a: 1, b: 2, length: 5}).toHaveSize(5);
-    });
-    verifyFails(function(env) {
-      env.expect({a: 1, b: 2, length: 5}).toHaveSize(1);
-    });
-
-    verifyPasses(function(env) {
-      env.expect('ab').toHaveSize(2);
-    });
-    verifyFails(function(env) {
-      env.expect('ab').toHaveSize(1);
-    });
-
-    verifyPasses(function(env) {
-      var map = new Map();
-      map.set('a',1);
-      map.set('b',2);
-      env.expect(map).toHaveSize(2);
-    });
-    verifyFails(function(env) {
-      var map = new Map();
-      map.set('a',1);
-      map.set('b',2);
-      env.expect(map).toHaveSize(1);
-    });
-
-    verifyPasses(function(env) {
-      var set = new Set();
-      set.add('a');
-      set.add('b');
-      env.expect(set).toHaveSize(2);
-    });
-    verifyFails(function(env) {
-      var set = new Set();
-      set.add('a');
-      set.add('b');
-      env.expect(set).toHaveSize(1);
-    });
-
-    verifyFails(function(env) {
-      env.expect(new WeakSet()).toHaveSize(1);
-    });
-    verifyFails(function(env) {
-      env.expect(new WeakMap()).toHaveSize(1);
-    });
-    verifyFails(function(env) {
-      env.expect(new DataView(new ArrayBuffer(128))).toHaveSize(1);
     });
   });
 
