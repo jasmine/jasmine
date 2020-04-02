@@ -49,7 +49,7 @@ describe("toHaveBeenCalledOnceWith", function () {
     result = matcher.compare(calledSpy, 'a', 'b');
 
     expect(result.pass).toBe(false);
-    expect(result.message).toEqual("Expected spy called-spy to have been called only once, and with given args:\n  [ 'a', 'b' ]\nBut the actual calls were:\n  [ 'a', 'c' ].\n\n");
+    expect(result.message).toEqual("Expected spy called-spy to have been called only once, and with given args:\n  [ 'a', 'b' ]\nBut the actual call was:\n  [ 'a', 'c' ].\nExpected $[1] = 'c' to equal 'b'.\n\n");
   });
 
   it("fails when the actual was called multiple times with expected parameters", function () {

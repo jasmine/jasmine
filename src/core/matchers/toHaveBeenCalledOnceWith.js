@@ -36,10 +36,23 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function (j$) {
           };
         }
 
+        function getDiffs() {
+          return actual.calls.allArgs().map(function (argsForCall, callIx) {
+            var diffBuilder = new j$.DiffBuilder();
+            util.equals(argsForCall, expectedArgs, customEqualityTesters, diffBuilder);
+            return diffBuilder.getMessage();
+          });
+        }
+
         function butString() {
-          return actual.calls.count() !== 0
-            ? 'But the actual calls were:\n' + prettyPrintedCalls.join(',\n') + '.\n\n'
-            : 'But it was never called.\n\n';
+          switch (actual.calls.count()) {
+            case 0:
+              return 'But it was never called.\n\n';
+            case 1:
+              return 'But the actual call was:\n' + prettyPrintedCalls.join(',\n') + '.\n' + getDiffs().join('\n') + '\n\n';
+            default:
+              return 'But the actual calls were:\n' + prettyPrintedCalls.join(',\n') + '.\n\n';
+          }
         }
 
         return {
