@@ -31,7 +31,7 @@ describe('PrettyPrinter (HTML Dependent)', function() {
       }
       // Different versions of FF produce different error messages.
       expect(pp(err)).toMatch(
-        /Not enough arguments|CustomEvent requires at least 1 argument, but only 0 were passed/
+        /Not enough arguments|CustomEvent.*only 0.*passed/
       );
     }
   });
