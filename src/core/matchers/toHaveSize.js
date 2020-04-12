@@ -16,11 +16,11 @@ getJasmineRequireObj().toHaveSize = function(j$) {
             pass: false
           };
 
-        if (j$.isA_('WeakSet', actual) || j$.isA_('WeakMap', actual) || j$.isA_('DataView', actual)) {
+        if (j$.isA_('WeakSet', actual) || j$.isWeakMap(actual) || j$.isDataView(actual)) {
           throw new Error('Cannot get size of ' + actual + '.');
         }
 
-        if (actual instanceof Set || actual instanceof Map) {
+        if (j$.isSet(actual) || j$.isMap(actual)) {
           result.pass = actual.size === expected;
         } else if (isLength(actual.length)) {
           result.pass = actual.length === expected;

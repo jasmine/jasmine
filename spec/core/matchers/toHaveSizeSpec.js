@@ -110,6 +110,7 @@ describe('toHaveSize', function() {
   });
 
   it('throws an error for WeakSet', function() {
+    jasmine.getEnv().requireWeakSets();
     var matcher = jasmineUnderTest.matchers.toHaveSize();
 
     expect(function() {
@@ -118,11 +119,12 @@ describe('toHaveSize', function() {
   });
 
   it('throws an error for WeakMap', function() {
+    jasmine.getEnv().requireWeakMaps();
     var matcher = jasmineUnderTest.matchers.toHaveSize();
 
     expect(function() {
       matcher.compare(new WeakMap(), 2);
-    }).toThrowError('Cannot get size of [object WeakMap].');
+    }).toThrowError(/Cannot get size of \[object (WeakMap|Object)\]\./);
   });
 
   it('throws an error for DataView', function() {
@@ -130,6 +132,6 @@ describe('toHaveSize', function() {
 
     expect(function() {
       matcher.compare(new DataView(new ArrayBuffer(128)), 2);
-    }).toThrowError('Cannot get size of [object DataView].');
+    }).toThrowError(/Cannot get size of \[object (DataView|Object)\]\./);
   });
 });
