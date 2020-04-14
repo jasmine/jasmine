@@ -616,6 +616,58 @@ describe("Env integration", function() {
 
       env.execute();
     });
+
+    it('reports the duration of the suite', function(done) {
+      var duration;
+
+      env.addReporter({
+        suiteDone: function(result) {
+          expect(duration).toBeUndefined();
+          duration = result.duration;
+        },
+        jasmineDone: function() {
+          expect(duration).toBeGreaterThanOrEqual(10);
+          done();
+        }
+      });
+
+      env.describe('my suite', function() {
+        env.it('takes time', function(done) {
+          // We can't just use the mock clock here because the timer is designed
+          // to record real time even when the mock clock is installed.
+          setTimeout(done, 10);
+        })
+      });
+
+      env.execute();
+    });
+  });
+
+  describe('specDone reporting', function() {
+    it('reports the duration of the spec', function(done) {
+      var duration;
+
+      env.addReporter({
+        specDone: function(result) {
+          expect(duration).toBeUndefined();
+          duration = result.duration;
+        },
+        jasmineDone: function() {
+          expect(duration).toBeGreaterThanOrEqual(10);
+          done();
+        }
+      });
+
+      env.describe('my suite', function() {
+        env.it('takes time', function(done) {
+          // We can't just use the mock clock here because the timer is designed
+          // to record real time even when the mock clock is installed.
+          setTimeout(done, 10);
+        })
+      });
+
+      env.execute();
+    });
   });
 
   it('reports expectation failures in global beforeAll', function(done) {
@@ -808,6 +860,31 @@ describe("Env integration", function() {
       expect(originalFunctionWasCalled).toEqual(true);
     });
 
+    env.it("works with constructors when using callThrough spy strategy", function() {
+      function MyClass(foo) {
+        if (!(this instanceof MyClass)) throw new Error('You must use the new keyword.');
+        this.foo = foo;
+      }
+      var subject = { MyClass: MyClass };
+      var spy = env.spyOn(subject, 'MyClass').and.callThrough();
+
+      expect(function() {
+        var result = new spy('hello world');
+        expect(result instanceof MyClass).toBeTruthy();
+        expect(result.foo).toEqual('hello world');
+      }).not.toThrow();
+
+      expect(function() {
+        var result = new spy('passing', 'extra', 'arguments', 'to', 'constructor');
+        expect(result instanceof MyClass).toBeTruthy();
+        expect(result.foo).toEqual('passing');
+      }).not.toThrow();
+
+      expect(function() {
+        spy('hello world');
+      }).toThrowError('You must use the new keyword.');
+    });
+
     env.execute();
   });
 
@@ -821,8 +898,8 @@ describe("Env integration", function() {
     env.allowRespy(true);
     env.addReporter({ jasmineDone: done });
 
-    env.describe('test suite', function(){
-      env.it('spec 0', function(){
+    env.describe('test suite', function() {
+      env.it('spec 0', function() {
         env.spyOn(foo,'bar');
 
         var error = null;
@@ -2582,6 +2659,35 @@ describe("Env integration", function() {
       }
     });
 
+    env.execute();
+  });
+
+  it("supports asymmetric equality testers that take a matchersUtil", function(done) {
+    var env = new jasmineUnderTest.Env();
+
+    env.it("spec using custom asymmetric equality tester", function() {
+      var customEqualityFn = function(a, b) {
+        if (a === 2 && b === "two") {
+          return true;
+        }
+      };
+      var arrayWithFirstElement = function(sample) {
+        return {
+          asymmetricMatch: function (actual, matchersUtil) {
+            return matchersUtil.equals(sample, actual[0]);
+          }
+        };
+      };
+
+      env.addCustomEqualityTester(customEqualityFn);
+      env.expect(["two"]).toEqual(arrayWithFirstElement(2));
+    });
+
+    var specExpectations = function(result) {
+      expect(result.status).toEqual('passed');
+    };
+
+    env.addReporter({ specDone: specExpectations, jasmineDone: done });
     env.execute();
   });
 });

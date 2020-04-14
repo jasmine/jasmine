@@ -47,4 +47,10 @@
       env.pending('Browser has incomplete or missing support for Sets');
     }
   };
+
+  env.requireWeakSets = function() {
+    if (typeof WeakSet === 'undefined') {
+      env.pending('Browser does not have support for WeakSet');
+    }
+  };
 })(jasmine.getEnv());

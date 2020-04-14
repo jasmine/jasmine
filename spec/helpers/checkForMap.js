@@ -43,4 +43,10 @@
       env.pending('Browser has incomplete or missing support for Maps');
     }
   };
+
+  env.requireWeakMaps = function() {
+    if (typeof WeakMap === 'undefined') {
+      env.pending('Browser does not have support for WeakMap');
+    }
+  };
 })(jasmine.getEnv());

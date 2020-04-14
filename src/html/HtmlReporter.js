@@ -321,9 +321,11 @@ jasmineRequire.HtmlReporter = function(j$) {
 
         find('.jasmine-failures-menu').onclick = function() {
           setMenuModeTo('jasmine-failure-list');
+          return false;
         };
         find('.jasmine-spec-list-menu').onclick = function() {
           setMenuModeTo('jasmine-spec-list');
+          return false;
         };
 
         setMenuModeTo('jasmine-failure-list');

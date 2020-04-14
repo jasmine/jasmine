@@ -31,7 +31,7 @@ getJasmineRequireObj().Spec = function(j$) {
         return true;
       };
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
-    this.timer = attrs.timer || j$.noopTimer;
+    this.timer = attrs.timer || new j$.Timer();
 
     if (!this.queueableFn.fn) {
       this.pend();
@@ -96,6 +96,7 @@ getJasmineRequireObj().Spec = function(j$) {
       fn: function(done) {
         self.queueableFn.fn = null;
         self.result.status = self.status(excluded, failSpecWithNoExp);
+        self.result.duration = self.timer.elapsed();
         self.resultCallback(self.result, done);
       }
     };
@@ -111,7 +112,6 @@ getJasmineRequireObj().Spec = function(j$) {
         self.onException.apply(self, arguments);
       },
       onComplete: function() {
-        self.result.duration = self.timer.elapsed();
         onComplete(
           self.result.status === 'failed' &&
             new j$.StopExecutionError('spec failed')

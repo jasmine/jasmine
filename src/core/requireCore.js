@@ -49,15 +49,23 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.Expector = jRequire.Expector(j$);
     j$.Expectation = jRequire.Expectation(j$);
     j$.buildExpectationResult = jRequire.buildExpectationResult(j$);
-    j$.noopTimer = jRequire.noopTimer();
     j$.JsApiReporter = jRequire.JsApiReporter(j$);
-    j$.matchersUtil = jRequire.matchersUtil(j$);
+    j$.asymmetricEqualityTesterArgCompatShim = jRequire.asymmetricEqualityTesterArgCompatShim(
+      j$
+    );
+    j$.makePrettyPrinter = jRequire.makePrettyPrinter(j$);
+    j$.pp = j$.makePrettyPrinter();
+    j$.MatchersUtil = jRequire.MatchersUtil(j$);
+    j$.matchersUtil = new j$.MatchersUtil({
+      customTesters: [],
+      pp: j$.pp
+    });
+
     j$.ObjectContaining = jRequire.ObjectContaining(j$);
     j$.ArrayContaining = jRequire.ArrayContaining(j$);
     j$.ArrayWithExactContents = jRequire.ArrayWithExactContents(j$);
     j$.MapContaining = jRequire.MapContaining(j$);
     j$.SetContaining = jRequire.SetContaining(j$);
-    j$.pp = jRequire.pp(j$);
     j$.QueueRunner = jRequire.QueueRunner(j$);
     j$.ReportDispatcher = jRequire.ReportDispatcher(j$);
     j$.Spec = jRequire.Spec(j$);
@@ -75,6 +83,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.DiffBuilder = jRequire.DiffBuilder(j$);
     j$.NullDiffBuilder = jRequire.NullDiffBuilder(j$);
     j$.ObjectPath = jRequire.ObjectPath(j$);
+    j$.MismatchTree = jRequire.MismatchTree(j$);
     j$.GlobalErrors = jRequire.GlobalErrors(j$);
 
     j$.Truthy = jRequire.Truthy(j$);

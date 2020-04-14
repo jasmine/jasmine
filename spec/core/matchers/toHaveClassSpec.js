@@ -27,7 +27,9 @@ describe('toHaveClass', function() {
   });
 
   it('throws an exception when actual is not a DOM element', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveClass();
+    var matcher = jasmineUnderTest.matchers.toHaveClass({
+      pp: jasmineUnderTest.makePrettyPrinter()
+    });
 
     expect(function() {
       matcher.compare('x', 'foo');

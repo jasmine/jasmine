@@ -1,10 +1,7 @@
 (function(env) {
   env.registerIntegrationMatchers = function() {
     jasmine.addMatchers({
-      toHaveFailedExpectationsForRunnable: function(
-        util,
-        customeEqualityTesters
-      ) {
+      toHaveFailedExpectationsForRunnable: function() {
         return {
           compare: function(actual, fullName, expectedFailures) {
             var foundRunnable = false,

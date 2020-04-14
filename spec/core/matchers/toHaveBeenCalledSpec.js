@@ -21,7 +21,9 @@ describe("toHaveBeenCalled", function() {
   });
 
   it("throws an exception when the actual is not a spy", function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalled(),
+    var matcher = jasmineUnderTest.matchers.toHaveBeenCalled({
+        pp: jasmineUnderTest.makePrettyPrinter()
+      }),
       fn = function() {};
 
     expect(function() { matcher.compare(fn) }).toThrowError(Error, /Expected a spy, but got Function./);

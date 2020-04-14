@@ -16,7 +16,7 @@ getJasmineRequireObj().ExpectationFilterChain = function() {
     result,
     matcherName,
     args,
-    util
+    matchersUtil
   ) {
     return this.callFirst_('buildFailureMessage', arguments).result;
   };
