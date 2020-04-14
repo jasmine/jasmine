@@ -30,4 +30,36 @@ describe('base helpers', function() {
       }, 100);
     });
   });
+
+  describe('isAsymmetricEqualityTester_', function() {
+    it('returns false when the argument is falsy', function() {
+      expect(jasmineUnderTest.isAsymmetricEqualityTester_(null)).toBe(false);
+    });
+
+    it('returns false when the argument does not have a asymmetricMatch property', function() {
+      var obj = {};
+      expect(jasmineUnderTest.isAsymmetricEqualityTester_(obj)).toBe(false);
+    });
+
+    it("returns false when the argument's asymmetricMatch is not a function", function() {
+      var obj = { asymmetricMatch: 'yes' };
+      expect(jasmineUnderTest.isAsymmetricEqualityTester_(obj)).toBe(false);
+    });
+
+    it("returns true when the argument's asymmetricMatch is a function", function() {
+      var obj = { asymmetricMatch: function() {} };
+      expect(jasmineUnderTest.isAsymmetricEqualityTester_(obj)).toBe(true);
+    });
+  });
+
+  describe('isSet', function() {
+    it('returns true when the object is a Set', function() {
+      jasmine.getEnv().requireFunctioningSets();
+      expect(jasmineUnderTest.isSet(new Set())).toBe(true);
+    });
+
+    it('returns false when the object is not a Set', function() {
+      expect(jasmineUnderTest.isSet({})).toBe(false);
+    });
+  });
 });

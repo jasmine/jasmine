@@ -111,6 +111,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return false;
   };
 
+  j$.isAsymmetricEqualityTester_ = function(obj) {
+    return obj ? j$.isA_('Function', obj.asymmetricMatch) : false;
+  };
+
   j$.getType_ = function(value) {
     return Object.prototype.toString.apply(value);
   };
@@ -141,6 +145,24 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       typeof obj !== 'undefined' &&
       typeof jasmineGlobal.Set !== 'undefined' &&
       obj.constructor === jasmineGlobal.Set
+    );
+  };
+
+  j$.isWeakMap = function(obj) {
+    return (
+      obj !== null &&
+      typeof obj !== 'undefined' &&
+      typeof jasmineGlobal.WeakMap !== 'undefined' &&
+      obj.constructor === jasmineGlobal.WeakMap
+    );
+  };
+
+  j$.isDataView = function(obj) {
+    return (
+      obj !== null &&
+      typeof obj !== 'undefined' &&
+      typeof jasmineGlobal.DataView !== 'undefined' &&
+      obj.constructor === jasmineGlobal.DataView
     );
   };
 

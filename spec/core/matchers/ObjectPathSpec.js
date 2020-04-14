@@ -39,5 +39,5 @@ describe('ObjectPath', function() {
 
     expect(path.toString()).toEqual('$.foo');
     expect(root.toString()).toEqual('');
-  })
+  });
 });

@@ -10,7 +10,9 @@ describe('toBeInstanceOf', function() {
     });
 
     it('passes for NaN', function() {
-      var matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      var matcher = jasmineUnderTest.matchers.toBeInstanceOf({
+        pp: jasmineUnderTest.makePrettyPrinter()
+      });
       var result = matcher.compare(NaN, Number);
       expect(result).toEqual({
         pass: true,
@@ -156,7 +158,9 @@ describe('toBeInstanceOf', function() {
     it('passes for objects with no constructor', function() {
       var object = Object.create(null);
 
-      var matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      var matcher = jasmineUnderTest.matchers.toBeInstanceOf({
+        pp: jasmineUnderTest.makePrettyPrinter()
+      });
       var result = matcher.compare(object, Object);
       expect(result).toEqual({
         pass: true,
@@ -219,7 +223,9 @@ describe('toBeInstanceOf', function() {
   });
 
   it('raises an error if missing an expected value', function() {
-    var matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+    var matcher = jasmineUnderTest.matchers.toBeInstanceOf({
+      pp: jasmineUnderTest.makePrettyPrinter()
+    });
     expect(function() {
       matcher.compare({}, undefined);
     }).toThrowError('<toBeInstanceOf> : Expected value is not a constructor function\n' +

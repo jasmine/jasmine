@@ -320,6 +320,20 @@ getJasmineRequireObj().interface = function(jasmine, env) {
   };
 
   /**
+   * Add a custom object formatter for the current scope of specs.
+   *
+   * _Note:_ This is only callable from within a {@link beforeEach}, {@link it}, or {@link beforeAll}.
+   * @name jasmine.addCustomObjectFormatter
+   * @since 3.6.0
+   * @function
+   * @param {Function} formatter - A function which takes a value to format and returns a string if it knows how to format it, and `undefined` otherwise.
+   * @see custom_object_formatter
+   */
+  jasmine.addCustomObjectFormatter = function(formatter) {
+    return env.addCustomObjectFormatter(formatter);
+  };
+
+  /**
    * Get the currently booted mock {Clock} for this Jasmine environment.
    * @name jasmine.clock
    * @since 2.0.0

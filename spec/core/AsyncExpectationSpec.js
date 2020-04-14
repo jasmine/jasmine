@@ -24,8 +24,9 @@ describe('AsyncExpectation', function() {
 
       var addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.resolve(),
+        pp = jasmineUnderTest.makePrettyPrinter(),
         expectation = jasmineUnderTest.Expectation.asyncFactory({
-          util: jasmineUnderTest.matchersUtil,
+          matchersUtil: new jasmineUnderTest.MatchersUtil({ pp: pp }),
           actual: actual,
           addExpectationResult: addExpectationResult
         });
@@ -47,7 +48,9 @@ describe('AsyncExpectation', function() {
       var addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.reject(),
         expectation = jasmineUnderTest.Expectation.asyncFactory({
-          util: jasmineUnderTest.matchersUtil,
+          matchersUtil: new jasmineUnderTest.MatchersUtil({
+            pp: function() {}
+          }),
           actual: actual,
           addExpectationResult: addExpectationResult
         });
@@ -91,7 +94,7 @@ describe('AsyncExpectation', function() {
     it('prepends the context to the generated failure message', function() {
       jasmine.getEnv().requirePromises();
 
-      var util = {
+      var matchersUtil = {
           buildFailureMessage: function() {
             return 'failure message';
           }
@@ -100,7 +103,7 @@ describe('AsyncExpectation', function() {
         expectation = jasmineUnderTest.Expectation.asyncFactory({
           actual: Promise.reject('rejected'),
           addExpectationResult: addExpectationResult,
-          util: util
+          matchersUtil: matchersUtil
         });
 
       return expectation
@@ -119,16 +122,17 @@ describe('AsyncExpectation', function() {
     it('prepends the context to a custom failure message', function() {
       jasmine.getEnv().requirePromises();
 
-      var util = {
+      var matchersUtil = {
           buildFailureMessage: function() {
             return 'failure message';
-          }
+          },
+          pp: jasmineUnderTest.makePrettyPrinter()
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = jasmineUnderTest.Expectation.asyncFactory({
           actual: Promise.reject('b'),
           addExpectationResult: addExpectationResult,
-          util: util
+          matchersUtil: matchersUtil
         });
 
       return expectation
@@ -149,7 +153,7 @@ describe('AsyncExpectation', function() {
       pending('should actually work, but no custom matchers for async yet');
       jasmine.getEnv().requirePromises();
 
-      var util = {
+      var matchersUtil = {
           buildFailureMessage: function() {
             return 'failure message';
           }
@@ -159,7 +163,7 @@ describe('AsyncExpectation', function() {
         expectation = jasmineUnderTest.Expectation.asyncFactory({
           actual: actual,
           addExpectationResult: addExpectationResult,
-          util: util
+          matchersUtil: matchersUtil
         });
 
       return expectation
@@ -180,10 +184,11 @@ describe('AsyncExpectation', function() {
 
       var addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.resolve(),
+        pp = jasmineUnderTest.makePrettyPrinter(),
         expectation = jasmineUnderTest.Expectation.asyncFactory({
           actual: actual,
           addExpectationResult: addExpectationResult,
-          util: jasmineUnderTest.matchersUtil
+          matchersUtil: new jasmineUnderTest.MatchersUtil({ pp: pp })
         });
 
       return expectation
@@ -208,7 +213,9 @@ describe('AsyncExpectation', function() {
         expectation = jasmineUnderTest.Expectation.asyncFactory({
           actual: actual,
           addExpectationResult: addExpectationResult,
-          util: jasmineUnderTest.matchersUtil
+          matchersUtil: new jasmineUnderTest.MatchersUtil({
+            pp: jasmineUnderTest.makePrettyPrinter()
+          })
         });
 
       return expectation
@@ -256,7 +263,7 @@ describe('AsyncExpectation', function() {
         matchers = {
           toFoo: matcherFactory
         },
-        util = {
+        matchersUtil = {
           buildFailureMessage: jasmine.createSpy('buildFailureMessage')
         },
         customEqualityTesters = ['a'],
@@ -264,7 +271,7 @@ describe('AsyncExpectation', function() {
         expectation;
 
       expectation = jasmineUnderTest.Expectation.asyncFactory({
-        util: util,
+        matchersUtil: matchersUtil,
         customAsyncMatchers: matchers,
         customEqualityTesters: customEqualityTesters,
         actual: 'an actual',
@@ -273,7 +280,7 @@ describe('AsyncExpectation', function() {
 
       return expectation.toFoo('hello').then(function() {
         expect(matcherFactory).toHaveBeenCalledWith(
-          util,
+          matchersUtil,
           customEqualityTesters
         );
       });
@@ -292,14 +299,14 @@ describe('AsyncExpectation', function() {
             };
           }
         },
-        util = {
+        matchersUtil = {
           buildFailureMessage: jasmine.createSpy('buildFailureMessage')
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation;
 
       expectation = jasmineUnderTest.Expectation.asyncFactory({
-        util: util,
+        matchersUtil: matchersUtil,
         customAsyncMatchers: matchers,
         actual: 'an actual',
         addExpectationResult: addExpectationResult
@@ -322,7 +329,7 @@ describe('AsyncExpectation', function() {
             };
           }
         },
-        util = {
+        matchersUtil = {
           buildFailureMessage: jasmine.createSpy('buildFailureMessage')
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
@@ -335,7 +342,7 @@ describe('AsyncExpectation', function() {
 
       expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
-        util: util,
+        matchersUtil: matchersUtil,
         actual: 'an actual',
         addExpectationResult: addExpectationResult
       });
@@ -365,7 +372,7 @@ describe('AsyncExpectation', function() {
             };
           }
         },
-        util = {
+        matchersUtil = {
           buildFailureMessage: function() {
             return '';
           }
@@ -380,7 +387,7 @@ describe('AsyncExpectation', function() {
 
       expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
-        util: util,
+        matchersUtil: matchersUtil,
         actual: 'an actual',
         addExpectationResult: addExpectationResult
       });
@@ -536,7 +543,7 @@ describe('AsyncExpectation', function() {
             };
           }
         },
-        util = {
+        matchersUtil = {
           buildFailureMessage: function() {
             return 'default message';
           }
@@ -553,7 +560,7 @@ describe('AsyncExpectation', function() {
       expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
         actual: 'an actual',
-        util: util,
+        matchersUtil: matchersUtil,
         addExpectationResult: addExpectationResult
       }).not;
 

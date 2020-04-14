@@ -140,6 +140,28 @@ describe('SpyStrategy', function() {
         .catch(done.fail);
     });
 
+    it('allows an empty resolved promise to be returned', function(done) {
+      jasmine.getEnv().requirePromises();
+
+      var originalFn = jasmine.createSpy('original'),
+        getPromise = function() {
+          return Promise;
+        },
+        spyStrategy = new jasmineUnderTest.SpyStrategy({
+          fn: originalFn,
+          getPromise: getPromise
+        });
+
+      spyStrategy.resolveTo();
+      spyStrategy
+        .exec()
+        .then(function(returnValue) {
+          expect(returnValue).toBe();
+          done();
+        })
+        .catch(done.fail);
+    });
+
     it('fails if promises are not available', function() {
       var originalFn = jasmine.createSpy('original'),
         spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
@@ -171,6 +193,29 @@ describe('SpyStrategy', function() {
         .then(done.fail)
         .catch(function(error) {
           expect(error).toEqual(new Error('oops'));
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('allows an empty rejected promise to be returned', function(done) {
+      jasmine.getEnv().requirePromises();
+
+      var originalFn = jasmine.createSpy('original'),
+        getPromise = function() {
+          return Promise;
+        },
+        spyStrategy = new jasmineUnderTest.SpyStrategy({
+          fn: originalFn,
+          getPromise: getPromise
+        });
+
+      spyStrategy.rejectWith();
+      spyStrategy
+        .exec()
+        .then(done.fail)
+        .catch(function(error) {
+          expect(error).toBe();
           done();
         })
         .catch(done.fail);

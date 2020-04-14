@@ -23,7 +23,7 @@ describe('npm package', function() {
 
   beforeEach(function() {
     jasmine.addMatchers({
-      toExistInPath: function(util, customEquality) {
+      toExistInPath: function() {
         return {
           compare: function(actual, expected) {
             var fullPath = path.resolve(expected, actual);
