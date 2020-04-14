@@ -14,11 +14,10 @@ describe("toHaveBeenCalledOnceWith", function () {
   });
 
   it("passes through the custom equality testers", function () {
-    var util = {
-      contains: jasmine.createSpy('delegated-contains').and.returnValue(false),
-      equals: jasmineUnderTest.matchersUtil.equals
-    },
-      customEqualityTesters = [function () { return true; }],
+    var util = jasmineUnderTest.matchersUtil;
+    spyOn(util, 'contains').and.returnValue(false);
+
+    var customEqualityTesters = [function () { return true; }],
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util, customEqualityTesters),
       calledSpy = new jasmineUnderTest.Spy('called-spy');
 
