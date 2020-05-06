@@ -48,7 +48,7 @@ getJasmineRequireObj().Spec = function(j$) {
      * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
      * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
      * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
-     * @property {Object} properties - user-supplied key-value pairs.
+     * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
      */
     this.result = {
       id: this.id,

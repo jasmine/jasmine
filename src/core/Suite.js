@@ -27,7 +27,7 @@ getJasmineRequireObj().Suite = function(j$) {
      * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred on this suite.
      * @property {String} status - Once the suite has completed, this string represents the pass/fail status of this suite.
      * @property {number} duration - The time in ms for Suite execution, including any before/afterAll, before/afterEach.
-     * @property {Object} properties - user-supplied key-value pairs.
+     * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSuiteProperty}
      */
     this.result = {
       id: this.id,
