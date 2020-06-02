@@ -70,7 +70,7 @@ describe('SpyStrategy', function() {
     expect(originalFn).not.toHaveBeenCalled();
   });
 
-  it('allows a non-Error to be thrown, wrapping it into an exception when executed', function() {
+  it('allows a string to be thrown, wrapping it into an exception when executed', function() {
     var originalFn = jasmine.createSpy('original'),
       spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
 
@@ -79,6 +79,18 @@ describe('SpyStrategy', function() {
     expect(function() {
       spyStrategy.exec();
     }).toThrowError(Error, 'bar');
+    expect(originalFn).not.toHaveBeenCalled();
+  });
+
+  it('allows a non-Error to be thrown when executed', function() {
+    var originalFn = jasmine.createSpy('original'),
+      spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
+
+    spyStrategy.throwError({ code: 'ESRCH' });
+
+    expect(function() {
+      spyStrategy.exec();
+    }).toThrow({ code: 'ESRCH' });
     expect(originalFn).not.toHaveBeenCalled();
   });
 
