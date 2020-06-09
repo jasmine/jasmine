@@ -482,13 +482,13 @@ getJasmineRequireObj().Env = function(j$) {
      * @since 2.3.0
      * @function
      * @param {Boolean} value Whether to throw when a expectation fails
-     * @deprecated Use the `oneFailurePerSpec` option with {@link Env#configure}
+     * @deprecated Use the `failFast` option with {@link Env#configure}
      */
     this.throwOnExpectationFailure = function(value) {
       this.deprecated(
         'Setting throwOnExpectationFailure directly on Env is deprecated and will be removed in a future version of Jasmine, please use the oneFailurePerSpec option in `configure`'
       );
-      this.configure({ oneFailurePerSpec: !!value });
+      this.configure({ failFast: !!value });
     };
 
     this.throwingExpectationFailures = function() {
