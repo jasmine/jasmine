@@ -227,7 +227,8 @@ describe('Spec', function() {
         passedExpectations: [],
         deprecationWarnings: [],
         pendingReason: '',
-        duration: jasmine.any(Number)
+        duration: jasmine.any(Number),
+        properties: null
       },
       'things'
     );
@@ -297,6 +298,23 @@ describe('Spec', function() {
 
     spec.execute(function() {});
     expect(duration).toBe(77000);
+  });
+
+  it('should report properties set during the test', function() {
+    var done = jasmine.createSpy('done callback'),
+      spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: jasmine.createSpy('spec body') },
+        catchExceptions: function() {
+          return false;
+        },
+        resultCallback: function() {},
+        queueRunnerFactory: function(attrs) {
+          attrs.onComplete();
+        }
+      });
+    spec.setSpecProperty('a', 4);
+    spec.execute(done);
+    expect(spec.result.properties).toEqual({ a: 4 });
   });
 
   it('#status returns passing by default', function() {

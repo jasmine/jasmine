@@ -148,6 +148,24 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     );
   };
 
+  j$.isWeakMap = function(obj) {
+    return (
+      obj !== null &&
+      typeof obj !== 'undefined' &&
+      typeof jasmineGlobal.WeakMap !== 'undefined' &&
+      obj.constructor === jasmineGlobal.WeakMap
+    );
+  };
+
+  j$.isDataView = function(obj) {
+    return (
+      obj !== null &&
+      typeof obj !== 'undefined' &&
+      typeof jasmineGlobal.DataView !== 'undefined' &&
+      obj.constructor === jasmineGlobal.DataView
+    );
+  };
+
   j$.isPromise = function(obj) {
     return (
       typeof jasmineGlobal.Promise !== 'undefined' &&

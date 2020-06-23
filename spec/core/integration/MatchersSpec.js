@@ -47,6 +47,9 @@ describe('Matchers (Integration)', function() {
         expect(result.failedExpectations[0].message)
           .withContext('Failed with a thrown error rather than a matcher failure')
           .not.toMatch(/^Error: /);
+        expect(result.failedExpectations[0].message)
+          .withContext('Failed with a thrown type error rather than a matcher failure')
+          .not.toMatch(/^TypeError: /);
         expect(result.failedExpectations[0].matcherName).withContext('Matcher name')
           .not.toEqual('');
       };
@@ -477,15 +480,25 @@ describe('Matchers (Integration)', function() {
     verifyFailsWithCustomObjectFormatters({
       formatter: function(val) {
         if (val === 5) {
-          return "five"
+          return 'five';
         } else if (val === 4) {
-          return "four"
+          return 'four';
         }
       },
       expectations: function(env) {
         env.expect([{foo: 4}]).toEqual([{foo: 5}]);
       },
       expectedMessage: 'Expected $[0].foo = four to equal five.'
+    });
+  });
+
+  describe('toHaveSize', function() {
+    verifyPasses(function(env) {
+      env.expect(['a','b']).toHaveSize(2);
+    });
+
+    verifyFails(function(env) {
+      env.expect(['a','b']).toHaveSize(1);
     });
   });
 

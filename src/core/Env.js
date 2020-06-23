@@ -1124,6 +1124,40 @@ getJasmineRequireObj().Env = function(j$) {
       return spec;
     };
 
+    /**
+     * Sets a user-defined property that will be provided to reporters as part of {@link SpecResult#properties}
+     * @name Env#setSpecProperty
+     * @since 3.6.0
+     * @function
+     * @param {String} key The name of the property
+     * @param {*} value The value of the property
+     */
+    this.setSpecProperty = function(key, value) {
+      if (!currentRunnable() || currentRunnable() == currentSuite()) {
+        throw new Error(
+          "'setSpecProperty' was used when there was no current spec"
+        );
+      }
+      currentRunnable().setSpecProperty(key, value);
+    };
+
+    /**
+     * Sets a user-defined property that will be provided to reporters as part of {@link SuiteResult#properties}
+     * @name Env#setSuiteProperty
+     * @since 3.6.0
+     * @function
+     * @param {String} key The name of the property
+     * @param {*} value The value of the property
+     */
+    this.setSuiteProperty = function(key, value) {
+      if (!currentSuite()) {
+        throw new Error(
+          "'setSuiteProperty' was used when there was no current suite"
+        );
+      }
+      currentSuite().setSuiteProperty(key, value);
+    };
+
     this.expect = function(actual) {
       if (!currentRunnable()) {
         throw new Error(
