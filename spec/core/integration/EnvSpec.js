@@ -2000,7 +2000,7 @@ describe("Env integration", function() {
     });
 
     var assertions = function() {
-      expect(exception.message).toBe(`'setSpecProperty' was used when there was no current spec`);
+      expect(exception.message).toBe("'setSpecProperty' was used when there was no current spec");
       done();
     };
 
@@ -2020,10 +2020,10 @@ describe("Env integration", function() {
 
       env.addReporter(reporter);
       env.describe('calls setSuiteProperty', function() {
-        env.beforeEach(() => {
+        env.beforeEach(function() {
           env.setSuiteProperty('b', 'Sweet');
         });
-        env.it('a passing spec', () => {
+        env.it('a passing spec', function() {
           expect.nothing();
         });
       });
@@ -2037,7 +2037,7 @@ describe("Env integration", function() {
     try {
       env.setSuiteProperty('a', 'Bee');
     } catch(e) {
-      expect(e.message).toBe(`'setSuiteProperty' was used when there was no current suite`);
+      expect(e.message).toBe("'setSuiteProperty' was used when there was no current suite");
       done();
     }
   });
