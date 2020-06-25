@@ -109,6 +109,11 @@ describe("matchersUtil", function() {
       expect(matchersUtil.equals(123, 456)).toBe(false);
     });
 
+    it("fails for a Number and a String that have equivalent values", function() {
+      var matchersUtil = new jasmineUnderTest.MatchersUtil();
+      expect(matchersUtil.equals(123, "123")).toBe(false);
+    });
+
     it("passes for Dates that are equivalent", function() {
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
       expect(matchersUtil.equals(new Date("Jan 1, 1970"), new Date("Jan 1, 1970"))).toBe(true);
