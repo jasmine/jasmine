@@ -13,18 +13,17 @@ describe("toHaveBeenCalledOnceWith", function () {
     expect(result.message).toEqual("Expected spy called-spy to have been called 0 times, multiple times, or once, but with arguments different from:\n  [ 'a', 'b' ]\nBut the actual call was:\n  [ 'a', 'b' ].\n\n");
   });
 
-  it("passes through the custom equality testers", function () {
-    var util = jasmineUnderTest.matchersUtil;
-    spyOn(util, 'contains').and.returnValue(false);
-
-    var customEqualityTesters = [function () { return true; }],
-      matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util, customEqualityTesters),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+  it("supports custom equality testers", function () {
+    var customEqualityTesters = [function() { return true; }],
+      matchersUtil = new jasmineUnderTest.MatchersUtil({customTesters: customEqualityTesters}),
+      matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(matchersUtil),
+      calledSpy = new jasmineUnderTest.Spy('called-spy'),
+      result;
 
     calledSpy('a', 'b');
-    matcher.compare(calledSpy, 'a', 'b');
+    result = matcher.compare(calledSpy, 'a', 'a');
 
-    expect(util.contains).toHaveBeenCalledWith([['a', 'b']], ['a', 'b'], customEqualityTesters);
+    expect(result.pass).toBe(true);
   });
 
   it("fails when the actual was never called", function () {
