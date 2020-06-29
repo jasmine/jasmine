@@ -1,6 +1,6 @@
-<a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/master/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a>
+<a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/main/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a>
 
-[![Build Status](https://travis-ci.org/jasmine/jasmine.svg?branch=master)](https://travis-ci.org/jasmine/jasmine)
+[![Build Status](https://travis-ci.org/jasmine/jasmine.svg?branch=main)](https://travis-ci.org/jasmine/jasmine)
 [![Open Source Helpers](https://www.codetriage.com/jasmine/jasmine/badges/users.svg)](https://www.codetriage.com/jasmine/jasmine)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjasmine%2Fjasmine.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjasmine%2Fjasmine?ref=badge_shield)
 
@@ -15,7 +15,7 @@ Upgrading from Jasmine 2.x? Check out the [3.0 release notes](https://github.com
 
 ## Contributing
 
-Please read the [contributors' guide](https://github.com/jasmine/jasmine/blob/master/.github/CONTRIBUTING.md).
+Please read the [contributors' guide](https://github.com/jasmine/jasmine/blob/main/.github/CONTRIBUTING.md).
 
 ## Installation
 
@@ -52,7 +52,7 @@ Add the following to your HTML file:
 
 ## Supported environments
 
-Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Edge, and new Internet Explorer) as well as nodejs. To see the exact version tests are run against look at our [.travis.yml](https://github.com/jasmine/jasmine/blob/master/.travis.yml).
+Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Edge, and new Internet Explorer) as well as nodejs. To see the exact version tests are run against look at our [.travis.yml](https://github.com/jasmine/jasmine/blob/main/.travis.yml).
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/jasmine-js.svg)](https://saucelabs.com/u/jasmine-js)
 

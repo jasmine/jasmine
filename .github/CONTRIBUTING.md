@@ -17,7 +17,7 @@ git clone git@github.com:yourUserName/jasmine.git              # Clone your fork
 cd jasmine                                                     # Change directory
 git remote add upstream https://github.com/jasmine/jasmine.git # Assign original repository to a remote named 'upstream'
 git fetch upstream                                             # Fetch changes not present in your local repository
-git merge upstream/master                                      # Sync local master with upstream repository
+git merge upstream/main                                      # Sync local main with upstream repository
 git checkout -b my-new-feature                                 # Create your feature branch
 git commit -am 'Add some feature'                              # Commit your changes
 git push origin my-new-feature                                 # Push to the branch
@@ -121,7 +121,7 @@ The easiest way to run the tests in **Internet Explorer** is to run a VM that ha
 1. Build `jasmine.js` with `npm run build` and run all specs again - this ensures that your changes self-test well
 1. Revert your changes to `jasmine.js` and `jasmine-html.js`
     * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches
-    * When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into master
+    * When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into main
 
 Note that we use Travis for Continuous Integration. We only accept green pull requests.
 
