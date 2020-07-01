@@ -821,7 +821,7 @@ describe("matchersUtil", function() {
 
         expect(diffBuilder.setRoots).toHaveBeenCalledWith(actual, expected);
         expect(diffBuilder.withPath).toHaveBeenCalledWith('x', jasmine.any(Function));
-        expect(diffBuilder.recordMismatch). toHaveBeenCalledWith();
+        expect(diffBuilder.recordMismatch).toHaveBeenCalledWith();
       });
 
       it("records both objects when the tester does not implement valuesForDiff", function() {
@@ -836,7 +836,7 @@ describe("matchersUtil", function() {
 
         expect(diffBuilder.setRoots).toHaveBeenCalledWith(actual, expected);
         expect(diffBuilder.withPath).toHaveBeenCalledWith('x', jasmine.any(Function));
-        expect(diffBuilder.recordMismatch). toHaveBeenCalledWith();
+        expect(diffBuilder.recordMismatch).toHaveBeenCalledWith();
       });
     });
 

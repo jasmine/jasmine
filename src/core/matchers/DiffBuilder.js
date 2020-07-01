@@ -72,7 +72,7 @@ getJasmineRequireObj().DiffBuilder = function (j$) {
   };
 
   function dereferencePath(objectPath, actual, expected, pp) {
-    var i, asymmetricResult
+    var i, asymmetricResult;
 
     for (i = 0; i < objectPath.components.length; i++) {
       actual = actual[objectPath.components[i]];
