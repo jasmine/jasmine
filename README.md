@@ -52,7 +52,20 @@ Add the following to your HTML file:
 
 ## Supported environments
 
-Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Edge, and new Internet Explorer) as well as nodejs. To see the exact version tests are run against look at our [.travis.yml](https://github.com/jasmine/jasmine/blob/main/.travis.yml).
+Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Edge, and Internet Explorer) as well as nodejs.
+
+| Environment       | Supported versions |
+|-------------------|--------------------|
+| Node              | 8, 10, 12          |
+| Safari            | 8-13               |
+| Chrome            | Evergreen          |
+| Firefox           | Evergreen, 68      |
+| Edge              | Evergreen          |
+| Internet Explorer | 10, 11             |
+
+For evergreen browsers, each version of Jasmine is tested against the version of the browser that is available to us
+at the time of release. Other browsers, as well as older & newer versions of some supported browsers, are likely to work.
+However, Jasmine isn't tested against them and they aren't actively supported. 
 
 ## Support
 
