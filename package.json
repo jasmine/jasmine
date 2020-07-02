@@ -28,7 +28,7 @@
   "devDependencies": {
     "acorn": "^6.0.0",
     "ejs": "^2.5.5",
-    "eslint": "7.3.1",
+    "eslint": "^6.8.0",
     "eslint-plugin-compat": "^3.8.0",
     "express": "^4.16.4",
     "fast-check": "^1.21.0",
