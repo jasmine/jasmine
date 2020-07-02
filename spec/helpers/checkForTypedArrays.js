@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 (function(env) {
   function hasFunctioningTypedArrays() {
     if (typeof Uint32Array === 'undefined') {

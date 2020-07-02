@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 (function(env) {
   env.hasFunctioningMaps = function() {
     if (typeof Map === 'undefined') {

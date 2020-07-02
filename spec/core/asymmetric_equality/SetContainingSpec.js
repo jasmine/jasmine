@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('SetContaining', function() {
   function SetI(iterable) {    // for IE11
     var set = new Set();

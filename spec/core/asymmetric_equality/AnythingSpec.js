@@ -28,7 +28,7 @@ describe("Anything", function() {
 
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(new Map())).toBe(true);
+    expect(anything.asymmetricMatch(new Map())).toBe(true); // eslint-disable-line compat/compat
   });
 
   it("matches a Set", function() {
@@ -36,7 +36,7 @@ describe("Anything", function() {
 
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(new Set())).toBe(true);
+    expect(anything.asymmetricMatch(new Set())).toBe(true); // eslint-disable-line compat/compat
   });
 
   it("matches a TypedArray", function() {
@@ -44,7 +44,7 @@ describe("Anything", function() {
 
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(new Uint32Array([]))).toBe(true);
+    expect(anything.asymmetricMatch(new Uint32Array([]))).toBe(true); // eslint-disable-line compat/compat
   });
 
   it("matches a Symbol", function() {
@@ -52,7 +52,7 @@ describe("Anything", function() {
 
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(Symbol())).toBe(true);
+    expect(anything.asymmetricMatch(Symbol())).toBe(true); // eslint-disable-line compat/compat
   });
 
   it("doesn't match undefined", function() {

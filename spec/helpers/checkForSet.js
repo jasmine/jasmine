@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 (function(env) {
   env.hasFunctioningSets = function() {
     if (typeof Set === 'undefined') {

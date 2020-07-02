@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('toHaveSize', function() {
   'use strict';
 

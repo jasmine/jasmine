@@ -2581,7 +2581,7 @@ describe("Env integration", function() {
 
     function fail(innerDone) {
       var resolve;
-      var p = new Promise(function(res, rej) { resolve = res });
+      var p = new Promise(function(res, rej) { resolve = res }); // eslint-disable-line compat/compat
       env.expectAsync(p).toBeRejected().then(innerDone);
       resolve();
     }
@@ -2613,7 +2613,7 @@ describe("Env integration", function() {
 
     env.it('has an async failure', function() {
       env.addCustomEqualityTester(function() { return true; });
-      var p = Promise.resolve('something');
+      var p = Promise.resolve('something'); // eslint-disable-line compat/compat
       return env.expectAsync(p).toBeResolvedTo('something else');
     });
 
@@ -2639,7 +2639,7 @@ describe("Env integration", function() {
 
     env.it('has an async failure', function() {
       env.addCustomEqualityTester(function() { return true; });
-      var p = Promise.resolve();
+      var p = Promise.resolve(); // eslint-disable-line compat/compat
       return env.expectAsync(p).toBeRejected();
     });
 
@@ -2650,7 +2650,7 @@ describe("Env integration", function() {
     jasmine.getEnv().requirePromises();
 
     var resolve,
-      promise = new Promise(function(res) { resolve = res; });
+      promise = new Promise(function(res) { resolve = res; }); // eslint-disable-line compat/compat
 
     env.describe('a suite', function() {
       env.it('does not wait', function() {
@@ -2698,7 +2698,7 @@ describe("Env integration", function() {
     jasmine.getEnv().requirePromises();
 
     var resolve,
-      promise = new Promise(function(res) { resolve = res; });
+      promise = new Promise(function(res) { resolve = res; }); // eslint-disable-line compat/compat
 
     env.describe('a suite', function() {
       env.afterAll(function() {

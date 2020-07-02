@@ -40,7 +40,7 @@ describe('jasmineUnderTest.util', function() {
 
     beforeEach(function() {
       jasmine.getEnv().requirePromises();
-      mockNativePromise = new Promise(function(res, rej) {});
+      mockNativePromise = new Promise(function(res, rej) {}); // eslint-disable-line compat/compat
       mockPromiseLikeObject = new mockPromiseLike();
     });
 

@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('AsyncExpectation', function() {
   beforeEach(function() {
     jasmineUnderTest.Expectation.addAsyncCoreMatchers(

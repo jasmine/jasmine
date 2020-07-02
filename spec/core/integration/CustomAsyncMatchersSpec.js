@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('Custom Async Matchers (Integration)', function() {
   var env;
 

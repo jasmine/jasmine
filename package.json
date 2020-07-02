@@ -29,6 +29,7 @@
     "acorn": "^6.0.0",
     "ejs": "^2.5.5",
     "eslint": "7.3.1",
+    "eslint-plugin-compat": "^3.8.0",
     "express": "^4.16.4",
     "fast-check": "^1.21.0",
     "fast-glob": "^2.2.6",
@@ -52,6 +53,12 @@
     "singleQuote": true
   },
   "eslintConfig": {
+    "extends": [
+      "plugin:compat/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 5
+    },
     "rules": {
       "quotes": [
         "error",
@@ -81,5 +88,13 @@
       ],
       "space-before-blocks": "error"
     }
-  }
+  },
+  "browserslist": [
+    "Safari >= 8",
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "Firefox 68",
+    "last 2 Edge versions",
+    "IE >= 10"
+  ]
 }

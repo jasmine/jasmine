@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('toBeResolved', function() {
   it('passes if the actual is resolved', function() {
     jasmine.getEnv().requirePromises();

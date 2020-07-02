@@ -91,7 +91,7 @@ getJasmineRequireObj().asymmetricEqualityTesterArgCompatShim = function(j$) {
       });
     }
 
-    props = Object.getOwnPropertyDescriptors(Array.prototype);
+    props = Object.getOwnPropertyDescriptors(Array.prototype); // eslint-disable-line compat/compat
     a = [];
 
     for (k in props) {

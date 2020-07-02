@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('#toBeRejectedWithError', function () {
   it('passes when Error type matches', function () {
     jasmine.getEnv().requirePromises();

@@ -1,4 +1,8 @@
 module.exports = {
+  "ignorePatterns": [
+    "support/ci.js",
+    "support/jasmine-browser.js"
+  ],
   rules: {
     // Relax rules for now to allow for the quirks of the test suite
     // TODO: We should probably remove these & fix the resulting errors

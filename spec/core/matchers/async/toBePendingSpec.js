@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('toBePending', function() {
   it('passes if the actual promise is pending', function() {
     jasmine.getEnv().requirePromises();

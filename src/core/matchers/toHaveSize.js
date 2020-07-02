@@ -33,7 +33,7 @@ getJasmineRequireObj().toHaveSize = function(j$) {
     };
   }
 
-  var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
+  var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;  // eslint-disable-line compat/compat
   function isLength(value) {
     return (typeof value == 'number') && value > -1 && value % 1 === 0 && value <= MAX_SAFE_INTEGER;
   }

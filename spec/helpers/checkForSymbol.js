@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 (function(env) {
   function hasFunctioningSymbols() {
     if (typeof Symbol === 'undefined') {

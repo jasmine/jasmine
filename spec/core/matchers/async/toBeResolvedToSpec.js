@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('#toBeResolvedTo', function() {
   it('passes if the promise is resolved to the expected value', function() {
     jasmine.getEnv().requirePromises();

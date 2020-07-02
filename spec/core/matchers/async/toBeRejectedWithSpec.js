@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('#toBeRejectedWith', function () {
   it('should return true if the promise is rejected with the expected value', function () {
     jasmine.getEnv().requirePromises();

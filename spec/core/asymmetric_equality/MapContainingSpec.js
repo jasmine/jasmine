@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('MapContaining', function() {
   function MapI(iterable) {    // for IE11
     var map = new Map();

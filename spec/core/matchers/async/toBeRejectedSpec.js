@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('toBeRejected', function() {
   it('passes if the actual is rejected', function() {
     jasmine.getEnv().requirePromises();
