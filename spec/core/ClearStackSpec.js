@@ -163,4 +163,37 @@ describe('ClearStack', function() {
     expect(called).toBe(true);
     expect(setTimeout).toHaveBeenCalledWith(jasmine.any(Function), 0);
   });
+
+  it('uses setTimeout with an actual delay when configured for IE/Selenium compatibility', function() {
+    var setImmediate = jasmine.createSpy('setImmediate'),
+      fakeChannel = {
+        port1: {},
+        port2: {
+          postMessage: jasmine.createSpy('postMessage')
+        }
+      },
+      setTimeout = jasmine.createSpy('setTimeout').and.callFake(function(fn) {
+        fn();
+      }),
+      global = {
+        setImmediate: setImmediate,
+        setTimeout: setTimeout,
+        MessageChannel: function() {
+          return fakeChannel;
+        }
+      },
+      clearStack = jasmineUnderTest.getClearStack(global, {
+        slowIeSeleniumCompat: true
+      }),
+      called = false;
+
+    clearStack(function() {
+      called = true;
+    });
+
+    expect(called).toBe(true);
+    expect(setTimeout).toHaveBeenCalledWith(jasmine.any(Function), 25);
+    expect(setImmediate).not.toHaveBeenCalled();
+    expect(fakeChannel.port2.postMessage).not.toHaveBeenCalled();
+  });
 });

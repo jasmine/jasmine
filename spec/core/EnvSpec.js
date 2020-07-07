@@ -386,4 +386,33 @@ describe('Env', function() {
 
     env.execute();
   });
+
+  describe('when enableSlowIeSeleniumCompat_ has been called', function() {
+    it('passes slowIeSeleniumCompat: true to getClearStack', function() {
+      spyOn(jasmineUnderTest, 'getClearStack');
+      env.cleanup_();
+      env = new jasmineUnderTest.Env();
+
+      env.enableSlowIeSeleniumCompat_();
+      env.execute();
+      expect(jasmineUnderTest.getClearStack).toHaveBeenCalledWith(
+        jasmine.anything(),
+        { slowIeSeleniumCompat: true }
+      );
+    });
+  });
+
+  describe('when enableSlowIeSeleniumCompat_ has not been called', function() {
+    it('does not pass slowIeSeleniumCompat: true to getClearStack', function() {
+      spyOn(jasmineUnderTest, 'getClearStack');
+      env.cleanup_();
+      env = new jasmineUnderTest.Env();
+
+      env.execute();
+      expect(jasmineUnderTest.getClearStack).toHaveBeenCalledWith(
+        jasmine.anything(),
+        { slowIeSeleniumCompat: false }
+      );
+    });
+  });
 });

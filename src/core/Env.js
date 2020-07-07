@@ -17,7 +17,8 @@ getJasmineRequireObj().Env = function(j$) {
 
     var realSetTimeout = global.setTimeout;
     var realClearTimeout = global.clearTimeout;
-    var clearStack = j$.getClearStack(global);
+    var slowIeSeleniumCompat = false;
+    var clearStack;
     this.clock = new j$.Clock(
       global,
       function() {
@@ -706,6 +707,9 @@ getJasmineRequireObj().Env = function(j$) {
     );
 
     this.execute = function(runnablesToRun) {
+      clearStack = j$.getClearStack(global, {
+        slowIeSeleniumCompat: slowIeSeleniumCompat
+      });
       installGlobalErrors();
 
       if (!runnablesToRun) {
@@ -852,6 +856,10 @@ getJasmineRequireObj().Env = function(j$) {
      */
     this.clearReporters = function() {
       reporter.clearReporters();
+    };
+
+    this.enableSlowIeSeleniumCompat_ = function() {
+      slowIeSeleniumCompat = true;
     };
 
     var spyFactory = new j$.SpyFactory(

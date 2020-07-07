@@ -38,14 +38,30 @@ getJasmineRequireObj().clearStack = function(j$) {
     };
   }
 
-  function getClearStack(global) {
+  function ieSeleniumCompatImpl(global) {
+    // When both IE and the JS selenium-webdriver are used, the driver's
+    // executeScript() method tends to fail after the first few calls.
+    // Doing a setTimeout with an actual delay every time fixes this, perhaps
+    // by giving the JS injected by Selenium more chances to run. However,
+    // it also slows things down significantly, especially on non-IE browsers.
+    // So it's not the default.
+    var realSetTimeout = global.setTimeout;
+
+    return function clearStack(fn) {
+      Function.prototype.apply.apply(realSetTimeout, [global, [fn, 25]]);
+    };
+  }
+
+  function getClearStack(global, options) {
     var currentCallCount = 0;
     var realSetTimeout = global.setTimeout;
     var setTimeoutImpl = function clearStack(fn) {
       Function.prototype.apply.apply(realSetTimeout, [global, [fn, 0]]);
     };
 
-    if (j$.isFunction_(global.setImmediate)) {
+    if (options && options.slowIeSeleniumCompat) {
+      return ieSeleniumCompatImpl(global);
+    } else if (j$.isFunction_(global.setImmediate)) {
       var realSetImmediate = global.setImmediate;
       return function(fn) {
         currentCallCount++;
