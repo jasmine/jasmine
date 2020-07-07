@@ -192,7 +192,7 @@ describe('ClearStack', function() {
     });
 
     expect(called).toBe(true);
-    expect(setTimeout).toHaveBeenCalledWith(jasmine.any(Function), 25);
+    expect(setTimeout).toHaveBeenCalledWith(jasmine.any(Function), 50);
     expect(setImmediate).not.toHaveBeenCalled();
     expect(fakeChannel.port2.postMessage).not.toHaveBeenCalled();
   });

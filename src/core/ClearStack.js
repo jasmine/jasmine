@@ -48,7 +48,7 @@ getJasmineRequireObj().clearStack = function(j$) {
     var realSetTimeout = global.setTimeout;
 
     return function clearStack(fn) {
-      Function.prototype.apply.apply(realSetTimeout, [global, [fn, 25]]);
+      Function.prototype.apply.apply(realSetTimeout, [global, [fn, 50]]);
     };
   }
 
