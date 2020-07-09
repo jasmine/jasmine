@@ -133,4 +133,50 @@ describe("DiffBuilder", function () {
 
     expect(diffBuilder.getMessage()).toEqual(expectedMsg);
   });
+
+  it('builds diffs involving asymmetric equality testers that implement valuesForDiff_ at the root', function() {
+    var prettyPrinter = jasmineUnderTest.makePrettyPrinter([]),
+      diffBuilder = new jasmineUnderTest.DiffBuilder({prettyPrinter: prettyPrinter}),
+      expectedMsg = 'Expected $.foo = 1 to equal 2.\n' +
+      "Expected $.baz = undefined to equal 3.";
+
+
+    diffBuilder.setRoots(
+      {foo: 1, bar: 2},
+      jasmine.objectContaining({foo: 2, baz: 3})
+    );
+
+    diffBuilder.withPath('foo', function() {
+      diffBuilder.recordMismatch();
+    });
+    diffBuilder.withPath('baz', function() {
+      diffBuilder.recordMismatch();
+    });
+
+    expect(diffBuilder.getMessage()).toEqual(expectedMsg);
+  });
+
+  it('builds diffs involving asymmetric equality testers that implement valuesForDiff_ below the root', function() {
+    var prettyPrinter = jasmineUnderTest.makePrettyPrinter([]),
+      diffBuilder = new jasmineUnderTest.DiffBuilder({prettyPrinter: prettyPrinter}),
+      expectedMsg = 'Expected $.x.foo = 1 to equal 2.\n' +
+        "Expected $.x.baz = undefined to equal 3.";
+
+
+    diffBuilder.setRoots(
+      {x: {foo: 1, bar: 2}},
+      {x: jasmine.objectContaining({foo: 2, baz: 3})}
+    );
+
+    diffBuilder.withPath('x', function() {
+      diffBuilder.withPath('foo', function () {
+        diffBuilder.recordMismatch();
+      });
+      diffBuilder.withPath('baz', function () {
+        diffBuilder.recordMismatch();
+      });
+    });
+
+    expect(diffBuilder.getMessage()).toEqual(expectedMsg);
+  });
 });
