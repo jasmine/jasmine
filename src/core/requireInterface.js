@@ -169,8 +169,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     /**
-     * Sets a user-defined property that will be provided to reporters as part of {@link SpecResult#properties}
-     * @name Env#setSpecProperty
+     * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SpecResult}
+     * @name setSpecProperty
      * @since 3.6.0
      * @function
      * @param {String} key The name of the property
@@ -181,8 +181,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     /**
-     * Sets a user-defined property that will be provided to reporters as part of {@link SuiteResult#properties}
-     * @name Env#setSuiteProperty
+     * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SuiteResult}
+     * @name setSuiteProperty
      * @since 3.6.0
      * @function
      * @param {String} key The name of the property

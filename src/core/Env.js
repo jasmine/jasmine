@@ -1125,7 +1125,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     /**
-     * Sets a user-defined property that will be provided to reporters as part of {@link SpecResult#properties}
+     * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SpecResult}
      * @name Env#setSpecProperty
      * @since 3.6.0
      * @function
@@ -1142,7 +1142,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     /**
-     * Sets a user-defined property that will be provided to reporters as part of {@link SuiteResult#properties}
+     * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SuiteResult}
      * @name Env#setSuiteProperty
      * @since 3.6.0
      * @function

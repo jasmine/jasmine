@@ -3,7 +3,7 @@ getJasmineRequireObj().toHaveSize = function(j$) {
    * {@link expect} the actual size to be equal to the expected, using array-like length or object keys size.
    * @function
    * @name matchers#toHaveSize
-   * @since 3.5.1
+   * @since 3.6.0
    * @param {Object} expected - Expected size
    * @example
    * array = [1,2];
