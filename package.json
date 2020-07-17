@@ -13,7 +13,7 @@
     "bdd"
   ],
   "scripts": {
-    "posttest": "eslint \"src/**/*.js\" \"spec/**/*.js\" && prettier --check src/**/*.js spec/**/*.js",
+    "posttest": "eslint \"src/**/*.js\" \"spec/**/*.js\" && prettier --check \"src/**/*.js\" \"spec/**/*.js\"",
     "test": "grunt --stack execSpecsInNode",
     "cleanup": "prettier --write src/**/*.js spec/**/*.js",
     "build": "grunt buildDistribution",
