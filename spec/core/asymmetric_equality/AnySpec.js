@@ -34,7 +34,8 @@ describe('Any', function() {
 
     var any = new jasmineUnderTest.Any(Map);
 
-    expect(any.asymmetricMatch(new Map())).toBe(true); // eslint-disable-line compat/compat
+    // eslint-disable-next-line compat/compat
+    expect(any.asymmetricMatch(new Map())).toBe(true);
   });
 
   it('matches a Set', function() {

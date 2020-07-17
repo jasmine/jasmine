@@ -2969,9 +2969,10 @@ describe('Env integration', function() {
 
     function fail(innerDone) {
       var resolve;
+      // eslint-disable-next-line compat/compat
       var p = new Promise(function(res, rej) {
         resolve = res;
-      }); // eslint-disable-line compat/compat
+      });
       env
         .expectAsync(p)
         .toBeRejected()
@@ -3053,9 +3054,10 @@ describe('Env integration', function() {
     jasmine.getEnv().requirePromises();
 
     var resolve,
+      // eslint-disable-next-line compat/compat
       promise = new Promise(function(res) {
         resolve = res;
-      }); // eslint-disable-line compat/compat
+      });
 
     env.describe('a suite', function() {
       env.it('does not wait', function() {
@@ -3105,9 +3107,10 @@ describe('Env integration', function() {
     jasmine.getEnv().requirePromises();
 
     var resolve,
+      // eslint-disable-next-line compat/compat
       promise = new Promise(function(res) {
         resolve = res;
-      }); // eslint-disable-line compat/compat
+      });
 
     env.describe('a suite', function() {
       env.afterAll(function() {

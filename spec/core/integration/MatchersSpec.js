@@ -418,13 +418,17 @@ describe('Matchers (Integration)', function() {
 
   describe('toBeRejectedWithError', function() {
     verifyPassesAsync(function(env) {
-      return env
-        .expectAsync(Promise.reject(new Error()))
-        .toBeRejectedWithError(Error); // eslint-disable-line compat/compat
+      return (
+        env
+          // eslint-disable-next-line compat/compat
+          .expectAsync(Promise.reject(new Error()))
+          .toBeRejectedWithError(Error)
+      );
     });
 
     verifyFailsAsync(function(env) {
-      return env.expectAsync(Promise.resolve()).toBeRejectedWithError(Error); // eslint-disable-line compat/compat
+      // eslint-disable-next-line compat/compat
+      return env.expectAsync(Promise.resolve()).toBeRejectedWithError(Error);
     });
 
     verifyFailsWithCustomObjectFormattersAsync({
@@ -432,9 +436,12 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        return env
-          .expectAsync(Promise.reject('foo'))
-          .toBeRejectedWithError('foo'); // eslint-disable-line compat/compat
+        return (
+          env
+            // eslint-disable-next-line compat/compat
+            .expectAsync(Promise.reject('foo'))
+            .toBeRejectedWithError('foo')
+        );
       },
       expectedMessage:
         'Expected a promise to be rejected with Error: |foo| ' +
