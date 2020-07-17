@@ -92,13 +92,14 @@ describe('toBeInstanceOf', function() {
 
   describe('when expecting Function', function() {
     it('passes for a function', function() {
-      var fn = function() { };
+      var fn = function() {};
 
       var matcher = jasmineUnderTest.matchers.toBeInstanceOf();
       var result = matcher.compare(fn, Function);
       expect(result).toEqual({
         pass: true,
-        message: 'Expected instance of Function not to be an instance of Function'
+        message:
+          'Expected instance of Function not to be an instance of Function'
       });
     });
 
@@ -111,13 +112,14 @@ describe('toBeInstanceOf', function() {
       var result = matcher.compare(fn, Function);
       expect(result).toEqual({
         pass: true,
-        message: 'Expected instance of AsyncFunction not to be an instance of Function'
+        message:
+          'Expected instance of AsyncFunction not to be an instance of Function'
       });
     });
   });
 
   describe('when expecting Object', function() {
-    function Animal() { }
+    function Animal() {}
 
     it('passes for any object', function() {
       var matcher = jasmineUnderTest.matchers.toBeInstanceOf();
@@ -164,14 +166,15 @@ describe('toBeInstanceOf', function() {
       var result = matcher.compare(object, Object);
       expect(result).toEqual({
         pass: true,
-        message: 'Expected instance of null({  }) not to be an instance of Object'
+        message:
+          'Expected instance of null({  }) not to be an instance of Object'
       });
     });
   });
 
   describe('when expecting a user-defined class', function() {
     // Base class
-    function Animal() { }
+    function Animal() {}
 
     // Subclasses, defined using syntax that is as old as possible
     function Dog() {
@@ -218,8 +221,10 @@ describe('toBeInstanceOf', function() {
     var matcher = jasmineUnderTest.matchers.toBeInstanceOf();
     expect(function() {
       matcher.compare({}, 'Error');
-    }).toThrowError('<toBeInstanceOf> : Expected value is not a constructor function\n' +
-        'Usage: expect(value).toBeInstanceOf(<ConstructorFunction>)');
+    }).toThrowError(
+      '<toBeInstanceOf> : Expected value is not a constructor function\n' +
+        'Usage: expect(value).toBeInstanceOf(<ConstructorFunction>)'
+    );
   });
 
   it('raises an error if missing an expected value', function() {
@@ -228,7 +233,9 @@ describe('toBeInstanceOf', function() {
     });
     expect(function() {
       matcher.compare({}, undefined);
-    }).toThrowError('<toBeInstanceOf> : Expected value is not a constructor function\n' +
-        'Usage: expect(value).toBeInstanceOf(<ConstructorFunction>)');
+    }).toThrowError(
+      '<toBeInstanceOf> : Expected value is not a constructor function\n' +
+        'Usage: expect(value).toBeInstanceOf(<ConstructorFunction>)'
+    );
   });
 });

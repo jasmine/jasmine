@@ -1,5 +1,5 @@
-describe("toBeNull", function() {
-  it("passes for null", function() {
+describe('toBeNull', function() {
+  it('passes for null', function() {
     var matcher = jasmineUnderTest.matchers.toBeNull(),
       result;
 
@@ -7,7 +7,7 @@ describe("toBeNull", function() {
     expect(result.pass).toBe(true);
   });
 
-  it("fails for non-null", function() {
+  it('fails for non-null', function() {
     var matcher = jasmineUnderTest.matchers.toBeNull(),
       result;
 

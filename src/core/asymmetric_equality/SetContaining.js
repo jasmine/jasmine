@@ -1,7 +1,9 @@
 getJasmineRequireObj().SetContaining = function(j$) {
   function SetContaining(sample) {
     if (!j$.isSet(sample)) {
-      throw new Error('You must provide a set to `setContaining`, not ' + j$.pp(sample));
+      throw new Error(
+        'You must provide a set to `setContaining`, not ' + j$.pp(sample)
+      );
     }
 
     this.sample = sample;

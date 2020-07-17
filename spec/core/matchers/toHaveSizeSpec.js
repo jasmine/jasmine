@@ -18,28 +18,28 @@ describe('toHaveSize', function() {
 
   it('passes for an object with the proper number of keys', function() {
     var matcher = jasmineUnderTest.matchers.toHaveSize(),
-      result = matcher.compare({a: 1, b: 2}, 2);
+      result = matcher.compare({ a: 1, b: 2 }, 2);
 
     expect(result.pass).toBe(true);
   });
 
   it('fails for an object with a different number of keys', function() {
     var matcher = jasmineUnderTest.matchers.toHaveSize(),
-      result = matcher.compare({a: 1, b: 2}, 1);
+      result = matcher.compare({ a: 1, b: 2 }, 1);
 
     expect(result.pass).toBe(false);
   });
 
   it('passes for an object with an explicit `length` property that matches', function() {
     var matcher = jasmineUnderTest.matchers.toHaveSize(),
-      result = matcher.compare({a: 1, b: 2, length: 5}, 5);
+      result = matcher.compare({ a: 1, b: 2, length: 5 }, 5);
 
     expect(result.pass).toBe(true);
   });
 
   it('fails for an object with an explicit `length` property that does not match', function() {
     var matcher = jasmineUnderTest.matchers.toHaveSize(),
-      result = matcher.compare({a: 1, b: 2, length: 5}, 1);
+      result = matcher.compare({ a: 1, b: 2, length: 5 }, 1);
 
     expect(result.pass).toBe(false);
   });
@@ -62,8 +62,8 @@ describe('toHaveSize', function() {
     jasmine.getEnv().requireFunctioningMaps();
 
     var map = new Map();
-    map.set('a',1);
-    map.set('b',2);
+    map.set('a', 1);
+    map.set('b', 2);
 
     var matcher = jasmineUnderTest.matchers.toHaveSize(),
       result = matcher.compare(map, 2);
@@ -75,8 +75,8 @@ describe('toHaveSize', function() {
     jasmine.getEnv().requireFunctioningMaps();
 
     var map = new Map();
-    map.set('a',1);
-    map.set('b',2);
+    map.set('a', 1);
+    map.set('b', 2);
 
     var matcher = jasmineUnderTest.matchers.toHaveSize(),
       result = matcher.compare(map, 1);

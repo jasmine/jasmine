@@ -8,7 +8,7 @@ describe('toBeRejected', function() {
       actual = Promise.reject('AsyncExpectationSpec rejection');
 
     return matcher.compare(actual).then(function(result) {
-      expect(result).toEqual(jasmine.objectContaining({pass: true}));
+      expect(result).toEqual(jasmine.objectContaining({ pass: true }));
     });
   });
 
@@ -20,7 +20,7 @@ describe('toBeRejected', function() {
       actual = Promise.resolve();
 
     return matcher.compare(actual).then(function(result) {
-      expect(result).toEqual(jasmine.objectContaining({pass: false}));
+      expect(result).toEqual(jasmine.objectContaining({ pass: false }));
     });
   });
 
@@ -33,8 +33,6 @@ describe('toBeRejected', function() {
       return matcher.compare(actual);
     }
 
-    expect(f).toThrowError(
-      'Expected toBeRejected to be called on a promise.'
-    );
+    expect(f).toThrowError('Expected toBeRejected to be called on a promise.');
   });
 });

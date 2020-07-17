@@ -11,13 +11,15 @@ getJasmineRequireObj().toBeNaN = function(j$) {
     return {
       compare: function(actual) {
         var result = {
-          pass: (actual !== actual)
+          pass: actual !== actual
         };
 
         if (result.pass) {
           result.message = 'Expected actual not to be NaN.';
         } else {
-          result.message = function() { return 'Expected ' + matchersUtil.pp(actual) + ' to be NaN.'; };
+          result.message = function() {
+            return 'Expected ' + matchersUtil.pp(actual) + ' to be NaN.';
+          };
         }
 
         return result;

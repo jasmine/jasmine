@@ -1,6 +1,8 @@
-getJasmineRequireObj().toHaveBeenCalledOnceWith = function (j$) {
-
-  var getErrorMsg = j$.formatErrorMsg('<toHaveBeenCalledOnceWith>', 'expect(<spyObj>).toHaveBeenCalledOnceWith(...arguments)');
+getJasmineRequireObj().toHaveBeenCalledOnceWith = function(j$) {
+  var getErrorMsg = j$.formatErrorMsg(
+    '<toHaveBeenCalledOnceWith>',
+    'expect(<spyObj>).toHaveBeenCalledOnceWith(...arguments)'
+  );
 
   /**
    * {@link expect} the actual (a {@link Spy}) to have been called exactly once, and exactly with the particular arguments.
@@ -13,31 +15,44 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function (j$) {
    */
   function toHaveBeenCalledOnceWith(util) {
     return {
-      compare: function () {
+      compare: function() {
         var args = Array.prototype.slice.call(arguments, 0),
           actual = args[0],
           expectedArgs = args.slice(1);
 
         if (!j$.isSpy(actual)) {
-          throw new Error(getErrorMsg('Expected a spy, but got ' + j$.pp(actual) + '.'));
+          throw new Error(
+            getErrorMsg('Expected a spy, but got ' + j$.pp(actual) + '.')
+          );
         }
 
-        var prettyPrintedCalls = actual.calls.allArgs().map(function (argsForCall) {
-          return '  ' + j$.pp(argsForCall);
-        });
+        var prettyPrintedCalls = actual.calls
+          .allArgs()
+          .map(function(argsForCall) {
+            return '  ' + j$.pp(argsForCall);
+          });
 
-        if (actual.calls.count() === 1 && util.contains(actual.calls.allArgs(), expectedArgs)) {
+        if (
+          actual.calls.count() === 1 &&
+          util.contains(actual.calls.allArgs(), expectedArgs)
+        ) {
           return {
             pass: true,
-            message: 'Expected spy ' + actual.and.identity + ' to have been called 0 times, multiple times, or once, but with arguments different from:\n'
-              + '  ' + j$.pp(expectedArgs) + '\n'
-              + 'But the actual call was:\n'
-              + prettyPrintedCalls.join(',\n') + '.\n\n'
+            message:
+              'Expected spy ' +
+              actual.and.identity +
+              ' to have been called 0 times, multiple times, or once, but with arguments different from:\n' +
+              '  ' +
+              j$.pp(expectedArgs) +
+              '\n' +
+              'But the actual call was:\n' +
+              prettyPrintedCalls.join(',\n') +
+              '.\n\n'
           };
         }
 
         function getDiffs() {
-          return actual.calls.allArgs().map(function (argsForCall, callIx) {
+          return actual.calls.allArgs().map(function(argsForCall, callIx) {
             var diffBuilder = new j$.DiffBuilder();
             util.equals(argsForCall, expectedArgs, diffBuilder);
             return diffBuilder.getMessage();
@@ -49,17 +64,32 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function (j$) {
             case 0:
               return 'But it was never called.\n\n';
             case 1:
-              return 'But the actual call was:\n' + prettyPrintedCalls.join(',\n') + '.\n' + getDiffs().join('\n') + '\n\n';
+              return (
+                'But the actual call was:\n' +
+                prettyPrintedCalls.join(',\n') +
+                '.\n' +
+                getDiffs().join('\n') +
+                '\n\n'
+              );
             default:
-              return 'But the actual calls were:\n' + prettyPrintedCalls.join(',\n') + '.\n\n';
+              return (
+                'But the actual calls were:\n' +
+                prettyPrintedCalls.join(',\n') +
+                '.\n\n'
+              );
           }
         }
 
         return {
           pass: false,
-          message: 'Expected spy ' + actual.and.identity + ' to have been called only once, and with given args:\n'
-            + '  ' + j$.pp(expectedArgs) + '\n'
-            + butString()
+          message:
+            'Expected spy ' +
+            actual.and.identity +
+            ' to have been called only once, and with given args:\n' +
+            '  ' +
+            j$.pp(expectedArgs) +
+            '\n' +
+            butString()
         };
       }
     };

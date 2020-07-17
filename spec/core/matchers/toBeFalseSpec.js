@@ -1,5 +1,5 @@
-describe("toBeFalse", function() {
-  it("passes for false", function() {
+describe('toBeFalse', function() {
+  it('passes for false', function() {
     var matcher = jasmineUnderTest.matchers.toBeFalse(),
       result;
 
@@ -7,7 +7,7 @@ describe("toBeFalse", function() {
     expect(result.pass).toBe(true);
   });
 
-  it("fails for non-false", function() {
+  it('fails for non-false', function() {
     var matcher = jasmineUnderTest.matchers.toBeFalse(),
       result;
 
@@ -15,7 +15,7 @@ describe("toBeFalse", function() {
     expect(result.pass).toBe(false);
   });
 
-  it("fails for falsy", function() {
+  it('fails for falsy', function() {
     var matcher = jasmineUnderTest.matchers.toBeFalse(),
       result;
 

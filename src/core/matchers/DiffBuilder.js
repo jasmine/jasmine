@@ -1,4 +1,4 @@
-getJasmineRequireObj().DiffBuilder = function (j$) {
+getJasmineRequireObj().DiffBuilder = function(j$) {
   return function DiffBuilder(config) {
     var prettyPrinter = (config || {}).prettyPrinter || j$.makePrettyPrinter(),
       mismatches = new j$.MismatchTree(),
@@ -7,21 +7,28 @@ getJasmineRequireObj().DiffBuilder = function (j$) {
       expectedRoot = undefined;
 
     return {
-      setRoots: function (actual, expected) {
+      setRoots: function(actual, expected) {
         actualRoot = actual;
         expectedRoot = expected;
       },
 
-      recordMismatch: function (formatter) {
+      recordMismatch: function(formatter) {
         mismatches.add(path, formatter);
       },
 
-      getMessage: function () {
+      getMessage: function() {
         var messages = [];
 
-        mismatches.traverse(function (path, isLeaf, formatter) {
-          var actualCustom, expectedCustom, useCustom,
-            derefResult = dereferencePath(path, actualRoot, expectedRoot, prettyPrinter),
+        mismatches.traverse(function(path, isLeaf, formatter) {
+          var actualCustom,
+            expectedCustom,
+            useCustom,
+            derefResult = dereferencePath(
+              path,
+              actualRoot,
+              expectedRoot,
+              prettyPrinter
+            ),
             actual = derefResult.actual,
             expected = derefResult.expected;
 
@@ -32,15 +39,22 @@ getJasmineRequireObj().DiffBuilder = function (j$) {
 
           actualCustom = prettyPrinter.customFormat_(actual);
           expectedCustom = prettyPrinter.customFormat_(expected);
-          useCustom = !(j$.util.isUndefined(actualCustom) && j$.util.isUndefined(expectedCustom));
+          useCustom = !(
+            j$.util.isUndefined(actualCustom) &&
+            j$.util.isUndefined(expectedCustom)
+          );
 
           if (useCustom) {
-            messages.push(wrapPrettyPrinted(actualCustom, expectedCustom, path));
+            messages.push(
+              wrapPrettyPrinted(actualCustom, expectedCustom, path)
+            );
             return false; // don't recurse further
           }
 
           if (isLeaf) {
-            messages.push(defaultFormatter(actual, expected, path, prettyPrinter));
+            messages.push(
+              defaultFormatter(actual, expected, path, prettyPrinter)
+            );
           }
 
           return true;
@@ -49,7 +63,7 @@ getJasmineRequireObj().DiffBuilder = function (j$) {
         return messages.join('\n');
       },
 
-      withPath: function (pathComponent, block) {
+      withPath: function(pathComponent, block) {
         var oldPath = path;
         path = path.add(pathComponent);
         block();
@@ -58,22 +72,32 @@ getJasmineRequireObj().DiffBuilder = function (j$) {
     };
 
     function defaultFormatter(actual, expected, path, prettyPrinter) {
-      return wrapPrettyPrinted(prettyPrinter(actual), prettyPrinter(expected), path);
+      return wrapPrettyPrinted(
+        prettyPrinter(actual),
+        prettyPrinter(expected),
+        path
+      );
     }
 
     function wrapPrettyPrinted(actual, expected, path) {
-      return 'Expected ' +
-        path + (path.depth() ? ' = ' : '') +
+      return (
+        'Expected ' +
+        path +
+        (path.depth() ? ' = ' : '') +
         actual +
         ' to equal ' +
         expected +
-        '.';
+        '.'
+      );
     }
   };
 
   function dereferencePath(objectPath, actual, expected, pp) {
     function handleAsymmetricExpected() {
-      if (j$.isAsymmetricEqualityTester_(expected) && j$.isFunction_(expected.valuesForDiff_)) {
+      if (
+        j$.isAsymmetricEqualityTester_(expected) &&
+        j$.isFunction_(expected.valuesForDiff_)
+      ) {
         var asymmetricResult = expected.valuesForDiff_(actual, pp);
         expected = asymmetricResult.self;
         actual = asymmetricResult.other;
@@ -89,7 +113,6 @@ getJasmineRequireObj().DiffBuilder = function (j$) {
       handleAsymmetricExpected();
     }
 
-    return {actual: actual, expected: expected};
+    return { actual: actual, expected: expected };
   }
-
 };

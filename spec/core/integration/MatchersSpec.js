@@ -23,7 +23,9 @@ describe('Matchers (Integration)', function() {
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
           .toEqual(0);
-        expect(result.failedExpectations[0] && result.failedExpectations[0].message)
+        expect(
+          result.failedExpectations[0] && result.failedExpectations[0].message
+        )
           .withContext('Failure message')
           .toBeUndefined();
       };
@@ -45,12 +47,17 @@ describe('Matchers (Integration)', function() {
           .withContext('Number of failed expectations')
           .toEqual(1);
         expect(result.failedExpectations[0].message)
-          .withContext('Failed with a thrown error rather than a matcher failure')
+          .withContext(
+            'Failed with a thrown error rather than a matcher failure'
+          )
           .not.toMatch(/^Error: /);
         expect(result.failedExpectations[0].message)
-          .withContext('Failed with a thrown type error rather than a matcher failure')
+          .withContext(
+            'Failed with a thrown type error rather than a matcher failure'
+          )
           .not.toMatch(/^TypeError: /);
-        expect(result.failedExpectations[0].matcherName).withContext('Matcher name')
+        expect(result.failedExpectations[0].matcherName)
+          .withContext('Matcher name')
           .not.toEqual('');
       };
 
@@ -61,21 +68,22 @@ describe('Matchers (Integration)', function() {
 
   function verifyFailsWithCustomObjectFormatters(config) {
     it('uses custom object formatters', function(done) {
-      env.it('a spec', function () {
+      env.it('a spec', function() {
         env.addCustomObjectFormatter(config.formatter);
         config.expectations(env);
       });
 
-      var specExpectations = function (result) {
+      var specExpectations = function(result) {
         expect(result.status).toEqual('failed');
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
           .toEqual(1);
-        expect(result.failedExpectations[0].message)
-          .toEqual(config.expectedMessage);
+        expect(result.failedExpectations[0].message).toEqual(
+          config.expectedMessage
+        );
       };
 
-      env.addReporter({specDone: specExpectations, jasmineDone: done});
+      env.addReporter({ specDone: specExpectations, jasmineDone: done });
       env.execute();
     });
   }
@@ -96,7 +104,9 @@ describe('Matchers (Integration)', function() {
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
           .toEqual(0);
-        expect(result.failedExpectations[0] && result.failedExpectations[0].message)
+        expect(
+          result.failedExpectations[0] && result.failedExpectations[0].message
+        )
           .withContext('Failure message')
           .toBeUndefined();
       };
@@ -120,9 +130,12 @@ describe('Matchers (Integration)', function() {
           .withContext('Number of failed expectations')
           .toEqual(1);
         expect(result.failedExpectations[0].message)
-          .withContext('Failed with a thrown error rather than a matcher failure')
+          .withContext(
+            'Failed with a thrown error rather than a matcher failure'
+          )
           .not.toMatch(/^Error: /);
-        expect(result.failedExpectations[0].matcherName).withContext('Matcher name')
+        expect(result.failedExpectations[0].matcherName)
+          .withContext('Matcher name')
           .not.toEqual('');
       };
 
@@ -135,25 +148,25 @@ describe('Matchers (Integration)', function() {
     it('uses custom object formatters', function(done) {
       var env = new jasmineUnderTest.Env();
       jasmine.getEnv().requirePromises();
-      env.it('a spec', function () {
+      env.it('a spec', function() {
         env.addCustomObjectFormatter(config.formatter);
         return config.expectations(env);
       });
 
-      var specExpectations = function (result) {
+      var specExpectations = function(result) {
         expect(result.status).toEqual('failed');
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
           .toEqual(1);
-        expect(result.failedExpectations[0].message)
-          .toEqual(config.expectedMessage);
+        expect(result.failedExpectations[0].message).toEqual(
+          config.expectedMessage
+        );
       };
 
-      env.addReporter({specDone: specExpectations, jasmineDone: done});
+      env.addReporter({ specDone: specExpectations, jasmineDone: done });
       env.execute();
     });
   }
-
 
   describe('nothing', function() {
     verifyPasses(function(env) {
@@ -330,7 +343,7 @@ describe('Matchers (Integration)', function() {
         env.expect(1).toBePositiveInfinity();
       },
       expectedMessage: 'Expected |1| to be Infinity.'
-    })
+    });
   });
 
   describe('toBeResolved', function() {
@@ -362,7 +375,8 @@ describe('Matchers (Integration)', function() {
       expectations: function(env) {
         return env.expectAsync(Promise.resolve('x')).toBeResolvedTo('y'); // eslint-disable-line compat/compat
       },
-      expectedMessage: 'Expected a promise to be resolved to |y| ' +
+      expectedMessage:
+        'Expected a promise to be resolved to |y| ' +
         'but it was resolved to |x|.'
     });
   });
@@ -396,14 +410,17 @@ describe('Matchers (Integration)', function() {
       expectations: function(env) {
         return env.expectAsync(Promise.reject('x')).toBeRejectedWith('y'); // eslint-disable-line compat/compat
       },
-      expectedMessage: 'Expected a promise to be rejected with |y| ' +
+      expectedMessage:
+        'Expected a promise to be rejected with |y| ' +
         'but it was rejected with |x|.'
     });
   });
 
   describe('toBeRejectedWithError', function() {
     verifyPassesAsync(function(env) {
-      return env.expectAsync(Promise.reject(new Error())).toBeRejectedWithError(Error); // eslint-disable-line compat/compat
+      return env
+        .expectAsync(Promise.reject(new Error()))
+        .toBeRejectedWithError(Error); // eslint-disable-line compat/compat
     });
 
     verifyFailsAsync(function(env) {
@@ -415,9 +432,12 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        return env.expectAsync(Promise.reject('foo')).toBeRejectedWithError('foo'); // eslint-disable-line compat/compat
+        return env
+          .expectAsync(Promise.reject('foo'))
+          .toBeRejectedWithError('foo'); // eslint-disable-line compat/compat
       },
-      expectedMessage: 'Expected a promise to be rejected with Error: |foo| ' +
+      expectedMessage:
+        'Expected a promise to be rejected with Error: |foo| ' +
         'but it was rejected with |foo|.'
     });
   });
@@ -486,7 +506,7 @@ describe('Matchers (Integration)', function() {
         }
       },
       expectations: function(env) {
-        env.expect([{foo: 4}]).toEqual([{foo: 5}]);
+        env.expect([{ foo: 4 }]).toEqual([{ foo: 5 }]);
       },
       expectedMessage: 'Expected $[0].foo = four to equal five.'
     });
@@ -494,11 +514,11 @@ describe('Matchers (Integration)', function() {
 
   describe('toHaveSize', function() {
     verifyPasses(function(env) {
-      env.expect(['a','b']).toHaveSize(2);
+      env.expect(['a', 'b']).toHaveSize(2);
     });
 
     verifyFails(function(env) {
-      env.expect(['a','b']).toHaveSize(1);
+      env.expect(['a', 'b']).toHaveSize(1);
     });
   });
 
@@ -517,14 +537,16 @@ describe('Matchers (Integration)', function() {
 
   describe('toHaveBeenCalledBefore', function() {
     verifyPasses(function(env) {
-      var a = env.createSpy('a'), b = env.createSpy('b');
+      var a = env.createSpy('a'),
+        b = env.createSpy('b');
       a();
       b();
       env.expect(a).toHaveBeenCalledBefore(b);
     });
 
     verifyFails(function(env) {
-      var a = env.createSpy('a'), b = env.createSpy('b');
+      var a = env.createSpy('a'),
+        b = env.createSpy('b');
       b();
       a();
       env.expect(a).toHaveBeenCalledBefore(b);
@@ -567,7 +589,8 @@ describe('Matchers (Integration)', function() {
         var spy = env.createSpy('foo');
         env.expect(spy).toHaveBeenCalledWith('x');
       },
-      expectedMessage: 'Expected spy foo to have been called with:\n' +
+      expectedMessage:
+        'Expected spy foo to have been called with:\n' +
         '  |x|\n' +
         'but it was never called.'
     });
@@ -622,7 +645,11 @@ describe('Matchers (Integration)', function() {
       env.addCustomEqualityTester(function(a, b) {
         return a.toString() === b.toString();
       });
-      env.expect(function() { throw '5'; }).toThrow(5);
+      env
+        .expect(function() {
+          throw '5';
+        })
+        .toThrow(5);
     });
 
     verifyFails(function(env) {
@@ -635,9 +662,11 @@ describe('Matchers (Integration)', function() {
       },
       expectations: function(env) {
         var spy = env.createSpy('foo');
-        env.expect(function() {
-          throw 'x'
-        }).not.toThrow();
+        env
+          .expect(function() {
+            throw 'x';
+          })
+          .not.toThrow();
       },
       expectedMessage: 'Expected function not to throw, but it threw |x|.'
     });
@@ -645,11 +674,15 @@ describe('Matchers (Integration)', function() {
 
   describe('toThrowError', function() {
     verifyPasses(function(env) {
-      env.expect(function() { throw new Error(); }).toThrowError();
+      env
+        .expect(function() {
+          throw new Error();
+        })
+        .toThrowError();
     });
 
     verifyFails(function(env) {
-      env.expect(function() { }).toThrowError();
+      env.expect(function() {}).toThrowError();
     });
 
     verifyFailsWithCustomObjectFormatters({
@@ -658,9 +691,11 @@ describe('Matchers (Integration)', function() {
       },
       expectations: function(env) {
         var spy = env.createSpy('foo');
-        env.expect(function() {
-          throw 'x'
-        }).toThrowError();
+        env
+          .expect(function() {
+            throw 'x';
+          })
+          .toThrowError();
       },
       expectedMessage: 'Expected function to throw an Error, but it threw |x|.'
     });
@@ -672,11 +707,15 @@ describe('Matchers (Integration)', function() {
     }
 
     verifyPasses(function(env) {
-      env.expect(throws).toThrowMatching(function() { return true; });
+      env.expect(throws).toThrowMatching(function() {
+        return true;
+      });
     });
 
     verifyFails(function(env) {
-      env.expect(throws).toThrowMatching(function() { return false; });
+      env.expect(throws).toThrowMatching(function() {
+        return false;
+      });
     });
 
     verifyFailsWithCustomObjectFormatters({
@@ -685,13 +724,16 @@ describe('Matchers (Integration)', function() {
       },
       expectations: function(env) {
         var spy = env.createSpy('foo');
-        env.expect(function() {
-          throw new Error('nope')
-        }).toThrowMatching(function() {
-          return false;
-        });
+        env
+          .expect(function() {
+            throw new Error('nope');
+          })
+          .toThrowMatching(function() {
+            return false;
+          });
       },
-      expectedMessage: 'Expected function to throw an exception matching ' +
+      expectedMessage:
+        'Expected function to throw an exception matching ' +
         'a predicate, but it threw Error with message |nope|.'
     });
   });
