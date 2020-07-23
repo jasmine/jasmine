@@ -60,8 +60,10 @@ Install [twine](https://github.com/pypa/twine)
 
 Probably only need to do this when releasing a minor version, and not a patch version.
 
-1. `cp -R edge ${version}` to copy the current edge docs to the new version
-1. Add a link to the new version in `index.html`
+1. `rake update_edge_jasmine`
+1. `npm run jsdoc`
+1. `rake release[${version}]` to copy the current edge docs to the new version
+1. Commit and push.
 
 ### Finally
 
