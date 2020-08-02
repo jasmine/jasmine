@@ -1992,6 +1992,7 @@ describe("Env integration", function() {
        exception;
 
     env.describe("a suite", function () {
+      env.it('a spec');
       try {
         env.setSpecProperty('a prop', 'val');
       } catch(e) {

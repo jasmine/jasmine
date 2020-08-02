@@ -19,18 +19,18 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function (j$) {
           expectedArgs = args.slice(1);
 
         if (!j$.isSpy(actual)) {
-          throw new Error(getErrorMsg('Expected a spy, but got ' + j$.pp(actual) + '.'));
+          throw new Error(getErrorMsg('Expected a spy, but got ' + util.pp(actual) + '.'));
         }
 
         var prettyPrintedCalls = actual.calls.allArgs().map(function (argsForCall) {
-          return '  ' + j$.pp(argsForCall);
+          return '  ' + util.pp(argsForCall);
         });
 
         if (actual.calls.count() === 1 && util.contains(actual.calls.allArgs(), expectedArgs)) {
           return {
             pass: true,
             message: 'Expected spy ' + actual.and.identity + ' to have been called 0 times, multiple times, or once, but with arguments different from:\n'
-              + '  ' + j$.pp(expectedArgs) + '\n'
+              + '  ' + util.pp(expectedArgs) + '\n'
               + 'But the actual call was:\n'
               + prettyPrintedCalls.join(',\n') + '.\n\n'
           };
@@ -58,7 +58,7 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function (j$) {
         return {
           pass: false,
           message: 'Expected spy ' + actual.and.identity + ' to have been called only once, and with given args:\n'
-            + '  ' + j$.pp(expectedArgs) + '\n'
+            + '  ' + util.pp(expectedArgs) + '\n'
             + butString()
         };
       }
