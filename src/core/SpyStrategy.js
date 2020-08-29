@@ -168,7 +168,13 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @param {Function} fn The function to invoke with the passed parameters.
    */
   SpyStrategy.prototype.callFake = function(fn) {
-    if (!(j$.isFunction_(fn) || j$.isAsyncFunction_(fn))) {
+    if (
+      !(
+        j$.isFunction_(fn) ||
+        j$.isAsyncFunction_(fn) ||
+        j$.isGeneratorFunction_(fn)
+      )
+    ) {
       throw new Error(
         'Argument passed to callFake should be a function, got ' + fn
       );

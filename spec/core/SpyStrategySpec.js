@@ -334,6 +334,17 @@ describe('SpyStrategy', function() {
     }).toThrowError(/^Argument passed to callFake should be a function, got/);
   });
 
+  it('allows generator functions to be passed to callFake strategy', function() {
+    jasmine.getEnv().requireGeneratorFunctions();
+
+    var generator = jasmine.getEnv().makeGeneratorFunction('yield "ok";'),
+      spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: function() {} });
+
+    spyStrategy.callFake(generator);
+
+    expect(spyStrategy.exec().next().value).toEqual('ok');
+  });
+
   it('allows a return to plan stubbing after another strategy', function() {
     var originalFn = jasmine.createSpy('original'),
       fakeFn = jasmine.createSpy('fake').and.returnValue(67),

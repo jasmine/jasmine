@@ -18,6 +18,7 @@ module.exports = {
   specFiles: ['**/*[Ss]pec.js', '!npmPackage/**/*'],
   helpers: [
     'helpers/asyncAwait.js',
+    'helpers/generator.js',
     'helpers/BrowserFlags.js',
     'helpers/checkForMap.js',
     'helpers/checkForSet.js',

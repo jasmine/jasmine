@@ -76,6 +76,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return j$.isA_('AsyncFunction', value);
   };
 
+  j$.isGeneratorFunction_ = function(value) {
+    return j$.isA_('GeneratorFunction', value);
+  };
+
   j$.isTypedArray_ = function(value) {
     return (
       j$.isA_('Float32Array', value) ||

@@ -6,6 +6,7 @@
   ],
   "helpers": [
     "helpers/asyncAwait.js",
+    "helpers/generator.js",
     "helpers/checkForMap.js",
     "helpers/checkForSet.js",
     "helpers/checkForSymbol.js",
