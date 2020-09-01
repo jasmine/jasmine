@@ -110,9 +110,6 @@ describe('asymmetricEqualityTesterArgCompatShim', function() {
 
     beforeEach(function() {
       keys().forEach(function(k) {
-        if (Array.prototype[k]) {
-          console.log(Array.prototype[k].toString());
-        }
         expect(Array.prototype[k])
           .withContext('Array.prototype already had ' + k)
           .toBeUndefined();
