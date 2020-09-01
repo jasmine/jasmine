@@ -36,7 +36,6 @@ describe('asymmetricEqualityTesterArgCompatShim', function() {
   it('provides properties of Array.prototype', function() {
     var keys = [
         'concat',
-        'constructor',
         'every',
         'filter',
         'forEach',
@@ -55,8 +54,6 @@ describe('asymmetricEqualityTesterArgCompatShim', function() {
         'some',
         'sort',
         'splice',
-        'toLocaleString',
-        'toString',
         'unshift'
       ],
       optionalKeys = [
@@ -97,5 +94,50 @@ describe('asymmetricEqualityTesterArgCompatShim', function() {
           .toBe(Array.prototype[k]);
       }
     }
+  });
+
+  describe('When Array.prototype additions collide with MatchersUtil methods', function() {
+    function keys() {
+      return [
+        'contains',
+        'buildFailureMessage',
+        'asymmetricDiff_',
+        'asymmetricMatch_',
+        'equals',
+        'eq_'
+      ];
+    }
+
+    beforeEach(function() {
+      keys().forEach(function(k) {
+        if (Array.prototype[k]) {
+          console.log(Array.prototype[k].toString());
+        }
+        expect(Array.prototype[k])
+          .withContext('Array.prototype already had ' + k)
+          .toBeUndefined();
+        Array.prototype[k] = function() {};
+      });
+    });
+
+    afterEach(function() {
+      keys().forEach(function(k) {
+        delete Array.prototype[k];
+      });
+    });
+
+    it('uses the MatchersUtil methods', function() {
+      var matchersUtil = new jasmineUnderTest.MatchersUtil({}),
+        shim = jasmineUnderTest.asymmetricEqualityTesterArgCompatShim(
+          matchersUtil,
+          []
+        );
+
+      keys().forEach(function(k) {
+        expect(shim[k])
+          .withContext(k + ' was overwritten')
+          .toBe(jasmineUnderTest.MatchersUtil.prototype[k]);
+      });
+    });
   });
 });

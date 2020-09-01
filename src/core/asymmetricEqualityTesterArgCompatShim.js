@@ -66,7 +66,9 @@ getJasmineRequireObj().asymmetricEqualityTesterArgCompatShim = function(j$) {
 
     for (i = 0; i < props.length; i++) {
       k = props[i];
-      if (k !== 'length') {
+      // Skip length (dealt with above), and anything that collides with
+      // MatchesUtil e.g. an Array.prototype.contains method added by user code
+      if (k !== 'length' && !self[k]) {
         copy(self, Array.prototype, k);
       }
     }
