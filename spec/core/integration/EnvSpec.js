@@ -974,7 +974,6 @@ describe("Env integration", function() {
     env.execute(null, function() {
       expect(delayedFunctionForMockClock).toHaveBeenCalled();
       expect(globalSetTimeout).toHaveBeenCalledWith(delayedFunctionForGlobalClock, 100);
-
       done();
     });
   });
