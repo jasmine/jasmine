@@ -29,13 +29,15 @@ describe('Default Spy Strategy (Integration)', function() {
       expect(spy()).toBeUndefined();
     });
 
-    function jasmineDone(result) {
+    function expectations() {
+      var result = jasmineDone.calls.argsFor(0)[0];
       expect(result.overallStatus).toEqual('passed');
       done();
     }
 
+    var jasmineDone = jasmine.createSpy('jasmineDone');
     env.addReporter({ jasmineDone: jasmineDone });
-    env.execute();
+    env.execute(null, expectations);
   });
 
   it('uses the default spy strategy defined when the spy is created', function (done) {
@@ -61,12 +63,14 @@ describe('Default Spy Strategy (Integration)', function() {
       expect(d.and.isConfigured()).toBe(false);
     });
 
-    function jasmineDone(result) {
+    function expectations() {
+      var result = jasmineDone.calls.argsFor(0)[0];
       expect(result.overallStatus).toEqual('passed');
       done();
     }
 
+    var jasmineDone = jasmine.createSpy('jasmineDone');
     env.addReporter({ jasmineDone: jasmineDone });
-    env.execute();
+    env.execute(null, expectations);
   });
 });

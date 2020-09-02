@@ -28,8 +28,8 @@ describe('Matchers (Integration)', function() {
           .toBeUndefined();
       };
 
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -54,8 +54,8 @@ describe('Matchers (Integration)', function() {
           .not.toEqual('');
       };
 
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -75,8 +75,8 @@ describe('Matchers (Integration)', function() {
           .toEqual(config.expectedMessage);
       };
 
-      env.addReporter({specDone: specExpectations, jasmineDone: done});
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -101,8 +101,8 @@ describe('Matchers (Integration)', function() {
           .toBeUndefined();
       };
 
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -126,8 +126,8 @@ describe('Matchers (Integration)', function() {
           .not.toEqual('');
       };
 
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -149,8 +149,8 @@ describe('Matchers (Integration)', function() {
           .toEqual(config.expectedMessage);
       };
 
-      env.addReporter({specDone: specExpectations, jasmineDone: done});
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 

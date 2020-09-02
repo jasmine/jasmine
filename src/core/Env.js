@@ -705,7 +705,8 @@ getJasmineRequireObj().Env = function(j$) {
       queueRunnerFactory
     );
 
-    this.execute = function(runnablesToRun) {
+    // Both params are optional.
+    this.execute = function(runnablesToRun, onComplete) {
       installGlobalErrors();
 
       if (!runnablesToRun) {
@@ -813,7 +814,11 @@ getJasmineRequireObj().Env = function(j$) {
                 failedExpectations: topSuite.result.failedExpectations,
                 deprecationWarnings: topSuite.result.deprecationWarnings
               },
-              function() {}
+              function() {
+                if (onComplete) {
+                  onComplete();
+                }
+              }
             );
           });
         }

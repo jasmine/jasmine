@@ -1,4 +1,6 @@
 getJasmineRequireObj().QueueRunner = function(j$) {
+  var nextid = 1;
+
   function StopExecutionError() {}
   StopExecutionError.prototype = new Error();
   j$.StopExecutionError = StopExecutionError;
@@ -18,6 +20,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   function emptyFn() {}
 
   function QueueRunner(attrs) {
+    this.id_ = nextid++;
     var queueableFns = attrs.queueableFns || [];
     this.queueableFns = queueableFns.concat(attrs.cleanupFns || []);
     this.firstCleanupIx = queueableFns.length;

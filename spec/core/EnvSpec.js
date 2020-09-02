@@ -334,20 +334,16 @@ describe('Env', function() {
       expectationFactory('actual', specInstance);
     });
 
-    env.addReporter({
-      jasmineDone: function() {
-        expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
-          customObjectFormatter
-        ]);
-        expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
-          customTesters: [customEqualityTester],
-          pp: prettyPrinter
-        });
-        done();
-      }
+    env.execute(null, function() {
+      expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
+        customObjectFormatter
+      ]);
+      expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
+        customTesters: [customEqualityTester],
+        pp: prettyPrinter
+      });
+      done();
     });
-
-    env.execute();
   });
 
   it('creates an asyncExpectationFactory that uses the current custom equality testers and object formatters', function(done) {
@@ -371,19 +367,15 @@ describe('Env', function() {
       asyncExpectationFactory('actual', specInstance);
     });
 
-    env.addReporter({
-      jasmineDone: function() {
-        expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
-          customObjectFormatter
-        ]);
-        expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
-          customTesters: [customEqualityTester],
-          pp: prettyPrinter
-        });
-        done();
-      }
+    env.execute(null, function() {
+      expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
+        customObjectFormatter
+      ]);
+      expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
+        customTesters: [customEqualityTester],
+        pp: prettyPrinter
+      });
+      done();
     });
-
-    env.execute();
   });
 });

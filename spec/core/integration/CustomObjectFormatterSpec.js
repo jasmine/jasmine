@@ -25,9 +25,9 @@ describe("Custom object formatters", function() {
       expect(specResults[1].failedExpectations[0].message).toEqual("Expected 42 to be undefined.");
       done();
     };
-    env.addReporter({ specDone:specDone, jasmineDone: expectations});
+    env.addReporter({ specDone:specDone });
 
-    env.execute();
+    env.execute(null, expectations);
   });
 
   it("scopes custom object formatters to a suite", function(done) {
@@ -54,9 +54,9 @@ describe("Custom object formatters", function() {
       expect(specResults[1].failedExpectations[0].message).toEqual("Expected custom(42) to be undefined.");
       done();
     };
-    env.addReporter({ specDone:specDone, jasmineDone: expectations});
+    env.addReporter({ specDone:specDone });
 
-    env.execute();
+    env.execute(null, expectations);
   });
 
   it("throws an exception if you try to add a custom object formatter outside a runable", function() {

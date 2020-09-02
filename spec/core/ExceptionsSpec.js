@@ -29,8 +29,7 @@ describe('Exceptions:', function() {
       done();
     };
 
-    env.addReporter({ jasmineDone: expectations });
-    env.execute();
+    env.execute(null, expectations);
   });
 
   it('should handle exceptions thrown directly in top-level describe blocks and continue', function(done) {
@@ -49,7 +48,6 @@ describe('Exceptions:', function() {
       done();
     };
 
-    env.addReporter({ jasmineDone: expectations });
-    env.execute();
+    env.execute(null, expectations);
   });
 });
