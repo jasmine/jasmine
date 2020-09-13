@@ -2294,7 +2294,7 @@ describe("Env integration", function() {
   it('should report deprecation warnings on the correct specs and suites', function(done) {
     var reporter = jasmine.createSpyObj('reporter', ['jasmineDone', 'suiteDone', 'specDone']);
 
-    // prevent deprecation from being displayed
+    // prevent deprecation from being displayed, as well as letting us observe calls
     spyOn(console, "error");
 
     env.addReporter(reporter);
@@ -2316,6 +2316,7 @@ describe("Env integration", function() {
       expect(result.deprecationWarnings).toEqual([
         jasmine.objectContaining({ message: 'top level deprecation' })
       ]);
+      expect(console.error).toHaveBeenCalledWith('DEPRECATION: top level deprecation');
 
       expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
         fullName: 'suite',
@@ -2323,6 +2324,7 @@ describe("Env integration", function() {
           jasmine.objectContaining({ message: 'suite level deprecation' })
         ]
       }));
+      expect(console.error).toHaveBeenCalledWith('DEPRECATION: suite level deprecation (in suite: suite)');
 
       expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
         fullName: 'suite spec',
@@ -2330,6 +2332,7 @@ describe("Env integration", function() {
           jasmine.objectContaining({ message: 'spec level deprecation' })
         ]
       }));
+      expect(console.error).toHaveBeenCalledWith('DEPRECATION: spec level deprecation (in spec: suite spec)');
 
       done();
     });

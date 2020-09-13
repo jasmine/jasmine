@@ -270,12 +270,14 @@ describe('HtmlReporter', function() {
       reporter.jasmineStarted({});
       reporter.specDone({
         status: 'passed',
+        fullName: 'a spec with a deprecation',
         deprecationWarnings: [{ message: 'spec deprecation' }],
         failedExpectations: [],
         passedExpectations: []
       });
       reporter.suiteDone({
         status: 'passed',
+        fullName: 'a suite with a deprecation',
         deprecationWarnings: [{ message: 'suite deprecation' }],
         failedExpectations: []
       });
@@ -287,12 +289,17 @@ describe('HtmlReporter', function() {
       var alertBars = container.querySelectorAll('.jasmine-alert .jasmine-bar');
 
       expect(alertBars.length).toEqual(4);
-      expect(alertBars[1].innerHTML).toMatch(/spec deprecation/);
+      expect(alertBars[1].innerHTML).toMatch(
+        /spec deprecation.*\(in spec: a spec with a deprecation\)/
+      );
       expect(alertBars[1].getAttribute('class')).toEqual(
         'jasmine-bar jasmine-warning'
       );
-      expect(alertBars[2].innerHTML).toMatch(/suite deprecation/);
+      expect(alertBars[2].innerHTML).toMatch(
+        /suite deprecation.*\(in suite: a suite with a deprecation\)/
+      );
       expect(alertBars[3].innerHTML).toMatch(/global deprecation/);
+      expect(alertBars[3].innerHTML).not.toMatch(/in /);
     });
   });
 

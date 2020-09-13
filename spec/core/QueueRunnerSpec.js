@@ -528,11 +528,12 @@ describe('QueueRunner', function() {
 
       queueRunner.execute();
 
-      expect(deprecated).toHaveBeenCalledWith('An asynchronous ' +
-        'before/it/after function took a done callback but also returned a '+
-        'promise. This is not supported and will stop working in the future. ' +
-        'Either remove the done callback (recommended) or change the function ' +
-        'to not return a promise.'
+      expect(deprecated).toHaveBeenCalledWith(
+        'An asynchronous ' +
+          'before/it/after function took a done callback but also returned a ' +
+          'promise. This is not supported and will stop working in the future. ' +
+          'Either remove the done callback (recommended) or change the function ' +
+          'to not return a promise.'
       );
     });
 
@@ -541,17 +542,18 @@ describe('QueueRunner', function() {
       eval('var fn = async function(done){};');
       var deprecated = jasmine.createSpy('deprecated'),
         queueRunner = new jasmineUnderTest.QueueRunner({
-          queueableFns: [{fn: fn}],
+          queueableFns: [{ fn: fn }],
           deprecated: deprecated
         });
 
       queueRunner.execute();
 
-      expect(deprecated).toHaveBeenCalledWith('An asynchronous ' +
-        'before/it/after function was defined with the async keyword but ' +
-        'also took a done callback. This is not supported and will stop ' +
-        'working in the future. Either remove the done callback ' +
-        '(recommended) or remove the async keyword.'
+      expect(deprecated).toHaveBeenCalledWith(
+        'An asynchronous ' +
+          'before/it/after function was defined with the async keyword but ' +
+          'also took a done callback. This is not supported and will stop ' +
+          'working in the future. Either remove the done callback ' +
+          '(recommended) or remove the async keyword.'
       );
     });
   });

@@ -581,12 +581,22 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.deprecated = function(deprecation) {
       var runnable = currentRunnable() || topSuite;
+      var context;
+
+      if (runnable === topSuite) {
+        context = '';
+      } else if (runnable === currentSuite()) {
+        context = ' (in suite: ' + runnable.getFullName() + ')';
+      } else {
+        context = ' (in spec: ' + runnable.getFullName() + ')';
+      }
+
       runnable.addDeprecationWarning(deprecation);
       if (
         typeof console !== 'undefined' &&
         typeof console.error === 'function'
       ) {
-        console.error('DEPRECATION:', deprecation);
+        console.error('DEPRECATION: ' + deprecation + context);
       }
     };
 
