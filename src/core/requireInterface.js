@@ -169,6 +169,30 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     /**
+     * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SpecResult}
+     * @name setSpecProperty
+     * @since 3.6.0
+     * @function
+     * @param {String} key The name of the property
+     * @param {*} value The value of the property
+     */
+    setSpecProperty: function(key, value) {
+      return env.setSpecProperty(key, value);
+    },
+
+    /**
+     * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SuiteResult}
+     * @name setSuiteProperty
+     * @since 3.6.0
+     * @function
+     * @param {String} key The name of the property
+     * @param {*} value The value of the property
+     */
+    setSuiteProperty: function(key, value) {
+      return env.setSuiteProperty(key, value);
+    },
+
+    /**
      * Create an expectation for a spec.
      * @name expect
      * @since 1.3.0
@@ -327,7 +351,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
    * @since 3.6.0
    * @function
    * @param {Function} formatter - A function which takes a value to format and returns a string if it knows how to format it, and `undefined` otherwise.
-   * @see custom_object_formatter
+   * @see custom_object_formatters
    */
   jasmine.addCustomObjectFormatter = function(formatter) {
     return env.addCustomObjectFormatter(formatter);

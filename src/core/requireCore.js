@@ -49,7 +49,6 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.Expector = jRequire.Expector(j$);
     j$.Expectation = jRequire.Expectation(j$);
     j$.buildExpectationResult = jRequire.buildExpectationResult(j$);
-    j$.noopTimer = jRequire.noopTimer();
     j$.JsApiReporter = jRequire.JsApiReporter(j$);
     j$.asymmetricEqualityTesterArgCompatShim = jRequire.asymmetricEqualityTesterArgCompatShim(
       j$

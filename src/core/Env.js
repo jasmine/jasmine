@@ -620,12 +620,22 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.deprecated = function(deprecation) {
       var runnable = currentRunnable() || topSuite;
+      var context;
+
+      if (runnable === topSuite) {
+        context = '';
+      } else if (runnable === currentSuite()) {
+        context = ' (in suite: ' + runnable.getFullName() + ')';
+      } else {
+        context = ' (in spec: ' + runnable.getFullName() + ')';
+      }
+
       runnable.addDeprecationWarning(deprecation);
       if (
         typeof console !== 'undefined' &&
         typeof console.error === 'function'
       ) {
-        console.error('DEPRECATION:', deprecation);
+        console.error('DEPRECATION: ' + deprecation + context);
       }
     };
 
@@ -767,7 +777,8 @@ getJasmineRequireObj().Env = function(j$) {
       queueRunnerFactory
     );
 
-    this.execute = function(runnablesToRun) {
+    // Both params are optional.
+    this.execute = function(runnablesToRun, onComplete) {
       installGlobalErrors();
 
       if (!runnablesToRun) {
@@ -875,7 +886,11 @@ getJasmineRequireObj().Env = function(j$) {
                 failedExpectations: topSuite.result.failedExpectations,
                 deprecationWarnings: topSuite.result.deprecationWarnings
               },
-              function() {}
+              function() {
+                if (onComplete) {
+                  onComplete();
+                }
+              }
             );
           });
         }
@@ -1014,6 +1029,7 @@ getJasmineRequireObj().Env = function(j$) {
         id: getNextSuiteId(),
         description: description,
         parentSuite: currentDeclarationSuite,
+        timer: new j$.Timer(),
         expectationFactory: expectationFactory,
         asyncExpectationFactory: suiteAsyncExpectationFactory,
         expectationResultFactory: expectationResultFactory,
@@ -1190,6 +1206,40 @@ getJasmineRequireObj().Env = function(j$) {
       focusedRunnables.push(spec.id);
       unfocusAncestor();
       return spec;
+    };
+
+    /**
+     * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SpecResult}
+     * @name Env#setSpecProperty
+     * @since 3.6.0
+     * @function
+     * @param {String} key The name of the property
+     * @param {*} value The value of the property
+     */
+    this.setSpecProperty = function(key, value) {
+      if (!currentRunnable() || currentRunnable() == currentSuite()) {
+        throw new Error(
+          "'setSpecProperty' was used when there was no current spec"
+        );
+      }
+      currentRunnable().setSpecProperty(key, value);
+    };
+
+    /**
+     * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SuiteResult}
+     * @name Env#setSuiteProperty
+     * @since 3.6.0
+     * @function
+     * @param {String} key The name of the property
+     * @param {*} value The value of the property
+     */
+    this.setSuiteProperty = function(key, value) {
+      if (!currentSuite()) {
+        throw new Error(
+          "'setSuiteProperty' was used when there was no current suite"
+        );
+      }
+      currentSuite().setSuiteProperty(key, value);
     };
 
     this.expect = function(actual) {

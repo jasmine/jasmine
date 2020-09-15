@@ -51,4 +51,15 @@ describe('base helpers', function() {
       expect(jasmineUnderTest.isAsymmetricEqualityTester_(obj)).toBe(true);
     });
   });
+
+  describe('isSet', function() {
+    it('returns true when the object is a Set', function() {
+      jasmine.getEnv().requireFunctioningSets();
+      expect(jasmineUnderTest.isSet(new Set())).toBe(true); // eslint-disable-line compat/compat
+    });
+
+    it('returns false when the object is not a Set', function() {
+      expect(jasmineUnderTest.isSet({})).toBe(false);
+    });
+  });
 });

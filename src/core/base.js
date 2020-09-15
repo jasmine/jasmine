@@ -76,6 +76,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return j$.isA_('AsyncFunction', value);
   };
 
+  j$.isGeneratorFunction_ = function(value) {
+    return j$.isA_('GeneratorFunction', value);
+  };
+
   j$.isTypedArray_ = function(value) {
     return (
       j$.isA_('Float32Array', value) ||
@@ -145,6 +149,24 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       typeof obj !== 'undefined' &&
       typeof jasmineGlobal.Set !== 'undefined' &&
       obj.constructor === jasmineGlobal.Set
+    );
+  };
+
+  j$.isWeakMap = function(obj) {
+    return (
+      obj !== null &&
+      typeof obj !== 'undefined' &&
+      typeof jasmineGlobal.WeakMap !== 'undefined' &&
+      obj.constructor === jasmineGlobal.WeakMap
+    );
+  };
+
+  j$.isDataView = function(obj) {
+    return (
+      obj !== null &&
+      typeof obj !== 'undefined' &&
+      typeof jasmineGlobal.DataView !== 'undefined' &&
+      obj.constructor === jasmineGlobal.DataView
     );
   };
 

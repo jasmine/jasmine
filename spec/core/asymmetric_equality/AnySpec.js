@@ -34,7 +34,7 @@ describe("Any", function() {
 
     var any = new jasmineUnderTest.Any(Map);
 
-    expect(any.asymmetricMatch(new Map())).toBe(true);
+    expect(any.asymmetricMatch(new Map())).toBe(true); // eslint-disable-line compat/compat
   });
 
   it("matches a Set", function() {
@@ -42,23 +42,23 @@ describe("Any", function() {
 
     var any = new jasmineUnderTest.Any(Set);
 
-    expect(any.asymmetricMatch(new Set())).toBe(true);
+    expect(any.asymmetricMatch(new Set())).toBe(true); // eslint-disable-line compat/compat
   });
 
   it("matches a TypedArray", function() {
     jasmine.getEnv().requireFunctioningTypedArrays();
 
-    var any = new jasmineUnderTest.Any(Uint32Array);
+    var any = new jasmineUnderTest.Any(Uint32Array); // eslint-disable-line compat/compat
 
-    expect(any.asymmetricMatch(new Uint32Array([]))).toBe(true);
+    expect(any.asymmetricMatch(new Uint32Array([]))).toBe(true); // eslint-disable-line compat/compat
   });
 
   it("matches a Symbol", function() {
     jasmine.getEnv().requireFunctioningSymbols();
 
-    var any = new jasmineUnderTest.Any(Symbol);
+    var any = new jasmineUnderTest.Any(Symbol); // eslint-disable-line compat/compat
 
-    expect(any.asymmetricMatch(Symbol())).toBe(true);
+    expect(any.asymmetricMatch(Symbol())).toBe(true); // eslint-disable-line compat/compat
   });
 
   it("matches another constructed object", function() {

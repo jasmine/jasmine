@@ -101,7 +101,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       if (result.status === 'failed') {
         failures.push(failureDom(result));
       }
-      addDeprecationWarnings(result);
+      addDeprecationWarnings(result, 'suite');
     };
 
     this.specStarted = function(result) {
@@ -137,7 +137,7 @@ jasmineRequire.HtmlReporter = function(j$) {
         failures.push(failureDom(result));
       }
 
-      addDeprecationWarnings(result);
+      addDeprecationWarnings(result, 'spec');
     };
 
     this.displaySpecInCorrectFormat = function(result) {
@@ -276,14 +276,27 @@ jasmineRequire.HtmlReporter = function(j$) {
 
       addDeprecationWarnings(doneResult);
 
-      var warningBarClassName = 'jasmine-bar jasmine-warning';
       for (i = 0; i < deprecationWarnings.length; i++) {
-        var warning = deprecationWarnings[i];
+        var context;
+
+        switch (deprecationWarnings[i].runnableType) {
+          case 'spec':
+            context = '(in spec: ' + deprecationWarnings[i].runnableName + ')';
+            break;
+          case 'suite':
+            context = '(in suite: ' + deprecationWarnings[i].runnableName + ')';
+            break;
+          default:
+            context = '';
+        }
+
         alert.appendChild(
           createDom(
             'span',
-            { className: warningBarClassName },
-            'DEPRECATION: ' + warning
+            { className: 'jasmine-bar jasmine-warning' },
+            'DEPRECATION: ' + deprecationWarnings[i].message,
+            createDom('br'),
+            context
           )
         );
       }
@@ -321,9 +334,11 @@ jasmineRequire.HtmlReporter = function(j$) {
 
         find('.jasmine-failures-menu').onclick = function() {
           setMenuModeTo('jasmine-failure-list');
+          return false;
         };
         find('.jasmine-spec-list-menu').onclick = function() {
           setMenuModeTo('jasmine-spec-list');
+          return false;
         };
 
         setMenuModeTo('jasmine-failure-list');
@@ -592,12 +607,16 @@ jasmineRequire.HtmlReporter = function(j$) {
       return addToExistingQueryString('spec', els.join(' '));
     }
 
-    function addDeprecationWarnings(result) {
+    function addDeprecationWarnings(result, runnableType) {
       if (result && result.deprecationWarnings) {
         for (var i = 0; i < result.deprecationWarnings.length; i++) {
           var warning = result.deprecationWarnings[i].message;
           if (!j$.util.arrayContains(warning)) {
-            deprecationWarnings.push(warning);
+            deprecationWarnings.push({
+              message: warning,
+              runnableName: result.fullName,
+              runnableType: runnableType
+            });
           }
         }
       }

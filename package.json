@@ -1,7 +1,7 @@
 {
   "name": "jasmine-core",
   "license": "MIT",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jasmine/jasmine.git"
@@ -13,7 +13,7 @@
     "bdd"
   ],
   "scripts": {
-    "posttest": "eslint src/**/*.js spec/**/*.js && prettier --check src/**/*.js spec/**/*.js",
+    "posttest": "eslint \"src/**/*.js\" \"spec/**/*.js\" && prettier --check src/**/*.js spec/**/*.js",
     "test": "grunt --stack execSpecsInNode",
     "cleanup": "prettier --write src/**/*.js spec/**/*.js",
     "build": "grunt buildDistribution",
@@ -28,7 +28,8 @@
   "devDependencies": {
     "acorn": "^6.0.0",
     "ejs": "^2.5.5",
-    "eslint": "^5.16.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-compat": "^3.8.0",
     "express": "^4.16.4",
     "fast-check": "^1.21.0",
     "fast-glob": "^2.2.6",
@@ -39,7 +40,7 @@
     "grunt-css-url-embed": "^1.11.1",
     "grunt-sass": "^3.0.2",
     "jasmine": "^3.4.0",
-    "jasmine-browser-runner": "0.3.0",
+    "jasmine-browser-runner": "^0.4.0",
     "jsdom": "^15.0.0",
     "load-grunt-tasks": "^4.0.0",
     "node-sass": "^4.11.0",
@@ -52,6 +53,12 @@
     "singleQuote": true
   },
   "eslintConfig": {
+    "extends": [
+      "plugin:compat/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 5
+    },
     "rules": {
       "quotes": [
         "error",
@@ -67,10 +74,6 @@
         }
       ],
       "block-spacing": "error",
-      "comma-dangle": [
-        "error",
-        "never"
-      ],
       "func-call-spacing": [
         "error",
         "never"
@@ -85,5 +88,13 @@
       ],
       "space-before-blocks": "error"
     }
-  }
+  },
+  "browserslist": [
+    "Safari >= 8",
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "Firefox 68",
+    "last 2 Edge versions",
+    "IE >= 10"
+  ]
 }

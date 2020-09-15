@@ -70,7 +70,7 @@ describe('SpyStrategy', function() {
     expect(originalFn).not.toHaveBeenCalled();
   });
 
-  it('allows a non-Error to be thrown, wrapping it into an exception when executed', function() {
+  it('allows a string to be thrown, wrapping it into an exception when executed', function() {
     var originalFn = jasmine.createSpy('original'),
       spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
 
@@ -79,6 +79,18 @@ describe('SpyStrategy', function() {
     expect(function() {
       spyStrategy.exec();
     }).toThrowError(Error, 'bar');
+    expect(originalFn).not.toHaveBeenCalled();
+  });
+
+  it('allows a non-Error to be thrown when executed', function() {
+    var originalFn = jasmine.createSpy('original'),
+      spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
+
+    spyStrategy.throwError({ code: 'ESRCH' });
+
+    expect(function() {
+      spyStrategy.exec();
+    }).toThrow({ code: 'ESRCH' });
     expect(originalFn).not.toHaveBeenCalled();
   });
 
@@ -140,6 +152,28 @@ describe('SpyStrategy', function() {
         .catch(done.fail);
     });
 
+    it('allows an empty resolved promise to be returned', function(done) {
+      jasmine.getEnv().requirePromises();
+
+      var originalFn = jasmine.createSpy('original'),
+        getPromise = function() {
+          return Promise;
+        },
+        spyStrategy = new jasmineUnderTest.SpyStrategy({
+          fn: originalFn,
+          getPromise: getPromise
+        });
+
+      spyStrategy.resolveTo();
+      spyStrategy
+        .exec()
+        .then(function(returnValue) {
+          expect(returnValue).toBe();
+          done();
+        })
+        .catch(done.fail);
+    });
+
     it('fails if promises are not available', function() {
       var originalFn = jasmine.createSpy('original'),
         spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
@@ -171,6 +205,29 @@ describe('SpyStrategy', function() {
         .then(done.fail)
         .catch(function(error) {
           expect(error).toEqual(new Error('oops'));
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('allows an empty rejected promise to be returned', function(done) {
+      jasmine.getEnv().requirePromises();
+
+      var originalFn = jasmine.createSpy('original'),
+        getPromise = function() {
+          return Promise;
+        },
+        spyStrategy = new jasmineUnderTest.SpyStrategy({
+          fn: originalFn,
+          getPromise: getPromise
+        });
+
+      spyStrategy.rejectWith();
+      spyStrategy
+        .exec()
+        .then(done.fail)
+        .catch(function(error) {
+          expect(error).toBe();
           done();
         })
         .catch(done.fail);
@@ -275,6 +332,17 @@ describe('SpyStrategy', function() {
     expect(function() {
       spyStrategy.callFake(function() {});
     }).toThrowError(/^Argument passed to callFake should be a function, got/);
+  });
+
+  it('allows generator functions to be passed to callFake strategy', function() {
+    jasmine.getEnv().requireGeneratorFunctions();
+
+    var generator = jasmine.getEnv().makeGeneratorFunction('yield "ok";'),
+      spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: function() {} });
+
+    spyStrategy.callFake(generator);
+
+    expect(spyStrategy.exec().next().value).toEqual('ok');
   });
 
   it('allows a return to plan stubbing after another strategy', function() {

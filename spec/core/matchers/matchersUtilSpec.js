@@ -112,6 +112,11 @@ describe("matchersUtil", function() {
       expect(matchersUtil.equals(123, 456)).toBe(false);
     });
 
+    it("fails for a Number and a String that have equivalent values", function() {
+      var matchersUtil = new jasmineUnderTest.MatchersUtil();
+      expect(matchersUtil.equals(123, "123")).toBe(false);
+    });
+
     it("passes for Dates that are equivalent", function() {
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
       expect(matchersUtil.equals(new Date("Jan 1, 1970"), new Date("Jan 1, 1970"))).toBe(true);
@@ -280,8 +285,8 @@ describe("matchersUtil", function() {
     it("passes for equivalent Promises (GitHub issue #1314)", function() {
       if (typeof Promise === 'undefined') { return; }
 
-      var p1 = new Promise(function () {}),
-        p2 = new Promise(function () {}),
+      var p1 = new Promise(function () {}), // eslint-disable-line compat/compat
+        p2 = new Promise(function () {}), // eslint-disable-line compat/compat
         matchersUtil = new jasmineUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(p1, p1)).toBe(true);
@@ -416,10 +421,10 @@ describe("matchersUtil", function() {
       jasmine.getEnv().requireFunctioningMaps();
 
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var obj = new Map();
+      var obj = new Map(); // eslint-disable-line compat/compat
       obj.set(1, 2);
       obj.set('foo', 'bar');
-      var containing = new jasmineUnderTest.MapContaining(new Map());
+      var containing = new jasmineUnderTest.MapContaining(new Map()); // eslint-disable-line compat/compat
       containing.sample.set('foo', 'bar');
 
       expect(matchersUtil.equals(obj, containing)).toBe(true);
@@ -430,10 +435,10 @@ describe("matchersUtil", function() {
       jasmine.getEnv().requireFunctioningSets();
 
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var obj = new Set();
+      var obj = new Set(); // eslint-disable-line compat/compat
       obj.add(1);
       obj.add('foo');
-      var containing = new jasmineUnderTest.SetContaining(new Set());
+      var containing = new jasmineUnderTest.SetContaining(new Set()); // eslint-disable-line compat/compat
       containing.sample.add(1);
 
       expect(matchersUtil.equals(obj, containing)).toBe(true);
@@ -610,17 +615,17 @@ describe("matchersUtil", function() {
     it("passes when comparing two empty sets", function() {
       jasmine.getEnv().requireFunctioningSets();
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      expect(matchersUtil.equals(new Set(), new Set())).toBe(true);
+      expect(matchersUtil.equals(new Set(), new Set())).toBe(true); // eslint-disable-line compat/compat
     });
 
     it("passes when comparing identical sets", function() {
       jasmine.getEnv().requireFunctioningSets();
 
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var setA = new Set();
+      var setA = new Set(); // eslint-disable-line compat/compat
       setA.add(6);
       setA.add(5);
-      var setB = new Set();
+      var setB = new Set(); // eslint-disable-line compat/compat
       setB.add(6);
       setB.add(5);
 
@@ -631,10 +636,10 @@ describe("matchersUtil", function() {
       jasmine.getEnv().requireFunctioningSets();
 
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var setA = new Set();
+      var setA = new Set(); // eslint-disable-line compat/compat
       setA.add(3);
       setA.add(6);
-      var setB = new Set();
+      var setB = new Set(); // eslint-disable-line compat/compat
       setB.add(6);
       setB.add(3);
 
@@ -645,24 +650,23 @@ describe("matchersUtil", function() {
       jasmine.getEnv().requireFunctioningSets();
 
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var setA1 = new Set();
+      var setA1 = new Set(); // eslint-disable-line compat/compat
       setA1.add(['a',3]);
       setA1.add([6,1]);
-      var setA2 = new Set();
+      var setA2 = new Set(); // eslint-disable-line compat/compat
       setA1.add(['y',3]);
       setA1.add([6,1]);
-      var setA = new Set();
+      var setA = new Set(); // eslint-disable-line compat/compat
       setA.add(setA1);
       setA.add(setA2);
 
-
-      var setB1 = new Set();
+      var setB1 = new Set(); // eslint-disable-line compat/compat
       setB1.add([6,1]);
       setB1.add(['a',3]);
-      var setB2 = new Set();
+      var setB2 = new Set(); // eslint-disable-line compat/compat
       setB1.add([6,1]);
       setB1.add(['y',3]);
-      var setB = new Set();
+      var setB = new Set(); // eslint-disable-line compat/compat
       setB.add(setB1);
       setB.add(setB2);
 
@@ -673,10 +677,10 @@ describe("matchersUtil", function() {
       jasmine.getEnv().requireFunctioningSets();
 
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var setA = new Set();
+      var setA = new Set(); // eslint-disable-line compat/compat
       setA.add([[1,2], [3,4]]);
       setA.add([[5,6], [7,8]]);
-      var setB = new Set();
+      var setB = new Set(); // eslint-disable-line compat/compat
       setB.add([[5,6], [7,8]]);
       setB.add([[1,2], [3,4]]);
 
@@ -686,11 +690,11 @@ describe("matchersUtil", function() {
     it("fails for sets with different elements", function() {
       jasmine.getEnv().requireFunctioningSets();
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var setA = new Set();
+      var setA = new Set(); // eslint-disable-line compat/compat
       setA.add(6);
       setA.add(3);
       setA.add(5);
-      var setB = new Set();
+      var setB = new Set(); // eslint-disable-line compat/compat
       setB.add(6);
       setB.add(4);
       setB.add(5);
@@ -701,10 +705,10 @@ describe("matchersUtil", function() {
     it("fails for sets of different size", function() {
       jasmine.getEnv().requireFunctioningSets();
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var setA = new Set();
+      var setA = new Set(); // eslint-disable-line compat/compat
       setA.add(6);
       setA.add(3);
-      var setB = new Set();
+      var setB = new Set(); // eslint-disable-line compat/compat
       setB.add(6);
       setB.add(4);
       setB.add(5);
@@ -715,15 +719,15 @@ describe("matchersUtil", function() {
     it("passes when comparing two empty maps", function() {
       jasmine.getEnv().requireFunctioningMaps();
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      expect(matchersUtil.equals(new Map(), new Map())).toBe(true);
+      expect(matchersUtil.equals(new Map(), new Map())).toBe(true); // eslint-disable-line compat/compat
     });
 
     it("passes when comparing identical maps", function() {
       jasmine.getEnv().requireFunctioningMaps();
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var mapA = new Map();
+      var mapA = new Map(); // eslint-disable-line compat/compat
       mapA.set(6, 5);
-      var mapB = new Map();
+      var mapB = new Map(); // eslint-disable-line compat/compat
       mapB.set(6, 5);
       expect(matchersUtil.equals(mapA, mapB)).toBe(true);
     });
@@ -731,10 +735,10 @@ describe("matchersUtil", function() {
     it("passes when comparing identical maps with different insertion order", function() {
       jasmine.getEnv().requireFunctioningMaps();
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var mapA = new Map();
+      var mapA = new Map(); // eslint-disable-line compat/compat
       mapA.set("a", 3);
       mapA.set(6, 1);
-      var mapB = new Map();
+      var mapB = new Map(); // eslint-disable-line compat/compat
       mapB.set(6, 1);
       mapB.set("a", 3);
       expect(matchersUtil.equals(mapA, mapB)).toBe(true);
@@ -743,10 +747,10 @@ describe("matchersUtil", function() {
     it("fails for maps with different elements", function() {
       jasmine.getEnv().requireFunctioningMaps();
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var mapA = new Map();
+      var mapA = new Map(); // eslint-disable-line compat/compat
       mapA.set(6, 3);
       mapA.set(5, 1);
-      var mapB = new Map();
+      var mapB = new Map(); // eslint-disable-line compat/compat
       mapB.set(6, 4);
       mapB.set(5, 1);
 
@@ -756,9 +760,9 @@ describe("matchersUtil", function() {
     it("fails for maps of different size", function() {
       jasmine.getEnv().requireFunctioningMaps();
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var mapA = new Map();
+      var mapA = new Map(); // eslint-disable-line compat/compat
       mapA.set(6, 3);
-      var mapB = new Map();
+      var mapB = new Map(); // eslint-disable-line compat/compat
       mapB.set(6, 4);
       mapB.set(5, 1);
       expect(matchersUtil.equals(mapA, mapB)).toBe(false);
@@ -829,7 +833,7 @@ describe("matchersUtil", function() {
 
         expect(diffBuilder.setRoots).toHaveBeenCalledWith(actual, expected);
         expect(diffBuilder.withPath).toHaveBeenCalledWith('x', jasmine.any(Function));
-        expect(diffBuilder.recordMismatch). toHaveBeenCalledWith();
+        expect(diffBuilder.recordMismatch).toHaveBeenCalledWith();
       });
 
       it("records both objects when the tester does not implement valuesForDiff", function() {
@@ -846,7 +850,7 @@ describe("matchersUtil", function() {
 
         expect(diffBuilder.setRoots).toHaveBeenCalledWith(actual, expected);
         expect(diffBuilder.withPath).toHaveBeenCalledWith('x', jasmine.any(Function));
-        expect(diffBuilder.recordMismatch). toHaveBeenCalledWith();
+        expect(diffBuilder.recordMismatch).toHaveBeenCalledWith();
       });
     });
 
@@ -981,7 +985,7 @@ describe("matchersUtil", function() {
 
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
       var setItem = {'foo': 'bar'};
-      var set = new Set();
+      var set = new Set(); // eslint-disable-line compat/compat
       set.add(setItem);
 
       expect(matchersUtil.contains(set, setItem)).toBe(true);
@@ -992,7 +996,7 @@ describe("matchersUtil", function() {
       jasmine.getEnv().requireFunctioningSets();
 
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
-      var set = new Set();
+      var set = new Set(); // eslint-disable-line compat/compat
       set.add({'foo': 'bar'});
 
       expect(matchersUtil.contains(set, {'foo': 'bar'})).toBe(false);

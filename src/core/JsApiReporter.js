@@ -6,7 +6,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
    * @hideconstructor
    */
   function JsApiReporter(options) {
-    var timer = options.timer || j$.noopTimer,
+    var timer = options.timer || new j$.Timer(),
       status = 'loaded';
 
     this.started = false;

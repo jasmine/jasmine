@@ -28,8 +28,8 @@ describe('Matchers (Integration)', function() {
           .toBeUndefined();
       };
 
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -47,12 +47,15 @@ describe('Matchers (Integration)', function() {
         expect(result.failedExpectations[0].message)
           .withContext('Failed with a thrown error rather than a matcher failure')
           .not.toMatch(/^Error: /);
+        expect(result.failedExpectations[0].message)
+          .withContext('Failed with a thrown type error rather than a matcher failure')
+          .not.toMatch(/^TypeError: /);
         expect(result.failedExpectations[0].matcherName).withContext('Matcher name')
           .not.toEqual('');
       };
 
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -72,8 +75,8 @@ describe('Matchers (Integration)', function() {
           .toEqual(config.expectedMessage);
       };
 
-      env.addReporter({specDone: specExpectations, jasmineDone: done});
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -98,8 +101,8 @@ describe('Matchers (Integration)', function() {
           .toBeUndefined();
       };
 
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -123,8 +126,8 @@ describe('Matchers (Integration)', function() {
           .not.toEqual('');
       };
 
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -146,8 +149,8 @@ describe('Matchers (Integration)', function() {
           .toEqual(config.expectedMessage);
       };
 
-      env.addReporter({specDone: specExpectations, jasmineDone: done});
-      env.execute();
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
     });
   }
 
@@ -332,11 +335,11 @@ describe('Matchers (Integration)', function() {
 
   describe('toBeResolved', function() {
     verifyPassesAsync(function(env) {
-      return env.expectAsync(Promise.resolve()).toBeResolved();
+      return env.expectAsync(Promise.resolve()).toBeResolved(); // eslint-disable-line compat/compat
     });
 
     verifyFailsAsync(function(env) {
-      return env.expectAsync(Promise.reject()).toBeResolved();
+      return env.expectAsync(Promise.reject()).toBeResolved(); // eslint-disable-line compat/compat
     });
   });
 
@@ -345,11 +348,11 @@ describe('Matchers (Integration)', function() {
       env.addCustomEqualityTester(function(a, b) {
         return a.toString() === b.toString();
       });
-      return env.expectAsync(Promise.resolve('5')).toBeResolvedTo(5);
+      return env.expectAsync(Promise.resolve('5')).toBeResolvedTo(5); // eslint-disable-line compat/compat
     });
 
     verifyFailsAsync(function(env) {
-      return env.expectAsync(Promise.resolve('foo')).toBeResolvedTo('bar');
+      return env.expectAsync(Promise.resolve('foo')).toBeResolvedTo('bar'); // eslint-disable-line compat/compat
     });
 
     verifyFailsWithCustomObjectFormattersAsync({
@@ -357,7 +360,7 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        return env.expectAsync(Promise.resolve('x')).toBeResolvedTo('y');
+        return env.expectAsync(Promise.resolve('x')).toBeResolvedTo('y'); // eslint-disable-line compat/compat
       },
       expectedMessage: 'Expected a promise to be resolved to |y| ' +
         'but it was resolved to |x|.'
@@ -366,11 +369,11 @@ describe('Matchers (Integration)', function() {
 
   describe('toBeRejected', function() {
     verifyPassesAsync(function(env) {
-      return env.expectAsync(Promise.reject('nope')).toBeRejected();
+      return env.expectAsync(Promise.reject('nope')).toBeRejected(); // eslint-disable-line compat/compat
     });
 
     verifyFailsAsync(function(env) {
-      return env.expectAsync(Promise.resolve()).toBeRejected();
+      return env.expectAsync(Promise.resolve()).toBeRejected(); // eslint-disable-line compat/compat
     });
   });
 
@@ -379,11 +382,11 @@ describe('Matchers (Integration)', function() {
       env.addCustomEqualityTester(function(a, b) {
         return a.toString() === b.toString();
       });
-      return env.expectAsync(Promise.reject('5')).toBeRejectedWith(5);
+      return env.expectAsync(Promise.reject('5')).toBeRejectedWith(5); // eslint-disable-line compat/compat
     });
 
     verifyFailsAsync(function(env) {
-      return env.expectAsync(Promise.resolve()).toBeRejectedWith('nope');
+      return env.expectAsync(Promise.resolve()).toBeRejectedWith('nope'); // eslint-disable-line compat/compat
     });
 
     verifyFailsWithCustomObjectFormattersAsync({
@@ -391,7 +394,7 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        return env.expectAsync(Promise.reject('x')).toBeRejectedWith('y');
+        return env.expectAsync(Promise.reject('x')).toBeRejectedWith('y'); // eslint-disable-line compat/compat
       },
       expectedMessage: 'Expected a promise to be rejected with |y| ' +
         'but it was rejected with |x|.'
@@ -400,11 +403,11 @@ describe('Matchers (Integration)', function() {
 
   describe('toBeRejectedWithError', function() {
     verifyPassesAsync(function(env) {
-      return env.expectAsync(Promise.reject(new Error())).toBeRejectedWithError(Error);
+      return env.expectAsync(Promise.reject(new Error())).toBeRejectedWithError(Error); // eslint-disable-line compat/compat
     });
 
     verifyFailsAsync(function(env) {
-      return env.expectAsync(Promise.resolve()).toBeRejectedWithError(Error);
+      return env.expectAsync(Promise.resolve()).toBeRejectedWithError(Error); // eslint-disable-line compat/compat
     });
 
     verifyFailsWithCustomObjectFormattersAsync({
@@ -412,7 +415,7 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        return env.expectAsync(Promise.reject('foo')).toBeRejectedWithError('foo');
+        return env.expectAsync(Promise.reject('foo')).toBeRejectedWithError('foo'); // eslint-disable-line compat/compat
       },
       expectedMessage: 'Expected a promise to be rejected with Error: |foo| ' +
         'but it was rejected with |foo|.'
@@ -477,15 +480,25 @@ describe('Matchers (Integration)', function() {
     verifyFailsWithCustomObjectFormatters({
       formatter: function(val) {
         if (val === 5) {
-          return "five"
+          return 'five';
         } else if (val === 4) {
-          return "four"
+          return 'four';
         }
       },
       expectations: function(env) {
         env.expect([{foo: 4}]).toEqual([{foo: 5}]);
       },
       expectedMessage: 'Expected $[0].foo = four to equal five.'
+    });
+  });
+
+  describe('toHaveSize', function() {
+    verifyPasses(function(env) {
+      env.expect(['a','b']).toHaveSize(2);
+    });
+
+    verifyFails(function(env) {
+      env.expect(['a','b']).toHaveSize(1);
     });
   });
 
@@ -557,6 +570,22 @@ describe('Matchers (Integration)', function() {
       expectedMessage: 'Expected spy foo to have been called with:\n' +
         '  |x|\n' +
         'but it was never called.'
+    });
+  });
+
+  describe('toHaveBeenCalledOnceWith', function() {
+    verifyPasses(function(env) {
+      var spy = env.createSpy();
+      spy('5', 3);
+      env.addCustomEqualityTester(function(a, b) {
+        return a.toString() === b.toString();
+      });
+      env.expect(spy).toHaveBeenCalledOnceWith(5, 3);
+    });
+
+    verifyFails(function(env) {
+      var spy = env.createSpy();
+      env.expect(spy).toHaveBeenCalledOnceWith(5, 3);
     });
   });
 

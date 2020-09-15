@@ -1,8 +1,5 @@
 language: node_js
-node_js:
-  - "10"
-  - "8"
-  - "12"
+node_js: 10
 
 script: $TEST_COMMAND
 
@@ -10,15 +7,17 @@ env:
   global:
     - USE_SAUCE=true
     - TEST_COMMAND="bash travis-core-script.sh"
-    - JASMINE_LONG_PROPERTY_TESTS="y"
     - secure: WSPWhlnC4mWSnSPquX+m1/BCu5ch5NygkaHuM2Nea7lD8oS3XLX8QncZZAsQ4lnNfqoDDuBOizG0AESiqNvE4y6x5qvLLTS6q+ce255ZEMZ71TBdZgDEEvGMEjOPPsVXiXyTQOP1lwOPlrbZvaPgWV7e11KIBab6DfFcQpnvDgo=
     - secure: SW7CJhZnwaNT749Gdnhvqb5rbXlAOsygUAzh9qhtyvbqXKkmJdBIEsO01YF6pbju1X2twE9JvWCOxeZju43NgQChJlPsGbjY2j3k/TdQeTAJesQe2K7ytwghunI30gjEovtRH0T3w1EmcKPH8yj5eBIcB2OYoJHx8KEC7e68q1g=
-  matrix:
-    - TEST_COMMAND="npm test"
-
 
 matrix:
   include:
+    - node_js: "10"
+      env: JASMINE_LONG_PROPERTY_TESTS="y" TEST_COMMAND="npm test"
+    - node_js: "12"
+      env: TEST_COMMAND="npm test"
+    - node_js: "8"
+      env: TEST_COMMAND="npm test"
     - env: JASMINE_BROWSER="internet explorer" SAUCE_BROWSER_VERSION=11 SAUCE_OS="Windows 8.1"
       if: type != pull_request
       addons:

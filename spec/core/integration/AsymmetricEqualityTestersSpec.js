@@ -19,8 +19,8 @@ describe('Asymmetric equality testers (Integration)', function () {
           .toBeUndefined();
       };
 
-      env.addReporter({specDone: specExpectations, jasmineDone: done});
-      env.execute();
+      env.addReporter({specDone: specExpectations});
+      env.execute(null, done);
     });
   }
 
@@ -43,8 +43,8 @@ describe('Asymmetric equality testers (Integration)', function () {
           .not.toEqual('');
       };
 
-      env.addReporter({specDone: specExpectations, jasmineDone: done});
-      env.execute();
+      env.addReporter({specDone: specExpectations});
+      env.execute(null, done);
     });
   }
 

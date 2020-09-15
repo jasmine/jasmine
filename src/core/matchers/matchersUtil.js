@@ -3,7 +3,6 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
    * _Note:_ Do not construct this directly. Jasmine will construct one and
    * pass it to matchers and asymmetric equality testers.
    * @name MatchersUtil
-   * @since 2.0.0
    * @classdesc Utilities for use in implementing matchers
    * @constructor
    */
@@ -15,6 +14,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
      * taking into account the current set of custom value formatters.
      * @function
      * @name MatchersUtil#pp
+     * @since 3.6.0
      * @param {*} value The value to pretty-print
      * @return {string} The pretty-printed value
      */
@@ -26,6 +26,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
    * logic as {@link MatchersUtil#equals}.
    * @function
    * @name MatchersUtil#contains
+   * @since 2.0.0
    * @param {*} haystack The collection to search
    * @param {*} needle The value to search for
    * @param [customTesters] An array of custom equality testers. Deprecated.
@@ -125,6 +126,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
    * Determines whether two values are deeply equal to each other.
    * @function
    * @name MatchersUtil#equals
+   * @since 2.0.0
    * @param {*} a The first value to compare
    * @param {*} b The second value to compare
    * @param [customTesters] An array of custom equality testers. Deprecated.

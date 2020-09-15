@@ -149,7 +149,7 @@ describe("ObjectContaining", function() {
         });
       });
 
-      it("includes keys that are present in only sample", function() {
+      it("includes keys that are present only in sample", function() {
         var sample = {a: 1, b: 2},
           other = {a: 3},
           containing = new jasmineUnderTest.ObjectContaining(sample),

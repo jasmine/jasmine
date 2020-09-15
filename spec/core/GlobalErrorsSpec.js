@@ -58,12 +58,29 @@ describe('GlobalErrors', function() {
     errors.pushListener(handler1);
     errors.pushListener(handler2);
 
-    errors.popListener();
+    errors.popListener(handler2);
 
     fakeGlobal.onerror('foo');
 
     expect(handler1).toHaveBeenCalledWith('foo');
     expect(handler2).not.toHaveBeenCalled();
+  });
+
+  it('throws when no listener is passed to #popListener', function() {
+    var errors = new jasmineUnderTest.GlobalErrors({});
+    expect(function() {
+      errors.popListener();
+    }).toThrowError('popListener expects a listener');
+  });
+
+  it('throws when the argument to #popListener is not the current listener', function() {
+    var errors = new jasmineUnderTest.GlobalErrors({});
+    errors.pushListener(function() {});
+    expect(function() {
+      errors.popListener(function() {});
+    }).toThrowError(
+      'popListener was passed a different listener than the current one'
+    );
   });
 
   it('uninstalls itself, putting back a previous callback', function() {
