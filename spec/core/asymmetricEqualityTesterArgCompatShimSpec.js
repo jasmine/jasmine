@@ -181,4 +181,18 @@ describe('asymmetricEqualityTesterArgCompatShim', function() {
       });
     });
   });
+
+  describe('When the matchersUtil is already an asymmetricEqualityTesterArgCompatShim', function() {
+    it('does not trigger any deprecations', function() {
+      var shim1 = jasmineUnderTest.asymmetricEqualityTesterArgCompatShim(
+        {},
+        []
+      );
+      spyOn(jasmineUnderTest.getEnv(), 'deprecated');
+
+      jasmineUnderTest.asymmetricEqualityTesterArgCompatShim(shim1, []);
+
+      expect(jasmineUnderTest.getEnv().deprecated).not.toHaveBeenCalled();
+    });
+  });
 });
