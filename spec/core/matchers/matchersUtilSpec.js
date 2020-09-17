@@ -32,6 +32,7 @@ describe("matchersUtil", function() {
 
         // Be thorough but very slow when specified (usually on CI).
         if (process.env.JASMINE_LONG_PROPERTY_TESTS) {
+          /* eslint-disable-next-line no-console */
           console.log(
             'Using',
             many,

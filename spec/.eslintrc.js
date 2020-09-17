@@ -13,5 +13,11 @@ module.exports = {
     "no-unused-vars": "off",
     "no-trailing-spaces": "off",
     "block-spacing": "off",
+
+    // Since linting is done at the end of the process and doesn't stop us
+    // from running tests, it makes sense to fail if debugger statements
+    // or console references are present.
+    "no-debugger": "error",
+    "no-console": "error",
   }
-}
+};

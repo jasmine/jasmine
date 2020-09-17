@@ -2316,6 +2316,7 @@ describe("Env integration", function() {
       expect(result.deprecationWarnings).toEqual([
         jasmine.objectContaining({ message: 'top level deprecation' })
       ]);
+      /* eslint-disable-next-line no-console */
       expect(console.error).toHaveBeenCalledWith('DEPRECATION: top level deprecation');
 
       expect(reporter.suiteDone).toHaveBeenCalledWith(jasmine.objectContaining({
@@ -2324,6 +2325,7 @@ describe("Env integration", function() {
           jasmine.objectContaining({ message: 'suite level deprecation' })
         ]
       }));
+      /* eslint-disable-next-line no-console */
       expect(console.error).toHaveBeenCalledWith('DEPRECATION: suite level deprecation (in suite: suite)');
 
       expect(reporter.specDone).toHaveBeenCalledWith(jasmine.objectContaining({
@@ -2332,6 +2334,7 @@ describe("Env integration", function() {
           jasmine.objectContaining({ message: 'spec level deprecation' })
         ]
       }));
+      /* eslint-disable-next-line no-console */
       expect(console.error).toHaveBeenCalledWith('DEPRECATION: spec level deprecation (in spec: suite spec)');
 
       done();

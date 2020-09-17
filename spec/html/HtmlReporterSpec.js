@@ -104,6 +104,7 @@ describe('HtmlReporter', function() {
           passedExpectations: [],
           failedExpectations: []
         });
+        /* eslint-disable-next-line no-console */
         expect(console.warn).toHaveBeenCalledWith(
           "Spec 'Some Name' has no expectations."
         );
@@ -118,6 +119,7 @@ describe('HtmlReporter', function() {
           passedExpectations: [],
           failedExpectations: []
         });
+        /* eslint-disable-next-line no-console */
         expect(console.error).toHaveBeenCalledWith(
           "Spec 'Some Name' has no expectations."
         );
