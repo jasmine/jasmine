@@ -1,4 +1,4 @@
-describe("toBeFalsy", function() {
+describe('toBeFalsy', function() {
   it("passes for 'falsy' values", function() {
     var matcher = jasmineUnderTest.matchers.toBeFalsy(),
       result;
@@ -29,7 +29,7 @@ describe("toBeFalsy", function() {
     result = matcher.compare(1);
     expect(result.pass).toBe(false);
 
-    result = matcher.compare("foo");
+    result = matcher.compare('foo');
     expect(result.pass).toBe(false);
 
     result = matcher.compare({});

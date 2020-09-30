@@ -3,7 +3,7 @@ describe('Custom Spy Strategies (Integration)', function() {
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
-    env.configure({random: false});
+    env.configure({ random: false });
   });
 
   afterEach(function() {
@@ -11,10 +11,8 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows adding more strategies local to a suite', function(done) {
-    var plan = jasmine.createSpy('custom strategy plan')
-      .and.returnValue(42);
-    var strategy = jasmine.createSpy('custom strategy')
-      .and.returnValue(plan);
+    var plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
+    var strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
     var jasmineDone = jasmine.createSpy('jasmineDone');
 
     env.describe('suite defining a custom spy strategy', function() {
@@ -45,10 +43,8 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows adding more strategies local to a spec', function(done) {
-    var plan = jasmine.createSpy('custom strategy plan')
-      .and.returnValue(42);
-    var strategy = jasmine.createSpy('custom strategy')
-      .and.returnValue(plan);
+    var plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
+    var strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
     var jasmineDone = jasmine.createSpy('jasmineDone');
 
     env.it('spec defining a custom spy strategy', function() {
@@ -74,17 +70,17 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows using custom strategies on a per-argument basis', function(done) {
-    var plan = jasmine.createSpy('custom strategy plan')
-      .and.returnValue(42);
-    var strategy = jasmine.createSpy('custom strategy')
-      .and.returnValue(plan);
+    var plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
+    var strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
     var jasmineDone = jasmine.createSpy('jasmineDone');
 
     env.it('spec defining a custom spy strategy', function() {
       env.addSpyStrategy('frobnicate', strategy);
-      var spy = env.createSpy('something')
+      var spy = env
+        .createSpy('something')
         .and.returnValue('no args return')
-        .withArgs(1, 2, 3).and.frobnicate(17);
+        .withArgs(1, 2, 3)
+        .and.frobnicate(17);
 
       expect(spy()).toEqual('no args return');
       expect(plan).not.toHaveBeenCalled();
@@ -113,7 +109,6 @@ describe('Custom Spy Strategies (Integration)', function() {
       strategy2 = jasmine.createSpy('strat 2').and.returnValue(plan2),
       specDone = jasmine.createSpy('specDone'),
       jasmineDone = jasmine.createSpy('jasmineDone');
-
 
     env.beforeEach(function() {
       env.addSpyStrategy('frobnicate', strategy1);

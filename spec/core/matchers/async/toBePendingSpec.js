@@ -8,7 +8,7 @@ describe('toBePending', function() {
       actual = new Promise(function() {});
 
     return matcher.compare(actual).then(function(result) {
-      expect(result).toEqual(jasmine.objectContaining({pass: true}));
+      expect(result).toEqual(jasmine.objectContaining({ pass: true }));
     });
   });
 
@@ -20,7 +20,7 @@ describe('toBePending', function() {
       actual = Promise.resolve();
 
     return matcher.compare(actual).then(function(result) {
-      expect(result).toEqual(jasmine.objectContaining({pass: false}));
+      expect(result).toEqual(jasmine.objectContaining({ pass: false }));
     });
   });
 
@@ -32,21 +32,19 @@ describe('toBePending', function() {
       actual = Promise.reject(new Error('promise was rejected'));
 
     return matcher.compare(actual).then(function(result) {
-      expect(result).toEqual(jasmine.objectContaining({pass: false}));
+      expect(result).toEqual(jasmine.objectContaining({ pass: false }));
     });
   });
 
   it('fails if actual is not a promise', function() {
     var matchersUtil = new jasmineUnderTest.MatchersUtil(),
-    matcher = jasmineUnderTest.asyncMatchers.toBePending(matchersUtil),
-    actual = 'not a promise';
+      matcher = jasmineUnderTest.asyncMatchers.toBePending(matchersUtil),
+      actual = 'not a promise';
 
     function f() {
       return matcher.compare(actual);
     }
 
-    expect(f).toThrowError(
-      'Expected toBePending to be called on a promise.'
-    );
+    expect(f).toThrowError('Expected toBePending to be called on a promise.');
   });
 });

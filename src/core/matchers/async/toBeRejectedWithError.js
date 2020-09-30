@@ -18,7 +18,9 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
     return {
       compare: function(actualPromise, arg1, arg2) {
         if (!j$.isPromiseLike(actualPromise)) {
-          throw new Error('Expected toBeRejectedWithError to be called on a promise.');
+          throw new Error(
+            'Expected toBeRejectedWithError to be called on a promise.'
+          );
         }
 
         var expected = getExpectedFromArgs(arg1, arg2, matchersUtil);
@@ -30,7 +32,9 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
               message: 'Expected a promise to be rejected but it was resolved.'
             };
           },
-          function(actualValue) { return matchError(actualValue, expected, matchersUtil); }
+          function(actualValue) {
+            return matchError(actualValue, expected, matchersUtil);
+          }
         );
       }
     };
@@ -42,16 +46,25 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
     }
 
     if (!(actual instanceof expected.error)) {
-      return fail(expected, 'rejected with type ' + j$.fnNameFor(actual.constructor));
+      return fail(
+        expected,
+        'rejected with type ' + j$.fnNameFor(actual.constructor)
+      );
     }
 
     var actualMessage = actual.message;
 
-    if (actualMessage === expected.message || typeof expected.message === 'undefined') {
+    if (
+      actualMessage === expected.message ||
+      typeof expected.message === 'undefined'
+    ) {
       return pass(expected);
     }
 
-    if (expected.message instanceof RegExp && expected.message.test(actualMessage)) {
+    if (
+      expected.message instanceof RegExp &&
+      expected.message.test(actualMessage)
+    ) {
       return pass(expected);
     }
 
@@ -61,17 +74,24 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
   function pass(expected) {
     return {
       pass: true,
-      message: 'Expected a promise not to be rejected with ' + expected.printValue + ', but it was.'
+      message:
+        'Expected a promise not to be rejected with ' +
+        expected.printValue +
+        ', but it was.'
     };
   }
 
   function fail(expected, message) {
     return {
       pass: false,
-      message: 'Expected a promise to be rejected with ' + expected.printValue + ' but it was ' + message + '.'
+      message:
+        'Expected a promise to be rejected with ' +
+        expected.printValue +
+        ' but it was ' +
+        message +
+        '.'
     };
   }
-
 
   function getExpectedFromArgs(arg1, arg2, matchersUtil) {
     var error, message;
@@ -87,11 +107,16 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
     return {
       error: error,
       message: message,
-      printValue: j$.fnNameFor(error) + (typeof message === 'undefined' ? '' : ': ' + matchersUtil.pp(message))
+      printValue:
+        j$.fnNameFor(error) +
+        (typeof message === 'undefined' ? '' : ': ' + matchersUtil.pp(message))
     };
   }
 
   function isErrorConstructor(value) {
-    return typeof value === 'function' && (value === Error || j$.isError_(value.prototype));
+    return (
+      typeof value === 'function' &&
+      (value === Error || j$.isError_(value.prototype))
+    );
   }
 };

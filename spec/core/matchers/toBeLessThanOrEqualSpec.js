@@ -1,5 +1,5 @@
-describe("toBeLessThanOrEqual", function() {
-  it("passes when actual <= expected", function() {
+describe('toBeLessThanOrEqual', function() {
+  it('passes when actual <= expected', function() {
     var matcher = jasmineUnderTest.matchers.toBeLessThanOrEqual(),
       result;
 
@@ -11,12 +11,12 @@ describe("toBeLessThanOrEqual", function() {
 
     result = matcher.compare(1, 1.0000001);
     expect(result.pass).toBe(true);
-    
+
     result = matcher.compare(1.0, 1.0);
     expect(result.pass).toBe(true);
   });
 
-  it("fails when actual < expected", function() {
+  it('fails when actual < expected', function() {
     var matcher = jasmineUnderTest.matchers.toBeLessThanOrEqual(),
       result;
 

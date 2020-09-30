@@ -1,6 +1,8 @@
 getJasmineRequireObj().toThrow = function(j$) {
-
-  var getErrorMsg = j$.formatErrorMsg('<toThrow>', 'expect(function() {<expectation>}).toThrow()');
+  var getErrorMsg = j$.formatErrorMsg(
+    '<toThrow>',
+    'expect(function() {<expectation>}).toThrow()'
+  );
 
   /**
    * {@link expect} a function to `throw` something.
@@ -37,16 +39,36 @@ getJasmineRequireObj().toThrow = function(j$) {
 
         if (arguments.length == 1) {
           result.pass = true;
-          result.message = function() { return 'Expected function not to throw, but it threw ' + matchersUtil.pp(thrown) + '.'; };
+          result.message = function() {
+            return (
+              'Expected function not to throw, but it threw ' +
+              matchersUtil.pp(thrown) +
+              '.'
+            );
+          };
 
           return result;
         }
 
         if (matchersUtil.equals(thrown, expected)) {
           result.pass = true;
-          result.message = function() { return 'Expected function not to throw ' + matchersUtil.pp(expected) + '.'; };
+          result.message = function() {
+            return (
+              'Expected function not to throw ' +
+              matchersUtil.pp(expected) +
+              '.'
+            );
+          };
         } else {
-          result.message = function() { return 'Expected function to throw ' + matchersUtil.pp(expected) + ', but it threw ' +  matchersUtil.pp(thrown) + '.'; };
+          result.message = function() {
+            return (
+              'Expected function to throw ' +
+              matchersUtil.pp(expected) +
+              ', but it threw ' +
+              matchersUtil.pp(thrown) +
+              '.'
+            );
+          };
         }
 
         return result;

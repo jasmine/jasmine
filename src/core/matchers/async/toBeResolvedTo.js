@@ -19,9 +19,12 @@ getJasmineRequireObj().toBeResolvedTo = function(j$) {
         }
 
         function prefix(passed) {
-          return 'Expected a promise ' +
+          return (
+            'Expected a promise ' +
             (passed ? 'not ' : '') +
-            'to be resolved to ' + matchersUtil.pp(expectedValue);
+            'to be resolved to ' +
+            matchersUtil.pp(expectedValue)
+          );
         }
 
         return actualPromise.then(
@@ -34,7 +37,11 @@ getJasmineRequireObj().toBeResolvedTo = function(j$) {
             } else {
               return {
                 pass: false,
-                message: prefix(false) + ' but it was resolved to ' + matchersUtil.pp(actualValue) + '.'
+                message:
+                  prefix(false) +
+                  ' but it was resolved to ' +
+                  matchersUtil.pp(actualValue) +
+                  '.'
               };
             }
           },

@@ -17,8 +17,12 @@ getJasmineRequireObj().toBePending = function(j$) {
         }
         var want = {};
         return Promise.race([actual, Promise.resolve(want)]).then(
-          function(got) { return {pass: want === got}; },
-          function() { return {pass: false}; }
+          function(got) {
+            return { pass: want === got };
+          },
+          function() {
+            return { pass: false };
+          }
         );
       }
     };

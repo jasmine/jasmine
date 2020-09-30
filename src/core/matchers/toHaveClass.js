@@ -25,9 +25,9 @@ getJasmineRequireObj().toHaveClass = function(j$) {
   }
 
   function isElement(maybeEl) {
-    return maybeEl &&
-      maybeEl.classList &&
-      j$.isFunction_(maybeEl.classList.contains);
+    return (
+      maybeEl && maybeEl.classList && j$.isFunction_(maybeEl.classList.contains)
+    );
   }
 
   return toHaveClass;
