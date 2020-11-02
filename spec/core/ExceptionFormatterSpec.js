@@ -86,6 +86,37 @@ describe('ExceptionFormatter', function() {
       );
     });
 
+    it('filters Jasmine stack frames from V8-style traces but leaves unmatched lines intact', function() {
+      var error = {
+        message: 'nope',
+        stack:
+          'C:\\__spec__\\core\\UtilSpec.ts:120\n' +
+          "                new Error('nope');\n" +
+          '                ^\n' +
+          '\n' +
+          'Error: nope\n' +
+          '    at fn1 (C:\\__spec__\\core\\UtilSpec.js:115:19)\n' +
+          '        -> C:\\__spec__\\core\\UtilSpec.ts:120:15\n' +
+          '    at fn2 (C:\\__jasmine__\\lib\\jasmine-core\\jasmine.js:7533:40)\n' +
+          '    at fn3 (C:\\__jasmine__\\lib\\jasmine-core\\jasmine.js:7575:25)\n' +
+          '    at fn4 (node:internal/timers:462:21)\n'
+      };
+      var subject = new jasmineUnderTest.ExceptionFormatter({
+        jasmineFile: 'C:\\__jasmine__\\lib\\jasmine-core\\jasmine.js'
+      });
+      var result = subject.stack(error);
+      expect(result).toEqual(
+        'C:\\__spec__\\core\\UtilSpec.ts:120\n' +
+          "                new Error('nope');\n" +
+          '                ^\n' +
+          'Error: nope\n' +
+          '    at fn1 (C:\\__spec__\\core\\UtilSpec.js:115:19)\n' +
+          '        -> C:\\__spec__\\core\\UtilSpec.ts:120:15\n' +
+          '    at <Jasmine>\n' +
+          '    at fn4 (node:internal/timers:462:21)'
+      );
+    });
+
     it('filters Jasmine stack frames from V8 style traces', function() {
       var error = {
         message: 'nope',
