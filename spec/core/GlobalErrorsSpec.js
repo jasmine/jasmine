@@ -285,5 +285,64 @@ describe('GlobalErrors', function() {
         })
       );
     });
+
+    describe('Enabling external interception of reported rejections by overriding global.onerror', function() {
+      it('overriding global.onerror intercepts rejections whose reason is a string', function() {
+        var fakeGlobal = jasmine.createSpyObj('globalErrors', [
+            'addEventListener'
+          ]),
+          handler = jasmine.createSpy('errorHandler'),
+          hijackHandler = jasmine.createSpy('hijackErrorHandler'),
+          errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+        errors.install();
+        errors.pushListener(handler);
+
+        fakeGlobal.onerror = hijackHandler;
+
+        var addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
+        addedListener({ reason: 'nope' });
+
+        expect(hijackHandler).toHaveBeenCalledWith(
+          'Unhandled promise rejection: nope'
+        );
+        expect(handler).not.toHaveBeenCalled();
+      });
+
+      it('overriding global.onerror intercepts rejections whose reason is an Error', function() {
+        var fakeGlobal = jasmine.createSpyObj('globalErrors', [
+            'addEventListener'
+          ]),
+          handler = jasmine.createSpy('errorHandler'),
+          hijackHandler = jasmine.createSpy('hijackErrorHandler'),
+          errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+        errors.install();
+        errors.pushListener(handler);
+
+        fakeGlobal.onerror = hijackHandler;
+
+        var addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
+        var reason;
+
+        try {
+          // Throwing ensures that we get a stack property in all browsers
+          throw new Error('bar');
+        } catch (e) {
+          reason = e;
+        }
+
+        addedListener({ reason: reason });
+
+        expect(hijackHandler).toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            jasmineMessage: 'Unhandled promise rejection: Error: bar',
+            message: reason.message,
+            stack: reason.stack
+          })
+        );
+        expect(handler).not.toHaveBeenCalled();
+      });
+    });
   });
 });

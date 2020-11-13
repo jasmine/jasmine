@@ -67,9 +67,9 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
           if (j$.isError_(event.reason)) {
             event.reason.jasmineMessage =
               'Unhandled promise rejection: ' + event.reason;
-            onerror(event.reason);
+            global.onerror(event.reason);
           } else {
-            onerror('Unhandled promise rejection: ' + event.reason);
+            global.onerror('Unhandled promise rejection: ' + event.reason);
           }
         };
 
