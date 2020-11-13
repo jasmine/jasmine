@@ -12,6 +12,23 @@ describe('GlobalErrors', function() {
     expect(handler).toHaveBeenCalledWith('foo');
   });
 
+  it('enables external interception of error by overriding global.onerror', function() {
+    var fakeGlobal = { onerror: null },
+      handler = jasmine.createSpy('errorHandler'),
+      hijackHandler = jasmine.createSpy('hijackErrorHandler'),
+      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+    errors.install();
+    errors.pushListener(handler);
+
+    fakeGlobal.onerror = hijackHandler;
+
+    fakeGlobal.onerror('foo');
+
+    expect(hijackHandler).toHaveBeenCalledWith('foo');
+    expect(handler).not.toHaveBeenCalled();
+  });
+
   it('calls the global error handler with all parameters', function() {
     var fakeGlobal = { onerror: null },
       handler = jasmine.createSpy('errorHandler'),
