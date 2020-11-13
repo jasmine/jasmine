@@ -641,8 +641,8 @@ jasmineRequire.HtmlReporter = function(j$) {
       for (var i = 2; i < arguments.length; i++) {
         var child = arguments[i];
 
-        if (typeof child === 'string') {
-          el.appendChild(createTextNode(child));
+        if (typeof child === 'string' || typeof child === 'number') {
+          el.appendChild(createTextNode(child.toString()));
         } else {
           if (child) {
             el.appendChild(child);
