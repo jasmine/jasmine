@@ -24,6 +24,7 @@ module.exports = {
     'helpers/checkForSet.js',
     'helpers/checkForSymbol.js',
     'helpers/checkForTypedArrays.js',
+    'helpers/checkForUrl.js',
     'helpers/domHelpers.js',
     'helpers/integrationMatchers.js',
     'helpers/promises.js',

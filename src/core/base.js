@@ -161,6 +161,15 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     );
   };
 
+  j$.isURL = function(obj) {
+    return (
+      obj !== null &&
+      typeof obj !== 'undefined' &&
+      typeof jasmineGlobal.URL !== 'undefined' &&
+      obj.constructor === jasmineGlobal.URL
+    );
+  };
+
   j$.isDataView = function(obj) {
     return (
       obj !== null &&

@@ -475,6 +475,10 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
         diffBuilder.recordMismatch();
         return false;
       }
+    } else if (j$.isURL(a) && j$.isURL(b)) {
+      // URLs have no enumrable properties, so the default object comparison
+      // would consider any two URLs to be equal.
+      return a.toString() === b.toString();
     } else {
       // Objects with different constructors are not equivalent, but `Object`s
       // or `Array`s from different frames are.

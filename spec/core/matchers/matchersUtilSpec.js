@@ -837,6 +837,54 @@ describe('matchersUtil', function() {
       expect(matchersUtil.equals(mapA, mapB)).toBe(false);
     });
 
+    it('passes when comparing two identical URLs', function() {
+      jasmine.getEnv().requireUrls();
+
+      var matchersUtil = new jasmineUnderTest.MatchersUtil();
+
+      expect(
+        matchersUtil.equals(
+          // eslint-disable-next-line compat/compat
+          new URL('http://localhost/1'),
+          // eslint-disable-next-line compat/compat
+          new URL('http://localhost/1')
+        )
+      ).toBe(true);
+    });
+
+    it('fails when comparing two different URLs', function() {
+      jasmine.getEnv().requireUrls();
+
+      var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+        // eslint-disable-next-line compat/compat
+        url1 = new URL('http://localhost/1');
+
+      // eslint-disable-next-line compat/compat
+      expect(matchersUtil.equals(url1, new URL('http://localhost/2'))).toBe(
+        false
+      );
+      // eslint-disable-next-line compat/compat
+      expect(matchersUtil.equals(url1, new URL('http://localhost/1?foo'))).toBe(
+        false
+      );
+      // eslint-disable-next-line compat/compat
+      expect(matchersUtil.equals(url1, new URL('http://localhost/1#foo'))).toBe(
+        false
+      );
+      // eslint-disable-next-line compat/compat
+      expect(matchersUtil.equals(url1, new URL('https://localhost/1'))).toBe(
+        false
+      );
+      expect(
+        // eslint-disable-next-line compat/compat
+        matchersUtil.equals(url1, new URL('http://localhost:8080/1'))
+      ).toBe(false);
+      // eslint-disable-next-line compat/compat
+      expect(matchersUtil.equals(url1, new URL('http://example.com/1'))).toBe(
+        false
+      );
+    });
+
     describe('when running in an environment with array polyfills', function() {
       var findIndexDescriptor = Object.getOwnPropertyDescriptor(
         Array.prototype,
