@@ -210,4 +210,32 @@ describe('DiffBuilder', function() {
 
     expect(diffBuilder.getMessage()).toEqual(expectedMsg);
   });
+
+  it('shortens strings', function() {
+    var abc = 'abcdefghijklmnopqrstuvwxyz',
+      repeatedABC = '';
+    for (var i = 0; i < 100; i++) {
+      repeatedABC += abc;
+    }
+    var expected = repeatedABC;
+    var actual =
+      repeatedABC.substring(0, 1800) + 'XXXXX' + repeatedABC.substring(1805);
+
+    var prettyPrinter = jasmineUnderTest.makePrettyPrinter([]),
+      diffBuilder = new jasmineUnderTest.DiffBuilder({
+        prettyPrinter: prettyPrinter
+      });
+
+    diffBuilder.setRoots(actual, expected);
+    diffBuilder.recordMismatch();
+
+    var expectedMsg =
+      "Expected '[1761 omitted " +
+      'characters...]tuvwxyzabcdefghijklmnopqrstuvwxyzabcdefXXXXXlmnopqrstuvwxyzabcdefghijklmnopqrstu[...759 ' +
+      "omitted characters]' to equal '[1761 omitted " +
+      'characters...]tuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstu[...759 ' +
+      "omitted characters]'.";
+
+    expect(diffBuilder.getMessage()).toBe(expectedMsg);
+  });
 });
