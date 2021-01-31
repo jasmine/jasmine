@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 describe('toEqual', function() {
   'use strict';
 
@@ -1075,6 +1076,96 @@ describe('toEqual', function() {
 
       expect(compareEquals(actual, expected).pass).toBe(false);
       expect(compareEquals(actual, expected).message).toEqual(message);
+    });
+  });
+
+  // == Symbols ==
+
+  describe('Symbols', function() {
+    it('Fails if Symbol compared to Object', function() {
+      var sym = Symbol('foo');
+      var obj = {};
+
+      expect(sym).not.toEqual(obj);
+    });
+
+    it('Passes Symbol with itself', function() {
+      var sym = Symbol('foo');
+
+      expect(sym).toEqual(sym);
+    });
+
+    it('Fails if two Symbols with same value are compared', function() {
+      var symA = Symbol('foo');
+      var symB = Symbol('foo');
+
+      expect(symA).not.toEqual(symB);
+    });
+
+    it('Fails if two Symbols with different value are compared', function() {
+      var symA = Symbol('foo');
+      var symB = Symbol('bar');
+
+      expect(symA).not.toEqual(symB);
+    });
+
+    it('Fails if Symbol compared to NaN', function() {
+      var sym = Symbol('foo');
+
+      expect(sym).not.toEqual(NaN);
+    });
+
+    it('Fails if Symbol compared to Infinity', function() {
+      var sym = Symbol('foo');
+
+      expect(sym).not.toEqual(Infinity);
+    });
+
+    it('Fails if Symbol compared to String', function() {
+      var sym = Symbol('foo');
+      var str = 'foo';
+
+      expect(sym).not.toEqual(str);
+    });
+
+    it('Fails if Symbol compared to Number', function() {
+      var sym = Symbol('foo');
+      var num = Math.random();
+
+      expect(sym).not.toEqual(num);
+    });
+
+    it('Fails if Symbol compared to Boolean', function() {
+      var sym = Symbol('foo');
+
+      expect(sym).not.toEqual(true);
+      expect(sym).not.toEqual(false);
+    });
+
+    it('Fails if Symbol compared to Undefined', function() {
+      var sym = Symbol('foo');
+
+      expect(sym).not.toEqual(undefined);
+    });
+
+    it('Fails if Symbol compared to null', function() {
+      var sym = Symbol('foo');
+
+      expect(sym).not.toEqual(null);
+    });
+
+    it('Fails if Symbol compared to []', function() {
+      var sym = Symbol('foo');
+      var arr = ['foo'];
+
+      expect(sym).not.toEqual(arr);
+    });
+
+    it('Fails if Symbol compared to Function', function() {
+      var sym = Symbol('foo');
+      var f = function func() {};
+
+      expect(sym).not.toEqual(f);
     });
   });
 });
