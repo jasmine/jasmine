@@ -15,6 +15,9 @@ describe('toBeFalsy', function() {
     result = matcher.compare(null);
     expect(result.pass).toBe(true);
 
+    result = matcher.compare(undefined);
+    expect(result.pass).toBe(true);
+
     result = matcher.compare(void 0);
     expect(result.pass).toBe(true);
   });
@@ -33,6 +36,12 @@ describe('toBeFalsy', function() {
     expect(result.pass).toBe(false);
 
     result = matcher.compare({});
+    expect(result.pass).toBe(false);
+
+    result = matcher.compare([]);
+    expect(result.pass).toBe(false);
+
+    result = matcher.compare(function() {});
     expect(result.pass).toBe(false);
   });
 });

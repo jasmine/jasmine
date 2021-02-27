@@ -14,6 +14,12 @@ describe('toBeTruthy', function() {
 
     result = matcher.compare({});
     expect(result.pass).toBe(true);
+
+    result = matcher.compare([]);
+    expect(result.pass).toBe(true);
+
+    result = matcher.compare(function() {});
+    expect(result.pass).toBe(true);
   });
 
   it("fails for 'falsy' values", function() {
@@ -30,6 +36,9 @@ describe('toBeTruthy', function() {
     expect(result.pass).toBe(false);
 
     result = matcher.compare(null);
+    expect(result.pass).toBe(false);
+
+    result = matcher.compare(undefined);
     expect(result.pass).toBe(false);
 
     result = matcher.compare(void 0);
