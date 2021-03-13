@@ -424,6 +424,9 @@ getJasmineRequireObj().Env = function(j$) {
         resources.customAsyncMatchers = j$.util.clone(
           runnableResources[parentRunnableId].customAsyncMatchers
         );
+        resources.customObjectFormatters = j$.util.clone(
+          runnableResources[parentRunnableId].customObjectFormatters
+        );
         resources.defaultStrategyFn =
           runnableResources[parentRunnableId].defaultStrategyFn;
       }

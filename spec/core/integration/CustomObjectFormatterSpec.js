@@ -42,7 +42,7 @@ describe('Custom object formatters', function() {
     });
 
     env.describe('with custom pretty-printer', function() {
-      env.beforeEach(function() {
+      env.beforeAll(function() {
         env.addCustomObjectFormatter(function(obj) {
           return 'custom(' + obj + ')';
         });
