@@ -101,12 +101,6 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         throw new Error('popListener expects a listener');
       }
 
-      if (listener !== handlers[handlers.length - 1]) {
-        throw new Error(
-          'popListener was passed a different listener than the current one'
-        );
-      }
-
       handlers.pop();
     };
   }

@@ -90,16 +90,6 @@ describe('GlobalErrors', function() {
     }).toThrowError('popListener expects a listener');
   });
 
-  it('throws when the argument to #popListener is not the current listener', function() {
-    var errors = new jasmineUnderTest.GlobalErrors({});
-    errors.pushListener(function() {});
-    expect(function() {
-      errors.popListener(function() {});
-    }).toThrowError(
-      'popListener was passed a different listener than the current one'
-    );
-  });
-
   it('uninstalls itself, putting back a previous callback', function() {
     var originalCallback = jasmine.createSpy('error'),
       fakeGlobal = { onerror: originalCallback },
