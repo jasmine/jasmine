@@ -656,7 +656,8 @@ describe('Env integration', function() {
       });
 
       env.execute(null, function() {
-        expect(duration).toBeGreaterThanOrEqual(10);
+        // Expect >= 9 rather than >= 10 to compensate for clock imprecision
+        expect(duration).toBeGreaterThanOrEqual(9);
         done();
       });
     });
@@ -682,7 +683,8 @@ describe('Env integration', function() {
       });
 
       env.execute(null, function() {
-        expect(duration).toBeGreaterThanOrEqual(10);
+        // Expect >= 9 rather than >= 10 to compensate for clock imprecision
+        expect(duration).toBeGreaterThanOrEqual(9);
         done();
       });
     });
