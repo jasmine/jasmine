@@ -30,6 +30,7 @@ When ready to release - specs are all green and the stories are done:
 
 1. Update the release notes in `release_notes` - use the Anchorman gem to generate the markdown file and edit accordingly
 1. Update the version in `package.json`
+1. Run `npm run build`.
 1. Copy version to the Ruby gem with `grunt build:copyVersionToGem`
 
 ### Commit and push core changes
