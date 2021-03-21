@@ -30,11 +30,19 @@ matrix:
       if: type != pull_request
       addons:
         sauce_connect: true
+    - env: JASMINE_BROWSER="firefox" SAUCE_BROWSER_VERSION='78' SAUCE_OS="Windows 10"
+      if: type != pull_request
+      addons:
+        sauce_connect: true
     - env: JASMINE_BROWSER="firefox" SAUCE_BROWSER_VERSION='68' SAUCE_OS="Windows 10"
       if: type != pull_request
       addons:
         sauce_connect: true
     - env: JASMINE_BROWSER="chrome" SAUCE_BROWSER_VERSION='' SAUCE_OS="Windows 10"
+      if: type != pull_request
+      addons:
+        sauce_connect: true
+    - env: JASMINE_BROWSER="safari" SAUCE_BROWSER_VERSION="14" SAUCE_OS="OS X 11.0"
       if: type != pull_request
       addons:
         sauce_connect: true
