@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 (function(env) {
   function hasFunctioningSymbols() {
     if (typeof Symbol === 'undefined') {
@@ -21,8 +22,7 @@
 
   env.requireFunctioningSymbols = function() {
     if (!hasFunctioningSymbols()) {
-      env.pending("Browser has incomplete or missing support for Symbols");
+      env.pending('Browser has incomplete or missing support for Symbols');
     }
   };
-
 })(jasmine.getEnv());

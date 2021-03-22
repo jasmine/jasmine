@@ -1,17 +1,21 @@
 {
   "spec_dir": "spec",
   "spec_files": [
-    "core/**/*.js",
-    "npmPackage/**/*.js"
+    "core/**/*[Ss]pec.js",
+    "npmPackage/**/*[Ss]pec.js"
   ],
   "helpers": [
     "helpers/asyncAwait.js",
+    "helpers/generator.js",
     "helpers/checkForMap.js",
     "helpers/checkForSet.js",
     "helpers/checkForSymbol.js",
     "helpers/checkForTypedArrays.js",
+    "helpers/checkForUrl.js",
+    "helpers/domHelpers.js",
     "helpers/integrationMatchers.js",
     "helpers/promises.js",
+    "helpers/requireFastCheck.js",
     "helpers/nodeDefineJasmineUnderTest.js"
   ],
   "random": true

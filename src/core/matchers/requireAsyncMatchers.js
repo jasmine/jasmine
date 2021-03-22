@@ -1,9 +1,11 @@
 getJasmineRequireObj().requireAsyncMatchers = function(jRequire, j$) {
   var availableMatchers = [
+      'toBePending',
       'toBeResolved',
       'toBeRejected',
       'toBeResolvedTo',
-      'toBeRejectedWith'
+      'toBeRejectedWith',
+      'toBeRejectedWithError'
     ],
     matchers = {};
 

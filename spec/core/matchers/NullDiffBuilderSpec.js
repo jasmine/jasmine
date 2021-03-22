@@ -4,10 +4,4 @@ describe('NullDiffBuilder', function() {
     jasmineUnderTest.NullDiffBuilder().withPath('does not matter', spy);
     expect(spy).toHaveBeenCalled();
   });
-
-  it('responds to record()', function() {
-    expect(function() {
-      jasmineUnderTest.NullDiffBuilder().record('does not matter');
-    }).not.toThrow();
-  })
 });

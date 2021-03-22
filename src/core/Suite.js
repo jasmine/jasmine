@@ -14,7 +14,7 @@ getJasmineRequireObj().Suite = function(j$) {
     this.beforeAllFns = [];
     this.afterAllFns = [];
 
-    this.timer = attrs.timer || j$.noopTimer;
+    this.timer = attrs.timer || new j$.Timer();
 
     this.children = [];
 
@@ -27,6 +27,7 @@ getJasmineRequireObj().Suite = function(j$) {
      * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred on this suite.
      * @property {String} status - Once the suite has completed, this string represents the pass/fail status of this suite.
      * @property {number} duration - The time in ms for Suite execution, including any before/afterAll, before/afterEach.
+     * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSuiteProperty}
      */
     this.result = {
       id: this.id,
@@ -35,8 +36,14 @@ getJasmineRequireObj().Suite = function(j$) {
       failedExpectations: [],
       deprecationWarnings: [],
       duration: null,
+      properties: null
     };
   }
+
+  Suite.prototype.setSuiteProperty = function(key, value) {
+    this.result.properties = this.result.properties || {};
+    this.result.properties[key] = value;
+  };
 
   Suite.prototype.expect = function(actual) {
     return this.expectationFactory(actual, this);
@@ -48,7 +55,11 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.getFullName = function() {
     var fullName = [];
-    for (var parentSuite = this; parentSuite; parentSuite = parentSuite.parentSuite) {
+    for (
+      var parentSuite = this;
+      parentSuite;
+      parentSuite = parentSuite.parentSuite
+    ) {
       if (parentSuite.parentSuite) {
         fullName.unshift(parentSuite.description);
       }
@@ -85,7 +96,7 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   function removeFns(queueableFns) {
-    for(var i = 0; i < queueableFns.length; i++) {
+    for (var i = 0; i < queueableFns.length; i++) {
       queueableFns[i].fn = null;
     }
   }
@@ -124,7 +135,9 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.sharedUserContext = function() {
     if (!this.sharedContext) {
-      this.sharedContext = this.parentSuite ? this.parentSuite.clonedSharedUserContext() : new j$.UserContext();
+      this.sharedContext = this.parentSuite
+        ? this.parentSuite.clonedSharedUserContext()
+        : new j$.UserContext();
     }
 
     return this.sharedContext;
@@ -155,11 +168,11 @@ getJasmineRequireObj().Suite = function(j$) {
     this.result.failedExpectations.push(failedExpectation);
   };
 
-  Suite.prototype.addExpectationResult = function () {
-    if(isFailure(arguments)) {
+  Suite.prototype.addExpectationResult = function() {
+    if (isFailure(arguments)) {
       var data = arguments[1];
       this.result.failedExpectations.push(this.expectationResultFactory(data));
-      if(this.throwOnExpectationFailure) {
+      if (this.throwOnExpectationFailure) {
         throw new j$.errors.ExpectationFailed();
       }
     }
@@ -169,7 +182,9 @@ getJasmineRequireObj().Suite = function(j$) {
     if (typeof deprecation === 'string') {
       deprecation = { message: deprecation };
     }
-    this.result.deprecationWarnings.push(this.expectationResultFactory(deprecation));
+    this.result.deprecationWarnings.push(
+      this.expectationResultFactory(deprecation)
+    );
   };
 
   function isFailure(args) {

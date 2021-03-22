@@ -38,7 +38,10 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         var errorTypes = Object.keys(this.originalHandlers);
         for (var iType = 0; iType < errorTypes.length; iType++) {
           var errorType = errorTypes[iType];
-          global.process.removeListener(errorType, this.jasmineHandlers[errorType]);
+          global.process.removeListener(
+            errorType,
+            this.jasmineHandlers[errorType]
+          );
           for (var i = 0; i < this.originalHandlers[errorType].length; i++) {
             global.process.on(errorType, this.originalHandlers[errorType][i]);
           }
@@ -49,15 +52,42 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     };
 
     this.install = function install() {
-      if (global.process && global.process.listeners && j$.isFunction_(global.process.on)) {
+      if (
+        global.process &&
+        global.process.listeners &&
+        j$.isFunction_(global.process.on)
+      ) {
         this.installOne_('uncaughtException', 'Uncaught exception');
         this.installOne_('unhandledRejection', 'Unhandled promise rejection');
       } else {
         var originalHandler = global.onerror;
         global.onerror = onerror;
 
+        var browserRejectionHandler = function browserRejectionHandler(event) {
+          if (j$.isError_(event.reason)) {
+            event.reason.jasmineMessage =
+              'Unhandled promise rejection: ' + event.reason;
+            global.onerror(event.reason);
+          } else {
+            global.onerror('Unhandled promise rejection: ' + event.reason);
+          }
+        };
+
+        if (global.addEventListener) {
+          global.addEventListener(
+            'unhandledrejection',
+            browserRejectionHandler
+          );
+        }
+
         this.uninstall = function uninstall() {
           global.onerror = originalHandler;
+          if (global.removeEventListener) {
+            global.removeEventListener(
+              'unhandledrejection',
+              browserRejectionHandler
+            );
+          }
         };
       }
     };
@@ -66,7 +96,11 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       handlers.push(listener);
     };
 
-    this.popListener = function popListener() {
+    this.popListener = function popListener(listener) {
+      if (!listener) {
+        throw new Error('popListener expects a listener');
+      }
+
       handlers.pop();
     };
   }

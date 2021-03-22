@@ -1,20 +1,26 @@
 getJasmineRequireObj().Expector = function(j$) {
   function Expector(options) {
-    this.util = options.util || { buildFailureMessage: function() {} };
+    this.matchersUtil = options.matchersUtil || {
+      buildFailureMessage: function() {}
+    };
     this.customEqualityTesters = options.customEqualityTesters || [];
     this.actual = options.actual;
-    this.addExpectationResult = options.addExpectationResult || function(){};
+    this.addExpectationResult = options.addExpectationResult || function() {};
     this.filters = new j$.ExpectationFilterChain();
   }
 
-  Expector.prototype.instantiateMatcher = function(matcherName, matcherFactory, args) {
+  Expector.prototype.instantiateMatcher = function(
+    matcherName,
+    matcherFactory,
+    args
+  ) {
     this.matcherName = matcherName;
     this.args = Array.prototype.slice.call(args, 0);
     this.expected = this.args.slice(0);
 
     this.args.unshift(this.actual);
 
-    var matcher = matcherFactory(this.util, this.customEqualityTesters);
+    var matcher = matcherFactory(this.matchersUtil, this.customEqualityTesters);
     var comparisonFunc = this.filters.selectComparisonFunc(matcher);
     return comparisonFunc || matcher.compare;
   };
@@ -26,7 +32,13 @@ getJasmineRequireObj().Expector = function(j$) {
       return '';
     }
 
-    var msg = this.filters.buildFailureMessage(result, this.matcherName, this.args, this.util, defaultMessage);
+    var msg = this.filters.buildFailureMessage(
+      result,
+      this.matcherName,
+      this.args,
+      this.matchersUtil,
+      defaultMessage
+    );
     return this.filters.modifyFailureMessage(msg || defaultMessage());
 
     function defaultMessage() {
@@ -34,7 +46,10 @@ getJasmineRequireObj().Expector = function(j$) {
         var args = self.args.slice();
         args.unshift(false);
         args.unshift(self.matcherName);
-        return self.util.buildFailureMessage.apply(null, args);
+        return self.matchersUtil.buildFailureMessage.apply(
+          self.matchersUtil,
+          args
+        );
       } else if (j$.isFunction_(result.message)) {
         return result.message();
       } else {
@@ -44,7 +59,11 @@ getJasmineRequireObj().Expector = function(j$) {
   };
 
   Expector.prototype.compare = function(matcherName, matcherFactory, args) {
-    var matcherCompare = this.instantiateMatcher(matcherName, matcherFactory, args);
+    var matcherCompare = this.instantiateMatcher(
+      matcherName,
+      matcherFactory,
+      args
+    );
     return matcherCompare.apply(null, this.args);
   };
 
@@ -54,26 +73,22 @@ getJasmineRequireObj().Expector = function(j$) {
     return result;
   };
 
-  Expector.prototype.processResult = function(result, errorForStack, actualOverride) {
-    this.args[0] = actualOverride || this.args[0];
+  Expector.prototype.processResult = function(result, errorForStack) {
     var message = this.buildMessage(result);
 
     if (this.expected.length === 1) {
       this.expected = this.expected[0];
     }
 
-    this.addExpectationResult(
-      result.pass,
-      {
-        matcherName: this.matcherName,
-        passed: result.pass,
-        message: message,
-        error: errorForStack ? undefined : result.error,
-        errorForStack: errorForStack || undefined,
-        actual: this.actual,
-        expected: this.expected // TODO: this may need to be arrayified/sliced
-      }
-    );
+    this.addExpectationResult(result.pass, {
+      matcherName: this.matcherName,
+      passed: result.pass,
+      message: message,
+      error: errorForStack ? undefined : result.error,
+      errorForStack: errorForStack || undefined,
+      actual: this.actual,
+      expected: this.expected // TODO: this may need to be arrayified/sliced
+    });
   };
 
   return Expector;

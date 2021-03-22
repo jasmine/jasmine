@@ -1,5 +1,4 @@
-describe("QueueRunner", function() {
-
+describe('QueueRunner', function() {
   it("runs all the functions it's passed", function() {
     var calls = [],
       queueableFn1 = { fn: jasmine.createSpy('fn1') },
@@ -19,7 +18,7 @@ describe("QueueRunner", function() {
     expect(calls).toEqual(['fn1', 'fn2']);
   });
 
-  it("runs cleanup functions after the others", function() {
+  it('runs cleanup functions after the others', function() {
     var calls = [],
       queueableFn1 = { fn: jasmine.createSpy('fn1') },
       queueableFn2 = { fn: jasmine.createSpy('fn2') },
@@ -41,12 +40,17 @@ describe("QueueRunner", function() {
 
   it("calls each function with a consistent 'this'-- an empty object", function() {
     var queueableFn1 = { fn: jasmine.createSpy('fn1') },
-        queueableFn2 = { fn: jasmine.createSpy('fn2') },
-        queueableFn3 = { fn: function(done) { asyncContext = this; done(); } },
-        queueRunner = new jasmineUnderTest.QueueRunner({
-          queueableFns: [queueableFn1, queueableFn2, queueableFn3]
-        }),
-        asyncContext;
+      queueableFn2 = { fn: jasmine.createSpy('fn2') },
+      queueableFn3 = {
+        fn: function(done) {
+          asyncContext = this;
+          done();
+        }
+      },
+      queueRunner = new jasmineUnderTest.QueueRunner({
+        queueableFns: [queueableFn1, queueableFn2, queueableFn3]
+      }),
+      asyncContext;
 
     queueRunner.execute();
 
@@ -56,7 +60,7 @@ describe("QueueRunner", function() {
     expect(asyncContext).toBe(context);
   });
 
-  describe("with an asynchronous function", function() {
+  describe('with an asynchronous function', function() {
     beforeEach(function() {
       jasmine.clock().install();
     });
@@ -65,7 +69,7 @@ describe("QueueRunner", function() {
       jasmine.clock().uninstall();
     });
 
-    it("supports asynchronous functions, only advancing to next function after a done() callback", function() {
+    it('supports asynchronous functions, only advancing to next function after a done() callback', function() {
       //TODO: it would be nice if spy arity could match the fake, so we could do something like:
       //createSpy('asyncfn').and.callFake(function(done) {});
 
@@ -73,18 +77,24 @@ describe("QueueRunner", function() {
         beforeCallback = jasmine.createSpy('beforeCallback'),
         fnCallback = jasmine.createSpy('fnCallback'),
         afterCallback = jasmine.createSpy('afterCallback'),
-        queueableFn1 = { fn: function(done) {
-          beforeCallback();
-          setTimeout(done, 100);
-        } },
-        queueableFn2 = { fn: function(done) {
-          fnCallback();
-          setTimeout(done, 100);
-        } },
-        queueableFn3 = { fn: function(done) {
-          afterCallback();
-          setTimeout(done, 100);
-        } },
+        queueableFn1 = {
+          fn: function(done) {
+            beforeCallback();
+            setTimeout(done, 100);
+          }
+        },
+        queueableFn2 = {
+          fn: function(done) {
+            fnCallback();
+            setTimeout(done, 100);
+          }
+        },
+        queueableFn3 = {
+          fn: function(done) {
+            afterCallback();
+            setTimeout(done, 100);
+          }
+        },
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn1, queueableFn2, queueableFn3],
           onComplete: onComplete
@@ -113,10 +123,14 @@ describe("QueueRunner", function() {
       expect(onComplete).toHaveBeenCalled();
     });
 
-    it("explicitly fails an async function with a provided fail function and moves to the next function", function() {
-      var queueableFn1 = { fn: function(done) {
-          setTimeout(function() { done.fail('foo'); }, 100);
-        } },
+    it('explicitly fails an async function with a provided fail function and moves to the next function', function() {
+      var queueableFn1 = {
+          fn: function(done) {
+            setTimeout(function() {
+              done.fail('foo');
+            }, 100);
+          }
+        },
         queueableFn2 = { fn: jasmine.createSpy('fn2') },
         failFn = jasmine.createSpy('fail'),
         queueRunner = new jasmineUnderTest.QueueRunner({
@@ -135,11 +149,15 @@ describe("QueueRunner", function() {
       expect(queueableFn2.fn).toHaveBeenCalled();
     });
 
-    it("explicitly fails an async function when next is called with an Error and moves to the next function", function() {
+    it('explicitly fails an async function when next is called with an Error and moves to the next function', function() {
       var err = new Error('foo'),
-        queueableFn1 = { fn: function(done) {
-          setTimeout(function() { done(err); }, 100);
-        } },
+        queueableFn1 = {
+          fn: function(done) {
+            setTimeout(function() {
+              done(err);
+            }, 100);
+          }
+        },
         queueableFn2 = { fn: jasmine.createSpy('fn2') },
         failFn = jasmine.createSpy('fail'),
         queueRunner = new jasmineUnderTest.QueueRunner({
@@ -158,11 +176,15 @@ describe("QueueRunner", function() {
       expect(queueableFn2.fn).toHaveBeenCalled();
     });
 
-    it("does not cause an explicit fail if execution is being stopped", function() {
+    it('does not cause an explicit fail if execution is being stopped', function() {
       var err = new jasmineUnderTest.StopExecutionError('foo'),
-        queueableFn1 = { fn: function(done) {
-          setTimeout(function() { done(err); }, 100);
-        } },
+        queueableFn1 = {
+          fn: function(done) {
+            setTimeout(function() {
+              done(err);
+            }, 100);
+          }
+        },
         queueableFn2 = { fn: jasmine.createSpy('fn2') },
         failFn = jasmine.createSpy('fail'),
         queueRunner = new jasmineUnderTest.QueueRunner({
@@ -183,7 +205,7 @@ describe("QueueRunner", function() {
 
     it("sets a timeout if requested for asynchronous functions so they don't go on forever", function() {
       var timeout = 3,
-        beforeFn = { fn: function(done) { }, type: 'before', timeout: timeout },
+        beforeFn = { fn: function(done) {}, type: 'before', timeout: timeout },
         queueableFn = { fn: jasmine.createSpy('fn'), type: 'queueable' },
         onComplete = jasmine.createSpy('onComplete'),
         onException = jasmine.createSpy('onException'),
@@ -203,15 +225,15 @@ describe("QueueRunner", function() {
       expect(onComplete).toHaveBeenCalled();
     });
 
-    it("by default does not set a timeout for asynchronous functions", function() {
-      var beforeFn = { fn: function(done) { } },
+    it('by default does not set a timeout for asynchronous functions', function() {
+      var beforeFn = { fn: function(done) {} },
         queueableFn = { fn: jasmine.createSpy('fn') },
         onComplete = jasmine.createSpy('onComplete'),
         onException = jasmine.createSpy('onException'),
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [beforeFn, queueableFn],
           onComplete: onComplete,
-          onException: onException,
+          onException: onException
         });
 
       queueRunner.execute();
@@ -224,8 +246,12 @@ describe("QueueRunner", function() {
       expect(onComplete).not.toHaveBeenCalled();
     });
 
-    it("clears the timeout when an async function throws an exception, to prevent additional exception reporting", function() {
-       var queueableFn = { fn: function(done) { throw new Error("error!"); } },
+    it('clears the timeout when an async function throws an exception, to prevent additional exception reporting', function() {
+      var queueableFn = {
+          fn: function(done) {
+            throw new Error('error!');
+          }
+        },
         onComplete = jasmine.createSpy('onComplete'),
         onException = jasmine.createSpy('onException'),
         queueRunner = new jasmineUnderTest.QueueRunner({
@@ -243,8 +269,12 @@ describe("QueueRunner", function() {
       expect(onException.calls.count()).toEqual(1);
     });
 
-    it("clears the timeout when the done callback is called", function() {
-      var queueableFn = { fn: function(done) { done(); } },
+    it('clears the timeout when the done callback is called', function() {
+      var queueableFn = {
+          fn: function(done) {
+            done();
+          }
+        },
         onComplete = jasmine.createSpy('onComplete'),
         onException = jasmine.createSpy('onException'),
         queueRunner = new jasmineUnderTest.QueueRunner({
@@ -262,8 +292,13 @@ describe("QueueRunner", function() {
       expect(onException).not.toHaveBeenCalled();
     });
 
-    it("only moves to the next spec the first time you call done", function() {
-      var queueableFn = { fn: function(done) {done(); done();} },
+    it('only moves to the next spec the first time you call done', function() {
+      var queueableFn = {
+          fn: function(done) {
+            done();
+            done();
+          }
+        },
         nextQueueableFn = { fn: jasmine.createSpy('nextFn') },
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn, nextQueueableFn]
@@ -274,27 +309,31 @@ describe("QueueRunner", function() {
       expect(nextQueueableFn.fn.calls.count()).toEqual(1);
     });
 
-    it("does not move to the next spec if done is called after an exception has ended the spec", function() {
-       var queueableFn = { fn: function(done) {
-         setTimeout(done, 1);
-         throw new Error('error!');
-       } },
-       nextQueueableFn = { fn: jasmine.createSpy('nextFn') },
-       queueRunner = new jasmineUnderTest.QueueRunner({
-         queueableFns: [queueableFn, nextQueueableFn]
-       });
+    it('does not move to the next spec if done is called after an exception has ended the spec', function() {
+      var queueableFn = {
+          fn: function(done) {
+            setTimeout(done, 1);
+            throw new Error('error!');
+          }
+        },
+        nextQueueableFn = { fn: jasmine.createSpy('nextFn') },
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn, nextQueueableFn]
+        });
 
       queueRunner.execute();
       jasmine.clock().tick(1);
       expect(nextQueueableFn.fn.calls.count()).toEqual(1);
     });
 
-    it("should return a null when you call done", function () {
+    it('should return a null when you call done', function() {
       // Some promises want handlers to return anything but undefined to help catch "forgotten returns".
       var doneReturn,
-        queueableFn = { fn: function(done) {
-          doneReturn = done();
-        } },
+        queueableFn = {
+          fn: function(done) {
+            doneReturn = done();
+          }
+        },
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn]
         });
@@ -303,24 +342,36 @@ describe("QueueRunner", function() {
       expect(doneReturn).toBe(null);
     });
 
-    it("continues running functions when an exception is thrown in async code without timing out", function() {
-      var queueableFn = { fn: function(done) { throwAsync(); }, timeout: 1 },
-        nextQueueableFn = { fn: jasmine.createSpy("nextFunction") },
+    it('continues running functions when an exception is thrown in async code without timing out', function() {
+      var queueableFn = {
+          fn: function(done) {
+            throwAsync();
+          },
+          timeout: 1
+        },
+        nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
         onException = jasmine.createSpy('onException'),
-        globalErrors = { pushListener: jasmine.createSpy('pushListener'), popListener: jasmine.createSpy('popListener') },
+        globalErrors = {
+          pushListener: jasmine.createSpy('pushListener'),
+          popListener: jasmine.createSpy('popListener')
+        },
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn, nextQueueableFn],
           onException: onException,
           globalErrors: globalErrors
         }),
         throwAsync = function() {
-          globalErrors.pushListener.calls.mostRecent().args[0](new Error('foo'));
+          globalErrors.pushListener.calls
+            .mostRecent()
+            .args[0](new Error('foo'));
           jasmine.clock().tick(2);
         };
 
       nextQueueableFn.fn.and.callFake(function() {
         // should remove the same function that was added
-        expect(globalErrors.popListener).toHaveBeenCalledWith(globalErrors.pushListener.calls.argsFor(1)[0]);
+        expect(globalErrors.popListener).toHaveBeenCalledWith(
+          globalErrors.pushListener.calls.argsFor(1)[0]
+        );
       });
 
       queueRunner.execute();
@@ -335,28 +386,37 @@ describe("QueueRunner", function() {
           }
         };
       }
-      expect(onException).not.toHaveBeenCalledWith(errorWithMessage(/DEFAULT_TIMEOUT_INTERVAL/));
+      expect(onException).not.toHaveBeenCalledWith(
+        errorWithMessage(/DEFAULT_TIMEOUT_INTERVAL/)
+      );
       expect(onException).toHaveBeenCalledWith(errorWithMessage(/^foo$/));
       expect(nextQueueableFn.fn).toHaveBeenCalled();
     });
 
-    it("handles exceptions thrown while waiting for the stack to clear", function() {
-      var queueableFn = { fn: function(done) { done() } },
-      global = {},
-      errorListeners = [],
-      globalErrors = {
-        pushListener: function(f) { errorListeners.push(f); },
-        popListener: function() { errorListeners.pop(); }
-      },
-      clearStack = jasmine.createSpy('clearStack'),
-      onException = jasmine.createSpy('onException'),
-      queueRunner = new jasmineUnderTest.QueueRunner({
-        queueableFns: [queueableFn],
-        globalErrors: globalErrors,
-        clearStack: clearStack,
-        onException: onException
-      }),
-      error = new Error('nope');
+    it('handles exceptions thrown while waiting for the stack to clear', function() {
+      var queueableFn = {
+          fn: function(done) {
+            done();
+          }
+        },
+        errorListeners = [],
+        globalErrors = {
+          pushListener: function(f) {
+            errorListeners.push(f);
+          },
+          popListener: function() {
+            errorListeners.pop();
+          }
+        },
+        clearStack = jasmine.createSpy('clearStack'),
+        onException = jasmine.createSpy('onException'),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn],
+          globalErrors: globalErrors,
+          clearStack: clearStack,
+          onException: onException
+        }),
+        error = new Error('nope');
 
       queueRunner.execute();
       jasmine.clock().tick();
@@ -368,7 +428,7 @@ describe("QueueRunner", function() {
     });
   });
 
-  describe("with a function that returns a promise", function() {
+  describe('with a function that returns a promise', function() {
     function StubPromise() {}
 
     StubPromise.prototype.then = function(resolve, reject) {
@@ -384,28 +444,32 @@ describe("QueueRunner", function() {
       jasmine.clock().uninstall();
     });
 
-    it("runs the function asynchronously, advancing once the promise is settled", function() {
+    it('runs the function asynchronously, advancing once the promise is settled', function() {
       var onComplete = jasmine.createSpy('onComplete'),
-        fnCallback =  jasmine.createSpy('fnCallback'),
+        fnCallback = jasmine.createSpy('fnCallback'),
         p1 = new StubPromise(),
         p2 = new StubPromise(),
-        queueableFn1 = { fn: function() {
-          setTimeout(function() {
-            p1.resolveHandler();
-          }, 100);
-          return p1;
-        } };
-        queueableFn2 = { fn: function() {
+        queueableFn1 = {
+          fn: function() {
+            setTimeout(function() {
+              p1.resolveHandler();
+            }, 100);
+            return p1;
+          }
+        };
+      (queueableFn2 = {
+        fn: function() {
           fnCallback();
           setTimeout(function() {
             p2.resolveHandler();
           }, 100);
           return p2;
-        } },
-        queueRunner = new jasmineUnderTest.QueueRunner({
+        }
+      }),
+        (queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn1, queueableFn2],
           onComplete: onComplete
-        });
+        }));
 
       queueRunner.execute();
       expect(fnCallback).not.toHaveBeenCalled();
@@ -421,16 +485,17 @@ describe("QueueRunner", function() {
       expect(onComplete).toHaveBeenCalled();
     });
 
-    it("handles a rejected promise like an unhandled exception", function() {
+    it('handles a rejected promise like an unhandled exception', function() {
       var promise = new StubPromise(),
-        queueableFn1 = { fn: function() {
-          setTimeout(function() {
-            promise.rejectHandler('foo')
-          }, 100);
-          return promise;
-        } },
+        queueableFn1 = {
+          fn: function() {
+            setTimeout(function() {
+              promise.rejectHandler('foo');
+            }, 100);
+            return promise;
+          }
+        },
         queueableFn2 = { fn: jasmine.createSpy('fn2') },
-        failFn = jasmine.createSpy('fail'),
         onExceptionCallback = jasmine.createSpy('on exception callback'),
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn1, queueableFn2],
@@ -447,13 +512,85 @@ describe("QueueRunner", function() {
       expect(onExceptionCallback).toHaveBeenCalledWith('foo');
       expect(queueableFn2.fn).toHaveBeenCalled();
     });
+
+    it('issues a deprecation if the function also takes a parameter', function() {
+      var queueableFn = {
+          fn: function(done) {
+            return new StubPromise();
+          }
+        },
+        deprecated = jasmine.createSpy('deprecated'),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn],
+          deprecated: deprecated
+        }),
+        env = jasmineUnderTest.getEnv();
+
+      queueRunner.execute();
+
+      expect(deprecated).toHaveBeenCalledWith(
+        'An asynchronous ' +
+          'before/it/after function took a done callback but also returned a ' +
+          'promise. This is not supported and will stop working in the future. ' +
+          'Either remove the done callback (recommended) or change the function ' +
+          'to not return a promise.'
+      );
+    });
+
+    it('issues a more specific deprecation if the function is `async`', function() {
+      jasmine.getEnv().requireAsyncAwait();
+      eval('var fn = async function(done){};');
+      var deprecated = jasmine.createSpy('deprecated'),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [{ fn: fn }],
+          deprecated: deprecated
+        });
+
+      queueRunner.execute();
+
+      expect(deprecated).toHaveBeenCalledWith(
+        'An asynchronous ' +
+          'before/it/after function was defined with the async keyword but ' +
+          'also took a done callback. This is not supported and will stop ' +
+          'working in the future. Either remove the done callback ' +
+          '(recommended) or remove the async keyword.'
+      );
+    });
   });
 
-  it("calls exception handlers when an exception is thrown in a fn", function() {
-    var queueableFn = { type: 'queueable',
-      fn: function() {
-        throw new Error('fake error');
-      } },
+  it('passes the error instance to exception handlers in HTML browsers', function() {
+    var error = new Error('fake error'),
+      onExceptionCallback = jasmine.createSpy('on exception callback'),
+      queueRunner = new jasmineUnderTest.QueueRunner({
+        onException: onExceptionCallback
+      });
+
+    queueRunner.execute();
+    queueRunner.handleFinalError(error.message, 'fake.js', 1, 1, error);
+
+    expect(onExceptionCallback).toHaveBeenCalledWith(error);
+  });
+
+  it('passes the first argument to exception handlers for compatibility', function() {
+    var error = new Error('fake error'),
+      onExceptionCallback = jasmine.createSpy('on exception callback'),
+      queueRunner = new jasmineUnderTest.QueueRunner({
+        onException: onExceptionCallback
+      });
+
+    queueRunner.execute();
+    queueRunner.handleFinalError(error.message);
+
+    expect(onExceptionCallback).toHaveBeenCalledWith(error.message);
+  });
+
+  it('calls exception handlers when an exception is thrown in a fn', function() {
+    var queueableFn = {
+        type: 'queueable',
+        fn: function() {
+          throw new Error('fake error');
+        }
+      },
       onExceptionCallback = jasmine.createSpy('on exception callback'),
       queueRunner = new jasmineUnderTest.QueueRunner({
         queueableFns: [queueableFn],
@@ -465,9 +602,13 @@ describe("QueueRunner", function() {
     expect(onExceptionCallback).toHaveBeenCalledWith(jasmine.any(Error));
   });
 
-  it("continues running the functions even after an exception is thrown in an async spec", function() {
-    var queueableFn = { fn: function(done) { throw new Error("error"); } },
-      nextQueueableFn = { fn: jasmine.createSpy("nextFunction") },
+  it('continues running the functions even after an exception is thrown in an async spec', function() {
+    var queueableFn = {
+        fn: function(done) {
+          throw new Error('error');
+        }
+      },
+      nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
       queueRunner = new jasmineUnderTest.QueueRunner({
         queueableFns: [queueableFn, nextQueueableFn]
       });
@@ -476,12 +617,16 @@ describe("QueueRunner", function() {
     expect(nextQueueableFn.fn).toHaveBeenCalled();
   });
 
-  describe("When configured to complete on first error", function() {
-    it("skips to cleanup functions on the first exception", function() {
-      var queueableFn = { fn: function() { throw new Error("error"); } },
-        nextQueueableFn = { fn: jasmine.createSpy("nextFunction") },
-        cleanupFn = { fn: jasmine.createSpy("cleanup") },
-        onComplete = jasmine.createSpy("onComplete"),
+  describe('When configured to complete on first error', function() {
+    it('skips to cleanup functions on the first exception', function() {
+      var queueableFn = {
+          fn: function() {
+            throw new Error('error');
+          }
+        },
+        nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
+        cleanupFn = { fn: jasmine.createSpy('cleanup') },
+        onComplete = jasmine.createSpy('onComplete'),
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn, nextQueueableFn],
           cleanupFns: [cleanupFn],
@@ -492,13 +637,19 @@ describe("QueueRunner", function() {
       queueRunner.execute();
       expect(nextQueueableFn.fn).not.toHaveBeenCalled();
       expect(cleanupFn.fn).toHaveBeenCalled();
-      expect(onComplete).toHaveBeenCalledWith(jasmine.any(jasmineUnderTest.StopExecutionError));
+      expect(onComplete).toHaveBeenCalledWith(
+        jasmine.any(jasmineUnderTest.StopExecutionError)
+      );
     });
 
-    it("does not skip when a cleanup function throws", function() {
-      var queueableFn = { fn: function() { } },
-        cleanupFn1 = { fn: function() { throw new Error("error"); } },
-        cleanupFn2 = { fn: jasmine.createSpy("cleanupFn2") },
+    it('does not skip when a cleanup function throws', function() {
+      var queueableFn = { fn: function() {} },
+        cleanupFn1 = {
+          fn: function() {
+            throw new Error('error');
+          }
+        },
+        cleanupFn2 = { fn: jasmine.createSpy('cleanupFn2') },
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn],
           cleanupFns: [cleanupFn1, cleanupFn2],
@@ -509,7 +660,7 @@ describe("QueueRunner", function() {
       expect(cleanupFn2.fn).toHaveBeenCalled();
     });
 
-    describe("with an asynchronous function", function() {
+    describe('with an asynchronous function', function() {
       beforeEach(function() {
         jasmine.clock().install();
       });
@@ -518,21 +669,24 @@ describe("QueueRunner", function() {
         jasmine.clock().uninstall();
       });
 
-
-      it("skips to cleanup functions on the first exception", function() {
+      it('skips to cleanup functions on the first exception', function() {
         var errorListeners = [],
           queueableFn = { fn: function(done) {} },
           nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
           cleanupFn = { fn: jasmine.createSpy('cleanup') },
           queueRunner = new jasmineUnderTest.QueueRunner({
             globalErrors: {
-              pushListener: function(f) { errorListeners.push(f); },
-              popListener: function() { errorListeners.pop(); },
+              pushListener: function(f) {
+                errorListeners.push(f);
+              },
+              popListener: function() {
+                errorListeners.pop();
+              }
             },
             queueableFns: [queueableFn, nextQueueableFn],
             cleanupFns: [cleanupFn],
-            completeOnFirstError: true,
-         });
+            completeOnFirstError: true
+          });
 
         queueRunner.execute();
         errorListeners[errorListeners.length - 1](new Error('error'));
@@ -540,17 +694,19 @@ describe("QueueRunner", function() {
         expect(cleanupFn.fn).toHaveBeenCalled();
       });
 
-      it("skips to cleanup functions when next.fail is called", function() {
-        var queueableFn = { fn: function(done) {
-            done.fail('nope');
-          } },
+      it('skips to cleanup functions when next.fail is called', function() {
+        var queueableFn = {
+            fn: function(done) {
+              done.fail('nope');
+            }
+          },
           nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
           cleanupFn = { fn: jasmine.createSpy('cleanup') },
           queueRunner = new jasmineUnderTest.QueueRunner({
             queueableFns: [queueableFn, nextQueueableFn],
             cleanupFns: [cleanupFn],
-            completeOnFirstError: true,
-         });
+            completeOnFirstError: true
+          });
 
         queueRunner.execute();
         jasmine.clock().tick();
@@ -558,17 +714,19 @@ describe("QueueRunner", function() {
         expect(cleanupFn.fn).toHaveBeenCalled();
       });
 
-      it("skips to cleanup functions when next is called with an Error", function() {
-        var queueableFn = { fn: function(done) {
-            done(new Error('nope'));
-          } },
+      it('skips to cleanup functions when next is called with an Error', function() {
+        var queueableFn = {
+            fn: function(done) {
+              done(new Error('nope'));
+            }
+          },
           nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
           cleanupFn = { fn: jasmine.createSpy('cleanup') },
           queueRunner = new jasmineUnderTest.QueueRunner({
             queueableFns: [queueableFn, nextQueueableFn],
             cleanupFns: [cleanupFn],
-            completeOnFirstError: true,
-         });
+            completeOnFirstError: true
+          });
 
         queueRunner.execute();
         jasmine.clock().tick();
@@ -578,7 +736,7 @@ describe("QueueRunner", function() {
     });
   });
 
-  it("calls a provided complete callback when done", function() {
+  it('calls a provided complete callback when done', function() {
     var queueableFn = { fn: jasmine.createSpy('fn') },
       completeCallback = jasmine.createSpy('completeCallback'),
       queueRunner = new jasmineUnderTest.QueueRunner({
@@ -591,7 +749,7 @@ describe("QueueRunner", function() {
     expect(completeCallback).toHaveBeenCalled();
   });
 
-  describe("clearing the stack", function() {
+  describe('clearing the stack', function() {
     beforeEach(function() {
       jasmine.clock().install();
     });
@@ -600,18 +758,24 @@ describe("QueueRunner", function() {
       jasmine.clock().uninstall();
     });
 
-    it("calls a provided stack clearing function when done", function() {
-      var asyncFn = { fn: function(done) { done() } },
-          afterFn = { fn: jasmine.createSpy('afterFn') },
-          completeCallback = jasmine.createSpy('completeCallback'),
-          clearStack = jasmine.createSpy('clearStack'),
-          queueRunner = new jasmineUnderTest.QueueRunner({
-            queueableFns: [asyncFn, afterFn],
-            clearStack: clearStack,
-            onComplete: completeCallback
-          });
+    it('calls a provided stack clearing function when done', function() {
+      var asyncFn = {
+          fn: function(done) {
+            done();
+          }
+        },
+        afterFn = { fn: jasmine.createSpy('afterFn') },
+        completeCallback = jasmine.createSpy('completeCallback'),
+        clearStack = jasmine.createSpy('clearStack'),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [asyncFn, afterFn],
+          clearStack: clearStack,
+          onComplete: completeCallback
+        });
 
-      clearStack.and.callFake(function(fn) { fn(); });
+      clearStack.and.callFake(function(fn) {
+        fn();
+      });
 
       queueRunner.execute();
       jasmine.clock().tick();
@@ -633,9 +797,7 @@ describe("QueueRunner", function() {
     });
 
     it('runs the functions on the scope of a UserContext', function() {
-      var calls = [],
-          context;
-
+      var context;
       this.fn.and.callFake(function() {
         context = this;
       });
@@ -659,8 +821,7 @@ describe("QueueRunner", function() {
     });
 
     it('runs the functions on the scope of a UserContext', function() {
-      var calls = [],
-          context;
+      var context;
       this.fn.and.callFake(function() {
         context = this;
       });

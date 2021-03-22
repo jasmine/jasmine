@@ -1,21 +1,10 @@
 getJasmineRequireObj().util = function(j$) {
-
   var util = {};
 
   util.inherit = function(childClass, parentClass) {
-    var Subclass = function() {
-    };
+    var Subclass = function() {};
     Subclass.prototype = parentClass.prototype;
     childClass.prototype = new Subclass();
-  };
-
-  util.htmlEscape = function(str) {
-    if (!str) {
-      return str;
-    }
-    return str.replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
   };
 
   util.argsToArray = function(args) {
@@ -58,7 +47,7 @@ getJasmineRequireObj().util = function(j$) {
   util.cloneArgs = function(args) {
     var clonedArgs = [];
     var argsAsArray = j$.util.argsToArray(args);
-    for(var i = 0; i < argsAsArray.length; i++) {
+    for (var i = 0; i < argsAsArray.length; i++) {
       var str = Object.prototype.toString.apply(argsAsArray[i]),
         primitives = /^\[object (Boolean|String|RegExp|Number)/;
 
@@ -100,19 +89,7 @@ getJasmineRequireObj().util = function(j$) {
     return Object.prototype.hasOwnProperty.call(obj, key);
   };
 
-  function anyMatch(pattern, lines) {
-    var i;
-
-    for (i = 0; i < lines.length; i++) {
-      if (lines[i].match(pattern)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  util.errorWithStack = function errorWithStack () {
+  util.errorWithStack = function errorWithStack() {
     // Don't throw and catch if we don't have to, because it makes it harder
     // for users to debug their code with exception breakpoints.
     var error = new Error();
@@ -138,15 +115,32 @@ getJasmineRequireObj().util = function(j$) {
     var result;
 
     return function() {
-      var trace;
-
       if (!result) {
         result = callerFile();
       }
 
       return result;
     };
-  }());
+  })();
+
+  function StopIteration() {}
+  StopIteration.prototype = Object.create(Error.prototype);
+  StopIteration.prototype.constructor = StopIteration;
+
+  // useful for maps and sets since `forEach` is the only IE11-compatible way to iterate them
+  util.forEachBreakable = function(iterable, iteratee) {
+    function breakLoop() {
+      throw new StopIteration();
+    }
+
+    try {
+      iterable.forEach(function(value, key) {
+        iteratee(breakLoop, value, key, iterable);
+      });
+    } catch (error) {
+      if (!(error instanceof StopIteration)) throw error;
+    }
+  };
 
   return util;
 };

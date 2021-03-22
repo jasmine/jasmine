@@ -1,4 +1,6 @@
 getJasmineRequireObj().QueueRunner = function(j$) {
+  var nextid = 1;
+
   function StopExecutionError() {}
   StopExecutionError.prototype = new Error();
   j$.StopExecutionError = StopExecutionError;
@@ -18,20 +20,31 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   function emptyFn() {}
 
   function QueueRunner(attrs) {
+    this.id_ = nextid++;
     var queueableFns = attrs.queueableFns || [];
     this.queueableFns = queueableFns.concat(attrs.cleanupFns || []);
     this.firstCleanupIx = queueableFns.length;
     this.onComplete = attrs.onComplete || emptyFn;
-    this.clearStack = attrs.clearStack || function(fn) {fn();};
+    this.clearStack =
+      attrs.clearStack ||
+      function(fn) {
+        fn();
+      };
     this.onException = attrs.onException || emptyFn;
     this.userContext = attrs.userContext || new j$.UserContext();
-    this.timeout = attrs.timeout || {setTimeout: setTimeout, clearTimeout: clearTimeout};
+    this.timeout = attrs.timeout || {
+      setTimeout: setTimeout,
+      clearTimeout: clearTimeout
+    };
     this.fail = attrs.fail || emptyFn;
-    this.globalErrors = attrs.globalErrors || { pushListener: emptyFn, popListener: emptyFn };
+    this.globalErrors = attrs.globalErrors || {
+      pushListener: emptyFn,
+      popListener: emptyFn
+    };
     this.completeOnFirstError = !!attrs.completeOnFirstError;
     this.errored = false;
 
-    if (typeof(this.onComplete) !== 'function') {
+    if (typeof this.onComplete !== 'function') {
       throw new Error('invalid onComplete ' + JSON.stringify(this.onComplete));
     }
     this.deprecated = attrs.deprecated;
@@ -39,8 +52,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
   QueueRunner.prototype.execute = function() {
     var self = this;
-    this.handleFinalError = function(error) {
-      self.onException(error);
+    this.handleFinalError = function(message, source, lineno, colno, error) {
+      // Older browsers would send the error as the first parameter. HTML5
+      // specifies the the five parameters above. The error instance should
+      // be preffered, otherwise the call stack would get lost.
+      self.onException(error || message);
     };
     this.globalErrors.pushListener(this.handleFinalError);
     this.run(0);
@@ -55,15 +71,22 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.clearTimeout = function(timeoutId) {
-    Function.prototype.apply.apply(this.timeout.clearTimeout, [j$.getGlobal(), [timeoutId]]);
+    Function.prototype.apply.apply(this.timeout.clearTimeout, [
+      j$.getGlobal(),
+      [timeoutId]
+    ]);
   };
 
   QueueRunner.prototype.setTimeout = function(fn, timeout) {
-    return Function.prototype.apply.apply(this.timeout.setTimeout, [j$.getGlobal(), [fn, timeout]]);
+    return Function.prototype.apply.apply(this.timeout.setTimeout, [
+      j$.getGlobal(),
+      [fn, timeout]
+    ]);
   };
 
   QueueRunner.prototype.attempt = function attempt(iterativeIndex) {
-    var self = this, completedSynchronously = true,
+    var self = this,
+      completedSynchronously = true,
       handleError = function handleError(error) {
         onException(error);
         next(error);
@@ -100,7 +123,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }),
       errored = false,
       queueableFn = self.queueableFns[iterativeIndex],
-      timeoutId;
+      timeoutId,
+      maybeThenable;
 
     next.fail = function nextFail() {
       self.fail.apply(null, arguments);
@@ -114,8 +138,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       var timeoutInterval = queueableFn.timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
       timeoutId = self.setTimeout(function() {
         var error = new Error(
-          'Timeout - Async callback was not invoked within ' + timeoutInterval + 'ms ' +
-          (queueableFn.timeout ? '(custom timeout)' : '(set by jasmine.DEFAULT_TIMEOUT_INTERVAL)')
+          'Timeout - Async function did not complete within ' +
+            timeoutInterval +
+            'ms ' +
+            (queueableFn.timeout
+              ? '(custom timeout)'
+              : '(set by jasmine.DEFAULT_TIMEOUT_INTERVAL)')
         );
         onException(error);
         next();
@@ -124,7 +152,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     try {
       if (queueableFn.fn.length === 0) {
-        var maybeThenable = queueableFn.fn.call(self.userContext);
+        maybeThenable = queueableFn.fn.call(self.userContext);
 
         if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
           maybeThenable.then(next, onPromiseRejection);
@@ -132,7 +160,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
           return { completedSynchronously: false };
         }
       } else {
-        queueableFn.fn.call(self.userContext, next);
+        maybeThenable = queueableFn.fn.call(self.userContext, next);
+        this.diagnoseConflictingAsync_(queueableFn.fn, maybeThenable);
         completedSynchronously = false;
         return { completedSynchronously: false };
       }
@@ -160,8 +189,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self = this,
       iterativeIndex;
 
-
-    for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
+    for (
+      iterativeIndex = recursiveIndex;
+      iterativeIndex < length;
+      iterativeIndex++
+    ) {
       var result = this.attempt(iterativeIndex);
 
       if (!result.completedSynchronously) {
@@ -180,7 +212,29 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       self.globalErrors.popListener(self.handleFinalError);
       self.onComplete(self.errored && new StopExecutionError());
     });
+  };
 
+  QueueRunner.prototype.diagnoseConflictingAsync_ = function(fn, retval) {
+    if (retval && j$.isFunction_(retval.then)) {
+      // Issue a warning that matches the user's code
+      if (j$.isAsyncFunction_(fn)) {
+        this.deprecated(
+          'An asynchronous before/it/after ' +
+            'function was defined with the async keyword but also took a ' +
+            'done callback. This is not supported and will stop working in' +
+            ' the future. Either remove the done callback (recommended) or ' +
+            'remove the async keyword.'
+        );
+      } else {
+        this.deprecated(
+          'An asynchronous before/it/after ' +
+            'function took a done callback but also returned a promise. ' +
+            'This is not supported and will stop working in the future. ' +
+            'Either remove the done callback (recommended) or change the ' +
+            'function to not return a promise.'
+        );
+      }
+    }
   };
 
   return QueueRunner;

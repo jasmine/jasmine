@@ -1,4 +1,4 @@
-describe("toBePositiveInfinity", function() {
+describe('toBePositiveInfinity', function() {
   it("fails for anything that isn't Infinity", function() {
     var matcher = jasmineUnderTest.matchers.toBePositiveInfinity(),
       result;
@@ -13,19 +13,20 @@ describe("toBePositiveInfinity", function() {
     expect(result.pass).toBe(false);
   });
 
-  it("has a custom message on failure", function() {
-    var matcher = jasmineUnderTest.matchers.toBePositiveInfinity(),
+  it('has a custom message on failure', function() {
+    var matcher = jasmineUnderTest.matchers.toBePositiveInfinity({
+        pp: jasmineUnderTest.makePrettyPrinter()
+      }),
       result = matcher.compare(0);
 
-    expect(result.message()).toEqual("Expected 0 to be Infinity.")
+    expect(result.message()).toEqual('Expected 0 to be Infinity.');
   });
 
-  it("succeeds for Infinity", function() {
+  it('succeeds for Infinity', function() {
     var matcher = jasmineUnderTest.matchers.toBePositiveInfinity(),
       result = matcher.compare(Number.POSITIVE_INFINITY);
 
     expect(result.pass).toBe(true);
-    expect(result.message).toEqual("Expected actual not to be Infinity.")
+    expect(result.message).toEqual('Expected actual not to be Infinity.');
   });
-
 });

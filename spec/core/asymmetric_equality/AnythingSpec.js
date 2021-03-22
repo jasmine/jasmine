@@ -1,58 +1,58 @@
-describe("Anything", function() {
-  it("matches a string", function() {
+describe('Anything', function() {
+  it('matches a string', function() {
     var anything = new jasmineUnderTest.Anything();
 
     expect(anything.asymmetricMatch('foo')).toBe(true);
   });
 
-  it("matches a number", function() {
+  it('matches a number', function() {
     var anything = new jasmineUnderTest.Anything();
 
     expect(anything.asymmetricMatch(42)).toBe(true);
   });
 
-  it("matches an object", function() {
+  it('matches an object', function() {
     var anything = new jasmineUnderTest.Anything();
 
     expect(anything.asymmetricMatch({ foo: 'bar' })).toBe(true);
   });
 
-  it("matches an array", function() {
+  it('matches an array', function() {
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch([1,2,3])).toBe(true);
+    expect(anything.asymmetricMatch([1, 2, 3])).toBe(true);
   });
 
-  it("matches a Map", function() {
+  it('matches a Map', function() {
     jasmine.getEnv().requireFunctioningMaps();
 
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(new Map())).toBe(true);
+    expect(anything.asymmetricMatch(new Map())).toBe(true); // eslint-disable-line compat/compat
   });
 
-  it("matches a Set", function() {
+  it('matches a Set', function() {
     jasmine.getEnv().requireFunctioningSets();
 
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(new Set())).toBe(true);
+    expect(anything.asymmetricMatch(new Set())).toBe(true); // eslint-disable-line compat/compat
   });
 
-  it("matches a TypedArray", function() {
+  it('matches a TypedArray', function() {
     jasmine.getEnv().requireFunctioningTypedArrays();
 
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(new Uint32Array([]))).toBe(true);
+    expect(anything.asymmetricMatch(new Uint32Array([]))).toBe(true); // eslint-disable-line compat/compat
   });
 
-  it("matches a Symbol", function() {
+  it('matches a Symbol', function() {
     jasmine.getEnv().requireFunctioningSymbols();
 
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(Symbol())).toBe(true);
+    expect(anything.asymmetricMatch(Symbol())).toBe(true); // eslint-disable-line compat/compat
   });
 
   it("doesn't match undefined", function() {
@@ -71,6 +71,6 @@ describe("Anything", function() {
   it("jasmineToString's itself", function() {
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.jasmineToString()).toEqual("<jasmine.anything>");
+    expect(anything.jasmineToString()).toEqual('<jasmine.anything>');
   });
 });

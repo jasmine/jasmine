@@ -1,61 +1,61 @@
-describe("ResultsNode", function() {
-  it("wraps a result", function() {
+describe('ResultsNode', function() {
+  it('wraps a result', function() {
     var fakeResult = {
         id: 123,
-        message: "foo"
+        message: 'foo'
       },
-      node = new jasmineUnderTest.ResultsNode(fakeResult, "suite", null);
+      node = new jasmineUnderTest.ResultsNode(fakeResult, 'suite', null);
 
     expect(node.result).toBe(fakeResult);
-    expect(node.type).toEqual("suite");
+    expect(node.type).toEqual('suite');
   });
 
-  it("can add children with a type", function() {
+  it('can add children with a type', function() {
     var fakeResult = {
         id: 123,
-        message: "foo"
+        message: 'foo'
       },
       fakeChildResult = {
         id: 456,
-        message: "bar"
+        message: 'bar'
       },
-      node = new jasmineUnderTest.ResultsNode(fakeResult, "suite", null);
+      node = new jasmineUnderTest.ResultsNode(fakeResult, 'suite', null);
 
-    node.addChild(fakeChildResult, "spec");
+    node.addChild(fakeChildResult, 'spec');
 
     expect(node.children.length).toEqual(1);
     expect(node.children[0].result).toEqual(fakeChildResult);
-    expect(node.children[0].type).toEqual("spec");
+    expect(node.children[0].type).toEqual('spec');
   });
 
-  it("has a pointer back to its parent ResultNode", function() {
+  it('has a pointer back to its parent ResultNode', function() {
     var fakeResult = {
         id: 123,
-        message: "foo"
+        message: 'foo'
       },
       fakeChildResult = {
         id: 456,
-        message: "bar"
+        message: 'bar'
       },
-      node = new jasmineUnderTest.ResultsNode(fakeResult, "suite", null);
+      node = new jasmineUnderTest.ResultsNode(fakeResult, 'suite', null);
 
-    node.addChild(fakeChildResult, "spec");
+    node.addChild(fakeChildResult, 'spec');
 
     expect(node.children[0].parent).toBe(node);
   });
 
-  it("can provide the most recent child", function() {
+  it('can provide the most recent child', function() {
     var fakeResult = {
         id: 123,
-        message: "foo"
+        message: 'foo'
       },
       fakeChildResult = {
         id: 456,
-        message: "bar"
+        message: 'bar'
       },
-      node = new jasmineUnderTest.ResultsNode(fakeResult, "suite", null);
+      node = new jasmineUnderTest.ResultsNode(fakeResult, 'suite', null);
 
-    node.addChild(fakeChildResult, "spec");
+    node.addChild(fakeChildResult, 'spec');
 
     expect(node.last()).toBe(node.children[node.children.length - 1]);
   });

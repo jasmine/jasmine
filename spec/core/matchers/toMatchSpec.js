@@ -1,6 +1,5 @@
-describe("toMatch", function() {
-
-  it("passes when RegExps are equivalent", function() {
+describe('toMatch', function() {
+  it('passes when RegExps are equivalent', function() {
     var matcher = jasmineUnderTest.matchers.toMatch(),
       result;
 
@@ -8,7 +7,7 @@ describe("toMatch", function() {
     expect(result.pass).toBe(true);
   });
 
-  it("fails when RegExps are not equivalent", function() {
+  it('fails when RegExps are not equivalent', function() {
     var matcher = jasmineUnderTest.matchers.toMatch(),
       result;
 
@@ -16,7 +15,7 @@ describe("toMatch", function() {
     expect(result.pass).toBe(false);
   });
 
-  it("passes when the actual matches the expected string as a pattern", function() {
+  it('passes when the actual matches the expected string as a pattern', function() {
     var matcher = jasmineUnderTest.matchers.toMatch(),
       result;
 
@@ -24,7 +23,7 @@ describe("toMatch", function() {
     expect(result.pass).toBe(true);
   });
 
-  it("fails when the actual matches the expected string as a pattern", function() {
+  it('fails when the actual matches the expected string as a pattern', function() {
     var matcher = jasmineUnderTest.matchers.toMatch(),
       result;
 
@@ -32,7 +31,7 @@ describe("toMatch", function() {
     expect(result.pass).toBe(false);
   });
 
-  it("throws an Error when the expected is not a String or RegExp", function() {
+  it('throws an Error when the expected is not a String or RegExp', function() {
     var matcher = jasmineUnderTest.matchers.toMatch();
 
     expect(function() {
@@ -40,4 +39,3 @@ describe("toMatch", function() {
     }).toThrowError(/Expected is not a String or a RegExp/);
   });
 });
-

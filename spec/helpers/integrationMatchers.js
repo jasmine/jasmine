@@ -1,10 +1,12 @@
 (function(env) {
   env.registerIntegrationMatchers = function() {
     jasmine.addMatchers({
-      toHaveFailedExpectationsForRunnable: function (util, customeEqualityTesters) {
+      toHaveFailedExpectationsForRunnable: function() {
         return {
-          compare: function (actual, fullName, expectedFailures) {
-            var foundRunnable = false, expectations = true, foundFailures = [];
+          compare: function(actual, fullName, expectedFailures) {
+            var foundRunnable = false,
+              expectations = true,
+              foundFailures = [];
             for (var i = 0; i < actual.calls.count(); i++) {
               var args = actual.calls.argsFor(i)[0];
 
@@ -19,8 +21,12 @@
                   var failure = foundFailures[j];
                   var expectedFailure = expectedFailures[j];
 
-                  if (Object.prototype.toString.call(expectedFailure) === '[object RegExp]') {
-                    expectations = expectations && expectedFailure.test(failure);
+                  if (
+                    Object.prototype.toString.call(expectedFailure) ===
+                    '[object RegExp]'
+                  ) {
+                    expectations =
+                      expectations && expectedFailure.test(failure);
                   } else {
                     expectations = expectations && failure === expectedFailure;
                   }
@@ -31,8 +37,14 @@
 
             return {
               pass: foundRunnable && expectations,
-              message: !foundRunnable ? 'The runnable "' + fullName + '" never finished' :
-                'Expected runnable "' + fullName + '" to have failures ' + jasmine.pp(expectedFailures) + ' but it had ' + jasmine.pp(foundFailures)
+              message: !foundRunnable
+                ? 'The runnable "' + fullName + '" never finished'
+                : 'Expected runnable "' +
+                  fullName +
+                  '" to have failures ' +
+                  jasmine.pp(expectedFailures) +
+                  ' but it had ' +
+                  jasmine.pp(foundFailures)
             };
           }
         };
@@ -40,4 +52,3 @@
     });
   };
 })(jasmine.getEnv());
-

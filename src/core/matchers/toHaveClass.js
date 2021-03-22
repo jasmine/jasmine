@@ -3,17 +3,18 @@ getJasmineRequireObj().toHaveClass = function(j$) {
    * {@link expect} the actual value to be a DOM element that has the expected class
    * @function
    * @name matchers#toHaveClass
+   * @since 3.0.0
    * @param {Object} expected - The class name to test for
    * @example
    * var el = document.createElement('div');
    * el.className = 'foo bar baz';
    * expect(el).toHaveClass('bar');
    */
-  function toHaveClass(util, customEqualityTesters) {
+  function toHaveClass(matchersUtil) {
     return {
       compare: function(actual, expected) {
         if (!isElement(actual)) {
-          throw new Error(j$.pp(actual) + ' is not a DOM element');
+          throw new Error(matchersUtil.pp(actual) + ' is not a DOM element');
         }
 
         return {
@@ -24,9 +25,9 @@ getJasmineRequireObj().toHaveClass = function(j$) {
   }
 
   function isElement(maybeEl) {
-    return maybeEl &&
-      maybeEl.classList &&
-      j$.isFunction_(maybeEl.classList.contains);
+    return (
+      maybeEl && maybeEl.classList && j$.isFunction_(maybeEl.classList.contains)
+    );
   }
 
   return toHaveClass;

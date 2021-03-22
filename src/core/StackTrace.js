@@ -1,8 +1,8 @@
 getJasmineRequireObj().StackTrace = function(j$) {
   function StackTrace(error) {
-    var lines = error.stack
-      .split('\n')
-      .filter(function(line) { return line !== ''; });
+    var lines = error.stack.split('\n').filter(function(line) {
+      return line !== '';
+    });
 
     var extractResult = extractMessage(error.message, lines);
 
@@ -21,7 +21,12 @@ getJasmineRequireObj().StackTrace = function(j$) {
     // e.g. "   at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)"
     // Note that the "function name" can include a surprisingly large set of
     // characters, including angle brackets and square brackets.
-    { re: /^\s*at ([^\)]+) \(([^\)]+)\)$/, fnIx: 1, fileLineColIx: 2, style: 'v8' },
+    {
+      re: /^\s*at ([^\)]+) \(([^\)]+)\)$/,
+      fnIx: 1,
+      fileLineColIx: 2,
+      style: 'v8'
+    },
 
     // NodeJS alternate form, often mixed in with the Chrome style
     // e.g. "  at /some/path:4320:20
@@ -30,7 +35,12 @@ getJasmineRequireObj().StackTrace = function(j$) {
     // PhantomJS on OS X, Safari, Firefox
     // e.g. "run@http://localhost:8888/__jasmine__/jasmine.js:4320:27"
     // or "http://localhost:8888/__jasmine__/jasmine.js:4320:27"
-    { re: /^(([^@\s]+)@)?([^\s]+)$/, fnIx: 2, fileLineColIx: 3, style: 'webkit' }
+    {
+      re: /^(([^@\s]+)@)?([^\s]+)$/,
+      fnIx: 2,
+      fileLineColIx: 3,
+      style: 'webkit'
+    }
   ];
 
   // regexes should capture the function name (if any) as group 1
@@ -41,11 +51,16 @@ getJasmineRequireObj().StackTrace = function(j$) {
       var convertedLine = first(framePatterns, function(pattern) {
         var overallMatch = line.match(pattern.re),
           fileLineColMatch;
-        if (!overallMatch) { return null; }
+        if (!overallMatch) {
+          return null;
+        }
 
         fileLineColMatch = overallMatch[pattern.fileLineColIx].match(
-          /^(.*):(\d+):\d+$/);
-        if (!fileLineColMatch) { return null; }
+          /^(.*):(\d+):\d+$/
+        );
+        if (!fileLineColMatch) {
+          return null;
+        }
 
         style = style || pattern.style;
         return {
@@ -89,7 +104,7 @@ getJasmineRequireObj().StackTrace = function(j$) {
   }
 
   function messagePrefixLength(message, stackLines) {
-    if (!stackLines[0].match(/^Error/)) {
+    if (!stackLines[0].match(/^\w*Error/)) {
       return 0;
     }
 
@@ -104,6 +119,6 @@ getJasmineRequireObj().StackTrace = function(j$) {
 
     return messageLines.length;
   }
-  
+
   return StackTrace;
 };

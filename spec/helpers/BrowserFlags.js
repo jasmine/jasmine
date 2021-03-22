@@ -1,7 +1,9 @@
 (function(env) {
   function browserVersion(matchFn) {
     var userAgent = jasmine.getGlobal().navigator.userAgent;
-    if (!userAgent) { return void 0; }
+    if (!userAgent) {
+      return void 0;
+    }
 
     var match = matchFn(userAgent);
 
@@ -11,5 +13,4 @@
   env.firefoxVersion = browserVersion(function(userAgent) {
     return /Firefox\/([0-9]{0,})/.exec(userAgent);
   });
-
 })(jasmine.getEnv());

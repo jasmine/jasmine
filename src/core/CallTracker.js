@@ -1,14 +1,14 @@
 getJasmineRequireObj().CallTracker = function(j$) {
-
   /**
    * @namespace Spy#calls
+   * @since 2.0.0
    */
   function CallTracker() {
     var calls = [];
     var opts = {};
 
     this.track = function(context) {
-      if(opts.cloneArgs) {
+      if (opts.cloneArgs) {
         context.args = j$.util.cloneArgs(context.args);
       }
       calls.push(context);
@@ -17,6 +17,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
     /**
      * Check whether this spy has been invoked.
      * @name Spy#calls#any
+     * @since 2.0.0
      * @function
      * @return {Boolean}
      */
@@ -27,6 +28,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
     /**
      * Get the number of invocations of this spy.
      * @name Spy#calls#count
+     * @since 2.0.0
      * @function
      * @return {Integer}
      */
@@ -37,6 +39,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
     /**
      * Get the arguments that were passed to a specific invocation of this spy.
      * @name Spy#calls#argsFor
+     * @since 2.0.0
      * @function
      * @param {Integer} index The 0-based invocation index.
      * @return {Array}
@@ -49,6 +52,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
     /**
      * Get the raw calls array for this spy.
      * @name Spy#calls#all
+     * @since 2.0.0
      * @function
      * @return {Spy.callData[]}
      */
@@ -59,12 +63,13 @@ getJasmineRequireObj().CallTracker = function(j$) {
     /**
      * Get all of the arguments for each invocation of this spy in the order they were received.
      * @name Spy#calls#allArgs
+     * @since 2.0.0
      * @function
      * @return {Array}
      */
     this.allArgs = function() {
       var callArgs = [];
-      for(var i = 0; i < calls.length; i++){
+      for (var i = 0; i < calls.length; i++) {
         callArgs.push(calls[i].args);
       }
 
@@ -74,6 +79,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
     /**
      * Get the first invocation of this spy.
      * @name Spy#calls#first
+     * @since 2.0.0
      * @function
      * @return {ObjecSpy.callData}
      */
@@ -84,6 +90,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
     /**
      * Get the most recent invocation of this spy.
      * @name Spy#calls#mostRecent
+     * @since 2.0.0
      * @function
      * @return {ObjecSpy.callData}
      */
@@ -94,6 +101,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
     /**
      * Reset this spy as if it has never been called.
      * @name Spy#calls#reset
+     * @since 2.0.0
      * @function
      */
     this.reset = function() {
@@ -103,12 +111,12 @@ getJasmineRequireObj().CallTracker = function(j$) {
     /**
      * Set this spy to do a shallow clone of arguments passed to each invocation.
      * @name Spy#calls#saveArgumentsByValue
+     * @since 2.5.0
      * @function
      */
     this.saveArgumentsByValue = function() {
       opts.cloneArgs = true;
     };
-
   }
 
   return CallTracker;

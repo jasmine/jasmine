@@ -1,16 +1,25 @@
 getJasmineRequireObj().TreeProcessor = function() {
   function TreeProcessor(attrs) {
     var tree = attrs.tree,
-        runnableIds = attrs.runnableIds,
-        queueRunnerFactory = attrs.queueRunnerFactory,
-        nodeStart = attrs.nodeStart || function() {},
-        nodeComplete = attrs.nodeComplete || function() {},
-        orderChildren = attrs.orderChildren || function(node) { return node.children; },
-        excludeNode = attrs.excludeNode || function(node) { return false; },
-        stats = { valid: true },
-        processed = false,
-        defaultMin = Infinity,
-        defaultMax = 1 - Infinity;
+      runnableIds = attrs.runnableIds,
+      queueRunnerFactory = attrs.queueRunnerFactory,
+      nodeStart = attrs.nodeStart || function() {},
+      nodeComplete = attrs.nodeComplete || function() {},
+      failSpecWithNoExpectations = !!attrs.failSpecWithNoExpectations,
+      orderChildren =
+        attrs.orderChildren ||
+        function(node) {
+          return node.children;
+        },
+      excludeNode =
+        attrs.excludeNode ||
+        function(node) {
+          return false;
+        },
+      stats = { valid: true },
+      processed = false,
+      defaultMin = Infinity,
+      defaultMax = 1 - Infinity;
 
     this.processTree = function() {
       processNode(tree, true);
@@ -59,13 +68,15 @@ getJasmineRequireObj().TreeProcessor = function() {
         stats[node.id] = {
           excluded: excluded,
           willExecute: !excluded && !node.markedPending,
-          segments: [{
-            index: 0,
-            owner: node,
-            nodes: [node],
-            min: startingMin(executableIndex),
-            max: startingMax(executableIndex)
-          }]
+          segments: [
+            {
+              index: 0,
+              owner: node,
+              nodes: [node],
+              min: startingMin(executableIndex),
+              max: startingMax(executableIndex)
+            }
+          ]
         };
       } else {
         var hasExecutableChild = false;
@@ -107,14 +118,29 @@ getJasmineRequireObj().TreeProcessor = function() {
       return executableIndex === undefined ? defaultMax : executableIndex;
     }
 
-    function segmentChildren(node, orderedChildren, nodeStats, executableIndex) {
-      var currentSegment = { index: 0, owner: node, nodes: [], min: startingMin(executableIndex), max: startingMax(executableIndex) },
-          result = [currentSegment],
-          lastMax = defaultMax,
-          orderedChildSegments = orderChildSegments(orderedChildren);
+    function segmentChildren(
+      node,
+      orderedChildren,
+      nodeStats,
+      executableIndex
+    ) {
+      var currentSegment = {
+          index: 0,
+          owner: node,
+          nodes: [],
+          min: startingMin(executableIndex),
+          max: startingMax(executableIndex)
+        },
+        result = [currentSegment],
+        lastMax = defaultMax,
+        orderedChildSegments = orderChildSegments(orderedChildren);
 
       function isSegmentBoundary(minIndex) {
-        return lastMax !== defaultMax && minIndex !== defaultMin && lastMax < minIndex - 1;
+        return (
+          lastMax !== defaultMax &&
+          minIndex !== defaultMin &&
+          lastMax < minIndex - 1
+        );
       }
 
       for (var i = 0; i < orderedChildSegments.length; i++) {
@@ -123,7 +149,13 @@ getJasmineRequireObj().TreeProcessor = function() {
           minIndex = childSegment.min;
 
         if (isSegmentBoundary(minIndex)) {
-          currentSegment = {index: result.length, owner: node, nodes: [], min: defaultMin, max: defaultMax};
+          currentSegment = {
+            index: result.length,
+            owner: node,
+            nodes: [],
+            min: defaultMin,
+            max: defaultMax
+          };
           result.push(currentSegment);
         }
 
@@ -138,11 +170,11 @@ getJasmineRequireObj().TreeProcessor = function() {
 
     function orderChildSegments(children) {
       var specifiedOrder = [],
-          unspecifiedOrder = [];
+        unspecifiedOrder = [];
 
       for (var i = 0; i < children.length; i++) {
         var child = children[i],
-            segments = stats[child.id].segments;
+          segments = stats[child.id].segments;
 
         for (var j = 0; j < segments.length; j++) {
           var seg = segments[j];
@@ -173,7 +205,7 @@ getJasmineRequireObj().TreeProcessor = function() {
             };
 
             queueRunnerFactory({
-              onComplete: function () {
+              onComplete: function() {
                 var args = Array.prototype.slice.call(arguments, [0]);
                 node.cleanupBeforeAfter();
                 nodeComplete(node, node.getResult(), function() {
@@ -182,7 +214,7 @@ getJasmineRequireObj().TreeProcessor = function() {
               },
               queueableFns: [onStart].concat(wrapChildren(node, segmentNumber)),
               userContext: node.sharedUserContext(),
-              onException: function () {
+              onException: function() {
                 node.onException.apply(node, arguments);
               }
             });
@@ -190,17 +222,25 @@ getJasmineRequireObj().TreeProcessor = function() {
         };
       } else {
         return {
-          fn: function(done) { node.execute(done, stats[node.id].excluded); }
+          fn: function(done) {
+            node.execute(
+              done,
+              stats[node.id].excluded,
+              failSpecWithNoExpectations
+            );
+          }
         };
       }
     }
 
     function wrapChildren(node, segmentNumber) {
       var result = [],
-          segmentChildren = stats[node.id].segments[segmentNumber].nodes;
+        segmentChildren = stats[node.id].segments[segmentNumber].nodes;
 
       for (var i = 0; i < segmentChildren.length; i++) {
-        result.push(executeNode(segmentChildren[i].owner, segmentChildren[i].index));
+        result.push(
+          executeNode(segmentChildren[i].owner, segmentChildren[i].index)
+        );
       }
 
       if (!stats[node.id].willExecute) {

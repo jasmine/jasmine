@@ -1,6 +1,5 @@
 getJasmineRequireObj().UserContext = function(j$) {
-  function UserContext() {
-  }
+  function UserContext() {}
 
   UserContext.fromExisting = function(oldContext) {
     var context = new UserContext();
@@ -14,5 +13,5 @@ getJasmineRequireObj().UserContext = function(j$) {
     return context;
   };
 
-  return  UserContext;
+  return UserContext;
 };

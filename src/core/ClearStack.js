@@ -3,8 +3,8 @@ getJasmineRequireObj().clearStack = function(j$) {
 
   function messageChannelImpl(global, setTimeout) {
     var channel = new global.MessageChannel(),
-        head = {},
-        tail = head;
+      head = {},
+      tail = head;
 
     var taskRunning = false;
     channel.port1.onmessage = function() {
@@ -42,7 +42,7 @@ getJasmineRequireObj().clearStack = function(j$) {
     var currentCallCount = 0;
     var realSetTimeout = global.setTimeout;
     var setTimeoutImpl = function clearStack(fn) {
-        Function.prototype.apply.apply(realSetTimeout, [global, [fn, 0]]);
+      Function.prototype.apply.apply(realSetTimeout, [global, [fn, 0]]);
     };
 
     if (j$.isFunction_(global.setImmediate)) {

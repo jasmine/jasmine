@@ -1,5 +1,4 @@
 getJasmineRequireObj().Anything = function(j$) {
-
   function Anything() {}
 
   Anything.prototype.asymmetricMatch = function(other) {

@@ -1,8 +1,12 @@
-var getJasmineRequireObj = (function (jasmineGlobal) {
-  /* globals exports, global, module, window */
+// eslint-disable-next-line no-unused-vars
+var getJasmineRequireObj = (function(jasmineGlobal) {
   var jasmineRequire;
 
-  if (typeof module !== 'undefined' && module.exports && typeof exports !== 'undefined') {
+  if (
+    typeof module !== 'undefined' &&
+    module.exports &&
+    typeof exports !== 'undefined'
+  ) {
     if (typeof global !== 'undefined') {
       jasmineGlobal = global;
     } else {
@@ -10,7 +14,11 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     }
     jasmineRequire = exports;
   } else {
-    if (typeof window !== 'undefined' && typeof window.toString === 'function' && window.toString() === '[object GjsGlobal]') {
+    if (
+      typeof window !== 'undefined' &&
+      typeof window.toString === 'function' &&
+      window.toString() === '[object GjsGlobal]'
+    ) {
       jasmineGlobal = window;
     }
     jasmineRequire = jasmineGlobal.jasmineRequire = {};
@@ -40,14 +48,24 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.ExpectationFilterChain = jRequire.ExpectationFilterChain();
     j$.Expector = jRequire.Expector(j$);
     j$.Expectation = jRequire.Expectation(j$);
-    j$.buildExpectationResult = jRequire.buildExpectationResult();
-    j$.noopTimer = jRequire.noopTimer();
+    j$.buildExpectationResult = jRequire.buildExpectationResult(j$);
     j$.JsApiReporter = jRequire.JsApiReporter(j$);
-    j$.matchersUtil = jRequire.matchersUtil(j$);
+    j$.asymmetricEqualityTesterArgCompatShim = jRequire.asymmetricEqualityTesterArgCompatShim(
+      j$
+    );
+    j$.makePrettyPrinter = jRequire.makePrettyPrinter(j$);
+    j$.pp = j$.makePrettyPrinter();
+    j$.MatchersUtil = jRequire.MatchersUtil(j$);
+    j$.matchersUtil = new j$.MatchersUtil({
+      customTesters: [],
+      pp: j$.pp
+    });
+
     j$.ObjectContaining = jRequire.ObjectContaining(j$);
     j$.ArrayContaining = jRequire.ArrayContaining(j$);
     j$.ArrayWithExactContents = jRequire.ArrayWithExactContents(j$);
-    j$.pp = jRequire.pp(j$);
+    j$.MapContaining = jRequire.MapContaining(j$);
+    j$.SetContaining = jRequire.SetContaining(j$);
     j$.QueueRunner = jRequire.QueueRunner(j$);
     j$.ReportDispatcher = jRequire.ReportDispatcher(j$);
     j$.Spec = jRequire.Spec(j$);
@@ -65,6 +83,7 @@ var getJasmineRequireObj = (function (jasmineGlobal) {
     j$.DiffBuilder = jRequire.DiffBuilder(j$);
     j$.NullDiffBuilder = jRequire.NullDiffBuilder(j$);
     j$.ObjectPath = jRequire.ObjectPath(j$);
+    j$.MismatchTree = jRequire.MismatchTree(j$);
     j$.GlobalErrors = jRequire.GlobalErrors(j$);
 
     j$.Truthy = jRequire.Truthy(j$);

@@ -9,4 +9,4 @@ then
   fi
 fi
 
-node ci.js
+npm run ci

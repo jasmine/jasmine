@@ -1,5 +1,5 @@
-describe("toBeCloseTo", function() {
-  it("passes when within two decimal places by default", function() {
+describe('toBeCloseTo', function() {
+  it('passes when within two decimal places by default', function() {
     var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
       result;
 
@@ -13,7 +13,7 @@ describe("toBeCloseTo", function() {
     expect(result.pass).toBe(true);
   });
 
-  it("fails when not within two decimal places by default", function() {
+  it('fails when not within two decimal places by default', function() {
     var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
       result;
 
@@ -24,7 +24,7 @@ describe("toBeCloseTo", function() {
     expect(result.pass).toBe(false);
   });
 
-  it("accepts an optional precision argument", function() {
+  it('accepts an optional precision argument', function() {
     var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
       result;
 
@@ -47,23 +47,29 @@ describe("toBeCloseTo", function() {
     expect(result.pass).toBe(true);
   });
 
-  it("fails when one of the arguments is null", function() {
+  it('fails when one of the arguments is null', function() {
     var matcher = jasmineUnderTest.matchers.toBeCloseTo();
 
     expect(function() {
       matcher.compare(null, null);
-    }).toThrowError('Cannot use toBeCloseTo with null. Arguments evaluated to: expect(null).toBeCloseTo(null).');
+    }).toThrowError(
+      'Cannot use toBeCloseTo with null. Arguments evaluated to: expect(null).toBeCloseTo(null).'
+    );
 
     expect(function() {
       matcher.compare(0, null);
-    }).toThrowError('Cannot use toBeCloseTo with null. Arguments evaluated to: expect(0).toBeCloseTo(null).');
+    }).toThrowError(
+      'Cannot use toBeCloseTo with null. Arguments evaluated to: expect(0).toBeCloseTo(null).'
+    );
 
     expect(function() {
       matcher.compare(null, 0);
-    }).toThrowError('Cannot use toBeCloseTo with null. Arguments evaluated to: expect(null).toBeCloseTo(0).');
+    }).toThrowError(
+      'Cannot use toBeCloseTo with null. Arguments evaluated to: expect(null).toBeCloseTo(0).'
+    );
   });
 
-  it("rounds expected values", function() {
+  it('rounds expected values', function() {
     var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
       result;
 
@@ -88,6 +94,20 @@ describe("toBeCloseTo", function() {
     expect(result.pass).toBe(false);
 
     result = matcher.compare(1.23, 1.234);
+    expect(result.pass).toBe(true);
+  });
+
+  it('handles edge cases with rounding', function() {
+    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
+      result;
+
+    // these cases resulted in false negatives in version of V8
+    // included in Node.js 12 and Chrome 74 (and Edge Chromium)
+    result = matcher.compare(4.030904708957288, 4.0309, 5);
+    expect(result.pass).toBe(true);
+    result = matcher.compare(4.82665525779431, 4.82666, 5);
+    expect(result.pass).toBe(true);
+    result = matcher.compare(-2.82665525779431, -2.82666, 5);
     expect(result.pass).toBe(true);
   });
 });

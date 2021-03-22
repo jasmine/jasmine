@@ -1,27 +1,26 @@
-describe("spec running", function () {
+describe('spec running', function() {
   var env;
 
   beforeEach(function() {
     jasmine.getEnv().registerIntegrationMatchers();
     env = new jasmineUnderTest.Env();
-    env.configure({random: false});
+    env.configure({ random: false });
+  });
+
+  afterEach(function() {
+    env.cleanup_();
   });
 
   it('should assign spec ids sequentially', function() {
     var it0, it1, it2, it3, it4;
     env.describe('test suite', function() {
-      it0 = env.it('spec 0', function() {
-      });
-      it1 = env.it('spec 1', function() {
-      });
-      it2 = env.xit('spec 2', function() {
-      });
-      it3 = env.it('spec 3', function() {
-      });
+      it0 = env.it('spec 0', function() {});
+      it1 = env.it('spec 1', function() {});
+      it2 = env.xit('spec 2', function() {});
+      it3 = env.it('spec 3', function() {});
     });
     env.describe('test suite 2', function() {
-      it4 = env.it('spec 4', function() {
-      });
+      it4 = env.it('spec 4', function() {});
     });
 
     expect(it0.id).toEqual('spec0');
@@ -31,29 +30,28 @@ describe("spec running", function () {
     expect(it4.id).toEqual('spec4');
   });
 
-  it('nested suites', function (done) {
-
+  it('nested suites', function(done) {
     var foo = 0;
     var bar = 0;
     var baz = 0;
     var quux = 0;
-    var nested = env.describe('suite', function () {
-      env.describe('nested', function () {
-        env.it('should run nested suites', function () {
+    var nested = env.describe('suite', function() {
+      env.describe('nested', function() {
+        env.it('should run nested suites', function() {
           foo++;
         });
-        env.it('should run nested suites', function () {
+        env.it('should run nested suites', function() {
           bar++;
         });
       });
 
-      env.describe('nested 2', function () {
-        env.it('should run suites following nested suites', function () {
+      env.describe('nested 2', function() {
+        env.it('should run suites following nested suites', function() {
           baz++;
         });
       });
 
-      env.it('should run tests following nested suites', function () {
+      env.it('should run tests following nested suites', function() {
         quux++;
       });
     });
@@ -62,27 +60,24 @@ describe("spec running", function () {
     expect(bar).toEqual(0);
     expect(baz).toEqual(0);
     expect(quux).toEqual(0);
-    var assertions = function() {
+
+    env.execute(null, function() {
       expect(foo).toEqual(1);
       expect(bar).toEqual(1);
       expect(baz).toEqual(1);
       expect(quux).toEqual(1);
       done();
-    };
-
-    env.addReporter({ jasmineDone: assertions });
-
-    env.execute();
+    });
   });
 
-  it("should permit nested describes", function(done) {
+  it('should permit nested describes', function(done) {
     var actions = [];
 
-    env.beforeEach(function () {
+    env.beforeEach(function() {
       actions.push('topSuite beforeEach');
     });
 
-    env.afterEach(function () {
+    env.afterEach(function() {
       actions.push('topSuite afterEach');
     });
 
@@ -132,46 +127,42 @@ describe("spec running", function () {
       });
     });
 
-    var assertions = function() {
+    env.execute(null, function() {
       var expected = [
-        "topSuite beforeEach",
-        "outer beforeEach",
-        "outer it 1",
-        "outer afterEach",
-        "topSuite afterEach",
+        'topSuite beforeEach',
+        'outer beforeEach',
+        'outer it 1',
+        'outer afterEach',
+        'topSuite afterEach',
 
-        "topSuite beforeEach",
-        "outer beforeEach",
-        "inner 1 beforeEach",
-        "inner 1 it",
-        "inner 1 afterEach",
-        "outer afterEach",
-        "topSuite afterEach",
+        'topSuite beforeEach',
+        'outer beforeEach',
+        'inner 1 beforeEach',
+        'inner 1 it',
+        'inner 1 afterEach',
+        'outer afterEach',
+        'topSuite afterEach',
 
-        "topSuite beforeEach",
-        "outer beforeEach",
-        "outer it 2",
-        "outer afterEach",
-        "topSuite afterEach",
+        'topSuite beforeEach',
+        'outer beforeEach',
+        'outer it 2',
+        'outer afterEach',
+        'topSuite afterEach',
 
-        "topSuite beforeEach",
-        "outer beforeEach",
-        "inner 2 beforeEach",
-        "inner 2 it",
-        "inner 2 afterEach",
-        "outer afterEach",
-        "topSuite afterEach"
+        'topSuite beforeEach',
+        'outer beforeEach',
+        'inner 2 beforeEach',
+        'inner 2 it',
+        'inner 2 afterEach',
+        'outer afterEach',
+        'topSuite afterEach'
       ];
       expect(actions).toEqual(expected);
       done();
-    };
-
-    env.addReporter({jasmineDone: assertions});
-
-    env.execute();
+    });
   });
 
-  it("should run multiple befores and afters ordered so functions declared later are treated as more specific", function(done) {
+  it('should run multiple befores and afters ordered so functions declared later are treated as more specific', function(done) {
     var actions = [];
 
     env.beforeAll(function() {
@@ -190,19 +181,19 @@ describe("spec running", function () {
       actions.push('runner afterAll2');
     });
 
-    env.beforeEach(function () {
+    env.beforeEach(function() {
       actions.push('runner beforeEach1');
     });
 
-    env.afterEach(function () {
+    env.afterEach(function() {
       actions.push('runner afterEach1');
     });
 
-    env.beforeEach(function () {
+    env.beforeEach(function() {
       actions.push('runner beforeEach2');
     });
 
-    env.afterEach(function () {
+    env.afterEach(function() {
       actions.push('runner afterEach2');
     });
 
@@ -228,29 +219,25 @@ describe("spec running", function () {
       });
     });
 
-    var assertions = function() {
+    env.execute(null, function() {
       var expected = [
-        "runner beforeAll1",
-        "runner beforeAll2",
-        "runner beforeEach1",
-        "runner beforeEach2",
-        "beforeEach1",
-        "beforeEach2",
-        "outer it 1",
-        "afterEach2",
-        "afterEach1",
-        "runner afterEach2",
-        "runner afterEach1",
-        "runner afterAll2",
-        "runner afterAll1"
+        'runner beforeAll1',
+        'runner beforeAll2',
+        'runner beforeEach1',
+        'runner beforeEach2',
+        'beforeEach1',
+        'beforeEach2',
+        'outer it 1',
+        'afterEach2',
+        'afterEach1',
+        'runner afterEach2',
+        'runner afterEach1',
+        'runner afterAll2',
+        'runner afterAll1'
       ];
       expect(actions).toEqual(expected);
       done();
-    };
-
-    env.addReporter({jasmineDone: assertions});
-
-    env.execute();
+    });
   });
 
   it('should run beforeAlls before beforeEachs and afterAlls after afterEachs', function(done) {
@@ -264,11 +251,11 @@ describe("spec running", function () {
       actions.push('runner afterAll');
     });
 
-    env.beforeEach(function () {
+    env.beforeEach(function() {
       actions.push('runner beforeEach');
     });
 
-    env.afterEach(function () {
+    env.afterEach(function() {
       actions.push('runner afterEach');
     });
 
@@ -294,24 +281,21 @@ describe("spec running", function () {
       });
     });
 
-    var assertions = function() {
+    env.execute(null, function() {
       var expected = [
-        "runner beforeAll",
-        "inner beforeAll",
-        "runner beforeEach",
-        "inner beforeEach",
-        "it",
-        "inner afterEach",
-        "runner afterEach",
-        "inner afterAll",
-        "runner afterAll"
+        'runner beforeAll',
+        'inner beforeAll',
+        'runner beforeEach',
+        'inner beforeEach',
+        'it',
+        'inner afterEach',
+        'runner afterEach',
+        'inner afterAll',
+        'runner afterAll'
       ];
       expect(actions).toEqual(expected);
       done();
-    };
-
-    env.addReporter({jasmineDone: assertions});
-    env.execute();
+    });
   });
 
   it('should run beforeAlls and afterAlls in the order declared when runnablesToRun is provided', function(done) {
@@ -327,11 +311,11 @@ describe("spec running", function () {
       actions.push('runner afterAll');
     });
 
-    env.beforeEach(function () {
+    env.beforeEach(function() {
       actions.push('runner beforeEach');
     });
 
-    env.afterEach(function () {
+    env.afterEach(function() {
       actions.push('runner afterEach');
     });
 
@@ -361,77 +345,79 @@ describe("spec running", function () {
       });
     });
 
-    var assertions = function() {
+    env.execute([spec2.id, spec.id], function() {
       var expected = [
-        "runner beforeAll",
-        "inner beforeAll",
-        "runner beforeEach",
-        "inner beforeEach",
-        "it2",
-        "inner afterEach",
-        "runner afterEach",
+        'runner beforeAll',
+        'inner beforeAll',
+        'runner beforeEach',
+        'inner beforeEach',
+        'it2',
+        'inner afterEach',
+        'runner afterEach',
 
-        "runner beforeEach",
-        "inner beforeEach",
-        "it",
-        "inner afterEach",
-        "runner afterEach",
-        "inner afterAll",
-        "runner afterAll"
+        'runner beforeEach',
+        'inner beforeEach',
+        'it',
+        'inner afterEach',
+        'runner afterEach',
+        'inner afterAll',
+        'runner afterAll'
       ];
       expect(actions).toEqual(expected);
       done();
-    };
-
-    env.addReporter({jasmineDone: assertions});
-    env.execute([spec2.id, spec.id]);
+    });
   });
 
-  it('only runs *Alls once in a focused suite', function(done){
+  it('only runs *Alls once in a focused suite', function(done) {
     var actions = [];
 
     env.fdescribe('Suite', function() {
-      env.beforeAll(function(){
+      env.beforeAll(function() {
         actions.push('beforeAll');
       });
       env.it('should run beforeAll once', function() {
         actions.push('spec');
       });
-      env.afterAll(function(){
+      env.afterAll(function() {
         actions.push('afterAll');
       });
     });
 
-    var assertions = function() {
+    env.execute(null, function() {
       expect(actions).toEqual(['beforeAll', 'spec', 'afterAll']);
       done();
-    };
-
-    env.addReporter({jasmineDone: assertions});
-    env.execute();
+    });
   });
 
   describe('focused runnables', function() {
     it('runs the relevant alls and eachs for each runnable', function(done) {
       var actions = [];
-      env.beforeAll(function() {actions.push('beforeAll')});
-      env.afterAll(function() {actions.push('afterAll')});
-      env.beforeEach(function() {actions.push('beforeEach')});
-      env.afterEach(function() {actions.push('afterEach')});
+      env.beforeAll(function() {
+        actions.push('beforeAll');
+      });
+      env.afterAll(function() {
+        actions.push('afterAll');
+      });
+      env.beforeEach(function() {
+        actions.push('beforeEach');
+      });
+      env.afterEach(function() {
+        actions.push('afterEach');
+      });
 
       env.fdescribe('a focused suite', function() {
         env.it('is run', function() {
-          actions.push('spec in fdescribe')
+          actions.push('spec in fdescribe');
         });
       });
 
       env.describe('an unfocused suite', function() {
         env.fit('has a focused spec', function() {
-          actions.push('focused spec')
+          actions.push('focused spec');
         });
       });
 
-      var assertions = function() {
+      env.execute(null, function() {
         var expected = [
           'beforeAll',
           'beforeEach',
@@ -445,40 +431,34 @@ describe("spec running", function () {
         ];
         expect(actions).toEqual(expected);
         done();
-      };
-
-      env.addReporter({jasmineDone: assertions});
-      env.execute();
+      });
     });
 
-    it('focused specs in focused suites cause non-focused siblings to not run', function(done){
+    it('focused specs in focused suites cause non-focused siblings to not run', function(done) {
       var actions = [];
 
       env.fdescribe('focused suite', function() {
         env.it('unfocused spec', function() {
-          actions.push('unfocused spec')
+          actions.push('unfocused spec');
         });
         env.fit('focused spec', function() {
-          actions.push('focused spec')
+          actions.push('focused spec');
         });
       });
 
-      var assertions = function() {
+      env.execute(null, function() {
         var expected = ['focused spec'];
         expect(actions).toEqual(expected);
         done();
-      };
-
-      env.addReporter({jasmineDone: assertions});
-      env.execute();
+      });
     });
 
-    it('focused suites in focused suites cause non-focused siblings to not run', function(done){
+    it('focused suites in focused suites cause non-focused siblings to not run', function(done) {
       var actions = [];
 
       env.fdescribe('focused suite', function() {
         env.it('unfocused spec', function() {
-          actions.push('unfocused spec')
+          actions.push('unfocused spec');
         });
         env.fdescribe('inner focused suite', function() {
           env.it('inner spec', function() {
@@ -487,14 +467,11 @@ describe("spec running", function () {
         });
       });
 
-      var assertions = function() {
+      env.execute(null, function() {
         var expected = ['inner spec'];
         expect(actions).toEqual(expected);
         done();
-      };
-
-      env.addReporter({jasmineDone: assertions});
-      env.execute();
+      });
     });
 
     it('focused runnables unfocus ancestor focused suites', function(done) {
@@ -502,7 +479,7 @@ describe("spec running", function () {
 
       env.fdescribe('focused suite', function() {
         env.it('unfocused spec', function() {
-          actions.push('unfocused spec')
+          actions.push('unfocused spec');
         });
         env.describe('inner focused suite', function() {
           env.fit('focused spec', function() {
@@ -511,60 +488,49 @@ describe("spec running", function () {
         });
       });
 
-      var assertions = function() {
+      env.execute(null, function() {
         var expected = ['focused spec'];
         expect(actions).toEqual(expected);
         done();
-      };
-
-      env.addReporter({jasmineDone: assertions});
-      env.execute();
+      });
     });
   });
 
   it("shouldn't run disabled suites", function(done) {
-    var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
-    suite = env.describe('A Suite', function() {
-      env.xdescribe('with a disabled suite', function(){
-        env.it('spec inside a disabled suite', specInADisabledSuite);
+    var specInADisabledSuite = jasmine.createSpy('specInADisabledSuite'),
+      suite = env.describe('A Suite', function() {
+        env.xdescribe('with a disabled suite', function() {
+          env.it('spec inside a disabled suite', specInADisabledSuite);
+        });
       });
-    });
 
-    var assertions = function() {
+    env.execute(null, function() {
       expect(specInADisabledSuite).not.toHaveBeenCalled();
       done();
-    };
-
-    env.addReporter({jasmineDone: assertions});
-
-    env.execute();
+    });
   });
 
   it("shouldn't run before/after functions in disabled suites", function(done) {
-    var shouldNotRun = jasmine.createSpy("shouldNotRun"),
-    suite = env.xdescribe('A disabled Suite', function() {
-      // None of the before/after functions should run.
-      env.beforeAll(shouldNotRun);
-      env.beforeEach(shouldNotRun);
-      env.afterEach(shouldNotRun);
-      env.afterAll(shouldNotRun);
+    var shouldNotRun = jasmine.createSpy('shouldNotRun'),
+      suite = env.xdescribe('A disabled Suite', function() {
+        // None of the before/after functions should run.
+        env.beforeAll(shouldNotRun);
+        env.beforeEach(shouldNotRun);
+        env.afterEach(shouldNotRun);
+        env.afterAll(shouldNotRun);
 
-      env.it('spec inside a disabled suite', shouldNotRun);
-    });
+        env.it('spec inside a disabled suite', shouldNotRun);
+      });
 
-    var assertions = function() {
+    env.execute(null, function() {
       expect(shouldNotRun).not.toHaveBeenCalled();
       done();
-    };
-
-    env.addReporter({jasmineDone: assertions});
-
-    env.execute();
+    });
   });
 
-  it("should allow top level suites to be disabled", function(done) {
-    var specInADisabledSuite = jasmine.createSpy("specInADisabledSuite"),
-      otherSpec = jasmine.createSpy("otherSpec");
+  it('should allow top level suites to be disabled', function(done) {
+    var specInADisabledSuite = jasmine.createSpy('specInADisabledSuite'),
+      otherSpec = jasmine.createSpy('otherSpec');
 
     env.xdescribe('A disabled suite', function() {
       env.it('spec inside a disabled suite', specInADisabledSuite);
@@ -573,180 +539,168 @@ describe("spec running", function () {
       env.it('another spec', otherSpec);
     });
 
-    var assertions = function() {
+    env.execute(null, function() {
       expect(specInADisabledSuite).not.toHaveBeenCalled();
       expect(otherSpec).toHaveBeenCalled();
       done();
-    };
-
-    env.addReporter({jasmineDone: assertions});
-
-    env.execute();
+    });
   });
 
-  it("should set all pending specs to pending when a suite is run", function(done) {
+  it('should set all pending specs to pending when a suite is run', function(done) {
     var pendingSpec,
       suite = env.describe('default current suite', function() {
-        pendingSpec = env.it("I am a pending spec");
+        pendingSpec = env.it('I am a pending spec');
       });
 
-    var assertions = function() {
-      expect(pendingSpec.status()).toBe("pending");
+    env.execute(null, function() {
+      expect(pendingSpec.status()).toBe('pending');
       done();
-    };
-
-    env.addReporter({jasmineDone: assertions});
-
-    env.execute();
+    });
   });
 
-  it("should recover gracefully when there are errors in describe functions", function(done) {
+  it('should recover gracefully when there are errors in describe functions', function(done) {
     var specs = [],
-      reporter = jasmine.createSpyObj(['specDone', 'suiteDone', 'jasmineDone']);
+      reporter = jasmine.createSpyObj(['specDone', 'suiteDone']);
 
     reporter.specDone.and.callFake(function(result) {
       specs.push(result.fullName);
     });
 
-    reporter.jasmineDone.and.callFake(function() {
-      expect(specs).toEqual(['outer1 inner1 should thingy', 'outer1 inner2 should other thingy', 'outer2 should xxx']);
-      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer1 inner1', [/inner error/]);
-      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer1', [/outer error/]);
-      done();
-    });
-
     expect(function() {
-      env.describe("outer1", function() {
-        env.describe("inner1", function() {
-          env.it("should thingy", function() {
+      env.describe('outer1', function() {
+        env.describe('inner1', function() {
+          env.it('should thingy', function() {
             this.expect(true).toEqual(true);
           });
 
-          throw new Error("inner error");
+          throw new Error('inner error');
         });
 
-        env.describe("inner2", function() {
-          env.it("should other thingy", function() {
+        env.describe('inner2', function() {
+          env.it('should other thingy', function() {
             this.expect(true).toEqual(true);
           });
         });
 
-        throw new Error("outer error");
-
+        throw new Error('outer error');
       });
     }).not.toThrow();
 
-    env.describe("outer2", function() {
-      env.it("should xxx", function() {
+    env.describe('outer2', function() {
+      env.it('should xxx', function() {
         this.expect(true).toEqual(true);
       });
     });
 
     env.addReporter(reporter);
-    env.execute();
+    env.execute(null, function() {
+      expect(specs).toEqual([
+        'outer1 inner1 should thingy',
+        'outer1 inner2 should other thingy',
+        'outer2 should xxx'
+      ]);
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
+        'outer1 inner1',
+        [/inner error/]
+      );
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer1', [
+        /outer error/
+      ]);
+      done();
+    });
   });
 
-  it("re-enters suites that have no *Alls", function(done) {
+  it('re-enters suites that have no *Alls', function(done) {
     var actions = [],
-        spec1, spec2, spec3;
+      spec1,
+      spec2,
+      spec3;
 
-    env.describe("top", function() {
-      spec1 = env.it("spec1", function() {
-        actions.push("spec1");
+    env.describe('top', function() {
+      spec1 = env.it('spec1', function() {
+        actions.push('spec1');
       });
 
-      spec2 = env.it("spec2", function() {
-        actions.push("spec2");
+      spec2 = env.it('spec2', function() {
+        actions.push('spec2');
       });
     });
 
-    spec3 = env.it("spec3", function() {
-      actions.push("spec3");
+    spec3 = env.it('spec3', function() {
+      actions.push('spec3');
     });
 
-    env.addReporter({
-      jasmineDone: function() {
-        expect(actions).toEqual(["spec2", "spec3", "spec1"]);
-        done();
-      }
+    env.execute([spec2.id, spec3.id, spec1.id], function() {
+      expect(actions).toEqual(['spec2', 'spec3', 'spec1']);
+      done();
     });
-
-    env.execute([spec2.id, spec3.id, spec1.id]);
   });
 
-  it("refuses to re-enter suites with a beforeAll", function() {
+  it('refuses to re-enter suites with a beforeAll', function() {
     var actions = [],
-        spec1, spec2, spec3;
+      spec1,
+      spec2,
+      spec3;
 
-    env.describe("top", function() {
+    env.describe('top', function() {
       env.beforeAll(function() {});
 
-      spec1 = env.it("spec1", function() {
-        actions.push("spec1");
+      spec1 = env.it('spec1', function() {
+        actions.push('spec1');
       });
 
-      spec2 = env.it("spec2", function() {
-        actions.push("spec2");
+      spec2 = env.it('spec2', function() {
+        actions.push('spec2');
       });
     });
 
-    spec3 = env.it("spec3", function() {
-      actions.push("spec3");
-    });
-
-    env.addReporter({
-      jasmineDone: function() {
-        expect(actions).toEqual([]);
-        done();
-      }
+    spec3 = env.it('spec3', function() {
+      actions.push('spec3');
     });
 
     expect(function() {
       env.execute([spec2.id, spec3.id, spec1.id]);
     }).toThrowError(/beforeAll/);
+    expect(actions).toEqual([]);
   });
 
-  it("refuses to re-enter suites with a afterAll", function() {
+  it('refuses to re-enter suites with a afterAll', function() {
     var actions = [],
-        spec1, spec2, spec3;
+      spec1,
+      spec2,
+      spec3;
 
-    env.describe("top", function() {
+    env.describe('top', function() {
       env.afterAll(function() {});
 
-      spec1 = env.it("spec1", function() {
-        actions.push("spec1");
+      spec1 = env.it('spec1', function() {
+        actions.push('spec1');
       });
 
-      spec2 = env.it("spec2", function() {
-        actions.push("spec2");
+      spec2 = env.it('spec2', function() {
+        actions.push('spec2');
       });
     });
 
-    spec3 = env.it("spec3", function() {
-      actions.push("spec3");
-    });
-
-    env.addReporter({
-      jasmineDone: function() {
-        expect(actions).toEqual([]);
-        done();
-      }
+    spec3 = env.it('spec3', function() {
+      actions.push('spec3');
     });
 
     expect(function() {
       env.execute([spec2.id, spec3.id, spec1.id]);
     }).toThrowError(/afterAll/);
+    expect(actions).toEqual([]);
   });
 
-  it("should run the tests in a consistent order when a seed is supplied", function(done) {
+  it('should run the tests in a consistent order when a seed is supplied', function(done) {
     var actions = [];
-    env.configure({random: true, seed: '123456'});
+    env.configure({ random: true, seed: '123456' });
 
-    env.beforeEach(function () {
+    env.beforeEach(function() {
       actions.push('topSuite beforeEach');
     });
 
-    env.afterEach(function () {
+    env.afterEach(function() {
       actions.push('topSuite afterEach');
     });
 
@@ -796,7 +750,7 @@ describe("spec running", function () {
       });
     });
 
-    var assertions = function() {
+    env.execute(null, function() {
       var expected = [
         'topSuite beforeEach',
         'outer beforeEach',
@@ -828,21 +782,17 @@ describe("spec running", function () {
       ];
       expect(actions).toEqual(expected);
       done();
-    };
-
-    env.addReporter({jasmineDone: assertions});
-
-    env.execute();
+    });
   });
 
-  describe("When throwOnExpectationFailure is set", function() {
-    it("skips to cleanup functions after an error", function(done) {
+  describe('When throwOnExpectationFailure is set', function() {
+    it('skips to cleanup functions after an error', function(done) {
       var actions = [];
 
       env.describe('Something', function() {
         env.beforeEach(function() {
           actions.push('outer beforeEach');
-          throw new Error("error");
+          throw new Error('error');
         });
 
         env.afterEach(function() {
@@ -858,29 +808,25 @@ describe("spec running", function () {
             actions.push('inner afterEach');
           });
 
-          env.it('does it' , function() {
+          env.it('does it', function() {
             actions.push('inner it');
           });
         });
       });
 
-      env.configure({oneFailurePerSpec: true});
+      env.configure({ oneFailurePerSpec: true });
 
-      var assertions = function() {
+      env.execute(null, function() {
         expect(actions).toEqual([
           'outer beforeEach',
           'inner afterEach',
           'outer afterEach'
         ]);
         done();
-      };
-
-      env.addReporter({jasmineDone: assertions});
-
-      env.execute();
+      });
     });
 
-    it("skips to cleanup functions after done.fail is called", function(done) {
+    it('skips to cleanup functions after done.fail is called', function(done) {
       var actions = [];
 
       env.describe('Something', function() {
@@ -894,27 +840,20 @@ describe("spec running", function () {
           actions.push('afterEach');
         });
 
-        env.it('does it' , function() {
+        env.it('does it', function() {
           actions.push('it');
         });
       });
 
-      env.configure({oneFailurePerSpec: true});
+      env.configure({ oneFailurePerSpec: true });
 
-      var assertions = function() {
-        expect(actions).toEqual([
-          'beforeEach',
-          'afterEach'
-        ]);
+      env.execute(null, function() {
+        expect(actions).toEqual(['beforeEach', 'afterEach']);
         done();
-      };
-
-      env.addReporter({jasmineDone: assertions});
-
-      env.execute();
+      });
     });
 
-    it("skips to cleanup functions when an async function times out", function(done) {
+    it('skips to cleanup functions when an async function times out', function(done) {
       var actions = [];
 
       env.describe('Something', function() {
@@ -926,27 +865,20 @@ describe("spec running", function () {
           actions.push('afterEach');
         });
 
-        env.it('does it' , function() {
+        env.it('does it', function() {
           actions.push('it');
         });
       });
 
-      env.configure({oneFailurePerSpec: true});
+      env.configure({ oneFailurePerSpec: true });
 
-      var assertions = function() {
-        expect(actions).toEqual([
-          'beforeEach',
-          'afterEach'
-        ]);
+      env.execute(null, function() {
+        expect(actions).toEqual(['beforeEach', 'afterEach']);
         done();
-      };
-
-      env.addReporter({jasmineDone: assertions});
-
-      env.execute();
+      });
     });
 
-    it("skips to cleanup functions after an error with deprecations", function(done) {
+    it('skips to cleanup functions after an error with deprecations', function(done) {
       var actions = [];
 
       spyOn(env, 'deprecated');
@@ -954,7 +886,7 @@ describe("spec running", function () {
       env.describe('Something', function() {
         env.beforeEach(function() {
           actions.push('outer beforeEach');
-          throw new Error("error");
+          throw new Error('error');
         });
 
         env.afterEach(function() {
@@ -970,7 +902,7 @@ describe("spec running", function () {
             actions.push('inner afterEach');
           });
 
-          env.it('does it' , function() {
+          env.it('does it', function() {
             actions.push('inner it');
           });
         });
@@ -978,7 +910,7 @@ describe("spec running", function () {
 
       env.throwOnExpectationFailure(true);
 
-      var assertions = function() {
+      env.execute(null, function() {
         expect(actions).toEqual([
           'outer beforeEach',
           'inner afterEach',
@@ -986,14 +918,10 @@ describe("spec running", function () {
         ]);
         expect(env.deprecated).toHaveBeenCalled();
         done();
-      };
-
-      env.addReporter({jasmineDone: assertions});
-
-      env.execute();
+      });
     });
 
-    it("skips to cleanup functions after done.fail is called with deprecations", function(done) {
+    it('skips to cleanup functions after done.fail is called with deprecations', function(done) {
       var actions = [];
 
       spyOn(env, 'deprecated');
@@ -1009,28 +937,21 @@ describe("spec running", function () {
           actions.push('afterEach');
         });
 
-        env.it('does it' , function() {
+        env.it('does it', function() {
           actions.push('it');
         });
       });
 
       env.throwOnExpectationFailure(true);
 
-      var assertions = function() {
-        expect(actions).toEqual([
-          'beforeEach',
-          'afterEach'
-        ]);
+      env.execute(null, function() {
+        expect(actions).toEqual(['beforeEach', 'afterEach']);
         expect(env.deprecated).toHaveBeenCalled();
         done();
-      };
-
-      env.addReporter({jasmineDone: assertions});
-
-      env.execute();
+      });
     });
 
-    it("skips to cleanup functions when an async function times out with deprecations", function(done) {
+    it('skips to cleanup functions when an async function times out with deprecations', function(done) {
       var actions = [];
 
       spyOn(env, 'deprecated');
@@ -1044,30 +965,23 @@ describe("spec running", function () {
           actions.push('afterEach');
         });
 
-        env.it('does it' , function() {
+        env.it('does it', function() {
           actions.push('it');
         });
       });
 
       env.throwOnExpectationFailure(true);
 
-      var assertions = function() {
-        expect(actions).toEqual([
-          'beforeEach',
-          'afterEach'
-        ]);
+      env.execute(null, function() {
+        expect(actions).toEqual(['beforeEach', 'afterEach']);
         expect(env.deprecated).toHaveBeenCalled();
         done();
-      };
-
-      env.addReporter({jasmineDone: assertions});
-
-      env.execute();
+      });
     });
   });
 
-  describe("when stopOnSpecFailure is on", function() {
-    it("does not run further specs when one fails", function(done) {
+  describe('when stopOnSpecFailure is on', function() {
+    it('does not run further specs when one fails', function(done) {
       var actions = [];
 
       env.describe('wrapper', function() {
@@ -1083,18 +997,15 @@ describe("spec running", function () {
         });
       });
 
-      env.configure({random: false, failFast: true});
+      env.configure({ random: false, failFast: true });
 
-      var assertions = function() {
+      env.execute(null, function() {
         expect(actions).toEqual(['fails']);
         done();
-      };
-
-      env.addReporter({ jasmineDone: assertions });
-      env.execute();
+      });
     });
 
-    it("does not run further specs when one fails when configured with deprecated option", function(done) {
+    it('does not run further specs when one fails when configured with deprecated option', function(done) {
       var actions = [];
 
       spyOn(env, 'deprecated');
@@ -1112,17 +1023,14 @@ describe("spec running", function () {
         });
       });
 
-      env.configure({random: false});
+      env.configure({ random: false });
       env.stopOnSpecFailure(true);
 
-      var assertions = function() {
+      env.execute(null, function() {
         expect(actions).toEqual(['fails']);
         expect(env.deprecated).toHaveBeenCalled();
         done();
-      };
-
-      env.addReporter({ jasmineDone: assertions });
-      env.execute();
+      });
     });
   });
 });

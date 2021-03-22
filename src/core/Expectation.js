@@ -1,8 +1,4 @@
 getJasmineRequireObj().Expectation = function(j$) {
-  var promiseForMessage = {
-    jasmineToString: function() { return 'a promise'; }
-  };
-
   /**
    * Matchers that come with Jasmine out of the box.
    * @namespace matchers
@@ -12,7 +8,10 @@ getJasmineRequireObj().Expectation = function(j$) {
 
     var customMatchers = options.customMatchers || {};
     for (var matcherName in customMatchers) {
-      this[matcherName] = wrapSyncCompare(matcherName, customMatchers[matcherName]);
+      this[matcherName] = wrapSyncCompare(
+        matcherName,
+        customMatchers[matcherName]
+      );
     }
   }
 
@@ -20,6 +19,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * Add some context for an {@link expect}
    * @function
    * @name matchers#withContext
+   * @since 3.3.0
    * @param {String} message - Additional context to show when the matcher fails
    * @return {matchers}
    */
@@ -31,6 +31,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * Invert the matcher following this {@link expect}
    * @member
    * @name matchers#not
+   * @since 1.3.0
    * @type {matchers}
    * @example
    * expect(something).not.toBe(true);
@@ -50,11 +51,17 @@ getJasmineRequireObj().Expectation = function(j$) {
     this.expector = new j$.Expector(options);
 
     if (!global.Promise) {
-      throw new Error('expectAsync is unavailable because the environment does not support promises.');
+      throw new Error(
+        'expectAsync is unavailable because the environment does not support promises.'
+      );
     }
 
-    if (!j$.isPromiseLike(this.expector.actual)) {
-      throw new Error('Expected expectAsync to be called with a promise.');
+    var customAsyncMatchers = options.customAsyncMatchers || {};
+    for (var matcherName in customAsyncMatchers) {
+      this[matcherName] = wrapAsyncCompare(
+        matcherName,
+        customAsyncMatchers[matcherName]
+      );
     }
   }
 
@@ -62,6 +69,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * Add some context for an {@link expectAsync}
    * @function
    * @name async-matchers#withContext
+   * @since 3.3.0
    * @param {String} message - Additional context to show when the async matcher fails
    * @return {async-matchers}
    */
@@ -100,9 +108,11 @@ getJasmineRequireObj().Expectation = function(j$) {
       // frames that are relevant to the user instead of just parts of Jasmine.
       var errorForStack = j$.util.errorWithStack();
 
-      return this.expector.compare(name, matcherFactory, arguments).then(function(result) {
-        self.expector.processResult(result, errorForStack, promiseForMessage);
-      });
+      return this.expector
+        .compare(name, matcherFactory, arguments)
+        .then(function(result) {
+          self.expector.processResult(result, errorForStack);
+        });
     };
   }
 
@@ -119,7 +129,7 @@ getJasmineRequireObj().Expectation = function(j$) {
     return result;
   }
 
-  function negatedFailureMessage(result, matcherName, args, util) {
+  function negatedFailureMessage(result, matcherName, args, matchersUtil) {
     if (result.message) {
       if (j$.isFunction_(result.message)) {
         return result.message();
@@ -131,7 +141,7 @@ getJasmineRequireObj().Expectation = function(j$) {
     args = args.slice();
     args.unshift(true);
     args.unshift(matcherName);
-    return util.buildFailureMessage.apply(null, args);
+    return matchersUtil.buildFailureMessage.apply(matchersUtil, args);
   }
 
   function negate(result) {
@@ -156,7 +166,7 @@ getJasmineRequireObj().Expectation = function(j$) {
         return matcher.compare.apply(this, arguments).then(negate);
       }
 
-      return defaultNegativeCompare;
+      return matcher.negativeCompare || defaultNegativeCompare;
     },
     buildFailureMessage: negatedFailureMessage
   };
@@ -166,8 +176,18 @@ getJasmineRequireObj().Expectation = function(j$) {
   }
 
   ContextAddingFilter.prototype.modifyFailureMessage = function(msg) {
-    return this.message + ': ' + msg;
+    var nl = msg.indexOf('\n');
+
+    if (nl === -1) {
+      return this.message + ': ' + msg;
+    } else {
+      return this.message + ':\n' + indent(msg);
+    }
   };
+
+  function indent(s) {
+    return s.replace(/^/gm, '    ');
+  }
 
   return {
     factory: function(options) {

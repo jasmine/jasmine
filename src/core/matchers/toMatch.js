@@ -1,11 +1,14 @@
 getJasmineRequireObj().toMatch = function(j$) {
-
-  var getErrorMsg = j$.formatErrorMsg('<toMatch>', 'expect(<expectation>).toMatch(<string> || <regexp>)');
+  var getErrorMsg = j$.formatErrorMsg(
+    '<toMatch>',
+    'expect(<expectation>).toMatch(<string> || <regexp>)'
+  );
 
   /**
    * {@link expect} the actual value to match a regular expression
    * @function
    * @name matchers#toMatch
+   * @since 1.3.0
    * @param {RegExp|String} expected - Value to look for in the string.
    * @example
    * expect("my string").toMatch(/string$/);

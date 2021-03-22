@@ -15,11 +15,20 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       currentTime = endTime;
     };
 
-    self.scheduleFunction = function(funcToCall, millis, params, recurring, timeoutKey, runAtMillis) {
+    self.scheduleFunction = function(
+      funcToCall,
+      millis,
+      params,
+      recurring,
+      timeoutKey,
+      runAtMillis
+    ) {
       var f;
-      if (typeof(funcToCall) === 'string') {
+      if (typeof funcToCall === 'string') {
         /* jshint evil: true */
-        f = function() { return eval(funcToCall); };
+        f = function() {
+          return eval(funcToCall);
+        };
         /* jshint evil: false */
       } else {
         f = funcToCall;
@@ -27,7 +36,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
 
       millis = millis || 0;
       timeoutKey = timeoutKey || ++delayedFnCount;
-      runAtMillis = runAtMillis || (currentTime + millis);
+      runAtMillis = runAtMillis || currentTime + millis;
 
       var funcToSchedule = {
         runAtMillis: runAtMillis,
@@ -43,7 +52,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       } else {
         scheduledFunctions[runAtMillis] = [funcToSchedule];
         scheduledLookup.push(runAtMillis);
-        scheduledLookup.sort(function (a, b) {
+        scheduledLookup.sort(function(a, b) {
           return a - b;
         });
       }
@@ -56,7 +65,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
 
       for (var runAtMillis in scheduledFunctions) {
         var funcs = scheduledFunctions[runAtMillis];
-        var i = indexOfFirstToPass(funcs, function (func) {
+        var i = indexOfFirstToPass(funcs, function(func) {
           return func.timeoutKey === timeoutKey;
         });
 
@@ -92,7 +101,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
 
     function deleteFromLookup(key) {
       var value = Number(key);
-      var i = indexOfFirstToPass(scheduledLookup, function (millis) {
+      var i = indexOfFirstToPass(scheduledLookup, function(millis) {
         return millis === value;
       });
 
@@ -102,12 +111,14 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     }
 
     function reschedule(scheduledFn) {
-      self.scheduleFunction(scheduledFn.funcToCall,
+      self.scheduleFunction(
+        scheduledFn.funcToCall,
         scheduledFn.millis,
         scheduledFn.params,
         true,
         scheduledFn.timeoutKey,
-        scheduledFn.runAtMillis + scheduledFn.millis);
+        scheduledFn.runAtMillis + scheduledFn.millis
+      );
     }
 
     function forEachFunction(funcsToRun, callback) {
@@ -148,11 +159,13 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
           funcToRun.funcToCall.apply(null, funcToRun.params || []);
         });
         deletedKeys = [];
-      } while (scheduledLookup.length > 0 &&
-              // checking first if we're out of time prevents setTimeout(0)
-              // scheduled in a funcToRun from forcing an extra iteration
-                 currentTime !== endTime  &&
-                 scheduledLookup[0] <= endTime);
+      } while (
+        scheduledLookup.length > 0 &&
+        // checking first if we're out of time prevents setTimeout(0)
+        // scheduled in a funcToRun from forcing an extra iteration
+        currentTime !== endTime &&
+        scheduledLookup[0] <= endTime
+      );
 
       // ran out of functions to call, but still time left on the clock
       if (currentTime !== endTime) {

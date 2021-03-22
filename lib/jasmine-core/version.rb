@@ -4,6 +4,6 @@
 #
 module Jasmine
   module Core
-    VERSION = "3.4.0"
+    VERSION = "3.7.1"
   end
 end

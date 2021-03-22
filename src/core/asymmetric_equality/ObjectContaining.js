@@ -1,5 +1,4 @@
 getJasmineRequireObj().ObjectContaining = function(j$) {
-
   function ObjectContaining(sample) {
     this.sample = sample;
   }
@@ -17,7 +16,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
   }
 
   function hasProperty(obj, property) {
-    if (!obj) {
+    if (!obj || typeof obj !== 'object') {
       return false;
     }
 
@@ -28,12 +27,23 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
     return hasProperty(getPrototype(obj), property);
   }
 
-  ObjectContaining.prototype.asymmetricMatch = function(other, customTesters) {
-    if (typeof(this.sample) !== 'object') { throw new Error('You must provide an object to objectContaining, not \''+this.sample+'\'.'); }
+  ObjectContaining.prototype.asymmetricMatch = function(other, matchersUtil) {
+    if (typeof this.sample !== 'object') {
+      throw new Error(
+        "You must provide an object to objectContaining, not '" +
+          this.sample +
+          "'."
+      );
+    }
+    if (typeof other !== 'object') {
+      return false;
+    }
 
     for (var property in this.sample) {
-      if (!hasProperty(other, property) ||
-          !j$.matchersUtil.equals(this.sample[property], other[property], customTesters)) {
+      if (
+        !hasProperty(other, property) ||
+        !matchersUtil.equals(this.sample[property], other[property])
+      ) {
         return false;
       }
     }
@@ -41,8 +51,29 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
     return true;
   };
 
-  ObjectContaining.prototype.jasmineToString = function() {
-    return '<jasmine.objectContaining(' + j$.pp(this.sample) + ')>';
+  ObjectContaining.prototype.valuesForDiff_ = function(other, pp) {
+    if (!j$.isObject_(other)) {
+      return {
+        self: this.jasmineToString(pp),
+        other: other
+      };
+    }
+
+    var filteredOther = {};
+    Object.keys(this.sample).forEach(function(k) {
+      // eq short-circuits comparison of objects that have different key sets,
+      // so include all keys even if undefined.
+      filteredOther[k] = other[k];
+    });
+
+    return {
+      self: this.sample,
+      other: filteredOther
+    };
+  };
+
+  ObjectContaining.prototype.jasmineToString = function(pp) {
+    return '<jasmine.objectContaining(' + pp(this.sample) + ')>';
   };
 
   return ObjectContaining;

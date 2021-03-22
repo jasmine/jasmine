@@ -1,8 +1,7 @@
-getJasmineRequireObj().NotEmpty = function (j$) {
-
+getJasmineRequireObj().NotEmpty = function(j$) {
   function NotEmpty() {}
 
-  NotEmpty.prototype.asymmetricMatch = function (other) {
+  NotEmpty.prototype.asymmetricMatch = function(other) {
     if (j$.isString_(other) || j$.isArray_(other) || j$.isTypedArray_(other)) {
       return other.length !== 0;
     }
@@ -18,7 +17,7 @@ getJasmineRequireObj().NotEmpty = function (j$) {
     return false;
   };
 
-  NotEmpty.prototype.jasmineToString = function () {
+  NotEmpty.prototype.jasmineToString = function() {
     return '<jasmine.notEmpty>';
   };
 

@@ -3,7 +3,7 @@
 getJasmineRequireObj().Order = function() {
   function Order(options) {
     this.random = 'random' in options ? options.random : true;
-    var seed = this.seed = options.seed || generateSeed();
+    var seed = (this.seed = options.seed || generateSeed());
     this.sort = this.random ? randomOrder : naturalOrder;
 
     function naturalOrder(items) {
@@ -29,17 +29,16 @@ getJasmineRequireObj().Order = function() {
 
     function jenkinsHash(key) {
       var hash, i;
-      for(hash = i = 0; i < key.length; ++i) {
+      for (hash = i = 0; i < key.length; ++i) {
         hash += key.charCodeAt(i);
-        hash += (hash << 10);
-        hash ^= (hash >> 6);
+        hash += hash << 10;
+        hash ^= hash >> 6;
       }
-      hash += (hash << 3);
-      hash ^= (hash >> 11);
-      hash += (hash << 15);
+      hash += hash << 3;
+      hash ^= hash >> 11;
+      hash += hash << 15;
       return hash;
     }
-
   }
 
   return Order;
