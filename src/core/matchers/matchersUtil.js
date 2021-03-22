@@ -269,6 +269,17 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
           diffBuilder.recordMismatch();
         }
         return result;
+      case '[object ArrayBuffer]':
+        // If we have an instance of ArrayBuffer the Uint8Array ctor
+        // will be defined as well
+        return self.eq_(
+          new Uint8Array(a), // eslint-disable-line compat/compat
+          new Uint8Array(b), // eslint-disable-line compat/compat
+          aStack,
+          bStack,
+          customTesters,
+          diffBuilder
+        );
       // RegExps are compared by their source patterns and flags.
       case '[object RegExp]':
         return (
