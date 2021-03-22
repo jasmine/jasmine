@@ -269,37 +269,18 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
           diffBuilder.recordMismatch();
         }
         return result;
-      // RegExps are compared by their source patterns and flags.
       case '[object ArrayBuffer]':
         // If we have an instance of ArrayBuffer the Uint8Array ctor
         // will be defined as well
-        var arrayA = new Uint8Array(a);
-        var arrayB = new Uint8Array(b);
-        var arrayALength = arrayA.length;
-        var arrayBLength = arrayB.length;
-
-        diffBuilder.withPath('length', function() {
-          if (arrayALength !== arrayBLength) {
-            diffBuilder.record(arrayALength, arrayBLength);
-            result = false;
-          }
-        });
-
-        for (i = 0; i < arrayALength || i < arrayBLength; i++) {
-          diffBuilder.withPath(i, function() {
-            if (i >= arrayBLength) {
-              diffBuilder.record(arrayA[i], void 0, actualArrayIsLongerFormatter);
-              result = false;
-            } else if (i >= arrayALength){
-              diffBuilder.record(void 0, arrayB[i], actualArrayIsLongerFormatter);
-              result = false;
-            } else if (arrayA[i] !== arrayB[i]) {
-              diffBuilder.record(arrayA[i], arrayB[i]);
-              result = false;
-            }
-          });
-        }
-        return result;
+        return self.eq_(
+          new Uint8Array(a), // eslint-disable-line compat/compat
+          new Uint8Array(b), // eslint-disable-line compat/compat
+          aStack,
+          bStack,
+          customTesters,
+          diffBuilder
+        );
+      // RegExps are compared by their source patterns and flags.
       case '[object RegExp]':
         return (
           a.source == b.source &&

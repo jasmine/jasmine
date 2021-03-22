@@ -885,18 +885,23 @@ describe('matchersUtil', function() {
       );
     });
 
-    it("passes for ArrayBuffers with same length and content", function() {
-      var buffer1 = new ArrayBuffer(4);
-      var buffer2 = new ArrayBuffer(4);
+    it('passes for ArrayBuffers with same length and content', function() {
+      jasmine.getEnv().requireFunctioningArrayBuffers();
+      var buffer1 = new ArrayBuffer(4); // eslint-disable-line compat/compat
+      var buffer2 = new ArrayBuffer(4); // eslint-disable-line compat/compat
       expect(jasmineUnderTest.matchersUtil.equals(buffer1, buffer2)).toBe(true);
     });
 
-    it("fails for ArrayBuffers with same length but different content", function() {
-      var buffer1 = new ArrayBuffer(4);
-      var buffer2 = new ArrayBuffer(4);
-      var array1 = new Uint8Array(buffer1);
+    it('fails for ArrayBuffers with same length but different content', function() {
+      jasmine.getEnv().requireFunctioningTypedArrays();
+      jasmine.getEnv().requireFunctioningArrayBuffers();
+      var buffer1 = new ArrayBuffer(4); // eslint-disable-line compat/compat
+      var buffer2 = new ArrayBuffer(4); // eslint-disable-line compat/compat
+      var array1 = new Uint8Array(buffer1); // eslint-disable-line compat/compat
       array1[0] = 1;
-      expect(jasmineUnderTest.matchersUtil.equals(buffer1, buffer2)).toBe(false);
+      expect(jasmineUnderTest.matchersUtil.equals(buffer1, buffer2)).toBe(
+        false
+      );
     });
 
     describe('when running in an environment with array polyfills', function() {

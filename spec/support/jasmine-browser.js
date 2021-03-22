@@ -20,6 +20,7 @@ module.exports = {
     'helpers/asyncAwait.js',
     'helpers/generator.js',
     'helpers/BrowserFlags.js',
+    'helpers/checkForArrayBuffer.js',
     'helpers/checkForMap.js',
     'helpers/checkForSet.js',
     'helpers/checkForSymbol.js',
