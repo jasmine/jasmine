@@ -53,7 +53,7 @@ getJasmineRequireObj().Env = function(j$) {
        * Null causes the seed to be determined randomly at the start of execution.
        * @name Configuration#seed
        * @since 3.3.0
-       * @type function
+       * @type (number|string)
        * @default null
        */
       seed: null,
