@@ -1,5 +1,5 @@
 language: node_js
-node_js: 10
+node_js: 14
 
 script: $TEST_COMMAND
 
@@ -12,11 +12,11 @@ env:
 
 matrix:
   include:
-    - node_js: "10"
+    - node_js: "14"
       env: JASMINE_LONG_PROPERTY_TESTS="y" TEST_COMMAND="npm test"
     - node_js: "12"
       env: TEST_COMMAND="npm test"
-    - node_js: "8"
+    - node_js: "10"
       env: TEST_COMMAND="npm test"
     - env: JASMINE_BROWSER="internet explorer" SAUCE_BROWSER_VERSION=11 SAUCE_OS="Windows 8.1"
       if: type != pull_request
@@ -30,11 +30,19 @@ matrix:
       if: type != pull_request
       addons:
         sauce_connect: true
+    - env: JASMINE_BROWSER="firefox" SAUCE_BROWSER_VERSION='78' SAUCE_OS="Windows 10"
+      if: type != pull_request
+      addons:
+        sauce_connect: true
     - env: JASMINE_BROWSER="firefox" SAUCE_BROWSER_VERSION='68' SAUCE_OS="Windows 10"
       if: type != pull_request
       addons:
         sauce_connect: true
     - env: JASMINE_BROWSER="chrome" SAUCE_BROWSER_VERSION='' SAUCE_OS="Windows 10"
+      if: type != pull_request
+      addons:
+        sauce_connect: true
+    - env: JASMINE_BROWSER="safari" SAUCE_BROWSER_VERSION="14" SAUCE_OS="OS X 11.0"
       if: type != pull_request
       addons:
         sauce_connect: true

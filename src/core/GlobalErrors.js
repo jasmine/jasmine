@@ -67,9 +67,9 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
           if (j$.isError_(event.reason)) {
             event.reason.jasmineMessage =
               'Unhandled promise rejection: ' + event.reason;
-            onerror(event.reason);
+            global.onerror(event.reason);
           } else {
-            onerror('Unhandled promise rejection: ' + event.reason);
+            global.onerror('Unhandled promise rejection: ' + event.reason);
           }
         };
 
@@ -99,12 +99,6 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     this.popListener = function popListener(listener) {
       if (!listener) {
         throw new Error('popListener expects a listener');
-      }
-
-      if (listener !== handlers[handlers.length - 1]) {
-        throw new Error(
-          'popListener was passed a different listener than the current one'
-        );
       }
 
       handlers.pop();

@@ -3,7 +3,7 @@ describe('Default Spy Strategy (Integration)', function() {
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
-    env.configure({random: false});
+    env.configure({ random: false });
   });
 
   afterEach(function() {
@@ -13,7 +13,7 @@ describe('Default Spy Strategy (Integration)', function() {
   it('allows defining a default spy strategy', function(done) {
     env.describe('suite with default strategy', function() {
       env.beforeEach(function() {
-        env.setDefaultSpyStrategy(function (and) {
+        env.setDefaultSpyStrategy(function(and) {
           and.returnValue(42);
         });
       });
@@ -40,12 +40,16 @@ describe('Default Spy Strategy (Integration)', function() {
     env.execute(null, expectations);
   });
 
-  it('uses the default spy strategy defined when the spy is created', function (done) {
+  it('uses the default spy strategy defined when the spy is created', function(done) {
     env.it('spec', function() {
       var a = env.createSpy('a');
-      env.setDefaultSpyStrategy(function (and) { and.returnValue(42); });
+      env.setDefaultSpyStrategy(function(and) {
+        and.returnValue(42);
+      });
       var b = env.createSpy('b');
-      env.setDefaultSpyStrategy(function (and) { and.stub(); });
+      env.setDefaultSpyStrategy(function(and) {
+        and.stub();
+      });
       var c = env.createSpy('c');
       env.setDefaultSpyStrategy();
       var d = env.createSpy('d');

@@ -161,6 +161,15 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     );
   };
 
+  j$.isURL = function(obj) {
+    return (
+      obj !== null &&
+      typeof obj !== 'undefined' &&
+      typeof jasmineGlobal.URL !== 'undefined' &&
+      obj.constructor === jasmineGlobal.URL
+    );
+  };
+
   j$.isDataView = function(obj) {
     return (
       obj !== null &&
@@ -335,6 +344,14 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return new j$.SetContaining(sample);
   };
 
+  /**
+   * Determines whether the provided function is a Jasmine spy.
+   * @name jasmine.isSpy
+   * @since 2.0.0
+   * @function
+   * @param {Function} putativeSpy - The function to check.
+   * @return {Boolean}
+   */
   j$.isSpy = function(putativeSpy) {
     if (!putativeSpy) {
       return false;

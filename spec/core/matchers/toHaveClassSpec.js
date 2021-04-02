@@ -5,7 +5,10 @@ describe('toHaveClass', function() {
 
   it('fails for a DOM element that lacks the expected class', function() {
     var matcher = jasmineUnderTest.matchers.toHaveClass(),
-      result = matcher.compare(this.domHelpers.createElementWithClassName(''), 'foo');
+      result = matcher.compare(
+        this.domHelpers.createElementWithClassName(''),
+        'foo'
+      );
 
     expect(result.pass).toBe(false);
   });
@@ -41,11 +44,11 @@ describe('toHaveClass', function() {
 
     var textNode = this.domHelpers.document.createTextNode('');
     expect(function() {
-      matcher.compare(textNode, 'foo')
+      matcher.compare(textNode, 'foo');
     }).toThrowError('HTMLNode is not a DOM element');
 
     expect(function() {
-      matcher.compare({classList: ''}, 'foo');
+      matcher.compare({ classList: '' }, 'foo');
     }).toThrowError("Object({ classList: '' }) is not a DOM element");
   });
 });

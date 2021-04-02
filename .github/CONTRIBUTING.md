@@ -101,7 +101,7 @@ Follow these tips and your pull request, patch, or suggestion is much more likel
 
 Jasmine uses some internal tooling to test itself in browser on Travis. This tooling _should_ work locally as well.
 
-    $ node ci.js
+    $ node spec/support/ci.js
 
 You can also set the `JASMINE_BROWSER` environment variable to specify which browser should be used.
 

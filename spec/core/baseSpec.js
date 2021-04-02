@@ -62,4 +62,17 @@ describe('base helpers', function() {
       expect(jasmineUnderTest.isSet({})).toBe(false);
     });
   });
+
+  describe('isURL', function() {
+    it('returns true when the object is a URL', function() {
+      jasmine.getEnv().requireUrls();
+      // eslint-disable-next-line compat/compat
+      expect(jasmineUnderTest.isURL(new URL('http://localhost/'))).toBe(true);
+    });
+
+    it('returns false when the object is not a URL', function() {
+      jasmine.getEnv().requireUrls();
+      expect(jasmineUnderTest.isURL({})).toBe(false);
+    });
+  });
 });

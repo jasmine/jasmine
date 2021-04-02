@@ -183,14 +183,13 @@ describe('Spies', function() {
       var spyObj = env.createSpyObj('base', ['method1'], ['prop1']);
 
       expect(spyObj).toEqual({
-        method1: jasmine.any(Function)
+        method1: jasmine.any(Function),
+        prop1: undefined
       });
 
       var descriptor = Object.getOwnPropertyDescriptor(spyObj, 'prop1');
       expect(descriptor.get.and.identity).toEqual('base.prop1.get');
       expect(descriptor.set.and.identity).toEqual('base.prop1.set');
-
-      expect(spyObj.prop1).toBeUndefined();
     });
 
     it('creates an object with property names and return values if second object is passed', function() {
@@ -200,7 +199,9 @@ describe('Spies', function() {
       });
 
       expect(spyObj).toEqual({
-        method1: jasmine.any(Function)
+        method1: jasmine.any(Function),
+        prop1: 'foo',
+        prop2: 37
       });
 
       expect(spyObj.prop1).toEqual('foo');

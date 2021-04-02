@@ -1,6 +1,6 @@
 <a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/main/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a>
 
-[![Build Status](https://travis-ci.org/jasmine/jasmine.svg?branch=main)](https://travis-ci.org/jasmine/jasmine)
+[![Build Status](https://travis-ci.com/jasmine/jasmine.svg?branch=main)](https://travis-ci.com/jasmine/jasmine)
 [![Open Source Helpers](https://www.codetriage.com/jasmine/jasmine/badges/users.svg)](https://www.codetriage.com/jasmine/jasmine)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjasmine%2Fjasmine.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjasmine%2Fjasmine?ref=badge_shield)
 
@@ -56,10 +56,10 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Ed
 
 | Environment       | Supported versions |
 |-------------------|--------------------|
-| Node              | 8, 10, 12          |
-| Safari            | 8-13               |
+| Node              | 10, 12, 14         |
+| Safari            | 8-14               |
 | Chrome            | Evergreen          |
-| Firefox           | Evergreen, 68      |
+| Firefox           | Evergreen, 68, 78  |
 | Edge              | Evergreen          |
 | Internet Explorer | 10, 11             |
 

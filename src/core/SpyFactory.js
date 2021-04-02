@@ -38,6 +38,7 @@ getJasmineRequireObj().SpyFactory = function(j$) {
       var properties = normalizeKeyValues(propertyNames);
       for (var i = 0; i < properties.length; i++) {
         descriptor = {
+          enumerable: true,
           get: self.createSpy(baseName + '.' + properties[i][0] + '.get'),
           set: self.createSpy(baseName + '.' + properties[i][0] + '.set')
         };

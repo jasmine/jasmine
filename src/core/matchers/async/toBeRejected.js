@@ -17,8 +17,12 @@ getJasmineRequireObj().toBeRejected = function(j$) {
           throw new Error('Expected toBeRejected to be called on a promise.');
         }
         return actual.then(
-          function() { return {pass: false}; },
-          function() { return {pass: true}; }
+          function() {
+            return { pass: false };
+          },
+          function() {
+            return { pass: true };
+          }
         );
       }
     };

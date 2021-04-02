@@ -12,7 +12,6 @@ getJasmineRequireObj().toContain = function() {
   function toContain(matchersUtil) {
     return {
       compare: function(actual, expected) {
-
         return {
           pass: matchersUtil.contains(actual, expected)
         };
