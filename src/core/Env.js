@@ -646,6 +646,13 @@ getJasmineRequireObj().Env = function(j$) {
     defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
 
+    /**
+     * Provides the root suite, through which all suites and specs can be
+     * accessed.
+     * @function
+     * @name Env#topSuite
+     * @return {Suite} the root suite
+     */
     this.topSuite = function() {
       return topSuite;
     };
