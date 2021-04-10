@@ -11,7 +11,9 @@ jobs:
   build:
     working_directory: ~/jasmine
     # Reuse Docker container specification given by the node Orb
-    executor: node/default
+    executor:
+      name: node/default
+      tag: '14'
     steps:
       - checkout
       # Install the latest npm - the node Orb takes care of it
@@ -29,8 +31,9 @@ jobs:
             - .
 
   test:
-    docker:
-      - image: cimg/node:current
+    executor:
+      name: node/default
+      tag: '14'
     steps:
       # Reuse the workspace from the build job
       - attach_workspace:
