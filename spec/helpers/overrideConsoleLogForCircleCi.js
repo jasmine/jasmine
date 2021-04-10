@@ -1,10 +1,11 @@
+/* eslint no-console: 0 */
 (function() {
   function override(fnName) {
     var realFn = console[fnName];
     console[fnName] = function() {
       realFn.call(console, '\n');
       realFn.apply(console, arguments);
-    }
+    };
   }
 
   if (process && process.env && process.env.CIRCLE_CI) {
