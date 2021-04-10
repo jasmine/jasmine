@@ -2,60 +2,52 @@
 # https://circleci.com/docs/2.0/concepts/
 # https://circleci.com/docs/2.0/sample-config/
 # https://circleci.com/docs/2.0/oss/
+# React example: https://github.com/facebook/react-native/blob/master/.circleci/config.yml
+# Yarn example: https://github.com/yarnpkg/yarn/blob/master/.circleci/config.yml
 version: 2.1
 
 orbs:
   node: circleci/node@3.0.0
 
+executors:
+  node14:
+    docker:
+      - image: circleci/node:14
+  node12:
+    docker:
+      - image: circleci/node:12
+  node10:
+    docker:
+      - image: circleci/node:10
+
 jobs:
-  build:
-    working_directory: ~/jasmine
-    # Reuse Docker container specification given by the node Orb
-    executor:
-      name: node/default
-      tag: '14.16.1'
+  test_node:
+    parameters:
+      executor:
+        type: executor
+        # TODO do we need or want a default?
+        #       default: node14
+    executor: << parameters.executor >>
     steps:
       - checkout
-      # Install the latest npm - the node Orb takes care of it
-      - node/install-npm
-      # Install dependencies - the node Orb take care of installation and dependency caching
-      # TODO: Does this cache only across jobs (good) or across builds (possibly bad)?
-      - node/install-packages:
-          app-dir: ~/jasmine
-          cache-path: node_modules
-          override-ci-command: npm i
-      # Save workspace for subsequent jobs (i.e. test)
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-
-  test:
-    executor:
-      name: node/default
-      tag: '14.16.1'
-    steps:
-      # Reuse the workspace from the build job
-      - attach_workspace:
-          at: .
+      # TODO: might need node/install-npm
       - run:
-          name: Check working directory
-          command: pwd
+          name: Install dependencies
+          command: npm install
       - run:
-          name: List dirs
-          command: find . -type d -print
+          name: Build
+          command: npm run build
       - run:
-          name: Report node version
-          command: node --version
-      - run:
-          name: Test
+          name: Run tests
           command: npm test
 
 workflows:
   version: 2
-  build_and_test:
+  tests:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
+      - test_node:
+          executor: node14
+      - test_node:
+          executor: node12
+      - test_node:
+          executor: node10

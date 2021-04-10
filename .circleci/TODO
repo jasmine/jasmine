@@ -1,4 +1,3 @@
-* Build against a matrix, not just one version of Node
 * Build against browsers with Sauce
 * Make sure Sauce credentials are secure
 * Consider combining the build and test jobs
