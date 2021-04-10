@@ -10,6 +10,10 @@ describe('Env integration', function() {
     env.cleanup_();
   });
 
+  it('fails', function(done) {
+    expect(true).toBe(false);
+  });
+
   it('Suites execute as expected (no nesting)', function(done) {
     var calls = [];
 
