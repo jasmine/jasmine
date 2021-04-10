@@ -39,6 +39,9 @@ jobs:
           name: Check working directory
           command: pwd
       - run:
+          name: List dirs
+          command: find . -type d -print
+      - run:
           name: Test
           command: npm test
 
