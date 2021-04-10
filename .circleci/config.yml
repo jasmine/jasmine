@@ -50,6 +50,15 @@ jobs:
 
 workflows:
   version: 2
+  matrix-tests:
+    jobs:
+      - node/test:
+          matrix:
+            parameters:
+              version:
+                - 14
+                - 12
+                - 10
   build_and_test:
     jobs:
       - build
