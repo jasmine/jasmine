@@ -28,7 +28,6 @@ jobs:
         # TODO do we need or want a default?
         #       default: node14
     executor: << parameters.executor >>
-    description: Run tests on << parameters.executor >>
     steps:
       - checkout
       - run:
@@ -50,7 +49,10 @@ workflows:
     jobs:
       - test_node:
           executor: node14
+          name: test_node14
       - test_node:
           executor: node12
+          name: test_node12
       - test_node:
           executor: node10
+          name: test_node10
