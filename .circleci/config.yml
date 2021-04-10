@@ -36,6 +36,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Check working directory
+          command: pwd
+      - run:
           name: Test
           command: npm test
 
