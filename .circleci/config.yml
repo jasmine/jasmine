@@ -92,4 +92,4 @@ workflows:
           filters:
             branches:
               # Don't run on pull requests.
-              ignore: /^pull\//
+              ignore: /pull\//
