@@ -13,7 +13,7 @@ jobs:
     # Reuse Docker container specification given by the node Orb
     executor:
       name: node/default
-      tag: '14'
+      tag: '14.16.1'
     steps:
       - checkout
       # Install the latest npm - the node Orb takes care of it
@@ -33,7 +33,7 @@ jobs:
   test:
     executor:
       name: node/default
-      tag: '14'
+      tag: '14.16.1'
     steps:
       # Reuse the workspace from the build job
       - attach_workspace:
