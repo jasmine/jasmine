@@ -56,9 +56,9 @@ workflows:
           matrix:
             parameters:
               version:
-                - 14
-                - 12
-                - 10
+                - '14'
+                - '12'
+                - '10'
   build_and_test:
     jobs:
       - build
