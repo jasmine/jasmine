@@ -27,19 +27,22 @@ jobs:
         type: executor
     executor: << parameters.executor >>
     steps:
-      - checkout
       - run:
-          name: Report Node and NPM versions
-          command: echo "Using Node $(node --version) and NPM $(npm --version)"
-      - run:
-          name: Install dependencies
-          command: npm install
-      - run:
-          name: Build
-          command: npm run build
-      - run:
-          name: Run tests
-          command: npm test
+          name: Report env
+          command: "echo test: $ENV_TEST unset: $ENV_UNSET_HOPEFULLY"
+#      - checkout
+#      - run:
+#          name: Report Node and NPM versions
+#          command: echo "Using Node $(node --version) and NPM $(npm --version)"
+#      - run:
+#          name: Install dependencies
+#          command: npm install
+#      - run:
+#          name: Build
+#          command: npm run build
+#      - run:
+#          name: Run tests
+#          command: npm test
 
   test_node_with_long_property_tests:
     <<: *test_node
