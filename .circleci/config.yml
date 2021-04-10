@@ -54,10 +54,11 @@ jobs:
 workflows:
   version: 2
   matrix-tests:
+  build_and_test:
     jobs:
       - node/test:
-          version: 14.16.1
+        version: 14.16.1
       - node/test:
-          version: 12.22.1
+        version: 12.22.1
       - node/test:
-          version: 10.24.1
+        version: 10.24.1
