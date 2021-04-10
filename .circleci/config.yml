@@ -27,28 +27,48 @@ jobs:
         type: executor
     executor: << parameters.executor >>
     steps:
+      - checkout
       - run:
-          name: Report env
-          command: "echo test: $ENV_TEST unset: $ENV_UNSET_HOPEFULLY"
-#      - checkout
-#      - run:
-#          name: Report Node and NPM versions
-#          command: echo "Using Node $(node --version) and NPM $(npm --version)"
-#      - run:
-#          name: Install dependencies
-#          command: npm install
-#      - run:
-#          name: Build
-#          command: npm run build
-#      - run:
-#          name: Run tests
-#          command: npm test
+          name: Report Node and NPM versions
+          command: echo "Using Node $(node --version) and NPM $(npm --version)"
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Build
+          command: npm run build
+      - run:
+          name: Run tests
+          command: npm test
 
   test_node_with_long_property_tests:
     <<: *test_node
     environment:
       JASMINE_LONG_PROPERTY_TESTS: y
 
+  test_browser:
+    executor: node14
+    environment:
+      JASMINE_BROWSER: internet explorer
+      SAUCE_BROWSER_VERSION: 11
+    steps:
+      - run:
+          name: Early return if this build is from a PR
+          command: |
+            if [ -n "$CIRCLE_PR_NUMBER" ]; then
+              echo "This job does not run against pull requesets"
+              circleci step halt
+            fi
+      - checkout
+      - run:
+          name: Report Node and NPM versions
+          command: echo "Using Node $(node --version) and NPM $(npm --version)"
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Build
+          command: npm run build
 
 workflows:
   version: 2
@@ -63,3 +83,5 @@ workflows:
       - test_node:
           executor: node10
           name: test_node_10
+      - test_browser:
+          name: internet_explorer_11
