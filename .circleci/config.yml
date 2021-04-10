@@ -28,6 +28,7 @@ jobs:
         # TODO do we need or want a default?
         #       default: node14
     executor: << parameters.executor >>
+    description: Run tests on << parameters.executor >>
     steps:
       - checkout
       - run:
