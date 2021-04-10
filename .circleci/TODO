@@ -1,6 +1,2 @@
 * Build against browsers with Sauce
 * Make sure Sauce credentials are secure
-* Consider combining the build and test jobs
-* Is there a way to target the current latest minor & patch for each Node
-  major, rather than hardcoding?
-* Either disable caching or make it work
