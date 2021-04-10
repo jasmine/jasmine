@@ -42,6 +42,9 @@ jobs:
           name: List dirs
           command: find . -type d -print
       - run:
+          name: Report node version
+          command: node --version
+      - run:
           name: Test
           command: npm test
 
