@@ -89,3 +89,7 @@ workflows:
           name: test_node_10
       - test_browser:
           name: internet_explorer_11
+          filters:
+            branches:
+              # Don't run on pull requests.
+              ignore: /^pull\//
