@@ -49,6 +49,7 @@ jobs:
   test_browser:
     executor: node14
     environment:
+      USE_SAUCE: true
       JASMINE_BROWSER: internet explorer
       SAUCE_BROWSER_VERSION: 11
     steps:
