@@ -49,10 +49,10 @@ workflows:
     jobs:
       - test_node:
           executor: node14
-          name: test_node14
+          name: test_node_14
       - test_node:
           executor: node12
-          name: test_node12
+          name: test_node_12
       - test_node:
           executor: node10
-          name: test_node10
+          name: test_node_10
