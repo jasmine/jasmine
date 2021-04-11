@@ -90,7 +90,7 @@ describe('SpyStrategy', function() {
 
     expect(function() {
       spyStrategy.exec();
-    }).toThrow({ code: 'ESRCH' });
+    }).toThrow(jasmine.objectContaining({ code: 'ESRCH' }));
     expect(originalFn).not.toHaveBeenCalled();
   });
 
