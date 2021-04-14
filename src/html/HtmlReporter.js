@@ -109,6 +109,8 @@ jasmineRequire.HtmlReporter = function(j$) {
     };
 
     var failures = [];
+    var specDoneTimeoutId = 0;
+    var specDoneFragment = getContainer().ownerDocument.createDocumentFragment();
     this.specDone = function(result) {
       stateBuilder.specDone(result);
 
@@ -125,7 +127,13 @@ jasmineRequire.HtmlReporter = function(j$) {
         symbols = find('.jasmine-symbol-summary');
       }
 
-      symbols.appendChild(
+      if(!specDoneTimeoutId){
+        specDoneTimeoutId = getContainer().ownerDocument.defaultView.setTimeout(function(){
+          specDoneTimeoutId = 0;
+          symbols.appendChild(specDoneFragment);
+        }, 500);
+      }
+      specDoneFragment.appendChild(
         createDom('li', {
           className: this.displaySpecInCorrectFormat(result),
           id: 'spec_' + result.id,
