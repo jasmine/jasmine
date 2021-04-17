@@ -99,4 +99,13 @@ describe('npm package', function() {
     expect(images).toContain('jasmine-horizontal.svg');
     expect(images).toContain('jasmine_favicon.png');
   });
+
+  it('does not have CI config files and scripts', function() {
+    expect(fs.existsSync(path.resolve(this.tmpDir, 'package/.circleci'))).toBe(
+      false
+    );
+    expect(fs.existsSync(path.resolve(this.tmpDir, 'package/scripts'))).toBe(
+      false
+    );
+  });
 });

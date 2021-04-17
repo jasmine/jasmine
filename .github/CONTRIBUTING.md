@@ -99,7 +99,7 @@ Follow these tips and your pull request, patch, or suggestion is much more likel
 
 ### Running Specs
 
-Jasmine uses some internal tooling to test itself in browser on Travis. This tooling _should_ work locally as well.
+Jasmine uses some internal tooling to test itself in browser on Circle CI. This tooling _should_ work locally as well.
 
     $ node spec/support/ci.js
 
@@ -123,5 +123,5 @@ The easiest way to run the tests in **Internet Explorer** is to run a VM that ha
     * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches
     * When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into main
 
-Note that we use Travis for Continuous Integration. We only accept green pull requests.
+Note that we use Circle CI for Continuous Integration. We only accept green pull requests.
 

@@ -16,7 +16,8 @@ jasmine-core.gemspec
 .jshintrc
 .rspec
 .sass-cache/
-.travis.yml
+.circleci
+scripts/
 *.sh
 *.py
 Gruntfile.js

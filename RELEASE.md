@@ -37,7 +37,7 @@ When ready to release - specs are all green and the stories are done:
 
 1. Commit release notes and version changes (jasmine.js, version.rb, package.json)
 1. Push
-1. Wait for Travis to go green
+1. Wait for Circle CI to go green
 
 ### Build standalone distribution
 
@@ -77,7 +77,7 @@ Probably only need to do this when releasing a minor version, and not a patch ve
 1. Create release notes using Anchorman as above
 1. In `package.json`, update both the package version and the jasmine-core dependency version
 1. Commit and push.
-1. Wait for Travis to go green again.
+1. Wait for Circle CI to go green again.
 1. `grunt release `. (Note: This will publish the package by running `npm publish`.)
 
 #### Gem
@@ -86,7 +86,7 @@ Probably only need to do this when releasing a minor version, and not a patch ve
 1. Update the version number in `lib/jasmine/version.rb`.
 1. Update the jasmine-core dependency version in `jasmine.gemspec`.
 1. Commit and push.
-1. Wait for Travis to go green again.
+1. Wait for Circle CI to go green again.
 1. `rake release`
 
 ### Finally
