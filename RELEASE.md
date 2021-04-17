@@ -35,6 +35,7 @@ When ready to release - specs are all green and the stories are done:
 
 ### Commit and push core changes
 
+1. Run the browser tests using `scripts/run-all-browsers`.
 1. Commit release notes and version changes (jasmine.js, version.rb, package.json)
 1. Push
 1. Wait for Circle CI to go green

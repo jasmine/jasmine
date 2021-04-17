@@ -11,8 +11,6 @@ Jasmine is a Behavior Driven Development testing framework for JavaScript. It do
 Documentation & guides live here: [http://jasmine.github.io](http://jasmine.github.io/)
 For a quick start guide of Jasmine, see the beginning of [http://jasmine.github.io/edge/introduction.html](http://jasmine.github.io/edge/introduction.html).
 
-Upgrading from Jasmine 2.x? Check out the [3.0 release notes](https://github.com/jasmine/jasmine/blob/v3.0.0/release_notes/3.0.md) for a list of what's new (including breaking changes).
-
 ## Contributing
 
 Please read the [contributors' guide](https://github.com/jasmine/jasmine/blob/main/.github/CONTRIBUTING.md).

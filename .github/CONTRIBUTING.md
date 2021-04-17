@@ -56,15 +56,15 @@ Jasmine supports the following environments:
 
 * Browsers
   * IE10+
-  * Edge Latest
-  * Firefox Latest
-  * Chrome Latest
+  * Edge latest
+  * Firefox latest, 78, and 68
+  * Chrome latest
   * Safari 8+
 
 * Node.js
-  * 8
   * 10
   * 12
+  * 14
 
 ## Development
 
@@ -99,11 +99,18 @@ Follow these tips and your pull request, patch, or suggestion is much more likel
 
 ### Running Specs
 
-Jasmine uses some internal tooling to test itself in browser on Circle CI. This tooling _should_ work locally as well.
+Be sure to run the tests in at least one supported Node version and at least a
+couple of supported browsers. It's also a good idea to run the tests in Internet 
+Explorer if you've touched code in `src/html`, if your change involves newer 
+JavaScript language/runtime features, or if you're unfamiliar with writing code 
+for older browsers. To run the tests in Node, simply use `npm test` as described 
+above. To run the tests in a browser, run `npm run serve` and then visit
+`http://localhost:8888`.
 
-    $ node spec/support/ci.js
+If you have the necessary Selenium drivers installed, you can also use Jasmine's
+CI tooling: 
 
-You can also set the `JASMINE_BROWSER` environment variable to specify which browser should be used.
+    $ JASMINE_BROWSER=<name of browser> node spec/support/ci.js
 
 The easiest way to run the tests in **Internet Explorer** is to run a VM that has IE installed. It's easy to do this with VirtualBox.
 
@@ -112,7 +119,7 @@ The easiest way to run the tests in **Internet Explorer** is to run a VM that ha
 1. Unzip the downloaded archive. There should be an OVA file inside.
 1. In VirtualBox, choose `File > Import Appliance` and select the OVA file. Accept the default settings in the dialog that appears. Now you have a Windows VM!
 1. Run the VM and start IE.
-1. With `npm run serve` running on your host machine, navigate to `http://10.0.2.2:8888` in IE.
+1. With `npm run serve` running on your host machine, navigate to `http://<your IP address>:8888` in IE.
 
 ## Before Committing or Submitting a Pull Request
 
