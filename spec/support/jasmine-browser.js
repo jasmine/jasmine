@@ -42,9 +42,7 @@ module.exports = {
       browserVersion: process.env.SAUCE_BROWSER_VERSION,
       build: `Core ${process.env.TRAVIS_BUILD_NUMBER || 'Ran locally'}`,
       tags: ['Jasmine-Core'],
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER
-        ? process.env.TRAVIS_JOB_NUMBER.toString()
-        : null,
+      tunnelIdentifier: process.env.SAUCE_TUNNEL_IDENTIFIER,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY
     }

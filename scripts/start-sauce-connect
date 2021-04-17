@@ -15,7 +15,11 @@ fi
 
 outfile=`mktemp`
 echo "Starting Sauce Connect"
-sc -u "$SAUCE_USERNAME" -k "$SAUCE_ACCESS_KEY" -X 4445 --pidfile "$pidfile" 2>&1 | tee "$outfile" &
+if [ -z "$SAUCE_TUNNEL_IDENTIFIER" ]; then
+	sc -u "$SAUCE_USERNAME" -k "$SAUCE_ACCESS_KEY" -X 4445 --pidfile "$pidfile" 2>&1 | tee "$outfile" &
+else
+	sc -u "$SAUCE_USERNAME" -k "$SAUCE_ACCESS_KEY" -X 4445 --pidfile "$pidfile" -i "$SAUCE_TUNNEL_IDENTIFIER" 2>&1 | tee "$outfile" &
+fi
 
 while ! fgrep "Sauce Connect is up, you may start your tests." "$outfile" > /dev/null; do
     sleep 1

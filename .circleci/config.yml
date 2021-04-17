@@ -61,9 +61,6 @@ jobs:
     environment:
       JASMINE_LONG_PROPERTY_TESTS: y
 
-  # Warning: Currently this is very flaky if anything else is using Sauce
-  # at the same time, possibly because we're not specifying the tunnel ID
-  # correctly. Probably not a good idea to run it from anything but a nightly.
   test_browsers:
     executor: node14
     steps:
@@ -85,6 +82,7 @@ jobs:
             # cleanly if we kill it from a different step than it started in.
 
             export PATH=$PATH:$HOME/workspace/bin
+            export SAUCE_TUNNEL_IDENTIFIER=$CIRCLE_BUILD_NUM
             scripts/start-sauce-connect sauce-pidfile
             set +o errexit
             scripts/run-all-browsers
