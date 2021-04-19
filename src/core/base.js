@@ -108,7 +108,11 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
         valueGlobal = valueGlobal();
       }
 
-      if (valueGlobal && valueGlobal.Error && value instanceof valueGlobal.Error) {
+      if (
+        valueGlobal &&
+        valueGlobal.Error &&
+        value instanceof valueGlobal.Error
+      ) {
         return true;
       }
     }
