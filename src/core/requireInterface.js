@@ -285,10 +285,11 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {Object} obj - The object upon which to install the {@link Spy}s
+     * @param {boolean} includeNonEnumerable - Whether or not to add spies to non-enumerable properties
      * @returns {Object} the spied object
      */
-    spyOnAllFunctions: function(obj) {
-      return env.spyOnAllFunctions(obj);
+    spyOnAllFunctions: function(obj, includeNonEnumerable) {
+      return env.spyOnAllFunctions(obj, includeNonEnumerable);
     },
 
     jsApiReporter: new jasmine.JsApiReporter({
