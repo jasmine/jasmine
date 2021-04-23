@@ -149,15 +149,10 @@ describe('Env', function() {
       );
     });
 
-    it('logs a deprecation when it has no children', function() {
-      spyOn(env, 'deprecated');
-      env.describe('no children', function() {});
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'describe with no children' +
-          ' (describe() or it()) is deprecated and will be removed in a future ' +
-          'version of Jasmine. Please either remove the describe or add ' +
-          'children to it.'
-      );
+    it('throws an error when it has no children', function() {
+      expect(function() {
+        env.describe('done method', function() {});
+      }).toThrowError('describe with no children (describe() or it())');
     });
   });
 
