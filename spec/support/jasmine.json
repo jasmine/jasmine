@@ -17,6 +17,7 @@
     "helpers/integrationMatchers.js",
     "helpers/promises.js",
     "helpers/requireFastCheck.js",
+    "helpers/overrideConsoleLogForCircleCi.js",
     "helpers/nodeDefineJasmineUnderTest.js",
     "helpers/resetEnv.js"
   ],

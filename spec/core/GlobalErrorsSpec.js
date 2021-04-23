@@ -122,7 +122,7 @@ describe('GlobalErrors', function() {
     errors.uninstall();
   });
 
-  it('reports uncaughtException in node.js', function() {
+  it('reports uncaught exceptions in node.js', function() {
     var fakeGlobal = {
         process: {
           on: jasmine.createSpy('process.on'),
@@ -170,7 +170,7 @@ describe('GlobalErrors', function() {
     );
   });
 
-  it('reports unhandledRejection in node.js', function() {
+  it('reports unhandled promise rejections in node.js', function() {
     var fakeGlobal = {
         process: {
           on: jasmine.createSpy('process.on'),
@@ -215,6 +215,38 @@ describe('GlobalErrors', function() {
     expect(fakeGlobal.process.on).toHaveBeenCalledWith(
       'unhandledRejection',
       'foo'
+    );
+  });
+
+  it('reports unhandled promise rejections in node.js when no error is provided', function() {
+    var fakeGlobal = {
+        process: {
+          on: jasmine.createSpy('process.on'),
+          removeListener: function() {},
+          listeners: function() {
+            return [];
+          },
+          removeAllListeners: function() {}
+        }
+      },
+      handler = jasmine.createSpy('errorHandler'),
+      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+    errors.install();
+    errors.pushListener(handler);
+
+    expect(fakeGlobal.process.on.calls.argsFor(1)[0]).toEqual(
+      'unhandledRejection'
+    );
+    var addedListener = fakeGlobal.process.on.calls.argsFor(1)[1];
+    addedListener(undefined);
+
+    expect(handler).toHaveBeenCalledWith(
+      new Error(
+        'Unhandled promise rejection with no error or message\n' +
+          '(Tip: to get a useful stack trace, use ' +
+          'Promise.reject(new Error(...)) instead of Promise.reject().)'
+      )
     );
   });
 

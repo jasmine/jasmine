@@ -30,6 +30,20 @@ describe('CallTracker', function() {
     expect(callTracker.argsFor(1)).toEqual([0, 'foo']);
   });
 
+  it("tracks the 'this' object from each execution", function() {
+    var callTracker = new jasmineUnderTest.CallTracker();
+
+    var this0 = {},
+      this1 = {};
+    callTracker.track({ object: this0, args: [] });
+    callTracker.track({ object: this1, args: [] });
+    callTracker.track({ args: [] });
+
+    expect(callTracker.thisFor(0)).toBe(this0);
+    expect(callTracker.thisFor(1)).toBe(this1);
+    expect(callTracker.thisFor(2)).toBe(undefined);
+  });
+
   it('returns any empty array when there was no call', function() {
     var callTracker = new jasmineUnderTest.CallTracker();
 

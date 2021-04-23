@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o pipefail
+
+if [ -z "$1" ]; then
+	echo "Usage: $0 sauce-connect-pid" 1>&2
+	exit
+fi
+
+pid="$1"
+echo "PID: $pid"
+
+echo "Stopping Sauce Connect"
+# Sauce Connect docs say that we can just kill -9 it if we don't care about
+# failing any ongoing sessions. In practice, that sometimes works but usually
+# leaks a tunnel so badly that you can't even stop it from the web UI. 
+# Instead of doing that, we give Sauce Connect some time to shut down
+# gracefully and then give up.
+kill -INT $pid
+
+# Wait up to 2 minutes, then give up if it's still running
+n=0
+while [ $n -lt 120 ] && ps -p $pid > /dev/null; do
+	sleep 1
+	kill -INT $pid 2> /dev/null || true
+	n=$(($n + 1))
+done
+
+if ps -p $pid > /dev/null; then
+	echo "Could not shut down Sauce Connect"
+fi
+
+exit $exitcode

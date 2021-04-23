@@ -1,0 +1,163 @@
+# Run tests against supported Node versions, and (except for pull requests)
+# against supported browsers.
+
+version: 2.1
+
+orbs:
+  node: circleci/node@3.0.0
+
+executors:
+  node14:
+    docker:
+      - image: circleci/node:14
+    working_directory: ~/workspace
+  node12:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/workspace
+  node10:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/workspace
+
+jobs:
+  build:
+    parameters:
+      executor:
+        type: executor
+    executor: << parameters.executor >>
+    steps:
+      - checkout
+      - run:
+          name: Report Node and NPM versions
+          command: echo "Using Node $(node --version) and NPM $(npm --version)"
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Build
+          command: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  test_node: &test_node
+    parameters:
+      executor:
+        type: executor
+    executor: << parameters.executor >>
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run tests
+          command: npm test
+
+  # Warning: Sometimes takes a very long time (>25 minutes) on Circle.
+  # Probably not a good idea to run it from anything but a nightly.
+  test_node_with_long_property_tests:
+    <<: *test_node
+    environment:
+      JASMINE_LONG_PROPERTY_TESTS: y
+
+  test_browsers:
+    executor: node14
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install Sauce Connect
+          command: |
+            cd /tmp
+            curl https://saucelabs.com/downloads/sc-4.6.4-linux.tar.gz | tar zxf -
+            chmod +x sc-4.6.4-linux/bin/sc
+            mkdir ~/workspace/bin
+            cp sc-4.6.4-linux/bin/sc ~/workspace/bin
+            ~/workspace/bin/sc --version
+      - run:
+          name: Run tests
+          command: |
+            # Do everything in one step because Sauce Connect won't exit
+            # cleanly if we kill it from a different step than it started in.
+
+            export PATH=$PATH:$HOME/workspace/bin
+            export SAUCE_TUNNEL_IDENTIFIER=$CIRCLE_BUILD_NUM
+            scripts/start-sauce-connect sauce-pidfile
+            set +o errexit
+            scripts/run-all-browsers
+            exitcode=$?
+            set -o errexit
+            scripts/stop-sauce-connect $(cat sauce-pidfile)
+            exit $exitcode
+
+workflows:
+  version: 2
+  cron:
+    triggers:
+      - schedule:
+          # The choice of hour is somewhat load-bearing. test_browser currently
+          # tends to fail if there are other Sauce tunnels open. So we only
+          # run it at a time when that's unlikely.
+          # Times are UTC.
+          cron: "0 10 * * *"
+          filters:
+            branches:
+               only:
+                 - main
+    jobs:
+      - build:
+          executor: node14
+          name: build_node_14
+      - build:
+          executor: node12
+          name: build_node_12
+      - build:
+          executor: node10
+          name: build_node_10
+      - test_node_with_long_property_tests:
+          executor: node14
+          requires:
+             - build_node_14
+      - test_node:
+          executor: node12
+          name: test_node_12
+          requires:
+             - build_node_12
+      - test_node:
+          executor: node10
+          name: test_node_10
+          requires:
+             - build_node_10
+      - test_browsers:
+          requires:
+             - build_node_14
+          filters:
+            branches:
+              only: main
+  push:
+    jobs:
+      - build:
+          executor: node14
+          name: build_node_14
+      - build:
+          executor: node12
+          name: build_node_12
+      - build:
+          executor: node10
+          name: build_node_10
+      - test_node:
+          executor: node14
+          name: test_node_14
+          requires:
+             - build_node_14
+      - test_node:
+          executor: node12
+          name: test_node_12
+          requires:
+             - build_node_12
+      - test_node:
+          executor: node10
+          name: test_node_10
+          requires:
+             - build_node_10

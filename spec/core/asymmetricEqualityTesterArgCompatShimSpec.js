@@ -93,7 +93,6 @@ describe('asymmetricEqualityTesterArgCompatShim', function() {
         'flatMap',
         'includes',
         'keys',
-        'toSource',
         'values'
       ],
       shim = jasmineUnderTest.asymmetricEqualityTesterArgCompatShim({}, []),

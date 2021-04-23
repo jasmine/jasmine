@@ -1,6 +1,6 @@
 <a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/main/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a>
 
-[![Build Status](https://travis-ci.com/jasmine/jasmine.svg?branch=main)](https://travis-ci.com/jasmine/jasmine)
+[![Build Status](https://circleci.com/gh/jasmine/jasmine.svg?style=shield)](https://circleci.com/gh/jasmine/jasmine)
 [![Open Source Helpers](https://www.codetriage.com/jasmine/jasmine/badges/users.svg)](https://www.codetriage.com/jasmine/jasmine)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjasmine%2Fjasmine.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjasmine%2Fjasmine?ref=badge_shield)
 
@@ -10,8 +10,6 @@ Jasmine is a Behavior Driven Development testing framework for JavaScript. It do
 
 Documentation & guides live here: [http://jasmine.github.io](http://jasmine.github.io/)
 For a quick start guide of Jasmine, see the beginning of [http://jasmine.github.io/edge/introduction.html](http://jasmine.github.io/edge/introduction.html).
-
-Upgrading from Jasmine 2.x? Check out the [3.0 release notes](https://github.com/jasmine/jasmine/blob/v3.0.0/release_notes/3.0.md) for a list of what's new (including breaking changes).
 
 ## Contributing
 
