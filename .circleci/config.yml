@@ -163,3 +163,9 @@ workflows:
           name: test_node_10
           requires:
              - build_node_10
+      - test_browsers:
+          requires:
+             - build_node_14
+          filters:
+            branches:
+              ignore: /pull\/.*/ # Don't run on pull requests.
