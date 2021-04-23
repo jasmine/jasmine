@@ -30,27 +30,21 @@ describe('Any', function() {
   });
 
   it('matches a Map', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
     var any = new jasmineUnderTest.Any(Map);
 
-    expect(any.asymmetricMatch(new Map())).toBe(true); // eslint-disable-line compat/compat
+    expect(any.asymmetricMatch(new Map())).toBe(true);
   });
 
   it('matches a Set', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
     var any = new jasmineUnderTest.Any(Set);
 
-    expect(any.asymmetricMatch(new Set())).toBe(true); // eslint-disable-line compat/compat
+    expect(any.asymmetricMatch(new Set())).toBe(true);
   });
 
   it('matches a TypedArray', function() {
-    jasmine.getEnv().requireFunctioningTypedArrays();
+    var any = new jasmineUnderTest.Any(Uint32Array);
 
-    var any = new jasmineUnderTest.Any(Uint32Array); // eslint-disable-line compat/compat
-
-    expect(any.asymmetricMatch(new Uint32Array([]))).toBe(true); // eslint-disable-line compat/compat
+    expect(any.asymmetricMatch(new Uint32Array([]))).toBe(true);
   });
 
   it('matches a Symbol', function() {

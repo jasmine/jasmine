@@ -1,4 +1,3 @@
-/* eslint-disable compat/compat */
 describe('MapContaining', function() {
   function MapI(iterable) {
     // for IE11
@@ -8,10 +7,6 @@ describe('MapContaining', function() {
     });
     return map;
   }
-
-  beforeEach(function() {
-    jasmine.getEnv().requireFunctioningMaps();
-  });
 
   it('matches any actual map to an empty map', function() {
     var actualMap = new MapI([['foo', 'bar']]);

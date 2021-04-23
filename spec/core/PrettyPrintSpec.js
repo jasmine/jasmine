@@ -18,8 +18,7 @@ describe('PrettyPrinter', function() {
 
   describe('stringify sets', function() {
     it('should stringify sets properly', function() {
-      jasmine.getEnv().requireFunctioningSets();
-      var set = new Set(); // eslint-disable-line compat/compat
+      var set = new Set();
       set.add(1);
       set.add(2);
       var pp = jasmineUnderTest.makePrettyPrinter();
@@ -27,12 +26,11 @@ describe('PrettyPrinter', function() {
     });
 
     it('should truncate sets with more elements than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH', function() {
-      jasmine.getEnv().requireFunctioningSets();
       var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
 
       try {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        var set = new Set(); // eslint-disable-line compat/compat
+        var set = new Set();
         set.add('a');
         set.add('b');
         set.add('c');
@@ -46,20 +44,18 @@ describe('PrettyPrinter', function() {
 
   describe('stringify maps', function() {
     it('should stringify maps properly', function() {
-      jasmine.getEnv().requireFunctioningMaps();
-      var map = new Map(); // eslint-disable-line compat/compat
+      var map = new Map();
       map.set(1, 2);
       var pp = jasmineUnderTest.makePrettyPrinter();
       expect(pp(map)).toEqual('Map( [ 1, 2 ] )');
     });
 
     it('should truncate maps with more elements than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH', function() {
-      jasmine.getEnv().requireFunctioningMaps();
       var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
 
       try {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        var map = new Map(); // eslint-disable-line compat/compat
+        var map = new Map();
         map.set('a', 1);
         map.set('b', 2);
         map.set('c', 3);

@@ -1,4 +1,3 @@
-/* eslint-disable compat/compat */
 describe('SetContaining', function() {
   function SetI(iterable) {
     // for IE11
@@ -8,10 +7,6 @@ describe('SetContaining', function() {
     });
     return set;
   }
-
-  beforeEach(function() {
-    jasmine.getEnv().requireFunctioningSets();
-  });
 
   it('matches any actual set to an empty set', function() {
     var actualSet = new SetI(['foo', 'bar']);

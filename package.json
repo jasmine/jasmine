@@ -90,11 +90,11 @@
     }
   },
   "browserslist": [
-    "Safari >= 8",
+    "Safari >= 9",
     "last 2 Chrome versions",
     "last 2 Firefox versions",
     "Firefox 68",
     "last 2 Edge versions",
-    "IE >= 10"
+    "IE >= 11"
   ]
 }

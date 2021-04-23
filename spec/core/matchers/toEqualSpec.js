@@ -257,10 +257,8 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between arrays of different types', function() {
-    jasmine.getEnv().requireFunctioningTypedArrays();
-
-    var actual = new Uint32Array([1, 2, 3]), // eslint-disable-line compat/compat
-      expected = new Uint16Array([1, 2, 3]), // eslint-disable-line compat/compat
+    var actual = new Uint32Array([1, 2, 3]),
+      expected = new Uint16Array([1, 2, 3]),
       message =
         'Expected Uint32Array [ 1, 2, 3 ] to equal Uint16Array [ 1, 2, 3 ].';
 
@@ -462,11 +460,9 @@ describe('toEqual', function() {
   // == Sets ==
 
   it('reports mismatches between Sets', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
-    var actual = new Set(); // eslint-disable-line compat/compat
+    var actual = new Set();
     actual.add(1);
-    var expected = new Set(); // eslint-disable-line compat/compat
+    var expected = new Set();
     expected.add(2);
     var message = 'Expected Set( 1 ) to equal Set( 2 ).';
 
@@ -474,11 +470,9 @@ describe('toEqual', function() {
   });
 
   it('reports deep mismatches within Sets', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
-    var actual = new Set(); // eslint-disable-line compat/compat
+    var actual = new Set();
     actual.add({ x: 1 });
-    var expected = new Set(); // eslint-disable-line compat/compat
+    var expected = new Set();
     expected.add({ x: 2 });
     var message =
       'Expected Set( Object({ x: 1 }) ) to equal Set( Object({ x: 2 }) ).';
@@ -487,11 +481,9 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between Sets nested in objects', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
-    var actualSet = new Set(); // eslint-disable-line compat/compat
+    var actualSet = new Set();
     actualSet.add(1);
-    var expectedSet = new Set(); // eslint-disable-line compat/compat
+    var expectedSet = new Set();
     expectedSet.add(2);
 
     var actual = { sets: [actualSet] };
@@ -502,12 +494,10 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between Sets of different lengths', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
-    var actual = new Set(); // eslint-disable-line compat/compat
+    var actual = new Set();
     actual.add(1);
     actual.add(2);
-    var expected = new Set(); // eslint-disable-line compat/compat
+    var expected = new Set();
     expected.add(2);
     var message = 'Expected Set( 1, 2 ) to equal Set( 2 ).';
 
@@ -515,13 +505,11 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between Sets where actual is missing a value from expected', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
     // Use 'duplicate' object in actual so sizes match
-    var actual = new Set(); // eslint-disable-line compat/compat
+    var actual = new Set();
     actual.add({ x: 1 });
     actual.add({ x: 1 });
-    var expected = new Set(); // eslint-disable-line compat/compat
+    var expected = new Set();
     expected.add({ x: 1 });
     expected.add({ x: 2 });
     var message =
@@ -531,13 +519,11 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between Sets where actual has a value missing from expected', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
     // Use 'duplicate' object in expected so sizes match
-    var actual = new Set(); // eslint-disable-line compat/compat
+    var actual = new Set();
     actual.add({ x: 1 });
     actual.add({ x: 2 });
-    var expected = new Set(); // eslint-disable-line compat/compat
+    var expected = new Set();
     expected.add({ x: 1 });
     expected.add({ x: 1 });
     var message =
@@ -549,23 +535,19 @@ describe('toEqual', function() {
   // == Maps ==
 
   it('does not report mismatches between deep equal Maps', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
     // values are the same but with different object identity
-    var actual = new Map(); // eslint-disable-line compat/compat
+    var actual = new Map();
     actual.set('a', { x: 1 });
-    var expected = new Map(); // eslint-disable-line compat/compat
+    var expected = new Map();
     expected.set('a', { x: 1 });
 
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
 
   it('reports deep mismatches within Maps', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
-    var actual = new Map(); // eslint-disable-line compat/compat
+    var actual = new Map();
     actual.set('a', { x: 1 });
-    var expected = new Map(); // eslint-disable-line compat/compat
+    var expected = new Map();
     expected.set('a', { x: 2 });
     var message =
       "Expected Map( [ 'a', Object({ x: 1 }) ] ) to equal Map( [ 'a', Object({ x: 2 }) ] ).";
@@ -574,11 +556,9 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between Maps nested in objects', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
-    var actual = { Maps: [new Map()] }; // eslint-disable-line compat/compat
+    var actual = { Maps: [new Map()] };
     actual.Maps[0].set('a', 1);
-    var expected = { Maps: [new Map()] }; // eslint-disable-line compat/compat
+    var expected = { Maps: [new Map()] };
     expected.Maps[0].set('a', 2);
 
     var message =
@@ -588,11 +568,9 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between Maps of different lengths', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
-    var actual = new Map(); // eslint-disable-line compat/compat
+    var actual = new Map();
     actual.set('a', 1);
-    var expected = new Map(); // eslint-disable-line compat/compat
+    var expected = new Map();
     expected.set('a', 2);
     expected.set('b', 1);
     var message =
@@ -602,11 +580,9 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between Maps with equal values but differing keys', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
-    var actual = new Map(); // eslint-disable-line compat/compat
+    var actual = new Map();
     actual.set('a', 1);
-    var expected = new Map(); // eslint-disable-line compat/compat
+    var expected = new Map();
     expected.set('b', 1);
     var message = "Expected Map( [ 'a', 1 ] ) to equal Map( [ 'b', 1 ] ).";
 
@@ -614,22 +590,19 @@ describe('toEqual', function() {
   });
 
   it('does not report mismatches between Maps with keys with same object identity', function() {
-    jasmine.getEnv().requireFunctioningMaps();
     var key = { x: 1 };
-    var actual = new Map(); // eslint-disable-line compat/compat
+    var actual = new Map();
     actual.set(key, 2);
-    var expected = new Map(); // eslint-disable-line compat/compat
+    var expected = new Map();
     expected.set(key, 2);
 
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
 
   it('reports mismatches between Maps with identical keys with different object identity', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
-    var actual = new Map(); // eslint-disable-line compat/compat
+    var actual = new Map();
     actual.set({ x: 1 }, 2);
-    var expected = new Map(); // eslint-disable-line compat/compat
+    var expected = new Map();
     expected.set({ x: 1 }, 2);
     var message =
       'Expected Map( [ Object({ x: 1 }), 2 ] ) to equal Map( [ Object({ x: 1 }), 2 ] ).';
@@ -638,36 +611,32 @@ describe('toEqual', function() {
   });
 
   it('does not report mismatches when comparing Map key to jasmine.anything()', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
-    var actual = new Map(); // eslint-disable-line compat/compat
+    var actual = new Map();
     actual.set('a', 1);
-    var expected = new Map(); // eslint-disable-line compat/compat
+    var expected = new Map();
     expected.set(jasmineUnderTest.anything(), 1);
 
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
 
   it('does not report mismatches when comparing Maps with the same symbol keys', function() {
-    jasmine.getEnv().requireFunctioningMaps();
     jasmine.getEnv().requireFunctioningSymbols();
 
     var key = Symbol(); // eslint-disable-line compat/compat
-    var actual = new Map(); // eslint-disable-line compat/compat
+    var actual = new Map();
     actual.set(key, 1);
-    var expected = new Map(); // eslint-disable-line compat/compat
+    var expected = new Map();
     expected.set(key, 1);
 
     expect(compareEquals(actual, expected).pass).toBe(true);
   });
 
   it('reports mismatches between Maps with different symbol keys', function() {
-    jasmine.getEnv().requireFunctioningMaps();
     jasmine.getEnv().requireFunctioningSymbols();
 
-    var actual = new Map(); // eslint-disable-line compat/compat
+    var actual = new Map();
     actual.set(Symbol(), 1); // eslint-disable-line compat/compat
-    var expected = new Map(); // eslint-disable-line compat/compat
+    var expected = new Map();
     expected.set(Symbol(), 1); // eslint-disable-line compat/compat
     var message =
       'Expected Map( [ Symbol(), 1 ] ) to equal Map( [ Symbol(), 1 ] ).';
@@ -676,12 +645,11 @@ describe('toEqual', function() {
   });
 
   it('does not report mismatches when comparing Map symbol key to jasmine.anything()', function() {
-    jasmine.getEnv().requireFunctioningMaps();
     jasmine.getEnv().requireFunctioningSymbols();
 
-    var actual = new Map(); // eslint-disable-line compat/compat
+    var actual = new Map();
     actual.set(Symbol(), 1); // eslint-disable-line compat/compat
-    var expected = new Map(); // eslint-disable-line compat/compat
+    var expected = new Map();
     expected.set(jasmineUnderTest.anything(), 1);
 
     expect(compareEquals(actual, expected).pass).toBe(true);

@@ -234,8 +234,8 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
         // If we have an instance of ArrayBuffer the Uint8Array ctor
         // will be defined as well
         return self.eq_(
-          new Uint8Array(a), // eslint-disable-line compat/compat
-          new Uint8Array(b), // eslint-disable-line compat/compat
+          new Uint8Array(a),
+          new Uint8Array(b),
           aStack,
           bStack,
           diffBuilder
