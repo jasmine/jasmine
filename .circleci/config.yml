@@ -105,6 +105,8 @@ workflows:
             branches:
                only:
                  - main
+                 - "3.99"
+                 - "4.0"
     jobs:
       - build:
           executor: node14
@@ -134,7 +136,7 @@ workflows:
              - build_node_14
           filters:
             branches:
-              only: main
+              ignore: /pull\/.*/ # Don't run on pull requests.
   push:
     jobs:
       - build:
@@ -161,3 +163,9 @@ workflows:
           name: test_node_10
           requires:
              - build_node_10
+      - test_browsers:
+          requires:
+             - build_node_14
+          filters:
+            branches:
+              ignore: /pull\/.*/ # Don't run on pull requests.
