@@ -108,8 +108,13 @@ describe('HtmlReporter', function() {
         expect(console.warn).toHaveBeenCalledWith(
           "Spec 'Some Name' has no expectations."
         );
-        var specEl = container.querySelector('.jasmine-symbol-summary li');
-        expect(specEl.getAttribute('class')).toEqual('jasmine-empty');
+        return Promise.resolve()
+          // Let the specDone time to do its work.
+          .then(() => { return new Promise((resolve) => setTimeout(resolve, 500)); })
+          .then(() => {
+            var specEl = container.querySelector('.jasmine-symbol-summary li');
+            expect(specEl.getAttribute('class')).toEqual('jasmine-empty');
+        });
       });
 
       it('should log error to the console and print a failure symbol when empty spec status is failed', function() {
@@ -123,8 +128,13 @@ describe('HtmlReporter', function() {
         expect(console.error).toHaveBeenCalledWith(
           "Spec 'Some Name' has no expectations."
         );
-        var specEl = container.querySelector('.jasmine-symbol-summary li');
-        expect(specEl.getAttribute('class')).toEqual('jasmine-failed');
+        return Promise.resolve()
+          // Let the specDone time to do its work.
+          .then(() => { return new Promise((resolve) => setTimeout(resolve, 500)); })
+          .then(() => {
+            var specEl = container.querySelector('.jasmine-symbol-summary li');
+            expect(specEl.getAttribute('class')).toEqual('jasmine-failed');
+        });
       });
     });
 
@@ -152,12 +162,17 @@ describe('HtmlReporter', function() {
         failedExpectations: []
       });
 
-      var specEl = container.querySelector('.jasmine-symbol-summary li');
-      expect(specEl.getAttribute('class')).toEqual('jasmine-excluded');
-      expect(specEl.getAttribute('id')).toEqual('spec_789');
-      expect(specEl.getAttribute('title')).toEqual(
-        'symbols should have titles'
-      );
+      return Promise.resolve()
+        // Let the specDone time to do its work.
+        .then(() => { return new Promise((resolve) => setTimeout(resolve, 500)); })
+        .then(() => {
+          var specEl = container.querySelector('.jasmine-symbol-summary li');
+          expect(specEl.getAttribute('class')).toEqual('jasmine-excluded');
+          expect(specEl.getAttribute('id')).toEqual('spec_789');
+          expect(specEl.getAttribute('title')).toEqual(
+            'symbols should have titles'
+          );
+      });
     });
 
     it('reports the status symbol of a pending spec', function() {
@@ -184,9 +199,14 @@ describe('HtmlReporter', function() {
         failedExpectations: []
       });
 
-      var specEl = container.querySelector('.jasmine-symbol-summary li');
-      expect(specEl.getAttribute('class')).toEqual('jasmine-pending');
-      expect(specEl.getAttribute('id')).toEqual('spec_789');
+      return Promise.resolve()
+        // Let the specDone time to do its work.
+        .then(() => { return new Promise((resolve) => setTimeout(resolve, 500)); })
+        .then(() => {
+          var specEl = container.querySelector('.jasmine-symbol-summary li');
+          expect(specEl.getAttribute('class')).toEqual('jasmine-pending');
+          expect(specEl.getAttribute('id')).toEqual('spec_789');
+      });
     });
 
     it('reports the status symbol of a passing spec', function() {
@@ -213,10 +233,15 @@ describe('HtmlReporter', function() {
         failedExpectations: []
       });
 
-      var statuses = container.querySelector('.jasmine-symbol-summary');
-      var specEl = statuses.querySelector('li');
-      expect(specEl.getAttribute('class')).toEqual('jasmine-passed');
-      expect(specEl.getAttribute('id')).toEqual('spec_123');
+      return Promise.resolve()
+        // Let the specDone time to do its work.
+        .then(() => { return new Promise((resolve) => setTimeout(resolve, 500)); })
+        .then(() => {
+          var statuses = container.querySelector('.jasmine-symbol-summary');
+          var specEl = statuses.querySelector('li');
+          expect(specEl.getAttribute('class')).toEqual('jasmine-passed');
+          expect(specEl.getAttribute('id')).toEqual('spec_123');
+      });
     });
 
     it('reports the status symbol of a failing spec', function() {
@@ -244,9 +269,14 @@ describe('HtmlReporter', function() {
         passedExpectations: []
       });
 
-      var specEl = container.querySelector('.jasmine-symbol-summary li');
-      expect(specEl.getAttribute('class')).toEqual('jasmine-failed');
-      expect(specEl.getAttribute('id')).toEqual('spec_345');
+      return Promise.resolve()
+        // Let the specDone time to do its work.
+        .then(() => { return new Promise((resolve) => setTimeout(resolve, 500)); })
+        .then(() => {
+          var specEl = container.querySelector('.jasmine-symbol-summary li');
+          expect(specEl.getAttribute('class')).toEqual('jasmine-failed');
+          expect(specEl.getAttribute('id')).toEqual('spec_345');
+      });
     });
   });
 
@@ -909,10 +939,15 @@ describe('HtmlReporter', function() {
           failedExpectations: []
         });
 
-        var specEl = container.querySelector('.jasmine-symbol-summary li');
-        expect(specEl.getAttribute('class')).toEqual(
-          'jasmine-excluded-no-display'
-        );
+        return Promise.resolve()
+          // Let the specDone time to do its work.
+          .then(() => { return new Promise((resolve) => setTimeout(resolve, 500)); })
+          .then(() => {
+            var specEl = container.querySelector('.jasmine-symbol-summary li');
+            expect(specEl.getAttribute('class')).toEqual(
+              'jasmine-excluded-no-display'
+            );
+        });
       });
     });
     describe('UI for running tests in random order', function() {
