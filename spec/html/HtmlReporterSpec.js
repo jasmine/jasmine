@@ -209,6 +209,44 @@ describe('HtmlReporter', function() {
       });
     });
 
+    it('delays the status symbol of a passing spec', function() {
+      var container = document.createElement('div'),
+        getContainer = function() {
+          return container;
+        },
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() {
+            return document.createElement.apply(document, arguments);
+          },
+          createTextNode: function() {
+            return document.createTextNode.apply(document, arguments);
+          }
+        });
+      reporter.initialize();
+
+      reporter.specDone({
+        id: 123,
+        status: 'passed',
+        passedExpectations: [{ passed: true }],
+        failedExpectations: []
+      });
+
+      var statuses = container.querySelector('.jasmine-symbol-summary');
+      var specEl = statuses.querySelector('li');
+      expect(specEl).toBe(null);
+
+      return Promise.resolve()
+        // Let the specDone time to do its work.
+        .then(() => { return new Promise((resolve) => setTimeout(resolve, 500)); })
+        .then(() => {
+          var statuses = container.querySelector('.jasmine-symbol-summary');
+          var specEl = statuses.querySelector('li');
+          expect(specEl).not.toBe(null);
+      });
+    });
+
     it('reports the status symbol of a passing spec', function() {
       var container = document.createElement('div'),
         getContainer = function() {
