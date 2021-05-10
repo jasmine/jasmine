@@ -130,11 +130,11 @@ jasmineRequire.HtmlReporter = function(j$) {
       if(!specDoneFragment) {
         specDoneFragment = getContainer().ownerDocument.createDocumentFragment();
       }
-      if(!specDoneTimeoutId){
+      if(!specDoneTimeoutId) {
         specDoneTimeoutId = getContainer().ownerDocument.defaultView.setTimeout(function() {
           specDoneTimeoutId = 0;
           symbols.appendChild(specDoneFragment);
-        }, 500);
+        }, 100);
       }
       specDoneFragment.appendChild(
         createDom('li', {
