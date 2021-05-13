@@ -41,8 +41,8 @@
     "jasmine-browser-runner": "github:jasmine/jasmine-browser#main",
     "jsdom": "^15.0.0",
     "load-grunt-tasks": "^4.0.0",
-    "node-sass": "^4.11.0",
     "prettier": "1.17.1",
+    "sass": "^1.32.12",
     "shelljs": "^0.8.3",
     "temp": "^0.9.0"
   },
