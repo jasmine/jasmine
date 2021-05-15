@@ -65,8 +65,10 @@ jobs:
     environment:
       JASMINE_LONG_PROPERTY_TESTS: y
 
-  test_browsers:
+  test_browsers: &test_browsers
     executor: node14
+    environment:
+      SKIP_JASMINE_BROWSER_FLAKES: "true"
     steps:
       - attach_workspace:
           at: .
@@ -95,14 +97,16 @@ jobs:
             scripts/stop-sauce-connect $(cat sauce-pidfile)
             exit $exitcode
 
+  test_browser_flakes:
+    <<: *test_browsers
+    environment:
+      SKIP_JASMINE_BROWSER_FLAKES: "false"
+
 workflows:
   version: 2
   cron:
     triggers:
       - schedule:
-          # The choice of hour is somewhat load-bearing. test_browser currently
-          # tends to fail if there are other Sauce tunnels open. So we only
-          # run it at a time when that's unlikely.
           # Times are UTC.
           cron: "0 10 * * *"
           filters:
@@ -149,6 +153,7 @@ workflows:
           filters:
             branches:
               ignore: /pull\/.*/ # Don't run on pull requests.
+
   push:
     jobs:
       - build:
@@ -189,3 +194,23 @@ workflows:
           filters:
             branches:
               ignore: /pull\/.*/ # Don't run on pull requests.
+
+  browser-flakes:
+    triggers:
+    - schedule:
+        # Times are UTC.
+        cron: "0 11 * * *"
+        filters:
+          branches:
+            only:
+            - main
+    jobs:
+    - build:
+        executor: node14
+        name: build_node_14
+    - test_browser_flakes:
+        requires:
+        - build_node_14
+        filters:
+          branches:
+            ignore: /pull\/.*/ # Don't run on pull requests.
