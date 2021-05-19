@@ -59,6 +59,7 @@ Install [twine](https://github.com/pypa/twine)
 
 ### Release the core NPM module
 
+1. Run the tests on Windows. (CI only tests on Linux.)
 1. `npm adduser` to save your credentials locally
 1. `npm publish .` to publish what's in `package.json`
 

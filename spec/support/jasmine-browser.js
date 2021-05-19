@@ -49,3 +49,7 @@ module.exports = {
     }
   }
 };
+
+if (process.env.SKIP_JASMINE_BROWSER_FLAKES === 'true') {
+  module.exports.helpers.push('helpers/disableBrowserFlakes.js');
+}
