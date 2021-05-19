@@ -20,11 +20,11 @@ Please read the [contributors' guide](https://github.com/jasmine/jasmine/blob/ma
 For the Jasmine NPM module:<br>
 [https://github.com/jasmine/jasmine-npm](https://github.com/jasmine/jasmine-npm).
 
+For the Jasmine browser runner:<br>
+[https://github.com/jasmine/jasmine-browser](https://github.com/jasmine/jasmine-browser).
+
 For the Jasmine Ruby Gem:<br>
 [https://github.com/jasmine/jasmine-gem](https://github.com/jasmine/jasmine-gem).
-
-For the Jasmine Python Egg:<br>
-[https://github.com/jasmine/jasmine-py](https://github.com/jasmine/jasmine-py).
 
 For the Jasmine headless browser gulp plugin:<br>
 [https://github.com/jasmine/gulp-jasmine-browser](https://github.com/jasmine/gulp-jasmine-browser).
@@ -54,7 +54,7 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Ed
 
 | Environment       | Supported versions |
 |-------------------|--------------------|
-| Node              | 10, 12, 14         |
+| Node              | 10, 12, 14, 16     |
 | Safari            | 9-14               |
 | Chrome            | Evergreen          |
 | Firefox           | Evergreen, 68, 78  |

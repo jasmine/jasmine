@@ -7,6 +7,10 @@ orbs:
   node: circleci/node@3.0.0
 
 executors:
+  node16:
+    docker:
+      - image: cimg/node:16.1.0-browsers
+    working_directory: ~/workspace
   node14:
     docker:
       - image: circleci/node:14
@@ -61,8 +65,10 @@ jobs:
     environment:
       JASMINE_LONG_PROPERTY_TESTS: y
 
-  test_browsers:
+  test_browsers: &test_browsers
     executor: node14
+    environment:
+      SKIP_JASMINE_BROWSER_FLAKES: "true"
     steps:
       - attach_workspace:
           at: .
@@ -91,14 +97,16 @@ jobs:
             scripts/stop-sauce-connect $(cat sauce-pidfile)
             exit $exitcode
 
+  test_browser_flakes:
+    <<: *test_browsers
+    environment:
+      SKIP_JASMINE_BROWSER_FLAKES: "false"
+
 workflows:
   version: 2
   cron:
     triggers:
       - schedule:
-          # The choice of hour is somewhat load-bearing. test_browser currently
-          # tends to fail if there are other Sauce tunnels open. So we only
-          # run it at a time when that's unlikely.
           # Times are UTC.
           cron: "0 10 * * *"
           filters:
@@ -109,6 +117,9 @@ workflows:
                  - "4.0"
     jobs:
       - build:
+          executor: node16
+          name: build_node_16
+      - build:
           executor: node14
           name: build_node_14
       - build:
@@ -117,6 +128,11 @@ workflows:
       - build:
           executor: node10
           name: build_node_10
+      - test_node:
+          executor: node16
+          name: test_node_16
+          requires:
+             - build_node_16
       - test_node_with_long_property_tests:
           executor: node14
           requires:
@@ -137,8 +153,12 @@ workflows:
           filters:
             branches:
               ignore: /pull\/.*/ # Don't run on pull requests.
+
   push:
     jobs:
+      - build:
+          executor: node16
+          name: build_node_16
       - build:
           executor: node14
           name: build_node_14
@@ -148,6 +168,11 @@ workflows:
       - build:
           executor: node10
           name: build_node_10
+      - test_node:
+          executor: node16
+          name: test_node_16
+          requires:
+             - build_node_16
       - test_node:
           executor: node14
           name: test_node_14
@@ -169,3 +194,23 @@ workflows:
           filters:
             branches:
               ignore: /pull\/.*/ # Don't run on pull requests.
+
+  browser-flakes:
+    triggers:
+    - schedule:
+        # Times are UTC.
+        cron: "0 11 * * *"
+        filters:
+          branches:
+            only:
+            - main
+    jobs:
+    - build:
+        executor: node14
+        name: build_node_14
+    - test_browser_flakes:
+        requires:
+        - build_node_14
+        filters:
+          branches:
+            ignore: /pull\/.*/ # Don't run on pull requests.

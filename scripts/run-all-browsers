@@ -24,16 +24,14 @@ run_browser() {
 passfile=`mktemp -t jasmine-results.XXXXXX` || exit 1
 failfile=`mktemp -t jasmine-results.XXXXXX` || exit 1
 run_browser "internet explorer" 11
+run_browser chrome latest
 run_browser firefox latest
 run_browser firefox 78
-run_browser firefox 68 
-run_browser safari 14 
-run_browser safari 13 
-run_browser safari 12 
-run_browser safari 11 
-run_browser safari 10 
-run_browser safari 9 
-run_browser MicrosoftEdge latest 
+run_browser firefox 68
+run_browser safari 14
+run_browser safari 13
+run_browser safari 9
+run_browser MicrosoftEdge latest
 
 echo
 cat "$passfile" "$failfile"
