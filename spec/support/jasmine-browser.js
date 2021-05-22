@@ -22,6 +22,7 @@ module.exports = {
     'helpers/BrowserFlags.js',
     'helpers/checkForArrayBuffer.js',
     'helpers/checkForMap.js',
+    'helpers/checkForProxy.js',
     'helpers/checkForSet.js',
     'helpers/checkForSymbol.js',
     'helpers/checkForTypedArrays.js',
