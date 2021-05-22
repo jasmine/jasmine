@@ -987,7 +987,7 @@ getJasmineRequireObj().Env = function(j$) {
 
       var declarationError = null;
       try {
-        specDefinitions.call(suite);
+        specDefinitions.call(j$.deprecatingThisProxy(suite, self));
       } catch (e) {
         declarationError = e;
       }
