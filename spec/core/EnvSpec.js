@@ -441,38 +441,7 @@ describe('Env', function() {
     });
   });
 
-  it("deprecates access to 'this' in describes", function() {
-    jasmine.getEnv().requireProxy();
-    var msg = "Access to 'this' in describe functions is deprecated.",
-      ran = false;
-    spyOn(env, 'deprecated');
-
-    env.describe('a suite', function() {
-      expect(this.description).toEqual('a suite');
-      expect(env.deprecated).toHaveBeenCalledWith(msg);
-      env.deprecated.calls.reset();
-
-      this.foo = 1;
-      expect(env.deprecated).toHaveBeenCalledWith(msg);
-      expect(this.foo).toEqual(1);
-      env.deprecated.calls.reset();
-
-      expect(this.getFullName()).toEqual('a suite');
-      expect(env.deprecated).toHaveBeenCalledWith(msg);
-      env.deprecated.calls.reset();
-
-      env.it('has a spec');
-      ran = true;
-    });
-
-    expect(ran).toBeTrue();
-  });
-
-  // TODO: Remove this in the next major version. Suites were never meant to be
-  // exposed via describe 'this' in >= 2.0, and user code should not rely on it.
-  // This spec is just here to make sure we don't break user code that *does*
-  // rely on it in older browsers (without Proxy) while deprecating it.
-  it("sets 'this' to the Suite in describes", function() {
+  it("does not expose the suite as 'this'", function() {
     var suiteThis;
     spyOn(env, 'deprecated');
 
@@ -481,6 +450,6 @@ describe('Env', function() {
       env.it('has a spec');
     });
 
-    expect(suiteThis).toBeInstanceOf(jasmineUnderTest.Suite);
+    expect(suiteThis).not.toBeInstanceOf(jasmineUnderTest.Suite);
   });
 });

@@ -43,7 +43,6 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.Clock = jRequire.Clock();
     j$.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler(j$);
     j$.Env = jRequire.Env(j$);
-    j$.deprecatingThisProxy = jRequire.deprecatingThisProxy(j$);
     j$.StackTrace = jRequire.StackTrace(j$);
     j$.ExceptionFormatter = jRequire.ExceptionFormatter(j$);
     j$.ExpectationFilterChain = jRequire.ExpectationFilterChain();

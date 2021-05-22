@@ -21,7 +21,6 @@ module.exports = {
     'helpers/generator.js',
     'helpers/BrowserFlags.js',
     'helpers/checkForMap.js',
-    'helpers/checkForProxy.js',
     'helpers/checkForSet.js',
     'helpers/checkForSymbol.js',
     'helpers/checkForUrl.js',
