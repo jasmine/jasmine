@@ -1,19 +1,9 @@
 getJasmineRequireObj().Spec = function(j$) {
-  /**
-   * @interface Spec
-   * @see Configuration#specFilter
-   */
   function Spec(attrs) {
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
     this.resultCallback = attrs.resultCallback || function() {};
     this.id = attrs.id;
-    /**
-     * The description passed to the {@link it} that created this spec.
-     * @name Spec#description
-     * @readonly
-     * @type {string}
-     */
     this.description = attrs.description || '';
     this.queueableFn = attrs.queueableFn;
     this.beforeAndAfterFns =
@@ -205,12 +195,6 @@ getJasmineRequireObj().Spec = function(j$) {
     return 'passed';
   };
 
-  /**
-   * The full description including all ancestors of this spec.
-   * @name Spec#getFullName
-   * @function
-   * @returns {string}
-   */
   Spec.prototype.getFullName = function() {
     return this.getSpecName(this);
   };
@@ -241,6 +225,30 @@ getJasmineRequireObj().Spec = function(j$) {
       e.toString &&
       e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
     );
+  };
+
+  /**
+   * @interface Spec
+   * @see Configuration#specFilter
+   */
+  Spec.prototype.buildMetadata = function() {
+    return {
+      /**
+       * The description passed to the {@link it} that created this spec.
+       * @name Spec#description
+       * @readonly
+       * @type {string}
+       */
+      description: this.description,
+
+      /**
+       * The full description including all ancestors of this spec.
+       * @name Spec#getFullName
+       * @function
+       * @returns {string}
+       */
+      getFullName: this.getFullName.bind(this)
+    };
   };
 
   return Spec;

@@ -554,7 +554,7 @@ getJasmineRequireObj().Env = function(j$) {
      * @return {Suite} the root suite
      */
     this.topSuite = function() {
-      return j$.deprecatingSuiteProxy(topSuite, null, this);
+      return topSuite.buildMetadata(null);
     };
 
     /**

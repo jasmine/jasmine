@@ -39,19 +39,25 @@ describe('Env', function() {
       });
 
       suite = env.topSuite();
+      expect(suite).not.toBeInstanceOf(jasmineUnderTest.Suite);
       expect(suite.description).toEqual('Jasmine__TopLevel__Suite');
       expect(suite.getFullName()).toEqual('');
       expect(suite.children.length).toEqual(2);
 
+      expect(suite.children[0]).not.toBeInstanceOf(jasmineUnderTest.Spec);
       expect(suite.children[0].description).toEqual('a top level spec');
       expect(suite.children[0].getFullName()).toEqual('a top level spec');
       expect(suite.children[0].children).toBeFalsy();
 
+      expect(suite.children[1]).not.toBeInstanceOf(jasmineUnderTest.Suite);
       expect(suite.children[1].description).toEqual('a suite');
       expect(suite.children[1].getFullName()).toEqual('a suite');
       expect(suite.children[1].parentSuite).toBe(suite);
       expect(suite.children[1].children.length).toEqual(2);
 
+      expect(suite.children[1].children[0]).not.toBeInstanceOf(
+        jasmineUnderTest.Spec
+      );
       expect(suite.children[1].children[0].description).toEqual('a spec');
       expect(suite.children[1].children[0].getFullName()).toEqual(
         'a suite a spec'
@@ -74,93 +80,6 @@ describe('Env', function() {
         'a suite a nested suite a nested spec'
       );
       expect(suite.children[1].children[1].children[0].children).toBeFalsy();
-    });
-
-    it('does not deprecate access to public Suite and Spec members', function() {
-      jasmine.getEnv().requireProxy();
-      var suite;
-      spyOn(env, 'deprecated');
-
-      env.it('a top level spec');
-      env.describe('a suite', function() {
-        env.it('a spec');
-      });
-
-      suite = env.topSuite();
-      suite.description;
-      suite.getFullName();
-      suite.children;
-      suite.parentSuite;
-      suite.children[0].description;
-      suite.children[0].getFullName();
-      suite.children[0].children;
-
-      suite.children[1].description;
-      suite.children[1].getFullName();
-      suite.children[1].parentSuite;
-      suite.children[1].children;
-
-      expect(env.deprecated).not.toHaveBeenCalled();
-    });
-
-    it('deprecates access to internal Suite and Spec members', function() {
-      jasmine.getEnv().requireProxy();
-      var topSuite, expectationFactory, spec;
-
-      env.it('a top level spec');
-      spyOn(env, 'deprecated');
-      topSuite = env.topSuite();
-
-      topSuite.expectationFactory;
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Suite ' +
-          'members (in this case `expectationFactory`) via Env#topSuite is ' +
-          'not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
-      );
-      env.deprecated.calls.reset();
-
-      topSuite.expectationFactory = expectationFactory;
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Suite ' +
-          'members (in this case `expectationFactory`) via Env#topSuite is ' +
-          'not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
-      );
-
-      topSuite.status();
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Suite ' +
-          'members (in this case `status`) via Env#topSuite is ' +
-          'not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
-      );
-
-      spec = topSuite.children[0];
-      spec.pend();
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Spec ' +
-          'members (in this case `pend`) via Env#topSuite ' +
-          'is not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
-      );
-
-      expectationFactory = spec.expectationFactory;
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Spec ' +
-          'members (in this case `expectationFactory`) via Env#topSuite ' +
-          'is not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
-      );
-      env.deprecated.calls.reset();
-
-      spec.expectationFactory = expectationFactory;
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Spec ' +
-          'members (in this case `expectationFactory`) via Env#topSuite ' +
-          'is not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
-      );
     });
   });
 

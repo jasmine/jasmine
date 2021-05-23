@@ -1,24 +1,8 @@
 getJasmineRequireObj().Suite = function(j$) {
-  /**
-   * @interface Suite
-   * @see Env#topSuite
-   */
   function Suite(attrs) {
     this.env = attrs.env;
     this.id = attrs.id;
-    /**
-     * The parent of this suite, or null if this is the top suite.
-     * @name Suite#parentSuite
-     * @readonly
-     * @type {Suite}
-     */
     this.parentSuite = attrs.parentSuite;
-    /**
-     * The description passed to the {@link describe} that created this suite.
-     * @name Suite#description
-     * @readonly
-     * @type {string}
-     */
     this.description = attrs.description;
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
@@ -29,14 +13,7 @@ getJasmineRequireObj().Suite = function(j$) {
     this.afterFns = [];
     this.beforeAllFns = [];
     this.afterAllFns = [];
-
     this.timer = attrs.timer || new j$.Timer();
-
-    /**
-     * The suite's children.
-     * @name Suite#children
-     * @type {Array.<(Spec|Suite)>}
-     */
     this.children = [];
 
     /**
@@ -74,12 +51,6 @@ getJasmineRequireObj().Suite = function(j$) {
     return this.asyncExpectationFactory(actual, this);
   };
 
-  /**
-   * The full description including all ancestors of this suite.
-   * @name Suite#getFullName
-   * @function
-   * @returns {string}
-   */
   Suite.prototype.getFullName = function() {
     var fullName = [];
     for (
@@ -212,6 +183,49 @@ getJasmineRequireObj().Suite = function(j$) {
     this.result.deprecationWarnings.push(
       this.expectationResultFactory(deprecation)
     );
+  };
+
+  Suite.prototype.buildMetadata = function(parentMetadata) {
+    /**
+     * @interface Suite
+     * @see Env#topSuite
+     */
+    var result = {
+      /**
+       * The parent of this suite, or null if this is the top suite.
+       * @name Suite#parentSuite
+       * @readonly
+       * @type {Suite}
+       */
+      parentSuite: parentMetadata,
+
+      /**
+       * The description passed to the {@link describe} that created this suite.
+       * @name Suite#description
+       * @readonly
+       * @type {string}
+       */
+      description: this.description,
+
+      /**
+       * The full description including all ancestors of this suite.
+       * @name Suite#getFullName
+       * @function
+       * @returns {string}
+       */
+      getFullName: this.getFullName.bind(this)
+    };
+
+    /**
+     * The suite's children.
+     * @name Suite#children
+     * @type {Array.<(Spec|Suite)>}
+     */
+    result.children = this.children.map(function(child) {
+      return child.buildMetadata(result);
+    });
+
+    return result;
   };
 
   function isFailure(args) {
