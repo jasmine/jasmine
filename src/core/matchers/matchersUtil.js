@@ -35,7 +35,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
    */
   MatchersUtil.prototype.contains = function(haystack, needle, customTesters) {
     if (customTesters) {
-      j$.getEnv().deprecatedOnceWithStack(
+      j$.getEnv().deprecated(
         'Passing custom equality testers ' +
           'to MatchersUtil#contains is deprecated. ' +
           'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
@@ -172,7 +172,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       diffBuilder = customTestersOrDiffBuilder;
     } else {
       if (customTestersOrDiffBuilder) {
-        j$.getEnv().deprecatedOnceWithStack(
+        j$.getEnv().deprecated(
           'Passing custom equality testers ' +
             'to MatchersUtil#equals is deprecated. ' +
             'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
@@ -180,7 +180,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       }
 
       if (diffBuilderOrNothing) {
-        j$.getEnv().deprecatedOnceWithStack(
+        j$.getEnv().deprecated(
           'Diff builder should be passed ' +
             'as the third argument to MatchersUtil#equals, not the fourth. ' +
             'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'

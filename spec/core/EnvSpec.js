@@ -294,60 +294,6 @@ describe('Env', function() {
     });
   });
 
-  describe('#deprecatedOnceWithStack', function() {
-    it('includes a stack trace', function() {
-      spyOn(env, 'deprecated');
-
-      env.deprecatedOnceWithStack('msg');
-
-      expect(env.deprecated).toHaveBeenCalled();
-      var msg = env.deprecated.calls.argsFor(0)[0];
-      expect(msg).toContain('msg');
-      expect(msg).toContain('EnvSpec.js');
-      expect(msg).not.toContain('Error');
-    });
-
-    describe('When verboseDeprecations is true', function() {
-      it('calls #deprecated every time', function() {
-        env.configure({ verboseDeprecations: true });
-        spyOn(env, 'deprecated');
-
-        env.deprecatedOnceWithStack('msg');
-        env.deprecatedOnceWithStack('msg');
-        expect(env.deprecated).toHaveBeenCalledWith(
-          jasmine.stringMatching(/msg/)
-        );
-        expect(env.deprecated).toHaveBeenCalledTimes(2);
-        expect(env.deprecated).not.toHaveBeenCalledWith(
-          jasmine.stringMatching(/only once/)
-        );
-      });
-    });
-
-    describe('When verboseDeprecations is false', function() {
-      it('calls #deprecated once per unique message', function() {
-        env.configure({ verboseDeprecations: false });
-        spyOn(env, 'deprecated');
-
-        env.deprecatedOnceWithStack('foo');
-        env.deprecatedOnceWithStack('bar');
-        env.deprecatedOnceWithStack('foo');
-
-        expect(env.deprecated).toHaveBeenCalledWith(
-          jasmine.stringMatching(
-            /foo\nNote: This message will be shown only once. Set config.verboseDeprecations to true to see every occurrence/m
-          )
-        );
-        expect(env.deprecated).toHaveBeenCalledWith(
-          jasmine.stringMatching(
-            /bar\nNote: This message will be shown only once. Set config.verboseDeprecations to true to see every occurrence/m
-          )
-        );
-        expect(env.deprecated).toHaveBeenCalledTimes(2);
-      });
-    });
-  });
-
   describe('when not constructed with suppressLoadErrors: true', function() {
     it('installs a global error handler on construction', function() {
       var globalErrors = jasmine.createSpyObj('globalErrors', [

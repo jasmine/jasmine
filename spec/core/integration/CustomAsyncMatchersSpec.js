@@ -202,7 +202,7 @@ describe('Custom Async Matchers (Integration)', function() {
     env.execute(null, done);
   });
 
-  it('logs a deprecation once per matcher if the matcher factory takes two arguments', function(done) {
+  it('logs a distinct deprecation for each matcher if the matcher factory takes two arguments', function(done) {
     var matcherFactory = function(matchersUtil, customEqualityTesters) {
       return { compare: function() {} };
     };
@@ -232,7 +232,6 @@ describe('Custom Async Matchers (Integration)', function() {
             'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
         )
       );
-      expect(env.deprecated).toHaveBeenCalledTimes(2);
       done();
     }
 

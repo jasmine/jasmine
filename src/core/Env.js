@@ -32,7 +32,6 @@ getJasmineRequireObj().Env = function(j$) {
     var currentlyExecutingSuites = [];
     var currentDeclarationSuite = null;
     var hasFailures = false;
-    var deprecationsToSuppress = [];
 
     /**
      * This represents the available options to configure Jasmine.
@@ -228,6 +227,7 @@ getJasmineRequireObj().Env = function(j$) {
 
       if (configuration.hasOwnProperty('verboseDeprecations')) {
         config.verboseDeprecations = configuration.verboseDeprecations;
+        deprecator.verboseDeprecations(config.verboseDeprecations);
       }
     };
 
@@ -249,13 +249,19 @@ getJasmineRequireObj().Env = function(j$) {
     Object.defineProperty(this, 'specFilter', {
       get: function() {
         self.deprecated(
-          'Getting specFilter directly from Env is deprecated and will be removed in a future version of Jasmine, please check the specFilter option from `configuration`'
+          'Getting specFilter directly from Env is deprecated and will be ' +
+            'removed in a future version of Jasmine. Please check the ' +
+            'specFilter option from `configuration` instead.',
+          { ignoreRunnable: true }
         );
         return config.specFilter;
       },
       set: function(val) {
         self.deprecated(
-          'Setting specFilter directly on Env is deprecated and will be removed in a future version of Jasmine, please use the specFilter option in `configure`'
+          'Setting specFilter directly on Env is deprecated and will be ' +
+            'removed in a future version of Jasmine. Please use the ' +
+            'specFilter option in `configure` instead.',
+          { ignoreRunnable: true }
         );
         config.specFilter = val;
       }
@@ -303,7 +309,7 @@ getJasmineRequireObj().Env = function(j$) {
 
       for (var matcherName in matchersToAdd) {
         if (matchersToAdd[matcherName].length > 1) {
-          self.deprecatedOnceWithStack(
+          self.deprecated(
             'The matcher factory for "' +
               matcherName +
               '" ' +
@@ -328,7 +334,7 @@ getJasmineRequireObj().Env = function(j$) {
 
       for (var matcherName in matchersToAdd) {
         if (matchersToAdd[matcherName].length > 1) {
-          self.deprecatedOnceWithStack(
+          self.deprecated(
             'The matcher factory for "' +
               matcherName +
               '" ' +
@@ -535,14 +541,21 @@ getJasmineRequireObj().Env = function(j$) {
      */
     this.throwOnExpectationFailure = function(value) {
       this.deprecated(
-        'Setting throwOnExpectationFailure directly on Env is deprecated and will be removed in a future version of Jasmine, please use the oneFailurePerSpec option in `configure`'
+        'Setting throwOnExpectationFailure directly on Env is deprecated ' +
+          'and will be removed in a future version of Jasmine. Please use the ' +
+          'oneFailurePerSpec option in `configure` instead.',
+        { ignoreRunnable: true }
       );
       this.configure({ oneFailurePerSpec: !!value });
     };
 
     this.throwingExpectationFailures = function() {
       this.deprecated(
-        'Getting throwingExpectationFailures directly from Env is deprecated and will be removed in a future version of Jasmine, please check the oneFailurePerSpec option from `configuration`'
+        'Getting throwingExpectationFailures directly from Env is ' +
+          'deprecated and will be removed in a future version of Jasmine. ' +
+          'Please check the oneFailurePerSpec option from `configuration` ' +
+          'instead.',
+        { ignoreRunnable: true }
       );
       return config.oneFailurePerSpec;
     };
@@ -557,14 +570,20 @@ getJasmineRequireObj().Env = function(j$) {
      */
     this.stopOnSpecFailure = function(value) {
       this.deprecated(
-        'Setting stopOnSpecFailure directly is deprecated and will be removed in a future version of Jasmine, please use the failFast option in `configure`'
+        'Setting stopOnSpecFailure directly is deprecated and will be ' +
+          'removed in a future version of Jasmine. Please use the failFast ' +
+          'option in `configure` instead.',
+        { ignoreRunnable: true }
       );
       this.configure({ failFast: !!value });
     };
 
     this.stoppingOnSpecFailure = function() {
       this.deprecated(
-        'Getting stoppingOnSpecFailure directly from Env is deprecated and will be removed in a future version of Jasmine, please check the failFast option from `configuration`'
+        'Getting stoppingOnSpecFailure directly from Env is deprecated ' +
+          'and will be removed in a future version of Jasmine. Please check ' +
+          'the failFast option from `configuration` instead.',
+        { ignoreRunnable: true }
       );
       return config.failFast;
     };
@@ -579,14 +598,20 @@ getJasmineRequireObj().Env = function(j$) {
      */
     this.randomizeTests = function(value) {
       this.deprecated(
-        'Setting randomizeTests directly is deprecated and will be removed in a future version of Jasmine, please use the random option in `configure`'
+        'Setting randomizeTests directly is deprecated and will be removed ' +
+          'in a future version of Jasmine. Please use the random option in ' +
+          '`configure` instead.',
+        { ignoreRunnable: true }
       );
       config.random = !!value;
     };
 
     this.randomTests = function() {
       this.deprecated(
-        'Getting randomTests directly from Env is deprecated and will be removed in a future version of Jasmine, please check the random option from `configuration`'
+        'Getting randomTests directly from Env is deprecated and will be ' +
+          'removed in a future version of Jasmine. Please check the random ' +
+          'option from `configuration` instead.',
+        { ignoreRunnable: true }
       );
       return config.random;
     };
@@ -601,7 +626,10 @@ getJasmineRequireObj().Env = function(j$) {
      */
     this.seed = function(value) {
       this.deprecated(
-        'Setting seed directly is deprecated and will be removed in a future version of Jasmine, please use the seed option in `configure`'
+        'Setting seed directly is deprecated and will be removed in a ' +
+          'future version of Jasmine. Please use the seed option in ' +
+          '`configure` instead.',
+        { ignoreRunnable: true }
       );
       if (value) {
         config.seed = value;
@@ -611,7 +639,10 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.hidingDisabled = function(value) {
       this.deprecated(
-        'Getting hidingDisabled directly from Env is deprecated and will be removed in a future version of Jasmine, please check the hideDisabled option from `configuration`'
+        'Getting hidingDisabled directly from Env is deprecated and will ' +
+          'be removed in a future version of Jasmine. Please check the ' +
+          'hideDisabled option from `configuration` instead.',
+        { ignoreRunnable: true }
       );
       return config.hideDisabled;
     };
@@ -623,53 +654,39 @@ getJasmineRequireObj().Env = function(j$) {
      */
     this.hideDisabled = function(value) {
       this.deprecated(
-        'Setting hideDisabled directly is deprecated and will be removed in a future version of Jasmine, please use the hideDisabled option in `configure`'
+        'Setting hideDisabled directly is deprecated and will be removed ' +
+          'in a future version of Jasmine. Please use the hideDisabled option ' +
+          'in `configure` instead.',
+        { ignoreRunnable: true }
       );
       config.hideDisabled = !!value;
     };
 
-    this.deprecated = function(deprecation) {
+    /**
+     * Causes a deprecation warning to be logged to the console and reported to
+     * reporters.
+     *
+     * The optional second parameter is an object that can have either of the
+     * following properties:
+     *
+     * omitStackTrace: Whether to omit the stack trace. Optional. Defaults to
+     * false. This option is ignored if the deprecation is an Error. Set this
+     * when the stack trace will not contain anything that helps the user find
+     * the source of the deprecation.
+     *
+     * ignoreRunnable: Whether to log the deprecation on the root suite, ignoring
+     * the spec or suite that's running when it happens. Optional. Defaults to
+     * false.
+     *
+     * @name Env#deprecated
+     * @since 2.99
+     * @function
+     * @param {String|Error} deprecation The deprecation message
+     * @param {Object} [options] Optional extra options, as described above
+     */
+    this.deprecated = function(deprecation, options) {
       var runnable = currentRunnable() || topSuite;
-      var context;
-
-      if (runnable === topSuite) {
-        context = '';
-      } else if (runnable === currentSuite()) {
-        context = ' (in suite: ' + runnable.getFullName() + ')';
-      } else {
-        context = ' (in spec: ' + runnable.getFullName() + ')';
-      }
-
-      runnable.addDeprecationWarning(deprecation);
-      if (
-        typeof console !== 'undefined' &&
-        typeof console.error === 'function'
-      ) {
-        console.error('DEPRECATION: ' + deprecation + context);
-      }
-    };
-
-    this.deprecatedOnceWithStack = function(deprecation) {
-      var formatter = new j$.ExceptionFormatter(),
-        stackTrace = formatter
-          .stack(j$.util.errorWithStack())
-          .replace(/^Error\n/m, '');
-
-      if (config.verboseDeprecations) {
-        this.deprecated(deprecation + '\n' + stackTrace);
-      } else {
-        if (deprecationsToSuppress.indexOf(deprecation) === -1) {
-          this.deprecated(
-            deprecation +
-              '\n' +
-              'Note: This message will be shown only once. ' +
-              'Set config.verboseDeprecations to true to see every occurrence.\n' +
-              stackTrace
-          );
-        }
-
-        deprecationsToSuppress.push(deprecation);
-      }
+      deprecator.addDeprecationWarning(runnable, deprecation, options);
     };
 
     var queueRunnerFactory = function(options, args) {
@@ -705,6 +722,7 @@ getJasmineRequireObj().Env = function(j$) {
       asyncExpectationFactory: suiteAsyncExpectationFactory,
       expectationResultFactory: expectationResultFactory
     });
+    var deprecator = new j$.Deprecator(topSuite);
     defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
 

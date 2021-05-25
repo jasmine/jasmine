@@ -42,6 +42,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.getClearStack = jRequire.clearStack(j$);
     j$.Clock = jRequire.Clock();
     j$.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler(j$);
+    j$.Deprecator = jRequire.Deprecator(j$);
     j$.Env = jRequire.Env(j$);
     j$.deprecatingThisProxy = jRequire.deprecatingThisProxy(j$);
     j$.StackTrace = jRequire.StackTrace(j$);
@@ -58,7 +59,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.basicPrettyPrinter_ = j$.makePrettyPrinter();
     Object.defineProperty(j$, 'pp', {
       get: function() {
-        j$.getEnv().deprecatedOnceWithStack(
+        j$.getEnv().deprecated(
           'jasmine.pp is deprecated and will be removed in a future release. ' +
             'Use the pp method of the matchersUtil passed to the matcher factory ' +
             "or the asymmetric equality tester's `asymmetricMatch` method " +
@@ -75,7 +76,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     });
     Object.defineProperty(j$, 'matchersUtil', {
       get: function() {
-        j$.getEnv().deprecatedOnceWithStack(
+        j$.getEnv().deprecated(
           'jasmine.matchersUtil is deprecated and will be removed ' +
             'in a future release. Use the instance passed to the matcher factory or ' +
             "the asymmetric equality tester's `asymmetricMatch` method instead. " +

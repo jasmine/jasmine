@@ -215,25 +215,29 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.diagnoseConflictingAsync_ = function(fn, retval) {
+    var msg;
+
     if (retval && j$.isFunction_(retval.then)) {
-      // Issue a warning that matches the user's code
+      // Issue a warning that matches the user's code.
+      // Omit the stack trace because there's almost certainly no user code
+      // on the stack at this point.
       if (j$.isAsyncFunction_(fn)) {
-        this.deprecated(
+        msg =
           'An asynchronous before/it/after ' +
-            'function was defined with the async keyword but also took a ' +
-            'done callback. This is not supported and will stop working in' +
-            ' the future. Either remove the done callback (recommended) or ' +
-            'remove the async keyword.'
-        );
+          'function was defined with the async keyword but also took a ' +
+          'done callback. This is not supported and will stop working in' +
+          ' the future. Either remove the done callback (recommended) or ' +
+          'remove the async keyword.';
       } else {
-        this.deprecated(
+        msg =
           'An asynchronous before/it/after ' +
-            'function took a done callback but also returned a promise. ' +
-            'This is not supported and will stop working in the future. ' +
-            'Either remove the done callback (recommended) or change the ' +
-            'function to not return a promise.'
-        );
+          'function took a done callback but also returned a promise. ' +
+          'This is not supported and will stop working in the future. ' +
+          'Either remove the done callback (recommended) or change the ' +
+          'function to not return a promise.';
       }
+
+      this.deprecated(msg, { omitStackTrace: true });
     }
   };
 

@@ -533,7 +533,8 @@ describe('QueueRunner', function() {
           'before/it/after function took a done callback but also returned a ' +
           'promise. This is not supported and will stop working in the future. ' +
           'Either remove the done callback (recommended) or change the function ' +
-          'to not return a promise.'
+          'to not return a promise.',
+        { omitStackTrace: true }
       );
     });
 
@@ -553,7 +554,8 @@ describe('QueueRunner', function() {
           'before/it/after function was defined with the async keyword but ' +
           'also took a done callback. This is not supported and will stop ' +
           'working in the future. Either remove the done callback ' +
-          '(recommended) or remove the async keyword.'
+          '(recommended) or remove the async keyword.',
+        { omitStackTrace: true }
       );
     });
   });

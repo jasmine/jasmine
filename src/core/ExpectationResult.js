@@ -16,7 +16,7 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
     var result = {
       matcherName: options.matcherName,
       message: message(),
-      stack: stack(),
+      stack: options.omitStackTrace ? '' : stack(),
       passed: options.passed
     };
 
