@@ -231,6 +231,8 @@ body {
     }
 
     &.jasmine-warning {
+      margin-top: $margin-unit;
+      margin-bottom: $margin-unit;
       background-color: $pending-color;
       color: $text-color;
     }
@@ -385,5 +387,28 @@ body {
     border: 1px solid #ddd;
     background: white;
     white-space: pre;
+  }
+
+  .jasmine-expander {
+    a {
+      display: block;
+      margin-left: $margin-unit;
+      color: blue;
+      text-decoration: underline;
+    }
+  }
+
+  .jasmine-expander-contents {
+    display: none;
+  }
+
+  .jasmine-expanded {
+    padding-bottom: 10px;
+  }
+
+  .jasmine-expanded .jasmine-expander-contents {
+    display: block;
+    margin-left: $margin-unit;
+    padding: 5px;
   }
 }

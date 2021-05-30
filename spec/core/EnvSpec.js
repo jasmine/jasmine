@@ -26,9 +26,141 @@ describe('Env', function() {
   });
 
   describe('#topSuite', function() {
-    it('returns the Jasmine top suite for users to traverse the spec tree', function() {
-      var suite = env.topSuite();
+    it('returns an object that describes the tree of suites and specs', function() {
+      var suite;
+      spyOn(env, 'deprecated');
+
+      env.it('a top level spec');
+      env.describe('a suite', function() {
+        env.it('a spec');
+        env.describe('a nested suite', function() {
+          env.it('a nested spec');
+        });
+      });
+
+      suite = env.topSuite();
       expect(suite.description).toEqual('Jasmine__TopLevel__Suite');
+      expect(suite.getFullName()).toEqual('');
+      expect(suite.children.length).toEqual(2);
+
+      expect(suite.children[0].description).toEqual('a top level spec');
+      expect(suite.children[0].getFullName()).toEqual('a top level spec');
+      expect(suite.children[0].children).toBeFalsy();
+
+      expect(suite.children[1].description).toEqual('a suite');
+      expect(suite.children[1].getFullName()).toEqual('a suite');
+      expect(suite.children[1].parentSuite).toBe(suite);
+      expect(suite.children[1].children.length).toEqual(2);
+
+      expect(suite.children[1].children[0].description).toEqual('a spec');
+      expect(suite.children[1].children[0].getFullName()).toEqual(
+        'a suite a spec'
+      );
+      expect(suite.children[1].children[0].children).toBeFalsy();
+
+      expect(suite.children[1].children[1].description).toEqual(
+        'a nested suite'
+      );
+      expect(suite.children[1].children[1].getFullName()).toEqual(
+        'a suite a nested suite'
+      );
+      expect(suite.children[1].children[1].parentSuite).toBe(suite.children[1]);
+      expect(suite.children[1].children[1].children.length).toEqual(1);
+
+      expect(suite.children[1].children[1].children[0].description).toEqual(
+        'a nested spec'
+      );
+      expect(suite.children[1].children[1].children[0].getFullName()).toEqual(
+        'a suite a nested suite a nested spec'
+      );
+      expect(suite.children[1].children[1].children[0].children).toBeFalsy();
+    });
+
+    it('does not deprecate access to public Suite and Spec members', function() {
+      jasmine.getEnv().requireProxy();
+      var suite;
+      spyOn(env, 'deprecated');
+
+      env.it('a top level spec');
+      env.describe('a suite', function() {
+        env.it('a spec');
+      });
+
+      suite = env.topSuite();
+      suite.description;
+      suite.getFullName();
+      suite.children;
+      suite.parentSuite;
+      suite.children[0].description;
+      suite.children[0].getFullName();
+      suite.children[0].children;
+
+      suite.children[1].description;
+      suite.children[1].getFullName();
+      suite.children[1].parentSuite;
+      suite.children[1].children;
+
+      expect(env.deprecated).not.toHaveBeenCalled();
+    });
+
+    it('deprecates access to internal Suite and Spec members', function() {
+      jasmine.getEnv().requireProxy();
+      var topSuite, expectationFactory, spec;
+
+      env.it('a top level spec');
+      spyOn(env, 'deprecated');
+      topSuite = env.topSuite();
+
+      topSuite.expectationFactory;
+      expect(env.deprecated).toHaveBeenCalledWith(
+        'Access to private Suite ' +
+          'members (in this case `expectationFactory`) via Env#topSuite is ' +
+          'not supported and will break in a future release. See ' +
+          '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
+      );
+      env.deprecated.calls.reset();
+
+      topSuite.expectationFactory = expectationFactory;
+      expect(env.deprecated).toHaveBeenCalledWith(
+        'Access to private Suite ' +
+          'members (in this case `expectationFactory`) via Env#topSuite is ' +
+          'not supported and will break in a future release. See ' +
+          '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
+      );
+
+      topSuite.status();
+      expect(env.deprecated).toHaveBeenCalledWith(
+        'Access to private Suite ' +
+          'members (in this case `status`) via Env#topSuite is ' +
+          'not supported and will break in a future release. See ' +
+          '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
+      );
+
+      spec = topSuite.children[0];
+      spec.pend();
+      expect(env.deprecated).toHaveBeenCalledWith(
+        'Access to private Spec ' +
+          'members (in this case `pend`) via Env#topSuite ' +
+          'is not supported and will break in a future release. See ' +
+          '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
+      );
+
+      expectationFactory = spec.expectationFactory;
+      expect(env.deprecated).toHaveBeenCalledWith(
+        'Access to private Spec ' +
+          'members (in this case `expectationFactory`) via Env#topSuite ' +
+          'is not supported and will break in a future release. See ' +
+          '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
+      );
+      env.deprecated.calls.reset();
+
+      spec.expectationFactory = expectationFactory;
+      expect(env.deprecated).toHaveBeenCalledWith(
+        'Access to private Spec ' +
+          'members (in this case `expectationFactory`) via Env#topSuite ' +
+          'is not supported and will break in a future release. See ' +
+          '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
+      );
     });
   });
 
@@ -286,60 +418,6 @@ describe('Env', function() {
       expect(function() {
         env.afterAll(jasmine.getEnv().makeAsyncAwaitFunction());
       }).not.toThrow();
-    });
-  });
-
-  describe('#deprecatedOnceWithStack', function() {
-    it('includes a stack trace', function() {
-      spyOn(env, 'deprecated');
-
-      env.deprecatedOnceWithStack('msg');
-
-      expect(env.deprecated).toHaveBeenCalled();
-      var msg = env.deprecated.calls.argsFor(0)[0];
-      expect(msg).toContain('msg');
-      expect(msg).toContain('EnvSpec.js');
-      expect(msg).not.toContain('Error');
-    });
-
-    describe('When verboseDeprecations is true', function() {
-      it('calls #deprecated every time', function() {
-        env.configure({ verboseDeprecations: true });
-        spyOn(env, 'deprecated');
-
-        env.deprecatedOnceWithStack('msg');
-        env.deprecatedOnceWithStack('msg');
-        expect(env.deprecated).toHaveBeenCalledWith(
-          jasmine.stringMatching(/msg/)
-        );
-        expect(env.deprecated).toHaveBeenCalledTimes(2);
-        expect(env.deprecated).not.toHaveBeenCalledWith(
-          jasmine.stringMatching(/only once/)
-        );
-      });
-    });
-
-    describe('When verboseDeprecations is false', function() {
-      it('calls #deprecated once per unique message', function() {
-        env.configure({ verboseDeprecations: false });
-        spyOn(env, 'deprecated');
-
-        env.deprecatedOnceWithStack('foo');
-        env.deprecatedOnceWithStack('bar');
-        env.deprecatedOnceWithStack('foo');
-
-        expect(env.deprecated).toHaveBeenCalledWith(
-          jasmine.stringMatching(
-            /foo\nNote: This message will be shown only once. Set config.verboseDeprecations to true to see every occurrence/m
-          )
-        );
-        expect(env.deprecated).toHaveBeenCalledWith(
-          jasmine.stringMatching(
-            /bar\nNote: This message will be shown only once. Set config.verboseDeprecations to true to see every occurrence/m
-          )
-        );
-        expect(env.deprecated).toHaveBeenCalledTimes(2);
-      });
     });
   });
 

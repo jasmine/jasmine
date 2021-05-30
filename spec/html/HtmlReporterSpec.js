@@ -303,6 +303,128 @@ describe('HtmlReporter', function() {
       expect(alertBars[3].innerHTML).toMatch(/global deprecation/);
       expect(alertBars[3].innerHTML).not.toMatch(/in /);
     });
+
+    it('displays expandable stack traces', function() {
+      var container = document.createElement('div'),
+        getContainer = function() {
+          return container;
+        },
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() {
+            return document.createElement.apply(document, arguments);
+          },
+          createTextNode: function() {
+            return document.createTextNode.apply(document, arguments);
+          }
+        }),
+        expander,
+        expanderLink,
+        expanderContents;
+
+      reporter.initialize();
+
+      reporter.jasmineStarted({});
+      reporter.jasmineDone({
+        deprecationWarnings: [
+          {
+            message: 'a deprecation',
+            stack: 'a stack trace'
+          }
+        ],
+        failedExpectations: []
+      });
+
+      expander = container.querySelector(
+        '.jasmine-alert .jasmine-bar .jasmine-expander'
+      );
+      expanderContents = expander.querySelector('.jasmine-expander-contents');
+      expect(expanderContents.textContent).toMatch(/a stack trace/);
+
+      expanderLink = expander.querySelector('a');
+      expect(expander).not.toHaveClass('jasmine-expanded');
+      expect(expanderLink.textContent).toMatch(/Show stack trace/);
+
+      expanderLink.click();
+      expect(expander).toHaveClass('jasmine-expanded');
+      expect(expanderLink.textContent).toMatch(/Hide stack trace/);
+      expanderLink.click();
+
+      expect(expander).not.toHaveClass('jasmine-expanded');
+      expect(expanderLink.textContent).toMatch(/Show stack trace/);
+    });
+
+    it('omits the expander when there is no stack trace', function() {
+      var container = document.createElement('div'),
+        getContainer = function() {
+          return container;
+        },
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() {
+            return document.createElement.apply(document, arguments);
+          },
+          createTextNode: function() {
+            return document.createTextNode.apply(document, arguments);
+          }
+        }),
+        warningBar;
+
+      reporter.initialize();
+
+      reporter.jasmineStarted({});
+      reporter.jasmineDone({
+        deprecationWarnings: [
+          {
+            message: 'a deprecation',
+            stack: ''
+          }
+        ],
+        failedExpectations: []
+      });
+
+      warningBar = container.querySelector('.jasmine-warning');
+      expect(warningBar.querySelector('.jasmine-expander')).toBeFalsy();
+    });
+
+    it('nicely formats the verboseDeprecations note', function() {
+      var container = document.createElement('div'),
+        getContainer = function() {
+          return container;
+        },
+        reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() {
+            return document.createElement.apply(document, arguments);
+          },
+          createTextNode: function() {
+            return document.createTextNode.apply(document, arguments);
+          }
+        }),
+        alertBar;
+
+      reporter.initialize();
+
+      reporter.jasmineStarted({});
+      reporter.jasmineDone({
+        deprecationWarnings: [
+          {
+            message:
+              'a deprecation\nNote: This message will be shown only once. Set config.verboseDeprecations to true to see every occurrence.'
+          }
+        ],
+        failedExpectations: []
+      });
+
+      alertBar = container.querySelector('.jasmine-warning');
+
+      expect(alertBar.innerHTML).toMatch(
+        /a deprecation<br>Note: This message will be shown only once/
+      );
+    });
   });
 
   describe('when Jasmine is done', function() {

@@ -165,6 +165,8 @@ body {
   background-color: #bababa;
 }
 .jasmine_html-reporter .jasmine-bar.jasmine-warning {
+  margin-top: 14px;
+  margin-bottom: 14px;
   background-color: #ba9d37;
   color: #333;
 }
@@ -268,4 +270,21 @@ body {
   border: 1px solid #ddd;
   background: white;
   white-space: pre;
+}
+.jasmine_html-reporter .jasmine-expander a {
+  display: block;
+  margin-left: 14px;
+  color: blue;
+  text-decoration: underline;
+}
+.jasmine_html-reporter .jasmine-expander-contents {
+  display: none;
+}
+.jasmine_html-reporter .jasmine-expanded {
+  padding-bottom: 10px;
+}
+.jasmine_html-reporter .jasmine-expanded .jasmine-expander-contents {
+  display: block;
+  margin-left: 14px;
+  padding: 5px;
 }

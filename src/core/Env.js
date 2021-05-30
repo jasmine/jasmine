@@ -32,7 +32,6 @@ getJasmineRequireObj().Env = function(j$) {
     var currentlyExecutingSuites = [];
     var currentDeclarationSuite = null;
     var hasFailures = false;
-    var deprecationsToSuppress = [];
 
     /**
      * This represents the available options to configure Jasmine.
@@ -228,6 +227,7 @@ getJasmineRequireObj().Env = function(j$) {
 
       if (configuration.hasOwnProperty('verboseDeprecations')) {
         config.verboseDeprecations = configuration.verboseDeprecations;
+        deprecator.verboseDeprecations(config.verboseDeprecations);
       }
     };
 
@@ -482,48 +482,31 @@ getJasmineRequireObj().Env = function(j$) {
         return buildExpectationResult(attrs);
       };
 
-    this.deprecated = function(deprecation) {
+    /**
+     * Causes a deprecation warning to be logged to the console and reported to
+     * reporters.
+     *
+     * The optional second parameter is an object that can have either of the
+     * following properties:
+     *
+     * omitStackTrace: Whether to omit the stack trace. Optional. Defaults to
+     * false. This option is ignored if the deprecation is an Error. Set this
+     * when the stack trace will not contain anything that helps the user find
+     * the source of the deprecation.
+     *
+     * ignoreRunnable: Whether to log the deprecation on the root suite, ignoring
+     * the spec or suite that's running when it happens. Optional. Defaults to
+     * false.
+     *
+     * @name Env#deprecated
+     * @since 2.99
+     * @function
+     * @param {String|Error} deprecation The deprecation message
+     * @param {Object} [options] Optional extra options, as described above
+     */
+    this.deprecated = function(deprecation, options) {
       var runnable = currentRunnable() || topSuite;
-      var context;
-
-      if (runnable === topSuite) {
-        context = '';
-      } else if (runnable === currentSuite()) {
-        context = ' (in suite: ' + runnable.getFullName() + ')';
-      } else {
-        context = ' (in spec: ' + runnable.getFullName() + ')';
-      }
-
-      runnable.addDeprecationWarning(deprecation);
-      if (
-        typeof console !== 'undefined' &&
-        typeof console.error === 'function'
-      ) {
-        console.error('DEPRECATION: ' + deprecation + context);
-      }
-    };
-
-    this.deprecatedOnceWithStack = function(deprecation) {
-      var formatter = new j$.ExceptionFormatter(),
-        stackTrace = formatter
-          .stack(j$.util.errorWithStack())
-          .replace(/^Error\n/m, '');
-
-      if (config.verboseDeprecations) {
-        this.deprecated(deprecation + '\n' + stackTrace);
-      } else {
-        if (deprecationsToSuppress.indexOf(deprecation) === -1) {
-          this.deprecated(
-            deprecation +
-              '\n' +
-              'Note: This message will be shown only once. ' +
-              'Set config.verboseDeprecations to true to see every occurrence.\n' +
-              stackTrace
-          );
-        }
-
-        deprecationsToSuppress.push(deprecation);
-      }
+      deprecator.addDeprecationWarning(runnable, deprecation, options);
     };
 
     var queueRunnerFactory = function(options, args) {
@@ -559,6 +542,7 @@ getJasmineRequireObj().Env = function(j$) {
       asyncExpectationFactory: suiteAsyncExpectationFactory,
       expectationResultFactory: expectationResultFactory
     });
+    var deprecator = new j$.Deprecator(topSuite);
     defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
 
@@ -570,7 +554,7 @@ getJasmineRequireObj().Env = function(j$) {
      * @return {Suite} the root suite
      */
     this.topSuite = function() {
-      return topSuite;
+      return j$.deprecatingSuiteProxy(topSuite, null, this);
     };
 
     /**
