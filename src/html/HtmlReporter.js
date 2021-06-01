@@ -534,7 +534,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       );
       throwCheckbox.checked = config.oneFailurePerSpec;
       throwCheckbox.onclick = function() {
-        navigateWithNewParam('throwFailures', !config.oneFailurePerSpec);
+        navigateWithNewParam('oneFailurePerSpec', !config.oneFailurePerSpec);
       };
 
       var randomCheckbox = optionsMenuDom.querySelector(

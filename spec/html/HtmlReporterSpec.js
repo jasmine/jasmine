@@ -802,7 +802,7 @@ describe('HtmlReporter', function() {
         var throwingExpectationsUI = container.querySelector('.jasmine-throw');
         throwingExpectationsUI.click();
 
-        expect(navigateHandler).toHaveBeenCalledWith('throwFailures', true);
+        expect(navigateHandler).toHaveBeenCalledWith('oneFailurePerSpec', true);
       });
 
       it('should navigate and change the setting to off', function() {
@@ -831,7 +831,10 @@ describe('HtmlReporter', function() {
         var throwingExpectationsUI = container.querySelector('.jasmine-throw');
         throwingExpectationsUI.click();
 
-        expect(navigateHandler).toHaveBeenCalledWith('throwFailures', false);
+        expect(navigateHandler).toHaveBeenCalledWith(
+          'oneFailurePerSpec',
+          false
+        );
       });
     });
     describe('UI for hiding disabled specs', function() {
