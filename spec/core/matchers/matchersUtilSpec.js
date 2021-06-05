@@ -893,7 +893,6 @@ describe('matchersUtil', function() {
     });
 
     it('fails for ArrayBuffers with same length but different content', function() {
-      jasmine.getEnv().requireFunctioningTypedArrays();
       jasmine.getEnv().requireFunctioningArrayBuffers();
       var buffer1 = new ArrayBuffer(4); // eslint-disable-line compat/compat
       var buffer2 = new ArrayBuffer(4); // eslint-disable-line compat/compat
@@ -906,7 +905,6 @@ describe('matchersUtil', function() {
 
     describe('Typed arrays', function() {
       it('fails for typed arrays of same length and contents but different types', function() {
-        jasmine.getEnv().requireFunctioningTypedArrays();
         // eslint-disable-next-line compat/compat
         var a1 = new Int8Array(1);
         // eslint-disable-next-line compat/compat

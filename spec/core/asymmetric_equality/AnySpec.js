@@ -46,9 +46,7 @@ describe('Any', function() {
   });
 
   it('matches a TypedArray', function() {
-    jasmine.getEnv().requireFunctioningTypedArrays();
-
-    var any = new jasmineUnderTest.Any(Uint32Array); // eslint-disable-line compat/compat
+    var any = new jasmineUnderTest.Any(Uint32Array);
 
     expect(any.asymmetricMatch(new Uint32Array([]))).toBe(true); // eslint-disable-line compat/compat
   });

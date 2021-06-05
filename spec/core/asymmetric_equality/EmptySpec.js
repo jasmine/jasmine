@@ -42,7 +42,6 @@ describe('Empty', function() {
   });
 
   it('matches an empty typed array', function() {
-    jasmine.getEnv().requireFunctioningTypedArrays();
     var empty = new jasmineUnderTest.Empty();
 
     expect(empty.asymmetricMatch(new Int16Array())).toBe(true); // eslint-disable-line compat/compat

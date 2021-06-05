@@ -40,8 +40,6 @@ describe('Anything', function() {
   });
 
   it('matches a TypedArray', function() {
-    jasmine.getEnv().requireFunctioningTypedArrays();
-
     var anything = new jasmineUnderTest.Anything();
 
     expect(anything.asymmetricMatch(new Uint32Array([]))).toBe(true); // eslint-disable-line compat/compat
