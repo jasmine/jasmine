@@ -917,22 +917,30 @@ describe('matchersUtil', function() {
 
       // eslint-disable-next-line compat/compat
       [
-        Int8Array,
-        Uint8Array,
-        Uint8ClampedArray,
-        Int16Array,
-        Uint16Array,
-        Int32Array,
-        Uint32Array,
-        Float32Array,
-        Float64Array
-      ].forEach(function(TypedArrayCtor) {
+        'Int8Array',
+        'Uint8Array',
+        'Uint8ClampedArray',
+        'Int16Array',
+        'Uint16Array',
+        'Int32Array',
+        'Uint32Array',
+        'Float32Array',
+        'Float64Array'
+      ].forEach(function(typeName) {
+        function requireType() {
+          var TypedArrayCtor = jasmine.getGlobal()[typeName];
+
+          if (!TypedArrayCtor) {
+            pending('Browser does not support ' + typeName);
+          }
+
+          return TypedArrayCtor;
+        }
+
         it(
-          'passes for ' +
-            TypedArrayCtor.name +
-            's with same length and content',
+          'passes for ' + typeName + 's with same length and content',
           function() {
-            jasmine.getEnv().requireFunctioningTypedArrays();
+            var TypedArrayCtor = requireType();
             var a1 = new TypedArrayCtor(2);
             var a2 = new TypedArrayCtor(2);
             a1[0] = a2[0] = 0;
@@ -941,23 +949,18 @@ describe('matchersUtil', function() {
           }
         );
 
-        it(
-          'fails for ' + TypedArrayCtor.name + 's with different length',
-          function() {
-            jasmine.getEnv().requireFunctioningTypedArrays();
-            var a1 = new TypedArrayCtor(2);
-            var a2 = new TypedArrayCtor(1);
-            a1[0] = a1[1] = a2[0] = 0;
-            expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
-          }
-        );
+        it('fails for ' + typeName + 's with different length', function() {
+          var TypedArrayCtor = requireType();
+          var a1 = new TypedArrayCtor(2);
+          var a2 = new TypedArrayCtor(1);
+          a1[0] = a1[1] = a2[0] = 0;
+          expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+        });
 
         it(
-          'fails for ' +
-            TypedArrayCtor.name +
-            's with same length but different content',
+          'fails for ' + typeName + 's with same length but different content',
           function() {
-            jasmine.getEnv().requireFunctioningTypedArrays();
+            var TypedArrayCtor = requireType();
             var a1 = new TypedArrayCtor(1);
             var a2 = new TypedArrayCtor(1);
             a1[0] = 0;
@@ -966,8 +969,8 @@ describe('matchersUtil', function() {
           }
         );
 
-        it('checks nonstandard properties', function() {
-          jasmine.getEnv().requireFunctioningTypedArrays();
+        it('checks nonstandard properties of ' + typeName, function() {
+          var TypedArrayCtor = requireType();
           var a1 = new TypedArrayCtor(1);
           var a2 = new TypedArrayCtor(1);
           a1[0] = a2[0] = 0;
@@ -975,8 +978,8 @@ describe('matchersUtil', function() {
           expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
         });
 
-        it('works with custom equality testers', function() {
-          jasmine.getEnv().requireFunctioningTypedArrays();
+        it('works with custom equality testers with ' + typeName, function() {
+          var TypedArrayCtor = requireType();
           var a1 = new TypedArrayCtor(1);
           var a2 = new TypedArrayCtor(1);
           var matchersUtil = new jasmineUnderTest.MatchersUtil({
