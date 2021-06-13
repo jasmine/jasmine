@@ -25,6 +25,13 @@
   "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
   "homepage": "https://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
+  "files": [
+    "MIT.LICENSE",
+    "README.md",
+    "images/*.{png,svg}",
+    "lib/**/*.{js,css}",
+    "package.json"
+  ],
   "devDependencies": {
     "ejs": "^2.5.5",
     "eslint": "^6.8.0",
