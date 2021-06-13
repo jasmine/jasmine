@@ -10,12 +10,15 @@ Gemfile.lock
 Rakefile
 jasmine-core.gemspec
 .bundle/
+.editorconfig
+.eslintignore
 .gitignore
 .gitmodules
-.idea
+.idea/
 .jshintrc
 .rspec
 .sass-cache/
+.travis.yml
 .circleci
 scripts/
 *.sh
