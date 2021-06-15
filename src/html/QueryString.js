@@ -26,7 +26,10 @@ jasmineRequire.QueryString = function() {
           encodeURIComponent(prop) + '=' + encodeURIComponent(paramMap[prop])
         );
       }
-      return '?' + qStrPairs.join('&');
+      // include getWindowLocation() to fix issue with karma-jasmine-html-reporter in angular: see https://github.com/jasmine/jasmine/issues/1906
+      return (
+        (options.getWindowLocation().pathname || '') + '?' + qStrPairs.join('&')
+      );
     }
 
     function queryStringToParamMap() {
