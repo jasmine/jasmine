@@ -2,11 +2,11 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
   // TODO: convert all uses of j$.pp to use the injected pp
 
   /**
+   * @class MatchersUtil
+   * @classdesc Utilities for use in implementing matchers.<br>
    * _Note:_ Do not construct this directly. Jasmine will construct one and
    * pass it to matchers and asymmetric equality testers.
-   * @name MatchersUtil
-   * @classdesc Utilities for use in implementing matchers
-   * @constructor
+   * @hideconstructor
    */
   function MatchersUtil(options) {
     options = options || {};
