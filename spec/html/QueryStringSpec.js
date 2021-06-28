@@ -48,21 +48,6 @@ describe('QueryString', function() {
       expect(result).toMatch(/foo=bar/);
       expect(result).toMatch(/baz=quux/);
     });
-
-    it('includes url pathname with the query string including the given key/value pair', function() {
-      var windowLocation = {
-          pathname: 'debug.html',
-          search: '?foo=bar'
-        },
-        queryString = new jasmineUnderTest.QueryString({
-          getWindowLocation: function() {
-            return windowLocation;
-          }
-        });
-
-      var result = queryString.fullStringWithNewParam('baz', 'quux');
-      expect(result).toBe('debug.html?foo=bar&baz=quux');
-    });
   });
 
   describe('#getParam', function() {
