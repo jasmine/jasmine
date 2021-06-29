@@ -484,7 +484,7 @@ describe('HtmlReporter', function() {
       var suiteDetail = outerSuite.childNodes[0];
       var suiteLink = suiteDetail.childNodes[0];
       expect(suiteLink.innerHTML).toEqual('A Suite');
-      expect(suiteLink.getAttribute('href')).toEqual('?foo=bar&spec=A Suite');
+      expect(suiteLink.getAttribute('href')).toEqual('/?foo=bar&spec=A Suite');
 
       var specs = outerSuite.childNodes[1];
       var spec = specs.childNodes[0];
@@ -494,7 +494,7 @@ describe('HtmlReporter', function() {
       var specLink = spec.childNodes[0];
       expect(specLink.innerHTML).toEqual('with a spec');
       expect(specLink.getAttribute('href')).toEqual(
-        '?foo=bar&spec=A Suite with a spec'
+        '/?foo=bar&spec=A Suite with a spec'
       );
     });
 
@@ -1050,7 +1050,7 @@ describe('HtmlReporter', function() {
         var seedBar = container.querySelector('.jasmine-seed-bar');
         expect(seedBar.textContent).toBe(', randomized with seed 424242');
         var seedLink = container.querySelector('.jasmine-seed-bar a');
-        expect(seedLink.getAttribute('href')).toBe('?seed=424242');
+        expect(seedLink.getAttribute('href')).toBe('/?seed=424242');
       });
 
       it('should not show the current seed bar if not randomizing', function() {
@@ -1099,7 +1099,7 @@ describe('HtmlReporter', function() {
         reporter.jasmineDone({ order: { random: true } });
 
         var skippedLink = container.querySelector('.jasmine-skipped a');
-        expect(skippedLink.getAttribute('href')).toEqual('?foo=bar&spec=');
+        expect(skippedLink.getAttribute('href')).toEqual('/?foo=bar&spec=');
       });
     });
 
