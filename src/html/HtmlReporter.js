@@ -177,7 +177,10 @@ jasmineRequire.HtmlReporter = function(j$) {
           ' of ' +
           totalSpecsDefined +
           ' specs - run all';
-        var skippedLink = addToExistingQueryString('spec', '');
+        // include window.location.pathname to fix issue with karma-jasmine-html-reporter in angular: see https://github.com/jasmine/jasmine/issues/1906
+        var skippedLink =
+          (window.location.pathname || '') +
+          addToExistingQueryString('spec', '');
         alert.appendChild(
           createDom(
             'span',
@@ -604,7 +607,11 @@ jasmineRequire.HtmlReporter = function(j$) {
         suite = suite.parent;
       }
 
-      return addToExistingQueryString('spec', els.join(' '));
+      // include window.location.pathname to fix issue with karma-jasmine-html-reporter in angular: see https://github.com/jasmine/jasmine/issues/1906
+      return (
+        (window.location.pathname || '') +
+        addToExistingQueryString('spec', els.join(' '))
+      );
     }
 
     function addDeprecationWarnings(result, runnableType) {
@@ -668,11 +675,19 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     function specHref(result) {
-      return addToExistingQueryString('spec', result.fullName);
+      // include window.location.pathname to fix issue with karma-jasmine-html-reporter in angular: see https://github.com/jasmine/jasmine/issues/1906
+      return (
+        (window.location.pathname || '') +
+        addToExistingQueryString('spec', result.fullName)
+      );
     }
 
     function seedHref(seed) {
-      return addToExistingQueryString('seed', seed);
+      // include window.location.pathname to fix issue with karma-jasmine-html-reporter in angular: see https://github.com/jasmine/jasmine/issues/1906
+      return (
+        (window.location.pathname || '') +
+        addToExistingQueryString('seed', seed)
+      );
     }
 
     function defaultQueryString(key, value) {
