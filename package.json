@@ -8,6 +8,7 @@
   },
   "keywords": [
     "test",
+    "testing",
     "jasmine",
     "tdd",
     "bdd"
@@ -22,7 +23,7 @@
     "ci": "node spec/support/ci.js",
     "ci:performance": "node spec/support/ci.js jasmine-browser-performance.json"
   },
-  "description": "Official packaging of Jasmine's core files for use by Node.js projects.",
+  "description": "Simple JavaScript testing framework for browsers and node.js",
   "homepage": "https://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
   "files": [
