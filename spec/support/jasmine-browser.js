@@ -28,7 +28,6 @@ module.exports = {
     'helpers/domHelpers.js',
     'helpers/integrationMatchers.js',
     'helpers/promises.js',
-    'helpers/requireFastCheck.js',
     'helpers/defineJasmineUnderTest.js'
   ],
   random: true,
