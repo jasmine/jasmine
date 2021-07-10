@@ -51,12 +51,11 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Ed
 
 | Environment       | Supported versions |
 |-------------------|--------------------|
-| Node              | 10, 12, 14, 16     |
-| Safari            | 9-14               |
+| Node              | 12.17+, 14, 16     |
+| Safari            | 13-14              |
 | Chrome            | Evergreen          |
 | Firefox           | Evergreen, 68, 78  |
 | Edge              | Evergreen          |
-| Internet Explorer | 11                 |
 
 For evergreen browsers, each version of Jasmine is tested against the version of the browser that is available to us
 at the time of release. Other browsers, as well as older & newer versions of some supported browsers, are likely to work.

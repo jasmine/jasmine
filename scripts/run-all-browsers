@@ -30,7 +30,6 @@ run_browser firefox 78
 run_browser firefox 68
 run_browser safari 14
 run_browser safari 13
-run_browser safari 9
 run_browser MicrosoftEdge latest
 
 echo
