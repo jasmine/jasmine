@@ -26,9 +26,6 @@ For the Jasmine browser runner:<br>
 For the Jasmine Ruby Gem:<br>
 [https://github.com/jasmine/jasmine-gem](https://github.com/jasmine/jasmine-gem).
 
-For the Jasmine headless browser gulp plugin:<br>
-[https://github.com/jasmine/gulp-jasmine-browser](https://github.com/jasmine/gulp-jasmine-browser).
-
 To install Jasmine standalone on your local box (where **_{#.#.#}_** below is substituted by the release number downloaded):
 
 * Download the standalone distribution for your desired release from the [releases page](https://github.com/jasmine/jasmine/releases).

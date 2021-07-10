@@ -28,7 +28,7 @@ When jasmine-core revs its major or minor version, the binding libraries should 
 
 When ready to release - specs are all green and the stories are done:
 
-1. Update the release notes in `release_notes` - use the Anchorman gem to generate the markdown file and edit accordingly
+1. Update the release notes in `release_notes` - use the Anchorman gem to generate the markdown file and edit accordingly. Include a list of supported environments.
 1. Update the version in `package.json`
 1. Run `npm run build`.
 1. Copy version to the Ruby gem with `grunt build:copyVersionToGem`
@@ -80,6 +80,7 @@ Probably only need to do this when releasing a minor version, and not a patch ve
 1. In `package.json`, update both the package version and the jasmine-core dependency version
 1. Commit and push.
 1. Wait for Circle CI to go green again.
+1. Run the tests on Windows locally.
 1. `grunt release `. (Note: This will publish the package by running `npm publish`.)
 
 #### Gem

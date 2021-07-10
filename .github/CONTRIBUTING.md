@@ -1,6 +1,12 @@
 # Developing for Jasmine Core
 
-We welcome your contributions! Thanks for helping make Jasmine a better project for everyone. Please review the backlog and discussion lists before starting work.  What you're looking for may already have been done. If it hasn't, the community can help make your contribution better. If you want to contribute but don't know what to work on, [issues tagged ready for work](https://github.com/jasmine/jasmine/labels/ready%20for%20work) should have enough detail to get started.
+We welcome your contributions! Thanks for helping make Jasmine a better project
+for everyone. Please review the backlog and discussion lists before starting
+work. What you're looking for may already have been done. If it hasn't, the
+community can help make your contribution better. If you want to contribute but
+don't know what to work on, 
+[issues tagged help needed](https://github.com/jasmine/jasmine/labels/help%20needed)
+should have enough detail to get started.
 
 ## Links
 
@@ -35,8 +41,8 @@ Once you've pushed a feature branch to your forked repo, you're ready to open a 
 * `/spec` contains all of the tests
     * mirrors the source directory
     * there are some additional files
-* `/dist` contains the standalone distributions as zip files
-* `/lib` contains the generated files for distribution as the Jasmine Rubygem and the Python package
+* `/lib` contains the compiled copy of Jasmine. This is used to self-test and
+  distributed as the `jasmine-core` Node, Ruby, and Python packages.
 
 ### Self-testing
 
@@ -48,35 +54,23 @@ The tests should always use `jasmineUnderTest` to refer to the objects and funct
 
 This file does all of the setup necessary for Jasmine to work. It loads all of the code, creates an `Env`, attaches the global functions, and builds the reporter. It also sets up the execution of the `Env` - for browsers this is in `window.onload`. While the default in `lib` is appropriate for browsers, projects may wish to customize this file.
 
-For example, for Jasmine development there is a different `dev_boot.js` for Jasmine development that does more work.
-
 ### Compatibility
 
-Jasmine supports the following environments:
-
-* Browsers
-  * IE10+
-  * Edge latest
-  * Firefox latest, 78, and 68
-  * Chrome latest
-  * Safari 8+
-
-* Node.js
-  * 10
-  * 12
-  * 14
+Jasmine runs in both Node and browsers, including some older browsers that do
+not support the latest JavaScript features. See the README for the list of
+currently supported environments.
 
 ## Development
 
 All source code belongs in `src/`. The `core/` directory contains the bulk of Jasmine's functionality. This code should remain browser- and environment-agnostic. If your feature or fix cannot be, as mentioned above, please degrade gracefully. Any code that depends on a browser (specifically, it expects `window` to be the global or `document` is present) should live in `src/html/`.
 
-### Install Dependencies
+### Install Dev Dependencies
 
 Jasmine Core relies on Node.js.
 
-To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http://gruntjs.com/), the [grunt-cli](https://github.com/gruntjs/grunt-cli) and ensure that `grunt` is on your path.
+To install the Node dependencies, you will need Node.js and npm.
 
-    $ npm install --local
+    $ npm install
 
 ...will install all of the node modules locally. Now run
 
@@ -88,12 +82,18 @@ To install the Node dependencies, you will need Node.js, Npm, and [Grunt](http:/
 
 Or, How to make a successful pull request
 
-* _Do not change the public interface_. Lots of projects depend on Jasmine and if you aren't careful you'll break them
-* _Be environment agnostic_ - server-side developers are just as important as browser developers
-* _Be browser agnostic_ - if you must rely on browser-specific functionality, please write it in a way that degrades gracefully
-* _Write specs_ - Jasmine's a testing framework; don't add functionality without test-driving it
-* _Write code in the style of the rest of the repo_ - Jasmine should look like a cohesive whole
-* _Ensure the *entire* test suite is green_ in all the big browsers, Node, and ESLint - your contribution shouldn't break Jasmine for other users
+* _Do not change the public interface_. Lots of projects depend on Jasmine and
+  if you aren't careful you'll break them.
+* _Be environment agnostic_ - server-side developers are just as important as
+  browser developers.
+* _Be browser agnostic_ - if you must rely on browser-specific functionality, 
+  please write it in a way that degrades gracefully.
+* _Write specs_ - Jasmine's a testing framework. Don't add functionality 
+  without test-driving it.
+* _Write code in the style of the rest of the repo_ - Jasmine should look like
+  a cohesive whole.
+* _Ensure the *entire* test suite is green_ in all the big browsers, Node, and
+  ESLint. Your contribution shouldn't break Jasmine for other users.
 
 Follow these tips and your pull request, patch, or suggestion is much more likely to be integrated.
 
@@ -123,9 +123,9 @@ The easiest way to run the tests in **Internet Explorer** is to run a VM that ha
 
 ## Before Committing or Submitting a Pull Request
 
-1. Ensure all specs are green in browser *and* node
+1. Ensure all specs are green in browser *and* node.
 1. Ensure eslint and prettier are clean as part of your `npm test` command. You can run `npm run cleanup` to have prettier re-write the files.
-1. Build `jasmine.js` with `npm run build` and run all specs again - this ensures that your changes self-test well
+1. Build `jasmine.js` with `npm run build` and run all specs again - this ensures that your changes self-test well.
 1. Revert your changes to `jasmine.js` and `jasmine-html.js`
     * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches
     * When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into main

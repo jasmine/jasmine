@@ -407,6 +407,123 @@ describe('SpyRegistry', function() {
       expect(subject.toString).not.toBe('I am a spy');
       expect(subject.hasOwnProperty).not.toBe('I am a spy');
     });
+    describe('when includeNonEnumerable is true', function() {
+      it('does not override Object.prototype methods', function() {
+        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+          createSpy: function() {
+            return 'I am a spy';
+          }
+        });
+        var subject = {
+          spied1: function() {}
+        };
+
+        spyRegistry.spyOnAllFunctions(subject, true);
+
+        expect(subject.spied1).toBe('I am a spy');
+        expect(subject.toString).not.toBe('I am a spy');
+        expect(subject.hasOwnProperty).not.toBe('I am a spy');
+      });
+
+      it('overrides non-enumerable properties', function() {
+        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+          createSpy: function() {
+            return 'I am a spy';
+          }
+        });
+        var subject = {
+          spied1: function() {},
+          spied2: function() {}
+        };
+
+        Object.defineProperty(subject, 'spied2', {
+          enumerable: false,
+          writable: true,
+          configurable: true
+        });
+
+        spyRegistry.spyOnAllFunctions(subject, true);
+
+        expect(subject.spied1).toBe('I am a spy');
+        expect(subject.spied2).toBe('I am a spy');
+      });
+
+      it('should not spy on non-enumerable functions named constructor', function() {
+        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+          createSpy: function() {
+            return 'I am a spy';
+          }
+        });
+        var subject = {
+          constructor: function() {}
+        };
+
+        Object.defineProperty(subject, 'constructor', {
+          enumerable: false,
+          writable: true,
+          configurable: true
+        });
+
+        spyRegistry.spyOnAllFunctions(subject, true);
+
+        expect(subject.constructor).not.toBe('I am a spy');
+      });
+
+      it('should spy on enumerable functions named constructor', function() {
+        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+          createSpy: function() {
+            return 'I am a spy';
+          }
+        });
+        var subject = {
+          constructor: function() {}
+        };
+
+        spyRegistry.spyOnAllFunctions(subject, true);
+
+        expect(subject.constructor).toBe('I am a spy');
+      });
+
+      it('should not throw an exception if we try and access strict mode restricted properties', function() {
+        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+          createSpy: function() {
+            return 'I am a spy';
+          }
+        });
+        var subject = function() {};
+        var fn = function() {
+          spyRegistry.spyOnAllFunctions(subject, true);
+        };
+
+        expect(fn).not.toThrow();
+      });
+
+      it('should not spy on properties which are more permissable further up the prototype chain', function() {
+        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+          createSpy: function() {
+            return 'I am a spy';
+          }
+        });
+        var subjectParent = Object.defineProperty({}, 'sharedProp', {
+          value: function() {},
+          writable: true,
+          configurable: true
+        });
+
+        var subject = Object.create(subjectParent);
+
+        Object.defineProperty(subject, 'sharedProp', {
+          value: function() {}
+        });
+
+        var fn = function() {
+          spyRegistry.spyOnAllFunctions(subject, true);
+        };
+
+        expect(fn).not.toThrow();
+        expect(subject).not.toBe('I am a spy');
+      });
+    });
   });
 
   describe('#clearSpies', function() {

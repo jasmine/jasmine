@@ -213,7 +213,7 @@ describe('Spies', function() {
       ).toBe(1);
     });
 
-    it('allows base name to be ommitted when assigning methods and properties', function() {
+    it('allows base name to be omitted when assigning methods and properties', function() {
       var spyObj = env.createSpyObj({ m: 3 }, { p: 4 });
 
       expect(spyObj.m()).toEqual(3);

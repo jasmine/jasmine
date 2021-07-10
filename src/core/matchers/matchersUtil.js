@@ -1,10 +1,10 @@
 getJasmineRequireObj().MatchersUtil = function(j$) {
   /**
+   * @class MatchersUtil
+   * @classdesc Utilities for use in implementing matchers.<br>
    * _Note:_ Do not construct this directly. Jasmine will construct one and
    * pass it to matchers and asymmetric equality testers.
-   * @name MatchersUtil
-   * @classdesc Utilities for use in implementing matchers
-   * @constructor
+   * @hideconstructor
    */
   function MatchersUtil(options) {
     options = options || {};
@@ -599,3 +599,28 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
 
   return MatchersUtil;
 };
+
+/**
+ * @interface AsymmetricEqualityTester
+ * @classdesc An asymmetric equality tester is an object that can match multiple
+ * objects. Examples include jasmine.any() and jasmine.stringMatching().
+ * User-defined asymmetric equality testers can also be defined and used in
+ * expectations.
+ * @see custom_asymmetric_equality_testers
+ * @since 2.0.0
+ */
+/**
+ * Determines whether a value matches this tester
+ * @function
+ * @name AsymmetricEqualityTester#asymmetricMatch
+ * @param value {any} The value to test
+ * @param matchersUtil {MatchersUtil} utilities for testing equality, etc
+ * @return {Boolean}
+ */
+/**
+ * Returns a string representation of this tester to use in matcher failure messages
+ * @function
+ * @name AsymmetricEqualityTester#jasmineToString
+ * @param pp {function} Function that takes a value and returns a pretty-printed representation
+ * @return {String}
+ */

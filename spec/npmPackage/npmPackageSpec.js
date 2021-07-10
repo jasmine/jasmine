@@ -108,4 +108,56 @@ describe('npm package', function() {
       false
     );
   });
+
+  it('does not have any unexpected files in the root directory', function() {
+    var files = fs.readdirSync(this.tmpDir);
+    expect(files).toEqual(['package']);
+  });
+
+  it('does not have any unexpected files in the package directory', function() {
+    var files = fs.readdirSync(path.resolve(this.tmpDir, 'package'));
+    files.sort();
+    expect(files).toEqual([
+      'MIT.LICENSE',
+      'README.md',
+      'images',
+      'lib',
+      'package.json'
+    ]);
+  });
+
+  it('only has images in the images dir', function() {
+    var files = fs.readdirSync(path.resolve(this.tmpDir, 'package/images')),
+      i;
+
+    for (i = 0; i < files.length; i++) {
+      expect(files[i]).toMatch(/\.(svg|png)$/);
+    }
+  });
+
+  it('only has JS and CSS files in the lib dir', function() {
+    var files = [],
+      i;
+
+    function getFiles(dir) {
+      var dirents = fs.readdirSync(dir, { withFileTypes: true }),
+        j;
+
+      for (j = 0; j < dirents.length; j++) {
+        dirent = dirents[j];
+
+        if (dirent.isDirectory()) {
+          getFiles(path.resolve(dir, dirent.name));
+        } else {
+          files.push(path.resolve(dir, dirent.name));
+        }
+      }
+    }
+
+    getFiles(path.resolve(this.tmpDir, 'package/lib'));
+
+    for (i = 0; i < files.length; i++) {
+      expect(files[i]).toMatch(/\.(js|css)$/);
+    }
+  });
 });

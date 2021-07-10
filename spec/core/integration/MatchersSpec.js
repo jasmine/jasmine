@@ -754,4 +754,89 @@ describe('Matchers (Integration)', function() {
         'a predicate, but it threw Error with message |nope|.'
     });
   });
+
+  describe('When an async matcher is used with .already()', function() {
+    it('propagates the matcher result when the promise is resolved', function(done) {
+      jasmine.getEnv().requirePromises();
+
+      env.it('a spec', function() {
+        // eslint-disable-next-line compat/compat
+        return env.expectAsync(Promise.resolve()).already.toBeRejected();
+      });
+
+      var specExpectations = function(result) {
+        expect(result.status).toEqual('failed');
+        expect(result.failedExpectations.length)
+          .withContext('Number of failed expectations')
+          .toEqual(1);
+        expect(result.failedExpectations[0].message).toEqual(
+          'Expected [object Promise] to be rejected.'
+        );
+        expect(result.failedExpectations[0].matcherName)
+          .withContext('Matcher name')
+          .not.toEqual('');
+      };
+
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
+    });
+
+    it('propagates the matcher result when the promise is rejected', function(done) {
+      jasmine.getEnv().requirePromises();
+
+      env.it('a spec', function() {
+        return (
+          env
+            // eslint-disable-next-line compat/compat
+            .expectAsync(Promise.reject(new Error('nope')))
+            .already.toBeResolved()
+        );
+      });
+
+      var specExpectations = function(result) {
+        expect(result.status).toEqual('failed');
+        expect(result.failedExpectations.length)
+          .withContext('Number of failed expectations')
+          .toEqual(1);
+        expect(result.failedExpectations[0].message).toEqual(
+          'Expected a promise to be resolved but it was ' +
+            'rejected with Error: nope.'
+        );
+        expect(result.failedExpectations[0].matcherName)
+          .withContext('Matcher name')
+          .not.toEqual('');
+      };
+
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
+    });
+
+    it('fails when the promise is pending', function(done) {
+      jasmine.getEnv().requirePromises();
+
+      // eslint-disable-next-line compat/compat
+      var promise = new Promise(function() {});
+
+      env.it('a spec', function() {
+        return env.expectAsync(promise).already.toBeResolved();
+      });
+
+      var specExpectations = function(result) {
+        expect(result.status).toEqual('failed');
+        expect(result.failedExpectations.length)
+          .withContext('Number of failed expectations')
+          .toEqual(1);
+        expect(result.failedExpectations[0].message).toEqual(
+          'Expected a promise to be settled ' +
+            '(via expectAsync(...).already) but it was pending.'
+        );
+        expect(result.failedExpectations[0].matcherName)
+          .withContext('Matcher name')
+          .not.toEqual('');
+      };
+
+      env.addReporter({ specDone: specExpectations });
+      env.execute(null, done);
+    });
+  });
 });

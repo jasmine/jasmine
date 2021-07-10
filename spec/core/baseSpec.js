@@ -74,4 +74,33 @@ describe('base helpers', function() {
       expect(jasmineUnderTest.isURL({})).toBe(false);
     });
   });
+
+  describe('isPending_', function() {
+    it('returns a promise that resolves to true when the promise is pending', function() {
+      jasmine.getEnv().requirePromises();
+      // eslint-disable-next-line compat/compat
+      var promise = new Promise(function() {});
+      return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
+        true
+      );
+    });
+
+    it('returns a promise that resolves to false when the promise is resolved', function() {
+      jasmine.getEnv().requirePromises();
+      // eslint-disable-next-line compat/compat
+      var promise = Promise.resolve();
+      return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
+        false
+      );
+    });
+
+    it('returns a promise that resolves to false when the promise is rejected', function() {
+      jasmine.getEnv().requirePromises();
+      // eslint-disable-next-line compat/compat
+      var promise = Promise.reject();
+      return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
+        false
+      );
+    });
+  });
 });
