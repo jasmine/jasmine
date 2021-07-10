@@ -842,12 +842,13 @@ describe('matchersUtil', function() {
 
     describe('Typed arrays', function() {
       it('fails for typed arrays of same length and contents but different types', function() {
+        var matchersUtil = new jasmineUnderTest.MatchersUtil();
         // eslint-disable-next-line compat/compat
         var a1 = new Int8Array(1);
         // eslint-disable-next-line compat/compat
         var a2 = new Uint8Array(1);
         a1[0] = a2[0] = 0;
-        expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+        expect(matchersUtil.equals(a1, a2)).toBe(false);
       });
 
       // eslint-disable-next-line compat/compat
@@ -876,41 +877,45 @@ describe('matchersUtil', function() {
           'passes for ' + typeName + 's with same length and content',
           function() {
             var TypedArrayCtor = requireType();
+            var matchersUtil = new jasmineUnderTest.MatchersUtil();
             var a1 = new TypedArrayCtor(2);
             var a2 = new TypedArrayCtor(2);
             a1[0] = a2[0] = 0;
             a1[1] = a2[1] = 1;
-            expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(true);
+            expect(matchersUtil.equals(a1, a2)).toBe(true);
           }
         );
 
         it('fails for ' + typeName + 's with different length', function() {
           var TypedArrayCtor = requireType();
+          var matchersUtil = new jasmineUnderTest.MatchersUtil();
           var a1 = new TypedArrayCtor(2);
           var a2 = new TypedArrayCtor(1);
           a1[0] = a1[1] = a2[0] = 0;
-          expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+          expect(matchersUtil.equals(a1, a2)).toBe(false);
         });
 
         it(
           'fails for ' + typeName + 's with same length but different content',
           function() {
             var TypedArrayCtor = requireType();
+            var matchersUtil = new jasmineUnderTest.MatchersUtil();
             var a1 = new TypedArrayCtor(1);
             var a2 = new TypedArrayCtor(1);
             a1[0] = 0;
             a2[0] = 1;
-            expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+            expect(matchersUtil.equals(a1, a2)).toBe(false);
           }
         );
 
         it('checks nonstandard properties of ' + typeName, function() {
           var TypedArrayCtor = requireType();
+          var matchersUtil = new jasmineUnderTest.MatchersUtil();
           var a1 = new TypedArrayCtor(1);
           var a2 = new TypedArrayCtor(1);
           a1[0] = a2[0] = 0;
           a1.extra = 'yes';
-          expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+          expect(matchersUtil.equals(a1, a2)).toBe(false);
         });
 
         it('works with custom equality testers with ' + typeName, function() {
@@ -945,36 +950,39 @@ describe('matchersUtil', function() {
           'passes for ' + typeName + 's with same length and content',
           function() {
             var TypedArrayCtor = requireType();
+            var matchersUtil = new jasmineUnderTest.MatchersUtil();
             var a1 = new TypedArrayCtor(2);
             var a2 = new TypedArrayCtor(2);
             // eslint-disable-next-line compat/compat
             a1[0] = a2[0] = BigInt(0);
             // eslint-disable-next-line compat/compat
             a1[1] = a2[1] = BigInt(1);
-            expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(true);
+            expect(matchersUtil.equals(a1, a2)).toBe(true);
           }
         );
 
         it('fails for ' + typeName + 's with different length', function() {
           var TypedArrayCtor = requireType();
+          var matchersUtil = new jasmineUnderTest.MatchersUtil();
           var a1 = new TypedArrayCtor(2);
           var a2 = new TypedArrayCtor(1);
           // eslint-disable-next-line compat/compat
           a1[0] = a1[1] = a2[0] = BigInt(0);
-          expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+          expect(matchersUtil.equals(a1, a2)).toBe(false);
         });
 
         it(
           'fails for ' + typeName + 's with same length but different content',
           function() {
             var TypedArrayCtor = requireType();
+            var matchersUtil = new jasmineUnderTest.MatchersUtil();
             var a1 = new TypedArrayCtor(2);
             var a2 = new TypedArrayCtor(2);
             // eslint-disable-next-line compat/compat
             a1[0] = a1[1] = a2[0] = BigInt(0);
             // eslint-disable-next-line compat/compat
             a2[1] = BigInt(1);
-            expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+            expect(matchersUtil.equals(a1, a2)).toBe(false);
           }
         );
       });
