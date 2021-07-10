@@ -7,78 +7,6 @@ describe('matchersUtil', function() {
   });
 
   describe('equals', function() {
-    describe('Properties', function() {
-      var fc;
-
-      beforeEach(function() {
-        fc = jasmine.getEnv().requireFastCheck();
-      });
-
-      function basicAnythingSettings() {
-        return {
-          key: fc.oneof(fc.string(), fc.constantFrom('k1', 'k2', 'k3')),
-          // Limiting depth & number of keys allows fast-check to try
-          // a lot more scalar values.
-          maxDepth: 2,
-          maxKeys: 5,
-          withBoxedValues: true,
-          withMap: true,
-          withSet: true
-        };
-      }
-
-      function numRuns() {
-        var many = 5000000;
-
-        // Be thorough but very slow when specified (usually on CI).
-        if (process.env.JASMINE_LONG_PROPERTY_TESTS) {
-          /* eslint-disable-next-line no-console */
-          console.log(
-            'Using',
-            many,
-            'runs of fc.assert because JASMINE_LONG_PROPERTY_TESTS was set. This may take several minutes.'
-          );
-          return many;
-        } else {
-          return undefined;
-        }
-      }
-
-      it('is symmetric', function() {
-        var matchersUtil = new jasmineUnderTest.MatchersUtil();
-
-        fc.assert(
-          fc.property(
-            fc.anything(basicAnythingSettings()),
-            fc.anything(basicAnythingSettings()),
-            function(a, b) {
-              return matchersUtil.equals(a, b) === matchersUtil.equals(b, a);
-            }
-          ),
-          {
-            numRuns: numRuns(),
-            examples: [[0, 5e-324]]
-          }
-        );
-      });
-
-      it('is reflexive', function() {
-        var matchersUtil = new jasmineUnderTest.MatchersUtil();
-        var anythingSettings = basicAnythingSettings();
-        anythingSettings.withMap = false;
-        fc.assert(
-          fc.property(fc.dedup(fc.anything(anythingSettings), 2), function(
-            values
-          ) {
-            return matchersUtil.equals(values[0], values[1]);
-          }),
-          {
-            numRuns: numRuns()
-          }
-        );
-      });
-    });
-
     it('passes for literals that are triple-equal', function() {
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
       expect(matchersUtil.equals(null, null)).toBe(true);
@@ -903,7 +831,6 @@ describe('matchersUtil', function() {
     });
 
     it('fails for ArrayBuffers with same length but different content', function() {
-      jasmine.getEnv().requireFunctioningTypedArrays();
       jasmine.getEnv().requireFunctioningArrayBuffers();
       var buffer1 = new ArrayBuffer(4); // eslint-disable-line compat/compat
       var buffer2 = new ArrayBuffer(4); // eslint-disable-line compat/compat
@@ -911,6 +838,146 @@ describe('matchersUtil', function() {
       array1[0] = 1;
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
       expect(matchersUtil.equals(buffer1, buffer2)).toBe(false);
+    });
+
+    describe('Typed arrays', function() {
+      it('fails for typed arrays of same length and contents but different types', function() {
+        // eslint-disable-next-line compat/compat
+        var a1 = new Int8Array(1);
+        // eslint-disable-next-line compat/compat
+        var a2 = new Uint8Array(1);
+        a1[0] = a2[0] = 0;
+        expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+      });
+
+      // eslint-disable-next-line compat/compat
+      [
+        'Int8Array',
+        'Uint8Array',
+        'Uint8ClampedArray',
+        'Int16Array',
+        'Uint16Array',
+        'Int32Array',
+        'Uint32Array',
+        'Float32Array',
+        'Float64Array'
+      ].forEach(function(typeName) {
+        function requireType() {
+          var TypedArrayCtor = jasmine.getGlobal()[typeName];
+
+          if (!TypedArrayCtor) {
+            pending('Browser does not support ' + typeName);
+          }
+
+          return TypedArrayCtor;
+        }
+
+        it(
+          'passes for ' + typeName + 's with same length and content',
+          function() {
+            var TypedArrayCtor = requireType();
+            var a1 = new TypedArrayCtor(2);
+            var a2 = new TypedArrayCtor(2);
+            a1[0] = a2[0] = 0;
+            a1[1] = a2[1] = 1;
+            expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(true);
+          }
+        );
+
+        it('fails for ' + typeName + 's with different length', function() {
+          var TypedArrayCtor = requireType();
+          var a1 = new TypedArrayCtor(2);
+          var a2 = new TypedArrayCtor(1);
+          a1[0] = a1[1] = a2[0] = 0;
+          expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+        });
+
+        it(
+          'fails for ' + typeName + 's with same length but different content',
+          function() {
+            var TypedArrayCtor = requireType();
+            var a1 = new TypedArrayCtor(1);
+            var a2 = new TypedArrayCtor(1);
+            a1[0] = 0;
+            a2[0] = 1;
+            expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+          }
+        );
+
+        it('checks nonstandard properties of ' + typeName, function() {
+          var TypedArrayCtor = requireType();
+          var a1 = new TypedArrayCtor(1);
+          var a2 = new TypedArrayCtor(1);
+          a1[0] = a2[0] = 0;
+          a1.extra = 'yes';
+          expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+        });
+
+        it('works with custom equality testers with ' + typeName, function() {
+          var TypedArrayCtor = requireType();
+          var a1 = new TypedArrayCtor(1);
+          var a2 = new TypedArrayCtor(1);
+          var matchersUtil = new jasmineUnderTest.MatchersUtil({
+            customTesters: [
+              function() {
+                return true;
+              }
+            ]
+          });
+          a1[0] = 0;
+          a2[0] = 1;
+          expect(matchersUtil.equals(a1, a2)).toBe(true);
+        });
+      });
+
+      ['BigInt64Array', 'BigUint64Array'].forEach(function(typeName) {
+        function requireType() {
+          var TypedArrayCtor = jasmine.getGlobal()[typeName];
+
+          if (!TypedArrayCtor) {
+            pending('Browser does not support ' + typeName);
+          }
+
+          return TypedArrayCtor;
+        }
+
+        it(
+          'passes for ' + typeName + 's with same length and content',
+          function() {
+            var TypedArrayCtor = requireType();
+            var a1 = new TypedArrayCtor(2);
+            var a2 = new TypedArrayCtor(2);
+            // eslint-disable-next-line compat/compat
+            a1[0] = a2[0] = BigInt(0);
+            // eslint-disable-next-line compat/compat
+            a1[1] = a2[1] = BigInt(1);
+            expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(true);
+          }
+        );
+
+        it('fails for ' + typeName + 's with different length', function() {
+          var TypedArrayCtor = requireType();
+          var a1 = new TypedArrayCtor(2);
+          var a2 = new TypedArrayCtor(1);
+          // eslint-disable-next-line compat/compat
+          a1[0] = a1[1] = a2[0] = BigInt(0);
+          expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+        });
+
+        it(
+          'fails for ' + typeName + 's with same length but different content',
+          function() {
+            var TypedArrayCtor = requireType();
+            var a1 = new TypedArrayCtor(2);
+            var a2 = new TypedArrayCtor(2);
+            // eslint-disable-next-line compat/compat
+            a1[0] = a1[1] = a2[0] = BigInt(0);
+            // eslint-disable-next-line compat/compat
+            a2[1] = BigInt(1);
+            expect(jasmineUnderTest.matchersUtil.equals(a1, a2)).toBe(false);
+          }
+        );
+      });
     });
 
     describe('when running in an environment with array polyfills', function() {

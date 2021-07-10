@@ -58,13 +58,6 @@ jobs:
           name: Run tests
           command: npm test
 
-  # Warning: Sometimes takes a very long time (>25 minutes) on Circle.
-  # Probably not a good idea to run it from anything but a nightly.
-  test_node_with_long_property_tests:
-    <<: *test_node
-    environment:
-      JASMINE_LONG_PROPERTY_TESTS: y
-
   test_browsers: &test_browsers
     executor: node14
     environment:
@@ -133,10 +126,6 @@ workflows:
           name: test_node_16
           requires:
              - build_node_16
-      - test_node_with_long_property_tests:
-          executor: node14
-          requires:
-             - build_node_14
       - test_node:
           executor: node12
           name: test_node_12

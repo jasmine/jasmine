@@ -15,12 +15,19 @@ describe('toBeResolved', function() {
   it('fails if the actual is rejected', function() {
     jasmine.getEnv().requirePromises();
 
-    var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+    var matchersUtil = new jasmineUnderTest.MatchersUtil({
+        pp: jasmineUnderTest.makePrettyPrinter([])
+      }),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolved(matchersUtil),
-      actual = Promise.reject('AsyncExpectationSpec rejection');
+      actual = Promise.reject(new Error('AsyncExpectationSpec rejection'));
 
     return matcher.compare(actual).then(function(result) {
-      expect(result).toEqual(jasmine.objectContaining({ pass: false }));
+      expect(result).toEqual({
+        pass: false,
+        message:
+          'Expected a promise to be resolved but it was rejected ' +
+          'with Error: AsyncExpectationSpec rejection.'
+      });
     });
   });
 

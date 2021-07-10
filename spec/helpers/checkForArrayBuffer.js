@@ -17,7 +17,6 @@
   }
 
   env.requireFunctioningArrayBuffers = function() {
-    env.requireFunctioningTypedArrays();
     if (!hasFunctioningArrayBuffers()) {
       env.pending('Browser has incomplete or missing support for ArrayBuffer');
     }

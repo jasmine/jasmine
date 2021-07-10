@@ -3,9 +3,12 @@
 - When in doubt, create an issue here.
 - If you have an issue with the Jasmine docs, file an issue in the docs repo
   here: https://github.com/jasmine/jasmine.github.io
+- If you have an issue with TypeScript typings, start a discussion at
+  [DefinitelyTpyed](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/new?category=issues-with-a-types-package)
 - This repository is for the core Jasmine framework
 - If you are using a test runner that wraps Jasmine, consider filing an issue with that library if appropriate:
   - [Jasmine npm](https://github.com/jasmine/jasmine-npm/issues)
+  - [Jasmine browser runner](https://github.com/jasmine/jasmine-browser/issues)
   - [Jasmine gem](https://github.com/jasmine/jasmine-gem/issues)
   - [Jasmine py](https://github.com/jasmine/jasmine-py/issues)
   - [Gulp Jasmine Browser](https://github.com/jasmine/gulp-jasmine-browser/issues)

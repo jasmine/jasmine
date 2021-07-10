@@ -19,14 +19,15 @@ describe('#toBeResolvedTo', function() {
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
-      actual = Promise.reject('AsyncExpectationSpec error');
+      actual = Promise.reject(new Error('AsyncExpectationSpec error'));
 
     return matcher.compare(actual, '').then(function(result) {
       expect(result).toEqual(
         jasmine.objectContaining({
           pass: false,
           message:
-            "Expected a promise to be resolved to '' but it was rejected."
+            "Expected a promise to be resolved to '' but it was rejected " +
+            'with Error: AsyncExpectationSpec error.'
         })
       );
     });

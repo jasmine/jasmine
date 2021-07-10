@@ -257,8 +257,6 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between arrays of different types', function() {
-    jasmine.getEnv().requireFunctioningTypedArrays();
-
     var actual = new Uint32Array([1, 2, 3]), // eslint-disable-line compat/compat
       expected = new Uint16Array([1, 2, 3]), // eslint-disable-line compat/compat
       message =

@@ -96,8 +96,8 @@ describe('AsyncExpectation', function() {
       jasmine.getEnv().requirePromises();
 
       var matchersUtil = {
-          buildFailureMessage: function() {
-            return 'failure message';
+          pp: function(val) {
+            return val.toString();
           }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
@@ -114,7 +114,8 @@ describe('AsyncExpectation', function() {
           expect(addExpectationResult).toHaveBeenCalledWith(
             false,
             jasmine.objectContaining({
-              message: 'Some context: failure message'
+              message:
+                'Some context: Expected a promise to be resolved but it was rejected with rejected.'
             })
           );
         });
@@ -144,7 +145,8 @@ describe('AsyncExpectation', function() {
             false,
             jasmine.objectContaining({
               message:
-                "Some context: Expected a promise to be resolved to 'a' but it was rejected."
+                "Some context: Expected a promise to be resolved to 'a' " +
+                "but it was rejected with 'b'."
             })
           );
         });
