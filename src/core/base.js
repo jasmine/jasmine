@@ -99,6 +99,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isError_ = function(value) {
+    if (!value) {
+      return false;
+    }
+
     if (value instanceof Error) {
       return true;
     }
@@ -107,9 +111,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       typeof window.trustedTypes !== 'undefined'
     ) {
       return (
-        value &&
-        typeof value.stack === 'string' &&
-        typeof value.message === 'string'
+        typeof value.stack === 'string' && typeof value.message === 'string'
       );
     }
     if (value && value.constructor && value.constructor.constructor) {
