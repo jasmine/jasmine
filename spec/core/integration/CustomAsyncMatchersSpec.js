@@ -222,14 +222,14 @@ describe('Custom Async Matchers (Integration)', function() {
         jasmine.stringMatching(
           'The matcher factory for "toBeFoo" accepts custom equality testers, ' +
             'but this parameter will no longer be passed in a future release. ' +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+            'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#matchers-cet> for details.'
         )
       );
       expect(env.deprecated).toHaveBeenCalledWith(
         jasmine.stringMatching(
           'The matcher factory for "toBeBar" accepts custom equality testers, ' +
             'but this parameter will no longer be passed in a future release. ' +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+            'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#matchers-cet> for details.'
         )
       );
       done();

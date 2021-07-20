@@ -66,7 +66,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
             'Use the pp method of the matchersUtil passed to the matcher factory ' +
             "or the asymmetric equality tester's `asymmetricMatch` method " +
             'instead. See ' +
-            '<https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+            '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#static-utils> for details.'
         );
         return j$.basicPrettyPrinter_;
       }
@@ -82,7 +82,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
           'jasmine.matchersUtil is deprecated and will be removed ' +
             'in a future release. Use the instance passed to the matcher factory or ' +
             "the asymmetric equality tester's `asymmetricMatch` method instead. " +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+            'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#static-utils> for details.'
         );
         return staticMatchersUtil;
       }

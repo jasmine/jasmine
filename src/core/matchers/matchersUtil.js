@@ -38,7 +38,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       j$.getEnv().deprecated(
         'Passing custom equality testers ' +
           'to MatchersUtil#contains is deprecated. ' +
-          'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+          'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#matchers-cet> for details.'
       );
     }
 
@@ -175,7 +175,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
         j$.getEnv().deprecated(
           'Passing custom equality testers ' +
             'to MatchersUtil#equals is deprecated. ' +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+            'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#matchers-cet> for details.'
         );
       }
 
@@ -183,7 +183,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
         j$.getEnv().deprecated(
           'Diff builder should be passed ' +
             'as the third argument to MatchersUtil#equals, not the fourth. ' +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+            'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#matchers-cet> for details.'
         );
       }
 

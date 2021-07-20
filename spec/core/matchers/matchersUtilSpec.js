@@ -1115,7 +1115,7 @@ describe('matchersUtil', function() {
         jasmine.stringMatching(
           'Passing custom equality testers ' +
             'to MatchersUtil#equals is deprecated. ' +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+            'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#matchers-cet> for details.'
         )
       );
     });
@@ -1130,7 +1130,7 @@ describe('matchersUtil', function() {
         jasmine.stringMatching(
           'Diff builder should be passed as the ' +
             'third argument to MatchersUtil#equals, not the fourth. ' +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+            'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#matchers-cet> for details.'
         )
       );
     });
@@ -1218,7 +1218,7 @@ describe('matchersUtil', function() {
       expect(deprecated).toHaveBeenCalledWith(
         jasmine.stringMatching(
           'Passing custom equality testers to MatchersUtil#contains is deprecated. ' +
-            'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.'
+            'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#matchers-cet> for details.'
         )
       );
     });

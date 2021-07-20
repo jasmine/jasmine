@@ -24,7 +24,7 @@ describe('asymmetricEqualityTesterArgCompatShim', function() {
         'The second argument to asymmetricMatch is now a MatchersUtil. ' +
         'Using it as an array of custom equality testers is deprecated and will stop ' +
         'working in a future release. ' +
-        'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.';
+        'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#asymmetricMatch-cet> for details.';
 
     expect(shim.length).toBe(2);
     expect(deprecated).toHaveBeenCalledWith(expectedMessage);
@@ -45,7 +45,7 @@ describe('asymmetricEqualityTesterArgCompatShim', function() {
         'The second argument to asymmetricMatch is now a MatchersUtil. ' +
         'Using it as an array of custom equality testers is deprecated and will stop ' +
         'working in a future release. ' +
-        'See <https://jasmine.github.io/tutorials/upgrading_to_4.0> for details.';
+        'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#asymmetricMatch-cet> for details.';
 
     expect(shim.filter).toBe(Array.prototype.filter);
     expect(deprecated).toHaveBeenCalledWith(expectedMessage);
