@@ -29,6 +29,43 @@ describe('base helpers', function() {
         }
       }, 100);
     });
+
+    it('returns true for an Error subclass', function() {
+      function MyError() {}
+      MyError.prototype = new Error();
+      expect(jasmineUnderTest.isError_(new MyError())).toBe(true);
+    });
+
+    it('returns true for an un-thrown Error with no message in this environment', function() {
+      expect(jasmineUnderTest.isError_(new Error())).toBe(true);
+    });
+
+    it('returns true for an Error that originated from another frame', function() {
+      var iframe, error;
+
+      if (typeof window === 'undefined') {
+        pending('This test only runs in browsers.');
+      }
+
+      iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      try {
+        error = iframe.contentWindow.eval('new Error()');
+        expect(jasmineUnderTest.isError_(error)).toBe(true);
+      } finally {
+        document.body.removeChild(iframe);
+      }
+    });
+
+    it('returns false for a falsy value', function() {
+      expect(jasmineUnderTest.isError_(undefined)).toBe(false);
+    });
+
+    it('returns false for a non-Error object', function() {
+      expect(jasmineUnderTest.isError_({})).toBe(false);
+    });
   });
 
   describe('isAsymmetricEqualityTester_', function() {
