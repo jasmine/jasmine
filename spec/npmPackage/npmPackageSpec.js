@@ -55,8 +55,7 @@ describe('npm package', function() {
   it('has jsFiles', function() {
     expect(this.packagedCore.files.jsFiles).toEqual([
       'jasmine.js',
-      'jasmine-html.js',
-      'json2.js'
+      'jasmine-html.js'
     ]);
 
     var packagedCore = this.packagedCore;
