@@ -223,9 +223,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.it('async', jasmine.getEnv().makeAsyncAwaitFunction());
+        env.it('async', async function() {});
       }).not.toThrow();
     });
   });
@@ -255,9 +254,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.xit('async', jasmine.getEnv().makeAsyncAwaitFunction());
+        env.xit('async', async function() {});
       }).not.toThrow();
     });
   });
@@ -282,9 +280,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.beforeEach(jasmine.getEnv().makeAsyncAwaitFunction());
+        env.beforeEach(async function() {});
       }).not.toThrow();
     });
   });
@@ -299,9 +296,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.beforeAll(jasmine.getEnv().makeAsyncAwaitFunction());
+        env.beforeAll(async function() {});
       }).not.toThrow();
     });
   });
@@ -316,9 +312,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.afterEach(jasmine.getEnv().makeAsyncAwaitFunction());
+        env.afterEach(async function() {});
       }).not.toThrow();
     });
   });
@@ -333,9 +328,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.afterAll(jasmine.getEnv().makeAsyncAwaitFunction());
+        env.afterAll(async function() {});
       }).not.toThrow();
     });
   });

@@ -90,8 +90,6 @@ describe('Matchers (Integration)', function() {
 
   function verifyPassesAsync(expectations) {
     it('passes', function(done) {
-      jasmine.getEnv().requirePromises();
-
       env.it('a spec', function() {
         return expectations(env);
       });
@@ -118,8 +116,6 @@ describe('Matchers (Integration)', function() {
 
   function verifyFailsAsync(expectations) {
     it('fails', function(done) {
-      jasmine.getEnv().requirePromises();
-
       env.it('a spec', function() {
         return expectations(env);
       });
@@ -147,7 +143,6 @@ describe('Matchers (Integration)', function() {
   function verifyFailsWithCustomObjectFormattersAsync(config) {
     it('uses custom object formatters', function(done) {
       var env = new jasmineUnderTest.Env();
-      jasmine.getEnv().requirePromises();
       env.it('a spec', function() {
         env.addCustomObjectFormatter(config.formatter);
         return config.expectations(env);
@@ -348,12 +343,10 @@ describe('Matchers (Integration)', function() {
 
   describe('toBeResolved', function() {
     verifyPassesAsync(function(env) {
-      // eslint-disable-next-line compat/compat
       return env.expectAsync(Promise.resolve()).toBeResolved();
     });
 
     verifyFailsAsync(function(env) {
-      // eslint-disable-next-line compat/compat
       return env.expectAsync(Promise.reject()).toBeResolved();
     });
   });
@@ -363,12 +356,10 @@ describe('Matchers (Integration)', function() {
       env.addCustomEqualityTester(function(a, b) {
         return a.toString() === b.toString();
       });
-      // eslint-disable-next-line compat/compat
       return env.expectAsync(Promise.resolve('5')).toBeResolvedTo(5);
     });
 
     verifyFailsAsync(function(env) {
-      // eslint-disable-next-line compat/compat
       return env.expectAsync(Promise.resolve('foo')).toBeResolvedTo('bar');
     });
 
@@ -377,7 +368,6 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        // eslint-disable-next-line compat/compat
         return env.expectAsync(Promise.resolve('x')).toBeResolvedTo('y');
       },
       expectedMessage:
@@ -388,12 +378,10 @@ describe('Matchers (Integration)', function() {
 
   describe('toBeRejected', function() {
     verifyPassesAsync(function(env) {
-      // eslint-disable-next-line compat/compat
       return env.expectAsync(Promise.reject('nope')).toBeRejected();
     });
 
     verifyFailsAsync(function(env) {
-      // eslint-disable-next-line compat/compat
       return env.expectAsync(Promise.resolve()).toBeRejected();
     });
   });
@@ -403,12 +391,10 @@ describe('Matchers (Integration)', function() {
       env.addCustomEqualityTester(function(a, b) {
         return a.toString() === b.toString();
       });
-      // eslint-disable-next-line compat/compat
       return env.expectAsync(Promise.reject('5')).toBeRejectedWith(5);
     });
 
     verifyFailsAsync(function(env) {
-      // eslint-disable-next-line compat/compat
       return env.expectAsync(Promise.resolve()).toBeRejectedWith('nope');
     });
 
@@ -417,7 +403,6 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        // eslint-disable-next-line compat/compat
         return env.expectAsync(Promise.reject('x')).toBeRejectedWith('y');
       },
       expectedMessage:
@@ -428,16 +413,12 @@ describe('Matchers (Integration)', function() {
 
   describe('toBeRejectedWithError', function() {
     verifyPassesAsync(function(env) {
-      return (
-        env
-          // eslint-disable-next-line compat/compat
-          .expectAsync(Promise.reject(new Error()))
-          .toBeRejectedWithError(Error)
-      );
+      return env
+        .expectAsync(Promise.reject(new Error()))
+        .toBeRejectedWithError(Error);
     });
 
     verifyFailsAsync(function(env) {
-      // eslint-disable-next-line compat/compat
       return env.expectAsync(Promise.resolve()).toBeRejectedWithError(Error);
     });
 
@@ -446,12 +427,9 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        return (
-          env
-            // eslint-disable-next-line compat/compat
-            .expectAsync(Promise.reject('foo'))
-            .toBeRejectedWithError('foo')
-        );
+        return env
+          .expectAsync(Promise.reject('foo'))
+          .toBeRejectedWithError('foo');
       },
       expectedMessage:
         'Expected a promise to be rejected with Error: |foo| ' +
@@ -757,10 +735,7 @@ describe('Matchers (Integration)', function() {
 
   describe('When an async matcher is used with .already()', function() {
     it('propagates the matcher result when the promise is resolved', function(done) {
-      jasmine.getEnv().requirePromises();
-
       env.it('a spec', function() {
-        // eslint-disable-next-line compat/compat
         return env.expectAsync(Promise.resolve()).already.toBeRejected();
       });
 
@@ -782,15 +757,10 @@ describe('Matchers (Integration)', function() {
     });
 
     it('propagates the matcher result when the promise is rejected', function(done) {
-      jasmine.getEnv().requirePromises();
-
       env.it('a spec', function() {
-        return (
-          env
-            // eslint-disable-next-line compat/compat
-            .expectAsync(Promise.reject(new Error('nope')))
-            .already.toBeResolved()
-        );
+        return env
+          .expectAsync(Promise.reject(new Error('nope')))
+          .already.toBeResolved();
       });
 
       var specExpectations = function(result) {
@@ -812,9 +782,6 @@ describe('Matchers (Integration)', function() {
     });
 
     it('fails when the promise is pending', function(done) {
-      jasmine.getEnv().requirePromises();
-
-      // eslint-disable-next-line compat/compat
       var promise = new Promise(function() {});
 
       env.it('a spec', function() {

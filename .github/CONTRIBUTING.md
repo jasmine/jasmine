@@ -92,6 +92,7 @@ Or, How to make a successful pull request
   without test-driving it.
 * _Write code in the style of the rest of the repo_ - Jasmine should look like
   a cohesive whole.
+  * **Exception**: Prefer `const` or `let` over `var`.
 * _Ensure the *entire* test suite is green_ in all the big browsers, Node, and
   ESLint. Your contribution shouldn't break Jasmine for other users.
 
@@ -100,26 +101,14 @@ Follow these tips and your pull request, patch, or suggestion is much more likel
 ### Running Specs
 
 Be sure to run the tests in at least one supported Node version and at least a
-couple of supported browsers. It's also a good idea to run the tests in Internet 
-Explorer if you've touched code in `src/html`, if your change involves newer 
-JavaScript language/runtime features, or if you're unfamiliar with writing code 
-for older browsers. To run the tests in Node, simply use `npm test` as described 
-above. To run the tests in a browser, run `npm run serve` and then visit
-`http://localhost:8888`.
+couple of supported browsers. To run the tests in Node, simply use `npm test`
+as described above. To run the tests in a browser, run `npm run serve` and then
+visit `http://localhost:8888`.
 
 If you have the necessary Selenium drivers installed, you can also use Jasmine's
 CI tooling: 
 
     $ JASMINE_BROWSER=<name of browser> node spec/support/ci.js
-
-The easiest way to run the tests in **Internet Explorer** is to run a VM that has IE installed. It's easy to do this with VirtualBox.
-
-1. Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-1. Download a VM image [from Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/). Select "VirtualBox" as the platform.
-1. Unzip the downloaded archive. There should be an OVA file inside.
-1. In VirtualBox, choose `File > Import Appliance` and select the OVA file. Accept the default settings in the dialog that appears. Now you have a Windows VM!
-1. Run the VM and start IE.
-1. With `npm run serve` running on your host machine, navigate to `http://<your IP address>:8888` in IE.
 
 ## Before Committing or Submitting a Pull Request
 

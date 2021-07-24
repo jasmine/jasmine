@@ -620,9 +620,7 @@ describe('toEqual', function() {
   });
 
   it('does not report mismatches when comparing Maps with the same symbol keys', function() {
-    jasmine.getEnv().requireFunctioningSymbols();
-
-    var key = Symbol(); // eslint-disable-line compat/compat
+    var key = Symbol();
     var actual = new Map();
     actual.set(key, 1);
     var expected = new Map();
@@ -632,12 +630,10 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between Maps with different symbol keys', function() {
-    jasmine.getEnv().requireFunctioningSymbols();
-
     var actual = new Map();
-    actual.set(Symbol(), 1); // eslint-disable-line compat/compat
+    actual.set(Symbol(), 1);
     var expected = new Map();
-    expected.set(Symbol(), 1); // eslint-disable-line compat/compat
+    expected.set(Symbol(), 1);
     var message =
       'Expected Map( [ Symbol(), 1 ] ) to equal Map( [ Symbol(), 1 ] ).';
 
@@ -645,10 +641,8 @@ describe('toEqual', function() {
   });
 
   it('does not report mismatches when comparing Map symbol key to jasmine.anything()', function() {
-    jasmine.getEnv().requireFunctioningSymbols();
-
     var actual = new Map();
-    actual.set(Symbol(), 1); // eslint-disable-line compat/compat
+    actual.set(Symbol(), 1);
     var expected = new Map();
     expected.set(jasmineUnderTest.anything(), 1);
 

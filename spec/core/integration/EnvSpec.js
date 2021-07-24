@@ -156,10 +156,6 @@ describe('Env integration', function() {
               message: 'Failed: error message',
               stack: {
                 asymmetricMatch: function(other) {
-                  if (!other) {
-                    // IE doesn't give us a stacktrace so just ignore it.
-                    return true;
-                  }
                   var split = other.split('\n'),
                     firstLine = split[0];
                   if (firstLine.indexOf('error message') >= 0) {
@@ -2709,8 +2705,6 @@ describe('Env integration', function() {
   });
 
   it('supports async matchers', function(done) {
-    jasmine.getEnv().requirePromises();
-
     var specDone = jasmine.createSpy('specDone'),
       suiteDone = jasmine.createSpy('suiteDone'),
       jasmineDone = jasmine.createSpy('jasmineDone');
@@ -2723,7 +2717,6 @@ describe('Env integration', function() {
 
     function fail(innerDone) {
       var resolve;
-      // eslint-disable-next-line compat/compat
       var p = new Promise(function(res, rej) {
         resolve = res;
       });
@@ -2779,8 +2772,6 @@ describe('Env integration', function() {
       jasmine.getEnv().skipBrowserFlake();
     }
 
-    jasmine.getEnv().requirePromises();
-
     var specDone = jasmine.createSpy('specDone');
 
     env.addReporter({ specDone: specDone });
@@ -2789,7 +2780,7 @@ describe('Env integration', function() {
       env.addCustomEqualityTester(function() {
         return true;
       });
-      var p = Promise.resolve('something'); // eslint-disable-line compat/compat
+      var p = Promise.resolve('something');
       return env.expectAsync(p).toBeResolvedTo('something else');
     });
 
@@ -2805,8 +2796,6 @@ describe('Env integration', function() {
   });
 
   it('includes useful stack frames in async matcher failures', function(done) {
-    jasmine.getEnv().requirePromises();
-
     var specDone = jasmine.createSpy('specDone');
 
     env.addReporter({ specDone: specDone });
@@ -2815,7 +2804,7 @@ describe('Env integration', function() {
       env.addCustomEqualityTester(function() {
         return true;
       });
-      var p = Promise.resolve(); // eslint-disable-line compat/compat
+      var p = Promise.resolve();
       return env.expectAsync(p).toBeRejected();
     });
 
@@ -2834,11 +2823,8 @@ describe('Env integration', function() {
   });
 
   it('reports an error when an async expectation occurs after the spec finishes', function(done) {
-    jasmine.getEnv().requirePromises();
-
     var resolve,
       jasmineDone = jasmine.createSpy('jasmineDone'),
-      // eslint-disable-next-line compat/compat
       promise = new Promise(function(res) {
         resolve = res;
       });
@@ -2897,11 +2883,8 @@ describe('Env integration', function() {
   });
 
   it('reports an error when an async expectation occurs after the suite finishes', function(done) {
-    jasmine.getEnv().requirePromises();
-
     var resolve,
       jasmineDone = jasmine.createSpy('jasmineDone'),
-      // eslint-disable-next-line compat/compat
       promise = new Promise(function(res) {
         resolve = res;
       });

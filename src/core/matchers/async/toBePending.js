@@ -1,4 +1,3 @@
-/* eslint-disable compat/compat */
 getJasmineRequireObj().toBePending = function(j$) {
   /**
    * Expect a promise to be pending, i.e. the promise is neither resolved nor rejected.

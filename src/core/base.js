@@ -106,25 +106,8 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     if (value instanceof Error) {
       return true;
     }
-    if (
-      typeof window !== 'undefined' &&
-      typeof window.trustedTypes !== 'undefined'
-    ) {
-      return (
-        typeof value.stack === 'string' && typeof value.message === 'string'
-      );
-    }
-    if (value && value.constructor && value.constructor.constructor) {
-      var valueGlobal = value.constructor.constructor('return this');
-      if (j$.isFunction_(valueGlobal)) {
-        valueGlobal = valueGlobal();
-      }
 
-      if (valueGlobal.Error && value instanceof valueGlobal.Error) {
-        return true;
-      }
-    }
-    return false;
+    return typeof value.stack === 'string' && typeof value.message === 'string';
   };
 
   j$.isAsymmetricEqualityTester_ = function(obj) {
@@ -166,7 +149,6 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return (
       obj !== null &&
       typeof obj !== 'undefined' &&
-      typeof jasmineGlobal.WeakMap !== 'undefined' &&
       obj.constructor === jasmineGlobal.WeakMap
     );
   };
@@ -175,7 +157,6 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return (
       obj !== null &&
       typeof obj !== 'undefined' &&
-      typeof jasmineGlobal.URL !== 'undefined' &&
       obj.constructor === jasmineGlobal.URL
     );
   };
@@ -184,17 +165,12 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return (
       obj !== null &&
       typeof obj !== 'undefined' &&
-      typeof jasmineGlobal.DataView !== 'undefined' &&
       obj.constructor === jasmineGlobal.DataView
     );
   };
 
   j$.isPromise = function(obj) {
-    return (
-      typeof jasmineGlobal.Promise !== 'undefined' &&
-      !!obj &&
-      obj.constructor === jasmineGlobal.Promise
-    );
+    return !!obj && obj.constructor === jasmineGlobal.Promise;
   };
 
   j$.isPromiseLike = function(obj) {
@@ -215,7 +191,6 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
 
   j$.isPending_ = function(promise) {
     var sentinel = {};
-    // eslint-disable-next-line compat/compat
     return Promise.race([promise, Promise.resolve(sentinel)]).then(
       function(result) {
         return result === sentinel;

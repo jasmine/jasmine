@@ -61,10 +61,6 @@ describe('Spec', function() {
     spec.execute();
 
     fakeQueueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
-    // TODO: due to some issue with the Pretty Printer, this line fails, but the other two pass.
-    // This means toHaveBeenCalledWith on IE8 will always be broken.
-
-    //   expect(startCallback).toHaveBeenCalledWith(spec);
     expect(startCallback).toHaveBeenCalled();
     expect(startCallback.calls.first().object).toEqual(spec);
   });

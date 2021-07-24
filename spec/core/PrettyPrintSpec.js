@@ -295,20 +295,15 @@ describe('PrettyPrinter', function() {
 
   it('should indicate getters on objects as such', function() {
     var pp = jasmineUnderTest.makePrettyPrinter();
-    var sampleValue = { id: 1 };
-    if (sampleValue.__defineGetter__) {
-      //not supported in IE!
-      sampleValue.__defineGetter__('calculatedValue', function() {
+    var sampleValue = {
+      id: 1,
+      get calculatedValue() {
         throw new Error("don't call me!");
-      });
-    }
-    if (sampleValue.__defineGetter__) {
-      expect(pp(sampleValue)).toEqual(
-        'Object({ id: 1, calculatedValue: <getter> })'
-      );
-    } else {
-      expect(pp(sampleValue)).toEqual('Object({ id: 1 })');
-    }
+      }
+    };
+    expect(pp(sampleValue)).toEqual(
+      'Object({ id: 1, calculatedValue: <getter> })'
+    );
   });
 
   it('should not do HTML escaping of strings', function() {

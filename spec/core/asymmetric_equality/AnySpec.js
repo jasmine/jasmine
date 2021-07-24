@@ -48,11 +48,9 @@ describe('Any', function() {
   });
 
   it('matches a Symbol', function() {
-    jasmine.getEnv().requireFunctioningSymbols();
+    var any = new jasmineUnderTest.Any(Symbol);
 
-    var any = new jasmineUnderTest.Any(Symbol); // eslint-disable-line compat/compat
-
-    expect(any.asymmetricMatch(Symbol())).toBe(true); // eslint-disable-line compat/compat
+    expect(any.asymmetricMatch(Symbol())).toBe(true);
   });
 
   it('matches another constructed object', function() {

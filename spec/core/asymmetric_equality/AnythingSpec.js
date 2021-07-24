@@ -42,11 +42,9 @@ describe('Anything', function() {
   });
 
   it('matches a Symbol', function() {
-    jasmine.getEnv().requireFunctioningSymbols();
-
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(Symbol())).toBe(true); // eslint-disable-line compat/compat
+    expect(anything.asymmetricMatch(Symbol())).toBe(true);
   });
 
   it("doesn't match undefined", function() {

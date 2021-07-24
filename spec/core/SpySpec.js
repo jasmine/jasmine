@@ -31,12 +31,7 @@ describe('Spies', function() {
       var fn = function test() {};
       var spy = env.createSpy(fn);
 
-      // IE doesn't do `.name`
-      if (fn.name === 'test') {
-        expect(spy.and.identity).toEqual('test');
-      } else {
-        expect(spy.and.identity).toEqual('unknown');
-      }
+      expect(spy.and.identity).toEqual('test');
     });
 
     it('warns the user that we intend to overwrite an existing property', function() {
@@ -254,8 +249,6 @@ describe('Spies', function() {
 
   describe('any promise-based strategy', function() {
     it('works with global Promise library when available', function(done) {
-      jasmine.getEnv().requirePromises();
-
       var spy = env.createSpy('foo').and.resolveTo(42);
       spy()
         .then(function(result) {

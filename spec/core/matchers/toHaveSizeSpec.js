@@ -102,16 +102,14 @@ describe('toHaveSize', function() {
   });
 
   it('throws an error for WeakSet', function() {
-    jasmine.getEnv().requireWeakSets();
     var matcher = jasmineUnderTest.matchers.toHaveSize();
 
     expect(function() {
-      matcher.compare(new WeakSet(), 2); // eslint-disable-line compat/compat
+      matcher.compare(new WeakSet(), 2);
     }).toThrowError('Cannot get size of [object WeakSet].');
   });
 
   it('throws an error for WeakMap', function() {
-    jasmine.getEnv().requireWeakMaps();
     var matcher = jasmineUnderTest.matchers.toHaveSize();
 
     expect(function() {

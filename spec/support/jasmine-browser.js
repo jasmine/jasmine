@@ -17,16 +17,10 @@ module.exports = {
   specDir: 'spec',
   specFiles: ['**/*[Ss]pec.js', '!npmPackage/**/*'],
   helpers: [
-    'helpers/asyncAwait.js',
     'helpers/generator.js',
     'helpers/BrowserFlags.js',
-    'helpers/checkForMap.js',
-    'helpers/checkForSet.js',
-    'helpers/checkForSymbol.js',
-    'helpers/checkForUrl.js',
     'helpers/domHelpers.js',
     'helpers/integrationMatchers.js',
-    'helpers/promises.js',
     'helpers/defineJasmineUnderTest.js',
     'helpers/resetEnv.js'
   ],

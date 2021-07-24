@@ -104,8 +104,6 @@ describe('toBeInstanceOf', function() {
     });
 
     it('passes for an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
-
       var fn = eval("(async function fn() { return 'foo'; })");
 
       var matcher = jasmineUnderTest.matchers.toBeInstanceOf();

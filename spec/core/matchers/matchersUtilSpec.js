@@ -232,8 +232,8 @@ describe('matchersUtil', function() {
         return;
       }
 
-      var p1 = new Promise(function() {}), // eslint-disable-line compat/compat
-        p2 = new Promise(function() {}), // eslint-disable-line compat/compat
+      var p1 = new Promise(function() {}),
+        p2 = new Promise(function() {}),
         matchersUtil = new jasmineUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(p1, p1)).toBe(true);
@@ -655,48 +655,35 @@ describe('matchersUtil', function() {
     });
 
     it('passes when comparing two identical URLs', function() {
-      jasmine.getEnv().requireUrls();
-
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
       expect(
         matchersUtil.equals(
-          // eslint-disable-next-line compat/compat
           new URL('http://localhost/1'),
-          // eslint-disable-next-line compat/compat
           new URL('http://localhost/1')
         )
       ).toBe(true);
     });
 
     it('fails when comparing two different URLs', function() {
-      jasmine.getEnv().requireUrls();
-
       var matchersUtil = new jasmineUnderTest.MatchersUtil(),
-        // eslint-disable-next-line compat/compat
         url1 = new URL('http://localhost/1');
 
-      // eslint-disable-next-line compat/compat
       expect(matchersUtil.equals(url1, new URL('http://localhost/2'))).toBe(
         false
       );
-      // eslint-disable-next-line compat/compat
       expect(matchersUtil.equals(url1, new URL('http://localhost/1?foo'))).toBe(
         false
       );
-      // eslint-disable-next-line compat/compat
       expect(matchersUtil.equals(url1, new URL('http://localhost/1#foo'))).toBe(
         false
       );
-      // eslint-disable-next-line compat/compat
       expect(matchersUtil.equals(url1, new URL('https://localhost/1'))).toBe(
         false
       );
       expect(
-        // eslint-disable-next-line compat/compat
         matchersUtil.equals(url1, new URL('http://localhost:8080/1'))
       ).toBe(false);
-      // eslint-disable-next-line compat/compat
       expect(matchersUtil.equals(url1, new URL('http://example.com/1'))).toBe(
         false
       );
@@ -721,15 +708,12 @@ describe('matchersUtil', function() {
     describe('Typed arrays', function() {
       it('fails for typed arrays of same length and contents but different types', function() {
         var matchersUtil = new jasmineUnderTest.MatchersUtil();
-        // eslint-disable-next-line compat/compat
         var a1 = new Int8Array(1);
-        // eslint-disable-next-line compat/compat
         var a2 = new Uint8Array(1);
         a1[0] = a2[0] = 0;
         expect(matchersUtil.equals(a1, a2)).toBe(false);
       });
 
-      // eslint-disable-next-line compat/compat
       [
         'Int8Array',
         'Uint8Array',
@@ -741,20 +725,11 @@ describe('matchersUtil', function() {
         'Float32Array',
         'Float64Array'
       ].forEach(function(typeName) {
-        function requireType() {
-          var TypedArrayCtor = jasmine.getGlobal()[typeName];
-
-          if (!TypedArrayCtor) {
-            pending('Browser does not support ' + typeName);
-          }
-
-          return TypedArrayCtor;
-        }
+        var TypedArrayCtor = jasmine.getGlobal()[typeName];
 
         it(
           'passes for ' + typeName + 's with same length and content',
           function() {
-            var TypedArrayCtor = requireType();
             var matchersUtil = new jasmineUnderTest.MatchersUtil();
             var a1 = new TypedArrayCtor(2);
             var a2 = new TypedArrayCtor(2);
@@ -765,7 +740,6 @@ describe('matchersUtil', function() {
         );
 
         it('fails for ' + typeName + 's with different length', function() {
-          var TypedArrayCtor = requireType();
           var matchersUtil = new jasmineUnderTest.MatchersUtil();
           var a1 = new TypedArrayCtor(2);
           var a2 = new TypedArrayCtor(1);
@@ -776,7 +750,6 @@ describe('matchersUtil', function() {
         it(
           'fails for ' + typeName + 's with same length but different content',
           function() {
-            var TypedArrayCtor = requireType();
             var matchersUtil = new jasmineUnderTest.MatchersUtil();
             var a1 = new TypedArrayCtor(1);
             var a2 = new TypedArrayCtor(1);
@@ -787,7 +760,6 @@ describe('matchersUtil', function() {
         );
 
         it('checks nonstandard properties of ' + typeName, function() {
-          var TypedArrayCtor = requireType();
           var matchersUtil = new jasmineUnderTest.MatchersUtil();
           var a1 = new TypedArrayCtor(1);
           var a2 = new TypedArrayCtor(1);
@@ -797,7 +769,6 @@ describe('matchersUtil', function() {
         });
 
         it('works with custom equality testers with ' + typeName, function() {
-          var TypedArrayCtor = requireType();
           var a1 = new TypedArrayCtor(1);
           var a2 = new TypedArrayCtor(1);
           var matchersUtil = new jasmineUnderTest.MatchersUtil({

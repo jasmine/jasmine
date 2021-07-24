@@ -1,5 +1,5 @@
 describe('StackTrace', function() {
-  it('understands Chrome/IE/Edge style traces', function() {
+  it('understands Chrome/Edge style traces', function() {
     var error = {
       message: 'nope',
       stack:
@@ -30,7 +30,7 @@ describe('StackTrace', function() {
     ]);
   });
 
-  it('understands Chrome/IE/Edge style traces with multiline messages', function() {
+  it('understands Chrome/Edge style traces with multiline messages', function() {
     var error = {
       message: 'line 1\nline 2',
       stack:

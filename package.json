@@ -60,8 +60,10 @@
     "extends": [
       "plugin:compat/recommended"
     ],
-    "parserOptions": {
-      "ecmaVersion": 5
+    "env": {
+      "browser": true,
+      "node": true,
+      "es2017": true
     },
     "rules": {
       "quotes": [
@@ -94,11 +96,10 @@
     }
   },
   "browserslist": [
-    "Safari >= 9",
+    "Safari >= 13",
     "last 2 Chrome versions",
     "last 2 Firefox versions",
-    "Firefox 68",
-    "last 2 Edge versions",
-    "IE >= 11"
+    "Firefox >= 68",
+    "last 2 Edge versions"
   ]
 }

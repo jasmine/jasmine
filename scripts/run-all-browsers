@@ -23,7 +23,6 @@ run_browser() {
 
 passfile=`mktemp -t jasmine-results.XXXXXX` || exit 1
 failfile=`mktemp -t jasmine-results.XXXXXX` || exit 1
-run_browser "internet explorer" 11
 run_browser chrome latest
 run_browser firefox latest
 run_browser firefox 78

@@ -108,7 +108,6 @@ describe('SpyStrategy', function() {
   });
 
   it('allows a fake async function to be called instead', function(done) {
-    jasmine.getEnv().requireAsyncAwait();
     var originalFn = jasmine.createSpy('original'),
       fakeFn = jasmine
         .createSpy('fake')
@@ -131,8 +130,6 @@ describe('SpyStrategy', function() {
 
   describe('#resolveTo', function() {
     it('allows a resolved promise to be returned', function(done) {
-      jasmine.getEnv().requirePromises();
-
       var originalFn = jasmine.createSpy('original'),
         getPromise = function() {
           return Promise;
@@ -153,8 +150,6 @@ describe('SpyStrategy', function() {
     });
 
     it('allows an empty resolved promise to be returned', function(done) {
-      jasmine.getEnv().requirePromises();
-
       var originalFn = jasmine.createSpy('original'),
         getPromise = function() {
           return Promise;
@@ -188,8 +183,6 @@ describe('SpyStrategy', function() {
 
   describe('#rejectWith', function() {
     it('allows a rejected promise to be returned', function(done) {
-      jasmine.getEnv().requirePromises();
-
       var originalFn = jasmine.createSpy('original'),
         getPromise = function() {
           return Promise;
@@ -211,8 +204,6 @@ describe('SpyStrategy', function() {
     });
 
     it('allows an empty rejected promise to be returned', function(done) {
-      jasmine.getEnv().requirePromises();
-
       var originalFn = jasmine.createSpy('original'),
         getPromise = function() {
           return Promise;
@@ -234,8 +225,6 @@ describe('SpyStrategy', function() {
     });
 
     it('allows a non-Error to be rejected', function(done) {
-      jasmine.getEnv().requirePromises();
-
       var originalFn = jasmine.createSpy('original'),
         getPromise = function() {
           return Promise;
@@ -335,9 +324,9 @@ describe('SpyStrategy', function() {
   });
 
   it('allows generator functions to be passed to callFake strategy', function() {
-    jasmine.getEnv().requireGeneratorFunctions();
-
-    var generator = jasmine.getEnv().makeGeneratorFunction('yield "ok";'),
+    var generator = function*() {
+        yield 'ok';
+      },
       spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: function() {} });
 
     spyStrategy.callFake(generator);

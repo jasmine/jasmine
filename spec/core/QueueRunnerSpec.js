@@ -538,7 +538,6 @@ describe('QueueRunner', function() {
     });
 
     it('issues a more specific error if the function is `async`', function() {
-      jasmine.getEnv().requireAsyncAwait();
       eval('var fn = async function(done){};');
       var onException = jasmine.createSpy('onException'),
         queueRunner = new jasmineUnderTest.QueueRunner({

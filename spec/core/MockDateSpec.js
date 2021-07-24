@@ -96,24 +96,6 @@ describe('FakeDate', function() {
     expect(fakeGlobal.Date.now()).toEqual(1000);
   });
 
-  it("does not stub Date.now() if it doesn't already exist", function() {
-    var globalDate = jasmine.createSpy('global Date').and.callFake(function() {
-        return {
-          getTime: function() {
-            return 1000;
-          }
-        };
-      }),
-      fakeGlobal = { Date: globalDate },
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
-
-    mockDate.install();
-
-    expect(fakeGlobal.Date.now).toThrowError(
-      'Browser does not support Date.now()'
-    );
-  });
-
   it('makes time passes using tick', function() {
     var globalDate = jasmine.createSpy('global Date').and.callFake(function() {
         return {

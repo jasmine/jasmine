@@ -17,7 +17,7 @@ getJasmineRequireObj().StackTrace = function(j$) {
   }
 
   var framePatterns = [
-    // PhantomJS on Linux, Node, Chrome, IE, Edge
+    // Node, Chrome, Edge
     // e.g. "   at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)"
     // Note that the "function name" can include a surprisingly large set of
     // characters, including angle brackets and square brackets.
