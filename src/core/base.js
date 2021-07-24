@@ -161,6 +161,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     );
   };
 
+  j$.isIterable_ = function(value) {
+    return value && !!value[Symbol.iterator];
+  };
+
   j$.isDataView = function(obj) {
     return (
       obj !== null &&

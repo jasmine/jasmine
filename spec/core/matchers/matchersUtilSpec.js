@@ -1030,7 +1030,7 @@ describe('matchersUtil', function() {
       expect(matchersUtil.contains(null, 'A')).toBe(false);
     });
 
-    it('passes with array-like objects', function() {
+    it('works with array-like objects that implement iterable', function() {
       var capturedArgs = null,
         matchersUtil = new jasmineUnderTest.MatchersUtil();
 
@@ -1040,6 +1040,19 @@ describe('matchersUtil', function() {
 
       testFunction('foo', 'bar');
       expect(matchersUtil.contains(capturedArgs, 'bar')).toBe(true);
+      expect(matchersUtil.contains(capturedArgs, 'baz')).toBe(false);
+    });
+
+    it("passes with array-like objects that don't implement iterable", function() {
+      const arrayLike = {
+        0: 'a',
+        1: 'b',
+        length: 2
+      };
+      const matchersUtil = new jasmineUnderTest.MatchersUtil();
+
+      expect(matchersUtil.contains(arrayLike, 'b')).toBe(true);
+      expect(matchersUtil.contains(arrayLike, 'c')).toBe(false);
     });
 
     it('passes for set members', function() {
@@ -1051,13 +1064,12 @@ describe('matchersUtil', function() {
       expect(matchersUtil.contains(set, setItem)).toBe(true);
     });
 
-    // documenting current behavior
-    it('fails (!) for objects that equal to a set member', function() {
+    it('passes for objects that equal to a set member', function() {
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
       var set = new Set();
       set.add({ foo: 'bar' });
 
-      expect(matchersUtil.contains(set, { foo: 'bar' })).toBe(false);
+      expect(matchersUtil.contains(set, { foo: 'bar' })).toBe(true);
     });
   });
 

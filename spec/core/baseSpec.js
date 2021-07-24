@@ -109,6 +109,28 @@ describe('base helpers', function() {
     });
   });
 
+  describe('isIterable_', function() {
+    it('returns true when the object is an Array', function() {
+      expect(jasmineUnderTest.isIterable_([])).toBe(true);
+    });
+
+    it('returns true when the object is a Set', function() {
+      expect(jasmineUnderTest.isIterable_(new Set())).toBe(true);
+    });
+    it('returns true when the object is a Map', function() {
+      expect(jasmineUnderTest.isIterable_(new Map())).toBe(true);
+    });
+
+    it('returns true when the object implements @@iterator', function() {
+      const myIterable = { [Symbol.iterator]: function() {} };
+      expect(jasmineUnderTest.isIterable_(myIterable)).toBe(true);
+    });
+
+    it('returns false when the object does not implement @@iterator', function() {
+      expect(jasmineUnderTest.isIterable_({})).toBe(false);
+    });
+  });
+
   describe('isPending_', function() {
     it('returns a promise that resolves to true when the promise is pending', function() {
       var promise = new Promise(function() {});
