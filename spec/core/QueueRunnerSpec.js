@@ -150,109 +150,31 @@ describe('QueueRunner', function() {
     });
 
     describe('When next is called with an argument', function() {
-      describe('that is an Error', function() {
-        it('explicitly fails and moves to the next function', function() {
-          var err = new Error('foo'),
-            queueableFn1 = {
-              fn: function(done) {
-                setTimeout(function() {
-                  done(err);
-                }, 100);
-              }
-            },
-            queueableFn2 = { fn: jasmine.createSpy('fn2') },
-            failFn = jasmine.createSpy('fail'),
-            queueRunner = new jasmineUnderTest.QueueRunner({
-              queueableFns: [queueableFn1, queueableFn2],
-              fail: failFn
-            });
+      it('explicitly fails and moves to the next function', function() {
+        var err = 'anything except undefined',
+          queueableFn1 = {
+            fn: function(done) {
+              setTimeout(function() {
+                done(err);
+              }, 100);
+            }
+          },
+          queueableFn2 = { fn: jasmine.createSpy('fn2') },
+          failFn = jasmine.createSpy('fail'),
+          queueRunner = new jasmineUnderTest.QueueRunner({
+            queueableFns: [queueableFn1, queueableFn2],
+            fail: failFn
+          });
 
-          queueRunner.execute();
+        queueRunner.execute();
 
-          expect(failFn).not.toHaveBeenCalled();
-          expect(queueableFn2.fn).not.toHaveBeenCalled();
+        expect(failFn).not.toHaveBeenCalled();
+        expect(queueableFn2.fn).not.toHaveBeenCalled();
 
-          jasmine.clock().tick(100);
+        jasmine.clock().tick(100);
 
-          expect(failFn).toHaveBeenCalledWith(err);
-          expect(queueableFn2.fn).toHaveBeenCalled();
-        });
-
-        it('does not log a deprecation', function() {
-          var err = new Error('foo'),
-            queueableFn1 = {
-              fn: function(done) {
-                setTimeout(function() {
-                  done(err);
-                }, 100);
-              }
-            },
-            deprecated = jasmine.createSpy('deprecated'),
-            queueRunner = new jasmineUnderTest.QueueRunner({
-              queueableFns: [queueableFn1],
-              deprecated: deprecated
-            });
-
-          queueRunner.execute();
-
-          jasmine.clock().tick(100);
-
-          expect(deprecated).not.toHaveBeenCalled();
-        });
-      });
-
-      describe('that is not an Error', function() {
-        it('logs a deprecation', function() {
-          var queueableFn1 = {
-              fn: function(done) {
-                setTimeout(function() {
-                  done('not an Error');
-                }, 100);
-              }
-            },
-            deprecated = jasmine.createSpy('deprecated'),
-            queueRunner = new jasmineUnderTest.QueueRunner({
-              queueableFns: [queueableFn1],
-              deprecated: deprecated
-            });
-
-          queueRunner.execute();
-
-          jasmine.clock().tick(100);
-
-          expect(deprecated).toHaveBeenCalledWith(
-            'Any argument passed to a done callback will be treated as an ' +
-              'error in a future release. Call the done callback without ' +
-              "arguments if you don't want to trigger a spec failure."
-          );
-        });
-
-        it('moves to the next function without failing', function() {
-          var queueableFn1 = {
-              fn: function(done) {
-                setTimeout(function() {
-                  done('not an Error');
-                }, 100);
-              }
-            },
-            queueableFn2 = { fn: jasmine.createSpy('fn2') },
-            failFn = jasmine.createSpy('fail'),
-            queueRunner = new jasmineUnderTest.QueueRunner({
-              queueableFns: [queueableFn1, queueableFn2],
-              fail: failFn,
-              deprecated: function() {}
-            });
-
-          queueRunner.execute();
-
-          expect(failFn).not.toHaveBeenCalled();
-          expect(queueableFn2.fn).not.toHaveBeenCalled();
-
-          jasmine.clock().tick(100);
-
-          expect(failFn).not.toHaveBeenCalled();
-          expect(queueableFn2.fn).toHaveBeenCalled();
-        });
+        expect(failFn).toHaveBeenCalledWith(err);
+        expect(queueableFn2.fn).toHaveBeenCalled();
       });
     });
 
