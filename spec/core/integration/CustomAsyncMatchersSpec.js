@@ -161,7 +161,12 @@ describe('Custom Async Matchers (Integration)', function() {
       };
 
       spyOn(env, 'deprecated');
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
+      env.addReporter({
+        specDone: specExpectations,
+        jasmineDone: function() {
+          done();
+        }
+      });
       env.execute();
     });
   });

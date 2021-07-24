@@ -313,7 +313,12 @@ describe('Custom Matchers (Integration)', function() {
         );
       };
 
-      env.addReporter({ specDone: specExpectations, jasmineDone: done });
+      env.addReporter({
+        specDone: specExpectations,
+        jasmineDone: function() {
+          done();
+        }
+      });
       env.execute();
     });
   });

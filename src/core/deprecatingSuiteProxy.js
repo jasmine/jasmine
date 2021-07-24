@@ -65,7 +65,6 @@ getJasmineRequireObj().deprecatingSuiteProxy = function(j$) {
   };
 
   DeprecatingSuiteProxyHandler.prototype.set = function(target, prop, value) {
-    debugger;
     this._maybeDeprecate(target, prop);
     return (target[prop] = value);
   };

@@ -129,10 +129,11 @@ getJasmineRequireObj().Spec = function(j$) {
         self.onException.apply(self, arguments);
       },
       onComplete: function() {
-        onComplete(
-          self.result.status === 'failed' &&
-            new j$.StopExecutionError('spec failed')
-        );
+        if (self.result.status === 'failed') {
+          onComplete(new j$.StopExecutionError('spec failed'));
+        } else {
+          onComplete();
+        }
       },
       userContext: this.userContext()
     };
