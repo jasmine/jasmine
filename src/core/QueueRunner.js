@@ -105,6 +105,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
             self.fail(err);
           }
           self.errored = errored = true;
+        } else if (typeof err !== 'undefined' && !self.errored) {
+          self.deprecated(
+            'Any argument passed to a done callback will be treated as an ' +
+              'error in a future release. Call the done callback without ' +
+              "arguments if you don't want to trigger a spec failure."
+          );
         }
 
         function runNext() {
@@ -210,7 +216,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     this.clearStack(function() {
       self.globalErrors.popListener(self.handleFinalError);
-      self.onComplete(self.errored && new StopExecutionError());
+
+      if (self.errored) {
+        self.onComplete(new StopExecutionError());
+      } else {
+        self.onComplete();
+      }
     });
   };
 
