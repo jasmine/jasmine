@@ -29,7 +29,7 @@ module.exports = {
         cwd: libJasmineCore("")
       },
       {
-        src: [ "boot.js" ],
+        src: [ "boot0.js", "boot1.js" ],
         dest: standaloneLibDir,
         expand: true,
         cwd: libJasmineCore("boot")
