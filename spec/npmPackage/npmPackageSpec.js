@@ -74,13 +74,17 @@ describe('npm package', function() {
   });
 
   it('has bootFiles', function() {
-    expect(this.packagedCore.files.bootFiles).toEqual(['boot.js']);
+    expect(this.packagedCore.files.bootFiles).toEqual(['boot0.js', 'boot1.js']);
     expect(this.packagedCore.files.nodeBootFiles).toEqual(['node_boot.js']);
 
     var packagedCore = this.packagedCore;
     this.packagedCore.files.bootFiles.forEach(function(fileName) {
       expect(fileName).toExistInPath(packagedCore.files.bootDir);
     });
+
+    // For backwards compatibility, boot.js should be packaged even though
+    // it is no longer in bootFiles.
+    expect('boot.js').toExistInPath(packagedCore.files.bootDir);
 
     var packagedCore = this.packagedCore;
     this.packagedCore.files.nodeBootFiles.forEach(function(fileName) {

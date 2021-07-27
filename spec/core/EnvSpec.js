@@ -111,6 +111,31 @@ describe('Env', function() {
     );
   });
 
+  it('ignores configuration properties that are present but undefined', function() {
+    var initialConfig = {
+      random: true,
+      seed: '123',
+      failFast: true,
+      failSpecWithNoExpectations: true,
+      oneFailurePerSpec: true,
+      hideDisabled: true
+    };
+    env.configure(initialConfig);
+
+    env.configure({
+      random: undefined,
+      seed: undefined,
+      failFast: undefined,
+      failSpecWithNoExpectations: undefined,
+      oneFailurePerSpec: undefined,
+      hideDisabled: undefined
+    });
+
+    expect(env.configuration()).toEqual(
+      jasmine.objectContaining(initialConfig)
+    );
+  });
+
   describe('promise library', function() {
     it('can be configured without a custom library', function() {
       env.configure({});
