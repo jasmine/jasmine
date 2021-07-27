@@ -58,6 +58,11 @@ class Core(object):
         js_files.remove('boot.js')
         js_files.append('boot.js')
 
+        # Remove the new boot files. jasmine-py will continue to use the legacy
+        # boot.js.
+        js_files.remove('boot0.js')
+        js_files.remove('boot1.js')
+
         return cls._uniq(js_files)
 
     @classmethod
