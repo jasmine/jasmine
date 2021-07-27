@@ -24,7 +24,7 @@ module Jasmine
       end
 
       def boot_files
-        ["boot.js"]
+        ["boot0.js", "boot1.js"]
       end
 
       def node_boot_files

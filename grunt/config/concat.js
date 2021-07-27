@@ -37,10 +37,6 @@ module.exports = {
     ],
     dest: 'lib/jasmine-core/jasmine.js'
   },
-  boot: {
-    src: ['lib/jasmine-core/boot/boot.js'],
-    dest: 'lib/jasmine-core/boot.js'
-  },
   boot0: {
     src: ['lib/jasmine-core/boot/boot0.js'],
     dest: 'lib/jasmine-core/boot0.js'

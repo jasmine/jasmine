@@ -82,10 +82,6 @@ describe('npm package', function() {
       expect(fileName).toExistInPath(packagedCore.files.bootDir);
     });
 
-    // For backwards compatibility, boot.js should be packaged even though
-    // it is no longer in bootFiles.
-    expect('boot.js').toExistInPath(packagedCore.files.bootDir);
-
     var packagedCore = this.packagedCore;
     this.packagedCore.files.nodeBootFiles.forEach(function(fileName) {
       expect(fileName).toExistInPath(packagedCore.files.bootDir);
