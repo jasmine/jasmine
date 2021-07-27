@@ -17,11 +17,9 @@ pkg/*
 .sass-cache/*
 src/html/.sass-cache/*
 node_modules/
-*.pyc
 sauce_connect.log
 *.swp
 build/
-*.egg-info/
 dist
 nbproject/
 *.iml

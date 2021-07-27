@@ -42,7 +42,7 @@ Once you've pushed a feature branch to your forked repo, you're ready to open a 
     * mirrors the source directory
     * there are some additional files
 * `/lib` contains the compiled copy of Jasmine. This is used to self-test and
-  distributed as the `jasmine-core` Node, Ruby, and Python packages.
+  distributed as the `jasmine-core` Node, and Ruby packages.
 
 ### Self-testing
 

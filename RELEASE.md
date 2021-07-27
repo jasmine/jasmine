@@ -50,13 +50,6 @@ When ready to release - specs are all green and the stories are done:
 1. __NOTE__: You will likely need to push a new jasmine gem with a dependent version right after this release. See below.
 1. `rake release` - tags the repo with the version, builds the `jasmine-core` gem, pushes the gem to Rubygems.org. In order to release you will have to ensure you have rubygems creds locally.
 
-### Release the core Python egg
-
-Install [twine](https://github.com/pypa/twine)
-
-1. `python setup.py sdist`
-1. `twine upload dist/jasmine-core-<version>.tar.gz` You will need pypi credentials to upload the egg.
-
 ### Release the core NPM module
 
 1. Run the tests on Windows. (CI only tests on Linux.)
