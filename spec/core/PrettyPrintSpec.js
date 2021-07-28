@@ -268,15 +268,13 @@ describe('PrettyPrinter', function() {
   });
 
   it('should stringify immutable circular objects', function() {
-    if (Object.freeze) {
-      var pp = jasmineUnderTest.makePrettyPrinter();
-      var frozenObject = { foo: { bar: 'baz' } };
-      frozenObject.circular = frozenObject;
-      frozenObject = Object.freeze(frozenObject);
-      expect(pp(frozenObject)).toEqual(
-        "Object({ foo: Object({ bar: 'baz' }), circular: <circular reference: Object> })"
-      );
-    }
+    var pp = jasmineUnderTest.makePrettyPrinter();
+    var frozenObject = { foo: { bar: 'baz' } };
+    frozenObject.circular = frozenObject;
+    frozenObject = Object.freeze(frozenObject);
+    expect(pp(frozenObject)).toEqual(
+      "Object({ foo: Object({ bar: 'baz' }), circular: <circular reference: Object> })"
+    );
   });
 
   it('should stringify RegExp objects properly', function() {
