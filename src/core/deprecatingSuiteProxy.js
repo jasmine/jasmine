@@ -25,7 +25,7 @@ getJasmineRequireObj().deprecatingSuiteProxy = function(j$) {
     return (
       'Access to private Suite members (in this case `' +
       memberName +
-      '`) via Env#topSuite is not supported and will break in ' +
+      '`) is not supported and will break in ' +
       'a future release. See <https://jasmine.github.io/api/edge/Suite.html> ' +
       'for correct usage.'
     );

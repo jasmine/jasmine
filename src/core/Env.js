@@ -1117,7 +1117,7 @@ getJasmineRequireObj().Env = function(j$) {
             'Please either remove the describe or add children to it.'
         );
       }
-      return suite;
+      return j$.deprecatingSuiteProxy(suite, suite.parentSuite, this);
     };
 
     this.xdescribe = function(description, specDefinitions) {
@@ -1126,7 +1126,7 @@ getJasmineRequireObj().Env = function(j$) {
       var suite = suiteFactory(description);
       suite.pend();
       addSpecsToSuite(suite, specDefinitions);
-      return suite;
+      return j$.deprecatingSuiteProxy(suite, suite.parentSuite, this);
     };
 
     var focusedRunnables = [];
@@ -1141,7 +1141,7 @@ getJasmineRequireObj().Env = function(j$) {
       unfocusAncestor();
       addSpecsToSuite(suite, specDefinitions);
 
-      return suite;
+      return j$.deprecatingSuiteProxy(suite, suite.parentSuite, this);
     };
 
     function addSpecsToSuite(suite, specDefinitions) {
@@ -1231,7 +1231,7 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
-    this.it = function(description, fn, timeout) {
+    this.it_ = function(description, fn, timeout) {
       ensureIsNotNested('it');
       // it() sometimes doesn't have a fn argument, so only check the type if
       // it's given.
@@ -1243,7 +1243,13 @@ getJasmineRequireObj().Env = function(j$) {
         spec.pend();
       }
       currentDeclarationSuite.addChild(spec);
+
       return spec;
+    };
+
+    this.it = function(description, fn, timeout) {
+      var spec = this.it_(description, fn, timeout);
+      return j$.deprecatingSpecProxy(spec, this);
     };
 
     this.xit = function(description, fn, timeout) {
@@ -1253,9 +1259,9 @@ getJasmineRequireObj().Env = function(j$) {
       if (arguments.length > 1 && typeof fn !== 'undefined') {
         ensureIsFunctionOrAsync(fn, 'xit');
       }
-      var spec = this.it.apply(this, arguments);
+      var spec = this.it_.apply(this, arguments);
       spec.pend('Temporarily disabled with xit');
-      return spec;
+      return j$.deprecatingSpecProxy(spec, this);
     };
 
     this.fit = function(description, fn, timeout) {
@@ -1265,7 +1271,7 @@ getJasmineRequireObj().Env = function(j$) {
       currentDeclarationSuite.addChild(spec);
       focusedRunnables.push(spec.id);
       unfocusAncestor();
-      return spec;
+      return j$.deprecatingSpecProxy(spec, this);
     };
 
     /**

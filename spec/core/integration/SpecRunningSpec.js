@@ -550,10 +550,17 @@ describe('spec running', function() {
     var pendingSpec,
       suite = env.describe('default current suite', function() {
         pendingSpec = env.it('I am a pending spec');
-      });
+      }),
+      reporter = jasmine.createSpyObj('reporter', ['specDone']);
+
+    env.addReporter(reporter);
 
     env.execute(null, function() {
-      expect(pendingSpec.status()).toBe('pending');
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          status: 'pending'
+        })
+      );
       done();
     });
   });
