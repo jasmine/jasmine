@@ -87,14 +87,17 @@ describe('Env', function() {
       });
 
       suite = env.topSuite();
+      suite.id;
       suite.description;
       suite.getFullName();
       suite.children;
       suite.parentSuite;
+      suite.children[0].id;
       suite.children[0].description;
       suite.children[0].getFullName();
       suite.children[0].children;
 
+      suite.children[1].id;
       suite.children[1].description;
       suite.children[1].getFullName();
       suite.children[1].parentSuite;

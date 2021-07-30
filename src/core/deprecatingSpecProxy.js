@@ -9,7 +9,7 @@ getJasmineRequireObj().deprecatingSpecProxy = function(j$) {
   }
 
   function isAllowedMember(prop) {
-    return prop === 'description' || prop === 'getFullName';
+    return prop === 'id' || prop === 'description' || prop === 'getFullName';
   }
 
   function msg(member) {

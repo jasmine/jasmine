@@ -2,6 +2,7 @@
 // TODO: Remove this in the next major release.
 getJasmineRequireObj().deprecatingSuiteProxy = function(j$) {
   var allowedMembers = [
+    'id',
     'children',
     'description',
     'parentSuite',
