@@ -1058,6 +1058,7 @@ getJasmineRequireObj().Env = function(j$) {
         spec.pend();
       }
       currentDeclarationSuite.addChild(spec);
+
       return spec;
     };
 
