@@ -5,6 +5,12 @@ getJasmineRequireObj().Suite = function(j$) {
    */
   function Suite(attrs) {
     this.env = attrs.env;
+    /**
+     * The unique ID of this suite.
+     * @name Suite#id
+     * @readonly
+     * @type {string}
+     */
     this.id = attrs.id;
     /**
      * The parent of this suite, or null if this is the top suite.

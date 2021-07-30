@@ -7,6 +7,12 @@ getJasmineRequireObj().Spec = function(j$) {
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
     this.resultCallback = attrs.resultCallback || function() {};
+    /**
+     * The unique ID of this spec.
+     * @name Spec#id
+     * @readonly
+     * @type {string}
+     */
     this.id = attrs.id;
     /**
      * The description passed to the {@link it} that created this spec.
