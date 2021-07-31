@@ -792,7 +792,7 @@ describe('spec running', function() {
     });
   });
 
-  describe('When throwOnExpectationFailure is set', function() {
+  describe('When stopSpecOnExpectationFailure is set', function() {
     it('skips to cleanup functions after an error', function(done) {
       var actions = [];
 
@@ -821,7 +821,7 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ oneFailurePerSpec: true });
+      env.configure({ stopSpecOnExpectationFailure: true });
 
       env.execute(null, function() {
         expect(actions).toEqual([
@@ -852,7 +852,7 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ oneFailurePerSpec: true });
+      env.configure({ stopSpecOnExpectationFailure: true });
 
       env.execute(null, function() {
         expect(actions).toEqual(['beforeEach', 'afterEach']);
@@ -877,7 +877,7 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ oneFailurePerSpec: true });
+      env.configure({ stopSpecOnExpectationFailure: true });
 
       env.execute(null, function() {
         expect(actions).toEqual(['beforeEach', 'afterEach']);
@@ -886,9 +886,10 @@ describe('spec running', function() {
     });
   });
 
-  describe('when stopOnSpecFailure is on', function() {
+  function behavesLikeStopOnSpecFailureIsOn(configureFn) {
     it('does not run further specs when one fails', function(done) {
-      var actions = [];
+      var actions = [],
+        config;
 
       env.describe('wrapper', function() {
         env.it('fails', function() {
@@ -903,12 +904,26 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ random: false, failFast: true });
+      env.configure({ random: false });
+      configureFn(env);
 
       env.execute(null, function() {
         expect(actions).toEqual(['fails']);
         done();
       });
+    });
+  }
+
+  describe('when failFast is on', function() {
+    behavesLikeStopOnSpecFailureIsOn(function(env) {
+      spyOn(env, 'deprecated');
+      env.configure({ failFast: true });
+    });
+  });
+
+  describe('when stopOnSpecFailure is on', function() {
+    behavesLikeStopOnSpecFailureIsOn(function(env) {
+      env.configure({ stopOnSpecFailure: true });
     });
   });
 });

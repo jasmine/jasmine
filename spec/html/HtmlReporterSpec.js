@@ -785,7 +785,7 @@ describe('HtmlReporter', function() {
             }
           });
 
-        env.configure({ failFast: true });
+        env.configure({ stopOnSpecFailure: true });
 
         reporter.initialize();
         reporter.jasmineDone({});
@@ -839,7 +839,7 @@ describe('HtmlReporter', function() {
             }
           });
 
-        env.configure({ failFast: true });
+        env.configure({ stopOnSpecFailure: true });
 
         reporter.initialize();
         reporter.jasmineDone({});
@@ -891,7 +891,7 @@ describe('HtmlReporter', function() {
             }
           });
 
-        env.configure({ oneFailurePerSpec: true });
+        env.configure({ stopSpecOnExpectationFailure: true });
 
         reporter.initialize();
         reporter.jasmineDone({});
@@ -945,7 +945,7 @@ describe('HtmlReporter', function() {
             }
           });
 
-        env.configure({ oneFailurePerSpec: true });
+        env.configure({ stopSpecOnExpectationFailure: true });
 
         reporter.initialize();
         reporter.jasmineDone({});
