@@ -65,8 +65,17 @@ getJasmineRequireObj().Env = function(j$) {
        * @since 3.3.0
        * @type Boolean
        * @default false
+       * @deprecated Use the `stopOnSpecFailure` config property instead.
        */
       failFast: false,
+      /**
+       * Whether to stop execution of the suite after the first spec failure
+       * @name Configuration#stopOnSpecFailure
+       * @since 3.9.0
+       * @type Boolean
+       * @default false
+       */
+      stopOnSpecFailure: false,
       /**
        * Whether to fail the spec if it ran no expectations. By default
        * a spec that ran no expectations is reported as passed. Setting this
@@ -83,8 +92,17 @@ getJasmineRequireObj().Env = function(j$) {
        * @since 3.3.0
        * @type Boolean
        * @default false
+       * @deprecated Use the `stopSpecOnExpectationFailure` config property instead.
        */
       oneFailurePerSpec: false,
+      /**
+       * Whether to cause specs to only have one expectation failure.
+       * @name Configuration#stopSpecOnExpectationFailure
+       * @since 3.3.0
+       * @type Boolean
+       * @default false
+       */
+      stopSpecOnExpectationFailure: false,
       /**
        * A function that takes a spec and returns true if it should be executed
        * or false if it should be skipped.
@@ -184,9 +202,7 @@ getJasmineRequireObj().Env = function(j$) {
     this.configure = function(configuration) {
       var booleanProps = [
         'random',
-        'failFast',
         'failSpecWithNoExpectations',
-        'oneFailurePerSpec',
         'hideDisabled'
       ];
 
@@ -195,6 +211,46 @@ getJasmineRequireObj().Env = function(j$) {
           config[prop] = !!configuration[prop];
         }
       });
+
+      if (typeof configuration.failFast !== 'undefined') {
+        if (typeof configuration.stopOnSpecFailure !== 'undefined') {
+          if (configuration.stopOnSpecFailure !== configuration.failFast) {
+            throw new Error(
+              'stopOnSpecFailure and failFast are aliases for ' +
+                "each other. Don't set failFast if you also set stopOnSpecFailure."
+            );
+          }
+        }
+
+        config.failFast = configuration.failFast;
+        config.stopOnSpecFailure = configuration.failFast;
+      } else if (typeof configuration.stopOnSpecFailure !== 'undefined') {
+        config.failFast = configuration.stopOnSpecFailure;
+        config.stopOnSpecFailure = configuration.stopOnSpecFailure;
+      }
+
+      if (typeof configuration.oneFailurePerSpec !== 'undefined') {
+        if (typeof configuration.stopSpecOnExpectationFailure !== 'undefined') {
+          if (
+            configuration.stopSpecOnExpectationFailure !==
+            configuration.oneFailurePerSpec
+          ) {
+            throw new Error(
+              'stopSpecOnExpectationFailure and oneFailurePerSpec are aliases for ' +
+                "each other. Don't set oneFailurePerSpec if you also set stopSpecOnExpectationFailure."
+            );
+          }
+        }
+
+        config.oneFailurePerSpec = configuration.oneFailurePerSpec;
+        config.stopSpecOnExpectationFailure = configuration.oneFailurePerSpec;
+      } else if (
+        typeof configuration.stopSpecOnExpectationFailure !== 'undefined'
+      ) {
+        config.oneFailurePerSpec = configuration.stopSpecOnExpectationFailure;
+        config.stopSpecOnExpectationFailure =
+          configuration.stopSpecOnExpectationFailure;
+      }
 
       if (configuration.specFilter) {
         config.specFilter = configuration.specFilter;
@@ -532,13 +588,13 @@ getJasmineRequireObj().Env = function(j$) {
      * @since 2.3.0
      * @function
      * @param {Boolean} value Whether to throw when a expectation fails
-     * @deprecated Use the `oneFailurePerSpec` option with {@link Env#configure}
+     * @deprecated Use the `stopSpecOnExpectationFailure` option with {@link Env#configure}
      */
     this.throwOnExpectationFailure = function(value) {
       this.deprecated(
-        'Setting throwOnExpectationFailure directly on Env is deprecated ' +
-          'and will be removed in a future version of Jasmine. Please use the ' +
-          'oneFailurePerSpec option in `configure` instead.',
+        'Setting throwOnExpectationFailure directly on Env is deprecated and ' +
+          'will be removed in a future version of Jasmine. Please use the ' +
+          'stopSpecOnExpectationFailure option in `configure`.',
         { ignoreRunnable: true }
       );
       this.configure({ oneFailurePerSpec: !!value });
@@ -546,10 +602,9 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.throwingExpectationFailures = function() {
       this.deprecated(
-        'Getting throwingExpectationFailures directly from Env is ' +
-          'deprecated and will be removed in a future version of Jasmine. ' +
-          'Please check the oneFailurePerSpec option from `configuration` ' +
-          'instead.',
+        'Getting throwingExpectationFailures directly from Env is deprecated ' +
+          'and will be removed in a future version of Jasmine. Please check ' +
+          'the stopSpecOnExpectationFailure option from `configuration`.',
         { ignoreRunnable: true }
       );
       return config.oneFailurePerSpec;
@@ -561,23 +616,23 @@ getJasmineRequireObj().Env = function(j$) {
      * @since 2.7.0
      * @function
      * @param {Boolean} value Whether to stop suite execution when a spec fails
-     * @deprecated Use the `failFast` option with {@link Env#configure}
+     * @deprecated Use the `stopOnSpecFailure` option with {@link Env#configure}
      */
     this.stopOnSpecFailure = function(value) {
       this.deprecated(
         'Setting stopOnSpecFailure directly is deprecated and will be ' +
-          'removed in a future version of Jasmine. Please use the failFast ' +
-          'option in `configure` instead.',
+          'removed in a future version of Jasmine. Please use the ' +
+          'stopOnSpecFailure option in `configure`.',
         { ignoreRunnable: true }
       );
-      this.configure({ failFast: !!value });
+      this.configure({ stopOnSpecFailure: !!value });
     };
 
     this.stoppingOnSpecFailure = function() {
       this.deprecated(
-        'Getting stoppingOnSpecFailure directly from Env is deprecated ' +
-          'and will be removed in a future version of Jasmine. Please check ' +
-          'the failFast option from `configuration` instead.',
+        'Getting stoppingOnSpecFailure directly from Env is deprecated and ' +
+          'will be removed in a future version of Jasmine. Please check the ' +
+          'stopOnSpecFailure option from `configuration`.',
         { ignoreRunnable: true }
       );
       return config.failFast;
@@ -688,9 +743,9 @@ getJasmineRequireObj().Env = function(j$) {
     var queueRunnerFactory = function(options, args) {
       var failFast = false;
       if (options.isLeaf) {
-        failFast = config.oneFailurePerSpec;
+        failFast = config.stopSpecOnExpectationFailure;
       } else if (!options.isReporter) {
-        failFast = config.failFast;
+        failFast = config.stopOnSpecFailure;
       }
       options.clearStack = options.clearStack || clearStack;
       options.timeout = {
