@@ -543,18 +543,22 @@ getJasmineRequireObj().Env = function(j$) {
      * @since 2.3.0
      * @function
      * @param {Boolean} value Whether to throw when a expectation fails
-     * @deprecated Use the `oneFailurePerSpec` option with {@link Env#configure}
+     * @deprecated Use the `stopSpecOnExpectationFailure` option with {@link Env#configure}
      */
     this.throwOnExpectationFailure = function(value) {
       this.deprecated(
-        'Setting throwOnExpectationFailure directly on Env is deprecated and will be removed in a future version of Jasmine, please use the oneFailurePerSpec option in `configure`'
+        'Setting throwOnExpectationFailure directly on Env is deprecated and ' +
+          'will be removed in a future version of Jasmine. Please use the ' +
+          'stopSpecOnExpectationFailure option in `configure`.'
       );
       this.configure({ oneFailurePerSpec: !!value });
     };
 
     this.throwingExpectationFailures = function() {
       this.deprecated(
-        'Getting throwingExpectationFailures directly from Env is deprecated and will be removed in a future version of Jasmine, please check the oneFailurePerSpec option from `configuration`'
+        'Getting throwingExpectationFailures directly from Env is deprecated ' +
+          'and will be removed in a future version of Jasmine. Please check ' +
+          'the stopSpecOnExpectationFailure option from `configuration`.'
       );
       return config.oneFailurePerSpec;
     };
@@ -565,18 +569,22 @@ getJasmineRequireObj().Env = function(j$) {
      * @since 2.7.0
      * @function
      * @param {Boolean} value Whether to stop suite execution when a spec fails
-     * @deprecated Use the `failFast` option with {@link Env#configure}
+     * @deprecated Use the `stopOnSpecFailure` option with {@link Env#configure}
      */
     this.stopOnSpecFailure = function(value) {
       this.deprecated(
-        'Setting stopOnSpecFailure directly is deprecated and will be removed in a future version of Jasmine, please use the failFast option in `configure`'
+        'Setting stopOnSpecFailure directly is deprecated and will be ' +
+          'removed in a future version of Jasmine. Please use the ' +
+          'stopOnSpecFailure option in `configure`.'
       );
       this.configure({ stopOnSpecFailure: !!value });
     };
 
     this.stoppingOnSpecFailure = function() {
       this.deprecated(
-        'Getting stoppingOnSpecFailure directly from Env is deprecated and will be removed in a future version of Jasmine, please check the failFast option from `configuration`'
+        'Getting stoppingOnSpecFailure directly from Env is deprecated and ' +
+          'will be removed in a future version of Jasmine. Please check the ' +
+          'stopOnSpecFailure option from `configuration`.'
       );
       return config.failFast;
     };
