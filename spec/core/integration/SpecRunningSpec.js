@@ -980,35 +980,10 @@ describe('spec running', function() {
     });
   });
 
-  describe('when stopOnSpecFailure is on', function() {
+  function behavesLikeStopOnSpecFailureIsOn(configureFn) {
     it('does not run further specs when one fails', function(done) {
-      var actions = [];
-
-      env.describe('wrapper', function() {
-        env.it('fails', function() {
-          actions.push('fails');
-          env.expect(1).toBe(2);
-        });
-      });
-
-      env.describe('holder', function() {
-        env.it('does not run', function() {
-          actions.push('does not run');
-        });
-      });
-
-      env.configure({ random: false, failFast: true });
-
-      env.execute(null, function() {
-        expect(actions).toEqual(['fails']);
-        done();
-      });
-    });
-
-    it('does not run further specs when one fails when configured with deprecated option', function(done) {
-      var actions = [];
-
-      spyOn(env, 'deprecated');
+      var actions = [],
+        config;
 
       env.describe('wrapper', function() {
         env.it('fails', function() {
@@ -1024,13 +999,31 @@ describe('spec running', function() {
       });
 
       env.configure({ random: false });
-      env.stopOnSpecFailure(true);
+      configureFn(env);
 
       env.execute(null, function() {
         expect(actions).toEqual(['fails']);
-        expect(env.deprecated).toHaveBeenCalled();
         done();
       });
+    });
+  }
+
+  describe('when failFast is on', function() {
+    behavesLikeStopOnSpecFailureIsOn(function(env) {
+      env.configure({ failFast: true });
+    });
+  });
+
+  describe('when stopOnSpecFailure is on', function() {
+    behavesLikeStopOnSpecFailureIsOn(function(env) {
+      env.configure({ stopOnSpecFailure: true });
+    });
+  });
+
+  describe('when stopOnSpecFailure is enabled via the deprecated method', function() {
+    behavesLikeStopOnSpecFailureIsOn(function(env) {
+      spyOn(env, 'deprecated');
+      env.stopOnSpecFailure(true);
     });
   });
 });
