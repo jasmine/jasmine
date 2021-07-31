@@ -213,6 +213,18 @@ getJasmineRequireObj().Env = function(j$) {
       });
 
       if (typeof configuration.failFast !== 'undefined') {
+        // We can't unconditionally issue a warning here because then users who
+        // get the configuration from Jasmine, modify it, and pass it back would
+        // see the warning.
+        if (configuration.failFast !== config.failFast) {
+          this.deprecated(
+            'The `failFast` config property is deprecated and will be removed ' +
+              'in a future version of Jasmine. Please use `stopOnSpecFailure` ' +
+              'instead.',
+            { ignoreRunnable: true }
+          );
+        }
+
         if (typeof configuration.stopOnSpecFailure !== 'undefined') {
           if (configuration.stopOnSpecFailure !== configuration.failFast) {
             throw new Error(
@@ -230,6 +242,18 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       if (typeof configuration.oneFailurePerSpec !== 'undefined') {
+        // We can't unconditionally issue a warning here because then users who
+        // get the configuration from Jasmine, modify it, and pass it back would
+        // see the warning.
+        if (configuration.oneFailurePerSpec !== config.oneFailurePerSpec) {
+          this.deprecated(
+            'The `oneFailurePerSpec` config property is deprecated and will be ' +
+              'removed in a future version of Jasmine. Please use ' +
+              '`stopSpecOnExpectationFailure` instead.',
+            { ignoreRunnable: true }
+          );
+        }
+
         if (typeof configuration.stopSpecOnExpectationFailure !== 'undefined') {
           if (
             configuration.stopSpecOnExpectationFailure !==

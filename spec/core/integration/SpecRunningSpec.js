@@ -792,7 +792,7 @@ describe('spec running', function() {
     });
   });
 
-  describe('When throwOnExpectationFailure is set', function() {
+  describe('When stopSpecOnExpectationFailure is set', function() {
     it('skips to cleanup functions after an error', function(done) {
       var actions = [];
 
@@ -821,7 +821,7 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ oneFailurePerSpec: true });
+      env.configure({ stopSpecOnExpectationFailure: true });
 
       env.execute(null, function() {
         expect(actions).toEqual([
@@ -852,7 +852,7 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ oneFailurePerSpec: true });
+      env.configure({ stopSpecOnExpectationFailure: true });
 
       env.execute(null, function() {
         expect(actions).toEqual(['beforeEach', 'afterEach']);
@@ -877,7 +877,7 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ oneFailurePerSpec: true });
+      env.configure({ stopSpecOnExpectationFailure: true });
 
       env.execute(null, function() {
         expect(actions).toEqual(['beforeEach', 'afterEach']);
@@ -1017,6 +1017,7 @@ describe('spec running', function() {
 
   describe('when failFast is on', function() {
     behavesLikeStopOnSpecFailureIsOn(function(env) {
+      spyOn(env, 'deprecated');
       env.configure({ failFast: true });
     });
   });

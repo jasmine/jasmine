@@ -256,7 +256,7 @@ describe('Env', function() {
   });
 
   it('can configure specs to throw errors on expectation failures', function() {
-    env.configure({ oneFailurePerSpec: true });
+    env.configure({ stopSpecOnExpectationFailure: true });
 
     spyOn(jasmineUnderTest, 'Spec');
     env.it('foo', function() {});
@@ -268,7 +268,7 @@ describe('Env', function() {
   });
 
   it('can configure suites to throw errors on expectation failures', function() {
-    env.configure({ oneFailurePerSpec: true });
+    env.configure({ stopSpecOnExpectationFailure: true });
 
     spyOn(jasmineUnderTest, 'Suite');
     env.describe('foo', function() {});
@@ -280,6 +280,7 @@ describe('Env', function() {
   });
 
   it('ignores configuration properties that are present but undefined', function() {
+    spyOn(env, 'deprecated');
     var initialConfig = {
       random: true,
       seed: '123',
@@ -309,6 +310,7 @@ describe('Env', function() {
   });
 
   it('sets stopOnSpecFailure when failFast is set, and vice versa', function() {
+    spyOn(env, 'deprecated');
     env.configure({ failFast: true });
     expect(env.configuration()).toEqual(
       jasmine.objectContaining({
@@ -327,6 +329,7 @@ describe('Env', function() {
   });
 
   it('rejects a single call that sets stopOnSpecFailure and failFast to different values', function() {
+    spyOn(env, 'deprecated');
     expect(function() {
       env.configure({ failFast: true, stopOnSpecFailure: false });
     }).toThrowError(
@@ -335,7 +338,18 @@ describe('Env', function() {
     );
   });
 
+  it('deprecates the failFast config property', function() {
+    spyOn(env, 'deprecated');
+    env.configure({ failFast: true });
+    expect(env.deprecated).toHaveBeenCalledWith(
+      'The `failFast` config property is deprecated and will be removed in a ' +
+        'future version of Jasmine. Please use `stopOnSpecFailure` instead.',
+      { ignoreRunnable: true }
+    );
+  });
+
   it('sets stopSpecOnExpectationFailure when oneFailurePerSpec is set, and vice versa', function() {
+    spyOn(env, 'deprecated');
     env.configure({ oneFailurePerSpec: true });
     expect(env.configuration()).toEqual(
       jasmine.objectContaining({
@@ -354,6 +368,7 @@ describe('Env', function() {
   });
 
   it('rejects a single call that sets stopSpecOnExpectationFailure and oneFailurePerSpec to different values', function() {
+    spyOn(env, 'deprecated');
     expect(function() {
       env.configure({
         oneFailurePerSpec: true,
@@ -363,6 +378,17 @@ describe('Env', function() {
       'stopSpecOnExpectationFailure and oneFailurePerSpec are ' +
         "aliases for each other. Don't set oneFailurePerSpec if you also set " +
         'stopSpecOnExpectationFailure.'
+    );
+  });
+
+  it('deprecates the oneFailurePerSpec config property', function() {
+    spyOn(env, 'deprecated');
+    env.configure({ oneFailurePerSpec: true });
+    expect(env.deprecated).toHaveBeenCalledWith(
+      'The `oneFailurePerSpec` config property is deprecated and will be ' +
+        'removed in a future version of Jasmine. Please use ' +
+        '`stopSpecOnExpectationFailure` instead.',
+      { ignoreRunnable: true }
     );
   });
 
