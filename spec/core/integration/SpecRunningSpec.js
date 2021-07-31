@@ -886,7 +886,7 @@ describe('spec running', function() {
     });
   });
 
-  function behavesLikeStopOnSpecFailureIsOn(configureFn) {
+  describe('when stopOnSpecFailure is on', function() {
     it('does not run further specs when one fails', function(done) {
       var actions = [],
         config;
@@ -905,25 +905,12 @@ describe('spec running', function() {
       });
 
       env.configure({ random: false });
-      configureFn(env);
+      env.configure({ stopOnSpecFailure: true });
 
       env.execute(null, function() {
         expect(actions).toEqual(['fails']);
         done();
       });
-    });
-  }
-
-  describe('when failFast is on', function() {
-    behavesLikeStopOnSpecFailureIsOn(function(env) {
-      spyOn(env, 'deprecated');
-      env.configure({ failFast: true });
-    });
-  });
-
-  describe('when stopOnSpecFailure is on', function() {
-    behavesLikeStopOnSpecFailureIsOn(function(env) {
-      env.configure({ stopOnSpecFailure: true });
     });
   });
 });

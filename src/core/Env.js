@@ -61,15 +61,6 @@ getJasmineRequireObj().Env = function(j$) {
       seed: null,
       /**
        * Whether to stop execution of the suite after the first spec failure
-       * @name Configuration#failFast
-       * @since 3.3.0
-       * @type Boolean
-       * @default false
-       * @deprecated Use the `stopOnSpecFailure` config property instead.
-       */
-      failFast: false,
-      /**
-       * Whether to stop execution of the suite after the first spec failure
        * @name Configuration#stopOnSpecFailure
        * @since 3.9.0
        * @type Boolean
@@ -86,15 +77,6 @@ getJasmineRequireObj().Env = function(j$) {
        * @default false
        */
       failSpecWithNoExpectations: false,
-      /**
-       * Whether to cause specs to only have one expectation failure.
-       * @name Configuration#oneFailurePerSpec
-       * @since 3.3.0
-       * @type Boolean
-       * @default false
-       * @deprecated Use the `stopSpecOnExpectationFailure` config property instead.
-       */
-      oneFailurePerSpec: false,
       /**
        * Whether to cause specs to only have one expectation failure.
        * @name Configuration#stopSpecOnExpectationFailure
@@ -203,7 +185,9 @@ getJasmineRequireObj().Env = function(j$) {
       var booleanProps = [
         'random',
         'failSpecWithNoExpectations',
-        'hideDisabled'
+        'hideDisabled',
+        'stopOnSpecFailure',
+        'stopSpecOnExpectationFailure'
       ];
 
       booleanProps.forEach(function(prop) {
@@ -211,70 +195,6 @@ getJasmineRequireObj().Env = function(j$) {
           config[prop] = !!configuration[prop];
         }
       });
-
-      if (typeof configuration.failFast !== 'undefined') {
-        // We can't unconditionally issue a warning here because then users who
-        // get the configuration from Jasmine, modify it, and pass it back would
-        // see the warning.
-        if (configuration.failFast !== config.failFast) {
-          this.deprecated(
-            'The `failFast` config property is deprecated and will be removed ' +
-              'in a future version of Jasmine. Please use `stopOnSpecFailure` ' +
-              'instead.',
-            { ignoreRunnable: true }
-          );
-        }
-
-        if (typeof configuration.stopOnSpecFailure !== 'undefined') {
-          if (configuration.stopOnSpecFailure !== configuration.failFast) {
-            throw new Error(
-              'stopOnSpecFailure and failFast are aliases for ' +
-                "each other. Don't set failFast if you also set stopOnSpecFailure."
-            );
-          }
-        }
-
-        config.failFast = configuration.failFast;
-        config.stopOnSpecFailure = configuration.failFast;
-      } else if (typeof configuration.stopOnSpecFailure !== 'undefined') {
-        config.failFast = configuration.stopOnSpecFailure;
-        config.stopOnSpecFailure = configuration.stopOnSpecFailure;
-      }
-
-      if (typeof configuration.oneFailurePerSpec !== 'undefined') {
-        // We can't unconditionally issue a warning here because then users who
-        // get the configuration from Jasmine, modify it, and pass it back would
-        // see the warning.
-        if (configuration.oneFailurePerSpec !== config.oneFailurePerSpec) {
-          this.deprecated(
-            'The `oneFailurePerSpec` config property is deprecated and will be ' +
-              'removed in a future version of Jasmine. Please use ' +
-              '`stopSpecOnExpectationFailure` instead.',
-            { ignoreRunnable: true }
-          );
-        }
-
-        if (typeof configuration.stopSpecOnExpectationFailure !== 'undefined') {
-          if (
-            configuration.stopSpecOnExpectationFailure !==
-            configuration.oneFailurePerSpec
-          ) {
-            throw new Error(
-              'stopSpecOnExpectationFailure and oneFailurePerSpec are aliases for ' +
-                "each other. Don't set oneFailurePerSpec if you also set stopSpecOnExpectationFailure."
-            );
-          }
-        }
-
-        config.oneFailurePerSpec = configuration.oneFailurePerSpec;
-        config.stopSpecOnExpectationFailure = configuration.oneFailurePerSpec;
-      } else if (
-        typeof configuration.stopSpecOnExpectationFailure !== 'undefined'
-      ) {
-        config.oneFailurePerSpec = configuration.stopSpecOnExpectationFailure;
-        config.stopSpecOnExpectationFailure =
-          configuration.stopSpecOnExpectationFailure;
-      }
 
       if (configuration.specFilter) {
         config.specFilter = configuration.specFilter;
@@ -992,7 +912,7 @@ getJasmineRequireObj().Env = function(j$) {
         expectationFactory: expectationFactory,
         asyncExpectationFactory: suiteAsyncExpectationFactory,
         expectationResultFactory: expectationResultFactory,
-        throwOnExpectationFailure: config.oneFailurePerSpec
+        throwOnExpectationFailure: config.stopSpecOnExpectationFailure
       });
 
       return suite;
@@ -1103,7 +1023,7 @@ getJasmineRequireObj().Env = function(j$) {
           fn: fn,
           timeout: timeout || 0
         },
-        throwOnExpectationFailure: config.oneFailurePerSpec,
+        throwOnExpectationFailure: config.stopSpecOnExpectationFailure,
         timer: new j$.Timer()
       });
       return spec;
@@ -1297,7 +1217,7 @@ getJasmineRequireObj().Env = function(j$) {
         error: error && error.message ? error : null
       });
 
-      if (config.oneFailurePerSpec) {
+      if (config.stopSpecOnExpectationFailure) {
         throw new Error(message);
       }
     };

@@ -818,7 +818,10 @@ describe('HtmlReporter', function() {
         var stopOnFailureUI = container.querySelector('.jasmine-fail-fast');
         stopOnFailureUI.click();
 
-        expect(navigationHandler).toHaveBeenCalledWith('failFast', true);
+        expect(navigationHandler).toHaveBeenCalledWith(
+          'stopOnSpecFailure',
+          true
+        );
       });
 
       it('should navigate and turn the setting off', function() {
@@ -847,7 +850,10 @@ describe('HtmlReporter', function() {
         var stopOnFailureUI = container.querySelector('.jasmine-fail-fast');
         stopOnFailureUI.click();
 
-        expect(navigationHandler).toHaveBeenCalledWith('failFast', false);
+        expect(navigationHandler).toHaveBeenCalledWith(
+          'stopOnSpecFailure',
+          false
+        );
       });
     });
 
@@ -924,7 +930,10 @@ describe('HtmlReporter', function() {
         var throwingExpectationsUI = container.querySelector('.jasmine-throw');
         throwingExpectationsUI.click();
 
-        expect(navigateHandler).toHaveBeenCalledWith('oneFailurePerSpec', true);
+        expect(navigateHandler).toHaveBeenCalledWith(
+          'stopSpecOnExpectationFailure',
+          true
+        );
       });
 
       it('should navigate and change the setting to off', function() {
@@ -954,7 +963,7 @@ describe('HtmlReporter', function() {
         throwingExpectationsUI.click();
 
         expect(navigateHandler).toHaveBeenCalledWith(
-          'oneFailurePerSpec',
+          'stopSpecOnExpectationFailure',
           false
         );
       });

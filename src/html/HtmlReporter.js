@@ -540,7 +540,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       var failFastCheckbox = optionsMenuDom.querySelector('#jasmine-fail-fast');
       failFastCheckbox.checked = config.stopOnSpecFailure;
       failFastCheckbox.onclick = function() {
-        navigateWithNewParam('failFast', !config.stopOnSpecFailure);
+        navigateWithNewParam('stopOnSpecFailure', !config.stopOnSpecFailure);
       };
 
       var throwCheckbox = optionsMenuDom.querySelector(
@@ -549,7 +549,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       throwCheckbox.checked = config.stopSpecOnExpectationFailure;
       throwCheckbox.onclick = function() {
         navigateWithNewParam(
-          'oneFailurePerSpec',
+          'stopSpecOnExpectationFailure',
           !config.stopSpecOnExpectationFailure
         );
       };
