@@ -1,12 +1,6 @@
 getJasmineRequireObj().Suite = function(j$) {
   function Suite(attrs) {
     this.env = attrs.env;
-    /**
-     * The unique ID of this suite.
-     * @name Suite#id
-     * @readonly
-     * @type {string}
-     */
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
     this.description = attrs.description;
@@ -191,48 +185,67 @@ getJasmineRequireObj().Suite = function(j$) {
     );
   };
 
-  Suite.prototype.buildMetadata = function(parentMetadata) {
+  Object.defineProperty(Suite.prototype, 'metadata', {
+    get: function() {
+      if (!this.metadata_) {
+        this.metadata_ = new SuiteMetadata(this);
+      }
+
+      return this.metadata_;
+    }
+  });
+
+  /**
+   * @interface Suite
+   * @see Env#topSuite
+   */
+  function SuiteMetadata(suite) {
+    this.suite_ = suite;
     /**
-     * @interface Suite
-     * @see Env#topSuite
+     * The unique ID of this suite.
+     * @name Suite#id
+     * @readonly
+     * @type {string}
      */
-    var result = {
-      /**
-       * The parent of this suite, or null if this is the top suite.
-       * @name Suite#parentSuite
-       * @readonly
-       * @type {Suite}
-       */
-      parentSuite: parentMetadata,
-
-      /**
-       * The description passed to the {@link describe} that created this suite.
-       * @name Suite#description
-       * @readonly
-       * @type {string}
-       */
-      description: this.description,
-
-      /**
-       * The full description including all ancestors of this suite.
-       * @name Suite#getFullName
-       * @function
-       * @returns {string}
-       */
-      getFullName: this.getFullName.bind(this)
-    };
+    this.id = suite.id;
 
     /**
-     * The suite's children.
-     * @name Suite#children
-     * @type {Array.<(Spec|Suite)>}
+     * The parent of this suite, or null if this is the top suite.
+     * @name Suite#parentSuite
+     * @readonly
+     * @type {Suite}
      */
-    result.children = this.children.map(function(child) {
-      return child.buildMetadata(result);
-    });
+    this.parentSuite = suite.parentSuite ? suite.parentSuite.metadata : null;
 
-    return result;
+    /**
+     * The description passed to the {@link describe} that created this suite.
+     * @name Suite#description
+     * @readonly
+     * @type {string}
+     */
+    this.description = suite.description;
+  }
+
+  /**
+   * The full description including all ancestors of this suite.
+   * @name Suite#getFullName
+   * @function
+   * @returns {string}
+   */
+  SuiteMetadata.prototype.getFullName = function() {
+    return this.suite_.getFullName();
   };
+
+  /**
+   * The suite's children.
+   * @name Suite#children
+   * @type {Array.<(Spec|Suite)>}
+   */
+  Object.defineProperty(SuiteMetadata.prototype, 'children', {
+    get: function() {
+      return this.suite_.children.map(child => child.metadata);
+    }
+  });
 
   function isFailure(args) {
     return !args[0];
@@ -240,8 +253,3 @@ getJasmineRequireObj().Suite = function(j$) {
 
   return Suite;
 };
-
-if (typeof window == void 0 && typeof exports == 'object') {
-  /* globals exports */
-  exports.Suite = jasmineRequire.Suite;
-}

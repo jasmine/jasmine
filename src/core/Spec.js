@@ -3,12 +3,6 @@ getJasmineRequireObj().Spec = function(j$) {
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
     this.resultCallback = attrs.resultCallback || function() {};
-    /**
-     * The unique ID of this spec.
-     * @name Spec#id
-     * @readonly
-     * @type {string}
-     */
     this.id = attrs.id;
     this.description = attrs.description || '';
     this.queueableFn = attrs.queueableFn;
@@ -238,30 +232,39 @@ getJasmineRequireObj().Spec = function(j$) {
    * @interface Spec
    * @see Configuration#specFilter
    */
-  Spec.prototype.buildMetadata = function() {
-    return {
-      /**
-       * The description passed to the {@link it} that created this spec.
-       * @name Spec#description
-       * @readonly
-       * @type {string}
-       */
-      description: this.description,
+  Object.defineProperty(Spec.prototype, 'metadata', {
+    get: function() {
+      if (!this.metadata_) {
+        this.metadata_ = {
+          /**
+           * The unique ID of this spec.
+           * @name Spec#id
+           * @readonly
+           * @type {string}
+           */
+          id: this.id,
 
-      /**
-       * The full description including all ancestors of this spec.
-       * @name Spec#getFullName
-       * @function
-       * @returns {string}
-       */
-      getFullName: this.getFullName.bind(this)
-    };
-  };
+          /**
+           * The description passed to the {@link it} that created this spec.
+           * @name Spec#description
+           * @readonly
+           * @type {string}
+           */
+          description: this.description,
+
+          /**
+           * The full description including all ancestors of this spec.
+           * @name Spec#getFullName
+           * @function
+           * @returns {string}
+           */
+          getFullName: this.getFullName.bind(this)
+        };
+      }
+
+      return this.metadata_;
+    }
+  });
 
   return Spec;
 };
-
-if (typeof window == void 0 && typeof exports == 'object') {
-  /* globals exports */
-  exports.Spec = jasmineRequire.Spec;
-}

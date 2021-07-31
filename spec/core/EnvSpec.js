@@ -90,7 +90,7 @@ describe('Env', function() {
   it('can configure specs to throw errors on expectation failures', function() {
     env.configure({ oneFailurePerSpec: true });
 
-    spyOn(jasmineUnderTest, 'Spec');
+    spyOn(jasmineUnderTest, 'Spec').and.callThrough();
     env.it('foo', function() {});
     expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -162,7 +162,7 @@ describe('Env', function() {
   });
 
   it('defaults to multiple failures for specs', function() {
-    spyOn(jasmineUnderTest, 'Spec');
+    spyOn(jasmineUnderTest, 'Spec').and.callThrough();
     env.it('bar', function() {});
     expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -181,7 +181,40 @@ describe('Env', function() {
     );
   });
 
+  function behavesLikeDescribe(methodName) {
+    it('returns a suite metadata object', function() {
+      let innerSuite;
+      let spec;
+      const suite = env.describe('outer suite', function() {
+        innerSuite = env.describe('inner suite', function() {
+          spec = env.it('a spec');
+        });
+      });
+
+      expect(suite.parentSuite).toEqual(
+        jasmine.objectContaining({
+          description: 'Jasmine__TopLevel__Suite'
+        })
+      );
+      expect(suite.parentSuite.pend).toBeUndefined();
+      expect(suite.pend).toBeUndefined();
+      expect(suite.description).toEqual('outer suite');
+      expect(suite.getFullName()).toEqual('outer suite');
+      expect(suite.id).toBeInstanceOf(String);
+      expect(suite.id).not.toEqual('');
+      expect(suite.children.length).toEqual(1);
+      expect(suite.children[0]).toBe(innerSuite);
+      expect(innerSuite.children.length).toEqual(1);
+      expect(innerSuite.children[0]).toBe(spec);
+      expect(innerSuite.getFullName()).toEqual('outer suite inner suite');
+      expect(innerSuite.parentSuite).toBe(suite);
+      expect(spec.getFullName()).toEqual('outer suite inner suite a spec');
+    });
+  }
+
   describe('#describe', function() {
+    behavesLikeDescribe('describe');
+
     it('throws an error when given arguments', function() {
       expect(function() {
         env.describe('done method', function(done) {});
@@ -232,7 +265,41 @@ describe('Env', function() {
     });
   });
 
+  describe('#fdescribe', function() {
+    behavesLikeDescribe('fdescribe');
+  });
+
+  describe('xdescribe', function() {
+    behavesLikeDescribe('xdescribe');
+  });
+
+  function behavesLikeIt(methodName) {
+    it('returns a spec metadata object', function() {
+      let spec;
+
+      env.describe('a suite', function() {
+        spec = env[methodName]('a spec', function() {});
+      });
+
+      expect(spec.description)
+        .withContext('description')
+        .toEqual('a spec');
+      expect(spec.getFullName())
+        .withContext('getFullName')
+        .toEqual('a suite a spec');
+      expect(spec.id)
+        .withContext('id')
+        .toBeInstanceOf(String);
+      expect(spec.id)
+        .withContext('id')
+        .not.toEqual('');
+      expect(spec.pend).toBeFalsy();
+    });
+  }
+
   describe('#it', function() {
+    behavesLikeIt('it');
+
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.it('undefined arg', null);
@@ -255,9 +322,11 @@ describe('Env', function() {
   });
 
   describe('#xit', function() {
+    behavesLikeIt('xit');
+
     it('calls spec.pend with "Temporarily disabled with xit"', function() {
       var pendSpy = jasmine.createSpy();
-      spyOn(env, 'it').and.returnValue({
+      spyOn(env, 'it_').and.returnValue({
         pend: pendSpy
       });
       env.xit('foo', function() {});
@@ -286,6 +355,8 @@ describe('Env', function() {
   });
 
   describe('#fit', function() {
+    behavesLikeIt('fit');
+
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.fit('undefined arg', undefined);

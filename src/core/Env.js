@@ -549,7 +549,7 @@ getJasmineRequireObj().Env = function(j$) {
      * @return {Suite} the root suite
      */
     this.topSuite = function() {
-      return topSuite.buildMetadata(null);
+      return topSuite.metadata;
     };
 
     /**
@@ -932,7 +932,7 @@ getJasmineRequireObj().Env = function(j$) {
       if (suite.parentSuite && !suite.children.length) {
         throw new Error('describe with no children (describe() or it())');
       }
-      return suite;
+      return suite.metadata;
     };
 
     this.xdescribe = function(description, specDefinitions) {
@@ -941,7 +941,7 @@ getJasmineRequireObj().Env = function(j$) {
       var suite = suiteFactory(description);
       suite.pend();
       addSpecsToSuite(suite, specDefinitions);
-      return suite;
+      return suite.metadata;
     };
 
     var focusedRunnables = [];
@@ -956,7 +956,7 @@ getJasmineRequireObj().Env = function(j$) {
       unfocusAncestor();
       addSpecsToSuite(suite, specDefinitions);
 
-      return suite;
+      return suite.metadata;
     };
 
     function addSpecsToSuite(suite, specDefinitions) {
@@ -1046,7 +1046,7 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
-    this.it = function(description, fn, timeout) {
+    this.it_ = function(description, fn, timeout) {
       ensureIsNotNested('it');
       // it() sometimes doesn't have a fn argument, so only check the type if
       // it's given.
@@ -1062,6 +1062,11 @@ getJasmineRequireObj().Env = function(j$) {
       return spec;
     };
 
+    this.it = function(description, fn, timeout) {
+      const spec = this.it_(description, fn, timeout);
+      return spec.metadata;
+    };
+
     this.xit = function(description, fn, timeout) {
       ensureIsNotNested('xit');
       // xit(), like it(), doesn't always have a fn argument, so only check the
@@ -1069,9 +1074,9 @@ getJasmineRequireObj().Env = function(j$) {
       if (arguments.length > 1 && typeof fn !== 'undefined') {
         ensureIsFunctionOrAsync(fn, 'xit');
       }
-      var spec = this.it.apply(this, arguments);
+      var spec = this.it_.apply(this, arguments);
       spec.pend('Temporarily disabled with xit');
-      return spec;
+      return spec.metadata;
     };
 
     this.fit = function(description, fn, timeout) {
@@ -1081,7 +1086,7 @@ getJasmineRequireObj().Env = function(j$) {
       currentDeclarationSuite.addChild(spec);
       focusedRunnables.push(spec.id);
       unfocusAncestor();
-      return spec;
+      return spec.metadata;
     };
 
     /**
