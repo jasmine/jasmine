@@ -3038,6 +3038,112 @@ describe('Env integration', function() {
     env.execute(null, done);
   });
 
+  describe('The promise returned by #execute', function() {
+    beforeEach(function() {
+      this.savedInterval = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
+    });
+
+    afterEach(function() {
+      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = this.savedInterval;
+    });
+
+    it('is resolved after reporter events are dispatched', function() {
+      jasmine.getEnv().requirePromises();
+      var reporter = jasmine.createSpyObj('reporter', [
+        'specDone',
+        'suiteDone',
+        'jasmineDone'
+      ]);
+
+      env.addReporter(reporter);
+      env.describe('suite', function() {
+        env.it('spec', function() {});
+      });
+
+      return env.execute(null).then(function() {
+        expect(reporter.specDone).toHaveBeenCalled();
+        expect(reporter.suiteDone).toHaveBeenCalled();
+        expect(reporter.jasmineDone).toHaveBeenCalled();
+      });
+    });
+
+    it('is resolved after the stack is cleared', function(done) {
+      jasmine.getEnv().requirePromises();
+      var realClearStack = jasmineUnderTest.getClearStack(
+          jasmineUnderTest.getGlobal()
+        ),
+        clearStackSpy = jasmine
+          .createSpy('clearStack')
+          .and.callFake(realClearStack);
+      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
+
+      // Create a new env that has the clearStack defined above
+      env.cleanup_();
+      env = new jasmineUnderTest.Env();
+
+      env.describe('suite', function() {
+        env.it('spec', function() {});
+      });
+
+      env.execute(null).then(function() {
+        expect(clearStackSpy).toHaveBeenCalled(); // (many times)
+        clearStackSpy.calls.reset();
+        setTimeout(function() {
+          expect(clearStackSpy).not.toHaveBeenCalled();
+          done();
+        });
+      });
+    });
+
+    it('is resolved after QueueRunner timeouts are cleared', function() {
+      jasmine.getEnv().requirePromises();
+      var setTimeoutSpy = spyOn(
+        jasmineUnderTest.getGlobal(),
+        'setTimeout'
+      ).and.callThrough();
+      var clearTimeoutSpy = spyOn(
+        jasmineUnderTest.getGlobal(),
+        'clearTimeout'
+      ).and.callThrough();
+
+      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 123456; // a distinctive value
+
+      env = new jasmineUnderTest.Env();
+
+      env.describe('suite', function() {
+        env.it('spec', function() {});
+      });
+
+      return env.execute(null).then(function() {
+        var timeoutIds = setTimeoutSpy.calls
+          .all()
+          .filter(function(call) {
+            return call.args[1] === 123456;
+          })
+          .map(function(call) {
+            return call.returnValue;
+          });
+
+        expect(timeoutIds.length).toBeGreaterThan(0);
+
+        timeoutIds.forEach(function(timeoutId) {
+          expect(clearTimeoutSpy).toHaveBeenCalledWith(timeoutId);
+        });
+      });
+    });
+
+    it('is resolved even if specs fail', function() {
+      jasmine.getEnv().requirePromises();
+      env.describe('suite', function() {
+        env.it('spec', function() {
+          env.expect(true).toBe(false);
+        });
+      });
+
+      return expectAsync(env.execute(null)).toBeResolved();
+    });
+  });
+
   describe('The optional callback argument to #execute', function() {
     beforeEach(function() {
       this.savedInterval = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
