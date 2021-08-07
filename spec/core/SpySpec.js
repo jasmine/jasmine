@@ -271,6 +271,7 @@ describe('Spies', function() {
         reject: jasmine.createSpy()
       };
       customPromise.resolve.and.returnValue('resolved');
+      spyOn(env, 'deprecated');
       env.configure({ Promise: customPromise });
 
       var spy = env.createSpy('foo').and.resolveTo(42);

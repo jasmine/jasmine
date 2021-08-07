@@ -399,11 +399,17 @@ describe('Env', function() {
     });
 
     it('can be configured with a custom library', function() {
+      spyOn(env, 'deprecated');
       var myLibrary = {
         resolve: jasmine.createSpy(),
         reject: jasmine.createSpy()
       };
       env.configure({ Promise: myLibrary });
+      expect(env.deprecated).toHaveBeenCalledWith(
+        'The `Promise` config property is deprecated. Future versions of ' +
+          'Jasmine will create native promises even if the `Promise` config ' +
+          'property is set. Please remove it.'
+      );
     });
 
     it('cannot be configured with an invalid promise library', function() {

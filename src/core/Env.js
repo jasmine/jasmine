@@ -137,6 +137,8 @@ getJasmineRequireObj().Env = function(j$) {
        * @since 3.5.0
        * @type function
        * @default undefined
+       * @deprecated In a future version, Jasmine will ignore the Promise config
+       * property and always create native promises instead.
        */
       Promise: undefined,
       /**
@@ -293,6 +295,11 @@ getJasmineRequireObj().Env = function(j$) {
           typeof configuration.Promise.reject === 'function'
         ) {
           customPromise = configuration.Promise;
+          self.deprecated(
+            'The `Promise` config property is deprecated. Future versions ' +
+              'of Jasmine will create native promises even if the `Promise` ' +
+              'config property is set. Please remove it.'
+          );
         } else {
           throw new Error(
             'Custom promise library missing `resolve`/`reject` functions'
