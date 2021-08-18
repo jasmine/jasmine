@@ -19,16 +19,22 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       function taggedOnError(error) {
         var substituteMsg;
 
-        if (error) {
+        if (j$.isError_(error)) {
           error.jasmineMessage = jasmineMessage + ': ' + error;
         } else {
-          substituteMsg = jasmineMessage + ' with no error or message';
+          if (error) {
+            substituteMsg = jasmineMessage + ': ' + error;
+          } else {
+            substituteMsg = jasmineMessage + ' with no error or message';
+          }
 
           if (errorType === 'unhandledRejection') {
             substituteMsg +=
               '\n' +
               '(Tip: to get a useful stack trace, use ' +
-              'Promise.reject(new Error(...)) instead of Promise.reject().)';
+              'Promise.reject(new Error(...)) instead of Promise.reject(' +
+              (error ? '...' : '') +
+              ').)';
           }
 
           error = new Error(substituteMsg);

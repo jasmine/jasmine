@@ -772,4 +772,26 @@ describe('Env', function() {
 
     expect(suiteThis).toBeInstanceOf(jasmineUnderTest.Suite);
   });
+
+  describe('#execute', function() {
+    it('returns a promise when the environment supports promises', function() {
+      jasmine.getEnv().requirePromises();
+      expect(env.execute()).toBeInstanceOf(Promise);
+    });
+
+    it('returns a promise when a custom promise constructor is provided', function() {
+      function CustomPromise() {}
+      CustomPromise.resolve = function() {};
+      CustomPromise.reject = function() {};
+
+      spyOn(env, 'deprecated');
+      env.configure({ Promise: CustomPromise });
+      expect(env.execute()).toBeInstanceOf(CustomPromise);
+    });
+
+    it('returns undefined when promises are unavailable', function() {
+      jasmine.getEnv().requireNoPromises();
+      expect(env.execute()).toBeUndefined();
+    });
+  });
 });
