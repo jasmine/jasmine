@@ -1,3 +1,28 @@
+if ENV["SUPPRESS_JASMINE_DEPRECATION"].nil?
+  puts <<~END_DEPRECATION_MSG
+    The Jasmine Ruby gems are deprecated. There will be no further releases after
+    the end of the Jasmine 3.x series. We recommend that most users migrate to the
+    jasmine-browser-runner npm package, which is the direct replacement for the
+    jasmine gem. See <https://jasmine.github.io/setup/browser.html> for setup
+    instructions, including for Rails applications that use either Sprockets or
+    Webpacker.
+
+    If jasmine-browser-runner doesn't meet your needs, one of these might:
+
+    * The jasmine npm package to run specs in Node.js:
+      <https://github.com/jasmine/jasmine-npm>
+    * The standalone distribution to run specs in browsers with no additional
+      tools: <https://github.com/jasmine/jasmine#installation>
+    * The jasmine-core npm package if all you need is the Jasmine assets:
+      <https://github.com/jasmine/jasmine>. This is the direct equivalent of the
+      jasmine-core Ruby gem.
+
+    To prevent this message from appearing, set the SUPPRESS_JASMINE_DEPRECATION
+    environment variable.
+
+  END_DEPRECATION_MSG
+end
+
 module Jasmine
   module Core
     class << self
