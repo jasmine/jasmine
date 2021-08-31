@@ -8,7 +8,18 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = ["Gregg Van Hove"]
   s.summary = %q{JavaScript BDD framework}
-  s.description = %q{Test your JavaScript without any framework dependencies, in any environment, and with a nice descriptive syntax.}
+  s.description        = <<~DESC
+    Test your JavaScript without any framework dependencies, in any environment,
+    and with a nice descriptive syntax.
+
+    Jasmine for Ruby is deprecated. The direct replacment for the jasmine-core
+    gem is the jasmine-core NPM package. If you are also using the jasmine gem,
+    we recommend using the jasmine-browser-runner NPM package instead. It
+    supports all the same scenarios as the jasmine gem gem plus Webpacker. See
+    https://jasmine.github.io/setup/browser.html for setup instructions, and
+    https://github.com/jasmine/jasmine-gem/blob/main/release_notes/3.9.0.md
+    for other options.
+  DESC
   s.email = %q{jasmine-js@googlegroups.com}
   s.homepage = "http://jasmine.github.io"
   s.license = "MIT"
