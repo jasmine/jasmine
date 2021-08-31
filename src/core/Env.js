@@ -12,7 +12,6 @@ getJasmineRequireObj().Env = function(j$) {
 
     var self = this;
     var global = options.global || j$.getGlobal();
-    var customPromise;
 
     var totalSpecsDefined = 0;
 
@@ -204,27 +203,6 @@ getJasmineRequireObj().Env = function(j$) {
 
       if (typeof configuration.seed !== 'undefined') {
         config.seed = configuration.seed;
-      }
-
-      // Don't use hasOwnProperty to check for Promise existence because Promise
-      // can be initialized to undefined, either explicitly or by using the
-      // object returned from Env#configuration. In particular, Karma does this.
-      if (configuration.Promise) {
-        if (
-          typeof configuration.Promise.resolve === 'function' &&
-          typeof configuration.Promise.reject === 'function'
-        ) {
-          customPromise = configuration.Promise;
-          self.deprecated(
-            'The `Promise` config property is deprecated. Future versions ' +
-              'of Jasmine will create native promises even if the `Promise` ' +
-              'config property is set. Please remove it.'
-          );
-        } else {
-          throw new Error(
-            'Custom promise library missing `resolve`/`reject` functions'
-          );
-        }
       }
 
       if (configuration.hasOwnProperty('verboseDeprecations')) {
@@ -719,25 +697,15 @@ getJasmineRequireObj().Env = function(j$) {
       var jasmineTimer = new j$.Timer();
       jasmineTimer.start();
 
-      var Promise = customPromise || global.Promise;
-
-      if (Promise) {
-        return new Promise(function(resolve) {
-          runAll(function() {
-            if (onComplete) {
-              onComplete();
-            }
-
-            resolve();
-          });
-        });
-      } else {
+      return new Promise(function(resolve) {
         runAll(function() {
           if (onComplete) {
             onComplete();
           }
+
+          resolve();
         });
-      }
+      });
 
       function runAll(done) {
         /**
@@ -853,9 +821,6 @@ getJasmineRequireObj().Env = function(j$) {
         }
 
         return undefined;
-      },
-      function getPromise() {
-        return customPromise || global.Promise;
       }
     );
 

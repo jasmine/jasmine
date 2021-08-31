@@ -248,7 +248,7 @@ describe('Spies', function() {
   });
 
   describe('any promise-based strategy', function() {
-    it('works with global Promise library when available', function(done) {
+    it('works with global Promise library', function(done) {
       var spy = env.createSpy('foo').and.resolveTo(42);
       spy()
         .then(function(result) {
@@ -256,20 +256,6 @@ describe('Spies', function() {
           done();
         })
         .catch(done.fail);
-    });
-
-    it('works with a custom Promise library', function() {
-      var customPromise = {
-        resolve: jasmine.createSpy(),
-        reject: jasmine.createSpy()
-      };
-      customPromise.resolve.and.returnValue('resolved');
-      spyOn(env, 'deprecated');
-      env.configure({ Promise: customPromise });
-
-      var spy = env.createSpy('foo').and.resolveTo(42);
-      expect(spy()).toEqual('resolved');
-      expect(customPromise.resolve).toHaveBeenCalledWith(42);
     });
   });
 

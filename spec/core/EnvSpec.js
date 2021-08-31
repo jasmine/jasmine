@@ -137,37 +137,6 @@ describe('Env', function() {
     );
   });
 
-  describe('promise library', function() {
-    it('can be configured without a custom library', function() {
-      env.configure({});
-      env.configure({ Promise: undefined });
-    });
-
-    it('can be configured with a custom library', function() {
-      spyOn(env, 'deprecated');
-      var myLibrary = {
-        resolve: jasmine.createSpy(),
-        reject: jasmine.createSpy()
-      };
-      env.configure({ Promise: myLibrary });
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'The `Promise` config property is deprecated. Future versions of ' +
-          'Jasmine will create native promises even if the `Promise` config ' +
-          'property is set. Please remove it.'
-      );
-    });
-
-    it('cannot be configured with an invalid promise library', function() {
-      var myLibrary = {};
-
-      expect(function() {
-        env.configure({ Promise: myLibrary });
-      }).toThrowError(
-        'Custom promise library missing `resolve`/`reject` functions'
-      );
-    });
-  });
-
   it('defaults to multiple failures for specs', function() {
     spyOn(jasmineUnderTest, 'Spec').and.callThrough();
     env.it('bar', function() {});

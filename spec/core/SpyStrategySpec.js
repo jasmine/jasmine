@@ -131,12 +131,8 @@ describe('SpyStrategy', function() {
   describe('#resolveTo', function() {
     it('allows a resolved promise to be returned', function(done) {
       var originalFn = jasmine.createSpy('original'),
-        getPromise = function() {
-          return Promise;
-        },
         spyStrategy = new jasmineUnderTest.SpyStrategy({
-          fn: originalFn,
-          getPromise: getPromise
+          fn: originalFn
         });
 
       spyStrategy.resolveTo(37);
@@ -151,12 +147,8 @@ describe('SpyStrategy', function() {
 
     it('allows an empty resolved promise to be returned', function(done) {
       var originalFn = jasmine.createSpy('original'),
-        getPromise = function() {
-          return Promise;
-        },
         spyStrategy = new jasmineUnderTest.SpyStrategy({
-          fn: originalFn,
-          getPromise: getPromise
+          fn: originalFn
         });
 
       spyStrategy.resolveTo();
@@ -168,28 +160,13 @@ describe('SpyStrategy', function() {
         })
         .catch(done.fail);
     });
-
-    it('fails if promises are not available', function() {
-      var originalFn = jasmine.createSpy('original'),
-        spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
-
-      expect(function() {
-        spyStrategy.resolveTo(37);
-      }).toThrowError(
-        'resolveTo requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`'
-      );
-    });
   });
 
   describe('#rejectWith', function() {
     it('allows a rejected promise to be returned', function(done) {
       var originalFn = jasmine.createSpy('original'),
-        getPromise = function() {
-          return Promise;
-        },
         spyStrategy = new jasmineUnderTest.SpyStrategy({
-          fn: originalFn,
-          getPromise: getPromise
+          fn: originalFn
         });
 
       spyStrategy.rejectWith(new Error('oops'));
@@ -205,12 +182,8 @@ describe('SpyStrategy', function() {
 
     it('allows an empty rejected promise to be returned', function(done) {
       var originalFn = jasmine.createSpy('original'),
-        getPromise = function() {
-          return Promise;
-        },
         spyStrategy = new jasmineUnderTest.SpyStrategy({
-          fn: originalFn,
-          getPromise: getPromise
+          fn: originalFn
         });
 
       spyStrategy.rejectWith();
@@ -226,12 +199,8 @@ describe('SpyStrategy', function() {
 
     it('allows a non-Error to be rejected', function(done) {
       var originalFn = jasmine.createSpy('original'),
-        getPromise = function() {
-          return Promise;
-        },
         spyStrategy = new jasmineUnderTest.SpyStrategy({
-          fn: originalFn,
-          getPromise: getPromise
+          fn: originalFn
         });
 
       spyStrategy.rejectWith('oops');
@@ -243,17 +212,6 @@ describe('SpyStrategy', function() {
           done();
         })
         .catch(done.fail);
-    });
-
-    it('fails if promises are not available', function() {
-      var originalFn = jasmine.createSpy('original'),
-        spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
-
-      expect(function() {
-        spyStrategy.rejectWith(new Error('oops'));
-      }).toThrowError(
-        'rejectWith requires global Promise, or `Promise` configured with `jasmine.getEnv().configure()`'
-      );
     });
   });
 
