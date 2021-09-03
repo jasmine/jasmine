@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $line-height: 14px;
 $margin-unit: 14px;
 
@@ -117,7 +119,7 @@ body {
 
     li {
       display: inline-block;
-      height: ($line-height / 2) + 3;
+      height: math.div($line-height, 2) + 3;
       width: $line-height;
 
       font-size: 16px;
@@ -132,7 +134,7 @@ body {
       }
 
       &.jasmine-failed {
-        line-height: ($line-height / 2) + 2;
+        line-height: math.div($line-height, 2) + 2;
 
         &:before {
           color: $failing-color;
@@ -282,8 +284,8 @@ body {
       padding-left: 0;
 
       &.jasmine-suite {
-        margin-top: $margin-unit/2;
-        margin-bottom: $margin-unit/2
+        margin-top: math.div($margin-unit, 2);
+        margin-bottom: math.div($margin-unit, 2)
       }
     }
 
