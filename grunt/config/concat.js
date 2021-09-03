@@ -38,15 +38,15 @@ module.exports = {
     dest: 'lib/jasmine-core/jasmine.js'
   },
   boot0: {
-    src: ['lib/jasmine-core/boot/boot0.js'],
+    src: ['src/boot/boot0.js'],
     dest: 'lib/jasmine-core/boot0.js'
   },
   boot1: {
-    src: ['lib/jasmine-core/boot/boot1.js'],
+    src: ['src/boot/boot1.js'],
     dest: 'lib/jasmine-core/boot1.js'
   },
   nodeBoot: {
-    src: ['lib/jasmine-core/boot/node_boot.js'],
+    src: ['src/boot/node_boot.js'],
     dest: 'lib/jasmine-core/node_boot.js'
   },
   options: {

@@ -38,6 +38,7 @@ Once you've pushed a feature branch to your forked repo, you're ready to open a 
 * `/src` contains all of the source files
     * `/src/core` - generic source files
     * `/src/html` - browser-specific files
+    * `/src/boot` - sources for boot files (see below)
 * `/spec` contains all of the tests
     * mirrors the source directory
     * there are some additional files

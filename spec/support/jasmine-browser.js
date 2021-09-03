@@ -12,7 +12,8 @@ module.exports = {
     'core/Suite.js',
     'core/**/*.js',
     'html/**/*.js',
-    '**/*.js'
+    '**/*.js',
+    '!boot/**.js'
   ],
   specDir: 'spec',
   specFiles: ['**/*[Ss]pec.js', '!npmPackage/**/*'],
