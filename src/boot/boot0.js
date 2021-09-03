@@ -39,4 +39,4 @@
   for (var property in jasmineInterface) {
     global[property] = jasmineInterface[property];
   }
-}());
+})();
