@@ -465,7 +465,7 @@ describe('Env integration', function() {
 
     var global = {
       setTimeout: function(fn, delay) {
-        setTimeout(fn, delay);
+        return setTimeout(fn, delay);
       },
       clearTimeout: function(fn, delay) {
         clearTimeout(fn, delay);
@@ -1018,7 +1018,7 @@ describe('Env integration', function() {
     var globalSetTimeout = jasmine
         .createSpy('globalSetTimeout')
         .and.callFake(function(cb, t) {
-          setTimeout(cb, t);
+          return setTimeout(cb, t);
         }),
       delayedFunctionForGlobalClock = jasmine.createSpy(
         'delayedFunctionForGlobalClock'
@@ -1033,7 +1033,7 @@ describe('Env integration', function() {
         setTimeout: globalSetTimeout,
         clearTimeout: clearTimeout,
         setImmediate: function(cb) {
-          setTimeout(cb, 0);
+          return setTimeout(cb, 0);
         }
       }
     });
@@ -1108,7 +1108,7 @@ describe('Env integration', function() {
           setInterval: setInterval,
           clearInterval: clearInterval,
           setImmediate: function(cb) {
-            realSetTimeout(cb, 0);
+            return realSetTimeout(cb, 0);
           }
         }
       });
@@ -2255,7 +2255,7 @@ describe('Env integration', function() {
   it('reports errors that occur during loading', function(done) {
     var global = {
       setTimeout: function(fn, delay) {
-        setTimeout(fn, delay);
+        return setTimeout(fn, delay);
       },
       clearTimeout: function(fn, delay) {
         clearTimeout(fn, delay);
@@ -2312,7 +2312,7 @@ describe('Env integration', function() {
       var originalOnerror = jasmine.createSpy('original onerror');
       var global = {
         setTimeout: function(fn, delay) {
-          setTimeout(fn, delay);
+          return setTimeout(fn, delay);
         },
         clearTimeout: function(fn, delay) {
           clearTimeout(fn, delay);
@@ -2513,7 +2513,7 @@ describe('Env integration', function() {
       it('is "failed"', function(done) {
         var global = {
           setTimeout: function(fn, delay) {
-            setTimeout(fn, delay);
+            return setTimeout(fn, delay);
           },
           clearTimeout: function(fn, delay) {
             clearTimeout(fn, delay);
@@ -2835,10 +2835,6 @@ describe('Env integration', function() {
   });
 
   it('provides custom equality testers to async matchers', function(done) {
-    if (jasmine.getEnv().skipBrowserFlake) {
-      jasmine.getEnv().skipBrowserFlake();
-    }
-
     jasmine.getEnv().requirePromises();
 
     var specDone = jasmine.createSpy('specDone');
