@@ -516,4 +516,31 @@ describe('Spec', function() {
     args.cleanupFns[0].fn();
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual([]);
   });
+
+  it('passes an onMultipleDone that logs a deprecation', function() {
+    var queueRunnerFactory = jasmine.createSpy('queueRunnerFactory'),
+      deprecated = jasmine.createSpy('depredated'),
+      spec = new jasmineUnderTest.Spec({
+        deprecated: deprecated,
+        queueableFn: { fn: function() {} },
+        queueRunnerFactory: queueRunnerFactory,
+        getSpecName: function() {
+          return 'a spec';
+        }
+      });
+
+    spec.execute();
+
+    expect(queueRunnerFactory).toHaveBeenCalled();
+    queueRunnerFactory.calls.argsFor(0)[0].onMultipleDone();
+
+    expect(deprecated).toHaveBeenCalledWith(
+      "An asynchronous function called its 'done' " +
+        'callback more than once. This is a bug in the spec, beforeAll, ' +
+        'beforeEach, afterAll, or afterEach function in question. This will ' +
+        'be treated as an error in a future version.\n' +
+        '(in spec: a spec)',
+      { ignoreRunnable: true }
+    );
+  });
 });

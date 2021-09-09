@@ -291,7 +291,8 @@ describe('TreeProcessor', function() {
       onComplete: treeComplete,
       onException: jasmine.any(Function),
       userContext: { root: 'context' },
-      queueableFns: [{ fn: jasmine.any(Function) }]
+      queueableFns: [{ fn: jasmine.any(Function) }],
+      onMultipleDone: null
     });
 
     queueRunner.calls.mostRecent().args[0].queueableFns[0].fn('foo');
@@ -321,16 +322,19 @@ describe('TreeProcessor', function() {
       onComplete: treeComplete,
       onException: jasmine.any(Function),
       userContext: { root: 'context' },
-      queueableFns: [{ fn: jasmine.any(Function) }]
+      queueableFns: [{ fn: jasmine.any(Function) }],
+      onMultipleDone: null
     });
 
     queueRunner.calls.mostRecent().args[0].queueableFns[0].fn(nodeDone);
 
     expect(queueRunner).toHaveBeenCalledWith({
       onComplete: jasmine.any(Function),
+      onMultipleDone: null,
       queueableFns: [{ fn: jasmine.any(Function) }],
       userContext: { node: 'context' },
-      onException: jasmine.any(Function)
+      onException: jasmine.any(Function),
+      onMultipleDone: null
     });
 
     queueRunner.calls.mostRecent().args[0].queueableFns[0].fn('foo');

@@ -142,4 +142,44 @@ describe('Suite', function() {
       );
     });
   });
+
+  describe('#onMultipleDone', function() {
+    it('logs a special deprecation when it is the top suite', function() {
+      var env = jasmine.createSpyObj('env', ['deprecated']);
+      var suite = new jasmineUnderTest.Suite({ env: env, parentSuite: null });
+
+      suite.onMultipleDone();
+
+      expect(env.deprecated).toHaveBeenCalledWith(
+        'A top-level beforeAll or afterAll function called its ' +
+          "'done' callback more than once. This is a bug in the beforeAll " +
+          'or afterAll function in question. This will be treated as an ' +
+          'error in a future version.',
+        { ignoreRunnable: true }
+      );
+    });
+
+    it('logs a deprecation including the suite name when it is a normal suite', function() {
+      var env = jasmine.createSpyObj('env', ['deprecated']);
+      var suite = new jasmineUnderTest.Suite({
+        env: env,
+        description: 'the suite',
+        parentSuite: {
+          description: 'the parent suite',
+          parentSuite: {}
+        }
+      });
+
+      suite.onMultipleDone();
+
+      expect(env.deprecated).toHaveBeenCalledWith(
+        "An asynchronous function called its 'done' callback more than " +
+          'once. This is a bug in the spec, beforeAll, beforeEach, afterAll, ' +
+          'or afterEach function in question. This will be treated as an error ' +
+          'in a future version.\n' +
+          '(in suite: the parent suite the suite)',
+        { ignoreRunnable: true }
+      );
+    });
+  });
 });

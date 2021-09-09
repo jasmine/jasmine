@@ -305,6 +305,32 @@ describe('QueueRunner', function() {
       expect(onComplete).toHaveBeenCalled();
     });
 
+    it('does not call onMultipleDone if an asynchrnous function completes after timing out', function() {
+      var timeout = 3,
+        queueableFn = {
+          fn: function(done) {
+            queueableFnDone = done;
+          },
+          type: 'queueable',
+          timeout: timeout
+        },
+        onComplete = jasmine.createSpy('onComplete'),
+        onMultipleDone = jasmine.createSpy('onMultipleDone'),
+        queueRunner = new jasmineUnderTest.QueueRunner({
+          queueableFns: [queueableFn],
+          onComplete: onComplete,
+          onMultipleDone: onMultipleDone
+        }),
+        queueableFnDone;
+
+      queueRunner.execute();
+      jasmine.clock().tick(timeout);
+      queueableFnDone();
+
+      expect(onComplete).toHaveBeenCalled();
+      expect(onMultipleDone).not.toHaveBeenCalled();
+    });
+
     it('by default does not set a timeout for asynchronous functions', function() {
       var beforeFn = { fn: function(done) {} },
         queueableFn = { fn: jasmine.createSpy('fn') },
@@ -380,13 +406,16 @@ describe('QueueRunner', function() {
           }
         },
         nextQueueableFn = { fn: jasmine.createSpy('nextFn') },
+        onMultipleDone = jasmine.createSpy('onMultipleDone'),
         queueRunner = new jasmineUnderTest.QueueRunner({
-          queueableFns: [queueableFn, nextQueueableFn]
+          queueableFns: [queueableFn, nextQueueableFn],
+          onMultipleDone: onMultipleDone
         });
 
       queueRunner.execute();
       jasmine.clock().tick(1);
       expect(nextQueueableFn.fn.calls.count()).toEqual(1);
+      expect(onMultipleDone).toHaveBeenCalled();
     });
 
     it('does not move to the next spec if done is called after an exception has ended the spec', function() {
@@ -397,13 +426,17 @@ describe('QueueRunner', function() {
           }
         },
         nextQueueableFn = { fn: jasmine.createSpy('nextFn') },
+        deprecated = jasmine.createSpy('deprecated'),
         queueRunner = new jasmineUnderTest.QueueRunner({
+          deprecated: deprecated,
           queueableFns: [queueableFn, nextQueueableFn]
         });
-
       queueRunner.execute();
       jasmine.clock().tick(1);
       expect(nextQueueableFn.fn.calls.count()).toEqual(1);
+      // Don't issue a deprecation. The error already tells the user that
+      // something went wrong.
+      expect(deprecated).not.toHaveBeenCalled();
     });
 
     it('should return a null when you call done', function() {

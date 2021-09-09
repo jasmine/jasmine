@@ -44,7 +44,10 @@ getJasmineRequireObj().TreeProcessor = function() {
         onException: function() {
           tree.onException.apply(tree, arguments);
         },
-        onComplete: done
+        onComplete: done,
+        onMultipleDone: tree.onMultipleDone
+          ? tree.onMultipleDone.bind(tree)
+          : null
       });
     };
 
@@ -216,7 +219,10 @@ getJasmineRequireObj().TreeProcessor = function() {
               userContext: node.sharedUserContext(),
               onException: function() {
                 node.onException.apply(node, arguments);
-              }
+              },
+              onMultipleDone: node.onMultipleDone
+                ? node.onMultipleDone.bind(node)
+                : null
             });
           }
         };
