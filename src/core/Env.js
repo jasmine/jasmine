@@ -609,7 +609,8 @@ getJasmineRequireObj().Env = function(j$) {
          */
         'specDone'
       ],
-      queueRunnerFactory
+      queueRunnerFactory,
+      self.deprecated
     );
 
     /**
@@ -1007,6 +1008,7 @@ getJasmineRequireObj().Env = function(j$) {
         beforeAndAfterFns: beforeAndAfterFns(suite),
         expectationFactory: expectationFactory,
         asyncExpectationFactory: specAsyncExpectationFactory,
+        deprecated: self.deprecated,
         resultCallback: specResultCallback,
         getSpecName: function(spec) {
           return getSpecName(spec, suite);

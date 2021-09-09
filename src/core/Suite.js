@@ -166,6 +166,32 @@ getJasmineRequireObj().Suite = function(j$) {
     this.result.failedExpectations.push(failedExpectation);
   };
 
+  Suite.prototype.onMultipleDone = function() {
+    var msg;
+
+    // Issue a deprecation. Include the context ourselves and pass
+    // ignoreRunnable: true, since getting here always means that we've already
+    // moved on and the current runnable isn't the one that caused the problem.
+    if (this.parentSuite) {
+      msg =
+        "An asynchronous function called its 'done' callback more than " +
+        'once. This is a bug in the spec, beforeAll, beforeEach, afterAll, ' +
+        'or afterEach function in question. This will be treated as an error ' +
+        'in a future version.\n' +
+        '(in suite: ' +
+        this.getFullName() +
+        ')';
+    } else {
+      msg =
+        'A top-level beforeAll or afterAll function called its ' +
+        "'done' callback more than once. This is a bug in the beforeAll " +
+        'or afterAll function in question. This will be treated as an ' +
+        'error in a future version.';
+    }
+
+    this.env.deprecated(msg, { ignoreRunnable: true });
+  };
+
   Suite.prototype.addExpectationResult = function() {
     if (isFailure(arguments)) {
       var data = arguments[1];

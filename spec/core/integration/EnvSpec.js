@@ -461,7 +461,7 @@ describe('Env integration', function() {
 
     var global = {
       setTimeout: function(fn, delay) {
-        setTimeout(fn, delay);
+        return setTimeout(fn, delay);
       },
       clearTimeout: function(fn, delay) {
         clearTimeout(fn, delay);
@@ -507,6 +507,191 @@ describe('Env integration', function() {
     });
 
     env.execute(null, assertions);
+  });
+
+  it('deprecates multiple calls to done in the top suite', function(done) {
+    var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
+    var message =
+      'A top-level beforeAll or afterAll function called its ' +
+      "'done' callback more than once. This is a bug in the beforeAll " +
+      'or afterAll function in question. This will be treated as an ' +
+      'error in a future version.';
+
+    spyOn(console, 'error');
+    env.addReporter(reporter);
+    env.configure({ verboseDeprecations: true });
+    env.beforeAll(function(innerDone) {
+      innerDone();
+      innerDone();
+    });
+    env.it('a spec, so the beforeAll runs', function() {});
+    env.afterAll(function(innerDone) {
+      innerDone();
+      innerDone();
+    });
+
+    env.execute(null, function() {
+      var warnings;
+      expect(reporter.jasmineDone).toHaveBeenCalled();
+      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
+      expect(warnings.length).toEqual(2);
+      expect(warnings[0])
+        .withContext('top beforeAll')
+        .toEqual(jasmine.objectContaining({ message: message }));
+      expect(warnings[1])
+        .withContext('top afterAll')
+        .toEqual(jasmine.objectContaining({ message: message }));
+      done();
+    });
+  });
+
+  it('deprecates multiple calls to done in a non-top suite', function(done) {
+    var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
+    var message =
+      "An asynchronous function called its 'done' " +
+      'callback more than once. This is a bug in the spec, beforeAll, ' +
+      'beforeEach, afterAll, or afterEach function in question. This will ' +
+      'be treated as an error in a future version.';
+
+    spyOn(console, 'error');
+    env.addReporter(reporter);
+    env.configure({ verboseDeprecations: true });
+    env.describe('a suite', function() {
+      env.beforeAll(function(innerDone) {
+        innerDone();
+        innerDone();
+      });
+      env.it('a spec, so that before/afters run', function() {});
+      env.afterAll(function(innerDone) {
+        innerDone();
+        innerDone();
+      });
+    });
+
+    env.execute(null, function() {
+      var warnings;
+      expect(reporter.jasmineDone).toHaveBeenCalled();
+      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
+      expect(warnings.length).toEqual(2);
+      expect(warnings[0])
+        .withContext('suite beforeAll')
+        .toEqual(
+          jasmine.objectContaining({
+            message: message + '\n(in suite: a suite)'
+          })
+        );
+      expect(warnings[1])
+        .withContext('suite afterAll')
+        .toEqual(
+          jasmine.objectContaining({
+            message: message + '\n(in suite: a suite)'
+          })
+        );
+      done();
+    });
+  });
+
+  it('deprecates multiple calls to done in a spec', function(done) {
+    var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
+    var message =
+      "An asynchronous function called its 'done' " +
+      'callback more than once. This is a bug in the spec, beforeAll, ' +
+      'beforeEach, afterAll, or afterEach function in question. This will ' +
+      'be treated as an error in a future version.\n' +
+      '(in spec: a suite a spec)';
+
+    spyOn(console, 'error');
+    env.addReporter(reporter);
+    env.configure({ verboseDeprecations: true });
+    env.describe('a suite', function() {
+      env.beforeEach(function(innerDone) {
+        innerDone();
+        innerDone();
+      });
+      env.it('a spec', function(innerDone) {
+        innerDone();
+        innerDone();
+      });
+      env.afterEach(function(innerDone) {
+        innerDone();
+        innerDone();
+      });
+    });
+
+    env.execute(null, function() {
+      var warnings;
+      expect(reporter.jasmineDone).toHaveBeenCalled();
+      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
+      expect(warnings.length).toEqual(3);
+      expect(warnings[0])
+        .withContext('warning caused by beforeEach')
+        .toEqual(jasmine.objectContaining({ message: message }));
+      expect(warnings[1])
+        .withContext('warning caused by it')
+        .toEqual(jasmine.objectContaining({ message: message }));
+      expect(warnings[2])
+        .withContext('warning caused by afterEach')
+        .toEqual(jasmine.objectContaining({ message: message }));
+      done();
+    });
+  });
+
+  it('deprecates multiple calls to done in reporters', function(done) {
+    var message =
+      "An asynchronous reporter callback called its 'done' callback more " +
+      'than once. This is a bug in the reporter callback in question. This ' +
+      'will be treated as an error in a future version.\nNote: This message ' +
+      'will be shown only once. Set config.verboseDeprecations to true to ' +
+      'see every occurrence.';
+    var reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone']);
+    reporter.specDone = function(result, done) {
+      done();
+      done();
+    };
+    env.addReporter(reporter);
+
+    env.it('a spec', function() {});
+
+    spyOn(console, 'error');
+    env.execute(null, function() {
+      expect(reporter.jasmineDone).toHaveBeenCalled();
+      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
+      expect(warnings.length).toEqual(1);
+      expect(warnings[0]).toEqual(
+        jasmine.objectContaining({ message: message })
+      );
+      done();
+    });
+  });
+
+  it('does not deprecate a call to done that comes after a timeout', function(done) {
+    var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']),
+      firstSpecDone;
+
+    reporter.specDone = function(result, reporterDone) {
+      setTimeout(function() {
+        firstSpecDone();
+        reporterDone();
+      });
+    };
+    env.addReporter(reporter);
+
+    env.it(
+      'a spec',
+      function(innerDone) {
+        firstSpecDone = innerDone;
+      },
+      1
+    );
+
+    env.execute(null, function() {
+      expect(reporter.jasmineDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          deprecationWarnings: []
+        })
+      );
+      done();
+    });
   });
 
   describe('suiteDone reporting', function() {
@@ -1014,7 +1199,7 @@ describe('Env integration', function() {
     var globalSetTimeout = jasmine
         .createSpy('globalSetTimeout')
         .and.callFake(function(cb, t) {
-          setTimeout(cb, t);
+          return setTimeout(cb, t);
         }),
       delayedFunctionForGlobalClock = jasmine.createSpy(
         'delayedFunctionForGlobalClock'
@@ -1029,7 +1214,7 @@ describe('Env integration', function() {
         setTimeout: globalSetTimeout,
         clearTimeout: clearTimeout,
         setImmediate: function(cb) {
-          setTimeout(cb, 0);
+          return setTimeout(cb, 0);
         }
       }
     });
@@ -1104,7 +1289,7 @@ describe('Env integration', function() {
           setInterval: setInterval,
           clearInterval: clearInterval,
           setImmediate: function(cb) {
-            realSetTimeout(cb, 0);
+            return realSetTimeout(cb, 0);
           }
         }
       });
@@ -1193,10 +1378,6 @@ describe('Env integration', function() {
     });
 
     it('should wait a custom interval before reporting async functions that fail to complete', function(done) {
-      if (jasmine.getEnv().skipBrowserFlake) {
-        jasmine.getEnv().skipBrowserFlake();
-      }
-
       createMockedEnv();
       var reporter = jasmine.createSpyObj('fakeReport', [
         'jasmineDone',
@@ -2255,7 +2436,7 @@ describe('Env integration', function() {
   it('reports errors that occur during loading', function(done) {
     var global = {
       setTimeout: function(fn, delay) {
-        setTimeout(fn, delay);
+        return setTimeout(fn, delay);
       },
       clearTimeout: function(fn, delay) {
         clearTimeout(fn, delay);
@@ -2312,7 +2493,7 @@ describe('Env integration', function() {
       var originalOnerror = jasmine.createSpy('original onerror');
       var global = {
         setTimeout: function(fn, delay) {
-          setTimeout(fn, delay);
+          return setTimeout(fn, delay);
         },
         clearTimeout: function(fn, delay) {
           clearTimeout(fn, delay);
@@ -2513,10 +2694,10 @@ describe('Env integration', function() {
       it('is "failed"', function(done) {
         var global = {
           setTimeout: function(fn, delay) {
-            setTimeout(fn, delay);
+            return setTimeout(fn, delay);
           },
           clearTimeout: function(fn, delay) {
-            clearTimeout(fn, delay);
+            return clearTimeout(fn, delay);
           }
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
