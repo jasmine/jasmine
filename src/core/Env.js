@@ -339,15 +339,15 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     function recordLateError(error) {
-      topSuite.result.failedExpectations.push(
-        expectationResultFactory({
-          error,
-          passed: false,
-          matcherName: '',
-          expected: '',
-          actual: ''
-        })
-      );
+      const result = expectationResultFactory({
+        error,
+        passed: false,
+        matcherName: '',
+        expected: '',
+        actual: ''
+      });
+      result.globalErrorType = 'lateError';
+      topSuite.result.failedExpectations.push(result);
     }
 
     function recordLateExpectation(runable, runableType, result) {

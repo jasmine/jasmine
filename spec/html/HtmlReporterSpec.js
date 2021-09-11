@@ -704,6 +704,50 @@ describe('HtmlReporter', function() {
         expect(alertBars[2].innerHTML).not.toMatch(/line/);
       });
 
+      it('does not display the "AfterAll" prefix for other error types', function() {
+        const container = document.createElement('div');
+        const getContainer = function() {
+          return container;
+        };
+        const reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() {
+            return document.createElement.apply(document, arguments);
+          },
+          createTextNode: function() {
+            return document.createTextNode.apply(document, arguments);
+          }
+        });
+
+        reporter.initialize();
+
+        reporter.jasmineStarted({});
+        reporter.jasmineDone({
+          failedExpectations: [
+            { message: 'load error', globalErrorType: 'load' },
+            {
+              message: 'lateExpectation error',
+              globalErrorType: 'lateExpectation'
+            },
+            { message: 'lateError error', globalErrorType: 'lateError' }
+          ]
+        });
+
+        const alertBars = container.querySelectorAll(
+          '.jasmine-alert .jasmine-bar'
+        );
+
+        expect(alertBars.length).toEqual(4);
+        expect(alertBars[1].textContent).toContain('load error');
+        expect(alertBars[2].textContent).toContain('lateExpectation error');
+        expect(alertBars[3].textContent).toContain('lateError error');
+
+        for (let bar of alertBars) {
+          expect(bar.textContent).not.toContain('AfterAll');
+        }
+      });
+
       it('displays file and line information if available', function() {
         var container = document.createElement('div'),
           getContainer = function() {

@@ -272,8 +272,10 @@ jasmineRequire.HtmlReporter = function(j$) {
           } else {
             return prefix;
           }
-        } else {
+        } else if (failure.globalErrorType === 'afterAll') {
           return afterAllMessagePrefix + failure.message;
+        } else {
+          return failure.message;
         }
       }
 

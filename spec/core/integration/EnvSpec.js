@@ -534,9 +534,11 @@ describe('Env integration', function() {
       expect(errors[0].message)
         .withContext('top beforeAll')
         .toContain(message);
+      expect(errors[0].globalErrorType).toEqual('lateError');
       expect(errors[1].message)
         .withContext('top afterAll')
         .toContain(message);
+      expect(errors[1].globalErrorType).toEqual('lateError');
       done();
     });
   });
@@ -568,9 +570,11 @@ describe('Env integration', function() {
       expect(errors[0].message)
         .withContext('suite beforeAll')
         .toContain(message);
+      expect(errors[0].globalErrorType).toEqual('lateError');
       expect(errors[1].message)
         .withContext('suite afterAll')
         .toContain(message);
+      expect(errors[1].globalErrorType).toEqual('lateError');
       done();
     });
   });
@@ -605,12 +609,15 @@ describe('Env integration', function() {
       expect(errors[0].message)
         .withContext('error caused by beforeEach')
         .toContain(message);
+      expect(errors[0].globalErrorType).toEqual('lateError');
       expect(errors[1].message)
         .withContext('error caused by it')
         .toContain(message);
+      expect(errors[1].globalErrorType).toEqual('lateError');
       expect(errors[2].message)
         .withContext('error caused by afterEach')
         .toContain(message);
+      expect(errors[2].globalErrorType).toEqual('lateError');
       done();
     });
   });
@@ -634,6 +641,7 @@ describe('Env integration', function() {
         .failedExpectations;
       expect(errors.length).toEqual(1);
       expect(errors[0].message).toContain(message);
+      expect(errors[0].globalErrorType).toEqual('lateError');
       done();
     });
   });
