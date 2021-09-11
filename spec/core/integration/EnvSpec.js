@@ -509,17 +509,13 @@ describe('Env integration', function() {
     env.execute(null, assertions);
   });
 
-  it('deprecates multiple calls to done in the top suite', function(done) {
+  it('reports multiple calls to done in the top suite as errors', function(done) {
     var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
     var message =
       'A top-level beforeAll or afterAll function called its ' +
-      "'done' callback more than once. This is a bug in the beforeAll " +
-      'or afterAll function in question. This will be treated as an ' +
-      'error in a future version.';
+      "'done' callback more than once.";
 
-    spyOn(console, 'error');
     env.addReporter(reporter);
-    env.configure({ verboseDeprecations: true });
     env.beforeAll(function(innerDone) {
       innerDone();
       innerDone();
@@ -531,31 +527,27 @@ describe('Env integration', function() {
     });
 
     env.execute(null, function() {
-      var warnings;
       expect(reporter.jasmineDone).toHaveBeenCalled();
-      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
-      expect(warnings.length).toEqual(2);
-      expect(warnings[0])
+      const errors = reporter.jasmineDone.calls.argsFor(0)[0]
+        .failedExpectations;
+      expect(errors.length).toEqual(2);
+      expect(errors[0].message)
         .withContext('top beforeAll')
-        .toEqual(jasmine.objectContaining({ message: message }));
-      expect(warnings[1])
+        .toContain(message);
+      expect(errors[1].message)
         .withContext('top afterAll')
-        .toEqual(jasmine.objectContaining({ message: message }));
+        .toContain(message);
       done();
     });
   });
 
-  it('deprecates multiple calls to done in a non-top suite', function(done) {
+  it('reports multiple calls to done in a non-top suite as errors', function(done) {
     var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
     var message =
-      "An asynchronous function called its 'done' " +
-      'callback more than once. This is a bug in the spec, beforeAll, ' +
-      'beforeEach, afterAll, or afterEach function in question. This will ' +
-      'be treated as an error in a future version.';
+      "An asynchronous beforeAll or afterAll function called its 'done' " +
+      'callback more than once.\n(in suite: a suite)';
 
-    spyOn(console, 'error');
     env.addReporter(reporter);
-    env.configure({ verboseDeprecations: true });
     env.describe('a suite', function() {
       env.beforeAll(function(innerDone) {
         innerDone();
@@ -569,40 +561,27 @@ describe('Env integration', function() {
     });
 
     env.execute(null, function() {
-      var warnings;
       expect(reporter.jasmineDone).toHaveBeenCalled();
-      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
-      expect(warnings.length).toEqual(2);
-      expect(warnings[0])
+      const errors = reporter.jasmineDone.calls.argsFor(0)[0]
+        .failedExpectations;
+      expect(errors.length).toEqual(2);
+      expect(errors[0].message)
         .withContext('suite beforeAll')
-        .toEqual(
-          jasmine.objectContaining({
-            message: message + '\n(in suite: a suite)'
-          })
-        );
-      expect(warnings[1])
+        .toContain(message);
+      expect(errors[1].message)
         .withContext('suite afterAll')
-        .toEqual(
-          jasmine.objectContaining({
-            message: message + '\n(in suite: a suite)'
-          })
-        );
+        .toContain(message);
       done();
     });
   });
 
-  it('deprecates multiple calls to done in a spec', function(done) {
+  it('reports multiple calls to done in a spec as errors', function(done) {
     var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
     var message =
-      "An asynchronous function called its 'done' " +
-      'callback more than once. This is a bug in the spec, beforeAll, ' +
-      'beforeEach, afterAll, or afterEach function in question. This will ' +
-      'be treated as an error in a future version.\n' +
-      '(in spec: a suite a spec)';
+      'An asynchronous spec, beforeEach, or afterEach function called its ' +
+      "'done' callback more than once.\n(in spec: a suite a spec)";
 
-    spyOn(console, 'error');
     env.addReporter(reporter);
-    env.configure({ verboseDeprecations: true });
     env.describe('a suite', function() {
       env.beforeEach(function(innerDone) {
         innerDone();
@@ -619,30 +598,27 @@ describe('Env integration', function() {
     });
 
     env.execute(null, function() {
-      var warnings;
       expect(reporter.jasmineDone).toHaveBeenCalled();
-      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
-      expect(warnings.length).toEqual(3);
-      expect(warnings[0])
-        .withContext('warning caused by beforeEach')
-        .toEqual(jasmine.objectContaining({ message: message }));
-      expect(warnings[1])
-        .withContext('warning caused by it')
-        .toEqual(jasmine.objectContaining({ message: message }));
-      expect(warnings[2])
-        .withContext('warning caused by afterEach')
-        .toEqual(jasmine.objectContaining({ message: message }));
+      const errors = reporter.jasmineDone.calls.argsFor(0)[0]
+        .failedExpectations;
+      expect(errors.length).toEqual(3);
+      expect(errors[0].message)
+        .withContext('error caused by beforeEach')
+        .toContain(message);
+      expect(errors[1].message)
+        .withContext('error caused by it')
+        .toContain(message);
+      expect(errors[2].message)
+        .withContext('error caused by afterEach')
+        .toContain(message);
       done();
     });
   });
 
-  it('deprecates multiple calls to done in reporters', function(done) {
+  it('reports multiple calls to done in reporters as errors', function(done) {
     var message =
       "An asynchronous reporter callback called its 'done' callback more " +
-      'than once. This is a bug in the reporter callback in question. This ' +
-      'will be treated as an error in a future version.\nNote: This message ' +
-      'will be shown only once. Set config.verboseDeprecations to true to ' +
-      'see every occurrence.';
+      'than once.';
     var reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone']);
     reporter.specDone = function(result, done) {
       done();
@@ -652,19 +628,17 @@ describe('Env integration', function() {
 
     env.it('a spec', function() {});
 
-    spyOn(console, 'error');
     env.execute(null, function() {
       expect(reporter.jasmineDone).toHaveBeenCalled();
-      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
-      expect(warnings.length).toEqual(1);
-      expect(warnings[0]).toEqual(
-        jasmine.objectContaining({ message: message })
-      );
+      const errors = reporter.jasmineDone.calls.argsFor(0)[0]
+        .failedExpectations;
+      expect(errors.length).toEqual(1);
+      expect(errors[0].message).toContain(message);
       done();
     });
   });
 
-  it('does not deprecate a call to done that comes after a timeout', function(done) {
+  it('does not report an error for a call to done that comes after a timeout', function(done) {
     var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']),
       firstSpecDone;
 
@@ -687,7 +661,7 @@ describe('Env integration', function() {
     env.execute(null, function() {
       expect(reporter.jasmineDone).toHaveBeenCalledWith(
         jasmine.objectContaining({
-          deprecationWarnings: []
+          failedExpectations: []
         })
       );
       done();

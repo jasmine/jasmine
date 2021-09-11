@@ -338,6 +338,18 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
+    function recordLateError(error) {
+      topSuite.result.failedExpectations.push(
+        expectationResultFactory({
+          error,
+          passed: false,
+          matcherName: '',
+          expected: '',
+          actual: ''
+        })
+      );
+    }
+
     function recordLateExpectation(runable, runableType, result) {
       var delayedExpectationResult = {};
       Object.keys(result).forEach(function(k) {
@@ -515,12 +527,12 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var topSuite = new j$.Suite({
-      env: this,
       id: getNextSuiteId(),
       description: 'Jasmine__TopLevel__Suite',
       expectationFactory: expectationFactory,
       asyncExpectationFactory: suiteAsyncExpectationFactory,
-      expectationResultFactory: expectationResultFactory
+      expectationResultFactory: expectationResultFactory,
+      onLateError: recordLateError
     });
     var deprecator = new j$.Deprecator(topSuite);
     defaultResourcesForRunnable(topSuite.id);
@@ -610,7 +622,7 @@ getJasmineRequireObj().Env = function(j$) {
         'specDone'
       ],
       queueRunnerFactory,
-      self.deprecated
+      recordLateError
     );
 
     /**
@@ -904,7 +916,6 @@ getJasmineRequireObj().Env = function(j$) {
 
     var suiteFactory = function(description) {
       var suite = new j$.Suite({
-        env: self,
         id: getNextSuiteId(),
         description: description,
         parentSuite: currentDeclarationSuite,
@@ -912,7 +923,8 @@ getJasmineRequireObj().Env = function(j$) {
         expectationFactory: expectationFactory,
         asyncExpectationFactory: suiteAsyncExpectationFactory,
         expectationResultFactory: expectationResultFactory,
-        throwOnExpectationFailure: config.stopSpecOnExpectationFailure
+        throwOnExpectationFailure: config.stopSpecOnExpectationFailure,
+        onLateError: recordLateError
       });
 
       return suite;
@@ -1008,7 +1020,7 @@ getJasmineRequireObj().Env = function(j$) {
         beforeAndAfterFns: beforeAndAfterFns(suite),
         expectationFactory: expectationFactory,
         asyncExpectationFactory: specAsyncExpectationFactory,
-        deprecated: self.deprecated,
+        onLateError: recordLateError,
         resultCallback: specResultCallback,
         getSpecName: function(spec) {
           return getSpecName(spec, suite);

@@ -513,11 +513,11 @@ describe('Spec', function() {
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual([]);
   });
 
-  it('passes an onMultipleDone that logs a deprecation', function() {
+  it('treats multiple done calls as late errors', function() {
     var queueRunnerFactory = jasmine.createSpy('queueRunnerFactory'),
-      deprecated = jasmine.createSpy('depredated'),
+      onLateError = jasmine.createSpy('onLateError'),
       spec = new jasmineUnderTest.Spec({
-        deprecated: deprecated,
+        onLateError: onLateError,
         queueableFn: { fn: function() {} },
         queueRunnerFactory: queueRunnerFactory,
         getSpecName: function() {
@@ -530,13 +530,11 @@ describe('Spec', function() {
     expect(queueRunnerFactory).toHaveBeenCalled();
     queueRunnerFactory.calls.argsFor(0)[0].onMultipleDone();
 
-    expect(deprecated).toHaveBeenCalledWith(
-      "An asynchronous function called its 'done' " +
-        'callback more than once. This is a bug in the spec, beforeAll, ' +
-        'beforeEach, afterAll, or afterEach function in question. This will ' +
-        'be treated as an error in a future version.\n' +
-        '(in spec: a spec)',
-      { ignoreRunnable: true }
+    expect(onLateError).toHaveBeenCalledTimes(1);
+    expect(onLateError.calls.argsFor(0)[0]).toBeInstanceOf(Error);
+    expect(onLateError.calls.argsFor(0)[0].message).toEqual(
+      'An asynchronous spec, beforeEach, or afterEach function called its ' +
+        "'done' callback more than once.\n(in spec: a spec)"
     );
   });
 });

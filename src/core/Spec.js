@@ -24,7 +24,7 @@ getJasmineRequireObj().Spec = function(j$) {
       };
     this.expectationResultFactory =
       attrs.expectationResultFactory || function() {};
-    this.deprecated = attrs.deprecated || function() {};
+    this.onLateError = attrs.onLateError || function() {};
     this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
     this.catchingExceptions =
       attrs.catchingExceptions ||
@@ -123,15 +123,13 @@ getJasmineRequireObj().Spec = function(j$) {
         // Issue a deprecation. Include the context ourselves and pass
         // ignoreRunnable: true, since getting here always means that we've already
         // moved on and the current runnable isn't the one that caused the problem.
-        self.deprecated(
-          "An asynchronous function called its 'done' " +
-            'callback more than once. This is a bug in the spec, beforeAll, ' +
-            'beforeEach, afterAll, or afterEach function in question. This will ' +
-            'be treated as an error in a future version.\n' +
-            '(in spec: ' +
-            self.getFullName() +
-            ')',
-          { ignoreRunnable: true }
+        self.onLateError(
+          new Error(
+            'An asynchronous spec, beforeEach, or afterEach function called its ' +
+              "'done' callback more than once.\n(in spec: " +
+              self.getFullName() +
+              ')'
+          )
         );
       },
       onComplete: function() {

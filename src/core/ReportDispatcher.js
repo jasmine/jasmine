@@ -1,5 +1,5 @@
 getJasmineRequireObj().ReportDispatcher = function(j$) {
-  function ReportDispatcher(methods, queueRunnerFactory, deprecated) {
+  function ReportDispatcher(methods, queueRunnerFactory, onLateError) {
     var dispatchedMethods = methods || [];
 
     for (var i = 0; i < dispatchedMethods.length; i++) {
@@ -45,11 +45,11 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
         onComplete: onComplete,
         isReporter: true,
         onMultipleDone: function() {
-          deprecated(
-            "An asynchronous reporter callback called its 'done' callback " +
-              'more than once. This is a bug in the reporter callback in ' +
-              'question. This will be treated as an error in a future version.',
-            { ignoreRunnable: true }
+          onLateError(
+            new Error(
+              "An asynchronous reporter callback called its 'done' callback " +
+                'more than once.'
+            )
           );
         }
       });
