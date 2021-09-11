@@ -1382,6 +1382,10 @@ describe('Env integration', function() {
     });
 
     it('should wait a custom interval before reporting async functions that fail to complete', function(done) {
+      if (jasmine.getEnv().skipBrowserFlake) {
+        jasmine.getEnv().skipBrowserFlake();
+      }
+
       createMockedEnv();
       var reporter = jasmine.createSpyObj('fakeReport', [
         'jasmineDone',
@@ -2955,10 +2959,6 @@ describe('Env integration', function() {
   });
 
   it('provides custom equality testers to async matchers', function(done) {
-    if (jasmine.getEnv().skipBrowserFlake) {
-      jasmine.getEnv().skipBrowserFlake();
-    }
-
     jasmine.getEnv().requirePromises();
 
     var specDone = jasmine.createSpy('specDone');
