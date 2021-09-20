@@ -1360,6 +1360,10 @@ describe('Env integration', function() {
     });
 
     it('should wait a custom interval before reporting async functions that fail to complete', function(done) {
+      if (jasmine.getEnv().skipBrowserFlake) {
+        jasmine.getEnv().skipBrowserFlake();
+      }
+
       createMockedEnv();
       var reporter = jasmine.createSpyObj('fakeReport', [
         'jasmineDone',
