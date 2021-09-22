@@ -231,6 +231,16 @@ describe('Asymmetric equality testers (Integration)', function() {
     });
   });
 
+  describe('stringContaining', function() {
+    verifyPasses(function(env) {
+      env.expect('foo').toEqual(jasmineUnderTest.stringContaining('o'));
+    });
+
+    verifyFails(function(env) {
+      env.expect('bar').toEqual(jasmineUnderTest.stringContaining('o'));
+    });
+  });
+
   describe('truthy', function() {
     verifyPasses(function(env) {
       env.expect(true).toEqual(jasmineUnderTest.truthy());
