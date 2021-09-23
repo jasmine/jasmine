@@ -7,6 +7,7 @@ getJasmineRequireObj().Clock = function() {
 
   /**
    * @class Clock
+   * @since 1.3.0
    * @classdesc Jasmine's mock clock is used when testing time dependent code.<br>
    * _Note:_ Do not construct this directly. You can get the current clock with
    * {@link jasmine.clock}.

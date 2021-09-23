@@ -119,6 +119,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * Otherwise evaluate the matcher.
    * @member
    * @name async-matchers#already
+   * @since 3.8.0
    * @type {async-matchers}
    * @example
    * await expectAsync(myPromise).already.toBeResolved();
