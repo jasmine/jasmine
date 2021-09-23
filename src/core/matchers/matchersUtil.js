@@ -659,9 +659,33 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
 /**
  * @interface AsymmetricEqualityTester
  * @classdesc An asymmetric equality tester is an object that can match multiple
- * objects. Examples include jasmine.any() and jasmine.stringMatching().
- * User-defined asymmetric equality testers can also be defined and used in
- * expectations.
+ * objects. Examples include jasmine.any() and jasmine.stringMatching(). Jasmine
+ * includes a number of built-in asymmetric equality testers, such as
+ * {@link jasmine.objectContaining}. User-defined asymmetric equality testers are
+ * also supported.
+ *
+ * Asymmetric equality testers work with any matcher, including user-defined
+ * custom matchers, that uses {@link MatchersUtil#equals} or
+ * {@link MatchersUtil#contains}.
+ *
+ * @example
+ * function numberDivisibleBy(divisor) {
+ *   return {
+ *     asymmetricMatch: function(n) {
+ *       return typeof n === 'number' && n % divisor === 0;
+ *     },
+ *     jasmineToString: function() {
+ *       return `<a number divisible by ${divisor}>`;
+ *     }
+ *   };
+ * }
+ *
+ * var actual = {
+ *   n: 2,
+ *   otherFields: "don't care"
+ * };
+ *
+ * expect(actual).toEqual(jasmine.objectContaining({n: numberDivisibleBy(2)}));
  * @see custom_asymmetric_equality_testers
  * @since 2.0.0
  */
