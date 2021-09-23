@@ -52,6 +52,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
     /**
      * Get the "this" object that was passed to a specific invocation of this spy.
      * @name Spy#calls#thisFor
+     * @since 3.8.0
      * @function
      * @param {Integer} index The 0-based invocation index.
      * @return {Object?}

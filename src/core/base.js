@@ -323,6 +323,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value is a `String` that contains the specified `String`.
    * @name jasmine.stringContaining
+   * @since 3.10.0
    * @function
    * @param {String} expected
    */

@@ -712,6 +712,7 @@ getJasmineRequireObj().Env = function(j$) {
      * @function
      * @name Env#topSuite
      * @return {Suite} the root suite
+     * @since 2.0.0
      */
     this.topSuite = function() {
       return topSuite;
@@ -903,6 +904,7 @@ getJasmineRequireObj().Env = function(j$) {
          * @typedef JasmineStartedInfo
          * @property {Int} totalSpecsDefined - The total number of specs defined in this suite.
          * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
+         * @since 2.0.0
          */
         reporter.jasmineStarted(
           {
@@ -941,6 +943,7 @@ getJasmineRequireObj().Env = function(j$) {
                * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
                * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
                * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
+               * @since 2.4.0
                */
               reporter.jasmineDone(
                 {

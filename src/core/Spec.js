@@ -2,6 +2,7 @@ getJasmineRequireObj().Spec = function(j$) {
   /**
    * @interface Spec
    * @see Configuration#specFilter
+   * @since 2.0.0
    */
   function Spec(attrs) {
     this.expectationFactory = attrs.expectationFactory;
@@ -12,6 +13,7 @@ getJasmineRequireObj().Spec = function(j$) {
      * @name Spec#id
      * @readonly
      * @type {string}
+     * @since 2.0.0
      */
     this.id = attrs.id;
     /**
@@ -19,6 +21,7 @@ getJasmineRequireObj().Spec = function(j$) {
      * @name Spec#description
      * @readonly
      * @type {string}
+     * @since 2.0.0
      */
     this.description = attrs.description || '';
     this.queueableFn = attrs.queueableFn;
@@ -65,7 +68,8 @@ getJasmineRequireObj().Spec = function(j$) {
      * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
      * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
      * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
-     */
+     * @since 2.0.0
+x     */
     this.result = {
       id: this.id,
       description: this.description,
@@ -216,6 +220,7 @@ getJasmineRequireObj().Spec = function(j$) {
    * @name Spec#getFullName
    * @function
    * @returns {string}
+   * @since 2.0.0
    */
   Spec.prototype.getFullName = function() {
     return this.getSpecName(this);
