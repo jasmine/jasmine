@@ -783,9 +783,13 @@ describe('QueueRunner', function() {
         jasmine.clock().uninstall();
       });
 
-      it('skips to cleanup functions on the first exception', function() {
+      it('skips to cleanup functions once the fn completes after an unhandled exception', function() {
         var errorListeners = [],
-          queueableFn = { fn: function(done) {} },
+          queueableFn = {
+            fn: function(done) {
+              queueableFnDone = done;
+            }
+          },
           nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
           cleanupFn = { fn: jasmine.createSpy('cleanup') },
           queueRunner = new jasmineUnderTest.QueueRunner({
@@ -800,10 +804,13 @@ describe('QueueRunner', function() {
             queueableFns: [queueableFn, nextQueueableFn],
             cleanupFns: [cleanupFn],
             completeOnFirstError: true
-          });
+          }),
+          queueableFnDone;
 
         queueRunner.execute();
         errorListeners[errorListeners.length - 1](new Error('error'));
+        expect(cleanupFn.fn).not.toHaveBeenCalled();
+        queueableFnDone();
         expect(nextQueueableFn.fn).not.toHaveBeenCalled();
         expect(cleanupFn.fn).toHaveBeenCalled();
       });
