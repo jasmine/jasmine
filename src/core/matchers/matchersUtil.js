@@ -51,8 +51,13 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       (!!haystack && !haystack.indexOf)
     ) {
       for (var i = 0; i < haystack.length; i++) {
-        if (this.equals(haystack[i], needle, customTesters)) {
-          return true;
+        try {
+          this.suppressDeprecation_ = true;
+          if (this.equals(haystack[i], needle, customTesters)) {
+            return true;
+          }
+        } finally {
+          this.suppressDeprecation_ = false;
         }
       }
       return false;
@@ -171,7 +176,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     if (isDiffBuilder(customTestersOrDiffBuilder)) {
       diffBuilder = customTestersOrDiffBuilder;
     } else {
-      if (customTestersOrDiffBuilder) {
+      if (customTestersOrDiffBuilder && !this.suppressDeprecation_) {
         j$.getEnv().deprecated(
           'Passing custom equality testers ' +
             'to MatchersUtil#equals is deprecated. ' +

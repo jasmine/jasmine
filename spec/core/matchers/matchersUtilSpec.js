@@ -1235,6 +1235,22 @@ describe('matchersUtil', function() {
       expect(matchersUtil.contains([1, 2], 3)).toBe(true);
     });
 
+    it('logs a single deprecation warning when custom equality testers are passed', function() {
+      // TODO: remove this in the next major release.
+      var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+        deprecated = spyOn(jasmineUnderTest.getEnv(), 'deprecated');
+
+      matchersUtil.contains([0], 0, []);
+
+      expect(deprecated).toHaveBeenCalledOnceWith(
+        jasmine.stringMatching(
+          'Passing custom equality testers ' +
+            'to MatchersUtil#contains is deprecated. ' +
+            'See <https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#matchers-cet> for details.'
+        )
+      );
+    });
+
     it('fails when actual is undefined', function() {
       var matchersUtil = new jasmineUnderTest.MatchersUtil();
       expect(matchersUtil.contains(undefined, 'A')).toBe(false);
