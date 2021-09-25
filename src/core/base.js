@@ -5,7 +5,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
 
   /**
    * Maximum object depth the pretty printer will print to.
-   * Set this to a lower value to speed up pretty printing if you have large objects.
+   * Set this to a lower value to speed up pretty printing if you have large objects. The default value is 8.
    * @name jasmine.MAX_PRETTY_PRINT_DEPTH
    * @since 1.3.0
    */
@@ -13,20 +13,23 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   /**
    * Maximum number of array elements to display when pretty printing objects.
    * This will also limit the number of keys and values displayed for an object.
-   * Elements past this number will be ellipised.
+   * Elements past this number will be ellipised. The default value is 50.
    * @name jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH
    * @since 2.7.0
    */
   j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 50;
   /**
    * Maximum number of characters to display when pretty printing objects.
-   * Characters past this number will be ellipised.
+   * Characters past this number will be ellipised. The default value is 1000.
    * @name jasmine.MAX_PRETTY_PRINT_CHARS
    * @since 2.9.0
    */
   j$.MAX_PRETTY_PRINT_CHARS = 1000;
   /**
    * Default number of milliseconds Jasmine will wait for an asynchronous spec to complete.
+   * While debugging tests, you may want to set this to a large
+   * number no bigger than 2147483647 so that `before` or `after` hooks do not run in the middle of an
+   * async test that you are stepping through in a debugger. The default value is 5000.
    * @name jasmine.DEFAULT_TIMEOUT_INTERVAL
    * @since 1.3.0
    */
