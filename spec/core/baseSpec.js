@@ -186,4 +186,12 @@ describe('base helpers', function() {
       });
     });
   });
+
+  describe('trace', function() {
+    it("forwards to the current env's trace function", function() {
+      spyOn(jasmineUnderTest.getEnv(), 'trace');
+      jasmineUnderTest.trace('a message');
+      expect(jasmineUnderTest.getEnv().trace).toHaveBeenCalledWith('a message');
+    });
+  });
 });

@@ -1318,6 +1318,16 @@ getJasmineRequireObj().Env = function(j$) {
       currentSuite().setSuiteProperty(key, value);
     };
 
+    this.trace = function(msg) {
+      var maybeSpec = currentRunnable();
+
+      if (!maybeSpec || !maybeSpec.trace) {
+        throw new Error("'trace' was called when there was no current spec");
+      }
+
+      maybeSpec.trace(msg);
+    };
+
     this.expect = function(actual) {
       if (!currentRunnable()) {
         throw new Error(
