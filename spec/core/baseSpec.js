@@ -141,4 +141,49 @@ describe('base helpers', function() {
       );
     });
   });
+
+  describe('DEFAULT_TIMEOUT_INTERVAL setter', function() {
+    var max = 2147483647;
+
+    beforeEach(function() {
+      this.initialValue = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
+    });
+
+    afterEach(function() {
+      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = this.initialValue;
+    });
+
+    it('accepts only values <= ' + max, function() {
+      expect(function() {
+        jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = max + 1;
+      }).toThrowError(
+        'jasmine.DEFAULT_TIMEOUT_INTERVAL cannot be greater than ' + max
+      );
+
+      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = max;
+      expect(jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL).toEqual(max);
+    });
+
+    it('is consistent with setTimeout in this environment', function(done) {
+      var f1 = jasmine.createSpy('setTimeout callback for ' + max),
+        f2 = jasmine.createSpy('setTimeout callback for ' + (max + 1)),
+        id;
+
+      // Suppress printing of TimeoutOverflowWarning in node
+      spyOn(console, 'error');
+
+      id = setTimeout(f1, max);
+      setTimeout(function() {
+        clearTimeout(id);
+        expect(f1).not.toHaveBeenCalled();
+
+        id = setTimeout(f2, max + 1);
+        setTimeout(function() {
+          clearTimeout(id);
+          expect(f2).toHaveBeenCalled();
+          done();
+        });
+      });
+    });
+  });
 });

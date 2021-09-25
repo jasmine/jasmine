@@ -43,7 +43,16 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @default 5000
    * @since 1.3.0
    */
-  j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
+  var DEFAULT_TIMEOUT_INTERVAL = 5000;
+  Object.defineProperty(j$, 'DEFAULT_TIMEOUT_INTERVAL', {
+    get: function() {
+      return DEFAULT_TIMEOUT_INTERVAL;
+    },
+    set: function(newValue) {
+      j$.util.validateTimeout(newValue, 'jasmine.DEFAULT_TIMEOUT_INTERVAL');
+      DEFAULT_TIMEOUT_INTERVAL = newValue;
+    }
+  });
 
   j$.getGlobal = function() {
     return jasmineGlobal;
