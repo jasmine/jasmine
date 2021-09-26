@@ -792,8 +792,198 @@ describe('spec running', function() {
     });
   });
 
-  describe('When stopSpecOnExpectationFailure is set', function() {
-    it('skips to cleanup functions after an error', function(done) {
+  describe('When stopSpecOnExpectationFailure is true', function() {
+    it('skips to cleanup functions after a thrown error', function(done) {
+      var actions = [];
+
+      env.configure({ stopSpecOnExpectationFailure: true });
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          throw new Error('error');
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it', function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      env.execute(null, function() {
+        expect(actions).toEqual([
+          'outer beforeEach',
+          'inner afterEach',
+          'outer afterEach'
+        ]);
+        done();
+      });
+    });
+
+    it('skips to cleanup functions after a rejected promise', async function() {
+      var actions = [];
+
+      env.configure({ stopSpecOnExpectationFailure: true });
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          return Promise.reject(new Error('error'));
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it', function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      await env.execute();
+
+      expect(actions).toEqual([
+        'outer beforeEach',
+        'inner afterEach',
+        'outer afterEach'
+      ]);
+    });
+
+    it('skips to cleanup functions after an expectation failure', async function() {
+      var actions = [];
+
+      env.configure({ stopSpecOnExpectationFailure: true });
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          env.expect(1).toBe(2);
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it', function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      await env.execute();
+
+      expect(actions).toEqual([
+        'outer beforeEach',
+        'inner afterEach',
+        'outer afterEach'
+      ]);
+    });
+
+    it('skips to cleanup functions after done.fail is called', function(done) {
+      var actions = [];
+
+      env.configure({ stopSpecOnExpectationFailure: true });
+
+      env.describe('Something', function() {
+        env.beforeEach(function(done) {
+          actions.push('beforeEach');
+          done.fail('error');
+          actions.push('after done.fail');
+        });
+
+        env.afterEach(function() {
+          actions.push('afterEach');
+        });
+
+        env.it('does it', function() {
+          actions.push('it');
+        });
+      });
+
+      env.execute(null, function() {
+        expect(actions).toEqual(['beforeEach', 'afterEach']);
+        done();
+      });
+    });
+
+    it('skips to cleanup functions when an async function times out', function(done) {
+      var actions = [];
+
+      env.configure({ stopSpecOnExpectationFailure: true });
+
+      env.describe('Something', function() {
+        env.beforeEach(function(innerDone) {
+          actions.push('beforeEach');
+        }, 1);
+
+        env.afterEach(function() {
+          actions.push('afterEach');
+        });
+
+        env.it('does it', function() {
+          actions.push('it');
+        });
+      });
+
+      env.execute(null, function() {
+        expect(actions).toEqual(['beforeEach', 'afterEach']);
+        done();
+      });
+    });
+
+    it('runs all reporter callbacks even if one fails', async function() {
+      var laterReporter = jasmine.createSpyObj('laterReporter', ['specDone']);
+
+      env.configure({ stopSpecOnExpectationFailure: true });
+
+      env.it('a spec', function() {});
+      env.addReporter({
+        specDone: function() {
+          throw new Error('nope');
+        }
+      });
+      env.addReporter(laterReporter);
+
+      await env.execute();
+
+      expect(laterReporter.specDone).toHaveBeenCalled();
+    });
+  });
+
+  describe('When stopSpecOnExpectationFailure is false', function() {
+    it('does not skip anything after a thrown error', async function() {
       var actions = [];
 
       env.describe('Something', function() {
@@ -821,26 +1011,102 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ stopSpecOnExpectationFailure: true });
+      await env.execute();
 
-      env.execute(null, function() {
-        expect(actions).toEqual([
-          'outer beforeEach',
-          'inner afterEach',
-          'outer afterEach'
-        ]);
-        done();
-      });
+      expect(actions).toEqual([
+        'outer beforeEach',
+        'inner beforeEach',
+        'inner it',
+        'inner afterEach',
+        'outer afterEach'
+      ]);
     });
 
-    it('skips to cleanup functions after done.fail is called', function(done) {
+    it('does not skip anything after a rejected promise', async function() {
+      var actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          return Promise.reject(new Error('error'));
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it', function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      await env.execute();
+
+      expect(actions).toEqual([
+        'outer beforeEach',
+        'inner beforeEach',
+        'inner it',
+        'inner afterEach',
+        'outer afterEach'
+      ]);
+    });
+
+    it('does not skip anything after an expectation failure', async function() {
+      var actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          env.expect(1).toBe(2);
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it', function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      await env.execute();
+
+      expect(actions).toEqual([
+        'outer beforeEach',
+        'inner beforeEach',
+        'inner it',
+        'inner afterEach',
+        'outer afterEach'
+      ]);
+    });
+
+    it('does not skip anything after done.fail is called', async function() {
       var actions = [];
 
       env.describe('Something', function() {
         env.beforeEach(function(done) {
           actions.push('beforeEach');
           done.fail('error');
-          actions.push('after done.fail');
         });
 
         env.afterEach(function() {
@@ -852,15 +1118,12 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ stopSpecOnExpectationFailure: true });
+      await env.execute();
 
-      env.execute(null, function() {
-        expect(actions).toEqual(['beforeEach', 'afterEach']);
-        done();
-      });
+      expect(actions).toEqual(['beforeEach', 'it', 'afterEach']);
     });
 
-    it('skips to cleanup functions when an async function times out', function(done) {
+    it('does not skip anything when an async function times out', async function() {
       var actions = [];
 
       env.describe('Something', function() {
@@ -877,12 +1140,25 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ stopSpecOnExpectationFailure: true });
+      await env.execute();
 
-      env.execute(null, function() {
-        expect(actions).toEqual(['beforeEach', 'afterEach']);
-        done();
+      expect(actions).toEqual(['beforeEach', 'it', 'afterEach']);
+    });
+
+    it('runs all reporter callbacks even if one fails', async function() {
+      var laterReporter = jasmine.createSpyObj('laterReporter', ['specDone']);
+
+      env.it('a spec', function() {});
+      env.addReporter({
+        specDone: function() {
+          throw new Error('nope');
+        }
       });
+      env.addReporter(laterReporter);
+
+      await env.execute();
+
+      expect(laterReporter.specDone).toHaveBeenCalled();
     });
   });
 
