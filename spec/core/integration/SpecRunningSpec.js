@@ -983,7 +983,7 @@ describe('spec running', function() {
   });
 
   describe('When stopSpecOnExpectationFailure is false', function() {
-    it('does not skip anything after a thrown error', async function() {
+    it('skips to cleanup functions after a thrown error', async function() {
       var actions = [];
 
       env.describe('Something', function() {
@@ -1015,14 +1015,12 @@ describe('spec running', function() {
 
       expect(actions).toEqual([
         'outer beforeEach',
-        'inner beforeEach',
-        'inner it',
         'inner afterEach',
         'outer afterEach'
       ]);
     });
 
-    it('does not skip anything after a rejected promise', async function() {
+    it('skips to cleanup functions after a rejected promise', async function() {
       var actions = [];
 
       env.describe('Something', function() {
@@ -1054,8 +1052,6 @@ describe('spec running', function() {
 
       expect(actions).toEqual([
         'outer beforeEach',
-        'inner beforeEach',
-        'inner it',
         'inner afterEach',
         'outer afterEach'
       ]);
@@ -1100,7 +1096,7 @@ describe('spec running', function() {
       ]);
     });
 
-    it('does not skip anything after done.fail is called', async function() {
+    it('skips to cleanup functions after done.fail is called', async function() {
       var actions = [];
 
       env.describe('Something', function() {
@@ -1120,10 +1116,10 @@ describe('spec running', function() {
 
       await env.execute();
 
-      expect(actions).toEqual(['beforeEach', 'it', 'afterEach']);
+      expect(actions).toEqual(['beforeEach', 'afterEach']);
     });
 
-    it('does not skip anything when an async function times out', async function() {
+    it('skips to cleanup functions when an async function times out', async function() {
       var actions = [];
 
       env.describe('Something', function() {
@@ -1142,7 +1138,7 @@ describe('spec running', function() {
 
       await env.execute();
 
-      expect(actions).toEqual(['beforeEach', 'it', 'afterEach']);
+      expect(actions).toEqual(['beforeEach', 'afterEach']);
     });
 
     it('runs all reporter callbacks even if one fails', async function() {

@@ -504,7 +504,7 @@ getJasmineRequireObj().Env = function(j$) {
     var queueRunnerFactory = function(options, args) {
       var failFast = false;
       if (options.isLeaf) {
-        failFast = config.stopSpecOnExpectationFailure;
+        failFast = true;
       } else if (!options.isReporter) {
         failFast = config.stopOnSpecFailure;
       }
