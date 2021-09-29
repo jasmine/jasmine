@@ -502,12 +502,17 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var queueRunnerFactory = function(options, args) {
-      var failFast = false;
-      if (options.isLeaf) {
-        failFast = true;
-      } else if (!options.isReporter) {
-        failFast = config.stopOnSpecFailure;
+      if (
+        // A spec
+        options.isLeaf ||
+        // A suite, and config.stopOnSpecFailure is set
+        (!options.isLeaf && !options.isReporter && config.stopOnSpecFailure)
+      ) {
+        options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
+      } else {
+        options.SkipPolicy = j$.NeverSkipPolicy;
       }
+
       options.clearStack = options.clearStack || clearStack;
       options.timeout = {
         setTimeout: realSetTimeout,
@@ -515,7 +520,6 @@ getJasmineRequireObj().Env = function(j$) {
       };
       options.fail = self.fail;
       options.globalErrors = globalErrors;
-      options.completeOnFirstError = failFast;
       options.onException =
         options.onException ||
         function(e) {

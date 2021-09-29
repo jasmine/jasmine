@@ -649,6 +649,68 @@ describe('QueueRunner', function() {
     expect(nextQueueableFn.fn).toHaveBeenCalled();
   });
 
+  describe('When configured with a skip policy', function() {
+    it('instantiates the skip policy', function() {
+      const SkipPolicy = jasmine.createSpy('SkipPolicy ctor');
+      const queueableFns = [{ fn: () => {} }, { fn: () => {} }];
+      const cleanupFns = [{ fn: () => {} }];
+
+      new jasmineUnderTest.QueueRunner({
+        queueableFns,
+        cleanupFns,
+        SkipPolicy
+      });
+
+      expect(SkipPolicy).toHaveBeenCalledWith(
+        [...queueableFns, ...cleanupFns],
+        2
+      );
+    });
+
+    it('uses the skip policy to determine which fn to run next', function() {
+      const queueableFns = [
+        { fn: jasmine.createSpy('fn0') },
+        { fn: jasmine.createSpy('fn1') },
+        { fn: jasmine.createSpy('fn2').and.throwError(new Error('nope')) },
+        { fn: jasmine.createSpy('fn3') }
+      ];
+      const skipPolicy = jasmine.createSpyObj('skipPolicy', ['skipTo']);
+      skipPolicy.skipTo.and.callFake(function(lastRanIx) {
+        return lastRanIx === 0 ? 2 : lastRanIx + 1;
+      });
+      const queueRunner = new jasmineUnderTest.QueueRunner({
+        queueableFns,
+        SkipPolicy: function() {
+          return skipPolicy;
+        }
+      });
+
+      queueRunner.execute();
+
+      expect(skipPolicy.skipTo).toHaveBeenCalledWith(0, false);
+      expect(skipPolicy.skipTo).toHaveBeenCalledWith(2, true);
+      expect(queueableFns[0].fn).toHaveBeenCalled();
+      expect(queueableFns[1].fn).not.toHaveBeenCalled();
+      expect(queueableFns[2].fn).toHaveBeenCalled();
+      expect(queueableFns[3].fn).toHaveBeenCalled();
+    });
+
+    it('throws if the skip policy returns the current fn', function() {
+      const skipPolicy = { skipTo: i => i };
+      const queueableFns = [{ fn: () => {} }];
+      const queueRunner = new jasmineUnderTest.QueueRunner({
+        queueableFns,
+        SkipPolicy: function() {
+          return skipPolicy;
+        }
+      });
+
+      expect(function() {
+        queueRunner.execute();
+      }).toThrowError("Can't skip to the same queueable fn that just finished");
+    });
+  });
+
   describe('When configured to complete on first error', function() {
     it('skips to cleanup functions on the first exception', function() {
       var queueableFn = {
@@ -663,7 +725,7 @@ describe('QueueRunner', function() {
           queueableFns: [queueableFn, nextQueueableFn],
           cleanupFns: [cleanupFn],
           onComplete: onComplete,
-          completeOnFirstError: true
+          SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy
         });
 
       queueRunner.execute();
@@ -685,7 +747,7 @@ describe('QueueRunner', function() {
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn],
           cleanupFns: [cleanupFn1, cleanupFn2],
-          completeOnFirstError: true
+          SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy
         });
 
       queueRunner.execute();
@@ -721,7 +783,7 @@ describe('QueueRunner', function() {
             },
             queueableFns: [queueableFn, nextQueueableFn],
             cleanupFns: [cleanupFn],
-            completeOnFirstError: true
+            SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy
           }),
           queueableFnDone;
 
@@ -744,7 +806,7 @@ describe('QueueRunner', function() {
           queueRunner = new jasmineUnderTest.QueueRunner({
             queueableFns: [queueableFn, nextQueueableFn],
             cleanupFns: [cleanupFn],
-            completeOnFirstError: true
+            SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy
           });
 
         queueRunner.execute();
@@ -764,7 +826,7 @@ describe('QueueRunner', function() {
           queueRunner = new jasmineUnderTest.QueueRunner({
             queueableFns: [queueableFn, nextQueueableFn],
             cleanupFns: [cleanupFn],
-            completeOnFirstError: true
+            SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy
           });
 
         queueRunner.execute();

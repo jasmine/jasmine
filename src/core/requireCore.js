@@ -60,6 +60,10 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.MapContaining = jRequire.MapContaining(j$);
     j$.SetContaining = jRequire.SetContaining(j$);
     j$.QueueRunner = jRequire.QueueRunner(j$);
+    j$.NeverSkipPolicy = jRequire.NeverSkipPolicy(j$);
+    j$.CompleteOnFirstErrorSkipPolicy = jRequire.CompleteOnFirstErrorSkipPolicy(
+      j$
+    );
     j$.ReportDispatcher = jRequire.ReportDispatcher(j$);
     j$.Spec = jRequire.Spec(j$);
     j$.Spy = jRequire.Spy(j$);

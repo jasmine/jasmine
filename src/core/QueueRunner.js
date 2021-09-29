@@ -56,7 +56,9 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       pushListener: emptyFn,
       popListener: emptyFn
     };
-    this.completeOnFirstError = !!attrs.completeOnFirstError;
+
+    const SkipPolicy = attrs.SkipPolicy || j$.NeverSkipPolicy;
+    this.skipPolicy_ = new SkipPolicy(this.queueableFns, this.firstCleanupIx);
     this.errored = false;
 
     if (typeof this.onComplete !== 'function') {
@@ -75,14 +77,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     };
     this.globalErrors.pushListener(this.handleFinalError);
     this.run(0);
-  };
-
-  QueueRunner.prototype.skipToCleanup = function(lastRanIndex) {
-    if (lastRanIndex < this.firstCleanupIx) {
-      this.run(this.firstCleanupIx);
-    } else {
-      this.run(lastRanIndex + 1);
-    }
   };
 
   QueueRunner.prototype.clearTimeout = function(timeoutId) {
@@ -125,11 +119,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
           }
 
           function runNext() {
-            if (self.completeOnFirstError && errored) {
-              self.skipToCleanup(iterativeIndex);
-            } else {
-              self.run(iterativeIndex + 1);
-            }
+            self.run(self.nextFnIx_(iterativeIndex));
           }
 
           if (completedSynchronously) {
@@ -227,7 +217,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     for (
       iterativeIndex = recursiveIndex;
       iterativeIndex < length;
-      iterativeIndex++
+      iterativeIndex = this.nextFnIx_(iterativeIndex)
     ) {
       var result = this.attempt(iterativeIndex);
 
@@ -236,11 +226,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }
 
       self.errored = self.errored || result.errored;
-
-      if (this.completeOnFirstError && result.errored) {
-        this.skipToCleanup(iterativeIndex);
-        return;
-      }
     }
 
     this.clearStack(function() {
@@ -252,6 +237,16 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         self.onComplete();
       }
     });
+  };
+
+  QueueRunner.prototype.nextFnIx_ = function(currentFnIx) {
+    const result = this.skipPolicy_.skipTo(currentFnIx, this.errored);
+
+    if (result === currentFnIx) {
+      throw new Error("Can't skip to the same queueable fn that just finished");
+    }
+
+    return result;
   };
 
   QueueRunner.prototype.diagnoseConflictingAsync_ = function(fn, retval) {
