@@ -674,7 +674,10 @@ describe('QueueRunner', function() {
         { fn: jasmine.createSpy('fn2').and.throwError(new Error('nope')) },
         { fn: jasmine.createSpy('fn3') }
       ];
-      const skipPolicy = jasmine.createSpyObj('skipPolicy', ['skipTo']);
+      const skipPolicy = jasmine.createSpyObj('skipPolicy', [
+        'skipTo',
+        'fnErrored'
+      ]);
       skipPolicy.skipTo.and.callFake(function(lastRanIx) {
         return lastRanIx === 0 ? 2 : lastRanIx + 1;
       });
@@ -687,8 +690,9 @@ describe('QueueRunner', function() {
 
       queueRunner.execute();
 
-      expect(skipPolicy.skipTo).toHaveBeenCalledWith(0, false);
-      expect(skipPolicy.skipTo).toHaveBeenCalledWith(2, true);
+      expect(skipPolicy.skipTo).toHaveBeenCalledWith(0);
+      expect(skipPolicy.skipTo).toHaveBeenCalledWith(2);
+      expect(skipPolicy.fnErrored).toHaveBeenCalledWith(2);
       expect(queueableFns[0].fn).toHaveBeenCalled();
       expect(queueableFns[1].fn).not.toHaveBeenCalled();
       expect(queueableFns[2].fn).toHaveBeenCalled();

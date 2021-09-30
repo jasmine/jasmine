@@ -502,15 +502,19 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var queueRunnerFactory = function(options, args) {
-      if (
+      if (options.isLeaf) {
         // A spec
-        options.isLeaf ||
-        // A suite, and config.stopOnSpecFailure is set
-        (!options.isLeaf && !options.isReporter && config.stopOnSpecFailure)
-      ) {
         options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
-      } else {
+      } else if (options.isReporter) {
+        // A reporter queue
         options.SkipPolicy = j$.NeverSkipPolicy;
+      } else {
+        // A suite
+        if (config.stopOnSpecFailure) {
+          options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
+        } else {
+          options.SkipPolicy = j$.SkipAfterBeforeAllErrorPolicy;
+        }
       }
 
       options.clearStack = options.clearStack || clearStack;

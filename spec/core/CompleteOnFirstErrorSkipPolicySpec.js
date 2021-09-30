@@ -1,24 +1,25 @@
 describe('CompleteOnFirstErrorSkipPolicy', function() {
   describe('#skipTo', function() {
-    describe('When errored is false', function() {
+    describe('Before anything has errored', function() {
       it('returns the next index', function() {
         const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
           arrayOfArbitraryFns(4),
           4
         );
-        expect(policy.skipTo(1, false)).toEqual(2);
+        expect(policy.skipTo(1)).toEqual(2);
       });
     });
 
-    describe('When errored is true', function() {
+    describe('After something has errored', function() {
       it('returns the first cleanup fn when called with a non cleanup fn', function() {
         const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
           arrayOfArbitraryFns(4),
           2
         );
 
-        expect(policy.skipTo(0, true)).toEqual(2);
-        expect(policy.skipTo(1, true)).toEqual(2);
+        policy.fnErrored(0);
+        expect(policy.skipTo(0)).toEqual(2);
+        expect(policy.skipTo(1)).toEqual(2);
       });
 
       it('returns the next index when called with a cleanup fn', function() {
@@ -27,8 +28,9 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
           1
         );
 
-        expect(policy.skipTo(1, true)).toEqual(2);
-        expect(policy.skipTo(2, true)).toEqual(3);
+        policy.fnErrored(0);
+        expect(policy.skipTo(1)).toEqual(2);
+        expect(policy.skipTo(2)).toEqual(3);
       });
     });
   });

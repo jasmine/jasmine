@@ -59,7 +59,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     const SkipPolicy = attrs.SkipPolicy || j$.NeverSkipPolicy;
     this.skipPolicy_ = new SkipPolicy(this.queueableFns, this.firstCleanupIx);
-    this.errored = false;
+    this.errored_ = false;
 
     if (typeof this.onComplete !== 'function') {
       throw new Error('invalid onComplete ' + JSON.stringify(this.onComplete));
@@ -115,7 +115,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
             if (!(err instanceof StopExecutionError) && !err.jasmineMessage) {
               self.fail(err);
             }
-            self.errored = errored = true;
+            self.recordError_(iterativeIndex);
           }
 
           function runNext() {
@@ -141,7 +141,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
           }
         }
       ),
-      errored = false,
       timedOut = false,
       queueableFn = self.queueableFns[iterativeIndex],
       timeoutId,
@@ -149,7 +148,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     next.fail = function nextFail() {
       self.fail.apply(null, arguments);
-      self.errored = errored = true;
+      self.recordError_(iterativeIndex);
       next();
     };
 
@@ -192,15 +191,15 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }
     } catch (e) {
       onException(e);
-      self.errored = errored = true;
+      self.recordError_(iterativeIndex);
     }
 
     cleanup();
-    return { completedSynchronously: true, errored: errored };
+    return { completedSynchronously: true };
 
     function onException(e) {
       self.onException(e);
-      self.errored = errored = true;
+      self.recordError_(iterativeIndex);
     }
 
     function onPromiseRejection(e) {
@@ -224,14 +223,12 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       if (!result.completedSynchronously) {
         return;
       }
-
-      self.errored = self.errored || result.errored;
     }
 
     this.clearStack(function() {
       self.globalErrors.popListener(self.handleFinalError);
 
-      if (self.errored) {
+      if (self.errored_) {
         self.onComplete(new StopExecutionError());
       } else {
         self.onComplete();
@@ -240,13 +237,18 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.nextFnIx_ = function(currentFnIx) {
-    const result = this.skipPolicy_.skipTo(currentFnIx, this.errored);
+    const result = this.skipPolicy_.skipTo(currentFnIx);
 
     if (result === currentFnIx) {
       throw new Error("Can't skip to the same queueable fn that just finished");
     }
 
     return result;
+  };
+
+  QueueRunner.prototype.recordError_ = function(currentFnIx) {
+    this.errored_ = true;
+    this.skipPolicy_.fnErrored(currentFnIx);
   };
 
   QueueRunner.prototype.diagnoseConflictingAsync_ = function(fn, retval) {

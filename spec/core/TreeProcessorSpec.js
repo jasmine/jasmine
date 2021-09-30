@@ -482,7 +482,10 @@ describe('TreeProcessor', function() {
     var leaf = new Leaf(),
       node = new Node({
         children: [leaf],
-        beforeAllFns: ['beforeAll1', 'beforeAll2']
+        beforeAllFns: [
+          { fn: 'beforeAll1', timeout: 1 },
+          { fn: 'beforeAll2', timeout: 2 }
+        ]
       }),
       root = new Node({ children: [node] }),
       queueRunner = jasmine.createSpy('queueRunner'),
@@ -502,8 +505,8 @@ describe('TreeProcessor', function() {
 
     expect(queueableFns).toEqual([
       { fn: jasmine.any(Function) },
-      'beforeAll1',
-      'beforeAll2',
+      { type: 'beforeAll', fn: 'beforeAll1', timeout: 1 },
+      { type: 'beforeAll', fn: 'beforeAll2', timeout: 2 },
       { fn: jasmine.any(Function) }
     ]);
   });
@@ -512,7 +515,7 @@ describe('TreeProcessor', function() {
     var leaf = new Leaf(),
       node = new Node({
         children: [leaf],
-        afterAllFns: ['afterAll1', 'afterAll2']
+        afterAllFns: [{ fn: 'afterAll1' }, { fn: 'afterAll2' }]
       }),
       root = new Node({ children: [node] }),
       queueRunner = jasmine.createSpy('queueRunner'),
@@ -533,15 +536,15 @@ describe('TreeProcessor', function() {
     expect(queueableFns).toEqual([
       { fn: jasmine.any(Function) },
       { fn: jasmine.any(Function) },
-      'afterAll1',
-      'afterAll2'
+      { type: 'afterAll', fn: 'afterAll1' },
+      { type: 'afterAll', fn: 'afterAll2' }
     ]);
   });
 
   it('does not run beforeAlls or afterAlls for a node with no children', function() {
     var node = new Node({
-        beforeAllFns: ['before'],
-        afterAllFns: ['after']
+        beforeAllFns: [{ fn: 'before' }],
+        afterAllFns: [{ fn: 'after' }]
       }),
       root = new Node({ children: [node] }),
       queueRunner = jasmine.createSpy('queueRunner'),
@@ -566,8 +569,8 @@ describe('TreeProcessor', function() {
     var leaf = new Leaf({ markedPending: true }),
       node = new Node({
         children: [leaf],
-        beforeAllFns: ['before'],
-        afterAllFns: ['after'],
+        beforeAllFns: [{ fn: 'before' }],
+        afterAllFns: [{ fn: 'after' }],
         markedPending: false
       }),
       root = new Node({ children: [node] }),

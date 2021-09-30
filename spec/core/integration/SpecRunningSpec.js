@@ -1158,6 +1158,68 @@ describe('spec running', function() {
     });
   });
 
+  describe('When a beforeAll function fails', function() {
+    it('skips contained specs and suites', async function() {
+      const outerBeforeEach = jasmine.createSpy('outerBeforeEach');
+      const nestedBeforeEach = jasmine.createSpy('nestedBeforeEach');
+      const outerAfterEach = jasmine.createSpy('outerAfterEach');
+      const nestedAfterEach = jasmine.createSpy('nestedAfterEach');
+      const outerIt = jasmine.createSpy('outerIt');
+      const nestedIt = jasmine.createSpy('nestedIt');
+      const nestedBeforeAll = jasmine.createSpy('nestedBeforeAll');
+
+      env.beforeAll(function() {
+        throw new Error('nope');
+      });
+
+      env.beforeEach(outerBeforeEach);
+      env.it('a spec', outerIt);
+      env.describe('a nested suite', function() {
+        env.beforeAll(nestedBeforeAll);
+        env.beforeEach(nestedBeforeEach);
+        env.it('a nested spec', nestedIt);
+        env.afterEach(nestedAfterEach);
+      });
+      env.afterEach(outerAfterEach);
+
+      await env.execute();
+
+      expect(outerBeforeEach).not.toHaveBeenCalled();
+      expect(outerIt).not.toHaveBeenCalled();
+      expect(nestedBeforeAll).not.toHaveBeenCalled();
+      expect(nestedBeforeEach).not.toHaveBeenCalled();
+      expect(nestedIt).not.toHaveBeenCalled();
+      expect(nestedAfterEach).not.toHaveBeenCalled();
+      expect(outerAfterEach).not.toHaveBeenCalled();
+    });
+
+    it('runs afterAll functions in the current suite and outer scopes', async function() {
+      const outerAfterAll = jasmine.createSpy('outerAfterAll');
+      const nestedAfterAll = jasmine.createSpy('nestedAfterAll');
+      const secondNestedAfterAll = jasmine.createSpy('secondNestedAfterAll');
+
+      env.describe('a nested suite', function() {
+        env.beforeAll(function() {
+          throw new Error('nope');
+        });
+
+        env.describe('more nesting', function() {
+          env.it('a nested spec', function() {});
+          env.afterAll(secondNestedAfterAll);
+        });
+
+        env.afterAll(nestedAfterAll);
+      });
+      env.afterAll(outerAfterAll);
+
+      await env.execute();
+
+      expect(secondNestedAfterAll).not.toHaveBeenCalled();
+      expect(nestedAfterAll).toHaveBeenCalled();
+      expect(outerAfterAll).toHaveBeenCalled();
+    });
+  });
+
   describe('when stopOnSpecFailure is on', function() {
     it('does not run further specs when one fails', function(done) {
       var actions = [],
