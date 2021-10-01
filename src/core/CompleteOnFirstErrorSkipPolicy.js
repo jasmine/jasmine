@@ -1,20 +1,45 @@
 getJasmineRequireObj().CompleteOnFirstErrorSkipPolicy = function(j$) {
   function CompleteOnFirstErrorSkipPolicy(queueableFns, firstCleanupIx) {
+    this.queueableFns_ = queueableFns;
     this.firstCleanupIx_ = firstCleanupIx;
-    this.skipping_ = false;
+    this.erroredFnIx_ = null;
   }
 
   CompleteOnFirstErrorSkipPolicy.prototype.skipTo = function(lastRanFnIx) {
-    if (this.skipping_ && lastRanFnIx < this.firstCleanupIx_) {
-      return this.firstCleanupIx_;
-    } else {
-      return lastRanFnIx + 1;
-    }
+    for (
+      i = lastRanFnIx + 1;
+      i < this.queueableFns_.length && this.shouldSkip_(i);
+      i++
+    ) {}
+    return i;
   };
 
   CompleteOnFirstErrorSkipPolicy.prototype.fnErrored = function(fnIx) {
-    this.skipping_ = true;
+    this.erroredFnIx_ = fnIx;
   };
+
+  CompleteOnFirstErrorSkipPolicy.prototype.shouldSkip_ = function(fnIx) {
+    if (this.erroredFnIx_ === null) {
+      return false;
+    }
+
+    const candidateSuite = this.queueableFns_[fnIx].suite;
+    const errorSuite = this.queueableFns_[this.erroredFnIx_].suite;
+    return (
+      fnIx < this.firstCleanupIx_ ||
+      (candidateSuite && isDescendent(candidateSuite, errorSuite))
+    );
+  };
+
+  function isDescendent(candidate, ancestor) {
+    if (!candidate.parentSuite) {
+      return false;
+    } else if (candidate.parentSuite === ancestor) {
+      return true;
+    } else {
+      return isDescendent(candidate.parentSuite, ancestor);
+    }
+  }
 
   return CompleteOnFirstErrorSkipPolicy;
 };

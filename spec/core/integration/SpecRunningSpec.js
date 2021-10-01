@@ -824,11 +824,7 @@ describe('spec running', function() {
       });
 
       env.execute(null, function() {
-        expect(actions).toEqual([
-          'outer beforeEach',
-          'inner afterEach',
-          'outer afterEach'
-        ]);
+        expect(actions).toEqual(['outer beforeEach', 'outer afterEach']);
         done();
       });
     });
@@ -865,11 +861,7 @@ describe('spec running', function() {
 
       await env.execute();
 
-      expect(actions).toEqual([
-        'outer beforeEach',
-        'inner afterEach',
-        'outer afterEach'
-      ]);
+      expect(actions).toEqual(['outer beforeEach', 'outer afterEach']);
     });
 
     it('skips to cleanup functions after an expectation failure', async function() {
@@ -904,11 +896,7 @@ describe('spec running', function() {
 
       await env.execute();
 
-      expect(actions).toEqual([
-        'outer beforeEach',
-        'inner afterEach',
-        'outer afterEach'
-      ]);
+      expect(actions).toEqual(['outer beforeEach', 'outer afterEach']);
     });
 
     it('skips to cleanup functions after done.fail is called', function(done) {
@@ -1013,11 +1001,7 @@ describe('spec running', function() {
 
       await env.execute();
 
-      expect(actions).toEqual([
-        'outer beforeEach',
-        'inner afterEach',
-        'outer afterEach'
-      ]);
+      expect(actions).toEqual(['outer beforeEach', 'outer afterEach']);
     });
 
     it('skips to cleanup functions after a rejected promise', async function() {
@@ -1050,11 +1034,7 @@ describe('spec running', function() {
 
       await env.execute();
 
-      expect(actions).toEqual([
-        'outer beforeEach',
-        'inner afterEach',
-        'outer afterEach'
-      ]);
+      expect(actions).toEqual(['outer beforeEach', 'outer afterEach']);
     });
 
     it('does not skip anything after an expectation failure', async function() {
@@ -1139,6 +1119,29 @@ describe('spec running', function() {
       await env.execute();
 
       expect(actions).toEqual(['beforeEach', 'afterEach']);
+    });
+
+    it('skips cleanup functions that are defined in child suites when a beforeEach errors', async function() {
+      const parentAfterEachFn = jasmine.createSpy('parentAfterEachFn');
+      const childAfterEachFn = jasmine.createSpy('childAfterEachFn');
+
+      env.describe('parent suite', function() {
+        env.beforeEach(function() {
+          throw new Error('nope');
+        });
+
+        env.afterEach(parentAfterEachFn);
+
+        env.describe('child suite', function() {
+          env.it('a spec', function() {});
+          env.afterEach(childAfterEachFn);
+        });
+      });
+
+      await env.execute();
+
+      expect(parentAfterEachFn).toHaveBeenCalled();
+      expect(childAfterEachFn).not.toHaveBeenCalled();
     });
 
     it('runs all reporter callbacks even if one fails', async function() {

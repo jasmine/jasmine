@@ -105,7 +105,7 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.beforeEach = function(fn) {
-    this.beforeFns.unshift(fn);
+    this.beforeFns.unshift({ ...fn, suite: this });
   };
 
   Suite.prototype.beforeAll = function(fn) {
@@ -113,7 +113,7 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.afterEach = function(fn) {
-    this.afterFns.unshift(fn);
+    this.afterFns.unshift({ ...fn, suite: this });
   };
 
   Suite.prototype.afterAll = function(fn) {

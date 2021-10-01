@@ -48,13 +48,16 @@ describe('Suite', function() {
         env: env,
         description: 'I am a suite'
       }),
-      outerBefore = jasmine.createSpy('outerBeforeEach'),
-      innerBefore = jasmine.createSpy('insideBeforeEach');
+      outerBefore = { fn: 'outerBeforeEach' },
+      innerBefore = { fn: 'insideBeforeEach' };
 
     suite.beforeEach(outerBefore);
     suite.beforeEach(innerBefore);
 
-    expect(suite.beforeFns).toEqual([innerBefore, outerBefore]);
+    expect(suite.beforeFns).toEqual([
+      { fn: innerBefore.fn, suite },
+      { fn: outerBefore.fn, suite }
+    ]);
   });
 
   it('adds after functions in order of needed execution', function() {
@@ -62,13 +65,16 @@ describe('Suite', function() {
         env: env,
         description: 'I am a suite'
       }),
-      outerAfter = jasmine.createSpy('outerAfterEach'),
-      innerAfter = jasmine.createSpy('insideAfterEach');
+      outerAfter = { fn: 'outerAfterEach' },
+      innerAfter = { fn: 'insideAfterEach' };
 
     suite.afterEach(outerAfter);
     suite.afterEach(innerAfter);
 
-    expect(suite.afterFns).toEqual([innerAfter, outerAfter]);
+    expect(suite.afterFns).toEqual([
+      { fn: innerAfter.fn, suite },
+      { fn: outerAfter.fn, suite }
+    ]);
   });
 
   it('has a status of failed if any expectations have failed', function() {

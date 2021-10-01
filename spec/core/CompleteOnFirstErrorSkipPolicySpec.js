@@ -11,26 +11,89 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
     });
 
     describe('After something has errored', function() {
-      it('returns the first cleanup fn when called with a non cleanup fn', function() {
+      it('skips non cleanup fns', function() {
+        const fns = arrayOfArbitraryFns(4);
         const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
-          arrayOfArbitraryFns(4),
+          fns,
           2
         );
 
         policy.fnErrored(0);
         expect(policy.skipTo(0)).toEqual(2);
-        expect(policy.skipTo(1)).toEqual(2);
+        expect(policy.skipTo(2)).toEqual(3);
+        expect(policy.skipTo(3)).toEqual(4);
       });
 
-      it('returns the next index when called with a cleanup fn', function() {
+      describe('When the error was in a beforeEach fn', function() {
+        it('runs cleanup fns defined by the current and containing suites', function() {
+          const parentSuite = { description: 'parentSuite' };
+          const suite = { description: 'suite', parentSuite };
+          const fns = [
+            {
+              suite: suite
+            },
+            {
+              fn: () => {}
+            },
+            {
+              fn: () => {},
+              suite: suite
+            },
+            {
+              fn: () => {},
+              suite: parentSuite
+            }
+          ];
+          const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
+            fns,
+            2
+          );
+
+          policy.fnErrored(0);
+          expect(policy.skipTo(0)).toEqual(2);
+          expect(policy.skipTo(2)).toEqual(3);
+        });
+
+        it('skips cleanup fns defined by nested suites', function() {
+          const parentSuite = { description: 'parentSuite' };
+          const suite = { description: 'suite', parentSuite };
+          const fns = [
+            {
+              fn: () => {},
+              type: 'beforeEach',
+              suite: parentSuite
+            },
+            {
+              fn: () => {}
+            },
+            {
+              fn: () => {},
+              suite: suite
+            },
+            {
+              fn: () => {},
+              suite: parentSuite
+            }
+          ];
+          const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
+            fns,
+            2
+          );
+
+          policy.fnErrored(0);
+          expect(policy.skipTo(0)).toEqual(3);
+        });
+      });
+
+      it('does not skip cleanup fns that have no suite, such as the spec complete fn', function() {
+        const fns = [{ fn: () => {} }, { fn: () => {} }];
         const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
-          arrayOfArbitraryFns(4),
+          fns,
           1
         );
 
         policy.fnErrored(0);
-        expect(policy.skipTo(1)).toEqual(2);
-        expect(policy.skipTo(2)).toEqual(3);
+        expect(policy.skipTo(0)).toEqual(1);
       });
     });
   });
