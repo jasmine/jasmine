@@ -36,6 +36,8 @@ getJasmineRequireObj().Spec = function(j$) {
         return {};
       };
     this.onStart = attrs.onStart || function() {};
+    this.autoCleanClosures =
+      attrs.autoCleanClosures === undefined ? true : !!attrs.autoCleanClosures;
     this.getSpecName =
       attrs.getSpecName ||
       function() {
@@ -53,7 +55,7 @@ getJasmineRequireObj().Spec = function(j$) {
     this.timer = attrs.timer || new j$.Timer();
 
     if (!this.queueableFn.fn) {
-      this.pend();
+      this.exclude();
     }
 
     /**
@@ -121,7 +123,9 @@ x     */
 
     var complete = {
       fn: function(done) {
-        self.queueableFn.fn = null;
+        if (self.autoCleanClosures) {
+          self.queueableFn.fn = null;
+        }
         self.result.status = self.status(excluded, failSpecWithNoExp);
         self.result.duration = self.timer.elapsed();
         self.resultCallback(self.result, done);
@@ -158,6 +162,37 @@ x     */
     this.queueRunnerFactory(runnerConfig);
   };
 
+  Spec.prototype.reset = function() {
+    /**
+     * @typedef SpecResult
+     * @property {Int} id - The unique id of this spec.
+     * @property {String} description - The description passed to the {@link it} that created this spec.
+     * @property {String} fullName - The full description including all ancestors of this spec.
+     * @property {Expectation[]} failedExpectations - The list of expectations that failed during execution of this spec.
+     * @property {Expectation[]} passedExpectations - The list of expectations that passed during execution of this spec.
+     * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred during execution this spec.
+     * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
+     * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
+     * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
+     * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
+     * @property {TraceEntry[]|null} trace - Trace messages, if any, that were logged using {@link Env#trace} during a failing spec.
+     * @since 2.0.0
+     */
+    this.result = {
+      id: this.id,
+      description: this.description,
+      fullName: this.getFullName(),
+      failedExpectations: [],
+      passedExpectations: [],
+      deprecationWarnings: [],
+      pendingReason: this.excludeMessage,
+      duration: null,
+      properties: null,
+      trace: null
+    };
+    this.markedPending = this.markedExcluding;
+  };
+
   Spec.prototype.onException = function onException(e) {
     if (Spec.isPendingSpecException(e)) {
       this.pend(extractCustomPendingMessage(e));
@@ -181,11 +216,28 @@ x     */
     );
   };
 
+  /*
+   * Marks state as pending
+   * @param {string} [message] An optional reason message
+   */
   Spec.prototype.pend = function(message) {
     this.markedPending = true;
     if (message) {
       this.result.pendingReason = message;
     }
+  };
+
+  /*
+   * Like {@link Spec#pend}, but pending state will survive {@link Spec#reset}
+   * Useful for fit, xit, where pending state remains.
+   * @param {string} [message] An optional reason message
+   */
+  Spec.prototype.exclude = function(message) {
+    this.markedExcluding = true;
+    if (this.message) {
+      this.excludeMessage = message;
+    }
+    this.pend();
   };
 
   Spec.prototype.getResult = function() {
