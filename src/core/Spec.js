@@ -69,7 +69,7 @@ getJasmineRequireObj().Spec = function(j$) {
      * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
      * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
      * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
-     * @property {TraceEntry[]|null} trace - Trace messages, if any, that were logged using {@link Env#trace} during a failing spec.
+     * @property {TraceEntry[]|null} trace - Trace messages, if any, that were logged using {@link jasmine.trace} during a failing spec.
      * @since 2.0.0
      */
     this.result = {
@@ -265,7 +265,7 @@ getJasmineRequireObj().Spec = function(j$) {
 
     /**
      * @typedef TraceEntry
-     * @property {String} message - The message that was passed to {@link Env#trace}.
+     * @property {String} message - The message that was passed to {@link jasmine.trace}.
      * @property {number} timestamp - The time when the entry was added, in
      * milliseconds from the spec's start time
      */
