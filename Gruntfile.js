@@ -34,17 +34,11 @@ module.exports = function(grunt) {
           jasmine = new Jasmine({jasmineCore: jasmineCore});
 
       jasmine.loadConfigFile('./spec/support/jasmine.json');
+      jasmine.onComplete(function(passed) {
+        done(passed);
+      });
 
-      jasmine.exitOnCompletion = false;
-      jasmine.execute().then(
-        result => {
-          done(result.overallStatus === 'passed');
-        },
-        err => {
-          console.error(err);
-          exit(1);
-        }
-      );
+      jasmine.execute();
     }
   );
 
