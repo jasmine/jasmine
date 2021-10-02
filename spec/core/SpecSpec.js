@@ -224,7 +224,8 @@ describe('Spec', function() {
         deprecationWarnings: [],
         pendingReason: '',
         duration: jasmine.any(Number),
-        properties: null
+        properties: null,
+        trace: null
       },
       'things'
     );
@@ -536,5 +537,111 @@ describe('Spec', function() {
       'An asynchronous spec, beforeEach, or afterEach function called its ' +
         "'done' callback more than once.\n(in spec: a spec)"
     );
+  });
+
+  describe('#trace', function() {
+    it('adds the messages to the result', function() {
+      var timer = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+        spec = new jasmineUnderTest.Spec({
+          queueableFn: {
+            fn: function() {}
+          },
+          queueRunnerFactory: function() {},
+          timer: timer
+        }),
+        t1 = 123,
+        t2 = 456;
+
+      spec.execute();
+      expect(spec.result.trace).toBeNull();
+      timer.elapsed.and.returnValue(t1);
+      spec.trace('msg 1');
+      expect(spec.result.trace).toEqual([{ message: 'msg 1', timestamp: t1 }]);
+      timer.elapsed.and.returnValue(t2);
+      spec.trace('msg 2');
+      expect(spec.result.trace).toEqual([
+        { message: 'msg 1', timestamp: t1 },
+        { message: 'msg 2', timestamp: t2 }
+      ]);
+    });
+
+    describe('When the spec passes', function() {
+      it('omits the messages from the reported result', function() {
+        var resultCallback = jasmine.createSpy('resultCallback'),
+          spec = new jasmineUnderTest.Spec({
+            queueableFn: {
+              fn: function() {}
+            },
+            resultCallback: resultCallback,
+            queueRunnerFactory: function(config) {
+              spec.trace('msg');
+              config.cleanupFns.forEach(function(fn) {
+                fn.fn();
+              });
+              config.onComplete(false);
+            }
+          });
+
+        spec.execute(function() {});
+        expect(resultCallback).toHaveBeenCalledWith(
+          jasmine.objectContaining({ trace: null }),
+          undefined
+        );
+      });
+
+      it('removes the messages to save memory', function() {
+        var resultCallback = jasmine.createSpy('resultCallback'),
+          spec = new jasmineUnderTest.Spec({
+            queueableFn: {
+              fn: function() {}
+            },
+            resultCallback: resultCallback,
+            queueRunnerFactory: function(config) {
+              spec.trace('msg');
+              config.cleanupFns.forEach(function(fn) {
+                fn.fn();
+              });
+              config.onComplete(false);
+            }
+          });
+
+        spec.execute(function() {});
+        expect(resultCallback).toHaveBeenCalled();
+        expect(spec.result.trace).toBeNull();
+      });
+    });
+
+    describe('When the spec fails', function() {
+      it('includes the messages in the reported result', function() {
+        var resultCallback = jasmine.createSpy('resultCallback'),
+          timer = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+          spec = new jasmineUnderTest.Spec({
+            queueableFn: {
+              fn: function() {}
+            },
+            resultCallback: resultCallback,
+            queueRunnerFactory: function(config) {
+              spec.trace('msg');
+              spec.onException(new Error('nope'));
+              config.cleanupFns.forEach(function(fn) {
+                fn.fn();
+              });
+              config.onComplete(true);
+            },
+            timer: timer
+          }),
+          timestamp = 12345;
+
+        timer.elapsed.and.returnValue(timestamp);
+
+        spec.execute(function() {});
+        expect(resultCallback).toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            trace: [{ message: 'msg', timestamp: timestamp }]
+          }),
+          undefined
+        );
+      });
+    });
   });
 });

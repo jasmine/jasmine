@@ -1514,6 +1514,23 @@ describe('HtmlReporter', function() {
             }
           ]
         };
+        var failingSpecResultWithTrace = {
+          id: 567,
+          status: 'failed',
+          description: 'a failing spec',
+          fullName: 'a suite inner suite a failing spec',
+          passedExpectations: [],
+          failedExpectations: [
+            {
+              message: 'a failure message',
+              stack: 'a stack trace'
+            }
+          ],
+          trace: [
+            { timestamp: 123, message: 'msg 1' },
+            { timestamp: 456, message: 'msg 1' }
+          ]
+        };
 
         var passingSuiteResult = {
           id: 1,
@@ -1531,18 +1548,20 @@ describe('HtmlReporter', function() {
         reporter.suiteDone(passingSuiteResult);
         reporter.suiteDone(failingSuiteResult);
         reporter.suiteDone(passingSuiteResult);
+        reporter.specStarted(failingSpecResultWithTrace);
+        reporter.specDone(failingSpecResultWithTrace);
         reporter.jasmineDone({});
       });
 
       it('reports the specs counts', function() {
         var alertBar = container.querySelector('.jasmine-alert .jasmine-bar');
-        expect(alertBar.innerHTML).toMatch(/2 specs, 2 failure/);
+        expect(alertBar.innerHTML).toMatch(/3 specs, 3 failures/);
       });
 
       it('reports failure messages and stack traces', function() {
         var specFailures = container.querySelector('.jasmine-failures');
 
-        expect(specFailures.childNodes.length).toEqual(2);
+        expect(specFailures.childNodes.length).toEqual(3);
 
         var specFailure = specFailures.childNodes[0];
         expect(specFailure.getAttribute('class')).toMatch(/jasmine-failed/);
@@ -1581,6 +1600,18 @@ describe('HtmlReporter', function() {
           'jasmine-stack-trace'
         );
         expect(suiteStackTrace.innerHTML).toEqual('a stack trace');
+      });
+
+      it('reports traces when present', function() {
+        var specFailure = container.querySelectorAll(
+            '.jasmine-spec-detail.jasmine-failed'
+          )[2],
+          trace = specFailure.querySelector('.jasmine-trace table'),
+          rows;
+
+        expect(trace).toBeTruthy();
+        rows = trace.querySelectorAll('tbody tr');
+        expect(rows.length).toEqual(2);
       });
 
       it('provides links to focus on a failure and each containing suite', function() {

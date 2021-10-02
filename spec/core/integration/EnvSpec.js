@@ -3324,4 +3324,87 @@ describe('Env integration', function() {
       });
     });
   });
+
+  it('sends traces to the reporter when the spec fails', function(done) {
+    var reporter = jasmine.createSpyObj('reporter', ['specDone']),
+      startTime,
+      endTime;
+
+    env.addReporter(reporter);
+    env.configure({ random: false });
+
+    env.it('fails', function() {
+      startTime = new Date().getTime();
+      env.trace('message 1');
+      env.trace('message 2');
+      env.expect(1).toBe(2);
+      endTime = new Date().getTime();
+    });
+
+    env.it('passes', function() {
+      env.trace('message that should not be reported');
+    });
+
+    env.execute(null, function() {
+      function numberInRange(min, max) {
+        return {
+          asymmetricMatch: function(compareTo) {
+            return compareTo >= min && compareTo <= max;
+          },
+          jasmineToString: function(pp) {
+            return '<number from ' + min + ' to ' + max + ' inclusive>';
+          }
+        };
+      }
+
+      var duration;
+
+      expect(reporter.specDone).toHaveBeenCalledTimes(2);
+      duration = reporter.specDone.calls.argsFor(0)[0].duration;
+      expect(reporter.specDone.calls.argsFor(0)[0]).toEqual(
+        jasmine.objectContaining({
+          trace: [
+            {
+              timestamp: numberInRange(0, duration),
+              message: 'message 1'
+            },
+            {
+              timestamp: numberInRange(0, duration),
+              message: 'message 2'
+            }
+          ]
+        })
+      );
+      expect(reporter.specDone.calls.argsFor(1)[0].trace).toBeFalsy();
+      done();
+    });
+  });
+
+  it('reports an error when trace is used when a spec is not running', function(done) {
+    var reporter = jasmine.createSpyObj('reporter', ['suiteDone']);
+
+    env.describe('a suite', function() {
+      env.beforeAll(function() {
+        env.trace('a message');
+      });
+
+      env.it('a spec', function() {});
+    });
+
+    env.addReporter(reporter);
+    env.execute(null, function() {
+      expect(reporter.suiteDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          failedExpectations: [
+            jasmine.objectContaining({
+              message: jasmine.stringContaining(
+                "'trace' was called when there was no current spec"
+              )
+            })
+          ]
+        })
+      );
+      done();
+    });
+  });
 });
