@@ -269,16 +269,3 @@ body {
   background: white;
   white-space: pre;
 }
-.jasmine_html-reporter .jasmine-trace {
-  margin: 5px 0 0 0;
-  padding: 5px;
-  color: #666;
-  border: 1px solid #ddd;
-  background: white;
-}
-.jasmine_html-reporter .jasmine-trace table {
-  border-spacing: 0;
-}
-.jasmine_html-reporter .jasmine-trace table, .jasmine_html-reporter .jasmine-trace th, .jasmine_html-reporter .jasmine-trace td {
-  border: 1px solid #ddd;
-}
