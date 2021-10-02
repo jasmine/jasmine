@@ -520,6 +520,12 @@ describe('Env', function() {
         env.it('async', jasmine.getEnv().makeAsyncAwaitFunction());
       }).not.toThrow();
     });
+
+    it('throws an error when the timeout value is too large for setTimeout', function() {
+      expect(function() {
+        env.it('huge timeout', function() {}, 2147483648);
+      }).toThrowError('Timeout value cannot be greater than 2147483647');
+    });
   });
 
   describe('#xit', function() {
@@ -562,6 +568,12 @@ describe('Env', function() {
         /fit expects a function argument; received \[object (Undefined|DOMWindow|Object)\]/
       );
     });
+
+    it('throws an error when the timeout value is too large for setTimeout', function() {
+      expect(function() {
+        env.fit('huge timeout', function() {}, 2147483648);
+      }).toThrowError('Timeout value cannot be greater than 2147483647');
+    });
   });
 
   describe('#beforeEach', function() {
@@ -578,6 +590,12 @@ describe('Env', function() {
       expect(function() {
         env.beforeEach(jasmine.getEnv().makeAsyncAwaitFunction());
       }).not.toThrow();
+    });
+
+    it('throws an error when the timeout value is too large for setTimeout', function() {
+      expect(function() {
+        env.beforeEach(function() {}, 2147483648);
+      }).toThrowError('Timeout value cannot be greater than 2147483647');
     });
   });
 
@@ -596,6 +614,12 @@ describe('Env', function() {
         env.beforeAll(jasmine.getEnv().makeAsyncAwaitFunction());
       }).not.toThrow();
     });
+
+    it('throws an error when the timeout value is too large for setTimeout', function() {
+      expect(function() {
+        env.beforeAll(function() {}, 2147483648);
+      }).toThrowError('Timeout value cannot be greater than 2147483647');
+    });
   });
 
   describe('#afterEach', function() {
@@ -613,6 +637,12 @@ describe('Env', function() {
         env.afterEach(jasmine.getEnv().makeAsyncAwaitFunction());
       }).not.toThrow();
     });
+
+    it('throws an error when the timeout value is too large for setTimeout', function() {
+      expect(function() {
+        env.afterEach(function() {}, 2147483648);
+      }).toThrowError('Timeout value cannot be greater than 2147483647');
+    });
   });
 
   describe('#afterAll', function() {
@@ -629,6 +659,12 @@ describe('Env', function() {
       expect(function() {
         env.afterAll(jasmine.getEnv().makeAsyncAwaitFunction());
       }).not.toThrow();
+    });
+
+    it('throws an error when the timeout value is too large for setTimeout', function() {
+      expect(function() {
+        env.afterAll(function() {}, 2147483648);
+      }).toThrowError('Timeout value cannot be greater than 2147483647');
     });
   });
 

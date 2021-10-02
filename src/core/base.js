@@ -7,6 +7,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Maximum object depth the pretty printer will print to.
    * Set this to a lower value to speed up pretty printing if you have large objects.
    * @name jasmine.MAX_PRETTY_PRINT_DEPTH
+   * @default 8
    * @since 1.3.0
    */
   j$.MAX_PRETTY_PRINT_DEPTH = 8;
@@ -15,6 +16,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * This will also limit the number of keys and values displayed for an object.
    * Elements past this number will be ellipised.
    * @name jasmine.MAX_PRETTY_PRINT_ARRAY_LENGTH
+   * @default 50
    * @since 2.7.0
    */
   j$.MAX_PRETTY_PRINT_ARRAY_LENGTH = 50;
@@ -22,15 +24,35 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * Maximum number of characters to display when pretty printing objects.
    * Characters past this number will be ellipised.
    * @name jasmine.MAX_PRETTY_PRINT_CHARS
+   * @default 100
    * @since 2.9.0
    */
   j$.MAX_PRETTY_PRINT_CHARS = 1000;
   /**
-   * Default number of milliseconds Jasmine will wait for an asynchronous spec to complete.
+   * Default number of milliseconds Jasmine will wait for an asynchronous spec,
+   * before, or after function to complete. This can be overridden on a case by
+   * case basis by passing a time limit as the third argument to {@link it},
+   * {@link beforeEach}, {@link afterEach}, {@link beforeAll}, or
+   * {@link afterAll}. The value must be no greater than the largest number of
+   * milliseconds supported by setTimeout, which is usually 2147483647.
+   *
+   * While debugging tests, you may want to set this to a large number (or pass
+   * a large number to one of the functions mentioned above) so that Jasmine
+   * does not move on to after functions or the next spec while you're debugging.
    * @name jasmine.DEFAULT_TIMEOUT_INTERVAL
+   * @default 5000
    * @since 1.3.0
    */
-  j$.DEFAULT_TIMEOUT_INTERVAL = 5000;
+  var DEFAULT_TIMEOUT_INTERVAL = 5000;
+  Object.defineProperty(j$, 'DEFAULT_TIMEOUT_INTERVAL', {
+    get: function() {
+      return DEFAULT_TIMEOUT_INTERVAL;
+    },
+    set: function(newValue) {
+      j$.util.validateTimeout(newValue, 'jasmine.DEFAULT_TIMEOUT_INTERVAL');
+      DEFAULT_TIMEOUT_INTERVAL = newValue;
+    }
+  });
 
   j$.getGlobal = function() {
     return jasmineGlobal;

@@ -142,5 +142,20 @@ getJasmineRequireObj().util = function(j$) {
     }
   };
 
+  util.validateTimeout = function(timeout, msgPrefix) {
+    // Timeouts are implemented with setTimeout, which only supports a limited
+    // range of values. The limit is unspecified, as is the behavior when it's
+    // exceeded. But on all currently supported JS runtimes, setTimeout calls
+    // the callback immediately when the timeout is greater than 2147483647
+    // (the maximum value of a signed 32 bit integer).
+    var max = 2147483647;
+
+    if (timeout > max) {
+      throw new Error(
+        (msgPrefix || 'Timeout value') + ' cannot be greater than ' + max
+      );
+    }
+  };
+
   return util;
 };

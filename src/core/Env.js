@@ -1356,6 +1356,11 @@ getJasmineRequireObj().Env = function(j$) {
       if (arguments.length > 1 && typeof fn !== 'undefined') {
         ensureIsFunctionOrAsync(fn, 'it');
       }
+
+      if (timeout) {
+        j$.util.validateTimeout(timeout);
+      }
+
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
       if (currentDeclarationSuite.markedPending) {
         spec.pend();
@@ -1385,6 +1390,10 @@ getJasmineRequireObj().Env = function(j$) {
     this.fit = function(description, fn, timeout) {
       ensureIsNotNested('fit');
       ensureIsFunctionOrAsync(fn, 'fit');
+
+      if (timeout) {
+        j$.util.validateTimeout(timeout);
+      }
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
       currentDeclarationSuite.addChild(spec);
       focusedRunnables.push(spec.id);
@@ -1449,6 +1458,11 @@ getJasmineRequireObj().Env = function(j$) {
     this.beforeEach = function(beforeEachFunction, timeout) {
       ensureIsNotNested('beforeEach');
       ensureIsFunctionOrAsync(beforeEachFunction, 'beforeEach');
+
+      if (timeout) {
+        j$.util.validateTimeout(timeout);
+      }
+
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
         timeout: timeout || 0
@@ -1458,6 +1472,11 @@ getJasmineRequireObj().Env = function(j$) {
     this.beforeAll = function(beforeAllFunction, timeout) {
       ensureIsNotNested('beforeAll');
       ensureIsFunctionOrAsync(beforeAllFunction, 'beforeAll');
+
+      if (timeout) {
+        j$.util.validateTimeout(timeout);
+      }
+
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
         timeout: timeout || 0
@@ -1467,6 +1486,11 @@ getJasmineRequireObj().Env = function(j$) {
     this.afterEach = function(afterEachFunction, timeout) {
       ensureIsNotNested('afterEach');
       ensureIsFunctionOrAsync(afterEachFunction, 'afterEach');
+
+      if (timeout) {
+        j$.util.validateTimeout(timeout);
+      }
+
       afterEachFunction.isCleanup = true;
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
@@ -1477,6 +1501,11 @@ getJasmineRequireObj().Env = function(j$) {
     this.afterAll = function(afterAllFunction, timeout) {
       ensureIsNotNested('afterAll');
       ensureIsFunctionOrAsync(afterAllFunction, 'afterAll');
+
+      if (timeout) {
+        j$.util.validateTimeout(timeout);
+      }
+
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
         timeout: timeout || 0
