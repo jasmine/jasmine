@@ -1026,4 +1026,209 @@ describe('spec running', function() {
       env.stopOnSpecFailure(true);
     });
   });
+
+  describe('run multiple times', function() {
+    beforeEach(function() {
+      env.configure({ autoCleanClosures: false, random: false });
+    });
+
+    it('should be able to run multiple times', function() {
+      var actions = [];
+
+      env.describe('Suite', function() {
+        env.it('spec1', function() {
+          actions.push('spec1');
+        });
+        env.describe('inner suite', function() {
+          env.it('spec2', function() {
+            actions.push('spec2');
+          });
+        });
+      });
+
+      return env.execute().then(function() {
+        expect(actions).toEqual(['spec1', 'spec2']);
+        return env.execute().then(function() {
+          expect(actions).toEqual(['spec1', 'spec2', 'spec1', 'spec2']);
+        });
+      });
+    });
+
+    it('should reset results between runs', function() {
+      var specResults = {};
+      var suiteResults = {};
+      var firstExecution = true;
+
+      env.addReporter({
+        specDone: function(spec) {
+          specResults[spec.description] = spec.status;
+        },
+        suiteDone: function(suite) {
+          suiteResults[suite.description] = suite.status;
+        },
+        jasmineDone: function() {
+          firstExecution = false;
+        }
+      });
+
+      env.describe('suite0', function() {
+        env.it('spec1', function() {
+          if (firstExecution) {
+            env.expect(1).toBe(2);
+          }
+        });
+        env.describe('suite1', function() {
+          env.it('spec2', function() {
+            if (firstExecution) {
+              env.pending();
+            }
+          });
+          env.xit('spec3', function() {}); // Always pending
+        });
+        env.describe('suite2', function() {
+          env.it('spec4', function() {
+            if (firstExecution) {
+              throw new Error('spec 3 fails');
+            }
+          });
+        });
+        env.describe('suite3', function() {
+          beforeEach(function() {
+            throw new Error('suite 3 fails');
+          });
+          env.it('spec5', function() {});
+        });
+        env.xdescribe('suite4', function() {
+          // Always pending
+          env.it('spec6', function() {});
+        });
+        env.describe('suite5', function() {
+          env.it('spec7');
+        });
+      });
+
+      return env.execute().then(function() {
+        expect(specResults).toEqual({
+          spec1: 'failed',
+          spec2: 'pending',
+          spec3: 'pending',
+          spec4: 'failed',
+          spec6: 'pending',
+          spec7: 'pending'
+        });
+        expect(suiteResults).toEqual({
+          suite0: 'passed',
+          suite1: 'passed',
+          suite2: 'passed',
+          suite3: 'failed',
+          suite4: 'pending',
+          suite5: 'passed'
+        });
+        return env.execute().then(function() {
+          expect(specResults).toEqual({
+            spec1: 'passed',
+            spec2: 'passed',
+            spec3: 'pending',
+            spec4: 'passed',
+            spec6: 'pending',
+            spec7: 'pending'
+          });
+          expect(suiteResults).toEqual({
+            suite0: 'passed',
+            suite1: 'passed',
+            suite2: 'passed',
+            suite3: 'passed',
+            suite4: 'pending',
+            suite5: 'passed'
+          });
+        });
+      });
+    });
+
+    it('should execute before and after hooks per run', function() {
+      var timeline = [];
+      var timelineFn = function(hookName) {
+        return function() {
+          timeline.push(hookName);
+        };
+      };
+      var expectedTimeLine = [
+        'beforeAll',
+        'beforeEach',
+        'spec1',
+        'afterEach',
+        'beforeEach',
+        'spec2',
+        'afterEach',
+        'afterAll'
+      ];
+
+      env.describe('suite0', function() {
+        env.beforeAll(timelineFn('beforeAll'));
+        env.beforeEach(timelineFn('beforeEach'));
+        env.afterEach(timelineFn('afterEach'));
+        env.afterAll(timelineFn('afterAll'));
+        env.it('spec1', timelineFn('spec1'));
+        env.it('spec2', timelineFn('spec2'));
+      });
+      return env.execute().then(function() {
+        expect(timeline).toEqual(expectedTimeLine);
+        timeline = [];
+        return env.execute().then(function() {
+          expect(timeline).toEqual(expectedTimeLine);
+        });
+      });
+    });
+
+    it('should be able to filter out different tests in subsequent runs', function() {
+      var specResults = {};
+      var focussedSpec = 'spec1';
+
+      env.configure({
+        specFilter: function(spec) {
+          return spec.description === focussedSpec;
+        }
+      });
+
+      env.addReporter({
+        specDone: function(spec) {
+          specResults[spec.description] = spec.status;
+        }
+      });
+
+      env.describe('suite0', function() {
+        env.it('spec1', function() {});
+        env.it('spec2', function() {});
+        env.it('spec3', function() {});
+      });
+
+      return env
+        .execute()
+        .then(function() {
+          expect(specResults).toEqual({
+            spec1: 'passed',
+            spec2: 'excluded',
+            spec3: 'excluded'
+          });
+          focussedSpec = 'spec2';
+          return env.execute();
+        })
+        .then(function() {
+          expect(specResults).toEqual({
+            spec1: 'excluded',
+            spec2: 'passed',
+            spec3: 'excluded'
+          });
+          focussedSpec = 'spec3';
+          return env.execute();
+        })
+        .then(function() {
+          expect(specResults).toEqual({
+            spec1: 'excluded',
+            spec2: 'excluded',
+            spec3: 'passed'
+          });
+        });
+    });
+  });
 });
