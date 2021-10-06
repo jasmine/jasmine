@@ -904,6 +904,39 @@ describe('spec running', function() {
       expect(actions).toEqual(['beforeEach', 'afterEach']);
     });
 
+    it('skips to cleanup functions after pending() is called', async function() {
+      const actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          pending();
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it', function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      await env.execute();
+
+      expect(actions).toEqual(['outer beforeEach', 'outer afterEach']);
+    });
+
     it('runs all reporter callbacks even if one fails', async function() {
       const laterReporter = jasmine.createSpyObj('laterReporter', ['specDone']);
 
