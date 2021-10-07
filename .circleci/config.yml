@@ -17,11 +17,7 @@ executors:
     working_directory: ~/workspace
   node12:
     docker:
-      - image: circleci/node:12
-    working_directory: ~/workspace
-  node10:
-    docker:
-      - image: circleci/node:10
+      - image: circleci/node:12.17
     working_directory: ~/workspace
 
 jobs:
@@ -118,9 +114,6 @@ workflows:
       - build:
           executor: node12
           name: build_node_12
-      - build:
-          executor: node10
-          name: build_node_10
       - test_node:
           executor: node16
           name: test_node_16
@@ -131,11 +124,6 @@ workflows:
           name: test_node_12
           requires:
              - build_node_12
-      - test_node:
-          executor: node10
-          name: test_node_10
-          requires:
-             - build_node_10
       - test_browsers:
           requires:
              - build_node_14
@@ -154,9 +142,6 @@ workflows:
       - build:
           executor: node12
           name: build_node_12
-      - build:
-          executor: node10
-          name: build_node_10
       - test_node:
           executor: node16
           name: test_node_16
@@ -172,11 +157,6 @@ workflows:
           name: test_node_12
           requires:
              - build_node_12
-      - test_node:
-          executor: node10
-          name: test_node_10
-          requires:
-             - build_node_10
       - test_browsers:
           requires:
              - build_node_14
