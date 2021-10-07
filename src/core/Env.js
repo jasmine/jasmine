@@ -123,6 +123,15 @@ getJasmineRequireObj().Env = function(j$) {
        */
       Promise: undefined,
       /**
+       * Clean closures when a suite is done running (done by clearing the stored function reference).
+       * This prevents memory leaks, but you won't be able to run jasmine multiple times.
+       * @name Configuration#autoCleanClosures
+       * @since 3.10.0
+       * @type boolean
+       * @default true
+       */
+      autoCleanClosures: true,
+      /**
        * Whether or not to issue warnings for certain deprecated functionality
        * every time it's used. If not set or set to false, deprecation warnings
        * for methods that tend to be called frequently will be issued only once
@@ -188,7 +197,8 @@ getJasmineRequireObj().Env = function(j$) {
         'failSpecWithNoExpectations',
         'hideDisabled',
         'stopOnSpecFailure',
-        'stopSpecOnExpectationFailure'
+        'stopSpecOnExpectationFailure',
+        'autoCleanClosures'
       ];
 
       booleanProps.forEach(function(prop) {
@@ -435,10 +445,11 @@ getJasmineRequireObj().Env = function(j$) {
       delete runnableResources[id];
     };
 
-    var beforeAndAfterFns = function(suite) {
+    var beforeAndAfterFns = function(targetSuite) {
       return function() {
         var befores = [],
-          afters = [];
+          afters = [],
+          suite = targetSuite;
 
         while (suite) {
           befores = befores.concat(suite.beforeFns);
@@ -540,10 +551,10 @@ getJasmineRequireObj().Env = function(j$) {
       expectationFactory: expectationFactory,
       asyncExpectationFactory: suiteAsyncExpectationFactory,
       expectationResultFactory: expectationResultFactory,
+      autoCleanClosures: config.autoCleanClosures,
       onLateError: recordLateError
     });
     var deprecator = new j$.Deprecator(topSuite);
-    defaultResourcesForRunnable(topSuite.id);
     currentDeclarationSuite = topSuite;
 
     /**
@@ -662,6 +673,11 @@ getJasmineRequireObj().Env = function(j$) {
      * @return {Promise<undefined>}
      */
     this.execute = function(runnablesToRun, onComplete) {
+      if (this._executedBefore) {
+        topSuite.reset();
+      }
+      this._executedBefore = true;
+      defaultResourcesForRunnable(topSuite.id);
       installGlobalErrors();
 
       if (!runnablesToRun) {
@@ -935,6 +951,7 @@ getJasmineRequireObj().Env = function(j$) {
         asyncExpectationFactory: suiteAsyncExpectationFactory,
         expectationResultFactory: expectationResultFactory,
         throwOnExpectationFailure: config.stopSpecOnExpectationFailure,
+        autoCleanClosures: config.autoCleanClosures,
         onLateError: recordLateError
       });
 
@@ -948,8 +965,8 @@ getJasmineRequireObj().Env = function(j$) {
       if (specDefinitions.length > 0) {
         throw new Error('describe does not expect any arguments');
       }
-      if (currentDeclarationSuite.markedPending) {
-        suite.pend();
+      if (currentDeclarationSuite.markedExcluding) {
+        suite.exclude();
       }
       addSpecsToSuite(suite, specDefinitions);
       if (suite.parentSuite && !suite.children.length) {
@@ -962,7 +979,7 @@ getJasmineRequireObj().Env = function(j$) {
       ensureIsNotNested('xdescribe');
       ensureIsFunction(specDefinitions, 'xdescribe');
       var suite = suiteFactory(description);
-      suite.pend();
+      suite.exclude();
       addSpecsToSuite(suite, specDefinitions);
       return suite.metadata;
     };
@@ -1048,6 +1065,7 @@ getJasmineRequireObj().Env = function(j$) {
           timeout: timeout || 0
         },
         throwOnExpectationFailure: config.stopSpecOnExpectationFailure,
+        autoCleanClosures: config.autoCleanClosures,
         timer: new j$.Timer()
       });
       return spec;
@@ -1083,8 +1101,8 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       var spec = specFactory(description, fn, currentDeclarationSuite, timeout);
-      if (currentDeclarationSuite.markedPending) {
-        spec.pend();
+      if (currentDeclarationSuite.markedExcluding) {
+        spec.exclude();
       }
       currentDeclarationSuite.addChild(spec);
 
@@ -1104,7 +1122,7 @@ getJasmineRequireObj().Env = function(j$) {
         ensureIsFunctionOrAsync(fn, 'xit');
       }
       var spec = this.it_.apply(this, arguments);
-      spec.pend('Temporarily disabled with xit');
+      spec.exclude('Temporarily disabled with xit');
       return spec.metadata;
     };
 

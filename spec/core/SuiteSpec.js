@@ -149,6 +149,88 @@ describe('Suite', function() {
     });
   });
 
+  describe('attr.autoCleanClosures', function() {
+    function arrangeSuite(attrs) {
+      var suite = new jasmineUnderTest.Suite(attrs);
+      suite.beforeAll(function() {});
+      suite.beforeEach(function() {});
+      suite.afterEach(function() {});
+      suite.afterAll(function() {});
+      return suite;
+    }
+
+    it('should clean closures when "attr.autoCleanClosures" is missing', function() {
+      var suite = arrangeSuite({});
+      suite.cleanupBeforeAfter();
+      expect(suite.beforeAllFns[0].fn).toBe(null);
+      expect(suite.beforeFns[0].fn).toBe(null);
+      expect(suite.afterFns[0].fn).toBe(null);
+      expect(suite.afterAllFns[0].fn).toBe(null);
+    });
+
+    it('should clean closures when "attr.autoCleanClosures" is true', function() {
+      var suite = arrangeSuite({ autoCleanClosures: true });
+      suite.cleanupBeforeAfter();
+      expect(suite.beforeAllFns[0].fn).toBe(null);
+      expect(suite.beforeFns[0].fn).toBe(null);
+      expect(suite.afterFns[0].fn).toBe(null);
+      expect(suite.afterAllFns[0].fn).toBe(null);
+    });
+
+    it('should NOT clean closures when "attr.autoCleanClosures" is false', function() {
+      var suite = arrangeSuite({ autoCleanClosures: false });
+      suite.cleanupBeforeAfter();
+      expect(suite.beforeAllFns[0].fn).not.toBe(null);
+      expect(suite.beforeFns[0].fn).not.toBe(null);
+      expect(suite.afterFns[0].fn).not.toBe(null);
+      expect(suite.afterAllFns[0].fn).not.toBe(null);
+    });
+  });
+
+  describe('#reset', function() {
+    it('should reset the "pending" status', function() {
+      var suite = new jasmineUnderTest.Suite({});
+      suite.pend();
+      suite.reset();
+      expect(suite.getResult().status).toBe('passed');
+    });
+
+    it('should not reset the "pending" status when the suite was excluded', function() {
+      var suite = new jasmineUnderTest.Suite({});
+      suite.exclude();
+      suite.reset();
+      expect(suite.getResult().status).toBe('pending');
+    });
+
+    it('should also reset the children', function() {
+      var suite = new jasmineUnderTest.Suite({});
+      var child1 = jasmine.createSpyObj(['reset']);
+      var child2 = jasmine.createSpyObj(['reset']);
+      suite.addChild(child1);
+      suite.addChild(child2);
+
+      suite.reset();
+
+      expect(child1.reset).toHaveBeenCalled();
+      expect(child2.reset).toHaveBeenCalled();
+    });
+
+    it('should reset the failedExpectations', function() {
+      var suite = new jasmineUnderTest.Suite({
+        expectationResultFactory: function(error) {
+          return error;
+        }
+      });
+      suite.onException(new Error());
+
+      suite.reset();
+
+      var result = suite.getResult();
+      expect(result.status).toBe('passed');
+      expect(result.failedExpectations).toHaveSize(0);
+    });
+  });
+
   describe('#onMultipleDone', function() {
     it('reports a special error when it is the top suite', function() {
       const onLateError = jasmine.createSpy('onLateError');

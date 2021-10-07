@@ -306,13 +306,13 @@ describe('Env', function() {
   describe('#xit', function() {
     behavesLikeIt('xit');
 
-    it('calls spec.pend with "Temporarily disabled with xit"', function() {
-      var pendSpy = jasmine.createSpy();
+    it('calls spec.exclude with "Temporarily disabled with xit"', function() {
+      var excludeSpy = jasmine.createSpy();
       spyOn(env, 'it_').and.returnValue({
-        pend: pendSpy
+        exclude: excludeSpy
       });
       env.xit('foo', function() {});
-      expect(pendSpy).toHaveBeenCalledWith('Temporarily disabled with xit');
+      expect(excludeSpy).toHaveBeenCalledWith('Temporarily disabled with xit');
     });
 
     it('throws an error when it receives a non-fn argument', function() {
@@ -555,6 +555,24 @@ describe('Env', function() {
   describe('#execute', function() {
     it('returns a promise', function() {
       expect(env.execute()).toBeInstanceOf(Promise);
+    });
+
+    it('should reset the topSuite when run twice', function() {
+      spyOn(jasmineUnderTest.Suite.prototype, 'reset');
+      return env
+        .execute() // 1
+        .then(function() {
+          return env.execute(); // 2
+        })
+        .then(function() {
+          var id;
+          expect(
+            jasmineUnderTest.Suite.prototype.reset
+          ).toHaveBeenCalledOnceWith();
+          id = jasmineUnderTest.Suite.prototype.reset.calls.thisFor(0).id;
+          expect(id).toBeTruthy();
+          expect(id).toEqual(env.topSuite().id);
+        });
     });
   });
 });
