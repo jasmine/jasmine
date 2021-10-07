@@ -832,14 +832,20 @@ describe('Env', function() {
 
     it('should reset the topSuite when run twice', function() {
       jasmine.getEnv().requirePromises();
-      spyOn(env.topSuite(), 'reset');
+      spyOn(jasmineUnderTest.Suite.prototype, 'reset');
       return env
         .execute() // 1
         .then(function() {
           return env.execute(); // 2
         })
         .then(function() {
-          expect(env.topSuite().reset).toHaveBeenCalledOnceWith();
+          var id;
+          expect(
+            jasmineUnderTest.Suite.prototype.reset
+          ).toHaveBeenCalledOnceWith();
+          id = jasmineUnderTest.Suite.prototype.reset.calls.thisFor(0).id;
+          expect(id).toBeTruthy();
+          expect(id).toEqual(env.topSuite().id);
         });
     });
   });
