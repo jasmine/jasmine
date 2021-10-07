@@ -1032,7 +1032,7 @@ describe('spec running', function() {
       env.configure({ autoCleanClosures: false, random: false });
     });
 
-    it('should be able to run multiple times', function() {
+    it('should be able to run multiple times', function(done) {
       var actions = [];
 
       env.describe('Suite', function() {
@@ -1046,15 +1046,16 @@ describe('spec running', function() {
         });
       });
 
-      return env.execute().then(function() {
+      env.execute(null, function() {
         expect(actions).toEqual(['spec1', 'spec2']);
-        return env.execute().then(function() {
+        env.execute(null, function() {
           expect(actions).toEqual(['spec1', 'spec2', 'spec1', 'spec2']);
+          done();
         });
       });
     });
 
-    it('should reset results between runs', function() {
+    it('should reset results between runs', function(done) {
       var specResults = {};
       var suiteResults = {};
       var firstExecution = true;
@@ -1093,7 +1094,7 @@ describe('spec running', function() {
           });
         });
         env.describe('suite3', function() {
-          beforeEach(function() {
+          env.beforeEach(function() {
             throw new Error('suite 3 fails');
           });
           env.it('spec5', function() {});
@@ -1107,12 +1108,13 @@ describe('spec running', function() {
         });
       });
 
-      return env.execute().then(function() {
+      env.execute(null, function() {
         expect(specResults).toEqual({
           spec1: 'failed',
           spec2: 'pending',
           spec3: 'pending',
           spec4: 'failed',
+          spec5: 'failed',
           spec6: 'pending',
           spec7: 'pending'
         });
@@ -1120,16 +1122,17 @@ describe('spec running', function() {
           suite0: 'passed',
           suite1: 'passed',
           suite2: 'passed',
-          suite3: 'failed',
+          suite3: 'passed',
           suite4: 'pending',
           suite5: 'passed'
         });
-        return env.execute().then(function() {
+        env.execute(null, function() {
           expect(specResults).toEqual({
             spec1: 'passed',
             spec2: 'passed',
             spec3: 'pending',
             spec4: 'passed',
+            spec5: 'failed',
             spec6: 'pending',
             spec7: 'pending'
           });
@@ -1141,11 +1144,12 @@ describe('spec running', function() {
             suite4: 'pending',
             suite5: 'passed'
           });
+          done();
         });
       });
     });
 
-    it('should execute before and after hooks per run', function() {
+    it('should execute before and after hooks per run', function(done) {
       var timeline = [];
       var timelineFn = function(hookName) {
         return function() {
@@ -1171,16 +1175,17 @@ describe('spec running', function() {
         env.it('spec1', timelineFn('spec1'));
         env.it('spec2', timelineFn('spec2'));
       });
-      return env.execute().then(function() {
+      env.execute(null, function() {
         expect(timeline).toEqual(expectedTimeLine);
         timeline = [];
-        return env.execute().then(function() {
+        env.execute(null, function() {
           expect(timeline).toEqual(expectedTimeLine);
+          done();
         });
       });
     });
 
-    it('should be able to filter out different tests in subsequent runs', function() {
+    it('should be able to filter out different tests in subsequent runs', function(done) {
       var specResults = {};
       var focussedSpec = 'spec1';
 
@@ -1202,33 +1207,30 @@ describe('spec running', function() {
         env.it('spec3', function() {});
       });
 
-      return env
-        .execute()
-        .then(function() {
-          expect(specResults).toEqual({
-            spec1: 'passed',
-            spec2: 'excluded',
-            spec3: 'excluded'
-          });
-          focussedSpec = 'spec2';
-          return env.execute();
-        })
-        .then(function() {
+      env.execute(null, function() {
+        expect(specResults).toEqual({
+          spec1: 'passed',
+          spec2: 'excluded',
+          spec3: 'excluded'
+        });
+        focussedSpec = 'spec2';
+        env.execute(null, function() {
           expect(specResults).toEqual({
             spec1: 'excluded',
             spec2: 'passed',
             spec3: 'excluded'
           });
           focussedSpec = 'spec3';
-          return env.execute();
-        })
-        .then(function() {
-          expect(specResults).toEqual({
-            spec1: 'excluded',
-            spec2: 'excluded',
-            spec3: 'passed'
+          env.execute(null, function() {
+            expect(specResults).toEqual({
+              spec1: 'excluded',
+              spec2: 'excluded',
+              spec3: 'passed'
+            });
+            done();
           });
         });
+      });
     });
   });
 });
