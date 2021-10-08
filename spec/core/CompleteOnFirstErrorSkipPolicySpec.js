@@ -95,6 +95,23 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
         policy.fnErrored(0);
         expect(policy.skipTo(0)).toEqual(1);
       });
+
+      it('does not skip afterAll fns, even if before the first cleanup fn index', function() {
+        const fns = [
+          { fn: () => {} },
+          {
+            fn: () => {},
+            type: 'afterAll'
+          }
+        ];
+        const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
+          fns,
+          2
+        );
+
+        policy.fnErrored(0);
+        expect(policy.skipTo(0)).toEqual(1);
+      });
     });
   });
 });

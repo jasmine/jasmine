@@ -1153,6 +1153,41 @@ describe('spec running', function() {
         done();
       });
     });
+
+    it('runs afterAll functions', async function() {
+      const actions = [];
+
+      env.describe('outer suite', function() {
+        env.describe('inner suite', function() {
+          env.it('fails', function() {
+            actions.push('fails');
+            env.expect(1).toBe(2);
+          });
+
+          env.afterAll(function() {
+            actions.push('inner afterAll');
+          });
+        });
+
+        env.afterAll(function() {
+          actions.push('outer afterAll');
+        });
+      });
+
+      env.afterAll(function() {
+        actions.push('top afterAll');
+      });
+
+      env.configure({ stopOnSpecFailure: true });
+      await env.execute();
+
+      expect(actions).toEqual([
+        'fails',
+        'inner afterAll',
+        'outer afterAll',
+        'top afterAll'
+      ]);
+    });
   });
 
   describe('run multiple times', function() {
