@@ -768,7 +768,9 @@ describe('Env', function() {
 
   it("deprecates access to 'this' in describes", function() {
     jasmine.getEnv().requireProxy();
-    var msg = "Access to 'this' in describe functions is deprecated.",
+    var msg =
+        "Access to 'this' in describe functions (and in arrow " +
+        'functions inside describe functions) is deprecated.',
       ran = false;
     spyOn(env, 'deprecated');
 

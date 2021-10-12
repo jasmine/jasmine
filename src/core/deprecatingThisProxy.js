@@ -1,7 +1,9 @@
 /* eslint-disable compat/compat */
 // TODO: Remove this in the next major release.
 getJasmineRequireObj().deprecatingThisProxy = function(j$) {
-  var msg = "Access to 'this' in describe functions is deprecated.";
+  var msg =
+    "Access to 'this' in describe functions (and in arrow functions " +
+    'inside describe functions) is deprecated.';
 
   try {
     new Proxy({}, {});
