@@ -18,26 +18,6 @@ describe('QueueRunner', function() {
     expect(calls).toEqual(['fn1', 'fn2']);
   });
 
-  it('runs cleanup functions after the others', function() {
-    var calls = [],
-      queueableFn1 = { fn: jasmine.createSpy('fn1') },
-      queueableFn2 = { fn: jasmine.createSpy('fn2') },
-      queueRunner = new jasmineUnderTest.QueueRunner({
-        queueableFns: [queueableFn1],
-        cleanupFns: [queueableFn2]
-      });
-    queueableFn1.fn.and.callFake(function() {
-      calls.push('fn1');
-    });
-    queueableFn2.fn.and.callFake(function() {
-      calls.push('fn2');
-    });
-
-    queueRunner.execute();
-
-    expect(calls).toEqual(['fn1', 'fn2']);
-  });
-
   it("calls each function with a consistent 'this'-- an empty object", function() {
     var queueableFn1 = { fn: jasmine.createSpy('fn1') },
       queueableFn2 = { fn: jasmine.createSpy('fn2') },
@@ -653,18 +633,13 @@ describe('QueueRunner', function() {
     it('instantiates the skip policy', function() {
       const SkipPolicy = jasmine.createSpy('SkipPolicy ctor');
       const queueableFns = [{ fn: () => {} }, { fn: () => {} }];
-      const cleanupFns = [{ fn: () => {} }];
 
       new jasmineUnderTest.QueueRunner({
         queueableFns,
-        cleanupFns,
         SkipPolicy
       });
 
-      expect(SkipPolicy).toHaveBeenCalledWith(
-        [...queueableFns, ...cleanupFns],
-        2
-      );
+      expect(SkipPolicy).toHaveBeenCalledWith(queueableFns);
     });
 
     it('uses the skip policy to determine which fn to run next', function() {
@@ -723,11 +698,13 @@ describe('QueueRunner', function() {
           }
         },
         nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
-        cleanupFn = { fn: jasmine.createSpy('cleanup') },
+        cleanupFn = {
+          fn: jasmine.createSpy('cleanup'),
+          type: 'specCleanup'
+        },
         onComplete = jasmine.createSpy('onComplete'),
         queueRunner = new jasmineUnderTest.QueueRunner({
-          queueableFns: [queueableFn, nextQueueableFn],
-          cleanupFns: [cleanupFn],
+          queueableFns: [queueableFn, nextQueueableFn, cleanupFn],
           onComplete: onComplete,
           SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy
         });
@@ -745,12 +722,15 @@ describe('QueueRunner', function() {
         cleanupFn1 = {
           fn: function() {
             throw new Error('error');
-          }
+          },
+          type: 'afterEach'
         },
-        cleanupFn2 = { fn: jasmine.createSpy('cleanupFn2') },
+        cleanupFn2 = {
+          fn: jasmine.createSpy('cleanupFn2'),
+          type: 'afterEach'
+        },
         queueRunner = new jasmineUnderTest.QueueRunner({
-          queueableFns: [queueableFn],
-          cleanupFns: [cleanupFn1, cleanupFn2],
+          queueableFns: [queueableFn, cleanupFn1, cleanupFn2],
           SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy
         });
 
@@ -775,7 +755,7 @@ describe('QueueRunner', function() {
             }
           },
           nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
-          cleanupFn = { fn: jasmine.createSpy('cleanup') },
+          cleanupFn = { fn: jasmine.createSpy('cleanup'), type: 'specCleanup' },
           queueRunner = new jasmineUnderTest.QueueRunner({
             globalErrors: {
               pushListener: function(f) {
@@ -785,8 +765,7 @@ describe('QueueRunner', function() {
                 errorListeners.pop();
               }
             },
-            queueableFns: [queueableFn, nextQueueableFn],
-            cleanupFns: [cleanupFn],
+            queueableFns: [queueableFn, nextQueueableFn, cleanupFn],
             SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy
           }),
           queueableFnDone;
@@ -806,10 +785,9 @@ describe('QueueRunner', function() {
             }
           },
           nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
-          cleanupFn = { fn: jasmine.createSpy('cleanup') },
+          cleanupFn = { fn: jasmine.createSpy('cleanup'), type: 'specCleanup' },
           queueRunner = new jasmineUnderTest.QueueRunner({
-            queueableFns: [queueableFn, nextQueueableFn],
-            cleanupFns: [cleanupFn],
+            queueableFns: [queueableFn, nextQueueableFn, cleanupFn],
             SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy
           });
 
@@ -826,10 +804,12 @@ describe('QueueRunner', function() {
             }
           },
           nextQueueableFn = { fn: jasmine.createSpy('nextFunction') },
-          cleanupFn = { fn: jasmine.createSpy('cleanup') },
+          cleanupFn = {
+            fn: jasmine.createSpy('cleanup'),
+            type: 'specCleanup'
+          },
           queueRunner = new jasmineUnderTest.QueueRunner({
-            queueableFns: [queueableFn, nextQueueableFn],
-            cleanupFns: [cleanupFn],
+            queueableFns: [queueableFn, nextQueueableFn, cleanupFn],
             SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy
           });
 

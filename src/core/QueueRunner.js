@@ -35,9 +35,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
   function QueueRunner(attrs) {
     this.id_ = nextid++;
-    var queueableFns = attrs.queueableFns || [];
-    this.queueableFns = queueableFns.concat(attrs.cleanupFns || []);
-    this.firstCleanupIx = queueableFns.length;
+    this.queueableFns = attrs.queueableFns || [];
     this.onComplete = attrs.onComplete || emptyFn;
     this.clearStack =
       attrs.clearStack ||
@@ -58,7 +56,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     };
 
     const SkipPolicy = attrs.SkipPolicy || j$.NeverSkipPolicy;
-    this.skipPolicy_ = new SkipPolicy(this.queueableFns, this.firstCleanupIx);
+    this.skipPolicy_ = new SkipPolicy(this.queueableFns);
     this.errored_ = false;
 
     if (typeof this.onComplete !== 'function') {

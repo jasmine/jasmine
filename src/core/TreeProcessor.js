@@ -253,16 +253,7 @@ getJasmineRequireObj().TreeProcessor = function() {
         return result;
       }
 
-      return node.beforeAllFns
-        .map(function(fn) {
-          return { type: 'beforeAll', ...fn };
-        })
-        .concat(result)
-        .concat(
-          node.afterAllFns.map(function(fn) {
-            return { type: 'afterAll', ...fn };
-          })
-        );
+      return node.beforeAllFns.concat(result).concat(node.afterAllFns);
     }
   }
 

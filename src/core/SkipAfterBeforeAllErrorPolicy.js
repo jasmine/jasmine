@@ -1,5 +1,5 @@
 getJasmineRequireObj().SkipAfterBeforeAllErrorPolicy = function(j$) {
-  function SkipAfterBeforeAllErrorPolicy(queueableFns, firstCleanupIx) {
+  function SkipAfterBeforeAllErrorPolicy(queueableFns) {
     this.queueableFns_ = queueableFns;
     this.skipping_ = false;
   }

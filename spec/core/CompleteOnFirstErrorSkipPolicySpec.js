@@ -13,16 +13,28 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
     describe('After something has errored', function() {
       it('skips non cleanup fns', function() {
         const fns = arrayOfArbitraryFns(4);
-        const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
-          fns,
-          2
-        );
+        fns[2].type = arbitraryCleanupType();
+        fns[3].type = arbitraryCleanupType();
+        const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(fns);
 
         policy.fnErrored(0);
         expect(policy.skipTo(0)).toEqual(2);
         expect(policy.skipTo(2)).toEqual(3);
         expect(policy.skipTo(3)).toEqual(4);
       });
+
+      for (const type of ['afterEach', 'specCleanup', 'afterAll']) {
+        it(`does not skip ${type} fns`, function() {
+          const fns = arrayOfArbitraryFns(2);
+          fns[1].type = type;
+          const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
+            fns
+          );
+
+          policy.fnErrored(0);
+          expect(policy.skipTo(0)).toEqual(1);
+        });
+      }
 
       describe('When the error was in a beforeEach fn', function() {
         it('runs cleanup fns defined by the current and containing suites', function() {
@@ -37,16 +49,17 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
             },
             {
               fn: () => {},
-              suite: suite
+              suite: suite,
+              type: arbitraryCleanupType()
             },
             {
               fn: () => {},
-              suite: parentSuite
+              suite: parentSuite,
+              type: arbitraryCleanupType()
             }
           ];
           const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
-            fns,
-            2
+            fns
           );
 
           policy.fnErrored(0);
@@ -68,16 +81,17 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
             },
             {
               fn: () => {},
-              suite: suite
+              suite: suite,
+              type: arbitraryCleanupType()
             },
             {
               fn: () => {},
-              suite: parentSuite
+              suite: parentSuite,
+              type: arbitraryCleanupType()
             }
           ];
           const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
-            fns,
-            2
+            fns
           );
 
           policy.fnErrored(0);
@@ -86,42 +100,32 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
       });
 
       it('does not skip cleanup fns that have no suite, such as the spec complete fn', function() {
-        const fns = [{ fn: () => {} }, { fn: () => {} }];
-        const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
-          fns,
-          1
-        );
-
-        policy.fnErrored(0);
-        expect(policy.skipTo(0)).toEqual(1);
-      });
-
-      it('does not skip afterAll fns, even if before the first cleanup fn index', function() {
         const fns = [
           { fn: () => {} },
           {
             fn: () => {},
-            type: 'afterAll'
+            type: arbitraryCleanupType()
           }
         ];
-        const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
-          fns,
-          2
-        );
+        const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(fns);
 
         policy.fnErrored(0);
         expect(policy.skipTo(0)).toEqual(1);
       });
     });
   });
-});
 
-function arrayOfArbitraryFns(n) {
-  const result = [];
+  function arrayOfArbitraryFns(n) {
+    const result = [];
 
-  for (let i = 0; i < n; i++) {
-    result.push({ fn: () => {} });
+    for (let i = 0; i < n; i++) {
+      result.push({ fn: () => {} });
+    }
+
+    return result;
   }
 
-  return result;
-}
+  function arbitraryCleanupType() {
+    return 'specCleanup';
+  }
+});

@@ -137,16 +137,15 @@ getJasmineRequireObj().Spec = function(j$) {
         }
 
         self.resultCallback(self.result, done);
-      }
+      },
+      type: 'specCleanup'
     };
 
     var fns = this.beforeAndAfterFns();
-    var regularFns = fns.befores.concat(this.queueableFn);
 
     var runnerConfig = {
       isLeaf: true,
-      queueableFns: regularFns,
-      cleanupFns: fns.afters,
+      queueableFns: [...fns.befores, this.queueableFn, ...fns.afters],
       onException: function() {
         self.onException.apply(self, arguments);
       },
@@ -176,11 +175,10 @@ getJasmineRequireObj().Spec = function(j$) {
 
     if (this.markedPending || excluded === true) {
       runnerConfig.queueableFns = [];
-      runnerConfig.cleanupFns = [];
     }
 
     runnerConfig.queueableFns.unshift(onStart);
-    runnerConfig.cleanupFns.push(complete);
+    runnerConfig.queueableFns.push(complete);
 
     this.queueRunnerFactory(runnerConfig);
   };

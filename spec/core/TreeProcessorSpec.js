@@ -505,27 +505,28 @@ describe('TreeProcessor', function() {
 
     expect(queueableFns).toEqual([
       { fn: jasmine.any(Function) },
-      { type: 'beforeAll', fn: 'beforeAll1', timeout: 1 },
-      { type: 'beforeAll', fn: 'beforeAll2', timeout: 2 },
+      { fn: 'beforeAll1', timeout: 1 },
+      { fn: 'beforeAll2', timeout: 2 },
       { fn: jasmine.any(Function) }
     ]);
   });
 
   it('runs afterAlls for a node with children', function() {
     var leaf = new Leaf(),
-      node = new Node({
-        children: [leaf],
-        afterAllFns: [{ fn: 'afterAll1' }, { fn: 'afterAll2' }]
-      }),
-      root = new Node({ children: [node] }),
-      queueRunner = jasmine.createSpy('queueRunner'),
-      processor = new jasmineUnderTest.TreeProcessor({
+      afterAllFns = [{ fn: 'afterAll1' }, { fn: 'afterAll2' }];
+    (node = new Node({
+      children: [leaf],
+      afterAllFns
+    })),
+      (root = new Node({ children: [node] })),
+      (queueRunner = jasmine.createSpy('queueRunner')),
+      (processor = new jasmineUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [node.id],
         queueRunnerFactory: queueRunner
-      }),
-      treeComplete = jasmine.createSpy('treeComplete'),
-      nodeDone = jasmine.createSpy('nodeDone');
+      })),
+      (treeComplete = jasmine.createSpy('treeComplete')),
+      (nodeDone = jasmine.createSpy('nodeDone'));
 
     processor.execute(treeComplete);
     var queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
@@ -536,8 +537,8 @@ describe('TreeProcessor', function() {
     expect(queueableFns).toEqual([
       { fn: jasmine.any(Function) },
       { fn: jasmine.any(Function) },
-      { type: 'afterAll', fn: 'afterAll1' },
-      { type: 'afterAll', fn: 'afterAll2' }
+      afterAllFns[0],
+      afterAllFns[1]
     ]);
   });
 

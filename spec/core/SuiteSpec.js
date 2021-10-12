@@ -43,7 +43,7 @@ describe('Suite', function() {
     expect(suite.getFullName()).toEqual('I am a parent suite I am a suite');
   });
 
-  it('adds before functions in order of needed execution', function() {
+  it('adds beforeEach functions in order of needed execution', function() {
     var suite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a suite'
@@ -60,7 +60,24 @@ describe('Suite', function() {
     ]);
   });
 
-  it('adds after functions in order of needed execution', function() {
+  it('adds beforeAll functions in order of needed execution', function() {
+    var suite = new jasmineUnderTest.Suite({
+        env: env,
+        description: 'I am a suite'
+      }),
+      outerBefore = { fn: 'outerBeforeAll' },
+      innerBefore = { fn: 'insideBeforeAll' };
+
+    suite.beforeAll(outerBefore);
+    suite.beforeAll(innerBefore);
+
+    expect(suite.beforeAllFns).toEqual([
+      { fn: outerBefore.fn, type: 'beforeAll' },
+      { fn: innerBefore.fn, type: 'beforeAll' }
+    ]);
+  });
+
+  it('adds afterEach functions in order of needed execution', function() {
     var suite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a suite'
@@ -72,8 +89,25 @@ describe('Suite', function() {
     suite.afterEach(innerAfter);
 
     expect(suite.afterFns).toEqual([
-      { fn: innerAfter.fn, suite },
-      { fn: outerAfter.fn, suite }
+      { fn: innerAfter.fn, suite, type: 'afterEach' },
+      { fn: outerAfter.fn, suite, type: 'afterEach' }
+    ]);
+  });
+
+  it('adds afterAll functions in order of needed execution', function() {
+    const suite = new jasmineUnderTest.Suite({
+        env: env,
+        description: 'I am a suite'
+      }),
+      outerAfter = { fn: 'outerAfterAll' },
+      innerAfter = { fn: 'insideAfterAl' };
+
+    suite.afterAll(outerAfter);
+    suite.afterAll(innerAfter);
+
+    expect(suite.afterAllFns).toEqual([
+      { fn: innerAfter.fn, type: 'afterAll' },
+      { fn: outerAfter.fn, type: 'afterAll' }
     ]);
   });
 

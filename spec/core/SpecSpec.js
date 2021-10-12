@@ -116,9 +116,13 @@ describe('Spec', function() {
     expect(options.queueableFns).toEqual([
       { fn: jasmine.any(Function) },
       before,
-      queueableFn
+      queueableFn,
+      after,
+      {
+        fn: jasmine.any(Function),
+        type: 'specCleanup'
+      }
     ]);
-    expect(options.cleanupFns).toEqual([after, { fn: jasmine.any(Function) }]);
   });
 
   it("tells the queue runner that it's a leaf node", function() {
@@ -171,8 +175,13 @@ describe('Spec', function() {
     expect(fakeQueueRunner).toHaveBeenCalledWith(
       jasmine.objectContaining({
         onComplete: jasmine.any(Function),
-        queueableFns: [{ fn: jasmine.any(Function) }],
-        cleanupFns: [{ fn: jasmine.any(Function) }]
+        queueableFns: [
+          { fn: jasmine.any(Function) },
+          {
+            fn: jasmine.any(Function),
+            type: 'specCleanup'
+          }
+        ]
       })
     );
     expect(specBody).not.toHaveBeenCalled();
@@ -180,7 +189,7 @@ describe('Spec', function() {
     var args = fakeQueueRunner.calls.mostRecent().args[0];
     args.queueableFns[0].fn();
     expect(startCallback).toHaveBeenCalled();
-    args.cleanupFns[0].fn();
+    args.queueableFns[args.queueableFns.length - 1].fn();
     expect(resultCallback).toHaveBeenCalled();
 
     expect(spec.result.status).toBe('excluded');
@@ -212,7 +221,7 @@ describe('Spec', function() {
     var args = fakeQueueRunner.calls.mostRecent().args[0];
     args.queueableFns[0].fn();
     expect(startCallback).toHaveBeenCalled();
-    args.cleanupFns[0].fn('things');
+    args.queueableFns[1].fn('things');
     expect(resultCallback).toHaveBeenCalledWith(
       {
         id: spec.id,
@@ -284,9 +293,6 @@ describe('Spec', function() {
           config.queueableFns.forEach(function(qf) {
             qf.fn();
           });
-          config.cleanupFns.forEach(function(qf) {
-            qf.fn();
-          });
           config.onComplete();
         },
         timer: timer
@@ -354,7 +360,9 @@ describe('Spec', function() {
 
     spec.execute();
 
-    fakeQueueRunner.calls.mostRecent().args[0].cleanupFns[0].fn();
+    const fns = fakeQueueRunner.calls.mostRecent().args[0].queueableFns;
+    fns[fns.length - 1].fn();
+
     expect(resultCallback.calls.first().args[0].passedExpectations).toEqual([
       'expectation1'
     ]);
@@ -383,7 +391,8 @@ describe('Spec', function() {
 
     spec.execute();
 
-    fakeQueueRunner.calls.mostRecent().args[0].cleanupFns[0].fn();
+    const fns = fakeQueueRunner.calls.mostRecent().args[0].queueableFns;
+    fns[fns.length - 1].fn();
     expect(resultCallback.calls.first().args[0].passedExpectations).toEqual([
       'passed'
     ]);
@@ -482,7 +491,7 @@ describe('Spec', function() {
     spec.execute();
 
     var args = fakeQueueRunner.calls.mostRecent().args[0];
-    args.cleanupFns[0].fn();
+    args.queueableFns[args.queueableFns.length - 1].fn();
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual([
       {
         error: 'foo',
@@ -510,7 +519,7 @@ describe('Spec', function() {
     spec.execute();
 
     var args = fakeQueueRunner.calls.mostRecent().args[0];
-    args.cleanupFns[0].fn();
+    args.queueableFns[args.queueableFns.length - 1].fn();
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual([]);
   });
 
@@ -575,9 +584,9 @@ describe('Spec', function() {
             resultCallback: resultCallback,
             queueRunnerFactory: function(config) {
               spec.trace('msg');
-              config.cleanupFns.forEach(function(fn) {
+              for (const fn of config.queueableFns) {
                 fn.fn();
-              });
+              }
               config.onComplete(false);
             }
           });
@@ -598,9 +607,9 @@ describe('Spec', function() {
             resultCallback: resultCallback,
             queueRunnerFactory: function(config) {
               spec.trace('msg');
-              config.cleanupFns.forEach(function(fn) {
+              for (const fn of config.queueableFns) {
                 fn.fn();
-              });
+              }
               config.onComplete(false);
             }
           });
@@ -623,9 +632,9 @@ describe('Spec', function() {
             queueRunnerFactory: function(config) {
               spec.trace('msg');
               spec.onException(new Error('nope'));
-              config.cleanupFns.forEach(function(fn) {
+              for (const fn of config.queueableFns) {
                 fn.fn();
-              });
+              }
               config.onComplete(true);
             },
             timer: timer

@@ -1,7 +1,6 @@
 getJasmineRequireObj().CompleteOnFirstErrorSkipPolicy = function(j$) {
-  function CompleteOnFirstErrorSkipPolicy(queueableFns, firstCleanupIx) {
+  function CompleteOnFirstErrorSkipPolicy(queueableFns) {
     this.queueableFns_ = queueableFns;
-    this.firstCleanupIx_ = firstCleanupIx;
     this.erroredFnIx_ = null;
   }
 
@@ -23,16 +22,15 @@ getJasmineRequireObj().CompleteOnFirstErrorSkipPolicy = function(j$) {
       return false;
     }
 
-    // firstCleanupIx_ isn't correct for suites with afterAll functions.
-    // Rely on the type for those.
-    if (this.queueableFns_[fnIx].type === 'afterAll') {
-      return false;
-    }
-
-    const candidateSuite = this.queueableFns_[fnIx].suite;
+    const fn = this.queueableFns_[fnIx];
+    const candidateSuite = fn.suite;
     const errorSuite = this.queueableFns_[this.erroredFnIx_].suite;
+    const wasCleanupFn =
+      fn.type === 'afterEach' ||
+      fn.type === 'afterAll' ||
+      fn.type === 'specCleanup';
     return (
-      fnIx < this.firstCleanupIx_ ||
+      !wasCleanupFn ||
       (candidateSuite && isDescendent(candidateSuite, errorSuite))
     );
   };

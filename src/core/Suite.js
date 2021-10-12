@@ -103,15 +103,15 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.beforeAll = function(fn) {
-    this.beforeAllFns.push(fn);
+    this.beforeAllFns.push({ ...fn, type: 'beforeAll' });
   };
 
   Suite.prototype.afterEach = function(fn) {
-    this.afterFns.unshift({ ...fn, suite: this });
+    this.afterFns.unshift({ ...fn, suite: this, type: 'afterEach' });
   };
 
   Suite.prototype.afterAll = function(fn) {
-    this.afterAllFns.unshift(fn);
+    this.afterAllFns.unshift({ ...fn, type: 'afterAll' });
   };
 
   Suite.prototype.startTimer = function() {
