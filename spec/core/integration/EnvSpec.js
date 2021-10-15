@@ -3029,7 +3029,9 @@ describe('Env integration', function() {
           message:
             'Spec "a suite does not wait" ran a "toBeResolved" expectation ' +
             'after it finished.\n' +
-            'Did you forget to return or await the result of expectAsync?',
+            '1. Did you forget to return or await the result of expectAsync?\n' +
+            '2. Was done() invoked before an async operation completed?\n' +
+            '3. Did an expectation follow a call to done()?',
           matcherName: 'toBeResolved'
         }),
         jasmine.objectContaining({
@@ -3040,7 +3042,9 @@ describe('Env integration', function() {
             'after it finished.\n' +
             "Message: \"Expected a promise to be resolved to 'something else' " +
             'but it was resolved to undefined."\n' +
-            'Did you forget to return or await the result of expectAsync?',
+            '1. Did you forget to return or await the result of expectAsync?\n' +
+            '2. Was done() invoked before an async operation completed?\n' +
+            '3. Did an expectation follow a call to done()?',
           matcherName: 'toBeResolvedTo'
         })
       ]);
@@ -3090,7 +3094,9 @@ describe('Env integration', function() {
           message:
             'Suite "a suite" ran a "toBeResolved" expectation ' +
             'after it finished.\n' +
-            'Did you forget to return or await the result of expectAsync?',
+            '1. Did you forget to return or await the result of expectAsync?\n' +
+            '2. Was done() invoked before an async operation completed?\n' +
+            '3. Did an expectation follow a call to done()?',
           matcherName: 'toBeResolved'
         })
       ]);
