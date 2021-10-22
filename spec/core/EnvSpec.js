@@ -274,6 +274,18 @@ describe('Env', function() {
       expect(excludeSpy).toHaveBeenCalledWith('Temporarily disabled with xit');
     });
 
+    it('calls spec.pend with "Temporarily disabled with xit"', function() {
+      var pendSpy = jasmine.createSpy();
+      var realExclude = jasmineUnderTest.Spec.prototype.exclude;
+
+      spyOn(env, 'it').and.returnValue({
+        exclude: realExclude,
+        pend: pendSpy
+      });
+      env.xit('foo', function() {});
+      expect(pendSpy).toHaveBeenCalledWith('Temporarily disabled with xit');
+    });
+
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.xit('undefined arg', null);
