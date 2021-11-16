@@ -327,12 +327,18 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     var makeMatchersUtil = function() {
-      var customEqualityTesters =
-        runnableResources[currentRunnable().id].customEqualityTesters;
-      return new j$.MatchersUtil({
-        customTesters: customEqualityTesters,
-        pp: makePrettyPrinter()
-      });
+      const cr = currentRunnable();
+
+      if (cr) {
+        const customEqualityTesters =
+          runnableResources[cr.id].customEqualityTesters;
+        return new j$.MatchersUtil({
+          customTesters: customEqualityTesters,
+          pp: makePrettyPrinter()
+        });
+      } else {
+        return new j$.MatchersUtil({ pp: j$.basicPrettyPrinter_ });
+      }
     };
 
     var expectationFactory = function(actual, spec) {
@@ -863,7 +869,8 @@ getJasmineRequireObj().Env = function(j$) {
         }
 
         return undefined;
-      }
+      },
+      makeMatchersUtil
     );
 
     var spyRegistry = new j$.SpyRegistry({

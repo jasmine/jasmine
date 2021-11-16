@@ -3413,4 +3413,56 @@ describe('Env integration', function() {
       done();
     });
   });
+
+  it('uses custom equality testers in Spy#withArgs', async function() {
+    env.it('a spec', function() {
+      const createSpySpy = env.createSpy('via createSpy');
+      const spiedOn = { foo: function() {} };
+      env.spyOn(spiedOn, 'foo');
+      const spyObj = env.createSpyObj('spyObj', ['foo']);
+      const spiedOnAllFuncs = { foo: function() {} };
+      env.spyOnAllFunctions(spiedOnAllFuncs);
+
+      for (spy of [
+        createSpySpy,
+        spiedOn.foo,
+        spyObj.foo,
+        spiedOnAllFuncs.foo
+      ]) {
+        spy.and.returnValue('default strategy');
+        spy.withArgs(42).and.returnValue('custom strategy');
+      }
+
+      env.addCustomEqualityTester(function(a, b) {
+        if ((a === 'x' && b === 42) || (a === 42 && b === 'x')) {
+          return true;
+        }
+      });
+
+      env
+        .expect(createSpySpy('x'))
+        .withContext('createSpy')
+        .toEqual('custom strategy');
+      env
+        .expect(spiedOn.foo('x'))
+        .withContext('spyOn')
+        .toEqual('custom strategy');
+      env
+        .expect(spyObj.foo('x'))
+        .withContext('createSpyObj')
+        .toEqual('custom strategy');
+      env
+        .expect(spiedOnAllFuncs.foo('x'))
+        .withContext('spyOnAllFunctions')
+        .toEqual('custom strategy');
+    });
+
+    let failedExpectations;
+    env.addReporter({
+      specDone: r => (failedExpectations = r.failedExpectations)
+    });
+
+    await env.execute();
+    expect(failedExpectations).toEqual([]);
+  });
 });

@@ -231,13 +231,30 @@ describe('Spies', function() {
     expect(spy('baz', 'grault', 'waldo')).toEqual(42);
   });
 
-  it('uses custom equality testers when selecting a strategy', function() {
+  it('uses asymmetric equality testers when selecting a strategy', function() {
     var spy = env.createSpy('foo');
     spy.and.returnValue(42);
     spy.withArgs(jasmineUnderTest.any(String)).and.returnValue(-1);
 
     expect(spy('foo')).toEqual(-1);
     expect(spy({})).toEqual(42);
+  });
+
+  it('uses the provided matchersUtil selecting a strategy', function() {
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
+      customTesters: [
+        function(a, b) {
+          if ((a === 'bar' && b === 'baz') || (a === 'baz' && b === 'bar')) {
+            return true;
+          }
+        }
+      ]
+    });
+    const spy = new jasmineUnderTest.Spy('aSpy', matchersUtil);
+    spy.and.returnValue('default strategy return value');
+    spy.withArgs('bar').and.returnValue('custom strategy return value');
+    expect(spy('foo')).toEqual('default strategy return value');
+    expect(spy('baz')).toEqual('custom strategy return value');
   });
 
   it('can reconfigure an argument-specific strategy', function() {
