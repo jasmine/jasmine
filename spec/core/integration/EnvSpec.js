@@ -2839,7 +2839,7 @@ describe('Env integration', function() {
       expect(result.deprecationWarnings).toEqual([
         jasmine.objectContaining({
           message: topLevelError.message,
-          stack: exceptionFormatter.stack(topLevelError)
+          stack: exceptionFormatter.stack(topLevelError, { omitMessage: true })
         })
       ]);
 
@@ -2849,7 +2849,9 @@ describe('Env integration', function() {
           deprecationWarnings: [
             jasmine.objectContaining({
               message: suiteLevelError.message,
-              stack: exceptionFormatter.stack(suiteLevelError)
+              stack: exceptionFormatter.stack(suiteLevelError, {
+                omitMessage: true
+              })
             })
           ]
         })
@@ -2861,7 +2863,9 @@ describe('Env integration', function() {
           deprecationWarnings: [
             jasmine.objectContaining({
               message: specLevelError.message,
-              stack: exceptionFormatter.stack(specLevelError)
+              stack: exceptionFormatter.stack(specLevelError, {
+                omitMessage: true
+              })
             })
           ]
         })

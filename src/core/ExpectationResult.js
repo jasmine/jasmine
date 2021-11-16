@@ -76,7 +76,9 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
           }
         }
       }
-      return stackFormatter(error);
+      // Omit the message from the stack trace because it will be
+      // included elsewhere.
+      return stackFormatter(error, { omitMessage: true });
     }
   }
 
