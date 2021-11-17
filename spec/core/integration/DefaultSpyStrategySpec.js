@@ -33,6 +33,67 @@ describe('Default Spy Strategy (Integration)', function() {
     expect(result.overallStatus).toEqual('passed');
   });
 
+  it('inherits the default spy strategy set in a parent suite', async function() {
+    env.describe('suite with default strategy', function() {
+      env.beforeAll(function() {
+        env.setDefaultSpyStrategy(function(and) {
+          and.returnValue(42);
+        });
+      });
+
+      env.describe('child suite', function() {
+        env.it('spec in suite', function() {
+          const spy = env.createSpy('something');
+          expect(spy()).toBe(42);
+        });
+      });
+    });
+
+    let overallStatus;
+    env.addReporter({
+      jasmineDone: r => (overallStatus = r.overallStatus)
+    });
+    await env.execute();
+    expect(overallStatus).toEqual('passed');
+  });
+
+  it('restores the previous default strategy when exiting a runnable', async function() {
+    env.describe('outer suite', function() {
+      env.describe('inner suite', function() {
+        env.beforeAll(function() {
+          env.setDefaultSpyStrategy(function(and) {
+            and.returnValue(42);
+          });
+        });
+
+        env.it('spec in suite', function() {
+          env.setDefaultSpyStrategy(function(and) {
+            and.returnValue(17);
+          });
+          const spy = env.createSpy('something');
+          expect(spy()).toBe(17);
+        });
+
+        env.afterAll(function() {
+          const spy = env.createSpy('something');
+          expect(spy()).toBe(42);
+        });
+      });
+
+      env.afterAll(function() {
+        const spy = env.createSpy('something');
+        expect(spy()).toBeUndefined();
+      });
+    });
+
+    let overallStatus;
+    env.addReporter({
+      jasmineDone: r => (overallStatus = r.overallStatus)
+    });
+    await env.execute();
+    expect(overallStatus).toEqual('passed');
+  });
+
   it('uses the default spy strategy defined when the spy is created', async function() {
     env.it('spec', function() {
       const a = env.createSpy('a');
