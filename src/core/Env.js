@@ -441,6 +441,9 @@ getJasmineRequireObj().Env = function(j$) {
         resources.customObjectFormatters = j$.util.clone(
           runnableResources[parentRunnableId].customObjectFormatters
         );
+        resources.customSpyStrategies = j$.util.clone(
+          runnableResources[parentRunnableId].customSpyStrategies
+        );
         resources.defaultStrategyFn =
           runnableResources[parentRunnableId].defaultStrategyFn;
       }

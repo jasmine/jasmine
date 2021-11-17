@@ -16,7 +16,7 @@ describe('Custom Spy Strategies (Integration)', function() {
     var jasmineDone = jasmine.createSpy('jasmineDone');
 
     env.describe('suite defining a custom spy strategy', function() {
-      env.beforeEach(function() {
+      env.beforeAll(function() {
         env.addSpyStrategy('frobnicate', strategy);
       });
 
