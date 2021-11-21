@@ -26,7 +26,10 @@ getJasmineRequireObj().Env = function(j$) {
       new j$.MockDate(global)
     );
 
-    const runnableResources = {};
+    const runnableResources = new j$.RunnableResources(function() {
+      const r = currentRunnable();
+      return r ? r.id : null;
+    });
 
     let topSuite;
     let currentSpec = null;
@@ -36,7 +39,6 @@ getJasmineRequireObj().Env = function(j$) {
     let hasFailures = false;
     let deprecator;
     let reporter;
-    let spyRegistry;
 
     /**
      * This represents the available options to configure Jasmine.
@@ -230,74 +232,27 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.setDefaultSpyStrategy = function(defaultStrategyFn) {
-      if (!currentRunnable()) {
-        throw new Error(
-          'Default spy strategy must be set in a before function or a spec'
-        );
-      }
-      runnableResources[
-        currentRunnable().id
-      ].defaultStrategyFn = defaultStrategyFn;
+      runnableResources.setDefaultSpyStrategy(defaultStrategyFn);
     };
 
     this.addSpyStrategy = function(name, fn) {
-      if (!currentRunnable()) {
-        throw new Error(
-          'Custom spy strategies must be added in a before function or a spec'
-        );
-      }
-      runnableResources[currentRunnable().id].customSpyStrategies[name] = fn;
+      runnableResources.customSpyStrategies()[name] = fn;
     };
 
     this.addCustomEqualityTester = function(tester) {
-      if (!currentRunnable()) {
-        throw new Error(
-          'Custom Equalities must be added in a before function or a spec'
-        );
-      }
-      runnableResources[currentRunnable().id].customEqualityTesters.push(
-        tester
-      );
+      runnableResources.customEqualityTesters().push(tester);
     };
 
     this.addMatchers = function(matchersToAdd) {
-      if (!currentRunnable()) {
-        throw new Error(
-          'Matchers must be added in a before function or a spec'
-        );
-      }
-      const customMatchers =
-        runnableResources[currentRunnable().id].customMatchers;
-
-      for (const matcherName in matchersToAdd) {
-        customMatchers[matcherName] = matchersToAdd[matcherName];
-      }
+      runnableResources.addCustomMatchers(matchersToAdd);
     };
 
     this.addAsyncMatchers = function(matchersToAdd) {
-      if (!currentRunnable()) {
-        throw new Error(
-          'Async Matchers must be added in a before function or a spec'
-        );
-      }
-      const customAsyncMatchers =
-        runnableResources[currentRunnable().id].customAsyncMatchers;
-
-      for (const matcherName in matchersToAdd) {
-        customAsyncMatchers[matcherName] = matchersToAdd[matcherName];
-      }
+      runnableResources.addCustomAsyncMatchers(matchersToAdd);
     };
 
     this.addCustomObjectFormatter = function(formatter) {
-      if (!currentRunnable()) {
-        throw new Error(
-          'Custom object formatters must be added in a before function or a spec'
-        );
-      }
-
-      runnableResources[currentRunnable().id].customObjectFormatters.push(
-        formatter
-      );
+      runnableResources.customObjectFormatters().push(formatter);
     };
 
     j$.Expectation.addCoreMatchers(j$.matchers);
@@ -315,31 +270,10 @@ getJasmineRequireObj().Env = function(j$) {
       return 'suite' + nextSuiteId++;
     }
 
-    function makePrettyPrinter() {
-      const customObjectFormatters =
-        runnableResources[currentRunnable().id].customObjectFormatters;
-      return j$.makePrettyPrinter(customObjectFormatters);
-    }
-
-    function makeMatchersUtil() {
-      const cr = currentRunnable();
-
-      if (cr) {
-        const customEqualityTesters =
-          runnableResources[cr.id].customEqualityTesters;
-        return new j$.MatchersUtil({
-          customTesters: customEqualityTesters,
-          pp: makePrettyPrinter()
-        });
-      } else {
-        return new j$.MatchersUtil({ pp: j$.basicPrettyPrinter_ });
-      }
-    }
-
     const expectationFactory = function(actual, spec) {
       return j$.Expectation.factory({
-        matchersUtil: makeMatchersUtil(),
-        customMatchers: runnableResources[spec.id].customMatchers,
+        matchersUtil: runnableResources.makeMatchersUtil(),
+        customMatchers: runnableResources.customMatchers(),
         actual: actual,
         addExpectationResult: addExpectationResult
       });
@@ -416,8 +350,8 @@ getJasmineRequireObj().Env = function(j$) {
 
     const asyncExpectationFactory = function(actual, spec, runableType) {
       return j$.Expectation.asyncFactory({
-        matchersUtil: makeMatchersUtil(),
-        customAsyncMatchers: runnableResources[spec.id].customAsyncMatchers,
+        matchersUtil: runnableResources.makeMatchersUtil(),
+        customAsyncMatchers: runnableResources.customAsyncMatchers(),
         actual: actual,
         addExpectationResult: addExpectationResult
       });
@@ -436,45 +370,6 @@ getJasmineRequireObj().Env = function(j$) {
     const specAsyncExpectationFactory = function(actual, suite) {
       return asyncExpectationFactory(actual, suite, 'Spec');
     };
-
-    function defaultResourcesForRunnable(id, parentRunnableId) {
-      const resources = {
-        spies: [],
-        customEqualityTesters: [],
-        customMatchers: {},
-        customAsyncMatchers: {},
-        customSpyStrategies: {},
-        defaultStrategyFn: undefined,
-        customObjectFormatters: []
-      };
-
-      if (runnableResources[parentRunnableId]) {
-        resources.customEqualityTesters = j$.util.clone(
-          runnableResources[parentRunnableId].customEqualityTesters
-        );
-        resources.customMatchers = j$.util.clone(
-          runnableResources[parentRunnableId].customMatchers
-        );
-        resources.customAsyncMatchers = j$.util.clone(
-          runnableResources[parentRunnableId].customAsyncMatchers
-        );
-        resources.customObjectFormatters = j$.util.clone(
-          runnableResources[parentRunnableId].customObjectFormatters
-        );
-        resources.customSpyStrategies = j$.util.clone(
-          runnableResources[parentRunnableId].customSpyStrategies
-        );
-        resources.defaultStrategyFn =
-          runnableResources[parentRunnableId].defaultStrategyFn;
-      }
-
-      runnableResources[id] = resources;
-    }
-
-    function clearResourcesForRunnable(id) {
-      spyRegistry.clearSpies();
-      delete runnableResources[id];
-    }
 
     function beforeAndAfterFns(targetSuite) {
       return function() {
@@ -701,7 +596,7 @@ getJasmineRequireObj().Env = function(j$) {
         topSuite.reset();
       }
       this._executedBefore = true;
-      defaultResourcesForRunnable(topSuite.id);
+      runnableResources.initForRunnable(topSuite.id);
       installGlobalErrors();
 
       if (!runnablesToRun) {
@@ -724,7 +619,7 @@ getJasmineRequireObj().Env = function(j$) {
         failSpecWithNoExpectations: config.failSpecWithNoExpectations,
         nodeStart: function(suite, next) {
           currentlyExecutingSuites.push(suite);
-          defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
+          runnableResources.initForRunnable(suite.id, suite.parentSuite.id);
           reporter.suiteStarted(suite.result, next);
           suite.startTimer();
         },
@@ -733,7 +628,7 @@ getJasmineRequireObj().Env = function(j$) {
             throw new Error('Tried to complete the wrong suite');
           }
 
-          clearResourcesForRunnable(suite.id);
+          runnableResources.clearForRunnable(suite.id);
           currentlyExecutingSuites.pop();
 
           if (result.status === 'failed') {
@@ -798,7 +693,7 @@ getJasmineRequireObj().Env = function(j$) {
                   await reportChildrenOfBeforeAllFailure(topSuite);
                 }
 
-                clearResourcesForRunnable(topSuite.id);
+                runnableResources.clearForRunnable(topSuite.id);
                 currentlyExecutingSuites.pop();
                 let overallStatus, incompleteReason;
 
@@ -922,42 +817,6 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.clearReporters();
     };
 
-    const spyFactory = new j$.SpyFactory(
-      function getCustomStrategies() {
-        const runnable = currentRunnable();
-
-        if (runnable) {
-          return runnableResources[runnable.id].customSpyStrategies;
-        }
-
-        return {};
-      },
-      function getDefaultStrategyFn() {
-        const runnable = currentRunnable();
-
-        if (runnable) {
-          return runnableResources[runnable.id].defaultStrategyFn;
-        }
-
-        return undefined;
-      },
-      makeMatchersUtil
-    );
-
-    spyRegistry = new j$.SpyRegistry({
-      currentSpies: function() {
-        if (!currentRunnable()) {
-          throw new Error(
-            'Spies must be created in a before function or a spec'
-          );
-        }
-        return runnableResources[currentRunnable().id].spies;
-      },
-      createSpy: function(name, originalFn) {
-        return self.createSpy(name, originalFn);
-      }
-    });
-
     /**
      * Configures whether Jasmine should allow the same function to be spied on
      * more than once during the execution of a spec. By default, spying on
@@ -968,32 +827,40 @@ getJasmineRequireObj().Env = function(j$) {
      * @param {boolean} allow Whether to allow respying
      */
     this.allowRespy = function(allow) {
-      spyRegistry.allowRespy(allow);
+      runnableResources.spyRegistry.allowRespy(allow);
     };
 
     this.spyOn = function() {
-      return spyRegistry.spyOn.apply(spyRegistry, arguments);
+      return runnableResources.spyRegistry.spyOn.apply(
+        runnableResources.spyRegistry,
+        arguments
+      );
     };
 
     this.spyOnProperty = function() {
-      return spyRegistry.spyOnProperty.apply(spyRegistry, arguments);
+      return runnableResources.spyRegistry.spyOnProperty.apply(
+        runnableResources.spyRegistry,
+        arguments
+      );
     };
 
     this.spyOnAllFunctions = function() {
-      return spyRegistry.spyOnAllFunctions.apply(spyRegistry, arguments);
+      return runnableResources.spyRegistry.spyOnAllFunctions.apply(
+        runnableResources.spyRegistry,
+        arguments
+      );
     };
 
     this.createSpy = function(name, originalFn) {
-      if (arguments.length === 1 && j$.isFunction_(name)) {
-        originalFn = name;
-        name = originalFn.name;
-      }
-
-      return spyFactory.createSpy(name, originalFn);
+      return runnableResources.spyFactory.createSpy(name, originalFn);
     };
 
     this.createSpyObj = function(baseName, methodNames, propertyNames) {
-      return spyFactory.createSpyObj(baseName, methodNames, propertyNames);
+      return runnableResources.spyFactory.createSpyObj(
+        baseName,
+        methodNames,
+        propertyNames
+      );
     };
 
     function ensureIsFunction(fn, caller) {
@@ -1148,7 +1015,7 @@ getJasmineRequireObj().Env = function(j$) {
       return spec;
 
       function specResultCallback(result, next) {
-        clearResourcesForRunnable(spec.id);
+        runnableResources.clearForRunnable(spec.id);
         currentSpec = null;
 
         if (result.status === 'failed') {
@@ -1160,7 +1027,7 @@ getJasmineRequireObj().Env = function(j$) {
 
       function specStarted(spec, next) {
         currentSpec = spec;
-        defaultResourcesForRunnable(spec.id, suite.id);
+        runnableResources.initForRunnable(spec.id, suite.id);
         reporter.specStarted(spec.result, next);
       }
     };
@@ -1382,7 +1249,8 @@ getJasmineRequireObj().Env = function(j$) {
           message += error;
         } else {
           // pretty print all kind of objects. This includes arrays.
-          message += makePrettyPrinter()(error);
+          const pp = runnableResources.makePrettyPrinter();
+          message += pp(error);
         }
       }
 

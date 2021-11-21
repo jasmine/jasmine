@@ -1354,6 +1354,7 @@ describe('Env integration', function() {
       env.it('spec 1', secondSpec);
     });
 
+    env.configure({ random: false });
     await env.execute();
 
     expect(firstSpec).toHaveBeenCalled();

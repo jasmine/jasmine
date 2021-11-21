@@ -5,6 +5,11 @@ getJasmineRequireObj().SpyFactory = function(j$) {
     getMatchersUtil
   ) {
     this.createSpy = function(name, originalFn) {
+      if (j$.isFunction_(name) && originalFn === undefined) {
+        originalFn = name;
+        name = originalFn.name;
+      }
+
       return j$.Spy(name, getMatchersUtil(), {
         originalFn,
         customStrategies: getCustomStrategies(),
