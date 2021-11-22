@@ -316,7 +316,7 @@ describe('Env', function() {
 
     it('calls spec.exclude with "Temporarily disabled with xit"', function() {
       const excludeSpy = jasmine.createSpy();
-      spyOn(env, 'it_').and.returnValue({
+      spyOn(jasmineUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
         exclude: excludeSpy
       });
       env.xit('foo', function() {});
@@ -327,7 +327,7 @@ describe('Env', function() {
       const pendSpy = jasmine.createSpy();
       const realExclude = jasmineUnderTest.Spec.prototype.exclude;
 
-      spyOn(env, 'it_').and.returnValue({
+      spyOn(jasmineUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
         exclude: realExclude,
         pend: pendSpy
       });

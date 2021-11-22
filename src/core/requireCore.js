@@ -78,6 +78,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.StringContaining = jRequire.StringContaining(j$);
     j$.UserContext = jRequire.UserContext(j$);
     j$.Suite = jRequire.Suite(j$);
+    j$.SuiteBuilder = jRequire.SuiteBuilder(j$);
     j$.Timer = jRequire.Timer();
     j$.TreeProcessor = jRequire.TreeProcessor();
     j$.version = jRequire.version();

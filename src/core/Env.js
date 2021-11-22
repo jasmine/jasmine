@@ -13,8 +13,6 @@ getJasmineRequireObj().Env = function(j$) {
     const self = this;
     const global = options.global || j$.getGlobal();
 
-    let totalSpecsDefined = 0;
-
     const realSetTimeout = global.setTimeout;
     const realClearTimeout = global.clearTimeout;
     const clearStack = j$.getClearStack(global);
@@ -31,14 +29,11 @@ getJasmineRequireObj().Env = function(j$) {
       return r ? r.id : null;
     });
 
-    let topSuite;
     let currentSpec = null;
     const currentlyExecutingSuites = [];
-    const focusedRunables = [];
-    let currentDeclarationSuite = null;
     let hasFailures = false;
-    let deprecator;
     let reporter;
+    let topSuite;
 
     /**
      * This represents the available options to configure Jasmine.
@@ -258,18 +253,6 @@ getJasmineRequireObj().Env = function(j$) {
     j$.Expectation.addCoreMatchers(j$.matchers);
     j$.Expectation.addAsyncCoreMatchers(j$.asyncMatchers);
 
-    let nextSpecId = 0;
-
-    function getNextSpecId() {
-      return 'spec' + nextSpecId++;
-    }
-
-    let nextSuiteId = 0;
-
-    function getNextSuiteId() {
-      return 'suite' + nextSuiteId++;
-    }
-
     const expectationFactory = function(actual, spec) {
       return j$.Expectation.factory({
         matchersUtil: runableResources.makeMatchersUtil(),
@@ -363,43 +346,6 @@ getJasmineRequireObj().Env = function(j$) {
         return spec.addExpectationResult(passed, result);
       }
     };
-    const suiteAsyncExpectationFactory = function(actual, suite) {
-      return asyncExpectationFactory(actual, suite, 'Suite');
-    };
-
-    const specAsyncExpectationFactory = function(actual, suite) {
-      return asyncExpectationFactory(actual, suite, 'Spec');
-    };
-
-    function beforeAndAfterFns(targetSuite) {
-      return function() {
-        let befores = [],
-          afters = [],
-          suite = targetSuite;
-
-        while (suite) {
-          befores = befores.concat(suite.beforeFns);
-          afters = afters.concat(suite.afterFns);
-
-          suite = suite.parentSuite;
-        }
-
-        return {
-          befores: befores.reverse(),
-          afters: afters
-        };
-      };
-    }
-
-    function getSpecName(spec, suite) {
-      const fullName = [spec.description],
-        suiteFullName = suite.getFullName();
-
-      if (suiteFullName !== '') {
-        fullName.unshift(suiteFullName);
-      }
-      return fullName.join(' ');
-    }
 
     /**
      * Causes a deprecation warning to be logged to the console and reported to
@@ -461,16 +407,17 @@ getJasmineRequireObj().Env = function(j$) {
       new j$.QueueRunner(options).execute(args);
     }
 
-    topSuite = new j$.Suite({
-      id: getNextSuiteId(),
-      description: 'Jasmine__TopLevel__Suite',
-      expectationFactory: expectationFactory,
-      asyncExpectationFactory: suiteAsyncExpectationFactory,
-      autoCleanClosures: config.autoCleanClosures,
-      onLateError: recordLateError
+    const suiteBuilder = new j$.SuiteBuilder({
+      env: this,
+      expectationFactory,
+      asyncExpectationFactory,
+      onLateError: recordLateError,
+      specResultCallback,
+      specStarted,
+      queueRunnerFactory
     });
-    deprecator = new j$.Deprecator(topSuite);
-    currentDeclarationSuite = topSuite;
+    topSuite = suiteBuilder.topSuite;
+    const deprecator = new j$.Deprecator(topSuite);
 
     /**
      * Provides the root suite, through which all suites and specs can be
@@ -600,8 +547,8 @@ getJasmineRequireObj().Env = function(j$) {
       installGlobalErrors();
 
       if (!runablesToRun) {
-        if (focusedRunables.length) {
-          runablesToRun = focusedRunables;
+        if (suiteBuilder.focusedRunables.length) {
+          runablesToRun = suiteBuilder.focusedRunables;
         } else {
           runablesToRun = [topSuite.id];
         }
@@ -681,7 +628,7 @@ getJasmineRequireObj().Env = function(j$) {
          */
         reporter.jasmineStarted(
           {
-            totalSpecsDefined: totalSpecsDefined,
+            totalSpecsDefined: suiteBuilder.totalSpecsDefined,
             order: order
           },
           function() {
@@ -702,10 +649,10 @@ getJasmineRequireObj().Env = function(j$) {
                   topSuite.result.failedExpectations.length > 0
                 ) {
                   overallStatus = 'failed';
-                } else if (focusedRunables.length > 0) {
+                } else if (suiteBuilder.focusedRunables.length > 0) {
                   overallStatus = 'incomplete';
                   incompleteReason = 'fit() or fdescribe() was found';
-                } else if (totalSpecsDefined === 0) {
+                } else if (suiteBuilder.totalSpecsDefined === 0) {
                   overallStatus = 'incomplete';
                   incompleteReason = 'No specs found';
                 } else {
@@ -863,22 +810,6 @@ getJasmineRequireObj().Env = function(j$) {
       );
     };
 
-    function ensureIsFunction(fn, caller) {
-      if (!j$.isFunction_(fn)) {
-        throw new Error(
-          caller + ' expects a function argument; received ' + j$.getType_(fn)
-        );
-      }
-    }
-
-    function ensureIsFunctionOrAsync(fn, caller) {
-      if (!j$.isFunction_(fn) && !j$.isAsyncFunction_(fn)) {
-        throw new Error(
-          caller + ' expects a function argument; received ' + j$.getType_(fn)
-        );
-      }
-    }
-
     function ensureIsNotNested(method) {
       const runable = currentRunable();
       if (runable !== null && runable !== undefined) {
@@ -888,149 +819,37 @@ getJasmineRequireObj().Env = function(j$) {
       }
     }
 
-    function suiteFactory(description) {
-      return new j$.Suite({
-        id: getNextSuiteId(),
-        description: description,
-        parentSuite: currentDeclarationSuite,
-        timer: new j$.Timer(),
-        expectationFactory: expectationFactory,
-        asyncExpectationFactory: suiteAsyncExpectationFactory,
-        throwOnExpectationFailure: config.stopSpecOnExpectationFailure,
-        autoCleanClosures: config.autoCleanClosures,
-        onLateError: recordLateError
-      });
-    }
-
-    this.describe = function(description, specDefinitions) {
+    this.describe = function(description, definitionFn) {
       ensureIsNotNested('describe');
-      ensureIsFunction(specDefinitions, 'describe');
-      const suite = suiteFactory(description);
-      if (specDefinitions.length > 0) {
-        throw new Error('describe does not expect any arguments');
-      }
-      if (currentDeclarationSuite.markedExcluding) {
-        suite.exclude();
-      }
-      addSpecsToSuite(suite, specDefinitions);
-      if (suite.parentSuite && !suite.children.length) {
-        throw new Error(
-          'describe with no children (describe() or it()): ' +
-            suite.getFullName()
-        );
-      }
-      return suite.metadata;
+      return suiteBuilder.describe(description, definitionFn).metadata;
     };
 
-    this.xdescribe = function(description, specDefinitions) {
+    this.xdescribe = function(description, definitionFn) {
       ensureIsNotNested('xdescribe');
-      ensureIsFunction(specDefinitions, 'xdescribe');
-      const suite = suiteFactory(description);
-      suite.exclude();
-      addSpecsToSuite(suite, specDefinitions);
-      return suite.metadata;
+      return suiteBuilder.xdescribe(description, definitionFn).metadata;
     };
 
-    this.fdescribe = function(description, specDefinitions) {
+    this.fdescribe = function(description, definitionFn) {
       ensureIsNotNested('fdescribe');
-      ensureIsFunction(specDefinitions, 'fdescribe');
-      const suite = suiteFactory(description);
-      suite.isFocused = true;
-
-      focusedRunables.push(suite.id);
-      unfocusAncestor();
-      addSpecsToSuite(suite, specDefinitions);
-
-      return suite.metadata;
+      return suiteBuilder.fdescribe(description, definitionFn).metadata;
     };
 
-    function addSpecsToSuite(suite, specDefinitions) {
-      const parentSuite = currentDeclarationSuite;
-      parentSuite.addChild(suite);
-      currentDeclarationSuite = suite;
+    function specResultCallback(spec, result, next) {
+      runableResources.clearForRunable(spec.id);
+      currentSpec = null;
 
-      let declarationError = null;
-      try {
-        specDefinitions();
-      } catch (e) {
-        declarationError = e;
+      if (result.status === 'failed') {
+        hasFailures = true;
       }
 
-      if (declarationError) {
-        suite.handleException(declarationError);
-      }
-
-      currentDeclarationSuite = parentSuite;
+      reportSpecDone(spec, result, next);
     }
 
-    function findFocusedAncestor(suite) {
-      while (suite) {
-        if (suite.isFocused) {
-          return suite.id;
-        }
-        suite = suite.parentSuite;
-      }
-
-      return null;
+    function specStarted(spec, suite, next) {
+      currentSpec = spec;
+      runableResources.initForRunable(spec.id, suite.id);
+      reporter.specStarted(spec.result, next);
     }
-
-    function unfocusAncestor() {
-      const focusedAncestor = findFocusedAncestor(currentDeclarationSuite);
-      if (focusedAncestor) {
-        for (let i = 0; i < focusedRunables.length; i++) {
-          if (focusedRunables[i] === focusedAncestor) {
-            focusedRunables.splice(i, 1);
-            break;
-          }
-        }
-      }
-    }
-
-    const specFactory = function(description, fn, suite, timeout) {
-      totalSpecsDefined++;
-      const spec = new j$.Spec({
-        id: getNextSpecId(),
-        beforeAndAfterFns: beforeAndAfterFns(suite),
-        expectationFactory: expectationFactory,
-        asyncExpectationFactory: specAsyncExpectationFactory,
-        onLateError: recordLateError,
-        resultCallback: specResultCallback,
-        getSpecName: function(spec) {
-          return getSpecName(spec, suite);
-        },
-        onStart: specStarted,
-        description: description,
-        queueRunnerFactory: queueRunnerFactory,
-        userContext: function() {
-          return suite.clonedSharedUserContext();
-        },
-        queueableFn: {
-          fn: fn,
-          timeout: timeout || 0
-        },
-        throwOnExpectationFailure: config.stopSpecOnExpectationFailure,
-        autoCleanClosures: config.autoCleanClosures,
-        timer: new j$.Timer()
-      });
-      return spec;
-
-      function specResultCallback(result, next) {
-        runableResources.clearForRunable(spec.id);
-        currentSpec = null;
-
-        if (result.status === 'failed') {
-          hasFailures = true;
-        }
-
-        reportSpecDone(spec, result, next);
-      }
-
-      function specStarted(spec, next) {
-        currentSpec = spec;
-        runableResources.initForRunable(spec.id, suite.id);
-        reporter.specStarted(spec.result, next);
-      }
-    };
 
     function reportSpecDone(spec, result, next) {
       spec.reportedDone = true;
@@ -1042,66 +861,19 @@ getJasmineRequireObj().Env = function(j$) {
       reporter.suiteDone(result, next);
     }
 
-    this.it_ = function(description, fn, timeout) {
-      ensureIsNotNested('it');
-      // it() sometimes doesn't have a fn argument, so only check the type if
-      // it's given.
-      if (arguments.length > 1 && typeof fn !== 'undefined') {
-        ensureIsFunctionOrAsync(fn, 'it');
-      }
-
-      if (timeout) {
-        j$.util.validateTimeout(timeout);
-      }
-
-      const spec = specFactory(
-        description,
-        fn,
-        currentDeclarationSuite,
-        timeout
-      );
-      if (currentDeclarationSuite.markedExcluding) {
-        spec.exclude();
-      }
-      currentDeclarationSuite.addChild(spec);
-
-      return spec;
-    };
-
     this.it = function(description, fn, timeout) {
-      const spec = this.it_(description, fn, timeout);
-      return spec.metadata;
+      ensureIsNotNested('it');
+      return suiteBuilder.it(description, fn, timeout).metadata;
     };
 
     this.xit = function(description, fn, timeout) {
       ensureIsNotNested('xit');
-      // xit(), like it(), doesn't always have a fn argument, so only check the
-      // type when needed.
-      if (arguments.length > 1 && typeof fn !== 'undefined') {
-        ensureIsFunctionOrAsync(fn, 'xit');
-      }
-      const spec = this.it_.apply(this, arguments);
-      spec.exclude('Temporarily disabled with xit');
-      return spec.metadata;
+      return suiteBuilder.xit(description, fn, timeout).metadata;
     };
 
     this.fit = function(description, fn, timeout) {
       ensureIsNotNested('fit');
-      ensureIsFunctionOrAsync(fn, 'fit');
-
-      if (timeout) {
-        j$.util.validateTimeout(timeout);
-      }
-      const spec = specFactory(
-        description,
-        fn,
-        currentDeclarationSuite,
-        timeout
-      );
-      currentDeclarationSuite.addChild(spec);
-      focusedRunables.push(spec.id);
-      unfocusAncestor();
-      return spec.metadata;
+      return suiteBuilder.fit(description, fn, timeout).metadata;
     };
 
     /**
@@ -1170,59 +942,22 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.beforeEach = function(beforeEachFunction, timeout) {
       ensureIsNotNested('beforeEach');
-      ensureIsFunctionOrAsync(beforeEachFunction, 'beforeEach');
-
-      if (timeout) {
-        j$.util.validateTimeout(timeout);
-      }
-
-      currentDeclarationSuite.beforeEach({
-        fn: beforeEachFunction,
-        timeout: timeout || 0
-      });
+      suiteBuilder.beforeEach(beforeEachFunction, timeout);
     };
 
     this.beforeAll = function(beforeAllFunction, timeout) {
       ensureIsNotNested('beforeAll');
-      ensureIsFunctionOrAsync(beforeAllFunction, 'beforeAll');
-
-      if (timeout) {
-        j$.util.validateTimeout(timeout);
-      }
-
-      currentDeclarationSuite.beforeAll({
-        fn: beforeAllFunction,
-        timeout: timeout || 0
-      });
+      suiteBuilder.beforeAll(beforeAllFunction, timeout);
     };
 
     this.afterEach = function(afterEachFunction, timeout) {
       ensureIsNotNested('afterEach');
-      ensureIsFunctionOrAsync(afterEachFunction, 'afterEach');
-
-      if (timeout) {
-        j$.util.validateTimeout(timeout);
-      }
-
-      afterEachFunction.isCleanup = true;
-      currentDeclarationSuite.afterEach({
-        fn: afterEachFunction,
-        timeout: timeout || 0
-      });
+      suiteBuilder.afterEach(afterEachFunction, timeout);
     };
 
     this.afterAll = function(afterAllFunction, timeout) {
       ensureIsNotNested('afterAll');
-      ensureIsFunctionOrAsync(afterAllFunction, 'afterAll');
-
-      if (timeout) {
-        j$.util.validateTimeout(timeout);
-      }
-
-      currentDeclarationSuite.afterAll({
-        fn: afterAllFunction,
-        timeout: timeout || 0
-      });
+      suiteBuilder.afterAll(afterAllFunction, timeout);
     };
 
     this.pending = function(message) {
