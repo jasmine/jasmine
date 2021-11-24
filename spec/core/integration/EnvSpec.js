@@ -645,8 +645,9 @@ describe('Env integration', function() {
       "An asynchronous reporter callback called its 'done' callback more " +
       'than once. This is a bug in the reporter callback in question. This ' +
       'will be treated as an error in a future version.\nNote: This message ' +
-      'will be shown only once. Set config.verboseDeprecations to true to ' +
-      'see every occurrence.';
+      'will be shown only once. Set the verboseDeprecations config property ' +
+      'to true to see every occurrence.';
+
     var reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone']);
     reporter.specDone = function(result, done) {
       done();

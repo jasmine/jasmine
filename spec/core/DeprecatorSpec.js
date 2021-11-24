@@ -288,8 +288,8 @@ describe('Deprecator', function() {
 
     function verboseDeprecationsNote() {
       return (
-        'Note: This message will be shown only once. Set ' +
-        'config.verboseDeprecations to true to see every occurrence.'
+        'Note: This message will be shown only once. Set the ' +
+        'verboseDeprecations config property to true to see every occurrence.'
       );
     }
 
