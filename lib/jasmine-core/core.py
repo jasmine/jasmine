@@ -54,14 +54,14 @@ class Core(object):
         # jasmine.js needs to be first
         js_files.insert(0, 'jasmine.js')
 
-        # boot needs to be last
+        # Remove the legacy boot file
         js_files.remove('boot.js')
-        js_files.append('boot.js')
 
-        # Remove the new boot files. jasmine-py will continue to use the legacy
-        # boot.js.
+        # boot files need to be last
         js_files.remove('boot0.js')
         js_files.remove('boot1.js')
+        js_files.append('boot0.js')
+        js_files.append('boot1.js')
 
         return cls._uniq(js_files)
 
