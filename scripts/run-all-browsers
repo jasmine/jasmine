@@ -27,6 +27,7 @@ run_browser "internet explorer" 11
 run_browser "internet explorer" 10
 run_browser chrome latest
 run_browser firefox latest
+run_browser firefox 91
 run_browser firefox 78
 run_browser firefox 68 
 run_browser safari 14 
