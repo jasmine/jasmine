@@ -258,7 +258,7 @@ getJasmineRequireObj().Spec = function(j$) {
     if (this.message) {
       this.excludeMessage = message;
     }
-    this.pend();
+    this.pend(message);
   };
 
   Spec.prototype.getResult = function() {
