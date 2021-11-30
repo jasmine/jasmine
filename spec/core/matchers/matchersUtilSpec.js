@@ -94,7 +94,7 @@ describe('matchersUtil', function() {
     });
 
     it('fails for Arrays that have different lengths', function() {
-      matchersUtil = new jasmineUnderTest.MatchersUtil();
+      const matchersUtil = new jasmineUnderTest.MatchersUtil();
       expect(matchersUtil.equals([1, 2], [1, 2, 3])).toBe(false);
     });
 

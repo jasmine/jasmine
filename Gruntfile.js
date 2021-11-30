@@ -28,7 +28,8 @@ module.exports = function(grunt) {
   grunt.registerTask("execSpecsInNode",
     "Run Jasmine core specs in Node.js",
     function() {
-      var done = this.async(),
+      verifyNoGlobals(() => require('./lib/jasmine-core.js').noGlobals());
+      const done = this.async(),
           Jasmine = require('jasmine'),
           jasmineCore = require('./lib/jasmine-core.js'),
           jasmine = new Jasmine({jasmineCore: jasmineCore});
@@ -52,3 +53,14 @@ module.exports = function(grunt) {
     }
   );
 };
+
+function verifyNoGlobals(fn) {
+  const initialGlobals = Object.keys(global);
+  fn();
+
+  const extras = Object.keys(global).filter(k => !initialGlobals.includes(k));
+
+  if (extras.length !== 0) {
+    throw new Error('Globals were unexpectedly created: ' + extras.join(', '));
+  }
+}

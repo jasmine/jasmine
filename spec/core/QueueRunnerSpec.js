@@ -471,20 +471,20 @@ describe('QueueRunner', function() {
             }, 100);
             return p1;
           }
-        };
-      (queueableFn2 = {
-        fn: function() {
-          fnCallback();
-          setTimeout(function() {
-            p2.resolveHandler();
-          }, 100);
-          return p2;
-        }
-      }),
-        (queueRunner = new jasmineUnderTest.QueueRunner({
+        },
+        queueableFn2 = {
+          fn: function() {
+            fnCallback();
+            setTimeout(function() {
+              p2.resolveHandler();
+            }, 100);
+            return p2;
+          }
+        },
+        queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [queueableFn1, queueableFn2],
           onComplete: onComplete
-        }));
+        });
 
       queueRunner.execute();
       expect(fnCallback).not.toHaveBeenCalled();

@@ -143,7 +143,7 @@ describe('npm package', function() {
         j;
 
       for (j = 0; j < dirents.length; j++) {
-        dirent = dirents[j];
+        const dirent = dirents[j];
 
         if (dirent.isDirectory()) {
           getFiles(path.resolve(dir, dirent.name));

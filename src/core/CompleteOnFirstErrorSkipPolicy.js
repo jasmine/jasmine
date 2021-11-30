@@ -5,6 +5,8 @@ getJasmineRequireObj().CompleteOnFirstErrorSkipPolicy = function(j$) {
   }
 
   CompleteOnFirstErrorSkipPolicy.prototype.skipTo = function(lastRanFnIx) {
+    let i;
+
     for (
       i = lastRanFnIx + 1;
       i < this.queueableFns_.length && this.shouldSkip_(i);

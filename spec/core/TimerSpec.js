@@ -14,10 +14,12 @@ describe('Timer', function() {
   describe('when date is stubbed, perhaps by other testing helpers', function() {
     var origDate = Date;
     beforeEach(function() {
+      // eslint-disable-next-line no-implicit-globals
       Date = jasmine.createSpy('date spy');
     });
 
     afterEach(function() {
+      // eslint-disable-next-line no-implicit-globals
       Date = origDate;
     });
 

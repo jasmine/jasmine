@@ -30,7 +30,7 @@ describe('toHaveBeenCalledBefore', function() {
 
     secondSpy();
 
-    result = matcher.compare(firstSpy, secondSpy);
+    const result = matcher.compare(firstSpy, secondSpy);
     expect(result.pass).toBe(false);
     expect(result.message).toMatch(
       /Expected spy first spy to have been called./
@@ -44,7 +44,7 @@ describe('toHaveBeenCalledBefore', function() {
 
     firstSpy();
 
-    result = matcher.compare(firstSpy, secondSpy);
+    const result = matcher.compare(firstSpy, secondSpy);
     expect(result.pass).toBe(false);
     expect(result.message).toMatch(
       /Expected spy second spy to have been called./

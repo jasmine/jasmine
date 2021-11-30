@@ -513,20 +513,20 @@ describe('TreeProcessor', function() {
 
   it('runs afterAlls for a node with children', function() {
     var leaf = new Leaf(),
-      afterAllFns = [{ fn: 'afterAll1' }, { fn: 'afterAll2' }];
-    (node = new Node({
-      children: [leaf],
-      afterAllFns
-    })),
-      (root = new Node({ children: [node] })),
-      (queueRunner = jasmine.createSpy('queueRunner')),
-      (processor = new jasmineUnderTest.TreeProcessor({
+      afterAllFns = [{ fn: 'afterAll1' }, { fn: 'afterAll2' }],
+      node = new Node({
+        children: [leaf],
+        afterAllFns
+      }),
+      root = new Node({ children: [node] }),
+      queueRunner = jasmine.createSpy('queueRunner'),
+      processor = new jasmineUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [node.id],
         queueRunnerFactory: queueRunner
-      })),
-      (treeComplete = jasmine.createSpy('treeComplete')),
-      (nodeDone = jasmine.createSpy('nodeDone'));
+      }),
+      treeComplete = jasmine.createSpy('treeComplete'),
+      nodeDone = jasmine.createSpy('nodeDone');
 
     processor.execute(treeComplete);
     var queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;

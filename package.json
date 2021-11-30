@@ -82,6 +82,7 @@
           "args": "none"
         }
       ],
+      "no-implicit-globals": "error",
       "block-spacing": "error",
       "func-call-spacing": [
         "error",

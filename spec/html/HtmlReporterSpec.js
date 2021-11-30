@@ -73,10 +73,6 @@ describe('HtmlReporter', function() {
     describe('and no expectations ran', function() {
       var container, reporter;
       beforeEach(function() {
-        if (typeof console === 'undefined') {
-          console = { warn: function() {}, error: function() {} };
-        }
-
         container = document.createElement('div');
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,

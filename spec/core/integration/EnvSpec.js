@@ -3427,7 +3427,7 @@ describe('Env integration', function() {
       const spiedOnAllFuncs = { foo: function() {} };
       env.spyOnAllFunctions(spiedOnAllFuncs);
 
-      for (spy of [
+      for (const spy of [
         createSpySpy,
         spiedOn.foo,
         spyObj.foo,
