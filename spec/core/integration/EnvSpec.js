@@ -3229,14 +3229,14 @@ describe('Env integration', function() {
       });
     });
 
-    it('is resolved even if specs fail', function() {
+    it('is resolved to the overall status', function() {
       env.describe('suite', function() {
         env.it('spec', function() {
           env.expect(true).toBe(false);
         });
       });
 
-      return expectAsync(env.execute(null)).toBeResolved();
+      return expectAsync(env.execute(null)).toBeResolvedTo('failed');
     });
   });
 
