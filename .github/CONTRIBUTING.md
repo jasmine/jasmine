@@ -97,7 +97,12 @@ Or, How to make a successful pull request
   without test-driving it.
 * _Write code in the style of the rest of the repo_ - Jasmine should look like
   a cohesive whole.
-  * **Exception**: Prefer `const` or `let` over `var`.
+  
+  **Key exceptions:**
+  * Use `const` or `let` for new variable declarations, even if nearby code
+    uses `var`.
+  * New async specs should usually be async/await or promise-returning, not
+    callback based.
 * _Ensure the *entire* test suite is green_ in all the big browsers, Node, and
   ESLint. Your contribution shouldn't break Jasmine for other users.
 
