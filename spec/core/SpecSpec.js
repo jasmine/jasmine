@@ -234,7 +234,7 @@ describe('Spec', function() {
         pendingReason: '',
         duration: jasmine.any(Number),
         properties: null,
-        trace: null
+        debugLogs: null
       },
       'things'
     );
@@ -562,13 +562,15 @@ describe('Spec', function() {
         t2 = 456;
 
       spec.execute();
-      expect(spec.result.trace).toBeNull();
+      expect(spec.result.debugLogs).toBeNull();
       timer.elapsed.and.returnValue(t1);
-      spec.trace('msg 1');
-      expect(spec.result.trace).toEqual([{ message: 'msg 1', timestamp: t1 }]);
+      spec.debugLog('msg 1');
+      expect(spec.result.debugLogs).toEqual([
+        { message: 'msg 1', timestamp: t1 }
+      ]);
       timer.elapsed.and.returnValue(t2);
-      spec.trace('msg 2');
-      expect(spec.result.trace).toEqual([
+      spec.debugLog('msg 2');
+      expect(spec.result.debugLogs).toEqual([
         { message: 'msg 1', timestamp: t1 },
         { message: 'msg 2', timestamp: t2 }
       ]);
@@ -583,7 +585,7 @@ describe('Spec', function() {
             },
             resultCallback: resultCallback,
             queueRunnerFactory: function(config) {
-              spec.trace('msg');
+              spec.debugLog('msg');
               for (const fn of config.queueableFns) {
                 fn.fn();
               }
@@ -593,7 +595,7 @@ describe('Spec', function() {
 
         spec.execute(function() {});
         expect(resultCallback).toHaveBeenCalledWith(
-          jasmine.objectContaining({ trace: null }),
+          jasmine.objectContaining({ debugLogs: null }),
           undefined
         );
       });
@@ -606,7 +608,7 @@ describe('Spec', function() {
             },
             resultCallback: resultCallback,
             queueRunnerFactory: function(config) {
-              spec.trace('msg');
+              spec.debugLog('msg');
               for (const fn of config.queueableFns) {
                 fn.fn();
               }
@@ -616,7 +618,7 @@ describe('Spec', function() {
 
         spec.execute(function() {});
         expect(resultCallback).toHaveBeenCalled();
-        expect(spec.result.trace).toBeNull();
+        expect(spec.result.debugLogs).toBeNull();
       });
     });
 
@@ -630,7 +632,7 @@ describe('Spec', function() {
             },
             resultCallback: resultCallback,
             queueRunnerFactory: function(config) {
-              spec.trace('msg');
+              spec.debugLog('msg');
               spec.onException(new Error('nope'));
               for (const fn of config.queueableFns) {
                 fn.fn();
@@ -646,7 +648,7 @@ describe('Spec', function() {
         spec.execute(function() {});
         expect(resultCallback).toHaveBeenCalledWith(
           jasmine.objectContaining({
-            trace: [{ message: 'msg', timestamp: timestamp }]
+            debugLogs: [{ message: 'msg', timestamp: timestamp }]
           }),
           undefined
         );

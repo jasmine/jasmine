@@ -406,11 +406,11 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * This method should be called only when a spec (including any associated
    * beforeEach or afterEach functions) is running.
    * @function
-   * @name jasmine.trace
-   * @since 3.10.0
+   * @name jasmine.debugLog
+   * @since 4.0.0
    * @param {String} msg - The message to log
    */
-  j$.trace = function(msg) {
-    j$.getEnv().trace(msg);
+  j$.debugLog = function(msg) {
+    j$.getEnv().debugLog(msg);
   };
 };

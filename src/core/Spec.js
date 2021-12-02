@@ -71,7 +71,7 @@ getJasmineRequireObj().Spec = function(j$) {
      * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
      * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
      * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
-     * @property {TraceEntry[]|null} trace - Trace messages, if any, that were logged using {@link jasmine.trace} during a failing spec.
+     * @property {DebugLogEntry[]|null} debugLogs - Messages, if any, that were logged using {@link jasmine.debugLog} during a failing spec.
      * @since 2.0.0
      */
     this.result = {
@@ -84,7 +84,7 @@ getJasmineRequireObj().Spec = function(j$) {
       pendingReason: '',
       duration: null,
       properties: null,
-      trace: null
+      debugLogs: null
     };
   }
 
@@ -133,7 +133,7 @@ getJasmineRequireObj().Spec = function(j$) {
         self.result.duration = self.timer.elapsed();
 
         if (self.result.status !== 'failed') {
-          self.result.trace = null;
+          self.result.debugLogs = null;
         }
 
         self.resultCallback(self.result, done);
@@ -184,21 +184,6 @@ getJasmineRequireObj().Spec = function(j$) {
   };
 
   Spec.prototype.reset = function() {
-    /**
-     * @typedef SpecResult
-     * @property {Int} id - The unique id of this spec.
-     * @property {String} description - The description passed to the {@link it} that created this spec.
-     * @property {String} fullName - The full description including all ancestors of this spec.
-     * @property {Expectation[]} failedExpectations - The list of expectations that failed during execution of this spec.
-     * @property {Expectation[]} passedExpectations - The list of expectations that passed during execution of this spec.
-     * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred during execution this spec.
-     * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
-     * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
-     * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
-     * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
-     * @property {TraceEntry[]|null} trace - Trace messages, if any, that were logged using {@link Env#trace} during a failing spec.
-     * @since 2.0.0
-     */
     this.result = {
       id: this.id,
       description: this.description,
@@ -209,7 +194,7 @@ getJasmineRequireObj().Spec = function(j$) {
       pendingReason: this.excludeMessage,
       duration: null,
       properties: null,
-      trace: null
+      debugLogs: null
     };
     this.markedPending = this.markedExcluding;
   };
@@ -308,18 +293,21 @@ getJasmineRequireObj().Spec = function(j$) {
     );
   };
 
-  Spec.prototype.trace = function(msg) {
-    if (!this.result.trace) {
-      this.result.trace = [];
+  Spec.prototype.debugLog = function(msg) {
+    if (!this.result.debugLogs) {
+      this.result.debugLogs = [];
     }
 
     /**
-     * @typedef TraceEntry
-     * @property {String} message - The message that was passed to {@link jasmine.trace}.
+     * @typedef DebugLogEntry
+     * @property {String} message - The message that was passed to {@link jasmine.debugLog}.
      * @property {number} timestamp - The time when the entry was added, in
      * milliseconds from the spec's start time
      */
-    this.result.trace.push({ message: msg, timestamp: this.timer.elapsed() });
+    this.result.debugLogs.push({
+      message: msg,
+      timestamp: this.timer.elapsed()
+    });
   };
 
   var extractCustomPendingMessage = function(e) {

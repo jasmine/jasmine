@@ -1510,7 +1510,7 @@ describe('HtmlReporter', function() {
             }
           ]
         };
-        var failingSpecResultWithTrace = {
+        var failingSpecResultWithDebugLogs = {
           id: 567,
           status: 'failed',
           description: 'a failing spec',
@@ -1522,7 +1522,7 @@ describe('HtmlReporter', function() {
               stack: 'a stack trace'
             }
           ],
-          trace: [
+          debugLogs: [
             { timestamp: 123, message: 'msg 1' },
             { timestamp: 456, message: 'msg 1' }
           ]
@@ -1544,8 +1544,8 @@ describe('HtmlReporter', function() {
         reporter.suiteDone(passingSuiteResult);
         reporter.suiteDone(failingSuiteResult);
         reporter.suiteDone(passingSuiteResult);
-        reporter.specStarted(failingSpecResultWithTrace);
-        reporter.specDone(failingSpecResultWithTrace);
+        reporter.specStarted(failingSpecResultWithDebugLogs);
+        reporter.specDone(failingSpecResultWithDebugLogs);
         reporter.jasmineDone({});
       });
 
@@ -1602,11 +1602,11 @@ describe('HtmlReporter', function() {
         var specFailure = container.querySelectorAll(
             '.jasmine-spec-detail.jasmine-failed'
           )[2],
-          trace = specFailure.querySelector('.jasmine-trace table'),
+          debugLogs = specFailure.querySelector('.jasmine-debug-log table'),
           rows;
 
-        expect(trace).toBeTruthy();
-        rows = trace.querySelectorAll('tbody tr');
+        expect(debugLogs).toBeTruthy();
+        rows = debugLogs.querySelectorAll('tbody tr');
         expect(rows.length).toEqual(2);
       });
 

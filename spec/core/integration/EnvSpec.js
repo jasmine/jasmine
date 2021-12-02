@@ -3335,7 +3335,7 @@ describe('Env integration', function() {
     });
   });
 
-  it('sends traces to the reporter when the spec fails', function(done) {
+  it('sends debug logs to the reporter when the spec fails', function(done) {
     var reporter = jasmine.createSpyObj('reporter', ['specDone']),
       startTime,
       endTime;
@@ -3345,14 +3345,14 @@ describe('Env integration', function() {
 
     env.it('fails', function() {
       startTime = new Date().getTime();
-      env.trace('message 1');
-      env.trace('message 2');
+      env.debugLog('message 1');
+      env.debugLog('message 2');
       env.expect(1).toBe(2);
       endTime = new Date().getTime();
     });
 
     env.it('passes', function() {
-      env.trace('message that should not be reported');
+      env.debugLog('message that should not be reported');
     });
 
     env.execute(null, function() {
@@ -3373,7 +3373,7 @@ describe('Env integration', function() {
       duration = reporter.specDone.calls.argsFor(0)[0].duration;
       expect(reporter.specDone.calls.argsFor(0)[0]).toEqual(
         jasmine.objectContaining({
-          trace: [
+          debugLogs: [
             {
               timestamp: numberInRange(0, duration),
               message: 'message 1'
@@ -3385,17 +3385,17 @@ describe('Env integration', function() {
           ]
         })
       );
-      expect(reporter.specDone.calls.argsFor(1)[0].trace).toBeFalsy();
+      expect(reporter.specDone.calls.argsFor(1)[0].debugLogs).toBeFalsy();
       done();
     });
   });
 
-  it('reports an error when trace is used when a spec is not running', function(done) {
+  it('reports an error when debugLog is used when a spec is not running', function(done) {
     var reporter = jasmine.createSpyObj('reporter', ['suiteDone']);
 
     env.describe('a suite', function() {
       env.beforeAll(function() {
-        env.trace('a message');
+        env.debugLog('a message');
       });
 
       env.it('a spec', function() {});
@@ -3408,7 +3408,7 @@ describe('Env integration', function() {
           failedExpectations: [
             jasmine.objectContaining({
               message: jasmine.stringContaining(
-                "'trace' was called when there was no current spec"
+                "'debugLog' was called when there was no current spec"
               )
             })
           ]
