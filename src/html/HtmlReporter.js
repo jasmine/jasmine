@@ -41,6 +41,12 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
   };
 
+  ResultsStateBuilder.prototype.jasmineDone = function(result) {
+    if (result.failedExpectations) {
+      this.failureCount += result.failedExpectations.length;
+    }
+  };
+
   function HtmlReporter(options) {
     var config = function() {
         return (options.env && options.env.configuration()) || {};
@@ -156,6 +162,7 @@ jasmineRequire.HtmlReporter = function(j$) {
     };
 
     this.jasmineDone = function(doneResult) {
+      stateBuilder.jasmineDone(doneResult);
       var banner = find('.jasmine-banner');
       var alert = find('.jasmine-alert');
       var order = doneResult && doneResult.order;

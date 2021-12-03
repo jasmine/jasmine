@@ -1653,6 +1653,61 @@ describe('HtmlReporter', function() {
         );
       });
     });
+
+    it('counts failures that are reported in the jasmineDone event', function() {
+      const container = document.createElement('div');
+      function getContainer() {
+        return container;
+      }
+      const reporter = new jasmineUnderTest.HtmlReporter({
+        env: env,
+        getContainer: getContainer,
+        createElement: function() {
+          return document.createElement.apply(document, arguments);
+        },
+        createTextNode: function() {
+          return document.createTextNode.apply(document, arguments);
+        },
+        addToExistingQueryString: function(key, value) {
+          return '?' + key + '=' + value;
+        }
+      });
+      reporter.initialize();
+
+      reporter.jasmineStarted({ totalSpecsDefined: 1 });
+
+      const failingSpecResult = {
+        id: 124,
+        status: 'failed',
+        description: 'a failing spec',
+        fullName: 'a suite inner suite a failing spec',
+        passedExpectations: [],
+        failedExpectations: [
+          {
+            message: 'a failure message',
+            stack: 'a stack trace'
+          }
+        ]
+      };
+
+      reporter.specStarted(failingSpecResult);
+      reporter.specDone(failingSpecResult);
+      reporter.jasmineDone({
+        failedExpectations: [
+          {
+            message: 'a failure message',
+            stack: 'a stack trace'
+          },
+          {
+            message: 'a failure message',
+            stack: 'a stack trace'
+          }
+        ]
+      });
+
+      const alertBar = container.querySelector('.jasmine-alert .jasmine-bar');
+      expect(alertBar.innerHTML).toMatch(/1 spec, 3 failures/);
+    });
   });
 
   describe('The overall result bar', function() {
