@@ -49,7 +49,7 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Ed
 | Environment       | Supported versions |
 |-------------------|--------------------|
 | Node              | 12.17+, 14, 16     |
-| Safari            | 13-15              |
+| Safari            | 14-15              |
 | Chrome            | Evergreen          |
 | Firefox           | Evergreen, 68, 78, 91 |
 | Edge              | Evergreen          |
