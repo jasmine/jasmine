@@ -51,7 +51,7 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Ed
 | Node              | 12.17+, 14, 16     |
 | Safari            | 14-15              |
 | Chrome            | Evergreen          |
-| Firefox           | Evergreen, 68, 78, 91 |
+| Firefox           | Evergreen, 91      |
 | Edge              | Evergreen          |
 
 For evergreen browsers, each version of Jasmine is tested against the version of the browser that is available to us
