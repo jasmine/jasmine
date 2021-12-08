@@ -49,7 +49,7 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Ed
 | Environment       | Supported versions |
 |-------------------|--------------------|
 | Node              | 12.17+, 14, 16     |
-| Safari            | 13-14              |
+| Safari            | 13-15              |
 | Chrome            | Evergreen          |
 | Firefox           | Evergreen, 68, 78, 91 |
 | Edge              | Evergreen          |
@@ -57,6 +57,9 @@ Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Ed
 For evergreen browsers, each version of Jasmine is tested against the version of the browser that is available to us
 at the time of release. Other browsers, as well as older & newer versions of some supported browsers, are likely to work.
 However, Jasmine isn't tested against them and they aren't actively supported. 
+
+See the [release notes](https://github.com/jasmine/jasmine/tree/main/release_notes)
+for the supported environments for each Jasmine release.
 
 ## Support
 
