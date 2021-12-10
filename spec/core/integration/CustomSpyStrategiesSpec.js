@@ -31,8 +31,8 @@ describe('Custom Spy Strategies (Integration)', function() {
       expect(env.createSpy('something').and.frobnicate).toBeUndefined();
     });
 
-    const overallStatus = await env.execute();
-    expect(overallStatus).toEqual('passed');
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
   });
 
   it('allows adding more strategies local to a spec', async function() {
@@ -51,8 +51,8 @@ describe('Custom Spy Strategies (Integration)', function() {
       expect(env.createSpy('something').and.frobnicate).toBeUndefined();
     });
 
-    const overallStatus = await env.execute();
-    expect(overallStatus).toEqual('passed');
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
   });
 
   it('allows using custom strategies on a per-argument basis', async function() {
@@ -77,8 +77,8 @@ describe('Custom Spy Strategies (Integration)', function() {
       expect(env.createSpy('something').and.frobnicate).toBeUndefined();
     });
 
-    const overallStatus = await env.execute();
-    expect(overallStatus).toEqual('passed');
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
   });
 
   it('allows multiple custom strategies to be used', async function() {
@@ -112,8 +112,8 @@ describe('Custom Spy Strategies (Integration)', function() {
     });
 
     env.addReporter({ specDone: specDone });
-    const overallStatus = await env.execute();
-    expect(overallStatus).toEqual('passed');
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
     expect(specDone.calls.count()).toBe(2);
   });
 });

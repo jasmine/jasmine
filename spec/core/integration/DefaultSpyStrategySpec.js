@@ -29,8 +29,8 @@ describe('Default Spy Strategy (Integration)', function() {
       expect(spy()).toBeUndefined();
     });
 
-    const overallStatus = await env.execute();
-    expect(overallStatus).toEqual('passed');
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
   });
 
   it('uses the default spy strategy defined when the spy is created', async function() {
@@ -60,7 +60,7 @@ describe('Default Spy Strategy (Integration)', function() {
       expect(d.and.isConfigured()).toBe(false);
     });
 
-    const overallStatus = await env.execute();
-    expect(overallStatus).toEqual('passed');
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
   });
 });

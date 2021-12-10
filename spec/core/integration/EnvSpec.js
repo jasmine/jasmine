@@ -3229,14 +3229,21 @@ describe('Env integration', function() {
       });
     });
 
-    it('is resolved to the overall status', function() {
+    it('is resolved to the value of the jasmineDone event', async function() {
       env.describe('suite', function() {
         env.it('spec', function() {
           env.expect(true).toBe(false);
         });
       });
 
-      return expectAsync(env.execute(null)).toBeResolvedTo('failed');
+      let event;
+      env.addReporter({
+        jasmineDone: e => (event = e)
+      });
+      const result = await env.execute();
+
+      expect(event.overallStatus).toEqual('failed');
+      expect(result).toEqual(event);
     });
   });
 

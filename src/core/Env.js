@@ -749,12 +749,12 @@ getJasmineRequireObj().Env = function(j$) {
       jasmineTimer.start();
 
       return new Promise(function(resolve) {
-        runAll(function(overallStatus) {
+        runAll(function(jasmineDoneInfo) {
           if (onComplete) {
             onComplete();
           }
 
-          resolve(overallStatus);
+          resolve(jasmineDoneInfo);
         });
       });
 
@@ -805,19 +805,17 @@ getJasmineRequireObj().Env = function(j$) {
                * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
                * @since 2.4.0
                */
-              reporter.jasmineDone(
-                {
-                  overallStatus: overallStatus,
-                  totalTime: jasmineTimer.elapsed(),
-                  incompleteReason: incompleteReason,
-                  order: order,
-                  failedExpectations: topSuite.result.failedExpectations,
-                  deprecationWarnings: topSuite.result.deprecationWarnings
-                },
-                function() {
-                  done(overallStatus);
-                }
-              );
+              const jasmineDoneInfo = {
+                overallStatus: overallStatus,
+                totalTime: jasmineTimer.elapsed(),
+                incompleteReason: incompleteReason,
+                order: order,
+                failedExpectations: topSuite.result.failedExpectations,
+                deprecationWarnings: topSuite.result.deprecationWarnings
+              };
+              reporter.jasmineDone(jasmineDoneInfo, function() {
+                done(jasmineDoneInfo);
+              });
             });
           }
         );
