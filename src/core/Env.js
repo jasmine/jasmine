@@ -667,23 +667,25 @@ getJasmineRequireObj().Env = function(j$) {
      *
      * Both parameters are optional, but a completion callback is only valid as
      * the second parameter. To specify a completion callback but not a list of
-     * specs/suites to run, pass null or undefined as the first parameter.
+     * specs/suites to run, pass null or undefined as the first parameter. The
+     * completion callback is supported for backward compatibility. In most
+     * cases it will be more convenient to use the returned promise instead.
      *
      * execute should not be called more than once unless the env has been
      * configured with `{autoCleanClosures: false}`.
      *
-     * If the environment supports promises, execute will return a promise that
-     * is resolved after the suite finishes executing. The promise will be
-     * resolved (not rejected) to the suite's overall status as long as the
-     * suite runs to completion. To determine whether the suite passed, check
-     * the value that the promise resolves to or use a {@link Reporter}.
+     * execute returns a promise. The promise will be resolved to the same
+     * {@link JasmineDoneInfo|overall result} that's passed to a reporter's
+     * `jasmineDone` method, even if the suite did not pass. To determine
+     * whether the suite passed, check the value that the promise resolves to
+     * or use a {@link Reporter}.
      *
      * @name Env#execute
      * @since 2.0.0
      * @function
      * @param {(string[])=} runnablesToRun IDs of suites and/or specs to run
      * @param {Function=} onComplete Function that will be called after all specs have run
-     * @return {Promise<string>}
+     * @return {Promise<JasmineDoneInfo>}
      */
     this.execute = function(runnablesToRun, onComplete) {
       if (this._executedBefore) {
