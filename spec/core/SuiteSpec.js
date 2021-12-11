@@ -71,9 +71,20 @@ describe('Suite', function() {
     suite.beforeAll(outerBefore);
     suite.beforeAll(innerBefore);
 
+    function sameInstance(expected) {
+      return {
+        asymmetricMatch: function(actual) {
+          return actual === expected;
+        },
+        jasmineToString: function() {
+          return `<same instance as ${expected}>`;
+        }
+      };
+    }
+
     expect(suite.beforeAllFns).toEqual([
-      { fn: outerBefore.fn, type: 'beforeAll' },
-      { fn: innerBefore.fn, type: 'beforeAll' }
+      { fn: outerBefore.fn, type: 'beforeAll', suite: sameInstance(suite) },
+      { fn: innerBefore.fn, type: 'beforeAll', suite: sameInstance(suite) }
     ]);
   });
 

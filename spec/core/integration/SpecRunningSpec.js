@@ -1065,8 +1065,8 @@ describe('spec running', function() {
     });
   });
 
-  describe('When a beforeAll function fails', function() {
-    it('skips contained specs and suites', async function() {
+  describe('When a top-level beforeAll function fails', function() {
+    it('skips and reports contained specs', async function() {
       const outerBeforeEach = jasmine.createSpy('outerBeforeEach');
       const nestedBeforeEach = jasmine.createSpy('nestedBeforeEach');
       const outerAfterEach = jasmine.createSpy('outerAfterEach');
@@ -1089,6 +1089,14 @@ describe('spec running', function() {
       });
       env.afterEach(outerAfterEach);
 
+      const reporter = jasmine.createSpyObj('reporter', [
+        'suiteStarted',
+        'suiteDone',
+        'specStarted',
+        'specDone'
+      ]);
+      env.addReporter(reporter);
+
       await env.execute();
 
       expect(outerBeforeEach).not.toHaveBeenCalled();
@@ -1098,6 +1106,162 @@ describe('spec running', function() {
       expect(nestedIt).not.toHaveBeenCalled();
       expect(nestedAfterEach).not.toHaveBeenCalled();
       expect(outerAfterEach).not.toHaveBeenCalled();
+
+      expect(reporter.suiteStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a nested suite'
+        })
+      );
+
+      expect(reporter.suiteDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a nested suite',
+          status: 'failed',
+          failedExpectations: [
+            jasmine.objectContaining({
+              passed: false,
+              message: 'Not run because a beforeAll function failed'
+            })
+          ]
+        })
+      );
+
+      expect(reporter.specStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a spec'
+        })
+      );
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a spec',
+          status: 'failed',
+          failedExpectations: [
+            jasmine.objectContaining({
+              passed: false,
+              message: 'Not run because a beforeAll function failed'
+            })
+          ]
+        })
+      );
+
+      expect(reporter.specStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a nested suite a nested spec'
+        })
+      );
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a nested suite a nested spec',
+          status: 'failed',
+          failedExpectations: [
+            jasmine.objectContaining({
+              passed: false,
+              message: 'Not run because a beforeAll function failed'
+            })
+          ]
+        })
+      );
+    });
+  });
+
+  describe('When a suite beforeAll function fails', function() {
+    it('skips and reports contained specs', async function() {
+      const outerBeforeEach = jasmine.createSpy('outerBeforeEach');
+      const nestedBeforeEach = jasmine.createSpy('nestedBeforeEach');
+      const outerAfterEach = jasmine.createSpy('outerAfterEach');
+      const nestedAfterEach = jasmine.createSpy('nestedAfterEach');
+      const outerIt = jasmine.createSpy('outerIt');
+      const nestedIt = jasmine.createSpy('nestedIt');
+      const nestedBeforeAll = jasmine.createSpy('nestedBeforeAll');
+
+      env.describe('a suite', function() {
+        env.beforeAll(function() {
+          throw new Error('nope');
+        });
+
+        env.beforeEach(outerBeforeEach);
+        env.it('a spec', outerIt);
+        env.describe('a nested suite', function() {
+          env.beforeAll(nestedBeforeAll);
+          env.beforeEach(nestedBeforeEach);
+          env.it('a nested spec', nestedIt);
+          env.afterEach(nestedAfterEach);
+        });
+        env.afterEach(outerAfterEach);
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', [
+        'suiteStarted',
+        'suiteDone',
+        'specStarted',
+        'specDone'
+      ]);
+      env.addReporter(reporter);
+
+      await env.execute();
+
+      expect(outerBeforeEach).not.toHaveBeenCalled();
+      expect(outerIt).not.toHaveBeenCalled();
+      expect(nestedBeforeAll).not.toHaveBeenCalled();
+      expect(nestedBeforeEach).not.toHaveBeenCalled();
+      expect(nestedIt).not.toHaveBeenCalled();
+      expect(nestedAfterEach).not.toHaveBeenCalled();
+      expect(outerAfterEach).not.toHaveBeenCalled();
+
+      expect(reporter.suiteStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a nested suite'
+        })
+      );
+
+      expect(reporter.suiteDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a nested suite',
+          status: 'failed',
+          failedExpectations: [
+            jasmine.objectContaining({
+              passed: false,
+              message: 'Not run because a beforeAll function failed'
+            })
+          ]
+        })
+      );
+
+      expect(reporter.specStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a spec'
+        })
+      );
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a spec',
+          status: 'failed',
+          failedExpectations: [
+            jasmine.objectContaining({
+              passed: false,
+              message: 'Not run because a beforeAll function failed'
+            })
+          ]
+        })
+      );
+
+      expect(reporter.specStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a nested suite a nested spec'
+        })
+      );
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a nested suite a nested spec',
+          status: 'failed',
+          failedExpectations: [
+            jasmine.objectContaining({
+              passed: false,
+              message: 'Not run because a beforeAll function failed'
+            })
+          ]
+        })
+      );
     });
 
     it('runs afterAll functions in the current suite and outer scopes', async function() {

@@ -25,6 +25,12 @@ getJasmineRequireObj().SkipAfterBeforeAllErrorPolicy = function(j$) {
   SkipAfterBeforeAllErrorPolicy.prototype.fnErrored = function(fnIx) {
     if (this.queueableFns_[fnIx].type === 'beforeAll') {
       this.skipping_ = true;
+      // Failures need to be reported for each contained spec. But we can't do
+      // that from here because reporting is async. This function isn't async
+      // (and can't be without greatly complicating QueueRunner). Mark the
+      // failure so that the code that reports the suite result (which is
+      // already async) can detect the failure and report the specs.
+      this.queueableFns_[fnIx].suite.hadBeforeAllFailure = true;
     }
   };
 
