@@ -11,6 +11,9 @@ Jasmine is a Behavior Driven Development testing framework for JavaScript. It do
 Documentation & guides live here: [http://jasmine.github.io](http://jasmine.github.io/)
 For a quick start guide of Jasmine, see the beginning of [http://jasmine.github.io/edge/introduction.html](http://jasmine.github.io/edge/introduction.html).
 
+Upgrading from Jasmine 3.x? Check out the 4.0 release notes for a list of
+what's new (including breaking changes). You can also read the [upgrade guide](https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0).
+
 ## Contributing
 
 Please read the [contributors' guide](https://github.com/jasmine/jasmine/blob/main/.github/CONTRIBUTING.md).
@@ -44,7 +47,8 @@ Add the following to your HTML file:
 
 ## Supported environments
 
-Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Edge, and Internet Explorer) as well as nodejs.
+Jasmine tests itself across popular browsers (Safari, Chrome, Firefox, and
+Microsoft Edge) as well as nodejs.
 
 | Environment       | Supported versions |
 |-------------------|--------------------|
