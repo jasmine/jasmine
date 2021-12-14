@@ -538,7 +538,9 @@ describe('Spec', function() {
       "An asynchronous function called its 'done' " +
         'callback more than once. This is a bug in the spec, beforeAll, ' +
         'beforeEach, afterAll, or afterEach function in question. This will ' +
-        'be treated as an error in a future version.\n' +
+        'be treated as an error in a future version. See' +
+        '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
+        'for more information.\n' +
         '(in spec: a spec)',
       { ignoreRunnable: true }
     );

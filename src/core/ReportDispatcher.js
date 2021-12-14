@@ -48,7 +48,10 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
           deprecated(
             "An asynchronous reporter callback called its 'done' callback " +
               'more than once. This is a bug in the reporter callback in ' +
-              'question. This will be treated as an error in a future version.',
+              'question. This will be treated as an error in a future ' +
+              'version. See' +
+              '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
+              'for more information.',
             { ignoreRunnable: true }
           );
         }
