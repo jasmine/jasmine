@@ -45,7 +45,7 @@
     "grunt-css-url-embed": "^1.11.1",
     "grunt-sass": "^3.0.2",
     "jasmine": "github:jasmine/jasmine-npm#4.0",
-    "jasmine-browser-runner": "github:jasmine/jasmine-browser#main",
+    "jasmine-browser-runner": "github:jasmine/jasmine-browser#1.0",
     "jsdom": "^15.0.0",
     "load-grunt-tasks": "^4.0.0",
     "prettier": "1.17.1",
