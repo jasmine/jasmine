@@ -111,18 +111,6 @@ getJasmineRequireObj().Env = function(j$) {
        */
       hideDisabled: false,
       /**
-       * Set to provide a custom promise library that Jasmine will use if it needs
-       * to create a promise. If not set, it will default to whatever global Promise
-       * library is available (if any).
-       * @name Configuration#Promise
-       * @since 3.5.0
-       * @type function
-       * @default undefined
-       * @deprecated In a future version, Jasmine will ignore the Promise config
-       * property and always create native promises instead.
-       */
-      Promise: undefined,
-      /**
        * Clean closures when a suite is done running (done by clearing the stored function reference).
        * This prevents memory leaks, but you won't be able to run jasmine multiple times.
        * @name Configuration#autoCleanClosures
