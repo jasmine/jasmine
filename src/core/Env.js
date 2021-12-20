@@ -831,31 +831,37 @@ getJasmineRequireObj().Env = function(j$) {
               reporter.suiteStarted(child.result, resolve);
             });
             await reportChildrenOfBeforeAllFailure(child);
-            markNotRun(child);
+
+            // Marking the suite passed is consistent with how suites that
+            // contain failed specs but no suite-level failures are reported.
+            child.result.status = 'passed';
+
             await new Promise(function(resolve) {
               reporter.suiteDone(child.result, resolve);
             });
-          } /* a spec */ else {
+          } else {
+            /* a spec */
             await new Promise(function(resolve) {
               reporter.specStarted(child.result, resolve);
             });
+
+            child.addExpectationResult(
+              false,
+              {
+                passed: false,
+                message:
+                  'Not run because a beforeAll function failed. The ' +
+                  'beforeAll failure will be reported on the suite that ' +
+                  'caused it.'
+              },
+              true
+            );
+            child.result.status = 'failed';
+
             await new Promise(function(resolve) {
-              markNotRun(child);
               reporter.specDone(child.result, resolve);
             });
           }
-        }
-
-        function markNotRun(runnable) {
-          runnable.addExpectationResult(
-            false,
-            {
-              passed: false,
-              message: 'Not run because a beforeAll function failed'
-            },
-            true
-          );
-          runnable.result.status = 'failed';
         }
       }
     };

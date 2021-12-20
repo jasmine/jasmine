@@ -1113,16 +1113,13 @@ describe('spec running', function() {
         })
       );
 
+      // The child suite should be reported as passed, for consistency with
+      // suites that contain failing specs but no suite-level errors.
       expect(reporter.suiteDone).toHaveBeenCalledWith(
         jasmine.objectContaining({
           fullName: 'a nested suite',
-          status: 'failed',
-          failedExpectations: [
-            jasmine.objectContaining({
-              passed: false,
-              message: 'Not run because a beforeAll function failed'
-            })
-          ]
+          status: 'passed',
+          failedExpectations: []
         })
       );
 
@@ -1138,7 +1135,10 @@ describe('spec running', function() {
           failedExpectations: [
             jasmine.objectContaining({
               passed: false,
-              message: 'Not run because a beforeAll function failed'
+              message:
+                'Not run because a beforeAll function failed. The ' +
+                'beforeAll failure will be reported on the suite that ' +
+                'caused it.'
             })
           ]
         })
@@ -1156,7 +1156,10 @@ describe('spec running', function() {
           failedExpectations: [
             jasmine.objectContaining({
               passed: false,
-              message: 'Not run because a beforeAll function failed'
+              message:
+                'Not run because a beforeAll function failed. The ' +
+                'beforeAll failure will be reported on the suite that ' +
+                'caused it.'
             })
           ]
         })
@@ -1214,16 +1217,13 @@ describe('spec running', function() {
         })
       );
 
+      // The child suite should be reported as passed, for consistency with
+      // suites that contain failing specs but no suite-level errors.
       expect(reporter.suiteDone).toHaveBeenCalledWith(
         jasmine.objectContaining({
           fullName: 'a suite a nested suite',
-          status: 'failed',
-          failedExpectations: [
-            jasmine.objectContaining({
-              passed: false,
-              message: 'Not run because a beforeAll function failed'
-            })
-          ]
+          status: 'passed',
+          failedExpectations: []
         })
       );
 
@@ -1239,7 +1239,10 @@ describe('spec running', function() {
           failedExpectations: [
             jasmine.objectContaining({
               passed: false,
-              message: 'Not run because a beforeAll function failed'
+              message:
+                'Not run because a beforeAll function failed. The ' +
+                'beforeAll failure will be reported on the suite that ' +
+                'caused it.'
             })
           ]
         })
@@ -1257,7 +1260,10 @@ describe('spec running', function() {
           failedExpectations: [
             jasmine.objectContaining({
               passed: false,
-              message: 'Not run because a beforeAll function failed'
+              message:
+                'Not run because a beforeAll function failed. The ' +
+                'beforeAll failure will be reported on the suite that ' +
+                'caused it.'
             })
           ]
         })
