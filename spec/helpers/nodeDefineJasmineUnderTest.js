@@ -1,6 +1,6 @@
 (function() {
   var path = require('path'),
-    fg = require('fast-glob');
+    glob = require('glob');
 
   var jasmineUnderTestRequire = require(path.join(
     __dirname,
@@ -16,7 +16,8 @@
       return path.join(__dirname, '../../', 'src/', file);
     });
 
-    fg.sync(src_files).forEach(function(resolvedFile) {
+    const files = src_files.flatMap(g => glob.sync(g));
+    files.forEach(function(resolvedFile) {
       require(resolvedFile);
     });
   }
