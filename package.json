@@ -34,7 +34,6 @@
     "package.json"
   ],
   "devDependencies": {
-    "ejs": "^2.5.5",
     "eslint": "^6.8.0",
     "eslint-plugin-compat": "^3.8.0",
     "fast-glob": "^2.2.6",
