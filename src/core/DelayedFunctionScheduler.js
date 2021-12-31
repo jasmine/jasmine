@@ -12,7 +12,6 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       var endTime = currentTime + millis;
 
       runScheduledFunctions(endTime, tickDate);
-      currentTime = endTime;
     };
 
     self.scheduleFunction = function(
@@ -130,16 +129,20 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     function runScheduledFunctions(endTime, tickDate) {
       tickDate = tickDate || function() {};
       if (scheduledLookup.length === 0 || scheduledLookup[0] > endTime) {
-        tickDate(endTime - currentTime);
+        if (endTime >= currentTime) {
+          tickDate(endTime - currentTime);
+          currentTime = endTime;
+        }
         return;
       }
 
       do {
         deletedKeys = [];
         var newCurrentTime = scheduledLookup.shift();
-        tickDate(newCurrentTime - currentTime);
-
-        currentTime = newCurrentTime;
+        if (newCurrentTime >= currentTime) {
+          tickDate(newCurrentTime - currentTime);
+          currentTime = newCurrentTime;
+        }
 
         var funcsToRun = scheduledFunctions[currentTime];
 
@@ -168,8 +171,9 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       );
 
       // ran out of functions to call, but still time left on the clock
-      if (currentTime !== endTime) {
+      if (endTime >= currentTime) {
         tickDate(endTime - currentTime);
+        currentTime = endTime;
       }
     }
   }
