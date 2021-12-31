@@ -303,13 +303,13 @@ describe('DelayedFunctionScheduler', function() {
     let lastWork = 0;
 
     beforeEach(() => {
-      clock = jasmine.clock();
+      clock = jasmineUnderTest.getEnv().clock;
       clock.install();
       clock.mockDate(new Date(1));
     });
 
     afterEach(function() {
-      jasmine.clock().uninstall();
+      jasmineUnderTest.getEnv().clock.uninstall();
     });
 
     it('preserves monotonically-increasing current time', () => {
