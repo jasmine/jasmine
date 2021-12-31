@@ -6,13 +6,31 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     var currentTime = 0;
     var delayedFnCount = 0;
     var deletedKeys = [];
+    var ticking = false;
 
     self.tick = function(millis, tickDate) {
-      millis = millis || 0;
-      var endTime = currentTime + millis;
+      if (ticking) {
+        j$.getEnv().deprecated(
+          'The behavior of reentrant calls to jasmine.clock().tick() will ' +
+            'change in a future version. Either modify the affected spec to ' +
+            'not call tick() from within a setTimeout or setInterval handler, ' +
+            'or be aware that it may behave differently in the future. See ' +
+            '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-reentrant-calls-to-jasmine-clock-tick> ' +
+            'for details.'
+        );
+      }
 
-      runScheduledFunctions(endTime, tickDate);
-      currentTime = endTime;
+      ticking = true;
+
+      try {
+        millis = millis || 0;
+        var endTime = currentTime + millis;
+
+        runScheduledFunctions(endTime, tickDate);
+        currentTime = endTime;
+      } finally {
+        ticking = false;
+      }
     };
 
     self.scheduleFunction = function(

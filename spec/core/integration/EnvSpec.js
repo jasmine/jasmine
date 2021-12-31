@@ -1259,6 +1259,42 @@ describe('Env integration', function() {
     });
   });
 
+  it('logs a deprecation warning when the mock clock is ticked reentrantly', function(done) {
+    var ticked = false,
+      env = jasmineUnderTest.getEnv();
+    spyOn(env, 'deprecated');
+
+    env.beforeEach(function() {
+      env.clock.install();
+    });
+
+    env.afterEach(function() {
+      env.clock.uninstall();
+    });
+
+    env.it('ticks inside tick', function() {
+      setTimeout(function() {
+        ticked = true;
+        env.clock.tick();
+      }, 1);
+
+      env.clock.tick(1);
+    });
+
+    env.execute(null, function() {
+      expect(ticked).toBeTrue();
+      expect(env.deprecated).toHaveBeenCalledWith(
+        'The behavior of reentrant calls to jasmine.clock().tick() will ' +
+          'change in a future version. Either modify the affected spec to ' +
+          'not call tick() from within a setTimeout or setInterval handler, ' +
+          'or be aware that it may behave differently in the future. See ' +
+          '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-reentrant-calls-to-jasmine-clock-tick> ' +
+          'for details.'
+      );
+      done();
+    });
+  });
+
   it('should run async specs in order, waiting for them to complete', function(done) {
     var mutatedVar;
 
