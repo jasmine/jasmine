@@ -106,8 +106,6 @@ workflows:
             branches:
                only:
                  - main
-                 - "3.99"
-                 - "4.0"
     jobs:
       - build:
           executor: node16
