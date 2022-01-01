@@ -15,7 +15,11 @@ executors:
     docker:
       - image: circleci/node:14
     working_directory: ~/workspace
-  node12:
+  node12_latest:
+    docker:
+    - image: circleci/node:12
+    working_directory: ~/workspace
+  node12_17:
     docker:
       - image: circleci/node:12.17
     working_directory: ~/workspace
@@ -112,18 +116,26 @@ workflows:
           executor: node14
           name: build_node_14
       - build:
-          executor: node12
-          name: build_node_12
+          executor: node12_latest
+          name: build_node_12_latest
+      - build:
+          executor: node12_17
+          name: build_node_12_17
       - test_node:
           executor: node16
           name: test_node_16
           requires:
              - build_node_16
       - test_node:
-          executor: node12
-          name: test_node_12
+          executor: node12_latest
+          name: test_node_12_latest
           requires:
-             - build_node_12
+             - build_node_12_latest
+      - test_node:
+          executor: node12_17
+          name: test_node_12_17
+          requires:
+             - build_node_12_17
       - test_browsers:
           requires:
              - build_node_14
@@ -140,8 +152,11 @@ workflows:
           executor: node14
           name: build_node_14
       - build:
-          executor: node12
-          name: build_node_12
+          executor: node12_latest
+          name: build_node_12_latest
+      - build:
+          executor: node12_17
+          name: build_node_12_17
       - test_node:
           executor: node16
           name: test_node_16
@@ -153,10 +168,15 @@ workflows:
           requires:
              - build_node_14
       - test_node:
-          executor: node12
-          name: test_node_12
+          executor: node12_latest
+          name: test_node_12_latest
           requires:
-             - build_node_12
+             - build_node_12_latest
+      - test_node:
+          executor: node12_17
+          name: test_node_12_17
+          requires:
+             - build_node_12_17
       - test_browsers:
           requires:
              - build_node_14
