@@ -1,5 +1,5 @@
 describe('StackTrace', function() {
-  it('understands Chrome/IE/Edge style traces', function() {
+  it('understands Chrome/Edge style traces', function() {
     var error = {
       message: 'nope',
       stack:
@@ -30,7 +30,7 @@ describe('StackTrace', function() {
     ]);
   });
 
-  it('understands Chrome/IE/Edge style traces with multiline messages', function() {
+  it('understands Chrome/Edge style traces with multiline messages', function() {
     var error = {
       message: 'line 1\nline 2',
       stack:
@@ -95,7 +95,7 @@ describe('StackTrace', function() {
     ]);
   });
 
-  it('understands Safari/Firefox/Phantom-OS X style traces', function() {
+  it('understands Safari <=14/Firefox/Phantom-OS X style traces', function() {
     var error = {
       message: 'nope',
       stack:
@@ -118,6 +118,33 @@ describe('StackTrace', function() {
         func: 'run',
         file: 'http://localhost:8888/__jasmine__/jasmine.js',
         line: 4320
+      }
+    ]);
+  });
+
+  it('understands Safari 15 style traces', function() {
+    var error = {
+      message: 'nope',
+      stack:
+        '@http://localhost:8888/__spec__/core/FooSpec.js:164:24\n' +
+        'attempt@http://localhost:8888/__jasmine__/jasmine.js:8074:44\n'
+    };
+    var result = new jasmineUnderTest.StackTrace(error);
+
+    expect(result.message).toBeFalsy();
+    expect(result.style).toEqual('webkit');
+    expect(result.frames).toEqual([
+      {
+        raw: '@http://localhost:8888/__spec__/core/FooSpec.js:164:24',
+        func: undefined,
+        file: 'http://localhost:8888/__spec__/core/FooSpec.js',
+        line: 164
+      },
+      {
+        raw: 'attempt@http://localhost:8888/__jasmine__/jasmine.js:8074:44',
+        func: 'attempt',
+        file: 'http://localhost:8888/__jasmine__/jasmine.js',
+        line: 8074
       }
     ]);
   });

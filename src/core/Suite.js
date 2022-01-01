@@ -14,12 +14,6 @@ getJasmineRequireObj().Suite = function(j$) {
      * @since 2.0.0
      */
     this.id = attrs.id;
-    /**
-     * The parent of this suite, or null if this is the top suite.
-     * @name Suite#parentSuite
-     * @readonly
-     * @type {Suite}
-     */
     this.parentSuite = attrs.parentSuite;
     /**
      * The description passed to the {@link describe} that created this suite.
@@ -35,12 +29,12 @@ getJasmineRequireObj().Suite = function(j$) {
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
     this.autoCleanClosures =
       attrs.autoCleanClosures === undefined ? true : !!attrs.autoCleanClosures;
+    this.onLateError = attrs.onLateError;
 
     this.beforeFns = [];
     this.afterFns = [];
     this.beforeAllFns = [];
     this.afterAllFns = [];
-
     this.timer = attrs.timer || new j$.Timer();
 
     /**
@@ -105,19 +99,19 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.beforeEach = function(fn) {
-    this.beforeFns.unshift(fn);
+    this.beforeFns.unshift({ ...fn, suite: this });
   };
 
   Suite.prototype.beforeAll = function(fn) {
-    this.beforeAllFns.push(fn);
+    this.beforeAllFns.push({ ...fn, type: 'beforeAll', suite: this });
   };
 
   Suite.prototype.afterEach = function(fn) {
-    this.afterFns.unshift(fn);
+    this.afterFns.unshift({ ...fn, suite: this, type: 'afterEach' });
   };
 
   Suite.prototype.afterAll = function(fn) {
-    this.afterAllFns.unshift(fn);
+    this.afterAllFns.unshift({ ...fn, type: 'afterAll' });
   };
 
   Suite.prototype.startTimer = function() {
@@ -232,33 +226,25 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.onMultipleDone = function() {
-    var msg;
+    let msg;
 
     // Issue a deprecation. Include the context ourselves and pass
     // ignoreRunnable: true, since getting here always means that we've already
     // moved on and the current runnable isn't the one that caused the problem.
     if (this.parentSuite) {
       msg =
-        "An asynchronous function called its 'done' callback more than " +
-        'once. This is a bug in the spec, beforeAll, beforeEach, afterAll, ' +
-        'or afterEach function in question. This will be treated as an error ' +
-        'in a future version. See' +
-        '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
-        'for more information.\n' +
+        "An asynchronous beforeAll or afterAll function called its 'done' " +
+        'callback more than once.\n' +
         '(in suite: ' +
         this.getFullName() +
         ')';
     } else {
       msg =
         'A top-level beforeAll or afterAll function called its ' +
-        "'done' callback more than once. This is a bug in the beforeAll " +
-        'or afterAll function in question. This will be treated as an ' +
-        'error in a future version. See' +
-        '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
-        'for more information.';
+        "'done' callback more than once.";
     }
 
-    this.env.deprecated(msg, { ignoreRunnable: true });
+    this.onLateError(new Error(msg));
   };
 
   Suite.prototype.addExpectationResult = function() {
@@ -280,14 +266,71 @@ getJasmineRequireObj().Suite = function(j$) {
     );
   };
 
+  Object.defineProperty(Suite.prototype, 'metadata', {
+    get: function() {
+      if (!this.metadata_) {
+        this.metadata_ = new SuiteMetadata(this);
+      }
+
+      return this.metadata_;
+    }
+  });
+
+  /**
+   * @interface Suite
+   * @see Env#topSuite
+   */
+  function SuiteMetadata(suite) {
+    this.suite_ = suite;
+    /**
+     * The unique ID of this suite.
+     * @name Suite#id
+     * @readonly
+     * @type {string}
+     */
+    this.id = suite.id;
+
+    /**
+     * The parent of this suite, or null if this is the top suite.
+     * @name Suite#parentSuite
+     * @readonly
+     * @type {Suite}
+     */
+    this.parentSuite = suite.parentSuite ? suite.parentSuite.metadata : null;
+
+    /**
+     * The description passed to the {@link describe} that created this suite.
+     * @name Suite#description
+     * @readonly
+     * @type {string}
+     */
+    this.description = suite.description;
+  }
+
+  /**
+   * The full description including all ancestors of this suite.
+   * @name Suite#getFullName
+   * @function
+   * @returns {string}
+   */
+  SuiteMetadata.prototype.getFullName = function() {
+    return this.suite_.getFullName();
+  };
+
+  /**
+   * The suite's children.
+   * @name Suite#children
+   * @type {Array.<(Spec|Suite)>}
+   */
+  Object.defineProperty(SuiteMetadata.prototype, 'children', {
+    get: function() {
+      return this.suite_.children.map(child => child.metadata);
+    }
+  });
+
   function isFailure(args) {
     return !args[0];
   }
 
   return Suite;
 };
-
-if (typeof window == void 0 && typeof exports == 'object') {
-  /* globals exports */
-  exports.Suite = jasmineRequire.Suite;
-}

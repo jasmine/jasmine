@@ -30,33 +30,27 @@ describe('Any', function() {
   });
 
   it('matches a Map', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
     var any = new jasmineUnderTest.Any(Map);
 
-    expect(any.asymmetricMatch(new Map())).toBe(true); // eslint-disable-line compat/compat
+    expect(any.asymmetricMatch(new Map())).toBe(true);
   });
 
   it('matches a Set', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
     var any = new jasmineUnderTest.Any(Set);
 
-    expect(any.asymmetricMatch(new Set())).toBe(true); // eslint-disable-line compat/compat
+    expect(any.asymmetricMatch(new Set())).toBe(true);
   });
 
   it('matches a TypedArray', function() {
     var any = new jasmineUnderTest.Any(Uint32Array);
 
-    expect(any.asymmetricMatch(new Uint32Array([]))).toBe(true); // eslint-disable-line compat/compat
+    expect(any.asymmetricMatch(new Uint32Array([]))).toBe(true);
   });
 
   it('matches a Symbol', function() {
-    jasmine.getEnv().requireFunctioningSymbols();
+    var any = new jasmineUnderTest.Any(Symbol);
 
-    var any = new jasmineUnderTest.Any(Symbol); // eslint-disable-line compat/compat
-
-    expect(any.asymmetricMatch(Symbol())).toBe(true); // eslint-disable-line compat/compat
+    expect(any.asymmetricMatch(Symbol())).toBe(true);
   });
 
   it('matches another constructed object', function() {

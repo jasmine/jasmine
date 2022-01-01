@@ -3,7 +3,6 @@ getJasmineRequireObj().Expector = function(j$) {
     this.matchersUtil = options.matchersUtil || {
       buildFailureMessage: function() {}
     };
-    this.customEqualityTesters = options.customEqualityTesters || [];
     this.actual = options.actual;
     this.addExpectationResult = options.addExpectationResult || function() {};
     this.filters = new j$.ExpectationFilterChain();
@@ -20,14 +19,7 @@ getJasmineRequireObj().Expector = function(j$) {
 
     this.args.unshift(this.actual);
 
-    // TODO: Remove support for passing customEqualityTesters in the next major release.
-    var matcher;
-
-    if (matcherFactory.length >= 2) {
-      matcher = matcherFactory(this.matchersUtil, this.customEqualityTesters);
-    } else {
-      matcher = matcherFactory(this.matchersUtil);
-    }
+    var matcher = matcherFactory(this.matchersUtil);
 
     var comparisonFunc = this.filters.selectComparisonFunc(matcher);
     return comparisonFunc || matcher.compare;

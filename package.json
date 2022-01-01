@@ -1,7 +1,7 @@
 {
   "name": "jasmine-core",
   "license": "MIT",
-  "version": "3.99.0",
+  "version": "4.0.0-dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/jasmine/jasmine.git"
@@ -34,22 +34,21 @@
     "package.json"
   ],
   "devDependencies": {
-    "ejs": "^2.5.5",
-    "eslint": "^6.8.0",
-    "eslint-plugin-compat": "^3.8.0",
-    "fast-glob": "^2.2.6",
+    "eslint": "^7.32.0",
+    "eslint-plugin-compat": "^4.0.0",
+    "glob": "^7.2.0",
     "grunt": "^1.0.4",
     "grunt-cli": "^1.3.2",
-    "grunt-contrib-compress": "^1.3.0",
-    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-compress": "^2.0.0",
+    "grunt-contrib-concat": "^2.0.0",
     "grunt-css-url-embed": "^1.11.1",
     "grunt-sass": "^3.0.2",
-    "jasmine": "^3.10.0",
-    "jasmine-browser-runner": "github:jasmine/jasmine-browser#main",
-    "jsdom": "^15.0.0",
-    "load-grunt-tasks": "^4.0.0",
+    "jasmine": "github:jasmine/jasmine-npm#4.0",
+    "jasmine-browser-runner": "github:jasmine/jasmine-browser#1.0",
+    "jsdom": "^19.0.0",
+    "load-grunt-tasks": "^5.1.0",
     "prettier": "1.17.1",
-    "sass": "^1.32.12",
+    "sass": "^1.45.1",
     "shelljs": "^0.8.3",
     "temp": "^0.9.0"
   },
@@ -60,8 +59,13 @@
     "extends": [
       "plugin:compat/recommended"
     ],
+    "env": {
+      "browser": true,
+      "node": true,
+      "es2017": true
+    },
     "parserOptions": {
-      "ecmaVersion": 5
+      "ecmaVersion": 2018
     },
     "rules": {
       "quotes": [
@@ -77,6 +81,7 @@
           "args": "none"
         }
       ],
+      "no-implicit-globals": "error",
       "block-spacing": "error",
       "func-call-spacing": [
         "error",
@@ -94,11 +99,10 @@
     }
   },
   "browserslist": [
-    "Safari >= 8",
+    "Safari >= 13",
     "last 2 Chrome versions",
     "last 2 Firefox versions",
-    "Firefox 68",
-    "last 2 Edge versions",
-    "IE >= 10"
+    "Firefox >= 68",
+    "last 2 Edge versions"
   ]
 }

@@ -1,8 +1,5 @@
-/* eslint-disable compat/compat */
 describe('#toBeRejectedWith', function() {
   it('should return true if the promise is rejected with the expected value', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
       actual = Promise.reject({ error: 'PEBCAK' });
@@ -13,8 +10,6 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should fail if the promise resolves', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
       actual = Promise.resolve();
@@ -25,8 +20,6 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should fail if the promise is rejected with a different value', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
@@ -45,8 +38,6 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should build its error correctly when negated', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
@@ -64,8 +55,6 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should support custom equality testers', function() {
-    jasmine.getEnv().requirePromises();
-
     var customEqualityTesters = [
         function() {
           return true;

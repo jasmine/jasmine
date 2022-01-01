@@ -16,12 +16,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['sass:dist', "cssUrlEmbed"]);
 
-  var version = require('./grunt/tasks/version.js');
-
-  grunt.registerTask('build:copyVersionToGem',
-    "Propagates the version from package.json to version.rb",
-    version.copyToGem);
-
   grunt.registerTask('buildDistribution',
     'Builds and lints jasmine.js, jasmine-html.js, jasmine.css',
     [
@@ -34,18 +28,16 @@ module.exports = function(grunt) {
   grunt.registerTask("execSpecsInNode",
     "Run Jasmine core specs in Node.js",
     function() {
-      var done = this.async(),
+      verifyNoGlobals(() => require('./lib/jasmine-core.js').noGlobals());
+      const done = this.async(),
           Jasmine = require('jasmine'),
           jasmineCore = require('./lib/jasmine-core.js'),
           jasmine = new Jasmine({jasmineCore: jasmineCore});
 
       jasmine.loadConfigFile('./spec/support/jasmine.json');
-
       jasmine.exitOnCompletion = false;
       jasmine.execute().then(
-        result => {
-          done(result.overallStatus === 'passed');
-        },
+        result => done(result.overallStatus === 'passed'),
         err => {
           console.error(err);
           exit(1);
@@ -61,3 +53,14 @@ module.exports = function(grunt) {
     }
   );
 };
+
+function verifyNoGlobals(fn) {
+  const initialGlobals = Object.keys(global);
+  fn();
+
+  const extras = Object.keys(global).filter(k => !initialGlobals.includes(k));
+
+  if (extras.length !== 0) {
+    throw new Error('Globals were unexpectedly created: ' + extras.join(', '));
+  }
+}

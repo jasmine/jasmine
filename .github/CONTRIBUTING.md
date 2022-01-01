@@ -12,24 +12,23 @@ should have enough detail to get started.
 
 - [Jasmine Google Group](http://groups.google.com/group/jasmine-js)
 - [Jasmine-dev Google Group](http://groups.google.com/group/jasmine-js-dev)
-- [Jasmine on PivotalTracker](https://www.pivotaltracker.com/n/projects/10606)
+- [Jasmine backlog](https://www.pivotaltracker.com/n/projects/10606)
 
-## General Workflow
+## Before Submitting a Pull Request
 
-Please submit pull requests via feature branches using the semi-standard workflow of:
+1. Ensure all specs are green in browsers *and* node.
+   * Use `npm test` to test in Node.
+   * Use `npm run serve` to test in browsers.
+2. Fix any eslint or prettier errors reported at the end of `npm test`. Prettier
+   errors can be automatically fixed by running `npm run cleanup`.
+3. Build `jasmine.js` with `npm run build` and run all specs again. This
+   ensures that your changes self-test well.
+5. Revert your changes to `jasmine.js` and `jasmine-html.js`. When we accept 
+   your pull request, we will generate these files as a separate commit and
+   merge the entire branch into master.
 
-```bash
-git clone git@github.com:yourUserName/jasmine.git              # Clone your fork
-cd jasmine                                                     # Change directory
-git remote add upstream https://github.com/jasmine/jasmine.git # Assign original repository to a remote named 'upstream'
-git fetch upstream                                             # Fetch changes not present in your local repository
-git merge upstream/main                                      # Sync local main with upstream repository
-git checkout -b my-new-feature                                 # Create your feature branch
-git commit -am 'Add some feature'                              # Commit your changes
-git push origin my-new-feature                                 # Push to the branch
-```
-
-Once you've pushed a feature branch to your forked repo, you're ready to open a pull request. We favor pull requests with very small, single commits with a single purpose.
+We only accept green pull requests. If you see that the CI build failed, please
+fix it. Feel free to ask for help if you're stuck.
 
 ## Background
 
@@ -38,15 +37,16 @@ Once you've pushed a feature branch to your forked repo, you're ready to open a 
 * `/src` contains all of the source files
     * `/src/core` - generic source files
     * `/src/html` - browser-specific files
+    * `/src/boot` - sources for boot files (see below)
 * `/spec` contains all of the tests
     * mirrors the source directory
     * there are some additional files
 * `/lib` contains the compiled copy of Jasmine. This is used to self-test and
-  distributed as the `jasmine-core` Node, Ruby, and Python packages.
+  distributed as the `jasmine-core` Node, and Ruby packages.
 
 ### Self-testing
 
-Note that Jasmine tests itself. The files in `lib` are loaded first, defining the reference `jasmine`. Then the files in `src` are loaded, defining the reference `jasmineUnderTest`. So there are two copies of the code loaded under test.
+Jasmine tests itself. The files in `lib` are loaded first, defining the reference `jasmine`. Then the files in `src` are loaded, defining the reference `jasmineUnderTest`. So there are two copies of the code loaded under test.
 
 The tests should always use `jasmineUnderTest` to refer to the objects and functions that are being tested. But the tests can use functions on `jasmine` as needed. _Be careful how you structure any new test code_. Copy the patterns you see in the existing code - this ensures that the code you're testing is not leaking into the `jasmine` reference and vice-versa.
 
@@ -60,9 +60,8 @@ is appropriate for browsers, projects may wish to customize this file.
 
 ### Compatibility
 
-Jasmine runs in both Node and browsers, including some older browsers that do
-not support the latest JavaScript features. See the README for the list of
-currently supported environments.
+Jasmine runs in both Node and a variety of browsers. See the README for the
+list of currently supported environments.
 
 ## Development
 
@@ -88,51 +87,35 @@ Or, How to make a successful pull request
 
 * _Do not change the public interface_. Lots of projects depend on Jasmine and
   if you aren't careful you'll break them.
-* _Be environment agnostic_ - server-side developers are just as important as
-  browser developers.
+* _Be environment agnostic_. Some people run their specs in browsers, others in
+  Node. Jasmine should support them all as much as possible.
 * _Be browser agnostic_ - if you must rely on browser-specific functionality, 
   please write it in a way that degrades gracefully.
 * _Write specs_ - Jasmine's a testing framework. Don't add functionality 
   without test-driving it.
 * _Write code in the style of the rest of the repo_ - Jasmine should look like
   a cohesive whole.
+  
+  Key exceptions:
+  * Use `const` or `let` for new variable declarations, even if nearby code
+    uses `var`.
+  * New async specs should usually be async/await or promise-returning, not
+    callback based.
+  
 * _Ensure the *entire* test suite is green_ in all the big browsers, Node, and
-  ESLint. Your contribution shouldn't break Jasmine for other users.
+  ESLint/Prettier. Your contribution shouldn't break Jasmine for other users.
 
 Follow these tips and your pull request, patch, or suggestion is much more likely to be integrated.
 
 ### Running Specs
 
 Be sure to run the tests in at least one supported Node version and at least a
-couple of supported browsers. It's also a good idea to run the tests in Internet 
-Explorer if you've touched code in `src/html`, if your change involves newer 
-JavaScript language/runtime features, or if you're unfamiliar with writing code 
-for older browsers. To run the tests in Node, simply use `npm test` as described 
-above. To run the tests in a browser, run `npm run serve` and then visit
-`http://localhost:8888`.
+couple of supported browsers. To run the tests in Node, simply use `npm test`
+as described above. To run the tests in a browser, run `npm run serve` and then
+visit `http://localhost:8888`.
 
-If you have the necessary Selenium drivers installed, you can also use Jasmine's
-CI tooling: 
+If you have the necessary Selenium drivers installed (e.g. geckodriver or 
+chromedriver), you can also use Jasmine's CI tooling: 
 
-    $ JASMINE_BROWSER=<name of browser> node spec/support/ci.js
-
-The easiest way to run the tests in **Internet Explorer** is to run a VM that has IE installed. It's easy to do this with VirtualBox.
-
-1. Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-1. Download a VM image [from Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/). Select "VirtualBox" as the platform.
-1. Unzip the downloaded archive. There should be an OVA file inside.
-1. In VirtualBox, choose `File > Import Appliance` and select the OVA file. Accept the default settings in the dialog that appears. Now you have a Windows VM!
-1. Run the VM and start IE.
-1. With `npm run serve` running on your host machine, navigate to `http://<your IP address>:8888` in IE.
-
-## Before Committing or Submitting a Pull Request
-
-1. Ensure all specs are green in browser *and* node.
-1. Ensure eslint and prettier are clean as part of your `npm test` command. You can run `npm run cleanup` to have prettier re-write the files.
-1. Build `jasmine.js` with `npm run build` and run all specs again - this ensures that your changes self-test well.
-1. Revert your changes to `jasmine.js` and `jasmine-html.js`
-    * We do this because `jasmine.js` and `jasmine-html.js` are auto-generated (as you've seen in the previous steps) and accepting multiple pull requests when this auto-generated file changes causes lots of headaches
-    * When we accept your pull request, we will generate these files as a separate commit and merge the entire branch into main
-
-Note that we use Circle CI for Continuous Integration. We only accept green pull requests.
+    $ JASMINE_BROWSER=<name of browser> npm run ci
 

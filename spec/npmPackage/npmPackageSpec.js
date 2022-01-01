@@ -55,8 +55,7 @@ describe('npm package', function() {
   it('has jsFiles', function() {
     expect(this.packagedCore.files.jsFiles).toEqual([
       'jasmine.js',
-      'jasmine-html.js',
-      'json2.js'
+      'jasmine-html.js'
     ]);
 
     var packagedCore = this.packagedCore;
@@ -82,10 +81,6 @@ describe('npm package', function() {
     this.packagedCore.files.bootFiles.forEach(function(fileName) {
       expect(fileName).toExistInPath(packagedCore.files.bootDir);
     });
-
-    // For backwards compatibility, boot.js should be packaged even though
-    // it is no longer in bootFiles.
-    expect('boot.js').toExistInPath(packagedCore.files.bootDir);
 
     var packagedCore = this.packagedCore;
     this.packagedCore.files.nodeBootFiles.forEach(function(fileName) {
@@ -148,7 +143,7 @@ describe('npm package', function() {
         j;
 
       for (j = 0; j < dirents.length; j++) {
-        dirent = dirents[j];
+        const dirent = dirents[j];
 
         if (dirent.isDirectory()) {
           getFiles(path.resolve(dir, dirent.name));

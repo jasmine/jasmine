@@ -122,40 +122,24 @@ describe('Asymmetric equality testers (Integration)', function() {
   });
 
   describe('mapContaining', function() {
-    if (jasmine.getEnv().hasFunctioningMaps()) {
-      verifyPasses(function(env) {
-        var actual = new Map();
-        actual.set('a', '2');
-        var expected = new Map();
-        expected.set('a', 2);
+    verifyPasses(function(env) {
+      var actual = new Map();
+      actual.set('a', '2');
+      var expected = new Map();
+      expected.set('a', 2);
 
-        env.addCustomEqualityTester(function(a, b) {
-          return a.toString() === b.toString();
-        });
+      env.addCustomEqualityTester(function(a, b) {
+        return a.toString() === b.toString();
+      });
 
-        env.expect(actual).toEqual(jasmineUnderTest.mapContaining(expected));
-      });
-    } else {
-      it('passes', function() {
-        jasmine
-          .getEnv()
-          .pending('Browser has incomplete or missing support for Maps');
-      });
-    }
+      env.expect(actual).toEqual(jasmineUnderTest.mapContaining(expected));
+    });
 
-    if (jasmine.getEnv().hasFunctioningMaps()) {
-      verifyFails(function(env) {
-        env
-          .expect('something')
-          .toEqual(jasmineUnderTest.mapContaining(new Map()));
-      });
-    } else {
-      it('fails', function() {
-        jasmine
-          .getEnv()
-          .pending('Browser has incomplete or missing support for Maps');
-      });
-    }
+    verifyFails(function(env) {
+      env
+        .expect('something')
+        .toEqual(jasmineUnderTest.mapContaining(new Map()));
+    });
   });
 
   describe('notEmpty', function() {
@@ -185,40 +169,24 @@ describe('Asymmetric equality testers (Integration)', function() {
   });
 
   describe('setContaining', function() {
-    if (jasmine.getEnv().hasFunctioningSets()) {
-      verifyPasses(function(env) {
-        var actual = new Set();
-        actual.add('1');
-        var expected = new Set();
-        actual.add(1);
+    verifyPasses(function(env) {
+      var actual = new Set();
+      actual.add('1');
+      var expected = new Set();
+      actual.add(1);
 
-        env.addCustomEqualityTester(function(a, b) {
-          return a.toString() === b.toString();
-        });
+      env.addCustomEqualityTester(function(a, b) {
+        return a.toString() === b.toString();
+      });
 
-        env.expect(actual).toEqual(jasmineUnderTest.setContaining(expected));
-      });
-    } else {
-      it('pases', function() {
-        jasmine
-          .getEnv()
-          .pending('Browser has incomplete or missing support for Sets');
-      });
-    }
+      env.expect(actual).toEqual(jasmineUnderTest.setContaining(expected));
+    });
 
-    if (jasmine.getEnv().hasFunctioningSets()) {
-      verifyFails(function(env) {
-        env
-          .expect('something')
-          .toEqual(jasmineUnderTest.setContaining(new Set()));
-      });
-    } else {
-      it('fails', function() {
-        jasmine
-          .getEnv()
-          .pending('Browser has incomplete or missing support for Sets');
-      });
-    }
+    verifyFails(function(env) {
+      env
+        .expect('something')
+        .toEqual(jasmineUnderTest.setContaining(new Set()));
+    });
   });
 
   describe('stringMatching', function() {

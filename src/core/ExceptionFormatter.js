@@ -38,7 +38,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
       return message;
     };
 
-    this.stack = function(error) {
+    this.stack = function(error, { omitMessage } = {}) {
       if (!error || !error.stack) {
         return null;
       }
@@ -47,7 +47,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
       var lines = filterJasmine(stackTrace);
       var result = '';
 
-      if (stackTrace.message) {
+      if (stackTrace.message && !omitMessage) {
         lines.unshift(stackTrace.message);
       }
 

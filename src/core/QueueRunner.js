@@ -35,9 +35,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
   function QueueRunner(attrs) {
     this.id_ = nextid++;
-    var queueableFns = attrs.queueableFns || [];
-    this.queueableFns = queueableFns.concat(attrs.cleanupFns || []);
-    this.firstCleanupIx = queueableFns.length;
+    this.queueableFns = attrs.queueableFns || [];
     this.onComplete = attrs.onComplete || emptyFn;
     this.clearStack =
       attrs.clearStack ||
@@ -56,8 +54,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       pushListener: emptyFn,
       popListener: emptyFn
     };
-    this.completeOnFirstError = !!attrs.completeOnFirstError;
-    this.errored = false;
+
+    const SkipPolicy = attrs.SkipPolicy || j$.NeverSkipPolicy;
+    this.skipPolicy_ = new SkipPolicy(this.queueableFns);
+    this.errored_ = false;
 
     if (typeof this.onComplete !== 'function') {
       throw new Error('invalid onComplete ' + JSON.stringify(this.onComplete));
@@ -75,14 +75,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     };
     this.globalErrors.pushListener(this.handleFinalError);
     this.run(0);
-  };
-
-  QueueRunner.prototype.skipToCleanup = function(lastRanIndex) {
-    if (lastRanIndex < this.firstCleanupIx) {
-      this.run(this.firstCleanupIx);
-    } else {
-      this.run(lastRanIndex + 1);
-    }
   };
 
   QueueRunner.prototype.clearTimeout = function(timeoutId) {
@@ -117,25 +109,15 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         function next(err) {
           cleanup();
 
-          if (j$.isError_(err)) {
+          if (typeof err !== 'undefined') {
             if (!(err instanceof StopExecutionError) && !err.jasmineMessage) {
               self.fail(err);
             }
-            self.errored = errored = true;
-          } else if (typeof err !== 'undefined' && !self.errored) {
-            self.deprecated(
-              'Any argument passed to a done callback will be treated as an ' +
-                'error in a future release. Call the done callback without ' +
-                "arguments if you don't want to trigger a spec failure."
-            );
+            self.recordError_(iterativeIndex);
           }
 
           function runNext() {
-            if (self.completeOnFirstError && errored) {
-              self.skipToCleanup(iterativeIndex);
-            } else {
-              self.run(iterativeIndex + 1);
-            }
+            self.run(self.nextFnIx_(iterativeIndex));
           }
 
           if (completedSynchronously) {
@@ -157,7 +139,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
           }
         }
       ),
-      errored = false,
       timedOut = false,
       queueableFn = self.queueableFns[iterativeIndex],
       timeoutId,
@@ -165,7 +146,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
     next.fail = function nextFail() {
       self.fail.apply(null, arguments);
-      self.errored = errored = true;
+      self.recordError_(iterativeIndex);
       next();
     };
 
@@ -208,15 +189,15 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }
     } catch (e) {
       onException(e);
-      self.errored = errored = true;
+      self.recordError_(iterativeIndex);
     }
 
     cleanup();
-    return { completedSynchronously: true, errored: errored };
+    return { completedSynchronously: true };
 
     function onException(e) {
       self.onException(e);
-      self.errored = errored = true;
+      self.recordError_(iterativeIndex);
     }
 
     function onPromiseRejection(e) {
@@ -233,18 +214,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     for (
       iterativeIndex = recursiveIndex;
       iterativeIndex < length;
-      iterativeIndex++
+      iterativeIndex = this.nextFnIx_(iterativeIndex)
     ) {
       var result = this.attempt(iterativeIndex);
 
       if (!result.completedSynchronously) {
-        return;
-      }
-
-      self.errored = self.errored || result.errored;
-
-      if (this.completeOnFirstError && result.errored) {
-        this.skipToCleanup(iterativeIndex);
         return;
       }
     }
@@ -252,12 +226,27 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     this.clearStack(function() {
       self.globalErrors.popListener(self.handleFinalError);
 
-      if (self.errored) {
+      if (self.errored_) {
         self.onComplete(new StopExecutionError());
       } else {
         self.onComplete();
       }
     });
+  };
+
+  QueueRunner.prototype.nextFnIx_ = function(currentFnIx) {
+    const result = this.skipPolicy_.skipTo(currentFnIx);
+
+    if (result === currentFnIx) {
+      throw new Error("Can't skip to the same queueable fn that just finished");
+    }
+
+    return result;
+  };
+
+  QueueRunner.prototype.recordError_ = function(currentFnIx) {
+    this.errored_ = true;
+    this.skipPolicy_.fnErrored(currentFnIx);
   };
 
   QueueRunner.prototype.diagnoseConflictingAsync_ = function(fn, retval) {
@@ -268,19 +257,19 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       // Omit the stack trace because there's almost certainly no user code
       // on the stack at this point.
       if (j$.isAsyncFunction_(fn)) {
-        msg =
+        this.onException(
           'An asynchronous before/it/after ' +
-          'function was defined with the async keyword but also took a ' +
-          'done callback. This is not supported and will stop working in' +
-          ' the future. Either remove the done callback (recommended) or ' +
-          'remove the async keyword.';
+            'function was defined with the async keyword but also took a ' +
+            'done callback. Either remove the done callback (recommended) or ' +
+            'remove the async keyword.'
+        );
       } else {
-        msg =
+        this.onException(
           'An asynchronous before/it/after ' +
-          'function took a done callback but also returned a promise. ' +
-          'This is not supported and will stop working in the future. ' +
-          'Either remove the done callback (recommended) or change the ' +
-          'function to not return a promise.';
+            'function took a done callback but also returned a promise. ' +
+            'Either remove the done callback (recommended) or change the ' +
+            'function to not return a promise.'
+        );
       }
 
       this.deprecated(msg, { omitStackTrace: true });

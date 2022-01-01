@@ -12,6 +12,9 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
      * @property {Boolean} passed - Whether the expectation passed or failed.
      * @property {Object} expected - If the expectation failed, what was the expected value.
      * @property {Object} actual - If the expectation failed, what actual value was produced.
+     * @property {String|undefined} globalErrorType - The type of an error that
+     * is reported on the top suite. Valid values are undefined, "afterAll",
+     * "load", "lateExpectation", and "lateError".
      */
     var result = {
       matcherName: options.matcherName,
@@ -73,7 +76,9 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
           }
         }
       }
-      return stackFormatter(error);
+      // Omit the message from the stack trace because it will be
+      // included elsewhere.
+      return stackFormatter(error, { omitMessage: true });
     }
   }
 

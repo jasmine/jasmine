@@ -278,4 +278,58 @@ describe('DelayedFunctionScheduler', function() {
     expect(tickDate).toHaveBeenCalledWith(0);
     expect(tickDate).toHaveBeenCalledWith(1);
   });
+
+  describe('ticking inside a scheduled function', function() {
+    let clock;
+
+    // Runner function calls the callback until it returns false
+    function runWork(workCallback) {
+      while (workCallback()) {}
+    }
+
+    // Make a worker that takes a little time and tracks when it finished
+    function mockWork(times) {
+      return () => {
+        clock.tick(1);
+        const now = new Date().getTime();
+        expect(lastWork)
+          .withContext('Previous function calls should always be in the past')
+          .toBeLessThan(now);
+        lastWork = now;
+        times--;
+        return times > 0;
+      };
+    }
+    let lastWork = 0;
+
+    beforeEach(() => {
+      clock = jasmineUnderTest.getEnv().clock;
+      clock.install();
+      clock.mockDate(new Date(1));
+    });
+
+    afterEach(function() {
+      jasmineUnderTest.getEnv().clock.uninstall();
+    });
+
+    it('preserves monotonically-increasing current time', () => {
+      const work1 = mockWork(3);
+      setTimeout(() => {
+        runWork(work1);
+      }, 1);
+      clock.tick(1);
+      expect(lastWork)
+        .withContext('tick should advance past last-scheduled function')
+        .toBeLessThanOrEqual(new Date().getTime());
+
+      const work2 = mockWork(3);
+      setTimeout(() => {
+        runWork(work2);
+      }, 1);
+      clock.tick(1);
+      expect(lastWork)
+        .withContext('tick should advance past last-scheduled function')
+        .toBeLessThanOrEqual(new Date().getTime());
+    });
+  });
 });

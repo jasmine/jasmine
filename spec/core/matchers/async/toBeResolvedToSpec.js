@@ -1,8 +1,5 @@
-/* eslint-disable compat/compat */
 describe('#toBeResolvedTo', function() {
   it('passes if the promise is resolved to the expected value', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = Promise.resolve({ foo: 42 });
@@ -13,8 +10,6 @@ describe('#toBeResolvedTo', function() {
   });
 
   it('fails if the promise is rejected', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
@@ -34,8 +29,6 @@ describe('#toBeResolvedTo', function() {
   });
 
   it('fails if the promise is resolved to a different value', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
@@ -54,8 +47,6 @@ describe('#toBeResolvedTo', function() {
   });
 
   it('builds its message correctly when negated', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
@@ -73,8 +64,6 @@ describe('#toBeResolvedTo', function() {
   });
 
   it('supports custom equality testers', function() {
-    jasmine.getEnv().requirePromises();
-
     var customEqualityTesters = [
         function() {
           return true;

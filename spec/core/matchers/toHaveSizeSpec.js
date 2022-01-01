@@ -1,4 +1,3 @@
-/* eslint-disable compat/compat */
 describe('toHaveSize', function() {
   'use strict';
 
@@ -59,8 +58,6 @@ describe('toHaveSize', function() {
   });
 
   it('passes for a Map whose length matches', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
     var map = new Map();
     map.set('a', 1);
     map.set('b', 2);
@@ -72,8 +69,6 @@ describe('toHaveSize', function() {
   });
 
   it('fails for a Map whose length does not match', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
     var map = new Map();
     map.set('a', 1);
     map.set('b', 2);
@@ -85,8 +80,6 @@ describe('toHaveSize', function() {
   });
 
   it('passes for a Set whose length matches', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
     var set = new Set();
     set.add('a');
     set.add('b');
@@ -98,8 +91,6 @@ describe('toHaveSize', function() {
   });
 
   it('fails for a Set whose length does not match', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
     var set = new Set();
     set.add('a');
     set.add('b');
@@ -111,7 +102,6 @@ describe('toHaveSize', function() {
   });
 
   it('throws an error for WeakSet', function() {
-    jasmine.getEnv().requireWeakSets();
     var matcher = jasmineUnderTest.matchers.toHaveSize();
 
     expect(function() {
@@ -120,7 +110,6 @@ describe('toHaveSize', function() {
   });
 
   it('throws an error for WeakMap', function() {
-    jasmine.getEnv().requireWeakMaps();
     var matcher = jasmineUnderTest.matchers.toHaveSize();
 
     expect(function() {

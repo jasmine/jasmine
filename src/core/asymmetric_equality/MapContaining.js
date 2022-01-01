@@ -13,27 +13,26 @@ getJasmineRequireObj().MapContaining = function(j$) {
   MapContaining.prototype.asymmetricMatch = function(other, matchersUtil) {
     if (!j$.isMap(other)) return false;
 
-    var hasAllMatches = true;
-    j$.util.forEachBreakable(this.sample, function(breakLoop, value, key) {
+    for (const [key, value] of this.sample) {
       // for each key/value pair in `sample`
       // there should be at least one pair in `other` whose key and value both match
       var hasMatch = false;
-      j$.util.forEachBreakable(other, function(oBreakLoop, oValue, oKey) {
+      for (const [oKey, oValue] of other) {
         if (
           matchersUtil.equals(oKey, key) &&
           matchersUtil.equals(oValue, value)
         ) {
           hasMatch = true;
-          oBreakLoop();
+          break;
         }
-      });
-      if (!hasMatch) {
-        hasAllMatches = false;
-        breakLoop();
       }
-    });
 
-    return hasAllMatches;
+      if (!hasMatch) {
+        return false;
+      }
+    }
+
+    return true;
   };
 
   MapContaining.prototype.jasmineToString = function(pp) {

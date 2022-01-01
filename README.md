@@ -11,6 +11,9 @@ Jasmine is a Behavior Driven Development testing framework for JavaScript. It do
 Documentation & guides live here: [http://jasmine.github.io](http://jasmine.github.io/)
 For a quick start guide of Jasmine, see the beginning of [http://jasmine.github.io/edge/introduction.html](http://jasmine.github.io/edge/introduction.html).
 
+Upgrading from Jasmine 3.x? Check out the 4.0 release notes for a list of
+what's new (including breaking changes). You can also read the [upgrade guide](https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0).
+
 ## Contributing
 
 Please read the [contributors' guide](https://github.com/jasmine/jasmine/blob/main/.github/CONTRIBUTING.md).
@@ -22,9 +25,6 @@ For the Jasmine NPM module:<br>
 
 For the Jasmine browser runner:<br>
 [https://github.com/jasmine/jasmine-browser](https://github.com/jasmine/jasmine-browser).
-
-For the Jasmine Ruby Gem:<br>
-[https://github.com/jasmine/jasmine-gem](https://github.com/jasmine/jasmine-gem).
 
 To install Jasmine standalone on your local box (where **_{#.#.#}_** below is substituted by the release number downloaded):
 
@@ -47,20 +47,23 @@ Add the following to your HTML file:
 
 ## Supported environments
 
-Jasmine tests itself across many browsers (Safari, Chrome, Firefox, Microsoft Edge, and Internet Explorer) as well as nodejs.
+Jasmine tests itself across popular browsers (Safari, Chrome, Firefox, and
+Microsoft Edge) as well as nodejs.
 
 | Environment       | Supported versions |
 |-------------------|--------------------|
-| Node              | 10, 12, 14, 16     |
-| Safari            | 8-14               |
+| Node              | 12.17+, 14, 16     |
+| Safari            | 14-15              |
 | Chrome            | Evergreen          |
-| Firefox           | Evergreen, 68, 78, 91 |
+| Firefox           | Evergreen, 91      |
 | Edge              | Evergreen          |
-| Internet Explorer | 10, 11             |
 
 For evergreen browsers, each version of Jasmine is tested against the version of the browser that is available to us
 at the time of release. Other browsers, as well as older & newer versions of some supported browsers, are likely to work.
 However, Jasmine isn't tested against them and they aren't actively supported. 
+
+See the [release notes](https://github.com/jasmine/jasmine/tree/main/release_notes)
+for the supported environments for each Jasmine release.
 
 ## Support
 

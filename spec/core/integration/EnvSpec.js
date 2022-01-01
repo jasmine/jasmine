@@ -156,10 +156,6 @@ describe('Env integration', function() {
               message: 'Failed: error message',
               stack: {
                 asymmetricMatch: function(other) {
-                  if (!other) {
-                    // IE doesn't give us a stacktrace so just ignore it.
-                    return true;
-                  }
                   var split = other.split('\n'),
                     firstLine = split[0];
                   if (firstLine.indexOf('error message') >= 0) {
@@ -513,19 +509,13 @@ describe('Env integration', function() {
     env.execute(null, assertions);
   });
 
-  it('deprecates multiple calls to done in the top suite', function(done) {
+  it('reports multiple calls to done in the top suite as errors', function(done) {
     var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
     var message =
       'A top-level beforeAll or afterAll function called its ' +
-      "'done' callback more than once. This is a bug in the beforeAll " +
-      'or afterAll function in question. This will be treated as an ' +
-      'error in a future version. See' +
-      '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
-      'for more information.';
+      "'done' callback more than once.";
 
-    spyOn(console, 'error');
     env.addReporter(reporter);
-    env.configure({ verboseDeprecations: true });
     env.beforeAll(function(innerDone) {
       innerDone();
       innerDone();
@@ -537,33 +527,29 @@ describe('Env integration', function() {
     });
 
     env.execute(null, function() {
-      var warnings;
       expect(reporter.jasmineDone).toHaveBeenCalled();
-      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
-      expect(warnings.length).toEqual(2);
-      expect(warnings[0])
+      const errors = reporter.jasmineDone.calls.argsFor(0)[0]
+        .failedExpectations;
+      expect(errors.length).toEqual(2);
+      expect(errors[0].message)
         .withContext('top beforeAll')
-        .toEqual(jasmine.objectContaining({ message: message }));
-      expect(warnings[1])
+        .toContain(message);
+      expect(errors[0].globalErrorType).toEqual('lateError');
+      expect(errors[1].message)
         .withContext('top afterAll')
-        .toEqual(jasmine.objectContaining({ message: message }));
+        .toContain(message);
+      expect(errors[1].globalErrorType).toEqual('lateError');
       done();
     });
   });
 
-  it('deprecates multiple calls to done in a non-top suite', function(done) {
+  it('reports multiple calls to done in a non-top suite as errors', function(done) {
     var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
     var message =
-      "An asynchronous function called its 'done' " +
-      'callback more than once. This is a bug in the spec, beforeAll, ' +
-      'beforeEach, afterAll, or afterEach function in question. This will ' +
-      'be treated as an error in a future version. See' +
-      '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
-      'for more information.';
+      "An asynchronous beforeAll or afterAll function called its 'done' " +
+      'callback more than once.\n(in suite: a suite)';
 
-    spyOn(console, 'error');
     env.addReporter(reporter);
-    env.configure({ verboseDeprecations: true });
     env.describe('a suite', function() {
       env.beforeAll(function(innerDone) {
         innerDone();
@@ -577,42 +563,29 @@ describe('Env integration', function() {
     });
 
     env.execute(null, function() {
-      var warnings;
       expect(reporter.jasmineDone).toHaveBeenCalled();
-      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
-      expect(warnings.length).toEqual(2);
-      expect(warnings[0])
+      const errors = reporter.jasmineDone.calls.argsFor(0)[0]
+        .failedExpectations;
+      expect(errors.length).toEqual(2);
+      expect(errors[0].message)
         .withContext('suite beforeAll')
-        .toEqual(
-          jasmine.objectContaining({
-            message: message + '\n(in suite: a suite)'
-          })
-        );
-      expect(warnings[1])
+        .toContain(message);
+      expect(errors[0].globalErrorType).toEqual('lateError');
+      expect(errors[1].message)
         .withContext('suite afterAll')
-        .toEqual(
-          jasmine.objectContaining({
-            message: message + '\n(in suite: a suite)'
-          })
-        );
+        .toContain(message);
+      expect(errors[1].globalErrorType).toEqual('lateError');
       done();
     });
   });
 
-  it('deprecates multiple calls to done in a spec', function(done) {
+  it('reports multiple calls to done in a spec as errors', function(done) {
     var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
     var message =
-      "An asynchronous function called its 'done' " +
-      'callback more than once. This is a bug in the spec, beforeAll, ' +
-      'beforeEach, afterAll, or afterEach function in question. This will ' +
-      'be treated as an error in a future version. See' +
-      '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
-      'for more information.\n' +
-      '(in spec: a suite a spec)';
+      'An asynchronous spec, beforeEach, or afterEach function called its ' +
+      "'done' callback more than once.\n(in spec: a suite a spec)";
 
-    spyOn(console, 'error');
     env.addReporter(reporter);
-    env.configure({ verboseDeprecations: true });
     env.describe('a suite', function() {
       env.beforeEach(function(innerDone) {
         innerDone();
@@ -629,33 +602,30 @@ describe('Env integration', function() {
     });
 
     env.execute(null, function() {
-      var warnings;
       expect(reporter.jasmineDone).toHaveBeenCalled();
-      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
-      expect(warnings.length).toEqual(3);
-      expect(warnings[0])
-        .withContext('warning caused by beforeEach')
-        .toEqual(jasmine.objectContaining({ message: message }));
-      expect(warnings[1])
-        .withContext('warning caused by it')
-        .toEqual(jasmine.objectContaining({ message: message }));
-      expect(warnings[2])
-        .withContext('warning caused by afterEach')
-        .toEqual(jasmine.objectContaining({ message: message }));
+      const errors = reporter.jasmineDone.calls.argsFor(0)[0]
+        .failedExpectations;
+      expect(errors.length).toEqual(3);
+      expect(errors[0].message)
+        .withContext('error caused by beforeEach')
+        .toContain(message);
+      expect(errors[0].globalErrorType).toEqual('lateError');
+      expect(errors[1].message)
+        .withContext('error caused by it')
+        .toContain(message);
+      expect(errors[1].globalErrorType).toEqual('lateError');
+      expect(errors[2].message)
+        .withContext('error caused by afterEach')
+        .toContain(message);
+      expect(errors[2].globalErrorType).toEqual('lateError');
       done();
     });
   });
 
-  it('deprecates multiple calls to done in reporters', function(done) {
+  it('reports multiple calls to done in reporters as errors', function(done) {
     var message =
       "An asynchronous reporter callback called its 'done' callback more " +
-      'than once. This is a bug in the reporter callback in question. This ' +
-      'will be treated as an error in a future version. See' +
-      '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
-      'for more information.\nNote: This message ' +
-      'will be shown only once. Set the verboseDeprecations config property ' +
-      'to true to see every occurrence.';
-
+      'than once.';
     var reporter = jasmine.createSpyObj('fakeReport', ['jasmineDone']);
     reporter.specDone = function(result, done) {
       done();
@@ -665,19 +635,18 @@ describe('Env integration', function() {
 
     env.it('a spec', function() {});
 
-    spyOn(console, 'error');
     env.execute(null, function() {
       expect(reporter.jasmineDone).toHaveBeenCalled();
-      warnings = reporter.jasmineDone.calls.argsFor(0)[0].deprecationWarnings;
-      expect(warnings.length).toEqual(1);
-      expect(warnings[0]).toEqual(
-        jasmine.objectContaining({ message: message })
-      );
+      const errors = reporter.jasmineDone.calls.argsFor(0)[0]
+        .failedExpectations;
+      expect(errors.length).toEqual(1);
+      expect(errors[0].message).toContain(message);
+      expect(errors[0].globalErrorType).toEqual('lateError');
       done();
     });
   });
 
-  it('does not deprecate a call to done that comes after a timeout', function(done) {
+  it('does not report an error for a call to done that comes after a timeout', function(done) {
     var reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']),
       firstSpecDone;
 
@@ -700,7 +669,7 @@ describe('Env integration', function() {
     env.execute(null, function() {
       expect(reporter.jasmineDone).toHaveBeenCalledWith(
         jasmine.objectContaining({
-          deprecationWarnings: []
+          failedExpectations: []
         })
       );
       done();
@@ -1254,42 +1223,6 @@ describe('Env integration', function() {
       expect(globalSetTimeout).toHaveBeenCalledWith(
         delayedFunctionForGlobalClock,
         100
-      );
-      done();
-    });
-  });
-
-  it('logs a deprecation warning when the mock clock is ticked reentrantly', function(done) {
-    var ticked = false,
-      env = jasmineUnderTest.getEnv();
-    spyOn(env, 'deprecated');
-
-    env.beforeEach(function() {
-      env.clock.install();
-    });
-
-    env.afterEach(function() {
-      env.clock.uninstall();
-    });
-
-    env.it('ticks inside tick', function() {
-      setTimeout(function() {
-        ticked = true;
-        env.clock.tick();
-      }, 1);
-
-      env.clock.tick(1);
-    });
-
-    env.execute(null, function() {
-      expect(ticked).toBeTrue();
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'The behavior of reentrant calls to jasmine.clock().tick() will ' +
-          'change in a future version. Either modify the affected spec to ' +
-          'not call tick() from within a setTimeout or setInterval handler, ' +
-          'or be aware that it may behave differently in the future. See ' +
-          '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-reentrant-calls-to-jasmine-clock-tick> ' +
-          'for details.'
       );
       done();
     });
@@ -2282,6 +2215,7 @@ describe('Env integration', function() {
       } catch (e) {
         exception = e;
       }
+      env.it('has a test', function() {});
     });
 
     env.execute(null, function() {
@@ -2905,7 +2839,7 @@ describe('Env integration', function() {
       expect(result.deprecationWarnings).toEqual([
         jasmine.objectContaining({
           message: topLevelError.message,
-          stack: exceptionFormatter.stack(topLevelError)
+          stack: exceptionFormatter.stack(topLevelError, { omitMessage: true })
         })
       ]);
 
@@ -2915,7 +2849,9 @@ describe('Env integration', function() {
           deprecationWarnings: [
             jasmine.objectContaining({
               message: suiteLevelError.message,
-              stack: exceptionFormatter.stack(suiteLevelError)
+              stack: exceptionFormatter.stack(suiteLevelError, {
+                omitMessage: true
+              })
             })
           ]
         })
@@ -2927,7 +2863,9 @@ describe('Env integration', function() {
           deprecationWarnings: [
             jasmine.objectContaining({
               message: specLevelError.message,
-              stack: exceptionFormatter.stack(specLevelError)
+              stack: exceptionFormatter.stack(specLevelError, {
+                omitMessage: true
+              })
             })
           ]
         })
@@ -2938,8 +2876,6 @@ describe('Env integration', function() {
   });
 
   it('supports async matchers', function(done) {
-    jasmine.getEnv().requirePromises();
-
     var specDone = jasmine.createSpy('specDone'),
       suiteDone = jasmine.createSpy('suiteDone'),
       jasmineDone = jasmine.createSpy('jasmineDone');
@@ -2952,7 +2888,6 @@ describe('Env integration', function() {
 
     function fail(innerDone) {
       var resolve;
-      // eslint-disable-next-line compat/compat
       var p = new Promise(function(res, rej) {
         resolve = res;
       });
@@ -3004,7 +2939,9 @@ describe('Env integration', function() {
   });
 
   it('provides custom equality testers to async matchers', function(done) {
-    jasmine.getEnv().requirePromises();
+    if (jasmine.getEnv().skipBrowserFlake) {
+      jasmine.getEnv().skipBrowserFlake();
+    }
 
     var specDone = jasmine.createSpy('specDone');
 
@@ -3014,7 +2951,7 @@ describe('Env integration', function() {
       env.addCustomEqualityTester(function() {
         return true;
       });
-      var p = Promise.resolve('something'); // eslint-disable-line compat/compat
+      var p = Promise.resolve('something');
       return env.expectAsync(p).toBeResolvedTo('something else');
     });
 
@@ -3030,8 +2967,6 @@ describe('Env integration', function() {
   });
 
   it('includes useful stack frames in async matcher failures', function(done) {
-    jasmine.getEnv().requirePromises();
-
     var specDone = jasmine.createSpy('specDone');
 
     env.addReporter({ specDone: specDone });
@@ -3040,7 +2975,7 @@ describe('Env integration', function() {
       env.addCustomEqualityTester(function() {
         return true;
       });
-      var p = Promise.resolve(); // eslint-disable-line compat/compat
+      var p = Promise.resolve();
       return env.expectAsync(p).toBeRejected();
     });
 
@@ -3059,11 +2994,8 @@ describe('Env integration', function() {
   });
 
   it('reports an error when an async expectation occurs after the spec finishes', function(done) {
-    jasmine.getEnv().requirePromises();
-
     var resolve,
       jasmineDone = jasmine.createSpy('jasmineDone'),
-      // eslint-disable-next-line compat/compat
       promise = new Promise(function(res) {
         resolve = res;
       });
@@ -3126,11 +3058,8 @@ describe('Env integration', function() {
   });
 
   it('reports an error when an async expectation occurs after the suite finishes', function(done) {
-    jasmine.getEnv().requirePromises();
-
     var resolve,
       jasmineDone = jasmine.createSpy('jasmineDone'),
-      // eslint-disable-next-line compat/compat
       promise = new Promise(function(res) {
         resolve = res;
       });
@@ -3219,7 +3148,6 @@ describe('Env integration', function() {
     });
 
     it('is resolved after reporter events are dispatched', function() {
-      jasmine.getEnv().requirePromises();
       var reporter = jasmine.createSpyObj('reporter', [
         'specDone',
         'suiteDone',
@@ -3239,7 +3167,6 @@ describe('Env integration', function() {
     });
 
     it('is resolved after the stack is cleared', function(done) {
-      jasmine.getEnv().requirePromises();
       var realClearStack = jasmineUnderTest.getClearStack(
           jasmineUnderTest.getGlobal()
         ),
@@ -3267,7 +3194,6 @@ describe('Env integration', function() {
     });
 
     it('is resolved after QueueRunner timeouts are cleared', function() {
-      jasmine.getEnv().requirePromises();
       var setTimeoutSpy = spyOn(
         jasmineUnderTest.getGlobal(),
         'setTimeout'
@@ -3303,15 +3229,21 @@ describe('Env integration', function() {
       });
     });
 
-    it('is resolved even if specs fail', function() {
-      jasmine.getEnv().requirePromises();
+    it('is resolved to the value of the jasmineDone event', async function() {
       env.describe('suite', function() {
         env.it('spec', function() {
           env.expect(true).toBe(false);
         });
       });
 
-      return expectAsync(env.execute(null)).toBeResolved();
+      let event;
+      env.addReporter({
+        jasmineDone: e => (event = e)
+      });
+      const result = await env.execute();
+
+      expect(event.overallStatus).toEqual('failed');
+      expect(result).toEqual(event);
     });
   });
 
@@ -3408,5 +3340,140 @@ describe('Env integration', function() {
         done();
       });
     });
+  });
+
+  it('sends debug logs to the reporter when the spec fails', function(done) {
+    var reporter = jasmine.createSpyObj('reporter', ['specDone']),
+      startTime,
+      endTime;
+
+    env.addReporter(reporter);
+    env.configure({ random: false });
+
+    env.it('fails', function() {
+      startTime = new Date().getTime();
+      env.debugLog('message 1');
+      env.debugLog('message 2');
+      env.expect(1).toBe(2);
+      endTime = new Date().getTime();
+    });
+
+    env.it('passes', function() {
+      env.debugLog('message that should not be reported');
+    });
+
+    env.execute(null, function() {
+      function numberInRange(min, max) {
+        return {
+          asymmetricMatch: function(compareTo) {
+            return compareTo >= min && compareTo <= max;
+          },
+          jasmineToString: function(pp) {
+            return '<number from ' + min + ' to ' + max + ' inclusive>';
+          }
+        };
+      }
+
+      var duration;
+
+      expect(reporter.specDone).toHaveBeenCalledTimes(2);
+      duration = reporter.specDone.calls.argsFor(0)[0].duration;
+      expect(reporter.specDone.calls.argsFor(0)[0]).toEqual(
+        jasmine.objectContaining({
+          debugLogs: [
+            {
+              timestamp: numberInRange(0, duration),
+              message: 'message 1'
+            },
+            {
+              timestamp: numberInRange(0, duration),
+              message: 'message 2'
+            }
+          ]
+        })
+      );
+      expect(reporter.specDone.calls.argsFor(1)[0].debugLogs).toBeFalsy();
+      done();
+    });
+  });
+
+  it('reports an error when debugLog is used when a spec is not running', function(done) {
+    var reporter = jasmine.createSpyObj('reporter', ['suiteDone']);
+
+    env.describe('a suite', function() {
+      env.beforeAll(function() {
+        env.debugLog('a message');
+      });
+
+      env.it('a spec', function() {});
+    });
+
+    env.addReporter(reporter);
+    env.execute(null, function() {
+      expect(reporter.suiteDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          failedExpectations: [
+            jasmine.objectContaining({
+              message: jasmine.stringContaining(
+                "'debugLog' was called when there was no current spec"
+              )
+            })
+          ]
+        })
+      );
+      done();
+    });
+  });
+
+  it('uses custom equality testers in Spy#withArgs', async function() {
+    env.it('a spec', function() {
+      const createSpySpy = env.createSpy('via createSpy');
+      const spiedOn = { foo: function() {} };
+      env.spyOn(spiedOn, 'foo');
+      const spyObj = env.createSpyObj('spyObj', ['foo']);
+      const spiedOnAllFuncs = { foo: function() {} };
+      env.spyOnAllFunctions(spiedOnAllFuncs);
+
+      for (const spy of [
+        createSpySpy,
+        spiedOn.foo,
+        spyObj.foo,
+        spiedOnAllFuncs.foo
+      ]) {
+        spy.and.returnValue('default strategy');
+        spy.withArgs(42).and.returnValue('custom strategy');
+      }
+
+      env.addCustomEqualityTester(function(a, b) {
+        if ((a === 'x' && b === 42) || (a === 42 && b === 'x')) {
+          return true;
+        }
+      });
+
+      env
+        .expect(createSpySpy('x'))
+        .withContext('createSpy')
+        .toEqual('custom strategy');
+      env
+        .expect(spiedOn.foo('x'))
+        .withContext('spyOn')
+        .toEqual('custom strategy');
+      env
+        .expect(spyObj.foo('x'))
+        .withContext('createSpyObj')
+        .toEqual('custom strategy');
+      env
+        .expect(spiedOnAllFuncs.foo('x'))
+        .withContext('spyOnAllFunctions')
+        .toEqual('custom strategy');
+    });
+
+    let failedExpectations;
+    env.addReporter({
+      specDone: r => (failedExpectations = r.failedExpectations)
+    });
+
+    await env.execute();
+    expect(failedExpectations).toEqual([]);
   });
 });

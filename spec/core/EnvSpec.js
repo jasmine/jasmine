@@ -39,19 +39,25 @@ describe('Env', function() {
       });
 
       suite = env.topSuite();
+      expect(suite).not.toBeInstanceOf(jasmineUnderTest.Suite);
       expect(suite.description).toEqual('Jasmine__TopLevel__Suite');
       expect(suite.getFullName()).toEqual('');
       expect(suite.children.length).toEqual(2);
 
+      expect(suite.children[0]).not.toBeInstanceOf(jasmineUnderTest.Spec);
       expect(suite.children[0].description).toEqual('a top level spec');
       expect(suite.children[0].getFullName()).toEqual('a top level spec');
       expect(suite.children[0].children).toBeFalsy();
 
+      expect(suite.children[1]).not.toBeInstanceOf(jasmineUnderTest.Suite);
       expect(suite.children[1].description).toEqual('a suite');
       expect(suite.children[1].getFullName()).toEqual('a suite');
       expect(suite.children[1].parentSuite).toBe(suite);
       expect(suite.children[1].children.length).toEqual(2);
 
+      expect(suite.children[1].children[0]).not.toBeInstanceOf(
+        jasmineUnderTest.Spec
+      );
       expect(suite.children[1].children[0].description).toEqual('a spec');
       expect(suite.children[1].children[0].getFullName()).toEqual(
         'a suite a spec'
@@ -75,180 +81,6 @@ describe('Env', function() {
       );
       expect(suite.children[1].children[1].children[0].children).toBeFalsy();
     });
-
-    it('does not deprecate access to public Suite and Spec members', function() {
-      jasmine.getEnv().requireProxy();
-      var suite;
-      spyOn(env, 'deprecated');
-
-      env.it('a top level spec');
-      env.describe('a suite', function() {
-        env.it('a spec');
-      });
-
-      suite = env.topSuite();
-      suite.id;
-      suite.description;
-      suite.getFullName();
-      suite.children;
-      suite.parentSuite;
-      suite.children[0].id;
-      suite.children[0].description;
-      suite.children[0].getFullName();
-      suite.children[0].children;
-
-      suite.children[1].id;
-      suite.children[1].description;
-      suite.children[1].getFullName();
-      suite.children[1].parentSuite;
-      suite.children[1].children;
-
-      expect(env.deprecated).not.toHaveBeenCalled();
-    });
-
-    it('deprecates access to internal Spec members via it(), fit(), and xit()', function() {
-      jasmine.getEnv().requireProxy();
-      spyOn(env, 'deprecated');
-
-      ['it', 'fit', 'xit'].forEach(function(method) {
-        var spec = env[method]('a spec', function() {});
-        expect(env.deprecated).not.toHaveBeenCalled();
-
-        spec.pend();
-        expect(env.deprecated)
-          .withContext('via ' + method)
-          .toHaveBeenCalledWith(
-            'Access to private Spec members (in this case `pend`) is not ' +
-              'supported and will break in a future release. See ' +
-              '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
-          );
-        env.deprecated.calls.reset();
-
-        spec.expectationFactory = {};
-        expect(env.deprecated)
-          .withContext('via ' + method)
-          .toHaveBeenCalledWith(
-            'Access to private Spec members (in this case `expectationFactory`) is not ' +
-              'supported and will break in a future release. See ' +
-              '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
-          );
-        env.deprecated.calls.reset();
-
-        spec.expectationFactory = {};
-        expect(env.deprecated)
-          .withContext('via ' + method)
-          .toHaveBeenCalledWith(
-            'Access to private Spec members (in this case `expectationFactory`) is not ' +
-              'supported and will break in a future release. See ' +
-              '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
-          );
-        env.deprecated.calls.reset();
-      });
-    });
-
-    it('deprecates access to internal Spec and Suite members via describe(), fdescribe(), and xdescribe()', function() {
-      jasmine.getEnv().requireProxy();
-      spyOn(env, 'deprecated');
-
-      ['describe', 'fdescribe', 'xdescribe'].forEach(function(method) {
-        var suite = env[method]('a suite', function() {
-          env.it('a spec');
-        });
-
-        suite.expectationFactory;
-        expect(env.deprecated)
-          .withContext('via ' + method)
-          .toHaveBeenCalledWith(
-            'Access to private Suite ' +
-              'members (in this case `expectationFactory`) is ' +
-              'not supported and will break in a future release. See ' +
-              '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
-          );
-        env.deprecated.calls.reset();
-
-        suite.expectationFactory = {};
-        expect(env.deprecated)
-          .withContext('via ' + method)
-          .toHaveBeenCalledWith(
-            'Access to private Suite ' +
-              'members (in this case `expectationFactory`) is ' +
-              'not supported and will break in a future release. See ' +
-              '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
-          );
-        env.deprecated.calls.reset();
-
-        suite.status();
-        expect(env.deprecated)
-          .withContext('via ' + method)
-          .toHaveBeenCalledWith(
-            'Access to private Suite ' +
-              'members (in this case `status`) is ' +
-              'not supported and will break in a future release. See ' +
-              '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
-          );
-        env.deprecated.calls.reset();
-      });
-    });
-
-    it('deprecates access to internal Suite and Spec members via topSuite', function() {
-      jasmine.getEnv().requireProxy();
-      var topSuite, expectationFactory, spec;
-
-      env.it('a top level spec');
-      spyOn(env, 'deprecated');
-      topSuite = env.topSuite();
-
-      topSuite.expectationFactory;
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Suite ' +
-          'members (in this case `expectationFactory`) is ' +
-          'not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
-      );
-      env.deprecated.calls.reset();
-
-      topSuite.expectationFactory = expectationFactory;
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Suite ' +
-          'members (in this case `expectationFactory`) is ' +
-          'not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
-      );
-
-      topSuite.status();
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Suite ' +
-          'members (in this case `status`) is ' +
-          'not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Suite.html> for correct usage.'
-      );
-
-      spec = topSuite.children[0];
-      spec.pend();
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Spec ' +
-          'members (in this case `pend`) ' +
-          'is not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
-      );
-
-      expectationFactory = spec.expectationFactory;
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Spec ' +
-          'members (in this case `expectationFactory`) ' +
-          'is not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
-      );
-      env.deprecated.calls.reset();
-
-      spec.expectationFactory = expectationFactory;
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'Access to private Spec ' +
-          'members (in this case `expectationFactory`) ' +
-          'is not supported and will break in a future release. See ' +
-          '<https://jasmine.github.io/api/edge/Spec.html> for correct usage.'
-      );
-    });
   });
 
   it('accepts its own current configureation', function() {
@@ -258,7 +90,7 @@ describe('Env', function() {
   it('can configure specs to throw errors on expectation failures', function() {
     env.configure({ stopSpecOnExpectationFailure: true });
 
-    spyOn(jasmineUnderTest, 'Spec');
+    spyOn(jasmineUnderTest, 'Spec').and.callThrough();
     env.it('foo', function() {});
     expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -284,9 +116,7 @@ describe('Env', function() {
     var initialConfig = {
       random: true,
       seed: '123',
-      failFast: true,
       failSpecWithNoExpectations: true,
-      oneFailurePerSpec: true,
       stopSpecOnExpectationFailure: true,
       stopOnSpecFailure: true,
       hideDisabled: true
@@ -296,9 +126,7 @@ describe('Env', function() {
     env.configure({
       random: undefined,
       seed: undefined,
-      failFast: undefined,
       failSpecWithNoExpectations: undefined,
-      oneFailurePerSpec: undefined,
       stopSpecOnExpectationFailure: undefined,
       stopOnSpecFailure: undefined,
       hideDisabled: undefined
@@ -309,122 +137,8 @@ describe('Env', function() {
     );
   });
 
-  it('sets stopOnSpecFailure when failFast is set, and vice versa', function() {
-    spyOn(env, 'deprecated');
-    env.configure({ failFast: true });
-    expect(env.configuration()).toEqual(
-      jasmine.objectContaining({
-        failFast: true,
-        stopOnSpecFailure: true
-      })
-    );
-
-    env.configure({ stopOnSpecFailure: false });
-    expect(env.configuration()).toEqual(
-      jasmine.objectContaining({
-        failFast: false,
-        stopOnSpecFailure: false
-      })
-    );
-  });
-
-  it('rejects a single call that sets stopOnSpecFailure and failFast to different values', function() {
-    spyOn(env, 'deprecated');
-    expect(function() {
-      env.configure({ failFast: true, stopOnSpecFailure: false });
-    }).toThrowError(
-      'stopOnSpecFailure and failFast are aliases for each ' +
-        "other. Don't set failFast if you also set stopOnSpecFailure."
-    );
-  });
-
-  it('deprecates the failFast config property', function() {
-    spyOn(env, 'deprecated');
-    env.configure({ failFast: true });
-    expect(env.deprecated).toHaveBeenCalledWith(
-      'The `failFast` config property is deprecated and will be removed in a ' +
-        'future version of Jasmine. Please use `stopOnSpecFailure` instead.',
-      { ignoreRunnable: true }
-    );
-  });
-
-  it('sets stopSpecOnExpectationFailure when oneFailurePerSpec is set, and vice versa', function() {
-    spyOn(env, 'deprecated');
-    env.configure({ oneFailurePerSpec: true });
-    expect(env.configuration()).toEqual(
-      jasmine.objectContaining({
-        oneFailurePerSpec: true,
-        stopSpecOnExpectationFailure: true
-      })
-    );
-
-    env.configure({ stopSpecOnExpectationFailure: false });
-    expect(env.configuration()).toEqual(
-      jasmine.objectContaining({
-        oneFailurePerSpec: false,
-        stopSpecOnExpectationFailure: false
-      })
-    );
-  });
-
-  it('rejects a single call that sets stopSpecOnExpectationFailure and oneFailurePerSpec to different values', function() {
-    spyOn(env, 'deprecated');
-    expect(function() {
-      env.configure({
-        oneFailurePerSpec: true,
-        stopSpecOnExpectationFailure: false
-      });
-    }).toThrowError(
-      'stopSpecOnExpectationFailure and oneFailurePerSpec are ' +
-        "aliases for each other. Don't set oneFailurePerSpec if you also set " +
-        'stopSpecOnExpectationFailure.'
-    );
-  });
-
-  it('deprecates the oneFailurePerSpec config property', function() {
-    spyOn(env, 'deprecated');
-    env.configure({ oneFailurePerSpec: true });
-    expect(env.deprecated).toHaveBeenCalledWith(
-      'The `oneFailurePerSpec` config property is deprecated and will be ' +
-        'removed in a future version of Jasmine. Please use ' +
-        '`stopSpecOnExpectationFailure` instead.',
-      { ignoreRunnable: true }
-    );
-  });
-
-  describe('promise library', function() {
-    it('can be configured without a custom library', function() {
-      env.configure({});
-      env.configure({ Promise: undefined });
-    });
-
-    it('can be configured with a custom library', function() {
-      spyOn(env, 'deprecated');
-      var myLibrary = {
-        resolve: jasmine.createSpy(),
-        reject: jasmine.createSpy()
-      };
-      env.configure({ Promise: myLibrary });
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'The `Promise` config property is deprecated. Future versions of ' +
-          'Jasmine will create native promises even if the `Promise` config ' +
-          'property is set. Please remove it.'
-      );
-    });
-
-    it('cannot be configured with an invalid promise library', function() {
-      var myLibrary = {};
-
-      expect(function() {
-        env.configure({ Promise: myLibrary });
-      }).toThrowError(
-        'Custom promise library missing `resolve`/`reject` functions'
-      );
-    });
-  });
-
   it('defaults to multiple failures for specs', function() {
-    spyOn(jasmineUnderTest, 'Spec');
+    spyOn(jasmineUnderTest, 'Spec').and.callThrough();
     env.it('bar', function() {});
     expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -443,7 +157,40 @@ describe('Env', function() {
     );
   });
 
+  function behavesLikeDescribe(methodName) {
+    it('returns a suite metadata object', function() {
+      let innerSuite;
+      let spec;
+      const suite = env.describe('outer suite', function() {
+        innerSuite = env.describe('inner suite', function() {
+          spec = env.it('a spec');
+        });
+      });
+
+      expect(suite.parentSuite).toEqual(
+        jasmine.objectContaining({
+          description: 'Jasmine__TopLevel__Suite'
+        })
+      );
+      expect(suite.parentSuite.pend).toBeUndefined();
+      expect(suite.pend).toBeUndefined();
+      expect(suite.description).toEqual('outer suite');
+      expect(suite.getFullName()).toEqual('outer suite');
+      expect(suite.id).toBeInstanceOf(String);
+      expect(suite.id).not.toEqual('');
+      expect(suite.children.length).toEqual(1);
+      expect(suite.children[0]).toBe(innerSuite);
+      expect(innerSuite.children.length).toEqual(1);
+      expect(innerSuite.children[0]).toBe(spec);
+      expect(innerSuite.getFullName()).toEqual('outer suite inner suite');
+      expect(innerSuite.parentSuite).toBe(suite);
+      expect(spec.getFullName()).toEqual('outer suite inner suite a spec');
+    });
+  }
+
   describe('#describe', function() {
+    behavesLikeDescribe('describe');
+
     it('throws an error when given arguments', function() {
       expect(function() {
         env.describe('done method', function(done) {});
@@ -487,19 +234,48 @@ describe('Env', function() {
       );
     });
 
-    it('logs a deprecation when it has no children', function() {
-      spyOn(env, 'deprecated');
-      env.describe('no children', function() {});
-      expect(env.deprecated).toHaveBeenCalledWith(
-        'describe with no children' +
-          ' (describe() or it()) is deprecated and will be removed in a future ' +
-          'version of Jasmine. Please either remove the describe or add ' +
-          'children to it.'
-      );
+    it('throws an error when it has no children', function() {
+      expect(function() {
+        env.describe('done method', function() {});
+      }).toThrowError('describe with no children (describe() or it())');
     });
   });
 
+  describe('#fdescribe', function() {
+    behavesLikeDescribe('fdescribe');
+  });
+
+  describe('xdescribe', function() {
+    behavesLikeDescribe('xdescribe');
+  });
+
+  function behavesLikeIt(methodName) {
+    it('returns a spec metadata object', function() {
+      let spec;
+
+      env.describe('a suite', function() {
+        spec = env[methodName]('a spec', function() {});
+      });
+
+      expect(spec.description)
+        .withContext('description')
+        .toEqual('a spec');
+      expect(spec.getFullName())
+        .withContext('getFullName')
+        .toEqual('a suite a spec');
+      expect(spec.id)
+        .withContext('id')
+        .toBeInstanceOf(String);
+      expect(spec.id)
+        .withContext('id')
+        .not.toEqual('');
+      expect(spec.pend).toBeFalsy();
+    });
+  }
+
   describe('#it', function() {
+    behavesLikeIt('it');
+
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.it('undefined arg', null);
@@ -515,9 +291,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.it('async', jasmine.getEnv().makeAsyncAwaitFunction());
+        env.it('async', async function() {});
       }).not.toThrow();
     });
 
@@ -529,6 +304,8 @@ describe('Env', function() {
   });
 
   describe('#xit', function() {
+    behavesLikeIt('xit');
+
     it('calls spec.exclude with "Temporarily disabled with xit"', function() {
       var excludeSpy = jasmine.createSpy();
       spyOn(env, 'it_').and.returnValue({
@@ -565,14 +342,15 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.xit('async', jasmine.getEnv().makeAsyncAwaitFunction());
+        env.xit('async', async function() {});
       }).not.toThrow();
     });
   });
 
   describe('#fit', function() {
+    behavesLikeIt('fit');
+
     it('throws an error when it receives a non-fn argument', function() {
       expect(function() {
         env.fit('undefined arg', undefined);
@@ -598,9 +376,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.beforeEach(jasmine.getEnv().makeAsyncAwaitFunction());
+        env.beforeEach(async function() {});
       }).not.toThrow();
     });
 
@@ -621,9 +398,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.beforeAll(jasmine.getEnv().makeAsyncAwaitFunction());
+        env.beforeAll(async function() {});
       }).not.toThrow();
     });
 
@@ -644,9 +420,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.afterEach(jasmine.getEnv().makeAsyncAwaitFunction());
+        env.afterEach(async function() {});
       }).not.toThrow();
     });
 
@@ -667,9 +442,8 @@ describe('Env', function() {
     });
 
     it('accepts an async function', function() {
-      jasmine.getEnv().requireAsyncAwait();
       expect(function() {
-        env.afterAll(jasmine.getEnv().makeAsyncAwaitFunction());
+        env.afterAll(async function() {});
       }).not.toThrow();
     });
 
@@ -778,40 +552,7 @@ describe('Env', function() {
     });
   });
 
-  it("deprecates access to 'this' in describes", function() {
-    jasmine.getEnv().requireProxy();
-    var msg =
-        "Access to 'this' in describe functions (and in arrow " +
-        'functions inside describe functions) is deprecated.',
-      ran = false;
-    spyOn(env, 'deprecated');
-
-    env.describe('a suite', function() {
-      expect(this.description).toEqual('a suite');
-      expect(env.deprecated).toHaveBeenCalledWith(msg);
-      env.deprecated.calls.reset();
-
-      this.foo = 1;
-      expect(env.deprecated).toHaveBeenCalledWith(msg);
-      expect(this.foo).toEqual(1);
-      env.deprecated.calls.reset();
-
-      expect(this.getFullName()).toEqual('a suite');
-      expect(env.deprecated).toHaveBeenCalledWith(msg);
-      env.deprecated.calls.reset();
-
-      env.it('has a spec');
-      ran = true;
-    });
-
-    expect(ran).toBeTrue();
-  });
-
-  // TODO: Remove this in the next major version. Suites were never meant to be
-  // exposed via describe 'this' in >= 2.0, and user code should not rely on it.
-  // This spec is just here to make sure we don't break user code that *does*
-  // rely on it in older browsers (without Proxy) while deprecating it.
-  it("sets 'this' to the Suite in describes", function() {
+  it("does not expose the suite as 'this'", function() {
     var suiteThis;
     spyOn(env, 'deprecated');
 
@@ -820,32 +561,15 @@ describe('Env', function() {
       env.it('has a spec');
     });
 
-    expect(suiteThis).toBeInstanceOf(jasmineUnderTest.Suite);
+    expect(suiteThis).not.toBeInstanceOf(jasmineUnderTest.Suite);
   });
 
   describe('#execute', function() {
-    it('returns a promise when the environment supports promises', function() {
-      jasmine.getEnv().requirePromises();
+    it('returns a promise', function() {
       expect(env.execute()).toBeInstanceOf(Promise);
     });
 
-    it('returns a promise when a custom promise constructor is provided', function() {
-      function CustomPromise() {}
-      CustomPromise.resolve = function() {};
-      CustomPromise.reject = function() {};
-
-      spyOn(env, 'deprecated');
-      env.configure({ Promise: CustomPromise });
-      expect(env.execute()).toBeInstanceOf(CustomPromise);
-    });
-
-    it('returns undefined when promises are unavailable', function() {
-      jasmine.getEnv().requireNoPromises();
-      expect(env.execute()).toBeUndefined();
-    });
-
     it('should reset the topSuite when run twice', function() {
-      jasmine.getEnv().requirePromises();
       spyOn(jasmineUnderTest.Suite.prototype, 'reset');
       return env
         .execute() // 1

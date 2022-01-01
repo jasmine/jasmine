@@ -31,12 +31,7 @@ describe('Spies', function() {
       var fn = function test() {};
       var spy = env.createSpy(fn);
 
-      // IE doesn't do `.name`
-      if (fn.name === 'test') {
-        expect(spy.and.identity).toEqual('test');
-      } else {
-        expect(spy.and.identity).toEqual('unknown');
-      }
+      expect(spy.and.identity).toEqual('test');
     });
 
     it('warns the user that we intend to overwrite an existing property', function() {
@@ -236,13 +231,30 @@ describe('Spies', function() {
     expect(spy('baz', 'grault', 'waldo')).toEqual(42);
   });
 
-  it('uses custom equality testers when selecting a strategy', function() {
+  it('uses asymmetric equality testers when selecting a strategy', function() {
     var spy = env.createSpy('foo');
     spy.and.returnValue(42);
     spy.withArgs(jasmineUnderTest.any(String)).and.returnValue(-1);
 
     expect(spy('foo')).toEqual(-1);
     expect(spy({})).toEqual(42);
+  });
+
+  it('uses the provided matchersUtil selecting a strategy', function() {
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
+      customTesters: [
+        function(a, b) {
+          if ((a === 'bar' && b === 'baz') || (a === 'baz' && b === 'bar')) {
+            return true;
+          }
+        }
+      ]
+    });
+    const spy = new jasmineUnderTest.Spy('aSpy', matchersUtil);
+    spy.and.returnValue('default strategy return value');
+    spy.withArgs('bar').and.returnValue('custom strategy return value');
+    expect(spy('foo')).toEqual('default strategy return value');
+    expect(spy('baz')).toEqual('custom strategy return value');
   });
 
   it('can reconfigure an argument-specific strategy', function() {
@@ -253,9 +265,7 @@ describe('Spies', function() {
   });
 
   describe('any promise-based strategy', function() {
-    it('works with global Promise library when available', function(done) {
-      jasmine.getEnv().requirePromises();
-
+    it('works with global Promise library', function(done) {
       var spy = env.createSpy('foo').and.resolveTo(42);
       spy()
         .then(function(result) {
@@ -263,20 +273,6 @@ describe('Spies', function() {
           done();
         })
         .catch(done.fail);
-    });
-
-    it('works with a custom Promise library', function() {
-      var customPromise = {
-        resolve: jasmine.createSpy(),
-        reject: jasmine.createSpy()
-      };
-      customPromise.resolve.and.returnValue('resolved');
-      spyOn(env, 'deprecated');
-      env.configure({ Promise: customPromise });
-
-      var spy = env.createSpy('foo').and.resolveTo(42);
-      expect(spy()).toEqual('resolved');
-      expect(customPromise.resolve).toHaveBeenCalledWith(42);
     });
   });
 

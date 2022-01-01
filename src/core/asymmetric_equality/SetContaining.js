@@ -13,25 +13,24 @@ getJasmineRequireObj().SetContaining = function(j$) {
   SetContaining.prototype.asymmetricMatch = function(other, matchersUtil) {
     if (!j$.isSet(other)) return false;
 
-    var hasAllMatches = true;
-    j$.util.forEachBreakable(this.sample, function(breakLoop, item) {
+    for (const item of this.sample) {
       // for each item in `sample` there should be at least one matching item in `other`
       // (not using `matchersUtil.contains` because it compares set members by reference,
       // not by deep value equality)
       var hasMatch = false;
-      j$.util.forEachBreakable(other, function(oBreakLoop, oItem) {
+      for (const oItem of other) {
         if (matchersUtil.equals(oItem, item)) {
           hasMatch = true;
-          oBreakLoop();
+          break;
         }
-      });
-      if (!hasMatch) {
-        hasAllMatches = false;
-        breakLoop();
       }
-    });
 
-    return hasAllMatches;
+      if (!hasMatch) {
+        return false;
+      }
+    }
+
+    return true;
   };
 
   SetContaining.prototype.jasmineToString = function(pp) {

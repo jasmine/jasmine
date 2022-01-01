@@ -10,13 +10,12 @@ describe('Custom Spy Strategies (Integration)', function() {
     env.cleanup_();
   });
 
-  it('allows adding more strategies local to a suite', function(done) {
+  it('allows adding more strategies local to a suite', async function() {
     var plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
     var strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
-    var jasmineDone = jasmine.createSpy('jasmineDone');
 
     env.describe('suite defining a custom spy strategy', function() {
-      env.beforeEach(function() {
+      env.beforeAll(function() {
         env.addSpyStrategy('frobnicate', strategy);
       });
 
@@ -32,20 +31,13 @@ describe('Custom Spy Strategies (Integration)', function() {
       expect(env.createSpy('something').and.frobnicate).toBeUndefined();
     });
 
-    function expectations() {
-      var result = jasmineDone.calls.argsFor(0)[0];
-      expect(result.overallStatus).toEqual('passed');
-      done();
-    }
-
-    env.addReporter({ jasmineDone: jasmineDone });
-    env.execute(null, expectations);
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
   });
 
-  it('allows adding more strategies local to a spec', function(done) {
+  it('allows adding more strategies local to a spec', async function() {
     var plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
     var strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
-    var jasmineDone = jasmine.createSpy('jasmineDone');
 
     env.it('spec defining a custom spy strategy', function() {
       env.addSpyStrategy('frobnicate', strategy);
@@ -59,20 +51,13 @@ describe('Custom Spy Strategies (Integration)', function() {
       expect(env.createSpy('something').and.frobnicate).toBeUndefined();
     });
 
-    function expectations() {
-      var result = jasmineDone.calls.argsFor(0)[0];
-      expect(result.overallStatus).toEqual('passed');
-      done();
-    }
-
-    env.addReporter({ jasmineDone: jasmineDone });
-    env.execute(null, expectations);
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
   });
 
-  it('allows using custom strategies on a per-argument basis', function(done) {
+  it('allows using custom strategies on a per-argument basis', async function() {
     var plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
     var strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
-    var jasmineDone = jasmine.createSpy('jasmineDone');
 
     env.it('spec defining a custom spy strategy', function() {
       env.addSpyStrategy('frobnicate', strategy);
@@ -92,23 +77,16 @@ describe('Custom Spy Strategies (Integration)', function() {
       expect(env.createSpy('something').and.frobnicate).toBeUndefined();
     });
 
-    function expectations() {
-      var result = jasmineDone.calls.argsFor(0)[0];
-      expect(result.overallStatus).toEqual('passed');
-      done();
-    }
-
-    env.addReporter({ jasmineDone: jasmineDone });
-    env.execute(null, expectations);
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
   });
 
-  it('allows multiple custom strategies to be used', function(done) {
+  it('allows multiple custom strategies to be used', async function() {
     var plan1 = jasmine.createSpy('plan 1').and.returnValue(42),
       strategy1 = jasmine.createSpy('strat 1').and.returnValue(plan1),
       plan2 = jasmine.createSpy('plan 2').and.returnValue(24),
       strategy2 = jasmine.createSpy('strat 2').and.returnValue(plan2),
-      specDone = jasmine.createSpy('specDone'),
-      jasmineDone = jasmine.createSpy('jasmineDone');
+      specDone = jasmine.createSpy('specDone');
 
     env.beforeEach(function() {
       env.addSpyStrategy('frobnicate', strategy1);
@@ -133,14 +111,9 @@ describe('Custom Spy Strategies (Integration)', function() {
       expect(plan2).toHaveBeenCalled();
     });
 
-    function expectations() {
-      var result = jasmineDone.calls.argsFor(0)[0];
-      expect(result.overallStatus).toEqual('passed');
-      expect(specDone.calls.count()).toBe(2);
-      done();
-    }
-
-    env.addReporter({ jasmineDone: jasmineDone, specDone: specDone });
-    env.execute(null, expectations);
+    env.addReporter({ specDone: specDone });
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
+    expect(specDone.calls.count()).toBe(2);
   });
 });

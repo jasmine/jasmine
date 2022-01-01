@@ -99,7 +99,7 @@ describe('JsApiReporter', function() {
   });
 
   describe('#suiteResults', function() {
-    var reporter, suiteResult1, suiteResult2;
+    var reporter, suiteStarted1, suiteResult1, suiteResult2;
     beforeEach(function() {
       reporter = new jasmineUnderTest.JsApiReporter({});
       suiteStarted1 = {

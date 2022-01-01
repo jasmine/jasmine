@@ -6,31 +6,12 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     var currentTime = 0;
     var delayedFnCount = 0;
     var deletedKeys = [];
-    var ticking = false;
 
     self.tick = function(millis, tickDate) {
-      if (ticking) {
-        j$.getEnv().deprecated(
-          'The behavior of reentrant calls to jasmine.clock().tick() will ' +
-            'change in a future version. Either modify the affected spec to ' +
-            'not call tick() from within a setTimeout or setInterval handler, ' +
-            'or be aware that it may behave differently in the future. See ' +
-            '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-reentrant-calls-to-jasmine-clock-tick> ' +
-            'for details.'
-        );
-      }
+      millis = millis || 0;
+      var endTime = currentTime + millis;
 
-      ticking = true;
-
-      try {
-        millis = millis || 0;
-        var endTime = currentTime + millis;
-
-        runScheduledFunctions(endTime, tickDate);
-        currentTime = endTime;
-      } finally {
-        ticking = false;
-      }
+      runScheduledFunctions(endTime, tickDate);
     };
 
     self.scheduleFunction = function(
@@ -148,16 +129,20 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     function runScheduledFunctions(endTime, tickDate) {
       tickDate = tickDate || function() {};
       if (scheduledLookup.length === 0 || scheduledLookup[0] > endTime) {
-        tickDate(endTime - currentTime);
+        if (endTime >= currentTime) {
+          tickDate(endTime - currentTime);
+          currentTime = endTime;
+        }
         return;
       }
 
       do {
         deletedKeys = [];
         var newCurrentTime = scheduledLookup.shift();
-        tickDate(newCurrentTime - currentTime);
-
-        currentTime = newCurrentTime;
+        if (newCurrentTime >= currentTime) {
+          tickDate(newCurrentTime - currentTime);
+          currentTime = newCurrentTime;
+        }
 
         var funcsToRun = scheduledFunctions[currentTime];
 
@@ -186,8 +171,9 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       );
 
       // ran out of functions to call, but still time left on the clock
-      if (currentTime !== endTime) {
+      if (endTime >= currentTime) {
         tickDate(endTime - currentTime);
+        currentTime = endTime;
       }
     }
   }

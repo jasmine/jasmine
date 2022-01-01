@@ -24,33 +24,27 @@ describe('Anything', function() {
   });
 
   it('matches a Map', function() {
-    jasmine.getEnv().requireFunctioningMaps();
-
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(new Map())).toBe(true); // eslint-disable-line compat/compat
+    expect(anything.asymmetricMatch(new Map())).toBe(true);
   });
 
   it('matches a Set', function() {
-    jasmine.getEnv().requireFunctioningSets();
-
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(new Set())).toBe(true); // eslint-disable-line compat/compat
+    expect(anything.asymmetricMatch(new Set())).toBe(true);
   });
 
   it('matches a TypedArray', function() {
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(new Uint32Array([]))).toBe(true); // eslint-disable-line compat/compat
+    expect(anything.asymmetricMatch(new Uint32Array([]))).toBe(true);
   });
 
   it('matches a Symbol', function() {
-    jasmine.getEnv().requireFunctioningSymbols();
-
     var anything = new jasmineUnderTest.Anything();
 
-    expect(anything.asymmetricMatch(Symbol())).toBe(true); // eslint-disable-line compat/compat
+    expect(anything.asymmetricMatch(Symbol())).toBe(true);
   });
 
   it("doesn't match undefined", function() {

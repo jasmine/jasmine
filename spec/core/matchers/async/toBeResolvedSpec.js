@@ -1,8 +1,5 @@
-/* eslint-disable compat/compat */
 describe('toBeResolved', function() {
   it('passes if the actual is resolved', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolved(matchersUtil),
       actual = Promise.resolve();
@@ -13,8 +10,6 @@ describe('toBeResolved', function() {
   });
 
   it('fails if the actual is rejected', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter([])
       }),

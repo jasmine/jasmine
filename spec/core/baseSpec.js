@@ -91,8 +91,7 @@ describe('base helpers', function() {
 
   describe('isSet', function() {
     it('returns true when the object is a Set', function() {
-      jasmine.getEnv().requireFunctioningSets();
-      expect(jasmineUnderTest.isSet(new Set())).toBe(true); // eslint-disable-line compat/compat
+      expect(jasmineUnderTest.isSet(new Set())).toBe(true);
     });
 
     it('returns false when the object is not a Set', function() {
@@ -102,21 +101,38 @@ describe('base helpers', function() {
 
   describe('isURL', function() {
     it('returns true when the object is a URL', function() {
-      jasmine.getEnv().requireUrls();
-      // eslint-disable-next-line compat/compat
       expect(jasmineUnderTest.isURL(new URL('http://localhost/'))).toBe(true);
     });
 
     it('returns false when the object is not a URL', function() {
-      jasmine.getEnv().requireUrls();
       expect(jasmineUnderTest.isURL({})).toBe(false);
+    });
+  });
+
+  describe('isIterable_', function() {
+    it('returns true when the object is an Array', function() {
+      expect(jasmineUnderTest.isIterable_([])).toBe(true);
+    });
+
+    it('returns true when the object is a Set', function() {
+      expect(jasmineUnderTest.isIterable_(new Set())).toBe(true);
+    });
+    it('returns true when the object is a Map', function() {
+      expect(jasmineUnderTest.isIterable_(new Map())).toBe(true);
+    });
+
+    it('returns true when the object implements @@iterator', function() {
+      const myIterable = { [Symbol.iterator]: function() {} };
+      expect(jasmineUnderTest.isIterable_(myIterable)).toBe(true);
+    });
+
+    it('returns false when the object does not implement @@iterator', function() {
+      expect(jasmineUnderTest.isIterable_({})).toBe(false);
     });
   });
 
   describe('isPending_', function() {
     it('returns a promise that resolves to true when the promise is pending', function() {
-      jasmine.getEnv().requirePromises();
-      // eslint-disable-next-line compat/compat
       var promise = new Promise(function() {});
       return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
         true
@@ -124,8 +140,6 @@ describe('base helpers', function() {
     });
 
     it('returns a promise that resolves to false when the promise is resolved', function() {
-      jasmine.getEnv().requirePromises();
-      // eslint-disable-next-line compat/compat
       var promise = Promise.resolve();
       return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
         false
@@ -133,8 +147,6 @@ describe('base helpers', function() {
     });
 
     it('returns a promise that resolves to false when the promise is rejected', function() {
-      jasmine.getEnv().requirePromises();
-      // eslint-disable-next-line compat/compat
       var promise = Promise.reject();
       return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
         false
@@ -184,6 +196,16 @@ describe('base helpers', function() {
           done();
         });
       });
+    });
+  });
+
+  describe('debugLog', function() {
+    it("forwards to the current env's debugLog function", function() {
+      spyOn(jasmineUnderTest.getEnv(), 'debugLog');
+      jasmineUnderTest.debugLog('a message');
+      expect(jasmineUnderTest.getEnv().debugLog).toHaveBeenCalledWith(
+        'a message'
+      );
     });
   });
 });

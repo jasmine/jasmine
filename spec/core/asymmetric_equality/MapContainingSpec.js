@@ -1,33 +1,19 @@
-/* eslint-disable compat/compat */
 describe('MapContaining', function() {
-  function MapI(iterable) {
-    // for IE11
-    var map = new Map();
-    iterable.forEach(function(kv) {
-      map.set(kv[0], kv[1]);
-    });
-    return map;
-  }
-
-  beforeEach(function() {
-    jasmine.getEnv().requireFunctioningMaps();
-  });
-
   it('matches any actual map to an empty map', function() {
-    var actualMap = new MapI([['foo', 'bar']]);
+    var actualMap = new Map([['foo', 'bar']]);
     var containing = new jasmineUnderTest.MapContaining(new Map());
 
     expect(containing.asymmetricMatch(actualMap)).toBe(true);
   });
 
   it('matches when all the key/value pairs in sample have matches in actual', function() {
-    var actualMap = new MapI([
+    var actualMap = new Map([
       ['foo', [1, 2, 3]],
       [{ foo: 'bar' }, 'baz'],
       ['other', 'any']
     ]);
 
-    var containingMap = new MapI([[{ foo: 'bar' }, 'baz'], ['foo', [1, 2, 3]]]);
+    var containingMap = new Map([[{ foo: 'bar' }, 'baz'], ['foo', [1, 2, 3]]]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
     var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
@@ -35,12 +21,12 @@ describe('MapContaining', function() {
   });
 
   it('does not match when a key is not in actual', function() {
-    var actualMap = new MapI([
+    var actualMap = new Map([
       ['foo', [1, 2, 3]],
       [{ foo: 'not a bar' }, 'baz']
     ]);
 
-    var containingMap = new MapI([[{ foo: 'bar' }, 'baz'], ['foo', [1, 2, 3]]]);
+    var containingMap = new Map([[{ foo: 'bar' }, 'baz'], ['foo', [1, 2, 3]]]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
     var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
@@ -48,9 +34,9 @@ describe('MapContaining', function() {
   });
 
   it('does not match when a value is not in actual', function() {
-    var actualMap = new MapI([['foo', [1, 2, 3]], [{ foo: 'bar' }, 'baz']]);
+    var actualMap = new Map([['foo', [1, 2, 3]], [{ foo: 'bar' }, 'baz']]);
 
-    var containingMap = new MapI([[{ foo: 'bar' }, 'baz'], ['foo', [1, 2]]]);
+    var containingMap = new Map([[{ foo: 'bar' }, 'baz'], ['foo', [1, 2]]]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
     var matchersUtil = new jasmineUnderTest.MatchersUtil();
 
@@ -58,13 +44,13 @@ describe('MapContaining', function() {
   });
 
   it('matches when all the key/value pairs in sample have asymmetric matches in actual', function() {
-    var actualMap = new MapI([
+    var actualMap = new Map([
       ['foo1', 'not a bar'],
       ['foo2', 'bar'],
       ['baz', [1, 2, 3, 4]]
     ]);
 
-    var containingMap = new MapI([
+    var containingMap = new Map([
       [jasmineUnderTest.stringMatching(/^foo\d/), 'bar'],
       ['baz', jasmineUnderTest.arrayContaining([2, 3])]
     ]);
@@ -75,9 +61,9 @@ describe('MapContaining', function() {
   });
 
   it('does not match when a key in sample has no asymmetric matches in actual', function() {
-    var actualMap = new MapI([['a-foo1', 'bar'], ['baz', [1, 2, 3, 4]]]);
+    var actualMap = new Map([['a-foo1', 'bar'], ['baz', [1, 2, 3, 4]]]);
 
-    var containingMap = new MapI([
+    var containingMap = new Map([
       [jasmineUnderTest.stringMatching(/^foo\d/), 'bar'],
       ['baz', jasmineUnderTest.arrayContaining([2, 3])]
     ]);
@@ -88,9 +74,9 @@ describe('MapContaining', function() {
   });
 
   it('does not match when a value in sample has no asymmetric matches in actual', function() {
-    var actualMap = new MapI([['foo1', 'bar'], ['baz', [1, 2, 3, 4]]]);
+    var actualMap = new Map([['foo1', 'bar'], ['baz', [1, 2, 3, 4]]]);
 
-    var containingMap = new MapI([
+    var containingMap = new Map([
       [jasmineUnderTest.stringMatching(/^foo\d/), 'bar'],
       ['baz', jasmineUnderTest.arrayContaining([4, 5])]
     ]);
@@ -101,15 +87,15 @@ describe('MapContaining', function() {
   });
 
   it('matches recursively', function() {
-    var actualMap = new MapI([
-      ['foo', new MapI([['foo1', 1], ['foo2', 2]])],
-      [new MapI([[1, 'bar1'], [2, 'bar2']]), 'bar'],
+    var actualMap = new Map([
+      ['foo', new Map([['foo1', 1], ['foo2', 2]])],
+      [new Map([[1, 'bar1'], [2, 'bar2']]), 'bar'],
       ['other', 'any']
     ]);
 
-    var containingMap = new MapI([
-      ['foo', new jasmineUnderTest.MapContaining(new MapI([['foo1', 1]]))],
-      [new jasmineUnderTest.MapContaining(new MapI([[2, 'bar2']])), 'bar']
+    var containingMap = new Map([
+      ['foo', new jasmineUnderTest.MapContaining(new Map([['foo1', 1]]))],
+      [new jasmineUnderTest.MapContaining(new Map([[2, 'bar2']])), 'bar']
     ]);
     var containing = new jasmineUnderTest.MapContaining(containingMap);
     var matchersUtil = new jasmineUnderTest.MatchersUtil();
@@ -124,10 +110,8 @@ describe('MapContaining', function() {
         ? a < 0 && b < 0
         : a === b;
     }
-    var actualMap = new MapI([['foo', -1]]);
-    var containing = new jasmineUnderTest.MapContaining(
-      new MapI([['foo', -2]])
-    );
+    var actualMap = new Map([['foo', -1]]);
+    var containing = new jasmineUnderTest.MapContaining(new Map([['foo', -2]]));
     var matchersUtil = new jasmineUnderTest.MatchersUtil({
       customTesters: [tester]
     });
@@ -136,7 +120,7 @@ describe('MapContaining', function() {
   });
 
   it('does not match when actual is not a map', function() {
-    var containingMap = new MapI([['foo', 'bar']]);
+    var containingMap = new Map([['foo', 'bar']]);
     expect(
       new jasmineUnderTest.MapContaining(containingMap).asymmetricMatch('foo')
     ).toBe(false);

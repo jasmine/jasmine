@@ -1,8 +1,5 @@
-/* eslint-disable compat/compat */
 describe('toBePending', function() {
   it('passes if the actual promise is pending', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBePending(matchersUtil),
       actual = new Promise(function() {});
@@ -13,8 +10,6 @@ describe('toBePending', function() {
   });
 
   it('fails if the actual promise is resolved', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBePending(matchersUtil),
       actual = Promise.resolve();
@@ -25,8 +20,6 @@ describe('toBePending', function() {
   });
 
   it('fails if the actual promise is rejected', function() {
-    jasmine.getEnv().requirePromises();
-
     var matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBePending(matchersUtil),
       actual = Promise.reject(new Error('promise was rejected'));

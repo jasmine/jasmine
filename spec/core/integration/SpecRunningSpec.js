@@ -792,9 +792,9 @@ describe('spec running', function() {
     });
   });
 
-  describe('When stopSpecOnExpectationFailure is set', function() {
-    it('skips to cleanup functions after an error', function(done) {
-      var actions = [];
+  function hasStandardErrorHandlingBehavior() {
+    it('skips to cleanup functions after a thrown error', async function() {
+      const actions = [];
 
       env.describe('Something', function() {
         env.beforeEach(function() {
@@ -821,79 +821,18 @@ describe('spec running', function() {
         });
       });
 
-      env.configure({ stopSpecOnExpectationFailure: true });
+      await env.execute();
 
-      env.execute(null, function() {
-        expect(actions).toEqual([
-          'outer beforeEach',
-          'inner afterEach',
-          'outer afterEach'
-        ]);
-        done();
-      });
+      expect(actions).toEqual(['outer beforeEach', 'outer afterEach']);
     });
 
-    it('skips to cleanup functions after done.fail is called', function(done) {
-      var actions = [];
-
-      env.describe('Something', function() {
-        env.beforeEach(function(done) {
-          actions.push('beforeEach');
-          done.fail('error');
-          actions.push('after done.fail');
-        });
-
-        env.afterEach(function() {
-          actions.push('afterEach');
-        });
-
-        env.it('does it', function() {
-          actions.push('it');
-        });
-      });
-
-      env.configure({ stopSpecOnExpectationFailure: true });
-
-      env.execute(null, function() {
-        expect(actions).toEqual(['beforeEach', 'afterEach']);
-        done();
-      });
-    });
-
-    it('skips to cleanup functions when an async function times out', function(done) {
-      var actions = [];
-
-      env.describe('Something', function() {
-        env.beforeEach(function(innerDone) {
-          actions.push('beforeEach');
-        }, 1);
-
-        env.afterEach(function() {
-          actions.push('afterEach');
-        });
-
-        env.it('does it', function() {
-          actions.push('it');
-        });
-      });
-
-      env.configure({ stopSpecOnExpectationFailure: true });
-
-      env.execute(null, function() {
-        expect(actions).toEqual(['beforeEach', 'afterEach']);
-        done();
-      });
-    });
-
-    it('skips to cleanup functions after an error with deprecations', function(done) {
-      var actions = [];
-
-      spyOn(env, 'deprecated');
+    it('skips to cleanup functions after a rejected promise', async function() {
+      const actions = [];
 
       env.describe('Something', function() {
         env.beforeEach(function() {
           actions.push('outer beforeEach');
-          throw new Error('error');
+          return Promise.reject(new Error('error'));
         });
 
         env.afterEach(function() {
@@ -915,29 +854,18 @@ describe('spec running', function() {
         });
       });
 
-      env.throwOnExpectationFailure(true);
+      await env.execute();
 
-      env.execute(null, function() {
-        expect(actions).toEqual([
-          'outer beforeEach',
-          'inner afterEach',
-          'outer afterEach'
-        ]);
-        expect(env.deprecated).toHaveBeenCalled();
-        done();
-      });
+      expect(actions).toEqual(['outer beforeEach', 'outer afterEach']);
     });
 
-    it('skips to cleanup functions after done.fail is called with deprecations', function(done) {
-      var actions = [];
-
-      spyOn(env, 'deprecated');
+    it('skips to cleanup functions after done.fail is called', async function() {
+      const actions = [];
 
       env.describe('Something', function() {
         env.beforeEach(function(done) {
           actions.push('beforeEach');
           done.fail('error');
-          actions.push('after done.fail');
         });
 
         env.afterEach(function() {
@@ -949,19 +877,13 @@ describe('spec running', function() {
         });
       });
 
-      env.throwOnExpectationFailure(true);
+      await env.execute();
 
-      env.execute(null, function() {
-        expect(actions).toEqual(['beforeEach', 'afterEach']);
-        expect(env.deprecated).toHaveBeenCalled();
-        done();
-      });
+      expect(actions).toEqual(['beforeEach', 'afterEach']);
     });
 
-    it('skips to cleanup functions when an async function times out with deprecations', function(done) {
-      var actions = [];
-
-      spyOn(env, 'deprecated');
+    it('skips to cleanup functions when an async function times out', async function() {
+      const actions = [];
 
       env.describe('Something', function() {
         env.beforeEach(function(innerDone) {
@@ -977,17 +899,405 @@ describe('spec running', function() {
         });
       });
 
-      env.throwOnExpectationFailure(true);
+      await env.execute();
 
-      env.execute(null, function() {
-        expect(actions).toEqual(['beforeEach', 'afterEach']);
-        expect(env.deprecated).toHaveBeenCalled();
-        done();
+      expect(actions).toEqual(['beforeEach', 'afterEach']);
+    });
+
+    it('skips to cleanup functions after pending() is called', async function() {
+      const actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          pending();
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it', function() {
+            actions.push('inner it');
+          });
+        });
       });
+
+      await env.execute();
+
+      expect(actions).toEqual(['outer beforeEach', 'outer afterEach']);
+    });
+
+    it('runs all reporter callbacks even if one fails', async function() {
+      const laterReporter = jasmine.createSpyObj('laterReporter', ['specDone']);
+
+      env.it('a spec', function() {});
+      env.addReporter({
+        specDone: function() {
+          throw new Error('nope');
+        }
+      });
+      env.addReporter(laterReporter);
+
+      await env.execute();
+
+      expect(laterReporter.specDone).toHaveBeenCalled();
+    });
+
+    it('skips cleanup functions that are defined in child suites when a beforeEach errors', async function() {
+      const parentAfterEachFn = jasmine.createSpy('parentAfterEachFn');
+      const childAfterEachFn = jasmine.createSpy('childAfterEachFn');
+
+      env.describe('parent suite', function() {
+        env.beforeEach(function() {
+          throw new Error('nope');
+        });
+
+        env.afterEach(parentAfterEachFn);
+
+        env.describe('child suite', function() {
+          env.it('a spec', function() {});
+          env.afterEach(childAfterEachFn);
+        });
+      });
+
+      await env.execute();
+
+      expect(parentAfterEachFn).toHaveBeenCalled();
+      expect(childAfterEachFn).not.toHaveBeenCalled();
+    });
+  }
+
+  describe('When stopSpecOnExpectationFailure is true', function() {
+    beforeEach(function() {
+      env.configure({ stopSpecOnExpectationFailure: true });
+    });
+
+    hasStandardErrorHandlingBehavior();
+
+    it('skips to cleanup functions after an expectation failure', async function() {
+      var actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          env.expect(1).toBe(2);
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it', function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      await env.execute();
+
+      expect(actions).toEqual(['outer beforeEach', 'outer afterEach']);
     });
   });
 
-  function behavesLikeStopOnSpecFailureIsOn(configureFn) {
+  describe('When stopSpecOnExpectationFailure is false', function() {
+    beforeEach(function() {
+      env.configure({ stopSpecOnExpectationFailure: false });
+    });
+
+    hasStandardErrorHandlingBehavior();
+
+    it('does not skip anything after an expectation failure', async function() {
+      var actions = [];
+
+      env.describe('Something', function() {
+        env.beforeEach(function() {
+          actions.push('outer beforeEach');
+          env.expect(1).toBe(2);
+        });
+
+        env.afterEach(function() {
+          actions.push('outer afterEach');
+        });
+
+        env.describe('Inner', function() {
+          env.beforeEach(function() {
+            actions.push('inner beforeEach');
+          });
+
+          env.afterEach(function() {
+            actions.push('inner afterEach');
+          });
+
+          env.it('does it', function() {
+            actions.push('inner it');
+          });
+        });
+      });
+
+      await env.execute();
+
+      expect(actions).toEqual([
+        'outer beforeEach',
+        'inner beforeEach',
+        'inner it',
+        'inner afterEach',
+        'outer afterEach'
+      ]);
+    });
+  });
+
+  describe('When a top-level beforeAll function fails', function() {
+    it('skips and reports contained specs', async function() {
+      const outerBeforeEach = jasmine.createSpy('outerBeforeEach');
+      const nestedBeforeEach = jasmine.createSpy('nestedBeforeEach');
+      const outerAfterEach = jasmine.createSpy('outerAfterEach');
+      const nestedAfterEach = jasmine.createSpy('nestedAfterEach');
+      const outerIt = jasmine.createSpy('outerIt');
+      const nestedIt = jasmine.createSpy('nestedIt');
+      const nestedBeforeAll = jasmine.createSpy('nestedBeforeAll');
+
+      env.beforeAll(function() {
+        throw new Error('nope');
+      });
+
+      env.beforeEach(outerBeforeEach);
+      env.it('a spec', outerIt);
+      env.describe('a nested suite', function() {
+        env.beforeAll(nestedBeforeAll);
+        env.beforeEach(nestedBeforeEach);
+        env.it('a nested spec', nestedIt);
+        env.afterEach(nestedAfterEach);
+      });
+      env.afterEach(outerAfterEach);
+
+      const reporter = jasmine.createSpyObj('reporter', [
+        'suiteStarted',
+        'suiteDone',
+        'specStarted',
+        'specDone'
+      ]);
+      env.addReporter(reporter);
+
+      await env.execute();
+
+      expect(outerBeforeEach).not.toHaveBeenCalled();
+      expect(outerIt).not.toHaveBeenCalled();
+      expect(nestedBeforeAll).not.toHaveBeenCalled();
+      expect(nestedBeforeEach).not.toHaveBeenCalled();
+      expect(nestedIt).not.toHaveBeenCalled();
+      expect(nestedAfterEach).not.toHaveBeenCalled();
+      expect(outerAfterEach).not.toHaveBeenCalled();
+
+      expect(reporter.suiteStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a nested suite'
+        })
+      );
+
+      // The child suite should be reported as passed, for consistency with
+      // suites that contain failing specs but no suite-level errors.
+      expect(reporter.suiteDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a nested suite',
+          status: 'passed',
+          failedExpectations: []
+        })
+      );
+
+      expect(reporter.specStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a spec'
+        })
+      );
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a spec',
+          status: 'failed',
+          failedExpectations: [
+            jasmine.objectContaining({
+              passed: false,
+              message:
+                'Not run because a beforeAll function failed. The ' +
+                'beforeAll failure will be reported on the suite that ' +
+                'caused it.'
+            })
+          ]
+        })
+      );
+
+      expect(reporter.specStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a nested suite a nested spec'
+        })
+      );
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a nested suite a nested spec',
+          status: 'failed',
+          failedExpectations: [
+            jasmine.objectContaining({
+              passed: false,
+              message:
+                'Not run because a beforeAll function failed. The ' +
+                'beforeAll failure will be reported on the suite that ' +
+                'caused it.'
+            })
+          ]
+        })
+      );
+    });
+  });
+
+  describe('When a suite beforeAll function fails', function() {
+    it('skips and reports contained specs', async function() {
+      const outerBeforeEach = jasmine.createSpy('outerBeforeEach');
+      const nestedBeforeEach = jasmine.createSpy('nestedBeforeEach');
+      const outerAfterEach = jasmine.createSpy('outerAfterEach');
+      const nestedAfterEach = jasmine.createSpy('nestedAfterEach');
+      const outerIt = jasmine.createSpy('outerIt');
+      const nestedIt = jasmine.createSpy('nestedIt');
+      const nestedBeforeAll = jasmine.createSpy('nestedBeforeAll');
+
+      env.describe('a suite', function() {
+        env.beforeAll(function() {
+          throw new Error('nope');
+        });
+
+        env.beforeEach(outerBeforeEach);
+        env.it('a spec', outerIt);
+        env.describe('a nested suite', function() {
+          env.beforeAll(nestedBeforeAll);
+          env.beforeEach(nestedBeforeEach);
+          env.it('a nested spec', nestedIt);
+          env.afterEach(nestedAfterEach);
+        });
+        env.afterEach(outerAfterEach);
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', [
+        'suiteStarted',
+        'suiteDone',
+        'specStarted',
+        'specDone'
+      ]);
+      env.addReporter(reporter);
+
+      await env.execute();
+
+      expect(outerBeforeEach).not.toHaveBeenCalled();
+      expect(outerIt).not.toHaveBeenCalled();
+      expect(nestedBeforeAll).not.toHaveBeenCalled();
+      expect(nestedBeforeEach).not.toHaveBeenCalled();
+      expect(nestedIt).not.toHaveBeenCalled();
+      expect(nestedAfterEach).not.toHaveBeenCalled();
+      expect(outerAfterEach).not.toHaveBeenCalled();
+
+      expect(reporter.suiteStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a nested suite'
+        })
+      );
+
+      // The child suite should be reported as passed, for consistency with
+      // suites that contain failing specs but no suite-level errors.
+      expect(reporter.suiteDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a nested suite',
+          status: 'passed',
+          failedExpectations: []
+        })
+      );
+
+      expect(reporter.specStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a spec'
+        })
+      );
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a spec',
+          status: 'failed',
+          failedExpectations: [
+            jasmine.objectContaining({
+              passed: false,
+              message:
+                'Not run because a beforeAll function failed. The ' +
+                'beforeAll failure will be reported on the suite that ' +
+                'caused it.'
+            })
+          ]
+        })
+      );
+
+      expect(reporter.specStarted).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a nested suite a nested spec'
+        })
+      );
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          fullName: 'a suite a nested suite a nested spec',
+          status: 'failed',
+          failedExpectations: [
+            jasmine.objectContaining({
+              passed: false,
+              message:
+                'Not run because a beforeAll function failed. The ' +
+                'beforeAll failure will be reported on the suite that ' +
+                'caused it.'
+            })
+          ]
+        })
+      );
+    });
+
+    it('runs afterAll functions in the current suite and outer scopes', async function() {
+      const outerAfterAll = jasmine.createSpy('outerAfterAll');
+      const nestedAfterAll = jasmine.createSpy('nestedAfterAll');
+      const secondNestedAfterAll = jasmine.createSpy('secondNestedAfterAll');
+
+      env.describe('a nested suite', function() {
+        env.beforeAll(function() {
+          throw new Error('nope');
+        });
+
+        env.describe('more nesting', function() {
+          env.it('a nested spec', function() {});
+          env.afterAll(secondNestedAfterAll);
+        });
+
+        env.afterAll(nestedAfterAll);
+      });
+      env.afterAll(outerAfterAll);
+
+      await env.execute();
+
+      expect(secondNestedAfterAll).not.toHaveBeenCalled();
+      expect(nestedAfterAll).toHaveBeenCalled();
+      expect(outerAfterAll).toHaveBeenCalled();
+    });
+  });
+
+  describe('when stopOnSpecFailure is on', function() {
     it('does not run further specs when one fails', function(done) {
       var actions = [],
         config;
@@ -1006,32 +1316,47 @@ describe('spec running', function() {
       });
 
       env.configure({ random: false });
-      configureFn(env);
+      env.configure({ stopOnSpecFailure: true });
 
       env.execute(null, function() {
         expect(actions).toEqual(['fails']);
         done();
       });
     });
-  }
 
-  describe('when failFast is on', function() {
-    behavesLikeStopOnSpecFailureIsOn(function(env) {
-      spyOn(env, 'deprecated');
-      env.configure({ failFast: true });
-    });
-  });
+    it('runs afterAll functions', async function() {
+      const actions = [];
 
-  describe('when stopOnSpecFailure is on', function() {
-    behavesLikeStopOnSpecFailureIsOn(function(env) {
+      env.describe('outer suite', function() {
+        env.describe('inner suite', function() {
+          env.it('fails', function() {
+            actions.push('fails');
+            env.expect(1).toBe(2);
+          });
+
+          env.afterAll(function() {
+            actions.push('inner afterAll');
+          });
+        });
+
+        env.afterAll(function() {
+          actions.push('outer afterAll');
+        });
+      });
+
+      env.afterAll(function() {
+        actions.push('top afterAll');
+      });
+
       env.configure({ stopOnSpecFailure: true });
-    });
-  });
+      await env.execute();
 
-  describe('when stopOnSpecFailure is enabled via the deprecated method', function() {
-    behavesLikeStopOnSpecFailureIsOn(function(env) {
-      spyOn(env, 'deprecated');
-      env.stopOnSpecFailure(true);
+      expect(actions).toEqual([
+        'fails',
+        'inner afterAll',
+        'outer afterAll',
+        'top afterAll'
+      ]);
     });
   });
 

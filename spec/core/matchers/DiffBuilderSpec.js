@@ -112,7 +112,7 @@ describe('DiffBuilder', function() {
         return '[number:' + x + ']';
       }
     };
-    prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
+    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
     var diffBuilder = new jasmineUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
@@ -131,7 +131,7 @@ describe('DiffBuilder', function() {
         return '[thing with a=' + x.a + ', b=' + JSON.stringify(x.b) + ']';
       }
     };
-    prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
+    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
     var diffBuilder = new jasmineUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });

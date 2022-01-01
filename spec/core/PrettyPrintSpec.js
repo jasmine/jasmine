@@ -18,8 +18,7 @@ describe('PrettyPrinter', function() {
 
   describe('stringify sets', function() {
     it('should stringify sets properly', function() {
-      jasmine.getEnv().requireFunctioningSets();
-      var set = new Set(); // eslint-disable-line compat/compat
+      var set = new Set();
       set.add(1);
       set.add(2);
       var pp = jasmineUnderTest.makePrettyPrinter();
@@ -27,12 +26,11 @@ describe('PrettyPrinter', function() {
     });
 
     it('should truncate sets with more elements than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH', function() {
-      jasmine.getEnv().requireFunctioningSets();
       var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
 
       try {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        var set = new Set(); // eslint-disable-line compat/compat
+        var set = new Set();
         set.add('a');
         set.add('b');
         set.add('c');
@@ -46,20 +44,18 @@ describe('PrettyPrinter', function() {
 
   describe('stringify maps', function() {
     it('should stringify maps properly', function() {
-      jasmine.getEnv().requireFunctioningMaps();
-      var map = new Map(); // eslint-disable-line compat/compat
+      var map = new Map();
       map.set(1, 2);
       var pp = jasmineUnderTest.makePrettyPrinter();
       expect(pp(map)).toEqual('Map( [ 1, 2 ] )');
     });
 
     it('should truncate maps with more elements than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH', function() {
-      jasmine.getEnv().requireFunctioningMaps();
       var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
 
       try {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        var map = new Map(); // eslint-disable-line compat/compat
+        var map = new Map();
         map.set('a', 1);
         map.set('b', 2);
         map.set('c', 3);
@@ -272,15 +268,13 @@ describe('PrettyPrinter', function() {
   });
 
   it('should stringify immutable circular objects', function() {
-    if (Object.freeze) {
-      var pp = jasmineUnderTest.makePrettyPrinter();
-      var frozenObject = { foo: { bar: 'baz' } };
-      frozenObject.circular = frozenObject;
-      frozenObject = Object.freeze(frozenObject);
-      expect(pp(frozenObject)).toEqual(
-        "Object({ foo: Object({ bar: 'baz' }), circular: <circular reference: Object> })"
-      );
-    }
+    var pp = jasmineUnderTest.makePrettyPrinter();
+    var frozenObject = { foo: { bar: 'baz' } };
+    frozenObject.circular = frozenObject;
+    frozenObject = Object.freeze(frozenObject);
+    expect(pp(frozenObject)).toEqual(
+      "Object({ foo: Object({ bar: 'baz' }), circular: <circular reference: Object> })"
+    );
   });
 
   it('should stringify RegExp objects properly', function() {
@@ -299,20 +293,15 @@ describe('PrettyPrinter', function() {
 
   it('should indicate getters on objects as such', function() {
     var pp = jasmineUnderTest.makePrettyPrinter();
-    var sampleValue = { id: 1 };
-    if (sampleValue.__defineGetter__) {
-      //not supported in IE!
-      sampleValue.__defineGetter__('calculatedValue', function() {
+    var sampleValue = {
+      id: 1,
+      get calculatedValue() {
         throw new Error("don't call me!");
-      });
-    }
-    if (sampleValue.__defineGetter__) {
-      expect(pp(sampleValue)).toEqual(
-        'Object({ id: 1, calculatedValue: <getter> })'
-      );
-    } else {
-      expect(pp(sampleValue)).toEqual('Object({ id: 1 })');
-    }
+      }
+    };
+    expect(pp(sampleValue)).toEqual(
+      'Object({ id: 1, calculatedValue: <getter> })'
+    );
   });
 
   it('should not do HTML escaping of strings', function() {

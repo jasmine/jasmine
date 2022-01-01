@@ -61,10 +61,6 @@ describe('Spec', function() {
     spec.execute();
 
     fakeQueueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
-    // TODO: due to some issue with the Pretty Printer, this line fails, but the other two pass.
-    // This means toHaveBeenCalledWith on IE8 will always be broken.
-
-    //   expect(startCallback).toHaveBeenCalledWith(spec);
     expect(startCallback).toHaveBeenCalled();
     expect(startCallback.calls.first().object).toEqual(spec);
   });
@@ -120,9 +116,13 @@ describe('Spec', function() {
     expect(options.queueableFns).toEqual([
       { fn: jasmine.any(Function) },
       before,
-      queueableFn
+      queueableFn,
+      after,
+      {
+        fn: jasmine.any(Function),
+        type: 'specCleanup'
+      }
     ]);
-    expect(options.cleanupFns).toEqual([after, { fn: jasmine.any(Function) }]);
   });
 
   it("tells the queue runner that it's a leaf node", function() {
@@ -175,8 +175,13 @@ describe('Spec', function() {
     expect(fakeQueueRunner).toHaveBeenCalledWith(
       jasmine.objectContaining({
         onComplete: jasmine.any(Function),
-        queueableFns: [{ fn: jasmine.any(Function) }],
-        cleanupFns: [{ fn: jasmine.any(Function) }]
+        queueableFns: [
+          { fn: jasmine.any(Function) },
+          {
+            fn: jasmine.any(Function),
+            type: 'specCleanup'
+          }
+        ]
       })
     );
     expect(specBody).not.toHaveBeenCalled();
@@ -184,7 +189,7 @@ describe('Spec', function() {
     var args = fakeQueueRunner.calls.mostRecent().args[0];
     args.queueableFns[0].fn();
     expect(startCallback).toHaveBeenCalled();
-    args.cleanupFns[0].fn();
+    args.queueableFns[args.queueableFns.length - 1].fn();
     expect(resultCallback).toHaveBeenCalled();
 
     expect(spec.result.status).toBe('excluded');
@@ -216,7 +221,7 @@ describe('Spec', function() {
     var args = fakeQueueRunner.calls.mostRecent().args[0];
     args.queueableFns[0].fn();
     expect(startCallback).toHaveBeenCalled();
-    args.cleanupFns[0].fn('things');
+    args.queueableFns[1].fn('things');
     expect(resultCallback).toHaveBeenCalledWith(
       {
         id: spec.id,
@@ -228,7 +233,8 @@ describe('Spec', function() {
         deprecationWarnings: [],
         pendingReason: '',
         duration: jasmine.any(Number),
-        properties: null
+        properties: null,
+        debugLogs: null
       },
       'things'
     );
@@ -285,9 +291,6 @@ describe('Spec', function() {
         },
         queueRunnerFactory: function(config) {
           config.queueableFns.forEach(function(qf) {
-            qf.fn();
-          });
-          config.cleanupFns.forEach(function(qf) {
             qf.fn();
           });
           config.onComplete();
@@ -357,7 +360,9 @@ describe('Spec', function() {
 
     spec.execute();
 
-    fakeQueueRunner.calls.mostRecent().args[0].cleanupFns[0].fn();
+    const fns = fakeQueueRunner.calls.mostRecent().args[0].queueableFns;
+    fns[fns.length - 1].fn();
+
     expect(resultCallback.calls.first().args[0].passedExpectations).toEqual([
       'expectation1'
     ]);
@@ -386,7 +391,8 @@ describe('Spec', function() {
 
     spec.execute();
 
-    fakeQueueRunner.calls.mostRecent().args[0].cleanupFns[0].fn();
+    const fns = fakeQueueRunner.calls.mostRecent().args[0].queueableFns;
+    fns[fns.length - 1].fn();
     expect(resultCallback.calls.first().args[0].passedExpectations).toEqual([
       'passed'
     ]);
@@ -485,7 +491,7 @@ describe('Spec', function() {
     spec.execute();
 
     var args = fakeQueueRunner.calls.mostRecent().args[0];
-    args.cleanupFns[0].fn();
+    args.queueableFns[args.queueableFns.length - 1].fn();
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual([
       {
         error: 'foo',
@@ -513,15 +519,15 @@ describe('Spec', function() {
     spec.execute();
 
     var args = fakeQueueRunner.calls.mostRecent().args[0];
-    args.cleanupFns[0].fn();
+    args.queueableFns[args.queueableFns.length - 1].fn();
     expect(resultCallback.calls.first().args[0].failedExpectations).toEqual([]);
   });
 
-  it('passes an onMultipleDone that logs a deprecation', function() {
+  it('treats multiple done calls as late errors', function() {
     var queueRunnerFactory = jasmine.createSpy('queueRunnerFactory'),
-      deprecated = jasmine.createSpy('depredated'),
+      onLateError = jasmine.createSpy('onLateError'),
       spec = new jasmineUnderTest.Spec({
-        deprecated: deprecated,
+        onLateError: onLateError,
         queueableFn: { fn: function() {} },
         queueRunnerFactory: queueRunnerFactory,
         getSpecName: function() {
@@ -534,15 +540,119 @@ describe('Spec', function() {
     expect(queueRunnerFactory).toHaveBeenCalled();
     queueRunnerFactory.calls.argsFor(0)[0].onMultipleDone();
 
-    expect(deprecated).toHaveBeenCalledWith(
-      "An asynchronous function called its 'done' " +
-        'callback more than once. This is a bug in the spec, beforeAll, ' +
-        'beforeEach, afterAll, or afterEach function in question. This will ' +
-        'be treated as an error in a future version. See' +
-        '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
-        'for more information.\n' +
-        '(in spec: a spec)',
-      { ignoreRunnable: true }
+    expect(onLateError).toHaveBeenCalledTimes(1);
+    expect(onLateError.calls.argsFor(0)[0]).toBeInstanceOf(Error);
+    expect(onLateError.calls.argsFor(0)[0].message).toEqual(
+      'An asynchronous spec, beforeEach, or afterEach function called its ' +
+        "'done' callback more than once.\n(in spec: a spec)"
     );
+  });
+
+  describe('#trace', function() {
+    it('adds the messages to the result', function() {
+      var timer = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+        spec = new jasmineUnderTest.Spec({
+          queueableFn: {
+            fn: function() {}
+          },
+          queueRunnerFactory: function() {},
+          timer: timer
+        }),
+        t1 = 123,
+        t2 = 456;
+
+      spec.execute();
+      expect(spec.result.debugLogs).toBeNull();
+      timer.elapsed.and.returnValue(t1);
+      spec.debugLog('msg 1');
+      expect(spec.result.debugLogs).toEqual([
+        { message: 'msg 1', timestamp: t1 }
+      ]);
+      timer.elapsed.and.returnValue(t2);
+      spec.debugLog('msg 2');
+      expect(spec.result.debugLogs).toEqual([
+        { message: 'msg 1', timestamp: t1 },
+        { message: 'msg 2', timestamp: t2 }
+      ]);
+    });
+
+    describe('When the spec passes', function() {
+      it('omits the messages from the reported result', function() {
+        var resultCallback = jasmine.createSpy('resultCallback'),
+          spec = new jasmineUnderTest.Spec({
+            queueableFn: {
+              fn: function() {}
+            },
+            resultCallback: resultCallback,
+            queueRunnerFactory: function(config) {
+              spec.debugLog('msg');
+              for (const fn of config.queueableFns) {
+                fn.fn();
+              }
+              config.onComplete(false);
+            }
+          });
+
+        spec.execute(function() {});
+        expect(resultCallback).toHaveBeenCalledWith(
+          jasmine.objectContaining({ debugLogs: null }),
+          undefined
+        );
+      });
+
+      it('removes the messages to save memory', function() {
+        var resultCallback = jasmine.createSpy('resultCallback'),
+          spec = new jasmineUnderTest.Spec({
+            queueableFn: {
+              fn: function() {}
+            },
+            resultCallback: resultCallback,
+            queueRunnerFactory: function(config) {
+              spec.debugLog('msg');
+              for (const fn of config.queueableFns) {
+                fn.fn();
+              }
+              config.onComplete(false);
+            }
+          });
+
+        spec.execute(function() {});
+        expect(resultCallback).toHaveBeenCalled();
+        expect(spec.result.debugLogs).toBeNull();
+      });
+    });
+
+    describe('When the spec fails', function() {
+      it('includes the messages in the reported result', function() {
+        var resultCallback = jasmine.createSpy('resultCallback'),
+          timer = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+          spec = new jasmineUnderTest.Spec({
+            queueableFn: {
+              fn: function() {}
+            },
+            resultCallback: resultCallback,
+            queueRunnerFactory: function(config) {
+              spec.debugLog('msg');
+              spec.onException(new Error('nope'));
+              for (const fn of config.queueableFns) {
+                fn.fn();
+              }
+              config.onComplete(true);
+            },
+            timer: timer
+          }),
+          timestamp = 12345;
+
+        timer.elapsed.and.returnValue(timestamp);
+
+        spec.execute(function() {});
+        expect(resultCallback).toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            debugLogs: [{ message: 'msg', timestamp: timestamp }]
+          }),
+          undefined
+        );
+      });
+    });
   });
 });

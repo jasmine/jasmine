@@ -73,10 +73,6 @@ describe('HtmlReporter', function() {
     describe('and no expectations ran', function() {
       var container, reporter;
       beforeEach(function() {
-        if (typeof console === 'undefined') {
-          console = { warn: function() {}, error: function() {} };
-        }
-
         container = document.createElement('div');
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
@@ -704,6 +700,50 @@ describe('HtmlReporter', function() {
         expect(alertBars[2].innerHTML).not.toMatch(/line/);
       });
 
+      it('does not display the "AfterAll" prefix for other error types', function() {
+        const container = document.createElement('div');
+        const getContainer = function() {
+          return container;
+        };
+        const reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          createElement: function() {
+            return document.createElement.apply(document, arguments);
+          },
+          createTextNode: function() {
+            return document.createTextNode.apply(document, arguments);
+          }
+        });
+
+        reporter.initialize();
+
+        reporter.jasmineStarted({});
+        reporter.jasmineDone({
+          failedExpectations: [
+            { message: 'load error', globalErrorType: 'load' },
+            {
+              message: 'lateExpectation error',
+              globalErrorType: 'lateExpectation'
+            },
+            { message: 'lateError error', globalErrorType: 'lateError' }
+          ]
+        });
+
+        const alertBars = container.querySelectorAll(
+          '.jasmine-alert .jasmine-bar'
+        );
+
+        expect(alertBars.length).toEqual(4);
+        expect(alertBars[1].textContent).toContain('load error');
+        expect(alertBars[2].textContent).toContain('lateExpectation error');
+        expect(alertBars[3].textContent).toContain('lateError error');
+
+        for (let bar of alertBars) {
+          expect(bar.textContent).not.toContain('AfterAll');
+        }
+      });
+
       it('displays file and line information if available', function() {
         var container = document.createElement('div'),
           getContainer = function() {
@@ -818,7 +858,10 @@ describe('HtmlReporter', function() {
         var stopOnFailureUI = container.querySelector('.jasmine-fail-fast');
         stopOnFailureUI.click();
 
-        expect(navigationHandler).toHaveBeenCalledWith('failFast', true);
+        expect(navigationHandler).toHaveBeenCalledWith(
+          'stopOnSpecFailure',
+          true
+        );
       });
 
       it('should navigate and turn the setting off', function() {
@@ -847,7 +890,10 @@ describe('HtmlReporter', function() {
         var stopOnFailureUI = container.querySelector('.jasmine-fail-fast');
         stopOnFailureUI.click();
 
-        expect(navigationHandler).toHaveBeenCalledWith('failFast', false);
+        expect(navigationHandler).toHaveBeenCalledWith(
+          'stopOnSpecFailure',
+          false
+        );
       });
     });
 
@@ -924,7 +970,10 @@ describe('HtmlReporter', function() {
         var throwingExpectationsUI = container.querySelector('.jasmine-throw');
         throwingExpectationsUI.click();
 
-        expect(navigateHandler).toHaveBeenCalledWith('oneFailurePerSpec', true);
+        expect(navigateHandler).toHaveBeenCalledWith(
+          'stopSpecOnExpectationFailure',
+          true
+        );
       });
 
       it('should navigate and change the setting to off', function() {
@@ -954,7 +1003,7 @@ describe('HtmlReporter', function() {
         throwingExpectationsUI.click();
 
         expect(navigateHandler).toHaveBeenCalledWith(
-          'oneFailurePerSpec',
+          'stopSpecOnExpectationFailure',
           false
         );
       });
@@ -1461,6 +1510,23 @@ describe('HtmlReporter', function() {
             }
           ]
         };
+        var failingSpecResultWithDebugLogs = {
+          id: 567,
+          status: 'failed',
+          description: 'a failing spec',
+          fullName: 'a suite inner suite a failing spec',
+          passedExpectations: [],
+          failedExpectations: [
+            {
+              message: 'a failure message',
+              stack: 'a stack trace'
+            }
+          ],
+          debugLogs: [
+            { timestamp: 123, message: 'msg 1' },
+            { timestamp: 456, message: 'msg 1' }
+          ]
+        };
 
         var passingSuiteResult = {
           id: 1,
@@ -1478,18 +1544,20 @@ describe('HtmlReporter', function() {
         reporter.suiteDone(passingSuiteResult);
         reporter.suiteDone(failingSuiteResult);
         reporter.suiteDone(passingSuiteResult);
+        reporter.specStarted(failingSpecResultWithDebugLogs);
+        reporter.specDone(failingSpecResultWithDebugLogs);
         reporter.jasmineDone({});
       });
 
       it('reports the specs counts', function() {
         var alertBar = container.querySelector('.jasmine-alert .jasmine-bar');
-        expect(alertBar.innerHTML).toMatch(/2 specs, 2 failure/);
+        expect(alertBar.innerHTML).toMatch(/3 specs, 3 failures/);
       });
 
       it('reports failure messages and stack traces', function() {
         var specFailures = container.querySelector('.jasmine-failures');
 
-        expect(specFailures.childNodes.length).toEqual(2);
+        expect(specFailures.childNodes.length).toEqual(3);
 
         var specFailure = specFailures.childNodes[0];
         expect(specFailure.getAttribute('class')).toMatch(/jasmine-failed/);
@@ -1528,6 +1596,18 @@ describe('HtmlReporter', function() {
           'jasmine-stack-trace'
         );
         expect(suiteStackTrace.innerHTML).toEqual('a stack trace');
+      });
+
+      it('reports traces when present', function() {
+        var specFailure = container.querySelectorAll(
+            '.jasmine-spec-detail.jasmine-failed'
+          )[2],
+          debugLogs = specFailure.querySelector('.jasmine-debug-log table'),
+          rows;
+
+        expect(debugLogs).toBeTruthy();
+        rows = debugLogs.querySelectorAll('tbody tr');
+        expect(rows.length).toEqual(2);
       });
 
       it('provides links to focus on a failure and each containing suite', function() {
@@ -1572,6 +1652,61 @@ describe('HtmlReporter', function() {
           'jasmine-failure-list'
         );
       });
+    });
+
+    it('counts failures that are reported in the jasmineDone event', function() {
+      const container = document.createElement('div');
+      function getContainer() {
+        return container;
+      }
+      const reporter = new jasmineUnderTest.HtmlReporter({
+        env: env,
+        getContainer: getContainer,
+        createElement: function() {
+          return document.createElement.apply(document, arguments);
+        },
+        createTextNode: function() {
+          return document.createTextNode.apply(document, arguments);
+        },
+        addToExistingQueryString: function(key, value) {
+          return '?' + key + '=' + value;
+        }
+      });
+      reporter.initialize();
+
+      reporter.jasmineStarted({ totalSpecsDefined: 1 });
+
+      const failingSpecResult = {
+        id: 124,
+        status: 'failed',
+        description: 'a failing spec',
+        fullName: 'a suite inner suite a failing spec',
+        passedExpectations: [],
+        failedExpectations: [
+          {
+            message: 'a failure message',
+            stack: 'a stack trace'
+          }
+        ]
+      };
+
+      reporter.specStarted(failingSpecResult);
+      reporter.specDone(failingSpecResult);
+      reporter.jasmineDone({
+        failedExpectations: [
+          {
+            message: 'a failure message',
+            stack: 'a stack trace'
+          },
+          {
+            message: 'a failure message',
+            stack: 'a stack trace'
+          }
+        ]
+      });
+
+      const alertBar = container.querySelector('.jasmine-alert .jasmine-bar');
+      expect(alertBar.innerHTML).toMatch(/1 spec, 3 failures/);
     });
   });
 

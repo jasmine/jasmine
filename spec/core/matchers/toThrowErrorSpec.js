@@ -92,16 +92,9 @@ describe('toThrowError', function() {
       iframe.src = 'about:blank';
       var iframeDocument = iframe.contentWindow.document;
 
-      if (iframeDocument.body) {
-        iframeDocument.body.appendChild(
-          iframeDocument.createElement('script')
-        ).textContent = "function method() { throw new Error('foo'); }";
-      } else {
-        // IE 10 and older
-        iframeDocument.write(
-          "<html><head><script>function method() { throw new Error('foo'); }</script></head></html>"
-        );
-      }
+      iframeDocument.body.appendChild(
+        iframeDocument.createElement('script')
+      ).textContent = "function method() { throw new Error('foo'); }";
 
       var result = matcher.compare(iframe.contentWindow.method);
       expect(result.pass).toBe(true);

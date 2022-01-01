@@ -50,7 +50,9 @@ describe('buildExpectationResult', function() {
       stackFormatter: stackFormatter
     });
 
-    expect(stackFormatter).toHaveBeenCalledWith(fakeError);
+    expect(stackFormatter).toHaveBeenCalledWith(fakeError, {
+      omitMessage: true
+    });
     expect(result.stack).toEqual('foo');
   });
 
@@ -66,7 +68,9 @@ describe('buildExpectationResult', function() {
       stackFormatter: stackFormatter
     });
 
-    expect(stackFormatter).toHaveBeenCalledWith(fakeError);
+    expect(stackFormatter).toHaveBeenCalledWith(fakeError, {
+      omitMessage: true
+    });
     expect(result.stack).toEqual('foo');
   });
 

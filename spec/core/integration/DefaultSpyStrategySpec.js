@@ -10,7 +10,7 @@ describe('Default Spy Strategy (Integration)', function() {
     env.cleanup_();
   });
 
-  it('allows defining a default spy strategy', function(done) {
+  it('allows defining a default spy strategy', async function() {
     env.describe('suite with default strategy', function() {
       env.beforeEach(function() {
         env.setDefaultSpyStrategy(function(and) {
@@ -29,18 +29,11 @@ describe('Default Spy Strategy (Integration)', function() {
       expect(spy()).toBeUndefined();
     });
 
-    function expectations() {
-      var result = jasmineDone.calls.argsFor(0)[0];
-      expect(result.overallStatus).toEqual('passed');
-      done();
-    }
-
-    var jasmineDone = jasmine.createSpy('jasmineDone');
-    env.addReporter({ jasmineDone: jasmineDone });
-    env.execute(null, expectations);
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
   });
 
-  it('uses the default spy strategy defined when the spy is created', function(done) {
+  it('uses the default spy strategy defined when the spy is created', async function() {
     env.it('spec', function() {
       var a = env.createSpy('a');
       env.setDefaultSpyStrategy(function(and) {
@@ -67,14 +60,7 @@ describe('Default Spy Strategy (Integration)', function() {
       expect(d.and.isConfigured()).toBe(false);
     });
 
-    function expectations() {
-      var result = jasmineDone.calls.argsFor(0)[0];
-      expect(result.overallStatus).toEqual('passed');
-      done();
-    }
-
-    var jasmineDone = jasmine.createSpy('jasmineDone');
-    env.addReporter({ jasmineDone: jasmineDone });
-    env.execute(null, expectations);
+    const result = await env.execute();
+    expect(result.overallStatus).toEqual('passed');
   });
 });

@@ -7,11 +7,6 @@ getJasmineRequireObj().Spy = function(j$) {
     };
   })();
 
-  var matchersUtil = new j$.MatchersUtil({
-    customTesters: [],
-    pp: j$.makePrettyPrinter()
-  });
-
   /**
    * @classdesc _Note:_ Do not construct this directly. Use {@link spyOn},
    * {@link spyOnProperty}, {@link jasmine.createSpy}, or
@@ -19,26 +14,24 @@ getJasmineRequireObj().Spy = function(j$) {
    * @class Spy
    * @hideconstructor
    */
-  function Spy(
-    name,
-    originalFn,
-    customStrategies,
-    defaultStrategyFn,
-    getPromise
-  ) {
+  function Spy(name, matchersUtil, optionals) {
+    const { originalFn, customStrategies, defaultStrategyFn } = optionals || {};
+
     var numArgs = typeof originalFn === 'function' ? originalFn.length : 0,
       wrapper = makeFunc(numArgs, function(context, args, invokeNew) {
         return spy(context, args, invokeNew);
       }),
-      strategyDispatcher = new SpyStrategyDispatcher({
-        name: name,
-        fn: originalFn,
-        getSpy: function() {
-          return wrapper;
+      strategyDispatcher = new SpyStrategyDispatcher(
+        {
+          name: name,
+          fn: originalFn,
+          getSpy: function() {
+            return wrapper;
+          },
+          customStrategies: customStrategies
         },
-        customStrategies: customStrategies,
-        getPromise: getPromise
-      }),
+        matchersUtil
+      ),
       callTracker = new j$.CallTracker(),
       spy = function(context, args, invokeNew) {
         /**
@@ -150,11 +143,11 @@ getJasmineRequireObj().Spy = function(j$) {
     return wrapper;
   }
 
-  function SpyStrategyDispatcher(strategyArgs) {
+  function SpyStrategyDispatcher(strategyArgs, matchersUtil) {
     var baseStrategy = new j$.SpyStrategy(strategyArgs);
     var argsStrategies = new StrategyDict(function() {
       return new j$.SpyStrategy(strategyArgs);
-    });
+    }, matchersUtil);
 
     this.and = baseStrategy;
 
@@ -183,9 +176,10 @@ getJasmineRequireObj().Spy = function(j$) {
     };
   }
 
-  function StrategyDict(strategyFactory) {
+  function StrategyDict(strategyFactory, matchersUtil) {
     this.strategies = [];
     this.strategyFactory = strategyFactory;
+    this.matchersUtil = matchersUtil;
   }
 
   StrategyDict.prototype.any = function() {
@@ -210,7 +204,7 @@ getJasmineRequireObj().Spy = function(j$) {
     var i;
 
     for (i = 0; i < this.strategies.length; i++) {
-      if (matchersUtil.equals(args, this.strategies[i].args)) {
+      if (this.matchersUtil.equals(args, this.strategies[i].args)) {
         return this.strategies[i].strategy;
       }
     }

@@ -950,7 +950,7 @@ describe('Clock (acceptance)', function() {
     expect(timeoutDate).toEqual(baseTime.getTime() + 150);
   });
 
-  it('logs a deprecation when mockDate is called with a non-Date', function() {
+  it('throws mockDate is called with a non-Date', function() {
     var delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
       mockDate = new jasmineUnderTest.MockDate(global),
@@ -963,12 +963,9 @@ describe('Clock (acceptance)', function() {
       ),
       env = jasmineUnderTest.getEnv();
 
-    spyOn(env, 'deprecated');
-    clock.mockDate(12345);
-    expect(env.deprecated).toHaveBeenCalledWith(
+    expect(() => clock.mockDate(12345)).toThrowError(
       'The argument to jasmine.clock().mockDate(), if specified, should be ' +
-        'a Date instance. Passing anything other than a Date will be ' +
-        'treated as an error in a future release.'
+        'a Date instance.'
     );
   });
 

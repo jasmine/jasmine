@@ -43,32 +43,83 @@ describe('Suite', function() {
     expect(suite.getFullName()).toEqual('I am a parent suite I am a suite');
   });
 
-  it('adds before functions in order of needed execution', function() {
+  it('adds beforeEach functions in order of needed execution', function() {
     var suite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
-      outerBefore = jasmine.createSpy('outerBeforeEach'),
-      innerBefore = jasmine.createSpy('insideBeforeEach');
+      outerBefore = { fn: 'outerBeforeEach' },
+      innerBefore = { fn: 'insideBeforeEach' };
 
     suite.beforeEach(outerBefore);
     suite.beforeEach(innerBefore);
 
-    expect(suite.beforeFns).toEqual([innerBefore, outerBefore]);
+    expect(suite.beforeFns).toEqual([
+      { fn: innerBefore.fn, suite },
+      { fn: outerBefore.fn, suite }
+    ]);
   });
 
-  it('adds after functions in order of needed execution', function() {
+  it('adds beforeAll functions in order of needed execution', function() {
     var suite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
-      outerAfter = jasmine.createSpy('outerAfterEach'),
-      innerAfter = jasmine.createSpy('insideAfterEach');
+      outerBefore = { fn: 'outerBeforeAll' },
+      innerBefore = { fn: 'insideBeforeAll' };
+
+    suite.beforeAll(outerBefore);
+    suite.beforeAll(innerBefore);
+
+    function sameInstance(expected) {
+      return {
+        asymmetricMatch: function(actual) {
+          return actual === expected;
+        },
+        jasmineToString: function() {
+          return `<same instance as ${expected}>`;
+        }
+      };
+    }
+
+    expect(suite.beforeAllFns).toEqual([
+      { fn: outerBefore.fn, type: 'beforeAll', suite: sameInstance(suite) },
+      { fn: innerBefore.fn, type: 'beforeAll', suite: sameInstance(suite) }
+    ]);
+  });
+
+  it('adds afterEach functions in order of needed execution', function() {
+    var suite = new jasmineUnderTest.Suite({
+        env: env,
+        description: 'I am a suite'
+      }),
+      outerAfter = { fn: 'outerAfterEach' },
+      innerAfter = { fn: 'insideAfterEach' };
 
     suite.afterEach(outerAfter);
     suite.afterEach(innerAfter);
 
-    expect(suite.afterFns).toEqual([innerAfter, outerAfter]);
+    expect(suite.afterFns).toEqual([
+      { fn: innerAfter.fn, suite, type: 'afterEach' },
+      { fn: outerAfter.fn, suite, type: 'afterEach' }
+    ]);
+  });
+
+  it('adds afterAll functions in order of needed execution', function() {
+    const suite = new jasmineUnderTest.Suite({
+        env: env,
+        description: 'I am a suite'
+      }),
+      outerAfter = { fn: 'outerAfterAll' },
+      innerAfter = { fn: 'insideAfterAl' };
+
+    suite.afterAll(outerAfter);
+    suite.afterAll(innerAfter);
+
+    expect(suite.afterAllFns).toEqual([
+      { fn: innerAfter.fn, type: 'afterAll' },
+      { fn: outerAfter.fn, type: 'afterAll' }
+    ]);
   });
 
   it('has a status of failed if any expectations have failed', function() {
@@ -226,27 +277,27 @@ describe('Suite', function() {
   });
 
   describe('#onMultipleDone', function() {
-    it('logs a special deprecation when it is the top suite', function() {
-      var env = jasmine.createSpyObj('env', ['deprecated']);
-      var suite = new jasmineUnderTest.Suite({ env: env, parentSuite: null });
+    it('reports a special error when it is the top suite', function() {
+      const onLateError = jasmine.createSpy('onLateError');
+      const suite = new jasmineUnderTest.Suite({
+        onLateError,
+        parentSuite: null
+      });
 
       suite.onMultipleDone();
 
-      expect(env.deprecated).toHaveBeenCalledWith(
+      expect(onLateError).toHaveBeenCalledTimes(1);
+      expect(onLateError.calls.argsFor(0)[0]).toBeInstanceOf(Error);
+      expect(onLateError.calls.argsFor(0)[0].message).toEqual(
         'A top-level beforeAll or afterAll function called its ' +
-          "'done' callback more than once. This is a bug in the beforeAll " +
-          'or afterAll function in question. This will be treated as an ' +
-          'error in a future version. See' +
-          '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
-          'for more information.',
-        { ignoreRunnable: true }
+          "'done' callback more than once."
       );
     });
 
-    it('logs a deprecation including the suite name when it is a normal suite', function() {
-      var env = jasmine.createSpyObj('env', ['deprecated']);
+    it('reports an error including the suite name when it is a normal suite', function() {
+      const onLateError = jasmine.createSpy('onLateError');
       var suite = new jasmineUnderTest.Suite({
-        env: env,
+        onLateError,
         description: 'the suite',
         parentSuite: {
           description: 'the parent suite',
@@ -256,15 +307,11 @@ describe('Suite', function() {
 
       suite.onMultipleDone();
 
-      expect(env.deprecated).toHaveBeenCalledWith(
-        "An asynchronous function called its 'done' callback more than " +
-          'once. This is a bug in the spec, beforeAll, beforeEach, afterAll, ' +
-          'or afterEach function in question. This will be treated as an error ' +
-          'in a future version. See' +
-          '<https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0#deprecations-due-to-calling-done-multiple-times> ' +
-          'for more information.\n' +
-          '(in suite: the parent suite the suite)',
-        { ignoreRunnable: true }
+      expect(onLateError).toHaveBeenCalledTimes(1);
+      expect(onLateError.calls.argsFor(0)[0]).toBeInstanceOf(Error);
+      expect(onLateError.calls.argsFor(0)[0].message).toEqual(
+        "An asynchronous beforeAll or afterAll function called its 'done' " +
+          'callback more than once.\n(in suite: the parent suite the suite)'
       );
     });
   });

@@ -225,5 +225,61 @@ describe('ExceptionFormatter', function() {
 
       expect(result).toMatch(/error properties:.*someProperty.*hello there/);
     });
+
+    describe('When omitMessage is true', function() {
+      it('filters the message from V8-style stack traces', function() {
+        const error = {
+          message: 'nope',
+          stack:
+            'Error: nope\n' +
+            '    at fn1 (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)\n' +
+            '    at fn2 (http://localhost:8888/__jasmine__/jasmine.js:4320:20)\n' +
+            '    at fn3 (http://localhost:8888/__jasmine__/jasmine.js:4320:20)\n' +
+            '    at fn4 (http://localhost:8888/__spec__/core/UtilSpec.js:110:19)\n'
+        };
+        const subject = new jasmineUnderTest.ExceptionFormatter({
+          jasmineFile: 'http://localhost:8888/__jasmine__/jasmine.js'
+        });
+        const result = subject.stack(error, { omitMessage: true });
+        expect(result).toEqual(
+          '    at fn1 (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)\n' +
+            '    at <Jasmine>\n' +
+            '    at fn4 (http://localhost:8888/__spec__/core/UtilSpec.js:110:19)'
+        );
+      });
+
+      it('handles Webkit style traces that do not include a message', function() {
+        const error = {
+          stack:
+            'http://localhost:8888/__spec__/core/UtilSpec.js:115:28\n' +
+            'fn1@http://localhost:8888/__jasmine__/jasmine.js:4320:27\n' +
+            'fn2@http://localhost:8888/__jasmine__/jasmine.js:4320:27\n' +
+            'http://localhost:8888/__spec__/core/UtilSpec.js:115:28'
+        };
+        const subject = new jasmineUnderTest.ExceptionFormatter({
+          jasmineFile: 'http://localhost:8888/__jasmine__/jasmine.js'
+        });
+        const result = subject.stack(error, { omitMessage: true });
+        expect(result).toEqual(
+          'http://localhost:8888/__spec__/core/UtilSpec.js:115:28\n' +
+            '<Jasmine>\n' +
+            'http://localhost:8888/__spec__/core/UtilSpec.js:115:28'
+        );
+      });
+
+      it('ensures that stack traces do not include the message in this environment', function() {
+        let error;
+        try {
+          throw new Error('an error');
+        } catch (e) {
+          error = e;
+        }
+        const subject = new jasmineUnderTest.ExceptionFormatter({
+          jasmineFile: jasmine.util.jasmineFile()
+        });
+        const result = subject.stack(error, { omitMessage: true });
+        expect(result).not.toContain('an error');
+      });
+    });
   });
 });

@@ -1,4 +1,3 @@
-/* eslint-disable compat/compat */
 describe('AsyncExpectation', function() {
   beforeEach(function() {
     jasmineUnderTest.Expectation.addAsyncCoreMatchers(
@@ -6,23 +5,8 @@ describe('AsyncExpectation', function() {
     );
   });
 
-  describe('Factory', function() {
-    it('throws an Error if promises are not available', function() {
-      var thenable = { then: function() {} },
-        options = { global: {}, actual: thenable };
-      function f() {
-        jasmineUnderTest.Expectation.asyncFactory(options);
-      }
-      expect(f).toThrowError(
-        'expectAsync is unavailable because the environment does not support promises.'
-      );
-    });
-  });
-
   describe('#not', function() {
     it('converts a pass to a fail', function() {
-      jasmine.getEnv().requirePromises();
-
       var addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.resolve(),
         pp = jasmineUnderTest.makePrettyPrinter(),
@@ -44,8 +28,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('converts a fail to a pass', function() {
-      jasmine.getEnv().requirePromises();
-
       var addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.reject(),
         expectation = jasmineUnderTest.Expectation.asyncFactory({
@@ -69,7 +51,6 @@ describe('AsyncExpectation', function() {
   });
 
   it('propagates rejections from the comparison function', function() {
-    jasmine.getEnv().requirePromises();
     var error = new Error('ExpectationSpec failure');
 
     var addExpectationResult = jasmine.createSpy('addExpectationResult'),
@@ -93,8 +74,6 @@ describe('AsyncExpectation', function() {
 
   describe('#withContext', function() {
     it('prepends the context to the generated failure message', function() {
-      jasmine.getEnv().requirePromises();
-
       var matchersUtil = {
           pp: function(val) {
             return val.toString();
@@ -122,8 +101,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('prepends the context to a custom failure message', function() {
-      jasmine.getEnv().requirePromises();
-
       var matchersUtil = {
           buildFailureMessage: function() {
             return 'failure message';
@@ -154,7 +131,6 @@ describe('AsyncExpectation', function() {
 
     it('prepends the context to a custom failure message from a function', function() {
       pending('should actually work, but no custom matchers for async yet');
-      jasmine.getEnv().requirePromises();
 
       var matchersUtil = {
           buildFailureMessage: function() {
@@ -183,8 +159,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('works with #not', function() {
-      jasmine.getEnv().requirePromises();
-
       var addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.resolve(),
         pp = jasmineUnderTest.makePrettyPrinter(),
@@ -209,8 +183,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('works with #not and a custom message', function() {
-      jasmine.getEnv().requirePromises();
-
       var addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.resolve('a'),
         expectation = jasmineUnderTest.Expectation.asyncFactory({
@@ -238,8 +210,6 @@ describe('AsyncExpectation', function() {
 
   describe('async matchers', function() {
     it('makes custom matchers available to this expectation', function() {
-      jasmine.getEnv().requirePromises();
-
       var asyncMatchers = {
           toFoo: function() {},
           toBar: function() {}
@@ -255,8 +225,6 @@ describe('AsyncExpectation', function() {
     });
 
     it("wraps matchers's compare functions, passing in matcher dependencies", function() {
-      jasmine.getEnv().requirePromises();
-
       var fakeCompare = function() {
           return Promise.resolve({ pass: true });
         },
@@ -285,8 +253,6 @@ describe('AsyncExpectation', function() {
     });
 
     it("wraps matchers's compare functions, passing the actual and expected", function() {
-      jasmine.getEnv().requirePromises();
-
       var fakeCompare = jasmine
           .createSpy('fake-compare')
           .and.returnValue(Promise.resolve({ pass: true })),
@@ -316,8 +282,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('reports a passing result to the spec when the comparison passes', function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {
@@ -359,8 +323,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('reports a failing result to the spec when the comparison fails', function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {
@@ -404,8 +366,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('reports a failing result and a custom fail message to the spec when the comparison fails', function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {
@@ -446,8 +406,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('reports a failing result with a custom fail message function to the spec when the comparison fails', function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {
@@ -490,8 +448,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('reports a passing result to the spec when the comparison fails for a negative expectation', function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {
@@ -530,8 +486,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('reports a failing result to the spec when the comparison passes for a negative expectation', function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {
@@ -576,8 +530,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('reports a failing result and a custom fail message to the spec when the comparison passes for a negative expectation', function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {
@@ -619,8 +571,6 @@ describe('AsyncExpectation', function() {
     });
 
     it("reports a passing result to the spec when the 'not' comparison passes, given a negativeCompare", function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {
@@ -662,8 +612,6 @@ describe('AsyncExpectation', function() {
     });
 
     it("reports a failing result and a custom fail message to the spec when the 'not' comparison fails, given a negativeCompare", function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {
@@ -708,8 +656,6 @@ describe('AsyncExpectation', function() {
     });
 
     it('reports errorWithStack when a custom error message is returned', function() {
-      jasmine.getEnv().requirePromises();
-
       var customError = new Error('I am a custom error');
       var matchers = {
           toFoo: function() {
@@ -752,8 +698,6 @@ describe('AsyncExpectation', function() {
     });
 
     it("reports a custom message to the spec when a 'not' comparison fails", function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {
@@ -794,8 +738,6 @@ describe('AsyncExpectation', function() {
     });
 
     it("reports a custom message func to the spec when a 'not' comparison fails", function() {
-      jasmine.getEnv().requirePromises();
-
       var matchers = {
           toFoo: function() {
             return {

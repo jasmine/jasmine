@@ -17,10 +17,9 @@ getJasmineRequireObj().MockDate = function(j$) {
         currentTime = mockDate.getTime();
       } else {
         if (!j$.util.isUndefined(mockDate)) {
-          j$.getEnv().deprecated(
+          throw new Error(
             'The argument to jasmine.clock().mockDate(), if specified, ' +
-              'should be a Date instance. Passing anything other than a Date ' +
-              'will be treated as an error in a future release.'
+              'should be a Date instance.'
           );
         }
 
@@ -95,11 +94,7 @@ getJasmineRequireObj().MockDate = function(j$) {
       FakeDate.prototype = GlobalDate.prototype;
 
       FakeDate.now = function() {
-        if (GlobalDate.now) {
-          return currentTime;
-        } else {
-          throw new Error('Browser does not support Date.now()');
-        }
+        return currentTime;
       };
 
       FakeDate.toSource = GlobalDate.toSource;
