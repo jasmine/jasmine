@@ -38,11 +38,13 @@ Add the following to your HTML file:
 
 ```html
 <link rel="shortcut icon" type="image/png" href="lib/jasmine-{#.#.#}/jasmine_favicon.png">
-<link rel="stylesheet" type="text/css" href="lib/jasmine-{#.#.#}/jasmine.css">
+<link rel="stylesheet" href="lib/jasmine-{#.#.#}/jasmine.css">
 
-<script type="text/javascript" src="lib/jasmine-{#.#.#}/jasmine.js"></script>
-<script type="text/javascript" src="lib/jasmine-{#.#.#}/jasmine-html.js"></script>
-<script type="text/javascript" src="lib/jasmine-{#.#.#}/boot.js"></script>
+<script src="lib/jasmine-{#.#.#}/jasmine.js"></script>
+<script src="lib/jasmine-{#.#.#}/jasmine-html.js"></script>
+<script src="lib/jasmine-{#.#.#}/boot0.js"></script>
+<!-- optional: include a file here that configures the Jasmine env -->
+<script src="lib/jasmine-{#.#.#}/boot1.js"></script>
 ```
 
 ## Supported environments
