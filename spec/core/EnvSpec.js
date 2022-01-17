@@ -235,9 +235,17 @@ describe('Env', function() {
     });
 
     it('throws an error when it has no children', function() {
-      expect(function() {
-        env.describe('done method', function() {});
-      }).toThrowError('describe with no children (describe() or it())');
+      let ran = false;
+      env.describe('parent suite', function() {
+        expect(function() {
+          env.describe('child suite', function() {});
+        }).toThrowError(
+          'describe with no children (describe() or it()): parent suite child suite'
+        );
+        ran = true;
+      });
+
+      expect(ran).toBeTrue();
     });
   });
 
