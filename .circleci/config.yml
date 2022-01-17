@@ -60,8 +60,6 @@ jobs:
 
   test_browsers: &test_browsers
     executor: node14
-    environment:
-      SKIP_JASMINE_BROWSER_FLAKES: "true"
     steps:
       - attach_workspace:
           at: .
@@ -89,11 +87,6 @@ jobs:
             set -o errexit
             scripts/stop-sauce-connect $(cat sauce-pidfile)
             exit $exitcode
-
-  test_browser_flakes:
-    <<: *test_browsers
-    environment:
-      SKIP_JASMINE_BROWSER_FLAKES: "false"
 
 workflows:
   version: 2
@@ -138,15 +131,3 @@ workflows:
           filters:
             branches:
               ignore: /pull\/.*/ # Don't run on pull requests.
-
-  browser-flakes:
-    jobs:
-    - build:
-        executor: node14
-        name: build_node_14
-    - test_browser_flakes:
-        requires:
-        - build_node_14
-        filters:
-          branches:
-            ignore: /pull\/.*/ # Don't run on pull requests.
