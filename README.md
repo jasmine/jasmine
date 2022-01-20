@@ -76,18 +76,19 @@ for the supported environments for each Jasmine release.
 
 ## Maintainers
 
-* [Gregg Van Hove](mailto:gvanhove@pivotal.io), Pivotal Labs
+* [Gwendolyn Van Hove](mailto:gwen@slackersoft.net)
+* [Steve Gravrock](mailto:sdg@panix.com)
 
 ### Maintainers Emeritus
 
-* [Davis W. Frank](mailto:dwfrank@pivotal.io), Pivotal Labs
-* [Rajan Agaskar](mailto:rajan@pivotal.io), Pivotal Labs
-* [Greg Cobb](mailto:gcobb@pivotal.io), Pivotal Labs
-* [Chris Amavisca](mailto:camavisca@pivotal.io), Pivotal Labs
-* [Christian Williams](mailto:antixian666@gmail.com), Cloud Foundry
+* [Davis W. Frank](mailto:dwfrank@pivotal.io)
+* [Rajan Agaskar](mailto:rajan@pivotal.io)
+* [Greg Cobb](mailto:gcobb@pivotal.io)
+* [Chris Amavisca](mailto:camavisca@pivotal.io)
+* [Christian Williams](mailto:antixian666@gmail.com)
 * Sheel Choksi
 
-Copyright (c) 2008-2018 Pivotal Labs. This software is licensed under the MIT License.
+Copyright (c) 2008-2022 Jasmine Maintainers. This software is licensed under the MIT License.
 
 
 ## License
