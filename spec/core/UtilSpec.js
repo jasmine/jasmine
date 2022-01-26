@@ -140,6 +140,32 @@ describe('jasmineUnderTest.util', function() {
     });
   });
 
+  describe('cloneArgs', function() {
+    it('clones primitives as-is', function() {
+      expect(jasmineUnderTest.util.cloneArgs([true, false])).toEqual([
+        true,
+        false
+      ]);
+      expect(jasmineUnderTest.util.cloneArgs([0, 1])).toEqual([0, 1]);
+      expect(jasmineUnderTest.util.cloneArgs(['str'])).toEqual(['str']);
+    });
+
+    it('clones Regexp objects as-is', function() {
+      var regex = /match/;
+      expect(jasmineUnderTest.util.cloneArgs([regex])).toEqual([regex]);
+    });
+
+    it('clones Date objects as-is', function() {
+      var date = new Date(2022, 1, 1);
+      expect(jasmineUnderTest.util.cloneArgs([date])).toEqual([date]);
+    });
+
+    it('clones null and undefined', function() {
+      expect(jasmineUnderTest.util.cloneArgs([null])).toEqual([null]);
+      expect(jasmineUnderTest.util.cloneArgs([undefined])).toEqual([undefined]);
+    });
+  });
+
   describe('getPropertyDescriptor', function() {
     it('get property descriptor from object', function() {
       var obj = { prop: 1 },
