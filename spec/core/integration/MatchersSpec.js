@@ -625,6 +625,28 @@ describe('Matchers (Integration)', function() {
     });
   });
 
+  describe('toHaveSpyInteractions', function() {
+    let spyObj;
+    beforeEach(function() {
+      spyObj = env.createSpyObj('NewClass', ['spyA', 'spyB']);
+      spyObj.otherMethod = function() {};
+    });
+
+    verifyPasses(function(env) {
+      spyObj.spyA();
+      env.expect(spyObj).toHaveSpyInteractions();
+    });
+
+    verifyFails(function(env) {
+      env.expect(spyObj).toHaveSpyInteractions();
+    });
+
+    verifyFails(function(env) {
+      spyObj.otherMethod();
+      env.expect(spyObj).toHaveSpyInteractions();
+    });
+  });
+
   describe('toMatch', function() {
     verifyPasses(function(env) {
       env.expect('foo').toMatch(/oo$/);
