@@ -267,6 +267,7 @@ describe('QueueRunner', function() {
             var err = new Error('foo'),
               queueableFn1 = {
                 fn: function() {
+                  // eslint-disable-next-line compat/compat
                   return Promise.resolve(err);
                 }
               },
@@ -290,6 +291,7 @@ describe('QueueRunner', function() {
             var err = new Error('foo'),
               queueableFn1 = {
                 fn: function() {
+                  // eslint-disable-next-line compat/compat
                   return Promise.resolve(err);
                 }
               },
@@ -312,6 +314,7 @@ describe('QueueRunner', function() {
             jasmine.getEnv().requirePromises();
             var queueableFn1 = {
                 fn: function() {
+                  // eslint-disable-next-line compat/compat
                   return Promise.resolve('not an error');
                 }
               },

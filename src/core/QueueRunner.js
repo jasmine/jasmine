@@ -196,7 +196,10 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         maybeThenable = queueableFn.fn.call(self.userContext);
 
         if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
-          maybeThenable.then(wrapInPromiseResolutionHandler(next), onPromiseRejection);
+          maybeThenable.then(
+            wrapInPromiseResolutionHandler(next),
+            onPromiseRejection
+          );
           completedSynchronously = false;
           return { completedSynchronously: false };
         }
