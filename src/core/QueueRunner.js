@@ -196,7 +196,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         maybeThenable = queueableFn.fn.call(self.userContext);
 
         if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
-          maybeThenable.then(next, onPromiseRejection);
+          maybeThenable.then(wrapInPromiseResolutionHandler(next), onPromiseRejection);
           completedSynchronously = false;
           return { completedSynchronously: false };
         }
@@ -286,6 +286,16 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       this.deprecated(msg, { omitStackTrace: true });
     }
   };
+
+  function wrapInPromiseResolutionHandler(fn) {
+    return function(maybeArg) {
+      if (j$.isError_(maybeArg)) {
+        fn(maybeArg);
+      } else {
+        fn();
+      }
+    };
+  }
 
   return QueueRunner;
 };
