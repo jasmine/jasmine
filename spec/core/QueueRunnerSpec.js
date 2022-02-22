@@ -156,6 +156,81 @@ describe('QueueRunner', function() {
         expect(failFn).toHaveBeenCalledWith(err);
         expect(queueableFn2.fn).toHaveBeenCalled();
       });
+
+      describe('as a result of a promise', function() {
+        describe('and the argument is an Error', function() {
+          // Since promise support was added, Jasmine has failed specs that
+          // return a promise that resolves to an error. That's probably not
+          // the desired behavior but it's also not something we should change
+          // except on a major release and with a deprecation warning in
+          // advance.
+          it('explicitly fails and moves to the next function', function(done) {
+            var err = new Error('foo'),
+              queueableFn1 = {
+                fn: function() {
+                  return Promise.resolve(err);
+                }
+              },
+              queueableFn2 = { fn: jasmine.createSpy('fn2') },
+              failFn = jasmine.createSpy('fail'),
+              queueRunner = new jasmineUnderTest.QueueRunner({
+                queueableFns: [queueableFn1, queueableFn2],
+                fail: failFn,
+                onComplete: function() {
+                  expect(failFn).toHaveBeenCalledWith(err);
+                  expect(queueableFn2.fn).toHaveBeenCalled();
+                  done();
+                }
+              });
+
+            queueRunner.execute();
+          });
+
+          it('does not log a deprecation', function(done) {
+            var err = new Error('foo'),
+              queueableFn1 = {
+                fn: function() {
+                  return Promise.resolve(err);
+                }
+              },
+              deprecated = jasmine.createSpy('deprecated'),
+              queueRunner = new jasmineUnderTest.QueueRunner({
+                queueableFns: [queueableFn1],
+                deprecated: deprecated,
+                onComplete: function() {
+                  expect(deprecated).not.toHaveBeenCalled();
+                  done();
+                }
+              });
+
+            queueRunner.execute();
+          });
+        });
+
+        describe('and the argument is not an Error', function() {
+          it('does not log a deprecation or report a failure', function(done) {
+            var queueableFn1 = {
+                fn: function() {
+                  return Promise.resolve('not an error');
+                }
+              },
+              failFn = jasmine.createSpy('fail'),
+              deprecated = jasmine.createSpy('deprecated'),
+              queueRunner = new jasmineUnderTest.QueueRunner({
+                queueableFns: [queueableFn1],
+                deprecated: deprecated,
+                fail: failFn,
+                onComplete: function() {
+                  expect(deprecated).not.toHaveBeenCalled();
+                  expect(failFn).not.toHaveBeenCalled();
+                  done();
+                }
+              });
+
+            queueRunner.execute();
+          });
+        });
+      });
     });
 
     it('does not cause an explicit fail if execution is being stopped', function() {
