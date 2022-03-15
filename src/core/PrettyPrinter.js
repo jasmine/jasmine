@@ -40,7 +40,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
         this.emitScalar('<global>');
       } else if (value.jasmineToString) {
         this.emitScalar(value.jasmineToString(this.pp_));
-      } else if (typeof value === 'string') {
+      } else if (j$.isString_(value)) {
         this.emitString(value);
       } else if (j$.isSpy(value)) {
         this.emitScalar('spy on ' + value.and.identity);
