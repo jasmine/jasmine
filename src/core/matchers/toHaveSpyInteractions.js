@@ -20,7 +20,7 @@ getJasmineRequireObj().toHaveSpyInteractions = function(j$) {
         if (!j$.isObject_(actual)) {
           throw new Error(
             getErrorMsg(
-              'Expected a spy object, but got ' + matchersUtil.pp(actual) + '.'
+              'Expected a spy object, but got ' + typeof actual + '.'
             )
           );
         }
