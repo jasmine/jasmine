@@ -41,14 +41,12 @@ describe('toHaveSpyInteractions', function() {
     });
   });
 
-  [['argument'], [false, 0]].forEach(function(testValue) {
-    it(`throws error if arguments (${testValue}) are passed`, function() {
-      let spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['spyA', 'spyB']);
+  it('throws error if arguments are passed', function() {
+    let spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['spyA', 'spyB']);
 
-      expect(function() {
-        expect(spyObj).toHaveSpyInteractions(...testValue);
-      }).toThrowError(Error, /Does not take arguments/);
-    });
+    expect(function() {
+      expect(spyObj).toHaveSpyInteractions('an argument');
+    }).toThrowError(Error, /Does not take arguments/);
   });
 
   it('throws error if spy object has no spies', function() {
