@@ -33,8 +33,6 @@ describe('toHaveSpyInteractions', function() {
 
   [true, 123, 'string'].forEach(function(testValue) {
     it(`throws error if a non-object (${testValue}) is passed`, function() {
-      let spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['spyA', 'spyB']);
-
       expect(function() {
         expect(testValue).toHaveSpyInteractions();
       }).toThrowError(Error, /Expected a spy object, but got/);
