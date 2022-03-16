@@ -3,25 +3,22 @@
 
 version: 2.1
 
-orbs:
-  node: circleci/node@3.0.0
-
 executors:
   node16:
     docker:
-      - image: cimg/node:16.1.0-browsers
+      - image: cimg/node:16.14.0 # Latest 16.x
     working_directory: ~/workspace
   node14:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.17.4 # Latest 14.x
     working_directory: ~/workspace
   node12_latest:
     docker:
-    - image: circleci/node:12
+    - image: cimg/node:12.22.10 # Latest 12.x
     working_directory: ~/workspace
   node12_17:
     docker:
-      - image: circleci/node:12.17
+      - image: cimg/node:12.17.0 # Oldest version supported by Jasmine
     working_directory: ~/workspace
 
 jobs:

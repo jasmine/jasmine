@@ -5,6 +5,14 @@ describe('PrettyPrinter', function() {
     expect(pp("som' string")).toEqual("'som' string'");
   });
 
+  it('stringifies empty string primitives and objects recognizably', function() {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    expect(pp(new String(''))).toEqual(pp(''));
+    expect(pp(new String(''))).toEqual("''");
+    expect(pp([new String('')])).toEqual(pp(['']));
+    expect(pp([new String('')])).toEqual("[ '' ]");
+  });
+
   it('should stringify primitives properly', function() {
     var pp = jasmineUnderTest.makePrettyPrinter();
     expect(pp(true)).toEqual('true');
