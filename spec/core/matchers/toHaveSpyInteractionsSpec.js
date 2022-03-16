@@ -36,7 +36,7 @@ describe('toHaveSpyInteractions', function() {
       let spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['spyA', 'spyB']);
 
       expect(function() {
-        expect(true).toHaveSpyInteractions();
+        expect(testValue).toHaveSpyInteractions();
       }).toThrowError(Error, /Expected a spy object, but got/);
     });
   });
