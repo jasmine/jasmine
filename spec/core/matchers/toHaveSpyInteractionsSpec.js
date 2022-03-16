@@ -1,6 +1,6 @@
 describe('toHaveSpyInteractions', function() {
   it('detects spy interactions', function() {
-    let spyObj = jasmine.createSpyObj('NewClass', ['spyA', 'spyB']);
+    let spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['spyA', 'spyB']);
 
     spyObj.spyA();
 
@@ -8,7 +8,7 @@ describe('toHaveSpyInteractions', function() {
   });
 
   it('detects multiple spy interactions', function() {
-    let spyObj = jasmine.createSpyObj('NewClass', ['spyA', 'spyB']);
+    let spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['spyA', 'spyB']);
 
     spyObj.spyA();
     spyObj.spyB();
@@ -18,13 +18,13 @@ describe('toHaveSpyInteractions', function() {
   });
 
   it('detects no spy interactions', function() {
-    let spyObj = jasmine.createSpyObj('NewClass', ['spyA', 'spyB']);
+    let spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['spyA', 'spyB']);
 
     expect(spyObj).not.toHaveSpyInteractions();
   });
 
   it('ignores non-observed spy object interactions', function() {
-    let spyObj = jasmine.createSpyObj('NewClass', ['spyA', 'spyB']);
+    let spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['spyA', 'spyB']);
 
     spyObj.otherMethod();
 
@@ -33,7 +33,7 @@ describe('toHaveSpyInteractions', function() {
 
   [true, 123, 'string'].forEach(function(testValue) {
     it(`throws error if a non-object (${testValue}) is passed`, function() {
-      let spyObj = jasmine.createSpyObj('NewClass', ['spyA', 'spyB']);
+      let spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['spyA', 'spyB']);
 
       expect(function() {
         expect(true).toHaveSpyInteractions();
@@ -43,7 +43,7 @@ describe('toHaveSpyInteractions', function() {
 
   [['argument'], [false, 0]].forEach(function(testValue) {
     it(`throws error if arguments (${testValue}) are passed`, function() {
-      let spyObj = jasmine.createSpyObj('NewClass', ['spyA', 'spyB']);
+      let spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['spyA', 'spyB']);
 
       expect(function() {
         expect(spyObj).toHaveSpyInteractions(...testValue);
@@ -52,7 +52,7 @@ describe('toHaveSpyInteractions', function() {
   });
 
   it('throws error if spy object has no spies', function() {
-    const spyObj = jasmine.createSpyObj('NewClass', ['method']);
+    const spyObj = jasmineUnderTest.getEnv().createSpyObj('NewClass', ['method']);
     // Removing spy since spy objects cannot be created without spies.
     spyObj.method = function() {};
 
