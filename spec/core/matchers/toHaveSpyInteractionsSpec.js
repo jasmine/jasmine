@@ -60,14 +60,20 @@ describe('toHaveSpyInteractions', function() {
     );
   });
 
-  [true, 123, 'string'].forEach(function(testValue) {
-    it(`throws error if a non-object (${testValue}) is passed`, function() {
-      let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
+  it(`throws error if a non-object is passed`, function() {
+    let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
 
-      expect(function() {
-        matcher.compare(testValue);
-      }).toThrowError(Error, /Expected a spy object, but got/);
-    });
+    expect(function() {
+      matcher.compare(true);
+    }).toThrowError(Error, /Expected a spy object, but got/);
+
+    expect(function () {
+      matcher.compare(123);
+    }).toThrowError(Error, /Expected a spy object, but got/);
+
+    expect(function () {
+      matcher.compare('string');
+    }).toThrowError(Error, /Expected a spy object, but got/);
   });
 
   it('throws error if arguments are passed', function() {
