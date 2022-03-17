@@ -1,4 +1,4 @@
-getJasmineRequireObj().toHaveSpyInteractions = function(j$) {
+getJasmineRequireObj().toHaveSpyInteractions = function (j$) {
   var getErrorMsg = j$.formatErrorMsg(
     '<toHaveSpyInteractions>',
     'expect(<spyObj>).toHaveSpyInteractions()'
@@ -14,7 +14,7 @@ getJasmineRequireObj().toHaveSpyInteractions = function(j$) {
    */
   function toHaveSpyInteractions(matchersUtil) {
     return {
-      compare: function(actual) {
+      compare: function (actual) {
         var result = {};
 
         if (!j$.isObject_(actual)) {
@@ -48,16 +48,18 @@ getJasmineRequireObj().toHaveSpyInteractions = function(j$) {
           );
         }
 
-        let resultMessage = 'Expected spy object spies to have been called';
+        let resultMessage;
         if (result.pass) {
-          resultMessage += ', the following spies were called: ';
-          resultMessage += calledSpies
-            .map(([spyName, spyCount]) => {
+          resultMessage =
+            'Expected spy object spies not to have been called, ' +
+            'but the following spies were called: ';
+          resultMessage += calledSpies.map(([spyName, spyCount]) => {
               return `${spyName} called ${spyCount} time(s)`;
-            })
-            .join(', ');
+          }).join(', ');
         } else {
-          resultMessage += ', but no spies were called.';
+          resultMessage =
+            'Expected spy object spies to have been called, ' +
+            'but no spies were called.';
         }
         result.message = resultMessage;
 
