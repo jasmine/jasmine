@@ -38,7 +38,7 @@ describe('toHaveSpyInteractions', function() {
     );
   });
 
-  it('shows the right message is negated', function () {
+  it('shows the right message is negated', function() {
     let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
@@ -48,7 +48,8 @@ describe('toHaveSpyInteractions', function() {
 
     let result = matcher.compare(spyObj);
     expect(result.pass).toBe(true);
-    expect(result.message).toContain( // Will be shown only on negate.
+    expect(result.message).toContain(
+      // Will be shown only on negate.
       'Expected spy object spies not to have been called'
     );
   });
@@ -76,11 +77,11 @@ describe('toHaveSpyInteractions', function() {
       matcher.compare(true);
     }).toThrowError(Error, /Expected a spy object, but got/);
 
-    expect(function () {
+    expect(function() {
       matcher.compare(123);
     }).toThrowError(Error, /Expected a spy object, but got/);
 
-    expect(function () {
+    expect(function() {
       matcher.compare('string');
     }).toThrowError(Error, /Expected a spy object, but got/);
   });
