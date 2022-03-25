@@ -81,8 +81,8 @@ describe('Custom Matchers (Integration)', function() {
         if (
           typeof a == 'string' &&
           typeof b == 'string' &&
-          a.substr(0, 3) == 'foo' &&
-          b.substr(0, 3) == 'foo'
+          a.slice(0, 3) == 'foo' &&
+          b.slice(0, 3) == 'foo'
         ) {
           return true;
         }
