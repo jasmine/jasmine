@@ -1316,6 +1316,7 @@ describe('Env integration', function() {
 
       reporter.specDone.and.callFake(function() {
         realSetTimeout(function() {
+          jasmine.debugLog('Ticking after specDone');
           jasmine.clock().tick(1);
         }, 0);
       });
@@ -1334,14 +1335,18 @@ describe('Env integration', function() {
       env.it('spec that should not time out', function(innerDone) {
         clock.tick(6);
         expect(true).toEqual(true);
-        realSetTimeout(innerDone);
+        jasmine.debugLog('Calling realSetTimeout in spec');
+        realSetTimeout(function() {
+          jasmine.debugLog('Calling innerDone');
+          innerDone();
+        });
       });
 
       env.execute(null, function() {
         expect(reporter.specDone).toHaveBeenCalledTimes(1);
-        expect(reporter.specDone.calls.argsFor(0)[0]).toEqual(
-          jasmine.objectContaining({ status: 'passed' })
-        );
+        const event = reporter.specDone.calls.argsFor(0)[0];
+        jasmine.debugLog('Spec result: ' + jasmine.basicPrettyPrinter_(event));
+        expect(event).toEqual(jasmine.objectContaining({ status: 'passed' }));
         jasmine.clock().tick(1);
         realSetTimeout(done);
       });
