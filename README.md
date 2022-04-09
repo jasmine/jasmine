@@ -20,37 +20,20 @@ Please read the [contributors' guide](https://github.com/jasmine/jasmine/blob/ma
 
 ## Installation
 
-For the Jasmine NPM module:<br>
-[https://github.com/jasmine/jasmine-npm](https://github.com/jasmine/jasmine-npm).
+There are several different ways to install Jasmine, depending on your 
+environment and how you'd like to use it. See the [Getting Started page](https://jasmine.github.io/pages/getting_started.html)
+for details.
 
-For the Jasmine browser runner:<br>
-[https://github.com/jasmine/jasmine-browser](https://github.com/jasmine/jasmine-browser).
+## Usage
 
-To install Jasmine standalone on your local box (where **_{#.#.#}_** below is substituted by the release number downloaded):
-
-* Download the standalone distribution for your desired release from the [releases page](https://github.com/jasmine/jasmine/releases).
-* Create a Jasmine directory in your project. - `mkdir my-project/jasmine`
-* Move the dist to your project directory. - `mv jasmine/dist/jasmine-standalone-{#.#.#}.zip my-project/jasmine`
-* Change directory. - `cd my-project/jasmine`
-* Unzip the dist. - `unzip jasmine-standalone-{#.#.#}.zip`
-
-Add the following to your HTML file:
-
-```html
-<link rel="shortcut icon" type="image/png" href="lib/jasmine-{#.#.#}/jasmine_favicon.png">
-<link rel="stylesheet" href="lib/jasmine-{#.#.#}/jasmine.css">
-
-<script src="lib/jasmine-{#.#.#}/jasmine.js"></script>
-<script src="lib/jasmine-{#.#.#}/jasmine-html.js"></script>
-<script src="lib/jasmine-{#.#.#}/boot0.js"></script>
-<!-- optional: include a file here that configures the Jasmine env -->
-<script src="lib/jasmine-{#.#.#}/boot1.js"></script>
-```
+See the [documentation site](https://jasmine.github.io/pages/docs_home.html),
+particularly the [Your First Suite tutorial](https://jasmine.github.io/tutorials/your_first_suite)
+for information on writing specs.
 
 ## Supported environments
 
 Jasmine tests itself across popular browsers (Safari, Chrome, Firefox, and
-Microsoft Edge) as well as nodejs.
+Microsoft Edge) as well as Node.
 
 | Environment       | Supported versions |
 |-------------------|--------------------|
