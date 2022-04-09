@@ -110,4 +110,42 @@ describe('toBeCloseTo', function() {
     result = matcher.compare(-2.82665525779431, -2.82666, 5);
     expect(result.pass).toBe(true);
   });
+
+  describe('Infinity handling', function() {
+    it('passes when the actual and expected are both Infinity', function() {
+      const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+      const result = matcher.compare(Infinity, Infinity, 0);
+      expect(result.pass).toBe(true);
+    });
+
+    it('passes when the actual and expected are both -Infinity', function() {
+      const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+      const result = matcher.compare(-Infinity, -Infinity, 0);
+      expect(result.pass).toBe(true);
+    });
+
+    it('fails when the actual is Infinity and the expected is -Infinity', function() {
+      const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+      const result = matcher.compare(Infinity, -Infinity, 0);
+      expect(result.pass).toBe(false);
+    });
+
+    it('fails when the actual is -Infinity and the expected is Infinity', function() {
+      const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+      const result = matcher.compare(-Infinity, Infinity, 0);
+      expect(result.pass).toBe(false);
+    });
+
+    it('fails when the actual is a number and the expected is Infinity', function() {
+      const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+      const result = matcher.compare(42, Infinity, 0);
+      expect(result.pass).toBe(false);
+    });
+
+    it('fails when the actual is a number and the expected is -Infinity', function() {
+      const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+      const result = matcher.compare(42, -Infinity, 0);
+      expect(result.pass).toBe(false);
+    });
+  });
 });

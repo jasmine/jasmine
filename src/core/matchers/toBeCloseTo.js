@@ -27,6 +27,14 @@ getJasmineRequireObj().toBeCloseTo = function() {
           );
         }
 
+        // Infinity is close to Infinity and -Infinity is close to -Infinity,
+        // regardless of the precision.
+        if (expected === Infinity || expected === -Infinity) {
+          return {
+            pass: actual === expected
+          };
+        }
+
         var pow = Math.pow(10, precision + 1);
         var delta = Math.abs(expected - actual);
         var maxDelta = Math.pow(10, -precision) / 2;
