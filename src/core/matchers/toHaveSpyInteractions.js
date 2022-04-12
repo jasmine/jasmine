@@ -8,6 +8,7 @@ getJasmineRequireObj().toHaveSpyInteractions = function(j$) {
    * {@link expect} the actual (a {@link SpyObj}) spies to have been called.
    * @function
    * @name matchers#toHaveSpyInteractions
+   * @since 4.1.0
    * @example
    * expect(mySpyObj).toHaveSpyInteractions();
    * expect(mySpyObj).not.toHaveSpyInteractions();
