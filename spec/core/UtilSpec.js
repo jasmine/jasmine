@@ -39,7 +39,7 @@ describe('jasmineUnderTest.util', function() {
     };
 
     beforeEach(function() {
-      mockNativePromise = new Promise(function(res, rej) {});
+      mockNativePromise = new Promise(function() {});
       mockPromiseLikeObject = new mockPromiseLike();
     });
 

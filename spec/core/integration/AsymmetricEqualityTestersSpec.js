@@ -1,5 +1,5 @@
 describe('Asymmetric equality testers (Integration)', function() {
-  function verifyPasses(expectations, setup) {
+  function verifyPasses(expectations) {
     it('passes', function(done) {
       var env = new jasmineUnderTest.Env();
       env.it('a spec', function() {

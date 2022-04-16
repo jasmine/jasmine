@@ -392,7 +392,7 @@ describe('matchersUtil', function() {
 
     it('passes when an asymmetric equality tester returns true', function() {
       var tester = {
-          asymmetricMatch: function(other) {
+          asymmetricMatch: function() {
             return true;
           }
         },
@@ -404,7 +404,7 @@ describe('matchersUtil', function() {
 
     it('fails when an asymmetric equality tester returns false', function() {
       var tester = {
-          asymmetricMatch: function(other) {
+          asymmetricMatch: function() {
             return false;
           }
         },
@@ -424,7 +424,7 @@ describe('matchersUtil', function() {
     });
 
     it('passes when a custom equality matcher returns true', function() {
-      var tester = function(a, b) {
+      var tester = function() {
           return true;
         },
         matchersUtil = new jasmineUnderTest.MatchersUtil({
@@ -441,7 +441,7 @@ describe('matchersUtil', function() {
     });
 
     describe("when a custom equality matcher returns 'undefined'", function() {
-      var tester = function(a, b) {
+      var tester = function() {
         return jasmine.undefined;
       };
 
@@ -455,7 +455,7 @@ describe('matchersUtil', function() {
     });
 
     it('fails for equivalents when a custom equality matcher returns false', function() {
-      var tester = function(a, b) {
+      var tester = function() {
           return false;
         },
         matchersUtil = new jasmineUnderTest.MatchersUtil({
@@ -468,11 +468,11 @@ describe('matchersUtil', function() {
 
     it('passes for an asymmetric equality tester that returns true when a custom equality tester return false', function() {
       var asymmetricTester = {
-          asymmetricMatch: function(other) {
+          asymmetricMatch: function() {
             return true;
           }
         },
-        symmetricTester = function(a, b) {
+        symmetricTester = function() {
           return false;
         },
         matchersUtil = new jasmineUnderTest.MatchersUtil({
@@ -1009,7 +1009,7 @@ describe('matchersUtil', function() {
     });
 
     it('uses custom equality testers if actual is an Array', function() {
-      var customTester = function(a, b) {
+      var customTester = function() {
           return true;
         },
         matchersUtil = new jasmineUnderTest.MatchersUtil({

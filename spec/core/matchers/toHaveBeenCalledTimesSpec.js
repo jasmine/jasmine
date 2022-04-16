@@ -18,8 +18,7 @@ describe('toHaveBeenCalledTimes', function() {
 
   it('fails when expected numbers is not supplied', function() {
     var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      spy = new jasmineUnderTest.Spy('spy'),
-      result;
+      spy = new jasmineUnderTest.Spy('spy');
 
     spy();
     expect(function() {

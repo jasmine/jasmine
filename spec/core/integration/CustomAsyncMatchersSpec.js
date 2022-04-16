@@ -85,7 +85,7 @@ describe('Custom Async Matchers (Integration)', function() {
   });
 
   it('passes the jasmine utility to the matcher factory', function(done) {
-    var matcherFactory = function(util) {
+    var matcherFactory = function() {
         return {
           compare: function() {
             return Promise.resolve({ pass: true });

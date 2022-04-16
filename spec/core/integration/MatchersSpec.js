@@ -678,7 +678,6 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        var spy = env.createSpy('foo');
         env
           .expect(function() {
             throw 'x';
@@ -707,7 +706,6 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        var spy = env.createSpy('foo');
         env
           .expect(function() {
             throw 'x';
@@ -740,7 +738,6 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        var spy = env.createSpy('foo');
         env
           .expect(function() {
             throw new Error('nope');

@@ -337,7 +337,7 @@ describe('SpyRegistry', function() {
       });
       Object.defineProperty(subject, 'notSpied4', {
         configurable: false,
-        set: function(val) {
+        set: function() {
           /**/
         },
         get: function() {

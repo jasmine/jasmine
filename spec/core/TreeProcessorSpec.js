@@ -82,7 +82,7 @@ describe('TreeProcessor', function() {
       processor = new jasmineUnderTest.TreeProcessor({
         tree: leaf,
         runnableIds: [leaf.id],
-        excludeNode: function(node) {
+        excludeNode: function() {
           return true;
         }
       }),

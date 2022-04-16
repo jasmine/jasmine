@@ -960,8 +960,7 @@ describe('Clock (acceptance)', function() {
           return delayedFunctionScheduler;
         },
         mockDate
-      ),
-      env = jasmineUnderTest.getEnv();
+      );
 
     expect(() => clock.mockDate(12345)).toThrowError(
       'The argument to jasmine.clock().mockDate(), if specified, should be ' +

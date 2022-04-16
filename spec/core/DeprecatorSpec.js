@@ -212,7 +212,6 @@ describe('Deprecator', function() {
           'addDeprecationWarning',
           'getFullName'
         ]);
-        var exceptionFormatter = new jasmineUnderTest.ExceptionFormatter();
         var deprecation, originalStack;
 
         try {

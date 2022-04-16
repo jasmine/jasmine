@@ -97,11 +97,17 @@ describe('Spies', function() {
     it('preserves arity of original function', function() {
       var functions = [
         function nullary() {},
+        // eslint-disable-next-line no-unused-vars
         function unary(arg) {},
+        // eslint-disable-next-line no-unused-vars
         function binary(arg1, arg2) {},
+        // eslint-disable-next-line no-unused-vars
         function ternary(arg1, arg2, arg3) {},
+        // eslint-disable-next-line no-unused-vars
         function quaternary(arg1, arg2, arg3, arg4) {},
+        // eslint-disable-next-line no-unused-vars
         function quinary(arg1, arg2, arg3, arg4, arg5) {},
+        // eslint-disable-next-line no-unused-vars
         function senary(arg1, arg2, arg3, arg4, arg5, arg6) {}
       ];
 

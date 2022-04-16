@@ -35,7 +35,7 @@ describe('spec running', function() {
     var bar = 0;
     var baz = 0;
     var quux = 0;
-    var nested = env.describe('suite', function() {
+    env.describe('suite', function() {
       env.describe('nested', function() {
         env.it('should run nested suites', function() {
           foo++;
@@ -497,12 +497,12 @@ describe('spec running', function() {
   });
 
   it("shouldn't run disabled suites", function(done) {
-    var specInADisabledSuite = jasmine.createSpy('specInADisabledSuite'),
-      suite = env.describe('A Suite', function() {
-        env.xdescribe('with a disabled suite', function() {
-          env.it('spec inside a disabled suite', specInADisabledSuite);
-        });
+    const specInADisabledSuite = jasmine.createSpy('specInADisabledSuite');
+    env.describe('A Suite', function() {
+      env.xdescribe('with a disabled suite', function() {
+        env.it('spec inside a disabled suite', specInADisabledSuite);
       });
+    });
 
     env.execute(null, function() {
       expect(specInADisabledSuite).not.toHaveBeenCalled();
@@ -511,16 +511,16 @@ describe('spec running', function() {
   });
 
   it("shouldn't run before/after functions in disabled suites", function(done) {
-    var shouldNotRun = jasmine.createSpy('shouldNotRun'),
-      suite = env.xdescribe('A disabled Suite', function() {
-        // None of the before/after functions should run.
-        env.beforeAll(shouldNotRun);
-        env.beforeEach(shouldNotRun);
-        env.afterEach(shouldNotRun);
-        env.afterAll(shouldNotRun);
+    var shouldNotRun = jasmine.createSpy('shouldNotRun');
+    env.xdescribe('A disabled Suite', function() {
+      // None of the before/after functions should run.
+      env.beforeAll(shouldNotRun);
+      env.beforeEach(shouldNotRun);
+      env.afterEach(shouldNotRun);
+      env.afterAll(shouldNotRun);
 
-        env.it('spec inside a disabled suite', shouldNotRun);
-      });
+      env.it('spec inside a disabled suite', shouldNotRun);
+    });
 
     env.execute(null, function() {
       expect(shouldNotRun).not.toHaveBeenCalled();
@@ -547,11 +547,10 @@ describe('spec running', function() {
   });
 
   it('should set all pending specs to pending when a suite is run', function(done) {
-    var pendingSpec,
-      suite = env.describe('default current suite', function() {
-        pendingSpec = env.it('I am a pending spec');
-      }),
-      reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    env.describe('default current suite', function() {
+      env.it('I am a pending spec');
+    });
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
 
     env.addReporter(reporter);
 
@@ -886,6 +885,7 @@ describe('spec running', function() {
       const actions = [];
 
       env.describe('Something', function() {
+        // eslint-disable-next-line no-unused-vars
         env.beforeEach(function(innerDone) {
           actions.push('beforeEach');
         }, 1);
@@ -1299,8 +1299,7 @@ describe('spec running', function() {
 
   describe('when stopOnSpecFailure is on', function() {
     it('does not run further specs when one fails', function(done) {
-      var actions = [],
-        config;
+      const actions = [];
 
       env.describe('wrapper', function() {
         env.it('fails', function() {

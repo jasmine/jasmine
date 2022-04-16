@@ -781,6 +781,6 @@ describe('AsyncExpectation', function() {
   });
 
   function dummyPromise() {
-    return new Promise(function(resolve, reject) {});
+    return new Promise(function() {});
   }
 });

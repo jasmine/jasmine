@@ -7,9 +7,12 @@ module.exports = {
     semi: 'off',
     'key-spacing': 'off',
     'space-before-blocks': 'off',
-    'no-unused-vars': 'off',
     'no-trailing-spaces': 'off',
     'block-spacing': 'off',
+
+    // Additionally, check for unused fn args
+    // TODO: consider doing this in src files as well as specs
+    'no-unused-vars': ['error', { args: 'after-used' }],
 
     // Since linting is done at the end of the process and doesn't stop us
     // from running tests, it makes sense to fail if debugger statements

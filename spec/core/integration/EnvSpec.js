@@ -792,6 +792,7 @@ describe('Env integration', function() {
       env.describe('my suite', function() {
         env.it('my spec', function() {});
 
+        // eslint-disable-next-line no-unused-vars
         env.afterAll(function(afterAllDone) {
           throw error;
         });
@@ -959,9 +960,7 @@ describe('Env integration', function() {
 
   it('Allows filtering out specs and suites to run programmatically', function(done) {
     var calls = [],
-      suiteCallback = jasmine.createSpy('suite callback'),
-      firstSpec,
-      secondSuite;
+      suiteCallback = jasmine.createSpy('suite callback');
 
     env.addReporter({ suiteDone: suiteCallback });
 
@@ -974,7 +973,7 @@ describe('Env integration', function() {
       });
     });
 
-    secondSuite = env.describe('second suite', function() {
+    env.describe('second suite', function() {
       env.it('third spec', function() {
         calls.push('third spec');
       });
@@ -1085,8 +1084,6 @@ describe('Env integration', function() {
     env.describe('test suite', function() {
       env.it('spec 0', function() {
         env.spyOn(foo, 'bar');
-
-        var error = null;
 
         expect(function() {
           env.spyOn(foo, 'bar');
@@ -1296,6 +1293,7 @@ describe('Env integration', function() {
       env.addReporter(reporter);
       jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 8414;
 
+      // eslint-disable-next-line no-unused-vars
       env.it("async spec that doesn't call done", function(underTestCallback) {
         env.expect(true).toBeTruthy();
         jasmine.clock().tick(8416);
@@ -1374,6 +1372,7 @@ describe('Env integration', function() {
           }, 100);
         });
         env.describe('beforeAll', function() {
+          // eslint-disable-next-line no-unused-vars
           env.beforeAll(function(innerDone) {
             realSetTimeout(function() {
               jasmine.clock().tick(5001);
@@ -1389,6 +1388,7 @@ describe('Env integration', function() {
         });
 
         env.describe('afterAll', function() {
+          // eslint-disable-next-line no-unused-vars
           env.afterAll(function(innerDone) {
             realSetTimeout(function() {
               jasmine.clock().tick(2001);
@@ -1404,6 +1404,7 @@ describe('Env integration', function() {
         });
 
         env.describe('beforeEach', function() {
+          // eslint-disable-next-line no-unused-vars
           env.beforeEach(function(innerDone) {
             realSetTimeout(function() {
               jasmine.clock().tick(1001);
@@ -1419,6 +1420,7 @@ describe('Env integration', function() {
         });
 
         env.describe('afterEach', function() {
+          // eslint-disable-next-line no-unused-vars
           env.afterEach(function(innerDone) {
             realSetTimeout(function() {
               jasmine.clock().tick(4001);
@@ -1435,6 +1437,7 @@ describe('Env integration', function() {
 
         env.it(
           'it times out',
+          // eslint-disable-next-line no-unused-vars
           function(innerDone) {
             realSetTimeout(function() {
               jasmine.clock().tick(6001);
@@ -1910,7 +1913,7 @@ describe('Env integration', function() {
 
     env.describe('testing custom equality testers', function() {
       env.it('with a custom tester', function() {
-        env.addCustomEqualityTester(function(a, b) {
+        env.addCustomEqualityTester(function() {
           return true;
         });
         env.expect('a').toEqual('b');
@@ -1940,7 +1943,7 @@ describe('Env integration', function() {
 
     env.describe('testing custom equality testers', function() {
       env.beforeAll(function() {
-        env.addCustomEqualityTester(function(a, b) {
+        env.addCustomEqualityTester(function() {
           return true;
         });
       });
@@ -1981,7 +1984,7 @@ describe('Env integration', function() {
 
     env.describe('testing custom equality testers', function() {
       env.it('with a custom tester', function() {
-        env.addCustomEqualityTester(function(a, b) {
+        env.addCustomEqualityTester(function() {
           return true;
         });
         env.expect(['a']).toContain('b');
@@ -2026,7 +2029,7 @@ describe('Env integration', function() {
 
     env.describe('testing custom equality testers', function() {
       env.beforeAll(function() {
-        env.addCustomEqualityTester(function(a, b) {
+        env.addCustomEqualityTester(function() {
           return true;
         });
       });
@@ -2128,13 +2131,12 @@ describe('Env integration', function() {
   });
 
   it('throws an exception if you try to add a matcher outside of a runnable', function(done) {
-    var obj = { fn: function() {} },
-      exception;
+    let exception;
 
     env.describe('a suite', function() {
       try {
         env.addMatchers({
-          myMatcher: function(actual, expected) {
+          myMatcher: function() {
             return false;
           }
         });
@@ -2153,12 +2155,11 @@ describe('Env integration', function() {
   });
 
   it('throws an exception if you try to add a custom equality outside of a runnable', function(done) {
-    var obj = { fn: function() {} },
-      exception;
+    let exception;
 
     env.describe('a suite', function() {
       try {
-        env.addCustomEqualityTester(function(first, second) {
+        env.addCustomEqualityTester(function() {
           return true;
         });
       } catch (e) {
@@ -2265,6 +2266,7 @@ describe('Env integration', function() {
     env.addReporter(reporter);
 
     env.describe('async suite', function() {
+      // eslint-disable-next-line no-unused-vars
       env.afterAll(function(innerDone) {
         setTimeout(function() {
           throw new Error('suite');
@@ -2277,6 +2279,7 @@ describe('Env integration', function() {
     env.describe('suite', function() {
       env.it(
         'async spec',
+        // eslint-disable-next-line no-unused-vars
         function(innerDone) {
           setTimeout(function() {
             throw new Error('spec');
@@ -2877,7 +2880,7 @@ describe('Env integration', function() {
 
     function fail(innerDone) {
       var resolve;
-      var p = new Promise(function(res, rej) {
+      var p = new Promise(function(res) {
         resolve = res;
       });
       env
@@ -3328,19 +3331,15 @@ describe('Env integration', function() {
   });
 
   it('sends debug logs to the reporter when the spec fails', function(done) {
-    var reporter = jasmine.createSpyObj('reporter', ['specDone']),
-      startTime,
-      endTime;
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
 
     env.addReporter(reporter);
     env.configure({ random: false });
 
     env.it('fails', function() {
-      startTime = new Date().getTime();
       env.debugLog('message 1');
       env.debugLog('message 2');
       env.expect(1).toBe(2);
-      endTime = new Date().getTime();
     });
 
     env.it('passes', function() {
@@ -3353,7 +3352,7 @@ describe('Env integration', function() {
           asymmetricMatch: function(compareTo) {
             return compareTo >= min && compareTo <= max;
           },
-          jasmineToString: function(pp) {
+          jasmineToString: function() {
             return '<number from ' + min + ' to ' + max + ' inclusive>';
           }
         };

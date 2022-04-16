@@ -1,6 +1,5 @@
 describe('Custom Matchers (Integration)', function() {
   var env;
-  var fakeTimer;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -211,7 +210,7 @@ describe('Custom Matchers (Integration)', function() {
   });
 
   it('passes the jasmine utility to the matcher factory', function(done) {
-    var matcherFactory = function(util) {
+    var matcherFactory = function() {
         return {
           compare: function() {
             return { pass: true };

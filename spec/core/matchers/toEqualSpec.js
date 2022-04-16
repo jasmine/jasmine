@@ -368,9 +368,6 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between objects with their own constructor property', function() {
-    function Foo() {}
-    function Bar() {}
-
     var actual = { x: { constructor: 'blerf' } },
       expected = { x: { constructor: 'ftarrh' } },
       message = "Expected $.x.constructor = 'blerf' to equal 'ftarrh'.";
@@ -379,9 +376,6 @@ describe('toEqual', function() {
   });
 
   it('reports mismatches between an object with a real constructor and one with its own constructor property', function() {
-    function Foo() {}
-    function Bar() {}
-
     var actual = { x: {} },
       expected = { x: { constructor: 'ftarrh' } },
       message =

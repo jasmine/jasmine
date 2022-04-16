@@ -193,6 +193,7 @@ describe('Env', function() {
 
     it('throws an error when given arguments', function() {
       expect(function() {
+        // eslint-disable-next-line no-unused-vars
         env.describe('done method', function(done) {});
       }).toThrowError('describe does not expect any arguments');
     });

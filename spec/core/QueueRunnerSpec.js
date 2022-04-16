@@ -262,6 +262,7 @@ describe('QueueRunner', function() {
 
     it("sets a timeout if requested for asynchronous functions so they don't go on forever", function() {
       var timeout = 3,
+        // eslint-disable-next-line no-unused-vars
         beforeFn = { fn: function(done) {}, type: 'before', timeout: timeout },
         queueableFn = { fn: jasmine.createSpy('fn'), type: 'queueable' },
         onComplete = jasmine.createSpy('onComplete'),
@@ -309,6 +310,7 @@ describe('QueueRunner', function() {
     });
 
     it('by default does not set a timeout for asynchronous functions', function() {
+      // eslint-disable-next-line no-unused-vars
       var beforeFn = { fn: function(done) {} },
         queueableFn = { fn: jasmine.createSpy('fn') },
         onComplete = jasmine.createSpy('onComplete'),
@@ -331,6 +333,7 @@ describe('QueueRunner', function() {
 
     it('clears the timeout when an async function throws an exception, to prevent additional exception reporting', function() {
       var queueableFn = {
+          // eslint-disable-next-line no-unused-vars
           fn: function(done) {
             throw new Error('error!');
           }
@@ -434,6 +437,7 @@ describe('QueueRunner', function() {
 
     it('continues running functions when an exception is thrown in async code without timing out', function() {
       var queueableFn = {
+          // eslint-disable-next-line no-unused-vars
           fn: function(done) {
             throwAsync();
           },
@@ -605,6 +609,7 @@ describe('QueueRunner', function() {
 
     it('issues an error if the function also takes a parameter', function() {
       var queueableFn = {
+          // eslint-disable-next-line no-unused-vars
           fn: function(done) {
             return new StubPromise();
           }
@@ -691,6 +696,7 @@ describe('QueueRunner', function() {
 
   it('continues running the functions even after an exception is thrown in an async spec', function() {
     var queueableFn = {
+        // eslint-disable-next-line no-unused-vars
         fn: function(done) {
           throw new Error('error');
         }

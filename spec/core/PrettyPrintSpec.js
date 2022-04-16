@@ -500,7 +500,7 @@ describe('PrettyPrinter', function() {
   describe('Custom object formatters', function() {
     it('should use the first custom object formatter that does not return undefined', function() {
       var customObjectFormatters = [
-          function(obj) {
+          function() {
             return undefined;
           },
           function(obj) {
@@ -518,7 +518,7 @@ describe('PrettyPrinter', function() {
 
     it('should fall back to built in logic if all custom object formatters return undefined', function() {
       var customObjectFormatters = [
-          function(obj) {
+          function() {
             return undefined;
           }
         ],
@@ -532,7 +532,7 @@ describe('PrettyPrinter', function() {
   describe('#customFormat_', function() {
     it('should use the first custom object formatter that does not return undefined', function() {
       var customObjectFormatters = [
-          function(obj) {
+          function() {
             return undefined;
           },
           function(obj) {
@@ -550,7 +550,7 @@ describe('PrettyPrinter', function() {
 
     it('should return undefined if all custom object formatters return undefined', function() {
       var customObjectFormatters = [
-          function(obj) {
+          function() {
             return undefined;
           }
         ],
