@@ -161,8 +161,8 @@ describe('Env', function() {
     it('returns a suite metadata object', function() {
       let innerSuite;
       let spec;
-      const suite = env.describe('outer suite', function() {
-        innerSuite = env.describe('inner suite', function() {
+      const suite = env[methodName]('outer suite', function() {
+        innerSuite = env[methodName]('inner suite', function() {
           spec = env.it('a spec');
         });
       });
