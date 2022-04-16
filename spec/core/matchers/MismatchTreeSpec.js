@@ -2,7 +2,7 @@ describe('MismatchTree', function() {
   describe('#add', function() {
     describe('When the path is empty', function() {
       it('flags the root node as mismatched', function() {
-        var tree = new jasmineUnderTest.MismatchTree();
+        const tree = new jasmineUnderTest.MismatchTree();
         tree.add(new jasmineUnderTest.ObjectPath([]));
         expect(tree.isMismatch).toBe(true);
       });
@@ -10,7 +10,7 @@ describe('MismatchTree', function() {
 
     describe('When the path is not empty', function() {
       it('flags the node as mismatched', function() {
-        var tree = new jasmineUnderTest.MismatchTree();
+        const tree = new jasmineUnderTest.MismatchTree();
 
         tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']));
 
@@ -18,7 +18,7 @@ describe('MismatchTree', function() {
       });
 
       it('does not flag ancestors as mismatched', function() {
-        var tree = new jasmineUnderTest.MismatchTree();
+        const tree = new jasmineUnderTest.MismatchTree();
 
         tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']));
 
@@ -28,7 +28,7 @@ describe('MismatchTree', function() {
     });
 
     it('stores the formatter on only the target node', function() {
-      var tree = new jasmineUnderTest.MismatchTree();
+      const tree = new jasmineUnderTest.MismatchTree();
 
       tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']), formatter);
 
@@ -38,7 +38,7 @@ describe('MismatchTree', function() {
     });
 
     it('stores the path to the node', function() {
-      var tree = new jasmineUnderTest.MismatchTree();
+      const tree = new jasmineUnderTest.MismatchTree();
 
       tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']), formatter);
 
@@ -48,10 +48,10 @@ describe('MismatchTree', function() {
 
   describe('#traverse', function() {
     it('calls the callback for all nodes that are or contain mismatches', function() {
-      var tree = new jasmineUnderTest.MismatchTree();
+      const tree = new jasmineUnderTest.MismatchTree();
       tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']), formatter);
       tree.add(new jasmineUnderTest.ObjectPath(['c']));
-      var visit = jasmine.createSpy('visit').and.returnValue(true);
+      const visit = jasmine.createSpy('visit').and.returnValue(true);
 
       tree.traverse(visit);
 
@@ -78,8 +78,8 @@ describe('MismatchTree', function() {
     });
 
     it('does not call the callback if there are no mismatches', function() {
-      var tree = new jasmineUnderTest.MismatchTree();
-      var visit = jasmine.createSpy('visit');
+      const tree = new jasmineUnderTest.MismatchTree();
+      const visit = jasmine.createSpy('visit');
 
       tree.traverse(visit);
 
@@ -87,9 +87,9 @@ describe('MismatchTree', function() {
     });
 
     it('visits parents before children', function() {
-      var tree = new jasmineUnderTest.MismatchTree();
+      const tree = new jasmineUnderTest.MismatchTree();
       tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']));
-      var visited = [];
+      const visited = [];
 
       tree.traverse(function(path) {
         visited.push(path);
@@ -104,10 +104,10 @@ describe('MismatchTree', function() {
     });
 
     it('visits children in the order they were recorded', function() {
-      var tree = new jasmineUnderTest.MismatchTree();
+      const tree = new jasmineUnderTest.MismatchTree();
       tree.add(new jasmineUnderTest.ObjectPath(['length']));
       tree.add(new jasmineUnderTest.ObjectPath([1]));
-      var visited = [];
+      const visited = [];
 
       tree.traverse(function(path) {
         visited.push(path);
@@ -122,9 +122,9 @@ describe('MismatchTree', function() {
     });
 
     it('does not visit children if the callback returns falsy', function() {
-      var tree = new jasmineUnderTest.MismatchTree();
+      const tree = new jasmineUnderTest.MismatchTree();
       tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']));
-      var visited = [];
+      const visited = [];
 
       tree.traverse(function(path) {
         visited.push(path);

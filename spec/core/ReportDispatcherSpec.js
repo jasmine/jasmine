@@ -1,6 +1,6 @@
 describe('ReportDispatcher', function() {
   it('builds an interface of requested methods', function() {
-    var dispatcher = new jasmineUnderTest.ReportDispatcher([
+    const dispatcher = new jasmineUnderTest.ReportDispatcher([
       'foo',
       'bar',
       'baz'
@@ -12,7 +12,7 @@ describe('ReportDispatcher', function() {
   });
 
   it('dispatches requested methods to added reporters', function() {
-    var queueRunnerFactory = jasmine.createSpy('queueRunner'),
+    const queueRunnerFactory = jasmine.createSpy('queueRunner'),
       dispatcher = new jasmineUnderTest.ReportDispatcher(
         ['foo', 'bar'],
         queueRunnerFactory
@@ -36,7 +36,7 @@ describe('ReportDispatcher', function() {
       })
     );
 
-    var fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
+    let fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
     fns[0].fn();
     expect(reporter.foo).toHaveBeenCalledWith(123, 456);
     expect(reporter.foo.calls.mostRecent().object).toBe(reporter);
@@ -68,7 +68,7 @@ describe('ReportDispatcher', function() {
   });
 
   it("does not dispatch to a reporter if the reporter doesn't accept the method", function() {
-    var queueRunnerFactory = jasmine.createSpy('queueRunner'),
+    const queueRunnerFactory = jasmine.createSpy('queueRunner'),
       dispatcher = new jasmineUnderTest.ReportDispatcher(
         ['foo'],
         queueRunnerFactory
@@ -86,7 +86,7 @@ describe('ReportDispatcher', function() {
   });
 
   it("allows providing a fallback reporter in case there's no other reporter", function() {
-    var queueRunnerFactory = jasmine.createSpy('queueRunner'),
+    const queueRunnerFactory = jasmine.createSpy('queueRunner'),
       dispatcher = new jasmineUnderTest.ReportDispatcher(
         ['foo', 'bar'],
         queueRunnerFactory
@@ -104,13 +104,13 @@ describe('ReportDispatcher', function() {
       })
     );
 
-    var fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
+    const fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
     fns[0].fn();
     expect(reporter.foo).toHaveBeenCalledWith(123, 456);
   });
 
   it('does not call fallback reporting methods when another reporter is provided', function() {
-    var queueRunnerFactory = jasmine.createSpy('queueRunner'),
+    const queueRunnerFactory = jasmine.createSpy('queueRunner'),
       dispatcher = new jasmineUnderTest.ReportDispatcher(
         ['foo', 'bar'],
         queueRunnerFactory
@@ -130,14 +130,14 @@ describe('ReportDispatcher', function() {
       })
     );
 
-    var fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
+    const fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
     fns[0].fn();
     expect(reporter.foo).toHaveBeenCalledWith(123, 456);
     expect(fallbackReporter.foo).not.toHaveBeenCalledWith(123, 456);
   });
 
   it('allows registered reporters to be cleared', function() {
-    var queueRunnerFactory = jasmine.createSpy('queueRunner'),
+    const queueRunnerFactory = jasmine.createSpy('queueRunner'),
       dispatcher = new jasmineUnderTest.ReportDispatcher(
         ['foo', 'bar'],
         queueRunnerFactory
@@ -155,7 +155,7 @@ describe('ReportDispatcher', function() {
       })
     );
 
-    var fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
+    let fns = queueRunnerFactory.calls.mostRecent().args[0].queueableFns;
     fns[0].fn();
     expect(reporter1.foo).toHaveBeenCalledWith(123);
 

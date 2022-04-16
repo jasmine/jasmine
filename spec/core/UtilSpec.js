@@ -1,4 +1,4 @@
-describe('jasmineUnderTest.util', function() {
+describe('util', function() {
   describe('isArray_', function() {
     it('should return true if the argument is an array', function() {
       expect(jasmineUnderTest.isArray_([])).toBe(true);
@@ -32,9 +32,9 @@ describe('jasmineUnderTest.util', function() {
   });
 
   describe('promise utils', function() {
-    var mockNativePromise, mockPromiseLikeObject;
+    let mockNativePromise, mockPromiseLikeObject;
 
-    var mockPromiseLike = function() {
+    const mockPromiseLike = function() {
       this.then = function() {};
     };
 
@@ -130,12 +130,12 @@ describe('jasmineUnderTest.util', function() {
 
   describe('isUndefined', function() {
     it('reports if a variable is defined', function() {
-      var a;
+      let a;
       expect(jasmineUnderTest.util.isUndefined(a)).toBe(true);
       expect(jasmineUnderTest.util.isUndefined(undefined)).toBe(true);
 
-      var undefined = 'diz be undefined yo';
-      expect(jasmineUnderTest.util.isUndefined(undefined)).toBe(false);
+      const defined = 'diz be undefined yo';
+      expect(jasmineUnderTest.util.isUndefined(defined)).toBe(false);
     });
   });
 
@@ -150,12 +150,12 @@ describe('jasmineUnderTest.util', function() {
     });
 
     it('clones Regexp objects as-is', function() {
-      var regex = /match/;
+      const regex = /match/;
       expect(jasmineUnderTest.util.cloneArgs([regex])).toEqual([regex]);
     });
 
     it('clones Date objects as-is', function() {
-      var date = new Date(2022, 1, 1);
+      const date = new Date(2022, 1, 1);
       expect(jasmineUnderTest.util.cloneArgs([date])).toEqual([date]);
     });
 
@@ -167,7 +167,7 @@ describe('jasmineUnderTest.util', function() {
 
   describe('getPropertyDescriptor', function() {
     it('get property descriptor from object', function() {
-      var obj = { prop: 1 },
+      const obj = { prop: 1 },
         actual = jasmineUnderTest.util.getPropertyDescriptor(obj, 'prop'),
         expected = Object.getOwnPropertyDescriptor(obj, 'prop');
 
@@ -175,7 +175,7 @@ describe('jasmineUnderTest.util', function() {
     });
 
     it('get property descriptor from object property', function() {
-      var proto = { prop: 1 },
+      const proto = { prop: 1 },
         actual = jasmineUnderTest.util.getPropertyDescriptor(proto, 'prop'),
         expected = Object.getOwnPropertyDescriptor(proto, 'prop');
 
@@ -185,13 +185,13 @@ describe('jasmineUnderTest.util', function() {
 
   describe('objectDifference', function() {
     it('given two objects A and B, returns the properties in A not present in B', function() {
-      var a = {
+      const a = {
         foo: 3,
         bar: 4,
         baz: 5
       };
 
-      var b = {
+      const b = {
         bar: 6,
         quux: 7
       };
@@ -208,10 +208,10 @@ describe('jasmineUnderTest.util', function() {
       Foo.prototype.x = 1;
       Foo.prototype.y = 2;
 
-      var a = new Foo();
+      const a = new Foo();
       a.x = 1;
 
-      var b = new Foo();
+      const b = new Foo();
       b.y = 2;
 
       expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual({ x: 1 });

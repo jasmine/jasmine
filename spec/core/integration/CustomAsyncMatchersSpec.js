@@ -1,5 +1,5 @@
 describe('Custom Async Matchers (Integration)', function() {
-  var env;
+  let env;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -25,7 +25,7 @@ describe('Custom Async Matchers (Integration)', function() {
       return env.expectAsync(true).toBeReal();
     });
 
-    var specExpectations = function(result) {
+    const specExpectations = function(result) {
       expect(result.status).toEqual('passed');
     };
 
@@ -51,7 +51,7 @@ describe('Custom Async Matchers (Integration)', function() {
       return env.expectAsync(true).not.toBeReal();
     });
 
-    var specExpectations = function(result) {
+    const specExpectations = function(result) {
       expect(result.status).toEqual('passed');
     };
 
@@ -74,7 +74,7 @@ describe('Custom Async Matchers (Integration)', function() {
       return env.expectAsync('a').toBeReal();
     });
 
-    var specExpectations = function(result) {
+    const specExpectations = function(result) {
       expect(result.failedExpectations[0].message).toEqual(
         "Expected 'a' to be real."
       );
@@ -85,7 +85,7 @@ describe('Custom Async Matchers (Integration)', function() {
   });
 
   it('passes the jasmine utility to the matcher factory', function(done) {
-    var matcherFactory = function() {
+    const matcherFactory = function() {
         return {
           compare: function() {
             return Promise.resolve({ pass: true });
@@ -105,7 +105,7 @@ describe('Custom Async Matchers (Integration)', function() {
       return env.expectAsync(true).toBeReal();
     });
 
-    var specExpectations = function() {
+    const specExpectations = function() {
       expect(matcherFactorySpy).toHaveBeenCalledWith(
         jasmine.any(jasmineUnderTest.MatchersUtil)
       );
@@ -116,7 +116,7 @@ describe('Custom Async Matchers (Integration)', function() {
   });
 
   it('provides custom equality testers to the matcher factory via matchersUtil', function(done) {
-    var matcherFactory = function(matchersUtil) {
+    const matcherFactory = function(matchersUtil) {
         return {
           compare: function(actual, expected) {
             return Promise.resolve({
@@ -140,7 +140,7 @@ describe('Custom Async Matchers (Integration)', function() {
       return env.expectAsync([1, 2]).toBeArrayWithFirstElement('1');
     });
 
-    var specExpectations = function(result) {
+    const specExpectations = function(result) {
       expect(customEqualityFn).toHaveBeenCalledWith(1, '1');
       expect(result.failedExpectations).toEqual([]);
     };

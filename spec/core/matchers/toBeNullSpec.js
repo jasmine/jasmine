@@ -1,17 +1,13 @@
 describe('toBeNull', function() {
   it('passes for null', function() {
-    var matcher = jasmineUnderTest.matchers.toBeNull(),
-      result;
-
-    result = matcher.compare(null);
+    const matcher = jasmineUnderTest.matchers.toBeNull();
+    const result = matcher.compare(null);
     expect(result.pass).toBe(true);
   });
 
   it('fails for non-null', function() {
-    var matcher = jasmineUnderTest.matchers.toBeNull(),
-      result;
-
-    result = matcher.compare('foo');
+    const matcher = jasmineUnderTest.matchers.toBeNull();
+    const result = matcher.compare('foo');
     expect(result.pass).toBe(false);
   });
 });

@@ -1,5 +1,5 @@
 describe('Custom Matchers (Integration)', function() {
-  var env;
+  let env;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -36,9 +36,9 @@ describe('Custom Matchers (Integration)', function() {
       expect(env.expect('zzz').matcherForSpec).toBeUndefined();
     });
 
-    var specDoneSpy = jasmine.createSpy('specDoneSpy');
-    var expectations = function() {
-      var firstSpecResult = specDoneSpy.calls.first().args[0];
+    const specDoneSpy = jasmine.createSpy('specDoneSpy');
+    const expectations = function() {
+      const firstSpecResult = specDoneSpy.calls.first().args[0];
       expect(firstSpecResult.status).toEqual('failed');
       expect(firstSpecResult.failedExpectations[0].message).toEqual(
         'matcherForSpec: actual: zzz; expected: yyy'
@@ -65,7 +65,7 @@ describe('Custom Matchers (Integration)', function() {
       env.expect(true).toBeReal();
     });
 
-    var specExpectations = function(result) {
+    const specExpectations = function(result) {
       expect(result.status).toEqual('passed');
     };
 
@@ -75,7 +75,7 @@ describe('Custom Matchers (Integration)', function() {
 
   it('passes the spec if the custom equality matcher passes for types nested inside asymmetric equality testers', function(done) {
     env.it('spec using custom equality matcher', function() {
-      var customEqualityFn = function(a, b) {
+      const customEqualityFn = function(a, b) {
         // All "foo*" strings match each other.
         if (
           typeof a == 'string' &&
@@ -99,7 +99,7 @@ describe('Custom Matchers (Integration)', function() {
         .toEqual(jasmineUnderTest.arrayWithExactContents(['fooBar']));
     });
 
-    var specExpectations = function(result) {
+    const specExpectations = function(result) {
       expect(result.status).toEqual('passed');
     };
 
@@ -109,7 +109,7 @@ describe('Custom Matchers (Integration)', function() {
 
   it('displays an appropriate failure message if a custom equality matcher fails', function(done) {
     env.it('spec using custom equality matcher', function() {
-      var customEqualityFn = function(a, b) {
+      const customEqualityFn = function(a, b) {
         // "foo" is not equal to anything
         if (a === 'foo' || b === 'foo') {
           return false;
@@ -120,7 +120,7 @@ describe('Custom Matchers (Integration)', function() {
       env.expect({ foo: 'foo' }).toEqual({ foo: 'foo' });
     });
 
-    var specExpectations = function(result) {
+    const specExpectations = function(result) {
       expect(result.status).toEqual('failed');
       expect(result.failedExpectations[0].message).toEqual(
         "Expected $.foo = 'foo' to equal 'foo'."
@@ -149,7 +149,7 @@ describe('Custom Matchers (Integration)', function() {
       env.expect(true).not.toBeReal();
     });
 
-    var specExpectations = function(result) {
+    const specExpectations = function(result) {
       expect(result.status).toEqual('passed');
     };
 
@@ -172,7 +172,7 @@ describe('Custom Matchers (Integration)', function() {
       env.expect('a').toBeReal();
     });
 
-    var specExpectations = function(result) {
+    const specExpectations = function(result) {
       expect(result.failedExpectations[0].message).toEqual(
         "Expected 'a' to be real."
       );
@@ -183,7 +183,7 @@ describe('Custom Matchers (Integration)', function() {
   });
 
   it('passes the expected and actual arguments to the comparison function', function(done) {
-    var argumentSpy = jasmine
+    const argumentSpy = jasmine
       .createSpy('argument spy')
       .and.returnValue({ pass: true });
 
@@ -199,7 +199,7 @@ describe('Custom Matchers (Integration)', function() {
       env.expect(true).toBeReal('arg1', 'arg2');
     });
 
-    var specExpectations = function() {
+    const specExpectations = function() {
       expect(argumentSpy).toHaveBeenCalledWith(true);
       expect(argumentSpy).toHaveBeenCalledWith(true, 'arg');
       expect(argumentSpy).toHaveBeenCalledWith(true, 'arg1', 'arg2');
@@ -210,7 +210,7 @@ describe('Custom Matchers (Integration)', function() {
   });
 
   it('passes the jasmine utility to the matcher factory', function(done) {
-    var matcherFactory = function() {
+    const matcherFactory = function() {
         return {
           compare: function() {
             return { pass: true };
@@ -229,7 +229,7 @@ describe('Custom Matchers (Integration)', function() {
       env.expect(true).toBeReal();
     });
 
-    var specExpectations = function() {
+    const specExpectations = function() {
       expect(matcherFactorySpy).toHaveBeenCalledWith(
         jasmine.any(jasmineUnderTest.MatchersUtil)
       );
@@ -240,7 +240,7 @@ describe('Custom Matchers (Integration)', function() {
   });
 
   it('provides custom equality testers to the matcher factory via matchersUtil', function(done) {
-    var matcherFactory = function(matchersUtil) {
+    const matcherFactory = function(matchersUtil) {
         return {
           compare: function(actual, expected) {
             return { pass: matchersUtil.equals(actual[0], expected) };
@@ -262,7 +262,7 @@ describe('Custom Matchers (Integration)', function() {
       env.expect([1, 2]).toBeArrayWithFirstElement('1');
     });
 
-    var specExpectations = function(result) {
+    const specExpectations = function(result) {
       expect(customEqualityFn).toHaveBeenCalledWith(1, '1');
       expect(result.failedExpectations).toEqual([]);
     };

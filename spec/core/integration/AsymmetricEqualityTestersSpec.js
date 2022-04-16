@@ -1,12 +1,12 @@
 describe('Asymmetric equality testers (Integration)', function() {
   function verifyPasses(expectations) {
     it('passes', function(done) {
-      var env = new jasmineUnderTest.Env();
+      const env = new jasmineUnderTest.Env();
       env.it('a spec', function() {
         expectations(env);
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('passed');
         expect(result.passedExpectations.length)
           .withContext('Number of passed expectations')
@@ -28,12 +28,12 @@ describe('Asymmetric equality testers (Integration)', function() {
 
   function verifyFails(expectations) {
     it('fails', function(done) {
-      var env = new jasmineUnderTest.Env();
+      const env = new jasmineUnderTest.Env();
       env.it('a spec', function() {
         expectations(env);
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('failed');
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
@@ -123,9 +123,9 @@ describe('Asymmetric equality testers (Integration)', function() {
 
   describe('mapContaining', function() {
     verifyPasses(function(env) {
-      var actual = new Map();
+      const actual = new Map();
       actual.set('a', '2');
-      var expected = new Map();
+      const expected = new Map();
       expected.set('a', 2);
 
       env.addCustomEqualityTester(function(a, b) {
@@ -170,9 +170,9 @@ describe('Asymmetric equality testers (Integration)', function() {
 
   describe('setContaining', function() {
     verifyPasses(function(env) {
-      var actual = new Set();
+      const actual = new Set();
       actual.add('1');
-      var expected = new Set();
+      const expected = new Set();
       actual.add(1);
 
       env.addCustomEqualityTester(function(a, b) {

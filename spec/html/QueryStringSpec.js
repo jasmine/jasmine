@@ -1,7 +1,7 @@
 describe('QueryString', function() {
   describe('#navigateWithNewParam', function() {
     it('sets the query string to include the given key/value pair', function() {
-      var windowLocation = {
+      const windowLocation = {
           search: ''
         },
         queryString = new jasmineUnderTest.QueryString({
@@ -16,7 +16,7 @@ describe('QueryString', function() {
     });
 
     it('leaves existing params alone', function() {
-      var windowLocation = {
+      const windowLocation = {
           search: '?foo=bar'
         },
         queryString = new jasmineUnderTest.QueryString({
@@ -34,7 +34,7 @@ describe('QueryString', function() {
 
   describe('#fullStringWithNewParam', function() {
     it('gets the query string including the given key/value pair', function() {
-      var windowLocation = {
+      const windowLocation = {
           search: '?foo=bar'
         },
         queryString = new jasmineUnderTest.QueryString({
@@ -43,7 +43,7 @@ describe('QueryString', function() {
           }
         });
 
-      var result = queryString.fullStringWithNewParam('baz', 'quux');
+      const result = queryString.fullStringWithNewParam('baz', 'quux');
 
       expect(result).toMatch(/foo=bar/);
       expect(result).toMatch(/baz=quux/);
@@ -52,7 +52,7 @@ describe('QueryString', function() {
 
   describe('#getParam', function() {
     it('returns the value of the requested key', function() {
-      var windowLocation = {
+      const windowLocation = {
           search: '?baz=quux%20corge'
         },
         queryString = new jasmineUnderTest.QueryString({
@@ -65,7 +65,7 @@ describe('QueryString', function() {
     });
 
     it('returns null if the key is not present', function() {
-      var windowLocation = {
+      const windowLocation = {
           search: ''
         },
         queryString = new jasmineUnderTest.QueryString({

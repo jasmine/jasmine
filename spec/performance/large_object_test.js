@@ -1,14 +1,13 @@
 describe('Printing a big object', function() {
-  var bigObject;
   function rand(upper) {
     return Math.round(upper * Math.random());
   }
 
   function generateObject(level) {
-    var object = {};
+    const object = {};
 
-    for (var i = 0; i < 50; i++) {
-      var decide = rand(2);
+    for (let i = 0; i < 50; i++) {
+      const decide = rand(2);
       switch (decide) {
         case 0:
           object['cycle' + i] = object;
@@ -28,7 +27,7 @@ describe('Printing a big object', function() {
   }
 
   it('takes a reasonable amount of time', function() {
-    bigObject = generateObject(0);
+    const bigObject = generateObject(0);
     expect(jasmineUnderTest.pp(bigObject)).toMatch(/cycle/);
   });
 });

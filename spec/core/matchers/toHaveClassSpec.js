@@ -4,7 +4,7 @@ describe('toHaveClass', function() {
   });
 
   it('fails for a DOM element that lacks the expected class', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveClass(),
+    const matcher = jasmineUnderTest.matchers.toHaveClass(),
       result = matcher.compare(
         this.domHelpers.createElementWithClassName(''),
         'foo'
@@ -14,7 +14,7 @@ describe('toHaveClass', function() {
   });
 
   it('passes for a DOM element that has the expected class', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveClass(),
+    const matcher = jasmineUnderTest.matchers.toHaveClass(),
       el = this.domHelpers.createElementWithClassName('foo bar baz');
 
     expect(matcher.compare(el, 'foo').pass).toBe(true);
@@ -23,14 +23,14 @@ describe('toHaveClass', function() {
   });
 
   it('fails for a DOM element that only has other classes', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveClass(),
+    const matcher = jasmineUnderTest.matchers.toHaveClass(),
       el = this.domHelpers.createElementWithClassName('foo bar');
 
     expect(matcher.compare(el, 'fo').pass).toBe(false);
   });
 
   it('throws an exception when actual is not a DOM element', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveClass({
+    const matcher = jasmineUnderTest.matchers.toHaveClass({
       pp: jasmineUnderTest.makePrettyPrinter()
     });
 
@@ -42,7 +42,7 @@ describe('toHaveClass', function() {
       matcher.compare(undefined, 'foo');
     }).toThrowError('undefined is not a DOM element');
 
-    var textNode = this.domHelpers.document.createTextNode('');
+    const textNode = this.domHelpers.document.createTextNode('');
     expect(function() {
       matcher.compare(textNode, 'foo');
     }).toThrowError('HTMLNode is not a DOM element');

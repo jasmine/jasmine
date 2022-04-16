@@ -1,7 +1,7 @@
 describe('toBeTruthy', function() {
   it("passes for 'truthy' values", function() {
-    var matcher = jasmineUnderTest.matchers.toBeTruthy(),
-      result;
+    const matcher = jasmineUnderTest.matchers.toBeTruthy();
+    let result;
 
     result = matcher.compare(true);
     expect(result.pass).toBe(true);
@@ -23,8 +23,8 @@ describe('toBeTruthy', function() {
   });
 
   it("fails for 'falsy' values", function() {
-    var matcher = jasmineUnderTest.matchers.toBeTruthy(),
-      result;
+    const matcher = jasmineUnderTest.matchers.toBeTruthy();
+    let result;
 
     result = matcher.compare(false);
     expect(result.pass).toBe(false);

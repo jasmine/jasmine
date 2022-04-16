@@ -1,23 +1,21 @@
 describe('toHaveBeenCalledTimes', function() {
   it('passes when the actual 0 matches the expected 0 ', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
       calledSpy = new jasmineUnderTest.Spy('called-spy'),
-      result;
-    result = matcher.compare(calledSpy, 0);
+      result = matcher.compare(calledSpy, 0);
     expect(result.pass).toBeTruthy();
   });
   it('passes when the actual matches the expected', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      calledSpy = new jasmineUnderTest.Spy('called-spy'),
-      result;
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      calledSpy = new jasmineUnderTest.Spy('called-spy');
     calledSpy();
 
-    result = matcher.compare(calledSpy, 1);
+    const result = matcher.compare(calledSpy, 1);
     expect(result.pass).toBe(true);
   });
 
   it('fails when expected numbers is not supplied', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
       spy = new jasmineUnderTest.Spy('spy');
 
     spy();
@@ -29,28 +27,26 @@ describe('toHaveBeenCalledTimes', function() {
   });
 
   it('fails when the actual was called less than the expected', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      uncalledSpy = new jasmineUnderTest.Spy('uncalled spy'),
-      result;
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      uncalledSpy = new jasmineUnderTest.Spy('uncalled spy');
 
-    result = matcher.compare(uncalledSpy, 2);
+    const result = matcher.compare(uncalledSpy, 2);
     expect(result.pass).toBe(false);
   });
 
   it('fails when the actual was called more than expected', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      uncalledSpy = new jasmineUnderTest.Spy('uncalled spy'),
-      result;
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      uncalledSpy = new jasmineUnderTest.Spy('uncalled spy');
 
     uncalledSpy();
     uncalledSpy();
 
-    result = matcher.compare(uncalledSpy, 1);
+    const result = matcher.compare(uncalledSpy, 1);
     expect(result.pass).toBe(false);
   });
 
   it('throws an exception when the actual is not a spy', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes({
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       fn = function() {};
@@ -61,15 +57,14 @@ describe('toHaveBeenCalledTimes', function() {
   });
 
   it('has a custom message on failure that tells it was called only once', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      spy = new jasmineUnderTest.Spy('sample-spy'),
-      result;
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      spy = new jasmineUnderTest.Spy('sample-spy');
     spy();
     spy();
     spy();
     spy();
 
-    result = matcher.compare(spy, 1);
+    const result = matcher.compare(spy, 1);
     expect(result.message).toEqual(
       'Expected spy sample-spy to have been called once. It was called ' +
         4 +
@@ -78,15 +73,14 @@ describe('toHaveBeenCalledTimes', function() {
   });
 
   it('has a custom message on failure that tells how many times it was called', function() {
-    var matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      spy = new jasmineUnderTest.Spy('sample-spy'),
-      result;
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      spy = new jasmineUnderTest.Spy('sample-spy');
     spy();
     spy();
     spy();
     spy();
 
-    result = matcher.compare(spy, 2);
+    const result = matcher.compare(spy, 2);
     expect(result.message).toEqual(
       'Expected spy sample-spy to have been called 2 times. It was called ' +
         4 +

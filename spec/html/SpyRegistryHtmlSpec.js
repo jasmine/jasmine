@@ -4,7 +4,7 @@ describe('Spy Registry browser-specific behavior', function() {
   }
 
   it('can spy on and unspy window.onerror', function() {
-    var spies = [],
+    const spies = [],
       spyRegistry = new jasmineUnderTest.SpyRegistry({
         currentSpies: function() {
           return spies;

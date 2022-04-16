@@ -1,8 +1,8 @@
 (function() {
-  var path = require('path'),
+  const path = require('path'),
     glob = require('glob');
 
-  var jasmineUnderTestRequire = require(path.join(
+  const jasmineUnderTestRequire = require(path.join(
     __dirname,
     '../../src/core/requireCore.js'
   ));
@@ -12,7 +12,7 @@
   };
 
   function getSourceFiles() {
-    var src_files = ['core/**/*.js', 'version.js'].map(function(file) {
+    const src_files = ['core/**/*.js', 'version.js'].map(function(file) {
       return path.join(__dirname, '../../', 'src/', file);
     });
 

@@ -1,6 +1,6 @@
 describe('StringContaining', function() {
   it('searches for a provided substring when the expected is a String', function() {
-    var matcher = new jasmineUnderTest.StringContaining('foo');
+    const matcher = new jasmineUnderTest.StringContaining('foo');
 
     expect(matcher.asymmetricMatch('barfoobaz')).toBe(true);
     expect(matcher.asymmetricMatch('barbaz')).toBe(false);
@@ -13,12 +13,12 @@ describe('StringContaining', function() {
   });
 
   it('fails when the actual is not a String', function() {
-    var matcher = new jasmineUnderTest.StringContaining('x');
+    const matcher = new jasmineUnderTest.StringContaining('x');
     expect(matcher.asymmetricMatch(['x'])).toBe(false);
   });
 
   it("jasmineToString's itself", function() {
-    var matching = new jasmineUnderTest.StringContaining('foo');
+    const matching = new jasmineUnderTest.StringContaining('foo');
 
     expect(matching.jasmineToString()).toEqual(
       '<jasmine.stringContaining("foo")>'

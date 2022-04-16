@@ -1,6 +1,6 @@
 describe('JsApiReporter', function() {
   it('knows when a full environment is started', function() {
-    var reporter = new jasmineUnderTest.JsApiReporter({});
+    const reporter = new jasmineUnderTest.JsApiReporter({});
 
     expect(reporter.started).toBe(false);
     expect(reporter.finished).toBe(false);
@@ -12,7 +12,7 @@ describe('JsApiReporter', function() {
   });
 
   it('knows when a full environment is done', function() {
-    var reporter = new jasmineUnderTest.JsApiReporter({});
+    const reporter = new jasmineUnderTest.JsApiReporter({});
 
     expect(reporter.started).toBe(false);
     expect(reporter.finished).toBe(false);
@@ -24,13 +24,13 @@ describe('JsApiReporter', function() {
   });
 
   it("defaults to 'loaded' status", function() {
-    var reporter = new jasmineUnderTest.JsApiReporter({});
+    const reporter = new jasmineUnderTest.JsApiReporter({});
 
     expect(reporter.status()).toEqual('loaded');
   });
 
   it("reports 'started' when Jasmine has started", function() {
-    var reporter = new jasmineUnderTest.JsApiReporter({});
+    const reporter = new jasmineUnderTest.JsApiReporter({});
 
     reporter.jasmineStarted();
 
@@ -38,7 +38,7 @@ describe('JsApiReporter', function() {
   });
 
   it("reports 'done' when Jasmine is done", function() {
-    var reporter = new jasmineUnderTest.JsApiReporter({});
+    const reporter = new jasmineUnderTest.JsApiReporter({});
 
     reporter.jasmineDone({});
 
@@ -46,14 +46,14 @@ describe('JsApiReporter', function() {
   });
 
   it('tracks a suite', function() {
-    var reporter = new jasmineUnderTest.JsApiReporter({});
+    const reporter = new jasmineUnderTest.JsApiReporter({});
 
     reporter.suiteStarted({
       id: 123,
       description: 'A suite'
     });
 
-    var suites = reporter.suites();
+    const suites = reporter.suites();
 
     expect(suites).toEqual({ 123: { id: 123, description: 'A suite' } });
 
@@ -69,7 +69,7 @@ describe('JsApiReporter', function() {
   });
 
   describe('#specResults', function() {
-    var reporter, specResult1, specResult2;
+    let reporter, specResult1, specResult2;
     beforeEach(function() {
       reporter = new jasmineUnderTest.JsApiReporter({});
       specResult1 = {
@@ -99,7 +99,7 @@ describe('JsApiReporter', function() {
   });
 
   describe('#suiteResults', function() {
-    var reporter, suiteStarted1, suiteResult1, suiteResult2;
+    let reporter, suiteStarted1, suiteResult1, suiteResult2;
     beforeEach(function() {
       reporter = new jasmineUnderTest.JsApiReporter({});
       suiteStarted1 = {
@@ -137,7 +137,7 @@ describe('JsApiReporter', function() {
 
   describe('#executionTime', function() {
     it('should start the timer when jasmine starts', function() {
-      var timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+      const timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
         reporter = new jasmineUnderTest.JsApiReporter({
           timer: timerSpy
         });
@@ -147,7 +147,7 @@ describe('JsApiReporter', function() {
     });
 
     it('should return the time it took the specs to run, in ms', function() {
-      var timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+      const timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
         reporter = new jasmineUnderTest.JsApiReporter({
           timer: timerSpy
         });
@@ -159,7 +159,7 @@ describe('JsApiReporter', function() {
 
     describe("when the specs haven't finished being run", function() {
       it('should return undefined', function() {
-        var timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
+        const timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
           reporter = new jasmineUnderTest.JsApiReporter({
             timer: timerSpy
           });
@@ -171,7 +171,7 @@ describe('JsApiReporter', function() {
 
   describe('#runDetails', function() {
     it('should have details about the run', function() {
-      var reporter = new jasmineUnderTest.JsApiReporter({});
+      const reporter = new jasmineUnderTest.JsApiReporter({});
       reporter.jasmineDone({ some: { run: 'details' } });
       expect(reporter.runDetails).toEqual({ some: { run: 'details' } });
     });

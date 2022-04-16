@@ -1,6 +1,6 @@
 describe('ResultsNode', function() {
   it('wraps a result', function() {
-    var fakeResult = {
+    const fakeResult = {
         id: 123,
         message: 'foo'
       },
@@ -11,7 +11,7 @@ describe('ResultsNode', function() {
   });
 
   it('can add children with a type', function() {
-    var fakeResult = {
+    const fakeResult = {
         id: 123,
         message: 'foo'
       },
@@ -29,7 +29,7 @@ describe('ResultsNode', function() {
   });
 
   it('has a pointer back to its parent ResultNode', function() {
-    var fakeResult = {
+    const fakeResult = {
         id: 123,
         message: 'foo'
       },
@@ -45,7 +45,7 @@ describe('ResultsNode', function() {
   });
 
   it('can provide the most recent child', function() {
-    var fakeResult = {
+    const fakeResult = {
         id: 123,
         message: 'foo'
       },

@@ -1,13 +1,13 @@
 describe('StringMatching', function() {
   it('matches a string against a provided regexp', function() {
-    var matcher = new jasmineUnderTest.StringMatching(/foo/);
+    const matcher = new jasmineUnderTest.StringMatching(/foo/);
 
     expect(matcher.asymmetricMatch('barfoobaz')).toBe(true);
     expect(matcher.asymmetricMatch('barbaz')).toBe(false);
   });
 
   it('matches a string against provided string', function() {
-    var matcher = new jasmineUnderTest.StringMatching('foo');
+    const matcher = new jasmineUnderTest.StringMatching('foo');
 
     expect(matcher.asymmetricMatch('barfoobaz')).toBe(true);
     expect(matcher.asymmetricMatch('barbaz')).toBe(false);
@@ -20,7 +20,7 @@ describe('StringMatching', function() {
   });
 
   it("jasmineToString's itself", function() {
-    var matching = new jasmineUnderTest.StringMatching(/^foo/);
+    const matching = new jasmineUnderTest.StringMatching(/^foo/);
 
     expect(matching.jasmineToString()).toEqual(
       '<jasmine.stringMatching(/^foo/)>'

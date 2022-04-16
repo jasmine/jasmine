@@ -1,6 +1,6 @@
 describe('toBePending', function() {
   it('passes if the actual promise is pending', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBePending(matchersUtil),
       actual = new Promise(function() {});
 
@@ -10,7 +10,7 @@ describe('toBePending', function() {
   });
 
   it('fails if the actual promise is resolved', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBePending(matchersUtil),
       actual = Promise.resolve();
 
@@ -20,7 +20,7 @@ describe('toBePending', function() {
   });
 
   it('fails if the actual promise is rejected', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBePending(matchersUtil),
       actual = Promise.reject(new Error('promise was rejected'));
 
@@ -30,7 +30,7 @@ describe('toBePending', function() {
   });
 
   it('fails if actual is not a promise', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBePending(matchersUtil),
       actual = 'not a promise';
 

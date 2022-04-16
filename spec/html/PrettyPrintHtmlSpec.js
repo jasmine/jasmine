@@ -1,21 +1,21 @@
 describe('PrettyPrinter (HTML Dependent)', function() {
   it('should stringify non-element HTML nodes properly', function() {
-    var sampleNode = document.createTextNode('');
-    var pp = jasmineUnderTest.makePrettyPrinter();
+    const sampleNode = document.createTextNode('');
+    const pp = jasmineUnderTest.makePrettyPrinter();
     expect(pp(sampleNode)).toEqual('HTMLNode');
     expect(pp({ foo: sampleNode })).toEqual('Object({ foo: HTMLNode })');
   });
 
   it('should stringify empty HTML elements as their opening tags', function() {
-    var simple = document.createElement('div');
-    var pp = jasmineUnderTest.makePrettyPrinter();
+    const simple = document.createElement('div');
+    const pp = jasmineUnderTest.makePrettyPrinter();
     simple.className = 'foo';
     expect(pp(simple)).toEqual('<div class="foo">');
   });
 
   it('should stringify non-empty HTML elements as tags with placeholders', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var nonEmpty = document.createElement('div');
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const nonEmpty = document.createElement('div');
     nonEmpty.className = 'foo';
     nonEmpty.innerHTML = '<p>Irrelevant</p>';
     expect(pp(nonEmpty)).toEqual('<div class="foo">...</div>');
@@ -23,11 +23,12 @@ describe('PrettyPrinter (HTML Dependent)', function() {
 
   it("should print Firefox's wrapped native objects correctly", function() {
     if (jasmine.getEnv().firefoxVersion) {
-      var pp = jasmineUnderTest.makePrettyPrinter();
+      const pp = jasmineUnderTest.makePrettyPrinter();
+      let err;
       try {
         new CustomEvent();
       } catch (e) {
-        var err = e;
+        err = e;
       }
       // Different versions of FF produce different error messages.
       expect(pp(err)).toMatch(
@@ -37,8 +38,8 @@ describe('PrettyPrinter (HTML Dependent)', function() {
   });
 
   it('should stringify HTML element with text and attributes', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var el = document.createElement('div');
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const el = document.createElement('div');
     el.setAttribute('things', 'foo');
     el.innerHTML = 'foo';
     expect(pp(el)).toEqual('<div things="foo">...</div>');

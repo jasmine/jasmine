@@ -1,7 +1,7 @@
 describe('toBeNegativeInfinity', function() {
   it("fails for anything that isn't -Infinity", function() {
-    var matcher = jasmineUnderTest.matchers.toBeNegativeInfinity(),
-      result;
+    const matcher = jasmineUnderTest.matchers.toBeNegativeInfinity();
+    let result;
 
     result = matcher.compare(1);
     expect(result.pass).toBe(false);
@@ -14,7 +14,7 @@ describe('toBeNegativeInfinity', function() {
   });
 
   it('has a custom message on failure', function() {
-    var matcher = jasmineUnderTest.matchers.toBeNegativeInfinity({
+    const matcher = jasmineUnderTest.matchers.toBeNegativeInfinity({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       result = matcher.compare(0);
@@ -23,7 +23,7 @@ describe('toBeNegativeInfinity', function() {
   });
 
   it('succeeds for -Infinity', function() {
-    var matcher = jasmineUnderTest.matchers.toBeNegativeInfinity(),
+    const matcher = jasmineUnderTest.matchers.toBeNegativeInfinity(),
       result = matcher.compare(Number.NEGATIVE_INFINITY);
 
     expect(result.pass).toBe(true);

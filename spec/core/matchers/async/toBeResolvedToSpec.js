@@ -1,6 +1,6 @@
 describe('#toBeResolvedTo', function() {
   it('passes if the promise is resolved to the expected value', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = Promise.resolve({ foo: 42 });
 
@@ -10,7 +10,7 @@ describe('#toBeResolvedTo', function() {
   });
 
   it('fails if the promise is rejected', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
@@ -29,7 +29,7 @@ describe('#toBeResolvedTo', function() {
   });
 
   it('fails if the promise is resolved to a different value', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
@@ -47,7 +47,7 @@ describe('#toBeResolvedTo', function() {
   });
 
   it('builds its message correctly when negated', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
@@ -64,7 +64,7 @@ describe('#toBeResolvedTo', function() {
   });
 
   it('supports custom equality testers', function() {
-    var customEqualityTesters = [
+    const customEqualityTesters = [
         function() {
           return true;
         }
@@ -82,7 +82,7 @@ describe('#toBeResolvedTo', function() {
   });
 
   it('fails if actual is not a promise', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),

@@ -4,22 +4,22 @@
       toHaveFailedExpectationsForRunnable: function() {
         return {
           compare: function(actual, fullName, expectedFailures) {
-            var foundRunnable = false,
+            let foundRunnable = false,
               expectations = true,
               foundFailures = [];
-            for (var i = 0; i < actual.calls.count(); i++) {
-              var args = actual.calls.argsFor(i)[0];
+            for (let i = 0; i < actual.calls.count(); i++) {
+              const args = actual.calls.argsFor(i)[0];
 
               if (args.fullName === fullName) {
                 foundRunnable = true;
 
-                for (var j = 0; j < args.failedExpectations.length; j++) {
+                for (let j = 0; j < args.failedExpectations.length; j++) {
                   foundFailures.push(args.failedExpectations[j].message);
                 }
 
-                for (var j = 0; j < expectedFailures.length; j++) {
-                  var failure = foundFailures[j];
-                  var expectedFailure = expectedFailures[j];
+                for (let j = 0; j < expectedFailures.length; j++) {
+                  const failure = foundFailures[j];
+                  const expectedFailure = expectedFailures[j];
 
                   if (
                     Object.prototype.toString.call(expectedFailure) ===

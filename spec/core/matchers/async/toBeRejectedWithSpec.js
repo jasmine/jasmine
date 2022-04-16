@@ -1,6 +1,6 @@
 describe('#toBeRejectedWith', function() {
   it('should return true if the promise is rejected with the expected value', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
       actual = Promise.reject({ error: 'PEBCAK' });
 
@@ -10,7 +10,7 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should fail if the promise resolves', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil(),
+    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
       actual = Promise.resolve();
 
@@ -20,7 +20,7 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should fail if the promise is rejected with a different value', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
@@ -38,7 +38,7 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should build its error correctly when negated', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
@@ -55,7 +55,7 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should support custom equality testers', function() {
-    var customEqualityTesters = [
+    const customEqualityTesters = [
         function() {
           return true;
         }
@@ -72,7 +72,7 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('fails if actual is not a promise', function() {
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),

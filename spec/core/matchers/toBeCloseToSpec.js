@@ -1,7 +1,7 @@
 describe('toBeCloseTo', function() {
   it('passes when within two decimal places by default', function() {
-    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
-      result;
+    const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+    let result;
 
     result = matcher.compare(0, 0);
     expect(result.pass).toBe(true);
@@ -14,8 +14,8 @@ describe('toBeCloseTo', function() {
   });
 
   it('fails when not within two decimal places by default', function() {
-    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
-      result;
+    const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+    let result;
 
     result = matcher.compare(0, 0.01);
     expect(result.pass).toBe(false);
@@ -25,8 +25,8 @@ describe('toBeCloseTo', function() {
   });
 
   it('accepts an optional precision argument', function() {
-    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
-      result;
+    const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+    let result;
 
     result = matcher.compare(0, 0.1, 0);
     expect(result.pass).toBe(true);
@@ -48,7 +48,7 @@ describe('toBeCloseTo', function() {
   });
 
   it('fails when one of the arguments is null', function() {
-    var matcher = jasmineUnderTest.matchers.toBeCloseTo();
+    const matcher = jasmineUnderTest.matchers.toBeCloseTo();
 
     expect(function() {
       matcher.compare(null, null);
@@ -70,8 +70,8 @@ describe('toBeCloseTo', function() {
   });
 
   it('rounds expected values', function() {
-    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
-      result;
+    const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+    let result;
 
     result = matcher.compare(1.23, 1.229);
     expect(result.pass).toBe(true);
@@ -98,8 +98,8 @@ describe('toBeCloseTo', function() {
   });
 
   it('handles edge cases with rounding', function() {
-    var matcher = jasmineUnderTest.matchers.toBeCloseTo(),
-      result;
+    const matcher = jasmineUnderTest.matchers.toBeCloseTo();
+    let result;
 
     // these cases resulted in false negatives in version of V8
     // included in Node.js 12 and Chrome 74 (and Edge Chromium)

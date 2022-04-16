@@ -1,5 +1,5 @@
 describe('Matchers (Integration)', function() {
-  var env;
+  let env;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -15,7 +15,7 @@ describe('Matchers (Integration)', function() {
         expectations(env);
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('passed');
         expect(result.passedExpectations.length)
           .withContext('Number of passed expectations')
@@ -41,7 +41,7 @@ describe('Matchers (Integration)', function() {
         expectations(env);
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('failed');
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
@@ -73,7 +73,7 @@ describe('Matchers (Integration)', function() {
         config.expectations(env);
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('failed');
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
@@ -94,7 +94,7 @@ describe('Matchers (Integration)', function() {
         return expectations(env);
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('passed');
         expect(result.passedExpectations.length)
           .withContext('Number of passed expectations')
@@ -120,7 +120,7 @@ describe('Matchers (Integration)', function() {
         return expectations(env);
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('failed');
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
@@ -142,13 +142,13 @@ describe('Matchers (Integration)', function() {
 
   function verifyFailsWithCustomObjectFormattersAsync(config) {
     it('uses custom object formatters', function(done) {
-      var env = new jasmineUnderTest.Env();
+      const env = new jasmineUnderTest.Env();
       env.it('a spec', function() {
         env.addCustomObjectFormatter(config.formatter);
         return config.expectations(env);
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('failed');
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
@@ -519,20 +519,20 @@ describe('Matchers (Integration)', function() {
 
   describe('toHaveBeenCalled', function() {
     verifyPasses(function(env) {
-      var spy = env.createSpy('spy');
+      const spy = env.createSpy('spy');
       spy();
       env.expect(spy).toHaveBeenCalled();
     });
 
     verifyFails(function(env) {
-      var spy = env.createSpy('spy');
+      const spy = env.createSpy('spy');
       env.expect(spy).toHaveBeenCalled();
     });
   });
 
   describe('toHaveBeenCalledBefore', function() {
     verifyPasses(function(env) {
-      var a = env.createSpy('a'),
+      const a = env.createSpy('a'),
         b = env.createSpy('b');
       a();
       b();
@@ -540,7 +540,7 @@ describe('Matchers (Integration)', function() {
     });
 
     verifyFails(function(env) {
-      var a = env.createSpy('a'),
+      const a = env.createSpy('a'),
         b = env.createSpy('b');
       b();
       a();
@@ -550,20 +550,20 @@ describe('Matchers (Integration)', function() {
 
   describe('toHaveBeenCalledTimes', function() {
     verifyPasses(function(env) {
-      var spy = env.createSpy('spy');
+      const spy = env.createSpy('spy');
       spy();
       env.expect(spy).toHaveBeenCalledTimes(1);
     });
 
     verifyFails(function(env) {
-      var spy = env.createSpy('spy');
+      const spy = env.createSpy('spy');
       env.expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('toHaveBeenCalledWith', function() {
     verifyPasses(function(env) {
-      var spy = env.createSpy();
+      const spy = env.createSpy();
       spy('5');
       env.addCustomEqualityTester(function(a, b) {
         return a.toString() === b.toString();
@@ -572,7 +572,7 @@ describe('Matchers (Integration)', function() {
     });
 
     verifyFails(function(env) {
-      var spy = env.createSpy();
+      const spy = env.createSpy();
       env.expect(spy).toHaveBeenCalledWith('foo');
     });
 
@@ -581,7 +581,7 @@ describe('Matchers (Integration)', function() {
         return '|' + val + '|';
       },
       expectations: function(env) {
-        var spy = env.createSpy('foo');
+        const spy = env.createSpy('foo');
         env.expect(spy).toHaveBeenCalledWith('x');
       },
       expectedMessage:
@@ -593,7 +593,7 @@ describe('Matchers (Integration)', function() {
 
   describe('toHaveBeenCalledOnceWith', function() {
     verifyPasses(function(env) {
-      var spy = env.createSpy();
+      const spy = env.createSpy();
       spy('5', 3);
       env.addCustomEqualityTester(function(a, b) {
         return a.toString() === b.toString();
@@ -602,7 +602,7 @@ describe('Matchers (Integration)', function() {
     });
 
     verifyFails(function(env) {
-      var spy = env.createSpy();
+      const spy = env.createSpy();
       env.expect(spy).toHaveBeenCalledOnceWith(5, 3);
     });
   });
@@ -613,14 +613,14 @@ describe('Matchers (Integration)', function() {
     });
 
     verifyPasses(function(env) {
-      var domHelpers = jasmine.getEnv().domHelpers();
-      var el = domHelpers.createElementWithClassName('foo');
+      const domHelpers = jasmine.getEnv().domHelpers();
+      const el = domHelpers.createElementWithClassName('foo');
       env.expect(el).toHaveClass('foo');
     });
 
     verifyFails(function(env) {
-      var domHelpers = jasmine.getEnv().domHelpers();
-      var el = domHelpers.createElementWithClassName('foo');
+      const domHelpers = jasmine.getEnv().domHelpers();
+      const el = domHelpers.createElementWithClassName('foo');
       env.expect(el).toHaveClass('bar');
     });
   });
@@ -758,7 +758,7 @@ describe('Matchers (Integration)', function() {
         return env.expectAsync(Promise.resolve()).already.toBeRejected();
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('failed');
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
@@ -782,7 +782,7 @@ describe('Matchers (Integration)', function() {
           .already.toBeResolved();
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('failed');
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')
@@ -801,13 +801,13 @@ describe('Matchers (Integration)', function() {
     });
 
     it('fails when the promise is pending', function(done) {
-      var promise = new Promise(function() {});
+      const promise = new Promise(function() {});
 
       env.it('a spec', function() {
         return env.expectAsync(promise).already.toBeResolved();
       });
 
-      var specExpectations = function(result) {
+      const specExpectations = function(result) {
         expect(result.status).toEqual('failed');
         expect(result.failedExpectations.length)
           .withContext('Number of failed expectations')

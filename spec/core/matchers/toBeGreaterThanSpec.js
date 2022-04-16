@@ -1,15 +1,13 @@
 describe('toBeGreaterThan', function() {
   it('passes when actual > expected', function() {
-    var matcher = jasmineUnderTest.matchers.toBeGreaterThan(),
-      result;
-
-    result = matcher.compare(2, 1);
+    const matcher = jasmineUnderTest.matchers.toBeGreaterThan();
+    const result = matcher.compare(2, 1);
     expect(result.pass).toBe(true);
   });
 
   it('fails when actual <= expected', function() {
-    var matcher = jasmineUnderTest.matchers.toBeGreaterThan(),
-      result;
+    const matcher = jasmineUnderTest.matchers.toBeGreaterThan();
+    let result;
 
     result = matcher.compare(1, 1);
     expect(result.pass).toBe(false);

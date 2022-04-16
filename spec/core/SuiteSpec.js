@@ -1,5 +1,5 @@
 describe('Suite', function() {
-  var env;
+  let env;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -10,7 +10,7 @@ describe('Suite', function() {
   });
 
   it('keeps its id', function() {
-    var suite = new jasmineUnderTest.Suite({
+    const suite = new jasmineUnderTest.Suite({
       env: env,
       id: 456,
       description: 'I am a suite'
@@ -20,7 +20,7 @@ describe('Suite', function() {
   });
 
   it('returns blank full name for top level suite', function() {
-    var suite = new jasmineUnderTest.Suite({
+    const suite = new jasmineUnderTest.Suite({
       env: env,
       description: 'I am a suite'
     });
@@ -29,7 +29,7 @@ describe('Suite', function() {
   });
 
   it('returns its full name when it has parent suites', function() {
-    var parentSuite = new jasmineUnderTest.Suite({
+    const parentSuite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a parent suite',
         parentSuite: jasmine.createSpy('pretend top level suite')
@@ -44,7 +44,7 @@ describe('Suite', function() {
   });
 
   it('adds beforeEach functions in order of needed execution', function() {
-    var suite = new jasmineUnderTest.Suite({
+    const suite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
@@ -61,7 +61,7 @@ describe('Suite', function() {
   });
 
   it('adds beforeAll functions in order of needed execution', function() {
-    var suite = new jasmineUnderTest.Suite({
+    const suite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
@@ -89,7 +89,7 @@ describe('Suite', function() {
   });
 
   it('adds afterEach functions in order of needed execution', function() {
-    var suite = new jasmineUnderTest.Suite({
+    const suite = new jasmineUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
@@ -123,7 +123,7 @@ describe('Suite', function() {
   });
 
   it('has a status of failed if any expectations have failed', function() {
-    var suite = new jasmineUnderTest.Suite({
+    const suite = new jasmineUnderTest.Suite({
       expectationResultFactory: function() {
         return 'hi';
       }
@@ -134,20 +134,20 @@ describe('Suite', function() {
   });
 
   it('retrieves a result with updated status', function() {
-    var suite = new jasmineUnderTest.Suite({});
+    const suite = new jasmineUnderTest.Suite({});
 
     expect(suite.getResult().status).toBe('passed');
   });
 
   it('retrieves a result with pending status', function() {
-    var suite = new jasmineUnderTest.Suite({});
+    const suite = new jasmineUnderTest.Suite({});
     suite.pend();
 
     expect(suite.getResult().status).toBe('pending');
   });
 
   it('throws an ExpectationFailed when receiving a failed expectation when throwOnExpectationFailure is set', function() {
-    var suite = new jasmineUnderTest.Suite({
+    const suite = new jasmineUnderTest.Suite({
       expectationResultFactory: function(data) {
         return data;
       },
@@ -163,7 +163,7 @@ describe('Suite', function() {
   });
 
   it('does not add an additional failure when an expectation fails', function() {
-    var suite = new jasmineUnderTest.Suite({});
+    const suite = new jasmineUnderTest.Suite({});
 
     suite.onException(new jasmineUnderTest.errors.ExpectationFailed());
 
@@ -171,7 +171,7 @@ describe('Suite', function() {
   });
 
   it('calls timer to compute duration', function() {
-    var suite = new jasmineUnderTest.Suite({
+    const suite = new jasmineUnderTest.Suite({
       env: env,
       id: 456,
       description: 'I am a suite',
@@ -196,7 +196,7 @@ describe('Suite', function() {
 
   describe('attr.autoCleanClosures', function() {
     function arrangeSuite(attrs) {
-      var suite = new jasmineUnderTest.Suite(attrs);
+      const suite = new jasmineUnderTest.Suite(attrs);
       suite.beforeAll(function() {});
       suite.beforeEach(function() {});
       suite.afterEach(function() {});
@@ -205,7 +205,7 @@ describe('Suite', function() {
     }
 
     it('should clean closures when "attr.autoCleanClosures" is missing', function() {
-      var suite = arrangeSuite({});
+      const suite = arrangeSuite({});
       suite.cleanupBeforeAfter();
       expect(suite.beforeAllFns[0].fn).toBe(null);
       expect(suite.beforeFns[0].fn).toBe(null);
@@ -214,7 +214,7 @@ describe('Suite', function() {
     });
 
     it('should clean closures when "attr.autoCleanClosures" is true', function() {
-      var suite = arrangeSuite({ autoCleanClosures: true });
+      const suite = arrangeSuite({ autoCleanClosures: true });
       suite.cleanupBeforeAfter();
       expect(suite.beforeAllFns[0].fn).toBe(null);
       expect(suite.beforeFns[0].fn).toBe(null);
@@ -223,7 +223,7 @@ describe('Suite', function() {
     });
 
     it('should NOT clean closures when "attr.autoCleanClosures" is false', function() {
-      var suite = arrangeSuite({ autoCleanClosures: false });
+      const suite = arrangeSuite({ autoCleanClosures: false });
       suite.cleanupBeforeAfter();
       expect(suite.beforeAllFns[0].fn).not.toBe(null);
       expect(suite.beforeFns[0].fn).not.toBe(null);
@@ -234,23 +234,23 @@ describe('Suite', function() {
 
   describe('#reset', function() {
     it('should reset the "pending" status', function() {
-      var suite = new jasmineUnderTest.Suite({});
+      const suite = new jasmineUnderTest.Suite({});
       suite.pend();
       suite.reset();
       expect(suite.getResult().status).toBe('passed');
     });
 
     it('should not reset the "pending" status when the suite was excluded', function() {
-      var suite = new jasmineUnderTest.Suite({});
+      const suite = new jasmineUnderTest.Suite({});
       suite.exclude();
       suite.reset();
       expect(suite.getResult().status).toBe('pending');
     });
 
     it('should also reset the children', function() {
-      var suite = new jasmineUnderTest.Suite({});
-      var child1 = jasmine.createSpyObj(['reset']);
-      var child2 = jasmine.createSpyObj(['reset']);
+      const suite = new jasmineUnderTest.Suite({});
+      const child1 = jasmine.createSpyObj(['reset']);
+      const child2 = jasmine.createSpyObj(['reset']);
       suite.addChild(child1);
       suite.addChild(child2);
 
@@ -261,7 +261,7 @@ describe('Suite', function() {
     });
 
     it('should reset the failedExpectations', function() {
-      var suite = new jasmineUnderTest.Suite({
+      const suite = new jasmineUnderTest.Suite({
         expectationResultFactory: function(error) {
           return error;
         }
@@ -270,7 +270,7 @@ describe('Suite', function() {
 
       suite.reset();
 
-      var result = suite.getResult();
+      const result = suite.getResult();
       expect(result.status).toBe('passed');
       expect(result.failedExpectations).toHaveSize(0);
     });
@@ -296,7 +296,7 @@ describe('Suite', function() {
 
     it('reports an error including the suite name when it is a normal suite', function() {
       const onLateError = jasmine.createSpy('onLateError');
-      var suite = new jasmineUnderTest.Suite({
+      const suite = new jasmineUnderTest.Suite({
         onLateError,
         description: 'the suite',
         parentSuite: {

@@ -1,6 +1,6 @@
 describe('PrettyPrinter', function() {
   it('should wrap strings in single quotes', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
+    const pp = jasmineUnderTest.makePrettyPrinter();
     expect(pp('some string')).toEqual("'some string'");
     expect(pp("som' string")).toEqual("'som' string'");
   });
@@ -14,7 +14,7 @@ describe('PrettyPrinter', function() {
   });
 
   it('should stringify primitives properly', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
+    const pp = jasmineUnderTest.makePrettyPrinter();
     expect(pp(true)).toEqual('true');
     expect(pp(false)).toEqual('false');
     expect(pp(null)).toEqual('null');
@@ -26,23 +26,23 @@ describe('PrettyPrinter', function() {
 
   describe('stringify sets', function() {
     it('should stringify sets properly', function() {
-      var set = new Set();
+      const set = new Set();
       set.add(1);
       set.add(2);
-      var pp = jasmineUnderTest.makePrettyPrinter();
+      const pp = jasmineUnderTest.makePrettyPrinter();
       expect(pp(set)).toEqual('Set( 1, 2 )');
     });
 
     it('should truncate sets with more elements than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH', function() {
-      var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+      const originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
 
       try {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        var set = new Set();
+        const set = new Set();
         set.add('a');
         set.add('b');
         set.add('c');
-        var pp = jasmineUnderTest.makePrettyPrinter();
+        const pp = jasmineUnderTest.makePrettyPrinter();
         expect(pp(set)).toEqual("Set( 'a', 'b', ... )");
       } finally {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxSize;
@@ -52,22 +52,22 @@ describe('PrettyPrinter', function() {
 
   describe('stringify maps', function() {
     it('should stringify maps properly', function() {
-      var map = new Map();
+      const map = new Map();
       map.set(1, 2);
-      var pp = jasmineUnderTest.makePrettyPrinter();
+      const pp = jasmineUnderTest.makePrettyPrinter();
       expect(pp(map)).toEqual('Map( [ 1, 2 ] )');
     });
 
     it('should truncate maps with more elements than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH', function() {
-      var originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+      const originalMaxSize = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
 
       try {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
-        var map = new Map();
+        const map = new Map();
         map.set('a', 1);
         map.set('b', 2);
         map.set('c', 3);
-        var pp = jasmineUnderTest.makePrettyPrinter();
+        const pp = jasmineUnderTest.makePrettyPrinter();
         expect(pp(map)).toEqual("Map( [ 'a', 1 ], [ 'b', 2 ], ... )");
       } finally {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = originalMaxSize;
@@ -77,7 +77,7 @@ describe('PrettyPrinter', function() {
 
   describe('stringify arrays', function() {
     it('should stringify arrays properly', function() {
-      var pp = jasmineUnderTest.makePrettyPrinter();
+      const pp = jasmineUnderTest.makePrettyPrinter();
       expect(pp([1, 2])).toEqual('[ 1, 2 ]');
       expect(pp([1, 'foo', {}, jasmine.undefined, null])).toEqual(
         "[ 1, 'foo', Object({  }), undefined, null ]"
@@ -85,9 +85,9 @@ describe('PrettyPrinter', function() {
     });
 
     it('should truncate arrays that are longer than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH', function() {
-      var originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
-      var array = [1, 2, 3];
-      var pp = jasmineUnderTest.makePrettyPrinter();
+      const originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+      const array = [1, 2, 3];
+      const pp = jasmineUnderTest.makePrettyPrinter();
 
       try {
         jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
@@ -98,25 +98,25 @@ describe('PrettyPrinter', function() {
     });
 
     it('should stringify arrays with properties properly', function() {
-      var pp = jasmineUnderTest.makePrettyPrinter();
-      var arr = [1, 2];
+      const pp = jasmineUnderTest.makePrettyPrinter();
+      const arr = [1, 2];
       arr.foo = 'bar';
       arr.baz = {};
       expect(pp(arr)).toEqual("[ 1, 2, foo: 'bar', baz: Object({  }) ]");
     });
 
     it('should stringify empty arrays with properties properly', function() {
-      var pp = jasmineUnderTest.makePrettyPrinter();
-      var empty = [];
+      const pp = jasmineUnderTest.makePrettyPrinter();
+      const empty = [];
       empty.foo = 'bar';
       empty.baz = {};
       expect(pp(empty)).toEqual("[ foo: 'bar', baz: Object({  }) ]");
     });
 
     it('should stringify long arrays with properties properly', function() {
-      var pp = jasmineUnderTest.makePrettyPrinter();
-      var originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
-      var long = [1, 2, 3];
+      const pp = jasmineUnderTest.makePrettyPrinter();
+      const originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+      const long = [1, 2, 3];
       long.foo = 'bar';
       long.baz = {};
 
@@ -131,22 +131,22 @@ describe('PrettyPrinter', function() {
     });
 
     it('should indicate circular array references', function() {
-      var pp = jasmineUnderTest.makePrettyPrinter();
-      var array1 = [1, 2];
-      var array2 = [array1];
+      const pp = jasmineUnderTest.makePrettyPrinter();
+      const array1 = [1, 2];
+      const array2 = [array1];
       array1.push(array2);
       expect(pp(array1)).toEqual('[ 1, 2, [ <circular reference: Array> ] ]');
     });
 
     it('should not indicate circular references incorrectly', function() {
-      var pp = jasmineUnderTest.makePrettyPrinter();
-      var array = [[1]];
+      const pp = jasmineUnderTest.makePrettyPrinter();
+      const array = [[1]];
       expect(pp(array)).toEqual('[ [ 1 ] ]');
     });
   });
 
   it('should stringify objects properly', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
+    const pp = jasmineUnderTest.makePrettyPrinter();
     expect(pp({ foo: 'bar' })).toEqual("Object({ foo: 'bar' })");
     expect(
       pp({
@@ -164,14 +164,14 @@ describe('PrettyPrinter', function() {
   });
 
   it('should stringify objects that almost look like DOM nodes', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
+    const pp = jasmineUnderTest.makePrettyPrinter();
     expect(pp({ nodeType: 1 })).toEqual('Object({ nodeType: 1 })');
   });
 
   it('should truncate objects with too many keys', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
-    var long = { a: 1, b: 2, c: 3 };
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
+    const long = { a: 1, b: 2, c: 3 };
 
     try {
       jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH = 2;
@@ -182,7 +182,7 @@ describe('PrettyPrinter', function() {
   });
 
   function withMaxChars(maxChars, fn) {
-    var originalMaxChars = jasmineUnderTest.MAX_PRETTY_PRINT_CHARS;
+    const originalMaxChars = jasmineUnderTest.MAX_PRETTY_PRINT_CHARS;
 
     try {
       jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = maxChars;
@@ -193,8 +193,8 @@ describe('PrettyPrinter', function() {
   }
 
   it('should truncate outputs that are too long', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var big = [{ a: 1, b: 'a long string' }, {}];
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const big = [{ a: 1, b: 'a long string' }, {}];
 
     withMaxChars(34, function() {
       expect(pp(big)).toEqual("[ Object({ a: 1, b: 'a long st ...");
@@ -202,7 +202,7 @@ describe('PrettyPrinter', function() {
   });
 
   it('should not serialize more objects after hitting MAX_PRETTY_PRINT_CHARS', function() {
-    var a = {
+    const a = {
         jasmineToString: function() {
           return 'object a';
         }
@@ -232,25 +232,25 @@ describe('PrettyPrinter', function() {
   });
 
   it("should print 'null' as the constructor of an object with its own constructor property", function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
+    const pp = jasmineUnderTest.makePrettyPrinter();
     expect(pp({ constructor: function() {} })).toContain('null({');
     expect(pp({ constructor: 'foo' })).toContain('null({');
   });
 
   it('should not include inherited properties when stringifying an object', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var SomeClass = function SomeClass() {};
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const SomeClass = function SomeClass() {};
     SomeClass.prototype.foo = 'inherited foo';
-    var instance = new SomeClass();
+    const instance = new SomeClass();
     instance.bar = 'my own bar';
     expect(pp(instance)).toEqual("SomeClass({ bar: 'my own bar' })");
   });
 
   it('should not recurse objects and arrays more deeply than jasmineUnderTest.MAX_PRETTY_PRINT_DEPTH', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var originalMaxDepth = jasmineUnderTest.MAX_PRETTY_PRINT_DEPTH;
-    var nestedObject = { level1: { level2: { level3: { level4: 'leaf' } } } };
-    var nestedArray = [1, [2, [3, [4, 'leaf']]]];
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const originalMaxDepth = jasmineUnderTest.MAX_PRETTY_PRINT_DEPTH;
+    const nestedObject = { level1: { level2: { level3: { level4: 'leaf' } } } };
+    const nestedArray = [1, [2, [3, [4, 'leaf']]]];
 
     try {
       jasmineUnderTest.MAX_PRETTY_PRINT_DEPTH = 2;
@@ -276,8 +276,8 @@ describe('PrettyPrinter', function() {
   });
 
   it('should stringify immutable circular objects', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var frozenObject = { foo: { bar: 'baz' } };
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    let frozenObject = { foo: { bar: 'baz' } };
     frozenObject.circular = frozenObject;
     frozenObject = Object.freeze(frozenObject);
     expect(pp(frozenObject)).toEqual(
@@ -286,13 +286,13 @@ describe('PrettyPrinter', function() {
   });
 
   it('should stringify RegExp objects properly', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
+    const pp = jasmineUnderTest.makePrettyPrinter();
     expect(pp(/x|y|z/)).toEqual('/x|y|z/');
   });
 
   it('should indicate circular object references', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var sampleValue = { foo: 'hello' };
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const sampleValue = { foo: 'hello' };
     sampleValue.nested = sampleValue;
     expect(pp(sampleValue)).toEqual(
       "Object({ foo: 'hello', nested: <circular reference: Object> })"
@@ -300,8 +300,8 @@ describe('PrettyPrinter', function() {
   });
 
   it('should indicate getters on objects as such', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var sampleValue = {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const sampleValue = {
       id: 1,
       get calculatedValue() {
         throw new Error("don't call me!");
@@ -313,25 +313,25 @@ describe('PrettyPrinter', function() {
   });
 
   it('should not do HTML escaping of strings', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
+    const pp = jasmineUnderTest.makePrettyPrinter();
     expect(pp('some <b>html string</b> &', false)).toEqual(
       "'some <b>html string</b> &'"
     );
   });
 
   it('should abbreviate the global (usually window) object', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
+    const pp = jasmineUnderTest.makePrettyPrinter();
     expect(pp(jasmine.getGlobal())).toEqual('<global>');
   });
 
   it('should stringify Date objects properly', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var now = new Date();
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const now = new Date();
     expect(pp(now)).toEqual('Date(' + now.toString() + ')');
   });
 
   describe('with a spy object', function() {
-    var env, pp;
+    let env, pp;
 
     beforeEach(function() {
       env = new jasmineUnderTest.Env();
@@ -343,11 +343,11 @@ describe('PrettyPrinter', function() {
     });
 
     it('should stringify spy objects properly', function() {
-      var TestObject = {
+      const TestObject = {
         someFunction: function() {}
       };
 
-      var spyRegistry = new jasmineUnderTest.SpyRegistry({
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
         currentSpies: function() {
           return [];
         },
@@ -363,13 +363,13 @@ describe('PrettyPrinter', function() {
     });
 
     it('should stringify spyOn toString properly', function() {
-      var TestObject = {
+      const TestObject = {
           someFunction: function() {}
         },
         env = new jasmineUnderTest.Env(),
         pp = jasmineUnderTest.makePrettyPrinter();
 
-      var spyRegistry = new jasmineUnderTest.SpyRegistry({
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
         currentSpies: function() {
           return [];
         },
@@ -379,15 +379,15 @@ describe('PrettyPrinter', function() {
       });
 
       spyRegistry.spyOn(TestObject, 'toString');
-      var testSpyObj = env.createSpyObj('TheClassName', ['toString']);
+      const testSpyObj = env.createSpyObj('TheClassName', ['toString']);
 
       expect(pp(testSpyObj)).toEqual('spy on TheClassName.toString');
     });
   });
 
   it('should stringify objects that implement jasmineToString', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var obj = {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const obj = {
       jasmineToString: function() {
         return 'strung';
       }
@@ -397,8 +397,8 @@ describe('PrettyPrinter', function() {
   });
 
   it('should pass itself to jasmineToString', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter([]);
-    var obj = {
+    const pp = jasmineUnderTest.makePrettyPrinter([]);
+    const obj = {
       jasmineToString: jasmine.createSpy('jasmineToString').and.returnValue('')
     };
 
@@ -407,8 +407,8 @@ describe('PrettyPrinter', function() {
   });
 
   it('should stringify objects that implement custom toString', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var obj = {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const obj = {
       toString: function() {
         return 'my toString';
       }
@@ -418,7 +418,7 @@ describe('PrettyPrinter', function() {
 
     // Simulate object from another global context (e.g. an iframe or Web Worker) that does not actually have a custom
     // toString despite obj.toString !== Object.prototype.toString
-    var objFromOtherContext = {
+    const objFromOtherContext = {
       foo: 'bar',
       toString: function() {
         return Object.prototype.toString.call(this);
@@ -431,8 +431,8 @@ describe('PrettyPrinter', function() {
   });
 
   it("should stringify objects have have a toString that isn't a function", function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var obj = {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const obj = {
       toString: 'foo'
     };
 
@@ -440,30 +440,30 @@ describe('PrettyPrinter', function() {
   });
 
   it('should stringify objects from anonymous constructors with custom toString', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var MyAnonymousConstructor = (function() {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const MyAnonymousConstructor = (function() {
       return function() {};
     })();
     MyAnonymousConstructor.toString = function() {
       return '';
     };
 
-    var a = new MyAnonymousConstructor();
+    const a = new MyAnonymousConstructor();
 
     expect(pp(a)).toEqual('<anonymous>({  })');
   });
 
   it('should handle objects with null prototype', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var obj = Object.create(null);
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const obj = Object.create(null);
     obj.foo = 'bar';
 
     expect(pp(obj)).toEqual("null({ foo: 'bar' })");
   });
 
   it('should gracefully handle objects with invalid toString implementations', function() {
-    var pp = jasmineUnderTest.makePrettyPrinter();
-    var obj = {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const obj = {
       foo: {
         toString: function() {
           // Invalid: toString returning a number
@@ -499,7 +499,7 @@ describe('PrettyPrinter', function() {
 
   describe('Custom object formatters', function() {
     it('should use the first custom object formatter that does not return undefined', function() {
-      var customObjectFormatters = [
+      const customObjectFormatters = [
           function() {
             return undefined;
           },
@@ -517,7 +517,7 @@ describe('PrettyPrinter', function() {
     });
 
     it('should fall back to built in logic if all custom object formatters return undefined', function() {
-      var customObjectFormatters = [
+      const customObjectFormatters = [
           function() {
             return undefined;
           }
@@ -531,7 +531,7 @@ describe('PrettyPrinter', function() {
 
   describe('#customFormat_', function() {
     it('should use the first custom object formatter that does not return undefined', function() {
-      var customObjectFormatters = [
+      const customObjectFormatters = [
           function() {
             return undefined;
           },
@@ -549,7 +549,7 @@ describe('PrettyPrinter', function() {
     });
 
     it('should return undefined if all custom object formatters return undefined', function() {
-      var customObjectFormatters = [
+      const customObjectFormatters = [
           function() {
             return undefined;
           }

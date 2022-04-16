@@ -1,6 +1,6 @@
 describe('ClearStack', function() {
   it('works in an integrationy way', function(done) {
-    var clearStack = jasmineUnderTest.getClearStack(
+    const clearStack = jasmineUnderTest.getClearStack(
       jasmineUnderTest.getGlobal()
     );
 
@@ -10,14 +10,14 @@ describe('ClearStack', function() {
   });
 
   it('uses setImmediate when available', function() {
-    var setImmediate = jasmine
+    const setImmediate = jasmine
         .createSpy('setImmediate')
         .and.callFake(function(fn) {
           fn();
         }),
       global = { setImmediate: setImmediate },
-      clearStack = jasmineUnderTest.getClearStack(global),
-      called = false;
+      clearStack = jasmineUnderTest.getClearStack(global);
+    let called = false;
 
     clearStack(function() {
       called = true;
@@ -28,7 +28,7 @@ describe('ClearStack', function() {
   });
 
   it('uses setTimeout instead of setImmediate every 10 calls to make sure we release the CPU', function() {
-    var setImmediate = jasmine.createSpy('setImmediate'),
+    const setImmediate = jasmine.createSpy('setImmediate'),
       setTimeout = jasmine.createSpy('setTimeout'),
       global = { setImmediate: setImmediate, setTimeout: setTimeout },
       clearStack = jasmineUnderTest.getClearStack(global);
@@ -56,7 +56,7 @@ describe('ClearStack', function() {
   });
 
   it('uses MessageChannels when available', function() {
-    var fakeChannel = {
+    const fakeChannel = {
         port1: {},
         port2: {
           postMessage: function() {
@@ -69,8 +69,8 @@ describe('ClearStack', function() {
           return fakeChannel;
         }
       },
-      clearStack = jasmineUnderTest.getClearStack(global),
-      called = false;
+      clearStack = jasmineUnderTest.getClearStack(global);
+    let called = false;
 
     clearStack(function() {
       called = true;
@@ -80,7 +80,7 @@ describe('ClearStack', function() {
   });
 
   it('uses setTimeout instead of MessageChannel every 10 calls to make sure we release the CPU', function() {
-    var fakeChannel = {
+    const fakeChannel = {
         port1: {},
         port2: {
           postMessage: jasmine
@@ -122,7 +122,7 @@ describe('ClearStack', function() {
   });
 
   it('calls setTimeout when onmessage is called recursively', function() {
-    var fakeChannel = {
+    const fakeChannel = {
         port1: {},
         port2: {
           postMessage: function() {
@@ -149,12 +149,14 @@ describe('ClearStack', function() {
   });
 
   it('falls back to setTimeout', function() {
-    var setTimeout = jasmine.createSpy('setTimeout').and.callFake(function(fn) {
-        fn();
-      }),
+    const setTimeout = jasmine
+        .createSpy('setTimeout')
+        .and.callFake(function(fn) {
+          fn();
+        }),
       global = { setTimeout: setTimeout },
-      clearStack = jasmineUnderTest.getClearStack(global),
-      called = false;
+      clearStack = jasmineUnderTest.getClearStack(global);
+    let called = false;
 
     clearStack(function() {
       called = true;

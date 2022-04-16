@@ -14,6 +14,8 @@ module.exports = {
     // TODO: consider doing this in src files as well as specs
     'no-unused-vars': ['error', { args: 'after-used' }],
 
+    'no-var': 'error',
+
     // Since linting is done at the end of the process and doesn't stop us
     // from running tests, it makes sense to fail if debugger statements
     // or console references are present.

@@ -1,5 +1,5 @@
 describe('spec running', function() {
-  var env;
+  let env;
 
   beforeEach(function() {
     jasmine.getEnv().registerIntegrationMatchers();
@@ -12,7 +12,7 @@ describe('spec running', function() {
   });
 
   it('should assign spec ids sequentially', function() {
-    var it0, it1, it2, it3, it4;
+    let it0, it1, it2, it3, it4;
     env.describe('test suite', function() {
       it0 = env.it('spec 0', function() {});
       it1 = env.it('spec 1', function() {});
@@ -31,10 +31,10 @@ describe('spec running', function() {
   });
 
   it('nested suites', function(done) {
-    var foo = 0;
-    var bar = 0;
-    var baz = 0;
-    var quux = 0;
+    let foo = 0;
+    let bar = 0;
+    let baz = 0;
+    let quux = 0;
     env.describe('suite', function() {
       env.describe('nested', function() {
         env.it('should run nested suites', function() {
@@ -71,7 +71,7 @@ describe('spec running', function() {
   });
 
   it('should permit nested describes', function(done) {
-    var actions = [];
+    const actions = [];
 
     env.beforeEach(function() {
       actions.push('topSuite beforeEach');
@@ -128,7 +128,7 @@ describe('spec running', function() {
     });
 
     env.execute(null, function() {
-      var expected = [
+      const expected = [
         'topSuite beforeEach',
         'outer beforeEach',
         'outer it 1',
@@ -163,7 +163,7 @@ describe('spec running', function() {
   });
 
   it('should run multiple befores and afters ordered so functions declared later are treated as more specific', function(done) {
-    var actions = [];
+    const actions = [];
 
     env.beforeAll(function() {
       actions.push('runner beforeAll1');
@@ -220,7 +220,7 @@ describe('spec running', function() {
     });
 
     env.execute(null, function() {
-      var expected = [
+      const expected = [
         'runner beforeAll1',
         'runner beforeAll2',
         'runner beforeEach1',
@@ -241,7 +241,7 @@ describe('spec running', function() {
   });
 
   it('should run beforeAlls before beforeEachs and afterAlls after afterEachs', function(done) {
-    var actions = [];
+    const actions = [];
 
     env.beforeAll(function() {
       actions.push('runner beforeAll');
@@ -282,7 +282,7 @@ describe('spec running', function() {
     });
 
     env.execute(null, function() {
-      var expected = [
+      const expected = [
         'runner beforeAll',
         'inner beforeAll',
         'runner beforeEach',
@@ -299,9 +299,9 @@ describe('spec running', function() {
   });
 
   it('should run beforeAlls and afterAlls in the order declared when runnablesToRun is provided', function(done) {
-    var actions = [],
-      spec,
-      spec2;
+    const actions = [];
+    let spec;
+    let spec2;
 
     env.beforeAll(function() {
       actions.push('runner beforeAll');
@@ -346,7 +346,7 @@ describe('spec running', function() {
     });
 
     env.execute([spec2.id, spec.id], function() {
-      var expected = [
+      const expected = [
         'runner beforeAll',
         'inner beforeAll',
         'runner beforeEach',
@@ -369,7 +369,7 @@ describe('spec running', function() {
   });
 
   it('only runs *Alls once in a focused suite', function(done) {
-    var actions = [];
+    const actions = [];
 
     env.fdescribe('Suite', function() {
       env.beforeAll(function() {
@@ -391,7 +391,7 @@ describe('spec running', function() {
 
   describe('focused runnables', function() {
     it('runs the relevant alls and eachs for each runnable', function(done) {
-      var actions = [];
+      const actions = [];
       env.beforeAll(function() {
         actions.push('beforeAll');
       });
@@ -418,7 +418,7 @@ describe('spec running', function() {
       });
 
       env.execute(null, function() {
-        var expected = [
+        const expected = [
           'beforeAll',
           'beforeEach',
           'spec in fdescribe',
@@ -435,7 +435,7 @@ describe('spec running', function() {
     });
 
     it('focused specs in focused suites cause non-focused siblings to not run', function(done) {
-      var actions = [];
+      const actions = [];
 
       env.fdescribe('focused suite', function() {
         env.it('unfocused spec', function() {
@@ -447,14 +447,14 @@ describe('spec running', function() {
       });
 
       env.execute(null, function() {
-        var expected = ['focused spec'];
+        const expected = ['focused spec'];
         expect(actions).toEqual(expected);
         done();
       });
     });
 
     it('focused suites in focused suites cause non-focused siblings to not run', function(done) {
-      var actions = [];
+      const actions = [];
 
       env.fdescribe('focused suite', function() {
         env.it('unfocused spec', function() {
@@ -468,14 +468,14 @@ describe('spec running', function() {
       });
 
       env.execute(null, function() {
-        var expected = ['inner spec'];
+        const expected = ['inner spec'];
         expect(actions).toEqual(expected);
         done();
       });
     });
 
     it('focused runnables unfocus ancestor focused suites', function(done) {
-      var actions = [];
+      const actions = [];
 
       env.fdescribe('focused suite', function() {
         env.it('unfocused spec', function() {
@@ -489,7 +489,7 @@ describe('spec running', function() {
       });
 
       env.execute(null, function() {
-        var expected = ['focused spec'];
+        const expected = ['focused spec'];
         expect(actions).toEqual(expected);
         done();
       });
@@ -511,7 +511,7 @@ describe('spec running', function() {
   });
 
   it("shouldn't run before/after functions in disabled suites", function(done) {
-    var shouldNotRun = jasmine.createSpy('shouldNotRun');
+    const shouldNotRun = jasmine.createSpy('shouldNotRun');
     env.xdescribe('A disabled Suite', function() {
       // None of the before/after functions should run.
       env.beforeAll(shouldNotRun);
@@ -529,7 +529,7 @@ describe('spec running', function() {
   });
 
   it('should allow top level suites to be disabled', function(done) {
-    var specInADisabledSuite = jasmine.createSpy('specInADisabledSuite'),
+    const specInADisabledSuite = jasmine.createSpy('specInADisabledSuite'),
       otherSpec = jasmine.createSpy('otherSpec');
 
     env.xdescribe('A disabled suite', function() {
@@ -565,7 +565,7 @@ describe('spec running', function() {
   });
 
   it('should recover gracefully when there are errors in describe functions', function(done) {
-    var specs = [],
+    const specs = [],
       reporter = jasmine.createSpyObj(['specDone', 'suiteDone']);
 
     reporter.specDone.and.callFake(function(result) {
@@ -617,10 +617,10 @@ describe('spec running', function() {
   });
 
   it('re-enters suites that have no *Alls', function(done) {
-    var actions = [],
-      spec1,
-      spec2,
-      spec3;
+    const actions = [];
+    let spec1;
+    let spec2;
+    let spec3;
 
     env.describe('top', function() {
       spec1 = env.it('spec1', function() {
@@ -643,10 +643,10 @@ describe('spec running', function() {
   });
 
   it('refuses to re-enter suites with a beforeAll', function() {
-    var actions = [],
-      spec1,
-      spec2,
-      spec3;
+    const actions = [];
+    let spec1;
+    let spec2;
+    let spec3;
 
     env.describe('top', function() {
       env.beforeAll(function() {});
@@ -671,10 +671,10 @@ describe('spec running', function() {
   });
 
   it('refuses to re-enter suites with a afterAll', function() {
-    var actions = [],
-      spec1,
-      spec2,
-      spec3;
+    const actions = [];
+    let spec1;
+    let spec2;
+    let spec3;
 
     env.describe('top', function() {
       env.afterAll(function() {});
@@ -699,7 +699,7 @@ describe('spec running', function() {
   });
 
   it('should run the tests in a consistent order when a seed is supplied', function(done) {
-    var actions = [];
+    const actions = [];
     env.configure({ random: true, seed: '123456' });
 
     env.beforeEach(function() {
@@ -757,7 +757,7 @@ describe('spec running', function() {
     });
 
     env.execute(null, function() {
-      var expected = [
+      const expected = [
         'topSuite beforeEach',
         'outer beforeEach',
         'outer it 2',
@@ -985,7 +985,7 @@ describe('spec running', function() {
     hasStandardErrorHandlingBehavior();
 
     it('skips to cleanup functions after an expectation failure', async function() {
-      var actions = [];
+      const actions = [];
 
       env.describe('Something', function() {
         env.beforeEach(function() {
@@ -1026,7 +1026,7 @@ describe('spec running', function() {
     hasStandardErrorHandlingBehavior();
 
     it('does not skip anything after an expectation failure', async function() {
-      var actions = [];
+      const actions = [];
 
       env.describe('Something', function() {
         env.beforeEach(function() {
@@ -1365,7 +1365,7 @@ describe('spec running', function() {
     });
 
     it('should be able to run multiple times', function(done) {
-      var actions = [];
+      const actions = [];
 
       env.describe('Suite', function() {
         env.it('spec1', function() {
@@ -1388,9 +1388,9 @@ describe('spec running', function() {
     });
 
     it('should reset results between runs', function(done) {
-      var specResults = {};
-      var suiteResults = {};
-      var firstExecution = true;
+      const specResults = {};
+      const suiteResults = {};
+      let firstExecution = true;
 
       env.addReporter({
         specDone: function(spec) {
@@ -1482,13 +1482,13 @@ describe('spec running', function() {
     });
 
     it('should execute before and after hooks per run', function(done) {
-      var timeline = [];
-      var timelineFn = function(hookName) {
+      let timeline = [];
+      const timelineFn = function(hookName) {
         return function() {
           timeline.push(hookName);
         };
       };
-      var expectedTimeLine = [
+      const expectedTimeLine = [
         'beforeAll',
         'beforeEach',
         'spec1',
@@ -1518,8 +1518,8 @@ describe('spec running', function() {
     });
 
     it('should be able to filter out different tests in subsequent runs', function(done) {
-      var specResults = {};
-      var focussedSpec = 'spec1';
+      const specResults = {};
+      let focussedSpec = 'spec1';
 
       env.configure({
         specFilter: function(spec) {

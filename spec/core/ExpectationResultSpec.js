@@ -1,13 +1,13 @@
 describe('buildExpectationResult', function() {
   it('defaults to passed', function() {
-    var result = jasmineUnderTest.buildExpectationResult({
+    const result = jasmineUnderTest.buildExpectationResult({
       passed: 'some-value'
     });
     expect(result.passed).toBe('some-value');
   });
 
   it('message defaults to Passed for passing specs', function() {
-    var result = jasmineUnderTest.buildExpectationResult({
+    const result = jasmineUnderTest.buildExpectationResult({
       passed: true,
       message: 'some-value'
     });
@@ -15,7 +15,7 @@ describe('buildExpectationResult', function() {
   });
 
   it('message returns the message for failing expectations', function() {
-    var result = jasmineUnderTest.buildExpectationResult({
+    const result = jasmineUnderTest.buildExpectationResult({
       passed: false,
       message: 'some-value'
     });
@@ -23,12 +23,12 @@ describe('buildExpectationResult', function() {
   });
 
   it('delegates message formatting to the provided formatter if there was an Error', function() {
-    var fakeError = { message: 'foo' },
+    const fakeError = { message: 'foo' },
       messageFormatter = jasmine
         .createSpy('exception message formatter')
         .and.returnValue(fakeError.message);
 
-    var result = jasmineUnderTest.buildExpectationResult({
+    const result = jasmineUnderTest.buildExpectationResult({
       passed: false,
       error: fakeError,
       messageFormatter: messageFormatter
@@ -39,12 +39,12 @@ describe('buildExpectationResult', function() {
   });
 
   it('delegates stack formatting to the provided formatter if there was an Error', function() {
-    var fakeError = { stack: 'foo' },
+    const fakeError = { stack: 'foo' },
       stackFormatter = jasmine
         .createSpy('stack formatter')
         .and.returnValue(fakeError.stack);
 
-    var result = jasmineUnderTest.buildExpectationResult({
+    const result = jasmineUnderTest.buildExpectationResult({
       passed: false,
       error: fakeError,
       stackFormatter: stackFormatter
@@ -57,12 +57,12 @@ describe('buildExpectationResult', function() {
   });
 
   it('delegates stack formatting to the provided formatter if there was a provided errorForStack', function() {
-    var fakeError = { stack: 'foo' },
+    const fakeError = { stack: 'foo' },
       stackFormatter = jasmine
         .createSpy('stack formatter')
         .and.returnValue(fakeError.stack);
 
-    var result = jasmineUnderTest.buildExpectationResult({
+    const result = jasmineUnderTest.buildExpectationResult({
       passed: false,
       errorForStack: fakeError,
       stackFormatter: stackFormatter
@@ -75,21 +75,21 @@ describe('buildExpectationResult', function() {
   });
 
   it('matcherName returns passed matcherName', function() {
-    var result = jasmineUnderTest.buildExpectationResult({
+    const result = jasmineUnderTest.buildExpectationResult({
       matcherName: 'some-value'
     });
     expect(result.matcherName).toBe('some-value');
   });
 
   it('expected returns passed expected', function() {
-    var result = jasmineUnderTest.buildExpectationResult({
+    const result = jasmineUnderTest.buildExpectationResult({
       expected: 'some-value'
     });
     expect(result.expected).toBe('some-value');
   });
 
   it('actual returns passed actual', function() {
-    var result = jasmineUnderTest.buildExpectationResult({
+    const result = jasmineUnderTest.buildExpectationResult({
       actual: 'some-value'
     });
     expect(result.actual).toBe('some-value');
@@ -99,10 +99,10 @@ describe('buildExpectationResult', function() {
     if (typeof require === 'undefined') {
       return;
     }
-    var assert = require('assert');
-    var error;
-    var value = 8421;
-    var expectedValue = 'JasmineExpectationTestValue';
+    const assert = require('assert');
+    const value = 8421;
+    const expectedValue = 'JasmineExpectationTestValue';
+    let error;
     try {
       assert.equal(value, expectedValue);
     } catch (e) {
@@ -114,7 +114,7 @@ describe('buildExpectationResult', function() {
     expect(error.expected).toEqual(expectedValue);
     expect(error.operator).toEqual('==');
 
-    var result = jasmineUnderTest.buildExpectationResult({
+    const result = jasmineUnderTest.buildExpectationResult({
       passed: false,
       matcherName: '',
       expected: '',

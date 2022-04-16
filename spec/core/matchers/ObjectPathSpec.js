@@ -1,5 +1,5 @@
 describe('ObjectPath', function() {
-  var ObjectPath = jasmineUnderTest.ObjectPath;
+  const ObjectPath = jasmineUnderTest.ObjectPath;
 
   it('represents the path to a node in an object tree', function() {
     expect(new ObjectPath(['foo', 'bar']).toString()).toEqual('$.foo.bar');
@@ -34,8 +34,8 @@ describe('ObjectPath', function() {
   });
 
   it('can be created based on another path', function() {
-    var root = new ObjectPath();
-    var path = root.add('foo');
+    const root = new ObjectPath();
+    const path = root.add('foo');
 
     expect(path.toString()).toEqual('$.foo');
     expect(root.toString()).toEqual('');

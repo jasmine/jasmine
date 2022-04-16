@@ -1,5 +1,5 @@
 describe('Custom Spy Strategies (Integration)', function() {
-  var env;
+  let env;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -11,8 +11,8 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows adding more strategies local to a suite', async function() {
-    var plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
-    var strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
+    const plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
+    const strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
 
     env.describe('suite defining a custom spy strategy', function() {
       env.beforeAll(function() {
@@ -20,7 +20,7 @@ describe('Custom Spy Strategies (Integration)', function() {
       });
 
       env.it('spec in the suite', function() {
-        var spy = env.createSpy('something').and.frobnicate(17);
+        const spy = env.createSpy('something').and.frobnicate(17);
         expect(spy(1, 2, 3)).toEqual(42);
         expect(strategy).toHaveBeenCalledWith(17);
         expect(plan).toHaveBeenCalledWith(1, 2, 3);
@@ -36,12 +36,12 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows adding more strategies local to a spec', async function() {
-    var plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
-    var strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
+    const plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
+    const strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
 
     env.it('spec defining a custom spy strategy', function() {
       env.addSpyStrategy('frobnicate', strategy);
-      var spy = env.createSpy('something').and.frobnicate(17);
+      const spy = env.createSpy('something').and.frobnicate(17);
       expect(spy(1, 2, 3)).toEqual(42);
       expect(strategy).toHaveBeenCalledWith(17);
       expect(plan).toHaveBeenCalledWith(1, 2, 3);
@@ -56,12 +56,12 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows using custom strategies on a per-argument basis', async function() {
-    var plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
-    var strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
+    const plan = jasmine.createSpy('custom strategy plan').and.returnValue(42);
+    const strategy = jasmine.createSpy('custom strategy').and.returnValue(plan);
 
     env.it('spec defining a custom spy strategy', function() {
       env.addSpyStrategy('frobnicate', strategy);
-      var spy = env
+      const spy = env
         .createSpy('something')
         .and.returnValue('no args return')
         .withArgs(1, 2, 3)
@@ -82,7 +82,7 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows multiple custom strategies to be used', async function() {
-    var plan1 = jasmine.createSpy('plan 1').and.returnValue(42),
+    const plan1 = jasmine.createSpy('plan 1').and.returnValue(42),
       strategy1 = jasmine.createSpy('strat 1').and.returnValue(plan1),
       plan2 = jasmine.createSpy('plan 2').and.returnValue(24),
       strategy2 = jasmine.createSpy('strat 2').and.returnValue(plan2),
@@ -96,7 +96,7 @@ describe('Custom Spy Strategies (Integration)', function() {
     env.it('frobnicates', function() {
       plan1.calls.reset();
       plan2.calls.reset();
-      var spy = env.createSpy('spy').and.frobnicate();
+      const spy = env.createSpy('spy').and.frobnicate();
       expect(spy()).toEqual(42);
       expect(plan1).toHaveBeenCalled();
       expect(plan2).not.toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe('Custom Spy Strategies (Integration)', function() {
     env.it('jiggles', function() {
       plan1.calls.reset();
       plan2.calls.reset();
-      var spy = env.createSpy('spy').and.jiggle();
+      const spy = env.createSpy('spy').and.jiggle();
       expect(spy()).toEqual(24);
       expect(plan1).not.toHaveBeenCalled();
       expect(plan2).toHaveBeenCalled();

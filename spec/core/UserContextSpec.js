@@ -1,9 +1,9 @@
 describe('UserContext', function() {
   it('Behaves just like an plain object', function() {
-    var context = new jasmineUnderTest.UserContext(),
+    const context = new jasmineUnderTest.UserContext(),
       properties = [];
 
-    for (var prop in context) {
+    for (const prop in context) {
       if (obj.hasOwnProperty(prop)) {
         properties.push(prop);
       }

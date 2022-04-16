@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 describe('Deprecation (integration)', function() {
-  var env;
+  let env;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -11,7 +11,7 @@ describe('Deprecation (integration)', function() {
   });
 
   it('reports a deprecation on the top suite', function(done) {
-    var reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
+    const reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
     env.addReporter(reporter);
     spyOn(console, 'error');
 
@@ -38,7 +38,7 @@ describe('Deprecation (integration)', function() {
   });
 
   it('reports a deprecation on a descendent suite', function(done) {
-    var reporter = jasmine.createSpyObj('reporter', ['suiteDone']);
+    const reporter = jasmine.createSpyObj('reporter', ['suiteDone']);
     env.addReporter(reporter);
     spyOn(console, 'error');
 
@@ -69,7 +69,7 @@ describe('Deprecation (integration)', function() {
   });
 
   it('reports a deprecation on a spec', function(done) {
-    var reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
     env.addReporter(reporter);
     spyOn(console, 'error');
 
@@ -99,7 +99,7 @@ describe('Deprecation (integration)', function() {
   });
 
   it('omits the suite or spec context when ignoreRunnable is true', function(done) {
-    var reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
+    const reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
     env.addReporter(reporter);
     spyOn(console, 'error');
 
@@ -128,7 +128,7 @@ describe('Deprecation (integration)', function() {
   });
 
   it('includes the stack trace', function(done) {
-    var reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
     env.addReporter(reporter);
     spyOn(console, 'error');
 
@@ -157,7 +157,7 @@ describe('Deprecation (integration)', function() {
   });
 
   it('excludes the stack trace when omitStackTrace is true', function(done) {
-    var reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
     env.addReporter(reporter);
     spyOn(console, 'error');
 
@@ -186,7 +186,10 @@ describe('Deprecation (integration)', function() {
   });
 
   it('emits a given deprecation only once', function(done) {
-    var reporter = jasmine.createSpyObj('reporter', ['specDone', 'suiteDone']);
+    const reporter = jasmine.createSpyObj('reporter', [
+      'specDone',
+      'suiteDone'
+    ]);
     env.addReporter(reporter);
     spyOn(console, 'error');
 
@@ -239,7 +242,10 @@ describe('Deprecation (integration)', function() {
   });
 
   it('emits a given deprecation each time when config.verboseDeprecations is true', function(done) {
-    var reporter = jasmine.createSpyObj('reporter', ['specDone', 'suiteDone']);
+    const reporter = jasmine.createSpyObj('reporter', [
+      'specDone',
+      'suiteDone'
+    ]);
     env.addReporter(reporter);
     spyOn(console, 'error');
 
@@ -296,7 +302,7 @@ describe('Deprecation (integration)', function() {
   });
 
   it('handles deprecations that occur before execute() is called', function(done) {
-    var reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
+    const reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
     env.addReporter(reporter);
     spyOn(console, 'error');
 

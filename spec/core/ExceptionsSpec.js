@@ -1,5 +1,5 @@
 describe('Exceptions:', function() {
-  var env;
+  let env;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -10,7 +10,7 @@ describe('Exceptions:', function() {
   });
 
   it('should handle exceptions thrown, but continue', function(done) {
-    var secondTest = jasmine.createSpy('second test');
+    const secondTest = jasmine.createSpy('second test');
     env.describe('Suite for handles exceptions', function() {
       env.it(
         'should be a test that fails because it throws an exception',
@@ -24,7 +24,7 @@ describe('Exceptions:', function() {
       );
     });
 
-    var expectations = function() {
+    const expectations = function() {
       expect(secondTest).toHaveBeenCalled();
       done();
     };
@@ -33,7 +33,7 @@ describe('Exceptions:', function() {
   });
 
   it('should handle exceptions thrown directly in top-level describe blocks and continue', function(done) {
-    var secondDescribe = jasmine
+    const secondDescribe = jasmine
       .createSpy('second describe')
       .and.callFake(function() {
         env.it('has a test', function() {});
@@ -47,7 +47,7 @@ describe('Exceptions:', function() {
     });
     env.describe("a suite that doesn't throw an exception", secondDescribe);
 
-    var expectations = function() {
+    const expectations = function() {
       expect(secondDescribe).toHaveBeenCalled();
       done();
     };

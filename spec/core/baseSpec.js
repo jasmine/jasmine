@@ -6,9 +6,9 @@ describe('base helpers', function() {
         return;
       }
 
-      var obj = (function() {
-        var sock = new WebSocket('ws://localhost');
-        var event;
+      const obj = (function() {
+        const sock = new WebSocket('ws://localhost');
+        let event;
         sock.onerror = function(e) {
           event = e;
         };
@@ -16,11 +16,11 @@ describe('base helpers', function() {
           return event;
         };
       })();
-      var left = 20;
+      let left = 20;
 
-      var int = setInterval(function() {
+      const int = setInterval(function() {
         if (obj() || left === 0) {
-          var result = jasmineUnderTest.isError_(obj());
+          const result = jasmineUnderTest.isError_(obj());
           expect(result).toBe(false);
           clearInterval(int);
           done();
@@ -41,18 +41,16 @@ describe('base helpers', function() {
     });
 
     it('returns true for an Error that originated from another frame', function() {
-      var iframe, error;
-
       if (typeof window === 'undefined') {
         pending('This test only runs in browsers.');
       }
 
-      iframe = document.createElement('iframe');
+      const iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       document.body.appendChild(iframe);
 
       try {
-        error = iframe.contentWindow.eval('new Error()');
+        const error = iframe.contentWindow.eval('new Error()');
         expect(jasmineUnderTest.isError_(error)).toBe(true);
       } finally {
         document.body.removeChild(iframe);
@@ -74,17 +72,17 @@ describe('base helpers', function() {
     });
 
     it('returns false when the argument does not have a asymmetricMatch property', function() {
-      var obj = {};
+      const obj = {};
       expect(jasmineUnderTest.isAsymmetricEqualityTester_(obj)).toBe(false);
     });
 
     it("returns false when the argument's asymmetricMatch is not a function", function() {
-      var obj = { asymmetricMatch: 'yes' };
+      const obj = { asymmetricMatch: 'yes' };
       expect(jasmineUnderTest.isAsymmetricEqualityTester_(obj)).toBe(false);
     });
 
     it("returns true when the argument's asymmetricMatch is a function", function() {
-      var obj = { asymmetricMatch: function() {} };
+      const obj = { asymmetricMatch: function() {} };
       expect(jasmineUnderTest.isAsymmetricEqualityTester_(obj)).toBe(true);
     });
   });
@@ -133,21 +131,21 @@ describe('base helpers', function() {
 
   describe('isPending_', function() {
     it('returns a promise that resolves to true when the promise is pending', function() {
-      var promise = new Promise(function() {});
+      const promise = new Promise(function() {});
       return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
         true
       );
     });
 
     it('returns a promise that resolves to false when the promise is resolved', function() {
-      var promise = Promise.resolve();
+      const promise = Promise.resolve();
       return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
         false
       );
     });
 
     it('returns a promise that resolves to false when the promise is rejected', function() {
-      var promise = Promise.reject();
+      const promise = Promise.reject();
       return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
         false
       );
@@ -155,7 +153,7 @@ describe('base helpers', function() {
   });
 
   describe('DEFAULT_TIMEOUT_INTERVAL setter', function() {
-    var max = 2147483647;
+    const max = 2147483647;
 
     beforeEach(function() {
       this.initialValue = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
@@ -177,14 +175,13 @@ describe('base helpers', function() {
     });
 
     it('is consistent with setTimeout in this environment', function(done) {
-      var f1 = jasmine.createSpy('setTimeout callback for ' + max),
-        f2 = jasmine.createSpy('setTimeout callback for ' + (max + 1)),
-        id;
+      const f1 = jasmine.createSpy('setTimeout callback for ' + max),
+        f2 = jasmine.createSpy('setTimeout callback for ' + (max + 1));
 
       // Suppress printing of TimeoutOverflowWarning in node
       spyOn(console, 'error');
 
-      id = setTimeout(f1, max);
+      let id = setTimeout(f1, max);
       setTimeout(function() {
         clearTimeout(id);
         expect(f1).not.toHaveBeenCalled();

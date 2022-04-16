@@ -5,7 +5,7 @@ describe('SpyRegistry', function() {
 
   describe('#spyOn', function() {
     it('checks for the existence of the object', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry({
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
         createSpy: createSpy
       });
       expect(function() {
@@ -14,7 +14,7 @@ describe('SpyRegistry', function() {
     });
 
     it('checks that a method name was passed', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      const spyRegistry = new jasmineUnderTest.SpyRegistry(),
         subject = {};
 
       expect(function() {
@@ -23,14 +23,14 @@ describe('SpyRegistry', function() {
     });
 
     it('checks that the object is not `null`', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry();
+      const spyRegistry = new jasmineUnderTest.SpyRegistry();
       expect(function() {
         spyRegistry.spyOn(null, 'pants');
       }).toThrowError(/could not find an object/);
     });
 
     it('checks that the method name is not `null`', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      const spyRegistry = new jasmineUnderTest.SpyRegistry(),
         subject = {};
 
       expect(function() {
@@ -39,7 +39,7 @@ describe('SpyRegistry', function() {
     });
 
     it('checks for the existence of the method', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      const spyRegistry = new jasmineUnderTest.SpyRegistry(),
         subject = {};
 
       expect(function() {
@@ -48,7 +48,7 @@ describe('SpyRegistry', function() {
     });
 
     it('checks if it has already been spied upon', function() {
-      var spies = [],
+      const spies = [],
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           currentSpies: function() {
             return spies;
@@ -65,7 +65,7 @@ describe('SpyRegistry', function() {
     });
 
     it('checks if it can be spied upon', function() {
-      var scope = {};
+      const scope = {};
 
       function myFunc() {
         return 1;
@@ -77,7 +77,7 @@ describe('SpyRegistry', function() {
         }
       });
 
-      var spies = [],
+      const spies = [],
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           currentSpies: function() {
             return spies;
@@ -95,7 +95,7 @@ describe('SpyRegistry', function() {
     });
 
     it('overrides the method on the object and returns the spy', function() {
-      var originalFunctionWasCalled = false,
+      const originalFunctionWasCalled = false,
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           createSpy: createSpy
         }),
@@ -105,7 +105,7 @@ describe('SpyRegistry', function() {
           }
         };
 
-      var spy = spyRegistry.spyOn(subject, 'spiedFunc');
+      const spy = spyRegistry.spyOn(subject, 'spiedFunc');
 
       expect(subject.spiedFunc).toEqual(spy);
       subject.spiedFunc();
@@ -115,14 +115,14 @@ describe('SpyRegistry', function() {
 
   describe('#spyOnProperty', function() {
     it('checks for the existence of the object', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry();
+      const spyRegistry = new jasmineUnderTest.SpyRegistry();
       expect(function() {
         spyRegistry.spyOnProperty(void 0, 'pants');
       }).toThrowError(/could not find an object/);
     });
 
     it('checks that a property name was passed', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      const spyRegistry = new jasmineUnderTest.SpyRegistry(),
         subject = {};
 
       expect(function() {
@@ -131,7 +131,7 @@ describe('SpyRegistry', function() {
     });
 
     it('checks for the existence of the method', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      const spyRegistry = new jasmineUnderTest.SpyRegistry(),
         subject = {};
 
       expect(function() {
@@ -140,7 +140,7 @@ describe('SpyRegistry', function() {
     });
 
     it('checks for the existence of access type', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry(),
+      const spyRegistry = new jasmineUnderTest.SpyRegistry(),
         subject = {};
 
       Object.defineProperty(subject, 'pants', {
@@ -156,7 +156,7 @@ describe('SpyRegistry', function() {
     });
 
     it('checks if it can be spied upon', function() {
-      var subject = {};
+      const subject = {};
 
       Object.defineProperty(subject, 'myProp', {
         get: function() {}
@@ -167,7 +167,7 @@ describe('SpyRegistry', function() {
         configurable: true
       });
 
-      var spyRegistry = new jasmineUnderTest.SpyRegistry();
+      const spyRegistry = new jasmineUnderTest.SpyRegistry();
 
       expect(function() {
         spyRegistry.spyOnProperty(subject, 'myProp');
@@ -179,7 +179,7 @@ describe('SpyRegistry', function() {
     });
 
     it('overrides the property getter on the object and returns the spy', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry({
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
           createSpy: createSpy
         }),
         subject = {},
@@ -194,8 +194,8 @@ describe('SpyRegistry', function() {
 
       expect(subject.spiedProperty).toEqual(returnValue);
 
-      var spy = spyRegistry.spyOnProperty(subject, 'spiedProperty');
-      var getter = Object.getOwnPropertyDescriptor(subject, 'spiedProperty')
+      const spy = spyRegistry.spyOnProperty(subject, 'spiedProperty');
+      const getter = Object.getOwnPropertyDescriptor(subject, 'spiedProperty')
         .get;
 
       expect(getter).toEqual(spy);
@@ -203,7 +203,7 @@ describe('SpyRegistry', function() {
     });
 
     it('overrides the property setter on the object and returns the spy', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry({
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
           createSpy: createSpy
         }),
         subject = {},
@@ -217,8 +217,8 @@ describe('SpyRegistry', function() {
         configurable: true
       });
 
-      var spy = spyRegistry.spyOnProperty(subject, 'spiedProperty', 'set');
-      var setter = Object.getOwnPropertyDescriptor(subject, 'spiedProperty')
+      const spy = spyRegistry.spyOnProperty(subject, 'spiedProperty', 'set');
+      const setter = Object.getOwnPropertyDescriptor(subject, 'spiedProperty')
         .set;
 
       expect(subject.spiedProperty).toEqual(returnValue);
@@ -227,7 +227,7 @@ describe('SpyRegistry', function() {
 
     describe('when the property is already spied upon', function() {
       it('throws an error if respy is not allowed', function() {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+        const spyRegistry = new jasmineUnderTest.SpyRegistry({
             createSpy: createSpy
           }),
           subject = {};
@@ -247,7 +247,7 @@ describe('SpyRegistry', function() {
       });
 
       it('returns the original spy if respy is allowed', function() {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+        const spyRegistry = new jasmineUnderTest.SpyRegistry({
             createSpy: createSpy
           }),
           subject = {};
@@ -261,7 +261,7 @@ describe('SpyRegistry', function() {
           configurable: true
         });
 
-        var originalSpy = spyRegistry.spyOnProperty(subject, 'spiedProp');
+        const originalSpy = spyRegistry.spyOnProperty(subject, 'spiedProp');
 
         expect(spyRegistry.spyOnProperty(subject, 'spiedProp')).toBe(
           originalSpy
@@ -272,33 +272,33 @@ describe('SpyRegistry', function() {
 
   describe('#spyOnAllFunctions', function() {
     it('checks for the existence of the object', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry();
+      const spyRegistry = new jasmineUnderTest.SpyRegistry();
       expect(function() {
         spyRegistry.spyOnAllFunctions(void 0);
       }).toThrowError(/spyOnAllFunctions could not find an object to spy upon/);
     });
 
     it('overrides all writable and configurable functions of the object and its parents', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry({
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
         createSpy: function() {
           return 'I am a spy';
         }
       });
-      var createNoop = function() {
+      const createNoop = function() {
         return function() {
           /**/
         };
       };
-      var noop1 = createNoop();
-      var noop2 = createNoop();
-      var noop3 = createNoop();
-      var noop4 = createNoop();
-      var noop5 = createNoop();
+      const noop1 = createNoop();
+      const noop2 = createNoop();
+      const noop3 = createNoop();
+      const noop4 = createNoop();
+      const noop5 = createNoop();
 
-      var parent = {
+      const parent = {
         parentSpied1: noop1
       };
-      var subject = Object.create(parent);
+      const subject = Object.create(parent);
       Object.defineProperty(subject, 'spied1', {
         value: noop1,
         writable: true,
@@ -311,7 +311,7 @@ describe('SpyRegistry', function() {
         configurable: true,
         enumerable: true
       });
-      var _spied3 = noop3;
+      let _spied3 = noop3;
       Object.defineProperty(subject, 'spied3', {
         configurable: true,
         set: function(val) {
@@ -353,7 +353,7 @@ describe('SpyRegistry', function() {
       });
       subject.notSpied6 = 6;
 
-      var spiedObject = spyRegistry.spyOnAllFunctions(subject);
+      const spiedObject = spyRegistry.spyOnAllFunctions(subject);
 
       expect(subject.parentSpied1).toBe('I am a spy');
       expect(subject.notSpied2).toBe(noop2);
@@ -369,21 +369,21 @@ describe('SpyRegistry', function() {
     });
 
     it('overrides prototype methods on the object', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry({
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
         createSpy: function() {
           return 'I am a spy';
         }
       });
 
-      var noop1 = function() {};
-      var noop2 = function() {};
+      const noop1 = function() {};
+      const noop2 = function() {};
 
-      var MyClass = function() {
+      const MyClass = function() {
         this.spied1 = noop1;
       };
       MyClass.prototype.spied2 = noop2;
 
-      var subject = new MyClass();
+      const subject = new MyClass();
       spyRegistry.spyOnAllFunctions(subject);
 
       expect(subject.spied1).toBe('I am a spy');
@@ -392,12 +392,12 @@ describe('SpyRegistry', function() {
     });
 
     it('does not override non-enumerable properties (like Object.prototype methods)', function() {
-      var spyRegistry = new jasmineUnderTest.SpyRegistry({
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
         createSpy: function() {
           return 'I am a spy';
         }
       });
-      var subject = {
+      const subject = {
         spied1: function() {}
       };
 
@@ -409,12 +409,12 @@ describe('SpyRegistry', function() {
     });
     describe('when includeNonEnumerable is true', function() {
       it('does not override Object.prototype methods', function() {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+        const spyRegistry = new jasmineUnderTest.SpyRegistry({
           createSpy: function() {
             return 'I am a spy';
           }
         });
-        var subject = {
+        const subject = {
           spied1: function() {}
         };
 
@@ -426,12 +426,12 @@ describe('SpyRegistry', function() {
       });
 
       it('overrides non-enumerable properties', function() {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+        const spyRegistry = new jasmineUnderTest.SpyRegistry({
           createSpy: function() {
             return 'I am a spy';
           }
         });
-        var subject = {
+        const subject = {
           spied1: function() {},
           spied2: function() {}
         };
@@ -449,12 +449,12 @@ describe('SpyRegistry', function() {
       });
 
       it('should not spy on non-enumerable functions named constructor', function() {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+        const spyRegistry = new jasmineUnderTest.SpyRegistry({
           createSpy: function() {
             return 'I am a spy';
           }
         });
-        var subject = {
+        const subject = {
           constructor: function() {}
         };
 
@@ -470,12 +470,12 @@ describe('SpyRegistry', function() {
       });
 
       it('should spy on enumerable functions named constructor', function() {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+        const spyRegistry = new jasmineUnderTest.SpyRegistry({
           createSpy: function() {
             return 'I am a spy';
           }
         });
-        var subject = {
+        const subject = {
           constructor: function() {}
         };
 
@@ -485,13 +485,13 @@ describe('SpyRegistry', function() {
       });
 
       it('should not throw an exception if we try and access strict mode restricted properties', function() {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+        const spyRegistry = new jasmineUnderTest.SpyRegistry({
           createSpy: function() {
             return 'I am a spy';
           }
         });
-        var subject = function() {};
-        var fn = function() {
+        const subject = function() {};
+        const fn = function() {
           spyRegistry.spyOnAllFunctions(subject, true);
         };
 
@@ -499,24 +499,24 @@ describe('SpyRegistry', function() {
       });
 
       it('should not spy on properties which are more permissable further up the prototype chain', function() {
-        var spyRegistry = new jasmineUnderTest.SpyRegistry({
+        const spyRegistry = new jasmineUnderTest.SpyRegistry({
           createSpy: function() {
             return 'I am a spy';
           }
         });
-        var subjectParent = Object.defineProperty({}, 'sharedProp', {
+        const subjectParent = Object.defineProperty({}, 'sharedProp', {
           value: function() {},
           writable: true,
           configurable: true
         });
 
-        var subject = Object.create(subjectParent);
+        const subject = Object.create(subjectParent);
 
         Object.defineProperty(subject, 'sharedProp', {
           value: function() {}
         });
 
-        var fn = function() {
+        const fn = function() {
           spyRegistry.spyOnAllFunctions(subject, true);
         };
 
@@ -528,7 +528,7 @@ describe('SpyRegistry', function() {
 
   describe('#clearSpies', function() {
     it('restores the original functions on the spied-upon objects', function() {
-      var spies = [],
+      const spies = [],
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           currentSpies: function() {
             return spies;
@@ -545,7 +545,7 @@ describe('SpyRegistry', function() {
     });
 
     it('restores the original functions, even when that spy has been replace and re-spied upon', function() {
-      var spies = [],
+      const spies = [],
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           currentSpies: function() {
             return spies;
@@ -569,7 +569,7 @@ describe('SpyRegistry', function() {
     });
 
     it("does not add a property that the spied-upon object didn't originally have", function() {
-      var spies = [],
+      const spies = [],
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           currentSpies: function() {
             return spies;
@@ -579,7 +579,7 @@ describe('SpyRegistry', function() {
         originalFunction = function() {},
         subjectParent = { spiedFunc: originalFunction };
 
-      var subject = Object.create(subjectParent);
+      const subject = Object.create(subjectParent);
 
       expect(subject.hasOwnProperty('spiedFunc')).toBe(false);
 
@@ -591,7 +591,7 @@ describe('SpyRegistry', function() {
     });
 
     it("restores the original function when it's inherited and cannot be deleted", function() {
-      var spies = [],
+      const spies = [],
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           currentSpies: function() {
             return spies;
@@ -601,7 +601,7 @@ describe('SpyRegistry', function() {
         originalFunction = function() {},
         subjectParent = { spiedFunc: originalFunction };
 
-      var subject = Object.create(subjectParent);
+      const subject = Object.create(subjectParent);
 
       spyRegistry.spyOn(subject, 'spiedFunc');
 
@@ -619,7 +619,7 @@ describe('SpyRegistry', function() {
       function FakeWindow() {}
       FakeWindow.prototype.onerror = function() {};
 
-      var spies = [],
+      const spies = [],
         global = new FakeWindow(),
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           currentSpies: function() {
@@ -638,7 +638,7 @@ describe('SpyRegistry', function() {
 
   describe('spying on properties', function() {
     it('restores the original properties on the spied-upon objects', function() {
-      var spies = [],
+      const spies = [],
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           currentSpies: function() {
             return spies;
@@ -662,7 +662,7 @@ describe('SpyRegistry', function() {
     });
 
     it("does not add a property that the spied-upon object didn't originally have", function() {
-      var spies = [],
+      const spies = [],
         spyRegistry = new jasmineUnderTest.SpyRegistry({
           currentSpies: function() {
             return spies;
@@ -679,7 +679,7 @@ describe('SpyRegistry', function() {
         configurable: true
       });
 
-      var subject = Object.create(subjectParent);
+      const subject = Object.create(subjectParent);
 
       expect(subject.hasOwnProperty('spiedProp')).toBe(false);
 

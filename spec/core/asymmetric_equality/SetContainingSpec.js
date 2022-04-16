@@ -1,66 +1,66 @@
 describe('SetContaining', function() {
   it('matches any actual set to an empty set', function() {
-    var actualSet = new Set(['foo', 'bar']);
-    var containing = new jasmineUnderTest.SetContaining(new Set());
+    const actualSet = new Set(['foo', 'bar']);
+    const containing = new jasmineUnderTest.SetContaining(new Set());
 
     expect(containing.asymmetricMatch(actualSet)).toBe(true);
   });
 
   it('matches when all the values in sample have matches in actual', function() {
-    var actualSet = new Set([{ foo: 'bar' }, 'baz', [1, 2, 3]]);
+    const actualSet = new Set([{ foo: 'bar' }, 'baz', [1, 2, 3]]);
 
-    var containingSet = new Set([[1, 2, 3], { foo: 'bar' }]);
-    var containing = new jasmineUnderTest.SetContaining(containingSet);
-    var matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containingSet = new Set([[1, 2, 3], { foo: 'bar' }]);
+    const containing = new jasmineUnderTest.SetContaining(containingSet);
+    const matchersUtil = new jasmineUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualSet, matchersUtil)).toBe(true);
   });
 
   it('does not match when a value is not in actual', function() {
-    var actualSet = new Set([{ foo: 'bar' }, 'baz', [1, 2, 3]]);
+    const actualSet = new Set([{ foo: 'bar' }, 'baz', [1, 2, 3]]);
 
-    var containingSet = new Set([[1, 2], { foo: 'bar' }]);
-    var containing = new jasmineUnderTest.SetContaining(containingSet);
-    var matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containingSet = new Set([[1, 2], { foo: 'bar' }]);
+    const containing = new jasmineUnderTest.SetContaining(containingSet);
+    const matchersUtil = new jasmineUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualSet, matchersUtil)).toBe(false);
   });
 
   it('matches when all the values in sample have asymmetric matches in actual', function() {
-    var actualSet = new Set([[1, 2, 3, 4], 'other', 'foo1']);
+    const actualSet = new Set([[1, 2, 3, 4], 'other', 'foo1']);
 
-    var containingSet = new Set([
+    const containingSet = new Set([
       jasmineUnderTest.stringMatching(/^foo\d/),
       jasmineUnderTest.arrayContaining([2, 3])
     ]);
-    var containing = new jasmineUnderTest.SetContaining(containingSet);
-    var matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containing = new jasmineUnderTest.SetContaining(containingSet);
+    const matchersUtil = new jasmineUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualSet, matchersUtil)).toBe(true);
   });
 
   it('does not match when a value in sample has no asymmetric matches in actual', function() {
-    var actualSet = new Set(['a-foo1', [1, 2, 3, 4], 'other']);
+    const actualSet = new Set(['a-foo1', [1, 2, 3, 4], 'other']);
 
-    var containingSet = new Set([
+    const containingSet = new Set([
       jasmine.stringMatching(/^foo\d/),
       jasmine.arrayContaining([2, 3])
     ]);
-    var containing = new jasmineUnderTest.SetContaining(containingSet);
-    var matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containing = new jasmineUnderTest.SetContaining(containingSet);
+    const matchersUtil = new jasmineUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualSet, matchersUtil)).toBe(false);
   });
 
   it('matches recursively', function() {
-    var actualSet = new Set(['foo', new Set([1, 'bar', 2]), 'other']);
+    const actualSet = new Set(['foo', new Set([1, 'bar', 2]), 'other']);
 
-    var containingSet = new Set([
+    const containingSet = new Set([
       new jasmineUnderTest.SetContaining(new Set(['bar'])),
       'foo'
     ]);
-    var containing = new jasmineUnderTest.SetContaining(containingSet);
-    var matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containing = new jasmineUnderTest.SetContaining(containingSet);
+    const matchersUtil = new jasmineUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualSet, matchersUtil)).toBe(true);
   });
@@ -72,9 +72,9 @@ describe('SetContaining', function() {
         ? a < 0 && b < 0
         : a === b;
     }
-    var actualSet = new Set(['foo', -1]);
-    var containing = new jasmineUnderTest.SetContaining(new Set([-2, 'foo']));
-    var matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const actualSet = new Set(['foo', -1]);
+    const containing = new jasmineUnderTest.SetContaining(new Set([-2, 'foo']));
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
       customTesters: [tester]
     });
 
@@ -82,7 +82,7 @@ describe('SetContaining', function() {
   });
 
   it('does not match when actual is not a set', function() {
-    var containingSet = new Set(['foo']);
+    const containingSet = new Set(['foo']);
     expect(
       new jasmineUnderTest.SetContaining(containingSet).asymmetricMatch('foo')
     ).toBe(false);
@@ -103,7 +103,7 @@ describe('SetContaining', function() {
   });
 
   it('defines a `jasmineToString` method', function() {
-    var sample = new Set(),
+    const sample = new Set(),
       containing = new jasmineUnderTest.SetContaining(sample),
       pp = jasmine.createSpy('pp').and.returnValue('sample');
 

@@ -1,5 +1,5 @@
 describe('Custom object formatters', function() {
-  var env;
+  let env;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -18,11 +18,11 @@ describe('Custom object formatters', function() {
       env.expect(42).toBeUndefined();
     });
 
-    var specResults = [];
-    var specDone = function(result) {
+    const specResults = [];
+    const specDone = function(result) {
       specResults.push(result);
     };
-    var expectations = function() {
+    const expectations = function() {
       expect(specResults[0].failedExpectations[0].message).toEqual(
         'Expected custom(42) to be undefined.'
       );
@@ -53,11 +53,11 @@ describe('Custom object formatters', function() {
       });
     });
 
-    var specResults = [];
-    var specDone = function(result) {
+    const specResults = [];
+    const specDone = function(result) {
       specResults.push(result);
     };
-    var expectations = function() {
+    const expectations = function() {
       expect(specResults[0].failedExpectations[0].message).toEqual(
         'Expected 42 to be undefined.'
       );

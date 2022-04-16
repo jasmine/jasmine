@@ -1,5 +1,5 @@
 describe('Default Spy Strategy (Integration)', function() {
-  var env;
+  let env;
 
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -19,13 +19,13 @@ describe('Default Spy Strategy (Integration)', function() {
       });
 
       env.it('spec in suite', function() {
-        var spy = env.createSpy('something');
+        const spy = env.createSpy('something');
         expect(spy()).toBe(42);
       });
     });
 
     env.it('spec not in suite', function() {
-      var spy = env.createSpy('something');
+      const spy = env.createSpy('something');
       expect(spy()).toBeUndefined();
     });
 
@@ -35,17 +35,17 @@ describe('Default Spy Strategy (Integration)', function() {
 
   it('uses the default spy strategy defined when the spy is created', async function() {
     env.it('spec', function() {
-      var a = env.createSpy('a');
+      const a = env.createSpy('a');
       env.setDefaultSpyStrategy(function(and) {
         and.returnValue(42);
       });
-      var b = env.createSpy('b');
+      const b = env.createSpy('b');
       env.setDefaultSpyStrategy(function(and) {
         and.stub();
       });
-      var c = env.createSpy('c');
+      const c = env.createSpy('c');
       env.setDefaultSpyStrategy();
-      var d = env.createSpy('d');
+      const d = env.createSpy('d');
 
       expect(a()).toBeUndefined();
       expect(b()).toBe(42);

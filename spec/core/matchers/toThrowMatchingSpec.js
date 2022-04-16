@@ -1,6 +1,6 @@
 describe('toThrowMatching', function() {
   it('throws an error when the actual is not a function', function() {
-    var matcher = jasmineUnderTest.matchers.toThrowMatching();
+    const matcher = jasmineUnderTest.matchers.toThrowMatching();
 
     expect(function() {
       matcher.compare({}, function() {
@@ -10,7 +10,7 @@ describe('toThrowMatching', function() {
   });
 
   it('throws an error when the expected is not a function', function() {
-    var matcher = jasmineUnderTest.matchers.toThrowMatching(),
+    const matcher = jasmineUnderTest.matchers.toThrowMatching(),
       fn = function() {
         throw new Error('foo');
       };
@@ -21,13 +21,12 @@ describe('toThrowMatching', function() {
   });
 
   it('fails if actual does not throw at all', function() {
-    var matcher = jasmineUnderTest.matchers.toThrowMatching(),
+    const matcher = jasmineUnderTest.matchers.toThrowMatching(),
       fn = function() {
         return true;
-      },
-      result;
+      };
 
-    result = matcher.compare(fn, function() {
+    const result = matcher.compare(fn, function() {
       return true;
     });
 
@@ -36,15 +35,14 @@ describe('toThrowMatching', function() {
   });
 
   it('fails with the correct message if thrown is a falsy value', function() {
-    var matcher = jasmineUnderTest.matchers.toThrowMatching({
+    const matcher = jasmineUnderTest.matchers.toThrowMatching({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       fn = function() {
         throw undefined;
-      },
-      result;
+      };
 
-    result = matcher.compare(fn, function() {
+    const result = matcher.compare(fn, function() {
       return false;
     });
     expect(result.pass).toBe(false);
@@ -54,16 +52,15 @@ describe('toThrowMatching', function() {
   });
 
   it('passes if the argument is a function that returns true when called with the error', function() {
-    var matcher = jasmineUnderTest.matchers.toThrowMatching(),
+    const matcher = jasmineUnderTest.matchers.toThrowMatching(),
       predicate = function(e) {
         return e.message === 'nope';
       },
       fn = function() {
         throw new TypeError('nope');
-      },
-      result;
+      };
 
-    result = matcher.compare(fn, predicate);
+    const result = matcher.compare(fn, predicate);
 
     expect(result.pass).toBe(true);
     expect(result.message).toEqual(
@@ -72,7 +69,7 @@ describe('toThrowMatching', function() {
   });
 
   it('fails if the argument is a function that returns false when called with the error', function() {
-    var matcher = jasmineUnderTest.matchers.toThrowMatching({
+    const matcher = jasmineUnderTest.matchers.toThrowMatching({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       predicate = function(e) {
@@ -80,10 +77,9 @@ describe('toThrowMatching', function() {
       },
       fn = function() {
         throw new TypeError('nope');
-      },
-      result;
+      };
 
-    result = matcher.compare(fn, predicate);
+    const result = matcher.compare(fn, predicate);
 
     expect(result.pass).toBe(false);
     expect(result.message()).toEqual(
