@@ -4,9 +4,13 @@
 version: 2.1
 
 executors:
+  node18:
+    docker:
+      - image: cimg/node:18.0.0 # Latest 18.x
+    working_directory: ~/workspace
   node16:
     docker:
-      - image: cimg/node:16.14.0 # Latest 16.x
+      - image: cimg/node:16.14.2 # Latest 16.x
     working_directory: ~/workspace
   node14:
     docker:
@@ -91,6 +95,9 @@ workflows:
   push:
     jobs:
       - build:
+          executor: node18
+          name: build_node_18
+      - build:
           executor: node16
           name: build_node_16
       - build:
@@ -102,6 +109,11 @@ workflows:
       - build:
           executor: node12_17
           name: build_node_12_17
+      - test_node:
+          executor: node18
+          name: test_node_18
+          requires:
+             - build_node_18
       - test_node:
           executor: node16
           name: test_node_16
