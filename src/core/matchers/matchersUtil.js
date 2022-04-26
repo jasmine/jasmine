@@ -532,8 +532,15 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
           keys.push(key);
         }
       }
-      // eslint-disable-next-line compat/compat
-      return keys.concat(Object.getOwnPropertySymbols(o));
+
+      var symbols = Object.getOwnPropertySymbols(o);
+      for (var i = 0; i < symbols.length; i++) {
+        if (o.propertyIsEnumerable(symbols[i])) {
+          keys.push(symbols[i]);
+        }
+      }
+
+      return keys;
     })(obj);
 
     if (!isArray) {
