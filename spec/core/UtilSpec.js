@@ -183,66 +183,6 @@ describe('util', function() {
     });
   });
 
-  describe('objectDifference', function() {
-    it('given two objects A and B, returns the properties in A not present in B', function() {
-      const a = {
-        foo: 3,
-        bar: 4,
-        baz: 5
-      };
-
-      const b = {
-        bar: 6,
-        quux: 7
-      };
-
-      expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual([
-        ['foo', 3],
-        ['baz', 5]
-      ]);
-    });
-
-    it('includes Symbol keys', function() {
-      const missing = Symbol('missing');
-      const both = Symbol('both');
-      const symbolDuplicated1 = Symbol('symbolDuplicated');
-      const symbolDuplicated2 = Symbol('symbolDuplicated');
-      const added = Symbol('added');
-      const a = {
-        [missing]: 1,
-        [both]: 2,
-        [symbolDuplicated1]: 3
-      };
-
-      const b = {
-        [both]: 'anything',
-        [symbolDuplicated2]: 4,
-        [added]: 5
-      };
-
-      expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual([
-        [missing, 1],
-        [symbolDuplicated1, 3]
-      ]);
-    });
-
-    it('only looks at own properties of both objects', function() {
-      function Foo() {}
-
-      Foo.prototype.x = 1;
-      Foo.prototype.y = 2;
-
-      const a = new Foo();
-      a.x = 1;
-
-      const b = new Foo();
-      b.y = 2;
-
-      expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual([['x', 1]]);
-      expect(jasmineUnderTest.util.objectDifference(b, a)).toEqual([['y', 2]]);
-    });
-  });
-
   describe('jasmineFile', function() {
     it('returns the file containing jasmine.util', function() {
       // Chrome sometimes reports foo.js as foo.js/, so tolerate

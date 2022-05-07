@@ -558,9 +558,17 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     return typeof obj === 'function';
   }
 
+  // Returns an array of [k, v] pairs for eacch property that's in objA
+  // and not in objB.
+  function extraKeysAndValues(objA, objB) {
+    return MatchersUtil.keys(objA)
+      .filter(key => !j$.util.has(objB, key))
+      .map(key => [key, objA[key]]);
+  }
+
   function objectKeysAreDifferentFormatter(pp, actual, expected, path) {
-    var missingProperties = j$.util.objectDifference(expected, actual),
-      extraProperties = j$.util.objectDifference(actual, expected),
+    var missingProperties = extraKeysAndValues(expected, actual),
+      extraProperties = extraKeysAndValues(actual, expected),
       missingPropertiesMessage = formatKeyValuePairs(pp, missingProperties),
       extraPropertiesMessage = formatKeyValuePairs(pp, extraProperties),
       messages = [];

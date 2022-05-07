@@ -75,12 +75,6 @@ getJasmineRequireObj().util = function(j$) {
     return descriptor;
   };
 
-  util.objectDifference = function(obj, toRemove) {
-    return j$.MatchersUtil.keys(obj)
-      .filter(key => !util.has(toRemove, key))
-      .map(key => [key, obj[key]]);
-  };
-
   util.has = function(obj, key) {
     return Object.prototype.hasOwnProperty.call(obj, key);
   };
