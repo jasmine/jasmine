@@ -106,7 +106,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   };
 
   SinglePrettyPrintRun.prototype.iterateObject = function(obj, fn) {
-    var objKeys = keys(obj, j$.isArray_(obj));
+    var objKeys = j$.MatchersUtil.keys(obj, j$.isArray_(obj));
     var isGetter = function isGetter(prop) {};
 
     if (obj.__lookupGetter__) {
@@ -301,8 +301,14 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     property,
     isGetter
   ) {
-    this.append(property);
+    if (typeof property === 'symbol') {
+      this.append(property.toString());
+    } else {
+      this.append(property);
+    }
+
     this.append(': ');
+
     if (isGetter) {
       this.append('<getter>');
     } else {
@@ -343,37 +349,6 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   }
 
   MaxCharsReachedError.prototype = new Error();
-
-  function keys(obj, isArray) {
-    var allKeys = Object.keys
-      ? Object.keys(obj)
-      : (function(o) {
-          var keys = [];
-          for (var key in o) {
-            if (j$.util.has(o, key)) {
-              keys.push(key);
-            }
-          }
-          return keys;
-        })(obj);
-
-    if (!isArray) {
-      return allKeys;
-    }
-
-    if (allKeys.length === 0) {
-      return allKeys;
-    }
-
-    var extraKeys = [];
-    for (var i = 0; i < allKeys.length; i++) {
-      if (!/^[0-9]+$/.test(allKeys[i])) {
-        extraKeys.push(allKeys[i]);
-      }
-    }
-
-    return extraKeys;
-  }
 
   function customFormat(value, customObjectFormatters) {
     var i, result;

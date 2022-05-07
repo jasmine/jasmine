@@ -84,6 +84,11 @@ describe('PrettyPrinter', function() {
       );
     });
 
+    it('includes symbols', function() {
+      const pp = jasmineUnderTest.makePrettyPrinter();
+      expect(pp([1, Symbol('foo'), 2])).toEqual('[ 1, Symbol(foo), 2 ]');
+    });
+
     it('should truncate arrays that are longer than jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH', function() {
       const originalMaxLength = jasmineUnderTest.MAX_PRETTY_PRINT_ARRAY_LENGTH;
       const array = [1, 2, 3];
@@ -161,6 +166,25 @@ describe('PrettyPrinter', function() {
     expect(pp({ foo: function() {}, bar: [1, 2, 3] })).toEqual(
       'Object({ foo: Function, bar: [ 1, 2, 3 ] })'
     );
+  });
+
+  it('includes symbol keys in objects', function() {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const obj = {};
+    obj[Symbol('foo')] = 'bar';
+    expect(pp(obj)).toEqual("Object({ Symbol(foo): 'bar' })");
+  });
+
+  it('stringifies string and symbol keys differently', function() {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    const symObj = {};
+    const strObj = {};
+    const k = 'foo';
+    const v = 'bar';
+    symObj[Symbol(k)] = v;
+    strObj[k] = v;
+
+    expect(pp(symObj)).not.toEqual(pp(strObj));
   });
 
   it('should stringify objects that almost look like DOM nodes', function() {

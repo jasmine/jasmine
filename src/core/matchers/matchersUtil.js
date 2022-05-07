@@ -483,12 +483,12 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     }
 
     // Deep compare objects.
-    var aKeys = keys(a, className == '[object Array]'),
+    var aKeys = MatchersUtil.keys(a, className == '[object Array]'),
       key;
     size = aKeys.length;
 
     // Ensure that both objects contain the same number of properties before comparing deep equality.
-    if (keys(b, className == '[object Array]').length !== size) {
+    if (MatchersUtil.keys(b, className == '[object Array]').length !== size) {
       diffBuilder.recordMismatch(
         objectKeysAreDifferentFormatter.bind(null, this.pp)
       );
@@ -524,7 +524,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     return result;
   };
 
-  function keys(obj, isArray) {
+  MatchersUtil.keys = function(obj, isArray) {
     var allKeys = (function(o) {
       var keys = [];
       for (var key in o) {
@@ -552,7 +552,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     }
 
     return extraKeys;
-  }
+  };
 
   function isFunction(obj) {
     return typeof obj === 'function';
