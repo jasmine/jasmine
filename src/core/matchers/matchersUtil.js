@@ -610,11 +610,13 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     );
   }
 
-  function formatKeyValuePairs(pp, obj) {
-    var formatted = '';
-    for (var key in obj) {
-      formatted += '\n    ' + key + ': ' + pp(obj[key]);
+  function formatKeyValuePairs(pp, keyValuePairs) {
+    let formatted = '';
+
+    for (const [key, value] of keyValuePairs) {
+      formatted += '\n    ' + key.toString() + ': ' + pp(value);
     }
+
     return formatted;
   }
 

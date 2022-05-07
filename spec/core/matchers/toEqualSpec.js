@@ -51,6 +51,15 @@ describe('toEqual', function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
+  it('reports differences between symbol properties', function() {
+    const x = Symbol('x'),
+      actual = { [x]: 1, y: 3 },
+      expected = { [x]: 2, y: 3 },
+      message = 'Expected $[Symbol(x)] = 1 to equal 2.';
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
   it('reports the difference between nested objects that are not equal', function() {
     const actual = { x: { y: 1 } },
       expected = { x: { y: 2 } },
@@ -71,6 +80,22 @@ describe('toEqual', function() {
     const actual = { x: {} },
       expected = { x: { y: 1 } },
       message = 'Expected $.x to have properties\n' + '    y: 1';
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it('reports missing symbol properties', function() {
+    const actual = { x: {} },
+      expected = { x: { [Symbol('y')]: 1 } },
+      message = 'Expected $.x to have properties\n' + '    Symbol(y): 1';
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it('reports extra symbol properties', function() {
+    const actual = { x: { [Symbol('y')]: 1 } },
+      expected = { x: {} },
+      message = 'Expected $.x not to have properties\n' + '    Symbol(y): 1';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
   });

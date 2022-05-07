@@ -196,10 +196,34 @@ describe('util', function() {
         quux: 7
       };
 
-      expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual({
-        foo: 3,
-        baz: 5
-      });
+      expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual([
+        ['foo', 3],
+        ['baz', 5]
+      ]);
+    });
+
+    it('includes Symbol keys', function() {
+      const missing = Symbol('missing');
+      const both = Symbol('both');
+      const symbolDuplicated1 = Symbol('symbolDuplicated');
+      const symbolDuplicated2 = Symbol('symbolDuplicated');
+      const added = Symbol('added');
+      const a = {
+        [missing]: 1,
+        [both]: 2,
+        [symbolDuplicated1]: 3
+      };
+
+      const b = {
+        [both]: 'anything',
+        [symbolDuplicated2]: 4,
+        [added]: 5
+      };
+
+      expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual([
+        [missing, 1],
+        [symbolDuplicated1, 3]
+      ]);
     });
 
     it('only looks at own properties of both objects', function() {
@@ -214,8 +238,8 @@ describe('util', function() {
       const b = new Foo();
       b.y = 2;
 
-      expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual({ x: 1 });
-      expect(jasmineUnderTest.util.objectDifference(b, a)).toEqual({ y: 2 });
+      expect(jasmineUnderTest.util.objectDifference(a, b)).toEqual([['x', 1]]);
+      expect(jasmineUnderTest.util.objectDifference(b, a)).toEqual([['y', 2]]);
     });
   });
 
