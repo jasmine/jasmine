@@ -125,6 +125,28 @@ describe('matchersUtil', function() {
       expect(matchersUtil.equals(one, two)).toBe(true);
     });
 
+    it('handles symbol keys in Arrays', function() {
+      const matchersUtil = new jasmineUnderTest.MatchersUtil(),
+        sym = Symbol('foo'),
+        arr1 = [];
+      let arr2 = [];
+
+      arr1[sym] = 'bar';
+      arr2[sym] = 'bar';
+      expect(matchersUtil.equals(arr1, arr2)).toBe(true);
+
+      arr2[sym] = 'baz';
+      expect(matchersUtil.equals(arr1, arr2)).toBe(false);
+
+      arr2 = [];
+      arr2[Symbol('foo')] = 'bar';
+      expect(matchersUtil.equals(arr1, arr2)).toBe(false);
+
+      arr2 = [];
+      arr2['foo'] = 'bar';
+      expect(matchersUtil.equals(arr1, arr2)).toBe(false);
+    });
+
     it('passes for Errors that are the same type and have the same message', function() {
       const matchersUtil = new jasmineUnderTest.MatchersUtil();
       expect(matchersUtil.equals(new Error('foo'), new Error('foo'))).toBe(
