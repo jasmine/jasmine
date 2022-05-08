@@ -342,16 +342,21 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
+    // TODO: Unify recordLateError with recordLateExpectation? The extra
+    // diagnostic info added by the latter is probably useful in most cases.
     function recordLateError(error) {
-      const result = expectationResultFactory({
-        error,
-        passed: false,
-        matcherName: '',
-        expected: '',
-        actual: ''
-      });
-      result.globalErrorType = 'lateError';
-      topSuite.result.failedExpectations.push(result);
+      const isExpectationResult =
+        error.matcherName !== undefined && error.passed !== undefined;
+      const result = isExpectationResult
+        ? error
+        : expectationResultFactory({
+            error,
+            passed: false,
+            matcherName: '',
+            expected: '',
+            actual: ''
+          });
+      routeLateFailure(result);
     }
 
     function recordLateExpectation(runable, runableType, result) {
@@ -380,6 +385,26 @@ getJasmineRequireObj().Env = function(j$) {
         '3. Did an expectation follow a call to done()?';
 
       topSuite.result.failedExpectations.push(delayedExpectationResult);
+    }
+
+    function routeLateFailure(expectationResult) {
+      // Report the result on the nearest ancestor suite that hasn't already
+      // been reported done.
+      for (let r = currentRunnable(); r; r = r.parentSuite) {
+        if (!r.reportedDone) {
+          if (r === topSuite) {
+            expectationResult.globalErrorType = 'lateError';
+          }
+
+          r.result.failedExpectations.push(expectationResult);
+          return;
+        }
+      }
+
+      // If we get here, all results have been reported and there's nothing we
+      // can do except log the result and hope the user sees it.
+      console.error('Jasmine received a result after the suite finished:');
+      console.error(expectationResult);
     }
 
     var asyncExpectationFactory = function(actual, spec, runableType) {
@@ -537,7 +562,7 @@ getJasmineRequireObj().Env = function(j$) {
       options.onException =
         options.onException ||
         function(e) {
-          (currentRunnable() || topSuite).onException(e);
+          (currentRunnable() || topSuite).handleException(e);
         };
       options.deprecated = self.deprecated;
 
@@ -722,10 +747,10 @@ getJasmineRequireObj().Env = function(j$) {
 
           if (suite.hadBeforeAllFailure) {
             reportChildrenOfBeforeAllFailure(suite).then(function() {
-              reporter.suiteDone(result, next);
+              reportSuiteDone(suite, result, next);
             });
           } else {
-            reporter.suiteDone(result, next);
+            reportSuiteDone(suite, result, next);
           }
         },
         orderChildren: function(node) {
@@ -815,6 +840,7 @@ getJasmineRequireObj().Env = function(j$) {
                   failedExpectations: topSuite.result.failedExpectations,
                   deprecationWarnings: topSuite.result.deprecationWarnings
                 };
+                topSuite.reportedDone = true;
                 reporter.jasmineDone(jasmineDoneInfo, function() {
                   done(jasmineDoneInfo);
                 });
@@ -859,7 +885,7 @@ getJasmineRequireObj().Env = function(j$) {
             child.result.status = 'failed';
 
             await new Promise(function(resolve) {
-              reporter.specDone(child.result, resolve);
+              reportSpecDone(child, child.result, resolve);
             });
           }
         }
@@ -1073,7 +1099,7 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       if (declarationError) {
-        suite.onException(declarationError);
+        suite.handleException(declarationError);
       }
 
       currentDeclarationSuite = parentSuite;
@@ -1139,7 +1165,7 @@ getJasmineRequireObj().Env = function(j$) {
           hasFailures = true;
         }
 
-        reporter.specDone(result, next);
+        reportSpecDone(spec, result, next);
       }
 
       function specStarted(spec, next) {
@@ -1148,6 +1174,16 @@ getJasmineRequireObj().Env = function(j$) {
         reporter.specStarted(spec.result, next);
       }
     };
+
+    function reportSpecDone(spec, result, next) {
+      spec.reportedDone = true;
+      reporter.specDone(result, next);
+    }
+
+    function reportSuiteDone(suite, result, next) {
+      suite.reportedDone = true;
+      reporter.suiteDone(result, next);
+    }
 
     this.it_ = function(description, fn, timeout) {
       ensureIsNotNested('it');

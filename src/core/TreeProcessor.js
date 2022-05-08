@@ -42,7 +42,7 @@ getJasmineRequireObj().TreeProcessor = function() {
         queueableFns: childFns,
         userContext: tree.sharedUserContext(),
         onException: function() {
-          tree.onException.apply(tree, arguments);
+          tree.handleException.apply(tree, arguments);
         },
         onComplete: done,
         onMultipleDone: tree.onMultipleDone
@@ -218,7 +218,7 @@ getJasmineRequireObj().TreeProcessor = function() {
               queueableFns: [onStart].concat(wrapChildren(node, segmentNumber)),
               userContext: node.sharedUserContext(),
               onException: function() {
-                node.onException.apply(node, arguments);
+                node.handleException.apply(node, arguments);
               },
               onMultipleDone: node.onMultipleDone
                 ? node.onMultipleDone.bind(node)

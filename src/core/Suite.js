@@ -29,7 +29,7 @@ getJasmineRequireObj().Suite = function(j$) {
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
     this.autoCleanClosures =
       attrs.autoCleanClosures === undefined ? true : !!attrs.autoCleanClosures;
-    this.onLateError = attrs.onLateError;
+    this.onLateError = attrs.onLateError || function() {};
 
     this.beforeFns = [];
     this.afterFns = [];
@@ -163,6 +163,7 @@ getJasmineRequireObj().Suite = function(j$) {
     this.children.forEach(function(child) {
       child.reset();
     });
+    this.reportedDone = false;
   };
 
   Suite.prototype.addChild = function(child) {
@@ -204,7 +205,7 @@ getJasmineRequireObj().Suite = function(j$) {
     return j$.UserContext.fromExisting(this.sharedUserContext());
   };
 
-  Suite.prototype.onException = function() {
+  Suite.prototype.handleException = function() {
     if (arguments[0] instanceof j$.errors.ExpectationFailed) {
       return;
     }
@@ -222,7 +223,11 @@ getJasmineRequireObj().Suite = function(j$) {
       failedExpectation.globalErrorType = 'afterAll';
     }
 
-    this.result.failedExpectations.push(failedExpectation);
+    if (this.reportedDone) {
+      this.onLateError(failedExpectation);
+    } else {
+      this.result.failedExpectations.push(failedExpectation);
+    }
   };
 
   Suite.prototype.onMultipleDone = function() {
@@ -249,8 +254,15 @@ getJasmineRequireObj().Suite = function(j$) {
 
   Suite.prototype.addExpectationResult = function() {
     if (isFailure(arguments)) {
-      var data = arguments[1];
-      this.result.failedExpectations.push(this.expectationResultFactory(data));
+      const data = arguments[1];
+      const expectationResult = this.expectationResultFactory(data);
+
+      if (this.reportedDone) {
+        this.onLateError(expectationResult);
+      } else {
+        this.result.failedExpectations.push(expectationResult);
+      }
+
       if (this.throwOnExpectationFailure) {
         throw new j$.errors.ExpectationFailed();
       }

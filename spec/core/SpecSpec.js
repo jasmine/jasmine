@@ -404,6 +404,105 @@ describe('Spec', function() {
     ]);
   });
 
+  it('forwards late expectation failures to onLateError', function() {
+    const onLateError = jasmine.createSpy('onLateError');
+    const expectationResultFactory = jasmine
+      .createSpy('expectationResultFactory')
+      .and.returnValue('built expectation result');
+    const spec = new jasmineUnderTest.Spec({
+      expectationResultFactory,
+      onLateError,
+      queueableFn: { fn: function() {} }
+    });
+    const data = {
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: '',
+      error: new Error('nope')
+    };
+
+    spec.reportedDone = true;
+    spec.addExpectationResult(false, data, true);
+
+    expect(expectationResultFactory).toHaveBeenCalledWith(data);
+    expect(onLateError).toHaveBeenCalledWith('built expectation result');
+    expect(spec.result.failedExpectations).toEqual([]);
+  });
+
+  it('does not forward non-late expectation failures to onLateError', function() {
+    const onLateError = jasmine.createSpy('onLateError');
+    const spec = new jasmineUnderTest.Spec({
+      expectationResultFactory: r => r,
+      onLateError,
+      queueableFn: { fn: function() {} }
+    });
+    const data = {
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: '',
+      error: new Error('nope')
+    };
+
+    spec.addExpectationResult(false, data, true);
+
+    expect(onLateError).not.toHaveBeenCalled();
+  });
+
+  it('forwards late handleException calls to onLateError', function() {
+    const onLateError = jasmine.createSpy('onLateError');
+    const expectationResultFactory = jasmine
+      .createSpy('expectationResultFactory')
+      .and.returnValue('built expectation result');
+    const spec = new jasmineUnderTest.Spec({
+      expectationResultFactory,
+      onLateError,
+      queueableFn: { fn: function() {} }
+    });
+    const error = new Error('oops');
+
+    spec.reportedDone = true;
+    spec.handleException(error);
+
+    expect(expectationResultFactory).toHaveBeenCalledWith({
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: '',
+      error
+    });
+    expect(onLateError).toHaveBeenCalledWith('built expectation result');
+    expect(spec.result.failedExpectations).toEqual([]);
+  });
+
+  it('does not forward non-late handleException calls to onLateError', function() {
+    const onLateError = jasmine.createSpy('onLateError');
+    const spec = new jasmineUnderTest.Spec({
+      expectationResultFactory: r => r,
+      onLateError,
+      queueableFn: { fn: function() {} }
+    });
+    const error = new Error('oops');
+
+    spec.handleException(error);
+
+    expect(onLateError).not.toHaveBeenCalled();
+    expect(spec.result.failedExpectations.length).toEqual(1);
+  });
+
+  it('clears the reportedDone flag when reset', function() {
+    const spec = new jasmineUnderTest.Spec({
+      expectationResultFactory: r => r,
+      queueableFn: { fn: function() {} }
+    });
+    spec.reportedDone = true;
+
+    spec.reset();
+
+    expect(spec.reportedDone).toBeFalse();
+  });
+
   it('does not throw an ExpectationFailed error when handling an error', function() {
     const resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
@@ -418,7 +517,7 @@ describe('Spec', function() {
         throwOnExpectationFailure: true
       });
 
-    spec.onException('failing exception');
+    spec.handleException('failing exception');
   });
 
   it('can return its full name', function() {
@@ -490,7 +589,7 @@ describe('Spec', function() {
         resultCallback: resultCallback
       });
 
-    spec.onException('foo');
+    spec.handleException('foo');
     spec.execute();
 
     const args = fakeQueueRunner.calls.mostRecent().args[0];
@@ -518,7 +617,7 @@ describe('Spec', function() {
         resultCallback: resultCallback
       });
 
-    spec.onException(new jasmineUnderTest.errors.ExpectationFailed());
+    spec.handleException(new jasmineUnderTest.errors.ExpectationFailed());
     spec.execute();
 
     const args = fakeQueueRunner.calls.mostRecent().args[0];
@@ -636,7 +735,7 @@ describe('Spec', function() {
             resultCallback: resultCallback,
             queueRunnerFactory: function(config) {
               spec.debugLog('msg');
-              spec.onException(new Error('nope'));
+              spec.handleException(new Error('nope'));
               for (const fn of config.queueableFns) {
                 fn.fn();
               }

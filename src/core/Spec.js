@@ -86,14 +86,20 @@ getJasmineRequireObj().Spec = function(j$) {
       properties: null,
       debugLogs: null
     };
+
+    this.reportedDone = false;
   }
 
   Spec.prototype.addExpectationResult = function(passed, data, isError) {
-    var expectationResult = this.expectationResultFactory(data);
+    const expectationResult = this.expectationResultFactory(data);
     if (passed) {
       this.result.passedExpectations.push(expectationResult);
     } else {
-      this.result.failedExpectations.push(expectationResult);
+      if (this.reportedDone) {
+        this.onLateError(expectationResult);
+      } else {
+        this.result.failedExpectations.push(expectationResult);
+      }
 
       if (this.throwOnExpectationFailure && !isError) {
         throw new j$.errors.ExpectationFailed();
@@ -147,7 +153,7 @@ getJasmineRequireObj().Spec = function(j$) {
       isLeaf: true,
       queueableFns: [...fns.befores, this.queueableFn, ...fns.afters],
       onException: function() {
-        self.onException.apply(self, arguments);
+        self.handleException.apply(self, arguments);
       },
       onMultipleDone: function() {
         // Issue a deprecation. Include the context ourselves and pass
@@ -197,9 +203,10 @@ getJasmineRequireObj().Spec = function(j$) {
       debugLogs: null
     };
     this.markedPending = this.markedExcluding;
+    this.reportedDone = false;
   };
 
-  Spec.prototype.onException = function onException(e) {
+  Spec.prototype.handleException = function handleException(e) {
     if (Spec.isPendingSpecException(e)) {
       this.pend(extractCustomPendingMessage(e));
       return;

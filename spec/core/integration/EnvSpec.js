@@ -491,6 +491,63 @@ describe('Env integration', function() {
       );
     });
 
+    describe('When the running spec has reported specDone', function() {
+      it('routes async errors to an ancestor suite', async function() {
+        const global = {
+          setTimeout: function(fn, delay) {
+            return setTimeout(fn, delay);
+          },
+          clearTimeout: function(fn) {
+            clearTimeout(fn);
+          }
+        };
+        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const clearStackCallbacks = {};
+        let clearStackCallCount = 0;
+        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+          clearStackCallCount++;
+
+          if (clearStackCallbacks[clearStackCallCount]) {
+            clearStackCallbacks[clearStackCallCount]();
+          }
+
+          realClearStack(fn);
+        });
+
+        env.cleanup_();
+        env = new jasmineUnderTest.Env();
+
+        let suiteErrors = [];
+        env.addReporter({
+          suiteDone: function(result) {
+            const messages = result.failedExpectations.map(e => e.message);
+            suiteErrors = suiteErrors.concat(messages);
+          },
+          specDone: function() {
+            clearStackCallbacks[clearStackCallCount + 1] = function() {
+              global.onerror('fail at the end of the reporter queue');
+            };
+            clearStackCallbacks[clearStackCallCount + 2] = function() {
+              global.onerror('fail at the end of the spec queue');
+            };
+          }
+        });
+
+        env.describe('A suite', function() {
+          env.it('is finishing when the failure occurs', function() {});
+        });
+
+        await env.execute();
+
+        expect(suiteErrors).toEqual([
+          'fail at the end of the reporter queue thrown',
+          'fail at the end of the spec queue thrown'
+        ]);
+      });
+    });
+
     it('routes async errors to a running suite', function(done) {
       const global = {
         setTimeout: function(fn, delay) {
@@ -543,7 +600,7 @@ describe('Env integration', function() {
     });
 
     describe('When the running suite has reported suiteDone', function() {
-      it('routes async errors to the parent suite', async function() {
+      it('routes async errors to an ancestor suite', async function() {
         const global = {
           setTimeout: function(fn, delay) {
             return setTimeout(fn, delay);
@@ -570,10 +627,12 @@ describe('Env integration', function() {
         env.cleanup_();
         env = new jasmineUnderTest.Env();
 
-        const reporter = jasmine.createSpyObj('fakeReporter', ['suiteDone']);
-        env.addReporter(reporter);
+        let suiteErrors = [];
         env.addReporter({
           suiteDone: function(result) {
+            const messages = result.failedExpectations.map(e => e.message);
+            suiteErrors = suiteErrors.concat(messages);
+
             if (result.description === 'A nested suite') {
               clearStackCallbacks[clearStackCallCount + 1] = function() {
                 global.onerror('fail at the end of the reporter queue');
@@ -593,18 +652,120 @@ describe('Env integration', function() {
 
         await env.execute();
 
-        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
-          'A suite',
-          [
-            'fail at the end of the reporter queue thrown',
-            'fail at the end of the suite queue thrown'
-          ]
-        );
+        expect(suiteErrors).toEqual([
+          'fail at the end of the reporter queue thrown',
+          'fail at the end of the suite queue thrown'
+        ]);
       });
     });
 
     describe('When the env has started reporting jasmineDone', function() {
-      it('does something reasonable');
+      it('logs the error to the console', async function() {
+        const global = {
+          setTimeout: function(fn, delay) {
+            return setTimeout(fn, delay);
+          },
+          clearTimeout: function(fn, delay) {
+            clearTimeout(fn, delay);
+          }
+        };
+        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+        env.cleanup_();
+        env = new jasmineUnderTest.Env();
+
+        spyOn(console, 'error');
+
+        env.addReporter({
+          jasmineDone: function() {
+            global.onerror('a very late error');
+          }
+        });
+
+        env.it('a spec', function() {});
+
+        await env.execute();
+
+        /* eslint-disable-next-line no-console */
+        expect(console.error).toHaveBeenCalledWith(
+          'Jasmine received a result after the suite finished:'
+        );
+        /* eslint-disable-next-line no-console */
+        expect(console.error).toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            message: 'a very late error thrown',
+            globalErrorType: 'afterAll'
+          })
+        );
+      });
+    });
+
+    it('routes all errors that occur during stack clearing somewhere', async function() {
+      const global = {
+        setTimeout: function(fn, delay) {
+          return setTimeout(fn, delay);
+        },
+        clearTimeout: function(fn) {
+          clearTimeout(fn);
+        }
+      };
+      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+      const realClearStack = jasmineUnderTest.getClearStack(global);
+      let clearStackCallCount = 0;
+      let jasmineDone = false;
+      const expectedErrors = [];
+      const expectedErrorsAfterJasmineDone = [];
+      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        clearStackCallCount++;
+        const msg = `Error in clearStack #${clearStackCallCount}`;
+
+        if (jasmineDone) {
+          expectedErrorsAfterJasmineDone.push(`${msg} thrown`);
+        } else {
+          expectedErrors.push(`${msg} thrown`);
+        }
+
+        global.onerror(msg);
+        realClearStack(fn);
+      });
+      spyOn(console, 'error');
+
+      env.cleanup_();
+      env = new jasmineUnderTest.Env();
+
+      const receivedErrors = [];
+      function logErrors(event) {
+        for (const failure of event.failedExpectations) {
+          receivedErrors.push(failure.message);
+        }
+      }
+      env.addReporter({
+        specDone: logErrors,
+        suiteDone: logErrors,
+        jasmineDone: function(event) {
+          jasmineDone = true;
+          logErrors(event);
+        }
+      });
+
+      env.describe('A suite', function() {
+        env.it('is finishing when the failure occurs', function() {});
+      });
+
+      await env.execute();
+
+      expect(receivedErrors.length).toEqual(expectedErrors.length);
+
+      for (const e of expectedErrors) {
+        expect(receivedErrors).toContain(e);
+      }
+
+      for (const message of expectedErrorsAfterJasmineDone) {
+        /* eslint-disable-next-line no-console */
+        expect(console.error).toHaveBeenCalledWith(
+          jasmine.objectContaining({ message })
+        );
+      }
     });
   });
 
@@ -642,11 +803,18 @@ describe('Env integration', function() {
     });
   });
 
-  it('reports multiple calls to done in a non-top suite as errors', function(done) {
-    const reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
+  it('reports multiple calls to done in a non-top suite as errors', async function() {
+    const reporter = jasmine.createSpyObj('fakeReporter', [
+      'jasmineDone',
+      'suiteDone'
+    ]);
     const message =
       "An asynchronous beforeAll or afterAll function called its 'done' " +
       'callback more than once.\n(in suite: a suite)';
+    let lateDone;
+    reporter.suiteDone.and.callFake(function() {
+      lateDone();
+    });
 
     env.addReporter(reporter);
     env.describe('a suite', function() {
@@ -658,31 +826,50 @@ describe('Env integration', function() {
       env.afterAll(function(innerDone) {
         innerDone();
         innerDone();
+        lateDone = innerDone;
       });
     });
 
-    env.execute(null, function() {
-      expect(reporter.jasmineDone).toHaveBeenCalled();
-      const errors = reporter.jasmineDone.calls.argsFor(0)[0]
-        .failedExpectations;
-      expect(errors.length).toEqual(2);
-      expect(errors[0].message)
-        .withContext('suite beforeAll')
-        .toContain(message);
-      expect(errors[0].globalErrorType).toEqual('lateError');
-      expect(errors[1].message)
-        .withContext('suite afterAll')
-        .toContain(message);
-      expect(errors[1].globalErrorType).toEqual('lateError');
-      done();
-    });
+    await env.execute();
+
+    expect(reporter.suiteDone).toHaveBeenCalled();
+    const suiteErrors = reporter.suiteDone.calls.argsFor(0)[0]
+      .failedExpectations;
+    expect(suiteErrors.length).toEqual(2);
+    expect(suiteErrors[0].message)
+      .withContext('suite beforeAll')
+      .toContain(message);
+    expect(suiteErrors[1].message)
+      .withContext('suite afterAll')
+      .toContain(message);
+
+    expect(reporter.jasmineDone).toHaveBeenCalled();
+    const topErrors = reporter.jasmineDone.calls.argsFor(0)[0]
+      .failedExpectations;
+    expect(topErrors.length).toEqual(1);
+    expect(topErrors[0].message)
+      .withContext('late suite afterAll')
+      .toContain(message);
+    expect(topErrors[0].globalErrorType).toEqual('lateError');
+    expect(topErrors[0].globalErrorType).toEqual('lateError');
   });
 
-  it('reports multiple calls to done in a spec as errors', function(done) {
-    const reporter = jasmine.createSpyObj('fakeReporter', ['jasmineDone']);
+  it('reports multiple calls to done in a spec as errors', async function() {
+    const reporter = jasmine.createSpyObj('fakeReporter', [
+      'specDone',
+      'suiteDone',
+      'jasmineDone'
+    ]);
     const message =
       'An asynchronous spec, beforeEach, or afterEach function called its ' +
       "'done' callback more than once.\n(in spec: a suite a spec)";
+    let lateDone;
+    reporter.specDone.and.callFake(function() {
+      lateDone();
+    });
+    reporter.suiteDone.and.callFake(function() {
+      lateDone();
+    });
 
     env.addReporter(reporter);
     env.describe('a suite', function() {
@@ -697,28 +884,39 @@ describe('Env integration', function() {
       env.afterEach(function(innerDone) {
         innerDone();
         innerDone();
+        lateDone = innerDone;
       });
     });
 
-    env.execute(null, function() {
-      expect(reporter.jasmineDone).toHaveBeenCalled();
-      const errors = reporter.jasmineDone.calls.argsFor(0)[0]
-        .failedExpectations;
-      expect(errors.length).toEqual(3);
-      expect(errors[0].message)
-        .withContext('error caused by beforeEach')
-        .toContain(message);
-      expect(errors[0].globalErrorType).toEqual('lateError');
-      expect(errors[1].message)
-        .withContext('error caused by it')
-        .toContain(message);
-      expect(errors[1].globalErrorType).toEqual('lateError');
-      expect(errors[2].message)
-        .withContext('error caused by afterEach')
-        .toContain(message);
-      expect(errors[2].globalErrorType).toEqual('lateError');
-      done();
-    });
+    await env.execute();
+
+    expect(reporter.specDone).toHaveBeenCalled();
+    const specErrors = reporter.specDone.calls.argsFor(0)[0].failedExpectations;
+    expect(specErrors.length).toEqual(3);
+    expect(specErrors[0].message)
+      .withContext('error caused by beforeEach')
+      .toContain(message);
+    expect(specErrors[1].message)
+      .withContext('error caused by it')
+      .toContain(message);
+    expect(specErrors[2].message)
+      .withContext('error caused by afterEach')
+      .toContain(message);
+
+    const suiteErrors = reporter.suiteDone.calls.argsFor(0)[0]
+      .failedExpectations;
+    expect(suiteErrors.length).toEqual(1);
+    expect(suiteErrors[0].message)
+      .withContext('late error caused by afterEach')
+      .toContain(message);
+
+    const topErrors = reporter.jasmineDone.calls.argsFor(0)[0]
+      .failedExpectations;
+    expect(topErrors.length).toEqual(1);
+    expect(topErrors[0].message)
+      .withContext('really late error caused by afterEach')
+      .toContain(message);
+    expect(topErrors[0].globalErrorType).toEqual('lateError');
   });
 
   it('reports multiple calls to done in reporters as errors', function(done) {

@@ -154,9 +154,105 @@ describe('Suite', function() {
   it('does not add an additional failure when an expectation fails', function() {
     const suite = new jasmineUnderTest.Suite({});
 
-    suite.onException(new jasmineUnderTest.errors.ExpectationFailed());
+    suite.handleException(new jasmineUnderTest.errors.ExpectationFailed());
 
     expect(suite.getResult().failedExpectations).toEqual([]);
+  });
+
+  it('forwards late expectation failures to onLateError', function() {
+    const onLateError = jasmine.createSpy('onLateError');
+    const expectationResultFactory = jasmine
+      .createSpy('expectationResultFactory')
+      .and.returnValue('built expectation result');
+    const suite = new jasmineUnderTest.Suite({
+      expectationResultFactory,
+      onLateError
+    });
+    const data = {
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: '',
+      error: new Error('nope')
+    };
+
+    suite.reportedDone = true;
+    suite.addExpectationResult(false, data, true);
+
+    expect(expectationResultFactory).toHaveBeenCalledWith(data);
+    expect(onLateError).toHaveBeenCalledWith('built expectation result');
+    expect(suite.result.failedExpectations).toEqual([]);
+  });
+
+  it('does not forward non-late expectation failures to onLateError', function() {
+    const onLateError = jasmine.createSpy('onLateError');
+    const suite = new jasmineUnderTest.Suite({
+      expectationResultFactory: r => r,
+      onLateError
+    });
+    const data = {
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: '',
+      error: new Error('nope')
+    };
+
+    suite.addExpectationResult(false, data, true);
+
+    expect(onLateError).not.toHaveBeenCalled();
+    expect(suite.result.failedExpectations.length).toEqual(1);
+  });
+
+  it('forwards late handleException calls to onLateError', function() {
+    const onLateError = jasmine.createSpy('onLateError');
+    const expectationResultFactory = jasmine
+      .createSpy('expectationResultFactory')
+      .and.returnValue('built expectation result');
+    const suite = new jasmineUnderTest.Suite({
+      expectationResultFactory,
+      onLateError
+    });
+    const error = new Error('oops');
+
+    suite.reportedDone = true;
+    suite.handleException(error);
+
+    expect(expectationResultFactory).toHaveBeenCalledWith({
+      matcherName: '',
+      passed: false,
+      expected: '',
+      actual: '',
+      error
+    });
+    expect(onLateError).toHaveBeenCalledWith('built expectation result');
+    expect(suite.result.failedExpectations).toEqual([]);
+  });
+
+  it('does not forward non-late handleException calls to onLateError', function() {
+    const onLateError = jasmine.createSpy('onLateError');
+    const suite = new jasmineUnderTest.Suite({
+      expectationResultFactory: r => r,
+      onLateError
+    });
+    const error = new Error('oops');
+
+    suite.handleException(error);
+
+    expect(onLateError).not.toHaveBeenCalled();
+    expect(suite.result.failedExpectations.length).toEqual(1);
+  });
+
+  it('clears the reportedDone flag when reset', function() {
+    const suite = new jasmineUnderTest.Suite({
+      expectationResultFactory: r => r,
+      queueableFn: { fn: function() {} }
+    });
+    suite.reportedDone = true;
+
+    suite.reset();
+
+    expect(suite.reportedDone).toBeFalse();
   });
 
   it('calls timer to compute duration', function() {
@@ -255,7 +351,7 @@ describe('Suite', function() {
           return error;
         }
       });
-      suite.onException(new Error());
+      suite.handleException(new Error());
 
       suite.reset();
 
