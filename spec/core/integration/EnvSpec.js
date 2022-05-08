@@ -454,55 +454,158 @@ describe('Env integration', function() {
     env.execute(null, assertions);
   });
 
-  it('copes with async failures after done has been called', function(done) {
-    const global = {
-      setTimeout: function(fn, delay) {
-        return setTimeout(fn, delay);
-      },
-      clearTimeout: function(fn, delay) {
-        clearTimeout(fn, delay);
-      }
-    };
-    spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-    env.cleanup_();
-    env = new jasmineUnderTest.Env();
-    const reporter = jasmine.createSpyObj('fakeReporter', [
-      'specDone',
-      'suiteDone'
-    ]);
+  describe('Handling async errors', function() {
+    it('routes async errors to a running spec', async function() {
+      const global = {
+        setTimeout: function(fn, delay) {
+          return setTimeout(fn, delay);
+        },
+        clearTimeout: function(fn, delay) {
+          clearTimeout(fn, delay);
+        }
+      };
+      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+      env.cleanup_();
+      env = new jasmineUnderTest.Env();
+      const reporter = jasmine.createSpyObj('fakeReporter', [
+        'specDone',
+        'suiteDone'
+      ]);
 
-    const assertions = function() {
-      expect(reporter.specDone).not.toHaveFailedExpectationsForRunnable(
+      env.addReporter(reporter);
+
+      env.describe('A suite', function() {
+        env.it('fails', function(specDone) {
+          setTimeout(function() {
+            global.onerror('fail');
+            specDone();
+          });
+        });
+      });
+
+      await env.execute();
+
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable(
         'A suite fails',
         ['fail thrown']
       );
-      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
-        'A suite',
-        ['fail thrown']
-      );
-      done();
-    };
+    });
 
-    env.addReporter(reporter);
+    it('routes async errors to a running suite', function(done) {
+      const global = {
+        setTimeout: function(fn, delay) {
+          return setTimeout(fn, delay);
+        },
+        clearTimeout: function(fn, delay) {
+          clearTimeout(fn, delay);
+        }
+      };
+      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+      env.cleanup_();
+      env = new jasmineUnderTest.Env();
+      const reporter = jasmine.createSpyObj('fakeReporter', [
+        'specDone',
+        'suiteDone'
+      ]);
 
-    env.fdescribe('A suite', function() {
-      env.it('fails', function(specDone) {
-        setTimeout(function() {
-          specDone();
+      const assertions = function() {
+        expect(reporter.specDone).not.toHaveFailedExpectationsForRunnable(
+          'A suite fails',
+          ['fail thrown']
+        );
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
+          'A suite',
+          ['fail thrown']
+        );
+        done();
+      };
+
+      env.addReporter(reporter);
+
+      env.fdescribe('A suite', function() {
+        env.it('fails', function(specDone) {
           setTimeout(function() {
+            specDone();
             setTimeout(function() {
-              global.onerror('fail');
+              setTimeout(function() {
+                global.onerror('fail');
+              });
             });
           });
         });
       });
+
+      env.describe('Ignored', function() {
+        env.it('is not run', function() {});
+      });
+
+      env.execute(null, assertions);
     });
 
-    env.describe('Ignored', function() {
-      env.it('is not run', function() {});
+    describe('When the running suite has reported suiteDone', function() {
+      it('routes async errors to the parent suite', async function() {
+        const global = {
+          setTimeout: function(fn, delay) {
+            return setTimeout(fn, delay);
+          },
+          clearTimeout: function(fn, delay) {
+            clearTimeout(fn, delay);
+          }
+        };
+        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const clearStackCallbacks = {};
+        let clearStackCallCount = 0;
+        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+          clearStackCallCount++;
+
+          if (clearStackCallbacks[clearStackCallCount]) {
+            clearStackCallbacks[clearStackCallCount]();
+          }
+
+          realClearStack(fn);
+        });
+
+        env.cleanup_();
+        env = new jasmineUnderTest.Env();
+
+        const reporter = jasmine.createSpyObj('fakeReporter', ['suiteDone']);
+        env.addReporter(reporter);
+        env.addReporter({
+          suiteDone: function(result) {
+            if (result.description === 'A nested suite') {
+              clearStackCallbacks[clearStackCallCount + 1] = function() {
+                global.onerror('fail at the end of the reporter queue');
+              };
+              clearStackCallbacks[clearStackCallCount + 2] = function() {
+                global.onerror('fail at the end of the suite queue');
+              };
+            }
+          }
+        });
+
+        env.describe('A suite', function() {
+          env.describe('A nested suite', function() {
+            env.it('a spec', function() {});
+          });
+        });
+
+        await env.execute();
+
+        expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
+          'A suite',
+          [
+            'fail at the end of the reporter queue thrown',
+            'fail at the end of the suite queue thrown'
+          ]
+        );
+      });
     });
 
-    env.execute(null, assertions);
+    describe('When the env has started reporting jasmineDone', function() {
+      it('does something reasonable');
+    });
   });
 
   it('reports multiple calls to done in the top suite as errors', function(done) {
