@@ -1067,6 +1067,29 @@ describe('toEqual', function() {
   // == Symbols ==
 
   describe('Symbols', function() {
+    it('Enumerable symbols are compared', function() {
+      const sym = Symbol('foo');
+      const actual = {};
+      Object.defineProperty(actual, sym, {
+        value: '',
+        enumerable: true
+      });
+      const expected = { [sym]: '' };
+
+      expect(actual).toEqual(expected);
+    });
+
+    it('Symbols that cannot be enumerated are not compared ', function() {
+      const sym = Symbol('foo');
+      const actual = {};
+      Object.defineProperty(actual, sym, {
+        value: '',
+        enumerable: false
+      });
+      const expected = {};
+      expect(actual).toEqual(expected);
+    });
+
     it('Fails if Symbol compared to Object', function() {
       const sym = Symbol('foo');
       const obj = {};
