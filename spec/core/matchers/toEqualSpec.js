@@ -51,13 +51,25 @@ describe('toEqual', function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
-  it('reports differences between symbol properties', function() {
+  it('reports differences between enumerable symbol properties', function() {
     const x = Symbol('x'),
       actual = { [x]: 1, y: 3 },
       expected = { [x]: 2, y: 3 },
       message = 'Expected $[Symbol(x)] = 1 to equal 2.';
 
     expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
+  it('excludes non-enumerable symbol properties from the comparison', function() {
+    const sym = Symbol('foo');
+    const actual = {};
+    Object.defineProperty(actual, sym, {
+      value: '',
+      enumerable: false
+    });
+    const expected = {};
+
+    expect(compareEquals(actual, expected).pass).toBeTrue();
   });
 
   it('reports the difference between nested objects that are not equal', function() {
@@ -1067,29 +1079,6 @@ describe('toEqual', function() {
   // == Symbols ==
 
   describe('Symbols', function() {
-    it('Enumerable symbols are compared', function() {
-      const sym = Symbol('foo');
-      const actual = {};
-      Object.defineProperty(actual, sym, {
-        value: '',
-        enumerable: true
-      });
-      const expected = { [sym]: '' };
-
-      expect(actual).toEqual(expected);
-    });
-
-    it('Symbols that cannot be enumerated are not compared ', function() {
-      const sym = Symbol('foo');
-      const actual = {};
-      Object.defineProperty(actual, sym, {
-        value: '',
-        enumerable: false
-      });
-      const expected = {};
-      expect(actual).toEqual(expected);
-    });
-
     it('Fails if Symbol compared to Object', function() {
       const sym = Symbol('foo');
       const obj = {};
