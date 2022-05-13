@@ -107,18 +107,10 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
 
   SinglePrettyPrintRun.prototype.iterateObject = function(obj, fn) {
     var objKeys = j$.MatchersUtil.keys(obj, j$.isArray_(obj));
-    var isGetter = function isGetter(prop) {};
-
-    if (obj.__lookupGetter__) {
-      isGetter = function isGetter(prop) {
-        var getter = obj.__lookupGetter__(prop);
-        return !j$.util.isUndefined(getter) && getter !== null;
-      };
-    }
     var length = Math.min(objKeys.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
+
     for (var i = 0; i < length; i++) {
-      var property = objKeys[i];
-      fn(property, isGetter(property));
+      fn(objKeys[i]);
     }
 
     return objKeys.length > length;
@@ -151,14 +143,14 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
 
     var self = this;
     var first = array.length === 0;
-    var truncated = this.iterateObject(array, function(property, isGetter) {
+    var truncated = this.iterateObject(array, function(property) {
       if (first) {
         first = false;
       } else {
         self.append(', ');
       }
 
-      self.formatProperty(array, property, isGetter);
+      self.formatProperty(array, property);
     });
 
     if (truncated) {
@@ -237,14 +229,14 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     this.append('({ ');
     var first = true;
 
-    var truncated = this.iterateObject(obj, function(property, isGetter) {
+    var truncated = this.iterateObject(obj, function(property) {
       if (first) {
         first = false;
       } else {
         self.append(', ');
       }
 
-      self.formatProperty(obj, property, isGetter);
+      self.formatProperty(obj, property);
     });
 
     if (truncated) {
@@ -296,11 +288,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     this.append(out);
   };
 
-  SinglePrettyPrintRun.prototype.formatProperty = function(
-    obj,
-    property,
-    isGetter
-  ) {
+  SinglePrettyPrintRun.prototype.formatProperty = function(obj, property) {
     if (typeof property === 'symbol') {
       this.append(property.toString());
     } else {
@@ -308,12 +296,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     }
 
     this.append(': ');
-
-    if (isGetter) {
-      this.append('<getter>');
-    } else {
-      this.format(obj[property]);
-    }
+    this.format(obj[property]);
   };
 
   SinglePrettyPrintRun.prototype.append = function(value) {

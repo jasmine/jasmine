@@ -323,16 +323,16 @@ describe('PrettyPrinter', function() {
     );
   });
 
-  it('should indicate getters on objects as such', function() {
+  it('should use the return value of getters', function() {
     const pp = jasmineUnderTest.makePrettyPrinter();
     const sampleValue = {
       id: 1,
       get calculatedValue() {
-        throw new Error("don't call me!");
+        return 'the getter return value';
       }
     };
     expect(pp(sampleValue)).toEqual(
-      'Object({ id: 1, calculatedValue: <getter> })'
+      "Object({ id: 1, calculatedValue: 'the getter return value' })"
     );
   });
 
