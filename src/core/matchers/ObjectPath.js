@@ -5,7 +5,7 @@ getJasmineRequireObj().ObjectPath = function(j$) {
 
   ObjectPath.prototype.toString = function() {
     if (this.components.length) {
-      return '$' + map(this.components, formatPropertyAccess).join('');
+      return '$' + this.components.map(formatPropertyAccess).join('');
     } else {
       return '';
     }
@@ -33,14 +33,6 @@ getJasmineRequireObj().ObjectPath = function(j$) {
     }
 
     return "['" + prop + "']";
-  }
-
-  function map(array, fn) {
-    var results = [];
-    for (var i = 0; i < array.length; i++) {
-      results.push(fn(array[i]));
-    }
-    return results;
   }
 
   function isValidIdentifier(string) {

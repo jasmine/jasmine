@@ -26,7 +26,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   SinglePrettyPrintRun.prototype.format = function(value) {
     this.ppNestLevel_++;
     try {
-      var customFormatResult = this.applyCustomFormatters_(value);
+      const customFormatResult = this.applyCustomFormatters_(value);
 
       if (customFormatResult) {
         this.emitScalar(customFormatResult);
@@ -106,10 +106,10 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   };
 
   SinglePrettyPrintRun.prototype.iterateObject = function(obj, fn) {
-    var objKeys = j$.MatchersUtil.keys(obj, j$.isArray_(obj));
-    var length = Math.min(objKeys.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
+    const objKeys = j$.MatchersUtil.keys(obj, j$.isArray_(obj));
+    const length = Math.min(objKeys.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
 
-    for (var i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       fn(objKeys[i]);
     }
 
@@ -129,9 +129,11 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
       this.append('Array');
       return;
     }
-    var length = Math.min(array.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
+
+    const length = Math.min(array.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
     this.append('[ ');
-    for (var i = 0; i < length; i++) {
+
+    for (let i = 0; i < length; i++) {
       if (i > 0) {
         this.append(', ');
       }
@@ -141,19 +143,18 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
       this.append(', ...');
     }
 
-    var self = this;
-    var first = array.length === 0;
-    var truncated = this.iterateObject(array, function(property) {
+    let first = array.length === 0;
+    const wasTruncated = this.iterateObject(array, property => {
       if (first) {
         first = false;
       } else {
-        self.append(', ');
+        this.append(', ');
       }
 
-      self.formatProperty(array, property);
+      this.formatProperty(array, property);
     });
 
-    if (truncated) {
+    if (wasTruncated) {
       this.append(', ...');
     }
 
@@ -166,8 +167,8 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
       return;
     }
     this.append('Set( ');
-    var size = Math.min(set.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
-    var i = 0;
+    const size = Math.min(set.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
+    let i = 0;
     set.forEach(function(value, key) {
       if (i >= size) {
         return;
@@ -191,8 +192,8 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
       return;
     }
     this.append('Map( ');
-    var size = Math.min(map.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
-    var i = 0;
+    const size = Math.min(map.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
+    let i = 0;
     map.forEach(function(value, key) {
       if (i >= size) {
         return;
@@ -211,10 +212,8 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   };
 
   SinglePrettyPrintRun.prototype.emitObject = function(obj) {
-    var ctor = obj.constructor,
-      constructorName;
-
-    constructorName =
+    const ctor = obj.constructor;
+    const constructorName =
       typeof ctor === 'function' && obj instanceof ctor
         ? j$.fnNameFor(obj.constructor)
         : 'null';
@@ -225,21 +224,20 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
       return;
     }
 
-    var self = this;
     this.append('({ ');
-    var first = true;
+    let first = true;
 
-    var truncated = this.iterateObject(obj, function(property) {
+    const wasTruncated = this.iterateObject(obj, property => {
       if (first) {
         first = false;
       } else {
-        self.append(', ');
+        this.append(', ');
       }
 
-      self.formatProperty(obj, property);
+      this.formatProperty(obj, property);
     });
 
-    if (truncated) {
+    if (wasTruncated) {
       this.append(', ...');
     }
 
@@ -247,13 +245,13 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   };
 
   SinglePrettyPrintRun.prototype.emitTypedArray = function(arr) {
-    var constructorName = j$.fnNameFor(arr.constructor),
-      limitedArray = Array.prototype.slice.call(
-        arr,
-        0,
-        j$.MAX_PRETTY_PRINT_ARRAY_LENGTH
-      ),
-      itemsString = Array.prototype.join.call(limitedArray, ', ');
+    const constructorName = j$.fnNameFor(arr.constructor);
+    const limitedArray = Array.prototype.slice.call(
+      arr,
+      0,
+      j$.MAX_PRETTY_PRINT_ARRAY_LENGTH
+    );
+    let itemsString = Array.prototype.join.call(limitedArray, ', ');
 
     if (limitedArray.length !== arr.length) {
       itemsString += ', ...';
@@ -263,15 +261,10 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   };
 
   SinglePrettyPrintRun.prototype.emitDomElement = function(el) {
-    var tagName = el.tagName.toLowerCase(),
-      attrs = el.attributes,
-      i,
-      len = attrs.length,
-      out = '<' + tagName,
-      attr;
+    const tagName = el.tagName.toLowerCase();
+    let out = '<' + tagName;
 
-    for (i = 0; i < len; i++) {
-      attr = attrs[i];
+    for (const attr of el.attributes) {
       out += ' ' + attr.name;
 
       if (attr.value !== '') {
@@ -306,7 +299,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
       value = Object.prototype.toString.call(value);
     }
 
-    var result = truncate(value, j$.MAX_PRETTY_PRINT_CHARS - this.length);
+    const result = truncate(value, j$.MAX_PRETTY_PRINT_CHARS - this.length);
     this.length += result.value.length;
     this.stringParts.push(result.value);
 
@@ -334,10 +327,8 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   MaxCharsReachedError.prototype = new Error();
 
   function customFormat(value, customObjectFormatters) {
-    var i, result;
-
-    for (i = 0; i < customObjectFormatters.length; i++) {
-      result = customObjectFormatters[i](value);
+    for (const formatter of customObjectFormatters) {
+      const result = formatter(value);
 
       if (result !== undefined) {
         return result;
@@ -348,8 +339,11 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
   return function(customObjectFormatters) {
     customObjectFormatters = customObjectFormatters || [];
 
-    var pp = function(value) {
-      var prettyPrinter = new SinglePrettyPrintRun(customObjectFormatters, pp);
+    const pp = function(value) {
+      const prettyPrinter = new SinglePrettyPrintRun(
+        customObjectFormatters,
+        pp
+      );
       prettyPrinter.format(value);
       return prettyPrinter.stringParts.join('');
     };

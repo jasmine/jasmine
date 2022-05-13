@@ -1,10 +1,11 @@
 getJasmineRequireObj().DiffBuilder = function(j$) {
   return function DiffBuilder(config) {
-    var prettyPrinter = (config || {}).prettyPrinter || j$.makePrettyPrinter(),
-      mismatches = new j$.MismatchTree(),
-      path = new j$.ObjectPath(),
-      actualRoot = undefined,
-      expectedRoot = undefined;
+    const prettyPrinter =
+      (config || {}).prettyPrinter || j$.makePrettyPrinter();
+    const mismatches = new j$.MismatchTree();
+    let path = new j$.ObjectPath();
+    let actualRoot = undefined;
+    let expectedRoot = undefined;
 
     return {
       setRoots: function(actual, expected) {
@@ -17,29 +18,24 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
       },
 
       getMessage: function() {
-        var messages = [];
+        const messages = [];
 
         mismatches.traverse(function(path, isLeaf, formatter) {
-          var actualCustom,
-            expectedCustom,
-            useCustom,
-            derefResult = dereferencePath(
-              path,
-              actualRoot,
-              expectedRoot,
-              prettyPrinter
-            ),
-            actual = derefResult.actual,
-            expected = derefResult.expected;
+          const { actual, expected } = dereferencePath(
+            path,
+            actualRoot,
+            expectedRoot,
+            prettyPrinter
+          );
 
           if (formatter) {
             messages.push(formatter(actual, expected, path, prettyPrinter));
             return true;
           }
 
-          actualCustom = prettyPrinter.customFormat_(actual);
-          expectedCustom = prettyPrinter.customFormat_(expected);
-          useCustom = !(
+          const actualCustom = prettyPrinter.customFormat_(actual);
+          const expectedCustom = prettyPrinter.customFormat_(expected);
+          const useCustom = !(
             j$.util.isUndefined(actualCustom) &&
             j$.util.isUndefined(expectedCustom)
           );
@@ -64,7 +60,7 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
       },
 
       withPath: function(pathComponent, block) {
-        var oldPath = path;
+        const oldPath = path;
         path = path.add(pathComponent);
         block();
         path = oldPath;
@@ -98,18 +94,17 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
         j$.isAsymmetricEqualityTester_(expected) &&
         j$.isFunction_(expected.valuesForDiff_)
       ) {
-        var asymmetricResult = expected.valuesForDiff_(actual, pp);
+        const asymmetricResult = expected.valuesForDiff_(actual, pp);
         expected = asymmetricResult.self;
         actual = asymmetricResult.other;
       }
     }
 
-    var i;
     handleAsymmetricExpected();
 
-    for (i = 0; i < objectPath.components.length; i++) {
-      actual = actual[objectPath.components[i]];
-      expected = expected[objectPath.components[i]];
+    for (const pc of objectPath.components) {
+      actual = actual[pc];
+      expected = expected[pc];
       handleAsymmetricExpected();
     }
 

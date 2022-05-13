@@ -14,15 +14,13 @@ getJasmineRequireObj().MismatchTree = function(j$) {
   }
 
   MismatchTree.prototype.add = function(path, formatter) {
-    var key, child;
-
     if (path.depth() === 0) {
       this.formatter = formatter;
       this.isMismatch = true;
     } else {
-      key = path.components[0];
+      const key = path.components[0];
       path = path.shift();
-      child = this.child(key);
+      let child = this.child(key);
 
       if (!child) {
         child = new MismatchTree(this.path.add(key));
@@ -34,27 +32,22 @@ getJasmineRequireObj().MismatchTree = function(j$) {
   };
 
   MismatchTree.prototype.traverse = function(visit) {
-    var i,
-      hasChildren = this.children.length > 0;
+    const hasChildren = this.children.length > 0;
 
     if (this.isMismatch || hasChildren) {
       if (visit(this.path, !hasChildren, this.formatter)) {
-        for (i = 0; i < this.children.length; i++) {
-          this.children[i].traverse(visit);
+        for (const child of this.children) {
+          child.traverse(visit);
         }
       }
     }
   };
 
   MismatchTree.prototype.child = function(key) {
-    var i, pathEls;
-
-    for (i = 0; i < this.children.length; i++) {
-      pathEls = this.children[i].path.components;
-      if (pathEls[pathEls.length - 1] === key) {
-        return this.children[i];
-      }
-    }
+    return this.children.find(child => {
+      const pathEls = child.path.components;
+      return pathEls[pathEls.length - 1] === key;
+    });
   };
 
   return MismatchTree;
