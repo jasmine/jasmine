@@ -253,8 +253,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.diagnoseConflictingAsync_ = function(fn, retval) {
-    var msg;
-
     if (retval && j$.isFunction_(retval.then)) {
       // Issue a warning that matches the user's code.
       // Omit the stack trace because there's almost certainly no user code
@@ -274,8 +272,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
             'function to not return a promise.'
         );
       }
-
-      this.deprecated(msg, { omitStackTrace: true });
     }
   };
 
