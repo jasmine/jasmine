@@ -1,6 +1,6 @@
 describe('DiffBuilder', function() {
   it('records the actual and expected objects', function() {
-    const diffBuilder = jasmineUnderTest.DiffBuilder();
+    const diffBuilder = new jasmineUnderTest.DiffBuilder();
     diffBuilder.setRoots({ x: 'actual' }, { x: 'expected' });
     diffBuilder.recordMismatch();
 
@@ -10,7 +10,7 @@ describe('DiffBuilder', function() {
   });
 
   it('prints the path at which the difference was found', function() {
-    const diffBuilder = jasmineUnderTest.DiffBuilder();
+    const diffBuilder = new jasmineUnderTest.DiffBuilder();
     diffBuilder.setRoots({ foo: { x: 'actual' } }, { foo: { x: 'expected' } });
 
     diffBuilder.withPath('foo', function() {
@@ -23,7 +23,7 @@ describe('DiffBuilder', function() {
   });
 
   it('prints multiple messages, separated by newlines', function() {
-    const diffBuilder = jasmineUnderTest.DiffBuilder();
+    const diffBuilder = new jasmineUnderTest.DiffBuilder();
     diffBuilder.setRoots({ foo: 1, bar: 3 }, { foo: 2, bar: 4 });
 
     diffBuilder.withPath('foo', function() {
@@ -40,7 +40,7 @@ describe('DiffBuilder', function() {
   });
 
   it('allows customization of the message', function() {
-    const diffBuilder = jasmineUnderTest.DiffBuilder();
+    const diffBuilder = new jasmineUnderTest.DiffBuilder();
     diffBuilder.setRoots({ x: 'bar' }, { x: 'foo' });
 
     function darthVaderFormatter(actual, expected, path) {
@@ -68,7 +68,7 @@ describe('DiffBuilder', function() {
     const prettyPrinter = function(val) {
         return '|' + val + '|';
       },
-      diffBuilder = jasmineUnderTest.DiffBuilder({
+      diffBuilder = new jasmineUnderTest.DiffBuilder({
         prettyPrinter: prettyPrinter
       });
     prettyPrinter.customFormat_ = function() {};
@@ -86,7 +86,7 @@ describe('DiffBuilder', function() {
   it('passes the injected pretty-printer to the diff formatter', function() {
     const diffFormatter = jasmine.createSpy('diffFormatter'),
       prettyPrinter = function() {},
-      diffBuilder = jasmineUnderTest.DiffBuilder({
+      diffBuilder = new jasmineUnderTest.DiffBuilder({
         prettyPrinter: prettyPrinter
       });
     prettyPrinter.customFormat_ = function() {};

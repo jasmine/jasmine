@@ -1,27 +1,29 @@
 getJasmineRequireObj().ObjectPath = function(j$) {
-  function ObjectPath(components) {
-    this.components = components || [];
-  }
-
-  ObjectPath.prototype.toString = function() {
-    if (this.components.length) {
-      return '$' + this.components.map(formatPropertyAccess).join('');
-    } else {
-      return '';
+  class ObjectPath {
+    constructor(components) {
+      this.components = components || [];
     }
-  };
 
-  ObjectPath.prototype.add = function(component) {
-    return new ObjectPath(this.components.concat([component]));
-  };
+    toString() {
+      if (this.components.length) {
+        return '$' + this.components.map(formatPropertyAccess).join('');
+      } else {
+        return '';
+      }
+    }
 
-  ObjectPath.prototype.shift = function() {
-    return new ObjectPath(this.components.slice(1));
-  };
+    add(component) {
+      return new ObjectPath(this.components.concat([component]));
+    }
 
-  ObjectPath.prototype.depth = function() {
-    return this.components.length;
-  };
+    shift() {
+      return new ObjectPath(this.components.slice(1));
+    }
+
+    depth() {
+      return this.components.length;
+    }
+  }
 
   function formatPropertyAccess(prop) {
     if (typeof prop === 'number' || typeof prop === 'symbol') {
@@ -32,7 +34,7 @@ getJasmineRequireObj().ObjectPath = function(j$) {
       return '.' + prop;
     }
 
-    return "['" + prop + "']";
+    return `['${prop}']`;
   }
 
   function isValidIdentifier(string) {
