@@ -10,7 +10,7 @@ describe('Custom Matchers (Integration)', function() {
     env.cleanup_();
   });
 
-  it('allows adding more matchers local to a spec', function(done) {
+  it('allows adding more matchers local to a spec', async function() {
     env.it('spec defining a custom matcher', function() {
       env.addMatchers({
         matcherForSpec: function() {
@@ -37,20 +37,18 @@ describe('Custom Matchers (Integration)', function() {
     });
 
     const specDoneSpy = jasmine.createSpy('specDoneSpy');
-    const expectations = function() {
-      const firstSpecResult = specDoneSpy.calls.first().args[0];
-      expect(firstSpecResult.status).toEqual('failed');
-      expect(firstSpecResult.failedExpectations[0].message).toEqual(
-        'matcherForSpec: actual: zzz; expected: yyy'
-      );
-      done();
-    };
     env.addReporter({ specDone: specDoneSpy });
 
-    env.execute(null, expectations);
+    await env.execute();
+
+    const firstSpecResult = specDoneSpy.calls.first().args[0];
+    expect(firstSpecResult.status).toEqual('failed');
+    expect(firstSpecResult.failedExpectations[0].message).toEqual(
+      'matcherForSpec: actual: zzz; expected: yyy'
+    );
   });
 
-  it('passes the spec if the custom matcher passes', function(done) {
+  it('passes the spec if the custom matcher passes', async function() {
     env.it('spec using custom matcher', function() {
       env.addMatchers({
         toBeReal: function() {
@@ -65,15 +63,16 @@ describe('Custom Matchers (Integration)', function() {
       env.expect(true).toBeReal();
     });
 
-    const specExpectations = function(result) {
-      expect(result.status).toEqual('passed');
-    };
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    env.addReporter(reporter);
+    await env.execute();
 
-    env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    expect(reporter.specDone).toHaveBeenCalledTimes(1);
+    const result = reporter.specDone.calls.argsFor(0)[0];
+    expect(result.status).toEqual('passed');
   });
 
-  it('passes the spec if the custom equality matcher passes for types nested inside asymmetric equality testers', function(done) {
+  it('passes the spec if the custom equality matcher passes for types nested inside asymmetric equality testers', async function() {
     env.it('spec using custom equality matcher', function() {
       const customEqualityFn = function(a, b) {
         // All "foo*" strings match each other.
@@ -99,15 +98,16 @@ describe('Custom Matchers (Integration)', function() {
         .toEqual(jasmineUnderTest.arrayWithExactContents(['fooBar']));
     });
 
-    const specExpectations = function(result) {
-      expect(result.status).toEqual('passed');
-    };
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    env.addReporter(reporter);
+    await env.execute();
 
-    env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    expect(reporter.specDone).toHaveBeenCalledTimes(1);
+    const result = reporter.specDone.calls.argsFor(0)[0];
+    expect(result.status).toEqual('passed');
   });
 
-  it('displays an appropriate failure message if a custom equality matcher fails', function(done) {
+  it('displays an appropriate failure message if a custom equality matcher fails', async function() {
     env.it('spec using custom equality matcher', function() {
       const customEqualityFn = function(a, b) {
         // "foo" is not equal to anything
@@ -120,18 +120,19 @@ describe('Custom Matchers (Integration)', function() {
       env.expect({ foo: 'foo' }).toEqual({ foo: 'foo' });
     });
 
-    const specExpectations = function(result) {
-      expect(result.status).toEqual('failed');
-      expect(result.failedExpectations[0].message).toEqual(
-        "Expected $.foo = 'foo' to equal 'foo'."
-      );
-    };
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    env.addReporter(reporter);
+    await env.execute();
 
-    env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    expect(reporter.specDone).toHaveBeenCalledTimes(1);
+    const result = reporter.specDone.calls.argsFor(0)[0];
+    expect(result.status).toEqual('failed');
+    expect(result.failedExpectations[0].message).toEqual(
+      "Expected $.foo = 'foo' to equal 'foo'."
+    );
   });
 
-  it('uses the negative compare function for a negative comparison, if provided', function(done) {
+  it('uses the negative compare function for a negative comparison, if provided', async function() {
     env.it('spec with custom negative comparison matcher', function() {
       env.addMatchers({
         toBeReal: function() {
@@ -149,15 +150,16 @@ describe('Custom Matchers (Integration)', function() {
       env.expect(true).not.toBeReal();
     });
 
-    const specExpectations = function(result) {
-      expect(result.status).toEqual('passed');
-    };
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    env.addReporter(reporter);
+    await env.execute();
 
-    env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    expect(reporter.specDone).toHaveBeenCalledTimes(1);
+    const result = reporter.specDone.calls.argsFor(0)[0];
+    expect(result.status).toEqual('passed');
   });
 
-  it('generates messages with the same rules as built in matchers absent a custom message', function(done) {
+  it('generates messages with the same rules as built in matchers absent a custom message', async function() {
     env.it('spec with an expectation', function() {
       env.addMatchers({
         toBeReal: function() {
@@ -172,17 +174,18 @@ describe('Custom Matchers (Integration)', function() {
       env.expect('a').toBeReal();
     });
 
-    const specExpectations = function(result) {
-      expect(result.failedExpectations[0].message).toEqual(
-        "Expected 'a' to be real."
-      );
-    };
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    env.addReporter(reporter);
+    await env.execute();
 
-    env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    expect(reporter.specDone).toHaveBeenCalledTimes(1);
+    const result = reporter.specDone.calls.argsFor(0)[0];
+    expect(result.failedExpectations[0].message).toEqual(
+      "Expected 'a' to be real."
+    );
   });
 
-  it('passes the expected and actual arguments to the comparison function', function(done) {
+  it('passes the expected and actual arguments to the comparison function', async function() {
     const argumentSpy = jasmine
       .createSpy('argument spy')
       .and.returnValue({ pass: true });
@@ -199,17 +202,13 @@ describe('Custom Matchers (Integration)', function() {
       env.expect(true).toBeReal('arg1', 'arg2');
     });
 
-    const specExpectations = function() {
-      expect(argumentSpy).toHaveBeenCalledWith(true);
-      expect(argumentSpy).toHaveBeenCalledWith(true, 'arg');
-      expect(argumentSpy).toHaveBeenCalledWith(true, 'arg1', 'arg2');
-    };
-
-    env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    await env.execute();
+    expect(argumentSpy).toHaveBeenCalledWith(true);
+    expect(argumentSpy).toHaveBeenCalledWith(true, 'arg');
+    expect(argumentSpy).toHaveBeenCalledWith(true, 'arg1', 'arg2');
   });
 
-  it('passes the jasmine utility to the matcher factory', function(done) {
+  it('passes the jasmine utility to the matcher factory', async function() {
     const matcherFactory = function() {
         return {
           compare: function() {
@@ -229,17 +228,13 @@ describe('Custom Matchers (Integration)', function() {
       env.expect(true).toBeReal();
     });
 
-    const specExpectations = function() {
-      expect(matcherFactorySpy).toHaveBeenCalledWith(
-        jasmine.any(jasmineUnderTest.MatchersUtil)
-      );
-    };
-
-    env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    await env.execute();
+    expect(matcherFactorySpy).toHaveBeenCalledWith(
+      jasmine.any(jasmineUnderTest.MatchersUtil)
+    );
   });
 
-  it('provides custom equality testers to the matcher factory via matchersUtil', function(done) {
+  it('provides custom equality testers to the matcher factory via matchersUtil', async function() {
     const matcherFactory = function(matchersUtil) {
         return {
           compare: function(actual, expected) {
@@ -262,12 +257,13 @@ describe('Custom Matchers (Integration)', function() {
       env.expect([1, 2]).toBeArrayWithFirstElement('1');
     });
 
-    const specExpectations = function(result) {
-      expect(customEqualityFn).toHaveBeenCalledWith(1, '1');
-      expect(result.failedExpectations).toEqual([]);
-    };
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    env.addReporter(reporter);
+    await env.execute();
 
-    env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    expect(reporter.specDone).toHaveBeenCalledTimes(1);
+    const result = reporter.specDone.calls.argsFor(0)[0];
+    expect(customEqualityFn).toHaveBeenCalledWith(1, '1');
+    expect(result.failedExpectations).toEqual([]);
   });
 });

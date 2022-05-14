@@ -6,7 +6,7 @@ describe('Custom object formatters', function() {
     env.configure({ random: false });
   });
 
-  it('scopes custom object formatters to a spec', function(done) {
+  it('scopes custom object formatters to a spec', async function() {
     env.it('a spec with custom pretty-printer', function() {
       env.addCustomObjectFormatter(function(obj) {
         return 'custom(' + obj + ')';
@@ -22,21 +22,19 @@ describe('Custom object formatters', function() {
     const specDone = function(result) {
       specResults.push(result);
     };
-    const expectations = function() {
-      expect(specResults[0].failedExpectations[0].message).toEqual(
-        'Expected custom(42) to be undefined.'
-      );
-      expect(specResults[1].failedExpectations[0].message).toEqual(
-        'Expected 42 to be undefined.'
-      );
-      done();
-    };
     env.addReporter({ specDone: specDone });
 
-    env.execute(null, expectations);
+    await env.execute();
+
+    expect(specResults[0].failedExpectations[0].message).toEqual(
+      'Expected custom(42) to be undefined.'
+    );
+    expect(specResults[1].failedExpectations[0].message).toEqual(
+      'Expected 42 to be undefined.'
+    );
   });
 
-  it('scopes custom object formatters to a suite', function(done) {
+  it('scopes custom object formatters to a suite', async function() {
     env.it('a spec without custom pretty-printer', function() {
       env.expect(42).toBeUndefined();
     });
@@ -57,18 +55,16 @@ describe('Custom object formatters', function() {
     const specDone = function(result) {
       specResults.push(result);
     };
-    const expectations = function() {
-      expect(specResults[0].failedExpectations[0].message).toEqual(
-        'Expected 42 to be undefined.'
-      );
-      expect(specResults[1].failedExpectations[0].message).toEqual(
-        'Expected custom(42) to be undefined.'
-      );
-      done();
-    };
     env.addReporter({ specDone: specDone });
 
-    env.execute(null, expectations);
+    await env.execute();
+
+    expect(specResults[0].failedExpectations[0].message).toEqual(
+      'Expected 42 to be undefined.'
+    );
+    expect(specResults[1].failedExpectations[0].message).toEqual(
+      'Expected custom(42) to be undefined.'
+    );
   });
 
   it('throws an exception if you try to add a custom object formatter outside a runable', function() {

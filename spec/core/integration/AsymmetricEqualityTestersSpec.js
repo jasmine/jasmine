@@ -1,55 +1,57 @@
 describe('Asymmetric equality testers (Integration)', function() {
   function verifyPasses(expectations) {
-    it('passes', function(done) {
+    it('passes', async function() {
       const env = new jasmineUnderTest.Env();
       env.it('a spec', function() {
         expectations(env);
       });
 
-      const specExpectations = function(result) {
-        expect(result.status).toEqual('passed');
-        expect(result.passedExpectations.length)
-          .withContext('Number of passed expectations')
-          .toEqual(1);
-        expect(result.failedExpectations.length)
-          .withContext('Number of failed expectations')
-          .toEqual(0);
-        expect(
-          result.failedExpectations[0] && result.failedExpectations[0].message
-        )
-          .withContext('Failure message')
-          .toBeUndefined();
-      };
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+      await env.execute();
 
-      env.addReporter({ specDone: specExpectations });
-      env.execute(null, done);
+      expect(reporter.specDone).toHaveBeenCalledTimes(1);
+      const result = reporter.specDone.calls.argsFor(0)[0];
+
+      expect(result.status).toEqual('passed');
+      expect(result.passedExpectations.length)
+        .withContext('Number of passed expectations')
+        .toEqual(1);
+      expect(result.failedExpectations.length)
+        .withContext('Number of failed expectations')
+        .toEqual(0);
+      expect(
+        result.failedExpectations[0] && result.failedExpectations[0].message
+      )
+        .withContext('Failure message')
+        .toBeUndefined();
     });
   }
 
   function verifyFails(expectations) {
-    it('fails', function(done) {
+    it('fails', async function() {
       const env = new jasmineUnderTest.Env();
       env.it('a spec', function() {
         expectations(env);
       });
 
-      const specExpectations = function(result) {
-        expect(result.status).toEqual('failed');
-        expect(result.failedExpectations.length)
-          .withContext('Number of failed expectations')
-          .toEqual(1);
-        expect(result.failedExpectations[0].message)
-          .withContext(
-            'Failed with a thrown error rather than a matcher failure'
-          )
-          .not.toMatch(/^Error: /);
-        expect(result.failedExpectations[0].matcherName)
-          .withContext('Matcher name')
-          .not.toEqual('');
-      };
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+      await env.execute();
 
-      env.addReporter({ specDone: specExpectations });
-      env.execute(null, done);
+      expect(reporter.specDone).toHaveBeenCalledTimes(1);
+      const result = reporter.specDone.calls.argsFor(0)[0];
+
+      expect(result.status).toEqual('failed');
+      expect(result.failedExpectations.length)
+        .withContext('Number of failed expectations')
+        .toEqual(1);
+      expect(result.failedExpectations[0].message)
+        .withContext('Failed with a thrown error rather than a matcher failure')
+        .not.toMatch(/^Error: /);
+      expect(result.failedExpectations[0].matcherName)
+        .withContext('Matcher name')
+        .not.toEqual('');
     });
   }
 
