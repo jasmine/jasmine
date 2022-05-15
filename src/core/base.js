@@ -284,6 +284,18 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
+   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher}
+   * that passes if the actual value is the same as the sample as determined
+   * by the `===` operator.
+   * @name jasmine.exactly
+   * @function
+   * @param {Object} sample - The value to compare the actual to.
+   */
+  j$.exactly = function(sample) {
+    return new j$.Exactly(sample);
+  };
+
+  /**
    * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
    * that will succeed if the actual value being compared is not empty.
    * @name jasmine.notEmpty
