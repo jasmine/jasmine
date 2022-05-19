@@ -1320,7 +1320,7 @@ describe('Env integration', function() {
       });
 
       env.addReporter(reporter);
-      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 5;
+      jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 500;
 
       env.beforeAll(function() {
         clock.install();
@@ -1331,7 +1331,7 @@ describe('Env integration', function() {
       });
 
       env.it('spec that should not time out', function(innerDone) {
-        clock.tick(6);
+        clock.tick(1000);
         expect(true).toEqual(true);
         jasmine.debugLog('Calling realSetTimeout in spec');
         realSetTimeout(function() {
