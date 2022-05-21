@@ -72,8 +72,8 @@ describe('Suite', function() {
     suite.beforeAll(innerBefore);
 
     expect(suite.beforeAllFns).toEqual([
-      { fn: outerBefore.fn, type: 'beforeAll', suite: jasmine.exactly(suite) },
-      { fn: innerBefore.fn, type: 'beforeAll', suite: jasmine.exactly(suite) }
+      { fn: outerBefore.fn, type: 'beforeAll', suite: jasmine.is(suite) },
+      { fn: innerBefore.fn, type: 'beforeAll', suite: jasmine.is(suite) }
     ]);
   });
 

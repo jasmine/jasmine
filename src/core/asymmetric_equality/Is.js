@@ -1,5 +1,5 @@
-getJasmineRequireObj().Exactly = function(j$) {
-  class Exactly {
+getJasmineRequireObj().Is = function(j$) {
+  class Is {
     constructor(expected) {
       this.expected_ = expected;
     }
@@ -9,9 +9,9 @@ getJasmineRequireObj().Exactly = function(j$) {
     }
 
     jasmineToString(pp) {
-      return `<jasmine.exactly(${pp(this.expected_)})>`;
+      return `<jasmine.is(${pp(this.expected_)})>`;
     }
   }
 
-  return Exactly;
+  return Is;
 };
