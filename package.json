@@ -99,10 +99,10 @@
     }
   },
   "browserslist": [
-    "Safari >= 13",
+    "Safari >= 14",
     "last 2 Chrome versions",
     "last 2 Firefox versions",
-    "Firefox >= 68",
+    "Firefox >= 91",
     "last 2 Edge versions"
   ]
 }
