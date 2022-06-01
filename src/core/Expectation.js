@@ -6,8 +6,8 @@ getJasmineRequireObj().Expectation = function(j$) {
   function Expectation(options) {
     this.expector = new j$.Expector(options);
 
-    var customMatchers = options.customMatchers || {};
-    for (var matcherName in customMatchers) {
+    const customMatchers = options.customMatchers || {};
+    for (const matcherName in customMatchers) {
       this[matcherName] = wrapSyncCompare(
         matcherName,
         customMatchers[matcherName]
@@ -77,8 +77,8 @@ getJasmineRequireObj().Expectation = function(j$) {
   function AsyncExpectation(options) {
     this.expector = new j$.Expector(options);
 
-    var customAsyncMatchers = options.customAsyncMatchers || {};
-    for (var matcherName in customAsyncMatchers) {
+    const customAsyncMatchers = options.customAsyncMatchers || {};
+    for (const matcherName in customAsyncMatchers) {
       this[matcherName] = wrapAsyncCompare(
         matcherName,
         customAsyncMatchers[matcherName]
@@ -134,36 +134,34 @@ getJasmineRequireObj().Expectation = function(j$) {
 
   function wrapSyncCompare(name, matcherFactory) {
     return function() {
-      var result = this.expector.compare(name, matcherFactory, arguments);
+      const result = this.expector.compare(name, matcherFactory, arguments);
       this.expector.processResult(result);
     };
   }
 
   function wrapAsyncCompare(name, matcherFactory) {
     return function() {
-      var self = this;
-
       // Capture the call stack here, before we go async, so that it will contain
       // frames that are relevant to the user instead of just parts of Jasmine.
-      var errorForStack = j$.util.errorWithStack();
+      const errorForStack = j$.util.errorWithStack();
 
       return this.expector
         .compare(name, matcherFactory, arguments)
-        .then(function(result) {
-          self.expector.processResult(result, errorForStack);
+        .then(result => {
+          this.expector.processResult(result, errorForStack);
         });
     };
   }
 
   function addCoreMatchers(prototype, matchers, wrapper) {
-    for (var matcherName in matchers) {
-      var matcher = matchers[matcherName];
+    for (const matcherName in matchers) {
+      const matcher = matchers[matcherName];
       prototype[matcherName] = wrapper(matcherName, matcher);
     }
   }
 
   function addFilter(source, filter) {
-    var result = Object.create(source);
+    const result = Object.create(source);
     result.expector = source.expector.addFilter(filter);
     return result;
   }
@@ -188,7 +186,7 @@ getJasmineRequireObj().Expectation = function(j$) {
     return result;
   }
 
-  var syncNegatingFilter = {
+  const syncNegatingFilter = {
     selectComparisonFunc: function(matcher) {
       function defaultNegativeCompare() {
         return negate(matcher.compare.apply(null, arguments));
@@ -199,7 +197,7 @@ getJasmineRequireObj().Expectation = function(j$) {
     buildFailureMessage: negatedFailureMessage
   };
 
-  var asyncNegatingFilter = {
+  const asyncNegatingFilter = {
     selectComparisonFunc: function(matcher) {
       function defaultNegativeCompare() {
         return matcher.compare.apply(this, arguments).then(negate);
@@ -210,10 +208,10 @@ getJasmineRequireObj().Expectation = function(j$) {
     buildFailureMessage: negatedFailureMessage
   };
 
-  var expectSettledPromiseFilter = {
+  const expectSettledPromiseFilter = {
     selectComparisonFunc: function(matcher) {
       return function(actual) {
-        var matcherArgs = arguments;
+        const matcherArgs = arguments;
 
         return j$.isPending_(actual).then(function(isPending) {
           if (isPending) {
@@ -236,9 +234,7 @@ getJasmineRequireObj().Expectation = function(j$) {
   }
 
   ContextAddingFilter.prototype.modifyFailureMessage = function(msg) {
-    var nl = msg.indexOf('\n');
-
-    if (nl === -1) {
+    if (msg.indexOf('\n') === -1) {
       return this.message + ': ' + msg;
     } else {
       return this.message + ':\n' + indent(msg);

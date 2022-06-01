@@ -329,7 +329,7 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
-    var expectationFactory = function(actual, spec) {
+    const expectationFactory = function(actual, spec) {
       return j$.Expectation.factory({
         matchersUtil: makeMatchersUtil(),
         customMatchers: runnableResources[spec.id].customMatchers,
@@ -407,7 +407,7 @@ getJasmineRequireObj().Env = function(j$) {
       console.error(expectationResult);
     }
 
-    var asyncExpectationFactory = function(actual, spec, runableType) {
+    const asyncExpectationFactory = function(actual, spec, runableType) {
       return j$.Expectation.asyncFactory({
         matchersUtil: makeMatchersUtil(),
         customAsyncMatchers: runnableResources[spec.id].customAsyncMatchers,
@@ -422,11 +422,11 @@ getJasmineRequireObj().Env = function(j$) {
         return spec.addExpectationResult(passed, result);
       }
     };
-    var suiteAsyncExpectationFactory = function(actual, suite) {
+    const suiteAsyncExpectationFactory = function(actual, suite) {
       return asyncExpectationFactory(actual, suite, 'Suite');
     };
 
-    var specAsyncExpectationFactory = function(actual, suite) {
+    const specAsyncExpectationFactory = function(actual, suite) {
       return asyncExpectationFactory(actual, suite, 'Spec');
     };
 

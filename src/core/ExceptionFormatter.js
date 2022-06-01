@@ -1,5 +1,5 @@
 getJasmineRequireObj().ExceptionFormatter = function(j$) {
-  var ignoredProperties = [
+  const ignoredProperties = [
     'name',
     'message',
     'stack',
@@ -13,9 +13,10 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
   ];
 
   function ExceptionFormatter(options) {
-    var jasmineFile = (options && options.jasmineFile) || j$.util.jasmineFile();
+    const jasmineFile =
+      (options && options.jasmineFile) || j$.util.jasmineFile();
     this.message = function(error) {
-      var message = '';
+      let message = '';
 
       if (error.jasmineMessage) {
         message += error.jasmineMessage;
@@ -43,9 +44,9 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
         return null;
       }
 
-      var stackTrace = new j$.StackTrace(error);
-      var lines = filterJasmine(stackTrace);
-      var result = '';
+      const stackTrace = new j$.StackTrace(error);
+      const lines = filterJasmine(stackTrace);
+      let result = '';
 
       if (stackTrace.message && !omitMessage) {
         lines.unshift(stackTrace.message);
@@ -58,9 +59,9 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
     };
 
     function filterJasmine(stackTrace) {
-      var result = [],
-        jasmineMarker =
-          stackTrace.style === 'webkit' ? '<Jasmine>' : '    at <Jasmine>';
+      const result = [];
+      const jasmineMarker =
+        stackTrace.style === 'webkit' ? '<Jasmine>' : '    at <Jasmine>';
 
       stackTrace.frames.forEach(function(frame) {
         if (frame.file !== jasmineFile) {
@@ -78,10 +79,10 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
         return;
       }
 
-      var result = {};
-      var empty = true;
+      const result = {};
+      let empty = true;
 
-      for (var prop in error) {
+      for (const prop in error) {
         if (j$.util.arrayContains(ignoredProperties, prop)) {
           continue;
         }
