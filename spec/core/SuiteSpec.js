@@ -112,13 +112,9 @@ describe('Suite', function() {
   });
 
   it('has a status of failed if any expectations have failed', function() {
-    const suite = new jasmineUnderTest.Suite({
-      expectationResultFactory: function() {
-        return 'hi';
-      }
-    });
+    const suite = new jasmineUnderTest.Suite({});
 
-    suite.addExpectationResult(false);
+    suite.addExpectationResult(false, {});
     expect(suite.status()).toBe('failed');
   });
 
@@ -137,18 +133,17 @@ describe('Suite', function() {
 
   it('throws an ExpectationFailed when receiving a failed expectation when throwOnExpectationFailure is set', function() {
     const suite = new jasmineUnderTest.Suite({
-      expectationResultFactory: function(data) {
-        return data;
-      },
       throwOnExpectationFailure: true
     });
 
     expect(function() {
-      suite.addExpectationResult(false, 'failed');
+      suite.addExpectationResult(false, { message: 'failed' });
     }).toThrowError(jasmineUnderTest.errors.ExpectationFailed);
 
     expect(suite.status()).toBe('failed');
-    expect(suite.result.failedExpectations).toEqual(['failed']);
+    expect(suite.result.failedExpectations).toEqual([
+      jasmine.objectContaining({ message: 'failed' })
+    ]);
   });
 
   it('does not add an additional failure when an expectation fails', function() {
@@ -161,13 +156,7 @@ describe('Suite', function() {
 
   it('forwards late expectation failures to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
-    const expectationResultFactory = jasmine
-      .createSpy('expectationResultFactory')
-      .and.returnValue('built expectation result');
-    const suite = new jasmineUnderTest.Suite({
-      expectationResultFactory,
-      onLateError
-    });
+    const suite = new jasmineUnderTest.Suite({ onLateError });
     const data = {
       matcherName: '',
       passed: false,
@@ -179,15 +168,17 @@ describe('Suite', function() {
     suite.reportedDone = true;
     suite.addExpectationResult(false, data, true);
 
-    expect(expectationResultFactory).toHaveBeenCalledWith(data);
-    expect(onLateError).toHaveBeenCalledWith('built expectation result');
+    expect(onLateError).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        message: jasmine.stringMatching(/^Error: nope/)
+      })
+    );
     expect(suite.result.failedExpectations).toEqual([]);
   });
 
   it('does not forward non-late expectation failures to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
     const suite = new jasmineUnderTest.Suite({
-      expectationResultFactory: r => r,
       onLateError
     });
     const data = {
@@ -206,11 +197,7 @@ describe('Suite', function() {
 
   it('forwards late handleException calls to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
-    const expectationResultFactory = jasmine
-      .createSpy('expectationResultFactory')
-      .and.returnValue('built expectation result');
     const suite = new jasmineUnderTest.Suite({
-      expectationResultFactory,
       onLateError
     });
     const error = new Error('oops');
@@ -218,21 +205,17 @@ describe('Suite', function() {
     suite.reportedDone = true;
     suite.handleException(error);
 
-    expect(expectationResultFactory).toHaveBeenCalledWith({
-      matcherName: '',
-      passed: false,
-      expected: '',
-      actual: '',
-      error
-    });
-    expect(onLateError).toHaveBeenCalledWith('built expectation result');
+    expect(onLateError).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        message: jasmine.stringMatching(/^Error: oops/)
+      })
+    );
     expect(suite.result.failedExpectations).toEqual([]);
   });
 
   it('does not forward non-late handleException calls to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
     const suite = new jasmineUnderTest.Suite({
-      expectationResultFactory: r => r,
       onLateError
     });
     const error = new Error('oops');
@@ -245,7 +228,6 @@ describe('Suite', function() {
 
   it('clears the reportedDone flag when reset', function() {
     const suite = new jasmineUnderTest.Suite({
-      expectationResultFactory: r => r,
       queueableFn: { fn: function() {} }
     });
     suite.reportedDone = true;
@@ -346,11 +328,7 @@ describe('Suite', function() {
     });
 
     it('should reset the failedExpectations', function() {
-      const suite = new jasmineUnderTest.Suite({
-        expectationResultFactory: function(error) {
-          return error;
-        }
-      });
+      const suite = new jasmineUnderTest.Suite({});
       suite.handleException(new Error());
 
       suite.reset();

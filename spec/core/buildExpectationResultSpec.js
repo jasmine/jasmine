@@ -22,56 +22,38 @@ describe('buildExpectationResult', function() {
     expect(result.message).toBe('some-value');
   });
 
-  it('delegates message formatting to the provided formatter if there was an Error', function() {
-    const fakeError = { message: 'foo' },
-      messageFormatter = jasmine
-        .createSpy('exception message formatter')
-        .and.returnValue(fakeError.message);
+  describe('When the error property is provided', function() {
+    it('sets the message to the formatted error', function() {
+      const result = jasmineUnderTest.buildExpectationResult({
+        passed: false,
+        error: { message: 'foo', fileName: 'somefile.js' }
+      });
 
-    const result = jasmineUnderTest.buildExpectationResult({
-      passed: false,
-      error: fakeError,
-      messageFormatter: messageFormatter
+      expect(result.message).toEqual('foo in somefile.js');
     });
 
-    expect(messageFormatter).toHaveBeenCalledWith(fakeError);
-    expect(result.message).toEqual('foo');
+    it('delegates stack formatting to the provided formatter', function() {
+      const result = jasmineUnderTest.buildExpectationResult({
+        passed: false,
+        error: { stack: 'foo', extra: 'wombat' }
+      });
+
+      expect(result.stack).toEqual(
+        "error properties: Object({ extra: 'wombat' })\nfoo"
+      );
+    });
   });
 
-  it('delegates stack formatting to the provided formatter if there was an Error', function() {
-    const fakeError = { stack: 'foo' },
-      stackFormatter = jasmine
-        .createSpy('stack formatter')
-        .and.returnValue(fakeError.stack);
+  describe('When the errorForStack property is provided', function() {
+    it('builds the stack trace using errorForStack instead of Error', function() {
+      const result = jasmineUnderTest.buildExpectationResult({
+        passed: false,
+        errorForStack: { stack: 'foo' },
+        error: { stack: 'bar' }
+      });
 
-    const result = jasmineUnderTest.buildExpectationResult({
-      passed: false,
-      error: fakeError,
-      stackFormatter: stackFormatter
+      expect(result.stack).toEqual('bar');
     });
-
-    expect(stackFormatter).toHaveBeenCalledWith(fakeError, {
-      omitMessage: true
-    });
-    expect(result.stack).toEqual('foo');
-  });
-
-  it('delegates stack formatting to the provided formatter if there was a provided errorForStack', function() {
-    const fakeError = { stack: 'foo' },
-      stackFormatter = jasmine
-        .createSpy('stack formatter')
-        .and.returnValue(fakeError.stack);
-
-    const result = jasmineUnderTest.buildExpectationResult({
-      passed: false,
-      errorForStack: fakeError,
-      stackFormatter: stackFormatter
-    });
-
-    expect(stackFormatter).toHaveBeenCalledWith(fakeError, {
-      omitMessage: true
-    });
-    expect(result.stack).toEqual('foo');
   });
 
   it('matcherName returns passed matcherName', function() {

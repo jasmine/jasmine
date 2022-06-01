@@ -349,7 +349,7 @@ getJasmineRequireObj().Env = function(j$) {
         error.matcherName !== undefined && error.passed !== undefined;
       const result = isExpectationResult
         ? error
-        : expectationResultFactory({
+        : j$.buildExpectationResult({
             error,
             passed: false,
             matcherName: '',
@@ -499,16 +499,6 @@ getJasmineRequireObj().Env = function(j$) {
       return fullName.join(' ');
     };
 
-    // TODO: we may just be able to pass in the fn instead of wrapping here
-    var buildExpectationResult = j$.buildExpectationResult,
-      exceptionFormatter = new j$.ExceptionFormatter(),
-      expectationResultFactory = function(attrs) {
-        attrs.messageFormatter = exceptionFormatter.message;
-        attrs.stackFormatter = exceptionFormatter.stack;
-
-        return buildExpectationResult(attrs);
-      };
-
     /**
      * Causes a deprecation warning to be logged to the console and reported to
      * reporters.
@@ -574,7 +564,6 @@ getJasmineRequireObj().Env = function(j$) {
       description: 'Jasmine__TopLevel__Suite',
       expectationFactory: expectationFactory,
       asyncExpectationFactory: suiteAsyncExpectationFactory,
-      expectationResultFactory: expectationResultFactory,
       autoCleanClosures: config.autoCleanClosures,
       onLateError: recordLateError
     });
@@ -1033,7 +1022,6 @@ getJasmineRequireObj().Env = function(j$) {
         timer: new j$.Timer(),
         expectationFactory: expectationFactory,
         asyncExpectationFactory: suiteAsyncExpectationFactory,
-        expectationResultFactory: expectationResultFactory,
         throwOnExpectationFailure: config.stopSpecOnExpectationFailure,
         autoCleanClosures: config.autoCleanClosures,
         onLateError: recordLateError
@@ -1142,7 +1130,6 @@ getJasmineRequireObj().Env = function(j$) {
         },
         onStart: specStarted,
         description: description,
-        expectationResultFactory: expectationResultFactory,
         queueRunnerFactory: queueRunnerFactory,
         userContext: function() {
           return suite.clonedSharedUserContext();

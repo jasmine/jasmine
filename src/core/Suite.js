@@ -25,7 +25,6 @@ getJasmineRequireObj().Suite = function(j$) {
     this.description = attrs.description;
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
-    this.expectationResultFactory = attrs.expectationResultFactory;
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
     this.autoCleanClosures =
       attrs.autoCleanClosures === undefined ? true : !!attrs.autoCleanClosures;
@@ -210,14 +209,14 @@ getJasmineRequireObj().Suite = function(j$) {
       return;
     }
 
-    var data = {
+    const data = {
       matcherName: '',
       passed: false,
       expected: '',
       actual: '',
       error: arguments[0]
     };
-    var failedExpectation = this.expectationResultFactory(data);
+    const failedExpectation = j$.buildExpectationResult(data);
 
     if (!this.parentSuite) {
       failedExpectation.globalErrorType = 'afterAll';
@@ -255,7 +254,7 @@ getJasmineRequireObj().Suite = function(j$) {
   Suite.prototype.addExpectationResult = function() {
     if (isFailure(arguments)) {
       const data = arguments[1];
-      const expectationResult = this.expectationResultFactory(data);
+      const expectationResult = j$.buildExpectationResult(data);
 
       if (this.reportedDone) {
         this.onLateError(expectationResult);
@@ -274,7 +273,7 @@ getJasmineRequireObj().Suite = function(j$) {
       deprecation = { message: deprecation };
     }
     this.result.deprecationWarnings.push(
-      this.expectationResultFactory(deprecation)
+      j$.buildExpectationResult(deprecation)
     );
   };
 

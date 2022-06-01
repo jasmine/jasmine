@@ -1,8 +1,7 @@
 //TODO: expectation result may make more sense as a presentation of an expectation.
 getJasmineRequireObj().buildExpectationResult = function(j$) {
   function buildExpectationResult(options) {
-    const messageFormatter = options.messageFormatter || function() {};
-    const stackFormatter = options.stackFormatter || function() {};
+    const exceptionFormatter = new j$.ExceptionFormatter();
 
     /**
      * @typedef Expectation
@@ -52,7 +51,7 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
       } else if (options.message) {
         return options.message;
       } else if (options.error) {
-        return messageFormatter(options.error);
+        return exceptionFormatter.message(options.error);
       }
       return '';
     }
@@ -79,7 +78,7 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
       }
       // Omit the message from the stack trace because it will be
       // included elsewhere.
-      return stackFormatter(error, { omitMessage: true });
+      return exceptionFormatter.stack(error, { omitMessage: true });
     }
   }
 

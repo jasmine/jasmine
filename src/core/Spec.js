@@ -43,8 +43,6 @@ getJasmineRequireObj().Spec = function(j$) {
       function() {
         return '';
       };
-    this.expectationResultFactory =
-      attrs.expectationResultFactory || function() {};
     this.onLateError = attrs.onLateError || function() {};
     this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
     this.catchingExceptions =
@@ -91,7 +89,7 @@ getJasmineRequireObj().Spec = function(j$) {
   }
 
   Spec.prototype.addExpectationResult = function(passed, data, isError) {
-    const expectationResult = this.expectationResultFactory(data);
+    const expectationResult = j$.buildExpectationResult(data);
     if (passed) {
       this.result.passedExpectations.push(expectationResult);
     } else {
@@ -296,7 +294,7 @@ getJasmineRequireObj().Spec = function(j$) {
       deprecation = { message: deprecation };
     }
     this.result.deprecationWarnings.push(
-      this.expectationResultFactory(deprecation)
+      j$.buildExpectationResult(deprecation)
     );
   };
 
