@@ -1,8 +1,8 @@
 //TODO: expectation result may make more sense as a presentation of an expectation.
 getJasmineRequireObj().buildExpectationResult = function(j$) {
   function buildExpectationResult(options) {
-    var messageFormatter = options.messageFormatter || function() {},
-      stackFormatter = options.stackFormatter || function() {};
+    const messageFormatter = options.messageFormatter || function() {};
+    const stackFormatter = options.stackFormatter || function() {};
 
     /**
      * @typedef Expectation
@@ -16,7 +16,7 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
      * is reported on the top suite. Valid values are undefined, "afterAll",
      * "load", "lateExpectation", and "lateError".
      */
-    var result = {
+    const result = {
       matcherName: options.matcherName,
       message: message(),
       stack: options.omitStackTrace ? '' : stack(),
@@ -62,7 +62,8 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
         return '';
       }
 
-      var error = options.error;
+      let error = options.error;
+      
       if (!error) {
         if (options.errorForStack) {
           error = options.errorForStack;
