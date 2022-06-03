@@ -104,7 +104,9 @@ describe('toBeInstanceOf', function() {
     });
 
     it('passes for an async function', function() {
-      const fn = eval("(async function fn() { return 'foo'; })");
+      async function fn() {
+        return 'foo';
+      }
 
       const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(fn, Function);

@@ -24,11 +24,10 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     ) {
       var f;
       if (typeof funcToCall === 'string') {
-        /* jshint evil: true */
         f = function() {
+          // eslint-disable-next-line no-eval
           return eval(funcToCall);
         };
-        /* jshint evil: false */
       } else {
         f = funcToCall;
       }

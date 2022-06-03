@@ -1,5 +1,3 @@
-/*jshint bitwise: false*/
-
 getJasmineRequireObj().Order = function() {
   function Order(options) {
     this.random = 'random' in options ? options.random : true;

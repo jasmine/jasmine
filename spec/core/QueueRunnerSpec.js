@@ -632,7 +632,8 @@ describe('QueueRunner', function() {
     });
 
     it('issues a more specific error if the function is `async`', function() {
-      eval('var fn = async function(done){};');
+      // eslint-disable-next-line no-unused-vars
+      async function fn(done) {}
       const onException = jasmine.createSpy('onException'),
         queueRunner = new jasmineUnderTest.QueueRunner({
           queueableFns: [{ fn: fn }],

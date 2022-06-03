@@ -95,7 +95,8 @@
         "error",
         "always"
       ],
-      "space-before-blocks": "error"
+      "space-before-blocks": "error",
+      "no-eval": "error"
     }
   },
   "browserslist": [

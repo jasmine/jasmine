@@ -106,9 +106,9 @@ describe('SpyStrategy', function() {
 
   it('allows a fake async function to be called instead', function(done) {
     const originalFn = jasmine.createSpy('original'),
-      fakeFn = jasmine
-        .createSpy('fake')
-        .and.callFake(eval('async () => { return 67; }')),
+      fakeFn = jasmine.createSpy('fake').and.callFake(async () => {
+        return 67;
+      }),
       spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
 
     spyStrategy.callFake(fakeFn);
