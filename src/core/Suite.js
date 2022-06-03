@@ -1,27 +1,8 @@
 getJasmineRequireObj().Suite = function(j$) {
-  /**
-   * @interface Suite
-   * @see Env#topSuite
-   * @since 2.0.0
-   */
   function Suite(attrs) {
     this.env = attrs.env;
-    /**
-     * The unique ID of this suite.
-     * @name Suite#id
-     * @readonly
-     * @type {string}
-     * @since 2.0.0
-     */
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
-    /**
-     * The description passed to the {@link describe} that created this suite.
-     * @name Suite#description
-     * @readonly
-     * @type {string}
-     * @since 2.0.0
-     */
     this.description = attrs.description;
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
@@ -35,13 +16,6 @@ getJasmineRequireObj().Suite = function(j$) {
     this.beforeAllFns = [];
     this.afterAllFns = [];
     this.timer = attrs.timer || new j$.Timer();
-
-    /**
-     * The suite's children.
-     * @name Suite#children
-     * @type {Array.<(Spec|Suite)>}
-     * @since 2.0.0
-     */
     this.children = [];
 
     this.reset();
@@ -60,13 +34,6 @@ getJasmineRequireObj().Suite = function(j$) {
     return this.asyncExpectationFactory(actual, this);
   };
 
-  /**
-   * The full description including all ancestors of this suite.
-   * @name Suite#getFullName
-   * @function
-   * @returns {string}
-   * @since 2.0.0
-   */
   Suite.prototype.getFullName = function() {
     var fullName = [];
     for (
@@ -290,6 +257,7 @@ getJasmineRequireObj().Suite = function(j$) {
   /**
    * @interface Suite
    * @see Env#topSuite
+   * @since 2.0.0
    */
   function SuiteMetadata(suite) {
     this.suite_ = suite;
@@ -298,6 +266,7 @@ getJasmineRequireObj().Suite = function(j$) {
      * @name Suite#id
      * @readonly
      * @type {string}
+     * @since 2.0.0
      */
     this.id = suite.id;
 
@@ -314,6 +283,7 @@ getJasmineRequireObj().Suite = function(j$) {
      * @name Suite#description
      * @readonly
      * @type {string}
+     * @since 2.0.0
      */
     this.description = suite.description;
   }
@@ -323,6 +293,7 @@ getJasmineRequireObj().Suite = function(j$) {
    * @name Suite#getFullName
    * @function
    * @returns {string}
+   * @since 2.0.0
    */
   SuiteMetadata.prototype.getFullName = function() {
     return this.suite_.getFullName();
@@ -332,6 +303,7 @@ getJasmineRequireObj().Suite = function(j$) {
    * The suite's children.
    * @name Suite#children
    * @type {Array.<(Spec|Suite)>}
+   * @since 2.0.0
    */
   Object.defineProperty(SuiteMetadata.prototype, 'children', {
     get: function() {
