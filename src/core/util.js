@@ -1,15 +1,15 @@
 getJasmineRequireObj().util = function(j$) {
-  var util = {};
+  const util = {};
 
   util.inherit = function(childClass, parentClass) {
-    var Subclass = function() {};
+    const Subclass = function() {};
     Subclass.prototype = parentClass.prototype;
     childClass.prototype = new Subclass();
   };
 
   util.argsToArray = function(args) {
-    var arrayOfArgs = [];
-    for (var i = 0; i < args.length; i++) {
+    const arrayOfArgs = [];
+    for (let i = 0; i < args.length; i++) {
       arrayOfArgs.push(args[i]);
     }
     return arrayOfArgs;
@@ -20,7 +20,7 @@ getJasmineRequireObj().util = function(j$) {
   };
 
   util.arrayContains = function(array, search) {
-    var i = array.length;
+    let i = array.length;
     while (i--) {
       if (array[i] === search) {
         return true;
@@ -34,8 +34,8 @@ getJasmineRequireObj().util = function(j$) {
       return obj.slice();
     }
 
-    var cloned = {};
-    for (var prop in obj) {
+    const cloned = {};
+    for (const prop in obj) {
       if (obj.hasOwnProperty(prop)) {
         cloned[prop] = obj[prop];
       }
@@ -45,10 +45,10 @@ getJasmineRequireObj().util = function(j$) {
   };
 
   util.cloneArgs = function(args) {
-    var clonedArgs = [];
-    var argsAsArray = j$.util.argsToArray(args);
-    for (var i = 0; i < argsAsArray.length; i++) {
-      var str = Object.prototype.toString.apply(argsAsArray[i]),
+    const clonedArgs = [];
+    const argsAsArray = j$.util.argsToArray(args);
+    for (let i = 0; i < argsAsArray.length; i++) {
+      const str = Object.prototype.toString.apply(argsAsArray[i]),
         primitives = /^\[object (Boolean|String|RegExp|Number)/;
 
       // All falsey values are either primitives, `null`, or `undefined.
@@ -64,7 +64,7 @@ getJasmineRequireObj().util = function(j$) {
   };
 
   util.getPropertyDescriptor = function(obj, methodName) {
-    var descriptor,
+    let descriptor,
       proto = obj;
 
     do {
@@ -87,12 +87,12 @@ getJasmineRequireObj().util = function(j$) {
   };
 
   function callerFile() {
-    var trace = new j$.StackTrace(util.errorWithStack());
+    const trace = new j$.StackTrace(util.errorWithStack());
     return trace.frames[2].file;
   }
 
   util.jasmineFile = (function() {
-    var result;
+    let result;
 
     return function() {
       if (!result) {
@@ -113,7 +113,7 @@ getJasmineRequireObj().util = function(j$) {
     // exceeded. But on all currently supported JS runtimes, setTimeout calls
     // the callback immediately when the timeout is greater than 2147483647
     // (the maximum value of a signed 32 bit integer).
-    var max = 2147483647;
+    const max = 2147483647;
 
     if (timeout > max) {
       throw new Error(

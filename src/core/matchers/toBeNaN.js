@@ -10,7 +10,7 @@ getJasmineRequireObj().toBeNaN = function(j$) {
   function toBeNaN(matchersUtil) {
     return {
       compare: function(actual) {
-        var result = {
+        const result = {
           pass: actual !== actual
         };
 

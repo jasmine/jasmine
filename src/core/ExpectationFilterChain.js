@@ -22,15 +22,13 @@ getJasmineRequireObj().ExpectationFilterChain = function() {
   };
 
   ExpectationFilterChain.prototype.modifyFailureMessage = function(msg) {
-    var result = this.callFirst_('modifyFailureMessage', arguments).result;
+    const result = this.callFirst_('modifyFailureMessage', arguments).result;
     return result || msg;
   };
 
   ExpectationFilterChain.prototype.callFirst_ = function(fname, args) {
-    var prevResult;
-
     if (this.prev_) {
-      prevResult = this.prev_.callFirst_(fname, args);
+      const prevResult = this.prev_.callFirst_(fname, args);
 
       if (prevResult.found) {
         return prevResult;

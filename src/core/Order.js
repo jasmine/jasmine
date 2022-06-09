@@ -1,7 +1,7 @@
 getJasmineRequireObj().Order = function() {
   function Order(options) {
     this.random = 'random' in options ? options.random : true;
-    var seed = (this.seed = options.seed || generateSeed());
+    const seed = (this.seed = options.seed || generateSeed());
     this.sort = this.random ? randomOrder : naturalOrder;
 
     function naturalOrder(items) {
@@ -9,7 +9,7 @@ getJasmineRequireObj().Order = function() {
     }
 
     function randomOrder(items) {
-      var copy = items.slice();
+      const copy = items.slice();
       copy.sort(function(a, b) {
         return jenkinsHash(seed + a.id) - jenkinsHash(seed + b.id);
       });
@@ -26,7 +26,7 @@ getJasmineRequireObj().Order = function() {
     // used in conjunction with a seed
 
     function jenkinsHash(key) {
-      var hash, i;
+      let hash, i;
       for (hash = i = 0; i < key.length; ++i) {
         hash += key.charCodeAt(i);
         hash += hash << 10;

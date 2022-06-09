@@ -16,7 +16,7 @@ getJasmineRequireObj().MapContaining = function(j$) {
     for (const [key, value] of this.sample) {
       // for each key/value pair in `sample`
       // there should be at least one pair in `other` whose key and value both match
-      var hasMatch = false;
+      let hasMatch = false;
       for (const [oKey, oValue] of other) {
         if (
           matchersUtil.equals(oKey, key) &&

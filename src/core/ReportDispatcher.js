@@ -1,9 +1,8 @@
 getJasmineRequireObj().ReportDispatcher = function(j$) {
   function ReportDispatcher(methods, queueRunnerFactory, onLateError) {
-    var dispatchedMethods = methods || [];
+    const dispatchedMethods = methods || [];
 
-    for (var i = 0; i < dispatchedMethods.length; i++) {
-      var method = dispatchedMethods[i];
+    for (const method of dispatchedMethods) {
       this[method] = (function(m) {
         return function() {
           dispatch(m, arguments);
@@ -11,8 +10,8 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
       })(method);
     }
 
-    var reporters = [];
-    var fallbackReporter = null;
+    let reporters = [];
+    let fallbackReporter = null;
 
     this.addReporter = function(reporter) {
       reporters.push(reporter);
@@ -32,11 +31,10 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
       if (reporters.length === 0 && fallbackReporter !== null) {
         reporters.push(fallbackReporter);
       }
-      var onComplete = args[args.length - 1];
+      const onComplete = args[args.length - 1];
       args = j$.util.argsToArray(args).splice(0, args.length - 1);
-      var fns = [];
-      for (var i = 0; i < reporters.length; i++) {
-        var reporter = reporters[i];
+      const fns = [];
+      for (const reporter of reporters) {
         addFn(fns, reporter, method, args);
       }
 
@@ -56,12 +54,12 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
     }
 
     function addFn(fns, reporter, method, args) {
-      var fn = reporter[method];
+      const fn = reporter[method];
       if (!fn) {
         return;
       }
 
-      var thisArgs = j$.util.cloneArgs(args);
+      const thisArgs = j$.util.cloneArgs(args);
       if (fn.length <= 1) {
         fns.push({
           fn: function() {

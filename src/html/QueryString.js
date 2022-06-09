@@ -8,7 +8,7 @@ jasmineRequire.QueryString = function() {
     };
 
     this.fullStringWithNewParam = function(key, value) {
-      var paramMap = queryStringToParamMap();
+      const paramMap = queryStringToParamMap();
       paramMap[key] = value;
       return toQueryString(paramMap);
     };
@@ -20,8 +20,8 @@ jasmineRequire.QueryString = function() {
     return this;
 
     function toQueryString(paramMap) {
-      var qStrPairs = [];
-      for (var prop in paramMap) {
+      const qStrPairs = [];
+      for (const prop in paramMap) {
         qStrPairs.push(
           encodeURIComponent(prop) + '=' + encodeURIComponent(paramMap[prop])
         );
@@ -30,15 +30,15 @@ jasmineRequire.QueryString = function() {
     }
 
     function queryStringToParamMap() {
-      var paramStr = options.getWindowLocation().search.substring(1),
-        params = [],
-        paramMap = {};
+      const paramStr = options.getWindowLocation().search.substring(1);
+      let params = [];
+      const paramMap = {};
 
       if (paramStr.length > 0) {
         params = paramStr.split('&');
-        for (var i = 0; i < params.length; i++) {
-          var p = params[i].split('=');
-          var value = decodeURIComponent(p[1]);
+        for (let i = 0; i < params.length; i++) {
+          const p = params[i].split('=');
+          let value = decodeURIComponent(p[1]);
           if (value === 'true' || value === 'false') {
             value = JSON.parse(value);
           }

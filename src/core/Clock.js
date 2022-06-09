@@ -1,6 +1,6 @@
 getJasmineRequireObj().Clock = function() {
   /* global process */
-  var NODE_JS =
+  const NODE_JS =
     typeof process !== 'undefined' &&
     process.versions &&
     typeof process.versions.node === 'string';
@@ -14,7 +14,7 @@ getJasmineRequireObj().Clock = function() {
    * @hideconstructor
    */
   function Clock(global, delayedFunctionSchedulerFactory, mockDate) {
-    var self = this,
+    const self = this,
       realTimingFunctions = {
         setTimeout: global.setTimeout,
         clearTimeout: global.clearTimeout,
@@ -26,10 +26,10 @@ getJasmineRequireObj().Clock = function() {
         clearTimeout: clearTimeout,
         setInterval: setInterval,
         clearInterval: clearInterval
-      },
-      installed = false,
-      delayedFunctionScheduler,
-      timer;
+      };
+    let installed = false;
+    let delayedFunctionScheduler;
+    let timer;
 
     self.FakeTimeout = FakeTimeout;
 
@@ -151,7 +151,7 @@ getJasmineRequireObj().Clock = function() {
     }
 
     function replace(dest, source) {
-      for (var prop in source) {
+      for (const prop in source) {
         dest[prop] = source[prop];
       }
     }
@@ -165,7 +165,7 @@ getJasmineRequireObj().Clock = function() {
         );
       }
 
-      var timeout = new FakeTimeout();
+      const timeout = new FakeTimeout();
 
       delayedFunctionScheduler.scheduleFunction(
         fn,
@@ -192,7 +192,7 @@ getJasmineRequireObj().Clock = function() {
         );
       }
 
-      var timeout = new FakeTimeout();
+      const timeout = new FakeTimeout();
 
       delayedFunctionScheduler.scheduleFunction(
         fn,

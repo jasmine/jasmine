@@ -12,7 +12,7 @@ getJasmineRequireObj().toHaveSize = function(j$) {
   function toHaveSize() {
     return {
       compare: function(actual, expected) {
-        var result = {
+        const result = {
           pass: false
         };
 
@@ -37,7 +37,7 @@ getJasmineRequireObj().toHaveSize = function(j$) {
     };
   }
 
-  var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
+  const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
   function isLength(value) {
     return (
       typeof value == 'number' &&

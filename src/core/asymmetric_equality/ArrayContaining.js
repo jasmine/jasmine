@@ -19,8 +19,7 @@ getJasmineRequireObj().ArrayContaining = function(j$) {
       return false;
     }
 
-    for (var i = 0; i < this.sample.length; i++) {
-      var item = this.sample[i];
+    for (const item of this.sample) {
       if (!matchersUtil.contains(other, item)) {
         return false;
       }

@@ -12,7 +12,7 @@
  */
 
 (function() {
-  var env = jasmine.getEnv();
+  const env = jasmine.getEnv();
 
   /**
    * ## Runner Parameters
@@ -20,15 +20,15 @@
    * More browser specific code - wrap the query string in an object and to allow for getting/setting parameters from the runner user interface.
    */
 
-  var queryString = new jasmine.QueryString({
+  const queryString = new jasmine.QueryString({
     getWindowLocation: function() {
       return window.location;
     }
   });
 
-  var filterSpecs = !!queryString.getParam('spec');
+  const filterSpecs = !!queryString.getParam('spec');
 
-  var config = {
+  const config = {
     stopOnSpecFailure: queryString.getParam('stopOnSpecFailure'),
     stopSpecOnExpectationFailure: queryString.getParam(
       'stopSpecOnExpectationFailure'
@@ -36,13 +36,13 @@
     hideDisabled: queryString.getParam('hideDisabled')
   };
 
-  var random = queryString.getParam('random');
+  const random = queryString.getParam('random');
 
   if (random !== undefined && random !== '') {
     config.random = random;
   }
 
-  var seed = queryString.getParam('seed');
+  const seed = queryString.getParam('seed');
   if (seed) {
     config.seed = seed;
   }
@@ -51,7 +51,7 @@
    * ## Reporters
    * The `HtmlReporter` builds all of the HTML UI for the runner page. This reporter paints the dots, stars, and x's for specs, as well as all spec names and all failures (if any).
    */
-  var htmlReporter = new jasmine.HtmlReporter({
+  const htmlReporter = new jasmine.HtmlReporter({
     env: env,
     navigateWithNewParam: function(key, value) {
       return queryString.navigateWithNewParam(key, value);
@@ -81,7 +81,7 @@
   /**
    * Filter which specs will be run by matching the start of the full name against the `spec` query param.
    */
-  var specFilter = new jasmine.HtmlSpecFilter({
+  const specFilter = new jasmine.HtmlSpecFilter({
     filterString: function() {
       return queryString.getParam('spec');
     }
@@ -98,7 +98,7 @@
    *
    * Replace the browser window's `onload`, ensure it's called, and then run all of the loaded specs. This includes initializing the `HtmlReporter` instance and then executing the loaded Jasmine environment. All of this will happen after all of the specs are loaded.
    */
-  var currentWindowOnload = window.onload;
+  const currentWindowOnload = window.onload;
 
   window.onload = function() {
     if (currentWindowOnload) {

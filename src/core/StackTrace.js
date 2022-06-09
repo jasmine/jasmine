@@ -1,22 +1,22 @@
 getJasmineRequireObj().StackTrace = function(j$) {
   function StackTrace(error) {
-    var lines = error.stack.split('\n').filter(function(line) {
+    let lines = error.stack.split('\n').filter(function(line) {
       return line !== '';
     });
 
-    var extractResult = extractMessage(error.message, lines);
+    const extractResult = extractMessage(error.message, lines);
 
     if (extractResult) {
       this.message = extractResult.message;
       lines = extractResult.remainder;
     }
 
-    var parseResult = tryParseFrames(lines);
+    const parseResult = tryParseFrames(lines);
     this.frames = parseResult.frames;
     this.style = parseResult.style;
   }
 
-  var framePatterns = [
+  const framePatterns = [
     // Node, Chrome, Edge
     // e.g. "   at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)"
     // Note that the "function name" can include a surprisingly large set of
@@ -46,16 +46,15 @@ getJasmineRequireObj().StackTrace = function(j$) {
   // regexes should capture the function name (if any) as group 1
   // and the file, line, and column as group 2.
   function tryParseFrames(lines) {
-    var style = null;
-    var frames = lines.map(function(line) {
-      var convertedLine = first(framePatterns, function(pattern) {
-        var overallMatch = line.match(pattern.re),
-          fileLineColMatch;
+    let style = null;
+    const frames = lines.map(function(line) {
+      const convertedLine = first(framePatterns, function(pattern) {
+        const overallMatch = line.match(pattern.re);
         if (!overallMatch) {
           return null;
         }
 
-        fileLineColMatch = overallMatch[pattern.fileLineColIx].match(
+        const fileLineColMatch = overallMatch[pattern.fileLineColIx].match(
           /^(.*):(\d+):\d+$/
         );
         if (!fileLineColMatch) {
@@ -81,10 +80,8 @@ getJasmineRequireObj().StackTrace = function(j$) {
   }
 
   function first(items, fn) {
-    var i, result;
-
-    for (i = 0; i < items.length; i++) {
-      result = fn(items[i]);
+    for (const item of items) {
+      const result = fn(item);
 
       if (result) {
         return result;
@@ -93,7 +90,7 @@ getJasmineRequireObj().StackTrace = function(j$) {
   }
 
   function extractMessage(message, stackLines) {
-    var len = messagePrefixLength(message, stackLines);
+    const len = messagePrefixLength(message, stackLines);
 
     if (len > 0) {
       return {
@@ -108,10 +105,9 @@ getJasmineRequireObj().StackTrace = function(j$) {
       return 0;
     }
 
-    var messageLines = message.split('\n');
-    var i;
+    const messageLines = message.split('\n');
 
-    for (i = 1; i < messageLines.length; i++) {
+    for (let i = 1; i < messageLines.length; i++) {
       if (messageLines[i] !== stackLines[i]) {
         return 0;
       }

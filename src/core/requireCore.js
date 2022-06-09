@@ -1,6 +1,6 @@
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars,no-var
 var getJasmineRequireObj = (function(jasmineGlobal) {
-  var jasmineRequire;
+  let jasmineRequire;
 
   if (
     typeof module !== 'undefined' &&
@@ -29,7 +29,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
   }
 
   getJasmineRequire().core = function(jRequire) {
-    var j$ = {};
+    const j$ = {};
 
     jRequire.base(j$, jasmineGlobal);
     j$.util = jRequire.util(j$);

@@ -1,5 +1,5 @@
 getJasmineRequireObj().Timer = function() {
-  var defaultNow = (function(Date) {
+  const defaultNow = (function(Date) {
     return function() {
       return new Date().getTime();
     };
@@ -8,8 +8,8 @@ getJasmineRequireObj().Timer = function() {
   function Timer(options) {
     options = options || {};
 
-    var now = options.now || defaultNow,
-      startTime;
+    const now = options.now || defaultNow;
+    let startTime;
 
     this.start = function() {
       startTime = now();

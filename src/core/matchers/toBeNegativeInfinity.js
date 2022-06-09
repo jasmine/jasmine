@@ -10,7 +10,7 @@ getJasmineRequireObj().toBeNegativeInfinity = function(j$) {
   function toBeNegativeInfinity(matchersUtil) {
     return {
       compare: function(actual) {
-        var result = {
+        const result = {
           pass: actual === Number.NEGATIVE_INFINITY
         };
 

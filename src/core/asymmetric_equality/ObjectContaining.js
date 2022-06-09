@@ -27,7 +27,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
       return false;
     }
 
-    for (var property in this.sample) {
+    for (const property in this.sample) {
       if (
         !hasProperty(other, property) ||
         !matchersUtil.equals(this.sample[property], other[property])
@@ -47,7 +47,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
       };
     }
 
-    var filteredOther = {};
+    const filteredOther = {};
     Object.keys(this.sample).forEach(function(k) {
       // eq short-circuits comparison of objects that have different key sets,
       // so include all keys even if undefined.

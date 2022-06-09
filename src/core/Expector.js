@@ -19,20 +19,20 @@ getJasmineRequireObj().Expector = function(j$) {
 
     this.args.unshift(this.actual);
 
-    var matcher = matcherFactory(this.matchersUtil);
+    const matcher = matcherFactory(this.matchersUtil);
 
-    var comparisonFunc = this.filters.selectComparisonFunc(matcher);
+    const comparisonFunc = this.filters.selectComparisonFunc(matcher);
     return comparisonFunc || matcher.compare;
   };
 
   Expector.prototype.buildMessage = function(result) {
-    var self = this;
+    const self = this;
 
     if (result.pass) {
       return '';
     }
 
-    var msg = this.filters.buildFailureMessage(
+    const msg = this.filters.buildFailureMessage(
       result,
       this.matcherName,
       this.args,
@@ -43,7 +43,7 @@ getJasmineRequireObj().Expector = function(j$) {
 
     function defaultMessage() {
       if (!result.message) {
-        var args = self.args.slice();
+        const args = self.args.slice();
         args.unshift(false);
         args.unshift(self.matcherName);
         return self.matchersUtil.buildFailureMessage.apply(
@@ -59,7 +59,7 @@ getJasmineRequireObj().Expector = function(j$) {
   };
 
   Expector.prototype.compare = function(matcherName, matcherFactory, args) {
-    var matcherCompare = this.instantiateMatcher(
+    const matcherCompare = this.instantiateMatcher(
       matcherName,
       matcherFactory,
       args
@@ -68,13 +68,13 @@ getJasmineRequireObj().Expector = function(j$) {
   };
 
   Expector.prototype.addFilter = function(filter) {
-    var result = Object.create(this);
+    const result = Object.create(this);
     result.filters = this.filters.addFilter(filter);
     return result;
   };
 
   Expector.prototype.processResult = function(result, errorForStack) {
-    var message = this.buildMessage(result);
+    const message = this.buildMessage(result);
 
     if (this.expected.length === 1) {
       this.expected = this.expected[0];

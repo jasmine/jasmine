@@ -1,15 +1,15 @@
 getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
   function DelayedFunctionScheduler() {
-    var self = this;
-    var scheduledLookup = [];
-    var scheduledFunctions = {};
-    var currentTime = 0;
-    var delayedFnCount = 0;
-    var deletedKeys = [];
+    const self = this;
+    const scheduledLookup = [];
+    const scheduledFunctions = {};
+    let currentTime = 0;
+    let delayedFnCount = 0;
+    let deletedKeys = [];
 
     self.tick = function(millis, tickDate) {
       millis = millis || 0;
-      var endTime = currentTime + millis;
+      const endTime = currentTime + millis;
 
       runScheduledFunctions(endTime, tickDate);
     };
@@ -22,7 +22,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       timeoutKey,
       runAtMillis
     ) {
-      var f;
+      let f;
       if (typeof funcToCall === 'string') {
         f = function() {
           // eslint-disable-next-line no-eval
@@ -36,7 +36,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       timeoutKey = timeoutKey || ++delayedFnCount;
       runAtMillis = runAtMillis || currentTime + millis;
 
-      var funcToSchedule = {
+      const funcToSchedule = {
         runAtMillis: runAtMillis,
         funcToCall: f,
         recurring: recurring,
@@ -61,9 +61,9 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     self.removeFunctionWithId = function(timeoutKey) {
       deletedKeys.push(timeoutKey);
 
-      for (var runAtMillis in scheduledFunctions) {
-        var funcs = scheduledFunctions[runAtMillis];
-        var i = indexOfFirstToPass(funcs, function(func) {
+      for (const runAtMillis in scheduledFunctions) {
+        const funcs = scheduledFunctions[runAtMillis];
+        const i = indexOfFirstToPass(funcs, function(func) {
           return func.timeoutKey === timeoutKey;
         });
 
@@ -85,9 +85,9 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     return self;
 
     function indexOfFirstToPass(array, testFn) {
-      var index = -1;
+      let index = -1;
 
-      for (var i = 0; i < array.length; ++i) {
+      for (let i = 0; i < array.length; ++i) {
         if (testFn(array[i])) {
           index = i;
           break;
@@ -98,8 +98,8 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     }
 
     function deleteFromLookup(key) {
-      var value = Number(key);
-      var i = indexOfFirstToPass(scheduledLookup, function(millis) {
+      const value = Number(key);
+      const i = indexOfFirstToPass(scheduledLookup, function(millis) {
         return millis === value;
       });
 
@@ -120,8 +120,8 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     }
 
     function forEachFunction(funcsToRun, callback) {
-      for (var i = 0; i < funcsToRun.length; ++i) {
-        callback(funcsToRun[i]);
+      for (const f of funcsToRun) {
+        callback(f);
       }
     }
 
@@ -137,13 +137,13 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
 
       do {
         deletedKeys = [];
-        var newCurrentTime = scheduledLookup.shift();
+        const newCurrentTime = scheduledLookup.shift();
         if (newCurrentTime >= currentTime) {
           tickDate(newCurrentTime - currentTime);
           currentTime = newCurrentTime;
         }
 
-        var funcsToRun = scheduledFunctions[currentTime];
+        const funcsToRun = scheduledFunctions[currentTime];
 
         delete scheduledFunctions[currentTime];
 

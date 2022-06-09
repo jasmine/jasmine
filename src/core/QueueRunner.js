@@ -1,12 +1,12 @@
 getJasmineRequireObj().QueueRunner = function(j$) {
-  var nextid = 1;
+  let nextid = 1;
 
   function StopExecutionError() {}
   StopExecutionError.prototype = new Error();
   j$.StopExecutionError = StopExecutionError;
 
   function once(fn, onTwice) {
-    var called = false;
+    let called = false;
     return function(arg) {
       if (called) {
         if (onTwice) {
@@ -66,7 +66,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   }
 
   QueueRunner.prototype.execute = function() {
-    var self = this;
+    const self = this;
     this.handleFinalError = function(message, source, lineno, colno, error) {
       // Older browsers would send the error as the first parameter. HTML5
       // specifies the the five parameters above. The error instance should
@@ -92,57 +92,57 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.attempt = function attempt(iterativeIndex) {
-    var self = this,
-      completedSynchronously = true,
-      handleError = function handleError(error) {
-        // TODO probably shouldn't next() right away here.
-        // That makes debugging async failures much more confusing.
-        onException(error);
+    let timeoutId;
+    let timedOut;
+    const self = this;
+    let completedSynchronously = true;
+    function handleError(error) {
+      // TODO probably shouldn't next() right away here.
+      // That makes debugging async failures much more confusing.
+      onException(error);
+    }
+    const cleanup = once(function cleanup() {
+      if (timeoutId !== void 0) {
+        self.clearTimeout(timeoutId);
+      }
+      self.globalErrors.popListener(handleError);
+    });
+    const next = once(
+      function next(err) {
+        cleanup();
+
+        if (typeof err !== 'undefined') {
+          if (!(err instanceof StopExecutionError) && !err.jasmineMessage) {
+            self.fail(err);
+          }
+          self.recordError_(iterativeIndex);
+        }
+
+        function runNext() {
+          self.run(self.nextFnIx_(iterativeIndex));
+        }
+
+        if (completedSynchronously) {
+          self.setTimeout(runNext);
+        } else {
+          runNext();
+        }
       },
-      cleanup = once(function cleanup() {
-        if (timeoutId !== void 0) {
-          self.clearTimeout(timeoutId);
+      function() {
+        try {
+          if (!timedOut) {
+            self.onMultipleDone();
+          }
+        } catch (error) {
+          // Any error we catch here is probably due to a bug in Jasmine,
+          // and it's not likely to end up anywhere useful if we let it
+          // propagate. Log it so it can at least show up when debugging.
+          console.error(error);
         }
-        self.globalErrors.popListener(handleError);
-      }),
-      next = once(
-        function next(err) {
-          cleanup();
-
-          if (typeof err !== 'undefined') {
-            if (!(err instanceof StopExecutionError) && !err.jasmineMessage) {
-              self.fail(err);
-            }
-            self.recordError_(iterativeIndex);
-          }
-
-          function runNext() {
-            self.run(self.nextFnIx_(iterativeIndex));
-          }
-
-          if (completedSynchronously) {
-            self.setTimeout(runNext);
-          } else {
-            runNext();
-          }
-        },
-        function() {
-          try {
-            if (!timedOut) {
-              self.onMultipleDone();
-            }
-          } catch (error) {
-            // Any error we catch here is probably due to a bug in Jasmine,
-            // and it's not likely to end up anywhere useful if we let it
-            // propagate. Log it so it can at least show up when debugging.
-            console.error(error);
-          }
-        }
-      ),
-      timedOut = false,
-      queueableFn = self.queueableFns[iterativeIndex],
-      timeoutId,
-      maybeThenable;
+      }
+    );
+    timedOut = false;
+    const queueableFn = self.queueableFns[iterativeIndex];
 
     next.fail = function nextFail() {
       self.fail.apply(null, arguments);
@@ -153,10 +153,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     self.globalErrors.pushListener(handleError);
 
     if (queueableFn.timeout !== undefined) {
-      var timeoutInterval = queueableFn.timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+      const timeoutInterval =
+        queueableFn.timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
       timeoutId = self.setTimeout(function() {
         timedOut = true;
-        var error = new Error(
+        const error = new Error(
           'Timeout - Async function did not complete within ' +
             timeoutInterval +
             'ms ' +
@@ -173,6 +174,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     }
 
     try {
+      let maybeThenable;
+
       if (queueableFn.fn.length === 0) {
         maybeThenable = queueableFn.fn.call(self.userContext);
 
@@ -210,16 +213,15 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.run = function(recursiveIndex) {
-    var length = this.queueableFns.length,
-      self = this,
-      iterativeIndex;
+    const length = this.queueableFns.length;
+    const self = this;
 
     for (
-      iterativeIndex = recursiveIndex;
+      let iterativeIndex = recursiveIndex;
       iterativeIndex < length;
       iterativeIndex = this.nextFnIx_(iterativeIndex)
     ) {
-      var result = this.attempt(iterativeIndex);
+      const result = this.attempt(iterativeIndex);
 
       if (!result.completedSynchronously) {
         return;

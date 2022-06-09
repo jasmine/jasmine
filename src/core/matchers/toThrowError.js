@@ -1,5 +1,5 @@
 getJasmineRequireObj().toThrowError = function(j$) {
-  var getErrorMsg = j$.formatErrorMsg(
+  const getErrorMsg = j$.formatErrorMsg(
     '<toThrowError>',
     'expect(function() {<expectation>}).toThrowError(<ErrorConstructor>, <message>)'
   );
@@ -21,12 +21,13 @@ getJasmineRequireObj().toThrowError = function(j$) {
   function toThrowError(matchersUtil) {
     return {
       compare: function(actual) {
-        var errorMatcher = getMatcher.apply(null, arguments),
-          thrown;
+        const errorMatcher = getMatcher.apply(null, arguments);
 
         if (typeof actual != 'function') {
           throw new Error(getErrorMsg('Actual is not a Function'));
         }
+
+        let thrown;
 
         try {
           actual();
@@ -50,7 +51,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
     };
 
     function getMatcher() {
-      var expected, errorType;
+      let expected, errorType;
 
       if (arguments[2]) {
         errorType = arguments[1];
@@ -106,15 +107,15 @@ getJasmineRequireObj().toThrowError = function(j$) {
         }
       }
 
-      var errorTypeDescription = errorType
+      const errorTypeDescription = errorType
         ? j$.fnNameFor(errorType)
         : 'an exception';
 
       function thrownDescription(thrown) {
-        var thrownName = errorType
-            ? j$.fnNameFor(thrown.constructor)
-            : 'an exception',
-          thrownMessage = '';
+        const thrownName = errorType
+          ? j$.fnNameFor(thrown.constructor)
+          : 'an exception';
+        let thrownMessage = '';
 
         if (expected) {
           thrownMessage = ' with message ' + matchersUtil.pp(thrown.message);
@@ -176,7 +177,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
         return false;
       }
 
-      var Surrogate = function() {};
+      const Surrogate = function() {};
       Surrogate.prototype = type.prototype;
       return j$.isError_(new Surrogate());
     }

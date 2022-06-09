@@ -1,6 +1,6 @@
 getJasmineRequireObj().Spy = function(j$) {
-  var nextOrder = (function() {
-    var order = 0;
+  const nextOrder = (function() {
+    let order = 0;
 
     return function() {
       return order++;
@@ -15,9 +15,29 @@ getJasmineRequireObj().Spy = function(j$) {
    * @hideconstructor
    */
   function Spy(name, matchersUtil, optionals) {
+    const spy = function(context, args, invokeNew) {
+      /**
+       * @name Spy.callData
+       * @property {object} object - `this` context for the invocation.
+       * @property {number} invocationOrder - Order of the invocation.
+       * @property {Array} args - The arguments passed for this invocation.
+       * @property returnValue - The value that was returned from this invocation.
+       */
+      const callData = {
+        object: context,
+        invocationOrder: nextOrder(),
+        args: Array.prototype.slice.apply(args)
+      };
+
+      callTracker.track(callData);
+      const returnValue = strategyDispatcher.exec(context, args, invokeNew);
+      callData.returnValue = returnValue;
+
+      return returnValue;
+    };
     const { originalFn, customStrategies, defaultStrategyFn } = optionals || {};
 
-    var numArgs = typeof originalFn === 'function' ? originalFn.length : 0,
+    const numArgs = typeof originalFn === 'function' ? originalFn.length : 0,
       wrapper = makeFunc(numArgs, function(context, args, invokeNew) {
         return spy(context, args, invokeNew);
       }),
@@ -32,27 +52,7 @@ getJasmineRequireObj().Spy = function(j$) {
         },
         matchersUtil
       ),
-      callTracker = new j$.CallTracker(),
-      spy = function(context, args, invokeNew) {
-        /**
-         * @name Spy.callData
-         * @property {object} object - `this` context for the invocation.
-         * @property {number} invocationOrder - Order of the invocation.
-         * @property {Array} args - The arguments passed for this invocation.
-         * @property returnValue - The value that was returned from this invocation.
-         */
-        var callData = {
-          object: context,
-          invocationOrder: nextOrder(),
-          args: Array.prototype.slice.apply(args)
-        };
-
-        callTracker.track(callData);
-        var returnValue = strategyDispatcher.exec(context, args, invokeNew);
-        callData.returnValue = returnValue;
-
-        return returnValue;
-      };
+      callTracker = new j$.CallTracker();
 
     function makeFunc(length, fn) {
       switch (length) {
@@ -99,7 +99,7 @@ getJasmineRequireObj().Spy = function(j$) {
       }
     }
 
-    for (var prop in originalFn) {
+    for (const prop in originalFn) {
       if (prop === 'and' || prop === 'calls') {
         throw new Error(
           "Jasmine spies would overwrite the 'and' and 'calls' properties on the object being spied upon"
@@ -144,15 +144,15 @@ getJasmineRequireObj().Spy = function(j$) {
   }
 
   function SpyStrategyDispatcher(strategyArgs, matchersUtil) {
-    var baseStrategy = new j$.SpyStrategy(strategyArgs);
-    var argsStrategies = new StrategyDict(function() {
+    const baseStrategy = new j$.SpyStrategy(strategyArgs);
+    const argsStrategies = new StrategyDict(function() {
       return new j$.SpyStrategy(strategyArgs);
     }, matchersUtil);
 
     this.and = baseStrategy;
 
     this.exec = function(spy, args, invokeNew) {
-      var strategy = argsStrategies.get(args);
+      let strategy = argsStrategies.get(args);
 
       if (!strategy) {
         if (argsStrategies.any() && !baseStrategy.isConfigured()) {
@@ -187,7 +187,7 @@ getJasmineRequireObj().Spy = function(j$) {
   };
 
   StrategyDict.prototype.getOrCreate = function(args) {
-    var strategy = this.get(args);
+    let strategy = this.get(args);
 
     if (!strategy) {
       strategy = this.strategyFactory();
@@ -201,9 +201,7 @@ getJasmineRequireObj().Spy = function(j$) {
   };
 
   StrategyDict.prototype.get = function(args) {
-    var i;
-
-    for (i = 0; i < this.strategies.length; i++) {
+    for (let i = 0; i < this.strategies.length; i++) {
       if (this.matchersUtil.equals(args, this.strategies[i].args)) {
         return this.strategies[i].strategy;
       }

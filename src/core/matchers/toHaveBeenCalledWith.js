@@ -1,5 +1,5 @@
 getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
-  var getErrorMsg = j$.formatErrorMsg(
+  const getErrorMsg = j$.formatErrorMsg(
     '<toHaveBeenCalledWith>',
     'expect(<spyObj>).toHaveBeenCalledWith(...arguments)'
   );
@@ -16,7 +16,7 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
   function toHaveBeenCalledWith(matchersUtil) {
     return {
       compare: function() {
-        var args = Array.prototype.slice.call(arguments, 0),
+        const args = Array.prototype.slice.call(arguments, 0),
           actual = args[0],
           expectedArgs = args.slice(1),
           result = { pass: false };
@@ -57,16 +57,16 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
           };
         } else {
           result.message = function() {
-            var prettyPrintedCalls = actual.calls
+            const prettyPrintedCalls = actual.calls
               .allArgs()
               .map(function(argsForCall) {
                 return '  ' + matchersUtil.pp(argsForCall);
               });
 
-            var diffs = actual.calls
+            const diffs = actual.calls
               .allArgs()
               .map(function(argsForCall, callIx) {
-                var diffBuilder = new j$.DiffBuilder();
+                const diffBuilder = new j$.DiffBuilder();
                 matchersUtil.equals(argsForCall, expectedArgs, diffBuilder);
                 return (
                   'Call ' +

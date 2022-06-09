@@ -35,9 +35,9 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   Suite.prototype.getFullName = function() {
-    var fullName = [];
+    const fullName = [];
     for (
-      var parentSuite = this;
+      let parentSuite = this;
       parentSuite;
       parentSuite = parentSuite.parentSuite
     ) {
@@ -89,8 +89,8 @@ getJasmineRequireObj().Suite = function(j$) {
   };
 
   function removeFns(queueableFns) {
-    for (var i = 0; i < queueableFns.length; i++) {
-      queueableFns[i].fn = null;
+    for (const qf of queueableFns) {
+      qf.fn = null;
     }
   }
 

@@ -43,7 +43,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @default 5000
    * @since 1.3.0
    */
-  var DEFAULT_TIMEOUT_INTERVAL = 5000;
+  let DEFAULT_TIMEOUT_INTERVAL = 5000;
   Object.defineProperty(j$, 'DEFAULT_TIMEOUT_INTERVAL', {
     get: function() {
       return DEFAULT_TIMEOUT_INTERVAL;
@@ -67,7 +67,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @return {Env}
    */
   j$.getEnv = function(options) {
-    var env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
+    const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
   };
@@ -208,7 +208,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       return func.name;
     }
 
-    var matches =
+    const matches =
       func.toString().match(/^\s*function\s*(\w+)\s*\(/) ||
       func.toString().match(/^\s*\[object\s*(\w+)Constructor\]/);
 
@@ -216,7 +216,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isPending_ = function(promise) {
-    var sentinel = {};
+    const sentinel = {};
     return Promise.race([promise, Promise.resolve(sentinel)]).then(
       function(result) {
         return result === sentinel;

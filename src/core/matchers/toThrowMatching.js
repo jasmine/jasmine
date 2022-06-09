@@ -1,5 +1,5 @@
 getJasmineRequireObj().toThrowMatching = function(j$) {
-  var usageError = j$.formatErrorMsg(
+  const usageError = j$.formatErrorMsg(
     '<toThrowMatching>',
     'expect(function() {<expectation>}).toThrowMatching(<Predicate>)'
   );
@@ -16,8 +16,6 @@ getJasmineRequireObj().toThrowMatching = function(j$) {
   function toThrowMatching(matchersUtil) {
     return {
       compare: function(actual, predicate) {
-        var thrown;
-
         if (typeof actual !== 'function') {
           throw new Error(usageError('Actual is not a Function'));
         }
@@ -25,6 +23,8 @@ getJasmineRequireObj().toThrowMatching = function(j$) {
         if (typeof predicate !== 'function') {
           throw new Error(usageError('Predicate is not a Function'));
         }
+
+        let thrown;
 
         try {
           actual();

@@ -1,15 +1,18 @@
 getJasmineRequireObj().SpyRegistry = function(j$) {
-  var spyOnMsg = j$.formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
-  var spyOnPropertyMsg = j$.formatErrorMsg(
+  const spyOnMsg = j$.formatErrorMsg(
+    '<spyOn>',
+    'spyOn(<object>, <methodName>)'
+  );
+  const spyOnPropertyMsg = j$.formatErrorMsg(
     '<spyOnProperty>',
     'spyOnProperty(<object>, <propName>, [accessType])'
   );
 
   function SpyRegistry(options) {
     options = options || {};
-    var global = options.global || j$.getGlobal();
-    var createSpy = options.createSpy;
-    var currentSpies =
+    const global = options.global || j$.getGlobal();
+    const createSpy = options.createSpy;
+    const currentSpies =
       options.currentSpies ||
       function() {
         return [];
@@ -20,7 +23,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
     };
 
     this.spyOn = function(obj, methodName) {
-      var getErrorMsg = spyOnMsg;
+      const getErrorMsg = spyOnMsg;
 
       if (j$.util.isUndefined(obj) || obj === null) {
         throw new Error(
@@ -48,7 +51,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         }
       }
 
-      var descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
+      const descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
 
       if (descriptor && !(descriptor.writable || descriptor.set)) {
         throw new Error(
@@ -56,9 +59,9 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         );
       }
 
-      var originalMethod = obj[methodName],
-        spiedMethod = createSpy(methodName, originalMethod),
-        restoreStrategy;
+      const originalMethod = obj[methodName];
+      const spiedMethod = createSpy(methodName, originalMethod);
+      let restoreStrategy;
 
       if (
         Object.prototype.hasOwnProperty.call(obj, methodName) ||
@@ -85,7 +88,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
     };
 
     this.spyOnProperty = function(obj, propertyName, accessType) {
-      var getErrorMsg = spyOnPropertyMsg;
+      const getErrorMsg = spyOnPropertyMsg;
 
       accessType = accessType || 'get';
 
@@ -103,7 +106,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         throw new Error(getErrorMsg('No property name supplied'));
       }
 
-      var descriptor = j$.util.getPropertyDescriptor(obj, propertyName);
+      const descriptor = j$.util.getPropertyDescriptor(obj, propertyName);
 
       if (!descriptor) {
         throw new Error(getErrorMsg(propertyName + ' property does not exist'));
@@ -138,9 +141,9 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         }
       }
 
-      var originalDescriptor = j$.util.clone(descriptor),
-        spy = createSpy(propertyName, descriptor[accessType]),
-        restoreStrategy;
+      const originalDescriptor = j$.util.clone(descriptor);
+      const spy = createSpy(propertyName, descriptor[accessType]);
+      let restoreStrategy;
 
       if (Object.prototype.hasOwnProperty.call(obj, propertyName)) {
         restoreStrategy = function() {
@@ -170,7 +173,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         );
       }
 
-      var pointer = obj,
+      let pointer = obj,
         propsToSpyOn = [],
         properties,
         propertiesToSkip = [];
@@ -190,24 +193,24 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         pointer = Object.getPrototypeOf(pointer);
       }
 
-      for (var i = 0; i < propsToSpyOn.length; i++) {
-        this.spyOn(obj, propsToSpyOn[i]);
+      for (const prop of propsToSpyOn) {
+        this.spyOn(obj, prop);
       }
 
       return obj;
     };
 
     this.clearSpies = function() {
-      var spies = currentSpies();
-      for (var i = spies.length - 1; i >= 0; i--) {
-        var spyEntry = spies[i];
+      const spies = currentSpies();
+      for (let i = spies.length - 1; i >= 0; i--) {
+        const spyEntry = spies[i];
         spyEntry.restoreObjectToOriginalState();
       }
     };
   }
 
   function getProps(obj, includeNonEnumerable) {
-    var enumerableProperties = Object.keys(obj);
+    const enumerableProperties = Object.keys(obj);
 
     if (!includeNonEnumerable) {
       return enumerableProperties;
@@ -222,10 +225,9 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
   }
 
   function getSpyableFunctionProps(obj, propertiesToCheck) {
-    var props = [],
-      prop;
-    for (var i = 0; i < propertiesToCheck.length; i++) {
-      prop = propertiesToCheck[i];
+    const props = [];
+
+    for (const prop of propertiesToCheck) {
       if (
         Object.prototype.hasOwnProperty.call(obj, prop) &&
         isSpyableProp(obj, prop)
@@ -237,14 +239,15 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
   }
 
   function isSpyableProp(obj, prop) {
-    var value, descriptor;
+    let value;
     try {
       value = obj[prop];
     } catch (e) {
       return false;
     }
+
     if (value instanceof Function) {
-      descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+      const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
       return (descriptor.writable || descriptor.set) && descriptor.configurable;
     }
     return false;

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-var
 var jasmineRequire = window.jasmineRequire || require('./jasmine.js');
 
 jasmineRequire.html = function(j$) {

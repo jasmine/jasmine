@@ -1,7 +1,7 @@
 getJasmineRequireObj().MockDate = function(j$) {
   function MockDate(global) {
-    var self = this;
-    var currentTime = 0;
+    const self = this;
+    let currentTime = 0;
 
     if (!global || !global.Date) {
       self.install = function() {};
@@ -10,7 +10,7 @@ getJasmineRequireObj().MockDate = function(j$) {
       return self;
     }
 
-    var GlobalDate = global.Date;
+    const GlobalDate = global.Date;
 
     self.install = function(mockDate) {
       if (mockDate instanceof GlobalDate) {

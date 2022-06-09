@@ -35,9 +35,9 @@ getJasmineRequireObj().toBeCloseTo = function() {
           };
         }
 
-        var pow = Math.pow(10, precision + 1);
-        var delta = Math.abs(expected - actual);
-        var maxDelta = Math.pow(10, -precision) / 2;
+        const pow = Math.pow(10, precision + 1);
+        const delta = Math.abs(expected - actual);
+        const maxDelta = Math.pow(10, -precision) / 2;
 
         return {
           pass: Math.round(delta * pow) <= maxDelta * pow

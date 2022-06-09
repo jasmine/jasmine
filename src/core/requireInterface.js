@@ -1,5 +1,5 @@
 getJasmineRequireObj().interface = function(jasmine, env) {
-  var jasmineInterface = {
+  const jasmineInterface = {
     /**
      * Callback passed to parts of the Jasmine base interface.
      *

@@ -9,12 +9,12 @@ getJasmineRequireObj().toBe = function(j$) {
    * expect(thing).toBe(realThing);
    */
   function toBe(matchersUtil) {
-    var tip =
+    const tip =
       ' Tip: To check for deep equality, use .toEqual() instead of .toBe().';
 
     return {
       compare: function(actual, expected) {
-        var result = {
+        const result = {
           pass: actual === expected
         };
 

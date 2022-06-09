@@ -17,7 +17,7 @@ getJasmineRequireObj().SetContaining = function(j$) {
       // for each item in `sample` there should be at least one matching item in `other`
       // (not using `matchersUtil.contains` because it compares set members by reference,
       // not by deep value equality)
-      var hasMatch = false;
+      let hasMatch = false;
       for (const oItem of other) {
         if (matchersUtil.equals(oItem, item)) {
           hasMatch = true;

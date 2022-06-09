@@ -1,5 +1,5 @@
 getJasmineRequireObj().toHaveBeenCalledBefore = function(j$) {
-  var getErrorMsg = j$.formatErrorMsg(
+  const getErrorMsg = j$.formatErrorMsg(
     '<toHaveBeenCalledBefore>',
     'expect(<spyObj>).toHaveBeenCalledBefore(<spyObj>)'
   );
@@ -31,7 +31,7 @@ getJasmineRequireObj().toHaveBeenCalledBefore = function(j$) {
           );
         }
 
-        var result = { pass: false };
+        const result = { pass: false };
 
         if (!firstSpy.calls.count()) {
           result.message =
@@ -44,8 +44,8 @@ getJasmineRequireObj().toHaveBeenCalledBefore = function(j$) {
           return result;
         }
 
-        var latest1stSpyCall = firstSpy.calls.mostRecent().invocationOrder;
-        var first2ndSpyCall = latterSpy.calls.first().invocationOrder;
+        const latest1stSpyCall = firstSpy.calls.mostRecent().invocationOrder;
+        const first2ndSpyCall = latterSpy.calls.first().invocationOrder;
 
         result.pass = latest1stSpyCall < first2ndSpyCall;
 
@@ -57,8 +57,8 @@ getJasmineRequireObj().toHaveBeenCalledBefore = function(j$) {
             latterSpy.and.identity +
             ', but it was';
         } else {
-          var first1stSpyCall = firstSpy.calls.first().invocationOrder;
-          var latest2ndSpyCall = latterSpy.calls.mostRecent().invocationOrder;
+          const first1stSpyCall = firstSpy.calls.first().invocationOrder;
+          const latest2ndSpyCall = latterSpy.calls.mostRecent().invocationOrder;
 
           if (first1stSpyCall < first2ndSpyCall) {
             result.message =

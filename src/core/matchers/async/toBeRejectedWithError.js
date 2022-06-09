@@ -23,7 +23,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
           );
         }
 
-        var expected = getExpectedFromArgs(arg1, arg2, matchersUtil);
+        const expected = getExpectedFromArgs(arg1, arg2, matchersUtil);
 
         return actualPromise.then(
           function() {
@@ -52,7 +52,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
       );
     }
 
-    var actualMessage = actual.message;
+    const actualMessage = actual.message;
 
     if (
       actualMessage === expected.message ||
@@ -94,7 +94,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
   }
 
   function getExpectedFromArgs(arg1, arg2, matchersUtil) {
-    var error, message;
+    let error, message;
 
     if (isErrorConstructor(arg1)) {
       error = arg1;

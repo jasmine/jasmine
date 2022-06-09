@@ -6,8 +6,8 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
    * @hideconstructor
    */
   function JsApiReporter(options) {
-    var timer = options.timer || new j$.Timer(),
-      status = 'loaded';
+    const timer = options.timer || new j$.Timer();
+    let status = 'loaded';
 
     this.started = false;
     this.finished = false;
@@ -19,7 +19,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
       timer.start();
     };
 
-    var executionTime;
+    let executionTime;
 
     this.jasmineDone = function(runDetails) {
       this.finished = true;
@@ -39,7 +39,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
       return status;
     };
 
-    var suites = [],
+    const suites = [],
       suites_hash = {};
 
     this.suiteStarted = function(result) {
@@ -81,7 +81,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
       return suites_hash;
     };
 
-    var specs = [];
+    const specs = [];
 
     this.specDone = function(result) {
       specs.push(result);

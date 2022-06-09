@@ -1,15 +1,15 @@
 getJasmineRequireObj().clearStack = function(j$) {
-  var maxInlineCallCount = 10;
+  const maxInlineCallCount = 10;
 
   function messageChannelImpl(global, setTimeout) {
-    var channel = new global.MessageChannel(),
-      head = {},
-      tail = head;
+    const channel = new global.MessageChannel();
+    let head = {};
+    let tail = head;
 
-    var taskRunning = false;
+    let taskRunning = false;
     channel.port1.onmessage = function() {
       head = head.next;
-      var task = head.task;
+      const task = head.task;
       delete head.task;
 
       if (taskRunning) {
@@ -24,7 +24,7 @@ getJasmineRequireObj().clearStack = function(j$) {
       }
     };
 
-    var currentCallCount = 0;
+    let currentCallCount = 0;
     return function clearStack(fn) {
       currentCallCount++;
 
@@ -39,14 +39,14 @@ getJasmineRequireObj().clearStack = function(j$) {
   }
 
   function getClearStack(global) {
-    var currentCallCount = 0;
-    var realSetTimeout = global.setTimeout;
-    var setTimeoutImpl = function clearStack(fn) {
+    let currentCallCount = 0;
+    const realSetTimeout = global.setTimeout;
+    const setTimeoutImpl = function clearStack(fn) {
       Function.prototype.apply.apply(realSetTimeout, [global, [fn, 0]]);
     };
 
     if (j$.isFunction_(global.setImmediate)) {
-      var realSetImmediate = global.setImmediate;
+      const realSetImmediate = global.setImmediate;
       return function(fn) {
         currentCallCount++;
 

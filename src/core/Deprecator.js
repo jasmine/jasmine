@@ -5,7 +5,7 @@ getJasmineRequireObj().Deprecator = function(j$) {
     this.toSuppress_ = [];
   }
 
-  var verboseNote =
+  const verboseNote =
     'Note: This message will be shown only once. Set the verboseDeprecations ' +
     'config property to true to see every occurrence.';
 
@@ -35,12 +35,12 @@ getJasmineRequireObj().Deprecator = function(j$) {
   };
 
   Deprecator.prototype.log_ = function(runnable, deprecation, options) {
-    var context;
-
     if (j$.isError_(deprecation)) {
       console.error(deprecation);
       return;
     }
+
+    let context;
 
     if (runnable === this.topSuite_ || options.ignoreRunnable) {
       context = '';
@@ -62,7 +62,7 @@ getJasmineRequireObj().Deprecator = function(j$) {
   };
 
   Deprecator.prototype.stackTrace_ = function() {
-    var formatter = new j$.ExceptionFormatter();
+    const formatter = new j$.ExceptionFormatter();
     return formatter.stack(j$.util.errorWithStack()).replace(/^Error\n/m, '');
   };
 

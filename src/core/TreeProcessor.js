@@ -1,25 +1,25 @@
 getJasmineRequireObj().TreeProcessor = function() {
   function TreeProcessor(attrs) {
-    var tree = attrs.tree,
-      runnableIds = attrs.runnableIds,
-      queueRunnerFactory = attrs.queueRunnerFactory,
-      nodeStart = attrs.nodeStart || function() {},
-      nodeComplete = attrs.nodeComplete || function() {},
-      failSpecWithNoExpectations = !!attrs.failSpecWithNoExpectations,
-      orderChildren =
-        attrs.orderChildren ||
-        function(node) {
-          return node.children;
-        },
-      excludeNode =
-        attrs.excludeNode ||
-        function(node) {
-          return false;
-        },
-      stats = { valid: true },
-      processed = false,
-      defaultMin = Infinity,
-      defaultMax = 1 - Infinity;
+    const tree = attrs.tree;
+    const runnableIds = attrs.runnableIds;
+    const queueRunnerFactory = attrs.queueRunnerFactory;
+    const nodeStart = attrs.nodeStart || function() {};
+    const nodeComplete = attrs.nodeComplete || function() {};
+    const failSpecWithNoExpectations = !!attrs.failSpecWithNoExpectations;
+    const orderChildren =
+      attrs.orderChildren ||
+      function(node) {
+        return node.children;
+      };
+    const excludeNode =
+      attrs.excludeNode ||
+      function(node) {
+        return false;
+      };
+    let stats = { valid: true };
+    let processed = false;
+    const defaultMin = Infinity;
+    const defaultMax = 1 - Infinity;
 
     this.processTree = function() {
       processNode(tree, true);
@@ -36,7 +36,7 @@ getJasmineRequireObj().TreeProcessor = function() {
         throw 'invalid order';
       }
 
-      var childFns = wrapChildren(tree, 0);
+      const childFns = wrapChildren(tree, 0);
 
       queueRunnerFactory({
         queueableFns: childFns,
@@ -52,7 +52,7 @@ getJasmineRequireObj().TreeProcessor = function() {
     };
 
     function runnableIndex(id) {
-      for (var i = 0; i < runnableIds.length; i++) {
+      for (let i = 0; i < runnableIds.length; i++) {
         if (runnableIds[i] === id) {
           return i;
         }
@@ -60,14 +60,14 @@ getJasmineRequireObj().TreeProcessor = function() {
     }
 
     function processNode(node, parentExcluded) {
-      var executableIndex = runnableIndex(node.id);
+      const executableIndex = runnableIndex(node.id);
 
       if (executableIndex !== undefined) {
         parentExcluded = false;
       }
 
       if (!node.children) {
-        var excluded = parentExcluded || excludeNode(node);
+        const excluded = parentExcluded || excludeNode(node);
         stats[node.id] = {
           excluded: excluded,
           willExecute: !excluded && !node.markedPending,
@@ -82,12 +82,12 @@ getJasmineRequireObj().TreeProcessor = function() {
           ]
         };
       } else {
-        var hasExecutableChild = false;
+        let hasExecutableChild = false;
 
-        var orderedChildren = orderChildren(node);
+        const orderedChildren = orderChildren(node);
 
-        for (var i = 0; i < orderedChildren.length; i++) {
-          var child = orderedChildren[i];
+        for (let i = 0; i < orderedChildren.length; i++) {
+          const child = orderedChildren[i];
 
           processNode(child, parentExcluded);
 
@@ -95,7 +95,7 @@ getJasmineRequireObj().TreeProcessor = function() {
             return;
           }
 
-          var childStats = stats[child.id];
+          const childStats = stats[child.id];
 
           hasExecutableChild = hasExecutableChild || childStats.willExecute;
         }
@@ -127,7 +127,7 @@ getJasmineRequireObj().TreeProcessor = function() {
       nodeStats,
       executableIndex
     ) {
-      var currentSegment = {
+      let currentSegment = {
           index: 0,
           owner: node,
           nodes: [],
@@ -146,8 +146,8 @@ getJasmineRequireObj().TreeProcessor = function() {
         );
       }
 
-      for (var i = 0; i < orderedChildSegments.length; i++) {
-        var childSegment = orderedChildSegments[i],
+      for (let i = 0; i < orderedChildSegments.length; i++) {
+        const childSegment = orderedChildSegments[i],
           maxIndex = childSegment.max,
           minIndex = childSegment.min;
 
@@ -172,15 +172,15 @@ getJasmineRequireObj().TreeProcessor = function() {
     }
 
     function orderChildSegments(children) {
-      var specifiedOrder = [],
+      const specifiedOrder = [],
         unspecifiedOrder = [];
 
-      for (var i = 0; i < children.length; i++) {
-        var child = children[i],
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i],
           segments = stats[child.id].segments;
 
-        for (var j = 0; j < segments.length; j++) {
-          var seg = segments[j];
+        for (let j = 0; j < segments.length; j++) {
+          const seg = segments[j];
 
           if (seg.min === defaultMin) {
             unspecifiedOrder.push(seg);
@@ -201,7 +201,7 @@ getJasmineRequireObj().TreeProcessor = function() {
       if (node.children) {
         return {
           fn: function(done) {
-            var onStart = {
+            const onStart = {
               fn: function(next) {
                 nodeStart(node, next);
               }
@@ -209,7 +209,7 @@ getJasmineRequireObj().TreeProcessor = function() {
 
             queueRunnerFactory({
               onComplete: function() {
-                var args = Array.prototype.slice.call(arguments, [0]);
+                const args = Array.prototype.slice.call(arguments, [0]);
                 node.cleanupBeforeAfter();
                 nodeComplete(node, node.getResult(), function() {
                   done.apply(undefined, args);
@@ -240,10 +240,10 @@ getJasmineRequireObj().TreeProcessor = function() {
     }
 
     function wrapChildren(node, segmentNumber) {
-      var result = [],
+      const result = [],
         segmentChildren = stats[node.id].segments[segmentNumber].nodes;
 
-      for (var i = 0; i < segmentChildren.length; i++) {
+      for (let i = 0; i < segmentChildren.length; i++) {
         result.push(
           executeNode(segmentChildren[i].owner, segmentChildren[i].index)
         );

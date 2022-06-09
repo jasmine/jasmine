@@ -100,16 +100,16 @@ getJasmineRequireObj().Spec = function(j$) {
   };
 
   Spec.prototype.execute = function(onComplete, excluded, failSpecWithNoExp) {
-    var self = this;
+    const self = this;
 
-    var onStart = {
+    const onStart = {
       fn: function(done) {
         self.timer.start();
         self.onStart(self, done);
       }
     };
 
-    var complete = {
+    const complete = {
       fn: function(done) {
         if (self.autoCleanClosures) {
           self.queueableFn.fn = null;
@@ -126,9 +126,9 @@ getJasmineRequireObj().Spec = function(j$) {
       type: 'specCleanup'
     };
 
-    var fns = this.beforeAndAfterFns();
+    const fns = this.beforeAndAfterFns();
 
-    var runnerConfig = {
+    const runnerConfig = {
       isLeaf: true,
       queueableFns: [...fns.befores, this.queueableFn, ...fns.afters],
       onException: function() {
@@ -289,8 +289,8 @@ getJasmineRequireObj().Spec = function(j$) {
     });
   };
 
-  var extractCustomPendingMessage = function(e) {
-    var fullMessage = e.toString(),
+  const extractCustomPendingMessage = function(e) {
+    const fullMessage = e.toString(),
       boilerplateStart = fullMessage.indexOf(Spec.pendingSpecExceptionMessage),
       boilerplateEnd =
         boilerplateStart + Spec.pendingSpecExceptionMessage.length;

@@ -1,10 +1,10 @@
 getJasmineRequireObj().GlobalErrors = function(j$) {
   function GlobalErrors(global) {
-    var handlers = [];
+    const handlers = [];
     global = global || j$.getGlobal();
 
-    var onerror = function onerror() {
-      var handler = handlers[handlers.length - 1];
+    const onerror = function onerror() {
+      const handler = handlers[handlers.length - 1];
 
       if (handler) {
         handler.apply(null, Array.prototype.slice.call(arguments, 0));
@@ -17,11 +17,11 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     this.jasmineHandlers = {};
     this.installOne_ = function installOne_(errorType, jasmineMessage) {
       function taggedOnError(error) {
-        var substituteMsg;
-
         if (j$.isError_(error)) {
           error.jasmineMessage = jasmineMessage + ': ' + error;
         } else {
+          let substituteMsg;
+
           if (error) {
             substituteMsg = jasmineMessage + ': ' + error;
           } else {
@@ -40,7 +40,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
           error = new Error(substituteMsg);
         }
 
-        var handler = handlers[handlers.length - 1];
+        const handler = handlers[handlers.length - 1];
 
         if (handler) {
           handler(error);
@@ -56,14 +56,14 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       global.process.on(errorType, taggedOnError);
 
       this.uninstall = function uninstall() {
-        var errorTypes = Object.keys(this.originalHandlers);
-        for (var iType = 0; iType < errorTypes.length; iType++) {
-          var errorType = errorTypes[iType];
+        const errorTypes = Object.keys(this.originalHandlers);
+        for (const errorType of errorTypes) {
           global.process.removeListener(
             errorType,
             this.jasmineHandlers[errorType]
           );
-          for (var i = 0; i < this.originalHandlers[errorType].length; i++) {
+
+          for (let i = 0; i < this.originalHandlers[errorType].length; i++) {
             global.process.on(errorType, this.originalHandlers[errorType][i]);
           }
           delete this.originalHandlers[errorType];
@@ -81,10 +81,12 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         this.installOne_('uncaughtException', 'Uncaught exception');
         this.installOne_('unhandledRejection', 'Unhandled promise rejection');
       } else {
-        var originalHandler = global.onerror;
+        const originalHandler = global.onerror;
         global.onerror = onerror;
 
-        var browserRejectionHandler = function browserRejectionHandler(event) {
+        const browserRejectionHandler = function browserRejectionHandler(
+          event
+        ) {
           if (j$.isError_(event.reason)) {
             event.reason.jasmineMessage =
               'Unhandled promise rejection: ' + event.reason;

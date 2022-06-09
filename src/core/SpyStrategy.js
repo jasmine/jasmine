@@ -5,7 +5,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   function SpyStrategy(options) {
     options = options || {};
 
-    var self = this;
+    const self = this;
 
     /**
      * Get the identifying information for the spy.
@@ -19,9 +19,8 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     this.getSpy = options.getSpy || function() {};
     this.plan = this._defaultPlan = function() {};
 
-    var k,
-      cs = options.customStrategies || {};
-    for (k in cs) {
+    const cs = options.customStrategies || {};
+    for (const k in cs) {
       if (j$.util.has(cs, k) && !this[k]) {
         this[k] = createCustomPlan(cs[k]);
       }
@@ -58,7 +57,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
 
   function createCustomPlan(factory) {
     return function() {
-      var plan = factory.apply(null, arguments);
+      const plan = factory.apply(null, arguments);
 
       if (!j$.isFunction_(plan)) {
         throw new Error('Spy strategy must return a function');
@@ -76,10 +75,10 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @function
    */
   SpyStrategy.prototype.exec = function(context, args, invokeNew) {
-    var contextArgs = [context].concat(
+    const contextArgs = [context].concat(
       args ? Array.prototype.slice.call(args) : []
     );
-    var target = this.plan.bind.apply(this.plan, contextArgs);
+    const target = this.plan.bind.apply(this.plan, contextArgs);
 
     return invokeNew ? new target() : target();
   };
@@ -117,7 +116,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @param {...*} values - Values to be returned on subsequent calls to the spy.
    */
   SpyStrategy.prototype.returnValues = function() {
-    var values = Array.prototype.slice.call(arguments);
+    const values = Array.prototype.slice.call(arguments);
     this.plan = function() {
       return values.shift();
     };
@@ -132,7 +131,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @param {Error|Object|String} something Thing to throw
    */
   SpyStrategy.prototype.throwError = function(something) {
-    var error = j$.isString_(something) ? new Error(something) : something;
+    const error = j$.isString_(something) ? new Error(something) : something;
     this.plan = function() {
       throw error;
     };

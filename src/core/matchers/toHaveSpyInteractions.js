@@ -1,5 +1,5 @@
 getJasmineRequireObj().toHaveSpyInteractions = function(j$) {
-  var getErrorMsg = j$.formatErrorMsg(
+  const getErrorMsg = j$.formatErrorMsg(
     '<toHaveSpyInteractions>',
     'expect(<spyObj>).toHaveSpyInteractions()'
   );
@@ -16,7 +16,7 @@ getJasmineRequireObj().toHaveSpyInteractions = function(j$) {
   function toHaveSpyInteractions(matchersUtil) {
     return {
       compare: function(actual) {
-        var result = {};
+        const result = {};
 
         if (!j$.isObject_(actual)) {
           throw new Error(

@@ -4,8 +4,8 @@ getJasmineRequireObj().CallTracker = function(j$) {
    * @since 2.0.0
    */
   function CallTracker() {
-    var calls = [];
-    var opts = {};
+    let calls = [];
+    const opts = {};
 
     this.track = function(context) {
       if (opts.cloneArgs) {
@@ -45,7 +45,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
      * @return {Array}
      */
     this.argsFor = function(index) {
-      var call = calls[index];
+      const call = calls[index];
       return call ? call.args : [];
     };
 
@@ -58,7 +58,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
      * @return {Object?}
      */
     this.thisFor = function(index) {
-      var call = calls[index];
+      const call = calls[index];
       return call ? call.object : undefined;
     };
 
@@ -81,12 +81,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
      * @return {Array}
      */
     this.allArgs = function() {
-      var callArgs = [];
-      for (var i = 0; i < calls.length; i++) {
-        callArgs.push(calls[i].args);
-      }
-
-      return callArgs;
+      return calls.map(c => c.args);
     };
 
     /**
