@@ -83,7 +83,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
       let empty = true;
 
       for (const prop in error) {
-        if (j$.util.arrayContains(ignoredProperties, prop)) {
+        if (ignoredProperties.includes(prop)) {
           continue;
         }
         result[prop] = error[prop];

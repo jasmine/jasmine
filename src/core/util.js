@@ -1,32 +1,8 @@
 getJasmineRequireObj().util = function(j$) {
   const util = {};
 
-  util.inherit = function(childClass, parentClass) {
-    const Subclass = function() {};
-    Subclass.prototype = parentClass.prototype;
-    childClass.prototype = new Subclass();
-  };
-
-  util.argsToArray = function(args) {
-    const arrayOfArgs = [];
-    for (let i = 0; i < args.length; i++) {
-      arrayOfArgs.push(args[i]);
-    }
-    return arrayOfArgs;
-  };
-
   util.isUndefined = function(obj) {
     return obj === void 0;
-  };
-
-  util.arrayContains = function(array, search) {
-    let i = array.length;
-    while (i--) {
-      if (array[i] === search) {
-        return true;
-      }
-    }
-    return false;
   };
 
   util.clone = function(obj) {
@@ -45,22 +21,19 @@ getJasmineRequireObj().util = function(j$) {
   };
 
   util.cloneArgs = function(args) {
-    const clonedArgs = [];
-    const argsAsArray = j$.util.argsToArray(args);
-    for (let i = 0; i < argsAsArray.length; i++) {
-      const str = Object.prototype.toString.apply(argsAsArray[i]),
+    return Array.from(args).map(function(arg) {
+      const str = Object.prototype.toString.apply(arg),
         primitives = /^\[object (Boolean|String|RegExp|Number)/;
 
       // All falsey values are either primitives, `null`, or `undefined.
-      if (!argsAsArray[i] || str.match(primitives)) {
-        clonedArgs.push(argsAsArray[i]);
+      if (!arg || str.match(primitives)) {
+        return arg;
       } else if (str === '[object Date]') {
-        clonedArgs.push(new Date(argsAsArray[i].valueOf()));
+        return new Date(arg.valueOf());
       } else {
-        clonedArgs.push(j$.util.clone(argsAsArray[i]));
+        return j$.util.clone(arg);
       }
-    }
-    return clonedArgs;
+    });
   };
 
   util.getPropertyDescriptor = function(obj, methodName) {
@@ -102,10 +75,6 @@ getJasmineRequireObj().util = function(j$) {
       return result;
     };
   })();
-
-  function StopIteration() {}
-  StopIteration.prototype = Object.create(Error.prototype);
-  StopIteration.prototype.constructor = StopIteration;
 
   util.validateTimeout = function(timeout, msgPrefix) {
     // Timeouts are implemented with setTimeout, which only supports a limited

@@ -61,7 +61,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
           } catch (e) {
             this.emitScalar('has-invalid-toString-method');
           }
-        } else if (j$.util.arrayContains(this.seen, value)) {
+        } else if (this.seen.includes(value)) {
           this.emitScalar(
             '<circular reference: ' +
               (j$.isArray_(value) ? 'Array' : 'Object') +

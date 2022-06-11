@@ -32,7 +32,7 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
         reporters.push(fallbackReporter);
       }
       const onComplete = args[args.length - 1];
-      args = j$.util.argsToArray(args).splice(0, args.length - 1);
+      args = Array.from(args).splice(0, args.length - 1);
       const fns = [];
       for (const reporter of reporters) {
         addFn(fns, reporter, method, args);

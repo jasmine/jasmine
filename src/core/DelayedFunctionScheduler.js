@@ -119,12 +119,6 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       );
     }
 
-    function forEachFunction(funcsToRun, callback) {
-      for (const f of funcsToRun) {
-        callback(f);
-      }
-    }
-
     function runScheduledFunctions(endTime, tickDate) {
       tickDate = tickDate || function() {};
       if (scheduledLookup.length === 0 || scheduledLookup[0] > endTime) {
@@ -147,19 +141,19 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
 
         delete scheduledFunctions[currentTime];
 
-        forEachFunction(funcsToRun, function(funcToRun) {
-          if (funcToRun.recurring) {
-            reschedule(funcToRun);
+        for (const fn of funcsToRun) {
+          if (fn.recurring) {
+            reschedule(fn);
           }
-        });
+        }
 
-        forEachFunction(funcsToRun, function(funcToRun) {
-          if (j$.util.arrayContains(deletedKeys, funcToRun.timeoutKey)) {
+        for (const fn of funcsToRun) {
+          if (deletedKeys.includes(fn.timeoutKey)) {
             // skip a timeoutKey deleted whilst we were running
             return;
           }
-          funcToRun.funcToCall.apply(null, funcToRun.params || []);
-        });
+          fn.funcToCall.apply(null, fn.params || []);
+        }
         deletedKeys = [];
       } while (
         scheduledLookup.length > 0 &&

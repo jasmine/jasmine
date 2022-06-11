@@ -1,8 +1,4 @@
 getJasmineRequireObj().base = function(j$, jasmineGlobal) {
-  j$.unimplementedMethod_ = function() {
-    throw new Error('unimplemented method');
-  };
-
   /**
    * Maximum object depth the pretty printer will print to.
    * Set this to a lower value to speed up pretty printing if you have large objects.
