@@ -26,11 +26,25 @@ getJasmineRequireObj().Expector = function(j$) {
   };
 
   Expector.prototype.buildMessage = function(result) {
-    const self = this;
-
     if (result.pass) {
       return '';
     }
+
+    const defaultMessage = () => {
+      if (!result.message) {
+        const args = this.args.slice();
+        args.unshift(false);
+        args.unshift(this.matcherName);
+        return this.matchersUtil.buildFailureMessage.apply(
+          this.matchersUtil,
+          args
+        );
+      } else if (j$.isFunction_(result.message)) {
+        return result.message();
+      } else {
+        return result.message;
+      }
+    };
 
     const msg = this.filters.buildFailureMessage(
       result,
@@ -40,22 +54,6 @@ getJasmineRequireObj().Expector = function(j$) {
       defaultMessage
     );
     return this.filters.modifyFailureMessage(msg || defaultMessage());
-
-    function defaultMessage() {
-      if (!result.message) {
-        const args = self.args.slice();
-        args.unshift(false);
-        args.unshift(self.matcherName);
-        return self.matchersUtil.buildFailureMessage.apply(
-          self.matchersUtil,
-          args
-        );
-      } else if (j$.isFunction_(result.message)) {
-        return result.message();
-      } else {
-        return result.message;
-      }
-    }
   };
 
   Expector.prototype.compare = function(matcherName, matcherFactory, args) {

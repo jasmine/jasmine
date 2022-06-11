@@ -1,18 +1,17 @@
 getJasmineRequireObj().MockDate = function(j$) {
   function MockDate(global) {
-    const self = this;
     let currentTime = 0;
 
     if (!global || !global.Date) {
-      self.install = function() {};
-      self.tick = function() {};
-      self.uninstall = function() {};
-      return self;
+      this.install = function() {};
+      this.tick = function() {};
+      this.uninstall = function() {};
+      return this;
     }
 
     const GlobalDate = global.Date;
 
-    self.install = function(mockDate) {
+    this.install = function(mockDate) {
       if (mockDate instanceof GlobalDate) {
         currentTime = mockDate.getTime();
       } else {
@@ -29,19 +28,19 @@ getJasmineRequireObj().MockDate = function(j$) {
       global.Date = FakeDate;
     };
 
-    self.tick = function(millis) {
+    this.tick = function(millis) {
       millis = millis || 0;
       currentTime = currentTime + millis;
     };
 
-    self.uninstall = function() {
+    this.uninstall = function() {
       currentTime = 0;
       global.Date = GlobalDate;
     };
 
     createDateProperties();
 
-    return self;
+    return this;
 
     function FakeDate() {
       switch (arguments.length) {

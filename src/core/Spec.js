@@ -100,28 +100,26 @@ getJasmineRequireObj().Spec = function(j$) {
   };
 
   Spec.prototype.execute = function(onComplete, excluded, failSpecWithNoExp) {
-    const self = this;
-
     const onStart = {
-      fn: function(done) {
-        self.timer.start();
-        self.onStart(self, done);
+      fn: done => {
+        this.timer.start();
+        this.onStart(this, done);
       }
     };
 
     const complete = {
-      fn: function(done) {
-        if (self.autoCleanClosures) {
-          self.queueableFn.fn = null;
+      fn: done => {
+        if (this.autoCleanClosures) {
+          this.queueableFn.fn = null;
         }
-        self.result.status = self.status(excluded, failSpecWithNoExp);
-        self.result.duration = self.timer.elapsed();
+        this.result.status = this.status(excluded, failSpecWithNoExp);
+        this.result.duration = this.timer.elapsed();
 
-        if (self.result.status !== 'failed') {
-          self.result.debugLogs = null;
+        if (this.result.status !== 'failed') {
+          this.result.debugLogs = null;
         }
 
-        self.resultCallback(self.result, done);
+        this.resultCallback(this.result, done);
       },
       type: 'specCleanup'
     };
@@ -131,24 +129,22 @@ getJasmineRequireObj().Spec = function(j$) {
     const runnerConfig = {
       isLeaf: true,
       queueableFns: [...fns.befores, this.queueableFn, ...fns.afters],
-      onException: function() {
-        self.handleException.apply(self, arguments);
-      },
-      onMultipleDone: function() {
+      onException: e => this.handleException(e),
+      onMultipleDone: () => {
         // Issue a deprecation. Include the context ourselves and pass
         // ignoreRunnable: true, since getting here always means that we've already
         // moved on and the current runnable isn't the one that caused the problem.
-        self.onLateError(
+        this.onLateError(
           new Error(
             'An asynchronous spec, beforeEach, or afterEach function called its ' +
               "'done' callback more than once.\n(in spec: " +
-              self.getFullName() +
+              this.getFullName() +
               ')'
           )
         );
       },
-      onComplete: function() {
-        if (self.result.status === 'failed') {
+      onComplete: () => {
+        if (this.result.status === 'failed') {
           onComplete(new j$.StopExecutionError('spec failed'));
         } else {
           onComplete();

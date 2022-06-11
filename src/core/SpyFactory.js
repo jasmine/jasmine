@@ -4,8 +4,6 @@ getJasmineRequireObj().SpyFactory = function(j$) {
     getDefaultStrategyFn,
     getMatchersUtil
   ) {
-    const self = this;
-
     this.createSpy = function(name, originalFn) {
       return j$.Spy(name, getMatchersUtil(), {
         originalFn,
@@ -28,7 +26,7 @@ getJasmineRequireObj().SpyFactory = function(j$) {
 
       const methods = normalizeKeyValues(methodNames);
       for (let i = 0; i < methods.length; i++) {
-        const spy = (obj[methods[i][0]] = self.createSpy(
+        const spy = (obj[methods[i][0]] = this.createSpy(
           baseName + '.' + methods[i][0]
         ));
         if (methods[i].length > 1) {
@@ -40,8 +38,8 @@ getJasmineRequireObj().SpyFactory = function(j$) {
       for (let i = 0; i < properties.length; i++) {
         const descriptor = {
           enumerable: true,
-          get: self.createSpy(baseName + '.' + properties[i][0] + '.get'),
-          set: self.createSpy(baseName + '.' + properties[i][0] + '.set')
+          get: this.createSpy(baseName + '.' + properties[i][0] + '.get'),
+          set: this.createSpy(baseName + '.' + properties[i][0] + '.set')
         };
         if (properties[i].length > 1) {
           descriptor.get.and.returnValue(properties[i][1]);

@@ -5,8 +5,6 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   function SpyStrategy(options) {
     options = options || {};
 
-    const self = this;
-
     /**
      * Get the identifying information for the spy.
      * @name SpyStrategy#identity
@@ -34,10 +32,10 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
      * @param {*} value The value to return.
      */
     this.resolveTo = function(value) {
-      self.plan = function() {
+      this.plan = function() {
         return Promise.resolve(value);
       };
-      return self.getSpy();
+      return this.getSpy();
     };
 
     /**
@@ -48,10 +46,10 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
      * @param {*} value The value to return.
      */
     this.rejectWith = function(value) {
-      self.plan = function() {
+      this.plan = function() {
         return Promise.reject(value);
       };
-      return self.getSpy();
+      return this.getSpy();
     };
   }
 

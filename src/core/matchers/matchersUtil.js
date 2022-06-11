@@ -74,7 +74,6 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
   };
 
   MatchersUtil.prototype.buildFailureMessage = function() {
-    const self = this;
     const args = Array.prototype.slice.call(arguments, 0),
       matcherName = args[0],
       isNot = args[1],
@@ -86,7 +85,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
 
     let message =
       'Expected ' +
-      self.pp(actual) +
+      this.pp(actual) +
       (isNot ? ' not ' : ' ') +
       englishyPredicate;
 
@@ -95,7 +94,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
         if (i > 0) {
           message += ',';
         }
-        message += ' ' + self.pp(expected[i]);
+        message += ' ' + this.pp(expected[i]);
       }
     }
 
@@ -170,7 +169,6 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
   //   [Underscore](http://underscorejs.org)
   MatchersUtil.prototype.eq_ = function(a, b, aStack, bStack, diffBuilder) {
     let result = true;
-    const self = this;
 
     const asymmetricResult = this.asymmetricMatch_(
       a,
@@ -255,7 +253,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       case '[object ArrayBuffer]':
         // If we have an instance of ArrayBuffer the Uint8Array ctor
         // will be defined as well
-        return self.eq_(
+        return this.eq_(
           new Uint8Array(a),
           new Uint8Array(b),
           aStack,
@@ -325,15 +323,15 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       });
 
       for (let i = 0; i < aLength || i < bLength; i++) {
-        diffBuilder.withPath(i, function() {
+        diffBuilder.withPath(i, () => {
           if (i >= bLength) {
             diffBuilder.recordMismatch(
-              actualArrayIsLongerFormatter.bind(null, self.pp)
+              actualArrayIsLongerFormatter.bind(null, this.pp)
             );
             result = false;
           } else {
             result =
-              self.eq_(
+              this.eq_(
                 i < aLength ? a[i] : void 0,
                 i < bLength ? b[i] : void 0,
                 aStack,
@@ -498,8 +496,8 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
         continue;
       }
 
-      diffBuilder.withPath(key, function() {
-        if (!self.eq_(a[key], b[key], aStack, bStack, diffBuilder)) {
+      diffBuilder.withPath(key, () => {
+        if (!this.eq_(a[key], b[key], aStack, bStack, diffBuilder)) {
           result = false;
         }
       });
