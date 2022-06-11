@@ -494,7 +494,7 @@ describe('Env', function() {
     });
   });
 
-  it('creates an expectationFactory that uses the current custom equality testers and object formatters', function(done) {
+  it('creates an expectationFactory that uses the current custom equality testers and object formatters', async function() {
     function customEqualityTester() {}
     function customObjectFormatter() {}
     function prettyPrinter() {}
@@ -515,19 +515,17 @@ describe('Env', function() {
       expectationFactory('actual', specInstance);
     });
 
-    env.execute(null, function() {
-      expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
-        customObjectFormatter
-      ]);
-      expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
-        customTesters: [customEqualityTester],
-        pp: prettyPrinter
-      });
-      done();
+    await env.execute();
+    expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
+      customObjectFormatter
+    ]);
+    expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
+      customTesters: [customEqualityTester],
+      pp: prettyPrinter
     });
   });
 
-  it('creates an asyncExpectationFactory that uses the current custom equality testers and object formatters', function(done) {
+  it('creates an asyncExpectationFactory that uses the current custom equality testers and object formatters', async function() {
     function customEqualityTester() {}
     function customObjectFormatter() {}
     function prettyPrinter() {}
@@ -548,15 +546,14 @@ describe('Env', function() {
       asyncExpectationFactory('actual', specInstance);
     });
 
-    env.execute(null, function() {
-      expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
-        customObjectFormatter
-      ]);
-      expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
-        customTesters: [customEqualityTester],
-        pp: prettyPrinter
-      });
-      done();
+    await env.execute();
+
+    expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
+      customObjectFormatter
+    ]);
+    expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
+      customTesters: [customEqualityTester],
+      pp: prettyPrinter
     });
   });
 

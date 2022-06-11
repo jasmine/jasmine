@@ -30,7 +30,7 @@ describe('spec running', function() {
     expect(it4.id).toEqual('spec4');
   });
 
-  it('nested suites', function(done) {
+  it('nested suites', async function() {
     let foo = 0;
     let bar = 0;
     let baz = 0;
@@ -61,16 +61,15 @@ describe('spec running', function() {
     expect(baz).toEqual(0);
     expect(quux).toEqual(0);
 
-    env.execute(null, function() {
-      expect(foo).toEqual(1);
-      expect(bar).toEqual(1);
-      expect(baz).toEqual(1);
-      expect(quux).toEqual(1);
-      done();
-    });
+    await env.execute();
+
+    expect(foo).toEqual(1);
+    expect(bar).toEqual(1);
+    expect(baz).toEqual(1);
+    expect(quux).toEqual(1);
   });
 
-  it('should permit nested describes', function(done) {
+  it('should permit nested describes', async function() {
     const actions = [];
 
     env.beforeEach(function() {
@@ -127,42 +126,41 @@ describe('spec running', function() {
       });
     });
 
-    env.execute(null, function() {
-      const expected = [
-        'topSuite beforeEach',
-        'outer beforeEach',
-        'outer it 1',
-        'outer afterEach',
-        'topSuite afterEach',
+    await env.execute();
 
-        'topSuite beforeEach',
-        'outer beforeEach',
-        'inner 1 beforeEach',
-        'inner 1 it',
-        'inner 1 afterEach',
-        'outer afterEach',
-        'topSuite afterEach',
+    const expected = [
+      'topSuite beforeEach',
+      'outer beforeEach',
+      'outer it 1',
+      'outer afterEach',
+      'topSuite afterEach',
 
-        'topSuite beforeEach',
-        'outer beforeEach',
-        'outer it 2',
-        'outer afterEach',
-        'topSuite afterEach',
+      'topSuite beforeEach',
+      'outer beforeEach',
+      'inner 1 beforeEach',
+      'inner 1 it',
+      'inner 1 afterEach',
+      'outer afterEach',
+      'topSuite afterEach',
 
-        'topSuite beforeEach',
-        'outer beforeEach',
-        'inner 2 beforeEach',
-        'inner 2 it',
-        'inner 2 afterEach',
-        'outer afterEach',
-        'topSuite afterEach'
-      ];
-      expect(actions).toEqual(expected);
-      done();
-    });
+      'topSuite beforeEach',
+      'outer beforeEach',
+      'outer it 2',
+      'outer afterEach',
+      'topSuite afterEach',
+
+      'topSuite beforeEach',
+      'outer beforeEach',
+      'inner 2 beforeEach',
+      'inner 2 it',
+      'inner 2 afterEach',
+      'outer afterEach',
+      'topSuite afterEach'
+    ];
+    expect(actions).toEqual(expected);
   });
 
-  it('should run multiple befores and afters ordered so functions declared later are treated as more specific', function(done) {
+  it('should run multiple befores and afters ordered so functions declared later are treated as more specific', async function() {
     const actions = [];
 
     env.beforeAll(function() {
@@ -219,28 +217,27 @@ describe('spec running', function() {
       });
     });
 
-    env.execute(null, function() {
-      const expected = [
-        'runner beforeAll1',
-        'runner beforeAll2',
-        'runner beforeEach1',
-        'runner beforeEach2',
-        'beforeEach1',
-        'beforeEach2',
-        'outer it 1',
-        'afterEach2',
-        'afterEach1',
-        'runner afterEach2',
-        'runner afterEach1',
-        'runner afterAll2',
-        'runner afterAll1'
-      ];
-      expect(actions).toEqual(expected);
-      done();
-    });
+    await env.execute();
+
+    const expected = [
+      'runner beforeAll1',
+      'runner beforeAll2',
+      'runner beforeEach1',
+      'runner beforeEach2',
+      'beforeEach1',
+      'beforeEach2',
+      'outer it 1',
+      'afterEach2',
+      'afterEach1',
+      'runner afterEach2',
+      'runner afterEach1',
+      'runner afterAll2',
+      'runner afterAll1'
+    ];
+    expect(actions).toEqual(expected);
   });
 
-  it('should run beforeAlls before beforeEachs and afterAlls after afterEachs', function(done) {
+  it('should run beforeAlls before beforeEachs and afterAlls after afterEachs', async function() {
     const actions = [];
 
     env.beforeAll(function() {
@@ -281,24 +278,23 @@ describe('spec running', function() {
       });
     });
 
-    env.execute(null, function() {
-      const expected = [
-        'runner beforeAll',
-        'inner beforeAll',
-        'runner beforeEach',
-        'inner beforeEach',
-        'it',
-        'inner afterEach',
-        'runner afterEach',
-        'inner afterAll',
-        'runner afterAll'
-      ];
-      expect(actions).toEqual(expected);
-      done();
-    });
+    await env.execute();
+
+    const expected = [
+      'runner beforeAll',
+      'inner beforeAll',
+      'runner beforeEach',
+      'inner beforeEach',
+      'it',
+      'inner afterEach',
+      'runner afterEach',
+      'inner afterAll',
+      'runner afterAll'
+    ];
+    expect(actions).toEqual(expected);
   });
 
-  it('should run beforeAlls and afterAlls in the order declared when runnablesToRun is provided', function(done) {
+  it('should run beforeAlls and afterAlls in the order declared when runnablesToRun is provided', async function() {
     const actions = [];
     let spec;
     let spec2;
@@ -345,30 +341,29 @@ describe('spec running', function() {
       });
     });
 
-    env.execute([spec2.id, spec.id], function() {
-      const expected = [
-        'runner beforeAll',
-        'inner beforeAll',
-        'runner beforeEach',
-        'inner beforeEach',
-        'it2',
-        'inner afterEach',
-        'runner afterEach',
+    await env.execute([spec2.id, spec.id]);
 
-        'runner beforeEach',
-        'inner beforeEach',
-        'it',
-        'inner afterEach',
-        'runner afterEach',
-        'inner afterAll',
-        'runner afterAll'
-      ];
-      expect(actions).toEqual(expected);
-      done();
-    });
+    const expected = [
+      'runner beforeAll',
+      'inner beforeAll',
+      'runner beforeEach',
+      'inner beforeEach',
+      'it2',
+      'inner afterEach',
+      'runner afterEach',
+
+      'runner beforeEach',
+      'inner beforeEach',
+      'it',
+      'inner afterEach',
+      'runner afterEach',
+      'inner afterAll',
+      'runner afterAll'
+    ];
+    expect(actions).toEqual(expected);
   });
 
-  it('only runs *Alls once in a focused suite', function(done) {
+  it('only runs *Alls once in a focused suite', async function() {
     const actions = [];
 
     env.fdescribe('Suite', function() {
@@ -383,14 +378,13 @@ describe('spec running', function() {
       });
     });
 
-    env.execute(null, function() {
-      expect(actions).toEqual(['beforeAll', 'spec', 'afterAll']);
-      done();
-    });
+    await env.execute();
+
+    expect(actions).toEqual(['beforeAll', 'spec', 'afterAll']);
   });
 
   describe('focused runnables', function() {
-    it('runs the relevant alls and eachs for each runnable', function(done) {
+    it('runs the relevant alls and eachs for each runnable', async function() {
       const actions = [];
       env.beforeAll(function() {
         actions.push('beforeAll');
@@ -417,24 +411,23 @@ describe('spec running', function() {
         });
       });
 
-      env.execute(null, function() {
-        const expected = [
-          'beforeAll',
-          'beforeEach',
-          'spec in fdescribe',
-          'afterEach',
+      await env.execute();
 
-          'beforeEach',
-          'focused spec',
-          'afterEach',
-          'afterAll'
-        ];
-        expect(actions).toEqual(expected);
-        done();
-      });
+      const expected = [
+        'beforeAll',
+        'beforeEach',
+        'spec in fdescribe',
+        'afterEach',
+
+        'beforeEach',
+        'focused spec',
+        'afterEach',
+        'afterAll'
+      ];
+      expect(actions).toEqual(expected);
     });
 
-    it('focused specs in focused suites cause non-focused siblings to not run', function(done) {
+    it('focused specs in focused suites cause non-focused siblings to not run', async function() {
       const actions = [];
 
       env.fdescribe('focused suite', function() {
@@ -446,14 +439,13 @@ describe('spec running', function() {
         });
       });
 
-      env.execute(null, function() {
-        const expected = ['focused spec'];
-        expect(actions).toEqual(expected);
-        done();
-      });
+      await env.execute();
+
+      const expected = ['focused spec'];
+      expect(actions).toEqual(expected);
     });
 
-    it('focused suites in focused suites cause non-focused siblings to not run', function(done) {
+    it('focused suites in focused suites cause non-focused siblings to not run', async function() {
       const actions = [];
 
       env.fdescribe('focused suite', function() {
@@ -467,14 +459,13 @@ describe('spec running', function() {
         });
       });
 
-      env.execute(null, function() {
-        const expected = ['inner spec'];
-        expect(actions).toEqual(expected);
-        done();
-      });
+      await env.execute();
+
+      const expected = ['inner spec'];
+      expect(actions).toEqual(expected);
     });
 
-    it('focused runnables unfocus ancestor focused suites', function(done) {
+    it('focused runnables unfocus ancestor focused suites', async function() {
       const actions = [];
 
       env.fdescribe('focused suite', function() {
@@ -488,15 +479,14 @@ describe('spec running', function() {
         });
       });
 
-      env.execute(null, function() {
-        const expected = ['focused spec'];
-        expect(actions).toEqual(expected);
-        done();
-      });
+      await env.execute();
+
+      const expected = ['focused spec'];
+      expect(actions).toEqual(expected);
     });
   });
 
-  it("shouldn't run disabled suites", function(done) {
+  it("shouldn't run disabled suites", async function() {
     const specInADisabledSuite = jasmine.createSpy('specInADisabledSuite');
     env.describe('A Suite', function() {
       env.xdescribe('with a disabled suite', function() {
@@ -504,13 +494,12 @@ describe('spec running', function() {
       });
     });
 
-    env.execute(null, function() {
-      expect(specInADisabledSuite).not.toHaveBeenCalled();
-      done();
-    });
+    await env.execute();
+
+    expect(specInADisabledSuite).not.toHaveBeenCalled();
   });
 
-  it("shouldn't run before/after functions in disabled suites", function(done) {
+  it("shouldn't run before/after functions in disabled suites", async function() {
     const shouldNotRun = jasmine.createSpy('shouldNotRun');
     env.xdescribe('A disabled Suite', function() {
       // None of the before/after functions should run.
@@ -522,13 +511,12 @@ describe('spec running', function() {
       env.it('spec inside a disabled suite', shouldNotRun);
     });
 
-    env.execute(null, function() {
-      expect(shouldNotRun).not.toHaveBeenCalled();
-      done();
-    });
+    await env.execute();
+
+    expect(shouldNotRun).not.toHaveBeenCalled();
   });
 
-  it('should allow top level suites to be disabled', function(done) {
+  it('should allow top level suites to be disabled', async function() {
     const specInADisabledSuite = jasmine.createSpy('specInADisabledSuite'),
       otherSpec = jasmine.createSpy('otherSpec');
 
@@ -539,14 +527,13 @@ describe('spec running', function() {
       env.it('another spec', otherSpec);
     });
 
-    env.execute(null, function() {
-      expect(specInADisabledSuite).not.toHaveBeenCalled();
-      expect(otherSpec).toHaveBeenCalled();
-      done();
-    });
+    await env.execute();
+
+    expect(specInADisabledSuite).not.toHaveBeenCalled();
+    expect(otherSpec).toHaveBeenCalled();
   });
 
-  it('should set all pending specs to pending when a suite is run', function(done) {
+  it('should set all pending specs to pending when a suite is run', async function() {
     env.describe('default current suite', function() {
       env.it('I am a pending spec');
     });
@@ -554,17 +541,16 @@ describe('spec running', function() {
 
     env.addReporter(reporter);
 
-    env.execute(null, function() {
-      expect(reporter.specDone).toHaveBeenCalledWith(
-        jasmine.objectContaining({
-          status: 'pending'
-        })
-      );
-      done();
-    });
+    await env.execute();
+
+    expect(reporter.specDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        status: 'pending'
+      })
+    );
   });
 
-  it('should recover gracefully when there are errors in describe functions', function(done) {
+  it('should recover gracefully when there are errors in describe functions', async function() {
     const specs = [],
       reporter = jasmine.createSpyObj(['specDone', 'suiteDone']);
 
@@ -599,24 +585,23 @@ describe('spec running', function() {
     });
 
     env.addReporter(reporter);
-    env.execute(null, function() {
-      expect(specs).toEqual([
-        'outer1 inner1 should thingy',
-        'outer1 inner2 should other thingy',
-        'outer2 should xxx'
-      ]);
-      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
-        'outer1 inner1',
-        [/inner error/]
-      );
-      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer1', [
-        /outer error/
-      ]);
-      done();
-    });
+    await env.execute();
+
+    expect(specs).toEqual([
+      'outer1 inner1 should thingy',
+      'outer1 inner2 should other thingy',
+      'outer2 should xxx'
+    ]);
+    expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
+      'outer1 inner1',
+      [/inner error/]
+    );
+    expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable('outer1', [
+      /outer error/
+    ]);
   });
 
-  it('re-enters suites that have no *Alls', function(done) {
+  it('re-enters suites that have no *Alls', async function() {
     const actions = [];
     let spec1;
     let spec2;
@@ -636,10 +621,9 @@ describe('spec running', function() {
       actions.push('spec3');
     });
 
-    env.execute([spec2.id, spec3.id, spec1.id], function() {
-      expect(actions).toEqual(['spec2', 'spec3', 'spec1']);
-      done();
-    });
+    await env.execute([spec2.id, spec3.id, spec1.id]);
+
+    expect(actions).toEqual(['spec2', 'spec3', 'spec1']);
   });
 
   it('refuses to re-enter suites with a beforeAll', function() {
@@ -698,7 +682,7 @@ describe('spec running', function() {
     expect(actions).toEqual([]);
   });
 
-  it('should run the tests in a consistent order when a seed is supplied', function(done) {
+  it('should run the tests in a consistent order when a seed is supplied', async function() {
     const actions = [];
     env.configure({ random: true, seed: '123456' });
 
@@ -756,39 +740,38 @@ describe('spec running', function() {
       });
     });
 
-    env.execute(null, function() {
-      const expected = [
-        'topSuite beforeEach',
-        'outer beforeEach',
-        'outer it 2',
-        'outer afterEach',
-        'topSuite afterEach',
+    await env.execute();
 
-        'topSuite beforeEach',
-        'outer beforeEach',
-        'inner 2 beforeEach',
-        'inner 2 it',
-        'inner 2 afterEach',
-        'outer afterEach',
-        'topSuite afterEach',
+    const expected = [
+      'topSuite beforeEach',
+      'outer beforeEach',
+      'outer it 2',
+      'outer afterEach',
+      'topSuite afterEach',
 
-        'topSuite beforeEach',
-        'outer beforeEach',
-        'inner 1 beforeEach',
-        'inner 1 it',
-        'inner 1 afterEach',
-        'outer afterEach',
-        'topSuite afterEach',
+      'topSuite beforeEach',
+      'outer beforeEach',
+      'inner 2 beforeEach',
+      'inner 2 it',
+      'inner 2 afterEach',
+      'outer afterEach',
+      'topSuite afterEach',
 
-        'topSuite beforeEach',
-        'outer beforeEach',
-        'outer it 1',
-        'outer afterEach',
-        'topSuite afterEach'
-      ];
-      expect(actions).toEqual(expected);
-      done();
-    });
+      'topSuite beforeEach',
+      'outer beforeEach',
+      'inner 1 beforeEach',
+      'inner 1 it',
+      'inner 1 afterEach',
+      'outer afterEach',
+      'topSuite afterEach',
+
+      'topSuite beforeEach',
+      'outer beforeEach',
+      'outer it 1',
+      'outer afterEach',
+      'topSuite afterEach'
+    ];
+    expect(actions).toEqual(expected);
   });
 
   function hasStandardErrorHandlingBehavior() {
@@ -1298,7 +1281,7 @@ describe('spec running', function() {
   });
 
   describe('when stopOnSpecFailure is on', function() {
-    it('does not run further specs when one fails', function(done) {
+    it('does not run further specs when one fails', async function() {
       const actions = [];
 
       env.describe('wrapper', function() {
@@ -1317,10 +1300,9 @@ describe('spec running', function() {
       env.configure({ random: false });
       env.configure({ stopOnSpecFailure: true });
 
-      env.execute(null, function() {
-        expect(actions).toEqual(['fails']);
-        done();
-      });
+      await env.execute();
+
+      expect(actions).toEqual(['fails']);
     });
 
     it('runs afterAll functions', async function() {
@@ -1364,7 +1346,7 @@ describe('spec running', function() {
       env.configure({ autoCleanClosures: false, random: false });
     });
 
-    it('should be able to run multiple times', function(done) {
+    it('should be able to run multiple times', async function() {
       const actions = [];
 
       env.describe('Suite', function() {
@@ -1378,16 +1360,14 @@ describe('spec running', function() {
         });
       });
 
-      env.execute(null, function() {
-        expect(actions).toEqual(['spec1', 'spec2']);
-        env.execute(null, function() {
-          expect(actions).toEqual(['spec1', 'spec2', 'spec1', 'spec2']);
-          done();
-        });
-      });
+      await env.execute();
+      expect(actions).toEqual(['spec1', 'spec2']);
+
+      await env.execute();
+      expect(actions).toEqual(['spec1', 'spec2', 'spec1', 'spec2']);
     });
 
-    it('should reset results between runs', function(done) {
+    it('should reset results between runs', async function() {
       const specResults = {};
       const suiteResults = {};
       let firstExecution = true;
@@ -1440,48 +1420,46 @@ describe('spec running', function() {
         });
       });
 
-      env.execute(null, function() {
-        expect(specResults).toEqual({
-          spec1: 'failed',
-          spec2: 'pending',
-          spec3: 'pending',
-          spec4: 'failed',
-          spec5: 'failed',
-          spec6: 'pending',
-          spec7: 'pending'
-        });
-        expect(suiteResults).toEqual({
-          suite0: 'passed',
-          suite1: 'passed',
-          suite2: 'passed',
-          suite3: 'passed',
-          suite4: 'pending',
-          suite5: 'passed'
-        });
-        env.execute(null, function() {
-          expect(specResults).toEqual({
-            spec1: 'passed',
-            spec2: 'passed',
-            spec3: 'pending',
-            spec4: 'passed',
-            spec5: 'failed',
-            spec6: 'pending',
-            spec7: 'pending'
-          });
-          expect(suiteResults).toEqual({
-            suite0: 'passed',
-            suite1: 'passed',
-            suite2: 'passed',
-            suite3: 'passed',
-            suite4: 'pending',
-            suite5: 'passed'
-          });
-          done();
-        });
+      await env.execute();
+      expect(specResults).toEqual({
+        spec1: 'failed',
+        spec2: 'pending',
+        spec3: 'pending',
+        spec4: 'failed',
+        spec5: 'failed',
+        spec6: 'pending',
+        spec7: 'pending'
+      });
+      expect(suiteResults).toEqual({
+        suite0: 'passed',
+        suite1: 'passed',
+        suite2: 'passed',
+        suite3: 'passed',
+        suite4: 'pending',
+        suite5: 'passed'
+      });
+
+      await env.execute();
+      expect(specResults).toEqual({
+        spec1: 'passed',
+        spec2: 'passed',
+        spec3: 'pending',
+        spec4: 'passed',
+        spec5: 'failed',
+        spec6: 'pending',
+        spec7: 'pending'
+      });
+      expect(suiteResults).toEqual({
+        suite0: 'passed',
+        suite1: 'passed',
+        suite2: 'passed',
+        suite3: 'passed',
+        suite4: 'pending',
+        suite5: 'passed'
       });
     });
 
-    it('should execute before and after hooks per run', function(done) {
+    it('should execute before and after hooks per run', async function() {
       let timeline = [];
       const timelineFn = function(hookName) {
         return function() {
@@ -1507,17 +1485,15 @@ describe('spec running', function() {
         env.it('spec1', timelineFn('spec1'));
         env.it('spec2', timelineFn('spec2'));
       });
-      env.execute(null, function() {
-        expect(timeline).toEqual(expectedTimeLine);
-        timeline = [];
-        env.execute(null, function() {
-          expect(timeline).toEqual(expectedTimeLine);
-          done();
-        });
-      });
+      await env.execute();
+      expect(timeline).toEqual(expectedTimeLine);
+
+      timeline = [];
+      await env.execute();
+      expect(timeline).toEqual(expectedTimeLine);
     });
 
-    it('should be able to filter out different tests in subsequent runs', function(done) {
+    it('should be able to filter out different tests in subsequent runs', async function() {
       const specResults = {};
       let focussedSpec = 'spec1';
 
@@ -1539,29 +1515,27 @@ describe('spec running', function() {
         env.it('spec3', function() {});
       });
 
-      env.execute(null, function() {
-        expect(specResults).toEqual({
-          spec1: 'passed',
-          spec2: 'excluded',
-          spec3: 'excluded'
-        });
-        focussedSpec = 'spec2';
-        env.execute(null, function() {
-          expect(specResults).toEqual({
-            spec1: 'excluded',
-            spec2: 'passed',
-            spec3: 'excluded'
-          });
-          focussedSpec = 'spec3';
-          env.execute(null, function() {
-            expect(specResults).toEqual({
-              spec1: 'excluded',
-              spec2: 'excluded',
-              spec3: 'passed'
-            });
-            done();
-          });
-        });
+      await env.execute();
+      expect(specResults).toEqual({
+        spec1: 'passed',
+        spec2: 'excluded',
+        spec3: 'excluded'
+      });
+
+      focussedSpec = 'spec2';
+      await env.execute();
+      expect(specResults).toEqual({
+        spec1: 'excluded',
+        spec2: 'passed',
+        spec3: 'excluded'
+      });
+
+      focussedSpec = 'spec3';
+      await env.execute();
+      expect(specResults).toEqual({
+        spec1: 'excluded',
+        spec2: 'excluded',
+        spec3: 'passed'
       });
     });
   });

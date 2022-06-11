@@ -10,7 +10,7 @@ describe('Custom Async Matchers (Integration)', function() {
     env.cleanup_();
   });
 
-  it('passes the spec if the custom async matcher passes', function(done) {
+  it('passes the spec if the custom async matcher passes', async function() {
     env.it('spec using custom async matcher', function() {
       env.addAsyncMatchers({
         toBeReal: function() {
@@ -30,10 +30,10 @@ describe('Custom Async Matchers (Integration)', function() {
     };
 
     env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    await env.execute();
   });
 
-  it('uses the negative compare function for a negative comparison, if provided', function(done) {
+  it('uses the negative compare function for a negative comparison, if provided', async function() {
     env.it('spec with custom negative comparison matcher', function() {
       env.addAsyncMatchers({
         toBeReal: function() {
@@ -56,10 +56,10 @@ describe('Custom Async Matchers (Integration)', function() {
     };
 
     env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    await env.execute();
   });
 
-  it('generates messages with the same rules as built in matchers absent a custom message', function(done) {
+  it('generates messages with the same rules as built in matchers absent a custom message', async function() {
     env.it('spec with an expectation', function() {
       env.addAsyncMatchers({
         toBeReal: function() {
@@ -81,10 +81,10 @@ describe('Custom Async Matchers (Integration)', function() {
     };
 
     env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    await env.execute();
   });
 
-  it('passes the jasmine utility to the matcher factory', function(done) {
+  it('passes the jasmine utility to the matcher factory', async function() {
     const matcherFactory = function() {
         return {
           compare: function() {
@@ -112,10 +112,10 @@ describe('Custom Async Matchers (Integration)', function() {
     };
 
     env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    await env.execute();
   });
 
-  it('provides custom equality testers to the matcher factory via matchersUtil', function(done) {
+  it('provides custom equality testers to the matcher factory via matchersUtil', async function() {
     const matcherFactory = function(matchersUtil) {
         return {
           compare: function(actual, expected) {
@@ -146,6 +146,6 @@ describe('Custom Async Matchers (Integration)', function() {
     };
 
     env.addReporter({ specDone: specExpectations });
-    env.execute(null, done);
+    await env.execute();
   });
 });

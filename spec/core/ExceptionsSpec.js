@@ -9,7 +9,7 @@ describe('Exceptions:', function() {
     env.cleanup_();
   });
 
-  it('should handle exceptions thrown, but continue', function(done) {
+  it('should handle exceptions thrown, but continue', async function() {
     const secondTest = jasmine.createSpy('second test');
     env.describe('Suite for handles exceptions', function() {
       env.it(
@@ -24,15 +24,12 @@ describe('Exceptions:', function() {
       );
     });
 
-    const expectations = function() {
-      expect(secondTest).toHaveBeenCalled();
-      done();
-    };
+    await env.execute();
 
-    env.execute(null, expectations);
+    expect(secondTest).toHaveBeenCalled();
   });
 
-  it('should handle exceptions thrown directly in top-level describe blocks and continue', function(done) {
+  it('should handle exceptions thrown directly in top-level describe blocks and continue', async function() {
     const secondDescribe = jasmine
       .createSpy('second describe')
       .and.callFake(function() {
@@ -47,11 +44,8 @@ describe('Exceptions:', function() {
     });
     env.describe("a suite that doesn't throw an exception", secondDescribe);
 
-    const expectations = function() {
-      expect(secondDescribe).toHaveBeenCalled();
-      done();
-    };
+    await env.execute();
 
-    env.execute(null, expectations);
+    expect(secondDescribe).toHaveBeenCalled();
   });
 });
