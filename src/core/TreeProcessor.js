@@ -230,6 +230,7 @@ getJasmineRequireObj().TreeProcessor = function() {
         return {
           fn: function(done) {
             node.execute(
+              queueRunnerFactory,
               done,
               stats[node.id].excluded,
               failSpecWithNoExpectations

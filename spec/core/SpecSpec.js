@@ -38,11 +38,10 @@ describe('Spec', function() {
       spec = new jasmineUnderTest.Spec({
         description: 'my test',
         id: 'some-id',
-        queueableFn: { fn: function() {} },
-        queueRunnerFactory: fakeQueueRunner
+        queueableFn: { fn: function() {} }
       });
 
-    spec.execute();
+    spec.execute(fakeQueueRunner);
 
     expect(fakeQueueRunner).toHaveBeenCalled();
   });
@@ -54,11 +53,10 @@ describe('Spec', function() {
         id: 123,
         description: 'foo bar',
         queueableFn: { fn: function() {} },
-        onStart: startCallback,
-        queueRunnerFactory: fakeQueueRunner
+        onStart: startCallback
       });
 
-    spec.execute();
+    spec.execute(fakeQueueRunner);
 
     fakeQueueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
     expect(startCallback).toHaveBeenCalled();
@@ -82,11 +80,10 @@ describe('Spec', function() {
           }
         ];
       },
-      onStart: startCallback,
-      queueRunnerFactory: fakeQueueRunner
+      onStart: startCallback
     });
 
-    spec.execute();
+    spec.execute(fakeQueueRunner);
 
     fakeQueueRunner.calls.mostRecent().args[0].queueableFns[0].fn();
     expect(startCallback).toHaveBeenCalled();
@@ -106,11 +103,10 @@ describe('Spec', function() {
         queueableFn: queueableFn,
         beforeAndAfterFns: function() {
           return { befores: [before], afters: [after] };
-        },
-        queueRunnerFactory: fakeQueueRunner
+        }
       });
 
-    spec.execute();
+    spec.execute(fakeQueueRunner);
 
     const options = fakeQueueRunner.calls.mostRecent().args[0];
     expect(options.queueableFns).toEqual([
@@ -131,11 +127,10 @@ describe('Spec', function() {
         queueableFn: { fn: function() {} },
         beforeAndAfterFns: function() {
           return { befores: [], afters: [] };
-        },
-        queueRunnerFactory: fakeQueueRunner
+        }
       });
 
-    spec.execute();
+    spec.execute(fakeQueueRunner);
 
     expect(fakeQueueRunner).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -145,14 +140,12 @@ describe('Spec', function() {
   });
 
   it('is marked pending if created without a function body', function() {
-    const fakeQueueRunner = jasmine.createSpy('fakeQueueRunner'),
-      startCallback = jasmine.createSpy('startCallback'),
+    const startCallback = jasmine.createSpy('startCallback'),
       resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
         onStart: startCallback,
         queueableFn: { fn: null },
-        resultCallback: resultCallback,
-        queueRunnerFactory: fakeQueueRunner
+        resultCallback: resultCallback
       });
 
     expect(spec.status()).toBe('pending');
@@ -166,11 +159,10 @@ describe('Spec', function() {
       spec = new jasmineUnderTest.Spec({
         onStart: startCallback,
         queueableFn: { fn: specBody },
-        resultCallback: resultCallback,
-        queueRunnerFactory: fakeQueueRunner
+        resultCallback: resultCallback
       });
 
-    spec.execute('cally-back', true);
+    spec.execute(fakeQueueRunner, 'cally-back', true);
 
     expect(fakeQueueRunner).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -206,7 +198,6 @@ describe('Spec', function() {
         getSpecName: function() {
           return 'a suite with a spec';
         },
-        queueRunnerFactory: fakeQueueRunner,
         queueableFn: { fn: null }
       });
 
@@ -214,7 +205,7 @@ describe('Spec', function() {
 
     expect(spec.status()).toBe('pending');
 
-    spec.execute();
+    spec.execute(fakeQueueRunner);
 
     expect(fakeQueueRunner).toHaveBeenCalled();
 
@@ -247,13 +238,10 @@ describe('Spec', function() {
         catchExceptions: function() {
           return false;
         },
-        resultCallback: function() {},
-        queueRunnerFactory: function(attrs) {
-          attrs.onComplete();
-        }
+        resultCallback: function() {}
       });
 
-    spec.execute(done);
+    spec.execute(attrs => attrs.onComplete(), done);
 
     expect(done).toHaveBeenCalled();
   });
@@ -265,14 +253,14 @@ describe('Spec', function() {
         catchExceptions: function() {
           return false;
         },
-        resultCallback: function() {},
-        queueRunnerFactory: function(attrs) {
-          spec.result.status = 'failed';
-          attrs.onComplete();
-        }
+        resultCallback: function() {}
       });
 
-    spec.execute(done);
+    function queueRunnerFactory(attrs) {
+      spec.result.status = 'failed';
+      attrs.onComplete();
+    }
+    spec.execute(queueRunnerFactory, done);
 
     expect(done).toHaveBeenCalledWith(
       jasmine.any(jasmineUnderTest.StopExecutionError)
@@ -293,16 +281,17 @@ describe('Spec', function() {
       resultCallback: function(result) {
         duration = result.duration;
       },
-      queueRunnerFactory: function(config) {
-        config.queueableFns.forEach(function(qf) {
-          qf.fn();
-        });
-        config.onComplete();
-      },
       timer: timer
     });
 
-    spec.execute(function() {});
+    function queueRunnerFactory(config) {
+      config.queueableFns.forEach(function(qf) {
+        qf.fn();
+      });
+      config.onComplete();
+    }
+
+    spec.execute(queueRunnerFactory, function() {});
     expect(duration).toBe(77000);
   });
 
@@ -313,13 +302,10 @@ describe('Spec', function() {
         catchExceptions: function() {
           return false;
         },
-        resultCallback: function() {},
-        queueRunnerFactory: function(attrs) {
-          attrs.onComplete();
-        }
+        resultCallback: function() {}
       });
     spec.setSpecProperty('a', 4);
-    spec.execute(done);
+    spec.execute(attrs => attrs.onComplete(), done);
     expect(spec.result.properties).toEqual({ a: 4 });
   });
 
@@ -352,13 +338,12 @@ describe('Spec', function() {
       resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: jasmine.createSpy('spec body') },
-        queueRunnerFactory: fakeQueueRunner,
         resultCallback: resultCallback
       });
     spec.addExpectationResult(true, { message: 'expectation1' });
     spec.addExpectationResult(false, { message: 'expectation2' });
 
-    spec.execute();
+    spec.execute(fakeQueueRunner);
 
     const fns = fakeQueueRunner.calls.mostRecent().args[0].queueableFns;
     fns[fns.length - 1].fn();
@@ -376,7 +361,6 @@ describe('Spec', function() {
       resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: function() {} },
-        queueRunnerFactory: fakeQueueRunner,
         resultCallback: resultCallback,
         throwOnExpectationFailure: true
       });
@@ -386,7 +370,7 @@ describe('Spec', function() {
       spec.addExpectationResult(false, { message: 'failed' });
     }).toThrowError(jasmineUnderTest.errors.ExpectationFailed);
 
-    spec.execute();
+    spec.execute(fakeQueueRunner);
 
     const fns = fakeQueueRunner.calls.mostRecent().args[0].queueableFns;
     fns[fns.length - 1].fn();
@@ -489,9 +473,6 @@ describe('Spec', function() {
     const resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: function() {} },
-        queueRunnerFactory: function(attrs) {
-          attrs.onComplete();
-        },
         resultCallback: resultCallback,
         throwOnExpectationFailure: true
       });
@@ -523,11 +504,10 @@ describe('Spec', function() {
         spec = new jasmineUnderTest.Spec({
           description: 'my test',
           id: 'some-id',
-          queueableFn: { fn: function() {} },
-          queueRunnerFactory: fakeQueueRunner
+          queueableFn: { fn: function() {} }
         });
 
-      spec.execute();
+      spec.execute(fakeQueueRunner);
 
       expect(spec.status()).toEqual('pending');
       expect(spec.result.pendingReason).toEqual('');
@@ -545,11 +525,10 @@ describe('Spec', function() {
         spec = new jasmineUnderTest.Spec({
           description: 'my test',
           id: 'some-id',
-          queueableFn: { fn: function() {} },
-          queueRunnerFactory: fakeQueueRunner
+          queueableFn: { fn: function() {} }
         });
 
-      spec.execute();
+      spec.execute(fakeQueueRunner);
 
       expect(spec.status()).toEqual('pending');
       expect(spec.result.pendingReason).toEqual('custom message');
@@ -561,12 +540,11 @@ describe('Spec', function() {
       resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: function() {} },
-        queueRunnerFactory: fakeQueueRunner,
         resultCallback: resultCallback
       });
 
     spec.handleException('foo');
-    spec.execute();
+    spec.execute(fakeQueueRunner);
 
     const args = fakeQueueRunner.calls.mostRecent().args[0];
     args.queueableFns[args.queueableFns.length - 1].fn();
@@ -587,12 +565,11 @@ describe('Spec', function() {
       resultCallback = jasmine.createSpy('resultCallback'),
       spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: function() {} },
-        queueRunnerFactory: fakeQueueRunner,
         resultCallback: resultCallback
       });
 
     spec.handleException(new jasmineUnderTest.errors.ExpectationFailed());
-    spec.execute();
+    spec.execute(fakeQueueRunner);
 
     const args = fakeQueueRunner.calls.mostRecent().args[0];
     args.queueableFns[args.queueableFns.length - 1].fn();
@@ -605,13 +582,12 @@ describe('Spec', function() {
       spec = new jasmineUnderTest.Spec({
         onLateError: onLateError,
         queueableFn: { fn: function() {} },
-        queueRunnerFactory: queueRunnerFactory,
         getSpecName: function() {
           return 'a spec';
         }
       });
 
-    spec.execute();
+    spec.execute(queueRunnerFactory);
 
     expect(queueRunnerFactory).toHaveBeenCalled();
     queueRunnerFactory.calls.argsFor(0)[0].onMultipleDone();
@@ -631,13 +607,12 @@ describe('Spec', function() {
           queueableFn: {
             fn: function() {}
           },
-          queueRunnerFactory: function() {},
           timer: timer
         }),
         t1 = 123,
         t2 = 456;
 
-      spec.execute();
+      spec.execute(() => {});
       expect(spec.result.debugLogs).toBeNull();
       timer.elapsed.and.returnValue(t1);
       spec.debugLog('msg 1');
@@ -659,17 +634,18 @@ describe('Spec', function() {
             queueableFn: {
               fn: function() {}
             },
-            resultCallback: resultCallback,
-            queueRunnerFactory: function(config) {
-              spec.debugLog('msg');
-              for (const fn of config.queueableFns) {
-                fn.fn();
-              }
-              config.onComplete(false);
-            }
+            resultCallback: resultCallback
           });
 
-        spec.execute(function() {});
+        function queueRunnerFactory(config) {
+          spec.debugLog('msg');
+          for (const fn of config.queueableFns) {
+            fn.fn();
+          }
+          config.onComplete(false);
+        }
+
+        spec.execute(queueRunnerFactory, function() {});
         expect(resultCallback).toHaveBeenCalledWith(
           jasmine.objectContaining({ debugLogs: null }),
           undefined
@@ -682,17 +658,18 @@ describe('Spec', function() {
             queueableFn: {
               fn: function() {}
             },
-            resultCallback: resultCallback,
-            queueRunnerFactory: function(config) {
-              spec.debugLog('msg');
-              for (const fn of config.queueableFns) {
-                fn.fn();
-              }
-              config.onComplete(false);
-            }
+            resultCallback: resultCallback
           });
 
-        spec.execute(function() {});
+        function queueRunnerFactory(config) {
+          spec.debugLog('msg');
+          for (const fn of config.queueableFns) {
+            fn.fn();
+          }
+          config.onComplete(false);
+        }
+
+        spec.execute(queueRunnerFactory, function() {});
         expect(resultCallback).toHaveBeenCalled();
         expect(spec.result.debugLogs).toBeNull();
       });
@@ -707,21 +684,22 @@ describe('Spec', function() {
               fn: function() {}
             },
             resultCallback: resultCallback,
-            queueRunnerFactory: function(config) {
-              spec.debugLog('msg');
-              spec.handleException(new Error('nope'));
-              for (const fn of config.queueableFns) {
-                fn.fn();
-              }
-              config.onComplete(true);
-            },
             timer: timer
           }),
           timestamp = 12345;
 
         timer.elapsed.and.returnValue(timestamp);
 
-        spec.execute(function() {});
+        function queueRunnerFactory(config) {
+          spec.debugLog('msg');
+          spec.handleException(new Error('nope'));
+          for (const fn of config.queueableFns) {
+            fn.fn();
+          }
+          config.onComplete(true);
+        }
+
+        spec.execute(queueRunnerFactory, function() {});
         expect(resultCallback).toHaveBeenCalledWith(
           jasmine.objectContaining({
             debugLogs: [{ message: 'msg', timestamp: timestamp }]

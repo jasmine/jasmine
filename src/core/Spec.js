@@ -25,7 +25,6 @@ getJasmineRequireObj().Spec = function(j$) {
         return '';
       };
     this.onLateError = attrs.onLateError || function() {};
-    this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
     this.catchingExceptions =
       attrs.catchingExceptions ||
       function() {
@@ -99,7 +98,12 @@ getJasmineRequireObj().Spec = function(j$) {
     return this.asyncExpectationFactory(actual, this);
   };
 
-  Spec.prototype.execute = function(onComplete, excluded, failSpecWithNoExp) {
+  Spec.prototype.execute = function(
+    queueRunnerFactory,
+    onComplete,
+    excluded,
+    failSpecWithNoExp
+  ) {
     const onStart = {
       fn: done => {
         this.timer.start();
@@ -161,7 +165,7 @@ getJasmineRequireObj().Spec = function(j$) {
     runnerConfig.queueableFns.unshift(onStart);
     runnerConfig.queueableFns.push(complete);
 
-    this.queueRunnerFactory(runnerConfig);
+    queueRunnerFactory(runnerConfig);
   };
 
   Spec.prototype.reset = function() {

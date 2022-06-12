@@ -12,7 +12,6 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       this.onLateError_ = options.onLateError;
       this.specResultCallback_ = options.specResultCallback;
       this.specStarted_ = options.specStarted;
-      this.queueRunnerFactory_ = options.queueRunnerFactory;
 
       this.nextSuiteId_ = 0;
       this.nextSpecId_ = 0;
@@ -212,7 +211,6 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
         },
         onStart: (spec, next) => this.specStarted_(spec, suite, next),
         description: description,
-        queueRunnerFactory: this.queueRunnerFactory_,
         userContext: function() {
           return suite.clonedSharedUserContext();
         },

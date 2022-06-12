@@ -374,7 +374,7 @@ getJasmineRequireObj().Env = function(j$) {
       deprecator.addDeprecationWarning(runable, deprecation, options);
     };
 
-    function queueRunnerFactory(options, args) {
+    function queueRunnerFactory(options) {
       if (options.isLeaf) {
         // A spec
         options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
@@ -404,7 +404,7 @@ getJasmineRequireObj().Env = function(j$) {
         };
       options.deprecated = self.deprecated;
 
-      new j$.QueueRunner(options).execute(args);
+      new j$.QueueRunner(options).execute();
     }
 
     const suiteBuilder = new j$.SuiteBuilder({

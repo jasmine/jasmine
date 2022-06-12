@@ -297,7 +297,7 @@ describe('TreeProcessor', function() {
 
     queueRunner.calls.mostRecent().args[0].queueableFns[0].fn('foo');
 
-    expect(leaf.execute).toHaveBeenCalledWith('foo', false, false);
+    expect(leaf.execute).toHaveBeenCalledWith(queueRunner, 'foo', false, false);
   });
 
   it('runs a node with no children', function() {
@@ -372,10 +372,20 @@ describe('TreeProcessor', function() {
     expect(queueableFns.length).toBe(3);
 
     queueableFns[1].fn('foo');
-    expect(leaf1.execute).toHaveBeenCalledWith('foo', false, false);
+    expect(leaf1.execute).toHaveBeenCalledWith(
+      queueRunner,
+      'foo',
+      false,
+      false
+    );
 
     queueableFns[2].fn('bar');
-    expect(leaf2.execute).toHaveBeenCalledWith('bar', false, false);
+    expect(leaf2.execute).toHaveBeenCalledWith(
+      queueRunner,
+      'bar',
+      false,
+      false
+    );
   });
 
   it('cascades errors up the tree', function() {
@@ -401,7 +411,7 @@ describe('TreeProcessor', function() {
     expect(queueableFns.length).toBe(2);
 
     queueableFns[1].fn('foo');
-    expect(leaf.execute).toHaveBeenCalledWith('foo', false, false);
+    expect(leaf.execute).toHaveBeenCalledWith(queueRunner, 'foo', false, false);
 
     queueRunner.calls.mostRecent().args[0].onComplete('things');
     expect(nodeComplete).toHaveBeenCalled();
@@ -437,7 +447,7 @@ describe('TreeProcessor', function() {
     expect(nodeStart).toHaveBeenCalledWith(node, 'bar');
 
     queueableFns[1].fn('foo');
-    expect(leaf1.execute).toHaveBeenCalledWith('foo', true, false);
+    expect(leaf1.execute).toHaveBeenCalledWith(queueRunner, 'foo', true, false);
 
     node.getResult.and.returnValue({ im: 'disabled' });
 
@@ -475,7 +485,7 @@ describe('TreeProcessor', function() {
     expect(queueableFns.length).toBe(2);
 
     queueableFns[1].fn('foo');
-    expect(leaf.execute).toHaveBeenCalledWith('foo', true, true);
+    expect(leaf.execute).toHaveBeenCalledWith(queueRunner, 'foo', true, true);
   });
 
   it('runs beforeAlls for a node with children', function() {
@@ -637,11 +647,21 @@ describe('TreeProcessor', function() {
     queueableFns[0].fn();
 
     expect(nonSpecified.execute).not.toHaveBeenCalled();
-    expect(specified.execute).toHaveBeenCalledWith(undefined, false, false);
+    expect(specified.execute).toHaveBeenCalledWith(
+      queueRunner,
+      undefined,
+      false,
+      false
+    );
 
     queueableFns[1].fn();
 
-    expect(nonSpecified.execute).toHaveBeenCalledWith(undefined, true, false);
+    expect(nonSpecified.execute).toHaveBeenCalledWith(
+      queueRunner,
+      undefined,
+      true,
+      false
+    );
   });
 
   it('runs nodes and leaves with a specified order', function() {
