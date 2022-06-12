@@ -57,7 +57,21 @@ getJasmineRequireObj().Runner = function(j$) {
       const processor = new j$.TreeProcessor({
         tree: this.topSuite_,
         runnableIds: runablesToRun,
-        queueRunnerFactory: this.queueRunnerFactory_,
+        queueRunnerFactory: options => {
+          if (options.isLeaf) {
+            // A spec
+            options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
+          } else {
+            // A suite
+            if (config.stopOnSpecFailure) {
+              options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
+            } else {
+              options.SkipPolicy = j$.SkipAfterBeforeAllErrorPolicy;
+            }
+          }
+
+          return this.queueRunnerFactory_(options);
+        },
         failSpecWithNoExpectations: config.failSpecWithNoExpectations,
         nodeStart: (suite, next) => {
           this.currentlyExecutingSuites_.push(suite);

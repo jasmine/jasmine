@@ -365,21 +365,6 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     function queueRunnerFactory(options) {
-      if (options.isLeaf) {
-        // A spec
-        options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
-      } else if (options.isReporter) {
-        // A reporter queue
-        options.SkipPolicy = j$.NeverSkipPolicy;
-      } else {
-        // A suite
-        if (config.stopOnSpecFailure) {
-          options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
-        } else {
-          options.SkipPolicy = j$.SkipAfterBeforeAllErrorPolicy;
-        }
-      }
-
       options.clearStack = options.clearStack || clearStack;
       options.timeout = {
         setTimeout: realSetTimeout,
@@ -493,7 +478,10 @@ getJasmineRequireObj().Env = function(j$) {
          */
         'specDone'
       ],
-      queueRunnerFactory,
+      function(options) {
+        options.SkipPolicy = j$.NeverSkipPolicy;
+        return queueRunnerFactory(options);
+      },
       recordLateError
     );
 
