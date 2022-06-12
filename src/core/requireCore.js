@@ -69,6 +69,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     );
     j$.ReportDispatcher = jRequire.ReportDispatcher(j$);
     j$.RunableResources = jRequire.RunableResources(j$);
+    j$.Runner = jRequire.Runner(j$);
     j$.Spec = jRequire.Spec(j$);
     j$.Spy = jRequire.Spy(j$);
     j$.SpyFactory = jRequire.SpyFactory(j$);

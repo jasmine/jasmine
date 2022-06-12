@@ -25,15 +25,13 @@ getJasmineRequireObj().Env = function(j$) {
     );
 
     const runableResources = new j$.RunableResources(function() {
-      const r = currentRunable();
+      const r = runner.currentRunable();
       return r ? r.id : null;
     });
 
-    let currentSpec = null;
-    const currentlyExecutingSuites = [];
-    let hasFailures = false;
     let reporter;
     let topSuite;
+    let runner;
 
     /**
      * This represents the available options to configure Jasmine.
@@ -134,14 +132,6 @@ getJasmineRequireObj().Env = function(j$) {
        */
       verboseDeprecations: false
     };
-
-    function currentSuite() {
-      return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
-    }
-
-    function currentRunable() {
-      return currentSpec || currentSuite();
-    }
 
     let globalErrors = null;
 
@@ -314,7 +304,7 @@ getJasmineRequireObj().Env = function(j$) {
     function routeLateFailure(expectationResult) {
       // Report the result on the nearest ancestor suite that hasn't already
       // been reported done.
-      for (let r = currentRunable(); r; r = r.parentSuite) {
+      for (let r = runner.currentRunable(); r; r = r.parentSuite) {
         if (!r.reportedDone) {
           if (r === topSuite) {
             expectationResult.globalErrorType = 'lateError';
@@ -340,7 +330,7 @@ getJasmineRequireObj().Env = function(j$) {
       });
 
       function addExpectationResult(passed, result) {
-        if (currentRunable() !== spec) {
+        if (runner.currentRunable() !== spec) {
           recordLateExpectation(spec, runableType, result);
         }
         return spec.addExpectationResult(passed, result);
@@ -370,7 +360,7 @@ getJasmineRequireObj().Env = function(j$) {
      * @param {Object} [options] Optional extra options, as described above
      */
     this.deprecated = function(deprecation, options) {
-      const runable = currentRunable() || topSuite;
+      const runable = runner.currentRunable() || topSuite;
       deprecator.addDeprecationWarning(runable, deprecation, options);
     };
 
@@ -400,7 +390,7 @@ getJasmineRequireObj().Env = function(j$) {
       options.onException =
         options.onException ||
         function(e) {
-          (currentRunable() || topSuite).handleException(e);
+          (runner.currentRunable() || topSuite).handleException(e);
         };
       options.deprecated = self.deprecated;
 
@@ -507,6 +497,17 @@ getJasmineRequireObj().Env = function(j$) {
       recordLateError
     );
 
+    runner = new j$.Runner({
+      topSuite,
+      totalSpecsDefined: () => suiteBuilder.totalSpecsDefined,
+      focusedRunables: () => suiteBuilder.focusedRunables,
+      runableResources,
+      reporter,
+      queueRunnerFactory,
+      getConfig: () => config,
+      reportSpecDone
+    });
+
     /**
      * Executes the specs.
      *
@@ -539,195 +540,15 @@ getJasmineRequireObj().Env = function(j$) {
      * @return {Promise<JasmineDoneInfo>}
      */
     this.execute = function(runablesToRun, onComplete) {
-      if (this._executedBefore) {
-        topSuite.reset();
-      }
-      this._executedBefore = true;
-      runableResources.initForRunable(topSuite.id);
       installGlobalErrors();
 
-      if (!runablesToRun) {
-        if (suiteBuilder.focusedRunables.length) {
-          runablesToRun = suiteBuilder.focusedRunables;
-        } else {
-          runablesToRun = [topSuite.id];
+      return runner.execute(runablesToRun).then(function(jasmineDoneInfo) {
+        if (onComplete) {
+          onComplete();
         }
-      }
 
-      const order = new j$.Order({
-        random: config.random,
-        seed: config.seed
+        return jasmineDoneInfo;
       });
-
-      const processor = new j$.TreeProcessor({
-        tree: topSuite,
-        runnableIds: runablesToRun,
-        queueRunnerFactory: queueRunnerFactory,
-        failSpecWithNoExpectations: config.failSpecWithNoExpectations,
-        nodeStart: function(suite, next) {
-          currentlyExecutingSuites.push(suite);
-          runableResources.initForRunable(suite.id, suite.parentSuite.id);
-          reporter.suiteStarted(suite.result, next);
-          suite.startTimer();
-        },
-        nodeComplete: function(suite, result, next) {
-          if (suite !== currentSuite()) {
-            throw new Error('Tried to complete the wrong suite');
-          }
-
-          runableResources.clearForRunable(suite.id);
-          currentlyExecutingSuites.pop();
-
-          if (result.status === 'failed') {
-            hasFailures = true;
-          }
-          suite.endTimer();
-
-          if (suite.hadBeforeAllFailure) {
-            reportChildrenOfBeforeAllFailure(suite).then(function() {
-              reportSuiteDone(suite, result, next);
-            });
-          } else {
-            reportSuiteDone(suite, result, next);
-          }
-        },
-        orderChildren: function(node) {
-          return order.sort(node.children);
-        },
-        excludeNode: function(spec) {
-          return !config.specFilter(spec);
-        }
-      });
-
-      if (!processor.processTree().valid) {
-        throw new Error(
-          'Invalid order: would cause a beforeAll or afterAll to be run multiple times'
-        );
-      }
-
-      const jasmineTimer = new j$.Timer();
-      jasmineTimer.start();
-
-      return new Promise(function(resolve) {
-        runAll(function(jasmineDoneInfo) {
-          if (onComplete) {
-            onComplete();
-          }
-
-          resolve(jasmineDoneInfo);
-        });
-      });
-
-      function runAll(done) {
-        /**
-         * Information passed to the {@link Reporter#jasmineStarted} event.
-         * @typedef JasmineStartedInfo
-         * @property {Int} totalSpecsDefined - The total number of specs defined in this suite.
-         * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
-         * @since 2.0.0
-         */
-        reporter.jasmineStarted(
-          {
-            totalSpecsDefined: suiteBuilder.totalSpecsDefined,
-            order: order
-          },
-          function() {
-            currentlyExecutingSuites.push(topSuite);
-
-            processor.execute(function() {
-              (async function() {
-                if (topSuite.hadBeforeAllFailure) {
-                  await reportChildrenOfBeforeAllFailure(topSuite);
-                }
-
-                runableResources.clearForRunable(topSuite.id);
-                currentlyExecutingSuites.pop();
-                let overallStatus, incompleteReason;
-
-                if (
-                  hasFailures ||
-                  topSuite.result.failedExpectations.length > 0
-                ) {
-                  overallStatus = 'failed';
-                } else if (suiteBuilder.focusedRunables.length > 0) {
-                  overallStatus = 'incomplete';
-                  incompleteReason = 'fit() or fdescribe() was found';
-                } else if (suiteBuilder.totalSpecsDefined === 0) {
-                  overallStatus = 'incomplete';
-                  incompleteReason = 'No specs found';
-                } else {
-                  overallStatus = 'passed';
-                }
-
-                /**
-                 * Information passed to the {@link Reporter#jasmineDone} event.
-                 * @typedef JasmineDoneInfo
-                 * @property {OverallStatus} overallStatus - The overall result of the suite: 'passed', 'failed', or 'incomplete'.
-                 * @property {Int} totalTime - The total time (in ms) that it took to execute the suite
-                 * @property {IncompleteReason} incompleteReason - Explanation of why the suite was incomplete.
-                 * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
-                 * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
-                 * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
-                 * @since 2.4.0
-                 */
-                const jasmineDoneInfo = {
-                  overallStatus: overallStatus,
-                  totalTime: jasmineTimer.elapsed(),
-                  incompleteReason: incompleteReason,
-                  order: order,
-                  failedExpectations: topSuite.result.failedExpectations,
-                  deprecationWarnings: topSuite.result.deprecationWarnings
-                };
-                topSuite.reportedDone = true;
-                reporter.jasmineDone(jasmineDoneInfo, function() {
-                  done(jasmineDoneInfo);
-                });
-              })();
-            });
-          }
-        );
-      }
-
-      async function reportChildrenOfBeforeAllFailure(suite) {
-        for (const child of suite.children) {
-          if (child instanceof j$.Suite) {
-            await new Promise(function(resolve) {
-              reporter.suiteStarted(child.result, resolve);
-            });
-            await reportChildrenOfBeforeAllFailure(child);
-
-            // Marking the suite passed is consistent with how suites that
-            // contain failed specs but no suite-level failures are reported.
-            child.result.status = 'passed';
-
-            await new Promise(function(resolve) {
-              reporter.suiteDone(child.result, resolve);
-            });
-          } else {
-            /* a spec */
-            await new Promise(function(resolve) {
-              reporter.specStarted(child.result, resolve);
-            });
-
-            child.addExpectationResult(
-              false,
-              {
-                passed: false,
-                message:
-                  'Not run because a beforeAll function failed. The ' +
-                  'beforeAll failure will be reported on the suite that ' +
-                  'caused it.'
-              },
-              true
-            );
-            child.result.status = 'failed';
-
-            await new Promise(function(resolve) {
-              reportSpecDone(child, child.result, resolve);
-            });
-          }
-        }
-      }
     };
 
     /**
@@ -811,7 +632,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     function ensureIsNotNested(method) {
-      const runable = currentRunable();
+      const runable = runner.currentRunable();
       if (runable !== null && runable !== undefined) {
         throw new Error(
           "'" + method + "' should only be used in 'describe' function"
@@ -836,17 +657,17 @@ getJasmineRequireObj().Env = function(j$) {
 
     function specResultCallback(spec, result, next) {
       runableResources.clearForRunable(spec.id);
-      currentSpec = null;
+      runner.currentSpec = null;
 
       if (result.status === 'failed') {
-        hasFailures = true;
+        runner.hasFailures = true;
       }
 
       reportSpecDone(spec, result, next);
     }
 
     function specStarted(spec, suite, next) {
-      currentSpec = spec;
+      runner.currentSpec = spec;
       runableResources.initForRunable(spec.id, suite.id);
       reporter.specStarted(spec.result, next);
     }
@@ -854,11 +675,6 @@ getJasmineRequireObj().Env = function(j$) {
     function reportSpecDone(spec, result, next) {
       spec.reportedDone = true;
       reporter.specDone(result, next);
-    }
-
-    function reportSuiteDone(suite, result, next) {
-      suite.reportedDone = true;
-      reporter.suiteDone(result, next);
     }
 
     this.it = function(description, fn, timeout) {
@@ -885,12 +701,15 @@ getJasmineRequireObj().Env = function(j$) {
      * @param {*} value The value of the property
      */
     this.setSpecProperty = function(key, value) {
-      if (!currentRunable() || currentRunable() == currentSuite()) {
+      if (
+        !runner.currentRunable() ||
+        runner.currentRunable() == runner.currentSuite()
+      ) {
         throw new Error(
           "'setSpecProperty' was used when there was no current spec"
         );
       }
-      currentRunable().setSpecProperty(key, value);
+      runner.currentRunable().setSpecProperty(key, value);
     };
 
     /**
@@ -902,16 +721,16 @@ getJasmineRequireObj().Env = function(j$) {
      * @param {*} value The value of the property
      */
     this.setSuiteProperty = function(key, value) {
-      if (!currentSuite()) {
+      if (!runner.currentSuite()) {
         throw new Error(
           "'setSuiteProperty' was used when there was no current suite"
         );
       }
-      currentSuite().setSuiteProperty(key, value);
+      runner.currentSuite().setSuiteProperty(key, value);
     };
 
     this.debugLog = function(msg) {
-      const maybeSpec = currentRunable();
+      const maybeSpec = runner.currentRunable();
 
       if (!maybeSpec || !maybeSpec.debugLog) {
         throw new Error("'debugLog' was called when there was no current spec");
@@ -921,23 +740,23 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.expect = function(actual) {
-      if (!currentRunable()) {
+      if (!runner.currentRunable()) {
         throw new Error(
           "'expect' was used when there was no current spec, this could be because an asynchronous test timed out"
         );
       }
 
-      return currentRunable().expect(actual);
+      return runner.currentRunable().expect(actual);
     };
 
     this.expectAsync = function(actual) {
-      if (!currentRunable()) {
+      if (!runner.currentRunable()) {
         throw new Error(
           "'expectAsync' was used when there was no current spec, this could be because an asynchronous test timed out"
         );
       }
 
-      return currentRunable().expectAsync(actual);
+      return runner.currentRunable().expectAsync(actual);
     };
 
     this.beforeEach = function(beforeEachFunction, timeout) {
@@ -969,7 +788,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.fail = function(error) {
-      if (!currentRunable()) {
+      if (!runner.currentRunable()) {
         throw new Error(
           "'fail' was used when there was no current spec, this could be because an asynchronous test timed out"
         );
@@ -989,7 +808,7 @@ getJasmineRequireObj().Env = function(j$) {
         }
       }
 
-      currentRunable().addExpectationResult(false, {
+      runner.currentRunable().addExpectationResult(false, {
         matcherName: '',
         passed: false,
         expected: '',
