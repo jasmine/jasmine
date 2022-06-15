@@ -5,7 +5,7 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
     for (const method of dispatchedMethods) {
       this[method] = (function(m) {
         return function() {
-          dispatch(m, arguments);
+          return dispatch(m, arguments);
         };
       })(method);
     }
@@ -31,25 +31,25 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
       if (reporters.length === 0 && fallbackReporter !== null) {
         reporters.push(fallbackReporter);
       }
-      const onComplete = args[args.length - 1];
-      args = Array.from(args).splice(0, args.length - 1);
       const fns = [];
       for (const reporter of reporters) {
         addFn(fns, reporter, method, args);
       }
 
-      queueRunnerFactory({
-        queueableFns: fns,
-        onComplete: onComplete,
-        isReporter: true,
-        onMultipleDone: function() {
-          onLateError(
-            new Error(
-              "An asynchronous reporter callback called its 'done' callback " +
-                'more than once.'
-            )
-          );
-        }
+      return new Promise(function(resolve) {
+        queueRunnerFactory({
+          queueableFns: fns,
+          onComplete: resolve,
+          isReporter: true,
+          onMultipleDone: function() {
+            onLateError(
+              new Error(
+                "An asynchronous reporter callback called its 'done' callback " +
+                  'more than once.'
+              )
+            );
+          }
+        });
       });
     }
 

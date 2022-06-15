@@ -701,12 +701,12 @@ getJasmineRequireObj().Env = function(j$) {
     function specStarted(spec, suite, next) {
       runner.currentSpec = spec;
       runableResources.initForRunable(spec.id, suite.id);
-      reporter.specStarted(spec.result, next);
+      reporter.specStarted(spec.result).then(next);
     }
 
     function reportSpecDone(spec, result, next) {
       spec.reportedDone = true;
-      reporter.specDone(result, next);
+      reporter.specDone(result).then(next);
     }
 
     this.it = function(description, fn, timeout) {
