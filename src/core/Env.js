@@ -24,9 +24,23 @@ getJasmineRequireObj().Env = function(j$) {
       new j$.MockDate(global)
     );
 
-    const runableResources = new j$.RunableResources(function() {
-      const r = runner.currentRunable();
-      return r ? r.id : null;
+    const globalErrors = new j$.GlobalErrors();
+    const installGlobalErrors = (function() {
+      let installed = false;
+      return function() {
+        if (!installed) {
+          globalErrors.install();
+          installed = true;
+        }
+      };
+    })();
+
+    const runableResources = new j$.RunableResources({
+      getCurrentRunableId: function() {
+        const r = runner.currentRunable();
+        return r ? r.id : null;
+      },
+      globalErrors
     });
 
     let reporter;
@@ -133,20 +147,9 @@ getJasmineRequireObj().Env = function(j$) {
       verboseDeprecations: false
     };
 
-    let globalErrors = null;
-
-    function installGlobalErrors() {
-      if (globalErrors) {
-        return;
-      }
-
-      globalErrors = new j$.GlobalErrors();
-      globalErrors.install();
-    }
-
     if (!options.suppressLoadErrors) {
       installGlobalErrors();
-      globalErrors.pushListener(function(
+      globalErrors.pushListener(function loadtimeErrorHandler(
         message,
         filename,
         lineno,
@@ -617,6 +620,47 @@ getJasmineRequireObj().Env = function(j$) {
         methodNames,
         propertyNames
       );
+    };
+
+    this.spyOnGlobalErrorsAsync = async function(fn) {
+      const spy = this.createSpy('global error handler');
+      const associatedRunable = runner.currentRunable();
+      let cleanedUp = false;
+
+      globalErrors.setOverrideListener(spy, () => {
+        if (!cleanedUp) {
+          const message =
+            'Global error spy was not uninstalled. (Did you ' +
+            'forget to await the return value of spyOnGlobalErrorsAsync?)';
+          associatedRunable.addExpectationResult(false, {
+            matcherName: '',
+            passed: false,
+            expected: '',
+            actual: '',
+            message,
+            error: null
+          });
+        }
+
+        cleanedUp = true;
+      });
+
+      try {
+        const maybePromise = fn(spy);
+
+        if (!j$.isPromiseLike(maybePromise)) {
+          throw new Error(
+            'The callback to spyOnGlobalErrorsAsync must be an async or promise-returning function'
+          );
+        }
+
+        await maybePromise;
+      } finally {
+        if (!cleanedUp) {
+          cleanedUp = true;
+          globalErrors.removeOverrideListener();
+        }
+      }
     };
 
     function ensureIsNotNested(method) {

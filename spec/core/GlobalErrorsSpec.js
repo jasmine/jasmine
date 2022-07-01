@@ -404,4 +404,158 @@ describe('GlobalErrors', function() {
       });
     });
   });
+
+  describe('#setOverrideListener', function() {
+    it('overrides the existing handlers in browsers until removed', function() {
+      const fakeGlobal = { onerror: null };
+      const handler0 = jasmine.createSpy('handler0');
+      const handler1 = jasmine.createSpy('handler1');
+      const overrideHandler = jasmine.createSpy('overrideHandler');
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+      errors.install();
+      errors.pushListener(handler0);
+      errors.setOverrideListener(overrideHandler, () => {});
+      errors.pushListener(handler1);
+      fakeGlobal.onerror('foo');
+      fakeGlobal.onerror(null, null, null, null, new Error('bar'));
+
+      expect(overrideHandler).toHaveBeenCalledWith('foo');
+      expect(overrideHandler).toHaveBeenCalledWith(new Error('bar'));
+      expect(handler0).not.toHaveBeenCalled();
+      expect(handler1).not.toHaveBeenCalled();
+
+      errors.removeOverrideListener();
+
+      fakeGlobal.onerror('baz');
+      expect(overrideHandler).not.toHaveBeenCalledWith('baz');
+      expect(handler1).toHaveBeenCalledWith('baz');
+    });
+
+    it('overrides the existing handlers in Node until removed', function() {
+      const globalEventListeners = {};
+      const fakeGlobal = {
+        process: {
+          on: (name, listener) => (globalEventListeners[name] = listener),
+          removeListener: () => {},
+          listeners: name => globalEventListeners[name],
+          removeAllListeners: name => (globalEventListeners[name] = [])
+        }
+      };
+      const handler0 = jasmine.createSpy('handler0');
+      const handler1 = jasmine.createSpy('handler1');
+      const overrideHandler = jasmine.createSpy('overrideHandler');
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+      errors.install();
+      errors.pushListener(handler0);
+      errors.setOverrideListener(overrideHandler);
+      errors.pushListener(handler1);
+
+      globalEventListeners['uncaughtException'](new Error('foo'));
+
+      expect(overrideHandler).toHaveBeenCalledWith(new Error('foo'));
+      expect(handler0).not.toHaveBeenCalled();
+      expect(handler1).not.toHaveBeenCalled();
+
+      errors.removeOverrideListener();
+
+      globalEventListeners['uncaughtException'](new Error('bar'));
+      expect(overrideHandler).not.toHaveBeenCalledWith(new Error('bar'));
+      expect(handler1).toHaveBeenCalledWith(new Error('bar'));
+    });
+
+    it('handles unhandled promise rejections in browsers', function() {
+      const globalEventListeners = {};
+      const fakeGlobal = {
+        addEventListener(name, listener) {
+          globalEventListeners[name] = listener;
+        },
+        removeEventListener() {}
+      };
+      const handler = jasmine.createSpy('handler');
+      const overrideHandler = jasmine.createSpy('overrideHandler');
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+      errors.install();
+      errors.pushListener(handler);
+      errors.setOverrideListener(overrideHandler, () => {});
+
+      const reason = new Error('bar');
+
+      globalEventListeners['unhandledrejection']({ reason: reason });
+
+      expect(overrideHandler).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          jasmineMessage: 'Unhandled promise rejection: Error: bar',
+          message: reason.message,
+          stack: reason.stack
+        })
+      );
+      expect(handler).not.toHaveBeenCalled();
+    });
+
+    it('handles unhandled promise rejections in Node', function() {
+      const globalEventListeners = {};
+      const fakeGlobal = {
+        process: {
+          on(name, listener) {
+            globalEventListeners[name] = listener;
+          },
+          removeListener() {},
+          listeners(name) {
+            return globalEventListeners[name];
+          },
+          removeAllListeners(name) {
+            globalEventListeners[name] = null;
+          }
+        }
+      };
+      const handler0 = jasmine.createSpy('handler0');
+      const handler1 = jasmine.createSpy('handler1');
+      const overrideHandler = jasmine.createSpy('overrideHandler');
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+      errors.install();
+      errors.pushListener(handler0);
+      errors.setOverrideListener(overrideHandler, () => {});
+      errors.pushListener(handler1);
+
+      globalEventListeners['unhandledRejection'](new Error('nope'));
+
+      expect(overrideHandler).toHaveBeenCalledWith(new Error('nope'));
+      expect(handler0).not.toHaveBeenCalled();
+      expect(handler1).not.toHaveBeenCalled();
+    });
+
+    it('throws if there is already an override handler', function() {
+      const fakeGlobal = { onerror: null };
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+      errors.setOverrideListener(() => {}, () => {});
+      expect(function() {
+        errors.setOverrideListener(() => {}, () => {});
+      }).toThrowError("Can't set more than one override listener at a time");
+    });
+  });
+
+  describe('#removeOverrideListener', function() {
+    it("calls the handler's onRemove callback", function() {
+      const fakeGlobal = { onerror: null };
+      const onRemove = jasmine.createSpy('onRemove');
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+      errors.setOverrideListener(() => {}, onRemove);
+      errors.removeOverrideListener();
+
+      expect(onRemove).toHaveBeenCalledWith();
+    });
+
+    it('does not throw if there is no handler', function() {
+      const fakeGlobal = { onerror: null };
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+      expect(() => errors.removeOverrideListener()).not.toThrow();
+    });
+  });
 });

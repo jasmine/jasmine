@@ -1,9 +1,17 @@
 getJasmineRequireObj().GlobalErrors = function(j$) {
   function GlobalErrors(global) {
-    const handlers = [];
     global = global || j$.getGlobal();
 
-    const onerror = function onerror() {
+    const handlers = [];
+    let overrideHandler = null,
+      onRemoveOverrideHandler = null;
+
+    function onerror(message, source, lineno, colno, error) {
+      if (overrideHandler) {
+        overrideHandler(error || message);
+        return;
+      }
+
       const handler = handlers[handlers.length - 1];
 
       if (handler) {
@@ -11,7 +19,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       } else {
         throw arguments[0];
       }
-    };
+    }
 
     this.originalHandlers = {};
     this.jasmineHandlers = {};
@@ -41,6 +49,11 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         }
 
         const handler = handlers[handlers.length - 1];
+
+        if (overrideHandler) {
+          overrideHandler(error);
+          return;
+        }
 
         if (handler) {
           handler(error);
@@ -125,6 +138,24 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       }
 
       handlers.pop();
+    };
+
+    this.setOverrideListener = function(listener, onRemove) {
+      if (overrideHandler) {
+        throw new Error("Can't set more than one override listener at a time");
+      }
+
+      overrideHandler = listener;
+      onRemoveOverrideHandler = onRemove;
+    };
+
+    this.removeOverrideListener = function() {
+      if (onRemoveOverrideHandler) {
+        onRemoveOverrideHandler();
+      }
+
+      overrideHandler = null;
+      onRemoveOverrideHandler = null;
     };
   }
 

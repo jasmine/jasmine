@@ -70,6 +70,7 @@ getJasmineRequireObj().Spec = function(j$) {
 
   Spec.prototype.addExpectationResult = function(passed, data, isError) {
     const expectationResult = j$.buildExpectationResult(data);
+
     if (passed) {
       this.result.passedExpectations.push(expectationResult);
     } else {
@@ -77,6 +78,11 @@ getJasmineRequireObj().Spec = function(j$) {
         this.onLateError(expectationResult);
       } else {
         this.result.failedExpectations.push(expectationResult);
+
+        // TODO: refactor so that we don't need to override cached status
+        if (this.result.status) {
+          this.result.status = 'failed';
+        }
       }
 
       if (this.throwOnExpectationFailure && !isError) {

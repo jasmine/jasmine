@@ -3625,4 +3625,285 @@ describe('Env integration', function() {
       done();
     });
   });
+
+  describe('#spyOnGlobalErrorsAsync', function() {
+    const leftInstalledMessage =
+      'Global error spy was not uninstalled. ' +
+      '(Did you forget to await the return value of spyOnGlobalErrorsAsync?)';
+
+    function resultForRunable(reporterSpy, fullName) {
+      const match = reporterSpy.calls.all().find(function(call) {
+        return call.args[0].fullName === fullName;
+      });
+
+      if (!match) {
+        throw new Error(`No result for runable "${fullName}"`);
+      }
+
+      return match.args[0];
+    }
+
+    it('allows global errors to be suppressed and spied on', async function() {
+      env.it('a passing spec', async function() {
+        await env.spyOnGlobalErrorsAsync(async spy => {
+          setTimeout(() => {
+            throw new Error('nope');
+          });
+          await new Promise(resolve => setTimeout(resolve));
+          env.expect(spy).toHaveBeenCalledWith(new Error('nope'));
+        });
+      });
+
+      env.it('a failing spec', async function() {
+        await env.spyOnGlobalErrorsAsync(async spy => {
+          setTimeout(() => {
+            throw new Error('yep');
+          });
+          await new Promise(resolve => setTimeout(resolve));
+          env.expect(spy).toHaveBeenCalledWith(new Error('nope'));
+        });
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+      await env.execute();
+
+      const passingResult = resultForRunable(
+        reporter.specDone,
+        'a passing spec'
+      );
+      expect(passingResult.status).toEqual('passed');
+      expect(passingResult.failedExpectations).toEqual([]);
+
+      const failingResult = resultForRunable(
+        reporter.specDone,
+        'a failing spec'
+      );
+      expect(failingResult.status).toEqual('failed');
+      expect(failingResult.failedExpectations[0].message).toMatch(
+        /Expected \$\[0] = Error: yep to equal Error: nope\./
+      );
+    });
+
+    it('cleans up if the global error spy is left installed in a beforeAll', async function() {
+      env.configure({ random: false });
+
+      env.describe('Suite 1', function() {
+        env.beforeAll(async function() {
+          env.spyOnGlobalErrorsAsync(function() {
+            // Never resolves
+            return new Promise(() => {});
+          });
+        });
+
+        env.it('a spec', function() {});
+      });
+
+      env.describe('Suite 2', function() {
+        env.it('a spec', async function() {
+          setTimeout(function() {
+            throw new Error('should fail the spec');
+          });
+          await new Promise(resolve => setTimeout(resolve));
+        });
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', [
+        'specDone',
+        'suiteDone'
+      ]);
+      env.addReporter(reporter);
+      await env.execute();
+
+      const suiteResult = resultForRunable(reporter.suiteDone, 'Suite 1');
+      expect(suiteResult.status).toEqual('failed');
+      expect(suiteResult.failedExpectations.length).toEqual(1);
+      expect(suiteResult.failedExpectations[0].message).toEqual(
+        leftInstalledMessage
+      );
+
+      const specResult = resultForRunable(reporter.specDone, 'Suite 2 a spec');
+      expect(specResult.status).toEqual('failed');
+      expect(specResult.failedExpectations.length).toEqual(1);
+      expect(specResult.failedExpectations[0].message).toMatch(
+        /Error: should fail the spec/
+      );
+    });
+
+    it('cleans up if the global error spy is left installed in an afterAll', async function() {
+      env.configure({ random: false });
+
+      env.describe('Suite 1', function() {
+        env.afterAll(async function() {
+          env.spyOnGlobalErrorsAsync(function() {
+            // Never resolves
+            return new Promise(() => {});
+          });
+        });
+
+        env.it('a spec', function() {});
+      });
+
+      env.describe('Suite 2', function() {
+        env.it('a spec', async function() {
+          setTimeout(function() {
+            throw new Error('should fail the spec');
+          });
+          await new Promise(resolve => setTimeout(resolve));
+        });
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', [
+        'specDone',
+        'suiteDone'
+      ]);
+      env.addReporter(reporter);
+      await env.execute();
+
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
+        'Suite 1',
+        [leftInstalledMessage]
+      );
+
+      const suiteResult = resultForRunable(reporter.suiteDone, 'Suite 1');
+      expect(suiteResult.status).toEqual('failed');
+      expect(suiteResult.failedExpectations.length).toEqual(1);
+      expect(suiteResult.failedExpectations[0].message).toEqual(
+        leftInstalledMessage
+      );
+
+      const specResult = resultForRunable(reporter.specDone, 'Suite 2 a spec');
+      expect(specResult.status).toEqual('failed');
+      expect(specResult.failedExpectations.length).toEqual(1);
+      expect(specResult.failedExpectations[0].message).toMatch(
+        /Error: should fail the spec/
+      );
+    });
+
+    it('cleans up if the global error spy is left installed in a beforeEach', async function() {
+      env.configure({ random: false });
+
+      env.describe('Suite 1', function() {
+        env.beforeEach(async function() {
+          env.spyOnGlobalErrorsAsync(function() {
+            // Never resolves
+            return new Promise(() => {});
+          });
+        });
+
+        env.it('a spec', function() {});
+      });
+
+      env.describe('Suite 2', function() {
+        env.it('a spec', async function() {
+          setTimeout(function() {
+            throw new Error('should fail the spec');
+          });
+          await new Promise(resolve => setTimeout(resolve));
+        });
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', [
+        'specDone',
+        'suiteDone'
+      ]);
+      env.addReporter(reporter);
+      await env.execute();
+
+      const spec1Result = resultForRunable(reporter.specDone, 'Suite 1 a spec');
+      expect(spec1Result.status).toEqual('failed');
+      expect(spec1Result.failedExpectations.length).toEqual(1);
+      expect(spec1Result.failedExpectations[0].message).toEqual(
+        leftInstalledMessage
+      );
+
+      const spec2Result = resultForRunable(reporter.specDone, 'Suite 2 a spec');
+      expect(spec2Result.status).toEqual('failed');
+      expect(spec2Result.failedExpectations.length).toEqual(1);
+      expect(spec2Result.failedExpectations[0].message).toMatch(
+        /Error: should fail the spec/
+      );
+    });
+
+    it('cleans up if the global error spy is left installed in an it', async function() {
+      env.configure({ random: false });
+
+      env.it('spec 1', async function() {
+        env.spyOnGlobalErrorsAsync(function() {
+          // Never resolves
+          return new Promise(() => {});
+        });
+      });
+
+      env.it('spec 2', async function() {
+        setTimeout(function() {
+          throw new Error('should fail the spec');
+        });
+        await new Promise(resolve => setTimeout(resolve));
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+      await env.execute();
+
+      const spec1Result = resultForRunable(reporter.specDone, 'spec 1');
+      expect(spec1Result.status).toEqual('failed');
+      expect(spec1Result.failedExpectations.length).toEqual(1);
+      expect(spec1Result.failedExpectations[0].message).toEqual(
+        leftInstalledMessage
+      );
+
+      const spec2Result = resultForRunable(reporter.specDone, 'spec 2');
+      expect(spec2Result.status).toEqual('failed');
+      expect(spec2Result.failedExpectations.length).toEqual(1);
+      expect(spec2Result.failedExpectations[0].message).toMatch(
+        /Error: should fail the spec/
+      );
+    });
+
+    it('cleans up if the global error spy is left installed in an afterEach', async function() {
+      env.configure({ random: false });
+
+      env.describe('Suite 1', function() {
+        env.afterEach(async function() {
+          env.spyOnGlobalErrorsAsync(function() {
+            // Never resolves
+            return new Promise(() => {});
+          });
+        });
+
+        env.it('a spec', function() {});
+      });
+
+      env.describe('Suite 2', function() {
+        env.it('a spec', async function() {
+          setTimeout(function() {
+            throw new Error('should fail the spec');
+          });
+          await new Promise(resolve => setTimeout(resolve));
+        });
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', [
+        'specDone',
+        'suiteDone'
+      ]);
+      env.addReporter(reporter);
+      await env.execute();
+
+      const spec1Result = resultForRunable(reporter.specDone, 'Suite 1 a spec');
+      expect(spec1Result.status).toEqual('failed');
+      expect(spec1Result.failedExpectations.length).toEqual(1);
+      expect(spec1Result.failedExpectations[0].message).toEqual(
+        leftInstalledMessage
+      );
+
+      const spec2Result = resultForRunable(reporter.specDone, 'Suite 2 a spec');
+      expect(spec2Result.status).toEqual('failed');
+      expect(spec2Result.failedExpectations.length).toEqual(1);
+      expect(spec2Result.failedExpectations[0].message).toMatch(
+        /Error: should fail the spec/
+      );
+    });
+  });
 });

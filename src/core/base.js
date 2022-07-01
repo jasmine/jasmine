@@ -421,4 +421,47 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   j$.debugLog = function(msg) {
     j$.getEnv().debugLog(msg);
   };
+
+  /**
+   * Replaces Jasmine's global error handling with a spy. This prevents Jasmine
+   * from treating uncaught exceptions and unhandled promise rejections
+   * as spec failures and allows them to be inspected using the spy's
+   * {@link Spy#calls|calls property} and related matchers such as
+   * {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}.
+   *
+   * After installing the spy, spyOnGlobalErrorsAsync immediately calls its
+   * argument, which must be an async or promise-returning function. The spy
+   * will be passed as the first argument to that callback. Normal error
+   * handling will be restored when the promise returned from the callback is
+   * settled.
+   *
+   * Note: The JavaScript runtime may deliver uncaught error events and unhandled
+   * rejection events asynchronously, especially in browsers. If the event
+   * occurs after the promise returned from the callback is settled, it won't
+   * be routed to the spy even if the underlying error occurred previously.
+   * It's up to you to ensure that the returned promise isn't resolved until
+   * all of the error/rejection events that you want to handle have occurred.
+   *
+   * You must await the return value of spyOnGlobalErrorsAsync.
+   * @name jasmine.spyOnGlobalErrorsAsync
+   * @function
+   * @async
+   * @param {AsyncFunction} fn - A function to run, during which the global error spy will be effective
+   * @example
+   * it('demonstrates global error spies', async function() {
+   *   await jasmine.spyOnGlobalErrorsAsync(async function(globalErrorSpy) {
+   *     setTimeout(function() {
+   *       throw new Error('the expected error');
+   *     });
+   *     await new Promise(function(resolve) {
+   *       setTimeout(resolve);
+   *     });
+   *     const expected = new Error('the expected error');
+   *     expect(globalErrorSpy).toHaveBeenCalledWith(expected);
+   *   });
+   * });
+   */
+  j$.spyOnGlobalErrorsAsync = async function(fn) {
+    await jasmine.getEnv().spyOnGlobalErrorsAsync(fn);
+  };
 };

@@ -1,8 +1,9 @@
 getJasmineRequireObj().RunableResources = function(j$) {
   class RunableResources {
-    constructor(getCurrentRunableId) {
+    constructor(options) {
       this.byRunableId_ = {};
-      this.getCurrentRunableId_ = getCurrentRunableId;
+      this.getCurrentRunableId_ = options.getCurrentRunableId;
+      this.globalErrors_ = options.globalErrors;
 
       this.spyFactory = new j$.SpyFactory(
         () => {
@@ -53,6 +54,7 @@ getJasmineRequireObj().RunableResources = function(j$) {
     }
 
     clearForRunable(runableId) {
+      this.globalErrors_.removeOverrideListener();
       this.spyRegistry.clearSpies();
       delete this.byRunableId_[runableId];
     }

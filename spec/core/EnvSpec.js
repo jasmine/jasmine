@@ -468,7 +468,8 @@ describe('Env', function() {
         'install',
         'uninstall',
         'pushListener',
-        'popListener'
+        'popListener',
+        'removeOverrideListener'
       ]);
       spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
       env.cleanup_();
@@ -483,7 +484,8 @@ describe('Env', function() {
         'install',
         'uninstall',
         'pushListener',
-        'popListener'
+        'popListener',
+        'removeOverrideListener'
       ]);
       spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
       env.cleanup_();
@@ -589,6 +591,21 @@ describe('Env', function() {
           expect(id).toBeTruthy();
           expect(id).toEqual(env.topSuite().id);
         });
+    });
+  });
+
+  describe('#spyOnGlobalErrorsAsync', function() {
+    it('throws if the callback does not return a promise', async function() {
+      const msg =
+        'The callback to spyOnGlobalErrorsAsync must be an async or ' +
+        'promise-returning function';
+
+      await expectAsync(
+        env.spyOnGlobalErrorsAsync(() => undefined)
+      ).toBeRejectedWithError(msg);
+      await expectAsync(
+        env.spyOnGlobalErrorsAsync(() => 'not a promise')
+      ).toBeRejectedWithError(msg);
     });
   });
 });
