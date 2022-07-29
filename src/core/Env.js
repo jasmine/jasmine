@@ -499,6 +499,11 @@ getJasmineRequireObj().Env = function(j$) {
       reportSpecDone
     });
 
+    this.parallelReset = function() {
+      // TODO: ensure that autoCleanClosures was false
+      suiteBuilder.parallelReset();
+    };
+
     /**
      * Executes the specs.
      *

@@ -132,6 +132,10 @@ getJasmineRequireObj().Suite = function(j$) {
     this.reportedDone = false;
   };
 
+  Suite.prototype.removeChildren = function() {
+    this.children = [];
+  };
+
   Suite.prototype.addChild = function(child) {
     this.children.push(child);
   };

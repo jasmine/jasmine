@@ -175,4 +175,69 @@ describe('SuiteBuilder', function() {
       }
     };
   }
+
+  describe('#parallelReset', function() {
+    it('removes children of the top suite', function() {
+      const env = { configuration: () => ({}) };
+      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      suiteBuilder.describe('a suite', function() {
+        suiteBuilder.it('a nested spec');
+      });
+      suiteBuilder.it('a spec');
+
+      suiteBuilder.parallelReset();
+
+      expect(suiteBuilder.topSuite.children).toEqual([]);
+    });
+
+    it('preserves top suite befores and afters', function() {
+      const env = { configuration: () => ({}) };
+      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+
+      function beforeAll() {}
+      function beforeEach() {}
+      function afterEach() {}
+      function afterAll() {}
+
+      suiteBuilder.beforeAll(beforeAll);
+      suiteBuilder.beforeEach(beforeEach);
+      suiteBuilder.afterEach(afterEach);
+      suiteBuilder.afterAll(afterAll);
+
+      suiteBuilder.parallelReset();
+
+      expect(suiteBuilder.topSuite.beforeAllFns).toEqual([
+        jasmine.objectContaining({ fn: beforeAll })
+      ]);
+      expect(suiteBuilder.topSuite.beforeFns).toEqual([
+        jasmine.objectContaining({ fn: beforeEach })
+      ]);
+      expect(suiteBuilder.topSuite.afterFns).toEqual([
+        jasmine.objectContaining({ fn: afterEach })
+      ]);
+      expect(suiteBuilder.topSuite.afterAllFns).toEqual([
+        jasmine.objectContaining({ fn: afterAll })
+      ]);
+    });
+
+    it('resets totalSpecsDefined', function() {
+      const env = { configuration: () => ({}) };
+      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      suiteBuilder.it('a spec');
+
+      suiteBuilder.parallelReset();
+
+      expect(suiteBuilder.totalSpecsDefined).toEqual(0);
+    });
+
+    it('resets focusedRunables', function() {
+      const env = { configuration: () => ({}) };
+      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      suiteBuilder.fit('a spec', function() {});
+
+      suiteBuilder.parallelReset();
+
+      expect(suiteBuilder.focusedRunables).toEqual([]);
+    });
+  });
 });

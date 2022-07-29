@@ -2,6 +2,7 @@ getJasmineRequireObj().Runner = function(j$) {
   class Runner {
     constructor(options) {
       this.topSuite_ = options.topSuite;
+      // TODO use names that read like getters
       this.totalSpecsDefined_ = options.totalSpecsDefined;
       this.focusedRunables_ = options.focusedRunables;
       this.runableResources_ = options.runableResources;

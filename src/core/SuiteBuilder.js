@@ -22,6 +22,12 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       this.focusedRunables = [];
     }
 
+    parallelReset() {
+      this.topSuite.removeChildren();
+      this.totalSpecsDefined = 0;
+      this.focusedRunables = [];
+    }
+
     describe(description, definitionFn) {
       ensureIsFunction(definitionFn, 'describe');
       const suite = this.suiteFactory_(description);
