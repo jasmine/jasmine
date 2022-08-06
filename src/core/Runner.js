@@ -127,8 +127,8 @@ getJasmineRequireObj().Runner = function(j$) {
       /**
        * Information passed to the {@link Reporter#jasmineStarted} event.
        * @typedef JasmineStartedInfo
-       * @property {Int} totalSpecsDefined - The total number of specs defined in this suite.
-       * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
+       * @property {Int} totalSpecsDefined - The total number of specs defined in this suite. Note that this property is not present when Jasmine is run in parallel mode.
+       * @property {Order} order - Information about the ordering (random or not) of this execution of the suite. Note that this property is not present when Jasmine is run in parallel mode.
        * @since 2.0.0
        */
       await this.reporter_.jasmineStarted({
@@ -147,7 +147,7 @@ getJasmineRequireObj().Runner = function(j$) {
 
             this.runableResources_.clearForRunable(this.topSuite_.id);
             this.currentlyExecutingSuites_.pop();
-            let overallStatus, incompleteReason;
+            let overallStatus, incompleteReason, incompleteCode;
 
             if (
               this.hasFailures ||
@@ -157,9 +157,11 @@ getJasmineRequireObj().Runner = function(j$) {
             } else if (this.focusedRunables_().length > 0) {
               overallStatus = 'incomplete';
               incompleteReason = 'fit() or fdescribe() was found';
+              incompleteCode = 'focused';
             } else if (totalSpecsDefined === 0) {
               overallStatus = 'incomplete';
               incompleteReason = 'No specs found';
+              incompleteCode = 'noSpecsFound';
             } else {
               overallStatus = 'passed';
             }
@@ -169,8 +171,10 @@ getJasmineRequireObj().Runner = function(j$) {
              * @typedef JasmineDoneInfo
              * @property {OverallStatus} overallStatus - The overall result of the suite: 'passed', 'failed', or 'incomplete'.
              * @property {Int} totalTime - The total time (in ms) that it took to execute the suite
-             * @property {IncompleteReason} incompleteReason - Explanation of why the suite was incomplete.
-             * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
+             * @property {String} incompleteReason - Human-readable explanation of why the suite was incomplete.
+             * @property {String} incompleteCode - Machine-readable explanation of why the suite was incomplete: 'focused', 'noSpecsFound', or undefined.
+             * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.  Note that this property is not present when Jasmine is run in parallel mode.
+             * @property {Int} numWorkers - Number of parallel workers.  Note that this property is only present when Jasmine is run in parallel mode.
              * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
              * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
              * @since 2.4.0
@@ -179,6 +183,7 @@ getJasmineRequireObj().Runner = function(j$) {
               overallStatus: overallStatus,
               totalTime: jasmineTimer.elapsed(),
               incompleteReason: incompleteReason,
+              incompleteCode: incompleteCode,
               order: order,
               failedExpectations: this.topSuite_.result.failedExpectations,
               deprecationWarnings: this.topSuite_.result.deprecationWarnings

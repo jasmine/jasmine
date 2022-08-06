@@ -45,10 +45,6 @@ module.exports = {
     src: ['src/boot/boot1.js'],
     dest: 'lib/jasmine-core/boot1.js'
   },
-  nodeBoot: {
-    src: ['src/boot/node_boot.js'],
-    dest: 'lib/jasmine-core/node_boot.js'
-  },
   options: {
     banner: license(),
     process: {

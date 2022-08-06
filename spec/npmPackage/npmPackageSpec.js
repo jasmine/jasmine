@@ -78,13 +78,8 @@ describe('npm package', function() {
 
   it('has bootFiles', function() {
     expect(this.packagedCore.files.bootFiles).toEqual(['boot0.js', 'boot1.js']);
-    expect(this.packagedCore.files.nodeBootFiles).toEqual(['node_boot.js']);
 
     for (const fileName of this.packagedCore.files.bootFiles) {
-      expect(fileName).toExistInPath(this.packagedCore.files.bootDir);
-    }
-
-    for (const fileName of this.packagedCore.files.nodeBootFiles) {
       expect(fileName).toExistInPath(this.packagedCore.files.bootDir);
     }
   });

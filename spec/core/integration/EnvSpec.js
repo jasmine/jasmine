@@ -2908,6 +2908,7 @@ describe('Env integration', function() {
         const e = reporter.jasmineDone.calls.argsFor(0)[0];
         expect(e.overallStatus).toEqual('incomplete');
         expect(e.incompleteReason).toEqual('No specs found');
+        expect(e.incompleteCode).toEqual('noSpecsFound');
       });
     });
 
@@ -2926,6 +2927,7 @@ describe('Env integration', function() {
         const e = reporter.jasmineDone.calls.argsFor(0)[0];
         expect(e.overallStatus).toEqual('incomplete');
         expect(e.incompleteReason).toEqual('fit() or fdescribe() was found');
+        expect(e.incompleteCode).toEqual('focused');
       });
     });
 
@@ -2946,6 +2948,7 @@ describe('Env integration', function() {
         const e = reporter.jasmineDone.calls.argsFor(0)[0];
         expect(e.overallStatus).toEqual('incomplete');
         expect(e.incompleteReason).toEqual('fit() or fdescribe() was found');
+        expect(e.incompleteCode).toEqual('focused');
       });
     });
 
@@ -2966,6 +2969,7 @@ describe('Env integration', function() {
         const e = reporter.jasmineDone.calls.argsFor(0)[0];
         expect(e.overallStatus).toEqual('failed');
         expect(e.incompleteReason).toBeUndefined();
+        expect(e.incompleteCode).toBeUndefined();
       });
     });
   });
