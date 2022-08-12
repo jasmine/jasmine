@@ -71,7 +71,6 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     if (typeof this.onComplete !== 'function') {
       throw new Error('invalid onComplete ' + JSON.stringify(this.onComplete));
     }
-    this.deprecated = attrs.deprecated;
   }
 
   QueueRunner.prototype.execute = function() {

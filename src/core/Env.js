@@ -380,7 +380,6 @@ getJasmineRequireObj().Env = function(j$) {
         function(e) {
           (runner.currentRunable() || topSuite).handleException(e);
         };
-      options.deprecated = self.deprecated;
 
       new j$.QueueRunner(options).execute();
     }

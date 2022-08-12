@@ -185,43 +185,20 @@ describe('QueueRunner', function() {
 
             queueRunner.execute();
           });
-
-          it('does not log a deprecation', function(done) {
-            const err = new Error('foo'),
-              queueableFn1 = {
-                fn: function() {
-                  return Promise.resolve(err);
-                }
-              },
-              deprecated = jasmine.createSpy('deprecated'),
-              queueRunner = new jasmineUnderTest.QueueRunner({
-                queueableFns: [queueableFn1],
-                deprecated: deprecated,
-                onComplete: function() {
-                  expect(deprecated).not.toHaveBeenCalled();
-                  done();
-                }
-              });
-
-            queueRunner.execute();
-          });
         });
 
         describe('and the argument is not an Error', function() {
-          it('does not log a deprecation or report a failure', function(done) {
+          it('does not report a failure', function(done) {
             const queueableFn1 = {
                 fn: function() {
                   return Promise.resolve('not an error');
                 }
               },
               failFn = jasmine.createSpy('fail'),
-              deprecated = jasmine.createSpy('deprecated'),
               queueRunner = new jasmineUnderTest.QueueRunner({
                 queueableFns: [queueableFn1],
-                deprecated: deprecated,
                 fail: failFn,
                 onComplete: function() {
-                  expect(deprecated).not.toHaveBeenCalled();
                   expect(failFn).not.toHaveBeenCalled();
                   done();
                 }
@@ -406,17 +383,12 @@ describe('QueueRunner', function() {
           }
         },
         nextQueueableFn = { fn: jasmine.createSpy('nextFn') },
-        deprecated = jasmine.createSpy('deprecated'),
         queueRunner = new jasmineUnderTest.QueueRunner({
-          deprecated: deprecated,
           queueableFns: [queueableFn, nextQueueableFn]
         });
       queueRunner.execute();
       jasmine.clock().tick(1);
       expect(nextQueueableFn.fn.calls.count()).toEqual(1);
-      // Don't issue a deprecation. The error already tells the user that
-      // something went wrong.
-      expect(deprecated).not.toHaveBeenCalled();
     });
 
     it('should return a null when you call done', function() {
