@@ -436,6 +436,9 @@ describe('Env integration', function() {
         },
         clearTimeout: function(fn, delay) {
           clearTimeout(fn, delay);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
         }
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -473,6 +476,9 @@ describe('Env integration', function() {
           },
           clearTimeout: function(fn) {
             clearTimeout(fn);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
           }
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -529,6 +535,9 @@ describe('Env integration', function() {
         },
         clearTimeout: function(fn, delay) {
           clearTimeout(fn, delay);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
         }
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -545,8 +554,8 @@ describe('Env integration', function() {
         env.it('fails', function(specDone) {
           setTimeout(function() {
             specDone();
-            setTimeout(function() {
-              setTimeout(function() {
+            queueMicrotask(function() {
+              queueMicrotask(function() {
                 global.onerror('fail');
               });
             });
@@ -578,6 +587,9 @@ describe('Env integration', function() {
           },
           clearTimeout: function(fn, delay) {
             clearTimeout(fn, delay);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
           }
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -638,6 +650,9 @@ describe('Env integration', function() {
           },
           clearTimeout: function(fn, delay) {
             clearTimeout(fn, delay);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
           }
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -677,6 +692,9 @@ describe('Env integration', function() {
         },
         clearTimeout: function(fn) {
           clearTimeout(fn);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
         }
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -1427,8 +1445,8 @@ describe('Env integration', function() {
       global: {
         setTimeout: globalSetTimeout,
         clearTimeout: clearTimeout,
-        setImmediate: function(cb) {
-          return setTimeout(cb, 0);
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
         }
       }
     });
@@ -1501,8 +1519,8 @@ describe('Env integration', function() {
           clearTimeout: clearTimeout,
           setInterval: setInterval,
           clearInterval: clearInterval,
-          setImmediate: function(cb) {
-            return realSetTimeout(cb, 0);
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
           }
         }
       });
@@ -2625,6 +2643,9 @@ describe('Env integration', function() {
       clearTimeout: function(fn, delay) {
         clearTimeout(fn, delay);
       },
+      queueMicrotask: function(fn) {
+        queueMicrotask(fn);
+      },
       onerror: function() {}
     };
     spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -2679,6 +2700,9 @@ describe('Env integration', function() {
         },
         clearTimeout: function(fn, delay) {
           clearTimeout(fn, delay);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
         },
         onerror: originalOnerror
       };
@@ -2869,6 +2893,9 @@ describe('Env integration', function() {
           },
           clearTimeout: function(fn, delay) {
             return clearTimeout(fn, delay);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
           }
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
