@@ -1,56 +1,42 @@
 describe('GlobalErrors', function() {
   it('calls the added handler on error', function() {
-    const fakeGlobal = minimalBrowserGlobal();
+    const fakeGlobal = browserGlobal();
     const handler = jasmine.createSpy('errorHandler');
     const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
     errors.install();
     errors.pushListener(handler);
 
-    fakeGlobal.onerror('foo');
-
-    expect(handler).toHaveBeenCalledWith('foo');
-  });
-
-  it('enables external interception of error by overriding global.onerror', function() {
-    const fakeGlobal = minimalBrowserGlobal();
-    const handler = jasmine.createSpy('errorHandler');
-    const hijackHandler = jasmine.createSpy('hijackErrorHandler');
-    const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
-
-    errors.install();
-    errors.pushListener(handler);
-
-    fakeGlobal.onerror = hijackHandler;
-
-    fakeGlobal.onerror('foo');
-
-    expect(hijackHandler).toHaveBeenCalledWith('foo');
-    expect(handler).not.toHaveBeenCalled();
-  });
-
-  it('calls the global error handler with all parameters', function() {
-    const fakeGlobal = minimalBrowserGlobal();
-    const handler = jasmine.createSpy('errorHandler');
-    const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
-    const fooError = new Error('foo');
-
-    errors.install();
-    errors.pushListener(handler);
-
-    fakeGlobal.onerror(fooError.message, 'foo.js', 1, 1, fooError);
+    const error = new Error('nope');
+    dispatchErrorEvent(fakeGlobal, { error });
 
     expect(handler).toHaveBeenCalledWith(
-      fooError.message,
-      'foo.js',
-      1,
-      1,
-      fooError
+      jasmine.is(error),
+      jasmine.objectContaining({ error: jasmine.is(error) })
+    );
+  });
+
+  it('is not affected by overriding global.onerror', function() {
+    const fakeGlobal = browserGlobal();
+    const handler = jasmine.createSpy('errorHandler');
+    const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+    errors.install();
+    errors.pushListener(handler);
+
+    fakeGlobal.onerror = () => {};
+
+    const error = new Error('nope');
+    dispatchErrorEvent(fakeGlobal, { error });
+
+    expect(handler).toHaveBeenCalledWith(
+      jasmine.is(error),
+      jasmine.objectContaining({ error: jasmine.is(error) })
     );
   });
 
   it('only calls the most recent handler', function() {
-    const fakeGlobal = minimalBrowserGlobal();
+    const fakeGlobal = browserGlobal();
     const handler1 = jasmine.createSpy('errorHandler1');
     const handler2 = jasmine.createSpy('errorHandler2');
     const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
@@ -59,14 +45,18 @@ describe('GlobalErrors', function() {
     errors.pushListener(handler1);
     errors.pushListener(handler2);
 
-    fakeGlobal.onerror('foo');
+    const error = new Error('nope');
+    dispatchErrorEvent(fakeGlobal, { error });
 
     expect(handler1).not.toHaveBeenCalled();
-    expect(handler2).toHaveBeenCalledWith('foo');
+    expect(handler2).toHaveBeenCalledWith(
+      jasmine.is(error),
+      jasmine.objectContaining({ error: jasmine.is(error) })
+    );
   });
 
   it('calls previous handlers when one is removed', function() {
-    const fakeGlobal = minimalBrowserGlobal();
+    const fakeGlobal = browserGlobal();
     const handler1 = jasmine.createSpy('errorHandler1');
     const handler2 = jasmine.createSpy('errorHandler2');
     const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
@@ -77,9 +67,13 @@ describe('GlobalErrors', function() {
 
     errors.popListener(handler2);
 
-    fakeGlobal.onerror('foo');
+    const error = new Error('nope');
+    dispatchErrorEvent(fakeGlobal, { error });
 
-    expect(handler1).toHaveBeenCalledWith('foo');
+    expect(handler1).toHaveBeenCalledWith(
+      jasmine.is(error),
+      jasmine.objectContaining({ error: jasmine.is(error) })
+    );
     expect(handler2).not.toHaveBeenCalled();
   });
 
@@ -90,34 +84,27 @@ describe('GlobalErrors', function() {
     }).toThrowError('popListener expects a listener');
   });
 
-  it('uninstalls itself, putting back a previous callback', function() {
-    const originalCallback = jasmine.createSpy('error');
-    const fakeGlobal = {
-      ...minimalBrowserGlobal(),
-      onerror: originalCallback
-    };
+  it('uninstalls itself', function() {
+    const fakeGlobal = browserGlobal();
     const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
-
-    expect(fakeGlobal.onerror).toBe(originalCallback);
+    function unrelatedListener() {}
 
     errors.install();
-
-    expect(fakeGlobal.onerror).not.toBe(originalCallback);
-
+    fakeGlobal.addEventListener('error', unrelatedListener);
     errors.uninstall();
 
-    expect(fakeGlobal.onerror).toBe(originalCallback);
+    expect(fakeGlobal.listeners_.error).toEqual([unrelatedListener]);
   });
 
   it('rethrows the original error when there is no handler', function() {
-    const fakeGlobal = minimalBrowserGlobal();
+    const fakeGlobal = browserGlobal();
     const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
     const originalError = new Error('nope');
 
     errors.install();
 
     try {
-      fakeGlobal.onerror(originalError);
+      dispatchErrorEvent(fakeGlobal, { error: originalError });
     } catch (e) {
       expect(e).toBe(originalError);
     }
@@ -289,128 +276,61 @@ describe('GlobalErrors', function() {
 
   describe('Reporting unhandled promise rejections in the browser', function() {
     it('subscribes and unsubscribes from the unhandledrejection event', function() {
-      const fakeGlobal = jasmine.createSpyObj('globalErrors', [
-          'addEventListener',
-          'removeEventListener',
-          'onerror'
-        ]),
-        errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+      const fakeGlobal = browserGlobal();
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
       errors.install();
-      expect(fakeGlobal.addEventListener).toHaveBeenCalledWith(
-        'unhandledrejection',
+      expect(fakeGlobal.listeners_.unhandledrejection).toEqual([
         jasmine.any(Function)
-      );
+      ]);
 
-      const addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
       errors.uninstall();
-
-      expect(fakeGlobal.removeEventListener).toHaveBeenCalledWith(
-        'unhandledrejection',
-        addedListener
-      );
+      expect(fakeGlobal.listeners_.unhandledrejection).toEqual([]);
     });
 
     it('reports rejections whose reason is a string', function() {
-      const fakeGlobal = jasmine.createSpyObj('globalErrors', [
-          'addEventListener',
-          'removeEventListener',
-          'onerror'
-        ]),
-        handler = jasmine.createSpy('errorHandler'),
-        errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+      const fakeGlobal = browserGlobal();
+      const handler = jasmine.createSpy('errorHandler');
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
       errors.install();
       errors.pushListener(handler);
 
-      const addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
-      addedListener({ reason: 'nope' });
+      const event = { reason: 'nope' };
+      dispatchUnhandledRejectionEvent(fakeGlobal, event);
 
-      expect(handler).toHaveBeenCalledWith('Unhandled promise rejection: nope');
+      expect(handler).toHaveBeenCalledWith(
+        'Unhandled promise rejection: nope',
+        event
+      );
     });
 
     it('reports rejections whose reason is an Error', function() {
-      const fakeGlobal = jasmine.createSpyObj('globalErrors', [
-          'addEventListener',
-          'removeEventListener',
-          'onerror'
-        ]),
-        handler = jasmine.createSpy('errorHandler'),
-        errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+      const fakeGlobal = browserGlobal();
+      const handler = jasmine.createSpy('errorHandler');
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
       errors.install();
       errors.pushListener(handler);
 
-      const addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
       const reason = new Error('bar');
-
-      addedListener({ reason: reason });
+      const event = { reason };
+      dispatchUnhandledRejectionEvent(fakeGlobal, event);
 
       expect(handler).toHaveBeenCalledWith(
         jasmine.objectContaining({
           jasmineMessage: 'Unhandled promise rejection: Error: bar',
           message: reason.message,
           stack: reason.stack
-        })
+        }),
+        event
       );
-    });
-
-    describe('Enabling external interception of reported rejections by overriding global.onerror', function() {
-      it('overriding global.onerror intercepts rejections whose reason is a string', function() {
-        const fakeGlobal = jasmine.createSpyObj('globalErrors', [
-            'addEventListener'
-          ]),
-          handler = jasmine.createSpy('errorHandler'),
-          hijackHandler = jasmine.createSpy('hijackErrorHandler'),
-          errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
-
-        errors.install();
-        errors.pushListener(handler);
-
-        fakeGlobal.onerror = hijackHandler;
-
-        const addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
-        addedListener({ reason: 'nope' });
-
-        expect(hijackHandler).toHaveBeenCalledWith(
-          'Unhandled promise rejection: nope'
-        );
-        expect(handler).not.toHaveBeenCalled();
-      });
-
-      it('overriding global.onerror intercepts rejections whose reason is an Error', function() {
-        const fakeGlobal = jasmine.createSpyObj('globalErrors', [
-            'addEventListener'
-          ]),
-          handler = jasmine.createSpy('errorHandler'),
-          hijackHandler = jasmine.createSpy('hijackErrorHandler'),
-          errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
-
-        errors.install();
-        errors.pushListener(handler);
-
-        fakeGlobal.onerror = hijackHandler;
-
-        const addedListener = fakeGlobal.addEventListener.calls.argsFor(0)[1];
-        const reason = new Error('bar');
-
-        addedListener({ reason: reason });
-
-        expect(hijackHandler).toHaveBeenCalledWith(
-          jasmine.objectContaining({
-            jasmineMessage: 'Unhandled promise rejection: Error: bar',
-            message: reason.message,
-            stack: reason.stack
-          })
-        );
-        expect(handler).not.toHaveBeenCalled();
-      });
     });
   });
 
   describe('#setOverrideListener', function() {
     it('overrides the existing handlers in browsers until removed', function() {
-      const fakeGlobal = minimalBrowserGlobal();
+      const fakeGlobal = browserGlobal();
       const handler0 = jasmine.createSpy('handler0');
       const handler1 = jasmine.createSpy('handler1');
       const overrideHandler = jasmine.createSpy('overrideHandler');
@@ -420,19 +340,18 @@ describe('GlobalErrors', function() {
       errors.pushListener(handler0);
       errors.setOverrideListener(overrideHandler, () => {});
       errors.pushListener(handler1);
-      fakeGlobal.onerror('foo');
-      fakeGlobal.onerror(null, null, null, null, new Error('bar'));
+      dispatchErrorEvent(fakeGlobal, { error: 'foo' });
 
       expect(overrideHandler).toHaveBeenCalledWith('foo');
-      expect(overrideHandler).toHaveBeenCalledWith(new Error('bar'));
       expect(handler0).not.toHaveBeenCalled();
       expect(handler1).not.toHaveBeenCalled();
 
       errors.removeOverrideListener();
 
-      fakeGlobal.onerror('baz');
+      const event = { error: 'baz' };
+      dispatchErrorEvent(fakeGlobal, event);
       expect(overrideHandler).not.toHaveBeenCalledWith('baz');
-      expect(handler1).toHaveBeenCalledWith('baz');
+      expect(handler1).toHaveBeenCalledWith('baz', event);
     });
 
     it('overrides the existing handlers in Node until removed', function() {
@@ -532,7 +451,7 @@ describe('GlobalErrors', function() {
     });
 
     it('throws if there is already an override handler', function() {
-      const errors = new jasmineUnderTest.GlobalErrors(minimalBrowserGlobal());
+      const errors = new jasmineUnderTest.GlobalErrors(browserGlobal());
 
       errors.setOverrideListener(() => {}, () => {});
       expect(function() {
@@ -544,7 +463,7 @@ describe('GlobalErrors', function() {
   describe('#removeOverrideListener', function() {
     it("calls the handler's onRemove callback", function() {
       const onRemove = jasmine.createSpy('onRemove');
-      const errors = new jasmineUnderTest.GlobalErrors(minimalBrowserGlobal());
+      const errors = new jasmineUnderTest.GlobalErrors(browserGlobal());
 
       errors.setOverrideListener(() => {}, onRemove);
       errors.removeOverrideListener();
@@ -553,17 +472,43 @@ describe('GlobalErrors', function() {
     });
 
     it('does not throw if there is no handler', function() {
-      const errors = new jasmineUnderTest.GlobalErrors(minimalBrowserGlobal());
+      const errors = new jasmineUnderTest.GlobalErrors(browserGlobal());
 
       expect(() => errors.removeOverrideListener()).not.toThrow();
     });
   });
 
-  function minimalBrowserGlobal() {
+  function browserGlobal() {
     return {
-      addEventListener() {},
-      removeEventListener() {},
-      onerror: null
+      listeners_: { error: [], unhandledrejection: [] },
+      addEventListener(eventName, listener) {
+        this.listeners_[eventName].push(listener);
+      },
+      removeEventListener(eventName, listener) {
+        this.listeners_[eventName] = this.listeners_[eventName].filter(
+          l => l !== listener
+        );
+      }
     };
+  }
+
+  function dispatchErrorEvent(global, event) {
+    expect(global.listeners_.error.length)
+      .withContext('number of error listeners')
+      .toBeGreaterThan(0);
+
+    for (const l of global.listeners_.error) {
+      l(event);
+    }
+  }
+
+  function dispatchUnhandledRejectionEvent(global, event) {
+    expect(global.listeners_.unhandledrejection.length)
+      .withContext('number of unhandledrejection listeners')
+      .toBeGreaterThan(0);
+
+    for (const l of global.listeners_.unhandledrejection) {
+      l(event);
+    }
   }
 });

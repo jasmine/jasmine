@@ -6,18 +6,22 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     let overrideHandler = null,
       onRemoveOverrideHandler = null;
 
-    function onerror(message, source, lineno, colno, error) {
+    function onBrowserError(event) {
+      dispatchBrowserError(event.error, event);
+    }
+
+    function dispatchBrowserError(error, event) {
       if (overrideHandler) {
-        overrideHandler(error || message);
+        overrideHandler(error);
         return;
       }
 
       const handler = handlers[handlers.length - 1];
 
       if (handler) {
-        handler.apply(null, Array.prototype.slice.call(arguments, 0));
+        handler(error, event);
       } else {
-        throw arguments[0];
+        throw error;
       }
     }
 
@@ -94,8 +98,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         this.installOne_('uncaughtException', 'Uncaught exception');
         this.installOne_('unhandledRejection', 'Unhandled promise rejection');
       } else {
-        const originalHandler = global.onerror;
-        global.onerror = onerror;
+        global.addEventListener('error', onBrowserError);
 
         const browserRejectionHandler = function browserRejectionHandler(
           event
@@ -103,16 +106,19 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
           if (j$.isError_(event.reason)) {
             event.reason.jasmineMessage =
               'Unhandled promise rejection: ' + event.reason;
-            global.onerror(event.reason);
+            dispatchBrowserError(event.reason, event);
           } else {
-            global.onerror('Unhandled promise rejection: ' + event.reason);
+            dispatchBrowserError(
+              'Unhandled promise rejection: ' + event.reason,
+              event
+            );
           }
         };
 
         global.addEventListener('unhandledrejection', browserRejectionHandler);
 
         this.uninstall = function uninstall() {
-          global.onerror = originalHandler;
+          global.removeEventListener('error', onBrowserError);
           global.removeEventListener(
             'unhandledrejection',
             browserRejectionHandler
@@ -121,6 +127,13 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       }
     };
 
+    // The listener at the top of the stack will be called with two arguments:
+    // the error and the event. Either of them may be falsy.
+    // The error will normally be provided, but will be falsy in the case of
+    // some browser load-time errors. The event will normally be provided in
+    // browsers but will be falsy in Node.
+    // Listeners that are pushed after spec files have been loaded should be
+    // able to just use the error parameter.
     this.pushListener = function pushListener(listener) {
       handlers.push(listener);
     };

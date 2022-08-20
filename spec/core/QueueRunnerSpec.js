@@ -651,7 +651,7 @@ describe('QueueRunner', function() {
     });
   });
 
-  it('passes the error instance to exception handlers in HTML browsers', function() {
+  it('passes final errors to exception handlers', function() {
     const error = new Error('fake error'),
       onExceptionCallback = jasmine.createSpy('on exception callback'),
       queueRunner = new jasmineUnderTest.QueueRunner({
@@ -659,22 +659,9 @@ describe('QueueRunner', function() {
       });
 
     queueRunner.execute();
-    queueRunner.handleFinalError(error.message, 'fake.js', 1, 1, error);
+    queueRunner.handleFinalError(error);
 
     expect(onExceptionCallback).toHaveBeenCalledWith(error);
-  });
-
-  it('passes the first argument to exception handlers for compatibility', function() {
-    const error = new Error('fake error'),
-      onExceptionCallback = jasmine.createSpy('on exception callback'),
-      queueRunner = new jasmineUnderTest.QueueRunner({
-        onException: onExceptionCallback
-      });
-
-    queueRunner.execute();
-    queueRunner.handleFinalError(error.message);
-
-    expect(onExceptionCallback).toHaveBeenCalledWith(error.message);
   });
 
   it('calls exception handlers when an exception is thrown in a fn', function() {

@@ -66,11 +66,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   }
 
   QueueRunner.prototype.execute = function() {
-    this.handleFinalError = (message, source, lineno, colno, error) => {
-      // Older browsers would send the error as the first parameter. HTML5
-      // specifies the the five parameters above. The error instance should
-      // be preffered, otherwise the call stack would get lost.
-      this.onException(error || message);
+    this.handleFinalError = error => {
+      this.onException(error);
     };
     this.globalErrors.pushListener(this.handleFinalError);
     this.run(0);

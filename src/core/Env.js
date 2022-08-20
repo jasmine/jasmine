@@ -149,20 +149,14 @@ getJasmineRequireObj().Env = function(j$) {
 
     if (!options.suppressLoadErrors) {
       installGlobalErrors();
-      globalErrors.pushListener(function loadtimeErrorHandler(
-        message,
-        filename,
-        lineno,
-        colNo,
-        err
-      ) {
+      globalErrors.pushListener(function loadtimeErrorHandler(error, event) {
         topSuite.result.failedExpectations.push({
           passed: false,
           globalErrorType: 'load',
-          message: message,
-          stack: err && err.stack,
-          filename: filename,
-          lineno: lineno
+          message: error ? error.message : event.message,
+          stack: error && error.stack,
+          filename: event && event.filename,
+          lineno: event && event.lineno
         });
       });
     }

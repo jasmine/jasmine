@@ -1,5 +1,6 @@
 describe('Env integration', function() {
   let env;
+  const isBrowser = typeof window !== 'undefined';
 
   beforeEach(function() {
     jasmine.getEnv().registerIntegrationMatchers();
@@ -455,7 +456,7 @@ describe('Env integration', function() {
       env.describe('A suite', function() {
         env.it('fails', function(specDone) {
           setTimeout(function() {
-            global.onerror('fail');
+            dispatchErrorEvent(global, { error: 'fail' });
             specDone();
           });
         });
@@ -509,10 +510,14 @@ describe('Env integration', function() {
           },
           specDone: function() {
             clearStackCallbacks[clearStackCallCount + 1] = function() {
-              global.onerror('fail at the end of the reporter queue');
+              dispatchErrorEvent(global, {
+                error: 'fail at the end of the reporter queue'
+              });
             };
             clearStackCallbacks[clearStackCallCount + 2] = function() {
-              global.onerror('fail at the end of the spec queue');
+              dispatchErrorEvent(global, {
+                error: 'fail at the end of the spec queue'
+              });
             };
           }
         });
@@ -559,7 +564,7 @@ describe('Env integration', function() {
             specDone();
             queueMicrotask(function() {
               queueMicrotask(function() {
-                global.onerror('fail');
+                dispatchErrorEvent(global, { error: 'fail' });
               });
             });
           });
@@ -622,10 +627,14 @@ describe('Env integration', function() {
 
             if (result.description === 'A nested suite') {
               clearStackCallbacks[clearStackCallCount + 1] = function() {
-                global.onerror('fail at the end of the reporter queue');
+                dispatchErrorEvent(global, {
+                  error: 'fail at the end of the reporter queue'
+                });
               };
               clearStackCallbacks[clearStackCallCount + 2] = function() {
-                global.onerror('fail at the end of the suite queue');
+                dispatchErrorEvent(global, {
+                  error: 'fail at the end of the suite queue'
+                });
               };
             }
           }
@@ -668,7 +677,7 @@ describe('Env integration', function() {
 
         env.addReporter({
           jasmineDone: function() {
-            global.onerror('a very late error');
+            dispatchErrorEvent(global, { error: 'a very late error' });
           }
         });
 
@@ -720,7 +729,7 @@ describe('Env integration', function() {
           expectedErrors.push(`${msg} thrown`);
         }
 
-        global.onerror(msg);
+        dispatchErrorEvent(global, { error: msg });
         realClearStack(fn);
       });
       spyOn(console, 'error');
@@ -2524,15 +2533,24 @@ describe('Env integration', function() {
       );
     });
 
-    await env.execute();
+    await jasmine.spyOnGlobalErrorsAsync(async function(globalErrorSpy) {
+      await env.execute();
+
+      if (isBrowser) {
+        // Verify that there were no unexpected errors
+        expect(globalErrorSpy).toHaveBeenCalledTimes(2);
+        expect(globalErrorSpy).toHaveBeenCalledWith(new Error('suite'));
+        expect(globalErrorSpy).toHaveBeenCalledWith(new Error('spec'));
+      }
+    });
 
     expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
       'async suite',
-      [/^(((Uncaught )?(exception: )?Error: suite( thrown)?)|(suite thrown))$/]
+      [/Error: suite/]
     );
     expect(reporter.specDone).toHaveFailedExpectationsForRunnable(
       'suite async spec',
-      [/^(((Uncaught )?(exception: )?Error: spec( thrown)?)|(spec thrown))$/]
+      [/Error: spec/]
     );
   });
 
@@ -2666,14 +2684,14 @@ describe('Env integration', function() {
     ]);
 
     env.addReporter(reporter);
-    global.onerror(
-      'Uncaught SyntaxError: Unexpected end of input',
-      'borkenSpec.js',
-      42,
-      undefined,
-      { stack: 'a stack' }
-    );
-    global.onerror('Uncaught Error: ENOCHEESE');
+    dispatchErrorEvent(global, {
+      message: 'Uncaught SyntaxError: Unexpected end of input',
+      error: undefined,
+      filename: 'borkenSpec.js',
+      lineno: 42
+    });
+    const error = new Error('ENOCHEESE');
+    dispatchErrorEvent(global, { error });
 
     await env.execute();
 
@@ -2683,15 +2701,15 @@ describe('Env integration', function() {
         passed: false,
         globalErrorType: 'load',
         message: 'Uncaught SyntaxError: Unexpected end of input',
-        stack: 'a stack',
+        stack: undefined,
         filename: 'borkenSpec.js',
         lineno: 42
       },
       {
         passed: false,
         globalErrorType: 'load',
-        message: 'Uncaught Error: ENOCHEESE',
-        stack: undefined,
+        message: 'ENOCHEESE',
+        stack: error.stack,
         filename: undefined,
         lineno: undefined
       }
@@ -2923,7 +2941,7 @@ describe('Env integration', function() {
 
         env.addReporter(reporter);
         env.it('passes', function() {});
-        global.onerror('Uncaught Error: ENOCHEESE');
+        dispatchErrorEvent(global, { error: 'ENOCHEESE' });
         await env.execute();
 
         expect(reporter.jasmineDone).toHaveBeenCalled();
@@ -3702,7 +3720,16 @@ describe('Env integration', function() {
 
       const reporter = jasmine.createSpyObj('reporter', ['specDone']);
       env.addReporter(reporter);
-      await env.execute();
+      await jasmine.spyOnGlobalErrorsAsync(async function(globalErrorSpy) {
+        await env.execute();
+
+        if (isBrowser) {
+          // Verify that there were no unexpected errors
+          expect(globalErrorSpy).toHaveBeenCalledTimes(2);
+          expect(globalErrorSpy).toHaveBeenCalledWith(new Error('nope'));
+          expect(globalErrorSpy).toHaveBeenCalledWith(new Error('yep'));
+        }
+      });
 
       const passingResult = resultForRunable(
         reporter.specDone,
@@ -3749,7 +3776,17 @@ describe('Env integration', function() {
         'suiteDone'
       ]);
       env.addReporter(reporter);
-      await env.execute();
+      await jasmine.spyOnGlobalErrorsAsync(async function(globalErrorSpy) {
+        await env.execute();
+
+        if (isBrowser) {
+          // Verify that there were no unexpected errors
+          expect(globalErrorSpy).toHaveBeenCalledTimes(1);
+          expect(globalErrorSpy).toHaveBeenCalledWith(
+            new Error('should fail the spec')
+          );
+        }
+      });
 
       const suiteResult = resultForRunable(reporter.suiteDone, 'Suite 1');
       expect(suiteResult.status).toEqual('failed');
@@ -3794,7 +3831,17 @@ describe('Env integration', function() {
         'suiteDone'
       ]);
       env.addReporter(reporter);
-      await env.execute();
+      await jasmine.spyOnGlobalErrorsAsync(async function(globalErrorSpy) {
+        await env.execute();
+
+        if (isBrowser) {
+          // Verify that there were no unexpected errors
+          expect(globalErrorSpy).toHaveBeenCalledTimes(1);
+          expect(globalErrorSpy).toHaveBeenCalledWith(
+            new Error('should fail the spec')
+          );
+        }
+      });
 
       expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
         'Suite 1',
@@ -3844,7 +3891,18 @@ describe('Env integration', function() {
         'suiteDone'
       ]);
       env.addReporter(reporter);
-      await env.execute();
+
+      await jasmine.spyOnGlobalErrorsAsync(async function(globalErrorSpy) {
+        await env.execute();
+
+        if (isBrowser) {
+          // Verify that there were no unexpected errors
+          expect(globalErrorSpy).toHaveBeenCalledTimes(1);
+          expect(globalErrorSpy).toHaveBeenCalledWith(
+            new Error('should fail the spec')
+          );
+        }
+      });
 
       const spec1Result = resultForRunable(reporter.specDone, 'Suite 1 a spec');
       expect(spec1Result.status).toEqual('failed');
@@ -3880,7 +3938,17 @@ describe('Env integration', function() {
 
       const reporter = jasmine.createSpyObj('reporter', ['specDone']);
       env.addReporter(reporter);
-      await env.execute();
+      await jasmine.spyOnGlobalErrorsAsync(async function(globalErrorSpy) {
+        await env.execute();
+
+        if (isBrowser) {
+          // Verify that there were no unexpected errors
+          expect(globalErrorSpy).toHaveBeenCalledTimes(1);
+          expect(globalErrorSpy).toHaveBeenCalledWith(
+            new Error('should fail the spec')
+          );
+        }
+      });
 
       const spec1Result = resultForRunable(reporter.specDone, 'spec 1');
       expect(spec1Result.status).toEqual('failed');
@@ -3925,7 +3993,17 @@ describe('Env integration', function() {
         'suiteDone'
       ]);
       env.addReporter(reporter);
-      await env.execute();
+      await jasmine.spyOnGlobalErrorsAsync(async function(globalErrorSpy) {
+        await env.execute();
+
+        if (isBrowser) {
+          // Verify that there were no unexpected errors
+          expect(globalErrorSpy).toHaveBeenCalledTimes(1);
+          expect(globalErrorSpy).toHaveBeenCalledWith(
+            new Error('should fail the spec')
+          );
+        }
+      });
 
       const spec1Result = resultForRunable(reporter.specDone, 'Suite 1 a spec');
       expect(spec1Result.status).toEqual('failed');
@@ -3945,8 +4023,25 @@ describe('Env integration', function() {
 
   function browserEventMethods() {
     return {
-      addEventListener() {},
-      removeEventListener() {}
+      listeners_: { error: [], unhandledrejection: [] },
+      addEventListener(eventName, listener) {
+        this.listeners_[eventName].push(listener);
+      },
+      removeEventListener(eventName, listener) {
+        this.listeners_[eventName] = this.listeners_[eventName].filter(
+          l => l !== listener
+        );
+      }
     };
+  }
+
+  function dispatchErrorEvent(global, event) {
+    expect(global.listeners_.error.length)
+      .withContext('number of error listeners')
+      .toBeGreaterThan(0);
+
+    for (const l of global.listeners_.error) {
+      l(event);
+    }
   }
 });
