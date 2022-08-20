@@ -1,8 +1,8 @@
 describe('GlobalErrors', function() {
   it('calls the added handler on error', function() {
-    const fakeGlobal = { onerror: null },
-      handler = jasmine.createSpy('errorHandler'),
-      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+    const fakeGlobal = minimalBrowserGlobal();
+    const handler = jasmine.createSpy('errorHandler');
+    const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
     errors.install();
     errors.pushListener(handler);
@@ -13,10 +13,10 @@ describe('GlobalErrors', function() {
   });
 
   it('enables external interception of error by overriding global.onerror', function() {
-    const fakeGlobal = { onerror: null },
-      handler = jasmine.createSpy('errorHandler'),
-      hijackHandler = jasmine.createSpy('hijackErrorHandler'),
-      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+    const fakeGlobal = minimalBrowserGlobal();
+    const handler = jasmine.createSpy('errorHandler');
+    const hijackHandler = jasmine.createSpy('hijackErrorHandler');
+    const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
     errors.install();
     errors.pushListener(handler);
@@ -30,10 +30,10 @@ describe('GlobalErrors', function() {
   });
 
   it('calls the global error handler with all parameters', function() {
-    const fakeGlobal = { onerror: null },
-      handler = jasmine.createSpy('errorHandler'),
-      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal),
-      fooError = new Error('foo');
+    const fakeGlobal = minimalBrowserGlobal();
+    const handler = jasmine.createSpy('errorHandler');
+    const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+    const fooError = new Error('foo');
 
     errors.install();
     errors.pushListener(handler);
@@ -50,10 +50,10 @@ describe('GlobalErrors', function() {
   });
 
   it('only calls the most recent handler', function() {
-    const fakeGlobal = { onerror: null },
-      handler1 = jasmine.createSpy('errorHandler1'),
-      handler2 = jasmine.createSpy('errorHandler2'),
-      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+    const fakeGlobal = minimalBrowserGlobal();
+    const handler1 = jasmine.createSpy('errorHandler1');
+    const handler2 = jasmine.createSpy('errorHandler2');
+    const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
     errors.install();
     errors.pushListener(handler1);
@@ -66,10 +66,10 @@ describe('GlobalErrors', function() {
   });
 
   it('calls previous handlers when one is removed', function() {
-    const fakeGlobal = { onerror: null },
-      handler1 = jasmine.createSpy('errorHandler1'),
-      handler2 = jasmine.createSpy('errorHandler2'),
-      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+    const fakeGlobal = minimalBrowserGlobal();
+    const handler1 = jasmine.createSpy('errorHandler1');
+    const handler2 = jasmine.createSpy('errorHandler2');
+    const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
     errors.install();
     errors.pushListener(handler1);
@@ -91,9 +91,12 @@ describe('GlobalErrors', function() {
   });
 
   it('uninstalls itself, putting back a previous callback', function() {
-    const originalCallback = jasmine.createSpy('error'),
-      fakeGlobal = { onerror: originalCallback },
-      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+    const originalCallback = jasmine.createSpy('error');
+    const fakeGlobal = {
+      ...minimalBrowserGlobal(),
+      onerror: originalCallback
+    };
+    const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
 
     expect(fakeGlobal.onerror).toBe(originalCallback);
 
@@ -107,9 +110,9 @@ describe('GlobalErrors', function() {
   });
 
   it('rethrows the original error when there is no handler', function() {
-    const fakeGlobal = {},
-      errors = new jasmineUnderTest.GlobalErrors(fakeGlobal),
-      originalError = new Error('nope');
+    const fakeGlobal = minimalBrowserGlobal();
+    const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+    const originalError = new Error('nope');
 
     errors.install();
 
@@ -407,7 +410,7 @@ describe('GlobalErrors', function() {
 
   describe('#setOverrideListener', function() {
     it('overrides the existing handlers in browsers until removed', function() {
-      const fakeGlobal = { onerror: null };
+      const fakeGlobal = minimalBrowserGlobal();
       const handler0 = jasmine.createSpy('handler0');
       const handler1 = jasmine.createSpy('handler1');
       const overrideHandler = jasmine.createSpy('overrideHandler');
@@ -529,8 +532,7 @@ describe('GlobalErrors', function() {
     });
 
     it('throws if there is already an override handler', function() {
-      const fakeGlobal = { onerror: null };
-      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+      const errors = new jasmineUnderTest.GlobalErrors(minimalBrowserGlobal());
 
       errors.setOverrideListener(() => {}, () => {});
       expect(function() {
@@ -541,9 +543,8 @@ describe('GlobalErrors', function() {
 
   describe('#removeOverrideListener', function() {
     it("calls the handler's onRemove callback", function() {
-      const fakeGlobal = { onerror: null };
       const onRemove = jasmine.createSpy('onRemove');
-      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+      const errors = new jasmineUnderTest.GlobalErrors(minimalBrowserGlobal());
 
       errors.setOverrideListener(() => {}, onRemove);
       errors.removeOverrideListener();
@@ -552,10 +553,17 @@ describe('GlobalErrors', function() {
     });
 
     it('does not throw if there is no handler', function() {
-      const fakeGlobal = { onerror: null };
-      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+      const errors = new jasmineUnderTest.GlobalErrors(minimalBrowserGlobal());
 
       expect(() => errors.removeOverrideListener()).not.toThrow();
     });
   });
+
+  function minimalBrowserGlobal() {
+    return {
+      addEventListener() {},
+      removeEventListener() {},
+      onerror: null
+    };
+  }
 });

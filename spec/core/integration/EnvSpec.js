@@ -431,6 +431,7 @@ describe('Env integration', function() {
   describe('Handling async errors', function() {
     it('routes async errors to a running spec', async function() {
       const global = {
+        ...browserEventMethods(),
         setTimeout: function(fn, delay) {
           return setTimeout(fn, delay);
         },
@@ -471,6 +472,7 @@ describe('Env integration', function() {
     describe('When the running spec has reported specDone', function() {
       it('routes async errors to an ancestor suite', async function() {
         const global = {
+          ...browserEventMethods(),
           setTimeout: function(fn, delay) {
             return setTimeout(fn, delay);
           },
@@ -530,6 +532,7 @@ describe('Env integration', function() {
 
     it('routes async errors to a running suite', async function() {
       const global = {
+        ...browserEventMethods(),
         setTimeout: function(fn, delay) {
           return setTimeout(fn, delay);
         },
@@ -582,6 +585,7 @@ describe('Env integration', function() {
     describe('When the running suite has reported suiteDone', function() {
       it('routes async errors to an ancestor suite', async function() {
         const global = {
+          ...browserEventMethods(),
           setTimeout: function(fn, delay) {
             return setTimeout(fn, delay);
           },
@@ -645,6 +649,7 @@ describe('Env integration', function() {
     describe('When the env has started reporting jasmineDone', function() {
       it('logs the error to the console', async function() {
         const global = {
+          ...browserEventMethods(),
           setTimeout: function(fn, delay) {
             return setTimeout(fn, delay);
           },
@@ -687,6 +692,7 @@ describe('Env integration', function() {
 
     it('routes all errors that occur during stack clearing somewhere', async function() {
       const global = {
+        ...browserEventMethods(),
         setTimeout: function(fn, delay) {
           return setTimeout(fn, delay);
         },
@@ -2637,6 +2643,7 @@ describe('Env integration', function() {
 
   it('reports errors that occur during loading', async function() {
     const global = {
+      ...browserEventMethods(),
       setTimeout: function(fn, delay) {
         return setTimeout(fn, delay);
       },
@@ -2695,6 +2702,7 @@ describe('Env integration', function() {
     it('does not install a global error handler during loading', async function() {
       const originalOnerror = jasmine.createSpy('original onerror');
       const global = {
+        ...browserEventMethods(),
         setTimeout: function(fn, delay) {
           return setTimeout(fn, delay);
         },
@@ -2888,6 +2896,7 @@ describe('Env integration', function() {
     describe('When there are load errors', function() {
       it('is "failed"', async function() {
         const global = {
+          ...browserEventMethods(),
           setTimeout: function(fn, delay) {
             return setTimeout(fn, delay);
           },
@@ -3933,4 +3942,11 @@ describe('Env integration', function() {
       );
     });
   });
+
+  function browserEventMethods() {
+    return {
+      addEventListener() {},
+      removeEventListener() {}
+    };
+  }
 });
