@@ -26,11 +26,7 @@ getJasmineRequireObj().Runner = function(j$) {
       ];
     }
 
-    // Although execute returns a promise, it isn't async for backwards
-    // compatibility: The "Invalid order" exception needs to be propagated
-    // synchronously from Env#execute.
-    // TODO: make this and Env#execute async in the next major release
-    execute(runablesToRun) {
+    async execute(runablesToRun) {
       if (this.executedBefore_) {
         this.topSuite_.reset();
       }

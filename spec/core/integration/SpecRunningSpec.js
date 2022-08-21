@@ -626,7 +626,7 @@ describe('spec running', function() {
     expect(actions).toEqual(['spec2', 'spec3', 'spec1']);
   });
 
-  it('refuses to re-enter suites with a beforeAll', function() {
+  it('refuses to re-enter suites with a beforeAll', async function() {
     const actions = [];
     let spec1;
     let spec2;
@@ -648,13 +648,12 @@ describe('spec running', function() {
       actions.push('spec3');
     });
 
-    expect(function() {
-      env.execute([spec2.id, spec3.id, spec1.id]);
-    }).toThrowError(/beforeAll/);
+    const promise = env.execute([spec2.id, spec3.id, spec1.id]);
+    await expectAsync(promise).toBeRejectedWithError(/beforeAll/);
     expect(actions).toEqual([]);
   });
 
-  it('refuses to re-enter suites with a afterAll', function() {
+  it('refuses to re-enter suites with a afterAll', async function() {
     const actions = [];
     let spec1;
     let spec2;
@@ -676,9 +675,8 @@ describe('spec running', function() {
       actions.push('spec3');
     });
 
-    expect(function() {
-      env.execute([spec2.id, spec3.id, spec1.id]);
-    }).toThrowError(/afterAll/);
+    const promise = env.execute([spec2.id, spec3.id, spec1.id]);
+    await expectAsync(promise).toBeRejectedWithError(/afterAll/);
     expect(actions).toEqual([]);
   });
 

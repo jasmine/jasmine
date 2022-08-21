@@ -509,15 +509,17 @@ getJasmineRequireObj().Env = function(j$) {
      * {@link JasmineDoneInfo|overall result} that's passed to a reporter's
      * `jasmineDone` method, even if the suite did not pass. To determine
      * whether the suite passed, check the value that the promise resolves to
-     * or use a {@link Reporter}.
+     * or use a {@link Reporter}. The promise will be rejected in the case of
+     * certain serious errors that prevent execution from starting.
      *
      * @name Env#execute
      * @since 2.0.0
      * @function
+     * @async
      * @param {(string[])=} runablesToRun IDs of suites and/or specs to run
      * @return {Promise<JasmineDoneInfo>}
      */
-    this.execute = function(runablesToRun) {
+    this.execute = async function(runablesToRun) {
       installGlobalErrors();
       return runner.execute(runablesToRun);
     };
