@@ -496,17 +496,11 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Executes the specs.
      *
-     * If called with no parameters or with a falsy value as the first parameter,
+     * If called with no parameter or with a falsy parameter,
      * all specs will be executed except those that are excluded by a
      * [spec filter]{@link Configuration#specFilter} or other mechanism. If the
-     * first parameter is a list of spec/suite IDs, only those specs/suites will
+     * parameter is a list of spec/suite IDs, only those specs/suites will
      * be run.
-     *
-     * Both parameters are optional, but a completion callback is only valid as
-     * the second parameter. To specify a completion callback but not a list of
-     * specs/suites to run, pass null or undefined as the first parameter. The
-     * completion callback is supported for backward compatibility. In most
-     * cases it will be more convenient to use the returned promise instead.
      *
      * execute should not be called more than once unless the env has been
      * configured with `{autoCleanClosures: false}`.
@@ -521,19 +515,11 @@ getJasmineRequireObj().Env = function(j$) {
      * @since 2.0.0
      * @function
      * @param {(string[])=} runablesToRun IDs of suites and/or specs to run
-     * @param {Function=} onComplete Function that will be called after all specs have run
      * @return {Promise<JasmineDoneInfo>}
      */
-    this.execute = function(runablesToRun, onComplete) {
+    this.execute = function(runablesToRun) {
       installGlobalErrors();
-
-      return runner.execute(runablesToRun).then(function(jasmineDoneInfo) {
-        if (onComplete) {
-          onComplete();
-        }
-
-        return jasmineDoneInfo;
-      });
+      return runner.execute(runablesToRun);
     };
 
     /**

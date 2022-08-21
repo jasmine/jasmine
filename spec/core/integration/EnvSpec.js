@@ -3670,16 +3670,6 @@ describe('Env integration', function() {
     expect(failedExpectations).toEqual([]);
   });
 
-  it('calls the optional done callback when finished', function(done) {
-    const reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
-    env.addReporter(reporter);
-
-    env.execute(null, function() {
-      expect(reporter.jasmineDone).toHaveBeenCalled();
-      done();
-    });
-  });
-
   describe('#spyOnGlobalErrorsAsync', function() {
     const leftInstalledMessage =
       'Global error spy was not uninstalled. ' +
