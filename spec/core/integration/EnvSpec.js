@@ -431,11 +431,15 @@ describe('Env integration', function() {
   describe('Handling async errors', function() {
     it('routes async errors to a running spec', async function() {
       const global = {
+        ...browserEventMethods(),
         setTimeout: function(fn, delay) {
           return setTimeout(fn, delay);
         },
         clearTimeout: function(fn, delay) {
           clearTimeout(fn, delay);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
         }
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -468,11 +472,15 @@ describe('Env integration', function() {
     describe('When the running spec has reported specDone', function() {
       it('routes async errors to an ancestor suite', async function() {
         const global = {
+          ...browserEventMethods(),
           setTimeout: function(fn, delay) {
             return setTimeout(fn, delay);
           },
           clearTimeout: function(fn) {
             clearTimeout(fn);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
           }
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -524,11 +532,15 @@ describe('Env integration', function() {
 
     it('routes async errors to a running suite', async function() {
       const global = {
+        ...browserEventMethods(),
         setTimeout: function(fn, delay) {
           return setTimeout(fn, delay);
         },
         clearTimeout: function(fn, delay) {
           clearTimeout(fn, delay);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
         }
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -545,8 +557,8 @@ describe('Env integration', function() {
         env.it('fails', function(specDone) {
           setTimeout(function() {
             specDone();
-            setTimeout(function() {
-              setTimeout(function() {
+            queueMicrotask(function() {
+              queueMicrotask(function() {
                 global.onerror('fail');
               });
             });
@@ -573,11 +585,15 @@ describe('Env integration', function() {
     describe('When the running suite has reported suiteDone', function() {
       it('routes async errors to an ancestor suite', async function() {
         const global = {
+          ...browserEventMethods(),
           setTimeout: function(fn, delay) {
             return setTimeout(fn, delay);
           },
           clearTimeout: function(fn, delay) {
             clearTimeout(fn, delay);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
           }
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -633,11 +649,15 @@ describe('Env integration', function() {
     describe('When the env has started reporting jasmineDone', function() {
       it('logs the error to the console', async function() {
         const global = {
+          ...browserEventMethods(),
           setTimeout: function(fn, delay) {
             return setTimeout(fn, delay);
           },
           clearTimeout: function(fn, delay) {
             clearTimeout(fn, delay);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
           }
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -672,11 +692,15 @@ describe('Env integration', function() {
 
     it('routes all errors that occur during stack clearing somewhere', async function() {
       const global = {
+        ...browserEventMethods(),
         setTimeout: function(fn, delay) {
           return setTimeout(fn, delay);
         },
         clearTimeout: function(fn) {
           clearTimeout(fn);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
         }
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -1427,8 +1451,8 @@ describe('Env integration', function() {
       global: {
         setTimeout: globalSetTimeout,
         clearTimeout: clearTimeout,
-        setImmediate: function(cb) {
-          return setTimeout(cb, 0);
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
         }
       }
     });
@@ -1501,8 +1525,8 @@ describe('Env integration', function() {
           clearTimeout: clearTimeout,
           setInterval: setInterval,
           clearInterval: clearInterval,
-          setImmediate: function(cb) {
-            return realSetTimeout(cb, 0);
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
           }
         }
       });
@@ -2619,11 +2643,15 @@ describe('Env integration', function() {
 
   it('reports errors that occur during loading', async function() {
     const global = {
+      ...browserEventMethods(),
       setTimeout: function(fn, delay) {
         return setTimeout(fn, delay);
       },
       clearTimeout: function(fn, delay) {
         clearTimeout(fn, delay);
+      },
+      queueMicrotask: function(fn) {
+        queueMicrotask(fn);
       },
       onerror: function() {}
     };
@@ -2674,11 +2702,15 @@ describe('Env integration', function() {
     it('does not install a global error handler during loading', async function() {
       const originalOnerror = jasmine.createSpy('original onerror');
       const global = {
+        ...browserEventMethods(),
         setTimeout: function(fn, delay) {
           return setTimeout(fn, delay);
         },
         clearTimeout: function(fn, delay) {
           clearTimeout(fn, delay);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
         },
         onerror: originalOnerror
       };
@@ -2864,11 +2896,15 @@ describe('Env integration', function() {
     describe('When there are load errors', function() {
       it('is "failed"', async function() {
         const global = {
+          ...browserEventMethods(),
           setTimeout: function(fn, delay) {
             return setTimeout(fn, delay);
           },
           clearTimeout: function(fn, delay) {
             return clearTimeout(fn, delay);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
           }
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
@@ -3906,4 +3942,11 @@ describe('Env integration', function() {
       );
     });
   });
+
+  function browserEventMethods() {
+    return {
+      addEventListener() {},
+      removeEventListener() {}
+    };
+  }
 });
