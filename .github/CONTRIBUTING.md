@@ -1,18 +1,9 @@
-# Developing for Jasmine Core
+# Contributing to Jasmine
 
 We welcome your contributions! Thanks for helping make Jasmine a better project
-for everyone. Please review the backlog and discussion lists before starting
-work. What you're looking for may already have been done. If it hasn't, the
-community can help make your contribution better. If you want to contribute but
-don't know what to work on, 
-[issues tagged help needed](https://github.com/jasmine/jasmine/labels/help%20needed)
+for everyone. If you want to contribute but don't know what to work on, 
+[issues tagged help needed](https://github.com/issues?q=is%3Aopen+is%3Aissue+org%3Ajasmine+label%3A%22help+needed%22+)
 should have enough detail to get started.
-
-## Links
-
-- [Jasmine Google Group](http://groups.google.com/group/jasmine-js)
-- [Jasmine-dev Google Group](http://groups.google.com/group/jasmine-js-dev)
-- [Jasmine backlog](https://www.pivotaltracker.com/n/projects/10606)
 
 ## Before Submitting a Pull Request
 
@@ -94,14 +85,7 @@ Or, How to make a successful pull request
 * _Write specs_ - Jasmine's a testing framework. Don't add functionality 
   without test-driving it.
 * _Write code in the style of the rest of the repo_ - Jasmine should look like
-  a cohesive whole.
-  
-  Key exceptions:
-  * Use `const` or `let` for new variable declarations, even if nearby code
-    uses `var`.
-  * New async specs should usually be async/await or promise-returning, not
-    callback based.
-  
+  a cohesive whole. 
 * _Ensure the *entire* test suite is green_ in all the big browsers, Node, and
   ESLint/Prettier. Your contribution shouldn't break Jasmine for other users.
 
@@ -119,3 +103,10 @@ chromedriver), you can also use Jasmine's CI tooling:
 
     $ JASMINE_BROWSER=<name of browser> npm run ci
 
+### Submitting a Pull Requeset
+
+Once you've done the steps listed under "Before Submitting a Pull Request"
+above, you can submit a pull request via the 
+[standard GitHub process](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request).
+TL;DR: Fork the repository, push your work up to your fork, and create a PR from
+there.
