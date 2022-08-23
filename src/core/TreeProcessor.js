@@ -27,7 +27,7 @@ getJasmineRequireObj().TreeProcessor = function() {
       return stats;
     };
 
-    this.execute = function(done) {
+    this.execute = async function() {
       if (!processed) {
         this.processTree();
       }
@@ -38,16 +38,18 @@ getJasmineRequireObj().TreeProcessor = function() {
 
       const childFns = wrapChildren(tree, 0);
 
-      queueRunnerFactory({
-        queueableFns: childFns,
-        userContext: tree.sharedUserContext(),
-        onException: function() {
-          tree.handleException.apply(tree, arguments);
-        },
-        onComplete: done,
-        onMultipleDone: tree.onMultipleDone
-          ? tree.onMultipleDone.bind(tree)
-          : null
+      await new Promise(function(resolve) {
+        queueRunnerFactory({
+          queueableFns: childFns,
+          userContext: tree.sharedUserContext(),
+          onException: function() {
+            tree.handleException.apply(tree, arguments);
+          },
+          onComplete: resolve,
+          onMultipleDone: tree.onMultipleDone
+            ? tree.onMultipleDone.bind(tree)
+            : null
+        });
       });
     };
 
