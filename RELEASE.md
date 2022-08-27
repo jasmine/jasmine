@@ -35,11 +35,10 @@ When ready to release - specs are all green and the stories are done:
 
 ### Commit and push core changes
 
-1. Run the browser tests using `scripts/run-all-browsers`.
-2. Commit release notes and version changes (jasmine.js, package.json)
-3. Push
-4. Tag the release and push the tag.
-5. Wait for Circle CI to go green
+1. Commit release notes and version changes (jasmine.js, package.json)
+2. Push
+3. Tag the release and push the tag.
+4. Wait for Circle CI to go green
 
 ### Build standalone distribution
 
@@ -53,7 +52,9 @@ When ready to release - specs are all green and the stories are done:
 
 ### Release the docs
 
-Probably only need to do this when releasing a minor version, and not a patch version.
+Probably only need to do this when releasing a minor version, and not a patch
+version. See [the README file in the docs repo](https://github.com/jasmine/jasmine.github.io/blob/master/README.md)
+for instructions.
 
 1. `rake update_edge_jasmine`
 1. `npm run jsdoc`
@@ -68,7 +69,6 @@ Probably only need to do this when releasing a minor version, and not a patch ve
 1. In `package.json`, update both the package version and the jasmine-core dependency version
 1. Commit and push.
 1. Wait for Circle CI to go green again.
-1. Run the tests on Windows locally.
 1. `grunt release `. (Note: This will publish the package by running `npm publish`.)
 
 ### Finally
