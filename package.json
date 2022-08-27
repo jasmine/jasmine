@@ -43,7 +43,7 @@
     "grunt-contrib-concat": "^2.0.0",
     "grunt-css-url-embed": "^1.11.1",
     "grunt-sass": "^3.0.2",
-    "jasmine": "^4.1.0",
+    "jasmine": "github:jasmine/jasmine-npm#parallel",
     "jasmine-browser-runner": "^1.0.0",
     "jsdom": "^19.0.0",
     "load-grunt-tasks": "^5.1.0",
