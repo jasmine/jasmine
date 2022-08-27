@@ -12,10 +12,6 @@ executors:
     docker:
       - image: cimg/node:16.14.2 # Latest 16.x
     working_directory: ~/workspace
-  node14:
-    docker:
-      - image: cimg/node:14.17.4 # Latest 14.x
-    working_directory: ~/workspace
 
 jobs:
   build:
@@ -52,7 +48,7 @@ jobs:
           command: npm test
 
   test_browsers: &test_browsers
-    executor: node14
+    executor: node16
     steps:
       - attach_workspace:
           at: .
@@ -92,9 +88,6 @@ workflows:
       - build:
           executor: node16
           name: build_node_16
-      - build:
-          executor: node14
-          name: build_node_14
       - test_node:
           executor: node18
           name: test_node_18
@@ -105,14 +98,9 @@ workflows:
           name: test_node_16
           requires:
              - build_node_16
-      - test_node:
-          executor: node14
-          name: test_node_14
-          requires:
-             - build_node_14
       - test_browsers:
           requires:
-             - build_node_14
+             - build_node_16
           filters:
             branches:
               ignore: /pull\/.*/ # Don't run on pull requests.
