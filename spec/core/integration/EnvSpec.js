@@ -2026,6 +2026,29 @@ describe('Env integration', function() {
     expect(doneArg.order.seed).toEqual('123456');
   });
 
+  it('coerces the random seed to a string if it is a number', async function() {
+    const reporter = jasmine.createSpyObj('fakeReporter', [
+      'jasmineStarted',
+      'jasmineDone',
+      'suiteStarted',
+      'suiteDone',
+      'specStarted',
+      'specDone'
+    ]);
+    env.configure({ random: true, seed: 123456 });
+
+    env.addReporter(reporter);
+    env.configure({ random: true });
+    await env.execute();
+
+    expect(reporter.jasmineStarted).toHaveBeenCalled();
+    const startedArg = reporter.jasmineStarted.calls.argsFor(0)[0];
+    expect(startedArg.order.seed).toEqual('123456');
+
+    const doneArg = reporter.jasmineDone.calls.argsFor(0)[0];
+    expect(doneArg.order.seed).toEqual('123456');
+  });
+
   it('should report pending spec messages', async function() {
     const reporter = jasmine.createSpyObj('fakeReporter', ['specDone']);
 
