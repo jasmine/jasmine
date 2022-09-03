@@ -18,12 +18,11 @@ copied to `jasmine.js` when the distribution is built. When releasing a new
 version, update `package.json` with the new version and `npm run build` to
 update the gem version number.
 
-Note that Jasmine should only use the "patch" version number in the following cases:
+Note that Jasmine should only use the "patch" version number if the new release
+contains only bug fixes.
 
-* Changes related to packaging for a specific binding library (npm or browser-runner)
-* Fixes for regressions.
-
-When jasmine-core revs its major or minor version, the binding libraries should also rev to that version.
+When `jasmine-core` revs its major or minor version, the `jasmine` NPM package
+should also rev to that version.
 
 ## Release
 
@@ -61,20 +60,13 @@ for instructions.
 1. `rake release[${version}]` to copy the current edge docs to the new version
 1. Commit and push.
 
-### Release the binding libraries
+### Release the `jasmine` NPM package
 
-#### NPM
+See <https://github.com/jasmine/jasmine-npm/blob/main/RELEASE.md>.
 
-1. Create release notes using Anchorman as above
-1. In `package.json`, update both the package version and the jasmine-core dependency version
-1. Commit and push.
-1. Wait for Circle CI to go green again.
-1. `grunt release `. (Note: This will publish the package by running `npm publish`.)
+### Publish the GitHub release
 
-### Finally
-
-For each of the above GitHub repos:
 1. Visit the releases page and find the tag just published.
-1. Paste in a link to the correct release notes for this release. The link should reference the blob and tag correctly, and the markdown file for the notes.
-1. If it is a pre-release, mark it as such.
-1. For core, attach the standalone zipfile.
+2. Paste in a link to the correct release notes for this release.
+3. If it is a pre-release, mark it as such.
+4. Attach the standalone zipfile.
