@@ -47,6 +47,18 @@ jobs:
           name: Run tests
           command: npm test
 
+  test_parallel: &test_parallel
+    parameters:
+      executor:
+        type: executor
+    executor: << parameters.executor >>
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run tests in parallel
+          command: npx grunt execSpecsInParallel
+
   test_browsers: &test_browsers
     executor: node16
     steps:
@@ -98,6 +110,16 @@ workflows:
           name: test_node_16
           requires:
              - build_node_16
+      - test_parallel:
+          executor: node16
+          name: test_parallel_node_16
+          requires:
+            - build_node_16
+      - test_parallel:
+          executor: node18
+          name: test_parallel_node_18
+          requires:
+            - build_node_18
       - test_browsers:
           requires:
              - build_node_16
