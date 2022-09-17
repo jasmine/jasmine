@@ -2026,6 +2026,29 @@ describe('Env integration', function() {
     expect(doneArg.order.seed).toEqual('123456');
   });
 
+  it('coerces the random seed to a string if it is a number', async function() {
+    const reporter = jasmine.createSpyObj('fakeReporter', [
+      'jasmineStarted',
+      'jasmineDone',
+      'suiteStarted',
+      'suiteDone',
+      'specStarted',
+      'specDone'
+    ]);
+    env.configure({ random: true, seed: 123456 });
+
+    env.addReporter(reporter);
+    env.configure({ random: true });
+    await env.execute();
+
+    expect(reporter.jasmineStarted).toHaveBeenCalled();
+    const startedArg = reporter.jasmineStarted.calls.argsFor(0)[0];
+    expect(startedArg.order.seed).toEqual('123456');
+
+    const doneArg = reporter.jasmineDone.calls.argsFor(0)[0];
+    expect(doneArg.order.seed).toEqual('123456');
+  });
+
   it('should report pending spec messages', async function() {
     const reporter = jasmine.createSpyObj('fakeReporter', ['specDone']);
 
@@ -3945,6 +3968,44 @@ describe('Env integration', function() {
         /Error: should fail the spec/
       );
     });
+  });
+
+  it('reports a suite level error when a describe fn throws', async function() {
+    const reporter = jasmine.createSpyObj('reporter', ['suiteDone']);
+    env.addReporter(reporter);
+
+    env.describe('throws before defining specs', function() {
+      throw new Error('nope');
+    });
+
+    env.describe('throws after defining specs', function() {
+      env.it('is a spec');
+      throw new Error('nope');
+    });
+
+    await env.execute();
+
+    expect(reporter.suiteDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        fullName: 'throws after defining specs',
+        failedExpectations: [
+          jasmine.objectContaining({
+            message: jasmine.stringContaining('Error: nope')
+          })
+        ]
+      })
+    );
+
+    expect(reporter.suiteDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        fullName: 'throws after defining specs',
+        failedExpectations: [
+          jasmine.objectContaining({
+            message: jasmine.stringContaining('Error: nope')
+          })
+        ]
+      })
+    );
   });
 
   function browserEventMethods() {
