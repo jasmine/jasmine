@@ -61,7 +61,7 @@ module.exports = function(grunt) {
       const runner = new ParallelRunner({
         // TODO:
         // jasmineCore,
-        // numWorkers: require('os').cpus().length
+        numWorkers: require('os').cpus().length
       });
 
       runner.loadConfigFile('./spec/support/jasmine.json')
