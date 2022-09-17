@@ -30,9 +30,9 @@ module.exports = function(grunt) {
     function() {
       verifyNoGlobals(() => require('./lib/jasmine-core.js').noGlobals());
       const done = this.async(),
-          Jasmine = require('jasmine'),
-          jasmineCore = require('./lib/jasmine-core.js'),
-          jasmine = new Jasmine({jasmineCore: jasmineCore});
+        Jasmine = require('jasmine'),
+        jasmineCore = require('./lib/jasmine-core.js'),
+        jasmine = new Jasmine({jasmineCore: jasmineCore});
 
       jasmine.loadConfigFile('./spec/support/jasmine.json');
       jasmine.exitOnCompletion = false;
@@ -40,9 +40,41 @@ module.exports = function(grunt) {
         result => done(result.overallStatus === 'passed'),
         err => {
           console.error(err);
-          exit(1);
+          done(false);
         }
       );
+    }
+  );
+
+  grunt.registerTask("execSpecsInParallel",
+    "Run Jasmine core specs in parallel in Node.js",
+    function() {
+      // Need to require this here rather than at the top of the file
+      // so that we don't break verifyNoGlobals above by loading jasmine-core
+      // too early
+      const ParallelRunner = require('jasmine/parallel');
+
+      console.log('parallel runner pid:', process.pid);
+      const done = this.async();
+      // TODO use this core instead of the one imported by jasmine/parallel
+      // const jasmineCore = require('./lib/jasmine-core.js');
+      const runner = new ParallelRunner({
+        // TODO:
+        // jasmineCore,
+        // numWorkers: require('os').cpus().length
+      });
+
+      runner.loadConfigFile('./spec/support/jasmine.json')
+        .then(() => {
+          runner.exitOnCompletion = false;
+          return runner.execute();
+        }).then(
+          jasmineDoneInfo => done(jasmineDoneInfo.overallStatus === 'passed'),
+          err => {
+            console.error(err);
+            done(false);
+          }
+        );
     }
   );
 

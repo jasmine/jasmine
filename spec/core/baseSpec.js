@@ -145,7 +145,7 @@ describe('base helpers', function() {
     });
 
     it('returns a promise that resolves to false when the promise is rejected', function() {
-      const promise = Promise.reject();
+      const promise = Promise.reject(new Error('nope'));
       return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
         false
       );

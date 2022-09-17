@@ -29,7 +29,7 @@ describe('AsyncExpectation', function() {
 
     it('converts a fail to a pass', function() {
       const addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.reject(),
+        actual = Promise.reject(new Error('nope')),
         expectation = jasmineUnderTest.Expectation.asyncFactory({
           matchersUtil: new jasmineUnderTest.MatchersUtil({
             pp: function() {}
@@ -138,7 +138,7 @@ describe('AsyncExpectation', function() {
           }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.reject(),
+        actual = Promise.reject(new Error('nope')),
         expectation = jasmineUnderTest.Expectation.asyncFactory({
           actual: actual,
           addExpectationResult: addExpectationResult,

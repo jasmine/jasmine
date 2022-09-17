@@ -349,7 +349,7 @@ describe('Matchers (Integration)', function() {
     });
 
     verifyFailsAsync(function(env) {
-      return env.expectAsync(Promise.reject()).toBeResolved();
+      return env.expectAsync(Promise.reject(new Error('nope'))).toBeResolved();
     });
   });
 
