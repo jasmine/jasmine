@@ -149,20 +149,14 @@ getJasmineRequireObj().Env = function(j$) {
 
     if (!options.suppressLoadErrors) {
       installGlobalErrors();
-      globalErrors.pushListener(function loadtimeErrorHandler(
-        message,
-        filename,
-        lineno,
-        colNo,
-        err
-      ) {
+      globalErrors.pushListener(function loadtimeErrorHandler(error, event) {
         topSuite.result.failedExpectations.push({
           passed: false,
           globalErrorType: 'load',
-          message: message,
-          stack: err && err.stack,
-          filename: filename,
-          lineno: lineno
+          message: error ? error.message : event.message,
+          stack: error && error.stack,
+          filename: event && event.filename,
+          lineno: event && event.lineno
         });
       });
     }
@@ -506,17 +500,11 @@ getJasmineRequireObj().Env = function(j$) {
     /**
      * Executes the specs.
      *
-     * If called with no parameters or with a falsy value as the first parameter,
+     * If called with no parameter or with a falsy parameter,
      * all specs will be executed except those that are excluded by a
      * [spec filter]{@link Configuration#specFilter} or other mechanism. If the
-     * first parameter is a list of spec/suite IDs, only those specs/suites will
+     * parameter is a list of spec/suite IDs, only those specs/suites will
      * be run.
-     *
-     * Both parameters are optional, but a completion callback is only valid as
-     * the second parameter. To specify a completion callback but not a list of
-     * specs/suites to run, pass null or undefined as the first parameter. The
-     * completion callback is supported for backward compatibility. In most
-     * cases it will be more convenient to use the returned promise instead.
      *
      * execute should not be called more than once unless the env has been
      * configured with `{autoCleanClosures: false}`.
@@ -525,25 +513,19 @@ getJasmineRequireObj().Env = function(j$) {
      * {@link JasmineDoneInfo|overall result} that's passed to a reporter's
      * `jasmineDone` method, even if the suite did not pass. To determine
      * whether the suite passed, check the value that the promise resolves to
-     * or use a {@link Reporter}.
+     * or use a {@link Reporter}. The promise will be rejected in the case of
+     * certain serious errors that prevent execution from starting.
      *
      * @name Env#execute
      * @since 2.0.0
      * @function
+     * @async
      * @param {(string[])=} runablesToRun IDs of suites and/or specs to run
-     * @param {Function=} onComplete Function that will be called after all specs have run
      * @return {Promise<JasmineDoneInfo>}
      */
-    this.execute = function(runablesToRun, onComplete) {
+    this.execute = async function(runablesToRun) {
       installGlobalErrors();
-
-      return runner.execute(runablesToRun).then(function(jasmineDoneInfo) {
-        if (onComplete) {
-          onComplete();
-        }
-
-        return jasmineDoneInfo;
-      });
+      return runner.execute(runablesToRun);
     };
 
     /**
