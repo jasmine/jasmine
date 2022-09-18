@@ -177,6 +177,26 @@ describe('SuiteBuilder', function() {
   }
 
   describe('#parallelReset', function() {
+    it('resets the top suite result', function() {
+      jasmineUnderTest.Suite.prototype.handleException.and.callThrough();
+
+      const env = { configuration: () => ({}) };
+      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+
+      suiteBuilder.topSuite.handleException(new Error('nope'));
+      suiteBuilder.parallelReset();
+
+      expect(suiteBuilder.topSuite.result).toEqual({
+        id: suiteBuilder.topSuite.id,
+        description: 'Jasmine__TopLevel__Suite',
+        fullName: '',
+        failedExpectations: [],
+        deprecationWarnings: [],
+        duration: null,
+        properties: null
+      });
+    });
+
     it('removes children of the top suite', function() {
       const env = { configuration: () => ({}) };
       const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });

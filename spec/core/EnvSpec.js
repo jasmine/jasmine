@@ -592,6 +592,14 @@ describe('Env', function() {
           expect(id).toEqual(env.topSuite().id);
         });
     });
+
+    it('should not reset the topSuite if parallelReset was called since the last run', async function() {
+      await env.execute();
+      env.parallelReset();
+      spyOn(jasmineUnderTest.Suite.prototype, 'reset');
+      await env.execute();
+      expect(jasmineUnderTest.Suite.prototype.reset).not.toHaveBeenCalled();
+    });
   });
 
   describe('#spyOnGlobalErrorsAsync', function() {

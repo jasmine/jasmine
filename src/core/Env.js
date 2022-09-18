@@ -495,6 +495,7 @@ getJasmineRequireObj().Env = function(j$) {
     this.parallelReset = function() {
       // TODO: ensure that autoCleanClosures was false
       suiteBuilder.parallelReset();
+      runner.parallelReset();
     };
 
     /**

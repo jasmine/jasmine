@@ -24,6 +24,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
 
     parallelReset() {
       this.topSuite.removeChildren();
+      this.topSuite.reset();
       this.totalSpecsDefined = 0;
       this.focusedRunables = [];
     }

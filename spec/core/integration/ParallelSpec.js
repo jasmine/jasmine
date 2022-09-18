@@ -101,4 +101,62 @@ describe('Support for parallel execution', function() {
       jasmine.objectContaining({ overallStatus: 'passed' })
     );
   });
+
+  it('reports errors thrown from describe', async function() {
+    const reporter = jasmine.createSpyObj('reporter', ['suiteDone']);
+    env.addReporter(reporter);
+
+    env.describe('borken', function() {
+      throw new Error('nope');
+    });
+    await env.execute();
+
+    expect(reporter.suiteDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'borken',
+        status: 'failed',
+        failedExpectations: [
+          jasmine.objectContaining({
+            message: jasmine.stringContaining('Error: nope')
+          })
+        ]
+      })
+    );
+
+    // Errors in subsequent suites should also be reported
+    reporter.suiteDone.calls.reset();
+    env.parallelReset();
+    env.describe('zarro boogs', function() {
+      throw new Error('nor that either');
+    });
+    await env.execute();
+
+    expect(reporter.suiteDone).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({
+        description: 'zarro boogs',
+        status: 'failed',
+        failedExpectations: [
+          jasmine.objectContaining({
+            message: jasmine.stringContaining('Error: nor that either')
+          })
+        ]
+      })
+    );
+
+    // Failure state should not persist across resets
+    reporter.suiteDone.calls.reset();
+    env.parallelReset();
+    env.describe('actually works', function() {
+      env.it('a spec', function() {});
+    });
+    await env.execute();
+
+    expect(reporter.suiteDone).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({
+        description: 'actually works',
+        status: 'passed',
+        failedExpectations: []
+      })
+    );
+  });
 });

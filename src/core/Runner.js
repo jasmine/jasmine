@@ -27,6 +27,10 @@ getJasmineRequireObj().Runner = function(j$) {
       ];
     }
 
+    parallelReset() {
+      this.executedBefore_ = false;
+    }
+
     async execute(runablesToRun) {
       if (this.executedBefore_) {
         this.topSuite_.reset();
