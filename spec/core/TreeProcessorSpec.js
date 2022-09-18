@@ -274,7 +274,7 @@ describe('TreeProcessor', function() {
     expect(result.valid).toBe(true);
   });
 
-  it('runs a single leaf', function() {
+  it('runs a single leaf', async function() {
     const leaf = new Leaf(),
       node = new Node({ children: [leaf], userContext: { root: 'context' } }),
       queueRunner = jasmine.createSpy('queueRunner'),
@@ -282,25 +282,27 @@ describe('TreeProcessor', function() {
         tree: node,
         runnableIds: [leaf.id],
         queueRunnerFactory: queueRunner
-      }),
-      treeComplete = jasmine.createSpy('treeComplete');
+      });
 
-    processor.execute(treeComplete);
+    const promise = processor.execute();
 
     expect(queueRunner).toHaveBeenCalledWith({
-      onComplete: treeComplete,
+      onComplete: jasmine.any(Function),
       onException: jasmine.any(Function),
       userContext: { root: 'context' },
       queueableFns: [{ fn: jasmine.any(Function) }],
       onMultipleDone: null
     });
 
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn('foo');
-
+    const queueRunnerArgs = queueRunner.calls.mostRecent().args[0];
+    queueRunnerArgs.queueableFns[0].fn('foo');
     expect(leaf.execute).toHaveBeenCalledWith(queueRunner, 'foo', false, false);
+
+    queueRunnerArgs.onComplete();
+    await expectAsync(promise).toBeResolvedTo(undefined);
   });
 
-  it('runs a node with no children', function() {
+  it('runs a node with no children', async function() {
     const node = new Node({ userContext: { node: 'context' } }),
       root = new Node({ children: [node], userContext: { root: 'context' } }),
       nodeStart = jasmine.createSpy('nodeStart'),
@@ -313,21 +315,20 @@ describe('TreeProcessor', function() {
         nodeComplete: nodeComplete,
         queueRunnerFactory: queueRunner
       }),
-      treeComplete = jasmine.createSpy('treeComplete'),
       nodeDone = jasmine.createSpy('nodeDone');
 
-    processor.execute(treeComplete);
+    const promise = processor.execute();
 
     expect(queueRunner).toHaveBeenCalledWith({
-      onComplete: treeComplete,
+      onComplete: jasmine.any(Function),
       onException: jasmine.any(Function),
       userContext: { root: 'context' },
       queueableFns: [{ fn: jasmine.any(Function) }],
       onMultipleDone: null
     });
 
-    queueRunner.calls.mostRecent().args[0].queueableFns[0].fn(nodeDone);
-
+    const queueRunnerArgs = queueRunner.calls.mostRecent().args[0];
+    queueRunnerArgs.queueableFns[0].fn(nodeDone);
     expect(queueRunner).toHaveBeenCalledWith({
       onComplete: jasmine.any(Function),
       onMultipleDone: null,
@@ -348,6 +349,9 @@ describe('TreeProcessor', function() {
       { my: 'result' },
       jasmine.any(Function)
     );
+
+    queueRunnerArgs.onComplete();
+    await expectAsync(promise).toBeResolvedTo(undefined);
   });
 
   it('runs a node with children', function() {
