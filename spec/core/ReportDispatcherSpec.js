@@ -18,13 +18,12 @@ describe('ReportDispatcher', function() {
         queueRunnerFactory
       ),
       reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']),
-      anotherReporter = jasmine.createSpyObj('reporter', ['foo', 'bar']),
-      completeCallback = jasmine.createSpy('complete');
+      anotherReporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
 
     dispatcher.addReporter(reporter);
     dispatcher.addReporter(anotherReporter);
 
-    dispatcher.foo(123, 456, completeCallback);
+    dispatcher.foo(123, 456);
 
     expect(queueRunnerFactory).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -47,7 +46,7 @@ describe('ReportDispatcher', function() {
 
     queueRunnerFactory.calls.reset();
 
-    dispatcher.bar('a', 'b', completeCallback);
+    dispatcher.bar('a', 'b');
 
     expect(queueRunnerFactory).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -91,11 +90,10 @@ describe('ReportDispatcher', function() {
         ['foo', 'bar'],
         queueRunnerFactory
       ),
-      reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']),
-      completeCallback = jasmine.createSpy('complete');
+      reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
 
     dispatcher.provideFallbackReporter(reporter);
-    dispatcher.foo(123, 456, completeCallback);
+    dispatcher.foo(123, 456);
 
     expect(queueRunnerFactory).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -116,12 +114,11 @@ describe('ReportDispatcher', function() {
         queueRunnerFactory
       ),
       reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']),
-      fallbackReporter = jasmine.createSpyObj('otherReporter', ['foo', 'bar']),
-      completeCallback = jasmine.createSpy('complete');
+      fallbackReporter = jasmine.createSpyObj('otherReporter', ['foo', 'bar']);
 
     dispatcher.provideFallbackReporter(fallbackReporter);
     dispatcher.addReporter(reporter);
-    dispatcher.foo(123, 456, completeCallback);
+    dispatcher.foo(123, 456);
 
     expect(queueRunnerFactory).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -143,11 +140,10 @@ describe('ReportDispatcher', function() {
         queueRunnerFactory
       ),
       reporter1 = jasmine.createSpyObj('reporter1', ['foo', 'bar']),
-      reporter2 = jasmine.createSpyObj('reporter2', ['foo', 'bar']),
-      completeCallback = jasmine.createSpy('complete');
+      reporter2 = jasmine.createSpyObj('reporter2', ['foo', 'bar']);
 
     dispatcher.addReporter(reporter1);
-    dispatcher.foo(123, completeCallback);
+    dispatcher.foo(123);
     expect(queueRunnerFactory).toHaveBeenCalledWith(
       jasmine.objectContaining({
         queueableFns: [{ fn: jasmine.any(Function) }],
@@ -161,7 +157,7 @@ describe('ReportDispatcher', function() {
 
     dispatcher.clearReporters();
     dispatcher.addReporter(reporter2);
-    dispatcher.bar(456, completeCallback);
+    dispatcher.bar(456);
 
     expect(queueRunnerFactory).toHaveBeenCalledWith(
       jasmine.objectContaining({

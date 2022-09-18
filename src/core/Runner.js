@@ -33,7 +33,6 @@ getJasmineRequireObj().Runner = function(j$) {
       this.executedBefore_ = true;
 
       this.hasFailures = false;
-      const totalSpecsDefined = this.totalSpecsDefined_();
       const focusedRunables = this.focusedRunables_();
       const config = this.getConfig_();
 
@@ -72,7 +71,7 @@ getJasmineRequireObj().Runner = function(j$) {
         nodeStart: (suite, next) => {
           this.currentlyExecutingSuites_.push(suite);
           this.runableResources_.initForRunable(suite.id, suite.parentSuite.id);
-          this.reporter_.suiteStarted(suite.result, next);
+          this.reporter_.suiteStarted(suite.result).then(next);
           suite.startTimer();
         },
         nodeComplete: (suite, result, next) => {
@@ -110,106 +109,97 @@ getJasmineRequireObj().Runner = function(j$) {
         );
       }
 
+      return this.execute2_(runablesToRun, order, processor);
+    }
+
+    async execute2_(runablesToRun, order, processor) {
+      const totalSpecsDefined = this.totalSpecsDefined_();
+
       this.runableResources_.initForRunable(this.topSuite_.id);
       const jasmineTimer = new j$.Timer();
       jasmineTimer.start();
 
-      return new Promise(resolve => {
-        /**
-         * Information passed to the {@link Reporter#jasmineStarted} event.
-         * @typedef JasmineStartedInfo
-         * @property {Int} totalSpecsDefined - The total number of specs defined in this suite.
-         * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
-         * @since 2.0.0
-         */
-        this.reporter_.jasmineStarted(
-          {
-            totalSpecsDefined,
-            order: order
-          },
-          () => {
-            this.currentlyExecutingSuites_.push(this.topSuite_);
-
-            processor.execute(() => {
-              (async () => {
-                if (this.topSuite_.hadBeforeAllFailure) {
-                  await this.reportChildrenOfBeforeAllFailure_(this.topSuite_);
-                }
-
-                this.runableResources_.clearForRunable(this.topSuite_.id);
-                this.currentlyExecutingSuites_.pop();
-                let overallStatus, incompleteReason;
-
-                if (
-                  this.hasFailures ||
-                  this.topSuite_.result.failedExpectations.length > 0
-                ) {
-                  overallStatus = 'failed';
-                } else if (focusedRunables.length > 0) {
-                  overallStatus = 'incomplete';
-                  incompleteReason = 'fit() or fdescribe() was found';
-                } else if (totalSpecsDefined === 0) {
-                  overallStatus = 'incomplete';
-                  incompleteReason = 'No specs found';
-                } else {
-                  overallStatus = 'passed';
-                }
-
-                /**
-                 * Information passed to the {@link Reporter#jasmineDone} event.
-                 * @typedef JasmineDoneInfo
-                 * @property {OverallStatus} overallStatus - The overall result of the suite: 'passed', 'failed', or 'incomplete'.
-                 * @property {Int} totalTime - The total time (in ms) that it took to execute the suite
-                 * @property {IncompleteReason} incompleteReason - Explanation of why the suite was incomplete.
-                 * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
-                 * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
-                 * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
-                 * @since 2.4.0
-                 */
-                const jasmineDoneInfo = {
-                  overallStatus: overallStatus,
-                  totalTime: jasmineTimer.elapsed(),
-                  incompleteReason: incompleteReason,
-                  order: order,
-                  failedExpectations: this.topSuite_.result.failedExpectations,
-                  deprecationWarnings: this.topSuite_.result.deprecationWarnings
-                };
-                this.topSuite_.reportedDone = true;
-                this.reporter_.jasmineDone(jasmineDoneInfo, function() {
-                  resolve(jasmineDoneInfo);
-                });
-              })();
-            });
-          }
-        );
+      /**
+       * Information passed to the {@link Reporter#jasmineStarted} event.
+       * @typedef JasmineStartedInfo
+       * @property {Int} totalSpecsDefined - The total number of specs defined in this suite.
+       * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
+       * @since 2.0.0
+       */
+      await this.reporter_.jasmineStarted({
+        totalSpecsDefined,
+        order: order
       });
+
+      this.currentlyExecutingSuites_.push(this.topSuite_);
+      await processor.execute();
+
+      if (this.topSuite_.hadBeforeAllFailure) {
+        await this.reportChildrenOfBeforeAllFailure_(this.topSuite_);
+      }
+
+      this.runableResources_.clearForRunable(this.topSuite_.id);
+      this.currentlyExecutingSuites_.pop();
+      let overallStatus, incompleteReason;
+
+      if (
+        this.hasFailures ||
+        this.topSuite_.result.failedExpectations.length > 0
+      ) {
+        overallStatus = 'failed';
+      } else if (this.focusedRunables_().length > 0) {
+        overallStatus = 'incomplete';
+        incompleteReason = 'fit() or fdescribe() was found';
+      } else if (totalSpecsDefined === 0) {
+        overallStatus = 'incomplete';
+        incompleteReason = 'No specs found';
+      } else {
+        overallStatus = 'passed';
+      }
+
+      /**
+       * Information passed to the {@link Reporter#jasmineDone} event.
+       * @typedef JasmineDoneInfo
+       * @property {OverallStatus} overallStatus - The overall result of the suite: 'passed', 'failed', or 'incomplete'.
+       * @property {Int} totalTime - The total time (in ms) that it took to execute the suite
+       * @property {IncompleteReason} incompleteReason - Explanation of why the suite was incomplete.
+       * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
+       * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
+       * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
+       * @since 2.4.0
+       */
+      const jasmineDoneInfo = {
+        overallStatus: overallStatus,
+        totalTime: jasmineTimer.elapsed(),
+        incompleteReason: incompleteReason,
+        order: order,
+        failedExpectations: this.topSuite_.result.failedExpectations,
+        deprecationWarnings: this.topSuite_.result.deprecationWarnings
+      };
+      this.topSuite_.reportedDone = true;
+      await this.reporter_.jasmineDone(jasmineDoneInfo);
+      return jasmineDoneInfo;
     }
 
     reportSuiteDone_(suite, result, next) {
       suite.reportedDone = true;
-      this.reporter_.suiteDone(result, next);
+      this.reporter_.suiteDone(result).then(next);
     }
 
     async reportChildrenOfBeforeAllFailure_(suite) {
       for (const child of suite.children) {
         if (child instanceof j$.Suite) {
-          await new Promise(resolve => {
-            this.reporter_.suiteStarted(child.result, resolve);
-          });
+          await this.reporter_.suiteStarted(child.result);
           await this.reportChildrenOfBeforeAllFailure_(child);
 
           // Marking the suite passed is consistent with how suites that
           // contain failed specs but no suite-level failures are reported.
           child.result.status = 'passed';
 
-          await new Promise(resolve => {
-            this.reporter_.suiteDone(child.result, resolve);
-          });
+          await this.reporter_.suiteDone(child.result);
         } else {
           /* a spec */
-          await new Promise(resolve => {
-            this.reporter_.specStarted(child.result, resolve);
-          });
+          await this.reporter_.specStarted(child.result);
 
           child.addExpectationResult(
             false,
