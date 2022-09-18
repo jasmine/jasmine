@@ -47,7 +47,7 @@ getJasmineRequireObj().Runner = function(j$) {
 
       const order = new j$.Order({
         random: config.random,
-        seed: config.seed
+        seed: j$.isNumber_(config.seed) ? config.seed + '' : config.seed
       });
 
       const processor = new j$.TreeProcessor({

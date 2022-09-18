@@ -32,11 +32,6 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
         suite.exclude();
       }
       this.addSpecsToSuite_(suite, definitionFn);
-      if (suite.parentSuite && !suite.children.length) {
-        throw new Error(
-          `describe with no children (describe() or it()): ${suite.getFullName()}`
-        );
-      }
       return suite;
     }
 
@@ -183,11 +178,19 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       const parentSuite = this.currentDeclarationSuite_;
       parentSuite.addChild(suite);
       this.currentDeclarationSuite_ = suite;
+      let threw = false;
 
       try {
         definitionFn();
       } catch (e) {
         suite.handleException(e);
+        threw = true;
+      }
+
+      if (suite.parentSuite && !suite.children.length && !threw) {
+        throw new Error(
+          `describe with no children (describe() or it()): ${suite.getFullName()}`
+        );
       }
 
       this.currentDeclarationSuite_ = parentSuite;
