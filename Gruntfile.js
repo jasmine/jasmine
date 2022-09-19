@@ -56,11 +56,8 @@ module.exports = function(grunt) {
 
       console.log('parallel runner pid:', process.pid);
       const done = this.async();
-      // TODO use this core instead of the one imported by jasmine/parallel
-      // const jasmineCore = require('./lib/jasmine-core.js');
       const runner = new ParallelRunner({
-        // TODO:
-        // jasmineCore,
+        jasmineCore: require('./lib/jasmine-core.js'),
         numWorkers: require('os').cpus().length
       });
 
