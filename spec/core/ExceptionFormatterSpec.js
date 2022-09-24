@@ -256,5 +256,51 @@ describe('ExceptionFormatter', function() {
         expect(result).not.toContain('an error');
       });
     });
+
+    describe('In environments that support the cause property of Errors', function() {
+      beforeEach(function() {
+        const inner = new Error('inner');
+        const outer = new Error('outer', { cause: inner });
+
+        if (!outer.cause) {
+          // Currently: Node 12, Node 14, Safari 14
+          pending('Environment does not support error cause');
+        }
+      });
+
+      it('recursively includes the cause in the stack trace in this environment', function() {
+        const subject = new jasmineUnderTest.ExceptionFormatter();
+        const rootCause = new Error('root cause');
+        const proximateCause = new Error('proximate cause', {
+          cause: rootCause
+        });
+        const symptom = new Error('symptom', { cause: proximateCause });
+
+        const lines = subject.stack(symptom).split('\n');
+        // Not all environments include the message in the stack trace.
+        const hasRootMessage = lines[0].indexOf('symptom') !== -1;
+        const firstSymptomStackIx = hasRootMessage ? 1 : 0;
+
+        expect(lines[firstSymptomStackIx])
+          .withContext('first symptom stack frame')
+          .toContain('ExceptionFormatterSpec.js');
+        const proximateCauseMsgIx = lines.indexOf(
+          'Caused by: Error: proximate cause'
+        );
+        expect(proximateCauseMsgIx)
+          .withContext('index of proximate cause message')
+          .toBeGreaterThan(firstSymptomStackIx);
+        expect(lines[proximateCauseMsgIx + 1])
+          .withContext('first proximate cause stack frame')
+          .toContain('ExceptionFormatterSpec.js');
+        const rootCauseMsgIx = lines.indexOf('Caused by: Error: root cause');
+        expect(rootCauseMsgIx)
+          .withContext('index of root cause message')
+          .toBeGreaterThan(proximateCauseMsgIx + 1);
+        expect(lines[rootCauseMsgIx + 1])
+          .withContext('first root cause stack frame')
+          .toContain('ExceptionFormatterSpec.js');
+      });
+    });
   });
 });
