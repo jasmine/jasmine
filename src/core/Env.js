@@ -400,6 +400,7 @@ getJasmineRequireObj().Env = function(j$) {
      * @since 2.0.0
      */
     this.topSuite = function() {
+      ensureNonParallel('topSuite');
       return topSuite.metadata;
     };
 

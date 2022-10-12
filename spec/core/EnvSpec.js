@@ -81,6 +81,19 @@ describe('Env', function() {
       );
       expect(suite.children[1].children[1].children[0].children).toBeFalsy();
     });
+
+    it('throws if called in parallel mode', function() {
+      env.setParallelLoadingState('helpers');
+      check();
+      env.setParallelLoadingState('specs');
+      check();
+
+      function check() {
+        expect(function() {
+          env.topSuite();
+        }).toThrowError("'topSuite' is not available in parallel mode");
+      }
+    });
   });
 
   it('accepts its own current configureation', function() {
