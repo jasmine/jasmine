@@ -46,6 +46,7 @@ getJasmineRequireObj().Env = function(j$) {
     let reporter;
     let topSuite;
     let runner;
+    let parallelLodingState = null; // 'specs', 'helpers', or null for non-parallel
 
     /**
      * This represents the available options to configure Jasmine.
@@ -492,6 +493,10 @@ getJasmineRequireObj().Env = function(j$) {
       reportSpecDone
     });
 
+    this.setParallelLoadingState = function(state) {
+      parallelLodingState = state;
+    };
+
     this.parallelReset = function() {
       // TODO: ensure that autoCleanClosures was false
       suiteBuilder.parallelReset();
@@ -659,6 +664,16 @@ getJasmineRequireObj().Env = function(j$) {
       }
     }
 
+    function ensureNonParallelOrInHelperOrInDescribe(method) {
+      if (parallelLodingState === 'specs' && !suiteBuilder.inDescribe()) {
+        throw new Error(
+          'In parallel mode, ' +
+            method +
+            ' must be in a describe block or in a helper file'
+        );
+      }
+    }
+
     this.describe = function(description, definitionFn) {
       ensureIsNotNested('describe');
       return suiteBuilder.describe(description, definitionFn).metadata;
@@ -780,6 +795,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.beforeEach = function(beforeEachFunction, timeout) {
       ensureIsNotNested('beforeEach');
+      ensureNonParallelOrInHelperOrInDescribe('beforeEach');
       suiteBuilder.beforeEach(beforeEachFunction, timeout);
     };
 
@@ -790,6 +806,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.afterEach = function(afterEachFunction, timeout) {
       ensureIsNotNested('afterEach');
+      ensureNonParallelOrInHelperOrInDescribe('afterEach');
       suiteBuilder.afterEach(afterEachFunction, timeout);
     };
 

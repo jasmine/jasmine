@@ -394,6 +394,28 @@ describe('Env', function() {
         env.beforeEach(function() {}, 2147483648);
       }).toThrowError('Timeout value cannot be greater than 2147483647');
     });
+
+    it('throws when called at the top level in a spec file in parallel mode', function() {
+      env.setParallelLoadingState('specs');
+      expect(function() {
+        env.beforeEach(function() {});
+      }).toThrowError(
+        'In parallel mode, beforeEach must be in a describe block or in a helper file'
+      );
+    });
+
+    it('does not throw when called at the top level in a helper file in parallel mode', function() {
+      env.setParallelLoadingState('helpers');
+      env.beforeEach(function() {});
+    });
+
+    it('does not throw when called in a describe in a spec file in parallel mode', function() {
+      env.setParallelLoadingState('specs');
+      env.describe('a suite', function() {
+        env.beforeEach(function() {});
+        env.it('a spec');
+      });
+    });
   });
 
   describe('#beforeAll', function() {
@@ -437,6 +459,28 @@ describe('Env', function() {
       expect(function() {
         env.afterEach(function() {}, 2147483648);
       }).toThrowError('Timeout value cannot be greater than 2147483647');
+    });
+
+    it('throws when called at the top level in a spec file in parallel mode', function() {
+      env.setParallelLoadingState('specs');
+      expect(function() {
+        env.afterEach(function() {});
+      }).toThrowError(
+        'In parallel mode, afterEach must be in a describe block or in a helper file'
+      );
+    });
+
+    it('does not throw when called at the top level in a helper file in parallel mode', function() {
+      env.setParallelLoadingState('helpers');
+      env.afterEach(function() {});
+    });
+
+    it('does not throw when called in a describe in a spec file in parallel mode', function() {
+      env.setParallelLoadingState('specs');
+      env.describe('a suite', function() {
+        env.afterEach(function() {});
+        env.it('a spec');
+      });
     });
   });
 
