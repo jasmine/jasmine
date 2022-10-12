@@ -251,6 +251,15 @@ describe('Env', function() {
 
   describe('#fdescribe', function() {
     behavesLikeDescribe('fdescribe');
+
+    it('throws an error in parallel mode', function() {
+      env.setParallelLoadingState('specs');
+      expect(function() {
+        env.fdescribe('a suite', function() {
+          env.it('a spec');
+        });
+      }).toThrowError("'fdescribe' is not available in parallel mode");
+    });
   });
 
   describe('xdescribe', function() {
@@ -371,6 +380,13 @@ describe('Env', function() {
       expect(function() {
         env.fit('huge timeout', function() {}, 2147483648);
       }).toThrowError('Timeout value cannot be greater than 2147483647');
+    });
+
+    it('throws an error in parallel mode', function() {
+      env.setParallelLoadingState('specs');
+      expect(function() {
+        env.fit('a spec', function() {});
+      }).toThrowError("'fit' is not available in parallel mode");
     });
   });
 

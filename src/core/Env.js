@@ -664,6 +664,12 @@ getJasmineRequireObj().Env = function(j$) {
       }
     }
 
+    function ensureNonParallel(method) {
+      if (parallelLodingState) {
+        throw new Error(`'${method}' is not available in parallel mode`);
+      }
+    }
+
     function ensureNonParallelOrInHelperOrInDescribe(method) {
       if (parallelLodingState === 'specs' && !suiteBuilder.inDescribe()) {
         throw new Error(
@@ -686,6 +692,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.fdescribe = function(description, definitionFn) {
       ensureIsNotNested('fdescribe');
+      ensureNonParallel('fdescribe');
       return suiteBuilder.fdescribe(description, definitionFn).metadata;
     };
 
@@ -723,6 +730,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.fit = function(description, fn, timeout) {
       ensureIsNotNested('fit');
+      ensureNonParallel('fit');
       return suiteBuilder.fit(description, fn, timeout).metadata;
     };
 
