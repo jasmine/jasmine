@@ -1,5 +1,6 @@
 // TODO: Fix these unit tests!
 describe('Env', function() {
+  beforeAll(function() {});
   let env;
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -454,6 +455,45 @@ describe('Env', function() {
         env.beforeAll(function() {}, 2147483648);
       }).toThrowError('Timeout value cannot be greater than 2147483647');
     });
+
+    describe('in parallel mode', function() {
+      it('throws an error when called at the top level', function() {
+        env.setParallelLoadingState('helpers');
+        check();
+        env.setParallelLoadingState('specs');
+        check();
+
+        function check() {
+          expect(function() {
+            env.beforeAll(function() {});
+          }).toThrowError(
+            "In parallel mode, 'beforeAll' must be in a describe block"
+          );
+        }
+      });
+
+      it('does not throw an error when called in a describe', function() {
+        env.setParallelLoadingState('helpers');
+        check();
+        env.setParallelLoadingState('specs');
+        check();
+
+        function check() {
+          let done = false;
+
+          env.describe('a suite', function() {
+            expect(function() {
+              env.it('a spec');
+              env.beforeAll(function() {});
+            }).not.toThrow();
+
+            done = true;
+          });
+
+          expect(done).toBeTrue();
+        }
+      });
+    });
   });
 
   describe('#afterEach', function() {
@@ -519,6 +559,45 @@ describe('Env', function() {
       expect(function() {
         env.afterAll(function() {}, 2147483648);
       }).toThrowError('Timeout value cannot be greater than 2147483647');
+    });
+
+    describe('in parallel mode', function() {
+      it('throws an error when called at the top level', function() {
+        env.setParallelLoadingState('helpers');
+        check();
+        env.setParallelLoadingState('specs');
+        check();
+
+        function check() {
+          expect(function() {
+            env.afterAll(function() {});
+          }).toThrowError(
+            "In parallel mode, 'afterAll' must be in a describe block"
+          );
+        }
+      });
+
+      it('does not throw an error when called in a describe', function() {
+        env.setParallelLoadingState('helpers');
+        check();
+        env.setParallelLoadingState('specs');
+        check();
+
+        function check() {
+          let done = false;
+
+          env.describe('a suite', function() {
+            expect(function() {
+              env.it('a spec');
+              env.afterAll(function() {});
+            }).not.toThrow();
+
+            done = true;
+          });
+
+          expect(done).toBeTrue();
+        }
+      });
     });
   });
 
