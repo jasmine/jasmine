@@ -532,6 +532,11 @@ getJasmineRequireObj().Env = function(j$) {
      */
     this.execute = async function(runablesToRun) {
       installGlobalErrors();
+
+      if (parallelLoadingState) {
+        validateConfigForParallel();
+      }
+
       return runner.execute(runablesToRun);
     };
 
@@ -686,6 +691,16 @@ getJasmineRequireObj().Env = function(j$) {
             method +
             ' must be in a describe block or in a helper file'
         );
+      }
+    }
+
+    function validateConfigForParallel() {
+      if (!config.random) {
+        throw new Error('Randomization cannot be disabled in parallel mode');
+      }
+
+      if (config.seed !== null && config.seed !== undefined) {
+        throw new Error('Random seed cannot be set in parallel mode');
       }
     }
 

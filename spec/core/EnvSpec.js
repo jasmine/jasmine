@@ -752,6 +752,24 @@ describe('Env', function() {
       await env.execute();
       expect(jasmineUnderTest.Suite.prototype.reset).not.toHaveBeenCalled();
     });
+
+    describe('In parallel mode', function() {
+      it('rejects if random is set to false', async function() {
+        env.setParallelLoadingState('specs');
+        env.configure({ random: false });
+        await expectAsync(env.execute()).toBeRejectedWithError(
+          'Randomization cannot be disabled in parallel mode'
+        );
+      });
+
+      it('rejects if seed is set', async function() {
+        env.setParallelLoadingState('specs');
+        env.configure({ seed: 1234 });
+        await expectAsync(env.execute()).toBeRejectedWithError(
+          'Random seed cannot be set in parallel mode'
+        );
+      });
+    });
   });
 
   describe('#spyOnGlobalErrorsAsync', function() {
