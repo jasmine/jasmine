@@ -1232,6 +1232,36 @@ describe('HtmlReporter', function() {
         expect(seedLink.getAttribute('href')).toBe('/?seed=424242');
       });
 
+      it('should succeed appending number seed to DOM', function() {
+        const container = document.createElement('div'),
+          getContainer = function() {
+            return container;
+          },
+          reporter = new jasmineUnderTest.HtmlReporter({
+            env: env,
+            getContainer: getContainer,
+            createElement: function() {
+              return document.createElement.apply(document, arguments);
+            },
+            createTextNode: function() {
+              return document.createTextNode.apply(document, arguments);
+            }
+          });
+
+        reporter.initialize();
+        reporter.jasmineDone({
+          order: {
+            random: true,
+            seed: 424242
+          }
+        });
+
+        const seedBar = container.querySelector('.jasmine-seed-bar');
+        expect(seedBar.textContent).toBe(', randomized with seed 424242');
+        const seedLink = container.querySelector('.jasmine-seed-bar a');
+        expect(seedLink.getAttribute('href')).toBe('/?seed=424242');
+      });
+
       it('should not show the current seed bar if not randomizing', function() {
         const container = document.createElement('div'),
           getContainer = function() {
