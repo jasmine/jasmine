@@ -39,7 +39,7 @@ getJasmineRequireObj().Spec = function(j$) {
 
     /**
      * @typedef SpecResult
-     * @property {Int} id - The unique id of this spec.
+     * @property {String} id - The unique id of this spec.
      * @property {String} description - The description passed to the {@link it} that created this spec.
      * @property {String} fullName - The full description including all ancestors of this spec.
      * @property {Expectation[]} failedExpectations - The list of expectations that failed during execution of this spec.
