@@ -549,6 +549,10 @@ getJasmineRequireObj().Env = function(j$) {
      * @see custom_reporter
      */
     this.addReporter = function(reporterToAdd) {
+      if (parallelLoadingState) {
+        throw new Error('Reporters cannot be added via Env in parallel mode');
+      }
+
       reporter.addReporter(reporterToAdd);
     };
 
@@ -571,6 +575,10 @@ getJasmineRequireObj().Env = function(j$) {
      * @function
      */
     this.clearReporters = function() {
+      if (parallelLoadingState) {
+        throw new Error('Reporters cannot be removed via Env in parallel mode');
+      }
+
       reporter.clearReporters();
     };
 

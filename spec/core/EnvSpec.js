@@ -786,4 +786,32 @@ describe('Env', function() {
       ).toBeRejectedWithError(msg);
     });
   });
+
+  describe('#addReporter', function() {
+    it('throws when called in parallel mode', function() {
+      env.setParallelLoadingState('helpers');
+      expect(function() {
+        env.addReporter({});
+      }).toThrowError('Reporters cannot be added via Env in parallel mode');
+
+      env.setParallelLoadingState('specs');
+      expect(function() {
+        env.addReporter({});
+      }).toThrowError('Reporters cannot be added via Env in parallel mode');
+    });
+  });
+
+  describe('#clearReporters', function() {
+    it('throws when called in parallel mode', function() {
+      env.setParallelLoadingState('helpers');
+      expect(function() {
+        env.clearReporters();
+      }).toThrowError('Reporters cannot be removed via Env in parallel mode');
+
+      env.setParallelLoadingState('specs');
+      expect(function() {
+        env.clearReporters();
+      }).toThrowError('Reporters cannot be removed via Env in parallel mode');
+    });
+  });
 });
