@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Issues with the `jasmine` CLI
+    url: https://github.com/jasmine/jasmine-npm/issues
+    about: Please create issues related to the `jasmine` package in its repository.
+  - name: Issues with jasmine-browser-runner
+    url: https://github.com/jasmine/jasmine-browser-runner/issues
+    about: Please create issues related to the `jasmine-browser-runner` package in its repository.
+  - name: Documentation issues
+    url: https://github.com/jasmine/jasmine.github.io/issues
+    about: Please create documentation issues in the docs repository.
+  - name: TypeScript issues
+    url: https://github.com/DefinitelyTyped/DefinitelyTyped/discussions
+    about: Please create issues related to TypeScript compilation errors or other problems with type definitions at DefinitelyTyped.
