@@ -1,0 +1,31 @@
+name: Feature Proposal
+description: I'd like to propose a new feature
+labels: ["feature request"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to propose a new feature. Although Jasmine is mostly feature complete, we're always open to hearing new ideas.
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Proposal
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: How would this feature be useful to you? What are you trying to accomplish? By providing context, you can help us come up with a solution that is most useful in the real world.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example
+      description: If you're proposing a new API or something similar, please show an example of how it would be used.
+      render: JavaScript
+  - type: textarea
+    id: other-info
+    attributes:
+      label: Other Information
+      description: Anything else that you think would be helpful.
