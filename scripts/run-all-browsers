@@ -27,6 +27,7 @@ run_browser chrome latest
 run_browser firefox latest
 run_browser firefox 102
 run_browser firefox 91
+run_browser safari 16
 run_browser safari 15
 run_browser safari 14
 run_browser MicrosoftEdge latest

@@ -33,9 +33,9 @@ Microsoft Edge) as well as Node.
 | Environment       | Supported versions |
 |-------------------|--------------------|
 | Node              | 16, 18             |
-| Safari            | 14-15              |
+| Safari            | 14-16              |
 | Chrome            | Evergreen          |
-| Firefox           | Evergreen, 91      |
+| Firefox           | Evergreen, 91, 102 |
 | Edge              | Evergreen          |
 
 For evergreen browsers, each version of Jasmine is tested against the version of the browser that is available to us

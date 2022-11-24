@@ -6,7 +6,7 @@ getJasmineRequireObj().toHaveClass = function(j$) {
    * @since 3.0.0
    * @param {Object} expected - The class name to test for
    * @example
-   * var el = document.createElement('div');
+   * const el = document.createElement('div');
    * el.className = 'foo bar baz';
    * expect(el).toHaveClass('bar');
    */

@@ -652,7 +652,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
  *   };
  * }
  *
- * var actual = {
+ * const actual = {
  *   n: 2,
  *   otherFields: "don't care"
  * };
