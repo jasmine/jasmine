@@ -257,17 +257,7 @@ describe('ExceptionFormatter', function() {
       });
     });
 
-    describe('In environments that support the cause property of Errors', function() {
-      beforeEach(function() {
-        const inner = new Error('inner');
-        const outer = new Error('outer', { cause: inner });
-
-        if (!outer.cause) {
-          // Currently: Node 12, Node 14, Safari 14
-          pending('Environment does not support error cause');
-        }
-      });
-
+    describe('when the error has a cause property', function() {
       it('recursively includes the cause in the stack trace in this environment', function() {
         const subject = new jasmineUnderTest.ExceptionFormatter();
         const rootCause = new Error('root cause');
