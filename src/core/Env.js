@@ -688,11 +688,9 @@ getJasmineRequireObj().Env = function(j$) {
       }
     }
 
-    function ensureNonParallelOrInDescribe(method) {
+    function ensureNonParallelOrInDescribe(msg) {
       if (parallelLoadingState && !suiteBuilder.inDescribe()) {
-        throw new Error(
-          `In parallel mode, '${method}' must be in a describe block`
-        );
+        throw new Error(msg);
       }
     }
 
@@ -845,7 +843,13 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.beforeAll = function(beforeAllFunction, timeout) {
       ensureIsNotNested('beforeAll');
-      ensureNonParallelOrInDescribe('beforeAll');
+      // This message is -npm-specific, but currently parallel operation is
+      // only supported via -npm.
+      ensureNonParallelOrInDescribe(
+        "In parallel mode, 'beforeAll' " +
+          'must be in a describe block. Use the globalSetup config ' +
+          'property for exactly-once setup in parallel mode.'
+      );
       suiteBuilder.beforeAll(beforeAllFunction, timeout);
     };
 
@@ -857,7 +861,13 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.afterAll = function(afterAllFunction, timeout) {
       ensureIsNotNested('afterAll');
-      ensureNonParallelOrInDescribe('afterAll');
+      // This message is -npm-specific, but currently parallel operation is
+      // only supported via -npm.
+      ensureNonParallelOrInDescribe(
+        "In parallel mode, 'afterAll' " +
+          'must be in a describe block. Use the globalTeardown config ' +
+          'property for exactly-once teardown in parallel mode.'
+      );
       suiteBuilder.afterAll(afterAllFunction, timeout);
     };
 

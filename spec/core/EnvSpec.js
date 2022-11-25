@@ -1,6 +1,5 @@
 // TODO: Fix these unit tests!
 describe('Env', function() {
-  beforeAll(function() {});
   let env;
   beforeEach(function() {
     env = new jasmineUnderTest.Env();
@@ -480,7 +479,9 @@ describe('Env', function() {
           expect(function() {
             env.beforeAll(function() {});
           }).toThrowError(
-            "In parallel mode, 'beforeAll' must be in a describe block"
+            "In parallel mode, 'beforeAll' must be in a describe block. " +
+              'Use the globalSetup config property for exactly-once setup in' +
+              ' parallel mode.'
           );
         }
       });
@@ -585,7 +586,9 @@ describe('Env', function() {
           expect(function() {
             env.afterAll(function() {});
           }).toThrowError(
-            "In parallel mode, 'afterAll' must be in a describe block"
+            "In parallel mode, 'afterAll' must be in a describe block. " +
+              'Use the globalTeardown config property for exactly-once ' +
+              'teardown in parallel mode.'
           );
         }
       });
