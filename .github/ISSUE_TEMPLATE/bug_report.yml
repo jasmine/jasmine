@@ -75,17 +75,6 @@ body:
       label: jasmine-core version
     validations:
       required: true
-  - type: dropdown
-    id: repro-with-latest-core
-    attributes:
-      label: Does the problem occur with the latest version of jasmine-core?
-      options:
-        - "Yes"
-        - "No"
-        - I haven't tried
-        - I'm stuck on an older version
-    validations:
-      required: true
   - type: textarea
     id: other-versions
     attributes:
