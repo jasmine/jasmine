@@ -4004,6 +4004,99 @@ describe('Env integration', function() {
     );
   });
 
+  it('reports suite and spec filenames', async function() {
+    const methods = ['suiteStarted', 'suiteDone', 'specStarted', 'specDone'];
+    const reporter = jasmine.createSpyObj('reporter', methods);
+    env.addReporter(reporter);
+
+    // Simulate calling through global it and describe,
+    // which add another stack frame vs calling env methods directly
+    function describeShim(name, fn) {
+      env.describe(name, fn);
+    }
+    function itShim(name, fn) {
+      env.it(name, fn);
+    }
+
+    describeShim('a suite', function() {
+      itShim('a spec', function() {});
+    });
+
+    await env.execute();
+
+    for (const method of methods) {
+      expect(reporter[method])
+        .withContext(method)
+        .toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            filename: jasmine.stringMatching(/EnvSpec\.js$/)
+          })
+        );
+    }
+  });
+
+  it('reports skipped suite and spec filenames', async function() {
+    const methods = ['suiteStarted', 'suiteDone', 'specStarted', 'specDone'];
+    const reporter = jasmine.createSpyObj('reporter', methods);
+    env.addReporter(reporter);
+
+    // Simulate calling through global it and describe,
+    // which add another stack frame vs calling env methods directly
+    function xdescribeShim(name, fn) {
+      env.xdescribe(name, fn);
+    }
+    function xitShim(name, fn) {
+      env.xit(name, fn);
+    }
+
+    xdescribeShim('a suite', function() {
+      xitShim('a spec', function() {});
+    });
+
+    await env.execute();
+
+    for (const method of methods) {
+      expect(reporter[method])
+        .withContext(method)
+        .toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            filename: jasmine.stringMatching(/EnvSpec\.js$/)
+          })
+        );
+    }
+  });
+
+  it('reports focused suite and spec filenames', async function() {
+    const methods = ['suiteStarted', 'suiteDone', 'specStarted', 'specDone'];
+    const reporter = jasmine.createSpyObj('reporter', methods);
+    env.addReporter(reporter);
+
+    // Simulate calling through global it and describe,
+    // which add another stack frame vs calling env methods directly
+    function fdescribeShim(name, fn) {
+      env.fdescribe(name, fn);
+    }
+    function fitShim(name, fn) {
+      env.fit(name, fn);
+    }
+
+    fdescribeShim('a suite', function() {
+      fitShim('a spec', function() {});
+    });
+
+    await env.execute();
+
+    for (const method of methods) {
+      expect(reporter[method])
+        .withContext(method)
+        .toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            filename: jasmine.stringMatching(/EnvSpec\.js$/)
+          })
+        );
+    }
+  });
+
   function browserEventMethods() {
     return {
       addEventListener() {},

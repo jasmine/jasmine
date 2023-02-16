@@ -195,6 +195,7 @@ describe('Spec', function() {
         onStart: startCallback,
         resultCallback: resultCallback,
         description: 'with a spec',
+        filename: 'someSpecFile.js',
         getSpecName: function() {
           return 'a suite with a spec';
         },
@@ -219,6 +220,7 @@ describe('Spec', function() {
         status: 'pending',
         description: 'with a spec',
         fullName: 'a suite with a spec',
+        filename: 'someSpecFile.js',
         failedExpectations: [],
         passedExpectations: [],
         deprecationWarnings: [],
