@@ -36,6 +36,7 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
         }
 
         actual = args[0];
+        actual.calls.markInteractionAsChecked();
         const calls = actual.calls.count();
         const timesMessage = expected === 1 ? 'once' : expected + ' times';
         result.pass = calls === expected;

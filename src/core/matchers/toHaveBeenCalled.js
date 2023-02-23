@@ -32,6 +32,7 @@ getJasmineRequireObj().toHaveBeenCalled = function(j$) {
           );
         }
 
+        actual.calls.markInteractionAsChecked();
         result.pass = actual.calls.any();
 
         result.message = result.pass

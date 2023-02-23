@@ -50,4 +50,13 @@ describe('toHaveBeenCalled', function() {
       'Expected spy sample-spy to have been called.'
     );
   });
+
+  it('set that spy call interaction was checked', function() {
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalled(),
+      spy = new jasmineUnderTest.Spy('sample-spy');
+
+    matcher.compare(spy);
+
+    expect(spy.calls.getInteractionChecked()).toBeTruthy();
+  });
 });

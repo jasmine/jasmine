@@ -48,6 +48,8 @@ getJasmineRequireObj().toHaveBeenCalledBefore = function(j$) {
         const first2ndSpyCall = latterSpy.calls.first().invocationOrder;
 
         result.pass = latest1stSpyCall < first2ndSpyCall;
+        firstSpy.calls.markInteractionAsChecked();
+        latterSpy.calls.markInteractionAsChecked();
 
         if (result.pass) {
           result.message =

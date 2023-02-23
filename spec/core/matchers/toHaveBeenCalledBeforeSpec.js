@@ -112,4 +112,18 @@ describe('toHaveBeenCalledBefore', function() {
       'Expected spy first spy to not have been called before spy second spy, but it was'
     );
   });
+
+  it('set that both spies call interaction was checked', function() {
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+      firstSpy = new jasmineUnderTest.Spy('first spy'),
+      secondSpy = new jasmineUnderTest.Spy('second spy');
+
+    firstSpy();
+    secondSpy();
+
+    matcher.compare(firstSpy, secondSpy);
+
+    expect(firstSpy.calls.getInteractionChecked()).toBeTruthy();
+    expect(secondSpy.calls.getInteractionChecked()).toBeTruthy();
+  });
 });

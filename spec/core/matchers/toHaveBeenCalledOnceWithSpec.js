@@ -105,4 +105,15 @@ describe('toHaveBeenCalledOnceWith', function() {
       matcher.compare(fn);
     }).toThrowError(/Expected a spy, but got Function./);
   });
+
+  it('set that spy call interaction was checked', function() {
+    const pp = jasmineUnderTest.makePrettyPrinter(),
+      util = new jasmineUnderTest.MatchersUtil({ pp: pp }),
+      matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
+      calledSpy = new jasmineUnderTest.Spy('called-spy');
+
+    matcher.compare(calledSpy);
+
+    expect(calledSpy.calls.getInteractionChecked()).toBeTruthy();
+  });
 });

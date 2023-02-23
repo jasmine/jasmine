@@ -32,6 +32,8 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function(j$) {
             return '  ' + util.pp(argsForCall);
           });
 
+        actual.calls.markInteractionAsChecked();
+
         if (
           actual.calls.count() === 1 &&
           util.contains(actual.calls.allArgs(), expectedArgs)

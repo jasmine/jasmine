@@ -87,4 +87,14 @@ describe('toHaveBeenCalledTimes', function() {
         ' times.'
     );
   });
+
+  it('set that spy interaction was checked', function() {
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      spy = new jasmineUnderTest.Spy('sample-spy');
+    spy();
+    spy();
+
+    matcher.compare(spy, 2);
+    expect(spy.calls.getInteractionChecked()).toBeTruthy();
+  });
 });

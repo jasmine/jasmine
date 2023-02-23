@@ -112,4 +112,16 @@ describe('toHaveSpyInteractions', function() {
       /Expected a spy object with spies, but object has no spies/
     );
   });
+
+  it('set that spy call interaction was checked', function() {
+    let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
+    let spyObj = jasmineUnderTest
+      .getEnv()
+      .createSpyObj('NewClass', ['spyA', 'spyB']);
+    spyObj.spyA();
+    spyObj.spyB();
+    matcher.compare(spyObj);
+    expect(spyObj.spyA.calls.getInteractionChecked()).toBeTruthy();
+    expect(spyObj.spyB.calls.getInteractionChecked()).toBeTruthy();
+  });
 });

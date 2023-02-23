@@ -35,6 +35,7 @@ getJasmineRequireObj().toHaveSpyInteractions = function(j$) {
           if (!j$.isSpy(spy)) continue;
           hasSpy = true;
 
+          spy.calls.markInteractionAsChecked();
           if (spy.calls.any()) {
             result.pass = true;
             calledSpies.push([spy.and.identity, spy.calls.count()]);
