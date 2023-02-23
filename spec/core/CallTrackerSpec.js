@@ -143,4 +143,17 @@ describe('CallTracker', function() {
 
     expect(callTracker.mostRecent().args).toEqual(args);
   });
+
+  it('default value for interactionChecked is false', function() {
+    const callTracker = new jasmineUnderTest.CallTracker();
+
+    expect(callTracker.getInteractionChecked()).toBeFalsy();
+  });
+
+  it('allows interactionChecked to be set', function() {
+    const callTracker = new jasmineUnderTest.CallTracker();
+
+    callTracker.markInteractionAsChecked();
+    expect(callTracker.getInteractionChecked()).toBeTruthy();
+  });
 });

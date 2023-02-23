@@ -8,7 +8,6 @@ getJasmineRequireObj().toHaveNoOtherSpyInteractions = function(j$) {
    * {@link expect} the actual (a {@link SpyObj}) spies to have not been called except interactions which was already tracked with `toHaveBeenCalled`.
    * @function
    * @name matchers#toHaveNoOtherSpyInteractions
-   * @since 4.1.0
    * @example
    * expect(mySpyObj).toHaveNoOtherSpyInteractions();
    * expect(mySpyObj).not.toHaveNoOtherSpyInteractions();
@@ -35,7 +34,7 @@ getJasmineRequireObj().toHaveNoOtherSpyInteractions = function(j$) {
           if (!j$.isSpy(spy)) continue;
           hasSpy = true;
 
-          if (spy.calls.any() && !spy.calls.spyCallVerified) {
+          if (spy.calls.any() && !spy.calls.getInteractionChecked()) {
             result.pass = false;
             calledSpies.push([spy.and.identity, spy.calls.count()]);
           }

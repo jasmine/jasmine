@@ -125,6 +125,24 @@ getJasmineRequireObj().CallTracker = function(j$) {
     this.saveArgumentsByValue = function() {
       opts.cloneArgs = true;
     };
+
+    /**
+     * Set this spy to be checked for interactions.
+     * @name Spy#calls#markInteractionAsChecked
+     * @function
+     */
+    this.markInteractionAsChecked = function() {
+      opts.interactionChecked = true;
+    };
+
+    /**
+     * Get if this spy has been checked for interactions.
+     * @name Spy#calls#getInteractionChecked;
+     * @function
+     */
+    this.getInteractionChecked = function() {
+      return !!opts.interactionChecked;
+    };
   }
 
   return CallTracker;
