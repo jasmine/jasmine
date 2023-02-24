@@ -649,6 +649,23 @@ describe('Matchers (Integration)', function() {
     });
   });
 
+  describe('toHaveNoOtherSpyInteractions', function() {
+    let spyObj;
+
+    beforeEach(function() {
+      spyObj = env.createSpyObj('NewClass', ['spyA', 'spyB']);
+    });
+
+    verifyPasses(function(env) {
+      env.expect(spyObj).toHaveNoOtherSpyInteractions();
+    });
+
+    verifyFails(function(env) {
+      spyObj.spyA();
+      env.expect(spyObj).toHaveNoOtherSpyInteractions();
+    });
+  });
+
   describe('toMatch', function() {
     verifyPasses(function(env) {
       env.expect('foo').toMatch(/oo$/);
