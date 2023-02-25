@@ -4,6 +4,7 @@ getJasmineRequireObj().Suite = function(j$) {
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
     this.description = attrs.description;
+    this.reportedParentSuiteId = attrs.reportedParentSuiteId;
     this.filename = attrs.filename;
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
@@ -110,6 +111,7 @@ getJasmineRequireObj().Suite = function(j$) {
      * @property {String} id - The unique id of this suite.
      * @property {String} description - The description text passed to the {@link describe} that made this suite.
      * @property {String} fullName - The full description including all ancestors of this suite.
+     * @property {String|null} parentSuiteId - The ID of the suite containing this suite, or null if this is not in another describe().
      * @property {String} filename - The name of the file the suite was defined in.
      * @property {Expectation[]} failedExpectations - The list of expectations that failed in an {@link afterAll} for this suite.
      * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred on this suite.
@@ -122,6 +124,7 @@ getJasmineRequireObj().Suite = function(j$) {
       id: this.id,
       description: this.description,
       fullName: this.getFullName(),
+      parentSuiteId: this.reportedParentSuiteId,
       filename: this.filename,
       failedExpectations: [],
       deprecationWarnings: [],

@@ -161,11 +161,15 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
 
     suiteFactory_(description, filename) {
       const config = this.env_.configuration();
+      const parentSuite = this.currentDeclarationSuite_;
+      const reportedParentSuiteId =
+        parentSuite === this.topSuite ? null : parentSuite.id;
       return new j$.Suite({
         id: 'suite' + this.nextSuiteId_++,
         description,
         filename,
-        parentSuite: this.currentDeclarationSuite_,
+        parentSuite,
+        reportedParentSuiteId,
         timer: new j$.Timer(),
         expectationFactory: this.expectationFactory_,
         asyncExpectationFactory: this.suiteAsyncExpectationFactory_,
@@ -201,9 +205,11 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       this.totalSpecsDefined++;
       const config = this.env_.configuration();
       const suite = this.currentDeclarationSuite_;
+      const parentSuiteId = suite === this.topSuite ? null : suite.id;
       const spec = new j$.Spec({
         id: 'spec' + this.nextSpecId_++,
         filename,
+        parentSuiteId,
         beforeAndAfterFns: beforeAndAfterFns(suite),
         expectationFactory: this.expectationFactory_,
         asyncExpectationFactory: this.specAsyncExpectationFactory_,

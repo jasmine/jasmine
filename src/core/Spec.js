@@ -5,6 +5,7 @@ getJasmineRequireObj().Spec = function(j$) {
     this.resultCallback = attrs.resultCallback || function() {};
     this.id = attrs.id;
     this.filename = attrs.filename;
+    this.parentSuiteId = attrs.parentSuiteId;
     this.description = attrs.description || '';
     this.queueableFn = attrs.queueableFn;
     this.beforeAndAfterFns =
@@ -153,6 +154,7 @@ getJasmineRequireObj().Spec = function(j$) {
      * @property {String} id - The unique id of this spec.
      * @property {String} description - The description passed to the {@link it} that created this spec.
      * @property {String} fullName - The full description including all ancestors of this spec.
+     * @property {String|null} parentSuiteId - The ID of the suite containing this spec, or null if this spec is not in a describe().
      * @property {String} filename - The name of the file the spec was defined in.
      * @property {Expectation[]} failedExpectations - The list of expectations that failed during execution of this spec.
      * @property {Expectation[]} passedExpectations - The list of expectations that passed during execution of this spec.
@@ -168,6 +170,7 @@ getJasmineRequireObj().Spec = function(j$) {
       id: this.id,
       description: this.description,
       fullName: this.getFullName(),
+      parentSuiteId: this.parentSuiteId,
       filename: this.filename,
       failedExpectations: [],
       passedExpectations: [],
