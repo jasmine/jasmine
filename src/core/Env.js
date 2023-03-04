@@ -931,7 +931,10 @@ getJasmineRequireObj().Env = function(j$) {
   }
 
   function callerCallerFilename() {
-    return new j$.StackTrace(new Error()).frames[3].file;
+    const frames = new j$.StackTrace(new Error()).frames;
+    // frames[3] should always exist except in Jasmine's own tests, which bypass
+    // the global it/describe layer, but don't crash if it doesn't.
+    return frames[3] && frames[3].file;
   }
 
   return Env;

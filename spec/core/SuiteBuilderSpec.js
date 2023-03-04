@@ -195,7 +195,7 @@ describe('SuiteBuilder', function() {
         duration: null,
         properties: null,
         parentSuiteId: null,
-        filename: undefined,
+        filename: undefined
       });
     });
 
