@@ -1888,7 +1888,8 @@ describe('Env integration', function() {
 
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
         totalSpecsDefined: 1,
-        order: jasmine.any(jasmineUnderTest.Order)
+        order: jasmine.any(jasmineUnderTest.Order),
+        parallel: false
       });
 
       expect(reporter.specDone).toHaveBeenCalledWith(
@@ -1922,7 +1923,8 @@ describe('Env integration', function() {
 
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
         totalSpecsDefined: 1,
-        order: jasmine.any(jasmineUnderTest.Order)
+        order: jasmine.any(jasmineUnderTest.Order),
+        parallel: false
       });
 
       expect(reporter.specDone).toHaveBeenCalledWith(
@@ -1970,7 +1972,8 @@ describe('Env integration', function() {
 
     expect(reporter.jasmineStarted).toHaveBeenCalledWith({
       totalSpecsDefined: 5,
-      order: jasmine.any(jasmineUnderTest.Order)
+      order: jasmine.any(jasmineUnderTest.Order),
+      parallel: false
     });
 
     expect(reporter.specDone.calls.count()).toBe(5);
@@ -2152,7 +2155,8 @@ describe('Env integration', function() {
 
     expect(reporter.jasmineStarted).toHaveBeenCalledWith({
       totalSpecsDefined: 1,
-      order: jasmine.any(jasmineUnderTest.Order)
+      order: jasmine.any(jasmineUnderTest.Order),
+      parallel: false
     });
 
     expect(reporter.specDone).toHaveBeenCalledWith(

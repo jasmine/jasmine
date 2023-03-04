@@ -129,11 +129,15 @@ getJasmineRequireObj().Runner = function(j$) {
        * @typedef JasmineStartedInfo
        * @property {Int} totalSpecsDefined - The total number of specs defined in this suite. Note that this property is not present when Jasmine is run in parallel mode.
        * @property {Order} order - Information about the ordering (random or not) of this execution of the suite. Note that this property is not present when Jasmine is run in parallel mode.
+       * @property {Boolean} parallel - Whether Jasmine is being run in parallel mode.
        * @since 2.0.0
        */
       await this.reporter_.jasmineStarted({
+        // In parallel mode, the jasmineStarted event is separately dispatched
+        // by jasmine-npm. This event only reaches reporters in non-parallel.
         totalSpecsDefined,
-        order: order
+        order: order,
+        parallel: false
       });
 
       this.currentlyExecutingSuites_.push(this.topSuite_);
