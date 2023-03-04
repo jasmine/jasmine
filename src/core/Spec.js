@@ -4,6 +4,8 @@ getJasmineRequireObj().Spec = function(j$) {
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
     this.resultCallback = attrs.resultCallback || function() {};
     this.id = attrs.id;
+    this.filename = attrs.filename;
+    this.parentSuiteId = attrs.parentSuiteId;
     this.description = attrs.description || '';
     this.queueableFn = attrs.queueableFn;
     this.beforeAndAfterFns =
@@ -37,35 +39,7 @@ getJasmineRequireObj().Spec = function(j$) {
       this.exclude();
     }
 
-    /**
-     * @typedef SpecResult
-     * @property {String} id - The unique id of this spec.
-     * @property {String} description - The description passed to the {@link it} that created this spec.
-     * @property {String} fullName - The full description including all ancestors of this spec.
-     * @property {Expectation[]} failedExpectations - The list of expectations that failed during execution of this spec.
-     * @property {Expectation[]} passedExpectations - The list of expectations that passed during execution of this spec.
-     * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred during execution this spec.
-     * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
-     * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
-     * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
-     * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
-     * @property {DebugLogEntry[]|null} debugLogs - Messages, if any, that were logged using {@link jasmine.debugLog} during a failing spec.
-     * @since 2.0.0
-     */
-    this.result = {
-      id: this.id,
-      description: this.description,
-      fullName: this.getFullName(),
-      failedExpectations: [],
-      passedExpectations: [],
-      deprecationWarnings: [],
-      pendingReason: '',
-      duration: null,
-      properties: null,
-      debugLogs: null
-    };
-
-    this.reportedDone = false;
+    this.reset();
   }
 
   Spec.prototype.addExpectationResult = function(passed, data, isError) {
@@ -175,14 +149,33 @@ getJasmineRequireObj().Spec = function(j$) {
   };
 
   Spec.prototype.reset = function() {
+    /**
+     * @typedef SpecResult
+     * @property {String} id - The unique id of this spec.
+     * @property {String} description - The description passed to the {@link it} that created this spec.
+     * @property {String} fullName - The full description including all ancestors of this spec.
+     * @property {String|null} parentSuiteId - The ID of the suite containing this spec, or null if this spec is not in a describe().
+     * @property {String} filename - The name of the file the spec was defined in.
+     * @property {Expectation[]} failedExpectations - The list of expectations that failed during execution of this spec.
+     * @property {Expectation[]} passedExpectations - The list of expectations that passed during execution of this spec.
+     * @property {Expectation[]} deprecationWarnings - The list of deprecation warnings that occurred during execution this spec.
+     * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
+     * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
+     * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
+     * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
+     * @property {DebugLogEntry[]|null} debugLogs - Messages, if any, that were logged using {@link jasmine.debugLog} during a failing spec.
+     * @since 2.0.0
+     */
     this.result = {
       id: this.id,
       description: this.description,
       fullName: this.getFullName(),
+      parentSuiteId: this.parentSuiteId,
+      filename: this.filename,
       failedExpectations: [],
       passedExpectations: [],
       deprecationWarnings: [],
-      pendingReason: this.excludeMessage,
+      pendingReason: this.excludeMessage || '',
       duration: null,
       properties: null,
       debugLogs: null

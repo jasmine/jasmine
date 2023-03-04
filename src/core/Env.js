@@ -716,18 +716,24 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.describe = function(description, definitionFn) {
       ensureIsNotNested('describe');
-      return suiteBuilder.describe(description, definitionFn).metadata;
+      const filename = callerCallerFilename();
+      return suiteBuilder.describe(description, definitionFn, filename)
+        .metadata;
     };
 
     this.xdescribe = function(description, definitionFn) {
       ensureIsNotNested('xdescribe');
-      return suiteBuilder.xdescribe(description, definitionFn).metadata;
+      const filename = callerCallerFilename();
+      return suiteBuilder.xdescribe(description, definitionFn, filename)
+        .metadata;
     };
 
     this.fdescribe = function(description, definitionFn) {
       ensureIsNotNested('fdescribe');
       ensureNonParallel('fdescribe');
-      return suiteBuilder.fdescribe(description, definitionFn).metadata;
+      const filename = callerCallerFilename();
+      return suiteBuilder.fdescribe(description, definitionFn, filename)
+        .metadata;
     };
 
     function specResultCallback(spec, result, next) {
@@ -754,18 +760,21 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.it = function(description, fn, timeout) {
       ensureIsNotNested('it');
-      return suiteBuilder.it(description, fn, timeout).metadata;
+      const filename = callerCallerFilename();
+      return suiteBuilder.it(description, fn, timeout, filename).metadata;
     };
 
     this.xit = function(description, fn, timeout) {
       ensureIsNotNested('xit');
-      return suiteBuilder.xit(description, fn, timeout).metadata;
+      const filename = callerCallerFilename();
+      return suiteBuilder.xit(description, fn, timeout, filename).metadata;
     };
 
     this.fit = function(description, fn, timeout) {
       ensureIsNotNested('fit');
       ensureNonParallel('fit');
-      return suiteBuilder.fit(description, fn, timeout).metadata;
+      const filename = callerCallerFilename();
+      return suiteBuilder.fit(description, fn, timeout, filename).metadata;
     };
 
     /**
@@ -919,6 +928,10 @@ getJasmineRequireObj().Env = function(j$) {
         globalErrors.uninstall();
       }
     };
+  }
+
+  function callerCallerFilename() {
+    return new j$.StackTrace(new Error()).frames[3].file;
   }
 
   return Env;

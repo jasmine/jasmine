@@ -33,9 +33,9 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       this.focusedRunables = [];
     }
 
-    describe(description, definitionFn) {
+    describe(description, definitionFn, filename) {
       ensureIsFunction(definitionFn, 'describe');
-      const suite = this.suiteFactory_(description);
+      const suite = this.suiteFactory_(description, filename);
       if (definitionFn.length > 0) {
         throw new Error('describe does not expect any arguments');
       }
@@ -46,9 +46,9 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       return suite;
     }
 
-    fdescribe(description, definitionFn) {
+    fdescribe(description, definitionFn, filename) {
       ensureIsFunction(definitionFn, 'fdescribe');
-      const suite = this.suiteFactory_(description);
+      const suite = this.suiteFactory_(description, filename);
       suite.isFocused = true;
 
       this.focusedRunables.push(suite.id);
@@ -58,37 +58,37 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       return suite;
     }
 
-    xdescribe(description, definitionFn) {
+    xdescribe(description, definitionFn, filename) {
       ensureIsFunction(definitionFn, 'xdescribe');
-      const suite = this.suiteFactory_(description);
+      const suite = this.suiteFactory_(description, filename);
       suite.exclude();
       this.addSpecsToSuite_(suite, definitionFn);
 
       return suite;
     }
 
-    it(description, fn, timeout) {
+    it(description, fn, timeout, filename) {
       // it() sometimes doesn't have a fn argument, so only check the type if
       // it's given.
       if (arguments.length > 1 && typeof fn !== 'undefined') {
         ensureIsFunctionOrAsync(fn, 'it');
       }
 
-      return this.it_(description, fn, timeout);
+      return this.it_(description, fn, timeout, filename);
     }
 
-    xit(description, fn, timeout) {
+    xit(description, fn, timeout, filename) {
       // xit(), like it(), doesn't always have a fn argument, so only check the
       // type when needed.
       if (arguments.length > 1 && typeof fn !== 'undefined') {
         ensureIsFunctionOrAsync(fn, 'xit');
       }
-      const spec = this.it_(description, fn, timeout);
+      const spec = this.it_(description, fn, timeout, filename);
       spec.exclude('Temporarily disabled with xit');
       return spec;
     }
 
-    fit(description, fn, timeout) {
+    fit(description, fn, timeout, filename) {
       // Unlike it and xit, the function is required because it doesn't make
       // sense to focus on nothing.
       ensureIsFunctionOrAsync(fn, 'fit');
@@ -96,7 +96,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       if (timeout) {
         j$.util.validateTimeout(timeout);
       }
-      const spec = this.specFactory_(description, fn, timeout);
+      const spec = this.specFactory_(description, fn, timeout, filename);
       this.currentDeclarationSuite_.addChild(spec);
       this.focusedRunables.push(spec.id);
       this.unfocusAncestor_();
@@ -156,12 +156,12 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       });
     }
 
-    it_(description, fn, timeout) {
+    it_(description, fn, timeout, filename) {
       if (timeout) {
         j$.util.validateTimeout(timeout);
       }
 
-      const spec = this.specFactory_(description, fn, timeout);
+      const spec = this.specFactory_(description, fn, timeout, filename);
       if (this.currentDeclarationSuite_.markedExcluding) {
         spec.exclude();
       }
@@ -170,12 +170,17 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       return spec;
     }
 
-    suiteFactory_(description) {
+    suiteFactory_(description, filename) {
       const config = this.env_.configuration();
+      const parentSuite = this.currentDeclarationSuite_;
+      const reportedParentSuiteId =
+        parentSuite === this.topSuite ? null : parentSuite.id;
       return new j$.Suite({
         id: 'suite' + this.nextSuiteId_++,
         description,
-        parentSuite: this.currentDeclarationSuite_,
+        filename,
+        parentSuite,
+        reportedParentSuiteId,
         timer: new j$.Timer(),
         expectationFactory: this.expectationFactory_,
         asyncExpectationFactory: this.suiteAsyncExpectationFactory_,
@@ -207,12 +212,15 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       this.currentDeclarationSuite_ = parentSuite;
     }
 
-    specFactory_(description, fn, timeout) {
+    specFactory_(description, fn, timeout, filename) {
       this.totalSpecsDefined++;
       const config = this.env_.configuration();
       const suite = this.currentDeclarationSuite_;
+      const parentSuiteId = suite === this.topSuite ? null : suite.id;
       const spec = new j$.Spec({
         id: 'spec' + this.nextSpecId_++,
+        filename,
+        parentSuiteId,
         beforeAndAfterFns: beforeAndAfterFns(suite),
         expectationFactory: this.expectationFactory_,
         asyncExpectationFactory: this.specAsyncExpectationFactory_,

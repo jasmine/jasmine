@@ -1944,11 +1944,17 @@ describe('Env integration', function() {
       'specStarted',
       'specDone'
     ]);
+    const suiteFullNameToId = {};
+    reporter.suiteStarted.and.callFake(function(e) {
+      suiteFullNameToId[e.fullName] = e.id;
+    });
 
     env.addReporter(reporter);
 
+    env.it('a top level spec', function() {});
+
     env.describe('A Suite', function() {
-      env.it('with a top level spec', function() {
+      env.it('with a spec', function() {
         env.expect(true).toBe(true);
       });
       env.describe('with a nested suite', function() {
@@ -1971,38 +1977,110 @@ describe('Env integration', function() {
     await env.execute();
 
     expect(reporter.jasmineStarted).toHaveBeenCalledWith({
-      totalSpecsDefined: 5,
+      totalSpecsDefined: 6,
       order: jasmine.any(jasmineUnderTest.Order),
       parallel: false
     });
 
-    expect(reporter.specDone.calls.count()).toBe(5);
+    expect(reporter.specStarted.calls.count()).toBe(6);
+    expect(reporter.specDone.calls.count()).toBe(6);
 
-    expect(reporter.specDone).toHaveBeenCalledWith(
+    expect(reporter.specStarted).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        description: 'with a top level spec',
-        status: 'passed'
+        description: 'a top level spec',
+        parentSuiteId: null
       })
     );
-
     expect(reporter.specDone).toHaveBeenCalledWith(
       jasmine.objectContaining({
-        description: "with an x'ed spec",
-        status: 'pending'
+        description: 'a top level spec',
+        status: 'passed',
+        parentSuiteId: null
       })
     );
-
+    expect(reporter.specStarted).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'with a spec',
+        parentSuiteId: suiteFullNameToId['A Suite']
+      })
+    );
     expect(reporter.specDone).toHaveBeenCalledWith(
       jasmine.objectContaining({
         description: 'with a spec',
-        status: 'failed'
+        status: 'passed',
+        parentSuiteId: suiteFullNameToId['A Suite']
       })
     );
 
+    expect(reporter.specStarted).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: "with an x'ed spec",
+        parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
+      })
+    );
+    expect(reporter.specDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: "with an x'ed spec",
+        status: 'pending',
+        parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
+      })
+    );
+
+    expect(reporter.specStarted).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'with a spec',
+        parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
+      })
+    );
+    expect(reporter.specDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'with a spec',
+        status: 'failed',
+        parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
+      })
+    );
+
+    expect(reporter.specStarted).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'is pending',
+        parentSuiteId:
+          suiteFullNameToId['A Suite with only non-executable specs']
+      })
+    );
     expect(reporter.specDone).toHaveBeenCalledWith(
       jasmine.objectContaining({
         description: 'is pending',
-        status: 'pending'
+        status: 'pending',
+        parentSuiteId:
+          suiteFullNameToId['A Suite with only non-executable specs']
+      })
+    );
+
+    expect(reporter.suiteStarted).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'A Suite',
+        parentSuiteId: null
+      })
+    );
+    expect(reporter.suiteDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'A Suite',
+        status: 'passed',
+        parentSuiteId: null
+      })
+    );
+
+    expect(reporter.suiteStarted).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'with a nested suite',
+        parentSuiteId: suiteFullNameToId['A Suite']
+      })
+    );
+    expect(reporter.suiteDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'with a nested suite',
+        status: 'passed',
+        parentSuiteId: suiteFullNameToId['A Suite']
       })
     );
 
@@ -2011,6 +2089,89 @@ describe('Env integration', function() {
 
     const suiteResult = reporter.suiteStarted.calls.argsFor(0)[0];
     expect(suiteResult.description).toEqual('A Suite');
+  });
+
+  it('reports focused specs and suites as expected', async function() {
+    const reporter = jasmine.createSpyObj('fakeReporter', [
+      'suiteStarted',
+      'suiteDone',
+      'specStarted',
+      'specDone'
+    ]);
+    const suiteFullNameToId = {};
+    reporter.suiteStarted.and.callFake(function(e) {
+      suiteFullNameToId[e.fullName] = e.id;
+    });
+
+    env.fit('a focused top level spec', function() {});
+
+    env.describe('a suite', function() {
+      env.fdescribe('a focused suite', function() {
+        env.fit('a focused spec', function() {});
+      });
+    });
+
+    env.addReporter(reporter);
+    await env.execute();
+
+    expect(reporter.specStarted).toHaveBeenCalledTimes(2);
+    expect(reporter.specDone).toHaveBeenCalledTimes(2);
+
+    expect(reporter.specStarted).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'a focused top level spec',
+        parentSuiteId: null
+      })
+    );
+    expect(reporter.specDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'a focused top level spec',
+        status: 'passed',
+        parentSuiteId: null
+      })
+    );
+
+    expect(reporter.specStarted).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'a focused spec',
+        parentSuiteId: suiteFullNameToId['a suite a focused suite']
+      })
+    );
+    expect(reporter.specDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'a focused spec',
+        status: 'passed',
+        parentSuiteId: suiteFullNameToId['a suite a focused suite']
+      })
+    );
+
+    expect(reporter.suiteStarted).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'a suite',
+        parentSuiteId: null
+      })
+    );
+    expect(reporter.suiteDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'a suite',
+        status: 'passed',
+        parentSuiteId: null
+      })
+    );
+
+    expect(reporter.suiteStarted).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'a focused suite',
+        parentSuiteId: suiteFullNameToId['a suite']
+      })
+    );
+    expect(reporter.suiteDone).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        description: 'a focused suite',
+        status: 'passed',
+        parentSuiteId: suiteFullNameToId['a suite']
+      })
+    );
   });
 
   it('should report the random seed at the beginning and end of execution', async function() {
@@ -4078,6 +4239,99 @@ describe('Env integration', function() {
         ]
       })
     );
+  });
+
+  it('reports suite and spec filenames', async function() {
+    const methods = ['suiteStarted', 'suiteDone', 'specStarted', 'specDone'];
+    const reporter = jasmine.createSpyObj('reporter', methods);
+    env.addReporter(reporter);
+
+    // Simulate calling through global it and describe,
+    // which add another stack frame vs calling env methods directly
+    function describeShim(name, fn) {
+      env.describe(name, fn);
+    }
+    function itShim(name, fn) {
+      env.it(name, fn);
+    }
+
+    describeShim('a suite', function() {
+      itShim('a spec', function() {});
+    });
+
+    await env.execute();
+
+    for (const method of methods) {
+      expect(reporter[method])
+        .withContext(method)
+        .toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            filename: jasmine.stringMatching(/EnvSpec\.js$/)
+          })
+        );
+    }
+  });
+
+  it('reports skipped suite and spec filenames', async function() {
+    const methods = ['suiteStarted', 'suiteDone', 'specStarted', 'specDone'];
+    const reporter = jasmine.createSpyObj('reporter', methods);
+    env.addReporter(reporter);
+
+    // Simulate calling through global it and describe,
+    // which add another stack frame vs calling env methods directly
+    function xdescribeShim(name, fn) {
+      env.xdescribe(name, fn);
+    }
+    function xitShim(name, fn) {
+      env.xit(name, fn);
+    }
+
+    xdescribeShim('a suite', function() {
+      xitShim('a spec', function() {});
+    });
+
+    await env.execute();
+
+    for (const method of methods) {
+      expect(reporter[method])
+        .withContext(method)
+        .toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            filename: jasmine.stringMatching(/EnvSpec\.js$/)
+          })
+        );
+    }
+  });
+
+  it('reports focused suite and spec filenames', async function() {
+    const methods = ['suiteStarted', 'suiteDone', 'specStarted', 'specDone'];
+    const reporter = jasmine.createSpyObj('reporter', methods);
+    env.addReporter(reporter);
+
+    // Simulate calling through global it and describe,
+    // which add another stack frame vs calling env methods directly
+    function fdescribeShim(name, fn) {
+      env.fdescribe(name, fn);
+    }
+    function fitShim(name, fn) {
+      env.fit(name, fn);
+    }
+
+    fdescribeShim('a suite', function() {
+      fitShim('a spec', function() {});
+    });
+
+    await env.execute();
+
+    for (const method of methods) {
+      expect(reporter[method])
+        .withContext(method)
+        .toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            filename: jasmine.stringMatching(/EnvSpec\.js$/)
+          })
+        );
+    }
   });
 
   function browserEventMethods() {
