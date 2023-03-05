@@ -123,7 +123,7 @@ describe('toHaveBeenCalledBefore', function() {
 
     matcher.compare(firstSpy, secondSpy);
 
-    expect(firstSpy.calls.getInteractionChecked()).toBeTruthy();
-    expect(secondSpy.calls.getInteractionChecked()).toBeTruthy();
+    expect(firstSpy.calls.getInteractionChecked()).toBeTrue();
+    expect(secondSpy.calls.getInteractionChecked()).toBeTrue();
   });
 });

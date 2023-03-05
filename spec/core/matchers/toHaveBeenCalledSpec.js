@@ -57,6 +57,6 @@ describe('toHaveBeenCalled', function() {
 
     matcher.compare(spy);
 
-    expect(spy.calls.getInteractionChecked()).toBeTruthy();
+    expect(spy.calls.getInteractionChecked()).toBeTrue();
   });
 });

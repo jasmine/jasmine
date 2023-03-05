@@ -95,6 +95,6 @@ describe('toHaveBeenCalledTimes', function() {
     spy();
 
     matcher.compare(spy, 2);
-    expect(spy.calls.getInteractionChecked()).toBeTruthy();
+    expect(spy.calls.getInteractionChecked()).toBeTrue();
   });
 });

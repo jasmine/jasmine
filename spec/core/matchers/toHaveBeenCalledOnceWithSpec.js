@@ -114,6 +114,6 @@ describe('toHaveBeenCalledOnceWith', function() {
 
     matcher.compare(calledSpy);
 
-    expect(calledSpy.calls.getInteractionChecked()).toBeTruthy();
+    expect(calledSpy.calls.getInteractionChecked()).toBeTrue();
   });
 });

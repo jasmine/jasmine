@@ -147,13 +147,13 @@ describe('CallTracker', function() {
   it('default value for interactionChecked is false', function() {
     const callTracker = new jasmineUnderTest.CallTracker();
 
-    expect(callTracker.getInteractionChecked()).toBeFalsy();
+    expect(callTracker.getInteractionChecked()).toBeFalse();
   });
 
   it('allows interactionChecked to be set', function() {
     const callTracker = new jasmineUnderTest.CallTracker();
 
     callTracker.markInteractionAsChecked();
-    expect(callTracker.getInteractionChecked()).toBeTruthy();
+    expect(callTracker.getInteractionChecked()).toBeTrue();
   });
 });

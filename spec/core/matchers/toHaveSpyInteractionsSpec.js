@@ -121,7 +121,7 @@ describe('toHaveSpyInteractions', function() {
     spyObj.spyA();
     spyObj.spyB();
     matcher.compare(spyObj);
-    expect(spyObj.spyA.calls.getInteractionChecked()).toBeTruthy();
-    expect(spyObj.spyB.calls.getInteractionChecked()).toBeTruthy();
+    expect(spyObj.spyA.calls.getInteractionChecked()).toBeTrue();
+    expect(spyObj.spyB.calls.getInteractionChecked()).toBeTrue();
   });
 });

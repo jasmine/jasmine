@@ -103,6 +103,6 @@ describe('toHaveBeenCalledWith', function() {
 
     calledSpy('a', 'b');
     matcher.compare(calledSpy, 'a', 'b');
-    expect(calledSpy.calls.getInteractionChecked()).toBeTruthy();
+    expect(calledSpy.calls.getInteractionChecked()).toBeTrue();
   });
 });
