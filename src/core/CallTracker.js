@@ -135,11 +135,6 @@ getJasmineRequireObj().CallTracker = function(j$) {
       opts.interactionChecked = true;
     };
 
-    /**
-     * Get if this spy has been checked for interactions.
-     * @name Spy#calls#getInteractionChecked;
-     * @function
-     */
     this.getInteractionChecked = function() {
       return !!opts.interactionChecked;
     };
