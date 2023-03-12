@@ -541,7 +541,9 @@ getJasmineRequireObj().Env = function(j$) {
         validateConfigForParallel();
       }
 
-      return runner.execute(runablesToRun);
+      const result = await runner.execute(runablesToRun);
+      this.cleanup_();
+      return result;
     };
 
     /**
