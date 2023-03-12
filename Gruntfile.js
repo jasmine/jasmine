@@ -53,12 +53,21 @@ module.exports = function(grunt) {
       // so that we don't break verifyNoGlobals above by loading jasmine-core
       // too early
       const ParallelRunner = require('jasmine/parallel');
+      let numWorkers = require('os').cpus().length;
 
-      console.log('parallel runner pid:', process.pid);
+      if (process.env['CIRCLECI']) {
+        // On Circle CI, the above gives the number of CPU cores on the host
+        // computer, which is unrelated to the resources actually available
+        // to the container. 2 workers gives peak performance with our current
+        // configuration, but 4 might increase the odds of discovering any
+        // parallel-specific bugs.
+        numWorkers = 4;
+      }
+
       const done = this.async();
       const runner = new ParallelRunner({
         jasmineCore: require('./lib/jasmine-core.js'),
-        numWorkers: require('os').cpus().length
+        numWorkers
       });
 
       runner.loadConfigFile('./spec/support/jasmine.json')
