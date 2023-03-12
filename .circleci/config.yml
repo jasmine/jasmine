@@ -6,11 +6,13 @@ version: 2.1
 executors:
   node18:
     docker:
-      - image: cimg/node:18.0.0 # Latest 18.x
+      - image: cimg/node:18.0.0
     working_directory: ~/workspace
   node16:
     docker:
-      - image: cimg/node:16.14.2 # Latest 16.x
+      # Oldest version with reliable support for error cause property,
+      # which jasmine-npm uses.
+      - image: cimg/node:16.14.0
     working_directory: ~/workspace
 
 jobs:
