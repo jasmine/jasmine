@@ -34,10 +34,10 @@
     "package.json"
   ],
   "devDependencies": {
-    "eslint": "^7.32.0",
-    "eslint-plugin-compat": ">=4.0.0 <4.1.0",
+    "eslint": "^8.36.0",
+    "eslint-plugin-compat": "^4.0.0",
     "glob": "^7.2.0",
-    "grunt": ">=1.0.4 <1.6.0",
+    "grunt": "^1.0.4",
     "grunt-cli": "^1.3.2",
     "grunt-contrib-compress": "^2.0.0",
     "grunt-contrib-concat": "^2.0.0",
@@ -45,10 +45,10 @@
     "grunt-sass": "^3.0.2",
     "jasmine": "github:jasmine/jasmine-npm#5.0",
     "jasmine-browser-runner": "^1.0.0",
-    "jsdom": "^19.0.0",
+    "jsdom": "^21.1.1",
     "load-grunt-tasks": "^5.1.0",
     "prettier": "1.17.1",
-    "sass": "1.58.3",
+    "sass": "^1.58.3",
     "shelljs": "^0.8.3",
     "temp": "^0.9.0"
   },
