@@ -174,6 +174,12 @@ getJasmineRequireObj().Env = function(j$) {
      * @function
      */
     this.configure = function(configuration) {
+      if (parallelLoadingState) {
+        throw new Error(
+          'Jasmine cannot be configured via Env in parallel mode'
+        );
+      }
+
       const booleanProps = [
         'random',
         'failSpecWithNoExpectations',

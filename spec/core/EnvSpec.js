@@ -758,16 +758,16 @@ describe('Env', function() {
 
     describe('In parallel mode', function() {
       it('rejects if random is set to false', async function() {
-        env.setParallelLoadingState('specs');
         env.configure({ random: false });
+        env.setParallelLoadingState('specs');
         await expectAsync(env.execute()).toBeRejectedWithError(
           'Randomization cannot be disabled in parallel mode'
         );
       });
 
       it('rejects if seed is set', async function() {
-        env.setParallelLoadingState('specs');
         env.configure({ seed: 1234 });
+        env.setParallelLoadingState('specs');
         await expectAsync(env.execute()).toBeRejectedWithError(
           'Random seed cannot be set in parallel mode'
         );
@@ -815,6 +815,20 @@ describe('Env', function() {
       expect(function() {
         env.clearReporters();
       }).toThrowError('Reporters cannot be removed via Env in parallel mode');
+    });
+  });
+
+  describe('#configure', function() {
+    it('throws when called in parallel mode', function() {
+      env.setParallelLoadingState('helpers');
+      expect(function() {
+        env.configure({});
+      }).toThrowError('Jasmine cannot be configured via Env in parallel mode');
+
+      env.setParallelLoadingState('specs');
+      expect(function() {
+        env.configure({});
+      }).toThrowError('Jasmine cannot be configured via Env in parallel mode');
     });
   });
 });
