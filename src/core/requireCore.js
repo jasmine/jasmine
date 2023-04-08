@@ -67,7 +67,9 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.CompleteOnFirstErrorSkipPolicy = jRequire.CompleteOnFirstErrorSkipPolicy(
       j$
     );
+    j$.reporterEvents = jRequire.reporterEvents(j$);
     j$.ReportDispatcher = jRequire.ReportDispatcher(j$);
+    j$.ParallelReportDispatcher = jRequire.ParallelReportDispatcher(j$);
     j$.RunableResources = jRequire.RunableResources(j$);
     j$.Runner = jRequire.Runner(j$);
     j$.Spec = jRequire.Spec(j$);

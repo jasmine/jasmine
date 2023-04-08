@@ -264,17 +264,21 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       // on the stack at this point.
       if (j$.isAsyncFunction_(fn)) {
         this.onException(
-          'An asynchronous before/it/after ' +
-            'function was defined with the async keyword but also took a ' +
-            'done callback. Either remove the done callback (recommended) or ' +
-            'remove the async keyword.'
+          new Error(
+            'An asynchronous before/it/after ' +
+              'function was defined with the async keyword but also took a ' +
+              'done callback. Either remove the done callback (recommended) or ' +
+              'remove the async keyword.'
+          )
         );
       } else {
         this.onException(
-          'An asynchronous before/it/after ' +
-            'function took a done callback but also returned a promise. ' +
-            'Either remove the done callback (recommended) or change the ' +
-            'function to not return a promise.'
+          new Error(
+            'An asynchronous before/it/after ' +
+              'function took a done callback but also returned a promise. ' +
+              'Either remove the done callback (recommended) or change the ' +
+              'function to not return a promise.'
+          )
         );
       }
     }

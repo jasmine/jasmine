@@ -595,11 +595,13 @@ describe('QueueRunner', function() {
       queueRunner.execute();
 
       expect(onException).toHaveBeenCalledWith(
-        'An asynchronous ' +
-          'before/it/after function took a done callback but also returned a ' +
-          'promise. ' +
-          'Either remove the done callback (recommended) or change the function ' +
-          'to not return a promise.'
+        new Error(
+          'An asynchronous ' +
+            'before/it/after function took a done callback but also returned a ' +
+            'promise. ' +
+            'Either remove the done callback (recommended) or change the function ' +
+            'to not return a promise.'
+        )
       );
     });
 
@@ -615,10 +617,12 @@ describe('QueueRunner', function() {
       queueRunner.execute();
 
       expect(onException).toHaveBeenCalledWith(
-        'An asynchronous ' +
-          'before/it/after function was defined with the async keyword but ' +
-          'also took a done callback. Either remove the done callback ' +
-          '(recommended) or remove the async keyword.'
+        new Error(
+          'An asynchronous ' +
+            'before/it/after function was defined with the async keyword but ' +
+            'also took a done callback. Either remove the done callback ' +
+            '(recommended) or remove the async keyword.'
+        )
       );
     });
   });
