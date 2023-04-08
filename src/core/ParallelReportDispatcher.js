@@ -1,13 +1,17 @@
 getJasmineRequireObj().ParallelReportDispatcher = function(j$) {
-  /*
-    A report dispatcher packaged for convenient use from outside jasmine-core.
-
-    This isn't part of the public interface, but it is used by
-    jasmine-npm. -core and -npm version in lockstep at the major and minor
-    levels but version independently at the patch level. Any changes that
-    would break -npm should be done in a major or minor release, never a
-    patch release, and accompanied by a change to -npm that's released in
-    the same version.
+  /**
+   * @class ParallelReportDispatcher
+   * @implements Reporter
+   * @classdesc A report dispatcher packaged for convenient use from outside jasmine-core.
+   *
+   * This is intended to help packages like `jasmine` (the Jasmine runner for
+   * Node.js) do their own report dispatching in order to support parallel
+   * execution. If you aren't implementing a runner package that supports
+   * parallel execution, this class probably isn't what you're looking for.
+   *
+   * Warning: Do not use ParallelReportDispatcher in the same process that
+   * Jasmine specs run in. Doing so will break Jasmine's error handling.
+   * @param onError {function} Function called when an unhandled exception, unhandled promise rejection, or explicit reporter failure occurs
    */
   function ParallelReportDispatcher(onError, deps = {}) {
     const ReportDispatcher = deps.ReportDispatcher || j$.ReportDispatcher;
@@ -45,9 +49,33 @@ getJasmineRequireObj().ParallelReportDispatcher = function(j$) {
     );
 
     const self = {
+      /**
+       * Adds a reporter to the list of reporters that events will be dispatched to.
+       * @function
+       * @name ParallelReportDispatcher#addReporter
+       * @param {Reporter} reporterToAdd The reporter to be added.
+       * @see custom_reporter
+       */
       addReporter: dispatcher.addReporter.bind(dispatcher),
+      /**
+       * Clears all registered reporters.
+       * @function
+       * @name ParallelReportDispatcher#clearReporters
+       */
       clearReporters: dispatcher.clearReporters.bind(dispatcher),
+      /**
+       * Installs a global error handler. After this method is called, any
+       * unhandled exceptions or unhandled promise rejections will be passed to
+       * the onError callback that was passed to the constructor.
+       * @function
+       * @name ParallelReportDispatcher#installGlobalErrors
+       */
       installGlobalErrors: globalErrors.install.bind(globalErrors),
+      /**
+       * Uninstalls the global error handler.
+       * @function
+       * @name ParallelReportDispatcher#uninstallGlobalErrors
+       */
       uninstallGlobalErrors: function() {
         // late-bind uninstall because it doesn't exist until install is called
         globalErrors.uninstall(globalErrors);

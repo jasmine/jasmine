@@ -1,29 +1,39 @@
 getJasmineRequireObj().Timer = function() {
-  /*
-    Timer isn't part of the public interface, but it is used by
-    jasmine-npm. -core and -npm version in lockstep at the major and minor
-    levels but version independently at the patch level. Any changes that
-    would break -npm should be done in a major or minor release, never a
-    patch release, and accompanied by a change to -npm that's released in
-    the same version.
-   */
-
   const defaultNow = (function(Date) {
     return function() {
       return new Date().getTime();
     };
   })(Date);
 
+  /**
+   * @class Timer
+   * @classdesc Tracks elapsed time
+   * @example
+   * const timer = new jasmine.Timer();
+   * timer.start();
+   * const elapsed = timer.elapsed()
+   */
   function Timer(options) {
     options = options || {};
 
     const now = options.now || defaultNow;
     let startTime;
 
+    /**
+     * Starts the timer.
+     * @function
+     * @name Timer#start
+     */
     this.start = function() {
       startTime = now();
     };
 
+    /**
+     * Determines the time since the timer was started.
+     * @function
+     * @name Timer#elapsed
+     * @returns {number} Elapsed time in milliseconds, or NaN if the timer has not been started
+     */
     this.elapsed = function() {
       return now() - startTime;
     };
