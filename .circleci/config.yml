@@ -12,12 +12,6 @@ executors:
     docker:
       - image: cimg/node:18.0.0
     working_directory: ~/workspace
-  node16:
-    docker:
-      # Oldest version with reliable support for error cause property,
-      # which jasmine-npm uses.
-      - image: cimg/node:16.14.0
-    working_directory: ~/workspace
 
 jobs:
   build:
@@ -66,7 +60,7 @@ jobs:
           command: npx grunt execSpecsInParallel
 
   test_browsers: &test_browsers
-    executor: node16
+    executor: node18
     steps:
       - attach_workspace:
           at: .
@@ -106,9 +100,6 @@ workflows:
       - build:
           executor: node18
           name: build_node_18
-      - build:
-          executor: node16
-          name: build_node_16
       - test_node:
           executor: node20
           name: test_node_20
@@ -119,24 +110,19 @@ workflows:
           name: test_node_18
           requires:
             - build_node_18
-      - test_node:
-          executor: node16
-          name: test_node_16
-          requires:
-             - build_node_16
-      - test_parallel:
-          executor: node16
-          name: test_parallel_node_16
-          requires:
-            - build_node_16
       - test_parallel:
           executor: node18
           name: test_parallel_node_18
           requires:
             - build_node_18
+      - test_parallel:
+          executor: node20
+          name: test_parallel_node_20
+          requires:
+            - build_node_20
       - test_browsers:
           requires:
-             - build_node_16
+             - build_node_18
           filters:
             branches:
               ignore: /pull\/.*/ # Don't run on pull requests.
