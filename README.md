@@ -30,13 +30,13 @@ for information on writing specs, and [the FAQ](https://jasmine.github.io/pages/
 Jasmine tests itself across popular browsers (Safari, Chrome, Firefox, and
 Microsoft Edge) as well as Node.
 
-| Environment       | Supported versions |
-|-------------------|--------------------|
-| Node              | 16.14-16.19, 18    |
-| Safari            | 15-16              |
-| Chrome            | Evergreen          |
-| Firefox           | Evergreen, 102     |
-| Edge              | Evergreen          |
+| Environment       | Supported versions  |
+|-------------------|---------------------|
+| Node              | 16.14-16.19, 18, 20 |
+| Safari            | 15-16               |
+| Chrome            | Evergreen           |
+| Firefox           | Evergreen, 102      |
+| Edge              | Evergreen           |
 
 For evergreen browsers, each version of Jasmine is tested against the version of the browser that is available to us
 at the time of release. Other browsers, as well as older & newer versions of some supported browsers, are likely to work.
