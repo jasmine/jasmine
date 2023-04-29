@@ -3,11 +3,13 @@
 $line-height: 14px;
 $margin-unit: 14px;
 
-$faint-text-color: #aaa;
 $light-text-color: #666;
 $text-color: #333;
+$inactive-tab-text-color: blue;
+$active-tab-text-color: #000;
 
 $page-background-color: #eee;
+$menu-background-color: #aaa;
 
 $passing-color: #007069;
 $failing-color: #ca3a11;
@@ -89,10 +91,6 @@ body {
   #jasmine_content {
     position: fixed;
     right: 100%;
-  }
-
-  .jasmine-version {
-    color: $faint-text-color;
   }
 
   //--- Banner ---//
@@ -238,10 +236,11 @@ body {
 
     &.jasmine-menu {
       background-color: #fff;
-      color: $faint-text-color;
+      color: $active-tab-text-color;
 
       a {
-        color: $text-color;
+        color: $inactive-tab-text-color;
+        text-decoration: underline;
       }
     }
 
