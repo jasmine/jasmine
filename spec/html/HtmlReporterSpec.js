@@ -1411,6 +1411,23 @@ describe('HtmlReporter', function() {
     describe('and there are pending specs', function() {
       let container, reporter;
 
+      function pendingSpecStatus() {
+        return {
+          id: 123,
+          description: 'with a spec',
+          fullName: 'A Suite with a spec',
+          status: 'pending',
+          passedExpectations: [],
+          failedExpectations: []
+        };
+      }
+
+      function reportWithSpecStatus(specStatus) {
+        reporter.specStarted(specStatus);
+        reporter.specDone(specStatus);
+        reporter.jasmineDone({});
+      }
+
       beforeEach(function() {
         container = document.createElement('div');
         const getContainer = function() {
@@ -1429,21 +1446,10 @@ describe('HtmlReporter', function() {
         reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 1 });
-        const specStatus = {
-          id: 123,
-          description: 'with a spec',
-          fullName: 'A Suite with a spec',
-          status: 'pending',
-          passedExpectations: [],
-          failedExpectations: [],
-          pendingReason: 'my custom pending reason'
-        };
-        reporter.specStarted(specStatus);
-        reporter.specDone(specStatus);
-        reporter.jasmineDone({});
       });
 
       it('reports the pending specs count', function() {
+        reportWithSpecStatus(pendingSpecStatus());
         const alertBar = container.querySelector('.jasmine-alert .jasmine-bar');
 
         expect(alertBar.innerHTML).toMatch(
@@ -1452,17 +1458,36 @@ describe('HtmlReporter', function() {
       });
 
       it('reports no failure details', function() {
+        reportWithSpecStatus(pendingSpecStatus());
         const specFailure = container.querySelector('.jasmine-failures');
 
         expect(specFailure.childNodes.length).toEqual(0);
       });
 
       it('displays the custom pending reason', function() {
+        reportWithSpecStatus({
+          ...pendingSpecStatus(),
+          pendingReason: 'my custom pending reason'
+        });
         const pendingDetails = container.querySelector(
           '.jasmine-summary .jasmine-pending'
         );
 
-        expect(pendingDetails.innerHTML).toContain('my custom pending reason');
+        expect(pendingDetails.innerHTML).toContain(
+          'PENDING WITH MESSAGE: my custom pending reason'
+        );
+      });
+
+      it('indicates that the spec is pending even if there is no reason', function() {
+        reportWithSpecStatus({
+          ...pendingSpecStatus(),
+          pendingReason: ''
+        });
+        const pendingDetails = container.querySelector(
+          '.jasmine-summary .jasmine-pending'
+        );
+
+        expect(pendingDetails.innerHTML).toContain('PENDING');
       });
     });
 
