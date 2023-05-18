@@ -719,6 +719,13 @@ getJasmineRequireObj().Env = function(j$) {
       return suiteBuilder.fit(description, fn, timeout, filename).metadata;
     };
 
+    this.oit = function(description, fn, options, timeout) {
+      ensureIsNotNested('oit');
+      const filename = callerCallerFilename();
+      return suiteBuilder.oit(description, fn, timeout, filename, options)
+        .metadata;
+    };
+
     /**
      * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SpecResult}
      * @name Env#setSpecProperty

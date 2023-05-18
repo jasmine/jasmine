@@ -91,6 +91,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.ObjectPath = jRequire.ObjectPath(j$);
     j$.MismatchTree = jRequire.MismatchTree(j$);
     j$.GlobalErrors = jRequire.GlobalErrors(j$);
+    j$.options = jRequire.options();
 
     j$.Truthy = jRequire.Truthy(j$);
     j$.Falsy = jRequire.Falsy(j$);

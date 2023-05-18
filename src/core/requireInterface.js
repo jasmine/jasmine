@@ -109,6 +109,22 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     /**
+     * An [`it`]{@link it} with options.
+     * The option can smoothly change the execution of [`it`]{@link it}
+     * @name oit
+     * @since 5.1.0
+     * @function
+     * @global
+     * @param {String} description Textual description of what this spec is checking.
+     * @param {implementationCallback} testFunction Function that contains the code of your test.
+     * @param {Object} options The options that changes the test execution
+     * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
+     */
+    oit: function() {
+      return env.oit.apply(env, arguments);
+    },
+
+    /**
      * Run some shared setup before each of the specs in the {@link describe} in which it is called.
      * @name beforeEach
      * @since 1.3.0

@@ -103,6 +103,51 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       return spec;
     }
 
+    oit(description, fn, timeout, filename, options) {
+      if (arguments.length > 1 && typeof fn !== 'undefined') {
+        ensureIsFunctionOrAsync(fn, 'it');
+      }
+
+      let optionsObjects = {
+        suiteBuilder: this,
+        unitTests: [],
+        originalValues: {
+          description: description,
+          fn: fn,
+          timeout: timeout,
+          filename: filename,
+          options: options
+        }
+      };
+
+      let optionsProcessor = j$.options.getOptionsProcessor(optionsObjects, j$);
+      let unitTests = optionsProcessor.execute();
+
+      let specs = [];
+      for (
+        let unitTestIndex = 0;
+        unitTestIndex < unitTests.length;
+        unitTestIndex++
+      ) {
+        let unitTest = unitTests[unitTestIndex];
+        const spec = this.it_(
+          unitTest.description,
+          unitTest.fn,
+          unitTest.timeout,
+          unitTest.filename
+        );
+        if (unitTest.excludedMsg != undefined) {
+          spec.exclude(unitTest.excludedMsg);
+        }
+        if (unitTest.stopOnFailure != undefined && unitTest.stopOnFailure) {
+          spec.throwOnExpectationFailure = true;
+        }
+        specs.push(spec);
+      }
+
+      return specs;
+    }
+
     beforeEach(beforeEachFunction, timeout) {
       ensureIsFunctionOrAsync(beforeEachFunction, 'beforeEach');
 
