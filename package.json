@@ -1,7 +1,7 @@
 {
   "name": "jasmine-core",
   "license": "MIT",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/jasmine/jasmine.git"
@@ -43,8 +43,8 @@
     "grunt-contrib-concat": "^2.0.0",
     "grunt-css-url-embed": "^1.11.1",
     "grunt-sass": "^3.0.2",
-    "jasmine": "5.0.0-beta.0",
-    "jasmine-browser-runner": "^1.0.0",
+    "jasmine": "^5.0.0",
+    "jasmine-browser-runner": "^2.0.0",
     "jsdom": "^22.0.0",
     "load-grunt-tasks": "^5.1.0",
     "prettier": "1.17.1",
