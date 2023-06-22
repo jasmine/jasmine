@@ -767,23 +767,27 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.expect = function(actual) {
-      if (!runner.currentRunable()) {
+      const runable = runner.currentRunable();
+
+      if (!runable) {
         throw new Error(
           "'expect' was used when there was no current spec, this could be because an asynchronous test timed out"
         );
       }
 
-      return runner.currentRunable().expect(actual);
+      return runable.expectationFactory(actual, runable);
     };
 
     this.expectAsync = function(actual) {
-      if (!runner.currentRunable()) {
+      const runable = runner.currentRunable();
+
+      if (!runable) {
         throw new Error(
           "'expectAsync' was used when there was no current spec, this could be because an asynchronous test timed out"
         );
       }
 
-      return runner.currentRunable().expectAsync(actual);
+      return runable.asyncExpectationFactory(actual, runable);
     };
 
     this.beforeEach = function(beforeEachFunction, timeout) {

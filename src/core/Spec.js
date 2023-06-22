@@ -70,14 +70,6 @@ getJasmineRequireObj().Spec = function(j$) {
     this.result.properties[key] = value;
   };
 
-  Spec.prototype.expect = function(actual) {
-    return this.expectationFactory(actual, this);
-  };
-
-  Spec.prototype.expectAsync = function(actual) {
-    return this.asyncExpectationFactory(actual, this);
-  };
-
   Spec.prototype.execute = function(
     queueRunnerFactory,
     onComplete,

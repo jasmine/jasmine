@@ -28,14 +28,6 @@ getJasmineRequireObj().Suite = function(j$) {
     this.result.properties[key] = value;
   };
 
-  Suite.prototype.expect = function(actual) {
-    return this.expectationFactory(actual, this);
-  };
-
-  Suite.prototype.expectAsync = function(actual) {
-    return this.asyncExpectationFactory(actual, this);
-  };
-
   Suite.prototype.getFullName = function() {
     const fullName = [];
     for (
