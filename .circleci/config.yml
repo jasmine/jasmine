@@ -80,7 +80,7 @@ jobs:
             # cleanly if we kill it from a different step than it started in.
 
             export PATH=$PATH:$HOME/workspace/bin
-            export SAUCE_TUNNEL_IDENTIFIER=$CIRCLE_BUILD_NUM
+            export SAUCE_TUNNEL_IDENTIFIER=$CIRCLE_WORKFLOW_JOB_ID
             scripts/start-sauce-connect sauce-pidfile
             set +o errexit
             scripts/run-all-browsers
