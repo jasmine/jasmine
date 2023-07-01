@@ -28,16 +28,19 @@ module.exports = {
   random: true,
   browser: {
     name: process.env.JASMINE_BROWSER || 'firefox',
-    useSauce: process.env.USE_SAUCE === 'true',
-    sauce: {
-      name: `jasmine-core ${new Date().toISOString()}`,
-      os: process.env.SAUCE_OS,
+    useRemoteSeleniumGrid: process.env.USE_SAUCE === 'true',
+    remoteSeleniumGrid: {
+      url: 'https://ondemand.saucelabs.com/wd/hub',
       browserVersion: process.env.SAUCE_BROWSER_VERSION,
-      build: `Core ${process.env.TRAVIS_BUILD_NUMBER || 'Ran locally'}`,
-      tags: ['Jasmine-Core'],
-      tunnelIdentifier: process.env.SAUCE_TUNNEL_IDENTIFIER,
-      username: process.env.SAUCE_USERNAME,
-      accessKey: process.env.SAUCE_ACCESS_KEY
+      platformName: process.env.SAUCE_OS,
+      'sauce:options': {
+        name: `jasmine-core ${new Date().toISOString()}`,
+        build: `Core ${process.env.CIRCLE_BUILD_NUM || 'Ran locally'}`,
+        tags: ['Jasmine-Core'],
+        tunnelIdentifier: process.env.SAUCE_TUNNEL_IDENTIFIER,
+        username: process.env.SAUCE_USERNAME,
+        accessKey: process.env.SAUCE_ACCESS_KEY
+      }
     }
   }
 };
