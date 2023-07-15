@@ -226,6 +226,50 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     /**
+     * Create an asynchronous expectation for a spec and throw an error if it fails.
+     *
+     * This is intended to allow Jasmine matchers to be used with tools like
+     * testing-library's `waitFor`, which expect matcher failures to throw
+     * exceptions and not trigger a spec failure if the exception is caught.
+     * It can also be used to integration-test custom matchers.
+     *
+     * If the resulting expectation fails, a {@link ThrowUnlessFailure} will be
+     * thrown. A failed expectation will not result in a spec failure unless the
+     * exception propagates back to Jasmine, either via the call stack or via
+     * the global unhandled exception/unhandled promise rejection events.
+     * @name throwUnlessAsync
+     * @param actual
+     * @global
+     * @param {Object} actual - Actual computed value to test expectations against.
+     * @return {matchers}
+     */
+    throwUnlessAsync: function(actual) {
+      return env.throwUnless(actual);
+    },
+
+    /**
+     * Create an expectation for a spec and throw an error if it fails.
+     *
+     * This is intended to allow Jasmine matchers to be used with tools like
+     * testing-library's `waitFor`, which expect matcher failures to throw
+     * exceptions and not trigger a spec failure if the exception is caught.
+     * It can also be used to integration-test custom matchers.
+     *
+     * If the resulting expectation fails, a {@link ThrowUnlessFailure} will be
+     * thrown. A failed expectation will not result in a spec failure unless the
+     * exception propagates back to Jasmine, either via the call stack or via
+     * the global unhandled exception/unhandled promise rejection events.
+     * @name throwUnless
+     * @param actual
+     * @global
+     * @param {Object} actual - Actual computed value to test expectations against.
+     * @return {matchers}
+     */
+    throwUnless: function(actual) {
+      return env.throwUnless(actual);
+    },
+
+    /**
      * Mark a spec as pending, expectation results will be ignored.
      * @name pending
      * @since 2.0.0

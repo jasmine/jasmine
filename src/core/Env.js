@@ -264,6 +264,49 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
+    const handleThrowUnlessFailure = function(passed, result) {
+      if (!passed) {
+        /**
+         * @interface
+         * @name ThrowUnlessFailure
+         * @extends Error
+         * @description Represents a failure of an expectation evaluated with
+         * {@link throwUnless}. Properties of this error are a subset of the
+         * properties of {@link Expectation} and have the same values.
+         * @property {String} matcherName - The name of the matcher that was executed for this expectation.
+         * @property {String} message - The failure message for the expectation.
+         * @property {Boolean} passed - Whether the expectation passed or failed.
+         * @property {Object} expected - If the expectation failed, what was the expected value.
+         * @property {Object} actual - If the expectation failed, what actual value was produced.
+         */
+        const error = new Error(result.message);
+        error.passed = result.passed;
+        error.message = result.message;
+        error.expected = result.expected;
+        error.actual = result.actual;
+        error.matcherName = result.matcherName;
+        throw error;
+      }
+    };
+
+    const throwUnlessFactory = function(actual, spec) {
+      return j$.Expectation.factory({
+        matchersUtil: runableResources.makeMatchersUtil(),
+        customMatchers: runableResources.customMatchers(),
+        actual: actual,
+        addExpectationResult: handleThrowUnlessFailure
+      });
+    };
+
+    const throwUnlessAsyncFactory = function(actual, spec) {
+      return j$.Expectation.asyncFactory({
+        matchersUtil: runableResources.makeMatchersUtil(),
+        customAsyncMatchers: runableResources.customAsyncMatchers(),
+        actual: actual,
+        addExpectationResult: handleThrowUnlessFailure
+      });
+    };
+
     // TODO: Unify recordLateError with recordLateExpectation? The extra
     // diagnostic info added by the latter is probably useful in most cases.
     function recordLateError(error) {
@@ -788,6 +831,16 @@ getJasmineRequireObj().Env = function(j$) {
       }
 
       return runable.asyncExpectationFactory(actual, runable);
+    };
+
+    this.throwUnless = function(actual) {
+      const runable = runner.currentRunable();
+      return throwUnlessFactory(actual, runable);
+    };
+
+    this.throwUnlessAsync = function(actual) {
+      const runable = runner.currentRunable();
+      return throwUnlessAsyncFactory(actual, runable);
     };
 
     this.beforeEach = function(beforeEachFunction, timeout) {

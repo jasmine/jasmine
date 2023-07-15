@@ -97,7 +97,8 @@
       ],
       "space-before-blocks": "error",
       "no-eval": "error",
-      "no-var": "error"
+      "no-var": "error",
+      "no-debugger": "error"
     }
   },
   "browserslist": [

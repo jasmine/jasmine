@@ -4334,6 +4334,115 @@ describe('Env integration', function() {
     }
   });
 
+  describe('throwUnless', function() {
+    it('throws when the matcher fails', async function() {
+      let thrown;
+
+      env.it('a spec', function() {
+        try {
+          env.throwUnless(1).toEqual(2);
+        } catch (e) {
+          thrown = e;
+        }
+      });
+
+      await env.execute();
+      expect(thrown).toBeInstanceOf(Error);
+      expect(thrown.passed).toEqual(false);
+      expect(thrown.matcherName).toEqual('toEqual');
+      expect(thrown.message).toEqual('Expected 1 to equal 2.');
+      expect(thrown.actual).toEqual(1);
+      expect(thrown.expected).toEqual(2);
+    });
+
+    it('does not throw when the matcher passes', async function() {
+      let threw = false;
+
+      env.it('a spec', function() {
+        try {
+          env.throwUnless(1).toEqual(1);
+        } catch (e) {
+          threw = true;
+        }
+      });
+
+      await env.execute();
+      expect(threw).toBe(false);
+    });
+
+    it('does not cause a failure if the error does not propagate back to jasmine', async function() {
+      env.it('a spec', function() {
+        try {
+          env.throwUnless(1).toEqual(2);
+        } catch (e) {}
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+
+      await env.execute();
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({ status: 'passed' })
+      );
+    });
+  });
+
+  describe('throwUnlessAsync', function() {
+    it('throws when the matcher fails', async function() {
+      const promise = Promise.resolve('a');
+      let thrown;
+
+      env.it('a spec', async function() {
+        try {
+          await env.throwUnlessAsync(promise).toBeResolvedTo('b');
+        } catch (e) {
+          thrown = e;
+        }
+      });
+
+      await env.execute();
+      expect(thrown).toBeInstanceOf(Error);
+      expect(thrown.passed).toEqual(false);
+      expect(thrown.matcherName).toEqual('toBeResolvedTo');
+      expect(thrown.message).toEqual(
+        "Expected a promise to be resolved to 'b' but it was resolved to 'a'."
+      );
+      expect(thrown.actual).toBe(promise);
+      expect(thrown.expected).toEqual('b');
+    });
+
+    it('does not throw when the matcher passes', async function() {
+      let threw = false;
+
+      env.it('a spec', async function() {
+        try {
+          await env.throwUnlessAsync(Promise.resolve()).toBeResolved();
+        } catch (e) {
+          threw = true;
+        }
+      });
+
+      await env.execute();
+      expect(threw).toBe(false);
+    });
+
+    it('does not cause a failure if the error does not propagate back to jasmine', async function() {
+      env.it('a spec', async function() {
+        try {
+          await env.throwUnlessAsync(Promise.resolve()).toBeRejected();
+        } catch (e) {}
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+
+      await env.execute();
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({ status: 'passed' })
+      );
+    });
+  });
+
   function browserEventMethods() {
     return {
       listeners_: { error: [], unhandledrejection: [] },
