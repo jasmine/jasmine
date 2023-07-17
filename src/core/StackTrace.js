@@ -101,7 +101,7 @@ getJasmineRequireObj().StackTrace = function(j$) {
   }
 
   function messagePrefixLength(message, stackLines) {
-    if (!stackLines[0].match(/^\w*Error/)) {
+    if (!stackLines[0].match(/^\w*Error/) || !message) {
       return 0;
     }
 

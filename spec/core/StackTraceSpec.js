@@ -282,4 +282,16 @@ describe('StackTrace', function() {
 
     expect(result_no_error.message).not.toEqual(jasmine.anything());
   });
+
+  it('handles errors with no message without throwing', function() {
+    const error = {
+      stack:
+        'HttpError [UnprocessableEntityError]\n' +
+        '    at UserContext.<anonymous> (/spec/support/error.spec.js:4:17)\n' +
+        '    at QueueRunner.attempt (/node_modules/jasmine-core/lib/jasmine-core/jasmine.js:7745:40)'
+    };
+    expect(function() {
+      new jasmineUnderTest.StackTrace(error);
+    }).not.toThrowError();
+  });
 });
