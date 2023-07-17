@@ -1,8 +1,10 @@
 getJasmineRequireObj().StackTrace = function(j$) {
   function StackTrace(error) {
-    let lines = error.stack.split('\n').filter(function(line) {
-      return line !== '';
-    });
+    let lines = error.stack
+      ? error.stack.split('\n').filter(function(line) {
+          return line !== '';
+        })
+      : [];
 
     const extractResult = extractMessage(error.message, lines);
 
@@ -101,7 +103,11 @@ getJasmineRequireObj().StackTrace = function(j$) {
   }
 
   function messagePrefixLength(message, stackLines) {
-    if (!stackLines[0].match(/^\w*Error/) || !message) {
+    if (
+      !message ||
+      stackLines.length === 0 ||
+      !stackLines[0].match(/^\w*Error/)
+    ) {
       return 0;
     }
 

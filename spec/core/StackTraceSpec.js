@@ -294,4 +294,11 @@ describe('StackTrace', function() {
       new jasmineUnderTest.StackTrace(error);
     }).not.toThrowError();
   });
+
+  it('handles errors with no stack without throwing', function() {
+    const error = { code: 'UnprocessableEntity', message: '' };
+    expect(function() {
+      new jasmineUnderTest.StackTrace(error);
+    }).not.toThrowError();
+  });
 });
