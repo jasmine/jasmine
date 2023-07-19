@@ -301,6 +301,26 @@ describe('ExceptionFormatter', function() {
           .withContext('first root cause stack frame')
           .toContain('ExceptionFormatterSpec.js');
       });
+
+      it('does not throw if cause is a non Error', function() {
+        const formatter = new jasmineUnderTest.ExceptionFormatter();
+
+        expect(function() {
+          formatter.stack(
+            new Error('error', {
+              cause: function() {}
+            })
+          );
+        }).not.toThrowError();
+
+        expect(function() {
+          formatter.stack(
+            new Error('error', {
+              cause: 'another error'
+            })
+          );
+        }).not.toThrowError();
+      });
     });
   });
 });
