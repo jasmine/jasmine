@@ -1,6 +1,6 @@
 name: Bug Report
 description: I think I've found a bug in Jasmine
-labels: ["unconfirmed bug"]
+labels: ["bug report"]
 body:
   - type: markdown
     attributes:
