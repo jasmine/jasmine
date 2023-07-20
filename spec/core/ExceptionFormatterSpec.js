@@ -197,13 +197,26 @@ describe('ExceptionFormatter', function() {
       expect(new jasmineUnderTest.ExceptionFormatter().stack()).toBeNull();
     });
 
-    it('includes error properties in stack', function() {
+    it("includes the error's own properties in stack", function() {
       const error = new Error('an error');
       error.someProperty = 'hello there';
 
       const result = new jasmineUnderTest.ExceptionFormatter().stack(error);
 
       expect(result).toMatch(/error properties:.*someProperty.*hello there/);
+    });
+
+    it('does not include inherited error properties', function() {
+      function CustomError(msg) {
+        Error.call(this, msg);
+      }
+
+      CustomError.prototype = new Error();
+      CustomError.prototype.anInheritedProp = 'something';
+      const error = new CustomError('nope');
+
+      const result = new jasmineUnderTest.ExceptionFormatter().stack(error);
+      expect(result).not.toContain('anInheritedProp');
     });
 
     describe('When omitMessage is true', function() {
