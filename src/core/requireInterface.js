@@ -238,6 +238,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * exception propagates back to Jasmine, either via the call stack or via
      * the global unhandled exception/unhandled promise rejection events.
      * @name throwUnlessAsync
+     * @since 5.1.0
+     * @function
      * @param actual
      * @global
      * @param {Object} actual - Actual computed value to test expectations against.
@@ -260,6 +262,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * exception propagates back to Jasmine, either via the call stack or via
      * the global unhandled exception/unhandled promise rejection events.
      * @name throwUnless
+     * @since 5.1.0
+     * @function
      * @param actual
      * @global
      * @param {Object} actual - Actual computed value to test expectations against.
