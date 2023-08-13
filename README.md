@@ -7,7 +7,7 @@
 
 Jasmine is a Behavior Driven Development testing framework for JavaScript. It does not rely on browsers, DOM, or any JavaScript framework. Thus it's suited for websites, [Node.js](http://nodejs.org) projects, or anywhere that JavaScript can run.
 
-Upgrading from Jasmine 3.x? Check out the [upgrade guide](https://jasmine.github.io/tutorials/upgrading_to_Jasmine_4.0).
+Upgrading from Jasmine 4.x? Check out the [upgrade guide](https://jasmine.github.io/tutorials/upgrading_to_Jasmine_5.0).
 
 ## Contributing
 
