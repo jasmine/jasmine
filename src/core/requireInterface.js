@@ -423,7 +423,11 @@ getJasmineRequireObj().interface = function(jasmine, env) {
    * @since 1.3.0
    * @function
    * @param {String} [name] - Name to give the spy. This will be displayed in failure messages.
-   * @param {Function} [originalFn] - Function to act as the real implementation.
+   * @param {Function} [originalFn] - The "real" function. This will
+   * be used for subsequent calls to the spy after you call
+   * `mySpy.and.callThrough()`. In most cases you should omit this parameter.
+   * The usual way to supply an original function is to call {@link spyOn}
+   * instead of createSpy.
    * @return {Spy}
    */
   jasmine.createSpy = function(name, originalFn) {
