@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeUndefined', function() {
   it('passes for undefined values', function() {
     const matcher = jasmineUnderTest.matchers.toBeUndefined();

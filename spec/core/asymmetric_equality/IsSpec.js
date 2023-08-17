@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Is', function() {
   it('passes for primitives that are ===', function() {
     const exactly = new jasmineUnderTest.Is(17);

@@ -1,3 +1,5 @@
+'use strict';
+
 /* eslint-env node, es6 */
 module.exports = {
   srcDir: 'src',

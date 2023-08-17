@@ -1,3 +1,5 @@
+'use strict';
+
 describe('ResultsNode', function() {
   it('wraps a result', function() {
     const fakeResult = {

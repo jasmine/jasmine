@@ -1,3 +1,5 @@
+'use strict';
+
 describe('StackTrace', function() {
   it('understands Chrome/Edge style traces', function() {
     const error = {

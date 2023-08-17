@@ -1,3 +1,5 @@
+'use strict';
+
 describe('#toBeResolvedTo', function() {
   it('passes if the promise is resolved to the expected value', function() {
     const matchersUtil = new jasmineUnderTest.MatchersUtil(),

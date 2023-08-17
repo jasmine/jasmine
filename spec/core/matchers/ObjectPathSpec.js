@@ -1,3 +1,5 @@
+'use strict';
+
 describe('ObjectPath', function() {
   const ObjectPath = jasmineUnderTest.ObjectPath;
 

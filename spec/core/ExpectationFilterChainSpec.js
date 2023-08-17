@@ -1,3 +1,5 @@
+'use strict';
+
 describe('ExpectationFilterChain', function() {
   describe('#addFilter', function() {
     it('returns a new filter chain with the added filter', function() {

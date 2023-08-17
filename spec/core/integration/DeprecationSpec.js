@@ -1,3 +1,5 @@
+'use strict';
+
 /* eslint no-console: 0 */
 describe('Deprecation (integration)', function() {
   let env;

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('CompleteOnFirstErrorSkipPolicy', function() {
   describe('#skipTo', function() {
     describe('Before anything has errored', function() {

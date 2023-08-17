@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeInstanceOf', function() {
   describe('when expecting Number', function() {
     it('passes for literal number', function() {

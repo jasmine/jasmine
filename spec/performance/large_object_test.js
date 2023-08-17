@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Printing a big object', function() {
   function rand(upper) {
     return Math.round(upper * Math.random());

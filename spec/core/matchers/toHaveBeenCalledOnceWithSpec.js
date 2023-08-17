@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toHaveBeenCalledOnceWith', function() {
   it('passes when the actual was called only once and with matching parameters', function() {
     const pp = jasmineUnderTest.makePrettyPrinter(),

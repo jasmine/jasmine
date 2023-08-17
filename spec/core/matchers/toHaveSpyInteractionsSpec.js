@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toHaveSpyInteractions', function() {
   it('passes when there are spy interactions', function() {
     let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();

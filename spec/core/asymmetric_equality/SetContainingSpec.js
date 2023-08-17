@@ -1,3 +1,5 @@
+'use strict';
+
 describe('SetContaining', function() {
   it('matches any actual set to an empty set', function() {
     const actualSet = new Set(['foo', 'bar']);

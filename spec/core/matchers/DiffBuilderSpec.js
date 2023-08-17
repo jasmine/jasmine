@@ -1,3 +1,5 @@
+'use strict';
+
 describe('DiffBuilder', function() {
   it('records the actual and expected objects', function() {
     const diffBuilder = new jasmineUnderTest.DiffBuilder();

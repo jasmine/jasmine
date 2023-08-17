@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toHaveBeenCalled', function() {
   it('passes when the actual was called, with a custom .not fail message', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalled(),

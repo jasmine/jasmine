@@ -1,3 +1,5 @@
+'use strict';
+
 describe('SuiteBuilder', function() {
   beforeEach(function() {
     // Rethrow exceptions to ease debugging

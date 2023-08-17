@@ -1,3 +1,5 @@
+'use strict';
+
 describe('base helpers', function() {
   describe('isError_', function() {
     it('correctly handles WebSocket events', function(done) {

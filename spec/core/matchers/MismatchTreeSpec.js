@@ -1,3 +1,5 @@
+'use strict';
+
 describe('MismatchTree', function() {
   describe('#add', function() {
     describe('When the path is empty', function() {

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('FakeDate', function() {
   it('does not fail if no global date is found', function() {
     const fakeGlobal = {},

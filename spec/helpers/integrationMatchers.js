@@ -1,3 +1,5 @@
+'use strict';
+
 (function(env) {
   env.registerIntegrationMatchers = function() {
     jasmine.addMatchers({

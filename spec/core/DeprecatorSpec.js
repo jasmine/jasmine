@@ -1,3 +1,5 @@
+'use strict';
+
 /* eslint no-console: 0 */
 describe('Deprecator', function() {
   describe('#deprecate', function() {

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('jasmineUnderTest.HtmlSpecFilter', function() {
   it('should match when no string is provided', function() {
     const specFilter = new jasmineUnderTest.HtmlSpecFilter();

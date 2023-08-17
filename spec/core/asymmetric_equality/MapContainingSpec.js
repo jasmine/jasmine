@@ -1,3 +1,5 @@
+'use strict';
+
 describe('MapContaining', function() {
   it('matches any actual map to an empty map', function() {
     const actualMap = new Map([['foo', 'bar']]);

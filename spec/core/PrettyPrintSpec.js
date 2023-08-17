@@ -1,3 +1,5 @@
+'use strict';
+
 describe('PrettyPrinter', function() {
   it('should wrap strings in single quotes', function() {
     const pp = jasmineUnderTest.makePrettyPrinter();

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeResolved', function() {
   it('passes if the actual is resolved', function() {
     const matchersUtil = new jasmineUnderTest.MatchersUtil(),

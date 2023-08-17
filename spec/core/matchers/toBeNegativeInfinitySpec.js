@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeNegativeInfinity', function() {
   it("fails for anything that isn't -Infinity", function() {
     const matcher = jasmineUnderTest.matchers.toBeNegativeInfinity();

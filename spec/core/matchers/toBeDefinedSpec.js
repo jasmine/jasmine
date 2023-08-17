@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeDefined', function() {
   it('matches for defined values', function() {
     const matcher = jasmineUnderTest.matchers.toBeDefined();

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toHaveBeenCalledBefore', function() {
   it('throws an exception when the actual is not a spy', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore({

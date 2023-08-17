@@ -1,3 +1,5 @@
+'use strict';
+
 // TODO: Fix these unit tests!
 describe('Env', function() {
   let env;

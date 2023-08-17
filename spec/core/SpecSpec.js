@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Spec', function() {
   it('#isPendingSpecException returns true for a pending spec exception', function() {
     const e = new Error(jasmineUnderTest.Spec.pendingSpecExceptionMessage);

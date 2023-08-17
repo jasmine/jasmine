@@ -1,3 +1,5 @@
+'use strict';
+
 describe('ParallelReportDispatcher', function() {
   it('dispatches the standard reporter events', async function() {
     const subject = new jasmineUnderTest.ParallelReportDispatcher(() => {}, {

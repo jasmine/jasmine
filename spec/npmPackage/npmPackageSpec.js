@@ -1,3 +1,5 @@
+'use strict';
+
 describe('npm package', function() {
   const path = require('path'),
     temp = require('temp').track(),

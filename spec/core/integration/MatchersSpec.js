@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Matchers (Integration)', function() {
   let env;
 

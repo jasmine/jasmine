@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   ignorePatterns: ['support/ci.js', 'support/jasmine-browser.js'],
   rules: {
@@ -18,6 +20,8 @@ module.exports = {
     // from running tests, it makes sense to fail if debugger statements
     // or console references are present.
     'no-debugger': 'error',
-    'no-console': 'error'
+    'no-console': 'error',
+
+    strict: ['error', 'global']
   }
 };

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Spy Registry browser-specific behavior', function() {
   function createSpy(name, originalFn) {
     return jasmineUnderTest.Spy(name, originalFn);

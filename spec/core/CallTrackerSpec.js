@@ -1,3 +1,5 @@
+'use strict';
+
 describe('CallTracker', function() {
   it('tracks that it was called when executed', function() {
     const callTracker = new jasmineUnderTest.CallTracker();

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('#toBeRejectedWithError', function() {
   it('passes when Error type matches', function() {
     const matchersUtil = new jasmineUnderTest.MatchersUtil({

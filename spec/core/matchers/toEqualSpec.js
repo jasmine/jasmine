@@ -1,7 +1,7 @@
+'use strict';
+
 /* eslint-disable compat/compat */
 describe('toEqual', function() {
-  'use strict';
-
   function compareEquals(actual, expected) {
     const matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()

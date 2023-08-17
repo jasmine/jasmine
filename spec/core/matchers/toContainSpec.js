@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toContain', function() {
   it('delegates to jasmineUnderTest.matchersUtil.contains', function() {
     const matchersUtil = {

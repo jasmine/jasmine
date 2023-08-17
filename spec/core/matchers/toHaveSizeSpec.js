@@ -1,6 +1,6 @@
-describe('toHaveSize', function() {
-  'use strict';
+'use strict';
 
+describe('toHaveSize', function() {
   it('passes for an array whose length matches', function() {
     const matcher = jasmineUnderTest.matchers.toHaveSize(),
       result = matcher.compare([1, 2], 2);

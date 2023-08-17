@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Custom object formatters', function() {
   let env;
 

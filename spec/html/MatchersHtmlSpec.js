@@ -1,3 +1,5 @@
+'use strict';
+
 describe('MatchersSpec - HTML Dependent', function() {
   let env, spec;
 

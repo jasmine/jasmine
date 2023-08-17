@@ -1,3 +1,5 @@
+'use strict';
+
 describe('ArrayWithExactContents', function() {
   it('matches an array with the same items in a different order', function() {
     const matcher = new jasmineUnderTest.ArrayWithExactContents(['a', 2, /a/]);

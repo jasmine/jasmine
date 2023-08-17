@@ -1,3 +1,5 @@
+'use strict';
+
 describe('ObjectContaining', function() {
   it('matches any object actual to an empty object', function() {
     const containing = new jasmineUnderTest.ObjectContaining({});

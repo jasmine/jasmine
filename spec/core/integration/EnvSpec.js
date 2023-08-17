@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Env integration', function() {
   let env;
   const isBrowser = typeof window !== 'undefined';

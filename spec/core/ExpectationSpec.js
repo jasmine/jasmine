@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Expectation', function() {
   it('makes custom matchers available to this expectation', function() {
     const matchers = {

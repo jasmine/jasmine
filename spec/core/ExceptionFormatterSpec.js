@@ -1,3 +1,5 @@
+'use strict';
+
 describe('ExceptionFormatter', function() {
   describe('#message', function() {
     it('formats Firefox exception messages', function() {

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('SkipAfterBeforeAllErrorPolicy', function() {
   describe('#skipTo', function() {
     describe('When nothing has errored', function() {

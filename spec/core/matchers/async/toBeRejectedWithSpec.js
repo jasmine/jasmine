@@ -1,3 +1,5 @@
+'use strict';
+
 describe('#toBeRejectedWith', function() {
   it('should return true if the promise is rejected with the expected value', function() {
     const matchersUtil = new jasmineUnderTest.MatchersUtil(),

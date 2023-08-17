@@ -1,3 +1,5 @@
+'use strict';
+
 (function(env) {
   function domHelpers() {
     let doc;

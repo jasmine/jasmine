@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path'),
   jasmineBrowser = require('jasmine-browser-runner'),
   jasmineCore = require('../../lib/jasmine-core.js');

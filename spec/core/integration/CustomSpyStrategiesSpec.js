@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Custom Spy Strategies (Integration)', function() {
   let env;
 

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('QueueRunner', function() {
   it("runs all the functions it's passed", function() {
     const calls = [],

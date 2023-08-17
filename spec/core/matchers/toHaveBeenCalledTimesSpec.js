@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toHaveBeenCalledTimes', function() {
   it('passes when the actual 0 matches the expected 0 ', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),

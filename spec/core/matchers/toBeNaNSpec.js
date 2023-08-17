@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeNaN', function() {
   it('passes for NaN with a custom .not fail', function() {
     const matcher = jasmineUnderTest.matchers.toBeNaN();

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('DelayedFunctionScheduler', function() {
   it('schedules a function for later execution', function() {
     const scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),

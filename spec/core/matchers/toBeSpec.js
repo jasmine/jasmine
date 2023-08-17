@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBe', function() {
   it('passes with no message when actual === expected', function() {
     const matchersUtil = new jasmineUnderTest.MatchersUtil(),

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Spies', function() {
   let env;
 

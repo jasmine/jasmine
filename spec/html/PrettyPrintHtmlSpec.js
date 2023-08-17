@@ -1,3 +1,5 @@
+'use strict';
+
 describe('PrettyPrinter (HTML Dependent)', function() {
   it('should stringify non-element HTML nodes properly', function() {
     const sampleNode = document.createTextNode('');

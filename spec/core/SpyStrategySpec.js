@@ -1,3 +1,5 @@
+'use strict';
+
 describe('SpyStrategy', function() {
   it('defaults its name to unknown', function() {
     const spyStrategy = new jasmineUnderTest.SpyStrategy();

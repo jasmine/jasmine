@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Custom Matchers (Integration)', function() {
   let env;
 

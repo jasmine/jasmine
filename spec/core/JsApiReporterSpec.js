@@ -1,3 +1,5 @@
+'use strict';
+
 describe('JsApiReporter', function() {
   it('knows when a full environment is started', function() {
     const reporter = new jasmineUnderTest.JsApiReporter({});

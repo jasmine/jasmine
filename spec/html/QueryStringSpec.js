@@ -1,3 +1,5 @@
+'use strict';
+
 describe('QueryString', function() {
   describe('#navigateWithNewParam', function() {
     it('sets the query string to include the given key/value pair', function() {

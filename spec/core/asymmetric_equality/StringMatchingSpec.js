@@ -1,3 +1,5 @@
+'use strict';
+
 describe('StringMatching', function() {
   it('matches a string against a provided regexp', function() {
     const matcher = new jasmineUnderTest.StringMatching(/foo/);

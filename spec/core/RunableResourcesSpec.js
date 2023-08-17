@@ -1,3 +1,5 @@
+'use strict';
+
 describe('RunableResources', function() {
   describe('#spies', function() {
     behavesLikeAPerRunableMutableArray(

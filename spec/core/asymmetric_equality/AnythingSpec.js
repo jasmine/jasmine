@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Anything', function() {
   it('matches a string', function() {
     const anything = new jasmineUnderTest.Anything();

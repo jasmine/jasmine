@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeNull', function() {
   it('passes for null', function() {
     const matcher = jasmineUnderTest.matchers.toBeNull();

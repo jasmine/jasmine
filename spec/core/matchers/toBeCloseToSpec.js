@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeCloseTo', function() {
   it('passes when within two decimal places by default', function() {
     const matcher = jasmineUnderTest.matchers.toBeCloseTo();

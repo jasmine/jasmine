@@ -1,3 +1,5 @@
+'use strict';
+
 describe('buildExpectationResult', function() {
   it('defaults to passed', function() {
     const result = jasmineUnderTest.buildExpectationResult({

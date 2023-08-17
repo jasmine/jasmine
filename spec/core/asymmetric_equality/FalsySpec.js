@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Falsy', function() {
   it('is true for an empty string', function() {
     const falsy = new jasmineUnderTest.Falsy();

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('StringContaining', function() {
   it('searches for a provided substring when the expected is a String', function() {
     const matcher = new jasmineUnderTest.StringContaining('foo');

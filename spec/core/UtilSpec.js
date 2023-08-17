@@ -1,3 +1,5 @@
+'use strict';
+
 describe('util', function() {
   describe('isArray_', function() {
     it('should return true if the argument is an array', function() {

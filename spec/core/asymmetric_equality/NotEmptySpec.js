@@ -1,3 +1,5 @@
+'use strict';
+
 describe('NotEmpty', function() {
   it('matches a non empty object', function() {
     const notEmpty = new jasmineUnderTest.NotEmpty();

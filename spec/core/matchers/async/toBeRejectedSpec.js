@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeRejected', function() {
   it('passes if the actual is rejected', function() {
     const matchersUtil = new jasmineUnderTest.MatchersUtil(),

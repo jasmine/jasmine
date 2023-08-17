@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Timer', function() {
   it('reports the time elapsed', function() {
     const fakeNow = jasmine.createSpy('fake Date.now'),

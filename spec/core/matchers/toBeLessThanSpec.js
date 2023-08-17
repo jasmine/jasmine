@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeLessThan', function() {
   it('passes when actual < expected', function() {
     const matcher = jasmineUnderTest.matchers.toBeLessThan();

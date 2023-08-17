@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Custom Async Matchers (Integration)', function() {
   let env;
 

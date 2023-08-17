@@ -1,3 +1,5 @@
+'use strict';
+
 describe('AsyncExpectation', function() {
   beforeEach(function() {
     jasmineUnderTest.Expectation.addAsyncCoreMatchers(

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('TreeProcessor', function() {
   let nodeNumber = 0,
     leafNumber = 0;

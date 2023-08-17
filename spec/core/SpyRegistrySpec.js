@@ -1,3 +1,5 @@
+'use strict';
+
 describe('SpyRegistry', function() {
   function createSpy(name, originalFn) {
     return jasmineUnderTest.Spy(name, originalFn);

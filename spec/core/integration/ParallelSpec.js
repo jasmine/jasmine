@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Support for parallel execution', function() {
   let env;
 

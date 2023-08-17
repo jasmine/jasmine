@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBePending', function() {
   it('passes if the actual promise is pending', function() {
     const matchersUtil = new jasmineUnderTest.MatchersUtil(),

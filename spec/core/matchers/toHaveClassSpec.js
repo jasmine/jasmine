@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toHaveClass', function() {
   beforeEach(function() {
     this.domHelpers = jasmine.getEnv().domHelpers();

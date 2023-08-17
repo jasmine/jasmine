@@ -1,3 +1,5 @@
+'use strict';
+
 (function(env) {
   function browserVersion(matchFn) {
     const userAgent = jasmine.getGlobal().navigator.userAgent;

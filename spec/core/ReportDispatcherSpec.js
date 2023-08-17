@@ -1,3 +1,5 @@
+'use strict';
+
 describe('ReportDispatcher', function() {
   it('builds an interface of requested methods', function() {
     const dispatcher = new jasmineUnderTest.ReportDispatcher([

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeTrue', function() {
   it('passes for true', function() {
     const matcher = jasmineUnderTest.matchers.toBeTrue();

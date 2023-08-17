@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toMatch', function() {
   it('passes when RegExps are equivalent', function() {
     const matcher = jasmineUnderTest.matchers.toMatch();

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Asymmetric equality testers (Integration)', function() {
   function verifyPasses(expectations) {
     it('passes', async function() {

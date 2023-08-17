@@ -1,3 +1,5 @@
+'use strict';
+
 describe('NullDiffBuilder', function() {
   it('responds to withPath() by calling the passed function', function() {
     const spy = jasmine.createSpy('callback');

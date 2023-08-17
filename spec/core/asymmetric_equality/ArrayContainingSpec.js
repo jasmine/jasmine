@@ -1,3 +1,5 @@
+'use strict';
+
 describe('ArrayContaining', function() {
   it('matches any actual to an empty array', function() {
     const containing = new jasmineUnderTest.ArrayContaining([]);

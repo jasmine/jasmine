@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toBeTruthy', function() {
   it("passes for 'truthy' values", function() {
     const matcher = jasmineUnderTest.matchers.toBeTruthy();

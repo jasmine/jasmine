@@ -1,3 +1,5 @@
+'use strict';
+
 describe('GlobalErrors', function() {
   it('calls the added handler on error', function() {
     const fakeGlobal = browserGlobal();

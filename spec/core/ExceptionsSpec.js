@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Exceptions:', function() {
   let env;
 

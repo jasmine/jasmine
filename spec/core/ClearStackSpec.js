@@ -1,3 +1,5 @@
+'use strict';
+
 describe('ClearStack', function() {
   it('works in an integrationy way', function(done) {
     const clearStack = jasmineUnderTest.getClearStack(

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('spec running', function() {
   let env;
 

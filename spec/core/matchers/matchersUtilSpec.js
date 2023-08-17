@@ -1,3 +1,5 @@
+'use strict';
+
 describe('matchersUtil', function() {
   it('exposes the injected pretty-printer as .pp', function() {
     const pp = function() {},

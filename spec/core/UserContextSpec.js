@@ -1,3 +1,5 @@
+'use strict';
+
 describe('UserContext', function() {
   it('Behaves just like an plain object', function() {
     const context = new jasmineUnderTest.UserContext(),

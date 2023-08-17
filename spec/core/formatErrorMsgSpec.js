@@ -1,3 +1,5 @@
+'use strict';
+
 describe('formatErrorMsg', function() {
   it('should format an error with a domain', function() {
     const formator = jasmineUnderTest.formatErrorMsg('api');

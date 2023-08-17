@@ -1,3 +1,5 @@
+'use strict';
+
 describe('Clock', function() {
   const NODE_JS =
     typeof process !== 'undefined' &&

@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toHaveBeenCalledWith', function() {
   it('passes when the actual was called with matching parameters', function() {
     const matchersUtil = {

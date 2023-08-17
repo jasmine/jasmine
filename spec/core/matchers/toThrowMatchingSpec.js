@@ -1,3 +1,5 @@
+'use strict';
+
 describe('toThrowMatching', function() {
   it('throws an error when the actual is not a function', function() {
     const matcher = jasmineUnderTest.matchers.toThrowMatching();
