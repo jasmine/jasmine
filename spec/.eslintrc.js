@@ -22,6 +22,8 @@ module.exports = {
     'no-debugger': 'error',
     'no-console': 'error',
 
+    // Since each spec is run as its own script, we can require 'use strict' to
+    // be in the slightly safer and tidier global position.
     strict: ['error', 'global']
   }
 };

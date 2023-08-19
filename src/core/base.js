@@ -1,4 +1,6 @@
 getJasmineRequireObj().base = function(j$, jasmineGlobal) {
+  'use strict';
+
   /**
    * Maximum object depth the pretty printer will print to.
    * Set this to a lower value to speed up pretty printing if you have large objects.
