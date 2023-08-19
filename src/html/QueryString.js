@@ -1,4 +1,6 @@
 jasmineRequire.QueryString = function() {
+  'use strict';
+
   function QueryString(options) {
     this.navigateWithNewParam = function(key, value) {
       options.getWindowLocation().search = this.fullStringWithNewParam(

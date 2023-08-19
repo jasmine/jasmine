@@ -1,4 +1,6 @@
 jasmineRequire.HtmlReporter = function(j$) {
+  'use strict';
+
   function ResultsStateBuilder() {
     this.topResults = new j$.ResultsNode({}, '', null);
     this.currentParent = this.topResults;

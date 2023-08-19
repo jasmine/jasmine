@@ -5,6 +5,7 @@
  source files or spec files are loaded.
  */
 (function() {
+  'use strict';
   const jasmineRequire = window.jasmineRequire || require('./jasmine.js');
 
   /**

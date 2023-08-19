@@ -1,4 +1,5 @@
 jasmineRequire.HtmlSpecFilter = function() {
+  'use strict';
   function HtmlSpecFilter(options) {
     const filterString =
       options &&

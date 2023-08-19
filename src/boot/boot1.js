@@ -12,6 +12,7 @@
  */
 
 (function() {
+  'use strict';
   const env = jasmine.getEnv();
 
   /**
