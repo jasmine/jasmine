@@ -1,4 +1,6 @@
 getJasmineRequireObj().Deprecator = function(j$) {
+  'use strict';
+
   function Deprecator(topSuite) {
     this.topSuite_ = topSuite;
     this.verbose_ = false;

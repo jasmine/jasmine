@@ -1,4 +1,6 @@
 getJasmineRequireObj().ExceptionFormatter = function(j$) {
+  'use strict';
+
   const ignoredProperties = [
     'name',
     'message',
