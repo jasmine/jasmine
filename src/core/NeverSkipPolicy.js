@@ -1,4 +1,6 @@
 getJasmineRequireObj().NeverSkipPolicy = function(j$) {
+  'use strict';
+
   function NeverSkipPolicy(queueableFns) {}
 
   NeverSkipPolicy.prototype.skipTo = function(lastRanFnIx) {

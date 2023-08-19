@@ -1,4 +1,6 @@
 getJasmineRequireObj().GlobalErrors = function(j$) {
+  'use strict';
+
   function GlobalErrors(global) {
     global = global || j$.getGlobal();
 

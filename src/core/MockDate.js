@@ -1,4 +1,6 @@
 getJasmineRequireObj().MockDate = function(j$) {
+  'use strict';
+
   function MockDate(global) {
     let currentTime = 0;
 
