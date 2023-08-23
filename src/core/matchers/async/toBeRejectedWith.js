@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBeRejectedWith = function(j$) {
+  'use strict';
+
   /**
    * Expect a promise to be rejected with a value equal to the expected, using deep equality comparison.
    * @function

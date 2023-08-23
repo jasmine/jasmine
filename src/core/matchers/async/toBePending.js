@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBePending = function(j$) {
+  'use strict';
+
   /**
    * Expect a promise to be pending, i.e. the promise is neither resolved nor rejected.
    * @function

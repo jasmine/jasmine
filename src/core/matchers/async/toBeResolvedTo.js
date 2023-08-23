@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBeResolvedTo = function(j$) {
+  'use strict';
+
   /**
    * Expect a promise to be resolved to a value equal to the expected, using deep equality comparison.
    * @function
