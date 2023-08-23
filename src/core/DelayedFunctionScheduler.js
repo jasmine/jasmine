@@ -1,6 +1,7 @@
 // Warning: don't add "use strict" to this file. Doing so potentially changes
 // the behavior of user code that does things like setTimeout("var x = 1;")
 // while the mock clock is installed.
+// eslint-disable-next-line strict
 getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
   function DelayedFunctionScheduler() {
     this.scheduledLookup_ = [];

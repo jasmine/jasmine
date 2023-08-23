@@ -74,7 +74,6 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         };
       } else {
         restoreStrategy = function() {
-          debugger;
           if (!delete obj[methodName]) {
             obj[methodName] = originalMethod;
           }
