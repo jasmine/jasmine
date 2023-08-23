@@ -1,4 +1,6 @@
 getJasmineRequireObj().Truthy = function(j$) {
+  'use strict';
+
   function Truthy() {}
 
   Truthy.prototype.asymmetricMatch = function(other) {

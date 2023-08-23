@@ -1,4 +1,6 @@
 getJasmineRequireObj().Any = function(j$) {
+  'use strict';
+
   function Any(expectedObject) {
     if (typeof expectedObject === 'undefined') {
       throw new TypeError(

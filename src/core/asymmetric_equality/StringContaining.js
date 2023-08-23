@@ -1,4 +1,6 @@
 getJasmineRequireObj().StringContaining = function(j$) {
+  'use strict';
+
   function StringContaining(expected) {
     if (!j$.isString_(expected)) {
       throw new Error('Expected is not a String');

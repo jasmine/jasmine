@@ -1,4 +1,6 @@
 getJasmineRequireObj().Falsy = function(j$) {
+  'use strict';
+
   function Falsy() {}
 
   Falsy.prototype.asymmetricMatch = function(other) {

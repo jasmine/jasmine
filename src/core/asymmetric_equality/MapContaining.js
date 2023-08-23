@@ -1,4 +1,6 @@
 getJasmineRequireObj().MapContaining = function(j$) {
+  'use strict';
+
   function MapContaining(sample) {
     if (!j$.isMap(sample)) {
       throw new Error(

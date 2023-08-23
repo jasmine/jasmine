@@ -1,4 +1,6 @@
 getJasmineRequireObj().SetContaining = function(j$) {
+  'use strict';
+
   function SetContaining(sample) {
     if (!j$.isSet(sample)) {
       throw new Error(
