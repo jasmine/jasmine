@@ -2,6 +2,8 @@
 var jasmineRequire = window.jasmineRequire || require('./jasmine.js');
 
 jasmineRequire.html = function(j$) {
+  'use strict';
+
   j$.ResultsNode = jasmineRequire.ResultsNode();
   j$.HtmlReporter = jasmineRequire.HtmlReporter(j$);
   j$.QueryString = jasmineRequire.QueryString();

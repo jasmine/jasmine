@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBeInstanceOf = function(j$) {
+  'use strict';
+
   const usageError = j$.formatErrorMsg(
     '<toBeInstanceOf>',
     'expect(value).toBeInstanceOf(<ConstructorFunction>)'

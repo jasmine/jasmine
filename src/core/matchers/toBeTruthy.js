@@ -1,4 +1,5 @@
 getJasmineRequireObj().toBeTruthy = function() {
+  'use strict';
   /**
    * {@link expect} the actual value to be truthy.
    * @function

@@ -1,4 +1,6 @@
 getJasmineRequireObj().requireMatchers = function(jRequire, j$) {
+  'use strict';
+
   const availableMatchers = [
       'nothing',
       'toBe',

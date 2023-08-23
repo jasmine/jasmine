@@ -1,4 +1,6 @@
 getJasmineRequireObj().nothing = function() {
+  'use strict';
+
   /**
    * {@link expect} nothing explicitly.
    * @function

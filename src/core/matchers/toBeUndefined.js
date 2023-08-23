@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBeUndefined = function() {
+  'use strict';
+
   /**
    * {@link expect} the actual value to be `undefined`.
    * @function

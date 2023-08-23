@@ -1,4 +1,6 @@
 getJasmineRequireObj().toHaveBeenCalledOnceWith = function(j$) {
+  'use strict';
+
   const getErrorMsg = j$.formatErrorMsg(
     '<toHaveBeenCalledOnceWith>',
     'expect(<spyObj>).toHaveBeenCalledOnceWith(...arguments)'

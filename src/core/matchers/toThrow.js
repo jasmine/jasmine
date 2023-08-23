@@ -1,4 +1,6 @@
 getJasmineRequireObj().toThrow = function(j$) {
+  'use strict';
+
   const getErrorMsg = j$.formatErrorMsg(
     '<toThrow>',
     'expect(function() {<expectation>}).toThrow()'
