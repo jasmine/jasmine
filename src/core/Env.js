@@ -1,4 +1,6 @@
 getJasmineRequireObj().Env = function(j$) {
+  'use strict';
+
   /**
    * @class Env
    * @since 2.0.0
