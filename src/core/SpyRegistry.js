@@ -1,3 +1,5 @@
+// Contains code that assumes the non-strict behavior of the delete operator.
+// eslint-disable-next-line strict
 getJasmineRequireObj().SpyRegistry = function(j$) {
   const spyOnMsg = j$.formatErrorMsg(
     '<spyOn>',
@@ -72,6 +74,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         };
       } else {
         restoreStrategy = function() {
+          debugger;
           if (!delete obj[methodName]) {
             obj[methodName] = originalMethod;
           }
