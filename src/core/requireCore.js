@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-unused-vars,no-var
+// eslint-disable-next-line no-unused-vars,no-var,strict
 var getJasmineRequireObj = (function(jasmineGlobal) {
   let jasmineRequire;
 

@@ -1,4 +1,6 @@
 getJasmineRequireObj().makePrettyPrinter = function(j$) {
+  'use strict';
+
   class SinglePrettyPrintRun {
     constructor(customObjectFormatters, pp) {
       this.customObjectFormatters_ = customObjectFormatters;

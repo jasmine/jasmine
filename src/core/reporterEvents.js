@@ -1,4 +1,6 @@
 getJasmineRequireObj().reporterEvents = function() {
+  'use strict';
+
   const events = [
     /**
      * `jasmineStarted` is called after all of the specs have been loaded, but just before execution starts.

@@ -1,4 +1,6 @@
 getJasmineRequireObj().QueueRunner = function(j$) {
+  'use strict';
+
   let nextid = 1;
 
   function StopExecutionError() {}

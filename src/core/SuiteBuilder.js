@@ -1,4 +1,6 @@
 getJasmineRequireObj().SuiteBuilder = function(j$) {
+  'use strict';
+
   class SuiteBuilder {
     constructor(options) {
       this.env_ = options.env;

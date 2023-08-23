@@ -1,4 +1,6 @@
 getJasmineRequireObj().Spec = function(j$) {
+  'use strict';
+
   function Spec(attrs) {
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;

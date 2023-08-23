@@ -1,4 +1,6 @@
 getJasmineRequireObj().Timer = function() {
+  'use strict';
+
   const defaultNow = (function(Date) {
     return function() {
       return new Date().getTime();

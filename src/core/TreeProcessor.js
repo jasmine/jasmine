@@ -1,4 +1,6 @@
 getJasmineRequireObj().TreeProcessor = function() {
+  'use strict';
+
   function TreeProcessor(attrs) {
     const tree = attrs.tree;
     const runnableIds = attrs.runnableIds;

@@ -1,4 +1,6 @@
 getJasmineRequireObj().Suite = function(j$) {
+  'use strict';
+
   function Suite(attrs) {
     this.env = attrs.env;
     this.id = attrs.id;

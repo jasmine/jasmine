@@ -1,4 +1,6 @@
 getJasmineRequireObj().SpyFactory = function(j$) {
+  'use strict';
+
   function SpyFactory(
     getCustomStrategies,
     getDefaultStrategyFn,

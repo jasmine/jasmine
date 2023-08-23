@@ -1,4 +1,6 @@
 getJasmineRequireObj().StackTrace = function(j$) {
+  'use strict';
+
   function StackTrace(error) {
     let lines = error.stack.split('\n').filter(function(line) {
       return line !== '';
