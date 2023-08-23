@@ -1,4 +1,6 @@
 getJasmineRequireObj().ReportDispatcher = function(j$) {
+  'use strict';
+
   function ReportDispatcher(methods, queueRunnerFactory, onLateError) {
     const dispatchedMethods = methods || [];
 

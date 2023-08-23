@@ -1,4 +1,6 @@
 getJasmineRequireObj().ParallelReportDispatcher = function(j$) {
+  'use strict';
+
   /**
    * @class ParallelReportDispatcher
    * @implements Reporter
@@ -17,7 +19,7 @@ getJasmineRequireObj().ParallelReportDispatcher = function(j$) {
     const ReportDispatcher = deps.ReportDispatcher || j$.ReportDispatcher;
     const QueueRunner = deps.QueueRunner || j$.QueueRunner;
     const globalErrors = deps.globalErrors || new j$.GlobalErrors();
-    const dispatcher = ReportDispatcher(
+    const dispatcher = new ReportDispatcher(
       j$.reporterEvents,
       function(queueRunnerOptions) {
         queueRunnerOptions = {
