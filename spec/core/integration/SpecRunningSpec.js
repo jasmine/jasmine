@@ -2,7 +2,7 @@ describe('spec running', function() {
   let env;
 
   beforeEach(function() {
-    jasmine.getEnv().registerIntegrationMatchers();
+    specHelpers.registerIntegrationMatchers();
     env = new jasmineUnderTest.Env();
     env.configure({ random: false });
   });

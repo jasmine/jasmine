@@ -22,7 +22,7 @@ describe('PrettyPrinter (HTML Dependent)', function() {
   });
 
   it("should print Firefox's wrapped native objects correctly", function() {
-    if (jasmine.getEnv().firefoxVersion) {
+    if (specHelpers.firefoxVersion) {
       const pp = jasmineUnderTest.makePrettyPrinter();
       let err;
       try {

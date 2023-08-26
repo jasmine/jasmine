@@ -5,6 +5,7 @@
     "npmPackage/**/*[Ss]pec.js"
   ],
   "helpers": [
+    "helpers/init.js",
     "helpers/domHelpers.js",
     "helpers/integrationMatchers.js",
     "helpers/overrideConsoleLogForCircleCi.js",

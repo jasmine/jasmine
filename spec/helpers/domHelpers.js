@@ -1,24 +1,20 @@
-(function(env) {
-  function domHelpers() {
-    let doc;
+(function() {
+  let doc;
 
-    if (typeof document !== 'undefined') {
-      doc = document;
-    } else {
-      const JSDOM = require('jsdom').JSDOM;
-      const dom = new JSDOM();
-      doc = dom.window.document;
-    }
-
-    return {
-      document: doc,
-      createElementWithClassName: function(className) {
-        const el = this.document.createElement('div');
-        el.className = className;
-        return el;
-      }
-    };
+  if (typeof document !== 'undefined') {
+    doc = document;
+  } else {
+    const JSDOM = require('jsdom').JSDOM;
+    const dom = new JSDOM();
+    doc = dom.window.document;
   }
 
-  env.domHelpers = domHelpers;
-})(jasmine.getEnv());
+  specHelpers.domHelpers = {
+    document: doc,
+    createElementWithClassName(className) {
+      const el = this.document.createElement('div');
+      el.className = className;
+      return el;
+    }
+  };
+})();

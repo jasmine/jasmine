@@ -1,5 +1,5 @@
-(function(env) {
-  env.registerIntegrationMatchers = function() {
+(function() {
+  specHelpers.registerIntegrationMatchers = function() {
     jasmine.addMatchers({
       toHaveFailedExpectationsForRunnable: function() {
         return {
@@ -51,4 +51,4 @@
       }
     });
   };
-})(jasmine.getEnv());
+})();

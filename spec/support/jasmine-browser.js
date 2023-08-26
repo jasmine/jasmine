@@ -18,6 +18,7 @@ module.exports = {
   specDir: 'spec',
   specFiles: ['**/*[Ss]pec.js', '!npmPackage/**/*'],
   helpers: [
+    'helpers/init.js',
     'helpers/generator.js',
     'helpers/BrowserFlags.js',
     'helpers/domHelpers.js',

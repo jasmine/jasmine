@@ -3,7 +3,7 @@ describe('Env integration', function() {
   const isBrowser = typeof window !== 'undefined';
 
   beforeEach(function() {
-    jasmine.getEnv().registerIntegrationMatchers();
+    specHelpers.registerIntegrationMatchers();
     env = new jasmineUnderTest.Env();
   });
 

@@ -610,19 +610,13 @@ describe('Matchers (Integration)', function() {
   });
 
   describe('toHaveClass', function() {
-    beforeEach(function() {
-      this.domHelpers = jasmine.getEnv().domHelpers();
-    });
-
     verifyPasses(function(env) {
-      const domHelpers = jasmine.getEnv().domHelpers();
-      const el = domHelpers.createElementWithClassName('foo');
+      const el = specHelpers.domHelpers.createElementWithClassName('foo');
       env.expect(el).toHaveClass('foo');
     });
 
     verifyFails(function(env) {
-      const domHelpers = jasmine.getEnv().domHelpers();
-      const el = domHelpers.createElementWithClassName('foo');
+      const el = specHelpers.domHelpers.createElementWithClassName('foo');
       env.expect(el).toHaveClass('bar');
     });
   });
