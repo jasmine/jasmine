@@ -58,4 +58,4 @@ To find out what environments work with a particular Jasmine release, see the [r
 * [Christian Williams](mailto:antixian666@gmail.com)
 * Sheel Choksi
 
-Copyright (c) 2008-2022 Jasmine Maintainers. This software is licensed under the [MIT License](https://github.com/jasmine/jasmine/blob/main/MIT.LICENSE).
+Copyright (c) 2008-2022 Jasmine Maintainers. This software is licensed under the [MIT License](https://github.com/jasmine/jasmine/blob/main/LICENSE).
