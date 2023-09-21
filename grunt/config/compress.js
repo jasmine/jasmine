@@ -11,7 +11,7 @@ module.exports = {
     },
 
     files: [
-      { src: [ root("MIT.LICENSE") ] },
+      { src: [ root("LICENSE") ] },
       {
         src: [ "jasmine_favicon.png"],
         dest: standaloneLibDir,
