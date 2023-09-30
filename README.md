@@ -1,8 +1,5 @@
 <a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/main/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a>
 
-[![Build Status](https://circleci.com/gh/jasmine/jasmine.svg?style=shield)](https://circleci.com/gh/jasmine/jasmine)
-[![Open Source Helpers](https://www.codetriage.com/jasmine/jasmine/badges/users.svg)](https://www.codetriage.com/jasmine/jasmine)
-
 # A JavaScript Testing Framework
 
 Jasmine is a Behavior Driven Development testing framework for JavaScript. It does not rely on browsers, DOM, or any JavaScript framework. Thus it's suited for websites, [Node.js](http://nodejs.org) projects, or anywhere that JavaScript can run.
