@@ -44,7 +44,7 @@
     "grunt-css-url-embed": "^1.11.1",
     "grunt-sass": "^3.0.2",
     "jasmine": "^5.0.0",
-    "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner",
+    "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner#sauce-chrome117-debugging",
     "jsdom": "^22.0.0",
     "load-grunt-tasks": "^5.1.0",
     "prettier": "1.17.1",
