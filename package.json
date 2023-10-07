@@ -27,7 +27,7 @@
   "homepage": "https://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
   "files": [
-    "MIT.LICENSE",
+    "LICENSE",
     "README.md",
     "images/*.{png,svg}",
     "lib/**/*.{js,css}",
