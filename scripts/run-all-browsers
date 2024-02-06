@@ -38,6 +38,7 @@ run_browser chrome latest "macOS 12"
 run_browser firefox latest
 run_browser firefox 115
 run_browser firefox 102
+run_browser safari 17
 run_browser safari 16
 run_browser safari 15
 run_browser MicrosoftEdge latest
