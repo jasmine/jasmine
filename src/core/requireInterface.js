@@ -246,7 +246,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @return {matchers}
      */
     throwUnlessAsync: function(actual) {
-      return env.throwUnless(actual);
+      return env.throwUnlessAsync(actual);
     },
 
     /**
