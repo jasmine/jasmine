@@ -2905,6 +2905,10 @@ describe('Env integration', function() {
   });
 
   describe('If suppressLoadErrors: true was passed', function() {
+    beforeEach(function() {
+      spyOn(console, 'error'); // prevent deprecation from being logged
+    });
+
     it('does not install a global error handler during loading', async function() {
       const originalOnerror = jasmine.createSpy('original onerror');
       const global = {
@@ -2942,6 +2946,24 @@ describe('Env integration', function() {
       const e = reporter.jasmineDone.calls.argsFor(0)[0];
       expect(e.failedExpectations).toEqual([]);
       expect(originalOnerror).toHaveBeenCalledWith('Uncaught Error: ENOCHEESE');
+    });
+
+    it('emits a deprecation warning', async function() {
+      env.cleanup_();
+      env = new jasmineUnderTest.Env({ suppressLoadErrors: true });
+      const reporter = jasmine.createSpyObj('reporter', [
+        'jasmineDone',
+        'suiteDone',
+        'specDone'
+      ]);
+
+      env.addReporter(reporter);
+      await env.execute();
+
+      const e = reporter.jasmineDone.calls.argsFor(0)[0];
+      expect(e.deprecationWarnings[0].message).toMatch(
+        /^The suppressLoadErrors option is deprecated and will be removed in a future release/
+      );
     });
   });
 
