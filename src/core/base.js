@@ -439,10 +439,16 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * rejection events asynchronously, especially in browsers. If the event
    * occurs after the promise returned from the callback is settled, it won't
    * be routed to the spy even if the underlying error occurred previously.
-   * It's up to you to ensure that the returned promise isn't resolved until
-   * all of the error/rejection events that you want to handle have occurred.
+   * It's up to you to ensure that all of the error/rejection events that you
+   * want to handle have occurred before you resolve the promise returned from
+   * the callback.
    *
-   * You must await the return value of spyOnGlobalErrorsAsync.
+   * You must ensure that the `it`/`beforeEach`/etc fn that called
+   * `spyOnGlobalErrorsAsync` does not signal completion until after the
+   * promise returned by `spyOnGlobalErrorsAsync` is resolved. Normally this is
+   * done by `await`ing the returned promise. Leaving the global error spy
+   * installed after the `it`/`beforeEach`/etc fn that installed it signals
+   * completion is likely to cause problems and is not supported.
    * @name jasmine.spyOnGlobalErrorsAsync
    * @function
    * @async
