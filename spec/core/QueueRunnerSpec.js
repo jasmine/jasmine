@@ -459,6 +459,32 @@ describe('QueueRunner', function() {
       expect(nextQueueableFn.fn).toHaveBeenCalled();
     });
 
+    it('handles a global error event with a message but no error', function() {
+      const queueableFn = {
+        // eslint-disable-next-line no-unused-vars
+        fn: function(done) {
+          const currentHandler = globalErrors.pushListener.calls.mostRecent()
+            .args[0];
+          currentHandler(undefined, { message: 'nope' });
+        },
+        timeout: 1
+      };
+      const onException = jasmine.createSpy('onException');
+      const globalErrors = {
+        pushListener: jasmine.createSpy('pushListener'),
+        popListener: jasmine.createSpy('popListener')
+      };
+      const queueRunner = new jasmineUnderTest.QueueRunner({
+        queueableFns: [queueableFn],
+        onException: onException,
+        globalErrors: globalErrors
+      });
+
+      queueRunner.execute();
+
+      expect(onException).toHaveBeenCalledWith('nope');
+    });
+
     it('handles exceptions thrown while waiting for the stack to clear', function() {
       const queueableFn = {
           fn: function(done) {
@@ -491,6 +517,40 @@ describe('QueueRunner', function() {
       errorListeners[0](error);
       clearStack.calls.argsFor(0)[0]();
       expect(onException).toHaveBeenCalledWith(error);
+    });
+
+    it('handles a global error event with no error while waiting for the stack to clear', function() {
+      const queueableFn = {
+        fn: function(done) {
+          done();
+        }
+      };
+      const errorListeners = [];
+      const globalErrors = {
+        pushListener: function(f) {
+          errorListeners.push(f);
+        },
+        popListener: function() {
+          errorListeners.pop();
+        }
+      };
+      const clearStack = jasmine.createSpy('clearStack');
+      const onException = jasmine.createSpy('onException');
+      const queueRunner = new jasmineUnderTest.QueueRunner({
+        queueableFns: [queueableFn],
+        globalErrors: globalErrors,
+        clearStack: clearStack,
+        onException: onException
+      });
+
+      queueRunner.execute();
+      jasmine.clock().tick();
+      expect(clearStack).toHaveBeenCalled();
+      expect(errorListeners.length).toEqual(1);
+      errorListeners[0](undefined, { message: 'nope' });
+
+      clearStack.calls.argsFor(0)[0]();
+      expect(onException).toHaveBeenCalledWith('nope');
     });
   });
 

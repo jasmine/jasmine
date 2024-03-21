@@ -65,8 +65,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   }
 
   QueueRunner.prototype.execute = function() {
-    this.handleFinalError = error => {
-      this.onException(error);
+    this.handleFinalError = (error, event) => {
+      this.onException(errorOrMsgForGlobalError(error, event));
     };
     this.globalErrors.pushListener(this.handleFinalError);
     this.run(0);
@@ -96,10 +96,8 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       this.recordError_(iterativeIndex);
     };
 
-    function handleError(error) {
-      // TODO probably shouldn't next() right away here.
-      // That makes debugging async failures much more confusing.
-      onException(error);
+    function handleError(error, event) {
+      onException(errorOrMsgForGlobalError(error, event));
     }
     const cleanup = once(() => {
       if (timeoutId !== void 0) {
@@ -283,6 +281,17 @@ getJasmineRequireObj().QueueRunner = function(j$) {
         fn();
       }
     };
+  }
+
+  function errorOrMsgForGlobalError(error, event) {
+    // TODO: In cases where error is a string or undefined, the error message
+    // that gets sent to reporters will be `${message} thrown`, which could
+    // be improved to not say "thrown" when the cause wasn't necessarily
+    // an exception or to provide hints about throwing Errors rather than
+    // strings.
+    return (
+      error || (event && event.message) || 'Global error event with no message'
+    );
   }
 
   return QueueRunner;
