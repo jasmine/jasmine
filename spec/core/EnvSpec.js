@@ -634,10 +634,6 @@ describe('Env', function() {
   });
 
   describe('when constructed with suppressLoadErrors: true', function() {
-    beforeEach(function() {
-      spyOn(console, 'error'); // prevent deprecation from being logged
-    });
-
     it('does not install a global error handler until execute is called', function() {
       const globalErrors = jasmine.createSpyObj('globalErrors', [
         'install',

@@ -518,14 +518,6 @@ getJasmineRequireObj().Env = function(j$) {
      * @return {Promise<JasmineDoneInfo>}
      */
     this.execute = async function(runablesToRun) {
-      if (options.suppressLoadErrors) {
-        this.deprecated(
-          'The suppressLoadErrors option is deprecated and will be removed ' +
-            'in a future release.',
-          { ignoreRunnable: true, omitStackTrace: true }
-        );
-      }
-
       installGlobalErrors();
 
       if (parallelLoadingState) {
