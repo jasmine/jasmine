@@ -12,6 +12,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
 
     function dispatchBrowserError(error, event) {
       if (overrideHandler) {
+        // See discussion of spyOnGlobalErrorsAsync in base.js
         overrideHandler(error);
         return;
       }
@@ -55,6 +56,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         const handler = handlers[handlers.length - 1];
 
         if (overrideHandler) {
+          // See discussion of spyOnGlobalErrorsAsync in base.js
           overrideHandler(error);
           return;
         }

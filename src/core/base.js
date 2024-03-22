@@ -435,6 +435,12 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * handling will be restored when the promise returned from the callback is
    * settled.
    *
+   * When the JavaScript runtime reports an uncaught error or unhandled rejection,
+   * the spy will be called with a single parameter representing Jasmine's best
+   * effort at describing the error. This parameter may be of any type, because
+   * JavaScript allows anything to be thrown or used as the reason for a
+   * rejected promise, but Error instances and strings are most common.
+   *
    * Note: The JavaScript runtime may deliver uncaught error events and unhandled
    * rejection events asynchronously, especially in browsers. If the event
    * occurs after the promise returned from the callback is settled, it won't
