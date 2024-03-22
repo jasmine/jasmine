@@ -328,6 +328,62 @@ describe('GlobalErrors', function() {
     });
   });
 
+  describe('Reporting uncaught exceptions in node.js', function() {
+    it('prepends a descriptive message when the error is not an `Error`', function() {
+      const fakeGlobal = {
+        process: {
+          on: jasmine.createSpy('process.on'),
+          removeListener: function() {},
+          listeners: function() {
+            return [];
+          },
+          removeAllListeners: function() {}
+        }
+      };
+      const handler = jasmine.createSpy('errorHandler');
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+      errors.install();
+      errors.pushListener(handler);
+
+      uncaughtExceptionListener(fakeGlobal)(17);
+
+      expect(handler).toHaveBeenCalledWith(new Error('Uncaught exception: 17'));
+    });
+
+    it('substitutes a descriptive message when the error is falsy', function() {
+      const fakeGlobal = {
+        process: {
+          on: jasmine.createSpy('process.on'),
+          removeListener: function() {},
+          listeners: function() {
+            return [];
+          },
+          removeAllListeners: function() {}
+        }
+      };
+      const handler = jasmine.createSpy('errorHandler');
+      const errors = new jasmineUnderTest.GlobalErrors(fakeGlobal);
+
+      errors.install();
+      errors.pushListener(handler);
+
+      uncaughtExceptionListener(fakeGlobal)();
+
+      expect(handler).toHaveBeenCalledWith(
+        new Error('Uncaught exception with no error or message')
+      );
+    });
+
+    function uncaughtExceptionListener(global) {
+      // Grab the right listener
+      expect(global.process.on.calls.argsFor(0)[0]).toEqual(
+        'uncaughtException'
+      );
+      return global.process.on.calls.argsFor(0)[1];
+    }
+  });
+
   describe('#setOverrideListener', function() {
     it('overrides the existing handlers in browsers until removed', function() {
       const fakeGlobal = browserGlobal();
