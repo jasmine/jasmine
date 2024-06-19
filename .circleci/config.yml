@@ -4,6 +4,10 @@
 version: 2.1
 
 executors:
+  node22:
+    docker:
+      - image: cimg/node:22.0.0
+    working_directory: ~/workspace
   node20:
     docker:
       - image: cimg/node:20.0.0
@@ -95,11 +99,19 @@ workflows:
   push:
     jobs:
       - build:
+          executor: node22
+          name: build_node_22
+      - build:
           executor: node20
           name: build_node_20
       - build:
           executor: node18
           name: build_node_18
+      - test_node:
+          executor: node22
+          name: test_node_22
+          requires:
+            - build_node_22
       - test_node:
           executor: node20
           name: test_node_20
@@ -115,6 +127,11 @@ workflows:
           name: test_parallel_node_18
           requires:
             - build_node_18
+      - test_parallel:
+          executor: node22
+          name: test_parallel_node_22
+          requires:
+            - build_node_22
       - test_parallel:
           executor: node20
           name: test_parallel_node_20

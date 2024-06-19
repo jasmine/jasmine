@@ -179,7 +179,10 @@ describe('base helpers', function() {
         f2 = jasmine.createSpy('setTimeout callback for ' + (max + 1));
 
       // Suppress printing of TimeoutOverflowWarning in node
-      spyOn(console, 'error');
+      if (typeof process !== 'undefined' && process.emitWarning) {
+        spyOn(process, 'emitWarning'); // Node 22
+      }
+      spyOn(console, 'error'); // Node <22
 
       let id = setTimeout(f1, max);
       setTimeout(function() {
