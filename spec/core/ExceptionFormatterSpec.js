@@ -153,6 +153,25 @@ describe('ExceptionFormatter', function() {
       );
     });
 
+    it('filters Jasmine stack frames with Firefox async annotations', function() {
+      const error = {
+        stack:
+          'http://localhost:8888/__spec__/core/UtilSpec.js:115:28\n' +
+          'promise callback*fn1@http://localhost:8888/__jasmine__/jasmine.js:4320:27\n' +
+          'setTimeout handler*fn2@http://localhost:8888/__jasmine__/jasmine.js:4320:27\n' +
+          'http://localhost:8888/__spec__/core/UtilSpec.js:115:28'
+      };
+      const subject = new jasmineUnderTest.ExceptionFormatter({
+        jasmineFile: 'http://localhost:8888/__jasmine__/jasmine.js'
+      });
+      const result = subject.stack(error);
+      expect(result).toEqual(
+        'http://localhost:8888/__spec__/core/UtilSpec.js:115:28\n' +
+          '<Jasmine>\n' +
+          'http://localhost:8888/__spec__/core/UtilSpec.js:115:28'
+      );
+    });
+
     it('filters Jasmine stack frames in this environment', function() {
       const error = new Error('an error');
       const subject = new jasmineUnderTest.ExceptionFormatter({

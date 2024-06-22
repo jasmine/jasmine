@@ -32,11 +32,20 @@ getJasmineRequireObj().StackTrace = function(j$) {
     // e.g. "  at /some/path:4320:20
     { re: /\s*at (.+)$/, fileLineColIx: 1, style: 'v8' },
 
-    // PhantomJS on OS X, Safari, Firefox
+    // Safari, most Firefox stack frames
     // e.g. "run@http://localhost:8888/__jasmine__/jasmine.js:4320:27"
     // or "http://localhost:8888/__jasmine__/jasmine.js:4320:27"
     {
       re: /^(?:(([^@\s]+)@)|@)?([^\s]+)$/,
+      fnIx: 2,
+      fileLineColIx: 3,
+      style: 'webkit'
+    },
+
+    // Some Firefox stack frames when the developer tools are open
+    // e.g. "promise callback*specStarted@http://localhost:8888/__jasmine__/jasmine.js:1880:41"
+    {
+      re: /^^(?:((?:promise callback|[^\s]+ handler)\*([^@\s]+)@)|@)?([^\s]+)$/,
       fnIx: 2,
       fileLineColIx: 3,
       style: 'webkit'
