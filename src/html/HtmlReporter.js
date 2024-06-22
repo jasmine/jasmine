@@ -430,7 +430,11 @@ jasmineRequire.HtmlReporter = function(j$) {
             'tr',
             {},
             createDom('td', {}, entry.timestamp.toString()),
-            createDom('td', {}, entry.message)
+            createDom(
+              'td',
+              { className: 'jasmine-debug-log-msg' },
+              entry.message
+            )
           )
         );
       });

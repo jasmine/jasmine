@@ -296,3 +296,6 @@ body {
 .jasmine_html-reporter .jasmine-debug-log table, .jasmine_html-reporter .jasmine-debug-log th, .jasmine_html-reporter .jasmine-debug-log td {
   border: 1px solid #ddd;
 }
+.jasmine_html-reporter .jasmine-debug-log .jasmine-debug-log-msg {
+  white-space: pre;
+}

@@ -159,6 +159,8 @@ describe('ExceptionFormatter', function() {
         jasmineFile: jasmine.util.jasmineFile()
       });
       const result = subject.stack(error);
+      jasmine.debugLog('Original stack trace: ' + error.stack);
+      jasmine.debugLog('Filtered stack trace: ' + result);
       const lines = result.split('\n');
 
       if (lines[0].match(/an error/)) {
