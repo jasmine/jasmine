@@ -15,6 +15,17 @@ describe('toHaveSize', function() {
     expect(result.pass).toBe(false);
   });
 
+  it('informs about the size of an array whose length does not match', function() {
+    const matcher = jasmineUnderTest.matchers.toHaveSize({
+        pp: jasmineUnderTest.makePrettyPrinter()
+      }),
+      result = matcher.compare([1, 2, 3], 2);
+
+    expect(result.message()).toEqual(
+      'Expected [ 1, 2, 3 ] with size 3 to have size 2.'
+    );
+  });
+
   it('passes for an object with the proper number of keys', function() {
     const matcher = jasmineUnderTest.matchers.toHaveSize(),
       result = matcher.compare({ a: 1, b: 2 }, 2);
