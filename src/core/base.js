@@ -224,9 +224,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value being compared is an instance of the specified class/constructor.
-   * @name jasmine.any
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value being compared is an instance of the specified class/constructor.
+   * @name asymmetricEqualityTesters.any
+   * @emittedName jasmine.any
    * @since 1.3.0
    * @function
    * @param {Constructor} clazz - The constructor to check against.
@@ -236,9 +237,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value being compared is not `null` and not `undefined`.
-   * @name jasmine.anything
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value being compared is not `null` and not `undefined`.
+   * @name asymmetricEqualityTesters.anything
+   * @emittedName jasmine.anything
    * @since 2.2.0
    * @function
    */
@@ -247,9 +249,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value being compared is `true` or anything truthy.
-   * @name jasmine.truthy
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value being compared is `true` or anything truthy.
+   * @name asymmetricEqualityTesters.truthy
+   * @emittedName jasmine.truthy
    * @since 3.1.0
    * @function
    */
@@ -258,9 +261,11 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value being compared is  `null`, `undefined`, `0`, `false` or anything falsey.
-   * @name jasmine.falsy
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value being compared is  `null`, `undefined`, `0`, `false` or anything
+   * falsy.
+   * @name asymmetricEqualityTesters.falsy
+   * @emittedName jasmine.falsy
    * @since 3.1.0
    * @function
    */
@@ -269,9 +274,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value being compared is empty.
-   * @name jasmine.empty
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value being compared is empty.
+   * @name asymmetricEqualityTesters.empty
+   * @emittedName jasmine.empty
    * @since 3.1.0
    * @function
    */
@@ -280,10 +286,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher}
-   * that passes if the actual value is the same as the sample as determined
-   * by the `===` operator.
-   * @name jasmine.is
+   * Get an {@link AsymmetricEqualityTester} that passes if the actual value is
+   * the same as the sample as determined by the `===` operator.
+   * @name asymmetricEqualityTesters.is
+   * @emittedName jasmine.is
    * @function
    * @param {Object} sample - The value to compare the actual to.
    */
@@ -292,9 +298,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value being compared is not empty.
-   * @name jasmine.notEmpty
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value being compared is not empty.
+   * @name asymmetricEqualityTesters.notEmpty
+   * @emittedName jasmine.notEmpty
    * @since 3.1.0
    * @function
    */
@@ -303,9 +310,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value being compared contains at least the keys and values.
-   * @name jasmine.objectContaining
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value being compared contains at least the specified keys and values.
+   * @name asymmetricEqualityTesters.objectContaining
+   * @emittedName jasmine.objectContaining
    * @since 1.3.0
    * @function
    * @param {Object} sample - The subset of properties that _must_ be in the actual.
@@ -315,9 +323,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value is a `String` that matches the `RegExp` or `String`.
-   * @name jasmine.stringMatching
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value is a `String` that matches the `RegExp` or `String`.
+   * @name asymmetricEqualityTesters.stringMatching
+   * @emittedName jasmine.stringMatching
    * @since 2.2.0
    * @function
    * @param {RegExp|String} expected
@@ -327,9 +336,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value is a `String` that contains the specified `String`.
-   * @name jasmine.stringContaining
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value is a `String` that contains the specified `String`.
+   * @name asymmetricEqualityTesters.stringContaining
+   * @emittedName jasmine.stringContaining
    * @since 3.10.0
    * @function
    * @param {String} expected
@@ -339,9 +349,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value is an `Array` that contains at least the elements in the sample.
-   * @name jasmine.arrayContaining
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value is an `Array` that contains at least the elements in the sample.
+   * @name asymmetricEqualityTesters.arrayContaining
+   * @emittedName jasmine.arrayContaining
    * @since 2.2.0
    * @function
    * @param {Array} sample
@@ -351,9 +362,11 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if the actual value is an `Array` that contains all of the elements in the sample in any order.
-   * @name jasmine.arrayWithExactContents
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value is an `Array` that contains all of the elements in the sample in
+   * any order.
+   * @name asymmetricEqualityTesters.arrayWithExactContents
+   * @emittedName jasmine.arrayWithExactContents
    * @since 2.8.0
    * @function
    * @param {Array} sample
@@ -363,10 +376,11 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if every key/value pair in the sample passes the deep equality comparison
+   * Get an {@link AsymmetricEqualityTester} that will succeed if every
+   * key/value pair in the sample passes the deep equality comparison
    * with at least one key/value pair in the actual value being compared
-   * @name jasmine.mapContaining
+   * @name asymmetricEqualityTesters.mapContaining
+   * @emittedName jasmine.mapContaining
    * @since 3.5.0
    * @function
    * @param {Map} sample - The subset of items that _must_ be in the actual.
@@ -376,10 +390,11 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   /**
-   * Get an {@link AsymmetricEqualityTester}, usable in any {@link matchers|matcher} that uses Jasmine's equality (e.g. {@link matchers#toEqual|toEqual}, {@link matchers#toContain|toContain}, or {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}),
-   * that will succeed if every item in the sample passes the deep equality comparison
+   * Get an {@link AsymmetricEqualityTester} that will succeed if every item
+   * in the sample passes the deep equality comparison
    * with at least one item in the actual value being compared
-   * @name jasmine.setContaining
+   * @name asymmetricEqualityTesters.setContaining
+   * @emittedName jasmine.setContaining
    * @since 3.5.0
    * @function
    * @param {Set} sample - The subset of items that _must_ be in the actual.

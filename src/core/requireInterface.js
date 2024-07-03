@@ -345,6 +345,12 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     }),
 
     /**
+     * <p>Members of the jasmine global.</p>
+     * <p>Note: The members of the
+     * {@link asymmetricEqualityTesters|asymmetricEqualityTesters namespace}
+     * are also accessed via the jasmine global, but due to jsdoc limitations
+     * they are not listed here.</p>
+     *
      * @namespace jasmine
      */
     jasmine: jasmine
@@ -477,6 +483,28 @@ getJasmineRequireObj().interface = function(jasmine, env) {
   jasmine.setDefaultSpyStrategy = function(defaultStrategyFn) {
     return env.setDefaultSpyStrategy(defaultStrategyFn);
   };
+
+  /**
+   * {@link AsymmetricEqualityTester|Asymmetric equality testers} allow for
+   * non-exact matching in matchers that use Jasmine's deep value equality
+   * semantics, such as {@link matchers#toEqual|toEqual},
+   * {@link matchers#toContain|toContain}, and
+   * {@link matchers#toHaveBeenCalledWith|toHaveBeenCalledWith}.
+   *
+   * @example
+   * const someComplexObject = {
+   *   foo: 'bar',
+   *   baz: 'a string that contains "something"',
+   *   qux: 'whatever'
+   * };
+   * // Passes.
+   * expect(someComplexObject).toEqual(jasmine.objectContaining({
+   *   foo: 'bar',
+   *   baz: jasmine.stringContaining('something')
+   * });
+   *
+   * @namespace asymmetricEqualityTesters
+   */
 
   return jasmineInterface;
 };
