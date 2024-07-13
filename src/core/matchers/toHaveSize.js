@@ -9,7 +9,7 @@ getJasmineRequireObj().toHaveSize = function(j$) {
    * array = [1,2];
    * expect(array).toHaveSize(2);
    */
-  function toHaveSize() {
+  function toHaveSize(matchersUtil) {
     return {
       compare: function(actual, expected) {
         const result = {
@@ -24,12 +24,29 @@ getJasmineRequireObj().toHaveSize = function(j$) {
           throw new Error('Cannot get size of ' + actual + '.');
         }
 
+        let actualSize;
         if (j$.isSet(actual) || j$.isMap(actual)) {
-          result.pass = actual.size === expected;
+          actualSize = actual.size;
         } else if (isLength(actual.length)) {
-          result.pass = actual.length === expected;
+          actualSize = actual.length;
         } else {
-          result.pass = Object.keys(actual).length === expected;
+          actualSize = Object.keys(actual).length;
+        }
+
+        result.pass = actualSize === expected;
+
+        if (!result.pass) {
+          result.message = function() {
+            return (
+              'Expected ' +
+              matchersUtil.pp(actual) +
+              ' with size ' +
+              actualSize +
+              ' to have size ' +
+              expected +
+              '.'
+            );
+          };
         }
 
         return result;
