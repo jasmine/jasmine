@@ -1,0 +1,46 @@
+{
+  "extends": [
+    "plugin:compat/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2017": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "rules": {
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "none"
+      }
+    ],
+    "no-implicit-globals": "error",
+    "block-spacing": "error",
+    "func-call-spacing": [
+      "error",
+      "never"
+    ],
+    "key-spacing": "error",
+    "no-tabs": "error",
+    "no-trailing-spaces": "error",
+    "no-whitespace-before-property": "error",
+    "semi": [
+      "error",
+      "always"
+    ],
+    "space-before-blocks": "error",
+    "no-eval": "error",
+    "no-var": "error",
+    "no-debugger": "error"
+  }
+}
