@@ -70,7 +70,9 @@ getJasmineRequireObj().clearStack = function(j$) {
 
     const SAFARI =
       global.navigator &&
-      /^((?!chrome|android).)*safari/i.test(global.navigator.userAgent);
+      /(^((?!chrome|android).)*safari)|(^((?!chrome|android|firefox).)+$)/i.test(
+        global.navigator.userAgent
+      );
 
     if (NODE_JS) {
       // Unlike browsers, Node doesn't require us to do a periodic setTimeout

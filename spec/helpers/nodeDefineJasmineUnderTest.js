@@ -16,7 +16,9 @@
       return path.join(__dirname, '../../', 'src/', file);
     });
 
-    const files = src_files.flatMap(g => glob.sync(g));
+    const files = src_files.flatMap(g =>
+      glob.sync(g, { windowsPathsNoEscape: true })
+    );
     files.forEach(function(resolvedFile) {
       require(resolvedFile);
     });
