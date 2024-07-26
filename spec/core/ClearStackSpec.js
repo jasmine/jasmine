@@ -22,6 +22,19 @@ describe('ClearStack', function() {
     });
   });
 
+  describe('in WebKit (Playwright\'s build for Windows)', function() {
+    usesQueueMicrotaskWithSetTimeout(function() {
+      return {
+        navigator: {
+          userAgent:
+            'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/605.1.15 (KHTML, like Gecko)'
+        },
+        // queueMicrotask should be used even though MessageChannel is present
+        MessageChannel: fakeMessageChannel
+      };
+    });
+  });
+
   describe('in browsers other than Safari', function() {
     usesMessageChannel(function() {
       return {

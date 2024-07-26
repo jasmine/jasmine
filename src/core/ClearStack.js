@@ -68,9 +68,11 @@ getJasmineRequireObj().clearStack = function(j$) {
       global.process.versions &&
       typeof global.process.versions.node === 'string';
 
-    const SAFARI =
+    // Windows builds of WebKit have a fairly generic user agent string when no application name is provided.
+    // See: https://github.com/WebKit/WebKit/blob/d898a3cffd9c992980016cb1fbdba272cb0c992d/Source/WebCore/platform/win/UserAgentWin.cpp#L37
+    const SAFARI_OR_WIN_WEBKIT =
       global.navigator &&
-      /(^((?!chrome|android).)*safari)|(^((?!chrome|android|firefox).)+$)/i.test(
+      /(^((?!chrome|android).)*safari)|(Win64; x64\) AppleWebKit\/[0-9.]+ \(KHTML, like Gecko\)$)/i.test(
         global.navigator.userAgent
       );
 
@@ -79,7 +81,7 @@ getJasmineRequireObj().clearStack = function(j$) {
       // so we avoid the overhead.
       return nodeQueueMicrotaskImpl(global);
     } else if (
-      SAFARI ||
+      SAFARI_OR_WIN_WEBKIT ||
       j$.util.isUndefined(global.MessageChannel) /* tests */
     ) {
       // queueMicrotask is dramatically faster than MessageChannel in Safari,
