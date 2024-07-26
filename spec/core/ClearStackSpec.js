@@ -22,7 +22,7 @@ describe('ClearStack', function() {
     });
   });
 
-  describe('in WebKit (Playwright\'s build for Windows)', function() {
+  describe("in WebKit (Playwright's build for Windows)", function() {
     usesQueueMicrotaskWithSetTimeout(function() {
       return {
         navigator: {
