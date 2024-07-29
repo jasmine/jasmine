@@ -9,20 +9,7 @@ describe('ClearStack', function() {
     });
   });
 
-  describe('in Safari', function() {
-    usesQueueMicrotaskWithSetTimeout(function() {
-      return {
-        navigator: {
-          userAgent:
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.0.8 (KHTML, like Gecko) Version/15.1 Safari/605.0.8'
-        },
-        // queueMicrotask should be used even though MessageChannel is present
-        MessageChannel: fakeMessageChannel
-      };
-    });
-  });
-
-  describe("in WebKit (Playwright's build for Windows)", function() {
+  describe('in browsers', function() {
     usesQueueMicrotaskWithSetTimeout(function() {
       return {
         navigator: {
@@ -31,18 +18,6 @@ describe('ClearStack', function() {
         },
         // queueMicrotask should be used even though MessageChannel is present
         MessageChannel: fakeMessageChannel
-      };
-    });
-  });
-
-  describe('in browsers other than Safari', function() {
-    usesMessageChannel(function() {
-      return {
-        navigator: {
-          // Chrome's user agent string contains "Safari" so it's a good test case
-          userAgent:
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
-        }
       };
     });
 

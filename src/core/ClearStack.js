@@ -68,32 +68,15 @@ getJasmineRequireObj().clearStack = function(j$) {
       global.process.versions &&
       typeof global.process.versions.node === 'string';
 
-    // Windows builds of WebKit have a fairly generic user agent string when no application name is provided:
-    // e.g. "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/605.1.15 (KHTML, like Gecko)"
-    const SAFARI_OR_WIN_WEBKIT =
-      global.navigator &&
-      /(^((?!chrome|android).)*safari)|(Win64; x64\) AppleWebKit\/[0-9.]+ \(KHTML, like Gecko\)$)/i.test(
-        global.navigator.userAgent
-      );
-
     if (NODE_JS) {
       // Unlike browsers, Node doesn't require us to do a periodic setTimeout
       // so we avoid the overhead.
       return nodeQueueMicrotaskImpl(global);
-    } else if (
-      SAFARI_OR_WIN_WEBKIT ||
-      j$.util.isUndefined(global.MessageChannel) /* tests */
-    ) {
-      // queueMicrotask is dramatically faster than MessageChannel in Safari
-      // and other WebKit-based browsers, such as the one distributed by Playwright
-      // to test Safari-like behavior on Windows.
-      // Some of our own integration tests provide a mock queueMicrotask in all
-      // environments because it's simpler to mock than MessageChannel.
-      return browserQueueMicrotaskImpl(global);
     } else {
-      // MessageChannel is faster than queueMicrotask in supported browsers
-      // other than Safari.
-      return messageChannelImpl(global);
+      // queueMicrotask is potentially faster than MessageChannel. Caveats:
+      // * It requires us to do a periodic setTimeout.
+      // * Periodic setTimeout needs protection against 4 ms clamping.
+      return browserQueueMicrotaskImpl(global);
     }
   }
 
