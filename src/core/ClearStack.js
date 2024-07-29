@@ -1,9 +1,12 @@
 getJasmineRequireObj().clearStack = function(j$) {
   const maxInlineCallCount = 10;
+  const maxSetTimeoutWithoutClampingCallCount = 4;
 
   function browserQueueMicrotaskImpl(global) {
+    const postMessage = postMessageImpl(global);
     const { setTimeout, queueMicrotask } = global;
     let currentCallCount = 0;
+    let currentSetTimeoutCallCount = 0;
     return function clearStack(fn) {
       currentCallCount++;
 
@@ -11,7 +14,18 @@ getJasmineRequireObj().clearStack = function(j$) {
         queueMicrotask(fn);
       } else {
         currentCallCount = 0;
-        setTimeout(fn);
+        currentSetTimeoutCallCount++;
+
+        if (
+          currentSetTimeoutCallCount < maxSetTimeoutWithoutClampingCallCount
+        ) {
+          setTimeout(fn);
+        } else {
+          currentSetTimeoutCallCount = 0;
+          setTimeout(function() {
+            postMessage(fn);
+          });
+        }
       }
     };
   }

@@ -21,6 +21,39 @@ describe('ClearStack', function() {
       };
     });
 
+    it('uses MessageChannel every four setTimeout calls to avoid timeout clamping', function() {
+      const fakeChannel = fakeMessageChannel();
+      spyOn(fakeChannel.port2, 'postMessage');
+      const setTimeout = jasmine
+        .createSpy('setTimeout')
+        .and.callFake(function(fn) {
+          fn();
+        });
+      const global = {
+        queueMicrotask: function(fn) {
+          fn();
+        },
+        setTimeout,
+        MessageChannel: function() {
+          return fakeChannel;
+        }
+      };
+      const clearStack = jasmineUnderTest.getClearStack(global);
+
+      for (let i = 0; i < 39; i++) clearStack(function() {});
+
+      expect(setTimeout).toHaveBeenCalledTimes(3);
+      expect(fakeChannel.port2.postMessage).not.toHaveBeenCalled();
+
+      clearStack(function() {});
+      expect(setTimeout).toHaveBeenCalledTimes(4);
+      expect(fakeChannel.port2.postMessage).toHaveBeenCalledTimes(1);
+
+      for (let i = 0; i < 39; i++) clearStack(function() {});
+      expect(setTimeout).toHaveBeenCalledTimes(7);
+      expect(fakeChannel.port2.postMessage).toHaveBeenCalledTimes(1);
+    });
+
     describe('when MessageChannel is unavailable', function() {
       usesQueueMicrotaskWithSetTimeout(function() {
         return {
@@ -44,70 +77,6 @@ describe('ClearStack', function() {
       };
     });
   });
-
-  function usesMessageChannel(makeGlobal) {
-    it('uses MessageChannel', function() {
-      const global = {
-        ...makeGlobal(),
-        MessageChannel: fakeMessageChannel
-      };
-      const clearStack = jasmineUnderTest.getClearStack(global);
-      let called = false;
-
-      clearStack(function() {
-        called = true;
-      });
-
-      expect(called).toBe(true);
-    });
-
-    it('uses setTimeout instead of MessageChannel every 10 calls to make sure we release the CPU', function() {
-      const fakeChannel = fakeMessageChannel();
-      spyOn(fakeChannel.port2, 'postMessage');
-      const setTimeout = jasmine.createSpy('setTimeout');
-      const global = {
-        ...makeGlobal(),
-        setTimeout,
-        MessageChannel: function() {
-          return fakeChannel;
-        }
-      };
-      const clearStack = jasmineUnderTest.getClearStack(global);
-
-      for (let i = 0; i < 9; i++) {
-        clearStack(function() {});
-      }
-
-      expect(fakeChannel.port2.postMessage).toHaveBeenCalled();
-      expect(setTimeout).not.toHaveBeenCalled();
-
-      clearStack(function() {});
-      expect(fakeChannel.port2.postMessage).toHaveBeenCalledTimes(9);
-      expect(setTimeout).toHaveBeenCalledTimes(1);
-
-      clearStack(function() {});
-      expect(fakeChannel.port2.postMessage).toHaveBeenCalledTimes(10);
-      expect(setTimeout).toHaveBeenCalledTimes(1);
-    });
-
-    it('calls setTimeout when onmessage is called recursively', function() {
-      const setTimeout = jasmine.createSpy('setTimeout');
-      const global = {
-        ...makeGlobal(),
-        setTimeout,
-        MessageChannel: fakeMessageChannel
-      };
-      const clearStack = jasmineUnderTest.getClearStack(global);
-      const fn = jasmine.createSpy('second clearStack function');
-
-      clearStack(function() {
-        clearStack(fn);
-      });
-
-      expect(fn).not.toHaveBeenCalled();
-      expect(setTimeout).toHaveBeenCalledWith(fn, 0);
-    });
-  }
 
   function usesQueueMicrotaskWithSetTimeout(makeGlobal) {
     it('uses queueMicrotask', function() {
