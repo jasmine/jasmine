@@ -24,8 +24,14 @@ getJasmineRequireObj().clearStack = function(j$) {
     };
   }
 
-  function messageChannelImpl(global) {
-    const { MessageChannel, setTimeout } = global;
+  function postMessageImpl(global) {
+    if (j$.util.isUndefined(global.MessageChannel)) {
+      return function callDummy(fn) {
+        fn();
+      };
+    }
+
+    const { MessageChannel } = global;
     const channel = new MessageChannel();
     let head = {};
     let tail = head;
@@ -37,7 +43,7 @@ getJasmineRequireObj().clearStack = function(j$) {
       delete head.task;
 
       if (taskRunning) {
-        setTimeout(task, 0);
+        setTimeout(task);
       } else {
         try {
           taskRunning = true;
@@ -48,17 +54,9 @@ getJasmineRequireObj().clearStack = function(j$) {
       }
     };
 
-    let currentCallCount = 0;
-    return function clearStack(fn) {
-      currentCallCount++;
-
-      if (currentCallCount < maxInlineCallCount) {
-        tail = tail.next = { task: fn };
-        channel.port2.postMessage(0);
-      } else {
-        currentCallCount = 0;
-        setTimeout(fn);
-      }
+    return function postMessage(fn) {
+      tail = tail.next = { task: fn };
+      channel.port2.postMessage(0);
     };
   }
 
