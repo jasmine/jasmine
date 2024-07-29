@@ -56,12 +56,7 @@ describe('ClearStack', function() {
 
     describe('when MessageChannel is unavailable', function() {
       usesQueueMicrotaskWithSetTimeout(function() {
-        return {
-          navigator: {
-            userAgent: 'CERN-LineMode/2.15 libwww/2.17b3',
-            MessageChannel: undefined
-          }
-        };
+        return { MessageChannel: undefined };
       });
     });
   });
