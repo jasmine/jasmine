@@ -12,14 +12,12 @@
   };
 
   function getSourceFiles() {
-    const src_files = ['core/**/*.js', 'version.js'].map(function(file) {
-      return path.join(__dirname, '../../', 'src/', file);
-    });
+    const globs = ['../../src/core/**/*.js', '../../src/version.js'];
+    const srcFiles = globs.flatMap(g => glob.sync(g, { cwd: __dirname }));
 
-    const files = src_files.flatMap(g => glob.sync(g));
-    files.forEach(function(resolvedFile) {
-      require(resolvedFile);
-    });
+    for (const file of srcFiles) {
+      require(file);
+    }
   }
 
   getSourceFiles();
