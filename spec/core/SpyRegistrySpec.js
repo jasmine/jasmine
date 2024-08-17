@@ -94,6 +94,30 @@ describe('SpyRegistry', function() {
       }).not.toThrowError(/is not declared writable or has no setter/);
     });
 
+    it('throws if assigning to the property is a no-op', function() {
+      const scope = {};
+
+      function original() {
+        return 1;
+      }
+
+      Object.defineProperty(scope, 'myFunc', {
+        get() {
+          return original;
+        },
+        set() {}
+      });
+
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
+        createSpy: createSpy
+      });
+      expect(function() {
+        spyRegistry.spyOn(scope, 'myFunc');
+      }).toThrowError(
+        "<spyOn> : Can't spy on myFunc because assigning to it had no effect"
+      );
+    });
+
     it('overrides the method on the object and returns the spy', function() {
       const originalFunctionWasCalled = false,
         spyRegistry = new jasmineUnderTest.SpyRegistry({

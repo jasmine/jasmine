@@ -84,6 +84,16 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
 
       obj[methodName] = spiedMethod;
 
+      // Check if setting the property actually worked. Some objects, such as
+      // localStorage in Firefox and later Safari versions, have no-op setters.
+      if (obj[methodName] !== spiedMethod) {
+        throw new Error(
+          j$.formatErrorMsg('<spyOn>')(
+            `Can't spy on ${methodName} because assigning to it had no effect`
+          )
+        );
+      }
+
       return spiedMethod;
     };
 
