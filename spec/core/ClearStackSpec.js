@@ -20,6 +20,32 @@ describe('ClearStack', function() {
         MessageChannel: fakeMessageChannel
       };
     });
+
+    it('uses MessageChannel to reduce setTimeout clamping', function() {
+      const fakeChannel = fakeMessageChannel();
+      spyOn(fakeChannel.port2, 'postMessage');
+      const queueMicrotask = jasmine.createSpy('queueMicrotask');
+      const global = {
+        navigator: {
+          userAgent:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.0.8 (KHTML, like Gecko) Version/15.1 Safari/605.0.8'
+        },
+        MessageChannel: function() {
+          return fakeChannel;
+        },
+        queueMicrotask
+      };
+
+      const clearStack = jasmineUnderTest.getClearStack(global);
+
+      for (let i = 0; i < 9; i++) clearStack(function() {});
+
+      expect(fakeChannel.port2.postMessage).not.toHaveBeenCalled();
+
+      clearStack(function() {});
+
+      expect(fakeChannel.port2.postMessage).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe("in WebKit (Playwright's build for Windows)", function() {

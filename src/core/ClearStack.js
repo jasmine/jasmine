@@ -2,7 +2,8 @@ getJasmineRequireObj().clearStack = function(j$) {
   const maxInlineCallCount = 10;
 
   function browserQueueMicrotaskImpl(global) {
-    const { setTimeout, queueMicrotask } = global;
+    const unclampedSetTimeout = getUnclampedSetTimeout(global);
+    const { queueMicrotask } = global;
     let currentCallCount = 0;
     return function clearStack(fn) {
       currentCallCount++;
@@ -11,7 +12,7 @@ getJasmineRequireObj().clearStack = function(j$) {
         queueMicrotask(fn);
       } else {
         currentCallCount = 0;
-        setTimeout(fn);
+        unclampedSetTimeout(fn);
       }
     };
   }
@@ -25,6 +26,35 @@ getJasmineRequireObj().clearStack = function(j$) {
   }
 
   function messageChannelImpl(global) {
+    const { setTimeout } = global;
+    const postMessage = getPostMessage(global);
+
+    let currentCallCount = 0;
+    return function clearStack(fn) {
+      currentCallCount++;
+
+      if (currentCallCount < maxInlineCallCount) {
+        postMessage(fn);
+      } else {
+        currentCallCount = 0;
+        setTimeout(fn);
+      }
+    };
+  }
+
+  function getUnclampedSetTimeout(global) {
+    const { setTimeout } = global;
+    if (j$.util.isUndefined(global.MessageChannel)) return setTimeout;
+
+    const postMessage = getPostMessage(global);
+    return function unclampedSetTimeout(fn) {
+      postMessage(function() {
+        setTimeout(fn);
+      });
+    };
+  }
+
+  function getPostMessage(global) {
     const { MessageChannel, setTimeout } = global;
     const channel = new MessageChannel();
     let head = {};
@@ -48,17 +78,9 @@ getJasmineRequireObj().clearStack = function(j$) {
       }
     };
 
-    let currentCallCount = 0;
-    return function clearStack(fn) {
-      currentCallCount++;
-
-      if (currentCallCount < maxInlineCallCount) {
-        tail = tail.next = { task: fn };
-        channel.port2.postMessage(0);
-      } else {
-        currentCallCount = 0;
-        setTimeout(fn);
-      }
+    return function postMessage(fn) {
+      tail = tail.next = { task: fn };
+      channel.port2.postMessage(0);
     };
   }
 
