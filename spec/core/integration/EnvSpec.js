@@ -1315,8 +1315,9 @@ describe('Env integration', function() {
       'works with constructors when using callThrough spy strategy',
       function() {
         function MyClass(foo) {
-          if (!(this instanceof MyClass))
+          if (!(this instanceof MyClass)) {
             throw new Error('You must use the new keyword.');
+          }
           this.foo = foo;
         }
         const subject = { MyClass: MyClass };

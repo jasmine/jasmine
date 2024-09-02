@@ -38,7 +38,9 @@ describe('ClearStack', function() {
 
       const clearStack = jasmineUnderTest.getClearStack(global);
 
-      for (let i = 0; i < 9; i++) clearStack(function() {});
+      for (let i = 0; i < 9; i++) {
+        clearStack(function() {});
+      }
 
       expect(fakeChannel.port2.postMessage).not.toHaveBeenCalled();
 

@@ -32,7 +32,10 @@ getJasmineRequireObj().toHaveSpyInteractions = function(j$) {
         let hasSpy = false;
         const calledSpies = [];
         for (const spy of Object.values(actual)) {
-          if (!j$.isSpy(spy)) continue;
+          if (!j$.isSpy(spy)) {
+            continue;
+          }
+
           hasSpy = true;
 
           if (spy.calls.any()) {

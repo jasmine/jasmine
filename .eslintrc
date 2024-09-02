@@ -11,6 +11,7 @@
     "ecmaVersion": 2018
   },
   "rules": {
+    "curly": "error",
     "quotes": [
       "error",
       "single",

@@ -11,7 +11,9 @@ getJasmineRequireObj().MapContaining = function(j$) {
   }
 
   MapContaining.prototype.asymmetricMatch = function(other, matchersUtil) {
-    if (!j$.isMap(other)) return false;
+    if (!j$.isMap(other)) {
+      return false;
+    }
 
     for (const [key, value] of this.sample) {
       // for each key/value pair in `sample`

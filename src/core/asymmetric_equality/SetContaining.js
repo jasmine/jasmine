@@ -11,7 +11,9 @@ getJasmineRequireObj().SetContaining = function(j$) {
   }
 
   SetContaining.prototype.asymmetricMatch = function(other, matchersUtil) {
-    if (!j$.isSet(other)) return false;
+    if (!j$.isSet(other)) {
+      return false;
+    }
 
     for (const item of this.sample) {
       // for each item in `sample` there should be at least one matching item in `other`

@@ -44,7 +44,9 @@ getJasmineRequireObj().clearStack = function(j$) {
 
   function getUnclampedSetTimeout(global) {
     const { setTimeout } = global;
-    if (j$.util.isUndefined(global.MessageChannel)) return setTimeout;
+    if (j$.util.isUndefined(global.MessageChannel)) {
+      return setTimeout;
+    }
 
     const postMessage = getPostMessage(global);
     return function unclampedSetTimeout(fn) {
