@@ -29,6 +29,15 @@ getJasmineRequireObj().Clock = function() {
     let installed = false;
     let delayedFunctionScheduler;
     let timer;
+    // Tracks how the clock ticking behaves.
+    // By default, the clock only ticks when the user manually calls a tick method.
+    // There is also an 'auto' mode which will advance the clock automatically to
+    // to the next task. Once enabled, there is currently no mechanism for users
+    // to disable the auto ticking.
+    let tickMode = {
+      mode: 'manual',
+      counter: 0
+    };
 
     this.FakeTimeout = FakeTimeout;
 
@@ -138,7 +147,94 @@ getJasmineRequireObj().Clock = function() {
       }
     };
 
+    /**
+     * Updates the clock to automatically advance time.
+     *
+     * With this mode, the clock advances to the first scheduled timer and fires it, in a loop.
+     * Between each timer, it will also break the event loop, allowing any scheduled promise
+callbacks to execute _before_ running the next one.
+     *
+     * This mode allows tests to be authored in a way that does not need to be aware of the
+     * mock clock. Consequently, tests which have been authored without a mock clock installed
+     * can one with auto tick enabled without any other updates to the test logic.
+     *
+     * In many cases, this can greatly improve test execution speed because asynchronous tasks
+     * will execute as quickly as possible rather than waiting real time to complete.
+     *
+     * Furthermore, tests can be authored in a consitent manner. They can always be written in an asynchronous style
+     * rather than having `tick` sprinkled throughout the tests with mock time in order to manually
+     * advance the clock.
+     *
+     * When auto tick is enabled, `tick` can still be used to synchronously advance the clock if necessary.
+     */
+    this.autoTick = function() {
+      if (tickMode.mode === 'auto') {
+        return;
+      }
+
+      tickMode = { mode: 'auto', counter: tickMode.counter + 1 };
+      advanceUntilModeChanges();
+    };
+
     return this;
+
+    // Advances the Clock's time until the mode changes.
+    //
+    // The time is advanced asynchronously, giving microtasks and events a chance
+    // to run before each timer runs.
+    //
+    // @function
+    // @return {!Promise<undefined>}
+    async function advanceUntilModeChanges() {
+      if (!installed) {
+        throw new Error(
+          'Mock clock is not installed, use jasmine.clock().install()'
+        );
+      }
+      const { counter } = tickMode;
+
+      while (true) {
+        await newMacrotask();
+
+        if (
+          tickMode.counter !== counter ||
+          !installed ||
+          delayedFunctionScheduler === null
+        ) {
+          return;
+        }
+
+        if (!delayedFunctionScheduler.isEmpty()) {
+          delayedFunctionScheduler.runNextQueuedFunction(function(millis) {
+            mockDate.tick(millis);
+          });
+        }
+      }
+    }
+
+    // Waits until a new macro task.
+    //
+    // Used with autoTick(), which is meant to act when the test is waiting, we need
+    // to insert ourselves in the macro task queue.
+    //
+    // @return {!Promise<undefined>}
+    async function newMacrotask() {
+      // MessageChannel ensures that setTimeout is not throttled to 4ms.
+      // https://developer.mozilla.org/en-US/docs/Web/API/setTimeout#reasons_for_delays_longer_than_specified
+      // https://stackblitz.com/edit/stackblitz-starters-qtlpcc
+      // Note: This trick does not work in Safari, which will still throttle the setTimeout
+      const channel = new MessageChannel();
+      await new Promise(resolve => {
+        channel.port1.onmessage = resolve;
+        channel.port2.postMessage(undefined);
+      });
+      channel.port1.close();
+      channel.port2.close();
+      // setTimeout ensures that we interleave with other setTimeouts.
+      await new Promise(resolve => {
+        realTimingFunctions.setTimeout.call(global, resolve);
+      });
+    }
 
     function originalTimingFunctionsIntact() {
       return (
