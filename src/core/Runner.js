@@ -177,8 +177,8 @@ getJasmineRequireObj().Runner = function(j$) {
        * @property {String} incompleteCode - Machine-readable explanation of why the suite was incomplete: 'focused', 'noSpecsFound', or undefined.
        * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.  Note that this property is not present when Jasmine is run in parallel mode.
        * @property {Int} numWorkers - Number of parallel workers.  Note that this property is only present when Jasmine is run in parallel mode.
-       * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
-       * @property {Expectation[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
+       * @property {ExpectationResult[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
+       * @property {ExpectationResult[]} deprecationWarnings - List of deprecation warnings that occurred at the global level.
        * @since 2.4.0
        */
       const jasmineDoneInfo = {
