@@ -272,7 +272,7 @@ getJasmineRequireObj().Env = function(j$) {
          * @extends Error
          * @description Represents a failure of an expectation evaluated with
          * {@link throwUnless}. Properties of this error are a subset of the
-         * properties of {@link Expectation} and have the same values.
+         * properties of {@link ExpectationResult} and have the same values.
          * @property {String} matcherName - The name of the matcher that was executed for this expectation.
          * @property {String} message - The failure message for the expectation.
          * @property {Boolean} passed - Whether the expectation passed or failed.
