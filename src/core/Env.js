@@ -273,11 +273,18 @@ getJasmineRequireObj().Env = function(j$) {
          * @description Represents a failure of an expectation evaluated with
          * {@link throwUnless}. Properties of this error are a subset of the
          * properties of {@link ExpectationResult} and have the same values.
+         *
+         * Note: The expected and actual properties are deprecated and may be removed
+         * in a future release. In many Jasmine configurations they are passed
+         * through JSON serialization and deserialization, which is inherently
+         * lossy. In such cases, the expected and actual values may be placeholders
+         * or approximations of the original objects.
+         *
          * @property {String} matcherName - The name of the matcher that was executed for this expectation.
          * @property {String} message - The failure message for the expectation.
          * @property {Boolean} passed - Whether the expectation passed or failed.
-         * @property {Object} expected - If the expectation failed, what was the expected value.
-         * @property {Object} actual - If the expectation failed, what actual value was produced.
+         * @property {Object} expected - Deprecated. If the expectation failed, what was the expected value.
+         * @property {Object} actual - Deprecated. If the expectation failed, what actual value was produced.
          */
         const error = new Error(result.message);
         error.passed = result.passed;
