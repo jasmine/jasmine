@@ -1,8 +1,6 @@
 getJasmineRequireObj().StackTrace = function(j$) {
   function StackTrace(error) {
-    let lines = error.stack.split('\n').filter(function(line) {
-      return line !== '';
-    });
+    let lines = error.stack.split('\n');
 
     const extractResult = extractMessage(error.message, lines);
 
@@ -10,6 +8,10 @@ getJasmineRequireObj().StackTrace = function(j$) {
       this.message = extractResult.message;
       lines = extractResult.remainder;
     }
+
+    lines = lines.filter(function(line) {
+      return line !== '';
+    });
 
     const parseResult = tryParseFrames(lines);
     this.frames = parseResult.frames;

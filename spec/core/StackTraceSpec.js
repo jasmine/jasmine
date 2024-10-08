@@ -51,6 +51,27 @@ describe('StackTrace', function() {
     ]);
   });
 
+  it('understands Chrome/Edge style traces with messages containing blank lines', function() {
+    const error = {
+      message: 'line 1\n\nline 2',
+      stack:
+        'Error: line 1\n\nline 2\n' +
+        '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)\n' +
+        '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
+    };
+
+    const result = new jasmineUnderTest.StackTrace(error);
+
+    expect(result.message).toEqual('Error: line 1\n\nline 2');
+    const rawFrames = result.frames.map(function(f) {
+      return f.raw;
+    });
+    expect(rawFrames).toEqual([
+      '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)',
+      '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
+    ]);
+  });
+
   it('understands Node style traces', function() {
     const error = {
       message: 'nope',
