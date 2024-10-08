@@ -687,6 +687,149 @@ describe('Clock (acceptance)', function() {
     expect(recurring1.calls.count()).toBe(4);
   });
 
+  describe('auto tick mode', () => {
+    let delayedFunctionScheduler;
+    let mockDate;
+    let clock;
+    const realTimeout = setTimeout;
+
+    beforeEach(() => {
+      delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler();
+      mockDate = {
+        install: function() {},
+        tick: function() {},
+        uninstall: function() {}
+      };
+      clock = new jasmineUnderTest.Clock(
+        // We use the real window for global or firefox is displeased when we try to call a real setTimeout on an object "that doesn't implement window".
+        typeof window !== 'undefined' ? window : { setTimeout: setTimeout },
+        function() {
+          return delayedFunctionScheduler;
+        },
+        mockDate
+      );
+      clock.install();
+      clock.setTickMode('auto');
+    });
+
+    afterEach(() => {
+      clock.uninstall();
+    });
+
+    it('can run setTimeouts/setIntervals asynchronously', function() {
+      const recurring = jasmine.createSpy('recurring'),
+        fn1 = jasmine.createSpy('fn1'),
+        fn2 = jasmine.createSpy('fn2'),
+        fn3 = jasmine.createSpy('fn3');
+
+      const intervalId = clock.setInterval(recurring, 50);
+      // In a microtask, add some timeouts.
+      Promise.resolve()
+        .then(function() {
+          return new Promise(function(resolve) {
+            clock.setTimeout(resolve, 25);
+          });
+        })
+        .then(function() {
+          fn1();
+          return new Promise(function(resolve) {
+            clock.setTimeout(resolve, 200);
+          });
+        })
+        .then(function() {
+          fn2();
+          return new Promise(function(resolve) {
+            clock.setTimeout(resolve, 100);
+          });
+        })
+        .then(function() {
+          fn3();
+        });
+
+      expect(recurring).not.toHaveBeenCalled();
+      expect(fn1).not.toHaveBeenCalled();
+      expect(fn2).not.toHaveBeenCalled();
+      expect(fn3).not.toHaveBeenCalled();
+
+      return new Promise(resolve => clock.setTimeout(resolve, 50))
+        .then(function() {
+          expect(recurring).toHaveBeenCalledTimes(1);
+          expect(fn1).toHaveBeenCalled();
+          expect(fn2).not.toHaveBeenCalled();
+          expect(fn3).not.toHaveBeenCalled();
+
+          return new Promise(resolve => clock.setTimeout(resolve, 175));
+        })
+        .then(function() {
+          expect(recurring).toHaveBeenCalledTimes(4);
+          expect(fn1).toHaveBeenCalled();
+          expect(fn2).toHaveBeenCalled();
+          expect(fn3).not.toHaveBeenCalled();
+
+          clock.clearInterval(intervalId);
+          return new Promise(resolve => clock.setTimeout(resolve, 100));
+        })
+        .then(function() {
+          expect(recurring).toHaveBeenCalledTimes(4);
+          expect(fn1).toHaveBeenCalled();
+          expect(fn2).toHaveBeenCalled();
+          expect(fn3).toHaveBeenCalled();
+        });
+    });
+
+    it('can execute hundreds of timers "quickly"', async () => {
+      // This test ensures the setTimeout loop isn't getting throttled by browsers
+      const promises = [];
+      for (let i = 0; i < 1000; i++) {
+        promises.push(new Promise(resolve => clock.setTimeout(resolve)));
+      }
+      const startTimeMs = performance.now() / 1000;
+      await Promise.all(promises);
+      const endTimeMs = performance.now() / 1000;
+      expect(endTimeMs - startTimeMs).toBeLessThan(1000);
+    });
+
+    it('cancels autoTick when turned off', async function() {
+      let p1Resolved = false;
+      let p2Resolved = false;
+      const p1 = new Promise(resolve => clock.setTimeout(resolve, 1)).then(
+        () => (p1Resolved = true)
+      );
+      const p2 = new Promise(resolve => clock.setTimeout(resolve, 2)).then(
+        () => (p2Resolved = true)
+      );
+
+      await p1;
+      expect(p1Resolved).toBe(true);
+      expect(p2Resolved).toBe(false);
+
+      clock.setTickMode('manual');
+      await new Promise(resolve => realTimeout(resolve, 2));
+      expect(p1Resolved).toBe(true);
+      expect(p2Resolved).toBe(false);
+
+      clock.setTickMode('auto');
+      await p2;
+      expect(p1Resolved).toBe(true);
+      expect(p2Resolved).toBe(true);
+    });
+
+    it('is easy to test async functions with interleaved timers and microtasks', async () => {
+      async function blackBoxWithLotsOfAsyncStuff() {
+        await new Promise(r => clock.setTimeout(r, 10));
+        await Promise.resolve();
+        await Promise.resolve();
+        await new Promise(r => clock.setTimeout(r, 20));
+        await Promise.resolve();
+        await Promise.resolve();
+        await Promise.resolve();
+        return 'done';
+      }
+      const result = await blackBoxWithLotsOfAsyncStuff();
+      expect(result).toBe('done');
+    });
+  });
+
   it('can clear a previously set timeout', function() {
     const clearedFn = jasmine.createSpy('clearedFn'),
       delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),

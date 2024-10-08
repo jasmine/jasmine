@@ -1,3 +1,7 @@
+/**
+ * @typedef {"auto" | "manual"} TickMode
+ */
+
 getJasmineRequireObj().Clock = function() {
   /* global process */
   const NODE_JS =
@@ -29,6 +33,10 @@ getJasmineRequireObj().Clock = function() {
     let installed = false;
     let delayedFunctionScheduler;
     let timer;
+    let tickMode = {
+      mode: 'manual',
+      counter: 0
+    };
 
     this.FakeTimeout = FakeTimeout;
 
@@ -138,7 +146,88 @@ getJasmineRequireObj().Clock = function() {
       }
     };
 
+    /**
+     * Updates how the clock ticks.
+     *
+     * There are two modes of operation:
+     *
+     * - 'manual': The clock will not execute timers unless `clock.tick()` is called.
+     * - 'auto': The time is automatically advanced asynchronously after a macrotask, giving
+     * microtasks and events outside the clock a chance to run before each timer runs.
+     *
+     * @param {TickMode} newMode
+     */
+    this.setTickMode = function(newMode) {
+      const { mode, counter } = tickMode;
+      if (newMode === mode) {
+        return;
+      }
+      tickMode = { mode: newMode, counter: counter + 1 };
+      if (newMode === 'auto') {
+        advanceUntilModeChanges();
+      }
+    };
+
     return this;
+
+    /**
+     * Advances the Clock's time until the mode changes.
+     *
+     * The time is advanced asynchronously, giving microtasks and events a chance
+     * to run before each timer runs.
+     *
+     * @function
+     * @return {!Promise<undefined>}
+     */
+    async function advanceUntilModeChanges() {
+      if (!installed) {
+        throw new Error(
+          'Mock clock is not installed, use jasmine.clock().install()'
+        );
+      }
+      const { counter } = tickMode;
+
+      while (true) {
+        await newMacrotask();
+
+        if (
+          tickMode.counter !== counter ||
+          !installed ||
+          delayedFunctionScheduler === null
+        ) {
+          return;
+        }
+
+        if (!delayedFunctionScheduler.isEmpty()) {
+          delayedFunctionScheduler.runNextQueuedFunction(function(millis) {
+            mockDate.tick(millis);
+          });
+        }
+      }
+    }
+
+    /**
+     * Waits until a new macro task.
+     *
+     * Used with setAutoTickMode(true), which is meant to act when the test is waiting, we need
+     * to insert ourselves in the macro task queue.
+     *
+     * @return {!Promise<undefined>}
+     */
+    async function newMacrotask() {
+      // MessageChannel ensures that setTimeout is not throttled to 4ms.
+      // https://developer.mozilla.org/en-US/docs/Web/API/setTimeout#reasons_for_delays_longer_than_specified
+      // https://stackblitz.com/edit/stackblitz-starters-qtlpcc
+      await new Promise(resolve => {
+        const channel = new MessageChannel();
+        channel.port1.onmessage = resolve;
+        channel.port2.postMessage(undefined);
+      });
+      // setTimeout ensures that we interleave with other setTimeouts.
+      await new Promise(resolve => {
+        realTimingFunctions.setTimeout.call(global, resolve);
+      });
+    }
 
     function originalTimingFunctionsIntact() {
       return (
