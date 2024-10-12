@@ -46,19 +46,14 @@ When ready to release - specs are all green and the stories are done:
 
 ### Release the core NPM module
 
-1. `npm adduser` to save your credentials locally
-1. `npm publish .` to publish what's in `package.json`
+1. `npm login` to save your credentials locally
+2. `npm publish .` to publish what's in `package.json`
 
 ### Release the docs
 
 Probably only need to do this when releasing a minor version, and not a patch
 version. See [the README file in the docs repo](https://github.com/jasmine/jasmine.github.io/blob/master/README.md)
 for instructions.
-
-1. `rake update_edge_jasmine`
-1. `npm run jsdoc`
-1. `rake release[${version}]` to copy the current edge docs to the new version
-1. Commit and push.
 
 ### Release the `jasmine` NPM package
 
