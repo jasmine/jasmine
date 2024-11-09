@@ -96,6 +96,16 @@ describe('toEqual', function() {
     expect(compareEquals(actual, expected).message).toEqual(message);
   });
 
+  it('reports mismatches as well as missing or extra properties', function() {
+    const actual = { x: { z: 2 } },
+      expected = { x: { y: 1, z: 3 } },
+      message = 'Expected $.x to have properties\n' +
+        '    y: 1\n' +
+        'Expected $.x.z = 2 to equal 3.';
+
+    expect(compareEquals(actual, expected).message).toEqual(message);
+  });
+
   it('reports missing symbol properties', function() {
     const actual = { x: {} },
       expected = { x: { [Symbol('y')]: 1 } },

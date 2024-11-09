@@ -483,7 +483,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       diffBuilder.recordMismatch(
         objectKeysAreDifferentFormatter.bind(null, this.pp)
       );
-      return false;
+      result = false;
     }
 
     for (const key of aKeys) {
