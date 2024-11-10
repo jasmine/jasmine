@@ -251,6 +251,16 @@ getJasmineRequireObj().Suite = function(j$) {
     );
   };
 
+  Suite.prototype.hasChildWithDescription = function(description) {
+    for (const child of this.children) {
+      if (child.description === description) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   Object.defineProperty(Suite.prototype, 'metadata', {
     get: function() {
       if (!this.metadata_) {

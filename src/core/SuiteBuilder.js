@@ -161,6 +161,8 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
         j$.util.validateTimeout(timeout);
       }
 
+      this.checkDuplicate_(description, 'spec');
+
       const spec = this.specFactory_(description, fn, timeout, filename);
       if (this.currentDeclarationSuite_.markedExcluding) {
         spec.exclude();
@@ -170,7 +172,27 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       return spec;
     }
 
+    checkDuplicate_(description, type) {
+      if (!this.env_.configuration().forbidDuplicateNames) {
+        return;
+      }
+
+      if (this.currentDeclarationSuite_.hasChildWithDescription(description)) {
+        const parentDesc =
+          this.currentDeclarationSuite_ === this.topSuite
+            ? 'top suite'
+            : `"${this.currentDeclarationSuite_.getFullName()}"`;
+        throw new Error(
+          `Duplicate ${type} name "${description}" found in ${parentDesc}`
+        );
+      }
+    }
+
     suiteFactory_(description, filename) {
+      if (this.topSuite) {
+        this.checkDuplicate_(description, 'suite');
+      }
+
       const config = this.env_.configuration();
       const parentSuite = this.currentDeclarationSuite_;
       const reportedParentSuiteId =

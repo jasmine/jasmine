@@ -378,4 +378,31 @@ describe('Suite', function() {
       );
     });
   });
+
+  describe('#hasChildWithDescription', function() {
+    it('returns true if there is a child with the given description', function() {
+      const subject = new jasmineUnderTest.Suite({});
+      const description = 'a spec';
+      subject.addChild({ description });
+
+      expect(subject.hasChildWithDescription(description)).toBeTrue();
+    });
+
+    it('returns false if there is no child with the given description', function() {
+      const subject = new jasmineUnderTest.Suite({});
+      subject.addChild({ description: 'a different spec' });
+
+      expect(subject.hasChildWithDescription('a spec')).toBeFalse();
+    });
+
+    it('does not recurse into child suites', function() {
+      const subject = new jasmineUnderTest.Suite({});
+      const childSuite = new jasmineUnderTest.Suite({});
+      subject.addChild(childSuite);
+      const description = 'a spec';
+      childSuite.addChild(description);
+
+      expect(subject.hasChildWithDescription('a spec')).toBeFalse();
+    });
+  });
 });

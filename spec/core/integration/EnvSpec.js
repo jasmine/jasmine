@@ -4444,6 +4444,15 @@ describe('Env integration', function() {
     });
   });
 
+  it('forbids duplicates when forbidDuplicateNames is true', function() {
+    env.configure({ forbidDuplicateNames: true });
+    env.it('a spec');
+
+    expect(function() {
+      env.it('a spec');
+    }).toThrowError('Duplicate spec name "a spec" found in top suite');
+  });
+
   function browserEventMethods() {
     return {
       listeners_: { error: [], unhandledrejection: [] },

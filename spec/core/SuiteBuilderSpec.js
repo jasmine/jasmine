@@ -176,6 +176,117 @@ describe('SuiteBuilder', function() {
     };
   }
 
+  describe('Duplicate name handling', function() {
+    describe('When forbidDuplicateNames is true', function() {
+      let env;
+
+      beforeEach(function() {
+        env = { configuration: () => ({ forbidDuplicateNames: true }) };
+      });
+
+      it('forbids duplicate spec names', function() {
+        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+
+        expect(function() {
+          suiteBuilder.describe('a suite', function() {
+            suiteBuilder.describe('a nested suite', function() {
+              suiteBuilder.it('a spec');
+              suiteBuilder.it('a spec');
+            });
+          });
+        }).toThrowError(
+          'Duplicate spec name "a spec" found in "a suite a nested suite"'
+        );
+      });
+
+      it('forbids duplicate spec names in the top suite', function() {
+        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+
+        expect(function() {
+          suiteBuilder.it('another spec');
+          suiteBuilder.it('another spec');
+        }).toThrowError(
+          'Duplicate spec name "another spec" found in top suite'
+        );
+      });
+
+      it('forbids duplicate suite names', function() {
+        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+
+        expect(function() {
+          suiteBuilder.describe('a suite', function() {
+            suiteBuilder.describe('a nested suite', function() {
+              suiteBuilder.describe('another suite', function() {
+                suiteBuilder.it('a spec');
+              });
+              suiteBuilder.describe('another suite', function() {
+                suiteBuilder.it('a spec');
+              });
+            });
+          });
+        }).toThrowError(
+          'Duplicate suite name "another suite" found in "a suite a nested suite"'
+        );
+      });
+
+      it('forbids duplicate suite names in the top suite', function() {
+        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+
+        expect(function() {
+          suiteBuilder.describe('a suite', function() {
+            suiteBuilder.it('a spec');
+          });
+          suiteBuilder.describe('a suite', function() {
+            suiteBuilder.it('a spec');
+          });
+        }).toThrowError('Duplicate suite name "a suite" found in top suite');
+      });
+
+      it('allows spec and suite names to be duplicated in different suites', function() {
+        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+
+        expect(function() {
+          suiteBuilder.describe('suite a', function() {
+            suiteBuilder.describe('dupe suite', function() {
+              suiteBuilder.it('dupe spec');
+              suiteBuilder.describe('child suite', function() {
+                suiteBuilder.it('dupe spec');
+              });
+            });
+          });
+          suiteBuilder.describe('suite b', function() {
+            suiteBuilder.describe('dupe suite', function() {
+              suiteBuilder.it('dupe spec');
+            });
+          });
+        }).not.toThrow();
+      });
+    });
+
+    describe('When forbidDuplicateNames is false', function() {
+      let env;
+
+      beforeEach(function() {
+        env = { configuration: () => ({ forbidDuplicateNames: false }) };
+      });
+
+      it('allows duplicate spec and suite names', function() {
+        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+
+        expect(function() {
+          suiteBuilder.describe('dupe suite', function() {
+            suiteBuilder.it('dupe spec');
+            suiteBuilder.it('dupe spec');
+          });
+          suiteBuilder.describe('dupe suite', function() {
+            suiteBuilder.it('dupe spec');
+            suiteBuilder.it('dupe spec');
+          });
+        }).not.toThrow();
+      });
+    });
+  });
+
   describe('#parallelReset', function() {
     it('resets the top suite result', function() {
       jasmineUnderTest.Suite.prototype.handleException.and.callThrough();

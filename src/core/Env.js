@@ -139,6 +139,15 @@ getJasmineRequireObj().Env = function(j$) {
        */
       autoCleanClosures: true,
       /**
+       * Whether to forbid duplicate spec or suite names. If set to true, using
+       * the same name multiple times in the same immediate parent suite is an
+       * error.
+       * @name Configuration#forbidDuplicateNames
+       * @type boolean
+       * @default false
+       */
+      forbidDuplicateNames: false,
+      /**
        * Whether or not to issue warnings for certain deprecated functionality
        * every time it's used. If not set or set to false, deprecation warnings
        * for methods that tend to be called frequently will be issued only once
@@ -186,7 +195,8 @@ getJasmineRequireObj().Env = function(j$) {
         'hideDisabled',
         'stopOnSpecFailure',
         'stopSpecOnExpectationFailure',
-        'autoCleanClosures'
+        'autoCleanClosures',
+        'forbidDuplicateNames'
       ];
 
       booleanProps.forEach(function(prop) {
