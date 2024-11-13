@@ -757,7 +757,9 @@ describe('matchersUtil', function() {
             const a2 = new TypedArrayCtor(2);
             a1[0] = a2[0] = 0;
             a1[1] = a2[1] = 1;
-            expect(matchersUtil.equals(a1, a2)).toBe(true);
+            const diffBuilder = new jasmineUnderTest.DiffBuilder();
+            expect(matchersUtil.equals(a1, a2, diffBuilder)).toBe(true);
+            jasmine.debugLog('Diff: ' + diffBuilder.getMessage());
           }
         );
 
