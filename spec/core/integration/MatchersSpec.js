@@ -481,7 +481,6 @@ describe('Matchers (Integration)', function() {
     verifyFails(function(env) {
       env.expect(1).toBeNullish();
     });
-
   });
 
   describe('toContain', function() {
