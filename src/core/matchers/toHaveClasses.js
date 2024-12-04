@@ -3,7 +3,7 @@ getJasmineRequireObj().toHaveClasses = function(j$) {
    * {@link expect} the actual value to be a DOM element that has the expected classes
    * @function
    * @name matchers#toHaveClasses
-   * @since 3.0.0
+   * @since 5.6.0
    * @param {Object} expected - The class names to test for
    * @example
    * const el = document.createElement('div');
