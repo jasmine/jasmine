@@ -621,6 +621,20 @@ describe('Matchers (Integration)', function() {
     });
   });
 
+  describe('toHaveClasses', function() {
+    verifyPasses(function(env) {
+      const el = specHelpers.domHelpers.createElementWithClassName(
+        'foo bar baz'
+      );
+      env.expect(el).toHaveClasses(['bar', 'baz']);
+    });
+
+    verifyFails(function(env) {
+      const el = specHelpers.domHelpers.createElementWithClassName('foo bar');
+      env.expect(el).toHaveClasses(['bar', 'baz']);
+    });
+  });
+
   describe('toHaveSpyInteractions', function() {
     let spyObj;
     beforeEach(function() {
