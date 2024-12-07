@@ -18,9 +18,7 @@ getJasmineRequireObj().toHaveClasses = function(j$) {
         }
 
         return {
-          pass: expected.every(e =>
-            actual.classList.value.split(' ').some(c => c === e)
-          )
+          pass: expected.every(e => actual.classList.contains(e))
         };
       }
     };
