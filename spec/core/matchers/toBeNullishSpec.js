@@ -1,0 +1,19 @@
+describe('toBeNullish', function() {
+  it('passes for null values', function() {
+    const matcher = jasmineUnderTest.matchers.toBeNullish();
+    const result = matcher.compare(null);
+    expect(result.pass).toBe(true);
+  });
+
+  it('passes for undefined values', function() {
+    const matcher = jasmineUnderTest.matchers.toBeNullish();
+    const result = matcher.compare(void 0);
+    expect(result.pass).toBe(true);
+  });
+
+  it('fails when matching defined values', function() {
+    const matcher = jasmineUnderTest.matchers.toBeNullish();
+    const result = matcher.compare('foo');
+    expect(result.pass).toBe(false);
+  });
+});
