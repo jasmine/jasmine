@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Questions, requests for help, etc
+    url: https://github.com/jasmine/jasmine/discussions/new/choose
+    about: Please start a discussion.
   - name: Issues with the `jasmine` CLI
     url: https://github.com/jasmine/jasmine-npm/issues
     about: Please create issues related to the `jasmine` package in its repository.
