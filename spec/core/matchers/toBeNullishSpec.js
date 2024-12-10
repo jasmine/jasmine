@@ -16,4 +16,42 @@ describe('toBeNullish', function() {
     const result = matcher.compare('foo');
     expect(result.pass).toBe(false);
   });
+
+  describe('falsy values', () => {
+    it('fails for 0', function() {
+      const matcher = jasmineUnderTest.matchers.toBeNullish();
+      const result = matcher.compare(0);
+      expect(result.pass).toBe(false);
+    });
+
+    it('fails for -0', function() {
+      const matcher = jasmineUnderTest.matchers.toBeNullish();
+      const result = matcher.compare(-0);
+      expect(result.pass).toBe(false);
+    });
+
+    it('fails for empty string', function() {
+      const matcher = jasmineUnderTest.matchers.toBeNullish();
+      const result = matcher.compare('');
+      expect(result.pass).toBe(false);
+    });
+
+    it('fails for false', function() {
+      const matcher = jasmineUnderTest.matchers.toBeNullish();
+      const result = matcher.compare(false);
+      expect(result.pass).toBe(false);
+    });
+
+    it('fails for NaN', function() {
+      const matcher = jasmineUnderTest.matchers.toBeNullish();
+      const result = matcher.compare(NaN);
+      expect(result.pass).toBe(false);
+    });
+
+    it('fails for 0n', function() {
+      const matcher = jasmineUnderTest.matchers.toBeNullish();
+      const result = matcher.compare(BigInt(0));
+      expect(result.pass).toBe(false);
+    });
+  });
 });
