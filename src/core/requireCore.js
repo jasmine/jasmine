@@ -21,6 +21,12 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     ) {
       jasmineGlobal = window;
     }
+    if (
+      typeof jasmineGlobal === 'undefined' &&
+      typeof globalThis !== 'undefined'
+    ) {
+      jasmineGlobal = globalThis;
+    }
     jasmineRequire = jasmineGlobal.jasmineRequire = {};
   }
 
