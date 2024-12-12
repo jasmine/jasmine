@@ -18,6 +18,7 @@ getJasmineRequireObj().requireMatchers = function(jRequire, j$) {
       'toBeTrue',
       'toBeTruthy',
       'toBeUndefined',
+      'toBeNullish',
       'toContain',
       'toEqual',
       'toHaveSize',
