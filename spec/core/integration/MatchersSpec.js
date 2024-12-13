@@ -469,6 +469,24 @@ describe('Matchers (Integration)', function() {
     });
   });
 
+  describe('toBeNullish', function() {
+    verifyPasses(function(env) {
+      env.expect(undefined).toBeNullish();
+    });
+
+    verifyPasses(function(env) {
+      env.expect(null).toBeNullish();
+    });
+
+    verifyFails(function(env) {
+      env.expect(1).toBeNullish();
+    });
+
+    verifyFails(function(env) {
+      env.expect('').toBeNullish();
+    });
+  });
+
   describe('toContain', function() {
     verifyPasses(function(env) {
       env.addCustomEqualityTester(function(a, b) {
