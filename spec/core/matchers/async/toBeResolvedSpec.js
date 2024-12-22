@@ -35,6 +35,8 @@ describe('toBeResolved', function() {
       return matcher.compare(actual);
     }
 
-    expect(f).toThrowError('Expected toBeResolved to be called on a promise.');
+    expect(f).toThrowError(
+      `Expected toBeResolved to be called on a promise but was on a ${typeof actual}.`
+    );
   });
 });

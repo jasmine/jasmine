@@ -14,7 +14,9 @@ getJasmineRequireObj().toBeRejected = function(j$) {
     return {
       compare: function(actual) {
         if (!j$.isPromiseLike(actual)) {
-          throw new Error('Expected toBeRejected to be called on a promise.');
+          throw new Error(
+            `Expected toBeRejected to be called on a promise but was on a ${typeof actual}.`
+          );
         }
         return actual.then(
           function() {
