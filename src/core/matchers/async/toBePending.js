@@ -12,7 +12,9 @@ getJasmineRequireObj().toBePending = function(j$) {
     return {
       compare: function(actual) {
         if (!j$.isPromiseLike(actual)) {
-          throw new Error('Expected toBePending to be called on a promise.');
+          throw new Error(
+            `Expected toBePending to be called on a promise but was on a ${typeof actual}.`
+          );
         }
         const want = {};
         return Promise.race([actual, Promise.resolve(want)]).then(
