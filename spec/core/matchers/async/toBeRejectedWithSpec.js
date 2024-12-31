@@ -83,7 +83,7 @@ describe('#toBeRejectedWith', function() {
     }
 
     expect(f).toThrowError(
-      `Expected toBeRejectedWith to be called on a promise but was on a ${typeof actual}.`
+      'Expected toBeRejectedWith to be called on a promise but was on a string.'
     );
   });
 });

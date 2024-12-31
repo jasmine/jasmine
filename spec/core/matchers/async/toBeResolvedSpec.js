@@ -36,7 +36,7 @@ describe('toBeResolved', function() {
     }
 
     expect(f).toThrowError(
-      `Expected toBeResolved to be called on a promise but was on a ${typeof actual}.`
+      'Expected toBeResolved to be called on a promise but was on a string.'
     );
   });
 });

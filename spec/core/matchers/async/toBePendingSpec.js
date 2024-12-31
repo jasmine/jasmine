@@ -39,7 +39,7 @@ describe('toBePending', function() {
     }
 
     expect(f).toThrowError(
-      `Expected toBePending to be called on a promise but was on a ${typeof actual}.`
+      'Expected toBePending to be called on a promise but was on a string.'
     );
   });
 });

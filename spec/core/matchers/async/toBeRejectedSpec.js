@@ -29,7 +29,7 @@ describe('toBeRejected', function() {
     }
 
     expect(f).toThrowError(
-      `Expected toBeRejected to be called on a promise but was on a ${typeof actual}.`
+      'Expected toBeRejected to be called on a promise but was on a string.'
     );
   });
 });
