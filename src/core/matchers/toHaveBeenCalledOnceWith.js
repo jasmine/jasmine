@@ -13,7 +13,7 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function(j$) {
    * @example
    * expect(mySpy).toHaveBeenCalledOnceWith('foo', 'bar', 2);
    */
-  function toHaveBeenCalledOnceWith(util) {
+  function toHaveBeenCalledOnceWith(matchersUtil) {
     return {
       compare: function() {
         const args = Array.prototype.slice.call(arguments, 0),
@@ -22,20 +22,29 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function(j$) {
 
         if (!j$.isSpy(actual)) {
           throw new Error(
-            getErrorMsg('Expected a spy, but got ' + util.pp(actual) + '.')
+            getErrorMsg(
+              'Expected a spy, but got ' + matchersUtil.pp(actual) + '.'
+            )
           );
         }
 
         const prettyPrintedCalls = actual.calls
           .allArgs()
           .map(function(argsForCall) {
-            return '  ' + util.pp(argsForCall);
+            return '  ' + matchersUtil.pp(argsForCall);
           });
 
         if (
           actual.calls.count() === 1 &&
-          util.contains(actual.calls.allArgs(), expectedArgs)
+          matchersUtil.contains(actual.calls.allArgs(), expectedArgs)
         ) {
+          const firstIndex = actual.calls
+            .all()
+            .findIndex(call => matchersUtil.equals(call.args, expectedArgs));
+          if (firstIndex > -1) {
+            actual.calls.all()[firstIndex].verified = true;
+          }
+
           return {
             pass: true,
             message:
@@ -43,7 +52,7 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function(j$) {
               actual.and.identity +
               ' to have been called 0 times, multiple times, or once, but with arguments different from:\n' +
               '  ' +
-              util.pp(expectedArgs) +
+              matchersUtil.pp(expectedArgs) +
               '\n' +
               'But the actual call was:\n' +
               prettyPrintedCalls.join(',\n') +
@@ -54,7 +63,7 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function(j$) {
         function getDiffs() {
           return actual.calls.allArgs().map(function(argsForCall, callIx) {
             const diffBuilder = new j$.DiffBuilder();
-            util.equals(argsForCall, expectedArgs, diffBuilder);
+            matchersUtil.equals(argsForCall, expectedArgs, diffBuilder);
             return diffBuilder.getMessage();
           });
         }
@@ -87,7 +96,7 @@ getJasmineRequireObj().toHaveBeenCalledOnceWith = function(j$) {
             actual.and.identity +
             ' to have been called only once, and with given args:\n' +
             '  ' +
-            util.pp(expectedArgs) +
+            matchersUtil.pp(expectedArgs) +
             '\n' +
             butString()
         };

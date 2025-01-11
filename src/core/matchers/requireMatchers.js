@@ -30,6 +30,7 @@ getJasmineRequireObj().requireMatchers = function(jRequire, j$) {
       'toHaveClass',
       'toHaveClasses',
       'toHaveSpyInteractions',
+      'toHaveNoOtherSpyInteractions',
       'toMatch',
       'toThrow',
       'toThrowError',

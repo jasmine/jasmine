@@ -87,4 +87,17 @@ describe('toHaveBeenCalledTimes', function() {
         ' times.'
     );
   });
+
+  it('set the correct calls as verified when passing', function() {
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
+      spy = new jasmineUnderTest.Spy('sample-spy');
+
+    spy();
+    spy();
+
+    matcher.compare(spy, 2);
+
+    expect(spy.calls.count()).toBe(2);
+    expect(spy.calls.unverifiedCount()).toBe(0);
+  });
 });

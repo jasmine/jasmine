@@ -105,4 +105,18 @@ describe('toHaveBeenCalledOnceWith', function() {
       matcher.compare(fn);
     }).toThrowError(/Expected a spy, but got Function./);
   });
+
+  it('set the correct calls as verified when passing', function() {
+    const pp = jasmineUnderTest.makePrettyPrinter(),
+      util = new jasmineUnderTest.MatchersUtil({ pp: pp }),
+      matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
+      calledSpy = new jasmineUnderTest.Spy('called-spy');
+
+    calledSpy('x');
+
+    matcher.compare(calledSpy, 'x');
+
+    expect(calledSpy.calls.count()).toBe(1);
+    expect(calledSpy.calls.unverifiedCount()).toBe(0);
+  });
 });

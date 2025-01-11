@@ -34,6 +34,8 @@ getJasmineRequireObj().toHaveBeenCalled = function(j$) {
 
         result.pass = actual.calls.any();
 
+        actual.calls.all().forEach(call => (call.verified = true));
+
         result.message = result.pass
           ? 'Expected spy ' + actual.and.identity + ' not to have been called.'
           : 'Expected spy ' + actual.and.identity + ' to have been called.';
