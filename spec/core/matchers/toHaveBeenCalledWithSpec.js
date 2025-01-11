@@ -2,6 +2,7 @@ describe('toHaveBeenCalledWith', function() {
   it('passes when the actual was called with matching parameters', function() {
     const matchersUtil = {
         contains: jasmine.createSpy('delegated-contains').and.returnValue(true),
+        equals: jasmine.createSpy('delegated-equals').and.returnValue(true),
         pp: jasmineUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
@@ -95,7 +96,8 @@ describe('toHaveBeenCalledWith', function() {
 
   it('set the correct calls as verified when passing', function() {
     const matchersUtil = {
-        contains: jasmine.createSpy('interaction-check').and.returnValue(true),
+        contains: jasmine.createSpy('delegated-contains').and.returnValue(true),
+        equals: jasmine.createSpy('delegated-equals').and.returnValue(true),
         pp: jasmineUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
