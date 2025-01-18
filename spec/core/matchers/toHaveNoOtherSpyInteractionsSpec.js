@@ -26,22 +26,32 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('fails when there are spy interactions', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions();
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
+      pp: jasmineUnderTest.makePrettyPrinter()
+    });
+    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions(
+      matchersUtil
+    );
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
 
-    spyObj.spyA();
+    spyObj.spyA('x');
 
     let result = matcher.compare(spyObj);
     expect(result.pass).toBeFalse();
     expect(result.message).toContain(
-      "Unverified spies' calls have been found in:"
+      'Expected to have no other spy interactions, but it had the following calls:'
     );
   });
 
   it('shows the right message is negated', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions();
+    const matchersUtil = new jasmineUnderTest.MatchersUtil({
+      pp: jasmineUnderTest.makePrettyPrinter()
+    });
+    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions(
+      matchersUtil
+    );
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
@@ -52,7 +62,7 @@ describe('toHaveNoOtherSpyInteractions', function() {
     let result = matcher.compare(spyObj);
     expect(result.pass).toBeFalse(),
       expect(result.message).toContain(
-        "Unverified spies' calls have been found in:"
+        'Expected to have no other spy interactions, but it had the following calls:'
       );
   });
 
@@ -67,7 +77,9 @@ describe('toHaveNoOtherSpyInteractions', function() {
 
     let result = matcher.compare(spyObj);
     expect(result.pass).toBeTrue();
-    expect(result.message).toContain("Spies' calls are all verified.");
+    expect(result.message).toContain(
+      "Expected to have other spy interactions but it didn't"
+    );
   });
 
   it(`throws an error if a non-object is passed`, function() {
@@ -117,7 +129,9 @@ describe('toHaveNoOtherSpyInteractions', function() {
     const matchersUtil = new jasmineUnderTest.MatchersUtil({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions(),
+      matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions(
+        matchersUtil
+      ),
       toHaveBeenCalledWithMatcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(
         matchersUtil
       ),

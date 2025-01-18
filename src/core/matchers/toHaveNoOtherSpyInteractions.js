@@ -29,7 +29,7 @@ getJasmineRequireObj().toHaveNoOtherSpyInteractions = function(j$) {
 
         result.pass = true;
         let hasSpy = false;
-        const unexpectedCallsIn = [];
+        const unexpectedCalls = [];
 
         for (const spy of Object.values(actual)) {
           if (!j$.isSpy(spy)) {
@@ -38,14 +38,20 @@ getJasmineRequireObj().toHaveNoOtherSpyInteractions = function(j$) {
 
           hasSpy = true;
 
-          if (!spy.calls.all().every(call => call.verified)) {
-            unexpectedCallsIn.push([
-              spy.and.identity,
-              spy.calls.unverifiedCount()
-            ]);
+          const unverifiedCalls = spy.calls
+            .all()
+            .filter(call => !call.verified);
 
+          if (unverifiedCalls.length > 0) {
             result.pass = false;
           }
+
+          unverifiedCalls.forEach(unverifiedCall => {
+            unexpectedCalls.push([
+              spy.and.identity,
+              matchersUtil.pp(unverifiedCall.args)
+            ]);
+          });
         }
 
         if (!hasSpy) {
@@ -56,15 +62,21 @@ getJasmineRequireObj().toHaveNoOtherSpyInteractions = function(j$) {
           );
         }
 
-        result.message = result.pass
-          ? "Spies' calls are all verified."
-          : "Unverified spies' calls have been found in: " +
-            unexpectedCallsIn
-              .map(
-                ([spyName, unverifiedCount]) =>
-                  `${spyName} (${unverifiedCount} unverified call(s))`
-              )
-              .join(', ');
+        if (result.pass) {
+          result.message =
+            "Expected to have other spy interactions but it didn't.";
+        } else {
+          const ppUnexpectedCalls = unexpectedCalls
+            .map(
+              ([spyName, arguments]) => `  ${spyName} called with ${arguments}`
+            )
+            .join(',\n');
+
+          result.message =
+            'Expected to have no other spy interactions, but it had the following calls:\n' +
+            ppUnexpectedCalls +
+            '.\n\n';
+        }
 
         return result;
       }
