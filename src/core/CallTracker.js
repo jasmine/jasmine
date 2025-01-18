@@ -126,12 +126,6 @@ getJasmineRequireObj().CallTracker = function(j$) {
       opts.cloneArgs = true;
     };
 
-    /**
-     * Get the number of unverified invocations of this spy.
-     * @name Spy#calls#unverifiedCount
-     * @function
-     * @return {Integer}
-     */
     this.unverifiedCount = function() {
       return calls.reduce((count, call) => count + (call.verified ? 0 : 1), 0);
     };
