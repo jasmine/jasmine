@@ -44,6 +44,11 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
         }
 
         if (matchersUtil.contains(actual.calls.allArgs(), expectedArgs)) {
+          actual.calls
+            .all()
+            .filter(call => matchersUtil.equals(call.args, expectedArgs))
+            .forEach(call => (call.verified = true));
+
           result.pass = true;
           result.message = function() {
             return (

@@ -50,4 +50,16 @@ describe('toHaveBeenCalled', function() {
       'Expected spy sample-spy to have been called.'
     );
   });
+
+  it('set the correct calls as verified when passing', function() {
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalled(),
+      spy = new jasmineUnderTest.Spy('sample-spy');
+
+    spy();
+
+    matcher.compare(spy);
+
+    expect(spy.calls.count()).toBe(1);
+    expect(spy.calls.unverifiedCount()).toBe(0);
+  });
 });

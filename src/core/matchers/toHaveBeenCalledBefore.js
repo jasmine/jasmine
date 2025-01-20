@@ -50,6 +50,9 @@ getJasmineRequireObj().toHaveBeenCalledBefore = function(j$) {
         result.pass = latest1stSpyCall < first2ndSpyCall;
 
         if (result.pass) {
+          firstSpy.calls.mostRecent().verified = true;
+          latterSpy.calls.first().verified = true;
+
           result.message =
             'Expected spy ' +
             firstSpy.and.identity +

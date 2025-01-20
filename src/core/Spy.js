@@ -26,7 +26,8 @@ getJasmineRequireObj().Spy = function(j$) {
       const callData = {
         object: context,
         invocationOrder: nextOrder(),
-        args: Array.prototype.slice.apply(args)
+        args: Array.prototype.slice.apply(args),
+        verified: false
       };
 
       callTracker.track(callData);

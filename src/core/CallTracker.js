@@ -125,6 +125,10 @@ getJasmineRequireObj().CallTracker = function(j$) {
     this.saveArgumentsByValue = function() {
       opts.cloneArgs = true;
     };
+
+    this.unverifiedCount = function() {
+      return calls.reduce((count, call) => count + (call.verified ? 0 : 1), 0);
+    };
   }
 
   return CallTracker;

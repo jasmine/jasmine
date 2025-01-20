@@ -112,4 +112,20 @@ describe('toHaveBeenCalledBefore', function() {
       'Expected spy first spy to not have been called before spy second spy, but it was'
     );
   });
+
+  it('set the correct calls as verified when passing', function() {
+    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+      firstSpy = new jasmineUnderTest.Spy('first spy'),
+      secondSpy = new jasmineUnderTest.Spy('second spy');
+
+    firstSpy();
+    secondSpy();
+
+    matcher.compare(firstSpy, secondSpy);
+
+    expect(firstSpy.calls.count()).toBe(1);
+    expect(firstSpy.calls.unverifiedCount()).toBe(0);
+    expect(secondSpy.calls.count()).toBe(1);
+    expect(secondSpy.calls.unverifiedCount()).toBe(0);
+  });
 });

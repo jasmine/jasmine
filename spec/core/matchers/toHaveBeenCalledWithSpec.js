@@ -2,6 +2,7 @@ describe('toHaveBeenCalledWith', function() {
   it('passes when the actual was called with matching parameters', function() {
     const matchersUtil = {
         contains: jasmine.createSpy('delegated-contains').and.returnValue(true),
+        equals: jasmine.createSpy('delegated-equals').and.returnValue(true),
         pp: jasmineUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
@@ -91,5 +92,21 @@ describe('toHaveBeenCalledWith', function() {
     expect(function() {
       matcher.compare(fn);
     }).toThrowError(/Expected a spy, but got Function./);
+  });
+
+  it('set the correct calls as verified when passing', function() {
+    const matchersUtil = {
+        contains: jasmine.createSpy('delegated-contains').and.returnValue(true),
+        equals: jasmine.createSpy('delegated-equals').and.returnValue(true),
+        pp: jasmineUnderTest.makePrettyPrinter()
+      },
+      matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
+      calledSpy = new jasmineUnderTest.Spy('called-spy');
+
+    calledSpy('a', 'b');
+    matcher.compare(calledSpy, 'a', 'b');
+
+    expect(calledSpy.calls.count()).toBe(1);
+    expect(calledSpy.calls.unverifiedCount()).toBe(0);
   });
 });
