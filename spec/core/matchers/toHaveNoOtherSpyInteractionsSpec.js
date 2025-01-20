@@ -40,8 +40,10 @@ describe('toHaveNoOtherSpyInteractions', function() {
 
     let result = matcher.compare(spyObj);
     expect(result.pass).toBeFalse();
-    expect(result.message).toContain(
-      'Expected to have no other spy interactions, but it had the following calls:'
+    // TODO: trim trailing newlines
+    expect(result.message).toEqual(
+      'Expected to have no other spy interactions, but it had the following calls:\n' +
+      "  NewClass.spyA called with [ 'x' ].\n\n"
     );
   });
 
@@ -60,10 +62,12 @@ describe('toHaveNoOtherSpyInteractions', function() {
     spyObj.spyB();
 
     let result = matcher.compare(spyObj);
-    expect(result.pass).toBeFalse(),
-      expect(result.message).toContain(
-        'Expected to have no other spy interactions, but it had the following calls:'
-      );
+    expect(result.pass).toBeFalse();
+    expect(result.message).toEqual(
+      'Expected to have no other spy interactions, but it had the following calls:\n' +
+      '  NewClass.spyA called with [  ],\n' +
+      '  NewClass.spyB called with [  ].\n\n'
+    );
   });
 
   it('passes when only non-observed spy object interactions are interacted', function() {
@@ -77,8 +81,8 @@ describe('toHaveNoOtherSpyInteractions', function() {
 
     let result = matcher.compare(spyObj);
     expect(result.pass).toBeTrue();
-    expect(result.message).toContain(
-      "Expected to have other spy interactions but it didn't"
+    expect(result.message).toEqual(
+      "Expected to have other spy interactions but it didn't."
     );
   });
 
