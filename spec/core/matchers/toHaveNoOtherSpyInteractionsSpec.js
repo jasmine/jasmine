@@ -40,10 +40,9 @@ describe('toHaveNoOtherSpyInteractions', function() {
 
     let result = matcher.compare(spyObj);
     expect(result.pass).toBeFalse();
-    // TODO: trim trailing newlines
     expect(result.message).toEqual(
-      'Expected to have no other spy interactions, but it had the following calls:\n' +
-      "  NewClass.spyA called with [ 'x' ].\n\n"
+      'Expected a spy object to have no other spy interactions, but it had the following calls:\n' +
+        "  NewClass.spyA called with [ 'x' ]."
     );
   });
 
@@ -64,9 +63,9 @@ describe('toHaveNoOtherSpyInteractions', function() {
     let result = matcher.compare(spyObj);
     expect(result.pass).toBeFalse();
     expect(result.message).toEqual(
-      'Expected to have no other spy interactions, but it had the following calls:\n' +
-      '  NewClass.spyA called with [  ],\n' +
-      '  NewClass.spyB called with [  ].\n\n'
+      'Expected a spy object to have no other spy interactions, but it had the following calls:\n' +
+        '  NewClass.spyA called with [  ],\n' +
+        '  NewClass.spyB called with [  ].'
     );
   });
 
@@ -82,7 +81,7 @@ describe('toHaveNoOtherSpyInteractions', function() {
     let result = matcher.compare(spyObj);
     expect(result.pass).toBeTrue();
     expect(result.message).toEqual(
-      "Expected to have other spy interactions but it didn't."
+      "Expected a spy object to have other spy interactions but it didn't."
     );
   });
 
@@ -106,7 +105,7 @@ describe('toHaveNoOtherSpyInteractions', function() {
     let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
-      .createSpyObj('NewClass', ['spyA', 'spyB']);
+      .createSpyObj('mySpyObj', ['spyA', 'spyB']);
 
     expect(function() {
       matcher.compare(spyObj, 'an argument');
@@ -117,7 +116,7 @@ describe('toHaveNoOtherSpyInteractions', function() {
     let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions();
     const spyObj = jasmineUnderTest
       .getEnv()
-      .createSpyObj('NewClass', ['notSpy']);
+      .createSpyObj('mySpyObj', ['notSpy']);
     // Removing spy since spy objects cannot be created without spies.
     spyObj.notSpy = function() {};
 

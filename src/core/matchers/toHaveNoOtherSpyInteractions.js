@@ -64,7 +64,7 @@ getJasmineRequireObj().toHaveNoOtherSpyInteractions = function(j$) {
 
         if (result.pass) {
           result.message =
-            "Expected to have other spy interactions but it didn't.";
+            "Expected a spy object to have other spy interactions but it didn't.";
         } else {
           const ppUnexpectedCalls = unexpectedCalls
             .map(
@@ -73,9 +73,9 @@ getJasmineRequireObj().toHaveNoOtherSpyInteractions = function(j$) {
             .join(',\n');
 
           result.message =
-            'Expected to have no other spy interactions, but it had the following calls:\n' +
+            'Expected a spy object to have no other spy interactions, but it had the following calls:\n' +
             ppUnexpectedCalls +
-            '.\n\n';
+            '.';
         }
 
         return result;
