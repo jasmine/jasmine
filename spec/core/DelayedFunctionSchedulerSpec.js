@@ -264,6 +264,42 @@ describe('DelayedFunctionScheduler', function() {
     expect(fn).toHaveBeenCalled();
   });
 
+  it('runs the next scheduled funtion', function() {
+    const scheduler = new jasmineUnderTest.DelayedFunctionScheduler();
+    const fn = jasmine.createSpy('fn');
+    const tickSpy = jasmine.createSpy('tick');
+
+    scheduler.scheduleFunction(fn, 10, [], false, 'foo');
+
+    expect(fn).not.toHaveBeenCalled();
+
+    scheduler.runNextQueuedFunction(tickSpy);
+
+    expect(fn).toHaveBeenCalled();
+    expect(tickSpy).toHaveBeenCalledWith(10);
+  });
+
+  it('runs the only a single scheduled funtion in a time slot', function() {
+    const scheduler = new jasmineUnderTest.DelayedFunctionScheduler();
+    const fn1 = jasmine.createSpy('fn');
+    const fn2 = jasmine.createSpy('fn2');
+    const tickSpy = jasmine.createSpy('tick');
+
+    scheduler.scheduleFunction(fn1, 10, [], false, 'foo1');
+    scheduler.scheduleFunction(fn2, 10, [], false, 'foo2');
+
+    scheduler.runNextQueuedFunction(tickSpy);
+
+    expect(fn1).toHaveBeenCalled();
+    expect(fn2).not.toHaveBeenCalled();
+    expect(tickSpy).toHaveBeenCalledWith(10);
+
+    tickSpy.calls.reset();
+    scheduler.runNextQueuedFunction(tickSpy);
+    expect(fn2).toHaveBeenCalled();
+    expect(tickSpy).toHaveBeenCalledWith(0);
+  });
+
   it('updates the mockDate per scheduled time', function() {
     const scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       tickDate = jasmine.createSpy('tickDate');
