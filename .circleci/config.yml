@@ -71,12 +71,14 @@ jobs:
       - run:
           name: Install Sauce Connect
           command: |
-            cd /tmp
-            curl https://saucelabs.com/downloads/sc-4.7.1-linux.tar.gz | tar zxf -
-            chmod +x sc-4.7.1-linux/bin/sc
+            tmpdir=$(mktemp -d)
+            cd "$tmpdir"
+            curl https://saucelabs.com/downloads/sauce-connect/5.2.2/sauce-connect-5.2.2_linux.x86_64.tar.gz | tar zxf -
+            chmod +x sc
             mkdir ~/workspace/bin
-            cp sc-4.7.1-linux/bin/sc ~/workspace/bin
-            ~/workspace/bin/sc --version
+            cp sc ~/workspace/bin
+            echo "Sauce Connect version info:"
+            ~/workspace/bin/sc version
       - run:
           name: Run tests
           command: |
@@ -84,13 +86,13 @@ jobs:
             # cleanly if we kill it from a different step than it started in.
 
             export PATH=$PATH:$HOME/workspace/bin
-            export SAUCE_TUNNEL_IDENTIFIER=$CIRCLE_WORKFLOW_JOB_ID
-            scripts/start-sauce-connect sauce-pidfile
+            export SAUCE_TUNNEL_NAME=$CIRCLE_WORKFLOW_JOB_ID
+            scripts/start-sauce-connect
             set +o errexit
             scripts/run-all-browsers
             exitcode=$?
             set -o errexit
-            scripts/stop-sauce-connect $(cat sauce-pidfile)
+            scripts/stop-sauce-connect
             exit $exitcode
 
 workflows:

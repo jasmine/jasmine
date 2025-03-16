@@ -38,7 +38,7 @@ module.exports = {
         name: `jasmine-core ${new Date().toISOString()}`,
         build: `Core ${process.env.CIRCLE_BUILD_NUM || 'Ran locally'}`,
         tags: ['Jasmine-Core'],
-        tunnelIdentifier: process.env.SAUCE_TUNNEL_IDENTIFIER,
+        tunnelName: process.env.SAUCE_TUNNEL_NAME,
         username: process.env.SAUCE_USERNAME,
         accessKey: process.env.SAUCE_ACCESS_KEY
       }

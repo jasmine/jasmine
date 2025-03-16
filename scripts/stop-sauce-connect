@@ -2,20 +2,31 @@
 set -o errexit
 set -o pipefail
 
-if [ -z "$1" ]; then
-	echo "Usage: $0 sauce-connect-pid" 1>&2
-	exit
+echo "Stopping Sauce Connect"
+
+# Sauce Connect 4 docs said that we can just kill -9 it if we don't care about
+# failing any ongoing sessions. In practice, that sometimes worked but usually
+# leaked a tunnel so badly that you couldn't even stop it from the web UI.
+#
+# Sauce Connect 5 appears to be *much* more prone to hung jobs. Hung jobs have
+# a shutdown deadline of *three hours*, however, they appear to usually exit
+# within a minute or so. Unfortunately the only thing the Sauce Connect 5 docs
+# say about shutdown is that "you can stop your tunnel from the terminal where
+# Sauce Connect is running by entering Ctrl+C". Nothing is said about what to
+# do if Sauce Connect doesn't exit on it own or about non-interactive usage.
+#
+# So we do our best to be well-behaved without assuming that Sauce Connect
+# always is: send it the same signal that it would get if an interactive user
+# hit ctrl-c, wait a while for it to exit, then give up so that the CI task
+# doesn't keep running indefinitely.
+
+pid=$(ps | grep sc | grep -v grep | awk '{print $1}')
+
+if [ -z $pid ]; then
+  echo "sc does not appear to be running" 1>&2
+  exit 1
 fi
 
-pid="$1"
-echo "PID: $pid"
-
-echo "Stopping Sauce Connect"
-# Sauce Connect docs say that we can just kill -9 it if we don't care about
-# failing any ongoing sessions. In practice, that sometimes works but usually
-# leaks a tunnel so badly that you can't even stop it from the web UI. 
-# Instead of doing that, we give Sauce Connect some time to shut down
-# gracefully and then give up.
 kill -INT $pid
 
 # Wait up to 2 minutes, then give up if it's still running
@@ -28,6 +39,5 @@ done
 
 if ps -p $pid > /dev/null; then
 	echo "Could not shut down Sauce Connect"
+	exit 1
 fi
-
-exit $exitcode

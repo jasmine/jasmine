@@ -2,32 +2,19 @@
 set -o errexit
 set -o pipefail
 
-if [ $# -gt 1 -o "$1" = "--help" ]; then
-	echo "Usage: $0 [pidfile]" 1>&2
-	exit
-fi
-
-if [ -z "$1" ]; then
-	pidfile=`mktemp`
-else
-	pidfile="$1"
+if [ -z "$SAUCE_TUNNEL_NAME" ]; then
+  echo "SAUCE_TUNNEL_NAME must be set" 1>&2
+  exit 1
 fi
 
 outfile=`mktemp`
 echo "Starting Sauce Connect"
-if [ -z "$SAUCE_TUNNEL_IDENTIFIER" ]; then
-	sc -u "$SAUCE_USERNAME" -k "$SAUCE_ACCESS_KEY" -X 4445 --pidfile "$pidfile" 2>&1 | tee "$outfile" &
-else
-	sc -u "$SAUCE_USERNAME" -k "$SAUCE_ACCESS_KEY" -X 4445 --pidfile "$pidfile" -i "$SAUCE_TUNNEL_IDENTIFIER" 2>&1 | tee "$outfile" &
-fi
+sc legacy --proxy-localhost --tunnel-domains localhost --region us-west \
+  -u "$SAUCE_USERNAME" -k "$SAUCE_ACCESS_KEY" \
+  -X 4445 -i "$SAUCE_TUNNEL_NAME" 2>&1 | tee "$outfile" &
 
-while ! fgrep "Sauce Connect is up, you may start your tests." "$outfile" > /dev/null; do
+while ! fgrep "Sauce Connect is up, you may start your tests" "$outfile" > /dev/null; do
     sleep 1
-
-	 if ! ps -p $(cat "$pidfile") > /dev/null; then
-	 	echo "Sauce Connect exited"
-		exit 1
-	 fi
 done
 
 if ! nc -z localhost 4445; then
