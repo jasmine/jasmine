@@ -20,24 +20,20 @@ echo "Stopping Sauce Connect"
 # hit ctrl-c, wait a while for it to exit, then give up so that the CI task
 # doesn't keep running indefinitely.
 
-pid=$(ps | grep sc | grep -v grep | awk '{print $1}')
-
-if [ -z $pid ]; then
+if ! pkill -INT '^sc$'; then
   echo "sc does not appear to be running" 1>&2
   exit 1
 fi
 
-kill -INT $pid
-
 # Wait up to 2 minutes, then give up if it's still running
 n=0
-while [ $n -lt 120 ] && ps -p $pid > /dev/null; do
+while [ $n -lt 120 ] && pgrep '^sc$' > /dev/null; do
 	sleep 1
-	kill -INT $pid 2> /dev/null || true
+	pkill -INT '^sc$' || true
 	n=$(($n + 1))
 done
 
-if ps -p $pid > /dev/null; then
+if pgrep '^sc$' > /dev/null; then
 	echo "Could not shut down Sauce Connect"
 	exit 1
 fi
