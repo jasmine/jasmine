@@ -13,7 +13,7 @@ body:
         Check the [FAQ](https://jasmine.github.io/pages/faq.html) and any other relevant [documentation](https://jasmine.github.io/pages/docs_home.html) to see if your issue has already been addressed.
 
         ## Special troubleshooting steps for asynchronous scenarios
-        If the issue has to do with testing asynchronous code, please read the [async tutorial](https://jasmine.github.io/tutorials/async) and the async section of the FAQ. In particular, check for the following common errors:
+        If the issue has to do with testing asynchronous code, please read the [async tutorial](https://jasmine.github.io/tutorials/async) and the [async section of the FAQ](https://jasmine.github.io/pages/faq.html#async). In particular, check for the following common errors:
 
         * Are you trying to write a synchronous test for asynchronous code?
         * Does the test signal completion before the code under test finishes?
@@ -22,19 +22,22 @@ body:
         ## Try the latest version of Jasmine
         If at all possible, upgrade to the latest versions of `jasmine-core` and any other relevant packages (e.g. `jasmine`, `jasmine-browser-runner`). If you can't do that, please check the [release notes](https://github.com/jasmine/jasmine/tree/main/release_notes) for all newer versions to make sure that the bug hasn't already been fixed.
 
-        ## Put together a [minimal, reproducible example](https://stackoverflow.com/help/minimal-reproducible-example)
-        Please help us help you by creating a minimal but complete setup that demonstrates the problem. Remove any code and libraries that aren't absolutely necessary, but make sure it doesn't depend on any code you haven't included. In many cases a simple code snippet is enough. In cases involving external libraries, *especially* Karma or Angular, we're likely to need a runable Git repository or jsbin/stackblitz/etc.
+        ## Explain how to reproduce the bug
+        
+        **Working steps to reproduce are required for all bug reports.** Please help us help you by creating complete but minimal instructions for reproducing the bug.
+        
+        The steps to reproduce could be:
+        
+        * A code snippet that reproduces the problem when run by itself in a newly generated empty `jasmine` or `jasmine-browser-runner` project, or in the standalone distribution.
+        * A set of steps that reproduce the problem when followed exactly as they're written in an empty directory.
+        * A link to a Git repository or zip/tar file containing a [minimal, reproducible example](https://stackoverflow.com/help/minimal-reproducible-example). This option is required for all bugs that can only be reproduced with third-party libraries, including Angular and Karma.
 
-        **If we can't reproduce it, we can't fix it. Bug reports without a minimal, reproducible example are very likely to be closed.**
-
+        Please **test your steps** by starting with an empty directory and following them exactly as they're written. Bug reports with steps to reproduce that are unclear, don't work, or include an unreasonable amount of extraneous code will likely be closed.
+        
   - type: textarea
     id: steps-to-reproduce
     attributes:
       label: Steps to Reproduce
-      placeholder: |
-        Example steps:
-        1. Paste the example code below into `mySpec.js`.
-        2. Run `npx jasmine@<some version> mySpec.js`
     validations:
       required: true
   - type: textarea
@@ -49,14 +52,6 @@ body:
     attributes:
       label: Actual Behavior
       description: What happened instead?
-    validations:
-      required: true
-  - type: textarea
-    id: code-sample
-    attributes:
-      label: Example code that reproduces the problem
-      description: Please include either a code snippet that reproduces the problem or a link to a repository or jsbin/stackblitz/etc containing a minimal, reproducible example as described above.
-      render: JavaScript
     validations:
       required: true
   - type: textarea
@@ -82,10 +77,11 @@ body:
       placeholder: |
         jasmine-browser-runner 1.2.0
         fancy-reporter 132.4.8
+
   - type: input
     id: browser-or-node-version
     attributes:
-      label: Node.js or browser version
+      label: Node.js and/or browser version
       placeholder: E.g. "node 16.2.0" or "Safari 15"
     validations:
       required: true
@@ -96,3 +92,4 @@ body:
       placeholder: E.g. "Windows 10", "MacOS 12.5", "MCC Interim Linux 0.99.p8"
     validations:
       required: true
+
