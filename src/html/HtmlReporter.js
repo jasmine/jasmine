@@ -122,8 +122,10 @@ jasmineRequire.HtmlReporter = function(j$) {
       if (noExpectations(result)) {
         const noSpecMsg = "Spec '" + result.fullName + "' has no expectations.";
         if (result.status === 'failed') {
+          // eslint-disable-next-line no-console
           console.error(noSpecMsg);
         } else {
+          // eslint-disable-next-line no-console
           console.warn(noSpecMsg);
         }
       }

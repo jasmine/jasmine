@@ -385,7 +385,9 @@ getJasmineRequireObj().Env = function(j$) {
 
       // If we get here, all results have been reported and there's nothing we
       // can do except log the result and hope the user sees it.
+      // eslint-disable-next-line no-console
       console.error('Jasmine received a result after the suite finished:');
+      // eslint-disable-next-line no-console
       console.error(expectationResult);
     }
 

@@ -1071,7 +1071,6 @@ describe('Env integration', function() {
       env.describe('my suite', function() {
         env.it('my spec', function() {});
 
-        // eslint-disable-next-line no-unused-vars
         env.afterAll(function(afterAllDone) {
           throw error;
         });
@@ -1569,7 +1568,6 @@ describe('Env integration', function() {
       env.addReporter(reporter);
       jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 8414;
 
-      // eslint-disable-next-line no-unused-vars
       env.it("async spec that doesn't call done", function(underTestCallback) {
         env.expect(true).toBeTruthy();
         jasmine.clock().tick(8416);
@@ -1642,13 +1640,13 @@ describe('Env integration', function() {
           realSetTimeout(function() {
             try {
               jasmine.clock().tick(10);
+              // eslint-disable-next-line no-unused-vars
             } catch (e) {
               // don't worry if the clock is already uninstalled
             }
           }, 100);
         });
         env.describe('beforeAll', function() {
-          // eslint-disable-next-line no-unused-vars
           env.beforeAll(function(innerDone) {
             realSetTimeout(function() {
               jasmine.clock().tick(5001);
@@ -1664,7 +1662,6 @@ describe('Env integration', function() {
         });
 
         env.describe('afterAll', function() {
-          // eslint-disable-next-line no-unused-vars
           env.afterAll(function(innerDone) {
             realSetTimeout(function() {
               jasmine.clock().tick(2001);
@@ -1680,7 +1677,6 @@ describe('Env integration', function() {
         });
 
         env.describe('beforeEach', function() {
-          // eslint-disable-next-line no-unused-vars
           env.beforeEach(function(innerDone) {
             realSetTimeout(function() {
               jasmine.clock().tick(1001);
@@ -1696,7 +1692,6 @@ describe('Env integration', function() {
         });
 
         env.describe('afterEach', function() {
-          // eslint-disable-next-line no-unused-vars
           env.afterEach(function(innerDone) {
             realSetTimeout(function() {
               jasmine.clock().tick(4001);
@@ -1713,7 +1708,6 @@ describe('Env integration', function() {
 
         env.it(
           'it times out',
-          // eslint-disable-next-line no-unused-vars
           function(innerDone) {
             realSetTimeout(function() {
               jasmine.clock().tick(6001);
@@ -2699,7 +2693,6 @@ describe('Env integration', function() {
     env.addReporter(reporter);
 
     env.describe('async suite', function() {
-      // eslint-disable-next-line no-unused-vars
       env.afterAll(function(innerDone) {
         setTimeout(function() {
           throw new Error('suite');
@@ -2712,7 +2705,6 @@ describe('Env integration', function() {
     env.describe('suite', function() {
       env.it(
         'async spec',
-        // eslint-disable-next-line no-unused-vars
         function(innerDone) {
           setTimeout(function() {
             throw new Error('spec');
@@ -4362,6 +4354,7 @@ describe('Env integration', function() {
       env.it('a spec', function() {
         try {
           env.throwUnless(1).toEqual(1);
+          // eslint-disable-next-line no-unused-vars
         } catch (e) {
           threw = true;
         }
@@ -4375,6 +4368,7 @@ describe('Env integration', function() {
       env.it('a spec', function() {
         try {
           env.throwUnless(1).toEqual(2);
+          // eslint-disable-next-line no-unused-vars
         } catch (e) {}
       });
 
@@ -4418,6 +4412,7 @@ describe('Env integration', function() {
       env.it('a spec', async function() {
         try {
           await env.throwUnlessAsync(Promise.resolve()).toBeResolved();
+          // eslint-disable-next-line no-unused-vars
         } catch (e) {
           threw = true;
         }
@@ -4431,6 +4426,7 @@ describe('Env integration', function() {
       env.it('a spec', async function() {
         try {
           await env.throwUnlessAsync(Promise.resolve()).toBeRejected();
+          // eslint-disable-next-line no-unused-vars
         } catch (e) {}
       });
 

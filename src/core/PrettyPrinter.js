@@ -58,6 +58,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
         ) {
           try {
             this.emitScalar(value.toString());
+            // eslint-disable-next-line no-unused-vars
           } catch (e) {
             this.emitScalar('has-invalid-toString-method');
           }
@@ -304,6 +305,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
         value.toString !== Object.prototype.toString &&
         value.toString() !== Object.prototype.toString.call(value)
       );
+      // eslint-disable-next-line no-unused-vars
     } catch (e) {
       // The custom toString() threw.
       return true;

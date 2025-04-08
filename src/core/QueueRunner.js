@@ -22,6 +22,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   }
 
   function fallbackOnMultipleDone() {
+    // eslint-disable-next-line no-console
     console.error(
       new Error(
         "An asynchronous function called its 'done' " +
@@ -135,6 +136,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
           // Any error we catch here is probably due to a bug in Jasmine,
           // and it's not likely to end up anywhere useful if we let it
           // propagate. Log it so it can at least show up when debugging.
+          // eslint-disable-next-line no-console
           console.error(error);
         }
       }

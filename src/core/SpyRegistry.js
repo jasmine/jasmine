@@ -252,6 +252,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
     let value;
     try {
       value = obj[prop];
+      // eslint-disable-next-line no-unused-vars
     } catch (e) {
       return false;
     }

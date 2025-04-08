@@ -239,7 +239,6 @@ describe('QueueRunner', function() {
 
     it("sets a timeout if requested for asynchronous functions so they don't go on forever", function() {
       const timeout = 3,
-        // eslint-disable-next-line no-unused-vars
         beforeFn = { fn: function(done) {}, type: 'before', timeout: timeout },
         queueableFn = { fn: jasmine.createSpy('fn'), type: 'queueable' },
         onComplete = jasmine.createSpy('onComplete'),
@@ -287,7 +286,6 @@ describe('QueueRunner', function() {
     });
 
     it('by default does not set a timeout for asynchronous functions', function() {
-      // eslint-disable-next-line no-unused-vars
       const beforeFn = { fn: function(done) {} },
         queueableFn = { fn: jasmine.createSpy('fn') },
         onComplete = jasmine.createSpy('onComplete'),
@@ -310,7 +308,6 @@ describe('QueueRunner', function() {
 
     it('clears the timeout when an async function throws an exception, to prevent additional exception reporting', function() {
       const queueableFn = {
-          // eslint-disable-next-line no-unused-vars
           fn: function(done) {
             throw new Error('error!');
           }
@@ -409,7 +406,6 @@ describe('QueueRunner', function() {
 
     it('continues running functions when an exception is thrown in async code without timing out', function() {
       const queueableFn = {
-          // eslint-disable-next-line no-unused-vars
           fn: function(done) {
             throwAsync();
           },
@@ -461,7 +457,6 @@ describe('QueueRunner', function() {
 
     it('handles a global error event with a message but no error', function() {
       const queueableFn = {
-        // eslint-disable-next-line no-unused-vars
         fn: function(done) {
           const currentHandler = globalErrors.pushListener.calls.mostRecent()
             .args[0];
@@ -641,7 +636,6 @@ describe('QueueRunner', function() {
 
     it('issues an error if the function also takes a parameter', function() {
       const queueableFn = {
-          // eslint-disable-next-line no-unused-vars
           fn: function(done) {
             return new StubPromise();
           }
@@ -666,7 +660,6 @@ describe('QueueRunner', function() {
     });
 
     it('issues a more specific error if the function is `async`', function() {
-      // eslint-disable-next-line no-unused-vars
       async function fn(done) {}
       const onException = jasmine.createSpy('onException'),
         queueRunner = new jasmineUnderTest.QueueRunner({
@@ -720,7 +713,6 @@ describe('QueueRunner', function() {
 
   it('continues running the functions even after an exception is thrown in an async spec', function() {
     const queueableFn = {
-        // eslint-disable-next-line no-unused-vars
         fn: function(done) {
           throw new Error('error');
         }
