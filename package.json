@@ -45,7 +45,7 @@
     "grunt-contrib-compress": "^2.0.0",
     "grunt-contrib-concat": "^2.0.0",
     "grunt-css-url-embed": "^1.11.1",
-    "grunt-sass": "^3.0.2",
+    "grunt-sass": "^4.0.0",
     "jasmine": "^5.0.0",
     "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner",
     "jsdom": "^26.0.0",
