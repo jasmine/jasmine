@@ -31,6 +31,7 @@ getJasmineRequireObj().toBeInstanceOf = function(j$) {
         try {
           expectedMatcher = new j$.Any(expected);
           pass = expectedMatcher.asymmetricMatch(actual);
+          // eslint-disable-next-line no-unused-vars
         } catch (error) {
           throw new Error(
             usageError('Expected value is not a constructor function')

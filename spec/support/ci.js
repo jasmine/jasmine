@@ -8,6 +8,7 @@ config.clearReporters = true;
 config.jasmineCore = jasmineCore;
 
 jasmineBrowser.runSpecs(config).catch(function(error) {
+  // eslint-disable-next-line no-console
   console.error(error);
   process.exit(1);
 });

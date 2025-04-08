@@ -866,7 +866,6 @@ describe('spec running', function() {
       const actions = [];
 
       env.describe('Something', function() {
-        // eslint-disable-next-line no-unused-vars
         env.beforeEach(function(innerDone) {
           actions.push('beforeEach');
         }, 1);

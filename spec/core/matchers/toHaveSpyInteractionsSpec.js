@@ -70,7 +70,7 @@ describe('toHaveSpyInteractions', function() {
     );
   });
 
-  it(`throws an error if a non-object is passed`, function() {
+  it('throws an error if a non-object is passed', function() {
     let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
 
     expect(function() {

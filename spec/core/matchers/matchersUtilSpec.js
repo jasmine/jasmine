@@ -830,9 +830,7 @@ describe('matchersUtil', function() {
             const matchersUtil = new jasmineUnderTest.MatchersUtil();
             const a1 = new TypedArrayCtor(2);
             const a2 = new TypedArrayCtor(2);
-            // eslint-disable-next-line compat/compat
             a1[0] = a2[0] = BigInt(0);
-            // eslint-disable-next-line compat/compat
             a1[1] = a2[1] = BigInt(1);
             expect(matchersUtil.equals(a1, a2)).toBe(true);
           }
@@ -843,7 +841,6 @@ describe('matchersUtil', function() {
           const matchersUtil = new jasmineUnderTest.MatchersUtil();
           const a1 = new TypedArrayCtor(2);
           const a2 = new TypedArrayCtor(1);
-          // eslint-disable-next-line compat/compat
           a1[0] = a1[1] = a2[0] = BigInt(0);
           expect(matchersUtil.equals(a1, a2)).toBe(false);
         });
@@ -855,9 +852,7 @@ describe('matchersUtil', function() {
             const matchersUtil = new jasmineUnderTest.MatchersUtil();
             const a1 = new TypedArrayCtor(2);
             const a2 = new TypedArrayCtor(2);
-            // eslint-disable-next-line compat/compat
             a1[0] = a1[1] = a2[0] = BigInt(0);
-            // eslint-disable-next-line compat/compat
             a2[1] = BigInt(1);
             expect(matchersUtil.equals(a1, a2)).toBe(false);
           }
