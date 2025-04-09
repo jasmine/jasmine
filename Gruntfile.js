@@ -6,7 +6,6 @@ module.exports = function(grunt) {
     pkg: pkg,
     concat: require('./grunt/config/concat.js'),
     sass: require('./grunt/config/sass.js'),
-    compress: require('./grunt/config/compress.js'),
     cssUrlEmbed: require('./grunt/config/cssUrlEmbed.js')
   });
 
