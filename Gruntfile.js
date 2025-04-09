@@ -12,6 +12,30 @@ module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
 
+  grunt.registerMultiTask('cssUrlEmbed', "Embed URLs as base64 strings inside your stylesheets", function () {
+    var done = this.async();
+
+    import('css-url-embed').then(cssEmbed => {
+      for (const file of this.files) {
+        try {
+          grunt.log.subhead('Processing source file "' + file.src[0] + '"');
+          const urls = cssEmbed.processFile(file.src[0], file.dest);
+
+          for (const url of urls) {
+            grunt.log.ok('"' + url + '" embedded');
+          }
+
+          grunt.log.writeln('File "' + file.dest + '" created');
+        } catch (e) {
+          grunt.log.error(e);
+          grunt.fail.warn('URL embedding failed\n');
+        }
+      }
+
+      done();
+    });
+  });
+
   grunt.loadTasks('grunt/tasks');
 
   grunt.registerTask('default', ['sass:dist', "cssUrlEmbed"]);
