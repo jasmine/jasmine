@@ -1,6 +1,7 @@
 const fs = require('fs');
 const glob = require('glob');
 const ejs = require('ejs');
+const sass = require('sass');
 
 module.exports = function(grunt) {
   var pkg = require("./package.json");
@@ -8,7 +9,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: pkg,
-    sass: require('./grunt/config/sass.js'),
     cssUrlEmbed: require('./grunt/config/cssUrlEmbed.js')
   });
 
@@ -40,7 +40,21 @@ module.exports = function(grunt) {
 
   grunt.loadTasks('grunt/tasks');
 
-  grunt.registerTask('default', ['sass:dist', "cssUrlEmbed"]);
+  grunt.registerTask('sass',
+    'Compile sass to css',
+    function() {
+      try {
+        const output = sass.compile('src/html/jasmine.scss');
+        fs.writeFileSync('lib/jasmine-core/jasmine.css', output.css,
+          {encoding: 'utf8'});
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    }
+  );
+
+  grunt.registerTask('default', ['sass', "cssUrlEmbed"]);
 
   grunt.registerTask('concat',
     'Concatenate files',
@@ -149,7 +163,7 @@ module.exports = function(grunt) {
   grunt.registerTask('buildDistribution',
     'Builds and lints jasmine.js, jasmine-html.js, jasmine.css',
     [
-      'sass:dist',
+      'sass',
       "cssUrlEmbed",
       'concat'
     ]

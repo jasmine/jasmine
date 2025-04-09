@@ -45,7 +45,6 @@
     "globals": "^16.0.0",
     "grunt": "^1.0.4",
     "grunt-cli": "^1.3.2",
-    "grunt-sass": "^4.0.0",
     "jasmine": "^5.0.0",
     "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner",
     "jsdom": "^26.0.0",
