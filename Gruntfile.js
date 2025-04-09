@@ -1,10 +1,13 @@
+const fs = require('fs');
+const glob = require('glob');
+const ejs = require('ejs');
+
 module.exports = function(grunt) {
   var pkg = require("./package.json");
   global.jasmineVersion = pkg.version;
 
   grunt.initConfig({
     pkg: pkg,
-    concat: require('./grunt/config/concat.js'),
     sass: require('./grunt/config/sass.js'),
     cssUrlEmbed: require('./grunt/config/cssUrlEmbed.js')
   });
@@ -38,6 +41,110 @@ module.exports = function(grunt) {
   grunt.loadTasks('grunt/tasks');
 
   grunt.registerTask('default', ['sass:dist', "cssUrlEmbed"]);
+
+  grunt.registerTask('concat',
+    'Concatenate files',
+    function() {
+      try {
+        const configs = [
+          {
+            src: [
+              'src/html/requireHtml.js',
+              'src/html/HtmlReporter.js',
+              'src/html/HtmlSpecFilter.js',
+              'src/html/ResultsNode.js',
+              'src/html/QueryString.js',
+              'src/html/**/*.js'
+            ],
+            dest: 'lib/jasmine-core/jasmine-html.js',
+          },
+          {
+            dest: 'lib/jasmine-core/jasmine.js',
+            src: [
+              'src/core/requireCore.js',
+              'src/core/matchers/requireMatchers.js',
+              'src/core/base.js',
+              'src/core/util.js',
+              'src/core/Spec.js',
+              'src/core/Order.js',
+              'src/core/Env.js',
+              'src/core/JsApiReporter.js',
+              'src/core/PrettyPrinter',
+              'src/core/Suite',
+              'src/core/**/*.js',
+              {
+                template: 'src/version.js',
+                data: {version: jasmineVersion}
+              },
+            ],
+          },
+          {
+            dest: 'lib/jasmine-core/boot0.js',
+            src: ['src/boot/boot0.js'],
+          },
+          {
+            dest: 'lib/jasmine-core/boot1.js',
+            src: ['src/boot/boot1.js'],
+          }
+        ];
+        const licenseBanner = {
+          template: 'grunt/templates/licenseBanner.js.ejs',
+          data: {currentYear: new Date(Date.now()).getFullYear()}
+        };
+
+        for (const {src, dest} of configs) {
+          src.unshift(licenseBanner);
+
+          function expand(srcListEntry) {
+            if (typeof srcListEntry === 'object') {
+              return srcListEntry;
+            }
+
+            return glob.sync(srcListEntry)
+              .sort(function (a, b) {
+                // Match the sort order of previous build tools, so that the
+                // output is the same.
+                a = a.toLowerCase();
+                b = b.toLowerCase();
+
+                if (a < b) {
+                  return -1;
+                } else if (a === b) {
+                  return 0;
+                } else {
+                  return 1;
+                }
+              });
+          }
+
+          const srcs = src.flatMap(expand);
+          const seen = new Set();
+          const chunks = [];
+
+          for (const s of srcs) {
+            let content;
+
+            if (!seen.has(s)) {
+              if (s.template) {
+                const template = fs.readFileSync(s.template, {encoding: 'utf8'});
+                content = ejs.render(template, s.data);
+              } else {
+                content = fs.readFileSync(s, {encoding: 'utf8'});
+              }
+
+              chunks.push(content);
+              seen.add(s);
+            }
+          }
+
+          fs.writeFileSync(dest, chunks.join('\n'), {encoding: 'utf8'});
+        }
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    }
+  );
 
   grunt.registerTask('buildDistribution',
     'Builds and lints jasmine.js, jasmine-html.js, jasmine.css',
