@@ -3,17 +3,23 @@ const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
 const glob = require('glob');
+const ejs = require('ejs');
 
 function standaloneTmpDir(path) {  return "dist/tmp/" + path; }
 
 grunt.registerTask("build:compileSpecRunner",
     "Processes the spec runner template and writes to a tmp file",
     function() {
-        var runnerHtml = grunt.template.process(
-            grunt.file.read("grunt/templates/SpecRunner.html.jst"),
-            { data: { jasmineVersion: global.jasmineVersion }});
+      const template = fs.readFileSync('grunt/templates/SpecRunner.html.ejs',
+        {encoding: 'utf8'});
+      const runnerHtml = ejs.render(template, { jasmineVersion: global.jasmineVersion });
 
-        grunt.file.write(standaloneTmpDir("SpecRunner.html"), runnerHtml);
+      if (!fs.existsSync('dist/tmp')) {
+        fs.mkdirSync('dist/tmp');
+      }
+
+      fs.writeFileSync('dist/tmp/SpecRunner.html', runnerHtml,
+        {encoding: 'utf8'});
     }
 );
 
