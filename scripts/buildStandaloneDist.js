@@ -9,6 +9,9 @@ const buildDistribution = require('./lib/buildDistribution');
 const tmpDir = 'dist/tmp'
 
 if (!fs.existsSync(tmpDir)) {
+  if (!fs.existsSync(path.dirname(tmpDir))) {
+    fs.mkdirSync(path.dirname(tmpDir));
+  }
   fs.mkdirSync(tmpDir);
 }
 
