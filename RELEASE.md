@@ -41,7 +41,7 @@ When ready to release - specs are all green and the stories are done:
 
 ### Build standalone distribution
 
-1. Build the standalone distribution with `grunt buildStandaloneDist`
+1. Build the standalone distribution with `npm run buildStandaloneDist`
 1. This will generate `dist/jasmine-standalone-<version>.zip`, which you will upload later (see "Finally" below).
 
 ### Release the core NPM module

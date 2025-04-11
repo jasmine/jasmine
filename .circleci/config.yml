@@ -61,7 +61,7 @@ jobs:
           at: .
       - run:
           name: Run tests in parallel
-          command: npx grunt execSpecsInParallel
+          command: npm run test:parallel
 
   test_browsers: &test_browsers
     executor: node18
