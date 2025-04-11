@@ -1,4 +1,4 @@
-<a name="README">[<img src="https://rawgithub.com/jasmine/jasmine/main/images/jasmine-horizontal.svg" width="400px" />](http://jasmine.github.io)</a>
+<a name="README"><img src="https://raw.githubusercontent.com/jasmine/jasmine/main/images/jasmine-horizontal.svg" width="400px" alt="Jasmine"></a>
 
 # A JavaScript Testing Framework
 
