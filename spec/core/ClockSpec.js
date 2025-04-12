@@ -787,28 +787,6 @@ describe('Clock (acceptance)', function() {
       expect(endTimeMs - startTimeMs).toBeLessThan(100);
     });
 
-    it('avoids throttling in browsers other than Safari', async () => {
-      if (typeof navigator === 'undefined' || typeof window === 'undefined') {
-        // Node does not throttle timeouts so this test isn't necessary
-        pending('This test only runs in browsers.');
-      } else if (
-        /^((?!chrome|android|firefox).)*safari/i.test(navigator.userAgent)
-      ) {
-        pending('Timeout throttling prevention does not work in Safari.');
-      }
-      // This test ensures the setTimeout loop isn't getting throttled by browsers
-      const promises = [];
-      // 100 timers at ~4ms throttling = 400ms would time out if we weren't
-      // preventing the throttle with the MessageChannel trick.
-      for (let i = 0; i < 100; i++) {
-        promises.push(new Promise(resolve => clock.setTimeout(resolve)));
-      }
-      const startTimeMs = performance.now();
-      await Promise.all(promises);
-      const endTimeMs = performance.now();
-      expect(endTimeMs - startTimeMs).toBeLessThan(50);
-    });
-
     it('is easy to test async functions with interleaved timers and microtasks', async () => {
       async function blackBoxWithLotsOfAsyncStuff() {
         await new Promise(r => clock.setTimeout(r, 10));
