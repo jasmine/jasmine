@@ -250,9 +250,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
         resultCallback: (result, next) => {
           this.specResultCallback_(spec, result, next);
         },
-        getSpecName: function(spec) {
-          return getSpecName(spec, suite);
-        },
+        getPath: spec => this.getSpecPath_(spec, suite),
         onStart: (spec, next) => this.specStarted_(spec, suite, next),
         description: description,
         userContext: function() {
@@ -267,6 +265,17 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
         timer: new j$.Timer()
       });
       return spec;
+    }
+
+    getSpecPath_(spec, suite) {
+      const path = [spec.description];
+
+      while (suite && suite !== this.topSuite) {
+        path.unshift(suite.description);
+        suite = suite.parentSuite;
+      }
+
+      return path;
     }
 
     unfocusAncestor_() {
@@ -330,16 +339,6 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
         afters: afters
       };
     };
-  }
-
-  function getSpecName(spec, suite) {
-    const fullName = [spec.description],
-      suiteFullName = suite.getFullName();
-
-    if (suiteFullName !== '') {
-      fullName.unshift(suiteFullName);
-    }
-    return fullName.join(' ');
   }
 
   return SuiteBuilder;

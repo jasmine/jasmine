@@ -21,11 +21,11 @@ getJasmineRequireObj().Spec = function(j$) {
     this.onStart = attrs.onStart || function() {};
     this.autoCleanClosures =
       attrs.autoCleanClosures === undefined ? true : !!attrs.autoCleanClosures;
-    this.getSpecName =
-      attrs.getSpecName ||
-      function() {
-        return '';
-      };
+
+    this.getPath = function() {
+      return attrs.getPath ? attrs.getPath(this) : [];
+    };
+
     this.onLateError = attrs.onLateError || function() {};
     this.catchingExceptions =
       attrs.catchingExceptions ||
@@ -251,7 +251,7 @@ getJasmineRequireObj().Spec = function(j$) {
   };
 
   Spec.prototype.getFullName = function() {
-    return this.getSpecName(this);
+    return this.getPath().join(' ');
   };
 
   Spec.prototype.addDeprecationWarning = function(deprecation) {
@@ -305,6 +305,10 @@ getJasmineRequireObj().Spec = function(j$) {
    * @since 2.0.0
    */
   Object.defineProperty(Spec.prototype, 'metadata', {
+    // NOTE: Although most of jasmine-core only exposes these metadata objects,
+    // actual Spec instances are still passed to Configuration#specFilter. Until
+    // that is fixed, it's important to make sure that all metadata properties
+    // also exist in compatible form on the underlying Spec.
     get: function() {
       if (!this.metadata_) {
         this.metadata_ = {
@@ -333,7 +337,16 @@ getJasmineRequireObj().Spec = function(j$) {
            * @returns {string}
            * @since 2.0.0
            */
-          getFullName: this.getFullName.bind(this)
+          getFullName: this.getFullName.bind(this),
+
+          /**
+           * The full path of the spec, as an array of names.
+           * @name Spec#getPath
+           * @function
+           * @returns {Array.<string>}
+           * @since 5.7.0
+           */
+          getPath: this.getPath.bind(this)
         };
       }
 

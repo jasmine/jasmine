@@ -197,8 +197,8 @@ describe('Spec', function() {
         description: 'with a spec',
         parentSuiteId: 'suite1',
         filename: 'someSpecFile.js',
-        getSpecName: function() {
-          return 'a suite with a spec';
+        getPath: function() {
+          return ['a suite', 'with a spec'];
         },
         queueableFn: { fn: null }
       });
@@ -485,17 +485,33 @@ describe('Spec', function() {
   });
 
   it('can return its full name', function() {
-    const specNameSpy = jasmine
-      .createSpy('specNameSpy')
-      .and.returnValue('expected val');
+    const getPath = jasmine
+      .createSpy('getPath')
+      .and.returnValue(['expected', 'val']);
 
     const spec = new jasmineUnderTest.Spec({
-      getSpecName: specNameSpy,
+      getPath,
       queueableFn: { fn: null }
     });
 
     expect(spec.getFullName()).toBe('expected val');
-    expect(specNameSpy.calls.mostRecent().args[0].id).toEqual(spec.id);
+    expect(getPath.calls.mostRecent().args[0]).toBe(spec);
+  });
+
+  it('can return its full path', function() {
+    const getPath = jasmine
+      .createSpy('getPath')
+      .and.returnValue(['expected val']);
+
+    const spec = new jasmineUnderTest.Spec({
+      getPath,
+      queueableFn: { fn: null }
+    });
+
+    expect(spec.getPath()).toEqual(['expected val']);
+    expect(getPath.calls.mostRecent().args[0]).toBe(spec);
+
+    expect(spec.metadata.getPath()).toEqual(['expected val']);
   });
 
   describe('when a spec is marked pending during execution', function() {
@@ -586,8 +602,8 @@ describe('Spec', function() {
       spec = new jasmineUnderTest.Spec({
         onLateError: onLateError,
         queueableFn: { fn: function() {} },
-        getSpecName: function() {
-          return 'a spec';
+        getPath: function() {
+          return ['a spec'];
         }
       });
 

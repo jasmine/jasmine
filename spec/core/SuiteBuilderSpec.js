@@ -163,6 +163,20 @@ describe('SuiteBuilder', function() {
       expect(spec2.id).toMatch(/^spec[0-9]+$/);
       expect(spec1.id).not.toEqual(spec2.id);
     });
+
+    it('gives each spec a full path', function() {
+      const env = { configuration: () => ({}) };
+      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      let spec;
+
+      suiteBuilder.describe('a suite', function() {
+        suiteBuilder.describe('a nested suite', function() {
+          spec = suiteBuilder[fnName]('a spec', function() {});
+        });
+      });
+
+      expect(spec.getPath()).toEqual(['a suite', 'a nested suite', 'a spec']);
+    });
   }
 
   function sameInstanceAs(expected) {
