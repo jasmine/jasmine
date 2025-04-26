@@ -161,11 +161,14 @@ callbacks to execute _before_ running the next one.
      * In many cases, this can greatly improve test execution speed because asynchronous tasks
      * will execute as quickly as possible rather than waiting real time to complete.
      *
-     * Furthermore, tests can be authored in a consitent manner. They can always be written in an asynchronous style
+     * Furthermore, tests can be authored in a consistent manner. They can always be written in an asynchronous style
      * rather than having `tick` sprinkled throughout the tests with mock time in order to manually
      * advance the clock.
      *
      * When auto tick is enabled, `tick` can still be used to synchronously advance the clock if necessary.
+     * @name Clock#autoTick
+     * @function
+     * @since 5.7.0
      */
     this.autoTick = function() {
       if (tickMode.mode === 'auto') {
