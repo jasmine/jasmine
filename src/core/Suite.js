@@ -105,6 +105,9 @@ getJasmineRequireObj().Suite = function(j$) {
      * @property {String} fullName - The full description including all ancestors of this suite.
      * @property {String|null} parentSuiteId - The ID of the suite containing this suite, or null if this is not in another describe().
      * @property {String} filename - The name of the file the suite was defined in.
+     * Note: The value may be incorrect if zone.js is installed or
+     * `describe`/`fdescribe`/`xdescribe` have been replaced with versions that
+     * don't maintain the same call stack height as the originals.
      * @property {ExpectationResult[]} failedExpectations - The list of expectations that failed in an {@link afterAll} for this suite.
      * @property {ExpectationResult[]} deprecationWarnings - The list of deprecation warnings that occurred on this suite.
      * @property {String} status - Once the suite has completed, this string represents the pass/fail status of this suite.
