@@ -1,7 +1,7 @@
 {
   "name": "jasmine-core",
   "license": "MIT",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jasmine/jasmine.git"
