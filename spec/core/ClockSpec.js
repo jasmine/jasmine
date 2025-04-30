@@ -776,6 +776,26 @@ describe('Clock (acceptance)', function() {
         });
     });
 
+    it('aborts auto ticking when uninstalled, even if installed again synchonrously', async () => {
+      clock.uninstall();
+      clock.install();
+
+      let resolved = false;
+      const promise = new Promise(resolve => {
+        clock.setTimeout(resolve, 1);
+      }).then(() => {
+        resolved = true;
+      });
+
+      // wait some real time and verify that the clock did not flush the timer above automatically
+      await new Promise(resolve => setTimeout(resolve, 2));
+      expect(resolved).toBe(false);
+
+      // enabling auto tick again will flush the timer
+      clock.autoTick();
+      await expectAsync(promise).toBeResolved();
+    });
+
     it('speeds up the execution of the timers in all browsers', async () => {
       const startTimeMs = performance.now() / 1000;
       await new Promise(resolve => clock.setTimeout(resolve, 5000));
