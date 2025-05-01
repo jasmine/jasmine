@@ -699,16 +699,19 @@ describe('Clock (acceptance)', function() {
         tick: function() {},
         uninstall: function() {}
       };
+      // window setTimeout to window to make firefox happy
+      const _setTimeout =
+        typeof window !== 'undefined' ? setTimeout.bind(window) : setTimeout;
+      // passing a fake global allows us to preserve the real timing functions for use in tests
+      const _global = { setTimeout: _setTimeout, setInterval: setInterval };
       clock = new jasmineUnderTest.Clock(
-        // We use the real window for global or firefox is displeased when we try to call a real setTimeout on an object "that doesn't implement window".
-        typeof window !== 'undefined' ? window : { setTimeout: setTimeout },
+        _global,
         function() {
           return delayedFunctionScheduler;
         },
         mockDate
       );
-      clock.install();
-      clock.autoTick();
+      clock.install().autoTick();
     });
 
     afterEach(() => {
