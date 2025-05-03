@@ -718,6 +718,20 @@ describe('Clock (acceptance)', function() {
       clock.uninstall();
     });
 
+    it('flushes microtask queue between macrotasks', async () => {
+      const log = [];
+      await new Promise(r => clock.setTimeout(r, 10)).then(() => {
+        log.push(1);
+        Promise.resolve().then(() => log.push(2));
+        Promise.resolve().then(() => log.push(3));
+      });
+      await new Promise(r => clock.setTimeout(r, 10)).then(() => {
+        log.push(4);
+        Promise.resolve().then(() => log.push(5));
+      });
+      expect(log).toEqual([1, 2, 3, 4, 5]);
+    });
+
     it('can run setTimeouts/setIntervals asynchronously', function() {
       const recurring = jasmine.createSpy('recurring'),
         fn1 = jasmine.createSpy('fn1'),

@@ -226,6 +226,12 @@ callbacks to execute _before_ running the next one.
     //
     // @return {!Promise<undefined>}
     async function newMacrotask() {
+      if (NODE_JS) {
+        // setImmediate is generally faster than setTimeout in Node
+        // https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick#setimmediate-vs-settimeout
+        return new Promise(resolve => void setImmediate(resolve));
+      }
+
       // MessageChannel ensures that setTimeout is not throttled to 4ms.
       // https://developer.mozilla.org/en-US/docs/Web/API/setTimeout#reasons_for_delays_longer_than_specified
       // https://stackblitz.com/edit/stackblitz-starters-qtlpcc
