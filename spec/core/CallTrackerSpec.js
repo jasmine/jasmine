@@ -134,6 +134,42 @@ describe('CallTracker', function() {
     expect(callTracker.mostRecent().args[1]).toEqual(arrayArg);
   });
 
+  it('allows object arguments to be deep cloned', function() {
+    const callTracker = new jasmineUnderTest.CallTracker();
+    callTracker.saveArgumentsByValue(args => JSON.parse(JSON.stringify(args)));
+
+    const objectArg = { foo: { bar: { baz: ['qux'] } } },
+      arrayArg = ['foo', 'bar'];
+
+    callTracker.track({
+      object: {},
+      args: [objectArg, arrayArg, false, undefined, null, NaN, '', 0, 1.0]
+    });
+
+    objectArg.foo.bar.baz.push('quux');
+
+    expect(callTracker.mostRecent().args[0]).not.toBe(objectArg);
+    expect(callTracker.mostRecent().args[0]).not.toEqual(objectArg);
+    expect(callTracker.mostRecent().args[0]).toEqual({
+      foo: { bar: { baz: ['qux'] } }
+    });
+    expect(callTracker.mostRecent().args[1]).not.toBe(arrayArg);
+    expect(callTracker.mostRecent().args[1]).toEqual(arrayArg);
+  });
+
+  it('can take any function to transform arguments when saving by value', function() {
+    const callTracker = new jasmineUnderTest.CallTracker();
+    callTracker.saveArgumentsByValue(JSON.stringify);
+
+    const objectArg = { foo: { bar: { baz: ['qux'] } } },
+      arrayArg = ['foo', 'bar'],
+      args = [objectArg, arrayArg, false, undefined, null, NaN, '', 0, 1.0];
+
+    callTracker.track({ object: {}, args });
+
+    expect(callTracker.mostRecent().args).toEqual(JSON.stringify(args));
+  });
+
   it('saves primitive arguments by value', function() {
     const callTracker = new jasmineUnderTest.CallTracker(),
       args = [undefined, null, false, '', /\s/, 0, 1.2, NaN];
