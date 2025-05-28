@@ -9,7 +9,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
 
     this.track = function(context) {
       if (opts.cloneArgs) {
-        context.args = j$.util.cloneArgs(context.args);
+        context.args = opts.argsCloner(context.args);
       }
       calls.push(context);
     };
@@ -117,13 +117,15 @@ getJasmineRequireObj().CallTracker = function(j$) {
     };
 
     /**
-     * Set this spy to do a shallow clone of arguments passed to each invocation.
+     * Set this spy to do a clone of arguments passed to each invocation.
      * @name Spy#calls#saveArgumentsByValue
      * @since 2.5.0
+     * @param {Function} [argsCloner] A function to use to clone the arguments. Defaults to a shallow cloning function.
      * @function
      */
-    this.saveArgumentsByValue = function() {
+    this.saveArgumentsByValue = function(argsCloner = j$.util.cloneArgs) {
       opts.cloneArgs = true;
+      opts.argsCloner = argsCloner;
     };
 
     this.unverifiedCount = function() {
