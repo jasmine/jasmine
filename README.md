@@ -29,7 +29,7 @@ Microsoft Edge) as well as Node.
 
 | Environment       | Supported versions         |
 |-------------------|----------------------------|
-| Node              | 18, 20, 22                 |
+| Node              | 18, 20, 22, 24             |
 | Safari            | 15*, 16*, 17*              |
 | Chrome            | Evergreen                  |
 | Firefox           | Evergreen, 102*, 115*, 128 |
