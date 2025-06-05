@@ -161,7 +161,7 @@ getJasmineRequireObj().Spy = function(j$) {
             "Spy '" +
               strategyArgs.name +
               "' received a call with arguments " +
-              j$.basicPrettyPrinter_(Array.prototype.slice.call(args)) +
+              matchersUtil.pp(Array.prototype.slice.call(args)) +
               ' but all configured strategies specify other arguments.'
           );
         } else {

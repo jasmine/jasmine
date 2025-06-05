@@ -3855,6 +3855,35 @@ describe('Env integration', function() {
     expect(failedExpectations).toEqual([]);
   });
 
+  it('uses custom object formatters in spy strategy argument mismatch errors', async function() {
+    env.it('a spec', function() {
+      env.addCustomObjectFormatter(function(value) {
+        if (typeof value === 'string') {
+          return 'custom:' + value;
+        }
+      });
+      const spy = env
+        .createSpy('foo')
+        .withArgs('x')
+        .and.returnValue('');
+      spy('y');
+    });
+
+    let failedExpectations;
+    env.addReporter({
+      specDone: r => (failedExpectations = r.failedExpectations)
+    });
+
+    await env.execute();
+    expect(failedExpectations).toEqual([
+      jasmine.objectContaining({
+        message: jasmine.stringContaining(
+          'received a call with arguments [ custom:y ]'
+        )
+      })
+    ]);
+  });
+
   describe('#spyOnGlobalErrorsAsync', function() {
     const leftInstalledMessage =
       'Global error spy was not uninstalled. ' +
