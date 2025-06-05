@@ -164,7 +164,7 @@ describe('PrettyPrinter', function() {
       "Object({ foo: 'bar', baz: 3, nullValue: null, undefinedValue: undefined })"
     );
     expect(pp({ foo: function() {}, bar: [1, 2, 3] })).toEqual(
-      'Object({ foo: Function, bar: [ 1, 2, 3 ] })'
+      "Object({ foo: Function 'foo', bar: [ 1, 2, 3 ] })"
     );
   });
 
@@ -450,7 +450,7 @@ describe('PrettyPrinter', function() {
     };
 
     expect(pp(objFromOtherContext)).toEqual(
-      "Object({ foo: 'bar', toString: Function })"
+      "Object({ foo: 'bar', toString: Function 'toString' })"
     );
   });
 
@@ -475,6 +475,17 @@ describe('PrettyPrinter', function() {
     const a = new MyAnonymousConstructor();
 
     expect(pp(a)).toEqual('<anonymous>({  })');
+  });
+
+  it('stringifies functions with names', function() {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    expect(pp(foo)).toEqual("Function 'foo'");
+    function foo() {}
+  });
+
+  it('stringifies functions without names', function() {
+    const pp = jasmineUnderTest.makePrettyPrinter();
+    expect(pp(function() {})).toEqual('Function');
   });
 
   it('should handle objects with null prototype', function() {
