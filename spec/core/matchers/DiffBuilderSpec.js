@@ -161,6 +161,63 @@ describe('DiffBuilder', function() {
     expect(diffBuilder.getMessage()).toEqual(expectedMsg);
   });
 
+  it('handles cases where only the expected has a custom object formatter', function() {
+    const formatter = function(x) {
+      if (typeof x === 'number') {
+        return '[number:' + x + ']';
+      }
+    };
+    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
+    const diffBuilder = new jasmineUnderTest.DiffBuilder({
+      prettyPrinter: prettyPrinter
+    });
+
+    diffBuilder.setRoots('five', 4);
+    diffBuilder.recordMismatch();
+
+    expect(diffBuilder.getMessage()).toEqual(
+      "Expected 'five' to equal [number:4]."
+    );
+  });
+
+  it('handles cases where only the actual has a custom object formatter', function() {
+    const formatter = function(x) {
+      if (typeof x === 'number') {
+        return '[number:' + x + ']';
+      }
+    };
+    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
+    const diffBuilder = new jasmineUnderTest.DiffBuilder({
+      prettyPrinter: prettyPrinter
+    });
+
+    diffBuilder.setRoots(5, 'four');
+    diffBuilder.recordMismatch();
+
+    expect(diffBuilder.getMessage()).toEqual(
+      "Expected [number:5] to equal 'four'."
+    );
+  });
+
+  it('handles complex cases where only one side has a custom object formatter', function() {
+    const formatter = function(x) {
+      if (typeof x === 'number') {
+        return '[number:' + x + ']';
+      }
+    };
+    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
+    const diffBuilder = new jasmineUnderTest.DiffBuilder({
+      prettyPrinter: prettyPrinter
+    });
+
+    diffBuilder.setRoots(5, { foo: 'bar', fnord: { graults: ['wombat'] } });
+    diffBuilder.recordMismatch();
+
+    expect(diffBuilder.getMessage()).toEqual(
+      "Expected [number:5] to equal Object({ foo: 'bar', fnord: Object({ graults: [ 'wombat' ] }) })."
+    );
+  });
+
   it('builds diffs involving asymmetric equality testers that implement valuesForDiff_ at the root', function() {
     const prettyPrinter = jasmineUnderTest.makePrettyPrinter([]),
       diffBuilder = new jasmineUnderTest.DiffBuilder({

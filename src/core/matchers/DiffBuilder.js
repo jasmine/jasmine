@@ -37,7 +37,10 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
         );
 
         if (useCustom) {
-          messages.push(wrapPrettyPrinted(actualCustom, expectedCustom, path));
+          const prettyActual = actualCustom || this.prettyPrinter_(actual);
+          const prettyExpected =
+            expectedCustom || this.prettyPrinter_(expected);
+          messages.push(wrapPrettyPrinted(prettyActual, prettyExpected, path));
           return false; // don't recurse further
         }
 
