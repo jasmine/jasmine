@@ -25,15 +25,7 @@ run_browser() {
 passfile=`mktemp -t jasmine-results.XXXXXX` || exit 1
 failfile=`mktemp -t jasmine-results.XXXXXX` || exit 1
 
-# As of 2023-09-30, Sauce Connect doesn't work with the latest Chrome version
-# on the default Linux. Run on Mac OS instead. The OS specification may need to
-# be updated or removed when new Chrome versions stop being available on Mac OS
-# 12, although historically this has taken several major OS versions.
-# See <https://saucelabs.com/products/supported-browsers-devices>.
-# On Saucelabs, the test suite frequently runs ~30s slower on Mac OS than it
-# does on Linux, so it's probably worth removing the OS specification once Sauce
-# Connect works with Chrome latest on Linux again.
-run_browser chrome latest "macOS 12"
+run_browser chrome latest
 
 run_browser firefox latest
 run_browser firefox 128
