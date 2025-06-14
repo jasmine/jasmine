@@ -3,7 +3,6 @@ const path = require('path');
 const glob = require('glob');
 const ejs = require('ejs');
 const archiver = require('archiver');
-const { rimrafSync } = require('rimraf');
 const buildDistribution = require('./lib/buildDistribution');
 
 const tmpDir = 'dist/tmp'
@@ -16,7 +15,7 @@ if (!fs.existsSync(tmpDir)) {
 }
 
 buildStandaloneDist().finally(function() {
-  rimrafSync(tmpDir);
+  fs.rmSync(tmpDir, { recursive: true });
 });
 
 async function buildStandaloneDist() {

@@ -1,7 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
-const { rimrafSync } = require('rimraf');
 
 describe('npm package', function() {
   beforeAll(function() {
@@ -43,7 +42,7 @@ describe('npm package', function() {
 
   afterAll(function() {
     fs.unlinkSync(this.tarball);
-    rimrafSync(this.tmpDir);
+    fs.rmSync(this.tmpDir, {recursive: true});
   });
 
   it('has a root path', function() {
