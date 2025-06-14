@@ -1,18 +1,13 @@
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const glob = require('glob');
 const ejs = require('ejs');
 const archiver = require('archiver');
 const buildDistribution = require('./lib/buildDistribution');
 
-const tmpDir = 'dist/tmp'
-
-if (!fs.existsSync(tmpDir)) {
-  if (!fs.existsSync(path.dirname(tmpDir))) {
-    fs.mkdirSync(path.dirname(tmpDir));
-  }
-  fs.mkdirSync(tmpDir);
-}
+const prefix = path.join(os.tmpdir(), 'jasmine-build-standalone');
+const tmpDir = fs.mkdtempSync(prefix);
 
 buildStandaloneDist().finally(function() {
   fs.rmSync(tmpDir, { recursive: true });
@@ -29,7 +24,7 @@ function compileSpecRunner(jasmineVersion) {
   const template = fs.readFileSync('src/SpecRunner.html.ejs',
     {encoding: 'utf8'});
   const runnerHtml = ejs.render(template, { jasmineVersion });
-  fs.writeFileSync('dist/tmp/SpecRunner.html', runnerHtml,
+  fs.writeFileSync(path.join(tmpDir, 'SpecRunner.html'), runnerHtml,
     {encoding: 'utf8'});
 }
 
@@ -38,7 +33,7 @@ async function zipStandaloneDist(jasmineVersion) {
     {
       src: [
         'LICENSE',
-        'dist/tmp/SpecRunner.html',
+        path.join(tmpDir, 'SpecRunner.html'),
       ]
     },
     {
