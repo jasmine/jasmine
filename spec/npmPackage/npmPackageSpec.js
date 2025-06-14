@@ -1,23 +1,21 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
+const child_process = require('node:child_process');
 
 describe('npm package', function() {
   beforeAll(function() {
-    const shell = require('shelljs'),
-      pack = shell.exec('npm pack', { silent: true });
-
-    this.tarball = pack.stdout.split('\n')[0];
+    const packOutput = child_process.execSync('npm pack', {
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'pipe']
+    });
+    this.tarball = packOutput.split('\n')[0];
     const prefix = path.join(os.tmpdir(), 'jasmine-npm-package');
     this.tmpDir = fs.mkdtempSync(prefix);
 
-    const untar = shell.exec(
-      'tar -xzf ' + this.tarball + ' -C ' + this.tmpDir,
-      {
-        silent: true
-      }
-    );
-    expect(untar.code).toBe(0);
+    child_process.execSync(`tar -xzf ${this.tarball} -C ${this.tmpDir}`, {
+      encoding: 'utf8'
+    });
 
     this.packagedCore = require(path.join(
       this.tmpDir,
@@ -42,7 +40,7 @@ describe('npm package', function() {
 
   afterAll(function() {
     fs.unlinkSync(this.tarball);
-    fs.rmSync(this.tmpDir, {recursive: true});
+    fs.rmSync(this.tmpDir, { recursive: true });
   });
 
   it('has a root path', function() {
