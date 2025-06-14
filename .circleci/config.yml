@@ -18,7 +18,7 @@ executors:
     working_directory: ~/workspace
   node18:
     docker:
-      - image: cimg/node:18.0.0
+      - image: cimg/node:18.20.5
     working_directory: ~/workspace
 
 jobs:
