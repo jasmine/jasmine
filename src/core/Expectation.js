@@ -148,7 +148,7 @@ getJasmineRequireObj().Expectation = function(j$) {
     return function() {
       // Capture the call stack here, before we go async, so that it will contain
       // frames that are relevant to the user instead of just parts of Jasmine.
-      const errorForStack = j$.util.errorWithStack();
+      const errorForStack = new Error();
 
       return this.expector
         .compare(name, matcherFactory, arguments)

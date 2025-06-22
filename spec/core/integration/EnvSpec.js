@@ -1524,7 +1524,7 @@ describe('Env integration', function() {
       env = new jasmineUnderTest.Env({
         global: {
           setTimeout: function(cb, t) {
-            const stack = jasmine.util.errorWithStack().stack;
+            const stack = new Error().stack;
             if (stack.indexOf('ClearStack') >= 0) {
               return realSetTimeout(cb, t);
             } else {

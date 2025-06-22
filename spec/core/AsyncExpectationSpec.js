@@ -277,23 +277,18 @@ describe('AsyncExpectation', function() {
 
     it('reports a passing result to the spec when the comparison passes', function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({ pass: true });
-              }
-            };
-          }
-        },
-        matchersUtil = {
-          buildFailureMessage: jasmine.createSpy('buildFailureMessage')
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({ pass: true });
+            }
+          };
+        }
+      };
+      const matchersUtil = {
+        buildFailureMessage: jasmine.createSpy('buildFailureMessage')
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -310,7 +305,7 @@ describe('AsyncExpectation', function() {
           error: undefined,
           expected: 'hello',
           actual: 'an actual',
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
@@ -329,13 +324,8 @@ describe('AsyncExpectation', function() {
           buildFailureMessage: function() {
             return '';
           }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -352,30 +342,25 @@ describe('AsyncExpectation', function() {
           actual: 'an actual',
           message: '',
           error: undefined,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
 
     it('reports a failing result and a custom fail message to the spec when the comparison fails', function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({
-                  pass: false,
-                  message: 'I am a custom message'
-                });
-              }
-            };
-          }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({
+                pass: false,
+                message: 'I am a custom message'
+              });
+            }
+          };
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         actual: 'an actual',
@@ -391,32 +376,27 @@ describe('AsyncExpectation', function() {
           actual: 'an actual',
           message: 'I am a custom message',
           error: undefined,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
 
     it('reports a failing result with a custom fail message function to the spec when the comparison fails', function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({
-                  pass: false,
-                  message: function() {
-                    return 'I am a custom message';
-                  }
-                });
-              }
-            };
-          }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({
+                pass: false,
+                message: function() {
+                  return 'I am a custom message';
+                }
+              });
+            }
+          };
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -432,28 +412,23 @@ describe('AsyncExpectation', function() {
           actual: 'an actual',
           message: 'I am a custom message',
           error: undefined,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
 
     it('reports a passing result to the spec when the comparison fails for a negative expectation', function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({ pass: false });
-              }
-            };
-          }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = 'an actual',
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({ pass: false });
+            }
+          };
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const actual = 'an actual';
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -469,7 +444,7 @@ describe('AsyncExpectation', function() {
           error: undefined,
           expected: 'hello',
           actual: actual,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
@@ -488,14 +463,9 @@ describe('AsyncExpectation', function() {
           buildFailureMessage: function() {
             return 'default message';
           }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = 'an actual',
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const actual = 'an actual';
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -512,31 +482,26 @@ describe('AsyncExpectation', function() {
           actual: actual,
           message: 'default message',
           error: undefined,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
 
     it('reports a failing result and a custom fail message to the spec when the comparison passes for a negative expectation', function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({
-                  pass: true,
-                  message: 'I am a custom message'
-                });
-              }
-            };
-          }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = 'an actual',
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({
+                pass: true,
+                message: 'I am a custom message'
+              });
+            }
+          };
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const actual = 'an actual';
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -552,31 +517,26 @@ describe('AsyncExpectation', function() {
           actual: actual,
           message: 'I am a custom message',
           error: undefined,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
 
     it("reports a passing result to the spec when the 'not' comparison passes, given a negativeCompare", function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({ pass: true });
-              },
-              negativeCompare: function() {
-                return Promise.resolve({ pass: true });
-              }
-            };
-          }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = 'an actual',
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({ pass: true });
+            },
+            negativeCompare: function() {
+              return Promise.resolve({ pass: true });
+            }
+          };
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const actual = 'an actual';
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -592,34 +552,29 @@ describe('AsyncExpectation', function() {
           actual: actual,
           message: '',
           error: undefined,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
 
     it("reports a failing result and a custom fail message to the spec when the 'not' comparison fails, given a negativeCompare", function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({ pass: true });
-              },
-              negativeCompare: function() {
-                return Promise.resolve({
-                  pass: false,
-                  message: "I'm a custom message"
-                });
-              }
-            };
-          }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = 'an actual',
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({ pass: true });
+            },
+            negativeCompare: function() {
+              return Promise.resolve({
+                pass: false,
+                message: "I'm a custom message"
+              });
+            }
+          };
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const actual = 'an actual';
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -635,7 +590,7 @@ describe('AsyncExpectation', function() {
           actual: actual,
           message: "I'm a custom message",
           error: undefined,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
@@ -643,24 +598,19 @@ describe('AsyncExpectation', function() {
     it('reports errorWithStack when a custom error message is returned', function() {
       const customError = new Error('I am a custom error');
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({
-                  pass: false,
-                  message: 'I am a custom message',
-                  error: customError
-                });
-              }
-            };
-          }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({
+                pass: false,
+                message: 'I am a custom message',
+                error: customError
+              });
+            }
+          };
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         actual: 'an actual',
@@ -676,30 +626,25 @@ describe('AsyncExpectation', function() {
           actual: 'an actual',
           message: 'I am a custom message',
           error: undefined,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
 
     it("reports a custom message to the spec when a 'not' comparison fails", function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({
-                  pass: true,
-                  message: 'I am a custom message'
-                });
-              }
-            };
-          }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({
+                pass: true,
+                message: 'I am a custom message'
+              });
+            }
+          };
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         actual: 'an actual',
@@ -715,32 +660,27 @@ describe('AsyncExpectation', function() {
           actual: 'an actual',
           message: 'I am a custom message',
           error: undefined,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
 
     it("reports a custom message func to the spec when a 'not' comparison fails", function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({
-                  pass: true,
-                  message: function() {
-                    return 'I am a custom message';
-                  }
-                });
-              }
-            };
-          }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        errorWithStack = new Error('errorWithStack');
-
-      spyOn(jasmineUnderTest.util, 'errorWithStack').and.returnValue(
-        errorWithStack
-      );
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({
+                pass: true,
+                message: function() {
+                  return 'I am a custom message';
+                }
+              });
+            }
+          };
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
 
       let expectation = jasmineUnderTest.Expectation.asyncFactory({
         actual: 'an actual',
@@ -756,7 +696,7 @@ describe('AsyncExpectation', function() {
           actual: 'an actual',
           message: 'I am a custom message',
           error: undefined,
-          errorForStack: errorWithStack
+          errorForStack: jasmine.any(Error)
         });
       });
     });
