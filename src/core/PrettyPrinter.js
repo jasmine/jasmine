@@ -16,7 +16,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
 
         if (customFormatResult) {
           this.emitScalar(customFormatResult);
-        } else if (j$.util.isUndefined(value)) {
+        } else if (value === undefined) {
           this.emitScalar('undefined');
         } else if (value === null) {
           this.emitScalar('null');

@@ -31,10 +31,8 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
 
         const actualCustom = this.prettyPrinter_.customFormat_(actual);
         const expectedCustom = this.prettyPrinter_.customFormat_(expected);
-        const useCustom = !(
-          j$.util.isUndefined(actualCustom) &&
-          j$.util.isUndefined(expectedCustom)
-        );
+        const useCustom =
+          actualCustom !== undefined || expectedCustom !== undefined;
 
         if (useCustom) {
           const prettyActual = actualCustom || this.prettyPrinter_(actual);

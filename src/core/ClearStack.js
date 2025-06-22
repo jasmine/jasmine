@@ -44,7 +44,7 @@ getJasmineRequireObj().clearStack = function(j$) {
 
   function getUnclampedSetTimeout(global) {
     const { setTimeout } = global;
-    if (j$.util.isUndefined(global.MessageChannel)) {
+    if (!global.MessageChannel) {
       return setTimeout;
     }
 
@@ -104,10 +104,7 @@ getJasmineRequireObj().clearStack = function(j$) {
       // Unlike browsers, Node doesn't require us to do a periodic setTimeout
       // so we avoid the overhead.
       return nodeQueueMicrotaskImpl(global);
-    } else if (
-      SAFARI_OR_WIN_WEBKIT ||
-      j$.util.isUndefined(global.MessageChannel) /* tests */
-    ) {
+    } else if (SAFARI_OR_WIN_WEBKIT || !global.MessageChannel /* tests */) {
       // queueMicrotask is dramatically faster than MessageChannel in Safari
       // and other WebKit-based browsers, such as the one distributed by Playwright
       // to test Safari-like behavior on Windows.

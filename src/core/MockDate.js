@@ -15,7 +15,7 @@ getJasmineRequireObj().MockDate = function(j$) {
       if (mockDate instanceof GlobalDate) {
         currentTime = mockDate.getTime();
       } else {
-        if (!j$.util.isUndefined(mockDate)) {
+        if (mockDate !== undefined) {
           throw new Error(
             'The argument to jasmine.clock().mockDate(), if specified, ' +
               'should be a Date instance.'

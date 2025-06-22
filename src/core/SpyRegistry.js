@@ -25,7 +25,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
     this.spyOn = function(obj, methodName) {
       const getErrorMsg = spyOnMsg;
 
-      if (j$.util.isUndefined(obj) || obj === null) {
+      if (obj === undefined || obj === null) {
         throw new Error(
           getErrorMsg(
             'could not find an object to spy upon for ' + methodName + '()'
@@ -33,11 +33,11 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         );
       }
 
-      if (j$.util.isUndefined(methodName) || methodName === null) {
+      if (methodName === undefined || methodName === null) {
         throw new Error(getErrorMsg('No method name supplied'));
       }
 
-      if (j$.util.isUndefined(obj[methodName])) {
+      if (obj[methodName] === undefined) {
         throw new Error(getErrorMsg(methodName + '() method does not exist'));
       }
 
@@ -102,7 +102,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
 
       accessType = accessType || 'get';
 
-      if (j$.util.isUndefined(obj)) {
+      if (!obj) {
         throw new Error(
           getErrorMsg(
             'spyOn could not find an object to spy upon for ' +
@@ -112,7 +112,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         );
       }
 
-      if (j$.util.isUndefined(propertyName)) {
+      if (propertyName === undefined) {
         throw new Error(getErrorMsg('No property name supplied'));
       }
 
@@ -177,7 +177,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
     };
 
     this.spyOnAllFunctions = function(obj, includeNonEnumerable) {
-      if (j$.util.isUndefined(obj)) {
+      if (!obj) {
         throw new Error(
           'spyOnAllFunctions could not find an object to spy upon'
         );

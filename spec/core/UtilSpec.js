@@ -128,17 +128,6 @@ describe('util', function() {
     });
   });
 
-  describe('isUndefined', function() {
-    it('reports if a variable is defined', function() {
-      let a;
-      expect(jasmineUnderTest.util.isUndefined(a)).toBe(true);
-      expect(jasmineUnderTest.util.isUndefined(undefined)).toBe(true);
-
-      const defined = 'diz be undefined yo';
-      expect(jasmineUnderTest.util.isUndefined(defined)).toBe(false);
-    });
-  });
-
   describe('cloneArgs', function() {
     it('clones primitives as-is', function() {
       expect(jasmineUnderTest.util.cloneArgs([true, false])).toEqual([

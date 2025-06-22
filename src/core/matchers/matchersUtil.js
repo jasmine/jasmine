@@ -177,13 +177,13 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
       bStack,
       diffBuilder
     );
-    if (!j$.util.isUndefined(asymmetricResult)) {
+    if (asymmetricResult !== undefined) {
       return asymmetricResult;
     }
 
     for (const tester of this.customTesters_) {
       const customTesterResult = tester(a, b);
-      if (!j$.util.isUndefined(customTesterResult)) {
+      if (customTesterResult !== undefined) {
         if (!customTesterResult) {
           diffBuilder.recordMismatch();
         }

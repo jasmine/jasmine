@@ -73,9 +73,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
   };
 
   j$.isObject_ = function(value) {
-    return (
-      !j$.util.isUndefined(value) && value !== null && j$.isA_('Object', value)
-    );
+    return value !== undefined && value !== null && j$.isA_('Object', value);
   };
 
   j$.isString_ = function(value) {

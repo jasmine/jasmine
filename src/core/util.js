@@ -1,10 +1,6 @@
 getJasmineRequireObj().util = function(j$) {
   const util = {};
 
-  util.isUndefined = function(obj) {
-    return obj === void 0;
-  };
-
   util.clone = function(obj) {
     if (Object.prototype.toString.apply(obj) === '[object Array]') {
       return obj.slice();
