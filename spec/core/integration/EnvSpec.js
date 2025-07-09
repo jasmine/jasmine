@@ -2697,7 +2697,7 @@ describe('Env integration', function() {
         setTimeout(function() {
           throw new Error('suite');
         }, 1);
-      }, 10);
+      }, 50);
 
       env.it('spec', function() {});
     });
@@ -2710,7 +2710,7 @@ describe('Env integration', function() {
             throw new Error('spec');
           }, 1);
         },
-        10
+        50
       );
     });
 
