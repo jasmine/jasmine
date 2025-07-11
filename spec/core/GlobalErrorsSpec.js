@@ -161,7 +161,7 @@ describe('GlobalErrors', function() {
 
       dispatchEvent(globals.listeners, 'unhandledRejection', new Error('bar'));
 
-      expect(handler).toHaveBeenCalledWith(new Error('bar'));
+      expect(handler).toHaveBeenCalledWith(new Error('bar'), undefined);
       expect(handler.calls.argsFor(0)[0].jasmineMessage).toBe(
         'Unhandled promise rejection: Error: bar'
       );
@@ -206,7 +206,8 @@ describe('GlobalErrors', function() {
           'Unhandled promise rejection with no error or message\n' +
             '(Tip: to get a useful stack trace, use ' +
             'Promise.reject(new Error(...)) instead of Promise.reject().)'
-        )
+        ),
+        undefined
       );
     });
   });
@@ -276,7 +277,10 @@ describe('GlobalErrors', function() {
 
       dispatchEvent(globals.listeners, 'uncaughtException', 17);
 
-      expect(handler).toHaveBeenCalledWith(new Error('Uncaught exception: 17'));
+      expect(handler).toHaveBeenCalledWith(
+        new Error('Uncaught exception: 17'),
+        undefined
+      );
     });
 
     it('substitutes a descriptive message when the error is falsy', function() {
@@ -290,7 +294,8 @@ describe('GlobalErrors', function() {
       dispatchEvent(globals.listeners, 'uncaughtException', undefined);
 
       expect(handler).toHaveBeenCalledWith(
-        new Error('Uncaught exception with no error or message')
+        new Error('Uncaught exception with no error or message'),
+        undefined
       );
     });
   });
@@ -344,7 +349,7 @@ describe('GlobalErrors', function() {
 
       dispatchEvent(globals.listeners, 'uncaughtException', new Error('bar'));
       expect(overrideHandler).not.toHaveBeenCalled();
-      expect(handler1).toHaveBeenCalledWith(new Error('bar'));
+      expect(handler1).toHaveBeenCalledWith(new Error('bar'), undefined);
     });
 
     it('handles unhandled promise rejections in browsers', function() {
