@@ -18,8 +18,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       this.#overrideHandler = null;
       this.#onRemoveOverrideHandler = null;
 
-      this.#onBrowserError = event =>
-        this.#dispatchBrowserError(event.error, event);
+      this.#onBrowserError = event => this.#dispatchError(event.error, event);
       this.#onBrowserRejection = event => this.#browserRejectionHandler(event);
 
       this.#onNodeError = error =>
@@ -129,7 +128,8 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       );
     }
 
-    #dispatchBrowserError(error, event) {
+    // Either error or event may be undefined
+    #dispatchError(error, event) {
       if (this.#overrideHandler) {
         // See discussion of spyOnGlobalErrorsAsync in base.js
         this.#overrideHandler(error);
@@ -149,9 +149,9 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       if (j$.isError_(event.reason)) {
         event.reason.jasmineMessage =
           'Unhandled promise rejection: ' + event.reason;
-        this.#dispatchBrowserError(event.reason, event);
+        this.#dispatchError(event.reason, event);
       } else {
-        this.#dispatchBrowserError(
+        this.#dispatchError(
           'Unhandled promise rejection: ' + event.reason,
           event
         );
@@ -192,19 +192,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         error = new Error(substituteMsg);
       }
 
-      const handler = this.#handlers[this.#handlers.length - 1];
-
-      if (this.#overrideHandler) {
-        // See discussion of spyOnGlobalErrorsAsync in base.js
-        this.#overrideHandler(error);
-        return;
-      }
-
-      if (handler) {
-        handler(error);
-      } else {
-        throw error;
-      }
+      this.#dispatchError(error);
     }
   }
 

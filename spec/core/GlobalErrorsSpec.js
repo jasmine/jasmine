@@ -131,7 +131,7 @@ describe('GlobalErrors', function() {
 
     dispatchEvent(globals.listeners, 'uncaughtException', new Error('bar'));
 
-    expect(handler).toHaveBeenCalledWith(new Error('bar'));
+    expect(handler).toHaveBeenCalledWith(new Error('bar'), undefined);
     expect(handler.calls.argsFor(0)[0].jasmineMessage).toBe(
       'Uncaught exception: Error: bar'
     );
@@ -186,7 +186,8 @@ describe('GlobalErrors', function() {
           'Unhandled promise rejection: 17\n' +
             '(Tip: to get a useful stack trace, use ' +
             'Promise.reject(new Error(...)) instead of Promise.reject(...).)'
-        )
+        ),
+        undefined
       );
     });
 
