@@ -22,7 +22,9 @@ export default defineConfig([{
       ...globals.node,
     },
 
-    ecmaVersion: 2018,
+    // 2022 isn't exactly right, but it's the earliest version that allows
+    // private properties.
+    ecmaVersion: 2022,
     sourceType: "commonjs",
   },
 
