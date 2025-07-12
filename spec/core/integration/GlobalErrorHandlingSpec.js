@@ -36,14 +36,14 @@ describe('Global error handling (integration)', function() {
     ]);
 
     env.addReporter(reporter);
-    dispatchErrorEvent(global, {
+    dispatchErrorEvent(global, 'error', {
       message: 'Uncaught SyntaxError: Unexpected end of input',
       error: undefined,
       filename: 'borkenSpec.js',
       lineno: 42
     });
     const error = new Error('ENOCHEESE');
-    dispatchErrorEvent(global, { error });
+    dispatchErrorEvent(global, 'error', { error });
 
     await env.execute();
 
@@ -136,7 +136,7 @@ describe('Global error handling (integration)', function() {
       env.describe('A suite', function() {
         env.it('fails', function(specDone) {
           setTimeout(function() {
-            dispatchErrorEvent(global, { error: 'fail' });
+            dispatchErrorEvent(global, 'error', { error: 'fail' });
             specDone();
           });
         });
@@ -190,12 +190,12 @@ describe('Global error handling (integration)', function() {
           },
           specDone: function() {
             clearStackCallbacks[clearStackCallCount + 1] = function() {
-              dispatchErrorEvent(global, {
+              dispatchErrorEvent(global, 'error', {
                 error: 'fail at the end of the reporter queue'
               });
             };
             clearStackCallbacks[clearStackCallCount + 2] = function() {
-              dispatchErrorEvent(global, {
+              dispatchErrorEvent(global, 'error', {
                 error: 'fail at the end of the spec queue'
               });
             };
@@ -244,7 +244,7 @@ describe('Global error handling (integration)', function() {
             specDone();
             queueMicrotask(function() {
               queueMicrotask(function() {
-                dispatchErrorEvent(global, { error: 'fail' });
+                dispatchErrorEvent(global, 'error', { error: 'fail' });
               });
             });
           });
@@ -268,7 +268,7 @@ describe('Global error handling (integration)', function() {
     });
 
     describe('When the most recently suite has reported suiteDone', function() {
-      it('routes unhandled exceptions errors to an ancestor suite', async function() {
+      it('routes unhandled exceptions to an ancestor suite', async function() {
         const global = {
           ...browserEventMethods(),
           setTimeout: function(fn, delay) {
@@ -307,12 +307,12 @@ describe('Global error handling (integration)', function() {
 
             if (result.description === 'A nested suite') {
               clearStackCallbacks[clearStackCallCount + 1] = function() {
-                dispatchErrorEvent(global, {
+                dispatchErrorEvent(global, 'error', {
                   error: 'fail at the end of the reporter queue'
                 });
               };
               clearStackCallbacks[clearStackCallCount + 2] = function() {
-                dispatchErrorEvent(global, {
+                dispatchErrorEvent(global, 'error', {
                   error: 'fail at the end of the suite queue'
                 });
               };
@@ -357,7 +357,7 @@ describe('Global error handling (integration)', function() {
 
         env.addReporter({
           jasmineDone: function() {
-            dispatchErrorEvent(global, { error: 'a very late error' });
+            dispatchErrorEvent(global, 'error', { error: 'a very late error' });
           }
         });
 
@@ -409,7 +409,358 @@ describe('Global error handling (integration)', function() {
           expectedErrors.push(`${msg} thrown`);
         }
 
-        dispatchErrorEvent(global, { error: msg });
+        dispatchErrorEvent(global, 'error', { error: msg });
+        realClearStack(fn);
+      });
+      spyOn(console, 'error');
+
+      env.cleanup_();
+      env = new jasmineUnderTest.Env();
+
+      const receivedErrors = [];
+      function logErrors(event) {
+        for (const failure of event.failedExpectations) {
+          receivedErrors.push(failure.message);
+        }
+      }
+      env.addReporter({
+        specDone: logErrors,
+        suiteDone: logErrors,
+        jasmineDone: function(event) {
+          jasmineDone = true;
+          logErrors(event);
+        }
+      });
+
+      env.describe('A suite', function() {
+        env.it('is finishing when the failure occurs', function() {});
+      });
+
+      await env.execute();
+
+      expect(receivedErrors.length).toEqual(expectedErrors.length);
+
+      for (const e of expectedErrors) {
+        expect(receivedErrors).toContain(e);
+      }
+
+      for (const message of expectedErrorsAfterJasmineDone) {
+        /* eslint-disable-next-line no-console */
+        expect(console.error).toHaveBeenCalledWith(
+          jasmine.objectContaining({ message })
+        );
+      }
+    });
+  });
+
+  describe('Handling unhandled promise rejections', function() {
+    it('routes unhandled promise rejections to the running spec', async function() {
+      const global = {
+        ...browserEventMethods(),
+        setTimeout: function(fn, delay) {
+          return setTimeout(fn, delay);
+        },
+        clearTimeout: function(fn, delay) {
+          clearTimeout(fn, delay);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
+        }
+      };
+      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+      env.cleanup_();
+      env = new jasmineUnderTest.Env();
+      const reporter = jasmine.createSpyObj('fakeReporter', [
+        'specDone',
+        'suiteDone'
+      ]);
+
+      env.addReporter(reporter);
+
+      env.describe('A suite', function() {
+        env.it('fails', function(specDone) {
+          setTimeout(function() {
+            dispatchErrorEvent(global, 'unhandledrejection', {
+              reason: 'fail'
+            });
+            specDone();
+          });
+        });
+      });
+
+      await env.execute();
+
+      expect(reporter.specDone).toHaveFailedExpectationsForRunnable(
+        'A suite fails',
+        ['Unhandled promise rejection: fail thrown']
+      );
+    });
+
+    describe('When the most recently running spec has reported specDone', function() {
+      it('routes unhandled promise rejections to an ancestor suite', async function() {
+        const global = {
+          ...browserEventMethods(),
+          setTimeout: function(fn, delay) {
+            return setTimeout(fn, delay);
+          },
+          clearTimeout: function(fn) {
+            clearTimeout(fn);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
+          }
+        };
+        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const clearStackCallbacks = {};
+        let clearStackCallCount = 0;
+        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+          clearStackCallCount++;
+
+          if (clearStackCallbacks[clearStackCallCount]) {
+            clearStackCallbacks[clearStackCallCount]();
+          }
+
+          realClearStack(fn);
+        });
+
+        env.cleanup_();
+        env = new jasmineUnderTest.Env();
+
+        let suiteErrors = [];
+        env.addReporter({
+          suiteDone: function(result) {
+            const messages = result.failedExpectations.map(e => e.message);
+            suiteErrors = suiteErrors.concat(messages);
+          },
+          specDone: function() {
+            clearStackCallbacks[clearStackCallCount + 1] = function() {
+              dispatchErrorEvent(global, 'unhandledrejection', {
+                reason: 'fail at the end of the reporter queue'
+              });
+            };
+            clearStackCallbacks[clearStackCallCount + 2] = function() {
+              dispatchErrorEvent(global, 'unhandledrejection', {
+                reason: 'fail at the end of the spec queue'
+              });
+            };
+          }
+        });
+
+        env.describe('A suite', function() {
+          env.it('is finishing when the failure occurs', function() {});
+        });
+
+        await env.execute();
+
+        expect(suiteErrors).toEqual([
+          'Unhandled promise rejection: fail at the end of the reporter queue thrown',
+          'Unhandled promise rejection: fail at the end of the spec queue thrown'
+        ]);
+      });
+    });
+
+    it('routes unhandled promise rejections to the running suite', async function() {
+      const global = {
+        ...browserEventMethods(),
+        setTimeout: function(fn, delay) {
+          return setTimeout(fn, delay);
+        },
+        clearTimeout: function(fn, delay) {
+          clearTimeout(fn, delay);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
+        }
+      };
+      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+      env.cleanup_();
+      env = new jasmineUnderTest.Env();
+      const reporter = jasmine.createSpyObj('fakeReporter', [
+        'specDone',
+        'suiteDone'
+      ]);
+
+      env.addReporter(reporter);
+
+      env.fdescribe('A suite', function() {
+        env.it('fails', function(specDone) {
+          setTimeout(function() {
+            specDone();
+            queueMicrotask(function() {
+              queueMicrotask(function() {
+                dispatchErrorEvent(global, 'unhandledrejection', {
+                  reason: 'fail'
+                });
+              });
+            });
+          });
+        });
+      });
+
+      env.describe('Ignored', function() {
+        env.it('is not run', function() {});
+      });
+
+      await env.execute();
+
+      expect(reporter.specDone).not.toHaveFailedExpectationsForRunnable(
+        'A suite fails',
+        ['Unhandled promise rejection: fail thrown']
+      );
+      expect(reporter.suiteDone).toHaveFailedExpectationsForRunnable(
+        'A suite',
+        ['Unhandled promise rejection: fail thrown']
+      );
+    });
+
+    describe('When the most recently suite has reported suiteDone', function() {
+      it('routes unhandled promise rejections to an ancestor suite', async function() {
+        const global = {
+          ...browserEventMethods(),
+          setTimeout: function(fn, delay) {
+            return setTimeout(fn, delay);
+          },
+          clearTimeout: function(fn, delay) {
+            clearTimeout(fn, delay);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
+          }
+        };
+        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const clearStackCallbacks = {};
+        let clearStackCallCount = 0;
+        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+          clearStackCallCount++;
+
+          if (clearStackCallbacks[clearStackCallCount]) {
+            clearStackCallbacks[clearStackCallCount]();
+          }
+
+          realClearStack(fn);
+        });
+
+        env.cleanup_();
+        env = new jasmineUnderTest.Env();
+
+        let suiteErrors = [];
+        env.addReporter({
+          suiteDone: function(result) {
+            const messages = result.failedExpectations.map(e => e.message);
+            suiteErrors = suiteErrors.concat(messages);
+
+            if (result.description === 'A nested suite') {
+              clearStackCallbacks[clearStackCallCount + 1] = function() {
+                dispatchErrorEvent(global, 'unhandledrejection', {
+                  reason: 'fail at the end of the reporter queue'
+                });
+              };
+              clearStackCallbacks[clearStackCallCount + 2] = function() {
+                dispatchErrorEvent(global, 'unhandledrejection', {
+                  reason: 'fail at the end of the suite queue'
+                });
+              };
+            }
+          }
+        });
+
+        env.describe('A suite', function() {
+          env.describe('A nested suite', function() {
+            env.it('a spec', function() {});
+          });
+        });
+
+        await env.execute();
+
+        expect(suiteErrors).toEqual([
+          'Unhandled promise rejection: fail at the end of the reporter queue thrown',
+          'Unhandled promise rejection: fail at the end of the suite queue thrown'
+        ]);
+      });
+    });
+
+    describe('When the env has started reporting jasmineDone', function() {
+      it('logs the rejection to the console', async function() {
+        const global = {
+          ...browserEventMethods(),
+          setTimeout: function(fn, delay) {
+            return setTimeout(fn, delay);
+          },
+          clearTimeout: function(fn, delay) {
+            clearTimeout(fn, delay);
+          },
+          queueMicrotask: function(fn) {
+            queueMicrotask(fn);
+          }
+        };
+        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+        env.cleanup_();
+        env = new jasmineUnderTest.Env();
+
+        spyOn(console, 'error');
+
+        env.addReporter({
+          jasmineDone: function() {
+            dispatchErrorEvent(global, 'unhandledrejection', {
+              reason: 'a very late error'
+            });
+          }
+        });
+
+        env.it('a spec', function() {});
+
+        await env.execute();
+
+        /* eslint-disable-next-line no-console */
+        expect(console.error).toHaveBeenCalledWith(
+          'Jasmine received a result after the suite finished:'
+        );
+        /* eslint-disable-next-line no-console */
+        expect(console.error).toHaveBeenCalledWith(
+          jasmine.objectContaining({
+            message: 'Unhandled promise rejection: a very late error thrown',
+            globalErrorType: 'afterAll'
+          })
+        );
+      });
+    });
+
+    it('routes all unhandled promise rejections that occur during stack clearing somewhere', async function() {
+      const global = {
+        ...browserEventMethods(),
+        setTimeout: function(fn, delay) {
+          return setTimeout(fn, delay);
+        },
+        clearTimeout: function(fn) {
+          clearTimeout(fn);
+        },
+        queueMicrotask: function(fn) {
+          queueMicrotask(fn);
+        }
+      };
+      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+
+      const realClearStack = jasmineUnderTest.getClearStack(global);
+      let clearStackCallCount = 0;
+      let jasmineDone = false;
+      const expectedErrors = [];
+      const expectedErrorsAfterJasmineDone = [];
+      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        clearStackCallCount++;
+        const reason = `Error in clearStack #${clearStackCallCount}`;
+        const expectedMsg = `Unhandled promise rejection: ${reason} thrown`;
+
+        if (jasmineDone) {
+          expectedErrorsAfterJasmineDone.push(expectedMsg);
+        } else {
+          expectedErrors.push(expectedMsg);
+        }
+
+        dispatchErrorEvent(global, 'unhandledrejection', { reason });
         realClearStack(fn);
       });
       spyOn(console, 'error');
@@ -808,12 +1159,12 @@ describe('Global error handling (integration)', function() {
     };
   }
 
-  function dispatchErrorEvent(global, event) {
-    expect(global.listeners_.error.length)
-      .withContext('number of error listeners')
+  function dispatchErrorEvent(global, eventName, event) {
+    expect(global.listeners_[eventName].length)
+      .withContext(`number of ${eventName} listeners`)
       .toBeGreaterThan(0);
 
-    for (const l of global.listeners_.error) {
+    for (const l of global.listeners_[eventName]) {
       l(event);
     }
   }
