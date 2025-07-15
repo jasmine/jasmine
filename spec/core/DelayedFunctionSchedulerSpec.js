@@ -86,12 +86,13 @@ describe('DelayedFunctionScheduler', function() {
   it('increments scheduled fns ids unless one is passed', function() {
     const scheduler = new jasmineUnderTest.DelayedFunctionScheduler();
 
-    expect(scheduler.scheduleFunction(function() {}, 0)).toBe(1);
-    expect(scheduler.scheduleFunction(function() {}, 0)).toBe(2);
+    const initial = scheduler.scheduleFunction(function() {}, 0);
+    expect(scheduler.scheduleFunction(function() {}, 0)).toBe(initial + 1);
+    expect(scheduler.scheduleFunction(function() {}, 0)).toBe(initial + 2);
     expect(scheduler.scheduleFunction(function() {}, 0, [], false, 123)).toBe(
       123
     );
-    expect(scheduler.scheduleFunction(function() {}, 0)).toBe(3);
+    expect(scheduler.scheduleFunction(function() {}, 0)).toBe(initial + 3);
   });
 
   it('#removeFunctionWithId removes a previously scheduled function with a given id', function() {
@@ -311,6 +312,28 @@ describe('DelayedFunctionScheduler', function() {
 
     expect(tickDate).toHaveBeenCalledWith(0);
     expect(tickDate).toHaveBeenCalledWith(1);
+  });
+
+  it('does not conflict with native timer IDs', function() {
+    const NODE_JS =
+      typeof process !== 'undefined' &&
+      process.versions &&
+      typeof process.versions.node === 'string';
+    if (NODE_JS) {
+      pending('numeric timer ID conflicts only relevant for browsers.');
+    }
+    const nativeTimeoutId = setTimeout(function() {}, 100);
+
+    const scheduler = new jasmineUnderTest.DelayedFunctionScheduler();
+    const fn = jasmine.createSpy('fn');
+
+    for (let i = 0; i < nativeTimeoutId; i++) {
+      scheduler.scheduleFunction(fn, 0, [], false);
+    }
+    scheduler.removeFunctionWithId(nativeTimeoutId);
+    scheduler.tick(1);
+
+    expect(fn).toHaveBeenCalledTimes(nativeTimeoutId);
   });
 
   describe('ticking inside a scheduled function', function() {
