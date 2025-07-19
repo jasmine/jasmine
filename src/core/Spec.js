@@ -147,10 +147,12 @@ getJasmineRequireObj().Spec = function(j$) {
      * @property {String} description - The description passed to the {@link it} that created this spec.
      * @property {String} fullName - The full description including all ancestors of this spec.
      * @property {String|null} parentSuiteId - The ID of the suite containing this spec, or null if this spec is not in a describe().
-     * @property {String} filename - The name of the file the spec was defined in.
+     * @property {String} filename - Deprecated. The name of the file the spec was defined in.
      * Note: The value may be incorrect if zone.js is installed or
      * `it`/`fit`/`xit` have been replaced with versions that don't maintain the
-     *  same call stack height as the originals.
+     *  same call stack height as the originals. This property may be removed in
+     *  a future version unless there is enough user interest in keeping it.
+     *  See {@link https://github.com/jasmine/jasmine/issues/2065}.
      * @property {ExpectationResult[]} failedExpectations - The list of expectations that failed during execution of this spec.
      * @property {ExpectationResult[]} passedExpectations - The list of expectations that passed during execution of this spec.
      * @property {ExpectationResult[]} deprecationWarnings - The list of deprecation warnings that occurred during execution this spec.
