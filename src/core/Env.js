@@ -497,6 +497,7 @@ getJasmineRequireObj().Env = function(j$) {
       runableResources,
       reporter,
       queueRunnerFactory,
+      TreeProcessor: j$.TreeProcessor,
       getConfig: () => config,
       reportSpecDone
     });

@@ -7,6 +7,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.focusedRunables_ = options.focusedRunables;
       this.runableResources_ = options.runableResources;
       this.queueRunnerFactory_ = options.queueRunnerFactory;
+      this.TreeProcessor_ = options.TreeProcessor;
       this.reporter_ = options.reporter;
       this.getConfig_ = options.getConfig;
       this.reportSpecDone_ = options.reportSpecDone;
@@ -54,7 +55,7 @@ getJasmineRequireObj().Runner = function(j$) {
         seed: j$.isNumber_(config.seed) ? config.seed + '' : config.seed
       });
 
-      const processor = new j$.TreeProcessor({
+      const processor = new this.TreeProcessor_({
         tree: this.topSuite_,
         runnableIds: runablesToRun,
         queueRunnerFactory: options => {
