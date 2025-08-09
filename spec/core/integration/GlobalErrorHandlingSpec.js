@@ -802,6 +802,118 @@ describe('Global error handling (integration)', function() {
         );
       }
     });
+
+    describe('When the detectLateRejectionHandling config option is set', function() {
+      describe('When the unhandled rejection event has a promise', function() {
+        it('reports the rejection unless a corresponding rejection handled event occurs', async function() {
+          function makeEvent(suffix) {
+            const reason = `rejection ${suffix}`;
+            const promise = Promise.reject(reason);
+            promise.catch(() => {});
+            return { reason, promise };
+          }
+
+          const global = {
+            ...browserEventMethods(),
+            setTimeout: function(fn, delay) {
+              return setTimeout(fn, delay);
+            },
+            clearTimeout: function(fn, delay) {
+              clearTimeout(fn, delay);
+            },
+            queueMicrotask: function(fn) {
+              queueMicrotask(fn);
+            }
+          };
+          spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+          env.cleanup_();
+          env = new jasmineUnderTest.Env();
+          env.configure({ detectLateRejectionHandling: true });
+          const reporter = jasmine.createSpyObj('fakeReporter', [
+            'specDone',
+            'suiteDone'
+          ]);
+
+          env.addReporter(reporter);
+
+          env.describe('A suite', function() {
+            env.it('fails', function(specDone) {
+              setTimeout(function() {
+                const events = ['spec 1', 'spec 2'].map(makeEvent);
+
+                for (const e of events) {
+                  dispatchErrorEvent(global, 'unhandledrejection', e);
+                }
+
+                dispatchErrorEvent(global, 'rejectionhandled', events[0]);
+                specDone();
+              });
+            });
+          });
+
+          await env.execute();
+
+          expect(reporter.specDone).toHaveBeenCalledWith(
+            jasmine.objectContaining({
+              fullName: 'A suite fails',
+              failedExpectations: [
+                // Only the second rejection should be reported, since the first
+                // one was eventually handled.
+                jasmine.objectContaining({
+                  message:
+                    'Unhandled promise rejection: rejection spec 2 thrown'
+                })
+              ]
+            })
+          );
+        });
+      });
+
+      describe("When the unhandled rejection event doesn't have a promise", function() {
+        it('reports the rejection', async function() {
+          const global = {
+            ...browserEventMethods(),
+            setTimeout: function(fn, delay) {
+              return setTimeout(fn, delay);
+            },
+            clearTimeout: function(fn, delay) {
+              clearTimeout(fn, delay);
+            },
+            queueMicrotask: function(fn) {
+              queueMicrotask(fn);
+            }
+          };
+          spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+          env.cleanup_();
+          env = new jasmineUnderTest.Env();
+          env.configure({ detectLateRejectionHandling: true });
+          const reporter = jasmine.createSpyObj('fakeReporter', [
+            'specDone',
+            'suiteDone'
+          ]);
+
+          env.addReporter(reporter);
+
+          env.describe('A suite', function() {
+            env.it('fails', function(specDone) {
+              setTimeout(function() {
+                dispatchErrorEvent(global, 'unhandledrejection', {
+                  reason: 'fail'
+                });
+                specDone();
+              });
+            });
+          });
+
+          await env.execute();
+
+          expect(reporter.specDone).toHaveFailedExpectationsForRunnable(
+            'A suite fails',
+            ['Unhandled promise rejection: fail thrown']
+          );
+        });
+      });
+    });
   });
 
   describe('#spyOnGlobalErrorsAsync', function() {
@@ -1147,7 +1259,7 @@ describe('Global error handling (integration)', function() {
 
   function browserEventMethods() {
     return {
-      listeners_: { error: [], unhandledrejection: [] },
+      listeners_: { error: [], unhandledrejection: [], rejectionhandled: [] },
       addEventListener(eventName, listener) {
         this.listeners_[eventName].push(listener);
       },

@@ -8,6 +8,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.runableResources_ = options.runableResources;
       this.queueRunnerFactory_ = options.queueRunnerFactory;
       this.TreeProcessor_ = options.TreeProcessor;
+      this.globalErrors_ = options.globalErrors;
       this.reporter_ = options.reporter;
       this.getConfig_ = options.getConfig;
       this.reportSpecDone_ = options.reportSpecDone;
@@ -73,7 +74,9 @@ getJasmineRequireObj().Runner = function(j$) {
 
           return this.queueRunnerFactory_(options);
         },
+        globalErrors: this.globalErrors_,
         failSpecWithNoExpectations: config.failSpecWithNoExpectations,
+        detectLateRejectionHandling: config.detectLateRejectionHandling,
         nodeStart: (suite, next) => {
           this.currentlyExecutingSuites_.push(suite);
           this.runableResources_.initForRunable(suite.id, suite.parentSuite.id);

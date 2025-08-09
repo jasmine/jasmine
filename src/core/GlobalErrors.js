@@ -1,27 +1,35 @@
 getJasmineRequireObj().GlobalErrors = function(j$) {
   class GlobalErrors {
+    #getConfig;
     #adapter;
     #handlers;
     #overrideHandler;
     #onRemoveOverrideHandler;
+    #pendingUnhandledRejections;
 
-    constructor(global) {
+    constructor(global, getConfig) {
       global = global || j$.getGlobal();
-      const dispatchError = this.#dispatchError.bind(this);
+      this.#getConfig = getConfig;
+      this.#pendingUnhandledRejections = new Map();
+      this.#handlers = [];
+      this.#overrideHandler = null;
+      this.#onRemoveOverrideHandler = null;
+
+      const dispatch = {
+        onUncaughtException: this.#onUncaughtException.bind(this),
+        onUnhandledRejection: this.#onUnhandledRejection.bind(this),
+        onRejectionHandled: this.#onRejectionHandled.bind(this)
+      };
 
       if (
         global.process &&
         global.process.listeners &&
         j$.isFunction_(global.process.on)
       ) {
-        this.#adapter = new NodeAdapter(global, dispatchError);
+        this.#adapter = new NodeAdapter(global, dispatch);
       } else {
-        this.#adapter = new BrowserAdapter(global, dispatchError);
+        this.#adapter = new BrowserAdapter(global, dispatch);
       }
-
-      this.#handlers = [];
-      this.#overrideHandler = null;
-      this.#onRemoveOverrideHandler = null;
     }
 
     install() {
@@ -69,6 +77,41 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       this.#onRemoveOverrideHandler = null;
     }
 
+    reportUnhandledRejections() {
+      for (const {
+        reason,
+        event
+      } of this.#pendingUnhandledRejections.values()) {
+        this.#dispatchError(reason, event);
+      }
+
+      this.#pendingUnhandledRejections.clear();
+    }
+
+    // Either error or event may be undefined
+    #onUncaughtException(error, event) {
+      this.#dispatchError(error, event);
+    }
+
+    // event or promise may be undefined
+    // event is passed through for backwards compatibility reasons. It's probably
+    // unnecessary, but user code could depend on it.
+    #onUnhandledRejection(reason, promise, event) {
+      if (this.#detectLateRejectionHandling() && promise) {
+        this.#pendingUnhandledRejections.set(promise, { reason, event });
+      } else {
+        this.#dispatchError(reason, event);
+      }
+    }
+
+    #detectLateRejectionHandling() {
+      return this.#getConfig().detectLateRejectionHandling;
+    }
+
+    #onRejectionHandled(promise) {
+      this.#pendingUnhandledRejections.delete(promise);
+    }
+
     // Either error or event may be undefined
     #dispatchError(error, event) {
       if (this.#overrideHandler) {
@@ -89,23 +132,28 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
 
   class BrowserAdapter {
     #global;
-    #dispatchError;
+    #dispatch;
     #onError;
     #onUnhandledRejection;
+    #onRejectionHandled;
 
-    constructor(global, dispatchError) {
+    constructor(global, dispatch) {
       this.#global = global;
-      this.#dispatchError = dispatchError;
-      this.#onError = event => this.#dispatchError(event.error, event);
+      this.#dispatch = dispatch;
+      this.#onError = event => dispatch.onUncaughtException(event.error, event);
       this.#onUnhandledRejection = this.#unhandledRejectionHandler.bind(this);
+      this.#onRejectionHandled = this.#rejectionHandledHandler.bind(this);
     }
 
     install() {
       this.#global.addEventListener('error', this.#onError);
-
       this.#global.addEventListener(
         'unhandledrejection',
         this.#onUnhandledRejection
+      );
+      this.#global.addEventListener(
+        'rejectionhandled',
+        this.#onRejectionHandled
       );
     }
 
@@ -115,50 +163,55 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         'unhandledrejection',
         this.#onUnhandledRejection
       );
+      this.#global.removeEventListener(
+        'rejectionhandled',
+        this.#onRejectionHandled
+      );
     }
 
     #unhandledRejectionHandler(event) {
+      const jasmineMessage = 'Unhandled promise rejection: ' + event.reason;
+      let reason;
+
       if (j$.isError_(event.reason)) {
-        event.reason.jasmineMessage =
-          'Unhandled promise rejection: ' + event.reason;
-        this.#dispatchError(event.reason, event);
+        reason = event.reason;
+        reason.jasmineMessage = jasmineMessage;
       } else {
-        this.#dispatchError(
-          'Unhandled promise rejection: ' + event.reason,
-          event
-        );
+        reason = jasmineMessage;
       }
+
+      this.#dispatch.onUnhandledRejection(reason, event.promise, event);
+    }
+
+    #rejectionHandledHandler(event) {
+      this.#dispatch.onRejectionHandled(event.promise);
     }
   }
 
   class NodeAdapter {
     #global;
-    #dispatchError;
+    #dispatch;
     #originalHandlers;
     #jasmineHandlers;
-    #onError;
-    #onUnhandledRejection;
 
-    constructor(global, dispatchError) {
+    constructor(global, dispatch) {
       this.#global = global;
-      this.#dispatchError = dispatchError;
+      this.#dispatch = dispatch;
 
       this.#jasmineHandlers = {};
       this.#originalHandlers = {};
 
-      this.#onError = error =>
-        this.#eventHandler(error, 'uncaughtException', 'Uncaught exception');
-      this.#onUnhandledRejection = error =>
-        this.#eventHandler(
-          error,
-          'unhandledRejection',
-          'Unhandled promise rejection'
-        );
+      this.onError = this.onError.bind(this);
+      this.onUnhandledRejection = this.onUnhandledRejection.bind(this);
     }
 
     install() {
-      this.#installHandler('uncaughtException', this.#onError);
-      this.#installHandler('unhandledRejection', this.#onUnhandledRejection);
+      this.#installHandler('uncaughtException', this.onError);
+      this.#installHandler('unhandledRejection', this.onUnhandledRejection);
+      this.#installHandler(
+        'rejectionHandled',
+        this.#dispatch.onRejectionHandled
+      );
     }
 
     uninstall() {
@@ -190,31 +243,49 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       this.#global.process.on(errorType, handler);
     }
 
-    #eventHandler(error, errorType, jasmineMessage) {
+    #augmentError(error, isUnhandledRejection) {
+      let jasmineMessagePrefix;
+
+      if (isUnhandledRejection) {
+        jasmineMessagePrefix = 'Unhandled promise rejection';
+      } else {
+        jasmineMessagePrefix = 'Uncaught exception';
+      }
+
       if (j$.isError_(error)) {
-        error.jasmineMessage = jasmineMessage + ': ' + error;
+        error.jasmineMessage = jasmineMessagePrefix + ': ' + error;
+        return error;
       } else {
         let substituteMsg;
 
         if (error) {
-          substituteMsg = jasmineMessage + ': ' + error;
+          substituteMsg = jasmineMessagePrefix + ': ' + error;
         } else {
-          substituteMsg = jasmineMessage + ' with no error or message';
+          substituteMsg = jasmineMessagePrefix + ' with no error or message';
         }
 
-        if (errorType === 'unhandledRejection') {
+        if (isUnhandledRejection) {
           substituteMsg +=
             '\n' +
             '(Tip: to get a useful stack trace, use ' +
-            'Promise.reject(new Error(...)) instead of Promise.reject(' +
+            'Promise.reject(n' +
+            'ew Error(...)) instead of Promise.reject(' +
             (error ? '...' : '') +
             ').)';
         }
 
-        error = new Error(substituteMsg);
+        return new Error(substituteMsg);
       }
+    }
 
-      this.#dispatchError(error);
+    onError(error) {
+      error = this.#augmentError(error, false);
+      this.#dispatch.onUncaughtException(error);
+    }
+
+    onUnhandledRejection(reason, promise) {
+      reason = this.#augmentError(reason, true);
+      this.#dispatch.onUnhandledRejection(reason, promise);
     }
   }
 

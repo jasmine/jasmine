@@ -239,6 +239,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       const config = this.env_.configuration();
       const suite = this.currentDeclarationSuite_;
       const parentSuiteId = suite === this.topSuite ? null : suite.id;
+      const global = j$.getGlobal();
       const spec = new j$.Spec({
         id: 'spec' + this.nextSpecId_++,
         filename,
@@ -246,6 +247,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
         beforeAndAfterFns: beforeAndAfterFns(suite),
         expectationFactory: this.expectationFactory_,
         asyncExpectationFactory: this.specAsyncExpectationFactory_,
+        setTimeout: global.setTimeout.bind(global),
         onLateError: this.onLateError_,
         resultCallback: (result, next) => {
           this.specResultCallback_(spec, result, next);

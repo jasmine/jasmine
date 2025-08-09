@@ -24,7 +24,12 @@ getJasmineRequireObj().Env = function(j$) {
       new j$.MockDate(global)
     );
 
-    const globalErrors = new j$.GlobalErrors();
+    const globalErrors = new j$.GlobalErrors(
+      undefined,
+      // Configuration is late-bound because GlobalErrors needs to be constructed
+      // before it's set to detect load-time errors in browsers
+      () => this.configuration()
+    );
     const installGlobalErrors = (function() {
       let installed = false;
       return function() {
@@ -158,7 +163,21 @@ getJasmineRequireObj().Env = function(j$) {
        * @type Boolean
        * @default false
        */
-      verboseDeprecations: false
+      verboseDeprecations: false,
+
+      /**
+       * Whether to detect late promise rejection handling during spec
+       * execution. If this option is enabled, a promise rejection that triggers
+       * the JavaScript runtime's unhandled rejection event will not be treated
+       * as an error as long as it's handled before the spec finishes.
+       *
+       * This option is off by default because it imposes a performance penalty.
+       * @name Configuration#detectLateRejectionHandling
+       * @since 5.10.0
+       * @type Boolean
+       * @default false
+       */
+      detectLateRejectionHandling: false
     };
 
     if (!options.suppressLoadErrors) {
@@ -196,7 +215,8 @@ getJasmineRequireObj().Env = function(j$) {
         'stopOnSpecFailure',
         'stopSpecOnExpectationFailure',
         'autoCleanClosures',
-        'forbidDuplicateNames'
+        'forbidDuplicateNames',
+        'detectLateRejectionHandling'
       ];
 
       booleanProps.forEach(function(prop) {
@@ -498,6 +518,7 @@ getJasmineRequireObj().Env = function(j$) {
       reporter,
       queueRunnerFactory,
       TreeProcessor: j$.TreeProcessor,
+      globalErrors,
       getConfig: () => config,
       reportSpecDone
     });

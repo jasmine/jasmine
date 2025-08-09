@@ -2,6 +2,7 @@ getJasmineRequireObj().Spec = function(j$) {
   function Spec(attrs) {
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
+    this.setTimeout = attrs.setTimeout;
     this.resultCallback = attrs.resultCallback || function() {};
     this.id = attrs.id;
     this.filename = attrs.filename;
@@ -72,9 +73,11 @@ getJasmineRequireObj().Spec = function(j$) {
 
   Spec.prototype.execute = function(
     queueRunnerFactory,
+    globalErrors,
     onComplete,
     excluded,
-    failSpecWithNoExp
+    failSpecWithNoExp,
+    detectLateRejectionHandling
   ) {
     const onStart = {
       fn: done => {
@@ -135,6 +138,21 @@ getJasmineRequireObj().Spec = function(j$) {
     }
 
     runnerConfig.queueableFns.unshift(onStart);
+
+    if (detectLateRejectionHandling) {
+      // Conditional because the setTimeout imposes a significant performance
+      // penalty in suites with lots of fast specs.
+      runnerConfig.queueableFns.push({
+        fn: done => {
+          // setTimeout is necessary to trigger rejectionhandled events
+          // TODO: let clearStack know about this so it doesn't do redundant setTimeouts
+          this.setTimeout(function() {
+            globalErrors.reportUnhandledRejections();
+            done();
+          });
+        }
+      });
+    }
     runnerConfig.queueableFns.push(complete);
 
     queueRunnerFactory(runnerConfig);

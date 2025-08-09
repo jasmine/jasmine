@@ -3697,7 +3697,7 @@ describe('Env integration', function() {
 
   function browserEventMethods() {
     return {
-      listeners_: { error: [], unhandledrejection: [] },
+      listeners_: { error: [], unhandledrejection: [], rejectionhandled: [] },
       addEventListener(eventName, listener) {
         this.listeners_[eventName].push(listener);
       },

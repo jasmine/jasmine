@@ -275,14 +275,21 @@ describe('TreeProcessor', function() {
   });
 
   it('runs a single leaf', async function() {
-    const leaf = new Leaf(),
-      node = new Node({ children: [leaf], userContext: { root: 'context' } }),
-      queueRunner = jasmine.createSpy('queueRunner'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: node,
-        runnableIds: [leaf.id],
-        queueRunnerFactory: queueRunner
-      });
+    const leaf = new Leaf();
+    const node = new Node({
+      children: [leaf],
+      userContext: { root: 'context' }
+    });
+    const queueRunner = jasmine.createSpy('queueRunner');
+    const globalErrors = 'the globalErrors instance';
+    const detectLateRejectionHandling = true;
+    const processor = new jasmineUnderTest.TreeProcessor({
+      tree: node,
+      runnableIds: [leaf.id],
+      queueRunnerFactory: queueRunner,
+      globalErrors,
+      detectLateRejectionHandling
+    });
 
     const promise = processor.execute();
 
@@ -296,7 +303,14 @@ describe('TreeProcessor', function() {
 
     const queueRunnerArgs = queueRunner.calls.mostRecent().args[0];
     queueRunnerArgs.queueableFns[0].fn('foo');
-    expect(leaf.execute).toHaveBeenCalledWith(queueRunner, 'foo', false, false);
+    expect(leaf.execute).toHaveBeenCalledWith(
+      queueRunner,
+      globalErrors,
+      'foo',
+      false,
+      false,
+      detectLateRejectionHandling
+    );
 
     queueRunnerArgs.onComplete();
     await expectAsync(promise).toBeResolvedTo(undefined);
@@ -355,18 +369,22 @@ describe('TreeProcessor', function() {
   });
 
   it('runs a node with children', function() {
-    const leaf1 = new Leaf(),
-      leaf2 = new Leaf(),
-      node = new Node({ children: [leaf1, leaf2] }),
-      root = new Node({ children: [node] }),
-      queueRunner = jasmine.createSpy('queueRunner'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [node.id],
-        queueRunnerFactory: queueRunner
-      }),
-      treeComplete = jasmine.createSpy('treeComplete'),
-      nodeDone = jasmine.createSpy('nodeDone');
+    const leaf1 = new Leaf();
+    const leaf2 = new Leaf();
+    const node = new Node({ children: [leaf1, leaf2] });
+    const root = new Node({ children: [node] });
+    const queueRunner = jasmine.createSpy('queueRunner');
+    const globalErrors = 'the globalErrors instance';
+    const detectLateRejectionHandling = false;
+    const processor = new jasmineUnderTest.TreeProcessor({
+      tree: root,
+      runnableIds: [node.id],
+      queueRunnerFactory: queueRunner,
+      globalErrors,
+      detectLateRejectionHandling
+    });
+    const treeComplete = jasmine.createSpy('treeComplete');
+    const nodeDone = jasmine.createSpy('nodeDone');
 
     processor.execute(treeComplete);
     let queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
@@ -378,34 +396,42 @@ describe('TreeProcessor', function() {
     queueableFns[1].fn('foo');
     expect(leaf1.execute).toHaveBeenCalledWith(
       queueRunner,
+      globalErrors,
       'foo',
       false,
-      false
+      false,
+      detectLateRejectionHandling
     );
 
     queueableFns[2].fn('bar');
     expect(leaf2.execute).toHaveBeenCalledWith(
       queueRunner,
+      globalErrors,
       'bar',
       false,
-      false
+      false,
+      detectLateRejectionHandling
     );
   });
 
   it('cascades errors up the tree', function() {
-    const leaf = new Leaf(),
-      node = new Node({ children: [leaf] }),
-      root = new Node({ children: [node] }),
-      queueRunner = jasmine.createSpy('queueRunner'),
-      nodeComplete = jasmine.createSpy('nodeComplete'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [node.id],
-        nodeComplete: nodeComplete,
-        queueRunnerFactory: queueRunner
-      }),
-      treeComplete = jasmine.createSpy('treeComplete'),
-      nodeDone = jasmine.createSpy('nodeDone');
+    const leaf = new Leaf();
+    const node = new Node({ children: [leaf] });
+    const root = new Node({ children: [node] });
+    const queueRunner = jasmine.createSpy('queueRunner');
+    const globalErrors = 'the globalErrors instance';
+    const detectLateRejectionHandling = false;
+    const nodeComplete = jasmine.createSpy('nodeComplete');
+    const processor = new jasmineUnderTest.TreeProcessor({
+      tree: root,
+      runnableIds: [node.id],
+      nodeComplete: nodeComplete,
+      queueRunnerFactory: queueRunner,
+      globalErrors,
+      detectLateRejectionHandling
+    });
+    const treeComplete = jasmine.createSpy('treeComplete');
+    const nodeDone = jasmine.createSpy('nodeDone');
 
     processor.execute(treeComplete);
     let queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
@@ -415,7 +441,14 @@ describe('TreeProcessor', function() {
     expect(queueableFns.length).toBe(2);
 
     queueableFns[1].fn('foo');
-    expect(leaf.execute).toHaveBeenCalledWith(queueRunner, 'foo', false, false);
+    expect(leaf.execute).toHaveBeenCalledWith(
+      queueRunner,
+      globalErrors,
+      'foo',
+      false,
+      false,
+      detectLateRejectionHandling
+    );
 
     queueRunner.calls.mostRecent().args[0].onComplete('things');
     expect(nodeComplete).toHaveBeenCalled();
@@ -424,21 +457,25 @@ describe('TreeProcessor', function() {
   });
 
   it('runs an excluded node with leaf', function() {
-    const leaf1 = new Leaf(),
-      node = new Node({ children: [leaf1] }),
-      root = new Node({ children: [node] }),
-      queueRunner = jasmine.createSpy('queueRunner'),
-      nodeStart = jasmine.createSpy('nodeStart'),
-      nodeComplete = jasmine.createSpy('nodeComplete'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [],
-        queueRunnerFactory: queueRunner,
-        nodeStart: nodeStart,
-        nodeComplete: nodeComplete
-      }),
-      treeComplete = jasmine.createSpy('treeComplete'),
-      nodeDone = jasmine.createSpy('nodeDone');
+    const leaf1 = new Leaf();
+    const node = new Node({ children: [leaf1] });
+    const root = new Node({ children: [node] });
+    const queueRunner = jasmine.createSpy('queueRunner');
+    const globalErrors = 'the globalErrors instance';
+    const detectLateRejectionHandling = false;
+    const nodeStart = jasmine.createSpy('nodeStart');
+    const nodeComplete = jasmine.createSpy('nodeComplete');
+    const processor = new jasmineUnderTest.TreeProcessor({
+      tree: root,
+      runnableIds: [],
+      queueRunnerFactory: queueRunner,
+      nodeStart: nodeStart,
+      nodeComplete: nodeComplete,
+      globalErrors,
+      detectLateRejectionHandling
+    });
+    const treeComplete = jasmine.createSpy('treeComplete');
+    const nodeDone = jasmine.createSpy('nodeDone');
 
     processor.execute(treeComplete);
     let queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
@@ -451,7 +488,14 @@ describe('TreeProcessor', function() {
     expect(nodeStart).toHaveBeenCalledWith(node, 'bar');
 
     queueableFns[1].fn('foo');
-    expect(leaf1.execute).toHaveBeenCalledWith(queueRunner, 'foo', true, false);
+    expect(leaf1.execute).toHaveBeenCalledWith(
+      queueRunner,
+      globalErrors,
+      'foo',
+      true,
+      false,
+      detectLateRejectionHandling
+    );
 
     node.getResult.and.returnValue({ im: 'disabled' });
 
@@ -464,22 +508,26 @@ describe('TreeProcessor', function() {
   });
 
   it('should execute node with correct arguments when failSpecWithNoExpectations option is set', function() {
-    const leaf = new Leaf(),
-      node = new Node({ children: [leaf] }),
-      root = new Node({ children: [node] }),
-      queueRunner = jasmine.createSpy('queueRunner'),
-      nodeStart = jasmine.createSpy('nodeStart'),
-      nodeComplete = jasmine.createSpy('nodeComplete'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [],
-        queueRunnerFactory: queueRunner,
-        nodeStart: nodeStart,
-        nodeComplete: nodeComplete,
-        failSpecWithNoExpectations: true
-      }),
-      treeComplete = jasmine.createSpy('treeComplete'),
-      nodeDone = jasmine.createSpy('nodeDone');
+    const leaf = new Leaf();
+    const node = new Node({ children: [leaf] });
+    const root = new Node({ children: [node] });
+    const queueRunner = jasmine.createSpy('queueRunner');
+    const globalErrors = 'the globalErrors instance';
+    const detectLateRejectionHandling = false;
+    const nodeStart = jasmine.createSpy('nodeStart');
+    const nodeComplete = jasmine.createSpy('nodeComplete');
+    const processor = new jasmineUnderTest.TreeProcessor({
+      tree: root,
+      runnableIds: [],
+      queueRunnerFactory: queueRunner,
+      nodeStart: nodeStart,
+      nodeComplete: nodeComplete,
+      globalErrors,
+      detectLateRejectionHandling,
+      failSpecWithNoExpectations: true
+    });
+    const treeComplete = jasmine.createSpy('treeComplete');
+    const nodeDone = jasmine.createSpy('nodeDone');
 
     processor.execute(treeComplete);
     let queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
@@ -489,7 +537,14 @@ describe('TreeProcessor', function() {
     expect(queueableFns.length).toBe(2);
 
     queueableFns[1].fn('foo');
-    expect(leaf.execute).toHaveBeenCalledWith(queueRunner, 'foo', true, true);
+    expect(leaf.execute).toHaveBeenCalledWith(
+      queueRunner,
+      globalErrors,
+      'foo',
+      true,
+      true,
+      detectLateRejectionHandling
+    );
   });
 
   it('runs beforeAlls for a node with children', function() {
@@ -635,16 +690,20 @@ describe('TreeProcessor', function() {
   });
 
   it('runs specified leaves before non-specified leaves within a parent node', function() {
-    const specified = new Leaf(),
-      nonSpecified = new Leaf(),
-      root = new Node({ children: [nonSpecified, specified] }),
-      queueRunner = jasmine.createSpy('queueRunner'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [specified.id],
-        queueRunnerFactory: queueRunner
-      }),
-      treeComplete = jasmine.createSpy('treeComplete');
+    const specified = new Leaf();
+    const nonSpecified = new Leaf();
+    const root = new Node({ children: [nonSpecified, specified] });
+    const queueRunner = jasmine.createSpy('queueRunner');
+    const globalErrors = 'the globalErrors instance';
+    const detectLateRejectionHandling = false;
+    const processor = new jasmineUnderTest.TreeProcessor({
+      tree: root,
+      runnableIds: [specified.id],
+      queueRunnerFactory: queueRunner,
+      globalErrors,
+      detectLateRejectionHandling
+    });
+    const treeComplete = jasmine.createSpy('treeComplete');
 
     processor.execute(treeComplete);
     const queueableFns = queueRunner.calls.mostRecent().args[0].queueableFns;
@@ -653,18 +712,22 @@ describe('TreeProcessor', function() {
     expect(nonSpecified.execute).not.toHaveBeenCalled();
     expect(specified.execute).toHaveBeenCalledWith(
       queueRunner,
+      globalErrors,
       undefined,
       false,
-      false
+      false,
+      detectLateRejectionHandling
     );
 
     queueableFns[1].fn();
 
     expect(nonSpecified.execute).toHaveBeenCalledWith(
       queueRunner,
+      globalErrors,
       undefined,
       true,
-      false
+      false,
+      detectLateRejectionHandling
     );
   });
 
