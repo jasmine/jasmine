@@ -625,9 +625,12 @@ describe('Env', function() {
         'popListener',
         'removeOverrideListener'
       ]);
-      spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new jasmineUnderTest.Env({
+        GlobalErrors: function() {
+          return globalErrors;
+        }
+      });
       expect(globalErrors.install).toHaveBeenCalled();
     });
   });
@@ -641,9 +644,13 @@ describe('Env', function() {
         'popListener',
         'removeOverrideListener'
       ]);
-      spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
       env.cleanup_();
-      env = new jasmineUnderTest.Env({ suppressLoadErrors: true });
+      env = new jasmineUnderTest.Env({
+        suppressLoadErrors: true,
+        GlobalErrors: function() {
+          return globalErrors;
+        }
+      });
       expect(globalErrors.install).not.toHaveBeenCalled();
       env.execute();
       expect(globalErrors.install).toHaveBeenCalled();

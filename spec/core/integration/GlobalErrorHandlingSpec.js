@@ -88,10 +88,14 @@ describe('Global error handling (integration)', function() {
       const globalErrors = new jasmineUnderTest.GlobalErrors(global);
       const onerror = jasmine.createSpy('onerror');
       globalErrors.pushListener(onerror);
-      spyOn(jasmineUnderTest, 'GlobalErrors').and.returnValue(globalErrors);
 
       env.cleanup_();
-      env = new jasmineUnderTest.Env({ suppressLoadErrors: true });
+      env = new jasmineUnderTest.Env({
+        suppressLoadErrors: true,
+        GlobalErrors: function() {
+          return globalErrors;
+        }
+      });
       const reporter = jasmine.createSpyObj('reporter', [
         'jasmineDone',
         'suiteDone',

@@ -11,6 +11,7 @@ getJasmineRequireObj().Env = function(j$) {
     options = options || {};
 
     const self = this;
+    const GlobalErrors = options.GlobalErrors || j$.GlobalErrors;
     const global = options.global || j$.getGlobal();
 
     const realSetTimeout = global.setTimeout;
@@ -24,7 +25,7 @@ getJasmineRequireObj().Env = function(j$) {
       new j$.MockDate(global)
     );
 
-    const globalErrors = new j$.GlobalErrors(
+    const globalErrors = new GlobalErrors(
       undefined,
       // Configuration is late-bound because GlobalErrors needs to be constructed
       // before it's set to detect load-time errors in browsers
