@@ -1,7 +1,7 @@
 getJasmineRequireObj().ReportDispatcher = function(j$) {
   'use strict';
 
-  function ReportDispatcher(methods, queueRunnerFactory, onLateError) {
+  function ReportDispatcher(methods, runQueue, onLateError) {
     const dispatchedMethods = methods || [];
 
     for (const method of dispatchedMethods) {
@@ -39,7 +39,7 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
       }
 
       return new Promise(function(resolve) {
-        queueRunnerFactory({
+        runQueue({
           queueableFns: fns,
           onComplete: resolve,
           isReporter: true,

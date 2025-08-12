@@ -6,7 +6,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.totalSpecsDefined_ = options.totalSpecsDefined;
       this.focusedRunables_ = options.focusedRunables;
       this.runableResources_ = options.runableResources;
-      this.queueRunnerFactory_ = options.queueRunnerFactory;
+      this.runQueue_ = options.runQueue;
       this.TreeProcessor_ = options.TreeProcessor;
       this.globalErrors_ = options.globalErrors;
       this.reporter_ = options.reporter;
@@ -59,7 +59,7 @@ getJasmineRequireObj().Runner = function(j$) {
       const processor = new this.TreeProcessor_({
         tree: this.topSuite_,
         runnableIds: runablesToRun,
-        queueRunnerFactory: options => {
+        runQueue: options => {
           if (options.isLeaf) {
             // A spec
             options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
@@ -72,7 +72,7 @@ getJasmineRequireObj().Runner = function(j$) {
             }
           }
 
-          return this.queueRunnerFactory_(options);
+          return this.runQueue_(options);
         },
         globalErrors: this.globalErrors_,
         failSpecWithNoExpectations: config.failSpecWithNoExpectations,

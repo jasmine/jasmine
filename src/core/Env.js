@@ -455,7 +455,7 @@ getJasmineRequireObj().Env = function(j$) {
       deprecator.addDeprecationWarning(runable, deprecation, options);
     };
 
-    function queueRunnerFactory(options) {
+    function runQueue(options) {
       options.clearStack = options.clearStack || clearStack;
       options.timeout = {
         setTimeout: realSetTimeout,
@@ -479,7 +479,7 @@ getJasmineRequireObj().Env = function(j$) {
       onLateError: recordLateError,
       specResultCallback,
       specStarted,
-      queueRunnerFactory
+      runQueue
     });
     topSuite = suiteBuilder.topSuite;
     const deprecator = new j$.Deprecator(topSuite);
@@ -506,7 +506,7 @@ getJasmineRequireObj().Env = function(j$) {
       j$.reporterEvents,
       function(options) {
         options.SkipPolicy = j$.NeverSkipPolicy;
-        return queueRunnerFactory(options);
+        return runQueue(options);
       },
       recordLateError
     );
@@ -517,7 +517,7 @@ getJasmineRequireObj().Env = function(j$) {
       focusedRunables: () => suiteBuilder.focusedRunables,
       runableResources,
       reporter,
-      queueRunnerFactory,
+      runQueue,
       TreeProcessor: j$.TreeProcessor,
       globalErrors,
       getConfig: () => config,

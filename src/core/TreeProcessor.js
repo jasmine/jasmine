@@ -2,7 +2,7 @@ getJasmineRequireObj().TreeProcessor = function() {
   function TreeProcessor(attrs) {
     const tree = attrs.tree;
     const runnableIds = attrs.runnableIds;
-    const queueRunnerFactory = attrs.queueRunnerFactory;
+    const runQueue = attrs.runQueue;
     const nodeStart = attrs.nodeStart || function() {};
     const nodeComplete = attrs.nodeComplete || function() {};
     const failSpecWithNoExpectations = !!attrs.failSpecWithNoExpectations;
@@ -42,7 +42,7 @@ getJasmineRequireObj().TreeProcessor = function() {
       const childFns = wrapChildren(tree, 0);
 
       await new Promise(function(resolve) {
-        queueRunnerFactory({
+        runQueue({
           queueableFns: childFns,
           userContext: tree.sharedUserContext(),
           onException: function() {
@@ -212,7 +212,7 @@ getJasmineRequireObj().TreeProcessor = function() {
               }
             };
 
-            queueRunnerFactory({
+            runQueue({
               onComplete: function() {
                 const args = Array.prototype.slice.call(arguments, [0]);
                 node.cleanupBeforeAfter();
@@ -235,7 +235,7 @@ getJasmineRequireObj().TreeProcessor = function() {
         return {
           fn: function(done) {
             node.execute(
-              queueRunnerFactory,
+              runQueue,
               globalErrors,
               done,
               stats[node.id].excluded,

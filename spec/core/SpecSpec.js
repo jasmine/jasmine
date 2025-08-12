@@ -312,11 +312,11 @@ describe('Spec', function() {
         resultCallback: function() {}
       });
 
-    function queueRunnerFactory(attrs) {
+    function runQueue(attrs) {
       spec.result.status = 'failed';
       attrs.onComplete();
     }
-    spec.execute(queueRunnerFactory, null, done);
+    spec.execute(runQueue, null, done);
 
     expect(done).toHaveBeenCalledWith(
       jasmine.any(jasmineUnderTest.StopExecutionError)
@@ -340,14 +340,14 @@ describe('Spec', function() {
       timer: timer
     });
 
-    function queueRunnerFactory(config) {
+    function runQueue(config) {
       config.queueableFns.forEach(function(qf) {
         qf.fn();
       });
       config.onComplete();
     }
 
-    spec.execute(queueRunnerFactory, null, function() {});
+    spec.execute(runQueue, null, function() {});
     expect(duration).toBe(77000);
   });
 
@@ -649,7 +649,7 @@ describe('Spec', function() {
   });
 
   it('treats multiple done calls as late errors', function() {
-    const queueRunnerFactory = jasmine.createSpy('queueRunnerFactory'),
+    const runQueue = jasmine.createSpy('runQueue'),
       onLateError = jasmine.createSpy('onLateError'),
       spec = new jasmineUnderTest.Spec({
         onLateError: onLateError,
@@ -659,10 +659,10 @@ describe('Spec', function() {
         }
       });
 
-    spec.execute(queueRunnerFactory);
+    spec.execute(runQueue);
 
-    expect(queueRunnerFactory).toHaveBeenCalled();
-    queueRunnerFactory.calls.argsFor(0)[0].onMultipleDone();
+    expect(runQueue).toHaveBeenCalled();
+    runQueue.calls.argsFor(0)[0].onMultipleDone();
 
     expect(onLateError).toHaveBeenCalledTimes(1);
     expect(onLateError.calls.argsFor(0)[0]).toBeInstanceOf(Error);
@@ -709,7 +709,7 @@ describe('Spec', function() {
             resultCallback: resultCallback
           });
 
-        function queueRunnerFactory(config) {
+        function runQueue(config) {
           spec.debugLog('msg');
           for (const fn of config.queueableFns) {
             fn.fn();
@@ -717,7 +717,7 @@ describe('Spec', function() {
           config.onComplete(false);
         }
 
-        spec.execute(queueRunnerFactory, null, function() {});
+        spec.execute(runQueue, null, function() {});
         expect(resultCallback).toHaveBeenCalledWith(
           jasmine.objectContaining({ debugLogs: null }),
           undefined
@@ -733,7 +733,7 @@ describe('Spec', function() {
             resultCallback: resultCallback
           });
 
-        function queueRunnerFactory(config) {
+        function runQueue(config) {
           spec.debugLog('msg');
           for (const fn of config.queueableFns) {
             fn.fn();
@@ -741,7 +741,7 @@ describe('Spec', function() {
           config.onComplete(false);
         }
 
-        spec.execute(queueRunnerFactory, null, function() {});
+        spec.execute(runQueue, null, function() {});
         expect(resultCallback).toHaveBeenCalled();
         expect(spec.result.debugLogs).toBeNull();
       });
@@ -762,7 +762,7 @@ describe('Spec', function() {
 
         timer.elapsed.and.returnValue(timestamp);
 
-        function queueRunnerFactory(config) {
+        function runQueue(config) {
           spec.debugLog('msg');
           spec.handleException(new Error('nope'));
           for (const fn of config.queueableFns) {
@@ -771,7 +771,7 @@ describe('Spec', function() {
           config.onComplete(true);
         }
 
-        spec.execute(queueRunnerFactory, null, function() {});
+        spec.execute(runQueue, null, function() {});
         expect(resultCallback).toHaveBeenCalledWith(
           jasmine.objectContaining({
             debugLogs: [{ message: 'msg', timestamp: timestamp }]

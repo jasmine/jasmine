@@ -72,7 +72,7 @@ getJasmineRequireObj().Spec = function(j$) {
   };
 
   Spec.prototype.execute = function(
-    queueRunnerFactory,
+    runQueue,
     globalErrors,
     onComplete,
     excluded,
@@ -155,7 +155,7 @@ getJasmineRequireObj().Spec = function(j$) {
     }
     runnerConfig.queueableFns.push(complete);
 
-    queueRunnerFactory(runnerConfig);
+    runQueue(runnerConfig);
   };
 
   Spec.prototype.reset = function() {
