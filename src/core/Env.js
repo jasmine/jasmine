@@ -49,7 +49,7 @@ getJasmineRequireObj().Env = function(j$) {
       globalErrors
     });
 
-    let reporter;
+    let reportDispatcher;
     let topSuite;
     let runner;
     let parallelLoadingState = null; // 'specs', 'helpers', or null for non-parallel
@@ -502,7 +502,7 @@ getJasmineRequireObj().Env = function(j$) {
      * @interface Reporter
      * @see custom_reporter
      */
-    reporter = new j$.ReportDispatcher(
+    reportDispatcher = new j$.ReportDispatcher(
       j$.reporterEvents,
       function(options) {
         options.SkipPolicy = j$.NeverSkipPolicy;
@@ -516,7 +516,7 @@ getJasmineRequireObj().Env = function(j$) {
       totalSpecsDefined: () => suiteBuilder.totalSpecsDefined,
       focusedRunables: () => suiteBuilder.focusedRunables,
       runableResources,
-      reporter,
+      reportDispatcher,
       runQueue,
       TreeProcessor: j$.TreeProcessor,
       globalErrors,
@@ -584,7 +584,7 @@ getJasmineRequireObj().Env = function(j$) {
         throw new Error('Reporters cannot be added via Env in parallel mode');
       }
 
-      reporter.addReporter(reporterToAdd);
+      reportDispatcher.addReporter(reporterToAdd);
     };
 
     /**
@@ -596,7 +596,7 @@ getJasmineRequireObj().Env = function(j$) {
      * @see custom_reporter
      */
     this.provideFallbackReporter = function(reporterToAdd) {
-      reporter.provideFallbackReporter(reporterToAdd);
+      reportDispatcher.provideFallbackReporter(reporterToAdd);
     };
 
     /**
@@ -610,7 +610,7 @@ getJasmineRequireObj().Env = function(j$) {
         throw new Error('Reporters cannot be removed via Env in parallel mode');
       }
 
-      reporter.clearReporters();
+      reportDispatcher.clearReporters();
     };
 
     /**
@@ -777,12 +777,12 @@ getJasmineRequireObj().Env = function(j$) {
     function specStarted(spec, suite, next) {
       runner.currentSpec = spec;
       runableResources.initForRunable(spec.id, suite.id);
-      reporter.specStarted(spec.result).then(next);
+      reportDispatcher.specStarted(spec.result).then(next);
     }
 
     function reportSpecDone(spec, result, next) {
       spec.reportedDone = true;
-      reporter.specDone(result).then(next);
+      reportDispatcher.specDone(result).then(next);
     }
 
     this.it = function(description, fn, timeout) {

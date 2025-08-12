@@ -129,11 +129,11 @@ describe('Runner', function() {
     describe('reporting', function() {
       it('reports the suiteDone event', async function() {
         const TreeProcessor = spyTreeProcessorCtor();
-        const reporter = spyReporter();
+        const reportDispatcher = spyReporter();
         const subject = new jasmineUnderTest.Runner({
           ...defaultCtorOptions(),
           TreeProcessor,
-          reporter
+          reportDispatcher
         });
 
         const promise = subject.execute();
@@ -152,13 +152,13 @@ describe('Runner', function() {
           { status: 'passed' }
         ]);
 
-        expect(reporter.suiteDone).toHaveBeenCalled();
+        expect(reportDispatcher.suiteDone).toHaveBeenCalled();
       });
 
       describe('when the suite had a beforeAll failure', function() {
         it('reports children before the suiteDone event', async function() {
           const TreeProcessor = spyTreeProcessorCtor();
-          const reporter = spyReporter();
+          const reportDispatcher = spyReporter();
           const reportSpecDone = jasmine
             .createSpy('reportSpecDone')
             .and.callFake(function(child, result, next) {
@@ -167,7 +167,7 @@ describe('Runner', function() {
           const subject = new jasmineUnderTest.Runner({
             ...defaultCtorOptions(),
             TreeProcessor,
-            reporter,
+            reportDispatcher,
             reportSpecDone
           });
 
@@ -209,8 +209,12 @@ describe('Runner', function() {
           expect(
             suiteToRun.children[0].addExpectationResult
           ).toHaveBeenCalledBefore(reportSpecDone);
-          expect(reportSpecDone).toHaveBeenCalledBefore(reporter.suiteDone);
-          expect(reporter.specStarted).toHaveBeenCalledBefore(reportSpecDone);
+          expect(reportSpecDone).toHaveBeenCalledBefore(
+            reportDispatcher.suiteDone
+          );
+          expect(reportDispatcher.specStarted).toHaveBeenCalledBefore(
+            reportSpecDone
+          );
         });
       });
     });
@@ -238,7 +242,7 @@ describe('Runner', function() {
   }
 
   function spyReporter() {
-    return jasmine.createSpyObj('reporter', {
+    return jasmine.createSpyObj('reportDispatcher', {
       jasmineStarted: Promise.resolve(),
       jasmineDone: Promise.resolve(),
       suiteStarted: Promise.resolve(),
@@ -255,7 +259,7 @@ describe('Runner', function() {
         initForRunable: () => {},
         clearForRunable: () => {}
       },
-      reporter: spyReporter(),
+      reportDispatcher: spyReporter(),
       focusedRunables: () => [],
       getConfig: () => ({}),
       totalSpecsDefined: () => 1
