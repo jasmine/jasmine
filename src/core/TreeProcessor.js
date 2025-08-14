@@ -52,7 +52,7 @@ getJasmineRequireObj().TreeProcessor = function() {
       }
 
       if (!this.#stats.valid) {
-        throw 'invalid order';
+        throw new Error('invalid order');
       }
 
       const childFns = this.#wrapChildren(this.#tree, 0);
@@ -133,6 +133,9 @@ getJasmineRequireObj().TreeProcessor = function() {
           this.#stats[node.id].segments.length > 1
         ) {
           this.#stats = { valid: false };
+          throw new Error(
+            'Invalid order: would cause a beforeAll or afterAll to be run multiple times'
+          );
         }
       }
     }

@@ -122,12 +122,7 @@ getJasmineRequireObj().Runner = function(j$) {
           return !config.specFilter(spec);
         }
       });
-
-      if (!processor.processTree().valid) {
-        throw new Error(
-          'Invalid order: would cause a beforeAll or afterAll to be run multiple times'
-        );
-      }
+      processor.processTree();
 
       return this.#execute2(runablesToRun, order, processor);
     }

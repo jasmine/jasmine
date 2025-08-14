@@ -217,7 +217,7 @@ describe('TreeProcessor', function() {
     });
   });
 
-  it('marks the run order invalid if it would re-enter a node that does not allow re-entry', function() {
+  it('marks the run order invalid if it would re-enter a node that does not allow re-entry', async function() {
     const leaf1 = new Leaf(),
       leaf2 = new Leaf(),
       leaf3 = new Leaf(),
@@ -226,10 +226,18 @@ describe('TreeProcessor', function() {
       processor = new jasmineUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [leaf1.id, leaf3.id, leaf2.id]
-      }),
-      result = processor.processTree();
+      });
 
-    expect(result).toEqual({ valid: false });
+    expect(function() {
+      processor.processTree();
+    }).toThrowError(
+      'Invalid order: would cause a beforeAll or afterAll to be run multiple times'
+    );
+
+    // Subsequent attempts to execute should fail
+    await expectAsync(processor.execute()).toBeRejectedWithError(
+      'invalid order'
+    );
   });
 
   it('marks the run order valid if a node being re-entered allows re-entry', function() {
