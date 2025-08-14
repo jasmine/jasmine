@@ -1,4 +1,4 @@
-getJasmineRequireObj().TreeProcessor = function() {
+getJasmineRequireObj().TreeProcessor = function(j$) {
   const defaultMin = Infinity;
   const defaultMax = 1 - Infinity;
 
@@ -128,14 +128,17 @@ getJasmineRequireObj().TreeProcessor = function() {
 
         segmentChildren(node, orderedChildren, this.#stats, executableIndex);
 
-        if (
-          !node.canBeReentered() &&
-          this.#stats[node.id].segments.length > 1
-        ) {
-          this.#stats = { valid: false };
-          throw new Error(
-            'Invalid order: would cause a beforeAll or afterAll to be run multiple times'
-          );
+        if (this.#stats[node.id].segments.length > 1) {
+          if (node.canBeReentered()) {
+            j$.getEnv().deprecated(
+              'The specified spec/suite order splits up a suite, running unrelated specs in the middle of it. This will become an error in a future release.'
+            );
+          } else {
+            this.#stats = { valid: false };
+            throw new Error(
+              'Invalid order: would cause a beforeAll or afterAll to be run multiple times'
+            );
+          }
         }
       }
     }

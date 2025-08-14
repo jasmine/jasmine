@@ -241,18 +241,24 @@ describe('TreeProcessor', function() {
   });
 
   it('marks the run order valid if a node being re-entered allows re-entry', function() {
-    const leaf1 = new Leaf(),
-      leaf2 = new Leaf(),
-      leaf3 = new Leaf(),
-      reentered = new Node({ children: [leaf1, leaf2] }),
-      root = new Node({ children: [reentered, leaf3] }),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [leaf1.id, leaf3.id, leaf2.id]
-      }),
-      result = processor.processTree();
+    const leaf1 = new Leaf();
+    const leaf2 = new Leaf();
+    const leaf3 = new Leaf();
+    const reentered = new Node({ children: [leaf1, leaf2] });
+    const root = new Node({ children: [reentered, leaf3] });
+    const processor = new jasmineUnderTest.TreeProcessor({
+      tree: root,
+      runnableIds: [leaf1.id, leaf3.id, leaf2.id]
+    });
+    const env = jasmineUnderTest.getEnv();
+    spyOn(env, 'deprecated');
+
+    const result = processor.processTree();
 
     expect(result.valid).toBe(true);
+    expect(env.deprecated).toHaveBeenCalledWith(
+      'The specified spec/suite order splits up a suite, running unrelated specs in the middle of it. This will become an error in a future release.'
+    );
   });
 
   it("marks the run order valid if a node which can't be re-entered is only entered once", function() {
