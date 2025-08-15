@@ -621,9 +621,14 @@ describe('spec running', function() {
       actions.push('spec3');
     });
 
+    spyOn(jasmineUnderTest.getEnv(), 'deprecated');
+
     await env.execute([spec2.id, spec3.id, spec1.id]);
 
     expect(actions).toEqual(['spec2', 'spec3', 'spec1']);
+    expect(jasmineUnderTest.getEnv().deprecated).toHaveBeenCalledWith(
+      'The specified spec/suite order splits up a suite, running unrelated specs in the middle of it. This will become an error in a future release.'
+    );
   });
 
   it('refuses to re-enter suites with a beforeAll', async function() {

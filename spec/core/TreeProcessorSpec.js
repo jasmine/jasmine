@@ -787,6 +787,7 @@ describe('TreeProcessor', function() {
         runQueue
       });
 
+    spyOn(jasmineUnderTest.getEnv(), 'deprecated');
     processor.execute();
     const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
     expect(queueableFns.length).toBe(5);
@@ -831,6 +832,7 @@ describe('TreeProcessor', function() {
         runQueue
       });
 
+    spyOn(jasmineUnderTest.getEnv(), 'deprecated');
     processor.execute();
     const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
     expect(queueableFns.length).toBe(5);
