@@ -29,9 +29,7 @@ getJasmineRequireObj().MockDate = function(j$) {
 
       global.Date = FakeDate;
 
-      if (
-        env.configuration().mockIntlDateTimeFormat &&
-      ) {
+      if (env.configuration().mockIntlDateTimeFormat) {
         originalIntl = global.Intl;
         global.Intl = this.installIntl();
       }
