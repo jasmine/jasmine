@@ -1,6 +1,8 @@
 getJasmineRequireObj().MockDate = function(j$) {
-  function MockDate(global) {
+  function MockDate(global, options) {
+    const env = options.env || {};
     let currentTime = 0;
+    let originalIntl = null;
 
     if (!global || !global.Date) {
       this.install = function() {};
@@ -26,6 +28,16 @@ getJasmineRequireObj().MockDate = function(j$) {
       }
 
       global.Date = FakeDate;
+
+      if (
+        env &&
+        env.configuration().mockIntlDateTimeFormat &&
+        global.Intl &&
+        typeof global.Intl === 'object'
+      ) {
+        originalIntl = global.Intl;
+        global.Intl = this.installIntl();
+      }
     };
 
     this.tick = function(millis) {
@@ -36,6 +48,58 @@ getJasmineRequireObj().MockDate = function(j$) {
     this.uninstall = function() {
       currentTime = 0;
       global.Date = GlobalDate;
+
+      if (originalIntl !== null) {
+        global.Intl = originalIntl;
+        originalIntl = null;
+      }
+    };
+
+    this.installIntl = function() {
+      const NativeIntl = global.Intl;
+      const ClockIntl = {};
+
+      Object.getOwnPropertyNames(NativeIntl).forEach(function(property) {
+        ClockIntl[property] = NativeIntl[property];
+      });
+
+      const DateTimeFormatProxy = new Proxy(NativeIntl.DateTimeFormat, {
+        construct(target, argArray, newTarget) {
+          const realFormatter = Reflect.construct(target, argArray, newTarget);
+          return new Proxy(realFormatter, {
+            get(formatterTarget, prop) {
+              const originalMethod = formatterTarget[prop];
+              if (
+                typeof prop === 'string' &&
+                ['format', 'formatToParts'].includes(prop)
+              ) {
+                return function formatClockCompatible(...args) {
+                  return Reflect.apply(
+                    originalMethod,
+                    formatterTarget,
+                    args.length === 0 ? [new FakeDate()] : args
+                  );
+                };
+              }
+              return function reflectBoundMethod(...args) {
+                // using Reflect.apply as original constructor's Date is expected to be called by the browser otherwise we get incompatible receiver errors.
+                return Reflect.apply(originalMethod, formatterTarget, args);
+              };
+            }
+          });
+        }
+      });
+
+      ClockIntl.DateTimeFormat = DateTimeFormatProxy;
+
+      ClockIntl.DateTimeFormat.prototype = Object.create(
+        NativeIntl.DateTimeFormat.prototype
+      );
+
+      ClockIntl.DateTimeFormat.supportedLocalesOf =
+        NativeIntl.DateTimeFormat.supportedLocalesOf;
+
+      return ClockIntl;
     };
 
     createDateProperties();

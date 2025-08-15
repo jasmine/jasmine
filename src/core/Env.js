@@ -22,7 +22,7 @@ getJasmineRequireObj().Env = function(j$) {
       function() {
         return new j$.DelayedFunctionScheduler();
       },
-      new j$.MockDate(global)
+      new j$.MockDate(global, { env: this })
     );
 
     const globalErrors = new GlobalErrors(
@@ -178,7 +178,19 @@ getJasmineRequireObj().Env = function(j$) {
        * @type Boolean
        * @default false
        */
-      detectLateRejectionHandling: false
+      detectLateRejectionHandling: false,
+
+      /**
+       * Whether to mock Intl.DateTimeFormat when the mock clock is installed.
+       * When enabled, Intl.DateTimeFormat.format() and formatToParts() methods
+       * will use the mocked date when called without arguments, ensuring
+       * consistent behavior with other date APIs.
+       * @name Configuration#mockIntlDateTimeFormat
+       * @since 5.11.0
+       * @type Boolean
+       * @default false
+       */
+      mockIntlDateTimeFormat: false
     };
 
     if (!options.suppressLoadErrors) {
