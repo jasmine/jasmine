@@ -1,15 +1,4 @@
 describe('Clock', function() {
-  let env;
-
-  beforeEach(function() {
-    env = new jasmineUnderTest.Env();
-    env.configure({ mockIntlDateTimeFormat: true });
-  });
-
-  afterEach(function() {
-    env.cleanup_();
-  });
-
   const NODE_JS =
     typeof process !== 'undefined' &&
     process.versions &&
@@ -1228,7 +1217,10 @@ describe('Clock (acceptance)', function() {
   });
 
   describe('Intl.DateTimeFormat integration', function() {
-    let clock, fakeGlobal, delayedFunctionScheduler, mockDate, fakeEnv;
+    let clock;
+    let fakeGlobal;
+    let delayedFunctionScheduler;
+    let mockDate;
 
     beforeEach(function() {
       fakeGlobal = {
@@ -1239,13 +1231,8 @@ describe('Clock (acceptance)', function() {
         setInterval: jasmine.createSpy('setInterval'),
         clearInterval: jasmine.createSpy('clearInterval')
       };
-      fakeEnv = {
-        configuration: jasmine.createSpy('configuration').and.returnValue({
-          mockIntlDateTimeFormat: true
-        })
-      };
       delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler();
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, fakeEnv);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
       clock = new jasmineUnderTest.Clock(
         fakeGlobal,
         function() {
@@ -1292,7 +1279,7 @@ describe('Clock (acceptance)', function() {
 
       const mockDateWithoutIntl = new jasmineUnderTest.MockDate(
         fakeGlobalWithoutIntl,
-        fakeEnv
+        { env }
       );
       const clockWithoutIntl = new jasmineUnderTest.Clock(
         fakeGlobalWithoutIntl,
@@ -1309,13 +1296,9 @@ describe('Clock (acceptance)', function() {
     });
 
     describe('when mockIntlDateTimeFormat configuration is disabled', function() {
-      beforeEach(function() {
-        fakeEnv.configuration = jasmine
-          .createSpy('configuration')
-          .and.returnValue({
-            mockIntlDateTimeFormat: false
-          });
-        mockDate = new jasmineUnderTest.MockDate(fakeGlobal, fakeEnv);
+      it('should not mock Intl.DateTimeFormat when configuration is disabled', function() {
+        env.configure({ mockIntlDateTimeFormat: false });
+        mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env });
         clock = new jasmineUnderTest.Clock(
           fakeGlobal,
           function() {
@@ -1323,9 +1306,6 @@ describe('Clock (acceptance)', function() {
           },
           mockDate
         );
-      });
-
-      it('should not mock Intl.DateTimeFormat when configuration is disabled', function() {
         const originalIntl = fakeGlobal.Intl;
         clock.install();
         clock.mockDate(new Date(2020, 11, 20, 10, 10));

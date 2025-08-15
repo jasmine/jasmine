@@ -312,17 +312,4 @@ describe('FakeDate', function() {
       expect(formatter.format(explicitDate)).toEqual('1/15/2019');
     });
   });
-  it('does not install Intl mocking when configuration disabled', function() {
-    const fakeGlobal = {
-      Date: Date,
-      Intl: typeof Intl !== 'undefined' ? Intl : null
-    };
-    const env = new jasmineUnderTest.Env();
-    env.configure({ mockIntlDateTimeFormat: false });
-    const mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
-
-    mockDate.install(new Date(2020, 11, 20, 10, 10));
-
-    expect(fakeGlobal.Intl).toBe(Intl);
-  });
 });
