@@ -30,12 +30,7 @@ getJasmineRequireObj().MockDate = function(j$) {
       global.Date = FakeDate;
 
       if (
-        env &&
-        env.configuration &&
-        typeof env.configuration === 'function' &&
         env.configuration().mockIntlDateTimeFormat &&
-        global.Intl &&
-        typeof global.Intl === 'object'
       ) {
         originalIntl = global.Intl;
         global.Intl = this.installIntl();
@@ -58,6 +53,9 @@ getJasmineRequireObj().MockDate = function(j$) {
     };
 
     this.installIntl = function() {
+      if (!global.Intl || typeof global.Intl !== 'object') {
+        return null;
+      }
       const NativeIntl = global.Intl;
       const ClockIntl = {};
 
