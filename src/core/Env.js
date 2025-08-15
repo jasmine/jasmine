@@ -229,7 +229,8 @@ getJasmineRequireObj().Env = function(j$) {
         'stopSpecOnExpectationFailure',
         'autoCleanClosures',
         'forbidDuplicateNames',
-        'detectLateRejectionHandling'
+        'detectLateRejectionHandling',
+        'mockIntlDateTimeFormat'
       ];
 
       booleanProps.forEach(function(prop) {

@@ -1,6 +1,6 @@
 getJasmineRequireObj().MockDate = function(j$) {
   function MockDate(global, options) {
-    const env = options.env || {};
+    const env = (options && options.env) || {};
     let currentTime = 0;
     let originalIntl = null;
 
@@ -31,6 +31,8 @@ getJasmineRequireObj().MockDate = function(j$) {
 
       if (
         env &&
+        env.configuration &&
+        typeof env.configuration === 'function' &&
         env.configuration().mockIntlDateTimeFormat &&
         global.Intl &&
         typeof global.Intl === 'object'

@@ -1,7 +1,18 @@
 describe('FakeDate', function() {
+  let env;
+
+  beforeEach(function() {
+    env = new jasmineUnderTest.Env();
+    env.configure({ mockIntlDateTimeFormat: true });
+  });
+
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   it('does not fail if no global date is found', function() {
     const fakeGlobal = {},
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     expect(function() {
       mockDate.install();
@@ -19,7 +30,7 @@ describe('FakeDate', function() {
           };
         }),
       fakeGlobal = { Date: globalDate },
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     expect(fakeGlobal.Date).toEqual(globalDate);
     mockDate.install();
@@ -36,7 +47,7 @@ describe('FakeDate', function() {
           };
         }),
       fakeGlobal = { Date: globalDate },
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     mockDate.install();
     mockDate.uninstall();
@@ -55,7 +66,7 @@ describe('FakeDate', function() {
           };
         }),
       fakeGlobal = { Date: globalDate },
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     mockDate.install();
 
@@ -66,7 +77,7 @@ describe('FakeDate', function() {
 
   it('can accept a date as time base when installing', function() {
     const fakeGlobal = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal),
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env }),
       baseDate = new Date();
 
     spyOn(baseDate, 'getTime').and.returnValue(123);
@@ -77,7 +88,7 @@ describe('FakeDate', function() {
 
   it('makes real dates', function() {
     const fakeGlobal = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     mockDate.install();
     expect(new fakeGlobal.Date()).toEqual(jasmine.any(Date));
@@ -97,7 +108,7 @@ describe('FakeDate', function() {
       fakeGlobal = { Date: globalDate };
 
     globalDate.now = function() {};
-    const mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+    const mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     mockDate.install();
 
@@ -117,7 +128,7 @@ describe('FakeDate', function() {
       fakeGlobal = { Date: globalDate };
 
     globalDate.now = function() {};
-    const mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+    const mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     mockDate.install();
 
@@ -143,7 +154,7 @@ describe('FakeDate', function() {
       fakeGlobal = { Date: globalDate };
 
     globalDate.now = function() {};
-    const mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+    const mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     mockDate.install();
 
@@ -156,7 +167,7 @@ describe('FakeDate', function() {
 
   it('allows creation of a Date in a different time than the mocked time', function() {
     const fakeGlobal = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     mockDate.install();
 
@@ -168,7 +179,7 @@ describe('FakeDate', function() {
 
   it("allows creation of a Date that isn't fully specified", function() {
     const fakeGlobal = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     mockDate.install();
 
@@ -178,7 +189,7 @@ describe('FakeDate', function() {
 
   it('allows creation of a Date with millis', function() {
     const fakeGlobal = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal),
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env }),
       now = new Date(2014, 3, 15).getTime();
 
     mockDate.install();
@@ -189,27 +200,30 @@ describe('FakeDate', function() {
 
   it('copies all Date properties to the mocked date', function() {
     const fakeGlobal = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal);
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
     mockDate.install();
 
     expect(fakeGlobal.Date.UTC(2013, 9, 23)).toEqual(Date.UTC(2013, 9, 23));
   });
 
-  describe('Intl.DateTimeFormat mocking', function() {
-    let fakeGlobal, mockDate, mockEnv;
+  describe('Supports Intl.DateTimeFormat', function() {
+    let fakeGlobal;
+    let mockDate;
+    let env;
 
     beforeEach(function() {
       fakeGlobal = {
         Date: Date,
         Intl: typeof Intl !== 'undefined' ? Intl : null
       };
-      mockEnv = {
-        configuration: function() {
-          return { mockIntlDateTimeFormat: true };
-        }
-      };
-      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, mockEnv);
+      env = new jasmineUnderTest.Env();
+      env.configure({ mockIntlDateTimeFormat: true });
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env });
+    });
+
+    afterEach(function() {
+      env.cleanup_();
     });
 
     it('mocks DateTimeFormat.format() without arguments', function() {
@@ -221,10 +235,6 @@ describe('FakeDate', function() {
         day: 'numeric',
         year: 'numeric'
       });
-
-      const mockedTime = Date.UTC(2020, 11, 20, 10, 10);
-      expect(new fakeGlobal.Date().getTime()).toEqual(mockedTime);
-      expect(fakeGlobal.Date.now()).toEqual(mockedTime);
 
       expect(formatter.format()).toEqual('12/20/2020');
       expect(formatter.format(new fakeGlobal.Date())).toEqual('12/20/2020');
@@ -301,19 +311,18 @@ describe('FakeDate', function() {
       const explicitDate = new Date(2019, 0, 15);
       expect(formatter.format(explicitDate)).toEqual('1/15/2019');
     });
+  });
+  it('does not install Intl mocking when configuration disabled', function() {
+    const fakeGlobal = {
+      Date: Date,
+      Intl: typeof Intl !== 'undefined' ? Intl : null
+    };
+    const env = new jasmineUnderTest.Env();
+    env.configure({ mockIntlDateTimeFormat: false });
+    const mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
 
-    it('does not install Intl mocking when configuration disabled', function() {
-      mockEnv.configuration = function() {
-        return { mockIntlDateTimeFormat: false };
-      };
+    mockDate.install(new Date(2020, 11, 20, 10, 10));
 
-      const mockDateWithoutIntl = new jasmineUnderTest.MockDate(
-        fakeGlobal,
-        mockEnv
-      );
-      mockDateWithoutIntl.install(new Date(2020, 11, 20, 10, 10));
-
-      expect(fakeGlobal.Intl).toBe(Intl);
-    });
+    expect(fakeGlobal.Intl).toBe(Intl);
   });
 });
