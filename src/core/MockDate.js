@@ -69,7 +69,7 @@ getJasmineRequireObj().MockDate = function(j$) {
         construct(target, argArray, newTarget) {
           const realFormatter = Reflect.construct(target, argArray, newTarget);
           return new Proxy(realFormatter, {
-            get(formatterTarget, prop) {
+            get(formatterTarget, prop, receiver) {
               const originalMethod = formatterTarget[prop];
               if (
                 typeof prop === 'string' &&
@@ -83,10 +83,10 @@ getJasmineRequireObj().MockDate = function(j$) {
                   );
                 };
               }
-              return function reflectBoundMethod(...args) {
-                // using Reflect.apply as original constructor's Date is expected to be called by the browser otherwise we get incompatible receiver errors.
-                return Reflect.apply(originalMethod, formatterTarget, args);
-              };
+              const value = Reflect.get(formatterTarget, prop, receiver);
+              return typeof value === 'function'
+                ? value.bind(formatterTarget)
+                : value;
             }
           });
         }
