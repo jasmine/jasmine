@@ -6,6 +6,7 @@ getJasmineRequireObj().Runner = function(j$) {
     #runableResources;
     #runQueue;
     #TreeProcessor;
+    #treeProcessor;
     #globalErrors;
     #reportDispatcher;
     #getConfig;
@@ -68,12 +69,9 @@ getJasmineRequireObj().Runner = function(j$) {
         seed: j$.isNumber_(config.seed) ? config.seed + '' : config.seed
       });
 
-      const processor = new this.#TreeProcessor({
+      this.#treeProcessor = new this.#TreeProcessor({
         tree: this.#topSuite,
         runnableIds: runablesToRun,
-        executeTopSuite: this.#executeTopSuite.bind(this),
-        executeSpec: this.#executeSpec.bind(this),
-        executeSuiteSegment: this.#executeSuiteSegment.bind(this),
         orderChildren: function(node) {
           return order.sort(node.children);
         },
@@ -81,12 +79,12 @@ getJasmineRequireObj().Runner = function(j$) {
           return !config.specFilter(spec);
         }
       });
-      processor.processTree();
+      this.#treeProcessor.processTree();
 
-      return this.#execute2(runablesToRun, order, processor);
+      return this.#execute2(runablesToRun, order);
     }
 
-    async #execute2(runablesToRun, order, processor) {
+    async #execute2(runablesToRun, order) {
       const totalSpecsDefined = this.#getTotalSpecsDefined();
 
       this.#runableResources.initForRunable(this.#topSuite.id);
@@ -110,7 +108,7 @@ getJasmineRequireObj().Runner = function(j$) {
       });
 
       this.#currentlyExecutingSuites.push(this.#topSuite);
-      await processor.execute();
+      await this.#executeTopSuite();
 
       if (this.#topSuite.hadBeforeAllFailure) {
         await this.#reportChildrenOfBeforeAllFailure(this.#topSuite);
@@ -164,28 +162,34 @@ getJasmineRequireObj().Runner = function(j$) {
       return jasmineDoneInfo;
     }
 
-    // TreeProcessor callback.
-    #executeTopSuite(topSuite, wrappedChildren, done) {
+    async #executeTopSuite() {
+      const wrappedChildren = this.#wrapNodes(
+        this.#treeProcessor.childrenOfTopSuite()
+      );
       const queueableFns = this.#addBeforeAndAfterAlls(
-        topSuite,
-        true,
+        this.#topSuite,
         wrappedChildren
       );
-      this.#runQueueWithSkipPolicy({
-        queueableFns,
-        userContext: topSuite.sharedUserContext(),
-        onException: function() {
-          topSuite.handleException.apply(topSuite, arguments);
-        }.bind(this),
-        onComplete: done,
-        onMultipleDone: topSuite.onMultipleDone
-          ? topSuite.onMultipleDone.bind(topSuite)
-          : null
+
+      await new Promise(resolve => {
+        this.#runQueueWithSkipPolicy({
+          queueableFns,
+          userContext: this.#topSuite.sharedUserContext(),
+          onException: function() {
+            this.#topSuite.handleException.apply(this.#topSuite, arguments);
+          }.bind(this),
+          onComplete: resolve,
+          onMultipleDone: this.#topSuite.onMultipleDone
+            ? this.#topSuite.onMultipleDone.bind(this.#topSuite)
+            : null
+        });
       });
     }
 
-    // TreeProcessor callback. Mutually recursive with TreeProcessor##executeNode.
-    #executeSuiteSegment(suite, excluded, wrappedChildren, done) {
+    #executeSuiteSegment(suite, segmentNumber, done) {
+      const wrappedChildren = this.#wrapNodes(
+        this.#treeProcessor.childrenOfSuiteSegment(suite, segmentNumber)
+      );
       const onStart = {
         fn: next => {
           this.#suiteSegmentStart(suite, next);
@@ -193,7 +197,7 @@ getJasmineRequireObj().Runner = function(j$) {
       };
       const queueableFns = [
         onStart,
-        ...this.#addBeforeAndAfterAlls(suite, excluded, wrappedChildren)
+        ...this.#addBeforeAndAfterAlls(suite, wrappedChildren)
       ];
 
       this.#runQueueWithSkipPolicy({
@@ -216,27 +220,40 @@ getJasmineRequireObj().Runner = function(j$) {
       });
     }
 
-    // TreeProcessor callback.
-    #executeSpec(spec, excluded, done) {
+    #executeSpec(spec, done) {
       const config = this.#getConfig();
       spec.execute(
         this.#runQueueWithSkipPolicy.bind(this),
         this.#globalErrors,
         done,
-        excluded,
+        this.#treeProcessor.isExcluded(spec),
         config.failSpecWithNoExpectations,
         config.detectLateRejectionHandling
       );
     }
 
-    #addBeforeAndAfterAlls(suite, willExecute, wrappedChildren) {
-      if (willExecute) {
-        return suite.beforeAllFns
-          .concat(wrappedChildren)
-          .concat(suite.afterAllFns);
-      } else {
+    #wrapNodes(nodes) {
+      return nodes.map(node => {
+        return {
+          fn: done => {
+            if (node.suite) {
+              this.#executeSuiteSegment(node.suite, node.segmentNumber, done);
+            } else {
+              this.#executeSpec(node.spec, done);
+            }
+          }
+        };
+      });
+    }
+
+    #addBeforeAndAfterAlls(suite, wrappedChildren) {
+      if (this.#treeProcessor.isExcluded(suite)) {
         return wrappedChildren;
       }
+
+      return suite.beforeAllFns
+        .concat(wrappedChildren)
+        .concat(suite.afterAllFns);
     }
 
     #suiteSegmentStart(suite, next) {

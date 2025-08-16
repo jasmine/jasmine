@@ -4,9 +4,6 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
 
   class TreeProcessor {
     #tree;
-    #executeTopSuite;
-    #executeSpec;
-    #executeSuiteSegment;
     #runnableIds;
     #orderChildren;
     #excludeNode;
@@ -16,9 +13,6 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
     constructor(attrs) {
       this.#tree = attrs.tree;
       this.#runnableIds = attrs.runnableIds;
-      this.#executeTopSuite = attrs.executeTopSuite;
-      this.#executeSpec = attrs.executeSpec;
-      this.#executeSuiteSegment = attrs.executeSuiteSegment;
 
       this.#orderChildren =
         attrs.orderChildren ||
@@ -30,7 +24,7 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
         function(node) {
           return false;
         };
-      this.#stats = { valid: true };
+      this.#stats = {};
       this.#processed = false;
     }
 
@@ -40,20 +34,25 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
       return this.#stats;
     }
 
-    async execute() {
-      if (!this.#processed) {
-        this.processTree();
-      }
+    childrenOfTopSuite() {
+      return this.childrenOfSuiteSegment(this.#tree, 0);
+    }
 
-      if (!this.#stats.valid) {
-        throw new Error('invalid order');
-      }
-
-      const wrappedChildren = this.#wrapChildren(this.#tree, 0);
-
-      await new Promise(resolve => {
-        this.#executeTopSuite(this.#tree, wrappedChildren, resolve);
+    childrenOfSuiteSegment(suite, segmentNumber) {
+      const segmentChildren = this.#stats[suite.id].segments[segmentNumber]
+        .nodes;
+      return segmentChildren.map(function(child) {
+        if (child.owner.children) {
+          return { suite: child.owner, segmentNumber: child.index };
+        } else {
+          return { spec: child.owner };
+        }
       });
+    }
+
+    isExcluded(node) {
+      const nodeStats = this.#stats[node.id];
+      return node.children ? !nodeStats.willExecute : nodeStats.excluded;
     }
 
     #runnableIndex(id) {
@@ -93,15 +92,8 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
 
         for (let i = 0; i < orderedChildren.length; i++) {
           const child = orderedChildren[i];
-
           this.#processNode(child, parentExcluded);
-
-          if (!this.#stats.valid) {
-            return;
-          }
-
           const childStats = this.#stats[child.id];
-
           hasExecutableChild = hasExecutableChild || childStats.willExecute;
         }
 
@@ -118,43 +110,11 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
               'The specified spec/suite order splits up a suite, running unrelated specs in the middle of it. This will become an error in a future release.'
             );
           } else {
-            this.#stats = { valid: false };
             throw new Error(
               'Invalid order: would cause a beforeAll or afterAll to be run multiple times'
             );
           }
         }
-      }
-    }
-
-    #wrapChildren(node, segmentNumber) {
-      const result = [],
-        segmentChildren = this.#stats[node.id].segments[segmentNumber].nodes;
-
-      for (let i = 0; i < segmentChildren.length; i++) {
-        result.push(
-          this.#executeNode(segmentChildren[i].owner, segmentChildren[i].index)
-        );
-      }
-
-      return result;
-    }
-
-    #executeNode(node, segmentNumber) {
-      if (node.children) {
-        return {
-          fn: done => {
-            const wrappedChildren = this.#wrapChildren(node, segmentNumber);
-            const willExecute = this.#stats[node.id].willExecute;
-            this.#executeSuiteSegment(node, willExecute, wrappedChildren, done);
-          }
-        };
-      } else {
-        return {
-          fn: done => {
-            this.#executeSpec(node, this.#stats[node.id].excluded, done);
-          }
-        };
       }
     }
   }

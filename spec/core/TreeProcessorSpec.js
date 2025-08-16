@@ -34,8 +34,6 @@ describe('TreeProcessor', function() {
       }),
       result = processor.processTree();
 
-    expect(result.valid).toBe(true);
-
     expect(result[leaf.id]).toEqual({
       excluded: false,
       willExecute: true,
@@ -51,8 +49,6 @@ describe('TreeProcessor', function() {
       }),
       result = processor.processTree();
 
-    expect(result.valid).toBe(true);
-
     expect(result[leaf.id]).toEqual({
       excluded: false,
       willExecute: false,
@@ -67,8 +63,6 @@ describe('TreeProcessor', function() {
         runnableIds: []
       }),
       result = processor.processTree();
-
-    expect(result.valid).toBe(true);
 
     expect(result[leaf.id]).toEqual({
       excluded: true,
@@ -88,8 +82,6 @@ describe('TreeProcessor', function() {
       }),
       result = processor.processTree();
 
-    expect(result.valid).toBe(true);
-
     expect(result[leaf.id]).toEqual({
       excluded: true,
       willExecute: false,
@@ -105,8 +97,6 @@ describe('TreeProcessor', function() {
         runnableIds: [parent.id]
       }),
       result = processor.processTree();
-
-    expect(result.valid).toBe(true);
 
     expect(result[parent.id]).toEqual({
       excluded: false,
@@ -129,8 +119,6 @@ describe('TreeProcessor', function() {
         runnableIds: [parent.id]
       }),
       result = processor.processTree();
-
-    expect(result.valid).toBe(true);
 
     expect(result[parent.id]).toEqual({
       excluded: false,
@@ -165,8 +153,6 @@ describe('TreeProcessor', function() {
         runnableIds: [root.id]
       }),
       result = processor.processTree();
-
-    expect(result.valid).toBe(true);
 
     expect(result[root.id]).toEqual({
       excluded: false,
@@ -217,7 +203,7 @@ describe('TreeProcessor', function() {
     });
   });
 
-  it('marks the run order invalid if it would re-enter a node that does not allow re-entry', async function() {
+  it('throws if the specified order would re-enter a node that does not allow re-entry', function() {
     const leaf1 = new Leaf(),
       leaf2 = new Leaf(),
       leaf3 = new Leaf(),
@@ -233,14 +219,9 @@ describe('TreeProcessor', function() {
     }).toThrowError(
       'Invalid order: would cause a beforeAll or afterAll to be run multiple times'
     );
-
-    // Subsequent attempts to execute should fail
-    await expectAsync(processor.execute()).toBeRejectedWithError(
-      'invalid order'
-    );
   });
 
-  it('marks the run order valid if a node being re-entered allows re-entry', function() {
+  it('does not throw if a node being re-entered allows re-entry', function() {
     const leaf1 = new Leaf();
     const leaf2 = new Leaf();
     const leaf3 = new Leaf();
@@ -253,15 +234,14 @@ describe('TreeProcessor', function() {
     const env = jasmineUnderTest.getEnv();
     spyOn(env, 'deprecated');
 
-    const result = processor.processTree();
+    processor.processTree();
 
-    expect(result.valid).toBe(true);
     expect(env.deprecated).toHaveBeenCalledWith(
       'The specified spec/suite order splits up a suite, running unrelated specs in the middle of it. This will become an error in a future release.'
     );
   });
 
-  it("marks the run order valid if a node which can't be re-entered is only entered once", function() {
+  it("does not throw if a node which can't be re-entered is only entered once", function() {
     const leaf1 = new Leaf(),
       leaf2 = new Leaf(),
       leaf3 = new Leaf(),
@@ -270,22 +250,20 @@ describe('TreeProcessor', function() {
       processor = new jasmineUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [leaf2.id, leaf1.id, leaf3.id]
-      }),
-      result = processor.processTree();
+      });
 
-    expect(result.valid).toBe(true);
+    processor.processTree();
   });
 
-  it("marks the run order valid if a node which can't be re-entered is run directly", function() {
+  it("does not throw if a node which can't be re-entered is run directly", function() {
     const noReentry = new Node({ noReenter: true }),
       root = new Node({ children: [noReentry] }),
       processor = new jasmineUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [root.id]
-      }),
-      result = processor.processTree();
+      });
 
-    expect(result.valid).toBe(true);
+    processor.processTree();
   });
 
   // TODO: Replace these with corresponding unit tests elsewhere, once things stabilize
