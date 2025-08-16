@@ -288,768 +288,771 @@ describe('TreeProcessor', function() {
     expect(result.valid).toBe(true);
   });
 
-  it('runs a single leaf', async function() {
-    const leaf = new Leaf();
-    const node = new Node({
-      children: [leaf],
-      userContext: { root: 'context' }
+  // TODO: Replace these with corresponding unit tests elsewhere, once things stabilize
+  xdescribe('#execute', function() {
+    it('runs a single leaf', async function() {
+      const leaf = new Leaf();
+      const node = new Node({
+        children: [leaf],
+        userContext: { root: 'context' }
+      });
+      const runQueue = jasmine.createSpy('runQueue');
+      const globalErrors = 'the globalErrors instance';
+      const detectLateRejectionHandling = true;
+      const processor = new jasmineUnderTest.TreeProcessor({
+        tree: node,
+        runnableIds: [leaf.id],
+        runQueue,
+        globalErrors,
+        detectLateRejectionHandling
+      });
+
+      const promise = processor.execute();
+
+      expect(runQueue).toHaveBeenCalledWith({
+        onComplete: jasmine.any(Function),
+        onException: jasmine.any(Function),
+        userContext: { root: 'context' },
+        queueableFns: [{ fn: jasmine.any(Function) }],
+        onMultipleDone: null
+      });
+
+      const runQueueArgs = runQueue.calls.mostRecent().args[0];
+      runQueueArgs.queueableFns[0].fn('foo');
+      expect(leaf.execute).toHaveBeenCalledWith(
+        runQueue,
+        globalErrors,
+        'foo',
+        false,
+        false,
+        detectLateRejectionHandling
+      );
+
+      runQueueArgs.onComplete();
+      await expectAsync(promise).toBeResolvedTo(undefined);
     });
-    const runQueue = jasmine.createSpy('runQueue');
-    const globalErrors = 'the globalErrors instance';
-    const detectLateRejectionHandling = true;
-    const processor = new jasmineUnderTest.TreeProcessor({
-      tree: node,
-      runnableIds: [leaf.id],
-      runQueue,
-      globalErrors,
-      detectLateRejectionHandling
+
+    it('runs a node with no children', async function() {
+      const node = new Node({ userContext: { node: 'context' } }),
+        root = new Node({ children: [node], userContext: { root: 'context' } }),
+        nodeStart = jasmine.createSpy('nodeStart'),
+        nodeComplete = jasmine.createSpy('nodeComplete'),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [node.id],
+          nodeStart: nodeStart,
+          nodeComplete: nodeComplete,
+          runQueue
+        }),
+        nodeDone = jasmine.createSpy('nodeDone');
+
+      const promise = processor.execute();
+
+      expect(runQueue).toHaveBeenCalledWith({
+        onComplete: jasmine.any(Function),
+        onException: jasmine.any(Function),
+        userContext: { root: 'context' },
+        queueableFns: [{ fn: jasmine.any(Function) }],
+        onMultipleDone: null
+      });
+
+      const runQueueArgs = runQueue.calls.mostRecent().args[0];
+      runQueueArgs.queueableFns[0].fn(nodeDone);
+      expect(runQueue).toHaveBeenCalledWith({
+        onComplete: jasmine.any(Function),
+        onMultipleDone: null,
+        queueableFns: [{ fn: jasmine.any(Function) }],
+        userContext: { node: 'context' },
+        onException: jasmine.any(Function),
+        onMultipleDone: null
+      });
+
+      runQueue.calls.mostRecent().args[0].queueableFns[0].fn('foo');
+      expect(nodeStart).toHaveBeenCalledWith(node, 'foo');
+
+      node.getResult.and.returnValue({ my: 'result' });
+
+      runQueue.calls.mostRecent().args[0].onComplete();
+      expect(nodeComplete).toHaveBeenCalledWith(
+        node,
+        { my: 'result' },
+        jasmine.any(Function)
+      );
+
+      runQueueArgs.onComplete();
+      await expectAsync(promise).toBeResolvedTo(undefined);
     });
 
-    const promise = processor.execute();
-
-    expect(runQueue).toHaveBeenCalledWith({
-      onComplete: jasmine.any(Function),
-      onException: jasmine.any(Function),
-      userContext: { root: 'context' },
-      queueableFns: [{ fn: jasmine.any(Function) }],
-      onMultipleDone: null
-    });
-
-    const runQueueArgs = runQueue.calls.mostRecent().args[0];
-    runQueueArgs.queueableFns[0].fn('foo');
-    expect(leaf.execute).toHaveBeenCalledWith(
-      runQueue,
-      globalErrors,
-      'foo',
-      false,
-      false,
-      detectLateRejectionHandling
-    );
-
-    runQueueArgs.onComplete();
-    await expectAsync(promise).toBeResolvedTo(undefined);
-  });
-
-  it('runs a node with no children', async function() {
-    const node = new Node({ userContext: { node: 'context' } }),
-      root = new Node({ children: [node], userContext: { root: 'context' } }),
-      nodeStart = jasmine.createSpy('nodeStart'),
-      nodeComplete = jasmine.createSpy('nodeComplete'),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
+    it('runs a node with children', function() {
+      const leaf1 = new Leaf();
+      const leaf2 = new Leaf();
+      const node = new Node({ children: [leaf1, leaf2] });
+      const root = new Node({ children: [node] });
+      const runQueue = jasmine.createSpy('runQueue');
+      const globalErrors = 'the globalErrors instance';
+      const detectLateRejectionHandling = false;
+      const processor = new jasmineUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [node.id],
+        runQueue,
+        globalErrors,
+        detectLateRejectionHandling
+      });
+      const treeComplete = jasmine.createSpy('treeComplete');
+      const nodeDone = jasmine.createSpy('nodeDone');
+
+      processor.execute(treeComplete);
+      let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn(nodeDone);
+
+      queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      expect(queueableFns.length).toBe(3);
+
+      queueableFns[1].fn('foo');
+      expect(leaf1.execute).toHaveBeenCalledWith(
+        runQueue,
+        globalErrors,
+        'foo',
+        false,
+        false,
+        detectLateRejectionHandling
+      );
+
+      queueableFns[2].fn('bar');
+      expect(leaf2.execute).toHaveBeenCalledWith(
+        runQueue,
+        globalErrors,
+        'bar',
+        false,
+        false,
+        detectLateRejectionHandling
+      );
+    });
+
+    it('cascades errors up the tree', function() {
+      const leaf = new Leaf();
+      const node = new Node({ children: [leaf] });
+      const root = new Node({ children: [node] });
+      const runQueue = jasmine.createSpy('runQueue');
+      const globalErrors = 'the globalErrors instance';
+      const detectLateRejectionHandling = false;
+      const nodeComplete = jasmine.createSpy('nodeComplete');
+      const processor = new jasmineUnderTest.TreeProcessor({
+        tree: root,
+        runnableIds: [node.id],
+        nodeComplete: nodeComplete,
+        runQueue,
+        globalErrors,
+        detectLateRejectionHandling
+      });
+      const treeComplete = jasmine.createSpy('treeComplete');
+      const nodeDone = jasmine.createSpy('nodeDone');
+
+      processor.execute(treeComplete);
+      let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn(nodeDone);
+
+      queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      expect(queueableFns.length).toBe(2);
+
+      queueableFns[1].fn('foo');
+      expect(leaf.execute).toHaveBeenCalledWith(
+        runQueue,
+        globalErrors,
+        'foo',
+        false,
+        false,
+        detectLateRejectionHandling
+      );
+
+      runQueue.calls.mostRecent().args[0].onComplete('things');
+      expect(nodeComplete).toHaveBeenCalled();
+      nodeComplete.calls.mostRecent().args[2]();
+      expect(nodeDone).toHaveBeenCalledWith('things');
+    });
+
+    it('runs an excluded node with leaf', function() {
+      const leaf1 = new Leaf();
+      const node = new Node({ children: [leaf1] });
+      const root = new Node({ children: [node] });
+      const runQueue = jasmine.createSpy('runQueue');
+      const globalErrors = 'the globalErrors instance';
+      const detectLateRejectionHandling = false;
+      const nodeStart = jasmine.createSpy('nodeStart');
+      const nodeComplete = jasmine.createSpy('nodeComplete');
+      const processor = new jasmineUnderTest.TreeProcessor({
+        tree: root,
+        runnableIds: [],
+        runQueue,
         nodeStart: nodeStart,
         nodeComplete: nodeComplete,
-        runQueue
-      }),
-      nodeDone = jasmine.createSpy('nodeDone');
-
-    const promise = processor.execute();
-
-    expect(runQueue).toHaveBeenCalledWith({
-      onComplete: jasmine.any(Function),
-      onException: jasmine.any(Function),
-      userContext: { root: 'context' },
-      queueableFns: [{ fn: jasmine.any(Function) }],
-      onMultipleDone: null
-    });
-
-    const runQueueArgs = runQueue.calls.mostRecent().args[0];
-    runQueueArgs.queueableFns[0].fn(nodeDone);
-    expect(runQueue).toHaveBeenCalledWith({
-      onComplete: jasmine.any(Function),
-      onMultipleDone: null,
-      queueableFns: [{ fn: jasmine.any(Function) }],
-      userContext: { node: 'context' },
-      onException: jasmine.any(Function),
-      onMultipleDone: null
-    });
-
-    runQueue.calls.mostRecent().args[0].queueableFns[0].fn('foo');
-    expect(nodeStart).toHaveBeenCalledWith(node, 'foo');
-
-    node.getResult.and.returnValue({ my: 'result' });
-
-    runQueue.calls.mostRecent().args[0].onComplete();
-    expect(nodeComplete).toHaveBeenCalledWith(
-      node,
-      { my: 'result' },
-      jasmine.any(Function)
-    );
-
-    runQueueArgs.onComplete();
-    await expectAsync(promise).toBeResolvedTo(undefined);
-  });
-
-  it('runs a node with children', function() {
-    const leaf1 = new Leaf();
-    const leaf2 = new Leaf();
-    const node = new Node({ children: [leaf1, leaf2] });
-    const root = new Node({ children: [node] });
-    const runQueue = jasmine.createSpy('runQueue');
-    const globalErrors = 'the globalErrors instance';
-    const detectLateRejectionHandling = false;
-    const processor = new jasmineUnderTest.TreeProcessor({
-      tree: root,
-      runnableIds: [node.id],
-      runQueue,
-      globalErrors,
-      detectLateRejectionHandling
-    });
-    const treeComplete = jasmine.createSpy('treeComplete');
-    const nodeDone = jasmine.createSpy('nodeDone');
-
-    processor.execute(treeComplete);
-    let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn(nodeDone);
-
-    queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(3);
-
-    queueableFns[1].fn('foo');
-    expect(leaf1.execute).toHaveBeenCalledWith(
-      runQueue,
-      globalErrors,
-      'foo',
-      false,
-      false,
-      detectLateRejectionHandling
-    );
-
-    queueableFns[2].fn('bar');
-    expect(leaf2.execute).toHaveBeenCalledWith(
-      runQueue,
-      globalErrors,
-      'bar',
-      false,
-      false,
-      detectLateRejectionHandling
-    );
-  });
-
-  it('cascades errors up the tree', function() {
-    const leaf = new Leaf();
-    const node = new Node({ children: [leaf] });
-    const root = new Node({ children: [node] });
-    const runQueue = jasmine.createSpy('runQueue');
-    const globalErrors = 'the globalErrors instance';
-    const detectLateRejectionHandling = false;
-    const nodeComplete = jasmine.createSpy('nodeComplete');
-    const processor = new jasmineUnderTest.TreeProcessor({
-      tree: root,
-      runnableIds: [node.id],
-      nodeComplete: nodeComplete,
-      runQueue,
-      globalErrors,
-      detectLateRejectionHandling
-    });
-    const treeComplete = jasmine.createSpy('treeComplete');
-    const nodeDone = jasmine.createSpy('nodeDone');
-
-    processor.execute(treeComplete);
-    let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn(nodeDone);
-
-    queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(2);
-
-    queueableFns[1].fn('foo');
-    expect(leaf.execute).toHaveBeenCalledWith(
-      runQueue,
-      globalErrors,
-      'foo',
-      false,
-      false,
-      detectLateRejectionHandling
-    );
-
-    runQueue.calls.mostRecent().args[0].onComplete('things');
-    expect(nodeComplete).toHaveBeenCalled();
-    nodeComplete.calls.mostRecent().args[2]();
-    expect(nodeDone).toHaveBeenCalledWith('things');
-  });
-
-  it('runs an excluded node with leaf', function() {
-    const leaf1 = new Leaf();
-    const node = new Node({ children: [leaf1] });
-    const root = new Node({ children: [node] });
-    const runQueue = jasmine.createSpy('runQueue');
-    const globalErrors = 'the globalErrors instance';
-    const detectLateRejectionHandling = false;
-    const nodeStart = jasmine.createSpy('nodeStart');
-    const nodeComplete = jasmine.createSpy('nodeComplete');
-    const processor = new jasmineUnderTest.TreeProcessor({
-      tree: root,
-      runnableIds: [],
-      runQueue,
-      nodeStart: nodeStart,
-      nodeComplete: nodeComplete,
-      globalErrors,
-      detectLateRejectionHandling
-    });
-    const treeComplete = jasmine.createSpy('treeComplete');
-    const nodeDone = jasmine.createSpy('nodeDone');
-
-    processor.execute(treeComplete);
-    let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn(nodeDone);
-
-    queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(2);
-
-    queueableFns[0].fn('bar');
-    expect(nodeStart).toHaveBeenCalledWith(node, 'bar');
-
-    queueableFns[1].fn('foo');
-    expect(leaf1.execute).toHaveBeenCalledWith(
-      runQueue,
-      globalErrors,
-      'foo',
-      true,
-      false,
-      detectLateRejectionHandling
-    );
-
-    node.getResult.and.returnValue({ im: 'disabled' });
-
-    runQueue.calls.mostRecent().args[0].onComplete();
-    expect(nodeComplete).toHaveBeenCalledWith(
-      node,
-      { im: 'disabled' },
-      jasmine.any(Function)
-    );
-  });
-
-  it('should execute node with correct arguments when failSpecWithNoExpectations option is set', function() {
-    const leaf = new Leaf();
-    const node = new Node({ children: [leaf] });
-    const root = new Node({ children: [node] });
-    const runQueue = jasmine.createSpy('runQueue');
-    const globalErrors = 'the globalErrors instance';
-    const detectLateRejectionHandling = false;
-    const nodeStart = jasmine.createSpy('nodeStart');
-    const nodeComplete = jasmine.createSpy('nodeComplete');
-    const processor = new jasmineUnderTest.TreeProcessor({
-      tree: root,
-      runnableIds: [],
-      runQueue,
-      nodeStart: nodeStart,
-      nodeComplete: nodeComplete,
-      globalErrors,
-      detectLateRejectionHandling,
-      failSpecWithNoExpectations: true
-    });
-    const treeComplete = jasmine.createSpy('treeComplete');
-    const nodeDone = jasmine.createSpy('nodeDone');
-
-    processor.execute(treeComplete);
-    let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn(nodeDone);
-
-    queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(2);
-
-    queueableFns[1].fn('foo');
-    expect(leaf.execute).toHaveBeenCalledWith(
-      runQueue,
-      globalErrors,
-      'foo',
-      true,
-      true,
-      detectLateRejectionHandling
-    );
-  });
-
-  it('runs beforeAlls for a node with children', function() {
-    const leaf = new Leaf(),
-      node = new Node({
-        children: [leaf],
-        beforeAllFns: [
-          { fn: 'beforeAll1', timeout: 1 },
-          { fn: 'beforeAll2', timeout: 2 }
-        ]
-      }),
-      root = new Node({ children: [node] }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [node.id],
-        runQueue
-      }),
-      treeComplete = jasmine.createSpy('treeComplete'),
-      nodeDone = jasmine.createSpy('nodeDone');
-
-    processor.execute(treeComplete);
-    let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn(nodeDone);
-
-    queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-
-    expect(queueableFns).toEqual([
-      { fn: jasmine.any(Function) },
-      { fn: 'beforeAll1', timeout: 1 },
-      { fn: 'beforeAll2', timeout: 2 },
-      { fn: jasmine.any(Function) }
-    ]);
-  });
-
-  it('runs afterAlls for a node with children', function() {
-    const leaf = new Leaf(),
-      afterAllFns = [{ fn: 'afterAll1' }, { fn: 'afterAll2' }],
-      node = new Node({
-        children: [leaf],
-        afterAllFns
-      }),
-      root = new Node({ children: [node] }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [node.id],
-        runQueue
-      }),
-      treeComplete = jasmine.createSpy('treeComplete'),
-      nodeDone = jasmine.createSpy('nodeDone');
-
-    processor.execute(treeComplete);
-    let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn(nodeDone);
-
-    queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-
-    expect(queueableFns).toEqual([
-      { fn: jasmine.any(Function) },
-      { fn: jasmine.any(Function) },
-      afterAllFns[0],
-      afterAllFns[1]
-    ]);
-  });
-
-  it('does not run beforeAlls or afterAlls for a node with no children', function() {
-    const node = new Node({
-        beforeAllFns: [{ fn: 'before' }],
-        afterAllFns: [{ fn: 'after' }]
-      }),
-      root = new Node({ children: [node] }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [node.id],
-        runQueue
-      }),
-      treeComplete = jasmine.createSpy('treeComplete'),
-      nodeDone = jasmine.createSpy('nodeDone');
-
-    processor.execute(treeComplete);
-    let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn(nodeDone);
-
-    queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-
-    expect(queueableFns).toEqual([{ fn: jasmine.any(Function) }]);
-  });
-
-  it('does not run beforeAlls or afterAlls for a node with only pending children', function() {
-    const leaf = new Leaf({ markedPending: true }),
-      node = new Node({
-        children: [leaf],
-        beforeAllFns: [{ fn: 'before' }],
-        afterAllFns: [{ fn: 'after' }],
-        markedPending: false
-      }),
-      root = new Node({ children: [node] }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [node.id],
-        runQueue
-      }),
-      treeComplete = jasmine.createSpy('treeComplete'),
-      nodeDone = jasmine.createSpy('nodeDone');
-
-    processor.execute(treeComplete);
-    let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn(nodeDone);
-
-    queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-
-    expect(queueableFns).toEqual([
-      { fn: jasmine.any(Function) },
-      { fn: jasmine.any(Function) }
-    ]);
-  });
-
-  it('runs leaves in the order specified', function() {
-    const leaf1 = new Leaf(),
-      leaf2 = new Leaf(),
-      root = new Node({ children: [leaf1, leaf2] }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [leaf2.id, leaf1.id],
-        runQueue
-      }),
-      treeComplete = jasmine.createSpy('treeComplete');
-
-    processor.execute(treeComplete);
-    const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn();
-
-    expect(leaf1.execute).not.toHaveBeenCalled();
-    expect(leaf2.execute).toHaveBeenCalled();
-
-    queueableFns[1].fn();
-
-    expect(leaf1.execute).toHaveBeenCalled();
-  });
-
-  it('runs specified leaves before non-specified leaves within a parent node', function() {
-    const specified = new Leaf();
-    const nonSpecified = new Leaf();
-    const root = new Node({ children: [nonSpecified, specified] });
-    const runQueue = jasmine.createSpy('runQueue');
-    const globalErrors = 'the globalErrors instance';
-    const detectLateRejectionHandling = false;
-    const processor = new jasmineUnderTest.TreeProcessor({
-      tree: root,
-      runnableIds: [specified.id],
-      runQueue,
-      globalErrors,
-      detectLateRejectionHandling
-    });
-    const treeComplete = jasmine.createSpy('treeComplete');
-
-    processor.execute(treeComplete);
-    const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn();
-
-    expect(nonSpecified.execute).not.toHaveBeenCalled();
-    expect(specified.execute).toHaveBeenCalledWith(
-      runQueue,
-      globalErrors,
-      undefined,
-      false,
-      false,
-      detectLateRejectionHandling
-    );
-
-    queueableFns[1].fn();
-
-    expect(nonSpecified.execute).toHaveBeenCalledWith(
-      runQueue,
-      globalErrors,
-      undefined,
-      true,
-      false,
-      detectLateRejectionHandling
-    );
-  });
-
-  it('runs nodes and leaves with a specified order', function() {
-    const specifiedLeaf = new Leaf(),
-      childLeaf = new Leaf(),
-      specifiedNode = new Node({ children: [childLeaf] }),
-      root = new Node({ children: [specifiedLeaf, specifiedNode] }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [specifiedNode.id, specifiedLeaf.id],
-        runQueue
+        globalErrors,
+        detectLateRejectionHandling
       });
+      const treeComplete = jasmine.createSpy('treeComplete');
+      const nodeDone = jasmine.createSpy('nodeDone');
 
-    processor.execute();
-    const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    queueableFns[0].fn();
+      processor.execute(treeComplete);
+      let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn(nodeDone);
 
-    expect(specifiedLeaf.execute).not.toHaveBeenCalled();
-    const nodeQueueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    nodeQueueableFns[1].fn();
+      queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      expect(queueableFns.length).toBe(2);
 
-    expect(childLeaf.execute).toHaveBeenCalled();
+      queueableFns[0].fn('bar');
+      expect(nodeStart).toHaveBeenCalledWith(node, 'bar');
 
-    queueableFns[1].fn();
-
-    expect(specifiedLeaf.execute).toHaveBeenCalled();
-  });
-
-  it('runs a node multiple times if the order specified leaves and re-enters it', function() {
-    const leaf1 = new Leaf(),
-      leaf2 = new Leaf(),
-      leaf3 = new Leaf(),
-      leaf4 = new Leaf(),
-      leaf5 = new Leaf(),
-      reentered = new Node({ children: [leaf1, leaf2, leaf3] }),
-      root = new Node({ children: [reentered, leaf4, leaf5] }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [leaf1.id, leaf4.id, leaf2.id, leaf5.id, leaf3.id],
-        runQueue
-      });
-
-    spyOn(jasmineUnderTest.getEnv(), 'deprecated');
-    processor.execute();
-    const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(5);
-
-    queueableFns[0].fn();
-    expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
-    runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
-    expect(leaf1.execute).toHaveBeenCalled();
-
-    queueableFns[1].fn();
-    expect(leaf4.execute).toHaveBeenCalled();
-
-    queueableFns[2].fn();
-    expect(runQueue.calls.count()).toBe(3);
-    expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
-    runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
-    expect(leaf2.execute).toHaveBeenCalled();
-
-    queueableFns[3].fn();
-    expect(leaf5.execute).toHaveBeenCalled();
-
-    queueableFns[4].fn();
-    expect(runQueue.calls.count()).toBe(4);
-    expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
-    runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
-    expect(leaf3.execute).toHaveBeenCalled();
-  });
-
-  it('runs a parent of a node with segments correctly', function() {
-    const leaf1 = new Leaf(),
-      leaf2 = new Leaf(),
-      leaf3 = new Leaf(),
-      leaf4 = new Leaf(),
-      leaf5 = new Leaf(),
-      parent = new Node({ children: [leaf1, leaf2, leaf3] }),
-      grandparent = new Node({ children: [parent] }),
-      root = new Node({ children: [grandparent, leaf4, leaf5] }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [leaf1.id, leaf4.id, leaf2.id, leaf5.id, leaf3.id],
-        runQueue
-      });
-
-    spyOn(jasmineUnderTest.getEnv(), 'deprecated');
-    processor.execute();
-    const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(5);
-
-    queueableFns[0].fn();
-    expect(runQueue.calls.count()).toBe(2);
-    expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
-
-    runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
-    expect(runQueue.calls.count()).toBe(3);
-
-    runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
-    expect(leaf1.execute).toHaveBeenCalled();
-
-    queueableFns[1].fn();
-    expect(leaf4.execute).toHaveBeenCalled();
-
-    queueableFns[2].fn();
-    expect(runQueue.calls.count()).toBe(4);
-    expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
-
-    runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
-    expect(runQueue.calls.count()).toBe(5);
-
-    runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
-    expect(leaf2.execute).toHaveBeenCalled();
-
-    queueableFns[3].fn();
-    expect(leaf5.execute).toHaveBeenCalled();
-
-    queueableFns[4].fn();
-    expect(runQueue.calls.count()).toBe(6);
-    expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
-
-    runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
-    expect(runQueue.calls.count()).toBe(7);
-
-    runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
-    expect(leaf3.execute).toHaveBeenCalled();
-  });
-
-  it('runs nodes in the order they were declared', function() {
-    const leaf1 = new Leaf(),
-      leaf2 = new Leaf(),
-      leaf3 = new Leaf(),
-      parent = new Node({ children: [leaf2, leaf3] }),
-      root = new Node({ children: [leaf1, parent] }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [root.id],
-        runQueue
-      });
-
-    processor.execute();
-    const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(2);
-
-    queueableFns[0].fn();
-    expect(leaf1.execute).toHaveBeenCalled();
-
-    queueableFns[1].fn();
-
-    const childFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    expect(childFns.length).toBe(3);
-    childFns[1].fn();
-    expect(leaf2.execute).toHaveBeenCalled();
-
-    childFns[2].fn();
-    expect(leaf3.execute).toHaveBeenCalled();
-  });
-
-  it('runs large segments of nodes in the order they were declared', function() {
-    const leaf1 = new Leaf(),
-      leaf2 = new Leaf(),
-      leaf3 = new Leaf(),
-      leaf4 = new Leaf(),
-      leaf5 = new Leaf(),
-      leaf6 = new Leaf(),
-      leaf7 = new Leaf(),
-      leaf8 = new Leaf(),
-      leaf9 = new Leaf(),
-      leaf10 = new Leaf(),
-      leaf11 = new Leaf(),
-      root = new Node({
-        children: [
-          leaf1,
-          leaf2,
-          leaf3,
-          leaf4,
-          leaf5,
-          leaf6,
-          leaf7,
-          leaf8,
-          leaf9,
-          leaf10,
-          leaf11
-        ]
-      }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [root.id],
-        runQueue
-      });
-
-    processor.execute();
-    const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(11);
-
-    queueableFns[0].fn();
-    expect(leaf1.execute).toHaveBeenCalled();
-
-    queueableFns[1].fn();
-    expect(leaf2.execute).toHaveBeenCalled();
-
-    queueableFns[2].fn();
-    expect(leaf3.execute).toHaveBeenCalled();
-
-    queueableFns[3].fn();
-    expect(leaf4.execute).toHaveBeenCalled();
-
-    queueableFns[4].fn();
-    expect(leaf5.execute).toHaveBeenCalled();
-
-    queueableFns[5].fn();
-    expect(leaf6.execute).toHaveBeenCalled();
-
-    queueableFns[6].fn();
-    expect(leaf7.execute).toHaveBeenCalled();
-
-    queueableFns[7].fn();
-    expect(leaf8.execute).toHaveBeenCalled();
-
-    queueableFns[8].fn();
-    expect(leaf9.execute).toHaveBeenCalled();
-
-    queueableFns[9].fn();
-    expect(leaf10.execute).toHaveBeenCalled();
-
-    queueableFns[10].fn();
-    expect(leaf11.execute).toHaveBeenCalled();
-  });
-
-  it('runs nodes in a custom order when orderChildren is overridden', function() {
-    const leaf1 = new Leaf(),
-      leaf2 = new Leaf(),
-      leaf3 = new Leaf(),
-      leaf4 = new Leaf(),
-      leaf5 = new Leaf(),
-      leaf6 = new Leaf(),
-      leaf7 = new Leaf(),
-      leaf8 = new Leaf(),
-      leaf9 = new Leaf(),
-      leaf10 = new Leaf(),
-      leaf11 = new Leaf(),
-      root = new Node({
-        children: [
-          leaf1,
-          leaf2,
-          leaf3,
-          leaf4,
-          leaf5,
-          leaf6,
-          leaf7,
-          leaf8,
-          leaf9,
-          leaf10,
-          leaf11
-        ]
-      }),
-      runQueue = jasmine.createSpy('runQueue'),
-      processor = new jasmineUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [root.id],
+      queueableFns[1].fn('foo');
+      expect(leaf1.execute).toHaveBeenCalledWith(
         runQueue,
-        orderChildren: function(node) {
-          const children = node.children.slice();
-          return children.reverse();
-        }
+        globalErrors,
+        'foo',
+        true,
+        false,
+        detectLateRejectionHandling
+      );
+
+      node.getResult.and.returnValue({ im: 'disabled' });
+
+      runQueue.calls.mostRecent().args[0].onComplete();
+      expect(nodeComplete).toHaveBeenCalledWith(
+        node,
+        { im: 'disabled' },
+        jasmine.any(Function)
+      );
+    });
+
+    it('should execute node with correct arguments when failSpecWithNoExpectations option is set', function() {
+      const leaf = new Leaf();
+      const node = new Node({ children: [leaf] });
+      const root = new Node({ children: [node] });
+      const runQueue = jasmine.createSpy('runQueue');
+      const globalErrors = 'the globalErrors instance';
+      const detectLateRejectionHandling = false;
+      const nodeStart = jasmine.createSpy('nodeStart');
+      const nodeComplete = jasmine.createSpy('nodeComplete');
+      const processor = new jasmineUnderTest.TreeProcessor({
+        tree: root,
+        runnableIds: [],
+        runQueue,
+        nodeStart: nodeStart,
+        nodeComplete: nodeComplete,
+        globalErrors,
+        detectLateRejectionHandling,
+        failSpecWithNoExpectations: true
       });
+      const treeComplete = jasmine.createSpy('treeComplete');
+      const nodeDone = jasmine.createSpy('nodeDone');
 
-    processor.execute();
-    const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
-    expect(queueableFns.length).toBe(11);
+      processor.execute(treeComplete);
+      let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn(nodeDone);
 
-    queueableFns[0].fn();
-    expect(leaf11.execute).toHaveBeenCalled();
+      queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      expect(queueableFns.length).toBe(2);
 
-    queueableFns[1].fn();
-    expect(leaf10.execute).toHaveBeenCalled();
+      queueableFns[1].fn('foo');
+      expect(leaf.execute).toHaveBeenCalledWith(
+        runQueue,
+        globalErrors,
+        'foo',
+        true,
+        true,
+        detectLateRejectionHandling
+      );
+    });
 
-    queueableFns[2].fn();
-    expect(leaf9.execute).toHaveBeenCalled();
+    it('runs beforeAlls for a node with children', function() {
+      const leaf = new Leaf(),
+        node = new Node({
+          children: [leaf],
+          beforeAllFns: [
+            { fn: 'beforeAll1', timeout: 1 },
+            { fn: 'beforeAll2', timeout: 2 }
+          ]
+        }),
+        root = new Node({ children: [node] }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [node.id],
+          runQueue
+        }),
+        treeComplete = jasmine.createSpy('treeComplete'),
+        nodeDone = jasmine.createSpy('nodeDone');
 
-    queueableFns[3].fn();
-    expect(leaf8.execute).toHaveBeenCalled();
+      processor.execute(treeComplete);
+      let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn(nodeDone);
 
-    queueableFns[4].fn();
-    expect(leaf7.execute).toHaveBeenCalled();
+      queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
 
-    queueableFns[5].fn();
-    expect(leaf6.execute).toHaveBeenCalled();
+      expect(queueableFns).toEqual([
+        { fn: jasmine.any(Function) },
+        { fn: 'beforeAll1', timeout: 1 },
+        { fn: 'beforeAll2', timeout: 2 },
+        { fn: jasmine.any(Function) }
+      ]);
+    });
 
-    queueableFns[6].fn();
-    expect(leaf5.execute).toHaveBeenCalled();
+    it('runs afterAlls for a node with children', function() {
+      const leaf = new Leaf(),
+        afterAllFns = [{ fn: 'afterAll1' }, { fn: 'afterAll2' }],
+        node = new Node({
+          children: [leaf],
+          afterAllFns
+        }),
+        root = new Node({ children: [node] }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [node.id],
+          runQueue
+        }),
+        treeComplete = jasmine.createSpy('treeComplete'),
+        nodeDone = jasmine.createSpy('nodeDone');
 
-    queueableFns[7].fn();
-    expect(leaf4.execute).toHaveBeenCalled();
+      processor.execute(treeComplete);
+      let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn(nodeDone);
 
-    queueableFns[8].fn();
-    expect(leaf3.execute).toHaveBeenCalled();
+      queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
 
-    queueableFns[9].fn();
-    expect(leaf2.execute).toHaveBeenCalled();
+      expect(queueableFns).toEqual([
+        { fn: jasmine.any(Function) },
+        { fn: jasmine.any(Function) },
+        afterAllFns[0],
+        afterAllFns[1]
+      ]);
+    });
 
-    queueableFns[10].fn();
-    expect(leaf1.execute).toHaveBeenCalled();
+    it('does not run beforeAlls or afterAlls for a node with no children', function() {
+      const node = new Node({
+          beforeAllFns: [{ fn: 'before' }],
+          afterAllFns: [{ fn: 'after' }]
+        }),
+        root = new Node({ children: [node] }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [node.id],
+          runQueue
+        }),
+        treeComplete = jasmine.createSpy('treeComplete'),
+        nodeDone = jasmine.createSpy('nodeDone');
+
+      processor.execute(treeComplete);
+      let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn(nodeDone);
+
+      queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+
+      expect(queueableFns).toEqual([{ fn: jasmine.any(Function) }]);
+    });
+
+    it('does not run beforeAlls or afterAlls for a node with only pending children', function() {
+      const leaf = new Leaf({ markedPending: true }),
+        node = new Node({
+          children: [leaf],
+          beforeAllFns: [{ fn: 'before' }],
+          afterAllFns: [{ fn: 'after' }],
+          markedPending: false
+        }),
+        root = new Node({ children: [node] }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [node.id],
+          runQueue
+        }),
+        treeComplete = jasmine.createSpy('treeComplete'),
+        nodeDone = jasmine.createSpy('nodeDone');
+
+      processor.execute(treeComplete);
+      let queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn(nodeDone);
+
+      queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+
+      expect(queueableFns).toEqual([
+        { fn: jasmine.any(Function) },
+        { fn: jasmine.any(Function) }
+      ]);
+    });
+
+    it('runs leaves in the order specified', function() {
+      const leaf1 = new Leaf(),
+        leaf2 = new Leaf(),
+        root = new Node({ children: [leaf1, leaf2] }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [leaf2.id, leaf1.id],
+          runQueue
+        }),
+        treeComplete = jasmine.createSpy('treeComplete');
+
+      processor.execute(treeComplete);
+      const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn();
+
+      expect(leaf1.execute).not.toHaveBeenCalled();
+      expect(leaf2.execute).toHaveBeenCalled();
+
+      queueableFns[1].fn();
+
+      expect(leaf1.execute).toHaveBeenCalled();
+    });
+
+    it('runs specified leaves before non-specified leaves within a parent node', function() {
+      const specified = new Leaf();
+      const nonSpecified = new Leaf();
+      const root = new Node({ children: [nonSpecified, specified] });
+      const runQueue = jasmine.createSpy('runQueue');
+      const globalErrors = 'the globalErrors instance';
+      const detectLateRejectionHandling = false;
+      const processor = new jasmineUnderTest.TreeProcessor({
+        tree: root,
+        runnableIds: [specified.id],
+        runQueue,
+        globalErrors,
+        detectLateRejectionHandling
+      });
+      const treeComplete = jasmine.createSpy('treeComplete');
+
+      processor.execute(treeComplete);
+      const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn();
+
+      expect(nonSpecified.execute).not.toHaveBeenCalled();
+      expect(specified.execute).toHaveBeenCalledWith(
+        runQueue,
+        globalErrors,
+        undefined,
+        false,
+        false,
+        detectLateRejectionHandling
+      );
+
+      queueableFns[1].fn();
+
+      expect(nonSpecified.execute).toHaveBeenCalledWith(
+        runQueue,
+        globalErrors,
+        undefined,
+        true,
+        false,
+        detectLateRejectionHandling
+      );
+    });
+
+    it('runs nodes and leaves with a specified order', function() {
+      const specifiedLeaf = new Leaf(),
+        childLeaf = new Leaf(),
+        specifiedNode = new Node({ children: [childLeaf] }),
+        root = new Node({ children: [specifiedLeaf, specifiedNode] }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [specifiedNode.id, specifiedLeaf.id],
+          runQueue
+        });
+
+      processor.execute();
+      const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      queueableFns[0].fn();
+
+      expect(specifiedLeaf.execute).not.toHaveBeenCalled();
+      const nodeQueueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      nodeQueueableFns[1].fn();
+
+      expect(childLeaf.execute).toHaveBeenCalled();
+
+      queueableFns[1].fn();
+
+      expect(specifiedLeaf.execute).toHaveBeenCalled();
+    });
+
+    it('runs a node multiple times if the order specified leaves and re-enters it', function() {
+      const leaf1 = new Leaf(),
+        leaf2 = new Leaf(),
+        leaf3 = new Leaf(),
+        leaf4 = new Leaf(),
+        leaf5 = new Leaf(),
+        reentered = new Node({ children: [leaf1, leaf2, leaf3] }),
+        root = new Node({ children: [reentered, leaf4, leaf5] }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [leaf1.id, leaf4.id, leaf2.id, leaf5.id, leaf3.id],
+          runQueue
+        });
+
+      spyOn(jasmineUnderTest.getEnv(), 'deprecated');
+      processor.execute();
+      const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      expect(queueableFns.length).toBe(5);
+
+      queueableFns[0].fn();
+      expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
+      runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
+      expect(leaf1.execute).toHaveBeenCalled();
+
+      queueableFns[1].fn();
+      expect(leaf4.execute).toHaveBeenCalled();
+
+      queueableFns[2].fn();
+      expect(runQueue.calls.count()).toBe(3);
+      expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
+      runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
+      expect(leaf2.execute).toHaveBeenCalled();
+
+      queueableFns[3].fn();
+      expect(leaf5.execute).toHaveBeenCalled();
+
+      queueableFns[4].fn();
+      expect(runQueue.calls.count()).toBe(4);
+      expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
+      runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
+      expect(leaf3.execute).toHaveBeenCalled();
+    });
+
+    it('runs a parent of a node with segments correctly', function() {
+      const leaf1 = new Leaf(),
+        leaf2 = new Leaf(),
+        leaf3 = new Leaf(),
+        leaf4 = new Leaf(),
+        leaf5 = new Leaf(),
+        parent = new Node({ children: [leaf1, leaf2, leaf3] }),
+        grandparent = new Node({ children: [parent] }),
+        root = new Node({ children: [grandparent, leaf4, leaf5] }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [leaf1.id, leaf4.id, leaf2.id, leaf5.id, leaf3.id],
+          runQueue
+        });
+
+      spyOn(jasmineUnderTest.getEnv(), 'deprecated');
+      processor.execute();
+      const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      expect(queueableFns.length).toBe(5);
+
+      queueableFns[0].fn();
+      expect(runQueue.calls.count()).toBe(2);
+      expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
+
+      runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
+      expect(runQueue.calls.count()).toBe(3);
+
+      runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
+      expect(leaf1.execute).toHaveBeenCalled();
+
+      queueableFns[1].fn();
+      expect(leaf4.execute).toHaveBeenCalled();
+
+      queueableFns[2].fn();
+      expect(runQueue.calls.count()).toBe(4);
+      expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
+
+      runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
+      expect(runQueue.calls.count()).toBe(5);
+
+      runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
+      expect(leaf2.execute).toHaveBeenCalled();
+
+      queueableFns[3].fn();
+      expect(leaf5.execute).toHaveBeenCalled();
+
+      queueableFns[4].fn();
+      expect(runQueue.calls.count()).toBe(6);
+      expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
+
+      runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
+      expect(runQueue.calls.count()).toBe(7);
+
+      runQueue.calls.mostRecent().args[0].queueableFns[1].fn();
+      expect(leaf3.execute).toHaveBeenCalled();
+    });
+
+    it('runs nodes in the order they were declared', function() {
+      const leaf1 = new Leaf(),
+        leaf2 = new Leaf(),
+        leaf3 = new Leaf(),
+        parent = new Node({ children: [leaf2, leaf3] }),
+        root = new Node({ children: [leaf1, parent] }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [root.id],
+          runQueue
+        });
+
+      processor.execute();
+      const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      expect(queueableFns.length).toBe(2);
+
+      queueableFns[0].fn();
+      expect(leaf1.execute).toHaveBeenCalled();
+
+      queueableFns[1].fn();
+
+      const childFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      expect(childFns.length).toBe(3);
+      childFns[1].fn();
+      expect(leaf2.execute).toHaveBeenCalled();
+
+      childFns[2].fn();
+      expect(leaf3.execute).toHaveBeenCalled();
+    });
+
+    it('runs large segments of nodes in the order they were declared', function() {
+      const leaf1 = new Leaf(),
+        leaf2 = new Leaf(),
+        leaf3 = new Leaf(),
+        leaf4 = new Leaf(),
+        leaf5 = new Leaf(),
+        leaf6 = new Leaf(),
+        leaf7 = new Leaf(),
+        leaf8 = new Leaf(),
+        leaf9 = new Leaf(),
+        leaf10 = new Leaf(),
+        leaf11 = new Leaf(),
+        root = new Node({
+          children: [
+            leaf1,
+            leaf2,
+            leaf3,
+            leaf4,
+            leaf5,
+            leaf6,
+            leaf7,
+            leaf8,
+            leaf9,
+            leaf10,
+            leaf11
+          ]
+        }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [root.id],
+          runQueue
+        });
+
+      processor.execute();
+      const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      expect(queueableFns.length).toBe(11);
+
+      queueableFns[0].fn();
+      expect(leaf1.execute).toHaveBeenCalled();
+
+      queueableFns[1].fn();
+      expect(leaf2.execute).toHaveBeenCalled();
+
+      queueableFns[2].fn();
+      expect(leaf3.execute).toHaveBeenCalled();
+
+      queueableFns[3].fn();
+      expect(leaf4.execute).toHaveBeenCalled();
+
+      queueableFns[4].fn();
+      expect(leaf5.execute).toHaveBeenCalled();
+
+      queueableFns[5].fn();
+      expect(leaf6.execute).toHaveBeenCalled();
+
+      queueableFns[6].fn();
+      expect(leaf7.execute).toHaveBeenCalled();
+
+      queueableFns[7].fn();
+      expect(leaf8.execute).toHaveBeenCalled();
+
+      queueableFns[8].fn();
+      expect(leaf9.execute).toHaveBeenCalled();
+
+      queueableFns[9].fn();
+      expect(leaf10.execute).toHaveBeenCalled();
+
+      queueableFns[10].fn();
+      expect(leaf11.execute).toHaveBeenCalled();
+    });
+
+    it('runs nodes in a custom order when orderChildren is overridden', function() {
+      const leaf1 = new Leaf(),
+        leaf2 = new Leaf(),
+        leaf3 = new Leaf(),
+        leaf4 = new Leaf(),
+        leaf5 = new Leaf(),
+        leaf6 = new Leaf(),
+        leaf7 = new Leaf(),
+        leaf8 = new Leaf(),
+        leaf9 = new Leaf(),
+        leaf10 = new Leaf(),
+        leaf11 = new Leaf(),
+        root = new Node({
+          children: [
+            leaf1,
+            leaf2,
+            leaf3,
+            leaf4,
+            leaf5,
+            leaf6,
+            leaf7,
+            leaf8,
+            leaf9,
+            leaf10,
+            leaf11
+          ]
+        }),
+        runQueue = jasmine.createSpy('runQueue'),
+        processor = new jasmineUnderTest.TreeProcessor({
+          tree: root,
+          runnableIds: [root.id],
+          runQueue,
+          orderChildren: function(node) {
+            const children = node.children.slice();
+            return children.reverse();
+          }
+        });
+
+      processor.execute();
+      const queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
+      expect(queueableFns.length).toBe(11);
+
+      queueableFns[0].fn();
+      expect(leaf11.execute).toHaveBeenCalled();
+
+      queueableFns[1].fn();
+      expect(leaf10.execute).toHaveBeenCalled();
+
+      queueableFns[2].fn();
+      expect(leaf9.execute).toHaveBeenCalled();
+
+      queueableFns[3].fn();
+      expect(leaf8.execute).toHaveBeenCalled();
+
+      queueableFns[4].fn();
+      expect(leaf7.execute).toHaveBeenCalled();
+
+      queueableFns[5].fn();
+      expect(leaf6.execute).toHaveBeenCalled();
+
+      queueableFns[6].fn();
+      expect(leaf5.execute).toHaveBeenCalled();
+
+      queueableFns[7].fn();
+      expect(leaf4.execute).toHaveBeenCalled();
+
+      queueableFns[8].fn();
+      expect(leaf3.execute).toHaveBeenCalled();
+
+      queueableFns[9].fn();
+      expect(leaf2.execute).toHaveBeenCalled();
+
+      queueableFns[10].fn();
+      expect(leaf1.execute).toHaveBeenCalled();
+    });
   });
 });

@@ -4,13 +4,10 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
 
   class TreeProcessor {
     #tree;
-    #runQueue;
+    #executeTopSuite;
+    #executeSpec;
+    #executeSuiteSegment;
     #runnableIds;
-    #nodeStart;
-    #nodeComplete;
-    #failSpecWithNoExpectations;
-    #detectLateRejectionHandling;
-    #globalErrors;
     #orderChildren;
     #excludeNode;
     #stats;
@@ -19,12 +16,9 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
     constructor(attrs) {
       this.#tree = attrs.tree;
       this.#runnableIds = attrs.runnableIds;
-      this.#runQueue = attrs.runQueue;
-      this.#nodeStart = attrs.nodeStart || function() {};
-      this.#nodeComplete = attrs.nodeComplete || function() {};
-      this.#failSpecWithNoExpectations = !!attrs.failSpecWithNoExpectations;
-      this.#detectLateRejectionHandling = !!attrs.detectLateRejectionHandling;
-      this.#globalErrors = attrs.globalErrors;
+      this.#executeTopSuite = attrs.executeTopSuite;
+      this.#executeSpec = attrs.executeSpec;
+      this.#executeSuiteSegment = attrs.executeSuiteSegment;
 
       this.#orderChildren =
         attrs.orderChildren ||
@@ -55,20 +49,10 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
         throw new Error('invalid order');
       }
 
-      const childFns = this.#wrapChildren(this.#tree, 0);
+      const wrappedChildren = this.#wrapChildren(this.#tree, 0);
 
       await new Promise(resolve => {
-        this.#runQueue({
-          queueableFns: childFns,
-          userContext: this.#tree.sharedUserContext(),
-          onException: function() {
-            this.#tree.handleException.apply(this.#tree, arguments);
-          }.bind(this),
-          onComplete: resolve,
-          onMultipleDone: this.#tree.onMultipleDone
-            ? this.#tree.onMultipleDone.bind(this.#tree)
-            : null
-        });
+        this.#executeTopSuite(this.#tree, wrappedChildren, resolve);
       });
     }
 
@@ -153,55 +137,22 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
         );
       }
 
-      if (!this.#stats[node.id].willExecute) {
-        return result;
-      }
-
-      return node.beforeAllFns.concat(result).concat(node.afterAllFns);
+      return result;
     }
 
     #executeNode(node, segmentNumber) {
       if (node.children) {
         return {
-          fn: function(done) {
-            const onStart = {
-              fn: next => {
-                this.#nodeStart(node, next);
-              }
-            };
-
-            this.#runQueue({
-              onComplete: function() {
-                const args = Array.prototype.slice.call(arguments, [0]);
-                node.cleanupBeforeAfter();
-                this.#nodeComplete(node, node.getResult(), () => {
-                  done.apply(undefined, args);
-                });
-              }.bind(this),
-              queueableFns: [onStart].concat(
-                this.#wrapChildren(node, segmentNumber)
-              ),
-              userContext: node.sharedUserContext(),
-              onException: function() {
-                node.handleException.apply(node, arguments);
-              },
-              onMultipleDone: node.onMultipleDone
-                ? node.onMultipleDone.bind(node)
-                : null
-            });
-          }.bind(this)
+          fn: done => {
+            const wrappedChildren = this.#wrapChildren(node, segmentNumber);
+            const willExecute = this.#stats[node.id].willExecute;
+            this.#executeSuiteSegment(node, willExecute, wrappedChildren, done);
+          }
         };
       } else {
         return {
           fn: done => {
-            node.execute(
-              this.#runQueue,
-              this.#globalErrors,
-              done,
-              this.#stats[node.id].excluded,
-              this.#failSpecWithNoExpectations,
-              this.#detectLateRejectionHandling
-            );
+            this.#executeSpec(node, this.#stats[node.id].excluded, done);
           }
         };
       }

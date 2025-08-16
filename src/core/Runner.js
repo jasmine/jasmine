@@ -11,6 +11,7 @@ getJasmineRequireObj().Runner = function(j$) {
     #getConfig;
     #reportSpecDone;
     #executedBefore;
+    #currentlyExecutingSuites;
 
     constructor(options) {
       this.#topSuite = options.topSuite;
@@ -26,7 +27,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.hasFailures = false;
       this.#executedBefore = false;
 
-      this.currentlyExecutingSuites_ = [];
+      this.#currentlyExecutingSuites = [];
       this.currentSpec = null;
     }
 
@@ -35,8 +36,8 @@ getJasmineRequireObj().Runner = function(j$) {
     }
 
     currentSuite() {
-      return this.currentlyExecutingSuites_[
-        this.currentlyExecutingSuites_.length - 1
+      return this.#currentlyExecutingSuites[
+        this.#currentlyExecutingSuites.length - 1
       ];
     }
 
@@ -70,51 +71,9 @@ getJasmineRequireObj().Runner = function(j$) {
       const processor = new this.#TreeProcessor({
         tree: this.#topSuite,
         runnableIds: runablesToRun,
-        runQueue: options => {
-          if (options.isLeaf) {
-            // A spec
-            options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
-          } else {
-            // A suite
-            if (config.stopOnSpecFailure) {
-              options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
-            } else {
-              options.SkipPolicy = j$.SkipAfterBeforeAllErrorPolicy;
-            }
-          }
-
-          return this.#runQueue(options);
-        },
-        globalErrors: this.#globalErrors,
-        failSpecWithNoExpectations: config.failSpecWithNoExpectations,
-        detectLateRejectionHandling: config.detectLateRejectionHandling,
-        nodeStart: (suite, next) => {
-          this.currentlyExecutingSuites_.push(suite);
-          this.#runableResources.initForRunable(suite.id, suite.parentSuite.id);
-          this.#reportDispatcher.suiteStarted(suite.result).then(next);
-          suite.startTimer();
-        },
-        nodeComplete: (suite, result, next) => {
-          if (suite !== this.currentSuite()) {
-            throw new Error('Tried to complete the wrong suite');
-          }
-
-          this.#runableResources.clearForRunable(suite.id);
-          this.currentlyExecutingSuites_.pop();
-
-          if (result.status === 'failed') {
-            this.hasFailures = true;
-          }
-          suite.endTimer();
-
-          if (suite.hadBeforeAllFailure) {
-            this.#reportChildrenOfBeforeAllFailure(suite).then(() => {
-              this.#reportSuiteDone(suite, result, next);
-            });
-          } else {
-            this.#reportSuiteDone(suite, result, next);
-          }
-        },
+        executeTopSuite: this.#executeTopSuite.bind(this),
+        executeSpec: this.#executeSpec.bind(this),
+        executeSuiteSegment: this.#executeSuiteSegment.bind(this),
         orderChildren: function(node) {
           return order.sort(node.children);
         },
@@ -150,7 +109,7 @@ getJasmineRequireObj().Runner = function(j$) {
         parallel: false
       });
 
-      this.currentlyExecutingSuites_.push(this.#topSuite);
+      this.#currentlyExecutingSuites.push(this.#topSuite);
       await processor.execute();
 
       if (this.#topSuite.hadBeforeAllFailure) {
@@ -158,7 +117,7 @@ getJasmineRequireObj().Runner = function(j$) {
       }
 
       this.#runableResources.clearForRunable(this.#topSuite.id);
-      this.currentlyExecutingSuites_.pop();
+      this.#currentlyExecutingSuites.pop();
       let overallStatus, incompleteReason, incompleteCode;
 
       if (
@@ -203,6 +162,128 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#topSuite.reportedDone = true;
       await this.#reportDispatcher.jasmineDone(jasmineDoneInfo);
       return jasmineDoneInfo;
+    }
+
+    // TreeProcessor callback.
+    #executeTopSuite(topSuite, wrappedChildren, done) {
+      const queueableFns = this.#addBeforeAndAfterAlls(
+        topSuite,
+        true,
+        wrappedChildren
+      );
+      this.#runQueueWithSkipPolicy({
+        queueableFns,
+        userContext: topSuite.sharedUserContext(),
+        onException: function() {
+          topSuite.handleException.apply(topSuite, arguments);
+        }.bind(this),
+        onComplete: done,
+        onMultipleDone: topSuite.onMultipleDone
+          ? topSuite.onMultipleDone.bind(topSuite)
+          : null
+      });
+    }
+
+    // TreeProcessor callback. Mutually recursive with TreeProcessor##executeNode.
+    #executeSuiteSegment(suite, excluded, wrappedChildren, done) {
+      const onStart = {
+        fn: next => {
+          this.#suiteSegmentStart(suite, next);
+        }
+      };
+      const queueableFns = [
+        onStart,
+        ...this.#addBeforeAndAfterAlls(suite, excluded, wrappedChildren)
+      ];
+
+      this.#runQueueWithSkipPolicy({
+        // TODO: if onComplete always takes 0-1 arguments (and it probably does)
+        // then it can be switched to an arrow fn with a named arg.
+        onComplete: function() {
+          const args = Array.prototype.slice.call(arguments, [0]);
+          this.#suiteSegmentComplete(suite, suite.getResult(), () => {
+            done.apply(undefined, args);
+          });
+        }.bind(this),
+        queueableFns,
+        userContext: suite.sharedUserContext(),
+        onException: function() {
+          suite.handleException.apply(suite, arguments);
+        },
+        onMultipleDone: suite.onMultipleDone
+          ? suite.onMultipleDone.bind(suite)
+          : null
+      });
+    }
+
+    // TreeProcessor callback.
+    #executeSpec(spec, excluded, done) {
+      const config = this.#getConfig();
+      spec.execute(
+        this.#runQueueWithSkipPolicy.bind(this),
+        this.#globalErrors,
+        done,
+        excluded,
+        config.failSpecWithNoExpectations,
+        config.detectLateRejectionHandling
+      );
+    }
+
+    #addBeforeAndAfterAlls(suite, willExecute, wrappedChildren) {
+      if (willExecute) {
+        return suite.beforeAllFns
+          .concat(wrappedChildren)
+          .concat(suite.afterAllFns);
+      } else {
+        return wrappedChildren;
+      }
+    }
+
+    #suiteSegmentStart(suite, next) {
+      this.#currentlyExecutingSuites.push(suite);
+      this.#runableResources.initForRunable(suite.id, suite.parentSuite.id);
+      this.#reportDispatcher.suiteStarted(suite.result).then(next);
+      suite.startTimer();
+    }
+
+    #suiteSegmentComplete(suite, result, next) {
+      suite.cleanupBeforeAfter();
+
+      if (suite !== this.currentSuite()) {
+        throw new Error('Tried to complete the wrong suite');
+      }
+
+      this.#runableResources.clearForRunable(suite.id);
+      this.#currentlyExecutingSuites.pop();
+
+      if (result.status === 'failed') {
+        this.hasFailures = true;
+      }
+      suite.endTimer();
+
+      if (suite.hadBeforeAllFailure) {
+        this.#reportChildrenOfBeforeAllFailure(suite).then(() => {
+          this.#reportSuiteDone(suite, result, next);
+        });
+      } else {
+        this.#reportSuiteDone(suite, result, next);
+      }
+    }
+
+    #runQueueWithSkipPolicy(options) {
+      if (options.isLeaf) {
+        // A spec
+        options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
+      } else {
+        // A suite
+        if (this.#getConfig().stopOnSpecFailure) {
+          options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
+        } else {
+          options.SkipPolicy = j$.SkipAfterBeforeAllErrorPolicy;
+        }
+      }
+
+      return this.#runQueue(options);
     }
 
     #reportSuiteDone(suite, result, next) {
