@@ -33,9 +33,9 @@ describe('TreeProcessor', function() {
         runnableIds: [leaf.id]
       });
 
-    processor.processTree();
+    const result = processor.processTree();
 
-    expect(processor.isExcluded(leaf)).toEqual(false);
+    expect(result.isExcluded(leaf)).toEqual(false);
   });
 
   it('processes a single pending leaf', function() {
@@ -45,9 +45,9 @@ describe('TreeProcessor', function() {
         runnableIds: [leaf.id]
       });
 
-    processor.processTree();
+    const result = processor.processTree();
 
-    expect(processor.isExcluded(leaf)).toEqual(false);
+    expect(result.isExcluded(leaf)).toEqual(false);
   });
 
   it('processes a single non-specified leaf', function() {
@@ -57,9 +57,9 @@ describe('TreeProcessor', function() {
         runnableIds: []
       });
 
-    processor.processTree();
+    const result = processor.processTree();
 
-    expect(processor.isExcluded(leaf)).toEqual(true);
+    expect(result.isExcluded(leaf)).toEqual(true);
   });
 
   it('processes a single excluded leaf', function() {
@@ -72,9 +72,9 @@ describe('TreeProcessor', function() {
         }
       });
 
-    processor.processTree();
+    const result = processor.processTree();
 
-    expect(processor.isExcluded(leaf)).toEqual(true);
+    expect(result.isExcluded(leaf)).toEqual(true);
   });
 
   it('processes a tree with a single leaf with the root specified', function() {
@@ -85,11 +85,11 @@ describe('TreeProcessor', function() {
         runnableIds: [parent.id]
       });
 
-    processor.processTree();
+    const result = processor.processTree();
 
-    expect(processor.isExcluded(parent)).toEqual(false);
-    expect(processor.childrenOfTopSuite()).toEqual([{ spec: leaf }]);
-    expect(processor.isExcluded(leaf)).toEqual(false);
+    expect(result.isExcluded(parent)).toEqual(false);
+    expect(result.childrenOfTopSuite()).toEqual([{ spec: leaf }]);
+    expect(result.isExcluded(leaf)).toEqual(false);
   });
 
   it('processes a tree with a single pending leaf, with the root specified', function() {
@@ -100,11 +100,11 @@ describe('TreeProcessor', function() {
         runnableIds: [parent.id]
       });
 
-    processor.processTree();
+    const result = processor.processTree();
 
-    expect(processor.isExcluded(parent)).toEqual(true);
-    expect(processor.childrenOfTopSuite()).toEqual([{ spec: leaf }]);
-    expect(processor.isExcluded(leaf)).toEqual(false);
+    expect(result.isExcluded(parent)).toEqual(true);
+    expect(result.childrenOfTopSuite()).toEqual([{ spec: leaf }]);
+    expect(result.isExcluded(leaf)).toEqual(false);
   });
 
   it('processes a complicated tree with the root specified', function() {
@@ -127,38 +127,38 @@ describe('TreeProcessor', function() {
         runnableIds: [root.id]
       });
 
-    processor.processTree();
+    const result = processor.processTree();
 
-    expect(processor.isExcluded(parent)).toEqual(false);
-    expect(processor.childrenOfTopSuite()).toEqual([
+    expect(result.isExcluded(parent)).toEqual(false);
+    expect(result.childrenOfTopSuite()).toEqual([
       { suite: parent, segmentNumber: 0 },
       { suite: parentOfPendings, segmentNumber: 0 }
     ]);
 
-    expect(processor.isExcluded(parentOfPendings)).toEqual(true);
-    expect(processor.childrenOfSuiteSegment(parentOfPendings, 0)).toEqual([
+    expect(result.isExcluded(parentOfPendings)).toEqual(true);
+    expect(result.childrenOfSuiteSegment(parentOfPendings, 0)).toEqual([
       { suite: childless, segmentNumber: 0 },
       { suite: pendingNode, segmentNumber: 0 }
     ]);
 
-    expect(processor.isExcluded(childless)).toEqual(true);
-    expect(processor.childrenOfSuiteSegment(childless, 0)).toEqual([]);
+    expect(result.isExcluded(childless)).toEqual(true);
+    expect(result.childrenOfSuiteSegment(childless, 0)).toEqual([]);
 
-    expect(processor.isExcluded(pendingLeaf)).toEqual(false);
-    expect(processor.isExcluded(executableLeaf)).toEqual(false);
+    expect(result.isExcluded(pendingLeaf)).toEqual(false);
+    expect(result.isExcluded(executableLeaf)).toEqual(false);
 
-    expect(processor.isExcluded(parent)).toEqual(false);
-    expect(processor.childrenOfSuiteSegment(parent, 0)).toEqual([
+    expect(result.isExcluded(parent)).toEqual(false);
+    expect(result.childrenOfSuiteSegment(parent, 0)).toEqual([
       { spec: pendingLeaf },
       { spec: executableLeaf }
     ]);
 
-    expect(processor.isExcluded(pendingNode)).toEqual(true);
-    expect(processor.childrenOfSuiteSegment(pendingNode, 0)).toEqual([
+    expect(result.isExcluded(pendingNode)).toEqual(true);
+    expect(result.childrenOfSuiteSegment(pendingNode, 0)).toEqual([
       { spec: childOfPending }
     ]);
 
-    expect(processor.isExcluded(childOfPending)).toEqual(false);
+    expect(result.isExcluded(childOfPending)).toEqual(false);
   });
 
   it('throws if the specified order would re-enter a node that does not allow re-entry', function() {

@@ -2,13 +2,15 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
   const defaultMin = Infinity;
   const defaultMax = 1 - Infinity;
 
+  // Transforms the suite tree into an execution tree, which represents the set
+  // of specs and (possibly interleaved) suites to be run in the order they are
+  // to be run in.
   class TreeProcessor {
     #tree;
     #runnableIds;
     #orderChildren;
     #excludeNode;
     #stats;
-    #processed;
 
     constructor(attrs) {
       this.#tree = attrs.tree;
@@ -24,34 +26,14 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
         function(node) {
           return false;
         };
-      this.#stats = {};
-      this.#processed = false;
     }
 
     processTree() {
+      this.#stats = {};
       this.#processNode(this.#tree, true);
-      this.#processed = true;
-    }
-
-    childrenOfTopSuite() {
-      return this.childrenOfSuiteSegment(this.#tree, 0);
-    }
-
-    childrenOfSuiteSegment(suite, segmentNumber) {
-      const segmentChildren = this.#stats[suite.id].segments[segmentNumber]
-        .nodes;
-      return segmentChildren.map(function(child) {
-        if (child.owner.children) {
-          return { suite: child.owner, segmentNumber: child.index };
-        } else {
-          return { spec: child.owner };
-        }
-      });
-    }
-
-    isExcluded(node) {
-      const nodeStats = this.#stats[node.id];
-      return node.children ? !nodeStats.willExecute : nodeStats.excluded;
+      const result = new ExecutionTree(this.#tree, this.#stats);
+      this.#stats = null;
+      return result;
     }
 
     #runnableIndex(id) {
@@ -115,6 +97,37 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
           }
         }
       }
+    }
+  }
+
+  class ExecutionTree {
+    #topSuite;
+    #stats;
+
+    constructor(topSuite, stats) {
+      this.#topSuite = topSuite;
+      this.#stats = stats;
+    }
+
+    childrenOfTopSuite() {
+      return this.childrenOfSuiteSegment(this.#topSuite, 0);
+    }
+
+    childrenOfSuiteSegment(suite, segmentNumber) {
+      const segmentChildren = this.#stats[suite.id].segments[segmentNumber]
+        .nodes;
+      return segmentChildren.map(function(child) {
+        if (child.owner.children) {
+          return { suite: child.owner, segmentNumber: child.index };
+        } else {
+          return { spec: child.owner };
+        }
+      });
+    }
+
+    isExcluded(node) {
+      const nodeStats = this.#stats[node.id];
+      return node.children ? !nodeStats.willExecute : nodeStats.excluded;
     }
   }
 

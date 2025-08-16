@@ -6,7 +6,7 @@ getJasmineRequireObj().Runner = function(j$) {
     #runableResources;
     #runQueue;
     #TreeProcessor;
-    #treeProcessor;
+    #executionTree;
     #globalErrors;
     #reportDispatcher;
     #getConfig;
@@ -69,7 +69,7 @@ getJasmineRequireObj().Runner = function(j$) {
         seed: j$.isNumber_(config.seed) ? config.seed + '' : config.seed
       });
 
-      this.#treeProcessor = new this.#TreeProcessor({
+      const treeProcessor = new this.#TreeProcessor({
         tree: this.#topSuite,
         runnableIds: runablesToRun,
         orderChildren: function(node) {
@@ -79,7 +79,7 @@ getJasmineRequireObj().Runner = function(j$) {
           return !config.specFilter(spec);
         }
       });
-      this.#treeProcessor.processTree();
+      this.#executionTree = treeProcessor.processTree();
 
       return this.#execute2(runablesToRun, order);
     }
@@ -164,7 +164,7 @@ getJasmineRequireObj().Runner = function(j$) {
 
     async #executeTopSuite() {
       const wrappedChildren = this.#wrapNodes(
-        this.#treeProcessor.childrenOfTopSuite()
+        this.#executionTree.childrenOfTopSuite()
       );
       const queueableFns = this.#addBeforeAndAfterAlls(
         this.#topSuite,
@@ -188,7 +188,7 @@ getJasmineRequireObj().Runner = function(j$) {
 
     #executeSuiteSegment(suite, segmentNumber, done) {
       const wrappedChildren = this.#wrapNodes(
-        this.#treeProcessor.childrenOfSuiteSegment(suite, segmentNumber)
+        this.#executionTree.childrenOfSuiteSegment(suite, segmentNumber)
       );
       const onStart = {
         fn: next => {
@@ -226,7 +226,7 @@ getJasmineRequireObj().Runner = function(j$) {
         this.#runQueueWithSkipPolicy.bind(this),
         this.#globalErrors,
         done,
-        this.#treeProcessor.isExcluded(spec),
+        this.#executionTree.isExcluded(spec),
         config.failSpecWithNoExpectations,
         config.detectLateRejectionHandling
       );
@@ -247,7 +247,7 @@ getJasmineRequireObj().Runner = function(j$) {
     }
 
     #addBeforeAndAfterAlls(suite, wrappedChildren) {
-      if (this.#treeProcessor.isExcluded(suite)) {
+      if (this.#executionTree.isExcluded(suite)) {
         return wrappedChildren;
       }
 
