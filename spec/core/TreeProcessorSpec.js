@@ -31,14 +31,11 @@ describe('TreeProcessor', function() {
       processor = new jasmineUnderTest.TreeProcessor({
         tree: leaf,
         runnableIds: [leaf.id]
-      }),
-      result = processor.processTree();
+      });
 
-    expect(result[leaf.id]).toEqual({
-      excluded: false,
-      willExecute: true,
-      segments: jasmine.any(Array)
-    });
+    processor.processTree();
+
+    expect(processor.isExcluded(leaf)).toEqual(false);
   });
 
   it('processes a single pending leaf', function() {
@@ -46,14 +43,11 @@ describe('TreeProcessor', function() {
       processor = new jasmineUnderTest.TreeProcessor({
         tree: leaf,
         runnableIds: [leaf.id]
-      }),
-      result = processor.processTree();
+      });
 
-    expect(result[leaf.id]).toEqual({
-      excluded: false,
-      willExecute: false,
-      segments: jasmine.any(Array)
-    });
+    processor.processTree();
+
+    expect(processor.isExcluded(leaf)).toEqual(false);
   });
 
   it('processes a single non-specified leaf', function() {
@@ -61,14 +55,11 @@ describe('TreeProcessor', function() {
       processor = new jasmineUnderTest.TreeProcessor({
         tree: leaf,
         runnableIds: []
-      }),
-      result = processor.processTree();
+      });
 
-    expect(result[leaf.id]).toEqual({
-      excluded: true,
-      willExecute: false,
-      segments: jasmine.any(Array)
-    });
+    processor.processTree();
+
+    expect(processor.isExcluded(leaf)).toEqual(true);
   });
 
   it('processes a single excluded leaf', function() {
@@ -79,14 +70,11 @@ describe('TreeProcessor', function() {
         excludeNode: function() {
           return true;
         }
-      }),
-      result = processor.processTree();
+      });
 
-    expect(result[leaf.id]).toEqual({
-      excluded: true,
-      willExecute: false,
-      segments: jasmine.any(Array)
-    });
+    processor.processTree();
+
+    expect(processor.isExcluded(leaf)).toEqual(true);
   });
 
   it('processes a tree with a single leaf with the root specified', function() {
@@ -95,20 +83,13 @@ describe('TreeProcessor', function() {
       processor = new jasmineUnderTest.TreeProcessor({
         tree: parent,
         runnableIds: [parent.id]
-      }),
-      result = processor.processTree();
+      });
 
-    expect(result[parent.id]).toEqual({
-      excluded: false,
-      willExecute: true,
-      segments: jasmine.any(Array)
-    });
+    processor.processTree();
 
-    expect(result[leaf.id]).toEqual({
-      excluded: false,
-      willExecute: true,
-      segments: jasmine.any(Array)
-    });
+    expect(processor.isExcluded(parent)).toEqual(false);
+    expect(processor.childrenOfTopSuite()).toEqual([{ spec: leaf }]);
+    expect(processor.isExcluded(leaf)).toEqual(false);
   });
 
   it('processes a tree with a single pending leaf, with the root specified', function() {
@@ -117,20 +98,13 @@ describe('TreeProcessor', function() {
       processor = new jasmineUnderTest.TreeProcessor({
         tree: parent,
         runnableIds: [parent.id]
-      }),
-      result = processor.processTree();
+      });
 
-    expect(result[parent.id]).toEqual({
-      excluded: false,
-      willExecute: false,
-      segments: jasmine.any(Array)
-    });
+    processor.processTree();
 
-    expect(result[leaf.id]).toEqual({
-      excluded: false,
-      willExecute: false,
-      segments: jasmine.any(Array)
-    });
+    expect(processor.isExcluded(parent)).toEqual(true);
+    expect(processor.childrenOfTopSuite()).toEqual([{ spec: leaf }]);
+    expect(processor.isExcluded(leaf)).toEqual(false);
   });
 
   it('processes a complicated tree with the root specified', function() {
@@ -151,56 +125,40 @@ describe('TreeProcessor', function() {
       processor = new jasmineUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [root.id]
-      }),
-      result = processor.processTree();
+      });
 
-    expect(result[root.id]).toEqual({
-      excluded: false,
-      willExecute: true,
-      segments: jasmine.any(Array)
-    });
+    processor.processTree();
 
-    expect(result[parentOfPendings.id]).toEqual({
-      excluded: false,
-      willExecute: false,
-      segments: jasmine.any(Array)
-    });
+    expect(processor.isExcluded(parent)).toEqual(false);
+    expect(processor.childrenOfTopSuite()).toEqual([
+      { suite: parent, segmentNumber: 0 },
+      { suite: parentOfPendings, segmentNumber: 0 }
+    ]);
 
-    expect(result[childless.id]).toEqual({
-      excluded: false,
-      willExecute: false,
-      segments: jasmine.any(Array)
-    });
+    expect(processor.isExcluded(parentOfPendings)).toEqual(true);
+    expect(processor.childrenOfSuiteSegment(parentOfPendings, 0)).toEqual([
+      { suite: childless, segmentNumber: 0 },
+      { suite: pendingNode, segmentNumber: 0 }
+    ]);
 
-    expect(result[pendingLeaf.id]).toEqual({
-      excluded: false,
-      willExecute: false,
-      segments: jasmine.any(Array)
-    });
+    expect(processor.isExcluded(childless)).toEqual(true);
+    expect(processor.childrenOfSuiteSegment(childless, 0)).toEqual([]);
 
-    expect(result[executableLeaf.id]).toEqual({
-      excluded: false,
-      willExecute: true,
-      segments: jasmine.any(Array)
-    });
+    expect(processor.isExcluded(pendingLeaf)).toEqual(false);
+    expect(processor.isExcluded(executableLeaf)).toEqual(false);
 
-    expect(result[parent.id]).toEqual({
-      excluded: false,
-      willExecute: true,
-      segments: jasmine.any(Array)
-    });
+    expect(processor.isExcluded(parent)).toEqual(false);
+    expect(processor.childrenOfSuiteSegment(parent, 0)).toEqual([
+      { spec: pendingLeaf },
+      { spec: executableLeaf }
+    ]);
 
-    expect(result[pendingNode.id]).toEqual({
-      excluded: false,
-      willExecute: false,
-      segments: jasmine.any(Array)
-    });
+    expect(processor.isExcluded(pendingNode)).toEqual(true);
+    expect(processor.childrenOfSuiteSegment(pendingNode, 0)).toEqual([
+      { spec: childOfPending }
+    ]);
 
-    expect(result[childOfPending.id]).toEqual({
-      excluded: false,
-      willExecute: false,
-      segments: jasmine.any(Array)
-    });
+    expect(processor.isExcluded(childOfPending)).toEqual(false);
   });
 
   it('throws if the specified order would re-enter a node that does not allow re-entry', function() {

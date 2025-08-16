@@ -31,7 +31,6 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
     processTree() {
       this.#processNode(this.#tree, true);
       this.#processed = true;
-      return this.#stats;
     }
 
     childrenOfTopSuite() {
