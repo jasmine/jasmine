@@ -101,16 +101,18 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
   }
 
   class ExecutionTree {
-    #topSuite;
     #stats;
 
     constructor(topSuite, stats) {
-      this.#topSuite = topSuite;
+      Object.defineProperty(this, 'topSuite', {
+        writable: false,
+        value: topSuite
+      });
       this.#stats = stats;
     }
 
     childrenOfTopSuite() {
-      return this.childrenOfSuiteSegment(this.#topSuite, 0);
+      return this.childrenOfSuiteSegment(this.topSuite, 0);
     }
 
     childrenOfSuiteSegment(suite, segmentNumber) {

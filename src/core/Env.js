@@ -765,7 +765,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     function specResultCallback(spec, result, next) {
       runableResources.clearForRunable(spec.id);
-      runner.currentSpec = null;
+      runner.setCurrentSpec(null);
 
       if (result.status === 'failed') {
         runner.hasFailures = true;
@@ -775,7 +775,7 @@ getJasmineRequireObj().Env = function(j$) {
     }
 
     function specStarted(spec, suite, next) {
-      runner.currentSpec = spec;
+      runner.setCurrentSpec(spec);
       runableResources.initForRunable(spec.id, suite.id);
       reportDispatcher.specStarted(spec.result).then(next);
     }

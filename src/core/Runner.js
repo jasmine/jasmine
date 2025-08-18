@@ -12,7 +12,7 @@ getJasmineRequireObj().Runner = function(j$) {
     #getConfig;
     #reportSpecDone;
     #executedBefore;
-    #currentlyExecutingSuites;
+    #currentRunableTracker;
 
     constructor(options) {
       this.#topSuite = options.topSuite;
@@ -27,19 +27,23 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#reportSpecDone = options.reportSpecDone;
       this.hasFailures = false;
       this.#executedBefore = false;
+      this.#currentRunableTracker = new CurrentRunableTracker();
+    }
 
-      this.#currentlyExecutingSuites = [];
-      this.currentSpec = null;
+    currentSpec() {
+      return this.#currentRunableTracker.currentSpec();
+    }
+
+    setCurrentSpec(spec) {
+      this.#currentRunableTracker.setCurrentSpec(spec);
     }
 
     currentRunable() {
-      return this.currentSpec || this.currentSuite();
+      return this.#currentRunableTracker.currentRunable();
     }
 
     currentSuite() {
-      return this.#currentlyExecutingSuites[
-        this.#currentlyExecutingSuites.length - 1
-      ];
+      return this.#currentRunableTracker.currentSuite();
     }
 
     parallelReset() {
@@ -107,15 +111,28 @@ getJasmineRequireObj().Runner = function(j$) {
         parallel: false
       });
 
-      this.#currentlyExecutingSuites.push(this.#topSuite);
-      await this.#executeTopSuite();
+      this.#currentRunableTracker.pushSuite(this.#topSuite);
+      const treeRunner = new j$.TreeRunner({
+        executionTree: this.#executionTree,
+        globalErrors: this.#globalErrors,
+        runableResources: this.#runableResources,
+        reportDispatcher: this.#reportDispatcher,
+        runQueue: this.#runQueue,
+        getConfig: this.#getConfig,
+        reportChildrenOfBeforeAllFailure: this.#reportChildrenOfBeforeAllFailure.bind(
+          this
+        ),
+        currentRunableTracker: this.#currentRunableTracker
+      });
+      await treeRunner.execute();
+      this.hasFailures = this.hasFailures || treeRunner.hasFailures;
 
       if (this.#topSuite.hadBeforeAllFailure) {
         await this.#reportChildrenOfBeforeAllFailure(this.#topSuite);
       }
 
       this.#runableResources.clearForRunable(this.#topSuite.id);
-      this.#currentlyExecutingSuites.pop();
+      this.#currentRunableTracker.popSuite();
       let overallStatus, incompleteReason, incompleteCode;
 
       if (
@@ -162,152 +179,6 @@ getJasmineRequireObj().Runner = function(j$) {
       return jasmineDoneInfo;
     }
 
-    async #executeTopSuite() {
-      const wrappedChildren = this.#wrapNodes(
-        this.#executionTree.childrenOfTopSuite()
-      );
-      const queueableFns = this.#addBeforeAndAfterAlls(
-        this.#topSuite,
-        wrappedChildren
-      );
-
-      await new Promise(resolve => {
-        this.#runQueueWithSkipPolicy({
-          queueableFns,
-          userContext: this.#topSuite.sharedUserContext(),
-          onException: function() {
-            this.#topSuite.handleException.apply(this.#topSuite, arguments);
-          }.bind(this),
-          onComplete: resolve,
-          onMultipleDone: this.#topSuite.onMultipleDone
-            ? this.#topSuite.onMultipleDone.bind(this.#topSuite)
-            : null
-        });
-      });
-    }
-
-    #executeSuiteSegment(suite, segmentNumber, done) {
-      const wrappedChildren = this.#wrapNodes(
-        this.#executionTree.childrenOfSuiteSegment(suite, segmentNumber)
-      );
-      const onStart = {
-        fn: next => {
-          this.#suiteSegmentStart(suite, next);
-        }
-      };
-      const queueableFns = [
-        onStart,
-        ...this.#addBeforeAndAfterAlls(suite, wrappedChildren)
-      ];
-
-      this.#runQueueWithSkipPolicy({
-        // TODO: if onComplete always takes 0-1 arguments (and it probably does)
-        // then it can be switched to an arrow fn with a named arg.
-        onComplete: function() {
-          const args = Array.prototype.slice.call(arguments, [0]);
-          this.#suiteSegmentComplete(suite, suite.getResult(), () => {
-            done.apply(undefined, args);
-          });
-        }.bind(this),
-        queueableFns,
-        userContext: suite.sharedUserContext(),
-        onException: function() {
-          suite.handleException.apply(suite, arguments);
-        },
-        onMultipleDone: suite.onMultipleDone
-          ? suite.onMultipleDone.bind(suite)
-          : null
-      });
-    }
-
-    #executeSpec(spec, done) {
-      const config = this.#getConfig();
-      spec.execute(
-        this.#runQueueWithSkipPolicy.bind(this),
-        this.#globalErrors,
-        done,
-        this.#executionTree.isExcluded(spec),
-        config.failSpecWithNoExpectations,
-        config.detectLateRejectionHandling
-      );
-    }
-
-    #wrapNodes(nodes) {
-      return nodes.map(node => {
-        return {
-          fn: done => {
-            if (node.suite) {
-              this.#executeSuiteSegment(node.suite, node.segmentNumber, done);
-            } else {
-              this.#executeSpec(node.spec, done);
-            }
-          }
-        };
-      });
-    }
-
-    #addBeforeAndAfterAlls(suite, wrappedChildren) {
-      if (this.#executionTree.isExcluded(suite)) {
-        return wrappedChildren;
-      }
-
-      return suite.beforeAllFns
-        .concat(wrappedChildren)
-        .concat(suite.afterAllFns);
-    }
-
-    #suiteSegmentStart(suite, next) {
-      this.#currentlyExecutingSuites.push(suite);
-      this.#runableResources.initForRunable(suite.id, suite.parentSuite.id);
-      this.#reportDispatcher.suiteStarted(suite.result).then(next);
-      suite.startTimer();
-    }
-
-    #suiteSegmentComplete(suite, result, next) {
-      suite.cleanupBeforeAfter();
-
-      if (suite !== this.currentSuite()) {
-        throw new Error('Tried to complete the wrong suite');
-      }
-
-      this.#runableResources.clearForRunable(suite.id);
-      this.#currentlyExecutingSuites.pop();
-
-      if (result.status === 'failed') {
-        this.hasFailures = true;
-      }
-      suite.endTimer();
-
-      if (suite.hadBeforeAllFailure) {
-        this.#reportChildrenOfBeforeAllFailure(suite).then(() => {
-          this.#reportSuiteDone(suite, result, next);
-        });
-      } else {
-        this.#reportSuiteDone(suite, result, next);
-      }
-    }
-
-    #runQueueWithSkipPolicy(options) {
-      if (options.isLeaf) {
-        // A spec
-        options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
-      } else {
-        // A suite
-        if (this.#getConfig().stopOnSpecFailure) {
-          options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
-        } else {
-          options.SkipPolicy = j$.SkipAfterBeforeAllErrorPolicy;
-        }
-      }
-
-      return this.#runQueue(options);
-    }
-
-    #reportSuiteDone(suite, result, next) {
-      suite.reportedDone = true;
-      this.#reportDispatcher.suiteDone(result).then(next);
-    }
-
     async #reportChildrenOfBeforeAllFailure(suite) {
       for (const child of suite.children) {
         if (child instanceof j$.Suite) {
@@ -341,6 +212,41 @@ getJasmineRequireObj().Runner = function(j$) {
           });
         }
       }
+    }
+  }
+
+  class CurrentRunableTracker {
+    #currentSpec;
+    #currentlyExecutingSuites;
+
+    constructor() {
+      this.#currentlyExecutingSuites = [];
+    }
+
+    currentRunable() {
+      return this.currentSpec() || this.currentSuite();
+    }
+
+    currentSpec() {
+      return this.#currentSpec;
+    }
+
+    setCurrentSpec(spec) {
+      this.#currentSpec = spec;
+    }
+
+    currentSuite() {
+      return this.#currentlyExecutingSuites[
+        this.#currentlyExecutingSuites.length - 1
+      ];
+    }
+
+    pushSuite(suite) {
+      this.#currentlyExecutingSuites.push(suite);
+    }
+
+    popSuite() {
+      this.#currentlyExecutingSuites.pop();
     }
   }
 
