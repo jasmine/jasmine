@@ -112,6 +112,8 @@ describe('TreeRunner', function() {
       expect(spec.result.duration).toEqual('the elapsed time');
       expect(spec.reportedDone).toEqual(true);
       await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
       expect(reportDispatcher.specDone).toHaveBeenCalledBefore(next);
       await expectAsync(promise).toBePending();
     });
