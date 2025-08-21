@@ -3,7 +3,6 @@ getJasmineRequireObj().Spec = function(j$) {
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
     this.setTimeout = attrs.setTimeout;
-    this.resultCallback = attrs.resultCallback || function() {};
     this.id = attrs.id;
     this.filename = attrs.filename;
     this.parentSuiteId = attrs.parentSuiteId;
@@ -19,7 +18,6 @@ getJasmineRequireObj().Spec = function(j$) {
       function() {
         return {};
       };
-    this.onStart = attrs.onStart || function() {};
     this.autoCleanClosures =
       attrs.autoCleanClosures === undefined ? true : !!attrs.autoCleanClosures;
 
@@ -74,15 +72,18 @@ getJasmineRequireObj().Spec = function(j$) {
   Spec.prototype.execute = function(
     runQueue,
     globalErrors,
+    onStart,
+    // TODO: may be able to merge resultCallback into onComplete
+    resultCallback,
     onComplete,
     excluded,
     failSpecWithNoExp,
     detectLateRejectionHandling
   ) {
-    const onStart = {
+    const start = {
       fn: done => {
         this.timer.start();
-        this.onStart(this, done);
+        onStart(done);
       }
     };
 
@@ -98,7 +99,7 @@ getJasmineRequireObj().Spec = function(j$) {
           this.result.debugLogs = null;
         }
 
-        this.resultCallback(this.result, done);
+        resultCallback(this.result, done);
       },
       type: 'specCleanup'
     };
@@ -137,7 +138,7 @@ getJasmineRequireObj().Spec = function(j$) {
       runnerConfig.queueableFns = [];
     }
 
-    runnerConfig.queueableFns.unshift(onStart);
+    runnerConfig.queueableFns.unshift(start);
 
     if (detectLateRejectionHandling) {
       // Conditional because the setTimeout imposes a significant performance

@@ -10,7 +10,6 @@ getJasmineRequireObj().Runner = function(j$) {
     #globalErrors;
     #reportDispatcher;
     #getConfig;
-    #reportSpecDone;
     #executedBefore;
     #currentRunableTracker;
 
@@ -24,10 +23,8 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#globalErrors = options.globalErrors;
       this.#reportDispatcher = options.reportDispatcher;
       this.#getConfig = options.getConfig;
-      this.#reportSpecDone = options.reportSpecDone;
-      this.hasFailures = false;
       this.#executedBefore = false;
-      this.#currentRunableTracker = new CurrentRunableTracker();
+      this.#currentRunableTracker = new j$.CurrentRunableTracker();
     }
 
     currentSpec() {
@@ -56,7 +53,6 @@ getJasmineRequireObj().Runner = function(j$) {
       }
       this.#executedBefore = true;
 
-      this.hasFailures = false;
       const focusedRunables = this.#getFocusedRunables();
       const config = this.#getConfig();
 
@@ -124,8 +120,7 @@ getJasmineRequireObj().Runner = function(j$) {
         ),
         currentRunableTracker: this.#currentRunableTracker
       });
-      await treeRunner.execute();
-      this.hasFailures = this.hasFailures || treeRunner.hasFailures;
+      const { hasFailures } = await treeRunner.execute();
 
       if (this.#topSuite.hadBeforeAllFailure) {
         await this.#reportChildrenOfBeforeAllFailure(this.#topSuite);
@@ -135,10 +130,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#currentRunableTracker.popSuite();
       let overallStatus, incompleteReason, incompleteCode;
 
-      if (
-        this.hasFailures ||
-        this.#topSuite.result.failedExpectations.length > 0
-      ) {
+      if (hasFailures || this.#topSuite.result.failedExpectations.length > 0) {
         overallStatus = 'failed';
       } else if (this.#getFocusedRunables().length > 0) {
         overallStatus = 'incomplete';
@@ -179,6 +171,12 @@ getJasmineRequireObj().Runner = function(j$) {
       return jasmineDoneInfo;
     }
 
+    // TODO: de-duplicate w/TreeRunner
+    #reportSpecDone(spec, result, next) {
+      spec.reportedDone = true;
+      this.#reportDispatcher.specDone(result).then(next);
+    }
+
     async #reportChildrenOfBeforeAllFailure(suite) {
       for (const child of suite.children) {
         if (child instanceof j$.Suite) {
@@ -212,41 +210,6 @@ getJasmineRequireObj().Runner = function(j$) {
           });
         }
       }
-    }
-  }
-
-  class CurrentRunableTracker {
-    #currentSpec;
-    #currentlyExecutingSuites;
-
-    constructor() {
-      this.#currentlyExecutingSuites = [];
-    }
-
-    currentRunable() {
-      return this.currentSpec() || this.currentSuite();
-    }
-
-    currentSpec() {
-      return this.#currentSpec;
-    }
-
-    setCurrentSpec(spec) {
-      this.#currentSpec = spec;
-    }
-
-    currentSuite() {
-      return this.#currentlyExecutingSuites[
-        this.#currentlyExecutingSuites.length - 1
-      ];
-    }
-
-    pushSuite(suite) {
-      this.#currentlyExecutingSuites.push(suite);
-    }
-
-    popSuite() {
-      this.#currentlyExecutingSuites.pop();
     }
   }
 

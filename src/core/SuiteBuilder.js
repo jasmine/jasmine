@@ -10,8 +10,6 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
         return options.asyncExpectationFactory(actual, suite, 'Spec');
       };
       this.onLateError_ = options.onLateError;
-      this.specResultCallback_ = options.specResultCallback;
-      this.specStarted_ = options.specStarted;
 
       this.nextSuiteId_ = 0;
       this.nextSpecId_ = 0;
@@ -249,11 +247,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
         asyncExpectationFactory: this.specAsyncExpectationFactory_,
         setTimeout: global.setTimeout.bind(global),
         onLateError: this.onLateError_,
-        resultCallback: (result, next) => {
-          this.specResultCallback_(spec, result, next);
-        },
         getPath: spec => this.getSpecPath_(spec, suite),
-        onStart: (spec, next) => this.specStarted_(spec, suite, next),
         description: description,
         userContext: function() {
           return suite.clonedSharedUserContext();

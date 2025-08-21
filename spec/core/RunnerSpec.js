@@ -311,6 +311,8 @@ describe('Runner', function() {
       expect(spec.execute).toHaveBeenCalledWith(
         jasmine.any(Function),
         globalErrors,
+        jasmine.any(Function),
+        jasmine.any(Function),
         'onComplete',
         shouldBeExcluded,
         failSpecWithNoExpectations,
@@ -468,6 +470,8 @@ describe('Runner', function() {
       expect(spec.execute).toHaveBeenCalledWith(
         jasmine.any(Function),
         globalErrors,
+        jasmine.any(Function),
+        jasmine.any(Function),
         'foo',
         false,
         true,
@@ -592,6 +596,8 @@ describe('Runner', function() {
       expect(specified.execute).toHaveBeenCalledWith(
         jasmine.any(Function),
         globalErrors,
+        jasmine.any(Function),
+        jasmine.any(Function),
         undefined,
         false,
         false,
@@ -603,6 +609,8 @@ describe('Runner', function() {
       expect(nonSpecified.execute).toHaveBeenCalledWith(
         jasmine.any(Function),
         globalErrors,
+        jasmine.any(Function),
+        jasmine.any(Function),
         undefined,
         true,
         false,

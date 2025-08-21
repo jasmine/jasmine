@@ -8,6 +8,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     #getConfig;
     #reportChildrenOfBeforeAllFailure;
     #currentRunableTracker;
+    #hasFailures;
 
     constructor(attrs) {
       this.#executionTree = attrs.executionTree;
@@ -22,7 +23,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     }
 
     async execute() {
-      this.hasFailures = false;
+      this.#hasFailures = false;
       const topSuite = this.#executionTree.topSuite;
       const wrappedChildren = this.#wrapNodes(
         this.#executionTree.childrenOfTopSuite()
@@ -45,6 +46,8 @@ getJasmineRequireObj().TreeRunner = function(j$) {
             : null
         });
       });
+
+      return { hasFailures: this.#hasFailures };
     }
 
     #wrapNodes(nodes) {
@@ -66,6 +69,14 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       spec.execute(
         this.#runQueueWithSkipPolicy.bind(this),
         this.#globalErrors,
+        next => {
+          this.#currentRunableTracker.setCurrentSpec(spec);
+          this.#runableResources.initForRunable(spec.id, spec.parentSuiteId);
+          this.#reportDispatcher.specStarted(spec.result).then(next);
+        },
+        (result, next) => {
+          this.#specComplete(spec, result, next);
+        },
         done,
         this.#executionTree.isExcluded(spec),
         config.failSpecWithNoExpectations,
@@ -125,7 +136,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       this.#currentRunableTracker.popSuite();
 
       if (result.status === 'failed') {
-        this.hasFailures = true;
+        this.#hasFailures = true;
       }
       suite.endTimer();
 
@@ -141,6 +152,22 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     #reportSuiteDone(suite, result, next) {
       suite.reportedDone = true;
       this.#reportDispatcher.suiteDone(result).then(next);
+    }
+
+    #specComplete(spec, result, next) {
+      this.#runableResources.clearForRunable(spec.id);
+      this.#currentRunableTracker.setCurrentSpec(null);
+
+      if (result.status === 'failed') {
+        this.#hasFailures = true;
+      }
+
+      this.#reportSpecDone(spec, result, next);
+    }
+
+    #reportSpecDone(spec, result, next) {
+      spec.reportedDone = true;
+      this.#reportDispatcher.specDone(result).then(next);
     }
 
     #addBeforeAndAfterAlls(suite, wrappedChildren) {

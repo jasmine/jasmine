@@ -477,8 +477,6 @@ getJasmineRequireObj().Env = function(j$) {
       expectationFactory,
       asyncExpectationFactory,
       onLateError: recordLateError,
-      specResultCallback,
-      specStarted,
       runQueue
     });
     topSuite = suiteBuilder.topSuite;
@@ -520,8 +518,7 @@ getJasmineRequireObj().Env = function(j$) {
       runQueue,
       TreeProcessor: j$.TreeProcessor,
       globalErrors,
-      getConfig: () => config,
-      reportSpecDone
+      getConfig: () => config
     });
 
     this.setParallelLoadingState = function(state) {
@@ -762,28 +759,6 @@ getJasmineRequireObj().Env = function(j$) {
       return suiteBuilder.fdescribe(description, definitionFn, filename)
         .metadata;
     };
-
-    function specResultCallback(spec, result, next) {
-      runableResources.clearForRunable(spec.id);
-      runner.setCurrentSpec(null);
-
-      if (result.status === 'failed') {
-        runner.hasFailures = true;
-      }
-
-      reportSpecDone(spec, result, next);
-    }
-
-    function specStarted(spec, suite, next) {
-      runner.setCurrentSpec(spec);
-      runableResources.initForRunable(spec.id, suite.id);
-      reportDispatcher.specStarted(spec.result).then(next);
-    }
-
-    function reportSpecDone(spec, result, next) {
-      spec.reportedDone = true;
-      reportDispatcher.specDone(result).then(next);
-    }
 
     this.it = function(description, fn, timeout) {
       ensureIsNotNested('it');
