@@ -351,6 +351,64 @@ describe('Spec', function() {
     expect(duration).toBe(77000);
   });
 
+  it('removes the fn after execution if autoCleanClosures is true', function() {
+    const done = jasmine.createSpy('done callback');
+    const spec = new jasmineUnderTest.Spec({
+      queueableFn: { fn() {} },
+      autoCleanClosures: true
+    });
+
+    function runQueue(config) {
+      config.queueableFns.forEach(function(qf) {
+        qf.fn();
+      });
+      config.onComplete();
+    }
+
+    spec.execute(runQueue, null, done);
+    expect(done).toHaveBeenCalled();
+    expect(spec.queueableFn.fn).toBeFalsy();
+  });
+
+  it('removes the fn after execution if autoCleanClosures is undefined', function() {
+    const done = jasmine.createSpy('done callback');
+    const spec = new jasmineUnderTest.Spec({
+      queueableFn: { fn() {} },
+      autoCleanClosures: undefined
+    });
+
+    function runQueue(config) {
+      config.queueableFns.forEach(function(qf) {
+        qf.fn();
+      });
+      config.onComplete();
+    }
+
+    spec.execute(runQueue, null, done);
+    expect(done).toHaveBeenCalled();
+    expect(spec.queueableFn.fn).toBeFalsy();
+  });
+
+  it('does not remove the fn after execution if autoCleanClosures is false', function() {
+    const done = jasmine.createSpy('done callback');
+    function originalFn() {}
+    const spec = new jasmineUnderTest.Spec({
+      queueableFn: { fn: originalFn },
+      autoCleanClosures: false
+    });
+
+    function runQueue(config) {
+      config.queueableFns.forEach(function(qf) {
+        qf.fn();
+      });
+      config.onComplete();
+    }
+
+    spec.execute(runQueue, null, done);
+    expect(done).toHaveBeenCalled();
+    expect(spec.queueableFn.fn).toBe(originalFn);
+  });
+
   it('should report properties set during the test', function() {
     const done = jasmine.createSpy('done callback'),
       spec = new jasmineUnderTest.Spec({
