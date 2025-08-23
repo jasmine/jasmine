@@ -153,7 +153,7 @@ describe('Spies', function() {
     it('should throw if you do not pass an array or object argument', function() {
       expect(function() {
         env.createSpyObj('BaseName');
-      }).toThrow(
+      }).toThrowError(
         'createSpyObj requires a non-empty array or object of method names to create spies for'
       );
     });
@@ -161,7 +161,7 @@ describe('Spies', function() {
     it('should throw if you pass an empty array argument', function() {
       expect(function() {
         env.createSpyObj('BaseName', []);
-      }).toThrow(
+      }).toThrowError(
         'createSpyObj requires a non-empty array or object of method names to create spies for'
       );
     });
@@ -169,7 +169,7 @@ describe('Spies', function() {
     it('should throw if you pass an empty object argument', function() {
       expect(function() {
         env.createSpyObj('BaseName', {});
-      }).toThrow(
+      }).toThrowError(
         'createSpyObj requires a non-empty array or object of method names to create spies for'
       );
     });
