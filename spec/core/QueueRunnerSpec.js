@@ -1,4 +1,20 @@
 describe('QueueRunner', function() {
+  it('validates that queueableFns are truthy', function() {
+    expect(function() {
+      new jasmineUnderTest.QueueRunner({
+        queueableFns: [undefined]
+      });
+    }).toThrowError('Received a falsy queueableFn');
+  });
+
+  it('validates that queueableFns have fn properties', function() {
+    expect(function() {
+      new jasmineUnderTest.QueueRunner({
+        queueableFns: [{ fn: undefined }]
+      });
+    }).toThrowError('Received a queueableFn with no fn');
+  });
+
   it("runs all the functions it's passed", function() {
     const calls = [],
       queueableFn1 = { fn: jasmine.createSpy('fn1') },
