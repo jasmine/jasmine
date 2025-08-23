@@ -69,6 +69,23 @@ getJasmineRequireObj().Spec = function(j$) {
     this.result.properties[key] = value;
   };
 
+  Spec.prototype.executionStarted = function() {
+    this.timer.start();
+  };
+
+  Spec.prototype.executionFinished = function(excluded, failSpecWithNoExp) {
+    if (this.autoCleanClosures) {
+      this.queueableFn.fn = null;
+    }
+
+    this.result.status = this.status(excluded, failSpecWithNoExp);
+    this.result.duration = this.timer.elapsed();
+
+    if (this.result.status !== 'failed') {
+      this.result.debugLogs = null;
+    }
+  };
+
   Spec.prototype.execute = function(
     runQueue,
     globalErrors,
@@ -82,23 +99,14 @@ getJasmineRequireObj().Spec = function(j$) {
   ) {
     const start = {
       fn: done => {
-        this.timer.start();
+        this.executionStarted();
         onStart(done);
       }
     };
 
     const complete = {
       fn: done => {
-        if (this.autoCleanClosures) {
-          this.queueableFn.fn = null;
-        }
-        this.result.status = this.status(excluded, failSpecWithNoExp);
-        this.result.duration = this.timer.elapsed();
-
-        if (this.result.status !== 'failed') {
-          this.result.debugLogs = null;
-        }
-
+        this.executionFinished(excluded, failSpecWithNoExp);
         resultCallback(this.result, done);
       },
       type: 'specCleanup'
