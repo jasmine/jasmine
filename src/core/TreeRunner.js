@@ -1,6 +1,7 @@
 getJasmineRequireObj().TreeRunner = function(j$) {
   class TreeRunner {
     #executionTree;
+    #setTimeout;
     #globalErrors;
     #runableResources;
     #reportDispatcher;
@@ -13,6 +14,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     constructor(attrs) {
       this.#executionTree = attrs.executionTree;
       this.#globalErrors = attrs.globalErrors;
+      this.#setTimeout = attrs.setTimeout || setTimeout.bind(globalThis);
       this.#runableResources = attrs.runableResources;
       this.#reportDispatcher = attrs.reportDispatcher;
       this.#runQueue = attrs.runQueue;
@@ -57,31 +59,103 @@ getJasmineRequireObj().TreeRunner = function(j$) {
             if (node.suite) {
               this.#executeSuiteSegment(node.suite, node.segmentNumber, done);
             } else {
-              this.#executeSpec(node.spec, done);
+              this._executeSpec(node.spec, done);
             }
           }
         };
       });
     }
 
-    #executeSpec(spec, done) {
-      const config = this.#getConfig();
-      spec.execute(
-        this.#runQueueWithSkipPolicy.bind(this),
-        this.#globalErrors,
-        next => {
-          this.#currentRunableTracker.setCurrentSpec(spec);
-          this.#runableResources.initForRunable(spec.id, spec.parentSuiteId);
-          this.#reportDispatcher.specStarted(spec.result).then(next);
-        },
-        (result, next) => {
-          this.#specComplete(spec).then(next);
-        },
-        done,
-        this.#executionTree.isExcluded(spec),
-        config.failSpecWithNoExpectations,
-        config.detectLateRejectionHandling
+    // Only exposed for testing.
+    _executeSpec(spec, specOverallDone) {
+      const onStart = next => {
+        this.#currentRunableTracker.setCurrentSpec(spec);
+        this.#runableResources.initForRunable(spec.id, spec.parentSuiteId);
+        this.#reportDispatcher.specStarted(spec.result).then(next);
+      };
+      const resultCallback = (result, next) => {
+        this.#specComplete(spec).then(next);
+      };
+      const queueableFns = this.#specQueueableFns(
+        spec,
+        onStart,
+        resultCallback
       );
+
+      this.#runQueueWithSkipPolicy({
+        isLeaf: true,
+        queueableFns,
+        onException: e => spec.handleException(e),
+        onMultipleDone: () => {
+          // Issue an erorr. Include the context ourselves and pass
+          // ignoreRunnable: true, since getting here always means that we've already
+          // moved on and the current runnable isn't the one that caused the problem.
+          spec.onLateError(
+            new Error(
+              'An asynchronous spec, beforeEach, or afterEach function called its ' +
+                "'done' callback more than once.\n(in spec: " +
+                spec.getFullName() +
+                ')'
+            )
+          );
+        },
+        onComplete: () => {
+          if (spec.result.status === 'failed') {
+            specOverallDone(new j$.StopExecutionError('spec failed'));
+          } else {
+            specOverallDone();
+          }
+        },
+        userContext: spec.userContext(),
+        runnableName: spec.getFullName.bind(spec)
+      });
+    }
+
+    #specQueueableFns(spec, onStart, resultCallback) {
+      const config = this.#getConfig();
+      const excluded = this.#executionTree.isExcluded(spec);
+      const ba = spec.beforeAndAfterFns();
+      let fns = [...ba.befores, spec.queueableFn, ...ba.afters];
+
+      if (spec.markedPending || excluded === true) {
+        fns = [];
+      }
+
+      const start = {
+        fn(done) {
+          spec.executionStarted();
+          onStart(done);
+        }
+      };
+
+      const complete = {
+        fn(done) {
+          spec.executionFinished(excluded, config.failSpecWithNoExpectations);
+          resultCallback(spec.result, done);
+        },
+        type: 'specCleanup'
+      };
+
+      fns.unshift(start);
+
+      if (config.detectLateRejectionHandling) {
+        // Conditional because the setTimeout imposes a significant performance
+        // penalty in suites with lots of fast specs.
+        const globalErrors = this.#globalErrors;
+        fns.push({
+          fn: done => {
+            // setTimeout is necessary to trigger rejectionhandled events
+            // TODO: let clearStack know about this so it doesn't do redundant setTimeouts
+            this.#setTimeout(function() {
+              globalErrors.reportUnhandledRejections();
+              done();
+            });
+          }
+        });
+      }
+
+      fns.push(complete);
+      return fns;
     }
 
     #executeSuiteSegment(suite, segmentNumber, done) {

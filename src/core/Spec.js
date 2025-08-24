@@ -2,7 +2,6 @@ getJasmineRequireObj().Spec = function(j$) {
   function Spec(attrs) {
     this.expectationFactory = attrs.expectationFactory;
     this.asyncExpectationFactory = attrs.asyncExpectationFactory;
-    this.setTimeout = attrs.setTimeout;
     this.id = attrs.id;
     this.filename = attrs.filename;
     this.parentSuiteId = attrs.parentSuiteId;
@@ -84,87 +83,6 @@ getJasmineRequireObj().Spec = function(j$) {
     if (this.result.status !== 'failed') {
       this.result.debugLogs = null;
     }
-  };
-
-  Spec.prototype.execute = function(
-    runQueue,
-    globalErrors,
-    onStart,
-    // TODO: may be able to merge resultCallback into onComplete
-    resultCallback,
-    onComplete,
-    excluded,
-    failSpecWithNoExp,
-    detectLateRejectionHandling
-  ) {
-    const start = {
-      fn: done => {
-        this.executionStarted();
-        onStart(done);
-      }
-    };
-
-    const complete = {
-      fn: done => {
-        this.executionFinished(excluded, failSpecWithNoExp);
-        resultCallback(this.result, done);
-      },
-      type: 'specCleanup'
-    };
-
-    const fns = this.beforeAndAfterFns();
-
-    const runnerConfig = {
-      isLeaf: true,
-      queueableFns: [...fns.befores, this.queueableFn, ...fns.afters],
-      onException: e => this.handleException(e),
-      onMultipleDone: () => {
-        // Issue a deprecation. Include the context ourselves and pass
-        // ignoreRunnable: true, since getting here always means that we've already
-        // moved on and the current runnable isn't the one that caused the problem.
-        this.onLateError(
-          new Error(
-            'An asynchronous spec, beforeEach, or afterEach function called its ' +
-              "'done' callback more than once.\n(in spec: " +
-              this.getFullName() +
-              ')'
-          )
-        );
-      },
-      onComplete: () => {
-        if (this.result.status === 'failed') {
-          onComplete(new j$.StopExecutionError('spec failed'));
-        } else {
-          onComplete();
-        }
-      },
-      userContext: this.userContext(),
-      runnableName: this.getFullName.bind(this)
-    };
-
-    if (this.markedPending || excluded === true) {
-      runnerConfig.queueableFns = [];
-    }
-
-    runnerConfig.queueableFns.unshift(start);
-
-    if (detectLateRejectionHandling) {
-      // Conditional because the setTimeout imposes a significant performance
-      // penalty in suites with lots of fast specs.
-      runnerConfig.queueableFns.push({
-        fn: done => {
-          // setTimeout is necessary to trigger rejectionhandled events
-          // TODO: let clearStack know about this so it doesn't do redundant setTimeouts
-          this.setTimeout(function() {
-            globalErrors.reportUnhandledRejections();
-            done();
-          });
-        }
-      });
-    }
-    runnerConfig.queueableFns.push(complete);
-
-    runQueue(runnerConfig);
   };
 
   Spec.prototype.reset = function() {
@@ -255,6 +173,8 @@ getJasmineRequireObj().Spec = function(j$) {
     this.pend(message);
   };
 
+  // TODO: ensure that all access to result goes through .getResult()
+  // so that the status is correct.
   Spec.prototype.getResult = function() {
     this.result.status = this.status();
     return this.result;
