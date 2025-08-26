@@ -141,6 +141,29 @@ describe('TreeRunner', function() {
       expect(spec.getResult().pendingReason).toEqual('some reason');
     });
 
+    it('passes failSpecWithNoExp to Spec#executionFinished', async function() {
+      const spec = new jasmineUnderTest.Spec({
+        id: 'spec1',
+        queueableFn: {}
+      });
+      spyOn(spec, 'executionFinished');
+      const {
+        runQueue,
+        suiteRunQueueArgs,
+        executePromise
+      } = runSingleSpecSuite(spec, { failSpecWithNoExpectations: true });
+
+      suiteRunQueueArgs.queueableFns[0].fn();
+
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const specRunQueueArgs = runQueue.calls.mostRecent().args[0];
+      expect(specRunQueueArgs.queueableFns[1].type).toEqual('specCleanup');
+      specRunQueueArgs.queueableFns[1].fn();
+
+      expect(spec.executionFinished).toHaveBeenCalledWith(false, true);
+      await expectAsync(executePromise).toBePending();
+    });
+
     describe('Late promise rejection handling', function() {
       it('is enabled when the detectLateRejectionHandling param is true', function() {
         const before = jasmine.createSpy('before');
