@@ -627,6 +627,17 @@ describe('Clock', function() {
 });
 
 describe('Clock (acceptance)', function() {
+  let env;
+
+  beforeEach(function() {
+    env = new jasmineUnderTest.Env();
+    env.configure({ mockIntlDateTimeFormat: true });
+  });
+
+  afterEach(function() {
+    env.cleanup_();
+  });
+
   it('can run setTimeouts/setIntervals synchronously', function() {
     const delayedFn1 = jasmine.createSpy('delayedFn1'),
       delayedFn2 = jasmine.createSpy('delayedFn2'),
@@ -1016,7 +1027,7 @@ describe('Clock (acceptance)', function() {
   it('does not mock the Date object by default', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new jasmineUnderTest.MockDate(global, { env: env }),
       clock = new jasmineUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
@@ -1039,7 +1050,7 @@ describe('Clock (acceptance)', function() {
   it('mocks the Date object and sets it to current time', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new jasmineUnderTest.MockDate(global, { env: env }),
       clock = new jasmineUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
@@ -1069,7 +1080,7 @@ describe('Clock (acceptance)', function() {
   it('mocks the Date object and sets it to a given time', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new jasmineUnderTest.MockDate(global, { env: env }),
       clock = new jasmineUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
@@ -1102,7 +1113,7 @@ describe('Clock (acceptance)', function() {
   it('throws mockDate is called with a non-Date', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new jasmineUnderTest.MockDate(global, { env: env }),
       clock = new jasmineUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
@@ -1120,7 +1131,7 @@ describe('Clock (acceptance)', function() {
   it('mocks the Date object and updates the date per delayed function', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new jasmineUnderTest.MockDate(global, { env: env }),
       clock = new jasmineUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
@@ -1159,7 +1170,7 @@ describe('Clock (acceptance)', function() {
   it('correctly clears a scheduled timeout while the Clock is advancing', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date, setTimeout: undefined },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new jasmineUnderTest.MockDate(global, { env: env }),
       clock = new jasmineUnderTest.Clock(
         global,
         function() {
@@ -1184,7 +1195,7 @@ describe('Clock (acceptance)', function() {
   it('correctly clears a scheduled interval while the Clock is advancing', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date, setTimeout: undefined },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new jasmineUnderTest.MockDate(global, { env: env }),
       clock = new jasmineUnderTest.Clock(
         global,
         function() {
@@ -1203,5 +1214,113 @@ describe('Clock (acceptance)', function() {
     timerId2 = global.setInterval(fail, 100);
 
     clock.tick(400);
+  });
+
+  describe('Intl.DateTimeFormat integration', function() {
+    let clock;
+    let fakeGlobal;
+    let delayedFunctionScheduler;
+    let mockDate;
+
+    beforeEach(function() {
+      fakeGlobal = {
+        Date: Date,
+        Intl: Intl,
+        setTimeout: jasmine.createSpy('setTimeout'),
+        clearTimeout: jasmine.createSpy('clearTimeout'),
+        setInterval: jasmine.createSpy('setInterval'),
+        clearInterval: jasmine.createSpy('clearInterval')
+      };
+      delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler();
+      mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env: env });
+      clock = new jasmineUnderTest.Clock(
+        fakeGlobal,
+        function() {
+          return delayedFunctionScheduler;
+        },
+        mockDate
+      );
+    });
+
+    it('should preserve other Intl.DateTimeFormat methods', function() {
+      clock.install();
+      clock.mockDate(new Date(2020, 11, 20, 10, 10));
+
+      const formatter = new fakeGlobal.Intl.DateTimeFormat('en-US', {
+        timeZone: 'UTC'
+      });
+
+      expect(typeof formatter.resolvedOptions).toBe('function');
+      expect(formatter.resolvedOptions().locale).toMatch(/en/);
+      expect(typeof formatter.formatRange).toBe('function');
+      expect(
+        formatter.formatRange(
+          new Date(2020, 11, 20, 10, 10),
+          new Date(2020, 12, 20, 10, 10)
+        )
+      ).toBe('12/20/2020 – 1/20/2021');
+      expect(typeof formatter.formatRangeToParts).toBe('function');
+      expect(
+        formatter.formatRangeToParts(
+          new Date(2020, 11, 20, 10, 10),
+          new Date(2020, 12, 20, 10, 10)
+        )
+      ).toEqual(jasmine.any(Array));
+    });
+
+    it('should handle environment without Intl gracefully', function() {
+      const fakeGlobalWithoutIntl = {
+        Date: Date,
+        setTimeout: jasmine.createSpy('setTimeout'),
+        clearTimeout: jasmine.createSpy('clearTimeout'),
+        setInterval: jasmine.createSpy('setInterval'),
+        clearInterval: jasmine.createSpy('clearInterval')
+      };
+
+      const mockDateWithoutIntl = new jasmineUnderTest.MockDate(
+        fakeGlobalWithoutIntl,
+        { env }
+      );
+      const clockWithoutIntl = new jasmineUnderTest.Clock(
+        fakeGlobalWithoutIntl,
+        function() {
+          return delayedFunctionScheduler;
+        },
+        mockDateWithoutIntl
+      );
+
+      expect(function() {
+        clockWithoutIntl.install();
+        clockWithoutIntl.uninstall();
+      }).not.toThrow();
+    });
+
+    describe('when mockIntlDateTimeFormat configuration is disabled', function() {
+      it('should not mock Intl.DateTimeFormat when configuration is disabled', function() {
+        env.configure({ mockIntlDateTimeFormat: false });
+        mockDate = new jasmineUnderTest.MockDate(fakeGlobal, { env });
+        clock = new jasmineUnderTest.Clock(
+          fakeGlobal,
+          function() {
+            return delayedFunctionScheduler;
+          },
+          mockDate
+        );
+        const originalIntl = fakeGlobal.Intl;
+        clock.install();
+        clock.mockDate(new Date(2020, 11, 20, 10, 10));
+
+        expect(fakeGlobal.Intl).toBe(originalIntl);
+
+        const formatter = new fakeGlobal.Intl.DateTimeFormat('en-US', {
+          timeZone: 'UTC'
+        });
+
+        // Should use real current date, not mocked date
+        expect(formatter.format()).not.toEqual(
+          formatter.format(new fakeGlobal.Date())
+        );
+      });
+    });
   });
 });
