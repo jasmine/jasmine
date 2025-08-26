@@ -36,7 +36,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       );
 
       await new Promise(resolve => {
-        this.#runQueueWithSkipPolicy({
+        this.#runQueue({
           queueableFns,
           userContext: this.#executionTree.topSuite.sharedUserContext(),
           onException: function() {
@@ -45,7 +45,8 @@ getJasmineRequireObj().TreeRunner = function(j$) {
           onComplete: resolve,
           onMultipleDone: topSuite.onMultipleDone
             ? topSuite.onMultipleDone.bind(topSuite)
-            : null
+            : null,
+          SkipPolicy: this.#suiteSkipPolicy()
         });
       });
 
@@ -82,7 +83,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         resultCallback
       );
 
-      this.#runQueueWithSkipPolicy({
+      this.#runQueue({
         isLeaf: true,
         queueableFns,
         onException: e => spec.handleException(e),
@@ -107,7 +108,8 @@ getJasmineRequireObj().TreeRunner = function(j$) {
           }
         },
         userContext: spec.userContext(),
-        runnableName: spec.getFullName.bind(spec)
+        runnableName: spec.getFullName.bind(spec),
+        SkipPolicy: j$.CompleteOnFirstErrorSkipPolicy
       });
     }
 
@@ -172,7 +174,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         ...this.#addBeforeAndAfterAlls(suite, wrappedChildren)
       ];
 
-      this.#runQueueWithSkipPolicy({
+      this.#runQueue({
         // TODO: if onComplete always takes 0-1 arguments (and it probably does)
         // then it can be switched to an arrow fn with a named arg.
         onComplete: function() {
@@ -188,7 +190,8 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         },
         onMultipleDone: suite.onMultipleDone
           ? suite.onMultipleDone.bind(suite)
-          : null
+          : null,
+        SkipPolicy: this.#suiteSkipPolicy()
       });
     }
 
@@ -254,20 +257,12 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         .concat(suite.afterAllFns);
     }
 
-    #runQueueWithSkipPolicy(options) {
-      if (options.isLeaf) {
-        // A spec
-        options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
+    #suiteSkipPolicy() {
+      if (this.#getConfig().stopOnSpecFailure) {
+        return j$.CompleteOnFirstErrorSkipPolicy;
       } else {
-        // A suite
-        if (this.#getConfig().stopOnSpecFailure) {
-          options.SkipPolicy = j$.CompleteOnFirstErrorSkipPolicy;
-        } else {
-          options.SkipPolicy = j$.SkipAfterBeforeAllErrorPolicy;
-        }
+        return j$.SkipAfterBeforeAllErrorPolicy;
       }
-
-      return this.#runQueue(options);
     }
   }
 
