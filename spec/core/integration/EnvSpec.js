@@ -2262,17 +2262,54 @@ describe('Env integration', function() {
     );
   });
 
+  it('throws an exception if you try to getSpecProperty outside of a spec', async function() {
+    const env = new jasmineUnderTest.Env();
+    let exception;
+
+    env.describe('a suite', function() {
+      env.it('a spec');
+      try {
+        env.getSpecProperty('a prop');
+      } catch (e) {
+        exception = e;
+      }
+      env.it('has a test', function() {});
+    });
+
+    await env.execute();
+
+    expect(exception.message).toBe(
+      "'getSpecProperty' was used when there was no current spec"
+    );
+  });
+
   it('reports test properties on specs', async function() {
     const env = new jasmineUnderTest.Env(),
       reporter = jasmine.createSpyObj('reporter', ['suiteDone', 'specDone']);
 
     reporter.specDone.and.callFake(function(e) {
-      expect(e.properties).toEqual({ a: 'Bee' });
+      expect(e.properties).toEqual({
+        fromBeforeEach: 'Pie',
+        fromSpecInnerCallback: 'Bee',
+        willChangeInAfterEach: 2,
+        fromAfterEach: 'Cheese'
+      });
     });
 
     env.addReporter(reporter);
+    env.beforeEach(function() {
+      env.setSpecProperty('fromBeforeEach', 'Pie');
+    });
+    env.afterEach(function() {
+      env.setSpecProperty(
+        'willChangeInAfterEach',
+        env.getSpecProperty('willChange') + 1
+      );
+      env.setSpecProperty('fromAfterEach', 'Cheese');
+    });
     env.it('calls setSpecProperty', function() {
-      env.setSpecProperty('a', 'Bee');
+      env.setSpecProperty('fromSpecInnerCallback', 'Bee');
+      env.setSpecProperty('willChangeInAfterEach', 1);
     });
     await env.execute();
 

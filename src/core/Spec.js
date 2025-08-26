@@ -63,6 +63,11 @@ getJasmineRequireObj().Spec = function(j$) {
     }
   };
 
+  Spec.prototype.getSpecProperty = function(key) {
+    this.result.properties = this.result.properties || {};
+    return this.result.properties[key];
+  };
+
   Spec.prototype.setSpecProperty = function(key, value) {
     this.result.properties = this.result.properties || {};
     this.result.properties[key] = value;

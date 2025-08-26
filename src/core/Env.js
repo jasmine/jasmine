@@ -780,6 +780,26 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     /**
+     * Get a user-defined property as part of the properties field of {@link SpecResult}
+     * @name Env#getSpecProperty
+     * @since 5.10.0
+     * @function
+     * @param {String} key The name of the property
+     * @returns {*} The value of the property
+     */
+    this.getSpecProperty = function(key) {
+      if (
+        !runner.currentRunable() ||
+        runner.currentRunable() == runner.currentSuite()
+      ) {
+        throw new Error(
+          "'getSpecProperty' was used when there was no current spec"
+        );
+      }
+      return runner.currentRunable().getSpecProperty(key);
+    };
+
+    /**
      * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SpecResult}
      * @name Env#setSpecProperty
      * @since 3.6.0
