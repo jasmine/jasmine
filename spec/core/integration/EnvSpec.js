@@ -2303,7 +2303,7 @@ describe('Env integration', function() {
     env.afterEach(function() {
       env.setSpecProperty(
         'willChangeInAfterEach',
-        env.getSpecProperty('willChange') + 1
+        env.getSpecProperty('willChangeInAfterEach') + 1
       );
       env.setSpecProperty('fromAfterEach', 'Cheese');
     });
