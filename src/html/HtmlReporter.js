@@ -523,6 +523,11 @@ jasmineRequire.HtmlReporter = function(j$) {
                 'a',
                 { href: specHref(resultNode.result) },
                 specDescription
+              ),
+              createDom(
+                'span',
+                { className: 'jasmine-spec-duration' },
+                '(' + resultNode.result.duration + 'ms)'
               )
             )
           );
