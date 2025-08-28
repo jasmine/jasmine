@@ -270,6 +270,247 @@ describe('TreeRunner', function() {
     }
   });
 
+  describe('Suite execution', function() {
+    it('reports the duration of the suite', async function() {
+      const timer = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
+      const suite = new jasmineUnderTest.Suite({
+        id: 'suite1',
+        parentSuite: topSuite,
+        timer
+      });
+      topSuite.addChild(suite);
+      const executionTree = {
+        topSuite,
+        childrenOfTopSuite() {
+          return [{ suite }];
+        },
+        childrenOfSuiteSegment() {
+          return [];
+        },
+        isExcluded() {
+          return false;
+        }
+      };
+      const runQueue = jasmine.createSpy('runQueue');
+      const reportDispatcher = mockReportDispatcher();
+      const subject = new jasmineUnderTest.TreeRunner({
+        executionTree,
+        runQueue,
+        globalErrors: mockGlobalErrors(),
+        runableResources: mockRunableResources(),
+        reportDispatcher,
+        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        getConfig() {
+          return {};
+        },
+        reportChildrenOfBeforeAllFailure() {}
+      });
+
+      const executePromise = subject.execute();
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const topSuiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      runQueue.calls.reset();
+      topSuiteRunQueueOpts.queueableFns[0].fn(function() {});
+
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      expect(timer.start).not.toHaveBeenCalled();
+      const suiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      suiteRunQueueOpts.queueableFns[0].fn();
+      expect(timer.start).toHaveBeenCalled();
+      expect(timer.elapsed).not.toHaveBeenCalled();
+
+      timer.elapsed.and.returnValue('the duration');
+      suiteRunQueueOpts.onComplete();
+      expect(timer.elapsed).toHaveBeenCalled();
+      const result = suite.getResult();
+      expect(result.duration).toEqual('the duration');
+      expect(reportDispatcher.suiteDone).toHaveBeenCalledWith(result);
+
+      await expectAsync(executePromise).toBePending();
+    });
+
+    it('returns false if a suite failed', async function() {
+      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
+      const failingSuite = new jasmineUnderTest.Suite({
+        id: 'failingSuite',
+        parentSuite: topSuite
+      });
+      const passingSuite = new jasmineUnderTest.Suite({
+        id: 'passingSuite',
+        parentSuite: topSuite
+      });
+      const executionTree = {
+        topSuite,
+        childrenOfTopSuite() {
+          return [{ suite: failingSuite }, { suite: passingSuite }];
+        },
+        childrenOfSuiteSegment() {
+          return [];
+        },
+        isExcluded() {
+          return false;
+        }
+      };
+      const runQueue = jasmine.createSpy('runQueue');
+      const reportDispatcher = mockReportDispatcher();
+      const subject = new jasmineUnderTest.TreeRunner({
+        executionTree,
+        runQueue,
+        globalErrors: mockGlobalErrors(),
+        runableResources: mockRunableResources(),
+        reportDispatcher,
+        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        getConfig() {
+          return {};
+        },
+        reportChildrenOfBeforeAllFailure() {}
+      });
+
+      const executePromise = subject.execute();
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const topSuiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      runQueue.calls.reset();
+      topSuiteRunQueueOpts.queueableFns[0].fn(function() {});
+
+      // Fail the first suite.
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const failingSuiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      runQueue.calls.reset();
+      failingSuiteRunQueueOpts.queueableFns[0].fn();
+      failingSuite.addExpectationResult(false, {});
+      failingSuiteRunQueueOpts.onComplete();
+
+      // Passing the second suite should not reset the overall result.
+      topSuiteRunQueueOpts.queueableFns[1].fn(function() {});
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const passingSuiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      passingSuiteRunQueueOpts.queueableFns[0].fn();
+      passingSuiteRunQueueOpts.onComplete();
+
+      topSuiteRunQueueOpts.onComplete();
+
+      const result = await executePromise;
+      expect(result.hasFailures).toEqual(true);
+    });
+
+    it('reports children when there is a beforeAll failure', async function() {
+      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
+      const suite = new jasmineUnderTest.Suite({
+        id: 'suite',
+        parentSuite: topSuite
+      });
+      suite.beforeAll({ fn() {} });
+      const spec = new jasmineUnderTest.Spec({
+        id: 'spec',
+        parentSuite: suite,
+        queueableFn: { fn() {} }
+      });
+      const executionTree = {
+        topSuite,
+        childrenOfTopSuite() {
+          return [{ suite }];
+        },
+        childrenOfSuiteSegment() {
+          return [{ spec }];
+        },
+        isExcluded() {
+          return false;
+        }
+      };
+      const runQueue = jasmine.createSpy('runQueue');
+      const reportDispatcher = mockReportDispatcher();
+      const reportChildrenOfBeforeAllFailure = jasmine
+        .createSpy('reportChildrenOfBeforeAllFailure')
+        .and.returnValue(Promise.resolve());
+      const subject = new jasmineUnderTest.TreeRunner({
+        executionTree,
+        runQueue,
+        globalErrors: mockGlobalErrors(),
+        runableResources: mockRunableResources(),
+        reportDispatcher,
+        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        reportChildrenOfBeforeAllFailure,
+        getConfig() {
+          return {};
+        }
+      });
+
+      const executePromise = subject.execute();
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const topSuiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      runQueue.calls.reset();
+      topSuiteRunQueueOpts.queueableFns[0].fn(function() {});
+
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const suiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      suiteRunQueueOpts.queueableFns[0].fn();
+      suite.hadBeforeAllFailure = true;
+      suiteRunQueueOpts.onComplete();
+      await Promise.resolve();
+
+      expect(reportChildrenOfBeforeAllFailure).toHaveBeenCalledBefore(
+        reportDispatcher.suiteDone
+      );
+      await expectAsync(executePromise).toBePending();
+    });
+
+    it('throws if the wrong suite is completed', async function() {
+      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
+      const suite = new jasmineUnderTest.Suite({
+        id: 'suite',
+        parentSuite: topSuite
+      });
+      const spec = new jasmineUnderTest.Spec({
+        id: 'spec',
+        parentSuite: suite,
+        queueableFn: { fn() {} }
+      });
+      const executionTree = {
+        topSuite,
+        childrenOfTopSuite() {
+          return [{ suite }];
+        },
+        childrenOfSuiteSegment() {
+          return [{ spec }];
+        },
+        isExcluded() {
+          return false;
+        }
+      };
+      const runQueue = jasmine.createSpy('runQueue');
+      const reportDispatcher = mockReportDispatcher();
+      const subject = new jasmineUnderTest.TreeRunner({
+        executionTree,
+        runQueue,
+        globalErrors: mockGlobalErrors(),
+        runableResources: mockRunableResources(),
+        reportDispatcher,
+        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        getConfig() {
+          return {};
+        },
+        reportChildrenOfBeforeAllFailure() {}
+      });
+
+      const executePromise = subject.execute();
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const topSuiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      runQueue.calls.reset();
+      topSuiteRunQueueOpts.queueableFns[0].fn(function() {});
+
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const suiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+
+      // Complete the suite without starting it
+      expect(function() {
+        suiteRunQueueOpts.onComplete();
+      }).toThrowError('Tried to complete the wrong suite');
+
+      await expectAsync(executePromise).toBePending();
+    });
+  });
+
   function mockReportDispatcher() {
     const reportDispatcher = jasmine.createSpyObj(
       'reportDispatcher',
