@@ -229,6 +229,9 @@ body {
 .jasmine_html-reporter .jasmine-specs li.jasmine-excluded a:before {
   content: "• ";
 }
+.jasmine_html-reporter .jasmine-specs li .jasmine-spec-duration {
+  margin-left: 14px;
+}
 .jasmine_html-reporter .jasmine-description + .jasmine-suite {
   margin-top: 0;
 }
