@@ -230,7 +230,7 @@ body {
   content: "• ";
 }
 .jasmine_html-reporter .jasmine-specs li .jasmine-spec-duration {
-  margin-left: 14px;
+  margin-left: 1em;
 }
 .jasmine_html-reporter .jasmine-description + .jasmine-suite {
   margin-top: 0;
