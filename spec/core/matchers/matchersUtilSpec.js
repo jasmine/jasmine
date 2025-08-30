@@ -250,10 +250,6 @@ describe('matchersUtil', function() {
     });
 
     it('passes for equivalent Promises (GitHub issue #1314)', function() {
-      if (typeof Promise === 'undefined') {
-        return;
-      }
-
       const p1 = new Promise(function() {}),
         p2 = new Promise(function() {}),
         matchersUtil = new jasmineUnderTest.MatchersUtil();
@@ -263,14 +259,13 @@ describe('matchersUtil', function() {
     });
 
     describe('when running in a browser', function() {
-      function isNotRunningInBrowser() {
-        return typeof document === 'undefined';
-      }
+      beforeEach(function() {
+        if (typeof document === 'undefined') {
+          pending('This test only runs in browsers');
+        }
+      });
 
       it('passes for equivalent DOM nodes', function() {
-        if (isNotRunningInBrowser()) {
-          return;
-        }
         const a = document.createElement('div');
         const matchersUtil = new jasmineUnderTest.MatchersUtil();
 
@@ -285,9 +280,6 @@ describe('matchersUtil', function() {
       });
 
       it('passes for equivalent objects from different frames', function() {
-        if (isNotRunningInBrowser()) {
-          return;
-        }
         const matchersUtil = new jasmineUnderTest.MatchersUtil();
         const iframe = document.createElement('iframe');
         document.body.appendChild(iframe);
@@ -299,9 +291,6 @@ describe('matchersUtil', function() {
       });
 
       it('fails for DOM nodes with different attributes or child nodes', function() {
-        if (isNotRunningInBrowser()) {
-          return;
-        }
         const matchersUtil = new jasmineUnderTest.MatchersUtil();
         const a = document.createElement('div');
         a.setAttribute('test-attr', 'attr-value');
@@ -325,14 +314,13 @@ describe('matchersUtil', function() {
     });
 
     describe('when running in Node', function() {
-      function isNotRunningInNode() {
-        return typeof require !== 'function';
-      }
+      beforeEach(function() {
+        if (typeof require !== 'function') {
+          pending('This test only runs in Node');
+        }
+      });
 
       it('passes for equivalent objects from different vm contexts', function() {
-        if (isNotRunningInNode()) {
-          return;
-        }
         const matchersUtil = new jasmineUnderTest.MatchersUtil();
         const vm = require('vm');
         const sandbox = {
@@ -344,9 +332,6 @@ describe('matchersUtil', function() {
       });
 
       it('passes for equivalent arrays from different vm contexts', function() {
-        if (isNotRunningInNode()) {
-          return;
-        }
         const matchersUtil = new jasmineUnderTest.MatchersUtil();
         const vm = require('vm');
         const sandbox = {

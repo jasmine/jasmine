@@ -2,8 +2,7 @@ describe('base helpers', function() {
   describe('isError_', function() {
     it('correctly handles WebSocket events', function(done) {
       if (typeof jasmine.getGlobal().WebSocket === 'undefined') {
-        done();
-        return;
+        pending('Environment does not provide WebSocket');
       }
 
       const obj = (function() {

@@ -82,7 +82,7 @@ describe('toThrowError', function() {
 
     it('passes if thrown is an instanceof Error regardless of global that contains its constructor', function() {
       if (isNotRunningInBrowser()) {
-        return;
+        pending('This test only runs in browsers.');
       }
 
       const matcher = jasmineUnderTest.matchers.toThrowError();

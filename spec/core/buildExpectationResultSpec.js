@@ -79,7 +79,7 @@ describe('buildExpectationResult', function() {
 
   it('handles nodejs assertions', function() {
     if (typeof require === 'undefined') {
-      return;
+      pending('This test only runs in Node');
     }
     const assert = require('assert');
     const value = 8421;
