@@ -129,33 +129,33 @@ describe('AsyncExpectation', function() {
         });
     });
 
-    it('prepends the context to a custom failure message from a function', function() {
-      pending('should actually work, but no custom matchers for async yet');
-
+    it('prepends the context to a custom failure message from a matcher', async function() {
       const matchersUtil = {
-          buildFailureMessage: function() {
-            return 'failure message';
-          }
+        buildFailureMessage() {
+          return 'failure message';
         },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.reject(new Error('nope')),
-        expectation = jasmineUnderTest.Expectation.asyncFactory({
-          actual: actual,
-          addExpectationResult: addExpectationResult,
-          matchersUtil: matchersUtil
-        });
+        pp(v) {
+          return v.toString();
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const actual = Promise.reject(new Error('nope'));
+      const expectation = jasmineUnderTest.Expectation.asyncFactory({
+        actual: actual,
+        addExpectationResult: addExpectationResult,
+        matchersUtil: matchersUtil
+      });
 
-      return expectation
-        .withContext('Some context')
-        .toBeResolved()
-        .then(function() {
-          expect(addExpectationResult).toHaveBeenCalledWith(
-            false,
-            jasmine.objectContaining({
-              message: 'Some context: msg'
-            })
-          );
-        });
+      await expectation.withContext('Some context').toBeResolved();
+
+      expect(addExpectationResult).toHaveBeenCalledWith(
+        false,
+        jasmine.objectContaining({
+          message:
+            'Some context: Expected a promise to be resolved but it ' +
+            'was rejected with Error: nope.'
+        })
+      );
     });
 
     it('works with #not', function() {
