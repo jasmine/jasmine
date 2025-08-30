@@ -406,6 +406,8 @@ describe('TreeRunner', function() {
         parentSuite: suite,
         queueableFn: { fn() {} }
       });
+      suite.addChild(spec);
+      topSuite.addChild(suite);
       const executionTree = {
         topSuite,
         childrenOfTopSuite() {
@@ -447,9 +449,12 @@ describe('TreeRunner', function() {
       suiteRunQueueOpts.queueableFns[0].fn();
       suite.hadBeforeAllFailure = true;
       suiteRunQueueOpts.onComplete();
-      await Promise.resolve();
 
-      expect(reportChildrenOfBeforeAllFailure).toHaveBeenCalledBefore(
+      while (reportDispatcher.suiteDone.calls.count() === 0) {
+        await Promise.resolve();
+      }
+
+      expect(reportDispatcher.specDone).toHaveBeenCalledBefore(
         reportDispatcher.suiteDone
       );
       await expectAsync(executePromise).toBePending();

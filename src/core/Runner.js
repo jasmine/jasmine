@@ -115,16 +115,9 @@ getJasmineRequireObj().Runner = function(j$) {
         reportDispatcher: this.#reportDispatcher,
         runQueue: this.#runQueue,
         getConfig: this.#getConfig,
-        reportChildrenOfBeforeAllFailure: this.#reportChildrenOfBeforeAllFailure.bind(
-          this
-        ),
         currentRunableTracker: this.#currentRunableTracker
       });
       const { hasFailures } = await treeRunner.execute();
-
-      if (this.#topSuite.hadBeforeAllFailure) {
-        await this.#reportChildrenOfBeforeAllFailure(this.#topSuite);
-      }
 
       this.#runableResources.clearForRunable(this.#topSuite.id);
       this.#currentRunableTracker.popSuite();
@@ -169,47 +162,6 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#topSuite.reportedDone = true;
       await this.#reportDispatcher.jasmineDone(jasmineDoneInfo);
       return jasmineDoneInfo;
-    }
-
-    // TODO: de-duplicate w/TreeRunner
-    #reportSpecDone(spec, result, next) {
-      spec.reportedDone = true;
-      this.#reportDispatcher.specDone(result).then(next);
-    }
-
-    async #reportChildrenOfBeforeAllFailure(suite) {
-      for (const child of suite.children) {
-        if (child instanceof j$.Suite) {
-          await this.#reportDispatcher.suiteStarted(child.result);
-          await this.#reportChildrenOfBeforeAllFailure(child);
-
-          // Marking the suite passed is consistent with how suites that
-          // contain failed specs but no suite-level failures are reported.
-          child.result.status = 'passed';
-
-          await this.#reportDispatcher.suiteDone(child.result);
-        } else {
-          /* a spec */
-          await this.#reportDispatcher.specStarted(child.result);
-
-          child.addExpectationResult(
-            false,
-            {
-              passed: false,
-              message:
-                'Not run because a beforeAll function failed. The ' +
-                'beforeAll failure will be reported on the suite that ' +
-                'caused it.'
-            },
-            true
-          );
-          child.result.status = 'failed';
-
-          await new Promise(resolve => {
-            this.#reportSpecDone(child, child.result, resolve);
-          });
-        }
-      }
     }
   }
 

@@ -7,7 +7,6 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     #reportDispatcher;
     #runQueue;
     #getConfig;
-    #reportChildrenOfBeforeAllFailure;
     #currentRunableTracker;
     #hasFailures;
 
@@ -19,8 +18,6 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       this.#reportDispatcher = attrs.reportDispatcher;
       this.#runQueue = attrs.runQueue;
       this.#getConfig = attrs.getConfig;
-      this.#reportChildrenOfBeforeAllFailure =
-        attrs.reportChildrenOfBeforeAllFailure;
       this.#currentRunableTracker = attrs.currentRunableTracker;
     }
 
@@ -49,6 +46,10 @@ getJasmineRequireObj().TreeRunner = function(j$) {
           SkipPolicy: this.#suiteSkipPolicy()
         });
       });
+
+      if (topSuite.hadBeforeAllFailure) {
+        await this.#reportChildrenOfBeforeAllFailure(topSuite);
+      }
 
       return { hasFailures: this.#hasFailures };
     }
@@ -245,6 +246,38 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     async #reportSpecDone(spec) {
       spec.reportedDone = true;
       await this.#reportDispatcher.specDone(spec.result);
+    }
+
+    async #reportChildrenOfBeforeAllFailure(suite) {
+      for (const child of suite.children) {
+        if (child instanceof j$.Suite) {
+          await this.#reportDispatcher.suiteStarted(child.result);
+          await this.#reportChildrenOfBeforeAllFailure(child);
+
+          // Marking the suite passed is consistent with how suites that
+          // contain failed specs but no suite-level failures are reported.
+          child.result.status = 'passed';
+
+          await this.#reportDispatcher.suiteDone(child.result);
+        } else {
+          /* a spec */
+          await this.#reportDispatcher.specStarted(child.result);
+
+          child.addExpectationResult(
+            false,
+            {
+              passed: false,
+              message:
+                'Not run because a beforeAll function failed. The ' +
+                'beforeAll failure will be reported on the suite that ' +
+                'caused it.'
+            },
+            true
+          );
+          child.result.status = 'failed';
+          await this.#reportSpecDone(child);
+        }
+      }
     }
 
     #addBeforeAndAfterAlls(suite, wrappedChildren) {
