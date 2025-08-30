@@ -499,7 +499,7 @@ describe('HtmlReporter', function() {
       expect(duration.innerHTML).toMatch(/finished in 0.1s/);
     });
 
-    it('reports the suite and spec names with status', function() {
+    it('reports the suite names with status, and spec names with status and duration', function() {
       const container = document.createElement('div'),
         getContainer = function() {
           return container;
@@ -532,7 +532,8 @@ describe('HtmlReporter', function() {
         fullName: 'A Suite with a spec',
         status: 'passed',
         failedExpectations: [],
-        passedExpectations: [{ passed: true }]
+        passedExpectations: [{ passed: true }],
+        duration: 1230
       };
       reporter.specStarted(specResult);
       reporter.specDone(specResult);
@@ -549,7 +550,8 @@ describe('HtmlReporter', function() {
         fullName: 'A Suite inner suite with another spec',
         status: 'passed',
         failedExpectations: [],
-        passedExpectations: [{ passed: true }]
+        passedExpectations: [{ passed: true }],
+        duration: 1240
       };
       reporter.specStarted(specResult);
       reporter.specDone(specResult);
@@ -567,7 +569,8 @@ describe('HtmlReporter', function() {
         fullName: 'A Suite inner with a failing spec',
         status: 'failed',
         failedExpectations: [{}],
-        passedExpectations: []
+        passedExpectations: [],
+        duration: 2090
       };
       reporter.specStarted(specResult);
       reporter.specDone(specResult);
@@ -614,6 +617,9 @@ describe('HtmlReporter', function() {
       expect(specLink.getAttribute('href')).toEqual(
         '/?foo=bar&spec=A Suite with a spec'
       );
+
+      const specDuration = spec.childNodes[1];
+      expect(specDuration.innerHTML).toEqual('(1230ms)');
     });
 
     it('has an options menu', function() {

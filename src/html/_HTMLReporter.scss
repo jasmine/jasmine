@@ -331,6 +331,10 @@ body {
       &.jasmine-excluded a:before {
         content: $passing-mark + $space;
       }
+
+      .jasmine-spec-duration {
+        margin-left: $margin-unit;
+      }
     }
   }
 
