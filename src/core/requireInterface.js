@@ -169,6 +169,18 @@ getJasmineRequireObj().interface = function(jasmine, env) {
     },
 
     /**
+     * Get a user-defined property as part of the properties field of {@link SpecResult}
+     * @name getSpecProperty
+     * @since 5.10.0
+     * @function
+     * @param {String} key The name of the property
+     * @returns {*} The value of the property
+     */
+    getSpecProperty: function(key) {
+      return env.getSpecProperty(key);
+    },
+
+    /**
      * Sets a user-defined property that will be provided to reporters as part of the properties field of {@link SpecResult}
      * @name setSpecProperty
      * @since 3.6.0
