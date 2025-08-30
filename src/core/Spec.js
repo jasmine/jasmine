@@ -1,272 +1,248 @@
 getJasmineRequireObj().Spec = function(j$) {
-  function Spec(attrs) {
-    this.expectationFactory = attrs.expectationFactory;
-    this.asyncExpectationFactory = attrs.asyncExpectationFactory;
-    this.id = attrs.id;
-    this.filename = attrs.filename;
-    this.parentSuiteId = attrs.parentSuiteId;
-    this.description = attrs.description || '';
-    this.queueableFn = attrs.queueableFn;
-    this.beforeAndAfterFns =
-      attrs.beforeAndAfterFns ||
-      function() {
-        return { befores: [], afters: [] };
-      };
-    this.userContext =
-      attrs.userContext ||
-      function() {
-        return {};
-      };
-    this.autoCleanClosures =
-      attrs.autoCleanClosures === undefined ? true : !!attrs.autoCleanClosures;
+  class Spec {
+    constructor(attrs) {
+      this.expectationFactory = attrs.expectationFactory;
+      this.asyncExpectationFactory = attrs.asyncExpectationFactory;
+      this.id = attrs.id;
+      this.filename = attrs.filename;
+      this.parentSuiteId = attrs.parentSuiteId;
+      this.description = attrs.description || '';
+      this.queueableFn = attrs.queueableFn;
+      this.beforeAndAfterFns =
+        attrs.beforeAndAfterFns ||
+        function() {
+          return { befores: [], afters: [] };
+        };
+      this.userContext =
+        attrs.userContext ||
+        function() {
+          return {};
+        };
+      this.autoCleanClosures =
+        attrs.autoCleanClosures === undefined
+          ? true
+          : !!attrs.autoCleanClosures;
 
-    this.getPath = function() {
-      return attrs.getPath ? attrs.getPath(this) : [];
-    };
-
-    this.onLateError = attrs.onLateError || function() {};
-    this.catchingExceptions =
-      attrs.catchingExceptions ||
-      function() {
-        return true;
+      this.getPath = function() {
+        return attrs.getPath ? attrs.getPath(this) : [];
       };
-    this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
-    this.timer = attrs.timer || new j$.Timer();
 
-    if (!this.queueableFn.fn) {
-      this.exclude();
+      this.onLateError = attrs.onLateError || function() {};
+      this.catchingExceptions =
+        attrs.catchingExceptions ||
+        function() {
+          return true;
+        };
+      this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
+      this.timer = attrs.timer || new j$.Timer();
+
+      if (!this.queueableFn.fn) {
+        this.exclude();
+      }
+
+      this.reset();
     }
 
-    this.reset();
-  }
+    addExpectationResult(passed, data, isError) {
+      const expectationResult = j$.buildExpectationResult(data);
 
-  Spec.prototype.addExpectationResult = function(passed, data, isError) {
-    const expectationResult = j$.buildExpectationResult(data);
-
-    if (passed) {
-      this.result.passedExpectations.push(expectationResult);
-    } else {
-      if (this.reportedDone) {
-        this.onLateError(expectationResult);
+      if (passed) {
+        this.result.passedExpectations.push(expectationResult);
       } else {
-        this.result.failedExpectations.push(expectationResult);
+        if (this.reportedDone) {
+          this.onLateError(expectationResult);
+        } else {
+          this.result.failedExpectations.push(expectationResult);
 
-        // TODO: refactor so that we don't need to override cached status
-        if (this.result.status) {
-          this.result.status = 'failed';
+          // TODO: refactor so that we don't need to override cached status
+          if (this.result.status) {
+            this.result.status = 'failed';
+          }
+        }
+
+        if (this.throwOnExpectationFailure && !isError) {
+          throw new j$.errors.ExpectationFailed();
         }
       }
+    }
 
-      if (this.throwOnExpectationFailure && !isError) {
-        throw new j$.errors.ExpectationFailed();
+    getSpecProperty(key) {
+      this.result.properties = this.result.properties || {};
+      return this.result.properties[key];
+    }
+
+    setSpecProperty(key, value) {
+      this.result.properties = this.result.properties || {};
+      this.result.properties[key] = value;
+    }
+
+    executionStarted() {
+      this.timer.start();
+    }
+
+    executionFinished(excluded, failSpecWithNoExp) {
+      if (this.autoCleanClosures) {
+        this.queueableFn.fn = null;
+      }
+
+      this.result.status = this.status(excluded, failSpecWithNoExp);
+      this.result.duration = this.timer.elapsed();
+
+      if (this.result.status !== 'failed') {
+        this.result.debugLogs = null;
       }
     }
-  };
 
-  Spec.prototype.getSpecProperty = function(key) {
-    this.result.properties = this.result.properties || {};
-    return this.result.properties[key];
-  };
-
-  Spec.prototype.setSpecProperty = function(key, value) {
-    this.result.properties = this.result.properties || {};
-    this.result.properties[key] = value;
-  };
-
-  Spec.prototype.executionStarted = function() {
-    this.timer.start();
-  };
-
-  Spec.prototype.executionFinished = function(excluded, failSpecWithNoExp) {
-    if (this.autoCleanClosures) {
-      this.queueableFn.fn = null;
+    reset() {
+      /**
+       * @typedef SpecResult
+       * @property {String} id - The unique id of this spec.
+       * @property {String} description - The description passed to the {@link it} that created this spec.
+       * @property {String} fullName - The full description including all ancestors of this spec.
+       * @property {String|null} parentSuiteId - The ID of the suite containing this spec, or null if this spec is not in a describe().
+       * @property {String} filename - Deprecated. The name of the file the spec was defined in.
+       * Note: The value may be incorrect if zone.js is installed or
+       * `it`/`fit`/`xit` have been replaced with versions that don't maintain the
+       *  same call stack height as the originals. This property may be removed in
+       *  a future version unless there is enough user interest in keeping it.
+       *  See {@link https://github.com/jasmine/jasmine/issues/2065}.
+       * @property {ExpectationResult[]} failedExpectations - The list of expectations that failed during execution of this spec.
+       * @property {ExpectationResult[]} passedExpectations - The list of expectations that passed during execution of this spec.
+       * @property {ExpectationResult[]} deprecationWarnings - The list of deprecation warnings that occurred during execution this spec.
+       * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
+       * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
+       * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
+       * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
+       * @property {DebugLogEntry[]|null} debugLogs - Messages, if any, that were logged using {@link jasmine.debugLog} during a failing spec.
+       * @since 2.0.0
+       */
+      this.result = {
+        id: this.id,
+        description: this.description,
+        fullName: this.getFullName(),
+        parentSuiteId: this.parentSuiteId,
+        filename: this.filename,
+        failedExpectations: [],
+        passedExpectations: [],
+        deprecationWarnings: [],
+        pendingReason: this.excludeMessage || '',
+        duration: null,
+        properties: null,
+        debugLogs: null
+      };
+      this.markedPending = this.markedExcluding;
+      this.reportedDone = false;
     }
 
-    this.result.status = this.status(excluded, failSpecWithNoExp);
-    this.result.duration = this.timer.elapsed();
+    handleException(e) {
+      if (Spec.isPendingSpecException(e)) {
+        this.pend(extractCustomPendingMessage(e));
+        return;
+      }
 
-    if (this.result.status !== 'failed') {
-      this.result.debugLogs = null;
+      if (e instanceof j$.errors.ExpectationFailed) {
+        return;
+      }
+
+      this.addExpectationResult(
+        false,
+        {
+          matcherName: '',
+          passed: false,
+          expected: '',
+          actual: '',
+          error: e
+        },
+        true
+      );
     }
-  };
 
-  Spec.prototype.reset = function() {
+    pend(message) {
+      this.markedPending = true;
+      if (message) {
+        this.result.pendingReason = message;
+      }
+    }
+
+    // Like pend(), but pending state will survive reset().
+    // Useful for fit, xit, where pending state remains.
+    exclude(message) {
+      this.markedExcluding = true;
+      if (this.message) {
+        this.excludeMessage = message;
+      }
+      this.pend(message);
+    }
+
+    // TODO: ensure that all access to result goes through .getResult()
+    // so that the status is correct.
+    getResult() {
+      this.result.status = this.status();
+      return this.result;
+    }
+
+    status(excluded, failSpecWithNoExpectations) {
+      if (excluded === true) {
+        return 'excluded';
+      }
+
+      if (this.markedPending) {
+        return 'pending';
+      }
+
+      if (
+        this.result.failedExpectations.length > 0 ||
+        (failSpecWithNoExpectations &&
+          this.result.failedExpectations.length +
+            this.result.passedExpectations.length ===
+            0)
+      ) {
+        return 'failed';
+      }
+
+      return 'passed';
+    }
+
+    getFullName() {
+      return this.getPath().join(' ');
+    }
+
+    addDeprecationWarning(deprecation) {
+      if (typeof deprecation === 'string') {
+        deprecation = { message: deprecation };
+      }
+      this.result.deprecationWarnings.push(
+        j$.buildExpectationResult(deprecation)
+      );
+    }
+
+    debugLog(msg) {
+      if (!this.result.debugLogs) {
+        this.result.debugLogs = [];
+      }
+
+      /**
+       * @typedef DebugLogEntry
+       * @property {String} message - The message that was passed to {@link jasmine.debugLog}.
+       * @property {number} timestamp - The time when the entry was added, in
+       * milliseconds from the spec's start time
+       */
+      this.result.debugLogs.push({
+        message: msg,
+        timestamp: this.timer.elapsed()
+      });
+    }
+
     /**
-     * @typedef SpecResult
-     * @property {String} id - The unique id of this spec.
-     * @property {String} description - The description passed to the {@link it} that created this spec.
-     * @property {String} fullName - The full description including all ancestors of this spec.
-     * @property {String|null} parentSuiteId - The ID of the suite containing this spec, or null if this spec is not in a describe().
-     * @property {String} filename - Deprecated. The name of the file the spec was defined in.
-     * Note: The value may be incorrect if zone.js is installed or
-     * `it`/`fit`/`xit` have been replaced with versions that don't maintain the
-     *  same call stack height as the originals. This property may be removed in
-     *  a future version unless there is enough user interest in keeping it.
-     *  See {@link https://github.com/jasmine/jasmine/issues/2065}.
-     * @property {ExpectationResult[]} failedExpectations - The list of expectations that failed during execution of this spec.
-     * @property {ExpectationResult[]} passedExpectations - The list of expectations that passed during execution of this spec.
-     * @property {ExpectationResult[]} deprecationWarnings - The list of deprecation warnings that occurred during execution this spec.
-     * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
-     * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
-     * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
-     * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
-     * @property {DebugLogEntry[]|null} debugLogs - Messages, if any, that were logged using {@link jasmine.debugLog} during a failing spec.
+     * @interface Spec
+     * @see Configuration#specFilter
      * @since 2.0.0
      */
-    this.result = {
-      id: this.id,
-      description: this.description,
-      fullName: this.getFullName(),
-      parentSuiteId: this.parentSuiteId,
-      filename: this.filename,
-      failedExpectations: [],
-      passedExpectations: [],
-      deprecationWarnings: [],
-      pendingReason: this.excludeMessage || '',
-      duration: null,
-      properties: null,
-      debugLogs: null
-    };
-    this.markedPending = this.markedExcluding;
-    this.reportedDone = false;
-  };
-
-  Spec.prototype.handleException = function handleException(e) {
-    if (Spec.isPendingSpecException(e)) {
-      this.pend(extractCustomPendingMessage(e));
-      return;
-    }
-
-    if (e instanceof j$.errors.ExpectationFailed) {
-      return;
-    }
-
-    this.addExpectationResult(
-      false,
-      {
-        matcherName: '',
-        passed: false,
-        expected: '',
-        actual: '',
-        error: e
-      },
-      true
-    );
-  };
-
-  /*
-   * Marks state as pending
-   * @param {string} [message] An optional reason message
-   */
-  Spec.prototype.pend = function(message) {
-    this.markedPending = true;
-    if (message) {
-      this.result.pendingReason = message;
-    }
-  };
-
-  /*
-   * Like {@link Spec#pend}, but pending state will survive {@link Spec#reset}
-   * Useful for fit, xit, where pending state remains.
-   * @param {string} [message] An optional reason message
-   */
-  Spec.prototype.exclude = function(message) {
-    this.markedExcluding = true;
-    if (this.message) {
-      this.excludeMessage = message;
-    }
-    this.pend(message);
-  };
-
-  // TODO: ensure that all access to result goes through .getResult()
-  // so that the status is correct.
-  Spec.prototype.getResult = function() {
-    this.result.status = this.status();
-    return this.result;
-  };
-
-  Spec.prototype.status = function(excluded, failSpecWithNoExpectations) {
-    if (excluded === true) {
-      return 'excluded';
-    }
-
-    if (this.markedPending) {
-      return 'pending';
-    }
-
-    if (
-      this.result.failedExpectations.length > 0 ||
-      (failSpecWithNoExpectations &&
-        this.result.failedExpectations.length +
-          this.result.passedExpectations.length ===
-          0)
-    ) {
-      return 'failed';
-    }
-
-    return 'passed';
-  };
-
-  Spec.prototype.getFullName = function() {
-    return this.getPath().join(' ');
-  };
-
-  Spec.prototype.addDeprecationWarning = function(deprecation) {
-    if (typeof deprecation === 'string') {
-      deprecation = { message: deprecation };
-    }
-    this.result.deprecationWarnings.push(
-      j$.buildExpectationResult(deprecation)
-    );
-  };
-
-  Spec.prototype.debugLog = function(msg) {
-    if (!this.result.debugLogs) {
-      this.result.debugLogs = [];
-    }
-
-    /**
-     * @typedef DebugLogEntry
-     * @property {String} message - The message that was passed to {@link jasmine.debugLog}.
-     * @property {number} timestamp - The time when the entry was added, in
-     * milliseconds from the spec's start time
-     */
-    this.result.debugLogs.push({
-      message: msg,
-      timestamp: this.timer.elapsed()
-    });
-  };
-
-  const extractCustomPendingMessage = function(e) {
-    const fullMessage = e.toString(),
-      boilerplateStart = fullMessage.indexOf(Spec.pendingSpecExceptionMessage),
-      boilerplateEnd =
-        boilerplateStart + Spec.pendingSpecExceptionMessage.length;
-
-    return fullMessage.slice(boilerplateEnd);
-  };
-
-  Spec.pendingSpecExceptionMessage = '=> marked Pending';
-
-  Spec.isPendingSpecException = function(e) {
-    return !!(
-      e &&
-      e.toString &&
-      e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
-    );
-  };
-
-  /**
-   * @interface Spec
-   * @see Configuration#specFilter
-   * @since 2.0.0
-   */
-  Object.defineProperty(Spec.prototype, 'metadata', {
-    // NOTE: Although most of jasmine-core only exposes these metadata objects,
-    // actual Spec instances are still passed to Configuration#specFilter. Until
-    // that is fixed, it's important to make sure that all metadata properties
-    // also exist in compatible form on the underlying Spec.
-    get: function() {
+    get metadata() {
+      // NOTE: Although most of jasmine-core only exposes these metadata objects,
+      // actual Spec instances are still passed to Configuration#specFilter. Until
+      // that is fixed, it's important to make sure that all metadata properties
+      // also exist in compatible form on the underlying Spec.
       if (!this.metadata_) {
         this.metadata_ = {
           /**
@@ -309,7 +285,26 @@ getJasmineRequireObj().Spec = function(j$) {
 
       return this.metadata_;
     }
-  });
+  }
+
+  const extractCustomPendingMessage = function(e) {
+    const fullMessage = e.toString(),
+      boilerplateStart = fullMessage.indexOf(Spec.pendingSpecExceptionMessage),
+      boilerplateEnd =
+        boilerplateStart + Spec.pendingSpecExceptionMessage.length;
+
+    return fullMessage.slice(boilerplateEnd);
+  };
+
+  Spec.pendingSpecExceptionMessage = '=> marked Pending';
+
+  Spec.isPendingSpecException = function(e) {
+    return !!(
+      e &&
+      e.toString &&
+      e.toString().indexOf(Spec.pendingSpecExceptionMessage) !== -1
+    );
+  };
 
   return Spec;
 };
