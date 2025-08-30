@@ -28,6 +28,7 @@ failfile=`mktemp -t jasmine-results.XXXXXX` || exit 1
 run_browser chrome latest
 
 run_browser firefox latest
+run_browser firefox 140
 run_browser firefox 128
 run_browser firefox 115
 run_browser firefox 102
