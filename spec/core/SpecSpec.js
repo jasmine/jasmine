@@ -78,6 +78,17 @@ describe('Spec', function() {
     });
   });
 
+  describe('#getSpecProperty', function() {
+    it('get the property value', function() {
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: () => {} }
+      });
+
+      spec.setSpecProperty('a', 4);
+      expect(spec.getSpecProperty('a')).toBe(4);
+    });
+  });
+
   describe('#setSpecProperty', function() {
     it('adds the property to the result', function() {
       const spec = new jasmineUnderTest.Spec({
@@ -87,6 +98,21 @@ describe('Spec', function() {
       spec.setSpecProperty('a', 4);
 
       expect(spec.result.properties).toEqual({ a: 4 });
+    });
+
+    it('replace the property result when it was previously set', function() {
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: () => {} }
+      });
+
+      spec.setSpecProperty('a', 'original-value');
+      spec.setSpecProperty('b', 'original-value');
+      spec.setSpecProperty('a', 'new-value');
+
+      expect(spec.result.properties).toEqual({
+        a: 'new-value',
+        b: 'original-value'
+      });
     });
   });
 
