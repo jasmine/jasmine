@@ -115,7 +115,7 @@ describe('Suite', function() {
     const suite = new jasmineUnderTest.Suite({});
 
     suite.addExpectationResult(false, {});
-    expect(suite.status()).toBe('failed');
+    expect(suite.getResult().status).toBe('failed');
   });
 
   it('retrieves a result with updated status', function() {
@@ -140,7 +140,7 @@ describe('Suite', function() {
       suite.addExpectationResult(false, { message: 'failed' });
     }).toThrowError(jasmineUnderTest.errors.ExpectationFailed);
 
-    expect(suite.status()).toBe('failed');
+    expect(suite.getResult().status).toBe('failed');
     expect(suite.result.failedExpectations).toEqual([
       jasmine.objectContaining({ message: 'failed' })
     ]);

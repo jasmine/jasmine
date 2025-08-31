@@ -33,18 +33,6 @@ describe('Spec', function() {
     expect(jasmineUnderTest.Spec.isPendingSpecException(void 0)).toBe(false);
   });
 
-  it('is marked pending if created without a function body', function() {
-    const startCallback = jasmine.createSpy('startCallback'),
-      resultCallback = jasmine.createSpy('resultCallback'),
-      spec = new jasmineUnderTest.Spec({
-        onStart: startCallback,
-        queueableFn: { fn: null },
-        resultCallback: resultCallback
-      });
-
-    expect(spec.status()).toBe('pending');
-  });
-
   describe('#executionFinished', function() {
     it('removes the fn if autoCleanClosures is true', function() {
       const spec = new jasmineUnderTest.Spec({
@@ -116,32 +104,25 @@ describe('Spec', function() {
     });
   });
 
-  it('#status returns passing by default', function() {
-    const spec = new jasmineUnderTest.Spec({
-      queueableFn: { fn: jasmine.createSpy('spec body') }
-    });
-    expect(spec.status()).toBe('passed');
-  });
-
-  describe('#status', function() {
-    it('returns "passed"" by default', function() {
+  describe('status', function() {
+    it('is "passed" by default', function() {
       const spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
-      expect(spec.status()).toBe('passed');
+      expect(spec.getResult().status).toBe('passed');
     });
 
-    it('returns "passed"" if all expectations passed', function() {
+    it('is "passed" if all expectations passed', function() {
       const spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
       spec.addExpectationResult(true, {});
 
-      expect(spec.status()).toBe('passed');
+      expect(spec.getResult().status).toBe('passed');
     });
 
-    it('returns "failed" if any expectation failed', function() {
+    it('is "failed" if any expectation failed', function() {
       const spec = new jasmineUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
@@ -149,7 +130,19 @@ describe('Spec', function() {
       spec.addExpectationResult(true, {});
       spec.addExpectationResult(false, {});
 
-      expect(spec.status()).toBe('failed');
+      expect(spec.getResult().status).toBe('failed');
+    });
+
+    it('is "pending" if created without a function body', function() {
+      const startCallback = jasmine.createSpy('startCallback'),
+        resultCallback = jasmine.createSpy('resultCallback'),
+        spec = new jasmineUnderTest.Spec({
+          onStart: startCallback,
+          queueableFn: { fn: null },
+          resultCallback: resultCallback
+        });
+
+      expect(spec.getResult().status).toBe('pending');
     });
   });
 

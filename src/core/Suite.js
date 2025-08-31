@@ -1,26 +1,30 @@
 getJasmineRequireObj().Suite = function(j$) {
   class Suite {
+    #reportedParentSuiteId;
+    #throwOnExpectationFailure;
+    #autoCleanClosures;
+    #timer;
+
     constructor(attrs) {
-      this.env = attrs.env;
       this.id = attrs.id;
       this.parentSuite = attrs.parentSuite;
       this.description = attrs.description;
-      this.reportedParentSuiteId = attrs.reportedParentSuiteId;
       this.filename = attrs.filename;
       this.expectationFactory = attrs.expectationFactory;
       this.asyncExpectationFactory = attrs.asyncExpectationFactory;
-      this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
-      this.autoCleanClosures =
+      this.onLateError = attrs.onLateError || function() {};
+      this.#reportedParentSuiteId = attrs.reportedParentSuiteId;
+      this.#throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
+      this.#autoCleanClosures =
         attrs.autoCleanClosures === undefined
           ? true
           : !!attrs.autoCleanClosures;
-      this.onLateError = attrs.onLateError || function() {};
+      this.#timer = attrs.timer || new j$.Timer();
 
       this.beforeFns = [];
       this.afterFns = [];
       this.beforeAllFns = [];
       this.afterAllFns = [];
-      this.timer = attrs.timer || new j$.Timer();
       this.children = [];
 
       this.reset();
@@ -74,15 +78,15 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     startTimer() {
-      this.timer.start();
+      this.#timer.start();
     }
 
     endTimer() {
-      this.result.duration = this.timer.elapsed();
+      this.result.duration = this.#timer.elapsed();
     }
 
     cleanupBeforeAfter() {
-      if (this.autoCleanClosures) {
+      if (this.#autoCleanClosures) {
         removeFns(this.beforeAllFns);
         removeFns(this.afterAllFns);
         removeFns(this.beforeFns);
@@ -114,7 +118,7 @@ getJasmineRequireObj().Suite = function(j$) {
         id: this.id,
         description: this.description,
         fullName: this.getFullName(),
-        parentSuiteId: this.reportedParentSuiteId,
+        parentSuiteId: this.#reportedParentSuiteId,
         filename: this.filename,
         failedExpectations: [],
         deprecationWarnings: [],
@@ -136,7 +140,7 @@ getJasmineRequireObj().Suite = function(j$) {
       this.children.push(child);
     }
 
-    status() {
+    #status() {
       if (this.markedPending) {
         return 'pending';
       }
@@ -149,7 +153,7 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     getResult() {
-      this.result.status = this.status();
+      this.result.status = this.#status();
       return this.result;
     }
 
@@ -234,7 +238,7 @@ getJasmineRequireObj().Suite = function(j$) {
           }
         }
 
-        if (this.throwOnExpectationFailure) {
+        if (this.#throwOnExpectationFailure) {
           throw new j$.errors.ExpectationFailed();
         }
       }

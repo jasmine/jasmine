@@ -1,5 +1,10 @@
 getJasmineRequireObj().Spec = function(j$) {
   class Spec {
+    #autoCleanClosures;
+    #throwOnExpectationFailure;
+    #timer;
+    #metadata;
+
     constructor(attrs) {
       this.expectationFactory = attrs.expectationFactory;
       this.asyncExpectationFactory = attrs.asyncExpectationFactory;
@@ -18,23 +23,17 @@ getJasmineRequireObj().Spec = function(j$) {
         function() {
           return {};
         };
-      this.autoCleanClosures =
-        attrs.autoCleanClosures === undefined
-          ? true
-          : !!attrs.autoCleanClosures;
-
       this.getPath = function() {
         return attrs.getPath ? attrs.getPath(this) : [];
       };
 
+      this.#autoCleanClosures =
+        attrs.autoCleanClosures === undefined
+          ? true
+          : !!attrs.autoCleanClosures;
       this.onLateError = attrs.onLateError || function() {};
-      this.catchingExceptions =
-        attrs.catchingExceptions ||
-        function() {
-          return true;
-        };
-      this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
-      this.timer = attrs.timer || new j$.Timer();
+      this.#throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
+      this.#timer = attrs.timer || new j$.Timer();
 
       if (!this.queueableFn.fn) {
         this.exclude();
@@ -60,7 +59,7 @@ getJasmineRequireObj().Spec = function(j$) {
           }
         }
 
-        if (this.throwOnExpectationFailure && !isError) {
+        if (this.#throwOnExpectationFailure && !isError) {
           throw new j$.errors.ExpectationFailed();
         }
       }
@@ -77,16 +76,16 @@ getJasmineRequireObj().Spec = function(j$) {
     }
 
     executionStarted() {
-      this.timer.start();
+      this.#timer.start();
     }
 
     executionFinished(excluded, failSpecWithNoExp) {
-      if (this.autoCleanClosures) {
+      if (this.#autoCleanClosures) {
         this.queueableFn.fn = null;
       }
 
-      this.result.status = this.status(excluded, failSpecWithNoExp);
-      this.result.duration = this.timer.elapsed();
+      this.result.status = this.#status(excluded, failSpecWithNoExp);
+      this.result.duration = this.#timer.elapsed();
 
       if (this.result.status !== 'failed') {
         this.result.debugLogs = null;
@@ -177,11 +176,11 @@ getJasmineRequireObj().Spec = function(j$) {
     // TODO: ensure that all access to result goes through .getResult()
     // so that the status is correct.
     getResult() {
-      this.result.status = this.status();
+      this.result.status = this.#status();
       return this.result;
     }
 
-    status(excluded, failSpecWithNoExpectations) {
+    #status(excluded, failSpecWithNoExpectations) {
       if (excluded === true) {
         return 'excluded';
       }
@@ -229,7 +228,7 @@ getJasmineRequireObj().Spec = function(j$) {
        */
       this.result.debugLogs.push({
         message: msg,
-        timestamp: this.timer.elapsed()
+        timestamp: this.#timer.elapsed()
       });
     }
 
@@ -243,8 +242,8 @@ getJasmineRequireObj().Spec = function(j$) {
       // actual Spec instances are still passed to Configuration#specFilter. Until
       // that is fixed, it's important to make sure that all metadata properties
       // also exist in compatible form on the underlying Spec.
-      if (!this.metadata_) {
-        this.metadata_ = {
+      if (!this.#metadata) {
+        this.#metadata = {
           /**
            * The unique ID of this spec.
            * @name Spec#id
@@ -283,7 +282,7 @@ getJasmineRequireObj().Spec = function(j$) {
         };
       }
 
-      return this.metadata_;
+      return this.#metadata;
     }
   }
 

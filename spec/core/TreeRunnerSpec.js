@@ -114,7 +114,6 @@ describe('TreeRunner', function() {
       expect(specRunQueueArgs.queueableFns[1]).toEqual(queueableFn);
       queueableFn.fn();
 
-      expect(spec.status()).toEqual('pending');
       expect(spec.getResult().status).toEqual('pending');
       expect(spec.getResult().pendingReason).toEqual('');
     });
@@ -136,7 +135,6 @@ describe('TreeRunner', function() {
       expect(specRunQueueArgs.queueableFns[1]).toEqual(queueableFn);
       queueableFn.fn();
 
-      expect(spec.status()).toEqual('pending');
       expect(spec.getResult().status).toEqual('pending');
       expect(spec.getResult().pendingReason).toEqual('some reason');
     });
