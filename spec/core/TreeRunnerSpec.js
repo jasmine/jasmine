@@ -409,6 +409,45 @@ describe('TreeRunner', function() {
     });
   });
 
+  it('does not remove before and after fns from the top suite', async function() {
+    const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
+    spyOn(topSuite, 'cleanupBeforeAfter');
+    const executionTree = {
+      topSuite,
+      childrenOfTopSuite() {
+        return [];
+      },
+      isExcluded() {
+        return false;
+      }
+    };
+    const runQueue = jasmine.createSpy('runQueue');
+    const subject = new jasmineUnderTest.TreeRunner({
+      executionTree,
+      runQueue,
+      globalErrors: mockGlobalErrors(),
+      runableResources: mockRunableResources(),
+      reportDispatcher: mockReportDispatcher(),
+      currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+      getConfig() {
+        return {};
+      }
+    });
+
+    const executePromise = subject.execute();
+    expect(runQueue).toHaveBeenCalledTimes(1);
+    const topSuiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+    runQueue.calls.reset();
+
+    for (const qfn of topSuiteRunQueueOpts.queueableFns) {
+      qfn.fn();
+    }
+    topSuiteRunQueueOpts.onComplete();
+
+    await expectAsync(executePromise).toBeResolved();
+    expect(topSuite.cleanupBeforeAfter).not.toHaveBeenCalled();
+  });
+
   describe('Late promise rejection handling', function() {
     it('works for specs when the detectLateRejectionHandling param is true', function() {
       const before = jasmine.createSpy('before');

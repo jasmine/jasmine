@@ -209,7 +209,6 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     }
 
     #suiteSegmentComplete(suite, result, next) {
-      suite.cleanupBeforeAfter();
       const isTopSuite = suite === this.#executionTree.topSuite;
 
       if (!isTopSuite) {
@@ -217,6 +216,11 @@ getJasmineRequireObj().TreeRunner = function(j$) {
           throw new Error('Tried to complete the wrong suite');
         }
 
+        // suite.cleanupBeforeAfter() is conditional because calling it on the
+        // top suite breaks parallel mode. The top suite is reentered every time
+        // a runner runs another file, so its before and after fns need to be
+        // preserved.
+        suite.cleanupBeforeAfter();
         this.#runableResources.clearForRunable(suite.id);
         this.#currentRunableTracker.popSuite();
 
