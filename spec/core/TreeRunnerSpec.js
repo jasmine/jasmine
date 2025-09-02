@@ -161,111 +161,6 @@ describe('TreeRunner', function() {
       expect(spec.executionFinished).toHaveBeenCalledWith(false, true);
       await expectAsync(executePromise).toBePending();
     });
-
-    describe('Late promise rejection handling', function() {
-      it('is enabled when the detectLateRejectionHandling param is true', function() {
-        const before = jasmine.createSpy('before');
-        const after = jasmine.createSpy('after');
-        const queueableFn = {
-          fn: jasmine.createSpy('test body').and.callFake(function() {
-            expect(before).toHaveBeenCalled();
-            expect(after).not.toHaveBeenCalled();
-          })
-        };
-        const spec = new jasmineUnderTest.Spec({
-          queueableFn,
-          beforeAndAfterFns: function() {
-            return { befores: [before], afters: [after] };
-          }
-        });
-
-        const {
-          runQueue,
-          setTimeout,
-          suiteRunQueueArgs,
-          globalErrors
-        } = runSingleSpecSuite(spec, { detectLateRejectionHandling: true });
-
-        suiteRunQueueArgs.queueableFns[0].fn();
-        expect(runQueue).toHaveBeenCalledTimes(1);
-        const specRunQueueOpts = runQueue.calls.mostRecent().args[0];
-
-        expect(specRunQueueOpts.queueableFns).toEqual([
-          { fn: jasmine.any(Function) },
-          before,
-          queueableFn,
-          after,
-          { fn: jasmine.any(Function) },
-          {
-            fn: jasmine.any(Function),
-            type: 'specCleanup'
-          }
-        ]);
-
-        const done = jasmine.createSpy('done');
-        specRunQueueOpts.queueableFns[4].fn(done);
-        expect(globalErrors.reportUnhandledRejections).not.toHaveBeenCalled();
-        expect(done).not.toHaveBeenCalled();
-
-        expect(setTimeout).toHaveBeenCalledOnceWith(jasmine.any(Function));
-        setTimeout.calls.argsFor(0)[0]();
-        expect(globalErrors.reportUnhandledRejections).toHaveBeenCalled();
-        expect(globalErrors.reportUnhandledRejections).toHaveBeenCalledBefore(
-          done
-        );
-      });
-    });
-
-    function runSingleSpecSuite(spec, optionalConfig) {
-      const topSuiteId = 'suite1';
-      spec.parentSuiteId = topSuiteId;
-      const topSuite = new jasmineUnderTest.Suite({ id: topSuiteId });
-      topSuite.addChild(spec);
-      const executionTree = {
-        topSuite,
-        childrenOfTopSuite() {
-          return [{ spec }];
-        },
-        isExcluded() {
-          return false;
-        }
-      };
-      const runQueue = jasmine.createSpy('runQueue');
-      const reportDispatcher = mockReportDispatcher();
-      const runableResources = mockRunableResources();
-      const globalErrors = mockGlobalErrors();
-      const setTimeout = jasmine.createSpy('setTimeout');
-      const currentRunableTracker = new jasmineUnderTest.CurrentRunableTracker();
-      const subject = new jasmineUnderTest.TreeRunner({
-        executionTree,
-        runQueue,
-        globalErrors,
-        setTimeout,
-        runableResources,
-        reportDispatcher,
-        currentRunableTracker,
-        getConfig() {
-          return optionalConfig || {};
-        },
-        reportChildrenOfBeforeAllFailure() {}
-      });
-
-      const executePromise = subject.execute();
-      expect(runQueue).toHaveBeenCalledTimes(1);
-      const suiteRunQueueArgs = runQueue.calls.mostRecent().args[0];
-      runQueue.calls.reset();
-
-      return {
-        runQueue,
-        globalErrors,
-        setTimeout,
-        currentRunableTracker,
-        runableResources,
-        reportDispatcher,
-        suiteRunQueueArgs,
-        executePromise
-      };
-    }
   });
 
   describe('Suite execution', function() {
@@ -513,6 +408,249 @@ describe('TreeRunner', function() {
       await expectAsync(executePromise).toBePending();
     });
   });
+
+  describe('Late promise rejection handling', function() {
+    it('works for specs when the detectLateRejectionHandling param is true', function() {
+      const before = jasmine.createSpy('before');
+      const after = jasmine.createSpy('after');
+      const queueableFn = {
+        fn: jasmine.createSpy('test body').and.callFake(function() {
+          expect(before).toHaveBeenCalled();
+          expect(after).not.toHaveBeenCalled();
+        })
+      };
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn,
+        beforeAndAfterFns: function() {
+          return { befores: [before], afters: [after] };
+        }
+      });
+
+      const {
+        runQueue,
+        setTimeout,
+        suiteRunQueueArgs,
+        globalErrors
+      } = runSingleSpecSuite(spec, { detectLateRejectionHandling: true });
+
+      suiteRunQueueArgs.queueableFns[0].fn();
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const specRunQueueOpts = runQueue.calls.mostRecent().args[0];
+
+      expect(specRunQueueOpts.queueableFns).toEqual([
+        { fn: jasmine.any(Function) },
+        before,
+        queueableFn,
+        after,
+        { fn: jasmine.any(Function) },
+        {
+          fn: jasmine.any(Function),
+          type: 'specCleanup'
+        }
+      ]);
+
+      const done = jasmine.createSpy('done');
+      specRunQueueOpts.queueableFns[4].fn(done);
+      expect(globalErrors.reportUnhandledRejections).not.toHaveBeenCalled();
+      expect(done).not.toHaveBeenCalled();
+
+      expect(setTimeout).toHaveBeenCalledOnceWith(jasmine.any(Function));
+      setTimeout.calls.argsFor(0)[0]();
+      expect(globalErrors.reportUnhandledRejections).toHaveBeenCalled();
+      expect(globalErrors.reportUnhandledRejections).toHaveBeenCalledBefore(
+        done
+      );
+    });
+
+    it('works for beforeAll when the detectLateRejectionHandling param is true', async function() {
+      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
+      const suite = new jasmineUnderTest.Suite({
+        id: 'suite',
+        parentSuite: topSuite
+      });
+      suite.beforeAll(function() {});
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn() {} },
+        parentSuite: suite
+      });
+      const executionTree = {
+        topSuite,
+        childrenOfTopSuite() {
+          return [{ suite }];
+        },
+        childrenOfSuiteSegment() {
+          return [{ spec }];
+        },
+        isExcluded() {
+          return false;
+        }
+      };
+      const runQueue = jasmine.createSpy('runQueue');
+      const reportDispatcher = mockReportDispatcher();
+      const globalErrors = mockGlobalErrors();
+      const setTimeout = jasmine.createSpy('setTimeout');
+      const subject = new jasmineUnderTest.TreeRunner({
+        executionTree,
+        runQueue,
+        globalErrors,
+        runableResources: mockRunableResources(),
+        reportDispatcher,
+        setTimeout,
+        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        getConfig() {
+          return { detectLateRejectionHandling: true };
+        },
+        reportChildrenOfBeforeAllFailure() {}
+      });
+
+      const executePromise = subject.execute();
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const topSuiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      runQueue.calls.reset();
+      topSuiteRunQueueOpts.queueableFns[0].fn(function() {});
+
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const suiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      expect(suiteRunQueueOpts.queueableFns).toEqual([
+        { fn: jasmine.any(Function) }, // onStart
+        jasmine.objectContaining({ type: 'beforeAll' }),
+        { fn: jasmine.any(Function) }, // detect late rejection handling
+        { fn: jasmine.any(Function) } // spec
+      ]);
+      suiteRunQueueOpts.queueableFns[0].fn();
+      const done = jasmine.createSpy('done');
+      suiteRunQueueOpts.queueableFns[2].fn(done);
+      expect(globalErrors.reportUnhandledRejections).not.toHaveBeenCalled();
+
+      expect(setTimeout).toHaveBeenCalledOnceWith(jasmine.any(Function));
+      setTimeout.calls.argsFor(0)[0]();
+      expect(globalErrors.reportUnhandledRejections).toHaveBeenCalledBefore(
+        done
+      );
+
+      await expectAsync(executePromise).toBePending();
+    });
+
+    it('works for afterAll when the detectLateRejectionHandling param is true', async function() {
+      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
+      const suite = new jasmineUnderTest.Suite({
+        id: 'suite',
+        parentSuite: topSuite
+      });
+      suite.afterAll(function() {});
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn() {} },
+        parentSuite: suite
+      });
+      const executionTree = {
+        topSuite,
+        childrenOfTopSuite() {
+          return [{ suite }];
+        },
+        childrenOfSuiteSegment() {
+          return [{ spec }];
+        },
+        isExcluded() {
+          return false;
+        }
+      };
+      const runQueue = jasmine.createSpy('runQueue');
+      const reportDispatcher = mockReportDispatcher();
+      const globalErrors = mockGlobalErrors();
+      const setTimeout = jasmine.createSpy('setTimeout');
+      const subject = new jasmineUnderTest.TreeRunner({
+        executionTree,
+        runQueue,
+        globalErrors,
+        runableResources: mockRunableResources(),
+        reportDispatcher,
+        setTimeout,
+        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        getConfig() {
+          return { detectLateRejectionHandling: true };
+        },
+        reportChildrenOfBeforeAllFailure() {}
+      });
+
+      const executePromise = subject.execute();
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const topSuiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      runQueue.calls.reset();
+      topSuiteRunQueueOpts.queueableFns[0].fn(function() {});
+
+      expect(runQueue).toHaveBeenCalledTimes(1);
+      const suiteRunQueueOpts = runQueue.calls.mostRecent().args[0];
+      expect(suiteRunQueueOpts.queueableFns).toEqual([
+        { fn: jasmine.any(Function) }, // onStart
+        { fn: jasmine.any(Function) }, // spec
+        jasmine.objectContaining({ type: 'afterAll' }),
+        { fn: jasmine.any(Function) } // detect late rejection handling
+      ]);
+      suiteRunQueueOpts.queueableFns[0].fn();
+      const done = jasmine.createSpy('done');
+      suiteRunQueueOpts.queueableFns[3].fn(done);
+      expect(globalErrors.reportUnhandledRejections).not.toHaveBeenCalled();
+
+      expect(setTimeout).toHaveBeenCalledOnceWith(jasmine.any(Function));
+      setTimeout.calls.argsFor(0)[0]();
+      expect(globalErrors.reportUnhandledRejections).toHaveBeenCalledBefore(
+        done
+      );
+
+      await expectAsync(executePromise).toBePending();
+    });
+  });
+
+  function runSingleSpecSuite(spec, optionalConfig) {
+    const topSuiteId = 'suite1';
+    spec.parentSuiteId = topSuiteId;
+    const topSuite = new jasmineUnderTest.Suite({ id: topSuiteId });
+    topSuite.addChild(spec);
+    const executionTree = {
+      topSuite,
+      childrenOfTopSuite() {
+        return [{ spec }];
+      },
+      isExcluded() {
+        return false;
+      }
+    };
+    const runQueue = jasmine.createSpy('runQueue');
+    const reportDispatcher = mockReportDispatcher();
+    const runableResources = mockRunableResources();
+    const globalErrors = mockGlobalErrors();
+    const setTimeout = jasmine.createSpy('setTimeout');
+    const currentRunableTracker = new jasmineUnderTest.CurrentRunableTracker();
+    const subject = new jasmineUnderTest.TreeRunner({
+      executionTree,
+      runQueue,
+      globalErrors,
+      setTimeout,
+      runableResources,
+      reportDispatcher,
+      currentRunableTracker,
+      getConfig() {
+        return optionalConfig || {};
+      },
+      reportChildrenOfBeforeAllFailure() {}
+    });
+
+    const executePromise = subject.execute();
+    expect(runQueue).toHaveBeenCalledTimes(1);
+    const suiteRunQueueArgs = runQueue.calls.mostRecent().args[0];
+    runQueue.calls.reset();
+
+    return {
+      runQueue,
+      globalErrors,
+      setTimeout,
+      currentRunableTracker,
+      runableResources,
+      reportDispatcher,
+      suiteRunQueueArgs,
+      executePromise
+    };
+  }
 
   function mockReportDispatcher() {
     const reportDispatcher = jasmine.createSpyObj(

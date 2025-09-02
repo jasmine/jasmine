@@ -809,15 +809,17 @@ describe('Global error handling (integration)', function() {
 
     describe('When the detectLateRejectionHandling config option is set', function() {
       describe('When the unhandled rejection event has a promise', function() {
-        it('reports the rejection unless a corresponding rejection handled event occurs', async function() {
-          function makeEvent(suffix) {
-            const reason = `rejection ${suffix}`;
-            const promise = Promise.reject(reason);
-            promise.catch(() => {});
-            return { reason, promise };
-          }
+        function makeEvent(suffix) {
+          const reason = `rejection ${suffix}`;
+          const promise = Promise.reject(reason);
+          promise.catch(() => {});
+          return { reason, promise };
+        }
 
-          const global = {
+        let global, reporter;
+
+        beforeEach(function() {
+          global = {
             ...browserEventMethods(),
             setTimeout: function(fn, delay) {
               return setTimeout(fn, delay);
@@ -833,43 +835,132 @@ describe('Global error handling (integration)', function() {
           env.cleanup_();
           env = new jasmineUnderTest.Env();
           env.configure({ detectLateRejectionHandling: true });
-          const reporter = jasmine.createSpyObj('fakeReporter', [
+
+          reporter = jasmine.createSpyObj('fakeReporter', [
             'specDone',
             'suiteDone'
           ]);
 
           env.addReporter(reporter);
+        });
 
-          env.describe('A suite', function() {
-            env.it('fails', function(specDone) {
-              setTimeout(function() {
-                const events = ['spec 1', 'spec 2'].map(makeEvent);
+        describe('During spec execution', function() {
+          it('reports the rejection unless a corresponding rejection handled event occurs', async function() {
+            env.describe('A suite', function() {
+              env.it('fails', function(specDone) {
+                setTimeout(function() {
+                  const events = ['spec 1', 'spec 2'].map(makeEvent);
 
-                for (const e of events) {
-                  dispatchErrorEvent(global, 'unhandledrejection', e);
-                }
+                  for (const e of events) {
+                    dispatchErrorEvent(global, 'unhandledrejection', e);
+                  }
 
-                dispatchErrorEvent(global, 'rejectionhandled', events[0]);
-                specDone();
+                  dispatchErrorEvent(global, 'rejectionhandled', events[0]);
+                  specDone();
+                });
               });
             });
+
+            await env.execute();
+
+            expect(reporter.specDone).toHaveBeenCalledWith(
+              jasmine.objectContaining({
+                fullName: 'A suite fails',
+                failedExpectations: [
+                  // Only the second rejection should be reported, since the first
+                  // one was eventually handled.
+                  jasmine.objectContaining({
+                    message:
+                      'Unhandled promise rejection: rejection spec 2 thrown'
+                  })
+                ]
+              })
+            );
           });
+        });
 
-          await env.execute();
+        describe('During beforeAll execution', function() {
+          it('reports the rejection unless a corresponding rejection handled event occurs by the end of the beforeAll', async function() {
+            env.describe('A suite', function() {
+              let events;
 
-          expect(reporter.specDone).toHaveBeenCalledWith(
-            jasmine.objectContaining({
-              fullName: 'A suite fails',
-              failedExpectations: [
-                // Only the second rejection should be reported, since the first
-                // one was eventually handled.
-                jasmine.objectContaining({
-                  message:
-                    'Unhandled promise rejection: rejection spec 2 thrown'
-                })
-              ]
-            })
-          );
+              env.beforeAll(function(beforeAllDone) {
+                setTimeout(function() {
+                  events = ['suite 1', 'suite 2'].map(makeEvent);
+
+                  for (const e of events) {
+                    dispatchErrorEvent(global, 'unhandledrejection', e);
+                  }
+
+                  dispatchErrorEvent(global, 'rejectionhandled', events[0]);
+                  beforeAllDone();
+                });
+              });
+
+              env.it('is a spec', function(specDone) {
+                setTimeout(function() {
+                  // Should not prevent the second rejection from being reported
+                  dispatchErrorEvent(global, 'rejectionhandled', events[1]);
+                  specDone();
+                });
+              });
+            });
+
+            await env.execute();
+
+            expect(reporter.suiteDone).toHaveBeenCalledWith(
+              jasmine.objectContaining({
+                fullName: 'A suite',
+                failedExpectations: [
+                  // Only the second rejection should be reported, since the first
+                  // one was eventually handled.
+                  jasmine.objectContaining({
+                    message:
+                      'Unhandled promise rejection: rejection suite 2 thrown'
+                  })
+                ]
+              })
+            );
+          });
+        });
+
+        describe('During afterAll execution', function() {
+          it('reports the rejection unless a corresponding rejection handled event occurs by the end of the afterAll', async function() {
+            env.describe('A suite', function() {
+              let events;
+
+              env.afterAll(function(beforeAllDone) {
+                setTimeout(function() {
+                  events = ['suite 1', 'suite 2'].map(makeEvent);
+
+                  for (const e of events) {
+                    dispatchErrorEvent(global, 'unhandledrejection', e);
+                  }
+
+                  dispatchErrorEvent(global, 'rejectionhandled', events[0]);
+                  beforeAllDone();
+                });
+              });
+
+              env.it('is a spec', function() {});
+            });
+
+            await env.execute();
+
+            expect(reporter.suiteDone).toHaveBeenCalledWith(
+              jasmine.objectContaining({
+                fullName: 'A suite',
+                failedExpectations: [
+                  // Only the second rejection should be reported, since the first
+                  // one was eventually handled.
+                  jasmine.objectContaining({
+                    message:
+                      'Unhandled promise rejection: rejection suite 2 thrown'
+                  })
+                ]
+              })
+            );
+          });
         });
       });
 
