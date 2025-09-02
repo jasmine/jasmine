@@ -23,34 +23,9 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     async execute() {
       this.#hasFailures = false;
-      const topSuite = this.#executionTree.topSuite;
-      const wrappedChildren = this.#wrapNodes(
-        this.#executionTree.childrenOfTopSuite()
-      );
-      const queueableFns = this.#addBeforeAndAfterAlls(
-        topSuite,
-        wrappedChildren
-      );
-
       await new Promise(resolve => {
-        this.#runQueue({
-          queueableFns,
-          userContext: this.#executionTree.topSuite.sharedUserContext(),
-          onException: function() {
-            topSuite.handleException.apply(topSuite, arguments);
-          }.bind(this),
-          onComplete: resolve,
-          onMultipleDone: topSuite.onMultipleDone
-            ? topSuite.onMultipleDone.bind(topSuite)
-            : null,
-          SkipPolicy: this.#suiteSkipPolicy()
-        });
+        this.#executeSuiteSegment(this.#executionTree.topSuite, 0, resolve);
       });
-
-      if (topSuite.hadBeforeAllFailure) {
-        await this.#reportChildrenOfBeforeAllFailure(topSuite);
-      }
-
       return { hasFailures: this.#hasFailures };
     }
 
@@ -162,18 +137,20 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     }
 
     #executeSuiteSegment(suite, segmentNumber, done) {
-      const wrappedChildren = this.#wrapNodes(
-        this.#executionTree.childrenOfSuiteSegment(suite, segmentNumber)
-      );
-      const onStart = {
-        fn: next => {
-          this.#suiteSegmentStart(suite, next);
-        }
-      };
-      const queueableFns = [
-        onStart,
-        ...this.#addBeforeAndAfterAlls(suite, wrappedChildren)
-      ];
+      const isTopSuite = suite === this.#executionTree.topSuite;
+      const children = isTopSuite
+        ? this.#executionTree.childrenOfTopSuite()
+        : this.#executionTree.childrenOfSuiteSegment(suite, segmentNumber);
+      const wrappedChildren = this.#wrapNodes(children);
+      const queueableFns = this.#addBeforeAndAfterAlls(suite, wrappedChildren);
+
+      if (!isTopSuite) {
+        queueableFns.unshift({
+          fn: next => {
+            this.#suiteSegmentStart(suite, next);
+          }
+        });
+      }
 
       this.#runQueue({
         // TODO: if onComplete always takes 0-1 arguments (and it probably does)
@@ -205,25 +182,30 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     #suiteSegmentComplete(suite, result, next) {
       suite.cleanupBeforeAfter();
+      const isTopSuite = suite === this.#executionTree.topSuite;
 
-      if (suite !== this.#currentRunableTracker.currentSuite()) {
-        throw new Error('Tried to complete the wrong suite');
+      if (!isTopSuite) {
+        if (suite !== this.#currentRunableTracker.currentSuite()) {
+          throw new Error('Tried to complete the wrong suite');
+        }
+
+        this.#runableResources.clearForRunable(suite.id);
+        this.#currentRunableTracker.popSuite();
+
+        if (result.status === 'failed') {
+          this.#hasFailures = true;
+        }
+        suite.endTimer();
       }
 
-      this.#runableResources.clearForRunable(suite.id);
-      this.#currentRunableTracker.popSuite();
-
-      if (result.status === 'failed') {
-        this.#hasFailures = true;
-      }
-      suite.endTimer();
+      const finish = isTopSuite
+        ? next
+        : () => this.#reportSuiteDone(suite, result, next);
 
       if (suite.hadBeforeAllFailure) {
-        this.#reportChildrenOfBeforeAllFailure(suite).then(() => {
-          this.#reportSuiteDone(suite, result, next);
-        });
+        this.#reportChildrenOfBeforeAllFailure(suite).then(finish);
       } else {
-        this.#reportSuiteDone(suite, result, next);
+        finish();
       }
     }
 
