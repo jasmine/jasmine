@@ -192,7 +192,6 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       return {
         fn: done => {
           // setTimeout is necessary to trigger rejectionhandled events
-          // TODO: let clearStack know about this so it doesn't do redundant setTimeouts
           this.#setTimeout(function() {
             globalErrors.reportUnhandledRejections();
             done();
