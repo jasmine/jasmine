@@ -31,12 +31,21 @@ getJasmineRequireObj().Env = function(j$) {
       // before it's set to detect load-time errors in browsers
       () => this.configuration()
     );
-    const installGlobalErrors = (function() {
+    const { installGlobalErrors, uninstallGlobalErrors } = (function() {
       let installed = false;
-      return function() {
-        if (!installed) {
-          globalErrors.install();
-          installed = true;
+
+      return {
+        installGlobalErrors() {
+          if (!installed) {
+            globalErrors.install();
+            installed = true;
+          }
+        },
+        uninstallGlobalErrors() {
+          if (installed) {
+            globalErrors.uninstall();
+            installed = false;
+          }
         }
       };
     })();
@@ -960,9 +969,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.cleanup_ = function() {
-      if (globalErrors) {
-        globalErrors.uninstall();
-      }
+      uninstallGlobalErrors();
     };
   }
 

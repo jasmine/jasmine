@@ -1011,6 +1011,43 @@ describe('Global error handling (integration)', function() {
     });
   });
 
+  it('works when the suite is run multiple times', async function() {
+    const global = {
+      ...browserEventMethods(),
+      setTimeout: function(fn, delay) {
+        return setTimeout(fn, delay);
+      },
+      clearTimeout: function(fn, delay) {
+        clearTimeout(fn, delay);
+      },
+      queueMicrotask: function(fn) {
+        queueMicrotask(fn);
+      }
+    };
+    spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+    env.cleanup_();
+    env = new jasmineUnderTest.Env();
+    env.configure({ autoCleanClosures: false });
+    const reporter = jasmine.createSpyObj('fakeReporter', ['specDone']);
+
+    env.addReporter(reporter);
+
+    env.it('fails', function(specDone) {
+      setTimeout(function() {
+        dispatchErrorEvent(global, 'error', { error: 'fail' });
+        specDone();
+      });
+    });
+
+    await env.execute();
+    reporter.specDone.calls.reset();
+    await env.execute();
+
+    expect(reporter.specDone).toHaveFailedExpectationsForRunnable('fails', [
+      'fail thrown'
+    ]);
+  });
+
   describe('#spyOnGlobalErrorsAsync', function() {
     const leftInstalledMessage =
       'Global error spy was not uninstalled. ' +
