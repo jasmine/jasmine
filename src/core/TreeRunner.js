@@ -162,14 +162,11 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       }
 
       this.#runQueue({
-        // TODO: if onComplete always takes 0-1 arguments (and it probably does)
-        // then it can be switched to an arrow fn with a named arg.
-        onComplete: function() {
-          const args = Array.prototype.slice.call(arguments, [0]);
+        onComplete: maybeError => {
           this.#suiteSegmentComplete(suite, suite.getResult(), () => {
-            done.apply(undefined, args);
+            done(maybeError);
           });
-        }.bind(this),
+        },
         queueableFns,
         userContext: suite.sharedUserContext(),
         onException: function() {
