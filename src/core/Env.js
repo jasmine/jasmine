@@ -7,12 +7,12 @@ getJasmineRequireObj().Env = function(j$) {
    * calling {@link jasmine.getEnv}.
    * @hideconstructor
    */
-  function Env(options) {
-    options = options || {};
+  function Env(envOptions) {
+    envOptions = envOptions || {};
 
     const self = this;
-    const GlobalErrors = options.GlobalErrors || j$.GlobalErrors;
-    const global = options.global || j$.getGlobal();
+    const GlobalErrors = envOptions.GlobalErrors || j$.GlobalErrors;
+    const global = envOptions.global || j$.getGlobal();
 
     const realSetTimeout = global.setTimeout;
     const realClearTimeout = global.clearTimeout;
@@ -190,7 +190,7 @@ getJasmineRequireObj().Env = function(j$) {
       detectLateRejectionHandling: false
     };
 
-    if (!options.suppressLoadErrors) {
+    if (!envOptions.suppressLoadErrors) {
       installGlobalErrors();
       globalErrors.pushListener(function loadtimeErrorHandler(error, event) {
         topSuite.result.failedExpectations.push({
