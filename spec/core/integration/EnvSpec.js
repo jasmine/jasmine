@@ -1600,6 +1600,16 @@ describe('Env integration', function() {
       suiteFullNameToId[e.fullName] = e.id;
     });
 
+    // Clone args to work around Jasmine mutating the result after passing it
+    // to the reporter event.
+    // TODO: remove this once Jasmine no longer does that
+    const clone = structuredClone.bind(globalThis);
+    reporter.specStarted.calls.saveArgumentsByValue(clone);
+    reporter.specDone.calls.saveArgumentsByValue(clone);
+    reporter.specStarted.calls.saveArgumentsByValue(clone);
+    reporter.suiteDone.calls.saveArgumentsByValue(clone);
+
+    env.configure({ random: false });
     env.addReporter(reporter);
 
     env.it('a top level spec', function() {});
@@ -1636,110 +1646,179 @@ describe('Env integration', function() {
     expect(reporter.specStarted.calls.count()).toBe(6);
     expect(reporter.specDone.calls.count()).toBe(6);
 
-    expect(reporter.specStarted).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'a top level spec',
-        parentSuiteId: null
-      })
-    );
-    expect(reporter.specDone).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'a top level spec',
-        status: 'passed',
-        parentSuiteId: null
-      })
-    );
-    expect(reporter.specStarted).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'with a spec',
-        parentSuiteId: suiteFullNameToId['A Suite']
-      })
-    );
-    expect(reporter.specDone).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'with a spec',
-        status: 'passed',
-        parentSuiteId: suiteFullNameToId['A Suite']
-      })
-    );
+    const baseSpecEvent = {
+      passedExpectations: [],
+      failedExpectations: [],
+      deprecationWarnings: [],
+      pendingReason: '',
+      duration: null,
+      properties: null,
+      debugLogs: null,
+      id: jasmine.any(String),
+      filename: jasmine.any(String)
+    };
 
-    expect(reporter.specStarted).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: "with an x'ed spec",
-        parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
-      })
-    );
-    expect(reporter.specDone).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: "with an x'ed spec",
-        status: 'pending',
-        parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
-      })
-    );
+    expect(reporter.specStarted.calls.argsFor(0)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'a top level spec',
+      fullName: 'a top level spec',
+      parentSuiteId: null
+    });
+    expect(reporter.specDone.calls.argsFor(0)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'a top level spec',
+      fullName: 'a top level spec',
+      status: 'passed',
+      parentSuiteId: null,
+      duration: jasmine.any(Number)
+    });
+    expect(reporter.specStarted.calls.argsFor(1)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'with a spec',
+      fullName: 'A Suite with a spec',
+      parentSuiteId: suiteFullNameToId['A Suite']
+    });
+    expect(reporter.specDone.calls.argsFor(1)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'with a spec',
+      fullName: 'A Suite with a spec',
+      status: 'passed',
+      parentSuiteId: suiteFullNameToId['A Suite'],
+      passedExpectations: [
+        { matcherName: 'toBe', message: 'Passed.', stack: '', passed: true }
+      ],
+      duration: jasmine.any(Number)
+    });
 
-    expect(reporter.specStarted).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'with a spec',
-        parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
-      })
-    );
-    expect(reporter.specDone).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'with a spec',
-        status: 'failed',
-        parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
-      })
-    );
+    expect(reporter.specStarted.calls.argsFor(2)[0]).toEqual({
+      ...baseSpecEvent,
+      description: "with an x'ed spec",
+      fullName: "A Suite with a nested suite with an x'ed spec",
+      parentSuiteId: suiteFullNameToId['A Suite with a nested suite'],
+      pendingReason: 'Temporarily disabled with xit'
+    });
+    expect(reporter.specDone.calls.argsFor(2)[0]).toEqual({
+      ...baseSpecEvent,
+      description: "with an x'ed spec",
+      fullName: "A Suite with a nested suite with an x'ed spec",
+      status: 'pending',
+      parentSuiteId: suiteFullNameToId['A Suite with a nested suite'],
+      pendingReason: 'Temporarily disabled with xit',
+      duration: jasmine.any(Number)
+    });
 
-    expect(reporter.specStarted).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'is pending',
-        parentSuiteId:
-          suiteFullNameToId['A Suite with only non-executable specs']
-      })
-    );
-    expect(reporter.specDone).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'is pending',
-        status: 'pending',
-        parentSuiteId:
-          suiteFullNameToId['A Suite with only non-executable specs']
-      })
-    );
+    expect(reporter.specStarted.calls.argsFor(3)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'with a spec',
+      fullName: 'A Suite with a nested suite with a spec',
+      parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
+    });
+    expect(reporter.specDone.calls.argsFor(3)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'with a spec',
+      fullName: 'A Suite with a nested suite with a spec',
+      status: 'failed',
+      parentSuiteId: suiteFullNameToId['A Suite with a nested suite'],
+      failedExpectations: [
+        jasmine.objectContaining({
+          matcherName: 'toBe',
+          message: 'Expected true to be false.'
+        })
+      ],
+      duration: jasmine.any(Number)
+    });
 
-    expect(reporter.suiteStarted).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'A Suite',
-        parentSuiteId: null
-      })
-    );
-    expect(reporter.suiteDone).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'A Suite',
-        status: 'passed',
-        parentSuiteId: null
-      })
-    );
+    expect(reporter.specStarted.calls.argsFor(4)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'is pending',
+      fullName: 'A Suite with only non-executable specs is pending',
+      parentSuiteId: suiteFullNameToId['A Suite with only non-executable specs']
+    });
+    expect(reporter.specDone.calls.argsFor(4)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'is pending',
+      status: 'pending',
+      fullName: 'A Suite with only non-executable specs is pending',
+      parentSuiteId:
+        suiteFullNameToId['A Suite with only non-executable specs'],
+      duration: jasmine.any(Number)
+    });
 
-    expect(reporter.suiteStarted).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'with a nested suite',
-        parentSuiteId: suiteFullNameToId['A Suite']
-      })
-    );
-    expect(reporter.suiteDone).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        description: 'with a nested suite',
-        status: 'passed',
-        parentSuiteId: suiteFullNameToId['A Suite']
-      })
-    );
+    expect(reporter.specStarted.calls.argsFor(5)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'is xed',
+      fullName: 'A Suite with only non-executable specs is xed',
+      parentSuiteId:
+        suiteFullNameToId['A Suite with only non-executable specs'],
+      pendingReason: 'Temporarily disabled with xit'
+    });
+    expect(reporter.specDone.calls.argsFor(5)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'is xed',
+      status: 'pending',
+      fullName: 'A Suite with only non-executable specs is xed',
+      parentSuiteId:
+        suiteFullNameToId['A Suite with only non-executable specs'],
+      pendingReason: 'Temporarily disabled with xit',
+      duration: jasmine.any(Number)
+    });
 
-    const suiteDone = reporter.suiteDone.calls.argsFor(0)[0];
-    expect(typeof suiteDone.duration).toBe('number');
+    expect(reporter.suiteStarted.calls.count()).toBe(3);
+    expect(reporter.suiteDone.calls.count()).toBe(3);
 
-    const suiteResult = reporter.suiteStarted.calls.argsFor(0)[0];
-    expect(suiteResult.description).toEqual('A Suite');
+    const baseSuiteEvent = {
+      id: jasmine.any(String),
+      filename: jasmine.any(String),
+      failedExpectations: [],
+      deprecationWarnings: [],
+      duration: null,
+      properties: null
+    };
+
+    expect(reporter.suiteStarted.calls.argsFor(0)[0]).toEqual({
+      ...baseSuiteEvent,
+      description: 'A Suite',
+      fullName: 'A Suite',
+      parentSuiteId: null
+    });
+    expect(reporter.suiteDone.calls.argsFor(2)[0]).toEqual({
+      ...baseSuiteEvent,
+      description: 'A Suite',
+      fullName: 'A Suite',
+      status: 'passed',
+      parentSuiteId: null,
+      duration: jasmine.any(Number)
+    });
+
+    expect(reporter.suiteStarted.calls.argsFor(1)[0]).toEqual({
+      ...baseSuiteEvent,
+      description: 'with a nested suite',
+      fullName: 'A Suite with a nested suite',
+      parentSuiteId: suiteFullNameToId['A Suite']
+    });
+    expect(reporter.suiteDone.calls.argsFor(0)[0]).toEqual({
+      ...baseSuiteEvent,
+      description: 'with a nested suite',
+      status: 'passed',
+      fullName: 'A Suite with a nested suite',
+      parentSuiteId: suiteFullNameToId['A Suite'],
+      duration: jasmine.any(Number)
+    });
+
+    expect(reporter.suiteStarted.calls.argsFor(2)[0]).toEqual({
+      ...baseSuiteEvent,
+      description: 'with only non-executable specs',
+      fullName: 'A Suite with only non-executable specs',
+      parentSuiteId: suiteFullNameToId['A Suite']
+    });
+    expect(reporter.suiteDone.calls.argsFor(1)[0]).toEqual({
+      ...baseSuiteEvent,
+      description: 'with only non-executable specs',
+      status: 'passed',
+      fullName: 'A Suite with only non-executable specs',
+      parentSuiteId: suiteFullNameToId['A Suite'],
+      duration: jasmine.any(Number)
+    });
   });
 
   it('reports focused specs and suites as expected', async function() {
