@@ -52,7 +52,7 @@
     "sass": "^1.58.3"
   },
   "browserslist": [
-    "Safari >= 15",
+    "Safari >= 16",
     "Firefox >= 102",
     "last 2 Chrome versions",
     "last 2 Edge versions"
