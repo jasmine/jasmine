@@ -1,4 +1,6 @@
 describe('DelayedFunctionScheduler', function() {
+  'use strict';
+  
   it('schedules a function for later execution', function() {
     const scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');
@@ -12,21 +14,14 @@ describe('DelayedFunctionScheduler', function() {
     expect(fn).toHaveBeenCalled();
   });
 
-  it('schedules a string for later execution', function() {
-    const scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
-      strfn = 'horrible = true;';
-    spyOn(jasmineUnderTest.getEnv(), 'deprecated');
+  it('throws if a string is passed', function() {
+    const scheduler = new jasmineUnderTest.DelayedFunctionScheduler();
 
-    scheduler.scheduleFunction(strfn, 0);
-    expect(jasmineUnderTest.getEnv().deprecated).toHaveBeenCalledWith(
-      'The eval form of setTimeout and setInterval is deprecated and will ' +
-        "stop working in a future version of Jasmine's mock clock. Pass a " +
-        'function instead of a string.'
+    expect(function() {
+      scheduler.scheduleFunction('horrible = true;', 0);
+    }).toThrowError(
+      'The mock clock does not support the eval form of setTimeout and setInterval. Pass a function instead of a string.'
     );
-
-    scheduler.tick(0);
-
-    expect(horrible).toEqual(true);
   });
 
   it('#tick defaults to 0', function() {

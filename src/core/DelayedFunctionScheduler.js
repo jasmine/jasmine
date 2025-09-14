@@ -1,7 +1,6 @@
-// Warning: don't add "use strict" to this file. Doing so potentially changes
-// the behavior of user code that does things like setTimeout("var x = 1;")
-// while the mock clock is installed.
 getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
+  'use strict';
+
   function DelayedFunctionScheduler() {
     this.scheduledLookup_ = [];
     this.scheduledFunctions_ = {};
@@ -24,20 +23,10 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
       timeoutKey,
       runAtMillis
     ) {
-      let f;
       if (typeof funcToCall === 'string') {
-        // setTimeout("some code") and setInterval("some code") are legal, if
-        // not recommended. We don't do that ourselves, but user code might.
-        // This allows such code to work when the mock clock is installed.
-        j$.getEnv().deprecated(
-          "The eval form of setTimeout and setInterval is deprecated and will stop working in a future version of Jasmine's mock clock. Pass a function instead of a string."
+        throw new Error(
+          'The mock clock does not support the eval form of setTimeout and setInterval. Pass a function instead of a string.'
         );
-        f = function() {
-          // eslint-disable-next-line no-eval
-          return eval(funcToCall);
-        };
-      } else {
-        f = funcToCall;
       }
 
       millis = millis || 0;
@@ -46,7 +35,7 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
 
       const funcToSchedule = {
         runAtMillis: runAtMillis,
-        funcToCall: f,
+        funcToCall,
         recurring: recurring,
         params: params,
         timeoutKey: timeoutKey,
