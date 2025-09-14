@@ -26,6 +26,9 @@ module.exports = {
     'helpers/defineJasmineUnderTest.js',
     'helpers/resetEnv.js'
   ],
+  env: {
+    forbidDuplicateNames: true
+  },
   random: true,
   browser: {
     name: process.env.JASMINE_BROWSER || 'firefox',
