@@ -1571,7 +1571,7 @@ describe('Env integration', function() {
 
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
         totalSpecsDefined: 1,
-        order: jasmine.any(jasmineUnderTest.Order),
+        order: { random: true, seed: jasmine.any(String) },
         parallel: false
       });
 
@@ -1606,7 +1606,7 @@ describe('Env integration', function() {
 
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
         totalSpecsDefined: 1,
-        order: jasmine.any(jasmineUnderTest.Order),
+        order: { random: true, seed: jasmine.any(String) },
         parallel: false
       });
 
@@ -1671,7 +1671,7 @@ describe('Env integration', function() {
 
     expect(reporter.jasmineStarted).toHaveBeenCalledWith({
       totalSpecsDefined: 6,
-      order: jasmine.any(jasmineUnderTest.Order),
+      order: { random: false },
       parallel: false
     });
 
@@ -1953,12 +1953,10 @@ describe('Env integration', function() {
 
     expect(reporter.jasmineStarted).toHaveBeenCalled();
     const startedArg = reporter.jasmineStarted.calls.argsFor(0)[0];
-    expect(startedArg.order.random).toEqual(true);
-    expect(startedArg.order.seed).toEqual('123456');
+    expect(startedArg.order).toEqual({ random: true, seed: '123456' });
 
     const doneArg = reporter.jasmineDone.calls.argsFor(0)[0];
-    expect(doneArg.order.random).toEqual(true);
-    expect(doneArg.order.seed).toEqual('123456');
+    expect(doneArg.order).toEqual({ random: true, seed: '123456' });
   });
 
   it('coerces the random seed to a string if it is a number', async function() {
@@ -2078,7 +2076,7 @@ describe('Env integration', function() {
 
     expect(reporter.jasmineStarted).toHaveBeenCalledWith({
       totalSpecsDefined: 1,
-      order: jasmine.any(jasmineUnderTest.Order),
+      order: { random: true, seed: jasmine.any(String) },
       parallel: false
     });
 
