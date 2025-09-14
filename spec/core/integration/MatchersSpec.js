@@ -470,20 +470,28 @@ describe('Matchers (Integration)', function() {
   });
 
   describe('toBeNullish', function() {
-    verifyPasses(function(env) {
-      env.expect(undefined).toBeNullish();
+    describe('with undefined', function() {
+      verifyPasses(function(env) {
+        env.expect(undefined).toBeNullish();
+      });
     });
 
-    verifyPasses(function(env) {
-      env.expect(null).toBeNullish();
+    describe('with null', function() {
+      verifyPasses(function(env) {
+        env.expect(null).toBeNullish();
+      });
     });
 
-    verifyFails(function(env) {
-      env.expect(1).toBeNullish();
+    describe('with a truthy value', function() {
+      verifyFails(function(env) {
+        env.expect(1).toBeNullish();
+      });
     });
 
-    verifyFails(function(env) {
-      env.expect('').toBeNullish();
+    describe('with a non-null falsy value', function() {
+      verifyFails(function(env) {
+        env.expect('').toBeNullish();
+      });
     });
   });
 
@@ -665,13 +673,17 @@ describe('Matchers (Integration)', function() {
       env.expect(spyObj).toHaveSpyInteractions();
     });
 
-    verifyFails(function(env) {
-      env.expect(spyObj).toHaveSpyInteractions();
+    describe('with no methods called', function() {
+      verifyFails(function(env) {
+        env.expect(spyObj).toHaveSpyInteractions();
+      });
     });
 
-    verifyFails(function(env) {
-      spyObj.otherMethod();
-      env.expect(spyObj).toHaveSpyInteractions();
+    describe('with only non-spy methods called', function() {
+      verifyFails(function(env) {
+        spyObj.otherMethod();
+        env.expect(spyObj).toHaveSpyInteractions();
+      });
     });
   });
 

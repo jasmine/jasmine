@@ -12,5 +12,8 @@
     "helpers/nodeDefineJasmineUnderTest.js",
     "helpers/resetEnv.js"
   ],
+  "env": {
+    "forbidDuplicateNames": true
+  },
   "random": true
 }

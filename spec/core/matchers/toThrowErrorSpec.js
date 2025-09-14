@@ -281,22 +281,44 @@ describe('toThrowError', function() {
     );
   });
 
-  it('fails if thrown is a type of Error and the expected is a different Error', function() {
-    const matchersUtil = {
-        equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
-        pp: jasmineUnderTest.makePrettyPrinter()
-      },
-      matcher = jasmineUnderTest.matchers.toThrowError(matchersUtil),
-      fn = function() {
-        throw new TypeError('foo');
-      };
+  describe('with a string', function() {
+    it('fails if thrown is a type of Error and the expected is a different Error', function() {
+      const matchersUtil = {
+          equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
+          pp: jasmineUnderTest.makePrettyPrinter()
+        },
+        matcher = jasmineUnderTest.matchers.toThrowError(matchersUtil),
+        fn = function() {
+          throw new TypeError('foo');
+        };
 
-    const result = matcher.compare(fn, TypeError, 'bar');
+      const result = matcher.compare(fn, TypeError, 'bar');
 
-    expect(result.pass).toBe(false);
-    expect(result.message()).toEqual(
-      "Expected function to throw TypeError with message 'bar', but it threw TypeError with message 'foo'."
-    );
+      expect(result.pass).toBe(false);
+      expect(result.message()).toEqual(
+        "Expected function to throw TypeError with message 'bar', but it threw TypeError with message 'foo'."
+      );
+    });
+  });
+
+  describe('with a regex', function() {
+    it('fails if thrown is a type of Error and the expected is a different Error', function() {
+      const matchersUtil = {
+          equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
+          pp: jasmineUnderTest.makePrettyPrinter()
+        },
+        matcher = jasmineUnderTest.matchers.toThrowError(matchersUtil),
+        fn = function() {
+          throw new TypeError('foo');
+        };
+
+      const result = matcher.compare(fn, TypeError, /bar/);
+
+      expect(result.pass).toBe(false);
+      expect(result.message()).toEqual(
+        "Expected function to throw TypeError with a message matching /bar/, but it threw TypeError with message 'foo'."
+      );
+    });
   });
 
   it('passes if thrown is a type of Error and has the same type as the expected Error and the message matches the expected message', function() {
@@ -314,24 +336,6 @@ describe('toThrowError', function() {
     expect(result.pass).toBe(true);
     expect(result.message()).toEqual(
       'Expected function not to throw TypeError with a message matching /foo/.'
-    );
-  });
-
-  it('fails if thrown is a type of Error and the expected is a different Error', function() {
-    const matchersUtil = {
-        equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
-        pp: jasmineUnderTest.makePrettyPrinter()
-      },
-      matcher = jasmineUnderTest.matchers.toThrowError(matchersUtil),
-      fn = function() {
-        throw new TypeError('foo');
-      };
-
-    const result = matcher.compare(fn, TypeError, /bar/);
-
-    expect(result.pass).toBe(false);
-    expect(result.message()).toEqual(
-      "Expected function to throw TypeError with a message matching /bar/, but it threw TypeError with message 'foo'."
     );
   });
 });
