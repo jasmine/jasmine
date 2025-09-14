@@ -63,50 +63,28 @@ describe('buildExpectationResult', function() {
     expect(result.matcherName).toBe('some-value');
   });
 
-  it('expected returns passed expected', function() {
-    const result = jasmineUnderTest.buildExpectationResult({
-      expected: 'some-value'
-    });
-    expect(result.expected).toBe('some-value');
-  });
-
-  it('actual returns passed actual', function() {
-    const result = jasmineUnderTest.buildExpectationResult({
-      actual: 'some-value'
-    });
-    expect(result.actual).toBe('some-value');
-  });
-
   it('handles nodejs assertions', function() {
     if (typeof require === 'undefined') {
       pending('This test only runs in Node');
     }
     const assert = require('assert');
-    const value = 8421;
-    const expectedValue = 'JasmineExpectationTestValue';
     let error;
     try {
-      assert.equal(value, expectedValue);
+      assert.equal('a', 'b');
     } catch (e) {
       error = e;
     }
 
     expect(error.code).toEqual('ERR_ASSERTION');
-    expect(error.actual).toEqual(value);
-    expect(error.expected).toEqual(expectedValue);
     expect(error.operator).toEqual('==');
 
     const result = jasmineUnderTest.buildExpectationResult({
       passed: false,
       matcherName: '',
-      expected: '',
-      actual: '',
       error: error
     });
 
     expect(result.code).toEqual('ERR_ASSERTION');
-    expect(result.actual).toEqual(value);
-    expect(result.expected).toEqual(expectedValue);
     expect(result.matcherName).toEqual('assert ==');
   });
 });
