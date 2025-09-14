@@ -1,6 +1,6 @@
 describe('DelayedFunctionScheduler', function() {
   'use strict';
-  
+
   it('schedules a function for later execution', function() {
     const scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       fn = jasmine.createSpy('fn');

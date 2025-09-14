@@ -106,13 +106,7 @@ getJasmineRequireObj().Runner = function(j$) {
         // In parallel mode, the jasmineStarted event is separately dispatched
         // by jasmine-npm. This event only reaches reporters in non-parallel.
         totalSpecsDefined,
-        /**
-         * Information about the ordering (random or not) of this execution of the suite.
-         * @typedef Order
-         * @property {boolean} random - Whether the suite is running in random order
-         * @property {string} seed - The random seed
-         */
-        order: order,
+        order: orderForReporting(order),
         parallel: false
       });
 
@@ -164,13 +158,29 @@ getJasmineRequireObj().Runner = function(j$) {
         totalTime: jasmineTimer.elapsed(),
         incompleteReason: incompleteReason,
         incompleteCode: incompleteCode,
-        order: order,
+        order: orderForReporting(order),
         failedExpectations: this.#topSuite.result.failedExpectations,
         deprecationWarnings: this.#topSuite.result.deprecationWarnings
       };
       this.#topSuite.reportedDone = true;
       await this.#reportDispatcher.jasmineDone(jasmineDoneInfo);
       return jasmineDoneInfo;
+    }
+  }
+
+  /**
+   * Information about the ordering (random or not) of this execution of the suite.
+   * @typedef Order
+   * @property {boolean} random - Whether the suite is running in random order
+   * @property {string} seed - The random seed
+   */
+  function orderForReporting(order) {
+    // Don't expose the actual Order object to reporters. That class is private
+    // and instances are not cloneable.
+    if (order.random) {
+      return { random: true, seed: order.seed };
+    } else {
+      return { random: false };
     }
   }
 
