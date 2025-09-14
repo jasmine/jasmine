@@ -371,8 +371,7 @@ getJasmineRequireObj().Env = function(j$) {
       runQueue,
       TreeProcessor: j$.TreeProcessor,
       globalErrors,
-      getConfig: () => config,
-      deprecated: this.deprecated
+      getConfig: () => config
     });
 
     this.setParallelLoadingState = function(state) {

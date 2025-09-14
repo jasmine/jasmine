@@ -925,40 +925,6 @@ describe('Env integration', function() {
     expect(suiteCallback).toHaveBeenCalled();
   });
 
-  it('reports a deprecation warning when a spec filter accesses private properties', async function() {
-    env.it('a spec', function() {});
-
-    const reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
-    env.addReporter(reporter);
-
-    env.configure({
-      random: false,
-      specFilter: function(spec) {
-        spec.result; // deprecated
-        spec.id; // not deprecated
-        spec.description; // not deprecated
-        spec.getPath(); // not deprecated
-        spec.getFullName(); // not deprecated
-        return true;
-      }
-    });
-
-    spyOn(console, 'error');
-    await env.execute();
-
-    expect(reporter.jasmineDone).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        deprecationWarnings: [
-          jasmine.objectContaining({
-            message: jasmine.stringContaining(
-              'Access to private Spec members (in this case `result`)'
-            )
-          })
-        ]
-      })
-    );
-  });
-
   it('Functions can be spied on and have their calls tracked', async function() {
     let originalFunctionWasCalled = false;
     const subject = {
