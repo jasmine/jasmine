@@ -40,7 +40,7 @@ describe('spec running', function() {
         env.it('should run nested suites', function() {
           foo++;
         });
-        env.it('should run nested suites', function() {
+        env.it('should run nested suites 2', function() {
           bar++;
         });
       });
