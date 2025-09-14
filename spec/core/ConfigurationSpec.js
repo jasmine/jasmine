@@ -7,14 +7,10 @@ describe('Configuration', function() {
     'hideDisabled',
     'autoCleanClosures',
     'forbidDuplicateNames',
-    'detectLateRejectionHandling'
-  ];
-  const allKeys = [
-    ...standardBooleanKeys,
-    'seed',
-    'specFilter',
+    'detectLateRejectionHandling',
     'verboseDeprecations'
   ];
+  const allKeys = [...standardBooleanKeys, 'seed', 'specFilter'];
   Object.freeze(standardBooleanKeys);
   Object.freeze(allKeys);
 
@@ -85,23 +81,6 @@ describe('Configuration', function() {
         booleanPropertyBehavior(k);
       });
     }
-
-    // TODO: in the next major release, treat verboseDeprecations like other booleans
-    it('sets verboseDeprecations when present', function() {
-      const subject = new jasmineUnderTest.Configuration();
-      const orig = subject.verboseDeprecations;
-
-      subject.update({ verboseDeprecations: !orig });
-      expect(subject.verboseDeprecations).toEqual(!orig);
-
-      subject.update({ verboseDeprecations: orig });
-      expect(subject.verboseDeprecations).toEqual(orig);
-
-      // For backwards compatibility, explicitly setting to undefined should
-      // work. Undefined isn't officially valid but gets treated like false.
-      subject.update({ verboseDeprecations: undefined });
-      expect(subject.verboseDeprecations).toBeUndefined();
-    });
 
     it('sets specFilter when truthy', function() {
       const subject = new jasmineUnderTest.Configuration();

@@ -156,7 +156,8 @@ getJasmineRequireObj().Configuration = function(j$) {
         'stopSpecOnExpectationFailure',
         'autoCleanClosures',
         'forbidDuplicateNames',
-        'detectLateRejectionHandling'
+        'detectLateRejectionHandling',
+        'verboseDeprecations'
       ];
 
       for (const k of booleanProps) {
@@ -172,12 +173,6 @@ getJasmineRequireObj().Configuration = function(j$) {
       // 0 and null are valid values, so a truthiness check wouldn't work
       if (typeof changes.seed !== 'undefined') {
         this.#values.seed = changes.seed;
-      }
-
-      // TODO: in the next major release, make verboseDeprecations work like
-      // other boolean properties.
-      if (changes.hasOwnProperty('verboseDeprecations')) {
-        this.#values.verboseDeprecations = changes.verboseDeprecations;
       }
     }
   }
