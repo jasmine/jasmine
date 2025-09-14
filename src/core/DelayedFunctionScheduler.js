@@ -29,6 +29,9 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
         // setTimeout("some code") and setInterval("some code") are legal, if
         // not recommended. We don't do that ourselves, but user code might.
         // This allows such code to work when the mock clock is installed.
+        j$.getEnv().deprecated(
+          "The eval form of setTimeout and setInterval is deprecated and will stop working in a future version of Jasmine's mock clock. Pass a function instead of a string."
+        );
         f = function() {
           // eslint-disable-next-line no-eval
           return eval(funcToCall);
