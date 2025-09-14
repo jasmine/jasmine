@@ -487,14 +487,14 @@ describe('Env', function() {
 
       it('does not throw an error when called in a describe', function() {
         env.setParallelLoadingState('helpers');
-        check();
+        check(1);
         env.setParallelLoadingState('specs');
-        check();
+        check(2);
 
-        function check() {
+        function check(disambiguator) {
           let done = false;
 
-          env.describe('a suite', function() {
+          env.describe('a suite ' + disambiguator, function() {
             expect(function() {
               env.it('a spec');
               env.beforeAll(function() {});
@@ -594,14 +594,14 @@ describe('Env', function() {
 
       it('does not throw an error when called in a describe', function() {
         env.setParallelLoadingState('helpers');
-        check();
+        check(1);
         env.setParallelLoadingState('specs');
-        check();
+        check(2);
 
-        function check() {
+        function check(disambiguator) {
           let done = false;
 
-          env.describe('a suite', function() {
+          env.describe('a suite ' + disambiguator, function() {
             expect(function() {
               env.it('a spec');
               env.afterAll(function() {});

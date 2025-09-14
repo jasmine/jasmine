@@ -25,7 +25,7 @@ describe('Configuration', function() {
     expect(subject.specFilter()).toEqual(true);
     expect(subject.hideDisabled).toEqual(false);
     expect(subject.autoCleanClosures).toEqual(true);
-    expect(subject.forbidDuplicateNames).toEqual(false);
+    expect(subject.forbidDuplicateNames).toEqual(true);
     expect(subject.verboseDeprecations).toEqual(false);
     expect(subject.detectLateRejectionHandling).toEqual(false);
   });
