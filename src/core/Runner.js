@@ -10,6 +10,7 @@ getJasmineRequireObj().Runner = function(j$) {
     #globalErrors;
     #reportDispatcher;
     #getConfig;
+    #deprecated;
     #executedBefore;
     #currentRunableTracker;
 
@@ -23,6 +24,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#globalErrors = options.globalErrors;
       this.#reportDispatcher = options.reportDispatcher;
       this.#getConfig = options.getConfig;
+      this.#deprecated = options.deprecated;
       this.#executedBefore = false;
       this.#currentRunableTracker = new j$.CurrentRunableTracker();
     }
@@ -75,8 +77,9 @@ getJasmineRequireObj().Runner = function(j$) {
         orderChildren: function(node) {
           return order.sort(node.children);
         },
-        excludeNode: function(spec) {
-          return !config.specFilter(spec);
+        excludeNode: spec => {
+          const proxy = j$.deprecatingSpecProxy(spec, this.#deprecated);
+          return !config.specFilter(proxy);
         }
       });
       this.#executionTree = treeProcessor.processTree();
