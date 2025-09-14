@@ -15,8 +15,14 @@ describe('DelayedFunctionScheduler', function() {
   it('schedules a string for later execution', function() {
     const scheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       strfn = 'horrible = true;';
+    spyOn(jasmineUnderTest.getEnv(), 'deprecated');
 
     scheduler.scheduleFunction(strfn, 0);
+    expect(jasmineUnderTest.getEnv().deprecated).toHaveBeenCalledWith(
+      'The eval form of setTimeout and setInterval is deprecated and will ' +
+        "stop working in a future version of Jasmine's mock clock. Pass a " +
+        'function instead of a string.'
+    );
 
     scheduler.tick(0);
 
