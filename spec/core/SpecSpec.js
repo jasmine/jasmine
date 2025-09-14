@@ -337,8 +337,6 @@ describe('Spec', function() {
           message: 'foo thrown',
           matcherName: '',
           passed: false,
-          expected: '',
-          actual: '',
           stack: null
         }
       ]);
