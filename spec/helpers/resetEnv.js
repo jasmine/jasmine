@@ -1,4 +1,8 @@
 beforeEach(function() {
-  // env is stateful. Ensure that it does not leak between tests.
-  jasmineUnderTest.currentEnv_ = null;
+  // env is stateful. Ensure that it, and its global error event listeners,
+  // do not leak between tests.
+  if (jasmineUnderTest.currentEnv_) {
+    jasmineUnderTest.currentEnv_.cleanup_();
+    jasmineUnderTest.currentEnv_ = null;
+  }
 });
