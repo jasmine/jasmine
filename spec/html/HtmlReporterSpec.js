@@ -528,6 +528,7 @@ describe('HtmlReporter', function() {
 
       let specResult = {
         id: 123,
+        parentSuiteId: 1,
         description: 'with a spec',
         fullName: 'A Suite with a spec',
         status: 'passed',
@@ -605,7 +606,9 @@ describe('HtmlReporter', function() {
       const suiteDetail = outerSuite.childNodes[0];
       const suiteLink = suiteDetail.childNodes[0];
       expect(suiteLink.innerHTML).toEqual('A Suite');
-      expect(suiteLink.getAttribute('href')).toEqual('/?foo=bar&spec=A Suite');
+      expect(suiteLink.getAttribute('href')).toEqual(
+        '/?foo=bar&spec=["A Suite"]'
+      );
 
       const specs = outerSuite.childNodes[1];
       const spec = specs.childNodes[0];
@@ -615,7 +618,7 @@ describe('HtmlReporter', function() {
       const specLink = spec.childNodes[0];
       expect(specLink.innerHTML).toEqual('with a spec');
       expect(specLink.getAttribute('href')).toEqual(
-        '/?foo=bar&spec=A Suite with a spec'
+        '/?foo=bar&spec=["A Suite","with a spec"]'
       );
 
       const specDuration = spec.childNodes[1];
@@ -1541,6 +1544,7 @@ describe('HtmlReporter', function() {
 
         const failingSpecResult = {
           id: 124,
+          parentSuiteId: 2,
           status: 'failed',
           description: 'a failing spec',
           fullName: 'a suite inner suite a failing spec',
@@ -1664,16 +1668,18 @@ describe('HtmlReporter', function() {
         expect(links.length).toEqual(3);
         expect(links[0].textContent).toEqual('A suite');
 
-        expect(links[0].getAttribute('href')).toMatch(/\?foo=bar&spec=A suite/);
+        expect(links[0].getAttribute('href')).toEqual(
+          '/?foo=bar&spec=["A suite"]'
+        );
 
         expect(links[1].textContent).toEqual('inner suite');
-        expect(links[1].getAttribute('href')).toMatch(
-          /\?foo=bar&spec=A suite inner suite/
+        expect(links[1].getAttribute('href')).toEqual(
+          '/?foo=bar&spec=["A suite","inner suite"]'
         );
 
         expect(links[2].textContent).toEqual('a failing spec');
-        expect(links[2].getAttribute('href')).toMatch(
-          /\?foo=bar&spec=a suite inner suite a failing spec/
+        expect(links[2].getAttribute('href')).toEqual(
+          '/?foo=bar&spec=["A suite","inner suite","a failing spec"]'
         );
       });
 
