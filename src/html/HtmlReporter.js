@@ -49,6 +49,13 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
   };
 
+  /**
+   * @class HtmlReporter
+   * @classdesc Displays results and allows re-running individual specs and suites.
+   * @implements {Reporter}
+   * @param options Options object. See lib/jasmine-core/boot1.js for details.
+   * @since 1.2.0
+   */
   function HtmlReporter(options) {
     function config() {
       return (options.env && options.env.configuration()) || {};
@@ -66,6 +73,11 @@ jasmineRequire.HtmlReporter = function(j$) {
     const deprecationWarnings = [];
     const failures = [];
 
+    /**
+     * Initializes the reporter. Should be called before {@link Env#execute}.
+     * @function
+     * @name HtmlReporter#initialize
+     */
     this.initialize = function() {
       clearPrior();
       htmlReporterMain = createDom(
