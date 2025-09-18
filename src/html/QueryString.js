@@ -1,11 +1,24 @@
 jasmineRequire.QueryString = function() {
+  /**
+   * Reads and manipulates the query string.
+   * @since 2.0.0
+   */
   class QueryString {
     #getWindowLocation;
 
+    /**
+     * @param options Object with a getWindowLocation property, which should be
+     * a function returning the current value of window.location.
+     */
     constructor(options) {
       this.#getWindowLocation = options.getWindowLocation;
     }
 
+    /**
+     * Sets the specified query parameter and navigates to the resulting URL.
+     * @param {string} key
+     * @param {string} value
+     */
     navigateWithNewParam(key, value) {
       this.#getWindowLocation().search = this.fullStringWithNewParam(
         key,
@@ -13,12 +26,24 @@ jasmineRequire.QueryString = function() {
       );
     }
 
+    /**
+     * Returns a new URL based on the current location, with the specified
+     * query parameter set.
+     * @param {string} key
+     * @param {string} value
+     * @return {string}
+     */
     fullStringWithNewParam(key, value) {
       const paramMap = this.#queryStringToParamMap();
       paramMap[key] = value;
       return toQueryString(paramMap);
     }
 
+    /**
+     * Gets the value of the specified query parameter.
+     * @param {string} key
+     * @return {string}
+     */
     getParam(key) {
       return this.#queryStringToParamMap()[key];
     }
