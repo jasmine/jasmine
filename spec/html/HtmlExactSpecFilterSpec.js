@@ -1,8 +1,10 @@
 describe('HtmlExactSpecFilter', function() {
   it('matches everything when no string is provided', function() {
     const specFilter = new jasmineUnderTest.HtmlExactSpecFilter({
-      filterString() {
-        return '';
+      queryString: {
+        getParam(name) {
+          return '';
+        }
       }
     });
 
@@ -11,8 +13,12 @@ describe('HtmlExactSpecFilter', function() {
 
   it('matches a spec with the exact same path', function() {
     const specFilter = new jasmineUnderTest.HtmlExactSpecFilter({
-      filterString() {
-        return '["a","b","c"]';
+      queryString: {
+        getParam(name) {
+          if (name === 'spec') {
+            return '["a","b","c"]';
+          }
+        }
       }
     });
 
@@ -21,8 +27,12 @@ describe('HtmlExactSpecFilter', function() {
 
   it('matches a spec whose path has the filter path as a prefix', function() {
     const specFilter = new jasmineUnderTest.HtmlExactSpecFilter({
-      filterString() {
-        return '["a","b"]';
+      queryString: {
+        getParam(name) {
+          if (name === 'spec') {
+            return '["a","b"]';
+          }
+        }
       }
     });
 
@@ -31,8 +41,12 @@ describe('HtmlExactSpecFilter', function() {
 
   it('does not match a spec with a different path', function() {
     const specFilter = new jasmineUnderTest.HtmlExactSpecFilter({
-      filterString() {
-        return '["a","b","c"]';
+      queryString: {
+        getParam(name) {
+          if (name === 'spec') {
+            return '["a","b","c"]';
+          }
+        }
       }
     });
 

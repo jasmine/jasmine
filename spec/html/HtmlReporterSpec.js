@@ -1368,6 +1368,11 @@ describe('HtmlReporter', function() {
           },
           createTextNode: function() {
             return document.createTextNode.apply(document, arguments);
+          },
+          queryString: {
+            getParam(name) {
+              return '';
+            }
           }
         };
         specStatus = {
@@ -1382,7 +1387,12 @@ describe('HtmlReporter', function() {
 
       describe('when the specs are not filtered', function() {
         beforeEach(function() {
-          reporterConfig.filterSpecs = false;
+          reporterConfig.queryString.getParam = function(name) {
+            if (name !== 'spec') {
+              throw new Error('Unexpected query param ' + name);
+            }
+            return '';
+          };
           reporter = new jasmineUnderTest.HtmlReporter(reporterConfig);
           reporter.initialize();
           reporter.jasmineStarted({ totalSpecsDefined: 1 });
@@ -1400,7 +1410,12 @@ describe('HtmlReporter', function() {
 
       describe('when the specs are filtered', function() {
         beforeEach(function() {
-          reporterConfig.filterSpecs = true;
+          reporterConfig.queryString.getParam = function(name) {
+            if (name !== 'spec') {
+              throw new Error('Unexpected query param ' + name);
+            }
+            return 'not the empty string';
+          };
           reporter = new jasmineUnderTest.HtmlReporter(reporterConfig);
           reporter.initialize();
           reporter.jasmineStarted({ totalSpecsDefined: 1 });

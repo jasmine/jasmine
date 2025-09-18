@@ -64,10 +64,14 @@ jasmineRequire.HtmlReporter = function(j$) {
     const getContainer = options.getContainer;
     const createElement = options.createElement;
     const createTextNode = options.createTextNode;
+    // TODO: in the next major release, replace navigateWithNewParam and
+    // addToExistingQueryString with direct usage of options.queryString
     const navigateWithNewParam = options.navigateWithNewParam || function() {};
     const addToExistingQueryString =
       options.addToExistingQueryString || defaultQueryString;
-    const filterSpecs = options.filterSpecs;
+    const filterSpecs = options.queryString
+      ? !!options.queryString.getParam('spec')
+      : options.filterSpecs; // For compatibility with pre-5.11 boot files
     let htmlReporterMain;
     let symbols;
     const deprecationWarnings = [];

@@ -14,19 +14,11 @@
 (function() {
   const env = jasmine.getEnv();
 
-  /**
-   * ## Runner Parameters
-   *
-   * More browser specific code - wrap the query string in an object and to allow for getting/setting parameters from the runner user interface.
-   */
-
   const queryString = new jasmine.QueryString({
     getWindowLocation: function() {
       return window.location;
     }
   });
-
-  const filterSpecs = !!queryString.getParam('spec');
 
   const config = {
     stopOnSpecFailure: queryString.getParam('stopOnSpecFailure'),
@@ -69,7 +61,7 @@
       return document.createTextNode.apply(document, arguments);
     },
     timer: new jasmine.Timer(),
-    filterSpecs: filterSpecs
+    queryString
   });
 
   /**
@@ -81,12 +73,7 @@
   /**
    * Filter which specs will be run by matching the start of the full name against the `spec` query param.
    */
-  const specFilter = new jasmine.HtmlExactSpecFilter({
-    filterString: function() {
-      return queryString.getParam('spec');
-    }
-  });
-
+  const specFilter = new jasmine.HtmlExactSpecFilter({ queryString });
   config.specFilter = function(spec) {
     return specFilter.matches(spec);
   };
