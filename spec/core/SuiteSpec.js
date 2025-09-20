@@ -138,7 +138,7 @@ describe('Suite', function() {
 
     expect(function() {
       suite.addExpectationResult(false, { message: 'failed' });
-    }).toThrowError(jasmineUnderTest.errors.ExpectationFailed);
+    }).toThrowError(jasmineUnderTest.private.errors.ExpectationFailed);
 
     expect(suite.getResult().status).toBe('failed');
     expect(suite.result.failedExpectations).toEqual([
@@ -149,7 +149,9 @@ describe('Suite', function() {
   it('does not add an additional failure when an expectation fails', function() {
     const suite = new jasmineUnderTest.Suite({});
 
-    suite.handleException(new jasmineUnderTest.errors.ExpectationFailed());
+    suite.handleException(
+      new jasmineUnderTest.private.errors.ExpectationFailed()
+    );
 
     expect(suite.getResult().failedExpectations).toEqual([]);
   });

@@ -176,7 +176,7 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     handleException() {
-      if (arguments[0] instanceof j$.errors.ExpectationFailed) {
+      if (arguments[0] instanceof j$.private.errors.ExpectationFailed) {
         return;
       }
 
@@ -239,7 +239,7 @@ getJasmineRequireObj().Suite = function(j$) {
         }
 
         if (this.#throwOnExpectationFailure) {
-          throw new j$.errors.ExpectationFailed();
+          throw new j$.private.errors.ExpectationFailed();
         }
       }
     }

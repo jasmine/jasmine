@@ -60,7 +60,7 @@ getJasmineRequireObj().Spec = function(j$) {
         }
 
         if (this.#throwOnExpectationFailure && !isError) {
-          throw new j$.errors.ExpectationFailed();
+          throw new j$.private.errors.ExpectationFailed();
         }
       }
     }
@@ -139,7 +139,7 @@ getJasmineRequireObj().Spec = function(j$) {
         return;
       }
 
-      if (e instanceof j$.errors.ExpectationFailed) {
+      if (e instanceof j$.private.errors.ExpectationFailed) {
         return;
       }
 
