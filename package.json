@@ -46,7 +46,7 @@
     "glob": "^10.2.3",
     "globals": "^16.0.0",
     "jasmine": "^5.0.0",
-    "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner",
+    "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner#4.0",
     "jsdom": "^26.0.0",
     "prettier": "1.17.1",
     "sass": "^1.58.3"
