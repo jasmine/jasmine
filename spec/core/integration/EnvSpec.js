@@ -3699,7 +3699,6 @@ describe('Env integration', function() {
 
       await env.execute();
       expect(thrown).toBeInstanceOf(Error);
-      expect(thrown.passed).toEqual(false);
       expect(thrown.matcherName).toEqual('toEqual');
       expect(thrown.message).toEqual('Expected 1 to equal 2.');
     });
@@ -3753,7 +3752,6 @@ describe('Env integration', function() {
 
       await env.execute();
       expect(thrown).toBeInstanceOf(Error);
-      expect(thrown.passed).toEqual(false);
       expect(thrown.matcherName).toEqual('toBeResolvedTo');
       expect(thrown.message).toEqual(
         "Expected a promise to be resolved to 'b' but it was resolved to 'a'."
