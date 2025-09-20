@@ -66,6 +66,39 @@ describe('ReportDispatcher', function() {
     expect(anotherReporter.bar).toHaveBeenCalledWith({ another: 'event' });
   });
 
+  it('passes each reporter a separate deep copy of the event', function() {
+    const runQueue = jasmine.createSpy('runQueue');
+    const dispatcher = new jasmineUnderTest.ReportDispatcher(
+      ['foo', 'bar'],
+      runQueue
+    );
+    const reporter = jasmine.createSpyObj('reporter', ['foo']);
+    const anotherReporter = jasmine.createSpyObj('anotherReporter', ['foo']);
+    const event = {
+      child: {
+        grandchild: 'something'
+      }
+    };
+    dispatcher.addReporter(reporter);
+    dispatcher.addReporter(anotherReporter);
+
+    dispatcher.foo(event);
+
+    for (const fn of runQueue.calls.mostRecent().args[0].queueableFns) {
+      fn.fn();
+    }
+
+    expect(reporter.foo).toHaveBeenCalledWith(event);
+    expect(anotherReporter.foo).toHaveBeenCalledWith(event);
+    const receivedEvents = [reporter, anotherReporter].map(function(reporter) {
+      return reporter.foo.calls.mostRecent().args[0];
+    });
+    expect(receivedEvents[0]).not.toBe(event);
+    expect(receivedEvents[0]).not.toBe(receivedEvents[1]);
+    expect(receivedEvents[0].child).not.toBe(event.child);
+    expect(receivedEvents[0].child).not.toBe(receivedEvents[1].child);
+  });
+
   it("does not dispatch to a reporter if the reporter doesn't accept the method", function() {
     const runQueue = jasmine.createSpy('runQueue'),
       dispatcher = new jasmineUnderTest.ReportDispatcher(['foo'], runQueue),

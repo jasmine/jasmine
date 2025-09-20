@@ -1598,15 +1598,6 @@ describe('Env integration', function() {
       suiteFullNameToId[e.fullName] = e.id;
     });
 
-    // Clone args to work around Jasmine mutating the result after passing it
-    // to the reporter event.
-    // TODO: remove this once Jasmine no longer does that
-    const clone = structuredClone.bind(globalThis);
-    reporter.specStarted.calls.saveArgumentsByValue(clone);
-    reporter.specDone.calls.saveArgumentsByValue(clone);
-    reporter.specStarted.calls.saveArgumentsByValue(clone);
-    reporter.suiteDone.calls.saveArgumentsByValue(clone);
-
     env.configure({ random: false });
     env.addReporter(reporter);
 
