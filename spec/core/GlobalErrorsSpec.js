@@ -142,8 +142,10 @@ describe('GlobalErrors', function() {
 
     errors.install();
     expect(globals.listeners.uncaughtException).toEqual([
-      originalHandler,
       jasmine.any(Function)
+    ]);
+    expect(globals.listeners.uncaughtException).not.toEqual([
+      originalHandler()
     ]);
 
     errors.pushListener(handler);
@@ -173,8 +175,10 @@ describe('GlobalErrors', function() {
 
       errors.install();
       expect(globals.listeners.unhandledRejection).toEqual([
-        originalHandler,
         jasmine.any(Function)
+      ]);
+      expect(globals.listeners.unhandledRejection).not.toEqual([
+        originalHandler()
       ]);
 
       errors.pushListener(handler);
@@ -253,8 +257,10 @@ describe('GlobalErrors', function() {
         errors.install();
 
         expect(globals.listeners.rejectionHandled).toEqual([
-          originalHandler,
           jasmine.any(Function)
+        ]);
+        expect(globals.listeners.rejectionHandled).not.toEqual([
+          originalHandler
         ]);
 
         errors.uninstall();

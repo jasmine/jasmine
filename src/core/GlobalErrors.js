@@ -191,34 +191,56 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
   class NodeAdapter {
     #global;
     #dispatch;
+    #originalHandlers;
+    #jasmineHandlers;
 
     constructor(global, dispatch) {
       this.#global = global;
       this.#dispatch = dispatch;
+
+      this.#jasmineHandlers = {};
+      this.#originalHandlers = {};
 
       this.onError = this.onError.bind(this);
       this.onUnhandledRejection = this.onUnhandledRejection.bind(this);
     }
 
     install() {
-      this.#global.process.on('uncaughtException', this.onError);
-      this.#global.process.on('unhandledRejection', this.onUnhandledRejection);
-      this.#global.process.on(
+      this.#installHandler('uncaughtException', this.onError);
+      this.#installHandler('unhandledRejection', this.onUnhandledRejection);
+      this.#installHandler(
         'rejectionHandled',
         this.#dispatch.onRejectionHandled
       );
     }
 
     uninstall() {
-      this.#global.process.removeListener('uncaughtException', this.onError);
-      this.#global.process.removeListener(
-        'unhandledRejection',
-        this.onUnhandledRejection
+      const errorTypes = Object.keys(this.#originalHandlers);
+      for (const errorType of errorTypes) {
+        this.#global.process.removeListener(
+          errorType,
+          this.#jasmineHandlers[errorType]
+        );
+
+        for (let i = 0; i < this.#originalHandlers[errorType].length; i++) {
+          this.#global.process.on(
+            errorType,
+            this.#originalHandlers[errorType][i]
+          );
+        }
+        delete this.#originalHandlers[errorType];
+        delete this.#jasmineHandlers[errorType];
+      }
+    }
+
+    #installHandler(errorType, handler) {
+      this.#originalHandlers[errorType] = this.#global.process.listeners(
+        errorType
       );
-      this.#global.process.removeListener(
-        'rejectionHandled',
-        this.#dispatch.onRejectionHandled
-      );
+      this.#jasmineHandlers[errorType] = handler;
+
+      this.#global.process.removeAllListeners(errorType);
+      this.#global.process.on(errorType, handler);
     }
 
     #augmentError(error, isUnhandledRejection) {
