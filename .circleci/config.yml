@@ -16,10 +16,6 @@ executors:
     docker:
       - image: cimg/node:20.0.0
     working_directory: ~/workspace
-  node18:
-    docker:
-      - image: cimg/node:18.20.5
-    working_directory: ~/workspace
 
 jobs:
   build:
@@ -68,7 +64,7 @@ jobs:
           command: npm run test:parallel
 
   test_browsers: &test_browsers
-    executor: node18
+    executor: node20
     steps:
       - attach_workspace:
           at: .
@@ -113,9 +109,6 @@ workflows:
       - build:
           executor: node20
           name: build_node_20
-      - build:
-          executor: node18
-          name: build_node_18
       - test_node:
           executor: node22
           name: test_node_22
@@ -126,11 +119,6 @@ workflows:
           name: test_node_20
           requires:
             - build_node_20
-      - test_node:
-          executor: node18
-          name: test_node_18
-          requires:
-            - build_node_18
       - test_parallel:
           executor: node24
           name: test_parallel_node_24
@@ -147,13 +135,13 @@ workflows:
           requires:
             - build_node_20
       - test_parallel:
-          executor: node18
-          name: test_parallel_node_18
+          executor: node20
+          name: test_parallel_node_20
           requires:
-            - build_node_18
+            - build_node_20
       - test_browsers:
           requires:
-             - build_node_18
+             - build_node_20
           filters:
             branches:
               ignore: /pull\/.*/ # Don't run on pull requests.
