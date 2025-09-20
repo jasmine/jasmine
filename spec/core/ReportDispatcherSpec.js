@@ -23,7 +23,7 @@ describe('ReportDispatcher', function() {
     dispatcher.addReporter(reporter);
     dispatcher.addReporter(anotherReporter);
 
-    dispatcher.foo(123, 456);
+    dispatcher.foo({ an: 'event' });
 
     expect(runQueue).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -37,16 +37,16 @@ describe('ReportDispatcher', function() {
 
     let fns = runQueue.calls.mostRecent().args[0].queueableFns;
     fns[0].fn();
-    expect(reporter.foo).toHaveBeenCalledWith(123, 456);
+    expect(reporter.foo).toHaveBeenCalledWith({ an: 'event' });
     expect(reporter.foo.calls.mostRecent().object).toBe(reporter);
 
     fns[1].fn();
-    expect(anotherReporter.foo).toHaveBeenCalledWith(123, 456);
+    expect(anotherReporter.foo).toHaveBeenCalledWith({ an: 'event' });
     expect(anotherReporter.foo.calls.mostRecent().object).toBe(anotherReporter);
 
     runQueue.calls.reset();
 
-    dispatcher.bar('a', 'b');
+    dispatcher.bar({ another: 'event' });
 
     expect(runQueue).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -60,10 +60,10 @@ describe('ReportDispatcher', function() {
 
     fns = runQueue.calls.mostRecent().args[0].queueableFns;
     fns[0].fn();
-    expect(reporter.bar).toHaveBeenCalledWith('a', 'b');
+    expect(reporter.bar).toHaveBeenCalledWith({ another: 'event' });
 
     fns[1].fn();
-    expect(anotherReporter.bar).toHaveBeenCalledWith('a', 'b');
+    expect(anotherReporter.bar).toHaveBeenCalledWith({ another: 'event' });
   });
 
   it("does not dispatch to a reporter if the reporter doesn't accept the method", function() {
@@ -90,7 +90,7 @@ describe('ReportDispatcher', function() {
       reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
 
     dispatcher.provideFallbackReporter(reporter);
-    dispatcher.foo(123, 456);
+    dispatcher.foo({ an: 'event' });
 
     expect(runQueue).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -101,7 +101,7 @@ describe('ReportDispatcher', function() {
 
     const fns = runQueue.calls.mostRecent().args[0].queueableFns;
     fns[0].fn();
-    expect(reporter.foo).toHaveBeenCalledWith(123, 456);
+    expect(reporter.foo).toHaveBeenCalledWith({ an: 'event' });
   });
 
   it('does not call fallback reporting methods when another reporter is provided', function() {
@@ -115,7 +115,7 @@ describe('ReportDispatcher', function() {
 
     dispatcher.provideFallbackReporter(fallbackReporter);
     dispatcher.addReporter(reporter);
-    dispatcher.foo(123, 456);
+    dispatcher.foo({ an: 'event' });
 
     expect(runQueue).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -126,8 +126,8 @@ describe('ReportDispatcher', function() {
 
     const fns = runQueue.calls.mostRecent().args[0].queueableFns;
     fns[0].fn();
-    expect(reporter.foo).toHaveBeenCalledWith(123, 456);
-    expect(fallbackReporter.foo).not.toHaveBeenCalledWith(123, 456);
+    expect(reporter.foo).toHaveBeenCalledWith({ an: 'event' });
+    expect(fallbackReporter.foo).not.toHaveBeenCalled();
   });
 
   it('allows registered reporters to be cleared', function() {
@@ -140,7 +140,7 @@ describe('ReportDispatcher', function() {
       reporter2 = jasmine.createSpyObj('reporter2', ['foo', 'bar']);
 
     dispatcher.addReporter(reporter1);
-    dispatcher.foo(123);
+    dispatcher.foo({ an: 'event' });
     expect(runQueue).toHaveBeenCalledWith(
       jasmine.objectContaining({
         queueableFns: [{ fn: jasmine.any(Function) }],
@@ -150,11 +150,11 @@ describe('ReportDispatcher', function() {
 
     let fns = runQueue.calls.mostRecent().args[0].queueableFns;
     fns[0].fn();
-    expect(reporter1.foo).toHaveBeenCalledWith(123);
+    expect(reporter1.foo).toHaveBeenCalledWith({ an: 'event' });
 
     dispatcher.clearReporters();
     dispatcher.addReporter(reporter2);
-    dispatcher.bar(456);
+    dispatcher.bar({ another: 'event' });
 
     expect(runQueue).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -166,6 +166,6 @@ describe('ReportDispatcher', function() {
     fns = runQueue.calls.mostRecent().args[0].queueableFns;
     fns[0].fn();
     expect(reporter1.bar).not.toHaveBeenCalled();
-    expect(reporter2.bar).toHaveBeenCalledWith(456);
+    expect(reporter2.bar).toHaveBeenCalledWith({ another: 'event' });
   });
 });
