@@ -68,53 +68,55 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return env;
   };
 
-  j$.isArray_ = function(value) {
-    return j$.isA_('Array', value);
+  j$.private.isArray = function(value) {
+    return j$.private.isA('Array', value);
   };
 
-  j$.isObject_ = function(value) {
-    return value !== undefined && value !== null && j$.isA_('Object', value);
-  };
-
-  j$.isString_ = function(value) {
-    return j$.isA_('String', value);
-  };
-
-  j$.isNumber_ = function(value) {
-    return j$.isA_('Number', value);
-  };
-
-  j$.isFunction_ = function(value) {
-    return j$.isA_('Function', value);
-  };
-
-  j$.isAsyncFunction_ = function(value) {
-    return j$.isA_('AsyncFunction', value);
-  };
-
-  j$.isGeneratorFunction_ = function(value) {
-    return j$.isA_('GeneratorFunction', value);
-  };
-
-  j$.isTypedArray_ = function(value) {
+  j$.private.isObject = function(value) {
     return (
-      j$.isA_('Float32Array', value) ||
-      j$.isA_('Float64Array', value) ||
-      j$.isA_('Int16Array', value) ||
-      j$.isA_('Int32Array', value) ||
-      j$.isA_('Int8Array', value) ||
-      j$.isA_('Uint16Array', value) ||
-      j$.isA_('Uint32Array', value) ||
-      j$.isA_('Uint8Array', value) ||
-      j$.isA_('Uint8ClampedArray', value)
+      value !== undefined && value !== null && j$.private.isA('Object', value)
     );
   };
 
-  j$.isA_ = function(typeName, value) {
-    return j$.getType_(value) === '[object ' + typeName + ']';
+  j$.private.isString = function(value) {
+    return j$.private.isA('String', value);
   };
 
-  j$.isError_ = function(value) {
+  j$.private.isNumber = function(value) {
+    return j$.private.isA('Number', value);
+  };
+
+  j$.private.isFunction = function(value) {
+    return j$.private.isA('Function', value);
+  };
+
+  j$.private.isAsyncFunction = function(value) {
+    return j$.private.isA('AsyncFunction', value);
+  };
+
+  j$.private.isGeneratorFunction = function(value) {
+    return j$.private.isA('GeneratorFunction', value);
+  };
+
+  j$.private.isTypedArray = function(value) {
+    return (
+      j$.private.isA('Float32Array', value) ||
+      j$.private.isA('Float64Array', value) ||
+      j$.private.isA('Int16Array', value) ||
+      j$.private.isA('Int32Array', value) ||
+      j$.private.isA('Int8Array', value) ||
+      j$.private.isA('Uint16Array', value) ||
+      j$.private.isA('Uint32Array', value) ||
+      j$.private.isA('Uint8Array', value) ||
+      j$.private.isA('Uint8ClampedArray', value)
+    );
+  };
+
+  j$.private.isA = function(typeName, value) {
+    return j$.private.getType(value) === '[object ' + typeName + ']';
+  };
+
+  j$.private.isError = function(value) {
     if (!value) {
       return false;
     }
@@ -126,15 +128,15 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return typeof value.stack === 'string' && typeof value.message === 'string';
   };
 
-  j$.isAsymmetricEqualityTester_ = function(obj) {
-    return obj ? j$.isA_('Function', obj.asymmetricMatch) : false;
+  j$.private.isAsymmetricEqualityTester = function(obj) {
+    return obj ? j$.private.isA('Function', obj.asymmetricMatch) : false;
   };
 
-  j$.getType_ = function(value) {
+  j$.private.getType = function(value) {
     return Object.prototype.toString.apply(value);
   };
 
-  j$.isDomNode = function(obj) {
+  j$.private.isDomNode = function(obj) {
     // Node is a function, because constructors
     return typeof jasmineGlobal.Node !== 'undefined'
       ? obj instanceof jasmineGlobal.Node
@@ -145,7 +147,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     // return obj.nodeType > 0;
   };
 
-  j$.isMap = function(obj) {
+  j$.private.isMap = function(obj) {
     return (
       obj !== null &&
       typeof obj !== 'undefined' &&
@@ -153,7 +155,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     );
   };
 
-  j$.isSet = function(obj) {
+  j$.private.isSet = function(obj) {
     return (
       obj !== null &&
       typeof obj !== 'undefined' &&
@@ -161,7 +163,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     );
   };
 
-  j$.isWeakMap = function(obj) {
+  j$.private.isWeakMap = function(obj) {
     return (
       obj !== null &&
       typeof obj !== 'undefined' &&
@@ -169,7 +171,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     );
   };
 
-  j$.isURL = function(obj) {
+  j$.private.isURL = function(obj) {
     return (
       obj !== null &&
       typeof obj !== 'undefined' &&
@@ -177,11 +179,11 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     );
   };
 
-  j$.isIterable_ = function(value) {
+  j$.private.isIterable = function(value) {
     return value && !!value[Symbol.iterator];
   };
 
-  j$.isDataView = function(obj) {
+  j$.private.isDataView = function(obj) {
     return (
       obj !== null &&
       typeof obj !== 'undefined' &&
@@ -189,15 +191,15 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     );
   };
 
-  j$.isPromise = function(obj) {
+  j$.private.isPromise = function(obj) {
     return !!obj && obj.constructor === jasmineGlobal.Promise;
   };
 
-  j$.isPromiseLike = function(obj) {
-    return !!obj && j$.isFunction_(obj.then);
+  j$.private.isPromiseLike = function(obj) {
+    return !!obj && j$.private.isFunction(obj.then);
   };
 
-  j$.fnNameFor = function(func) {
+  j$.private.fnNameFor = function(func) {
     if (func.name) {
       return func.name;
     }
@@ -209,7 +211,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     return matches ? matches[1] : '<anonymous>';
   };
 
-  j$.isPending_ = function(promise) {
+  j$.private.isPending = function(promise) {
     const sentinel = {};
     return Promise.race([promise, Promise.resolve(sentinel)]).then(
       function(result) {

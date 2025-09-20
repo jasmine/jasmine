@@ -17,7 +17,7 @@ getJasmineRequireObj().toHaveNoOtherSpyInteractions = function(j$) {
       compare: function(actual) {
         const result = {};
 
-        if (!j$.isObject_(actual)) {
+        if (!j$.private.isObject(actual)) {
           throw new Error(
             getErrorMsg('Expected an object, but got ' + typeof actual + '.')
           );

@@ -80,5 +80,5 @@ getJasmineRequireObj().util = function(j$) {
     }
   };
 
-  return util;
+  j$.util = util;
 };

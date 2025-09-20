@@ -1,10 +1,10 @@
-getJasmineRequireObj().errors = function() {
+getJasmineRequireObj().errors = function(j$) {
   function ExpectationFailed() {}
 
   ExpectationFailed.prototype = new Error();
   ExpectationFailed.prototype.constructor = ExpectationFailed;
 
-  return {
+  j$.errors = {
     ExpectationFailed: ExpectationFailed
   };
 };

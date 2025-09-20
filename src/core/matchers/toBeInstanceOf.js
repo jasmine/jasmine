@@ -20,10 +20,10 @@ getJasmineRequireObj().toBeInstanceOf = function(j$) {
       compare: function(actual, expected) {
         const actualType =
           actual && actual.constructor
-            ? j$.fnNameFor(actual.constructor)
+            ? j$.private.fnNameFor(actual.constructor)
             : matchersUtil.pp(actual);
         const expectedType = expected
-          ? j$.fnNameFor(expected)
+          ? j$.private.fnNameFor(expected)
           : matchersUtil.pp(expected);
         let expectedMatcher;
         let pass;

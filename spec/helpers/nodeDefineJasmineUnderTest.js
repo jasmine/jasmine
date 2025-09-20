@@ -24,4 +24,6 @@
   global.jasmineUnderTest = jasmineUnderTestRequire.core(
     jasmineUnderTestRequire
   );
+  // Alias the private namespace so tests can be less verbose
+  global.privateUnderTest = global.jasmineUnderTest.private;
 })();

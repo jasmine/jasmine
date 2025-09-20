@@ -65,8 +65,8 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
 
       const handleAsymmetricExpected = () => {
         if (
-          j$.isAsymmetricEqualityTester_(expected) &&
-          j$.isFunction_(expected.valuesForDiff_)
+          j$.private.isAsymmetricEqualityTester(expected) &&
+          j$.private.isFunction(expected.valuesForDiff_)
         ) {
           const asymmetricResult = expected.valuesForDiff_(
             actual,

@@ -29,11 +29,11 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
   }
 
   getJasmineRequire().core = function(jRequire) {
-    const j$ = {};
+    const j$ = { private: {} };
 
     jRequire.base(j$, jasmineGlobal);
-    j$.util = jRequire.util(j$);
-    j$.errors = jRequire.errors();
+    jRequire.util(j$);
+    jRequire.errors(j$);
     j$.formatErrorMsg = jRequire.formatErrorMsg();
     j$.Any = jRequire.Any(j$);
     j$.Anything = jRequire.Anything(j$);

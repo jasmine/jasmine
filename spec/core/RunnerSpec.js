@@ -90,7 +90,7 @@ describe('Runner', function() {
     function arrayNotContaining(item) {
       return {
         asymmetricMatch(other, matchersUtil) {
-          if (!jasmine.isArray_(other)) {
+          if (!jasmine.private.isArray(other)) {
             return false;
           }
 

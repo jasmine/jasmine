@@ -266,16 +266,11 @@ describe('SpyStrategy', function() {
     const originalFn = jasmine.createSpy('original'),
       spyStrategy = new jasmineUnderTest.SpyStrategy({ fn: originalFn });
 
-    spyOn(jasmineUnderTest, 'isFunction_').and.returnValue(false);
-    spyOn(jasmineUnderTest, 'isAsyncFunction_').and.returnValue(false);
-
     expect(function() {
-      spyStrategy.callFake(function() {});
-    }).toThrowError(/^Argument passed to callFake should be a function, got/);
-
-    expect(function() {
-      spyStrategy.callFake(function() {});
-    }).toThrowError(/^Argument passed to callFake should be a function, got/);
+      spyStrategy.callFake('not a function');
+    }).toThrowError(
+      'Argument passed to callFake should be a function, got not a function'
+    );
   });
 
   it('allows generator functions to be passed to callFake strategy', function() {

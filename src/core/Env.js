@@ -535,7 +535,7 @@ getJasmineRequireObj().Env = function(j$) {
       try {
         const maybePromise = fn(spy);
 
-        if (!j$.isPromiseLike(maybePromise)) {
+        if (!j$.private.isPromiseLike(maybePromise)) {
           throw new Error(
             'The callback to spyOnGlobalErrorsAsync must be an async or promise-returning function'
           );
@@ -789,7 +789,7 @@ getJasmineRequireObj().Env = function(j$) {
         message += ': ';
         if (error.message) {
           message += error.message;
-        } else if (j$.isString_(error)) {
+        } else if (j$.private.isString(error)) {
           message += error;
         } else {
           // pretty print all kind of objects. This includes arrays.

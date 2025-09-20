@@ -300,17 +300,21 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
   }
 
   function ensureIsFunction(fn, caller) {
-    if (!j$.isFunction_(fn)) {
+    if (!j$.private.isFunction(fn)) {
       throw new Error(
-        caller + ' expects a function argument; received ' + j$.getType_(fn)
+        caller +
+          ' expects a function argument; received ' +
+          j$.private.getType(fn)
       );
     }
   }
 
   function ensureIsFunctionOrAsync(fn, caller) {
-    if (!j$.isFunction_(fn) && !j$.isAsyncFunction_(fn)) {
+    if (!j$.private.isFunction(fn) && !j$.private.isAsyncFunction(fn)) {
       throw new Error(
-        caller + ' expects a function argument; received ' + j$.getType_(fn)
+        caller +
+          ' expects a function argument; received ' +
+          j$.private.getType(fn)
       );
     }
   }

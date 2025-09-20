@@ -39,7 +39,7 @@ getJasmineRequireObj().Expector = function(j$) {
           this.matchersUtil,
           args
         );
-      } else if (j$.isFunction_(result.message)) {
+      } else if (j$.private.isFunction(result.message)) {
         return result.message();
       } else {
         return result.message;

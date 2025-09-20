@@ -190,7 +190,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       if (queueableFn.fn.length === 0) {
         maybeThenable = queueableFn.fn.call(this.userContext);
 
-        if (maybeThenable && j$.isFunction_(maybeThenable.then)) {
+        if (maybeThenable && j$.private.isFunction(maybeThenable.then)) {
           maybeThenable.then(
             wrapInPromiseResolutionHandler(next),
             onPromiseRejection
@@ -260,11 +260,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.diagnoseConflictingAsync_ = function(fn, retval) {
-    if (retval && j$.isFunction_(retval.then)) {
+    if (retval && j$.private.isFunction(retval.then)) {
       // Issue a warning that matches the user's code.
       // Omit the stack trace because there's almost certainly no user code
       // on the stack at this point.
-      if (j$.isAsyncFunction_(fn)) {
+      if (j$.private.isAsyncFunction(fn)) {
         this.onException(
           new Error(
             'An asynchronous before/it/after ' +
@@ -288,7 +288,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
   function wrapInPromiseResolutionHandler(fn) {
     return function(maybeArg) {
-      if (j$.isError_(maybeArg)) {
+      if (j$.private.isError(maybeArg)) {
         fn(maybeArg);
       } else {
         fn();

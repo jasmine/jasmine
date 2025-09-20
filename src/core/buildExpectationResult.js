@@ -23,7 +23,7 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
     };
 
     if (!result.passed) {
-      if (options.error && !j$.isString_(options.error)) {
+      if (options.error && !j$.private.isString(options.error)) {
         if ('code' in options.error) {
           result.code = options.error.code;
         }
