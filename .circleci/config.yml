@@ -36,6 +36,9 @@ jobs:
           name: Install dependencies
           command: npm install
       - run:
+          name: Report selenium-webdriver version
+          command: npm ls selenium-webdriver
+      - run:
           name: Build
           command: npm run build
       - persist_to_workspace:
