@@ -303,8 +303,6 @@ describe('AsyncExpectation', function() {
           passed: true,
           message: '',
           error: undefined,
-          expected: 'hello',
-          actual: 'an actual',
           errorForStack: jasmine.any(Error)
         });
       });
@@ -338,8 +336,6 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
           matcherName: 'toFoo',
           passed: false,
-          expected: 'hello',
-          actual: 'an actual',
           message: '',
           error: undefined,
           errorForStack: jasmine.any(Error)
@@ -372,8 +368,6 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
           matcherName: 'toFoo',
           passed: false,
-          expected: 'hello',
-          actual: 'an actual',
           message: 'I am a custom message',
           error: undefined,
           errorForStack: jasmine.any(Error)
@@ -408,8 +402,6 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
           matcherName: 'toFoo',
           passed: false,
-          expected: 'hello',
-          actual: 'an actual',
           message: 'I am a custom message',
           error: undefined,
           errorForStack: jasmine.any(Error)
@@ -428,7 +420,6 @@ describe('AsyncExpectation', function() {
         }
       };
       const addExpectationResult = jasmine.createSpy('addExpectationResult');
-      const actual = 'an actual';
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -442,8 +433,6 @@ describe('AsyncExpectation', function() {
           passed: true,
           message: '',
           error: undefined,
-          expected: 'hello',
-          actual: actual,
           errorForStack: jasmine.any(Error)
         });
       });
@@ -465,7 +454,6 @@ describe('AsyncExpectation', function() {
           }
         };
       const addExpectationResult = jasmine.createSpy('addExpectationResult');
-      const actual = 'an actual';
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -478,8 +466,6 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
           matcherName: 'toFoo',
           passed: false,
-          expected: 'hello',
-          actual: actual,
           message: 'default message',
           error: undefined,
           errorForStack: jasmine.any(Error)
@@ -501,7 +487,6 @@ describe('AsyncExpectation', function() {
         }
       };
       const addExpectationResult = jasmine.createSpy('addExpectationResult');
-      const actual = 'an actual';
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -513,8 +498,6 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
           matcherName: 'toFoo',
           passed: false,
-          expected: 'hello',
-          actual: actual,
           message: 'I am a custom message',
           error: undefined,
           errorForStack: jasmine.any(Error)
@@ -536,7 +519,6 @@ describe('AsyncExpectation', function() {
         }
       };
       const addExpectationResult = jasmine.createSpy('addExpectationResult');
-      const actual = 'an actual';
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -548,8 +530,6 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(true, {
           matcherName: 'toFoo',
           passed: true,
-          expected: 'hello',
-          actual: actual,
           message: '',
           error: undefined,
           errorForStack: jasmine.any(Error)
@@ -574,7 +554,6 @@ describe('AsyncExpectation', function() {
         }
       };
       const addExpectationResult = jasmine.createSpy('addExpectationResult');
-      const actual = 'an actual';
 
       const expectation = jasmineUnderTest.Expectation.asyncFactory({
         customAsyncMatchers: matchers,
@@ -586,8 +565,6 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
           matcherName: 'toFoo',
           passed: false,
-          expected: 'hello',
-          actual: actual,
           message: "I'm a custom message",
           error: undefined,
           errorForStack: jasmine.any(Error)
@@ -622,8 +599,6 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
           matcherName: 'toFoo',
           passed: false,
-          expected: 'hello',
-          actual: 'an actual',
           message: 'I am a custom message',
           error: undefined,
           errorForStack: jasmine.any(Error)
@@ -656,8 +631,6 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
           matcherName: 'toFoo',
           passed: false,
-          expected: 'hello',
-          actual: 'an actual',
           message: 'I am a custom message',
           error: undefined,
           errorForStack: jasmine.any(Error)
@@ -692,8 +665,6 @@ describe('AsyncExpectation', function() {
         expect(addExpectationResult).toHaveBeenCalledWith(false, {
           matcherName: 'toFoo',
           passed: false,
-          expected: 'hello',
-          actual: 'an actual',
           message: 'I am a custom message',
           error: undefined,
           errorForStack: jasmine.any(Error)

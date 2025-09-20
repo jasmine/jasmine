@@ -183,8 +183,6 @@ getJasmineRequireObj().Suite = function(j$) {
       const data = {
         matcherName: '',
         passed: false,
-        expected: '',
-        actual: '',
         error: arguments[0]
       };
       const failedExpectation = j$.buildExpectationResult(data);

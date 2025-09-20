@@ -83,9 +83,7 @@ getJasmineRequireObj().Expector = function(j$) {
       passed: result.pass,
       message: message,
       error: errorForStack ? undefined : result.error,
-      errorForStack: errorForStack || undefined,
-      actual: this.actual,
-      expected: this.expected // TODO: this may need to be arrayified/sliced
+      errorForStack: errorForStack || undefined
     });
   };
 

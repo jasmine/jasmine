@@ -148,8 +148,6 @@ getJasmineRequireObj().Spec = function(j$) {
         {
           matcherName: '',
           passed: false,
-          expected: '',
-          actual: '',
           error: e
         },
         true
