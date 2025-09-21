@@ -102,6 +102,26 @@ describe('Spec', function() {
         b: 'original-value'
       });
     });
+
+    it('throws if the key is not structured-cloneable', function() {
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: () => {} }
+      });
+
+      expect(function() {
+        spec.setSpecProperty(new Promise(() => {}), '');
+      }).toThrowError("Key can't be cloned");
+    });
+
+    it('throws if the value is not structured-cloneable', function() {
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: () => {} }
+      });
+
+      expect(function() {
+        spec.setSpecProperty('k', new Promise(() => {}));
+      }).toThrowError("Value can't be cloned");
+    });
   });
 
   describe('status', function() {

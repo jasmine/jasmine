@@ -80,5 +80,13 @@ getJasmineRequireObj().util = function(j$) {
     }
   };
 
+  util.assertStructuredCloneable = function(v, msgPrefix) {
+    try {
+      structuredClone(v);
+    } catch (e) {
+      throw new Error(`${msgPrefix} can't be cloned`, { cause: e });
+    }
+  };
+
   return util;
 };

@@ -405,4 +405,22 @@ describe('Suite', function() {
       expect(subject.hasChildWithDescription('a spec')).toBeFalse();
     });
   });
+
+  describe('#setSuiteProperty', function() {
+    it('throws if the key is not structured-cloneable', function() {
+      const suite = new jasmineUnderTest.Suite({});
+
+      expect(function() {
+        suite.setSuiteProperty(new Promise(() => {}), '');
+      }).toThrowError("Key can't be cloned");
+    });
+
+    it('throws if the value is not structured-cloneable', function() {
+      const suite = new jasmineUnderTest.Suite({});
+
+      expect(function() {
+        suite.setSuiteProperty('k', new Promise(() => {}));
+      }).toThrowError("Value can't be cloned");
+    });
+  });
 });
