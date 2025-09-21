@@ -85,7 +85,7 @@ describe('Spec', function() {
 
       spec.setSpecProperty('a', 4);
 
-      expect(spec.result.properties).toEqual({ a: 4 });
+      expect(spec.doneEvent().properties).toEqual({ a: 4 });
     });
 
     it('replace the property result when it was previously set', function() {
@@ -97,7 +97,7 @@ describe('Spec', function() {
       spec.setSpecProperty('b', 'original-value');
       spec.setSpecProperty('a', 'new-value');
 
-      expect(spec.result.properties).toEqual({
+      expect(spec.doneEvent().properties).toEqual({
         a: 'new-value',
         b: 'original-value'
       });
@@ -272,10 +272,10 @@ describe('Spec', function() {
       spec.addExpectationResult(true, { message: 'expectation1' });
       spec.addExpectationResult(false, { message: 'expectation2' });
 
-      expect(spec.result.passedExpectations).toEqual([
+      expect(spec.doneEvent().passedExpectations).toEqual([
         jasmine.objectContaining({ message: 'expectation1' })
       ]);
-      expect(spec.result.failedExpectations).toEqual([
+      expect(spec.doneEvent().failedExpectations).toEqual([
         jasmine.objectContaining({ message: 'expectation2' })
       ]);
     });
@@ -292,7 +292,7 @@ describe('Spec', function() {
           spec.addExpectationResult(false, { message: 'failed' });
         }).toThrowError(jasmineUnderTest.private.errors.ExpectationFailed);
 
-        expect(spec.result.failedExpectations).toEqual([
+        expect(spec.doneEvent().failedExpectations).toEqual([
           jasmine.objectContaining({ message: 'failed' })
         ]);
       });
@@ -306,7 +306,7 @@ describe('Spec', function() {
 
         spec.addExpectationResult(false, { message: 'failed' });
 
-        expect(spec.result.failedExpectations).toEqual([
+        expect(spec.doneEvent().failedExpectations).toEqual([
           jasmine.objectContaining({ message: 'failed' })
         ]);
       });
@@ -335,7 +335,7 @@ describe('Spec', function() {
         message: jasmine.stringMatching(/^Error: nope/)
       })
     );
-    expect(spec.result.failedExpectations).toEqual([]);
+    expect(spec.doneEvent().failedExpectations).toEqual([]);
   });
 
   it('does not forward non-late expectation failures to onLateError', function() {
@@ -372,7 +372,7 @@ describe('Spec', function() {
         message: jasmine.stringMatching(/^Error: oops/)
       })
     );
-    expect(spec.result.failedExpectations).toEqual([]);
+    expect(spec.doneEvent().failedExpectations).toEqual([]);
   });
 
   it('does not forward non-late handleException calls to onLateError', function() {
@@ -386,7 +386,7 @@ describe('Spec', function() {
     spec.handleException(error);
 
     expect(onLateError).not.toHaveBeenCalled();
-    expect(spec.result.failedExpectations.length).toEqual(1);
+    expect(spec.doneEvent().failedExpectations.length).toEqual(1);
   });
 
   it('clears the reportedDone flag when reset', function() {
@@ -449,7 +449,7 @@ describe('Spec', function() {
 
       spec.handleException('foo');
 
-      expect(spec.result.failedExpectations).toEqual([
+      expect(spec.doneEvent().failedExpectations).toEqual([
         {
           message: 'foo thrown',
           matcherName: '',
@@ -469,7 +469,7 @@ describe('Spec', function() {
         new jasmineUnderTest.private.errors.ExpectationFailed()
       );
 
-      expect(spec.result.failedExpectations).toEqual([]);
+      expect(spec.doneEvent().failedExpectations).toEqual([]);
     });
   });
 
@@ -483,15 +483,15 @@ describe('Spec', function() {
       const t1 = 123;
       const t2 = 456;
 
-      expect(spec.result.debugLogs).toBeNull();
+      expect(spec.doneEvent().debugLogs).toBeNull();
       timer.elapsed.and.returnValue(t1);
       spec.debugLog('msg 1');
-      expect(spec.result.debugLogs).toEqual([
+      expect(spec.doneEvent().debugLogs).toEqual([
         { message: 'msg 1', timestamp: t1 }
       ]);
       timer.elapsed.and.returnValue(t2);
       spec.debugLog('msg 2');
-      expect(spec.result.debugLogs).toEqual([
+      expect(spec.doneEvent().debugLogs).toEqual([
         { message: 'msg 1', timestamp: t1 },
         { message: 'msg 2', timestamp: t2 }
       ]);
@@ -506,7 +506,7 @@ describe('Spec', function() {
         spec.debugLog('msg');
         spec.executionFinished();
 
-        expect(spec.result.debugLogs).toBeNull();
+        expect(spec.doneEvent().debugLogs).toBeNull();
       });
     });
 
@@ -525,7 +525,7 @@ describe('Spec', function() {
         spec.handleException(new Error('nope'));
         spec.executionFinished();
 
-        expect(spec.result.debugLogs).toEqual([
+        expect(spec.doneEvent().debugLogs).toEqual([
           { message: 'msg', timestamp: timestamp }
         ]);
       });

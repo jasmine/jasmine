@@ -64,7 +64,7 @@ describe('TreeRunner', function() {
       expect(currentRunableTracker.currentSpec()).toBeFalsy();
       expect(runableResources.clearForRunable).toHaveBeenCalledWith(spec.id);
       expect(reportDispatcher.specDone).toHaveBeenCalledWith(spec.doneEvent());
-      expect(spec.result.duration).toEqual('the elapsed time');
+      expect(spec.doneEvent().duration).toEqual('the elapsed time');
       expect(spec.reportedDone).toEqual(true);
       await Promise.resolve();
       await Promise.resolve();
