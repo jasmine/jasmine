@@ -35,10 +35,12 @@ if [ "$1" = "--not-actually-all" ]; then
 else
   run_browser firefox 140
   run_browser firefox 128
-fi
   run_browser firefox 115
+fi
+run_browser firefox 102
 
 run_browser safari 17
+run_browser safari 16
 
 run_browser MicrosoftEdge latest
 
