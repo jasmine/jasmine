@@ -412,4 +412,246 @@ describe('Spec', function() {
       });
     });
   });
+
+  describe('#startedEvent', function() {
+    it('includes only properties that are known before execution', function() {
+      const spec = new jasmineUnderTest.Spec({
+        id: 'spec1',
+        parentSuiteId: 'suite1',
+        description: 'a spec',
+        filename: 'somefile.js',
+        getPath() {
+          return ['a suite', 'a spec'];
+        },
+        queueableFn: { fn: () => {} }
+      });
+
+      expect(spec.startedEvent()).toEqual({
+        id: 'spec1',
+        parentSuiteId: 'suite1',
+        description: 'a spec',
+        fullName: 'a suite a spec',
+        filename: 'somefile.js'
+      });
+    });
+  });
+
+  describe('#doneEvent', function() {
+    it('returns the event for a passed spec', function() {
+      const timer = {
+        start() {},
+        elapsed() {
+          return 123;
+        }
+      };
+      const spec = new jasmineUnderTest.Spec({
+        id: 'spec1',
+        parentSuiteId: 'suite1',
+        description: 'a spec',
+        filename: 'somefile.js',
+        getPath() {
+          return ['a suite', 'a spec'];
+        },
+        queueableFn: { fn: () => {} },
+        timer: timer
+      });
+
+      spec.addExpectationResult(true, {
+        matcherName: 'a passing expectation',
+        passed: true
+      });
+      spec.executionFinished(false, false);
+
+      expect(spec.doneEvent()).toEqual({
+        id: 'spec1',
+        parentSuiteId: 'suite1',
+        description: 'a spec',
+        fullName: 'a suite a spec',
+        filename: 'somefile.js',
+        status: 'passed',
+        passedExpectations: [
+          {
+            matcherName: 'a passing expectation',
+            passed: true,
+            message: 'Passed.',
+            stack: '',
+            globalErrorType: undefined
+          }
+        ],
+        failedExpectations: [],
+        deprecationWarnings: [],
+        debugLogs: null, // TODO change to []
+        properties: null, // TODO change to {}
+        pendingReason: '',
+        duration: 123
+      });
+    });
+
+    it('returns the event for a failed spec', function() {
+      const timer = {
+        start() {},
+        elapsed() {
+          return 123;
+        }
+      };
+      const spec = new jasmineUnderTest.Spec({
+        id: 'spec1',
+        parentSuiteId: 'suite1',
+        description: 'a spec',
+        filename: 'somefile.js',
+        getPath() {
+          return ['a suite', 'a spec'];
+        },
+        queueableFn: { fn: () => {} },
+        timer: timer
+      });
+
+      spec.addExpectationResult(true, {
+        matcherName: 'a passing expectation',
+        passed: true
+      });
+      spec.addExpectationResult(false, {
+        matcherName: 'a failing expectation',
+        passed: false,
+        error: new Error('failed')
+      });
+      spec.executionFinished(false, false);
+
+      expect(spec.doneEvent()).toEqual({
+        id: 'spec1',
+        parentSuiteId: 'suite1',
+        description: 'a spec',
+        fullName: 'a suite a spec',
+        filename: 'somefile.js',
+        status: 'failed',
+        passedExpectations: [
+          {
+            matcherName: 'a passing expectation',
+            passed: true,
+            message: 'Passed.',
+            stack: '',
+            globalErrorType: undefined
+          }
+        ],
+        failedExpectations: [
+          {
+            matcherName: 'a failing expectation',
+            passed: false,
+            message: jasmine.stringMatching(/^Error: failed/),
+            stack: jasmine.stringContaining('SpecSpec.js'),
+            globalErrorType: undefined
+          }
+        ],
+        deprecationWarnings: [],
+        debugLogs: null, // TODO change to []
+        properties: null, // TODO change to {}
+        pendingReason: '',
+        duration: 123
+      });
+    });
+
+    it("reports a status of 'pending' for a declaratively pended spec", function() {
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: {}
+      });
+
+      spec.executionFinished(false, false);
+
+      const result = spec.doneEvent();
+      expect(result.status).toEqual('pending');
+      expect(result.pendingReason).toEqual('');
+    });
+
+    it("reports a status of 'pending' for a spec pended by #pend", function() {
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: () => {} }
+      });
+
+      spec.pend('nope');
+      spec.executionFinished(false, false);
+
+      const result = spec.doneEvent();
+      expect(result.status).toEqual('pending');
+      expect(result.pendingReason).toEqual('nope');
+    });
+
+    it("reports a status of 'excluded' for an excluded spec", function() {
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: () => {} }
+      });
+
+      spec.executionFinished(true, false);
+
+      expect(spec.doneEvent().status).toEqual('excluded');
+    });
+
+    describe('When failSpecWithNoExpectations is true', function() {
+      it("reports a status of 'failed' for a spec with no expectations", function() {
+        const spec = new jasmineUnderTest.Spec({
+          queueableFn: { fn: () => {} }
+        });
+
+        spec.executionFinished(false, true);
+
+        expect(spec.doneEvent().status).toEqual('failed');
+      });
+    });
+
+    it('includes deprecation warnings', function() {
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: () => {} }
+      });
+
+      spec.addDeprecationWarning('stop that');
+
+      expect(spec.doneEvent().deprecationWarnings).toEqual([
+        {
+          // TODO: remove irrelevant properties
+          message: 'stop that',
+          stack: jasmine.stringContaining('SpecSpec.js'),
+          matcherName: undefined,
+          passed: undefined,
+          globalErrorType: undefined
+        }
+      ]);
+    });
+
+    it('includes debug logs', function() {
+      const timer = {
+        start() {},
+        elapsed() {
+          return 123;
+        }
+      };
+      const spec = new jasmineUnderTest.Spec({
+        timer,
+        queueableFn: { fn: () => {} }
+      });
+
+      spec.debugLog('maybe this will help');
+
+      expect(spec.doneEvent().debugLogs).toEqual([
+        {
+          message: 'maybe this will help',
+          timestamp: 123
+        }
+      ]);
+    });
+
+    it('includes spec properties', function() {
+      const spec = new jasmineUnderTest.Spec({
+        queueableFn: { fn: () => {} }
+      });
+
+      spec.setSpecProperty('foo', 'bar');
+      spec.setSpecProperty('baz', { grault: ['wombat'] });
+
+      expect(spec.doneEvent().properties).toEqual({
+        foo: 'bar',
+        baz: { grault: ['wombat'] }
+      });
+    });
+
+    // it("excludes properties that aren't in the public API");
+  });
 });

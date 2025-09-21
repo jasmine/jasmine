@@ -28,7 +28,9 @@ describe('TreeRunner', function() {
         spec.id,
         spec.parentSuiteId
       );
-      expect(reportDispatcher.specStarted).toHaveBeenCalledWith(spec.result);
+      expect(reportDispatcher.specStarted).toHaveBeenCalledWith(
+        spec.startedEvent()
+      );
       await Promise.resolve();
       expect(reportDispatcher.specStarted).toHaveBeenCalledBefore(next);
       await expectAsync(executePromise).toBePending();
@@ -61,7 +63,7 @@ describe('TreeRunner', function() {
 
       expect(currentRunableTracker.currentSpec()).toBeFalsy();
       expect(runableResources.clearForRunable).toHaveBeenCalledWith(spec.id);
-      expect(reportDispatcher.specDone).toHaveBeenCalledWith(spec.result);
+      expect(reportDispatcher.specDone).toHaveBeenCalledWith(spec.doneEvent());
       expect(spec.result.duration).toEqual('the elapsed time');
       expect(spec.reportedDone).toEqual(true);
       await Promise.resolve();

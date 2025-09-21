@@ -70,6 +70,7 @@ getJasmineRequireObj().Spec = function(j$) {
       return this.result.properties[key];
     }
 
+    // TODO: throw if the key or value is not structred cloneable
     setSpecProperty(key, value) {
       this.result.properties = this.result.properties || {};
       this.result.properties[key] = value;
@@ -93,8 +94,45 @@ getJasmineRequireObj().Spec = function(j$) {
     }
 
     reset() {
+      this.result = {
+        id: this.id,
+        description: this.description,
+        fullName: this.getFullName(),
+        parentSuiteId: this.parentSuiteId,
+        filename: this.filename,
+        failedExpectations: [],
+        passedExpectations: [],
+        deprecationWarnings: [],
+        pendingReason: this.excludeMessage || '',
+        duration: null,
+        properties: null,
+        debugLogs: null
+      };
+      this.markedPending = this.markedExcluding;
+      this.reportedDone = false;
+    }
+
+    startedEvent() {
       /**
-       * @typedef SpecResult
+       * @typedef SpecStartedEvent
+       * @property {String} id - The unique id of this spec.
+       * @property {String} description - The description passed to the {@link it} that created this spec.
+       * @property {String} fullName - The full description including all ancestors of this spec.
+       * @property {String|null} parentSuiteId - The ID of the suite containing this spec, or null if this spec is not in a describe().
+       * @property {String} filename - Deprecated. The name of the file the spec was defined in.
+       * Note: The value may be incorrect if zone.js is installed or
+       * `it`/`fit`/`xit` have been replaced with versions that don't maintain the
+       *  same call stack height as the originals. This property may be removed in
+       *  a future version unless there is enough user interest in keeping it.
+       *  See {@link https://github.com/jasmine/jasmine/issues/2065}.
+       * @since 6.0.0
+       */
+      return this.#commonEventFields();
+    }
+
+    doneEvent() {
+      /**
+       * @typedef SpecDoneEvent
        * @property {String} id - The unique id of this spec.
        * @property {String} description - The description passed to the {@link it} that created this spec.
        * @property {String} fullName - The full description including all ancestors of this spec.
@@ -113,24 +151,37 @@ getJasmineRequireObj().Spec = function(j$) {
        * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
        * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
        * @property {DebugLogEntry[]|null} debugLogs - Messages, if any, that were logged using {@link jasmine.debugLog} during a failing spec.
-       * @since 2.0.0
+       * @since 6.0.0
        */
-      this.result = {
+      const event = {
+        ...this.#commonEventFields()
+      };
+      const toCopy = [
+        'failedExpectations',
+        'passedExpectations',
+        'deprecationWarnings',
+        'pendingReason',
+        'status',
+        'duration',
+        'properties',
+        'debugLogs'
+      ];
+
+      for (const k of toCopy) {
+        event[k] = this.result[k];
+      }
+
+      return event;
+    }
+
+    #commonEventFields() {
+      return {
         id: this.id,
         description: this.description,
         fullName: this.getFullName(),
         parentSuiteId: this.parentSuiteId,
-        filename: this.filename,
-        failedExpectations: [],
-        passedExpectations: [],
-        deprecationWarnings: [],
-        pendingReason: this.excludeMessage || '',
-        duration: null,
-        properties: null,
-        debugLogs: null
+        filename: this.filename
       };
-      this.markedPending = this.markedExcluding;
-      this.reportedDone = false;
     }
 
     handleException(e) {

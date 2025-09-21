@@ -48,7 +48,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       const onStart = next => {
         this.#currentRunableTracker.setCurrentSpec(spec);
         this.#runableResources.initForRunable(spec.id, spec.parentSuiteId);
-        this.#reportDispatcher.specStarted(spec.result).then(next);
+        this.#reportDispatcher.specStarted(spec.startedEvent()).then(next);
       };
       const resultCallback = (result, next) => {
         this.#specComplete(spec).then(next);
@@ -255,7 +255,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     async #reportSpecDone(spec) {
       spec.reportedDone = true;
-      await this.#reportDispatcher.specDone(spec.result);
+      await this.#reportDispatcher.specDone(spec.doneEvent());
     }
 
     async #reportChildrenOfBeforeAllFailure(suite) {
@@ -271,7 +271,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
           await this.#reportDispatcher.suiteDone(child.result);
         } else {
           /* a spec */
-          await this.#reportDispatcher.specStarted(child.result);
+          await this.#reportDispatcher.specStarted(child.startedEvent());
 
           child.addExpectationResult(
             false,

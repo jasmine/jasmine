@@ -621,7 +621,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     /**
-     * Get a user-defined property as part of the properties field of {@link SpecResult}
+     * Get a user-defined property as part of the properties field of {@link SpecDoneEvent}
      * @name Env#getSpecProperty
      * @since 5.10.0
      * @function

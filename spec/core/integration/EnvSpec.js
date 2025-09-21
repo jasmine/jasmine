@@ -1636,15 +1636,18 @@ describe('Env integration', function() {
     expect(reporter.specDone.calls.count()).toBe(6);
 
     const baseSpecEvent = {
+      id: jasmine.any(String),
+      filename: jasmine.any(String)
+    };
+    const baseSpecDoneEvent = {
+      ...baseSpecEvent,
       passedExpectations: [],
       failedExpectations: [],
       deprecationWarnings: [],
       pendingReason: '',
       duration: null,
       properties: null,
-      debugLogs: null,
-      id: jasmine.any(String),
-      filename: jasmine.any(String)
+      debugLogs: null
     };
 
     expect(reporter.specStarted.calls.argsFor(0)[0]).toEqual({
@@ -1654,7 +1657,7 @@ describe('Env integration', function() {
       parentSuiteId: null
     });
     expect(reporter.specDone.calls.argsFor(0)[0]).toEqual({
-      ...baseSpecEvent,
+      ...baseSpecDoneEvent,
       description: 'a top level spec',
       fullName: 'a top level spec',
       status: 'passed',
@@ -1668,7 +1671,7 @@ describe('Env integration', function() {
       parentSuiteId: suiteFullNameToId['A Suite']
     });
     expect(reporter.specDone.calls.argsFor(1)[0]).toEqual({
-      ...baseSpecEvent,
+      ...baseSpecDoneEvent,
       description: 'with a spec',
       fullName: 'A Suite with a spec',
       status: 'passed',
@@ -1689,11 +1692,10 @@ describe('Env integration', function() {
       ...baseSpecEvent,
       description: "with an x'ed spec",
       fullName: "A Suite with a nested suite with an x'ed spec",
-      parentSuiteId: suiteFullNameToId['A Suite with a nested suite'],
-      pendingReason: 'Temporarily disabled with xit'
+      parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
     });
     expect(reporter.specDone.calls.argsFor(2)[0]).toEqual({
-      ...baseSpecEvent,
+      ...baseSpecDoneEvent,
       description: "with an x'ed spec",
       fullName: "A Suite with a nested suite with an x'ed spec",
       status: 'pending',
@@ -1709,7 +1711,7 @@ describe('Env integration', function() {
       parentSuiteId: suiteFullNameToId['A Suite with a nested suite']
     });
     expect(reporter.specDone.calls.argsFor(3)[0]).toEqual({
-      ...baseSpecEvent,
+      ...baseSpecDoneEvent,
       description: 'with a spec',
       fullName: 'A Suite with a nested suite with a spec',
       status: 'failed',
@@ -1730,7 +1732,7 @@ describe('Env integration', function() {
       parentSuiteId: suiteFullNameToId['A Suite with only non-executable specs']
     });
     expect(reporter.specDone.calls.argsFor(4)[0]).toEqual({
-      ...baseSpecEvent,
+      ...baseSpecDoneEvent,
       description: 'is pending',
       status: 'pending',
       fullName: 'A Suite with only non-executable specs is pending',
@@ -1743,12 +1745,10 @@ describe('Env integration', function() {
       ...baseSpecEvent,
       description: 'is xed',
       fullName: 'A Suite with only non-executable specs is xed',
-      parentSuiteId:
-        suiteFullNameToId['A Suite with only non-executable specs'],
-      pendingReason: 'Temporarily disabled with xit'
+      parentSuiteId: suiteFullNameToId['A Suite with only non-executable specs']
     });
     expect(reporter.specDone.calls.argsFor(5)[0]).toEqual({
-      ...baseSpecEvent,
+      ...baseSpecDoneEvent,
       description: 'is xed',
       status: 'pending',
       fullName: 'A Suite with only non-executable specs is xed',

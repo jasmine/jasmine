@@ -421,7 +421,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
 
   /**
    * Logs a message for use in debugging. If the spec fails, trace messages
-   * will be included in the {@link SpecResult|result} passed to the
+   * will be included in the {@link SpecDoneEvent|result} passed to the
    * reporter's specDone method.
    *
    * This method should be called only when a spec (including any associated

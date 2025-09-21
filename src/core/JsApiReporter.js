@@ -96,7 +96,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
      * @function
      * @param {Number} index - The position in the specs list to start from.
      * @param {Number} length - Maximum number of specs results to return.
-     * @return {SpecResult[]}
+     * @return {SpecDoneEvent[]}
      */
     this.specResults = function(index, length) {
       return specs.slice(index, index + length);
@@ -107,7 +107,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
      * @name jsApiReporter#specs
      * @since 2.0.0
      * @function
-     * @return {SpecResult[]}
+     * @return {SpecDoneEvent[]}
      */
     this.specs = function() {
       return specs;
