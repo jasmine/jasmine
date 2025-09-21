@@ -19,7 +19,8 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
       matcherName: options.matcherName,
       message: message(),
       stack: options.omitStackTrace ? '' : stack(),
-      passed: options.passed
+      passed: options.passed,
+      globalErrorType: options.globalErrorType
     };
 
     if (!result.passed) {

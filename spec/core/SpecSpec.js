@@ -337,7 +337,8 @@ describe('Spec', function() {
           message: 'foo thrown',
           matcherName: '',
           passed: false,
-          stack: null
+          stack: null,
+          globalErrorType: undefined
         }
       ]);
     });

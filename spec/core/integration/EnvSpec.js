@@ -1674,7 +1674,13 @@ describe('Env integration', function() {
       status: 'passed',
       parentSuiteId: suiteFullNameToId['A Suite'],
       passedExpectations: [
-        { matcherName: 'toBe', message: 'Passed.', stack: '', passed: true }
+        {
+          matcherName: 'toBe',
+          message: 'Passed.',
+          stack: '',
+          passed: true,
+          globalErrorType: undefined
+        }
       ],
       duration: jasmine.any(Number)
     });
@@ -3145,7 +3151,7 @@ describe('Env integration', function() {
 
     const result = jasmineDone.calls.argsFor(0)[0];
     expect(result.failedExpectations).toEqual([
-      jasmine.objectContaining({
+      {
         passed: false,
         globalErrorType: 'lateExpectation',
         message:
@@ -3154,8 +3160,9 @@ describe('Env integration', function() {
           '1. Did you forget to return or await the result of expectAsync?\n' +
           '2. Was done() invoked before an async operation completed?\n' +
           '3. Did an expectation follow a call to done()?',
-        matcherName: 'toBeResolved'
-      })
+        matcherName: 'toBeResolved',
+        stack: jasmine.any(String)
+      }
     ]);
   });
 

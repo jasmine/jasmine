@@ -228,7 +228,7 @@ getJasmineRequireObj().Env = function(j$) {
         '2. Was done() invoked before an async operation completed?\n' +
         '3. Did an expectation follow a call to done()?';
 
-      topSuite.result.failedExpectations.push(delayedExpectationResult);
+      topSuite.addExpectationResult(false, delayedExpectationResult);
     }
 
     function routeLateFailure(expectationResult) {
