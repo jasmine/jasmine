@@ -220,25 +220,28 @@ getJasmineRequireObj().Suite = function(j$) {
       this.onLateError(new Error(msg));
     }
 
-    addExpectationResult() {
-      if (isFailure(arguments)) {
-        const data = arguments[1];
-        const expectationResult = j$.buildExpectationResult(data);
+    addExpectationResult(passed, data) {
+      if (passed) {
+        // Passed expectations are accepted for compatibility with
+        // Spec#addExpectationResult, but aren't recorded.
+        return;
+      }
 
-        if (this.reportedDone) {
-          this.onLateError(expectationResult);
-        } else {
-          this.result.failedExpectations.push(expectationResult);
+      const expectationResult = j$.buildExpectationResult(data);
 
-          // TODO: refactor so that we don't need to override cached status
-          if (this.result.status) {
-            this.result.status = 'failed';
-          }
+      if (this.reportedDone) {
+        this.onLateError(expectationResult);
+      } else {
+        this.result.failedExpectations.push(expectationResult);
+
+        // TODO: refactor so that we don't need to override cached status
+        if (this.result.status) {
+          this.result.status = 'failed';
         }
+      }
 
-        if (this.#throwOnExpectationFailure) {
-          throw new j$.errors.ExpectationFailed();
-        }
+      if (this.#throwOnExpectationFailure) {
+        throw new j$.errors.ExpectationFailed();
       }
     }
 
@@ -333,10 +336,6 @@ getJasmineRequireObj().Suite = function(j$) {
     get children() {
       return this.#suite.children.map(child => child.metadata);
     }
-  }
-
-  function isFailure(args) {
-    return !args[0];
   }
 
   return Suite;
