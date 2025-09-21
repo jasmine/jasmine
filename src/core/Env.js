@@ -240,7 +240,7 @@ getJasmineRequireObj().Env = function(j$) {
             expectationResult.globalErrorType = 'lateError';
           }
 
-          r.result.failedExpectations.push(expectationResult);
+          r.addExpectationResult(false, expectationResult);
           return;
         }
       }

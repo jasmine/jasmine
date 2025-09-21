@@ -77,7 +77,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
           );
         },
         onComplete: () => {
-          if (spec.result.status === 'failed') {
+          if (spec.status() === 'failed') {
             specOverallDone(new j$.private.StopExecutionError('spec failed'));
           } else {
             specOverallDone();
@@ -109,7 +109,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       const complete = {
         fn(done) {
           spec.executionFinished(excluded, config.failSpecWithNoExpectations);
-          resultCallback(spec.result, done);
+          resultCallback(spec.doneEvent(), done);
         },
         type: 'specCleanup'
       };
@@ -246,7 +246,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       this.#runableResources.clearForRunable(spec.id);
       this.#currentRunableTracker.setCurrentSpec(null);
 
-      if (spec.result.status === 'failed') {
+      if (spec.status() === 'failed') {
         this.#hasFailures = true;
       }
 
@@ -272,19 +272,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         } else {
           /* a spec */
           await this.#reportDispatcher.specStarted(child.startedEvent());
-
-          child.addExpectationResult(
-            false,
-            {
-              passed: false,
-              message:
-                'Not run because a beforeAll function failed. The ' +
-                'beforeAll failure will be reported on the suite that ' +
-                'caused it.'
-            },
-            true
-          );
-          child.result.status = 'failed';
+          child.hadBeforeAllFailure();
           await this.#reportSpecDone(child);
         }
       }

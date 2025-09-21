@@ -116,8 +116,8 @@ describe('TreeRunner', function() {
       expect(specRunQueueArgs.queueableFns[1]).toEqual(queueableFn);
       queueableFn.fn();
 
-      expect(spec.getResult().status).toEqual('pending');
-      expect(spec.getResult().pendingReason).toEqual('');
+      expect(spec.doneEvent().status).toEqual('pending');
+      expect(spec.doneEvent().pendingReason).toEqual('');
     });
 
     it('marks specs pending at runtime with a message', function() {
@@ -137,8 +137,8 @@ describe('TreeRunner', function() {
       expect(specRunQueueArgs.queueableFns[1]).toEqual(queueableFn);
       queueableFn.fn();
 
-      expect(spec.getResult().status).toEqual('pending');
-      expect(spec.getResult().pendingReason).toEqual('some reason');
+      expect(spec.doneEvent().status).toEqual('pending');
+      expect(spec.doneEvent().pendingReason).toEqual('some reason');
     });
 
     it('passes failSpecWithNoExp to Spec#executionFinished', async function() {

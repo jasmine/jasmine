@@ -149,11 +149,16 @@ describe('Spec', function() {
   });
 
   describe('status', function() {
-    it('is "passed" by default', function() {
+    it('returns "passed" by default', function() {
       const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
-      expect(spec.getResult().status).toBe('passed');
+      expect(spec.status())
+        .withContext('status()')
+        .toBe('passed');
+      expect(spec.doneEvent().status)
+        .withContext('doneEvent().status')
+        .toBe('passed');
     });
 
     it('is "passed" if all expectations passed', function() {
@@ -163,7 +168,12 @@ describe('Spec', function() {
 
       spec.addExpectationResult(true, {});
 
-      expect(spec.getResult().status).toBe('passed');
+      expect(spec.status())
+        .withContext('status()')
+        .toBe('passed');
+      expect(spec.doneEvent().status)
+        .withContext('doneEvent().status')
+        .toBe('passed');
     });
 
     it('is "failed" if any expectation failed', function() {
@@ -174,7 +184,12 @@ describe('Spec', function() {
       spec.addExpectationResult(true, {});
       spec.addExpectationResult(false, {});
 
-      expect(spec.getResult().status).toBe('failed');
+      expect(spec.status())
+        .withContext('status()')
+        .toBe('failed');
+      expect(spec.doneEvent().status)
+        .withContext('doneEvent().status')
+        .toBe('failed');
     });
 
     it('is "pending" if created without a function body', function() {
@@ -186,7 +201,65 @@ describe('Spec', function() {
           resultCallback: resultCallback
         });
 
-      expect(spec.getResult().status).toBe('pending');
+      expect(spec.status())
+        .withContext('status()')
+        .toBe('pending');
+      expect(spec.doneEvent().status)
+        .withContext('doneEvent().status')
+        .toBe('pending');
+    });
+
+    describe('after a call to executionFinished()', function() {
+      describe('with excluded true', function() {
+        it("is 'excluded'", function() {
+          const spec = new privateUnderTest.Spec({
+            queueableFn: { fn: () => {} }
+          });
+
+          spec.executionFinished(true, false);
+
+          expect(spec.status())
+            .withContext('status()')
+            .toBe('excluded');
+          expect(spec.doneEvent().status)
+            .withContext('doneEvent().status')
+            .toBe('excluded');
+        });
+      });
+
+      describe('with failSpecWithNoExp true', function() {
+        it("is 'failed' if there were no expectations", function() {
+          const spec = new privateUnderTest.Spec({
+            queueableFn: { fn: () => {} }
+          });
+
+          spec.executionFinished(false, true);
+
+          expect(spec.status())
+            .withContext('status()')
+            .toBe('failed');
+          expect(spec.doneEvent().status)
+            .withContext('doneEvent().status')
+            .toBe('failed');
+        });
+      });
+    });
+
+    describe('after a call to hadBeforeAllFailure()', function() {
+      it("is 'failed'", function() {
+        const spec = new privateUnderTest.Spec({
+          queueableFn: { fn: () => {} }
+        });
+
+        spec.hadBeforeAllFailure();
+
+        expect(spec.status())
+          .withContext('status()')
+          .toBe('failed');
+        expect(spec.doneEvent().status)
+          .withContext('doneEvent().status')
+          .toBe('failed');
+      });
     });
   });
 

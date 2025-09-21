@@ -4,6 +4,9 @@ getJasmineRequireObj().Spec = function(j$) {
     #throwOnExpectationFailure;
     #timer;
     #metadata;
+    // TODO: better naming. Don't make 'excluded' mean two things.
+    #dynamicallyExcluded;
+    #requireExpectations;
 
     constructor(attrs) {
       this.expectationFactory = attrs.expectationFactory;
@@ -52,11 +55,6 @@ getJasmineRequireObj().Spec = function(j$) {
           this.onLateError(expectationResult);
         } else {
           this.result.failedExpectations.push(expectationResult);
-
-          // TODO: refactor so that we don't need to override cached status
-          if (this.result.status) {
-            this.result.status = 'failed';
-          }
         }
 
         if (this.#throwOnExpectationFailure && !isError) {
@@ -85,16 +83,32 @@ getJasmineRequireObj().Spec = function(j$) {
     }
 
     executionFinished(excluded, failSpecWithNoExp) {
+      this.#dynamicallyExcluded = excluded;
+      this.#requireExpectations = failSpecWithNoExp;
+
       if (this.#autoCleanClosures) {
         this.queueableFn.fn = null;
       }
 
-      this.result.status = this.#status(excluded, failSpecWithNoExp);
       this.result.duration = this.#timer.elapsed();
 
-      if (this.result.status !== 'failed') {
+      if (this.status() !== 'failed') {
         this.result.debugLogs = null;
       }
+    }
+
+    hadBeforeAllFailure() {
+      this.addExpectationResult(
+        false,
+        {
+          passed: false,
+          message:
+            'Not run because a beforeAll function failed. The ' +
+            'beforeAll failure will be reported on the suite that ' +
+            'caused it.'
+        },
+        true
+      );
     }
 
     reset() {
@@ -114,6 +128,8 @@ getJasmineRequireObj().Spec = function(j$) {
       };
       this.markedPending = this.markedExcluding;
       this.reportedDone = false;
+      this.#dynamicallyExcluded = false;
+      this.#requireExpectations = false;
     }
 
     startedEvent() {
@@ -158,14 +174,14 @@ getJasmineRequireObj().Spec = function(j$) {
        * @since 6.0.0
        */
       const event = {
-        ...this.#commonEventFields()
+        ...this.#commonEventFields(),
+        status: this.status()
       };
       const toCopy = [
         'failedExpectations',
         'passedExpectations',
         'deprecationWarnings',
         'pendingReason',
-        'status',
         'duration',
         'properties',
         'debugLogs'
@@ -228,13 +244,13 @@ getJasmineRequireObj().Spec = function(j$) {
 
     // TODO: ensure that all access to result goes through .getResult()
     // so that the status is correct.
+    // Step 1: fix things so getResult() always returns correct status
     getResult() {
-      this.result.status = this.#status();
       return this.result;
     }
 
-    #status(excluded, failSpecWithNoExpectations) {
-      if (excluded === true) {
+    status() {
+      if (this.#dynamicallyExcluded) {
         return 'excluded';
       }
 
@@ -244,7 +260,7 @@ getJasmineRequireObj().Spec = function(j$) {
 
       if (
         this.result.failedExpectations.length > 0 ||
-        (failSpecWithNoExpectations &&
+        (this.#requireExpectations &&
           this.result.failedExpectations.length +
             this.result.passedExpectations.length ===
             0)
