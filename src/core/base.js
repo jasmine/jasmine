@@ -245,7 +245,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @function
    */
   j$.anything = function() {
-    return new j$.Anything();
+    return new j$.private.Anything();
   };
 
   /**

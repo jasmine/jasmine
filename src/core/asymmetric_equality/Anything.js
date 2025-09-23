@@ -9,5 +9,5 @@ getJasmineRequireObj().Anything = function(j$) {
     return '<jasmine.anything>';
   };
 
-  return Anything;
+  j$.private.Anything = Anything;
 };
