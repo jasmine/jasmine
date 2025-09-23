@@ -20,7 +20,7 @@ getJasmineRequireObj().Env = function(j$) {
     this.clock = new j$.private.Clock(
       global,
       function() {
-        return new j$.DelayedFunctionScheduler();
+        return new j$.private.DelayedFunctionScheduler();
       },
       new j$.private.MockDate(global)
     );

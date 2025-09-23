@@ -205,5 +205,5 @@ getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
     return index;
   }
 
-  return DelayedFunctionScheduler;
+  j$.private.DelayedFunctionScheduler = DelayedFunctionScheduler;
 };
