@@ -358,7 +358,7 @@ describe('PrettyPrinter', function() {
     let env, pp;
 
     beforeEach(function() {
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
       pp = jasmineUnderTest.makePrettyPrinter();
     });
 
@@ -390,7 +390,7 @@ describe('PrettyPrinter', function() {
       const TestObject = {
           someFunction: function() {}
         },
-        env = new jasmineUnderTest.Env(),
+        env = new privateUnderTest.Env(),
         pp = jasmineUnderTest.makePrettyPrinter();
 
       const spyRegistry = new jasmineUnderTest.SpyRegistry({

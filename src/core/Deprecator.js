@@ -88,5 +88,5 @@ getJasmineRequireObj().Deprecator = function(j$) {
     });
   };
 
-  return Deprecator;
+  j$.private.Deprecator = Deprecator;
 };

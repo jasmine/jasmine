@@ -177,5 +177,5 @@ getJasmineRequireObj().Configuration = function(j$) {
     }
   }
 
-  return Configuration;
+  j$.private.Configuration = Configuration;
 };

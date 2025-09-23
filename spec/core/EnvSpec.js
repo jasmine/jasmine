@@ -2,7 +2,7 @@
 describe('Env', function() {
   let env;
   beforeEach(function() {
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
   });
 
   afterEach(function() {
@@ -626,7 +626,7 @@ describe('Env', function() {
         'removeOverrideListener'
       ]);
       env.cleanup_();
-      env = new jasmineUnderTest.Env({
+      env = new privateUnderTest.Env({
         GlobalErrors: function() {
           return globalErrors;
         }
@@ -645,7 +645,7 @@ describe('Env', function() {
         'removeOverrideListener'
       ]);
       env.cleanup_();
-      env = new jasmineUnderTest.Env({
+      env = new privateUnderTest.Env({
         suppressLoadErrors: true,
         GlobalErrors: function() {
           return globalErrors;

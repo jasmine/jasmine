@@ -4,7 +4,7 @@ describe('toHaveBeenCalledBefore', function() {
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
       fn = function() {},
-      spy = new jasmineUnderTest.Env().createSpy('a spy');
+      spy = new privateUnderTest.Env().createSpy('a spy');
 
     expect(function() {
       matcher.compare(fn, spy);
@@ -15,7 +15,7 @@ describe('toHaveBeenCalledBefore', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore({
         pp: jasmineUnderTest.makePrettyPrinter()
       }),
-      spy = new jasmineUnderTest.Env().createSpy('a spy'),
+      spy = new privateUnderTest.Env().createSpy('a spy'),
       fn = function() {};
 
     expect(function() {

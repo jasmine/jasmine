@@ -2,7 +2,7 @@ describe('Custom Async Matchers (Integration)', function() {
   let env;
 
   beforeEach(function() {
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
     env.configure({ random: false });
   });
 

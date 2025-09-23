@@ -63,7 +63,7 @@ getJasmineRequireObj().Env = function(j$) {
     let runner;
     let parallelLoadingState = null; // 'specs', 'helpers', or null for non-parallel
 
-    const config = new j$.Configuration();
+    const config = new j$.private.Configuration();
 
     if (!envOptions.suppressLoadErrors) {
       installGlobalErrors();
@@ -333,7 +333,7 @@ getJasmineRequireObj().Env = function(j$) {
       runQueue
     });
     topSuite = suiteBuilder.topSuite;
-    const deprecator = new j$.Deprecator(topSuite);
+    const deprecator = new j$.private.Deprecator(topSuite);
 
     /**
      * Provides the root suite, through which all suites and specs can be
@@ -824,5 +824,7 @@ getJasmineRequireObj().Env = function(j$) {
     return frames[3] && frames[3].file;
   }
 
-  return Env;
+  // Env instances returned from jasmine.getEnv() are public, but the
+  // constructor itself is private.
+  j$.private.Env = Env;
 };

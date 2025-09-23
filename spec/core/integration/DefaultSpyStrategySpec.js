@@ -2,7 +2,7 @@ describe('Default Spy Strategy (Integration)', function() {
   let env;
 
   beforeEach(function() {
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
     env.configure({ random: false });
   });
 

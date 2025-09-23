@@ -7,7 +7,7 @@ describe('Deprecator', function() {
 
     it('logs the mesage without context when the runnable is the top suite', function() {
       const runnable = { addDeprecationWarning: function() {} };
-      const deprecator = new jasmineUnderTest.Deprecator(runnable);
+      const deprecator = new privateUnderTest.Deprecator(runnable);
       deprecator.verboseDeprecations(true);
 
       deprecator.addDeprecationWarning(runnable, 'the message', {
@@ -25,7 +25,7 @@ describe('Deprecator', function() {
         },
         children: []
       };
-      const deprecator = new jasmineUnderTest.Deprecator({});
+      const deprecator = new privateUnderTest.Deprecator({});
       deprecator.verboseDeprecations(true);
 
       deprecator.addDeprecationWarning(runnable, 'the message', {
@@ -44,7 +44,7 @@ describe('Deprecator', function() {
           return 'the spec';
         }
       };
-      const deprecator = new jasmineUnderTest.Deprecator({});
+      const deprecator = new privateUnderTest.Deprecator({});
       deprecator.verboseDeprecations(true);
 
       deprecator.addDeprecationWarning(runnable, 'the message', {
@@ -61,7 +61,7 @@ describe('Deprecator', function() {
         'addDeprecationWarning',
         'getFullName'
       ]);
-      const deprecator = new jasmineUnderTest.Deprecator(topSuite);
+      const deprecator = new privateUnderTest.Deprecator(topSuite);
       const runnable = jasmine.createSpyObj('spec', [
         'addDeprecationWarning',
         'getFullName'
@@ -105,7 +105,7 @@ describe('Deprecator', function() {
     });
 
     it('emits the deprecation only once when verboseDeprecations is not set', function() {
-      const deprecator = new jasmineUnderTest.Deprecator({});
+      const deprecator = new privateUnderTest.Deprecator({});
       const runnable1 = jasmine.createSpyObj('runnable1', [
         'addDeprecationWarning',
         'getFullName'
@@ -124,7 +124,7 @@ describe('Deprecator', function() {
     });
 
     it('emits the deprecation only once when verboseDeprecations is false', function() {
-      const deprecator = new jasmineUnderTest.Deprecator({});
+      const deprecator = new privateUnderTest.Deprecator({});
       const runnable1 = jasmine.createSpyObj('runnable1', [
         'addDeprecationWarning',
         'getFullName'
@@ -144,7 +144,7 @@ describe('Deprecator', function() {
     });
 
     it('emits the deprecation for each call when verboseDeprecations is true', function() {
-      const deprecator = new jasmineUnderTest.Deprecator({});
+      const deprecator = new privateUnderTest.Deprecator({});
       const runnable1 = jasmine.createSpyObj('runnable1', [
         'addDeprecationWarning',
         'getFullName'
@@ -164,7 +164,7 @@ describe('Deprecator', function() {
     });
 
     it('includes a note about verboseDeprecations', function() {
-      const deprecator = new jasmineUnderTest.Deprecator({});
+      const deprecator = new privateUnderTest.Deprecator({});
       const runnable = jasmine.createSpyObj('runnable', [
         'addDeprecationWarning',
         'getFullName'
@@ -183,7 +183,7 @@ describe('Deprecator', function() {
     });
 
     it('omits the note about verboseDeprecations when verboseDeprecations is true', function() {
-      const deprecator = new jasmineUnderTest.Deprecator({});
+      const deprecator = new privateUnderTest.Deprecator({});
       const runnable = jasmine.createSpyObj('runnable', [
         'addDeprecationWarning',
         'getFullName'
@@ -207,7 +207,7 @@ describe('Deprecator', function() {
       // to report their own deprecations through Jasmine. See
       // <https://github.com/jasmine/jasmine/pull/1498>.
       it('passes the error through unchanged', function() {
-        const deprecator = new jasmineUnderTest.Deprecator({});
+        const deprecator = new privateUnderTest.Deprecator({});
         const runnable = jasmine.createSpyObj('runnable', [
           'addDeprecationWarning',
           'getFullName'
@@ -238,7 +238,7 @@ describe('Deprecator', function() {
       });
 
       it('reports the deprecation every time, regardless of config.verboseDeprecations', function() {
-        const deprecator = new jasmineUnderTest.Deprecator({});
+        const deprecator = new privateUnderTest.Deprecator({});
         const runnable = jasmine.createSpyObj('runnable', [
           'addDeprecationWarning',
           'getFullName'
@@ -259,7 +259,7 @@ describe('Deprecator', function() {
       });
 
       it('omits the note about verboseDeprecations', function() {
-        const deprecator = new jasmineUnderTest.Deprecator({});
+        const deprecator = new privateUnderTest.Deprecator({});
         const runnable = jasmine.createSpyObj('runnable', [
           'addDeprecationWarning',
           'getFullName'
@@ -293,7 +293,7 @@ describe('Deprecator', function() {
     }
 
     function testStackTrace(options) {
-      const deprecator = new jasmineUnderTest.Deprecator({});
+      const deprecator = new privateUnderTest.Deprecator({});
       const runnable = jasmine.createSpyObj('runnable', [
         'addDeprecationWarning',
         'getFullName'
@@ -311,7 +311,7 @@ describe('Deprecator', function() {
     }
 
     function testNoStackTrace(options) {
-      const deprecator = new jasmineUnderTest.Deprecator({});
+      const deprecator = new privateUnderTest.Deprecator({});
       const runnable = jasmine.createSpyObj('runnable', [
         'addDeprecationWarning',
         'getFullName'

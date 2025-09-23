@@ -4,7 +4,7 @@ describe('Global error handling (integration)', function() {
 
   beforeEach(function() {
     specHelpers.registerIntegrationMatchers();
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
   });
 
   afterEach(function() {
@@ -28,7 +28,7 @@ describe('Global error handling (integration)', function() {
     spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
     env.cleanup_();
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
     const reporter = jasmine.createSpyObj('reporter', [
       'jasmineDone',
       'suiteDone',
@@ -90,7 +90,7 @@ describe('Global error handling (integration)', function() {
       globalErrors.pushListener(onerror);
 
       env.cleanup_();
-      env = new jasmineUnderTest.Env({
+      env = new privateUnderTest.Env({
         suppressLoadErrors: true,
         GlobalErrors: function() {
           return globalErrors;
@@ -129,7 +129,7 @@ describe('Global error handling (integration)', function() {
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -184,7 +184,7 @@ describe('Global error handling (integration)', function() {
         });
 
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env();
 
         let suiteErrors = [];
         env.addReporter({
@@ -234,7 +234,7 @@ describe('Global error handling (integration)', function() {
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -301,7 +301,7 @@ describe('Global error handling (integration)', function() {
         });
 
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env();
 
         let suiteErrors = [];
         env.addReporter({
@@ -355,7 +355,7 @@ describe('Global error handling (integration)', function() {
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env();
 
         spyOn(console, 'error');
 
@@ -419,7 +419,7 @@ describe('Global error handling (integration)', function() {
       spyOn(console, 'error');
 
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
 
       const receivedErrors = [];
       function logErrors(event) {
@@ -473,7 +473,7 @@ describe('Global error handling (integration)', function() {
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -530,7 +530,7 @@ describe('Global error handling (integration)', function() {
         });
 
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env();
 
         let suiteErrors = [];
         env.addReporter({
@@ -580,7 +580,7 @@ describe('Global error handling (integration)', function() {
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -649,7 +649,7 @@ describe('Global error handling (integration)', function() {
         });
 
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env();
 
         let suiteErrors = [];
         env.addReporter({
@@ -703,7 +703,7 @@ describe('Global error handling (integration)', function() {
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env();
 
         spyOn(console, 'error');
 
@@ -770,7 +770,7 @@ describe('Global error handling (integration)', function() {
       spyOn(console, 'error');
 
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
 
       const receivedErrors = [];
       function logErrors(event) {
@@ -833,7 +833,7 @@ describe('Global error handling (integration)', function() {
           };
           spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
           env.cleanup_();
-          env = new jasmineUnderTest.Env();
+          env = new privateUnderTest.Env();
           env.configure({ detectLateRejectionHandling: true });
 
           reporter = jasmine.createSpyObj('fakeReporter', [
@@ -980,7 +980,7 @@ describe('Global error handling (integration)', function() {
           };
           spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
           env.cleanup_();
-          env = new jasmineUnderTest.Env();
+          env = new privateUnderTest.Env();
           env.configure({ detectLateRejectionHandling: true });
           const reporter = jasmine.createSpyObj('fakeReporter', [
             'specDone',
@@ -1026,7 +1026,7 @@ describe('Global error handling (integration)', function() {
     };
     spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
     env.cleanup_();
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
     env.configure({ autoCleanClosures: false });
     const reporter = jasmine.createSpyObj('fakeReporter', ['specDone']);
 

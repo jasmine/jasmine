@@ -3,7 +3,7 @@ describe('spec running', function() {
 
   beforeEach(function() {
     specHelpers.registerIntegrationMatchers();
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
     env.configure({ random: false });
   });
 

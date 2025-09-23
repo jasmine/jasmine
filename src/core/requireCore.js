@@ -42,9 +42,9 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     jRequire.clearStack(j$);
     jRequire.Clock(j$);
     jRequire.DelayedFunctionScheduler(j$);
-    j$.Deprecator = jRequire.Deprecator(j$);
-    j$.Configuration = jRequire.Configuration(j$);
-    j$.Env = jRequire.Env(j$);
+    jRequire.Deprecator(j$);
+    jRequire.Configuration(j$);
+    jRequire.Env(j$);
     j$.StackTrace = jRequire.StackTrace(j$);
     j$.ExceptionFormatter = jRequire.ExceptionFormatter(j$);
     j$.ExpectationFilterChain = jRequire.ExpectationFilterChain();
