@@ -1024,7 +1024,7 @@ describe('Clock (acceptance)', function() {
   it('does not mock the Date object by default', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new privateUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
@@ -1047,7 +1047,7 @@ describe('Clock (acceptance)', function() {
   it('mocks the Date object and sets it to current time', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new privateUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
@@ -1077,7 +1077,7 @@ describe('Clock (acceptance)', function() {
   it('mocks the Date object and sets it to a given time', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new privateUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
@@ -1110,7 +1110,7 @@ describe('Clock (acceptance)', function() {
   it('throws mockDate is called with a non-Date', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new privateUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
@@ -1128,7 +1128,7 @@ describe('Clock (acceptance)', function() {
   it('mocks the Date object and updates the date per delayed function', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new privateUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
@@ -1167,7 +1167,7 @@ describe('Clock (acceptance)', function() {
   it('correctly clears a scheduled timeout while the Clock is advancing', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date, setTimeout: undefined },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new privateUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
         global,
         function() {
@@ -1192,7 +1192,7 @@ describe('Clock (acceptance)', function() {
   it('correctly clears a scheduled interval while the Clock is advancing', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date, setTimeout: undefined },
-      mockDate = new jasmineUnderTest.MockDate(global),
+      mockDate = new privateUnderTest.MockDate(global),
       clock = new jasmineUnderTest.Clock(
         global,
         function() {

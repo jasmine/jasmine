@@ -103,5 +103,5 @@ getJasmineRequireObj().MockDate = function(j$) {
     }
   }
 
-  return MockDate;
+  j$.private.MockDate = MockDate;
 };
