@@ -133,5 +133,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
     };
   }
 
-  return CallTracker;
+  // Although instances of CallTracker exposed via spies are public,
+  // the ctor itself isn't.
+  j$.private.CallTracker = CallTracker;
 };

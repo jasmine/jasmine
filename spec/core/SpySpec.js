@@ -51,7 +51,7 @@ describe('Spies', function() {
       );
 
       expect(spy.and).toEqual(jasmine.any(jasmineUnderTest.SpyStrategy));
-      expect(spy.calls).toEqual(jasmine.any(jasmineUnderTest.CallTracker));
+      expect(spy.calls).toEqual(jasmine.any(privateUnderTest.CallTracker));
     });
 
     it('tracks the argument of calls', function() {

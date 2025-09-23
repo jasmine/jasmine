@@ -53,7 +53,7 @@ getJasmineRequireObj().Spy = function(j$) {
         },
         matchersUtil
       ),
-      callTracker = new j$.CallTracker();
+      callTracker = new j$.private.CallTracker();
 
     function makeFunc(length, fn) {
       switch (length) {

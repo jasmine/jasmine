@@ -37,7 +37,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     jRequire.formatErrorMsg(j$);
     jRequire.Any(j$);
     jRequire.Anything(j$);
-    j$.CallTracker = jRequire.CallTracker(j$);
+    jRequire.CallTracker(j$);
     j$.MockDate = jRequire.MockDate(j$);
     j$.getClearStack = jRequire.clearStack(j$);
     j$.Clock = jRequire.Clock();

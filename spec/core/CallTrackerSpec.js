@@ -1,6 +1,6 @@
 describe('CallTracker', function() {
   it('tracks that it was called when executed', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     expect(callTracker.any()).toBe(false);
 
@@ -10,7 +10,7 @@ describe('CallTracker', function() {
   });
 
   it('tracks that number of times that it is executed', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     expect(callTracker.count()).toEqual(0);
 
@@ -20,7 +20,7 @@ describe('CallTracker', function() {
   });
 
   it('tracks the params from each execution', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     callTracker.track({ object: void 0, args: [] });
     callTracker.track({ object: {}, args: [0, 'foo'] });
@@ -31,7 +31,7 @@ describe('CallTracker', function() {
   });
 
   it("tracks the 'this' object from each execution", function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     const this0 = {},
       this1 = {};
@@ -45,13 +45,13 @@ describe('CallTracker', function() {
   });
 
   it('returns any empty array when there was no call', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     expect(callTracker.argsFor(0)).toEqual([]);
   });
 
   it('allows access for the arguments for all calls', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     callTracker.track({ object: {}, args: [] });
     callTracker.track({ object: {}, args: [0, 'foo'] });
@@ -60,7 +60,7 @@ describe('CallTracker', function() {
   });
 
   it('tracks the context and arguments for each call', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     callTracker.track({ object: {}, args: [] });
     callTracker.track({ object: {}, args: [0, 'foo'] });
@@ -71,7 +71,7 @@ describe('CallTracker', function() {
   });
 
   it('simplifies access to the arguments for the last (most recent) call', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     callTracker.track();
     callTracker.track({ object: {}, args: [0, 'foo'] });
@@ -83,13 +83,13 @@ describe('CallTracker', function() {
   });
 
   it("returns a useful falsy value when there isn't a last (most recent) call", function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     expect(callTracker.mostRecent()).toBeFalsy();
   });
 
   it('simplifies access to the arguments for the first (oldest) call', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     callTracker.track({ object: {}, args: [0, 'foo'] });
 
@@ -97,13 +97,13 @@ describe('CallTracker', function() {
   });
 
   it("returns a useful falsy value when there isn't a first (oldest) call", function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     expect(callTracker.first()).toBeFalsy();
   });
 
   it('allows the tracking to be reset', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
 
     callTracker.track();
     callTracker.track({ object: {}, args: [0, 'foo'] });
@@ -117,7 +117,7 @@ describe('CallTracker', function() {
   });
 
   it('allows object arguments to be shallow cloned', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
     callTracker.saveArgumentsByValue();
 
     const objectArg = { foo: 'bar' },
@@ -135,7 +135,7 @@ describe('CallTracker', function() {
   });
 
   it('allows object arguments to be deep cloned', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
     callTracker.saveArgumentsByValue(args => JSON.parse(JSON.stringify(args)));
 
     const objectArg = { foo: { bar: { baz: ['qux'] } } },
@@ -158,7 +158,7 @@ describe('CallTracker', function() {
   });
 
   it('can take any function to transform arguments when saving by value', function() {
-    const callTracker = new jasmineUnderTest.CallTracker();
+    const callTracker = new privateUnderTest.CallTracker();
     callTracker.saveArgumentsByValue(JSON.stringify);
 
     const objectArg = { foo: { bar: { baz: ['qux'] } } },
@@ -171,7 +171,7 @@ describe('CallTracker', function() {
   });
 
   it('saves primitive arguments by value', function() {
-    const callTracker = new jasmineUnderTest.CallTracker(),
+    const callTracker = new privateUnderTest.CallTracker(),
       args = [undefined, null, false, '', /\s/, 0, 1.2, NaN];
 
     callTracker.saveArgumentsByValue();

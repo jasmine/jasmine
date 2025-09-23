@@ -417,7 +417,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     }
     return (
       putativeSpy.and instanceof j$.SpyStrategy &&
-      putativeSpy.calls instanceof j$.CallTracker
+      putativeSpy.calls instanceof j$.private.CallTracker
     );
   };
 
