@@ -2880,7 +2880,7 @@ describe('Env integration', function() {
   });
 
   it('should report deprecation stack with an error object', async function() {
-    const exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
+    const exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
       reporter = jasmine.createSpyObj('reporter', [
         'jasmineDone',
         'suiteDone',

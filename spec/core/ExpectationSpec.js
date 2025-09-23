@@ -4,7 +4,7 @@ describe('Expectation', function() {
         toFoo: function() {},
         toBar: function() {}
       },
-      expectation = jasmineUnderTest.Expectation.factory({
+      expectation = privateUnderTest.Expectation.factory({
         customMatchers: matchers
       });
 
@@ -17,9 +17,9 @@ describe('Expectation', function() {
       toQuux: function() {}
     };
 
-    jasmineUnderTest.Expectation.addCoreMatchers(coreMatchers);
+    privateUnderTest.Expectation.addCoreMatchers(coreMatchers);
 
-    const expectation = jasmineUnderTest.Expectation.factory({});
+    const expectation = privateUnderTest.Expectation.factory({});
 
     expect(expectation.toQuux).toBeDefined();
   });
@@ -39,7 +39,7 @@ describe('Expectation', function() {
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult');
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       matchersUtil: matchersUtil,
       customMatchers: matchers,
       actual: 'an actual',
@@ -67,7 +67,7 @@ describe('Expectation', function() {
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult');
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       matchersUtil: matchersUtil,
       customMatchers: matchers,
       actual: 'an actual',
@@ -94,7 +94,7 @@ describe('Expectation', function() {
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult');
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       customMatchers: matchers,
       matchersUtil: matchersUtil,
       actual: 'an actual',
@@ -131,7 +131,7 @@ describe('Expectation', function() {
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult');
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       customMatchers: matchers,
       matchersUtil: matchersUtil,
       actual: 'an actual',
@@ -166,7 +166,7 @@ describe('Expectation', function() {
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult');
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       actual: 'an actual',
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
@@ -202,7 +202,7 @@ describe('Expectation', function() {
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult');
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: 'an actual',
       addExpectationResult: addExpectationResult
@@ -234,7 +234,7 @@ describe('Expectation', function() {
       addExpectationResult = jasmine.createSpy('addExpectationResult'),
       actual = 'an actual';
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: 'an actual',
       addExpectationResult: addExpectationResult
@@ -271,7 +271,7 @@ describe('Expectation', function() {
       addExpectationResult = jasmine.createSpy('addExpectationResult'),
       actual = 'an actual';
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: 'an actual',
       matchersUtil: matchersUtil,
@@ -307,7 +307,7 @@ describe('Expectation', function() {
       addExpectationResult = jasmine.createSpy('addExpectationResult'),
       actual = 'an actual';
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: 'an actual',
       addExpectationResult: addExpectationResult
@@ -342,7 +342,7 @@ describe('Expectation', function() {
       addExpectationResult = jasmine.createSpy('addExpectationResult'),
       actual = 'an actual';
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: 'an actual',
       addExpectationResult: addExpectationResult
@@ -380,7 +380,7 @@ describe('Expectation', function() {
       addExpectationResult = jasmine.createSpy('addExpectationResult'),
       actual = 'an actual';
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       customMatchers: matchers,
       actual: 'an actual',
       addExpectationResult: addExpectationResult
@@ -416,7 +416,7 @@ describe('Expectation', function() {
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult');
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       actual: 'an actual',
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
@@ -452,7 +452,7 @@ describe('Expectation', function() {
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult');
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       actual: 'an actual',
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
@@ -490,7 +490,7 @@ describe('Expectation', function() {
       },
       addExpectationResult = jasmine.createSpy('addExpectationResult');
 
-    const expectation = jasmineUnderTest.Expectation.factory({
+    const expectation = privateUnderTest.Expectation.factory({
       actual: 'an actual',
       customMatchers: matchers,
       addExpectationResult: addExpectationResult
@@ -526,7 +526,7 @@ describe('Expectation', function() {
           }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = jasmineUnderTest.Expectation.factory({
+        expectation = privateUnderTest.Expectation.factory({
           customMatchers: matchers,
           matchersUtil: matchersUtil,
           actual: 'an actual',
@@ -554,7 +554,7 @@ describe('Expectation', function() {
           }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = jasmineUnderTest.Expectation.factory({
+        expectation = privateUnderTest.Expectation.factory({
           customMatchers: matchers,
           actual: 'an actual',
           addExpectationResult: addExpectationResult
@@ -581,7 +581,7 @@ describe('Expectation', function() {
           }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = jasmineUnderTest.Expectation.factory({
+        expectation = privateUnderTest.Expectation.factory({
           customMatchers: matchers,
           actual: 'an actual',
           addExpectationResult: addExpectationResult
@@ -611,7 +611,7 @@ describe('Expectation', function() {
           }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = jasmineUnderTest.Expectation.factory({
+        expectation = privateUnderTest.Expectation.factory({
           customMatchers: matchers,
           actual: 'an actual',
           addExpectationResult: addExpectationResult
@@ -639,7 +639,7 @@ describe('Expectation', function() {
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
         pp = jasmineUnderTest.makePrettyPrinter(),
-        expectation = jasmineUnderTest.Expectation.factory({
+        expectation = privateUnderTest.Expectation.factory({
           customMatchers: matchers,
           matchersUtil: new jasmineUnderTest.MatchersUtil({ pp: pp }),
           actual: 'an actual',
@@ -674,7 +674,7 @@ describe('Expectation', function() {
           }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = jasmineUnderTest.Expectation.factory({
+        expectation = privateUnderTest.Expectation.factory({
           actual: 'an actual',
           customMatchers: matchers,
           addExpectationResult: addExpectationResult

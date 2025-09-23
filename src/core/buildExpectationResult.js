@@ -1,7 +1,7 @@
 //TODO: expectation result may make more sense as a presentation of an expectation.
 getJasmineRequireObj().buildExpectationResult = function(j$) {
   function buildExpectationResult(options) {
-    const exceptionFormatter = new j$.ExceptionFormatter();
+    const exceptionFormatter = new j$.private.ExceptionFormatter();
 
     /**
      * Describes the result of evaluating an expectation
@@ -69,5 +69,5 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
     }
   }
 
-  return buildExpectationResult;
+  j$.private.buildExpectationResult = buildExpectationResult;
 };

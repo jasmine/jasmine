@@ -127,5 +127,5 @@ getJasmineRequireObj().StackTrace = function(j$) {
     return messageLines.length;
   }
 
-  return StackTrace;
+  j$.private.StackTrace = StackTrace;
 };

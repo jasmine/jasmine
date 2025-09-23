@@ -43,7 +43,7 @@ getJasmineRequireObj().Spec = function(j$) {
     }
 
     addExpectationResult(passed, data, isError) {
-      const expectationResult = j$.buildExpectationResult(data);
+      const expectationResult = j$.private.buildExpectationResult(data);
 
       if (passed) {
         this.result.passedExpectations.push(expectationResult);
@@ -211,7 +211,7 @@ getJasmineRequireObj().Spec = function(j$) {
         deprecation = { message: deprecation };
       }
       this.result.deprecationWarnings.push(
-        j$.buildExpectationResult(deprecation)
+        j$.private.buildExpectationResult(deprecation)
       );
     }
 

@@ -5,7 +5,7 @@ getJasmineRequireObj().Expector = function(j$) {
     };
     this.actual = options.actual;
     this.addExpectationResult = options.addExpectationResult || function() {};
-    this.filters = new j$.ExpectationFilterChain();
+    this.filters = new j$.private.ExpectationFilterChain();
   }
 
   Expector.prototype.instantiateMatcher = function(
@@ -89,5 +89,5 @@ getJasmineRequireObj().Expector = function(j$) {
     });
   };
 
-  return Expector;
+  j$.private.Expector = Expector;
 };

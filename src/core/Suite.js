@@ -187,7 +187,7 @@ getJasmineRequireObj().Suite = function(j$) {
         actual: '',
         error: arguments[0]
       };
-      const failedExpectation = j$.buildExpectationResult(data);
+      const failedExpectation = j$.private.buildExpectationResult(data);
 
       if (!this.parentSuite) {
         failedExpectation.globalErrorType = 'afterAll';
@@ -225,7 +225,7 @@ getJasmineRequireObj().Suite = function(j$) {
     addExpectationResult() {
       if (isFailure(arguments)) {
         const data = arguments[1];
-        const expectationResult = j$.buildExpectationResult(data);
+        const expectationResult = j$.private.buildExpectationResult(data);
 
         if (this.reportedDone) {
           this.onLateError(expectationResult);
@@ -249,7 +249,7 @@ getJasmineRequireObj().Suite = function(j$) {
         deprecation = { message: deprecation };
       }
       this.result.deprecationWarnings.push(
-        j$.buildExpectationResult(deprecation)
+        j$.private.buildExpectationResult(deprecation)
       );
     }
 

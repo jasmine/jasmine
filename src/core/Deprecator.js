@@ -64,7 +64,7 @@ getJasmineRequireObj().Deprecator = function(j$) {
   };
 
   Deprecator.prototype.stackTrace_ = function() {
-    const formatter = new j$.ExceptionFormatter();
+    const formatter = new j$.private.ExceptionFormatter();
     return formatter.stack(new Error()).replace(/^Error\n/m, '');
   };
 

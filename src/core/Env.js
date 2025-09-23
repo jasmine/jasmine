@@ -132,11 +132,11 @@ getJasmineRequireObj().Env = function(j$) {
       runableResources.customObjectFormatters().push(formatter);
     };
 
-    j$.Expectation.addCoreMatchers(j$.matchers);
-    j$.Expectation.addAsyncCoreMatchers(j$.asyncMatchers);
+    j$.private.Expectation.addCoreMatchers(j$.matchers);
+    j$.private.Expectation.addAsyncCoreMatchers(j$.asyncMatchers);
 
     const expectationFactory = function(actual, spec) {
-      return j$.Expectation.factory({
+      return j$.private.Expectation.factory({
         matchersUtil: runableResources.makeMatchersUtil(),
         customMatchers: runableResources.customMatchers(),
         actual: actual,
@@ -181,7 +181,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     const throwUnlessFactory = function(actual, spec) {
-      return j$.Expectation.factory({
+      return j$.private.Expectation.factory({
         matchersUtil: runableResources.makeMatchersUtil(),
         customMatchers: runableResources.customMatchers(),
         actual: actual,
@@ -190,7 +190,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     const throwUnlessAsyncFactory = function(actual, spec) {
-      return j$.Expectation.asyncFactory({
+      return j$.private.Expectation.asyncFactory({
         matchersUtil: runableResources.makeMatchersUtil(),
         customAsyncMatchers: runableResources.customAsyncMatchers(),
         actual: actual,
@@ -205,7 +205,7 @@ getJasmineRequireObj().Env = function(j$) {
         error.matcherName !== undefined && error.passed !== undefined;
       const result = isExpectationResult
         ? error
-        : j$.buildExpectationResult({
+        : j$.private.buildExpectationResult({
             error,
             passed: false,
             matcherName: '',
@@ -266,7 +266,7 @@ getJasmineRequireObj().Env = function(j$) {
     }
 
     const asyncExpectationFactory = function(actual, spec, runableType) {
-      return j$.Expectation.asyncFactory({
+      return j$.private.Expectation.asyncFactory({
         matchersUtil: runableResources.makeMatchersUtil(),
         customAsyncMatchers: runableResources.customAsyncMatchers(),
         actual: actual,
@@ -818,7 +818,7 @@ getJasmineRequireObj().Env = function(j$) {
   }
 
   function callerCallerFilename() {
-    const frames = new j$.StackTrace(new Error()).frames;
+    const frames = new j$.private.StackTrace(new Error()).frames;
     // frames[3] should always exist except in Jasmine's own tests, which bypass
     // the global it/describe layer, but don't crash if it doesn't.
     return frames[3] && frames[3].file;

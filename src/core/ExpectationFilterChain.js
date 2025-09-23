@@ -1,4 +1,4 @@
-getJasmineRequireObj().ExpectationFilterChain = function() {
+getJasmineRequireObj().ExpectationFilterChain = function(j$) {
   function ExpectationFilterChain(maybeFilter, prev) {
     this.filter_ = maybeFilter;
     this.prev_ = prev;
@@ -45,5 +45,5 @@ getJasmineRequireObj().ExpectationFilterChain = function() {
     return { found: false };
   };
 
-  return ExpectationFilterChain;
+  j$.private.ExpectationFilterChain = ExpectationFilterChain;
 };

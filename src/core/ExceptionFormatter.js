@@ -58,7 +58,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
         lines.pop();
       }
 
-      const stackTrace = new j$.StackTrace(error);
+      const stackTrace = new j$.private.StackTrace(error);
       lines = lines.concat(filterJasmine(stackTrace));
 
       if (messageHandling === 'require') {
@@ -118,5 +118,5 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
     }
   }
 
-  return ExceptionFormatter;
+  j$.private.ExceptionFormatter = ExceptionFormatter;
 };

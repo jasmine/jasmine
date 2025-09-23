@@ -4,7 +4,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * @namespace matchers
    */
   function Expectation(options) {
-    this.expector = new j$.Expector(options);
+    this.expector = new j$.private.Expector(options);
 
     const customMatchers = options.customMatchers || {};
     for (const matcherName in customMatchers) {
@@ -80,7 +80,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * @namespace async-matchers
    */
   function AsyncExpectation(options) {
-    this.expector = new j$.Expector(options);
+    this.expector = new j$.private.Expector(options);
 
     const customAsyncMatchers = options.customAsyncMatchers || {};
     for (const matcherName in customAsyncMatchers) {
@@ -250,7 +250,7 @@ getJasmineRequireObj().Expectation = function(j$) {
     return s.replace(/^/gm, '    ');
   }
 
-  return {
+  j$.private.Expectation = {
     factory: function(options) {
       return new Expectation(options || {});
     },

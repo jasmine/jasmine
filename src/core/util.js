@@ -49,7 +49,7 @@ getJasmineRequireObj().util = function(j$) {
   };
 
   function callerFile() {
-    const trace = new j$.StackTrace(new Error());
+    const trace = new j$.private.StackTrace(new Error());
     return trace.frames[1].file;
   }
 

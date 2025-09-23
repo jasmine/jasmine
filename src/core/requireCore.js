@@ -45,12 +45,12 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     jRequire.Deprecator(j$);
     jRequire.Configuration(j$);
     jRequire.Env(j$);
-    j$.StackTrace = jRequire.StackTrace(j$);
-    j$.ExceptionFormatter = jRequire.ExceptionFormatter(j$);
-    j$.ExpectationFilterChain = jRequire.ExpectationFilterChain();
-    j$.Expector = jRequire.Expector(j$);
-    j$.Expectation = jRequire.Expectation(j$);
-    j$.buildExpectationResult = jRequire.buildExpectationResult(j$);
+    jRequire.StackTrace(j$);
+    jRequire.ExceptionFormatter(j$);
+    jRequire.ExpectationFilterChain(j$);
+    jRequire.Expector(j$);
+    jRequire.Expectation(j$);
+    jRequire.buildExpectationResult(j$);
     j$.JsApiReporter = jRequire.JsApiReporter(j$);
     j$.makePrettyPrinter = jRequire.makePrettyPrinter(j$);
     j$.basicPrettyPrinter_ = j$.makePrettyPrinter();
