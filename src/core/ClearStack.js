@@ -118,5 +118,5 @@ getJasmineRequireObj().clearStack = function(j$) {
     }
   }
 
-  return getClearStack;
+  j$.private.getClearStack = getClearStack;
 };

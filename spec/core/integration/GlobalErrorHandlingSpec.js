@@ -170,10 +170,10 @@ describe('Global error handling (integration)', function() {
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
-        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const realClearStack = privateUnderTest.getClearStack(global);
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -287,10 +287,10 @@ describe('Global error handling (integration)', function() {
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
-        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const realClearStack = privateUnderTest.getClearStack(global);
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -398,12 +398,12 @@ describe('Global error handling (integration)', function() {
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
-      const realClearStack = jasmineUnderTest.getClearStack(global);
+      const realClearStack = privateUnderTest.getClearStack(global);
       let clearStackCallCount = 0;
       let jasmineDone = false;
       const expectedErrors = [];
       const expectedErrorsAfterJasmineDone = [];
-      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+      spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
         clearStackCallCount++;
         const msg = `Error in clearStack #${clearStackCallCount}`;
 
@@ -516,10 +516,10 @@ describe('Global error handling (integration)', function() {
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
-        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const realClearStack = privateUnderTest.getClearStack(global);
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -635,10 +635,10 @@ describe('Global error handling (integration)', function() {
         };
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
-        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const realClearStack = privateUnderTest.getClearStack(global);
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -748,12 +748,12 @@ describe('Global error handling (integration)', function() {
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
-      const realClearStack = jasmineUnderTest.getClearStack(global);
+      const realClearStack = privateUnderTest.getClearStack(global);
       let clearStackCallCount = 0;
       let jasmineDone = false;
       const expectedErrors = [];
       const expectedErrorsAfterJasmineDone = [];
-      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+      spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
         clearStackCallCount++;
         const reason = `Error in clearStack #${clearStackCallCount}`;
         const expectedMsg = `Unhandled promise rejection: ${reason} thrown`;

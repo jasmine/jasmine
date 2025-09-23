@@ -3226,13 +3226,13 @@ describe('Env integration', function() {
     });
 
     it('is resolved after the stack is cleared', function(done) {
-      const realClearStack = jasmineUnderTest.getClearStack(
+      const realClearStack = privateUnderTest.getClearStack(
           jasmineUnderTest.getGlobal()
         ),
         clearStackSpy = jasmine
           .createSpy('clearStack')
           .and.callFake(realClearStack);
-      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
+      spyOn(privateUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
 
       // Create a new env that has the clearStack defined above
       env.cleanup_();
@@ -3335,13 +3335,13 @@ describe('Env integration', function() {
     });
 
     it('is called after the stack is cleared', async function() {
-      const realClearStack = jasmineUnderTest.getClearStack(
+      const realClearStack = privateUnderTest.getClearStack(
           jasmineUnderTest.getGlobal()
         ),
         clearStackSpy = jasmine
           .createSpy('clearStack')
           .and.callFake(realClearStack);
-      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
+      spyOn(privateUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
 
       // Create a new env that has the clearStack defined above
       env.cleanup_();

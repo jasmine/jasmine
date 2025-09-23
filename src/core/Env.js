@@ -16,7 +16,7 @@ getJasmineRequireObj().Env = function(j$) {
 
     const realSetTimeout = global.setTimeout;
     const realClearTimeout = global.clearTimeout;
-    const clearStack = j$.getClearStack(global);
+    const clearStack = j$.private.getClearStack(global);
     this.clock = new j$.Clock(
       global,
       function() {
