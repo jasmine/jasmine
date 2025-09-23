@@ -1,5 +1,5 @@
 getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
-  const getErrorMsg = j$.formatErrorMsg(
+  const getErrorMsg = j$.private.formatErrorMsg(
     '<toHaveBeenCalledTimes>',
     'expect(<spyObj>).toHaveBeenCalledTimes(<Number>)'
   );

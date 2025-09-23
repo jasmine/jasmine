@@ -1,5 +1,5 @@
 getJasmineRequireObj().toBeInstanceOf = function(j$) {
-  const usageError = j$.formatErrorMsg(
+  const usageError = j$.private.formatErrorMsg(
     '<toBeInstanceOf>',
     'expect(value).toBeInstanceOf(<ConstructorFunction>)'
   );

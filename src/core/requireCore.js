@@ -34,7 +34,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     jRequire.base(j$, jasmineGlobal);
     jRequire.util(j$);
     jRequire.errors(j$);
-    j$.formatErrorMsg = jRequire.formatErrorMsg();
+    jRequire.formatErrorMsg(j$);
     j$.Any = jRequire.Any(j$);
     j$.Anything = jRequire.Anything(j$);
     j$.CallTracker = jRequire.CallTracker(j$);

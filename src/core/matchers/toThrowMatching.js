@@ -1,5 +1,5 @@
 getJasmineRequireObj().toThrowMatching = function(j$) {
-  const usageError = j$.formatErrorMsg(
+  const usageError = j$.private.formatErrorMsg(
     '<toThrowMatching>',
     'expect(function() {<expectation>}).toThrowMatching(<Predicate>)'
   );
