@@ -345,7 +345,7 @@ describe('matchersUtil', function() {
 
     it('passes when Any is used', function() {
       const number = 3,
-        anyNumber = new jasmineUnderTest.Any(Number),
+        anyNumber = new privateUnderTest.Any(Number),
         matchersUtil = new jasmineUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(number, anyNumber)).toBe(true);
@@ -354,7 +354,7 @@ describe('matchersUtil', function() {
 
     it('fails when Any is compared to something unexpected', function() {
       const number = 3,
-        anyString = new jasmineUnderTest.Any(String),
+        anyString = new privateUnderTest.Any(String),
         matchersUtil = new jasmineUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(number, anyString)).toBe(false);
@@ -492,8 +492,8 @@ describe('matchersUtil', function() {
     });
 
     it('passes when an Any is compared to an Any that checks for the same type', function() {
-      const any1 = new jasmineUnderTest.Any(Function),
-        any2 = new jasmineUnderTest.Any(Function),
+      const any1 = new privateUnderTest.Any(Function),
+        any2 = new privateUnderTest.Any(Function),
         matchersUtil = new jasmineUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(any1, any2)).toBe(true);

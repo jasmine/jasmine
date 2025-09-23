@@ -41,5 +41,5 @@ getJasmineRequireObj().Any = function(j$) {
     return '<jasmine.any(' + j$.private.fnNameFor(this.expectedObject) + ')>';
   };
 
-  return Any;
+  j$.private.Any = Any;
 };

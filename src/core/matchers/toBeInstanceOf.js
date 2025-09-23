@@ -29,7 +29,7 @@ getJasmineRequireObj().toBeInstanceOf = function(j$) {
         let pass;
 
         try {
-          expectedMatcher = new j$.Any(expected);
+          expectedMatcher = new j$.private.Any(expected);
           pass = expectedMatcher.asymmetricMatch(actual);
           // eslint-disable-next-line no-unused-vars
         } catch (error) {
