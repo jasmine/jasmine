@@ -123,7 +123,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#currentRunableTracker.popSuite();
       let overallStatus, incompleteReason, incompleteCode;
 
-      if (hasFailures || this.#topSuite.result.failedExpectations.length > 0) {
+      if (hasFailures || this.#topSuite.hasOwnFailedExpectations()) {
         overallStatus = 'failed';
       } else if (this.#getFocusedRunables().length > 0) {
         overallStatus = 'incomplete';

@@ -1765,10 +1765,12 @@ describe('Env integration', function() {
 
     const baseSuiteEvent = {
       id: jasmine.any(String),
-      filename: jasmine.any(String),
+      filename: jasmine.any(String)
+    };
+    const baseSuiteDoneEvent = {
+      ...baseSuiteEvent,
       failedExpectations: [],
       deprecationWarnings: [],
-      duration: null,
       properties: null
     };
 
@@ -1779,7 +1781,7 @@ describe('Env integration', function() {
       parentSuiteId: null
     });
     expect(reporter.suiteDone.calls.argsFor(2)[0]).toEqual({
-      ...baseSuiteEvent,
+      ...baseSuiteDoneEvent,
       description: 'A Suite',
       fullName: 'A Suite',
       status: 'passed',
@@ -1794,7 +1796,7 @@ describe('Env integration', function() {
       parentSuiteId: suiteFullNameToId['A Suite']
     });
     expect(reporter.suiteDone.calls.argsFor(0)[0]).toEqual({
-      ...baseSuiteEvent,
+      ...baseSuiteDoneEvent,
       description: 'with a nested suite',
       status: 'passed',
       fullName: 'A Suite with a nested suite',
@@ -1809,7 +1811,7 @@ describe('Env integration', function() {
       parentSuiteId: suiteFullNameToId['A Suite']
     });
     expect(reporter.suiteDone.calls.argsFor(1)[0]).toEqual({
-      ...baseSuiteEvent,
+      ...baseSuiteDoneEvent,
       description: 'with only non-executable specs',
       status: 'passed',
       fullName: 'A Suite with only non-executable specs',

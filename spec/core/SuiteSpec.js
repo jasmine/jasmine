@@ -425,4 +425,34 @@ describe('Suite', function() {
       }).toThrowError("Value can't be cloned");
     });
   });
+
+  describe('#startedEvent', function() {
+    it('includes only properties that are known before execution', function() {
+      const topSuite = new privateUnderTest.Suite({});
+      const parentSuite = new privateUnderTest.Suite({
+        id: 'suite1',
+        parentSuite: topSuite,
+        description: 'a parent suite'
+      });
+      const suite = new privateUnderTest.Suite({
+        id: 'suite2',
+        parentSuite,
+        reportedParentSuiteId: parentSuite.id,
+        description: 'a suite',
+        filename: 'somefile.js',
+        getPath() {
+          return ['a parent suite', 'a spec'];
+        },
+        queueableFn: { fn: () => {} }
+      });
+
+      expect(suite.startedEvent()).toEqual({
+        id: 'suite2',
+        parentSuiteId: 'suite1',
+        description: 'a suite',
+        fullName: 'a parent suite a suite',
+        filename: 'somefile.js'
+      });
+    });
+  });
 });

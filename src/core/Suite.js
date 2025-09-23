@@ -100,8 +100,45 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     reset() {
+      this.result = {
+        id: this.id,
+        description: this.description,
+        fullName: this.getFullName(),
+        parentSuiteId: this.#reportedParentSuiteId,
+        filename: this.filename,
+        failedExpectations: [],
+        deprecationWarnings: [],
+        duration: null,
+        properties: null
+      };
+      this.markedPending = this.markedExcluding;
+      this.children.forEach(function(child) {
+        child.reset();
+      });
+      this.reportedDone = false;
+    }
+
+    startedEvent() {
       /**
-       * @typedef SuiteResult
+       * @typedef SuiteStartedEvent
+       * @property {String} id - The unique id of this suite.
+       * @property {String} description - The description text passed to the {@link describe} that made this suite.
+       * @property {String} fullName - The full description including all ancestors of this suite.
+       * @property {String|null} parentSuiteId - The ID of the suite containing this suite, or null if this is not in another describe().
+       * @property {String} filename - Deprecated. The name of the file the suite was defined in.
+       * Note: The value may be incorrect if zone.js is installed or
+       * `describe`/`fdescribe`/`xdescribe` have been replaced with versions that
+       * don't maintain the same call stack height as the originals. This property
+       * may be removed in a future version unless there is enough user interest
+       * in keeping it. See {@link https://github.com/jasmine/jasmine/issues/2065}.
+       * @since 6.0.0
+       */
+      return this.#commonEventFields();
+    }
+
+    doneEvent() {
+      /**
+       * @typedef SuiteDoneEvent
        * @property {String} id - The unique id of this suite.
        * @property {String} description - The description text passed to the {@link describe} that made this suite.
        * @property {String} fullName - The full description including all ancestors of this suite.
@@ -119,22 +156,32 @@ getJasmineRequireObj().Suite = function(j$) {
        * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSuiteProperty}
        * @since 2.0.0
        */
-      this.result = {
+      const event = {
+        ...this.#commonEventFields(),
+        status: this.#status()
+      };
+      const toCopy = [
+        'failedExpectations',
+        'deprecationWarnings',
+        'duration',
+        'properties'
+      ];
+
+      for (const k of toCopy) {
+        event[k] = this.result[k];
+      }
+
+      return event;
+    }
+
+    #commonEventFields() {
+      return {
         id: this.id,
         description: this.description,
         fullName: this.getFullName(),
         parentSuiteId: this.#reportedParentSuiteId,
-        filename: this.filename,
-        failedExpectations: [],
-        deprecationWarnings: [],
-        duration: null,
-        properties: null
+        filename: this.filename
       };
-      this.markedPending = this.markedExcluding;
-      this.children.forEach(function(child) {
-        child.reset();
-      });
-      this.reportedDone = false;
     }
 
     removeChildren() {
@@ -155,6 +202,10 @@ getJasmineRequireObj().Suite = function(j$) {
       } else {
         return 'passed';
       }
+    }
+
+    hasOwnFailedExpectations() {
+      return this.result.failedExpectations.length > 0;
     }
 
     getResult() {

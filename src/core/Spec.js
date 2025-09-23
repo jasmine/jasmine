@@ -139,7 +139,7 @@ getJasmineRequireObj().Spec = function(j$) {
        *  same call stack height as the originals. This property may be removed in
        *  a future version unless there is enough user interest in keeping it.
        *  See {@link https://github.com/jasmine/jasmine/issues/2065}.
-       * @since 6.0.0
+       * @since 2.0.0
        */
       return this.#commonEventFields();
     }
@@ -165,7 +165,7 @@ getJasmineRequireObj().Spec = function(j$) {
        * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
        * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
        * @property {DebugLogEntry[]|null} debugLogs - Messages, if any, that were logged using {@link jasmine.debugLog} during a failing spec.
-       * @since 6.0.0
+       * @since 2.0.0
        */
       const event = {
         ...this.#commonEventFields(),

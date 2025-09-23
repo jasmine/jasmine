@@ -37,11 +37,16 @@ describe('Runner', function() {
       this.sharedUserContext = function() {
         return attrs.userContext || {};
       };
+      // TODO remove
       this.result = {
         id: this.id,
         failedExpectations: []
       };
-      this.getResult = jasmine.createSpy('getResult');
+      this.startedEvent = jasmine.createSpy('startedEvent');
+      this.doneEvent = jasmine.createSpy('doneEvent');
+      this.hasOwnFailedExpectations = jasmine.createSpy(
+        'hasOwnFailedExpectations'
+      );
       this.beforeAllFns = attrs.beforeAllFns || [];
       this.afterAllFns = attrs.afterAllFns || [];
       this.cleanupBeforeAfter = function() {};
@@ -182,10 +187,13 @@ describe('Runner', function() {
         SkipPolicy: privateUnderTest.SkipAfterBeforeAllErrorPolicy
       });
 
+      suite.startedEvent.and.returnValue('suite started event');
       runQueue.calls.mostRecent().args[0].queueableFns[0].fn('foo');
-      expect(reportDispatcher.suiteStarted).toHaveBeenCalledWith(suite.result);
+      expect(reportDispatcher.suiteStarted).toHaveBeenCalledWith(
+        'suite started event'
+      );
 
-      suite.getResult.and.returnValue({ my: 'result' });
+      suite.doneEvent.and.returnValue({ my: 'result' });
 
       runQueue.calls.mostRecent().args[0].onComplete();
       expect(reportDispatcher.suiteDone).toHaveBeenCalledWith({ my: 'result' });
@@ -233,12 +241,15 @@ describe('Runner', function() {
       queueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
       expect(queueableFns.length).toBe(2);
 
+      parent.startedEvent.and.returnValue('parent suite started event');
       queueableFns[0].fn();
-      expect(reportDispatcher.suiteStarted).toHaveBeenCalledWith(parent.result);
+      expect(reportDispatcher.suiteStarted).toHaveBeenCalledWith(
+        'parent suite started event'
+      );
 
       verifyAndFinishSpec(spec, queueableFns[1], true);
 
-      parent.getResult.and.returnValue(parent.result);
+      parent.doneEvent.and.returnValue(parent.result);
       runQueue.calls.argsFor(1)[0].onComplete();
       expect(reportDispatcher.suiteDone).toHaveBeenCalledWith(parent.result);
       await expectAsync(promise).toBePending();

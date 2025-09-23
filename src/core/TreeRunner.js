@@ -163,7 +163,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
       this.#runQueue({
         onComplete: maybeError => {
-          this.#suiteSegmentComplete(suite, suite.getResult(), () => {
+          this.#suiteSegmentComplete(suite, () => {
             done(maybeError);
           });
         },
@@ -200,11 +200,12 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     #suiteSegmentStart(suite, next) {
       this.#currentRunableTracker.pushSuite(suite);
       this.#runableResources.initForRunable(suite.id, suite.parentSuite.id);
-      this.#reportDispatcher.suiteStarted(suite.result).then(next);
+      this.#reportDispatcher.suiteStarted(suite.startedEvent()).then(next);
       suite.startTimer();
     }
 
-    #suiteSegmentComplete(suite, result, next) {
+    #suiteSegmentComplete(suite, next) {
+      suite.endTimer();
       const isTopSuite = suite === this.#executionTree.topSuite;
 
       if (!isTopSuite) {
@@ -220,15 +221,14 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         this.#runableResources.clearForRunable(suite.id);
         this.#currentRunableTracker.popSuite();
 
-        if (result.status === 'failed') {
+        if (suite.doneEvent().status === 'failed') {
           this.#hasFailures = true;
         }
-        suite.endTimer();
       }
 
       const finish = isTopSuite
         ? next
-        : () => this.#reportSuiteDone(suite, result, next);
+        : () => this.#reportSuiteDone(suite, next);
 
       if (suite.hadBeforeAllFailure) {
         this.#reportChildrenOfBeforeAllFailure(suite).then(finish);
@@ -237,9 +237,9 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       }
     }
 
-    #reportSuiteDone(suite, result, next) {
+    #reportSuiteDone(suite, next) {
       suite.reportedDone = true;
-      this.#reportDispatcher.suiteDone(result).then(next);
+      this.#reportDispatcher.suiteDone(suite.doneEvent()).then(next);
     }
 
     async #specComplete(spec) {
@@ -261,14 +261,14 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     async #reportChildrenOfBeforeAllFailure(suite) {
       for (const child of suite.children) {
         if (child instanceof j$.private.Suite) {
-          await this.#reportDispatcher.suiteStarted(child.result);
+          await this.#reportDispatcher.suiteStarted(child.startedEvent());
           await this.#reportChildrenOfBeforeAllFailure(child);
 
           // Marking the suite passed is consistent with how suites that
           // contain failed specs but no suite-level failures are reported.
           child.result.status = 'passed';
 
-          await this.#reportDispatcher.suiteDone(child.result);
+          await this.#reportDispatcher.suiteDone(child.doneEvent());
         } else {
           /* a spec */
           await this.#reportDispatcher.specStarted(child.startedEvent());
