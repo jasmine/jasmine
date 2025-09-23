@@ -11,7 +11,7 @@ getJasmineRequireObj().Env = function(j$) {
     envOptions = envOptions || {};
 
     const self = this;
-    const GlobalErrors = envOptions.GlobalErrors || j$.GlobalErrors;
+    const GlobalErrors = envOptions.GlobalErrors || j$.private.GlobalErrors;
     const global = envOptions.global || j$.getGlobal();
 
     const realSetTimeout = global.setTimeout;

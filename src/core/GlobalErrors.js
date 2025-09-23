@@ -267,5 +267,5 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     }
   }
 
-  return GlobalErrors;
+  j$.private.GlobalErrors = GlobalErrors;
 };

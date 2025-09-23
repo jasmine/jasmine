@@ -85,7 +85,7 @@ describe('Global error handling (integration)', function() {
         onerror: originalOnerror
       };
       spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-      const globalErrors = new jasmineUnderTest.GlobalErrors(global);
+      const globalErrors = new privateUnderTest.GlobalErrors(global);
       const onerror = jasmine.createSpy('onerror');
       globalErrors.pushListener(onerror);
 

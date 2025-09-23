@@ -18,7 +18,7 @@ getJasmineRequireObj().ParallelReportDispatcher = function(j$) {
   function ParallelReportDispatcher(onError, deps = {}) {
     const ReportDispatcher = deps.ReportDispatcher || j$.ReportDispatcher;
     const QueueRunner = deps.QueueRunner || j$.QueueRunner;
-    const globalErrors = deps.globalErrors || new j$.GlobalErrors();
+    const globalErrors = deps.globalErrors || new j$.private.GlobalErrors();
     const dispatcher = new ReportDispatcher(
       j$.reporterEvents,
       function(queueRunnerOptions) {
