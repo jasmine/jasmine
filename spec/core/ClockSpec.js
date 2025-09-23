@@ -17,7 +17,7 @@ describe('Clock', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         function() {
           return delayedFunctionScheduler;
@@ -51,7 +51,7 @@ describe('Clock', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         function() {
           return delayedFunctionScheduler;
@@ -88,7 +88,7 @@ describe('Clock', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         function() {
           return delayedFunctionScheduler;
@@ -122,7 +122,7 @@ describe('Clock', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         function() {
           return delayedFunctionScheduler;
@@ -154,7 +154,7 @@ describe('Clock', function() {
         'delayedFunctionSchedulerFactory'
       ),
       mockDate = {},
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         delayedFunctionSchedulerFactory,
         mockDate
@@ -178,7 +178,7 @@ describe('Clock', function() {
         'delayedFunctionSchedulerFactory'
       ),
       mockDate = {},
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         delayedFunctionSchedulerFactory,
         mockDate
@@ -202,7 +202,7 @@ describe('Clock', function() {
         'delayedFunctionSchedulerFactory'
       ),
       mockDate = {},
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         delayedFunctionSchedulerFactory,
         mockDate
@@ -226,7 +226,7 @@ describe('Clock', function() {
         'delayedFunctionSchedulerFactory'
       ),
       mockDate = {},
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         delayedFunctionSchedulerFactory,
         mockDate
@@ -263,7 +263,7 @@ describe('Clock', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         function() {
           return delayedFunctionScheduler;
@@ -306,7 +306,7 @@ describe('Clock', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         function() {
           return delayedFunctionScheduler;
@@ -366,7 +366,7 @@ describe('Clock', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         fakeGlobal,
         function() {
           return delayedFunctionScheduler;
@@ -420,7 +420,7 @@ describe('Clock', function() {
           tick: function() {},
           uninstall: function() {}
         },
-        clock = new jasmineUnderTest.Clock(
+        clock = new privateUnderTest.Clock(
           fakeGlobal,
           function() {
             return delayedFunctionScheduler;
@@ -465,7 +465,7 @@ describe('Clock', function() {
           tick: function() {},
           uninstall: function() {}
         },
-        clock = new jasmineUnderTest.Clock(
+        clock = new privateUnderTest.Clock(
           fakeGlobal,
           function() {
             return delayedFunctionScheduler;
@@ -497,7 +497,7 @@ describe('Clock', function() {
           tick: function() {},
           uninstall: function() {}
         },
-        clock = new jasmineUnderTest.Clock(
+        clock = new privateUnderTest.Clock(
           fakeGlobal,
           function() {
             return delayedFunctionScheduler;
@@ -527,7 +527,7 @@ describe('Clock', function() {
           tick: function() {},
           uninstall: function() {}
         },
-        clock = new jasmineUnderTest.Clock(
+        clock = new privateUnderTest.Clock(
           fakeGlobal,
           function() {
             return delayedFunctionScheduler;
@@ -573,7 +573,7 @@ describe('Clock', function() {
           tick: function() {},
           uninstall: function() {}
         },
-        clock = new jasmineUnderTest.Clock(
+        clock = new privateUnderTest.Clock(
           fakeGlobal,
           function() {
             return delayedFunctionScheduler;
@@ -605,7 +605,7 @@ describe('Clock', function() {
           tick: function() {},
           uninstall: function() {}
         },
-        clock = new jasmineUnderTest.Clock(
+        clock = new privateUnderTest.Clock(
           fakeGlobal,
           function() {
             return delayedFunctionScheduler;
@@ -624,7 +624,7 @@ describe('Clock', function() {
   });
 
   it('gives you a friendly reminder if the Clock is not installed and you tick', function() {
-    const clock = new jasmineUnderTest.Clock(
+    const clock = new privateUnderTest.Clock(
       {},
       jasmine.createSpyObj('delayedFunctionScheduler', ['tick'])
     );
@@ -646,7 +646,7 @@ describe('Clock (acceptance)', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
           return delayedFunctionScheduler;
@@ -712,7 +712,7 @@ describe('Clock (acceptance)', function() {
         typeof window !== 'undefined' ? setTimeout.bind(window) : setTimeout;
       // passing a fake global allows us to preserve the real timing functions for use in tests
       const _global = { setTimeout: _setTimeout, setInterval: setInterval };
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         _global,
         function() {
           return delayedFunctionScheduler;
@@ -856,7 +856,7 @@ describe('Clock (acceptance)', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: function() {} },
         function() {
           return delayedFunctionScheduler;
@@ -883,7 +883,7 @@ describe('Clock (acceptance)', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setInterval: function() {} },
         function() {
           return delayedFunctionScheduler;
@@ -910,7 +910,7 @@ describe('Clock (acceptance)', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: function() {} },
         function() {
           return delayedFunctionScheduler;
@@ -937,7 +937,7 @@ describe('Clock (acceptance)', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: function() {} },
         function() {
           return delayedFunctionScheduler;
@@ -968,7 +968,7 @@ describe('Clock (acceptance)', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: function() {} },
         function() {
           return delayedFunctionScheduler;
@@ -996,7 +996,7 @@ describe('Clock (acceptance)', function() {
         tick: function() {},
         uninstall: function() {}
       },
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: function() {} },
         function() {
           return delayedFunctionScheduler;
@@ -1025,7 +1025,7 @@ describe('Clock (acceptance)', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
       mockDate = new privateUnderTest.MockDate(global),
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
           return delayedFunctionScheduler;
@@ -1048,7 +1048,7 @@ describe('Clock (acceptance)', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
       mockDate = new privateUnderTest.MockDate(global),
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
           return delayedFunctionScheduler;
@@ -1078,7 +1078,7 @@ describe('Clock (acceptance)', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
       mockDate = new privateUnderTest.MockDate(global),
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
           return delayedFunctionScheduler;
@@ -1111,7 +1111,7 @@ describe('Clock (acceptance)', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
       mockDate = new privateUnderTest.MockDate(global),
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
           return delayedFunctionScheduler;
@@ -1129,7 +1129,7 @@ describe('Clock (acceptance)', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date },
       mockDate = new privateUnderTest.MockDate(global),
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         { setTimeout: setTimeout },
         function() {
           return delayedFunctionScheduler;
@@ -1168,7 +1168,7 @@ describe('Clock (acceptance)', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date, setTimeout: undefined },
       mockDate = new privateUnderTest.MockDate(global),
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         global,
         function() {
           return delayedFunctionScheduler;
@@ -1193,7 +1193,7 @@ describe('Clock (acceptance)', function() {
     const delayedFunctionScheduler = new jasmineUnderTest.DelayedFunctionScheduler(),
       global = { Date: Date, setTimeout: undefined },
       mockDate = new privateUnderTest.MockDate(global),
-      clock = new jasmineUnderTest.Clock(
+      clock = new privateUnderTest.Clock(
         global,
         function() {
           return delayedFunctionScheduler;

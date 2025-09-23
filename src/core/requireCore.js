@@ -40,7 +40,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     jRequire.CallTracker(j$);
     jRequire.MockDate(j$);
     jRequire.clearStack(j$);
-    j$.Clock = jRequire.Clock();
+    jRequire.Clock(j$);
     j$.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler(j$);
     j$.Deprecator = jRequire.Deprecator(j$);
     j$.Configuration = jRequire.Configuration(j$);

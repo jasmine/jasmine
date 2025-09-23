@@ -1,4 +1,4 @@
-getJasmineRequireObj().Clock = function() {
+getJasmineRequireObj().Clock = function(j$) {
   /* global process */
   const NODE_JS =
     typeof process !== 'undefined' &&
@@ -335,5 +335,7 @@ callbacks to execute _before_ running the next one.
     return this;
   };
 
-  return Clock;
+  // Clock instances returned by jasmine.clock are public, but the ctor itself
+  // isn't.
+  j$.private.Clock = Clock;
 };
