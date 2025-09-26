@@ -41,6 +41,12 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         throw new Error(getErrorMsg(methodName + '() method does not exist'));
       }
 
+      // Spying on mock clock timing fns would prevent the real ones from being
+      // restored.
+      if (obj[methodName] && obj[methodName][j$.Clock.IsMockClockTimingFn]) {
+        throw new Error("Mock clock timing functions can't be spied on");
+      }
+
       if (obj[methodName] && j$.isSpy(obj[methodName])) {
         if (this.respy) {
           return obj[methodName];

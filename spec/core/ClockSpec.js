@@ -408,6 +408,41 @@ describe('Clock', function() {
     expect(delayedFunctionScheduler.scheduleFunction).not.toHaveBeenCalled();
   });
 
+  it('identifies its timing functions', function() {
+    const fakeSetTimeout = jasmine.createSpy('global setTimeout');
+    const fakeGlobal = { setTimeout: fakeSetTimeout };
+    const delayedFunctionScheduler = jasmine.createSpyObj(
+      'delayedFunctionScheduler',
+      ['scheduleFunction']
+    );
+    const mockDate = {
+      install: function() {},
+      tick: function() {},
+      uninstall: function() {}
+    };
+    const clock = new jasmineUnderTest.Clock(
+      fakeGlobal,
+      function() {
+        return delayedFunctionScheduler;
+      },
+      mockDate
+    );
+    clock.install();
+
+    expect(
+      fakeGlobal.setTimeout[jasmineUnderTest.Clock.IsMockClockTimingFn]
+    ).toEqual(true);
+    expect(
+      fakeGlobal.clearTimeout[jasmineUnderTest.Clock.IsMockClockTimingFn]
+    ).toEqual(true);
+    expect(
+      fakeGlobal.setInterval[jasmineUnderTest.Clock.IsMockClockTimingFn]
+    ).toEqual(true);
+    expect(
+      fakeGlobal.clearInterval[jasmineUnderTest.Clock.IsMockClockTimingFn]
+    ).toEqual(true);
+  });
+
   describe('setTimeout', function() {
     it('schedules the delayed function with the fake timer', function() {
       const fakeSetTimeout = jasmine.createSpy('setTimeout'),

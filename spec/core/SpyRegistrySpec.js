@@ -135,6 +135,18 @@ describe('SpyRegistry', function() {
       target.spiedFunc();
       expect(originalFunctionWasCalled).toBe(false);
     });
+
+    it('throws if the method is a mock clock method', function() {
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
+        createSpy: createSpy
+      });
+      const target = { spiedFunc: function() {} };
+      target.spiedFunc[jasmineUnderTest.Clock.IsMockClockTimingFn] = true;
+
+      expect(function() {
+        spyRegistry.spyOn(target, 'spiedFunc');
+      }).toThrowError("Mock clock timing functions can't be spied on");
+    });
   });
 
   describe('#spyOnProperty', function() {

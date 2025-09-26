@@ -5,6 +5,8 @@ getJasmineRequireObj().Clock = function() {
     process.versions &&
     typeof process.versions.node === 'string';
 
+  const IsMockClockTimingFn = Symbol('IsMockClockTimingFn');
+
   /**
    * @class Clock
    * @since 1.3.0
@@ -183,6 +185,10 @@ callbacks to execute _before_ running the next one.
       advanceUntilModeChanges();
     };
 
+    setTimeout[IsMockClockTimingFn] = true;
+    clearTimeout[IsMockClockTimingFn] = true;
+    setInterval[IsMockClockTimingFn] = true;
+    clearInterval[IsMockClockTimingFn] = true;
     return this;
 
     // Advances the Clock's time until the mode changes.
@@ -335,5 +341,6 @@ callbacks to execute _before_ running the next one.
     return this;
   };
 
+  Clock.IsMockClockTimingFn = IsMockClockTimingFn;
   return Clock;
 };
