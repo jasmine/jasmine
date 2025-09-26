@@ -11,7 +11,7 @@ describe('toBeInstanceOf', function() {
 
     it('passes for NaN', function() {
       const matcher = jasmineUnderTest.matchers.toBeInstanceOf({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       });
       const result = matcher.compare(NaN, Number);
       expect(result).toEqual({
@@ -161,7 +161,7 @@ describe('toBeInstanceOf', function() {
       const object = Object.create(null);
 
       const matcher = jasmineUnderTest.matchers.toBeInstanceOf({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       });
       const result = matcher.compare(object, Object);
       expect(result).toEqual({
@@ -229,7 +229,7 @@ describe('toBeInstanceOf', function() {
 
   it('raises an error if missing an expected value', function() {
     const matcher = jasmineUnderTest.matchers.toBeInstanceOf({
-      pp: jasmineUnderTest.makePrettyPrinter()
+      pp: privateUnderTest.makePrettyPrinter()
     });
     expect(function() {
       matcher.compare({}, undefined);

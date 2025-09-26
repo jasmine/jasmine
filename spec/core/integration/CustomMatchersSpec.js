@@ -230,7 +230,7 @@ describe('Custom Matchers (Integration)', function() {
 
     await env.execute();
     expect(matcherFactorySpy).toHaveBeenCalledWith(
-      jasmine.any(jasmineUnderTest.MatchersUtil)
+      jasmine.any(privateUnderTest.MatchersUtil)
     );
   });
 

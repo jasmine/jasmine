@@ -638,10 +638,10 @@ describe('Expectation', function() {
           }
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        pp = jasmineUnderTest.makePrettyPrinter(),
+        pp = privateUnderTest.makePrettyPrinter(),
         expectation = privateUnderTest.Expectation.factory({
           customMatchers: matchers,
-          matchersUtil: new jasmineUnderTest.MatchersUtil({ pp: pp }),
+          matchersUtil: new privateUnderTest.MatchersUtil({ pp: pp }),
           actual: 'an actual',
           addExpectationResult: addExpectationResult
         });

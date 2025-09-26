@@ -9,9 +9,9 @@ describe('AsyncExpectation', function() {
     it('converts a pass to a fail', function() {
       const addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.resolve(),
-        pp = jasmineUnderTest.makePrettyPrinter(),
+        pp = privateUnderTest.makePrettyPrinter(),
         expectation = privateUnderTest.Expectation.asyncFactory({
-          matchersUtil: new jasmineUnderTest.MatchersUtil({ pp: pp }),
+          matchersUtil: new privateUnderTest.MatchersUtil({ pp: pp }),
           actual: actual,
           addExpectationResult: addExpectationResult
         });
@@ -31,7 +31,7 @@ describe('AsyncExpectation', function() {
       const addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.reject(new Error('nope')),
         expectation = privateUnderTest.Expectation.asyncFactory({
-          matchersUtil: new jasmineUnderTest.MatchersUtil({
+          matchersUtil: new privateUnderTest.MatchersUtil({
             pp: function() {}
           }),
           actual: actual,
@@ -105,7 +105,7 @@ describe('AsyncExpectation', function() {
           buildFailureMessage: function() {
             return 'failure message';
           },
-          pp: jasmineUnderTest.makePrettyPrinter()
+          pp: privateUnderTest.makePrettyPrinter()
         },
         addExpectationResult = jasmine.createSpy('addExpectationResult'),
         expectation = privateUnderTest.Expectation.asyncFactory({
@@ -161,11 +161,11 @@ describe('AsyncExpectation', function() {
     it('works with #not', function() {
       const addExpectationResult = jasmine.createSpy('addExpectationResult'),
         actual = Promise.resolve(),
-        pp = jasmineUnderTest.makePrettyPrinter(),
+        pp = privateUnderTest.makePrettyPrinter(),
         expectation = privateUnderTest.Expectation.asyncFactory({
           actual: actual,
           addExpectationResult: addExpectationResult,
-          matchersUtil: new jasmineUnderTest.MatchersUtil({ pp: pp })
+          matchersUtil: new privateUnderTest.MatchersUtil({ pp: pp })
         });
 
       return expectation
@@ -188,8 +188,8 @@ describe('AsyncExpectation', function() {
         expectation = privateUnderTest.Expectation.asyncFactory({
           actual: actual,
           addExpectationResult: addExpectationResult,
-          matchersUtil: new jasmineUnderTest.MatchersUtil({
-            pp: jasmineUnderTest.makePrettyPrinter()
+          matchersUtil: new privateUnderTest.MatchersUtil({
+            pp: privateUnderTest.makePrettyPrinter()
           })
         });
 

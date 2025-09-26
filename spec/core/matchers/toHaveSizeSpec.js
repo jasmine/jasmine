@@ -17,7 +17,7 @@ describe('toHaveSize', function() {
 
   it('informs about the size of an array whose length does not match', function() {
     const matcher = jasmineUnderTest.matchers.toHaveSize({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       result = matcher.compare([1, 2, 3], 2);
 

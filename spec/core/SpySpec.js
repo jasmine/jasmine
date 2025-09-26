@@ -241,7 +241,7 @@ describe('Spies', function() {
   });
 
   it('uses the provided matchersUtil selecting a strategy', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new privateUnderTest.MatchersUtil({
       customTesters: [
         function(a, b) {
           if ((a === 'bar' && b === 'baz') || (a === 'baz' && b === 'bar')) {

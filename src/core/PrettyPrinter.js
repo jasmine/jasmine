@@ -100,7 +100,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     }
 
     iterateObject(obj, fn) {
-      const objKeys = j$.MatchersUtil.keys(obj, j$.private.isArray(obj));
+      const objKeys = j$.private.MatchersUtil.keys(obj, j$.private.isArray(obj));
       const length = Math.min(objKeys.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
 
       for (let i = 0; i < length; i++) {
@@ -347,7 +347,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     }
   }
 
-  return function(customObjectFormatters) {
+  j$.private.makePrettyPrinter = function(customObjectFormatters) {
     customObjectFormatters = customObjectFormatters || [];
 
     const pp = function(value) {

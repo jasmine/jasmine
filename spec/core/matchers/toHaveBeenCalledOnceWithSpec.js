@@ -1,7 +1,7 @@
 describe('toHaveBeenCalledOnceWith', function() {
   it('passes when the actual was called only once and with matching parameters', function() {
-    const pp = jasmineUnderTest.makePrettyPrinter(),
-      util = new jasmineUnderTest.MatchersUtil({ pp: pp }),
+    const pp = privateUnderTest.makePrettyPrinter(),
+      util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
       calledSpy = new jasmineUnderTest.Spy('called-spy');
 
@@ -20,7 +20,7 @@ describe('toHaveBeenCalledOnceWith', function() {
           return true;
         }
       ],
-      matchersUtil = new jasmineUnderTest.MatchersUtil({
+      matchersUtil = new privateUnderTest.MatchersUtil({
         customTesters: customEqualityTesters
       }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(
@@ -35,8 +35,8 @@ describe('toHaveBeenCalledOnceWith', function() {
   });
 
   it('fails when the actual was never called', function() {
-    const pp = jasmineUnderTest.makePrettyPrinter(),
-      util = new jasmineUnderTest.MatchersUtil({ pp: pp }),
+    const pp = privateUnderTest.makePrettyPrinter(),
+      util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
       calledSpy = new jasmineUnderTest.Spy('called-spy');
 
@@ -49,8 +49,8 @@ describe('toHaveBeenCalledOnceWith', function() {
   });
 
   it('fails when the actual was called once with different parameters', function() {
-    const pp = jasmineUnderTest.makePrettyPrinter(),
-      util = new jasmineUnderTest.MatchersUtil({ pp: pp }),
+    const pp = privateUnderTest.makePrettyPrinter(),
+      util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
       calledSpy = new jasmineUnderTest.Spy('called-spy');
 
@@ -64,8 +64,8 @@ describe('toHaveBeenCalledOnceWith', function() {
   });
 
   it('fails when the actual was called multiple times with expected parameters', function() {
-    const pp = jasmineUnderTest.makePrettyPrinter(),
-      util = new jasmineUnderTest.MatchersUtil({ pp: pp }),
+    const pp = privateUnderTest.makePrettyPrinter(),
+      util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
       calledSpy = new jasmineUnderTest.Spy('called-spy');
 
@@ -80,8 +80,8 @@ describe('toHaveBeenCalledOnceWith', function() {
   });
 
   it('fails when the actual was called multiple times (one of them - with expected parameters)', function() {
-    const pp = jasmineUnderTest.makePrettyPrinter(),
-      util = new jasmineUnderTest.MatchersUtil({ pp: pp }),
+    const pp = privateUnderTest.makePrettyPrinter(),
+      util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
       calledSpy = new jasmineUnderTest.Spy('called-spy');
 
@@ -96,8 +96,8 @@ describe('toHaveBeenCalledOnceWith', function() {
   });
 
   it('throws an exception when the actual is not a spy', function() {
-    const pp = jasmineUnderTest.makePrettyPrinter(),
-      util = new jasmineUnderTest.MatchersUtil({ pp: pp }),
+    const pp = privateUnderTest.makePrettyPrinter(),
+      util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
       fn = function() {};
 
@@ -107,8 +107,8 @@ describe('toHaveBeenCalledOnceWith', function() {
   });
 
   it('set the correct calls as verified when passing', function() {
-    const pp = jasmineUnderTest.makePrettyPrinter(),
-      util = new jasmineUnderTest.MatchersUtil({ pp: pp }),
+    const pp = privateUnderTest.makePrettyPrinter(),
+      util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
       calledSpy = new jasmineUnderTest.Spy('called-spy');
 

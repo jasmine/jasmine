@@ -15,28 +15,28 @@ describe('ArrayContaining', function() {
 
   it('matches when the item is in the actual', function() {
     const containing = new jasmineUnderTest.ArrayContaining(['foo']);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(['foo'], matchersUtil)).toBe(true);
   });
 
   it('matches when additional items are in the actual', function() {
     const containing = new jasmineUnderTest.ArrayContaining(['foo']);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(['foo', 'bar'], matchersUtil)).toBe(true);
   });
 
   it('does not match when the item is not in the actual', function() {
     const containing = new jasmineUnderTest.ArrayContaining(['foo']);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(['bar'], matchersUtil)).toBe(false);
   });
 
   it('does not match when the actual is not an array', function() {
     const containing = new jasmineUnderTest.ArrayContaining(['foo']);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch('foo', matchersUtil)).toBe(false);
   });
@@ -65,7 +65,7 @@ describe('ArrayContaining', function() {
       }
     };
     const containing = new jasmineUnderTest.ArrayContaining(['fooVal']);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new privateUnderTest.MatchersUtil({
       customTesters: [tester]
     });
 

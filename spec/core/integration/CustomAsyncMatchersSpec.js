@@ -107,7 +107,7 @@ describe('Custom Async Matchers (Integration)', function() {
 
     const specExpectations = function() {
       expect(matcherFactorySpy).toHaveBeenCalledWith(
-        jasmine.any(jasmineUnderTest.MatchersUtil)
+        jasmine.any(privateUnderTest.MatchersUtil)
       );
     };
 

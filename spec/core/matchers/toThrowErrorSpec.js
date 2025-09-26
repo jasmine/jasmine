@@ -54,7 +54,7 @@ describe('toThrowError', function() {
 
   it('fails if thrown is not an instanceof Error', function() {
     const matcher = jasmineUnderTest.matchers.toThrowError({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {
         throw 4;
@@ -104,7 +104,7 @@ describe('toThrowError', function() {
 
   it('fails with the correct message if thrown is a falsy value', function() {
     const matcher = jasmineUnderTest.matchers.toThrowError({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {
         throw undefined;
@@ -133,7 +133,7 @@ describe('toThrowError', function() {
 
   it('passes if thrown is an Error and the expected is the same message', function() {
     const matcher = jasmineUnderTest.matchers.toThrowError({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {
         throw new Error('foo');
@@ -149,7 +149,7 @@ describe('toThrowError', function() {
 
   it('fails if thrown is an Error and the expected is not the same message', function() {
     const matcher = jasmineUnderTest.matchers.toThrowError({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {
         throw new Error('foo');
@@ -165,7 +165,7 @@ describe('toThrowError', function() {
 
   it('passes if thrown is an Error and the expected is a RegExp that matches the message', function() {
     const matcher = jasmineUnderTest.matchers.toThrowError({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {
         throw new Error('a long message');
@@ -181,7 +181,7 @@ describe('toThrowError', function() {
 
   it('fails if thrown is an Error and the expected is a RegExp that does not match the message', function() {
     const matcher = jasmineUnderTest.matchers.toThrowError({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {
         throw new Error('a long message');
@@ -243,7 +243,7 @@ describe('toThrowError', function() {
   it('passes if thrown is a type of Error and it is equal to the expected Error and message', function() {
     const matchersUtil = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true),
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toThrowError(matchersUtil),
       fn = function() {
@@ -261,7 +261,7 @@ describe('toThrowError', function() {
   it('passes if thrown is a custom error that takes arguments and it is equal to the expected custom error and message', function() {
     const matchersUtil = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true),
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toThrowError(matchersUtil),
       CustomError = function CustomError(arg) {
@@ -285,7 +285,7 @@ describe('toThrowError', function() {
     it('fails if thrown is a type of Error and the expected is a different Error', function() {
       const matchersUtil = {
           equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
-          pp: jasmineUnderTest.makePrettyPrinter()
+          pp: privateUnderTest.makePrettyPrinter()
         },
         matcher = jasmineUnderTest.matchers.toThrowError(matchersUtil),
         fn = function() {
@@ -305,7 +305,7 @@ describe('toThrowError', function() {
     it('fails if thrown is a type of Error and the expected is a different Error', function() {
       const matchersUtil = {
           equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
-          pp: jasmineUnderTest.makePrettyPrinter()
+          pp: privateUnderTest.makePrettyPrinter()
         },
         matcher = jasmineUnderTest.matchers.toThrowError(matchersUtil),
         fn = function() {
@@ -324,7 +324,7 @@ describe('toThrowError', function() {
   it('passes if thrown is a type of Error and has the same type as the expected Error and the message matches the expected message', function() {
     const matchersUtil = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true),
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toThrowError(matchersUtil),
       fn = function() {

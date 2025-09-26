@@ -625,7 +625,8 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     return formatted;
   }
 
-  return MatchersUtil;
+  // Instances are exposed publicly but the constructor is private.
+  j$.private.MatchersUtil = MatchersUtil;
 };
 
 /**

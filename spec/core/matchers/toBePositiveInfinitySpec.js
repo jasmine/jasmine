@@ -15,7 +15,7 @@ describe('toBePositiveInfinity', function() {
 
   it('has a custom message on failure', function() {
     const matcher = jasmineUnderTest.matchers.toBePositiveInfinity({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       result = matcher.compare(0);
 

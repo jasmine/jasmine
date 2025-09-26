@@ -126,17 +126,17 @@ getJasmineRequireObj().RunableResources = function(j$) {
     }
 
     makePrettyPrinter() {
-      return j$.makePrettyPrinter(this.customObjectFormatters());
+      return j$.private.makePrettyPrinter(this.customObjectFormatters());
     }
 
     makeMatchersUtil() {
       if (this.getCurrentRunableId_()) {
-        return new j$.MatchersUtil({
+        return new j$.private.MatchersUtil({
           customTesters: this.customEqualityTesters(),
           pp: this.makePrettyPrinter()
         });
       } else {
-        return new j$.MatchersUtil({ pp: j$.basicPrettyPrinter_ });
+        return new j$.private.MatchersUtil({ pp: j$.basicPrettyPrinter_ });
       }
     }
 

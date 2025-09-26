@@ -36,7 +36,7 @@ describe('toThrowMatching', function() {
 
   it('fails with the correct message if thrown is a falsy value', function() {
     const matcher = jasmineUnderTest.matchers.toThrowMatching({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {
         throw undefined;
@@ -70,7 +70,7 @@ describe('toThrowMatching', function() {
 
   it('fails if the argument is a function that returns false when called with the error', function() {
     const matcher = jasmineUnderTest.matchers.toThrowMatching({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       predicate = function(e) {
         return e.message === 'oh no';

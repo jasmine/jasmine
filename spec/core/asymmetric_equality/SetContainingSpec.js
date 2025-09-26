@@ -11,7 +11,7 @@ describe('SetContaining', function() {
 
     const containingSet = new Set([[1, 2, 3], { foo: 'bar' }]);
     const containing = new jasmineUnderTest.SetContaining(containingSet);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualSet, matchersUtil)).toBe(true);
   });
@@ -21,7 +21,7 @@ describe('SetContaining', function() {
 
     const containingSet = new Set([[1, 2], { foo: 'bar' }]);
     const containing = new jasmineUnderTest.SetContaining(containingSet);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualSet, matchersUtil)).toBe(false);
   });
@@ -34,7 +34,7 @@ describe('SetContaining', function() {
       jasmineUnderTest.arrayContaining([2, 3])
     ]);
     const containing = new jasmineUnderTest.SetContaining(containingSet);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualSet, matchersUtil)).toBe(true);
   });
@@ -47,7 +47,7 @@ describe('SetContaining', function() {
       jasmine.arrayContaining([2, 3])
     ]);
     const containing = new jasmineUnderTest.SetContaining(containingSet);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualSet, matchersUtil)).toBe(false);
   });
@@ -60,7 +60,7 @@ describe('SetContaining', function() {
       'foo'
     ]);
     const containing = new jasmineUnderTest.SetContaining(containingSet);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualSet, matchersUtil)).toBe(true);
   });
@@ -74,7 +74,7 @@ describe('SetContaining', function() {
     }
     const actualSet = new Set(['foo', -1]);
     const containing = new jasmineUnderTest.SetContaining(new Set([-2, 'foo']));
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new privateUnderTest.MatchersUtil({
       customTesters: [tester]
     });
 

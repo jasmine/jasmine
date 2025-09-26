@@ -178,14 +178,14 @@ describe('RunableResources', function() {
       runableResources.initForRunable(1);
       function cof() {}
       runableResources.customObjectFormatters().push(cof);
-      spyOn(jasmineUnderTest, 'makePrettyPrinter').and.callThrough();
+      spyOn(privateUnderTest, 'makePrettyPrinter').and.callThrough();
       const pp = runableResources.makePrettyPrinter();
 
-      expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledOnceWith([
+      expect(privateUnderTest.makePrettyPrinter).toHaveBeenCalledOnceWith([
         cof
       ]);
       expect(pp).toBe(
-        jasmineUnderTest.makePrettyPrinter.calls.first().returnValue
+        privateUnderTest.makePrettyPrinter.calls.first().returnValue
       );
     });
   });
@@ -204,26 +204,26 @@ describe('RunableResources', function() {
         runableResources.customEqualityTesters().push(ceq);
         const expectedPP = {};
         const expectedMatchersUtil = {};
-        spyOn(jasmineUnderTest, 'makePrettyPrinter').and.returnValue(
+        spyOn(privateUnderTest, 'makePrettyPrinter').and.returnValue(
           expectedPP
         );
-        spyOn(jasmineUnderTest, 'MatchersUtil').and.returnValue(
+        spyOn(privateUnderTest, 'MatchersUtil').and.returnValue(
           expectedMatchersUtil
         );
 
         const matchersUtil = runableResources.makeMatchersUtil();
 
         expect(matchersUtil).toBe(expectedMatchersUtil);
-        expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledOnceWith([
+        expect(privateUnderTest.makePrettyPrinter).toHaveBeenCalledOnceWith([
           cof
         ]);
         // We need === equality on the pp passed to MatchersUtil
-        expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledOnceWith(
+        expect(privateUnderTest.MatchersUtil).toHaveBeenCalledOnceWith(
           jasmine.objectContaining({
             customTesters: [ceq]
           })
         );
-        expect(jasmineUnderTest.MatchersUtil.calls.argsFor(0)[0].pp).toBe(
+        expect(privateUnderTest.MatchersUtil.calls.argsFor(0)[0].pp).toBe(
           expectedPP
         );
       });
@@ -236,7 +236,7 @@ describe('RunableResources', function() {
           getCurrentRunableId: () => null
         });
         const expectedMatchersUtil = {};
-        spyOn(jasmineUnderTest, 'MatchersUtil').and.returnValue(
+        spyOn(privateUnderTest, 'MatchersUtil').and.returnValue(
           expectedMatchersUtil
         );
 
@@ -244,12 +244,12 @@ describe('RunableResources', function() {
 
         expect(matchersUtil).toBe(expectedMatchersUtil);
         // We need === equality on the pp passed to MatchersUtil
-        expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledTimes(1);
-        expect(jasmineUnderTest.MatchersUtil.calls.argsFor(0)[0].pp).toBe(
+        expect(privateUnderTest.MatchersUtil).toHaveBeenCalledTimes(1);
+        expect(privateUnderTest.MatchersUtil.calls.argsFor(0)[0].pp).toBe(
           jasmineUnderTest.basicPrettyPrinter_
         );
         expect(
-          jasmineUnderTest.MatchersUtil.calls.argsFor(0)[0].customTesters
+          privateUnderTest.MatchersUtil.calls.argsFor(0)[0].customTesters
         ).toBeUndefined();
       });
     });

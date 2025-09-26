@@ -27,7 +27,7 @@ describe('toHaveClass', function() {
 
   it('throws an exception when actual is not a DOM element', function() {
     const matcher = jasmineUnderTest.matchers.toHaveClass({
-      pp: jasmineUnderTest.makePrettyPrinter()
+      pp: privateUnderTest.makePrettyPrinter()
     });
 
     expect(function() {

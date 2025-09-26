@@ -47,7 +47,7 @@ describe('toHaveBeenCalledTimes', function() {
 
   it('throws an exception when the actual is not a spy', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes({
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {};
 

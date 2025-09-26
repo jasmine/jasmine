@@ -26,8 +26,8 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('fails when there are spy interactions', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
-      pp: jasmineUnderTest.makePrettyPrinter()
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+      pp: privateUnderTest.makePrettyPrinter()
     });
     let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions(
       matchersUtil
@@ -47,8 +47,8 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('shows the right message is negated', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
-      pp: jasmineUnderTest.makePrettyPrinter()
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+      pp: privateUnderTest.makePrettyPrinter()
     });
     let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions(
       matchersUtil
@@ -129,8 +129,8 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('handles multiple interactions with a single spy', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
-        pp: jasmineUnderTest.makePrettyPrinter()
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions(
         matchersUtil

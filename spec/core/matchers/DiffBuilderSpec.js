@@ -112,7 +112,7 @@ describe('DiffBuilder', function() {
         return '[number:' + x + ']';
       }
     };
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]);
     const diffBuilder = new jasmineUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
@@ -131,7 +131,7 @@ describe('DiffBuilder', function() {
         return '[thing with a=' + x.a + ', b=' + JSON.stringify(x.b) + ']';
       }
     };
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]);
     const diffBuilder = new jasmineUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
@@ -167,7 +167,7 @@ describe('DiffBuilder', function() {
         return '[number:' + x + ']';
       }
     };
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]);
     const diffBuilder = new jasmineUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
@@ -186,7 +186,7 @@ describe('DiffBuilder', function() {
         return '[number:' + x + ']';
       }
     };
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]);
     const diffBuilder = new jasmineUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
@@ -205,7 +205,7 @@ describe('DiffBuilder', function() {
         return '[number:' + x + ']';
       }
     };
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]);
     const diffBuilder = new jasmineUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
@@ -219,7 +219,7 @@ describe('DiffBuilder', function() {
   });
 
   it('builds diffs involving asymmetric equality testers that implement valuesForDiff_ at the root', function() {
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([]),
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([]),
       diffBuilder = new jasmineUnderTest.DiffBuilder({
         prettyPrinter: prettyPrinter
       }),
@@ -243,7 +243,7 @@ describe('DiffBuilder', function() {
   });
 
   it('builds diffs involving asymmetric equality testers that implement valuesForDiff_ below the root', function() {
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([]),
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([]),
       diffBuilder = new jasmineUnderTest.DiffBuilder({
         prettyPrinter: prettyPrinter
       }),

@@ -320,7 +320,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @param {Object} sample - The subset of properties that _must_ be in the actual.
    */
   j$.objectContaining = function(sample) {
-    return new j$.ObjectContaining(sample);
+    return new j$.private.ObjectContaining(sample);
   };
 
   /**

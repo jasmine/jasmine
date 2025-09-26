@@ -125,5 +125,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
     };
   }
 
-  return JsApiReporter;
+  // An instance of JsApiReporter is exposed publicly via requireInterface.js,
+  // but the constructor itself is private.
+  j$.private.JsApiReporter = JsApiReporter;
 };

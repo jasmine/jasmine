@@ -664,8 +664,8 @@ describe('Env', function() {
     const RealSpec = jasmineUnderTest.Spec;
     let specInstance;
     let expectationFactory;
-    spyOn(jasmineUnderTest, 'MatchersUtil');
-    spyOn(jasmineUnderTest, 'makePrettyPrinter').and.returnValue(prettyPrinter);
+    spyOn(privateUnderTest, 'MatchersUtil');
+    spyOn(privateUnderTest, 'makePrettyPrinter').and.returnValue(prettyPrinter);
     spyOn(jasmineUnderTest, 'Spec').and.callFake(function(options) {
       expectationFactory = options.expectationFactory;
       specInstance = new RealSpec(options);
@@ -679,10 +679,10 @@ describe('Env', function() {
     });
 
     await env.execute();
-    expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
+    expect(privateUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
       customObjectFormatter
     ]);
-    expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
+    expect(privateUnderTest.MatchersUtil).toHaveBeenCalledWith({
       customTesters: [customEqualityTester],
       pp: prettyPrinter
     });
@@ -695,8 +695,8 @@ describe('Env', function() {
     const RealSpec = jasmineUnderTest.Spec;
     let specInstance;
     let asyncExpectationFactory;
-    spyOn(jasmineUnderTest, 'MatchersUtil');
-    spyOn(jasmineUnderTest, 'makePrettyPrinter').and.returnValue(prettyPrinter);
+    spyOn(privateUnderTest, 'MatchersUtil');
+    spyOn(privateUnderTest, 'makePrettyPrinter').and.returnValue(prettyPrinter);
     spyOn(jasmineUnderTest, 'Spec').and.callFake(function(options) {
       asyncExpectationFactory = options.asyncExpectationFactory;
       specInstance = new RealSpec(options);
@@ -711,10 +711,10 @@ describe('Env', function() {
 
     await env.execute();
 
-    expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
+    expect(privateUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
       customObjectFormatter
     ]);
-    expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
+    expect(privateUnderTest.MatchersUtil).toHaveBeenCalledWith({
       customTesters: [customEqualityTester],
       pp: prettyPrinter
     });

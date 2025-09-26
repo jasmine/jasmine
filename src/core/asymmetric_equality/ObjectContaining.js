@@ -64,5 +64,5 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
     return '<jasmine.objectContaining(' + pp(this.sample) + ')>';
   };
 
-  return ObjectContaining;
+  j$.private.ObjectContaining = ObjectContaining;
 };
