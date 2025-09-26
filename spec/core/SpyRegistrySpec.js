@@ -119,15 +119,15 @@ describe('SpyRegistry', function() {
     });
 
     it('overrides the method on the object and returns the spy', function() {
-      const originalFunctionWasCalled = false,
-        spyRegistry = new jasmineUnderTest.SpyRegistry({
-          createSpy: createSpy
-        }),
-        subject = {
-          spiedFunc: function() {
-            originalFunctionWasCalled = true;
-          }
-        };
+      let originalFunctionWasCalled = false;
+      const spyRegistry = new jasmineUnderTest.SpyRegistry({
+        createSpy: createSpy
+      });
+      const subject = {
+        spiedFunc: function() {
+          originalFunctionWasCalled = true;
+        }
+      };
 
       const spy = spyRegistry.spyOn(subject, 'spiedFunc');
 
