@@ -53,8 +53,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     jRequire.buildExpectationResult(j$);
     jRequire.JsApiReporter(j$);
     jRequire.makePrettyPrinter(j$);
-    // TODO: consider making basicPrettyPrinter_ public. If not, move it to the private namespace.
-    j$.basicPrettyPrinter_ = j$.private.makePrettyPrinter();
+    j$.private.basicPrettyPrinter = j$.private.makePrettyPrinter();
     jRequire.MatchersUtil(j$);
     jRequire.ObjectContaining(j$);
     jRequire.ArrayContaining(j$);

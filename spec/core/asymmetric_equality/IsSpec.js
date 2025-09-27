@@ -22,7 +22,7 @@ describe('Is', function() {
 
   it('describes itself for use in diffs and pretty printing', function() {
     const exactly = new privateUnderTest.Is({ foo: ['bar'] });
-    const pp = jasmineUnderTest.basicPrettyPrinter_;
+    const pp = privateUnderTest.basicPrettyPrinter;
     expect(exactly.jasmineToString(pp)).toEqual(
       "<jasmine.is(Object({ foo: [ 'bar' ] }))>"
     );

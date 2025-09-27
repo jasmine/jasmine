@@ -3,7 +3,7 @@ getJasmineRequireObj().SetContaining = function(j$) {
     if (!j$.private.isSet(sample)) {
       throw new Error(
         'You must provide a set to `setContaining`, not ' +
-          j$.basicPrettyPrinter_(sample)
+          j$.private.basicPrettyPrinter(sample)
       );
     }
 

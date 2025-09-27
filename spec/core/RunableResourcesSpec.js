@@ -246,7 +246,7 @@ describe('RunableResources', function() {
         // We need === equality on the pp passed to MatchersUtil
         expect(privateUnderTest.MatchersUtil).toHaveBeenCalledTimes(1);
         expect(privateUnderTest.MatchersUtil.calls.argsFor(0)[0].pp).toBe(
-          jasmineUnderTest.basicPrettyPrinter_
+          privateUnderTest.basicPrettyPrinter
         );
         expect(
           privateUnderTest.MatchersUtil.calls.argsFor(0)[0].customTesters

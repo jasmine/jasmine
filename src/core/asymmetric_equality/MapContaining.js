@@ -3,7 +3,7 @@ getJasmineRequireObj().MapContaining = function(j$) {
     if (!j$.private.isMap(sample)) {
       throw new Error(
         'You must provide a map to `mapContaining`, not ' +
-          j$.basicPrettyPrinter_(sample)
+          j$.private.basicPrettyPrinter(sample)
       );
     }
 

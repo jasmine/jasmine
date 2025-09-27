@@ -136,7 +136,9 @@ getJasmineRequireObj().RunableResources = function(j$) {
           pp: this.makePrettyPrinter()
         });
       } else {
-        return new j$.private.MatchersUtil({ pp: j$.basicPrettyPrinter_ });
+        return new j$.private.MatchersUtil({
+          pp: j$.private.basicPrettyPrinter
+        });
       }
     }
 
