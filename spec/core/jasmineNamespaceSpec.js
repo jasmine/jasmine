@@ -38,8 +38,14 @@
 //       'stringMatching',
 //       'truthy',
 //
-//       // Undocumented but used in browser boot files
-//       'getGlobal'
+//       // Currently undocumented but used in browser boot files
+//       'getGlobal',
+//
+//       // jasmine-html.js
+//       // TODO: make sure 5.11 additions are here
+//       'HtmlReporter',
+//       'HtmlSpecFilter',
+//       'QueryString',
 //
 //       // TODO probably a few more
 //     ]);

@@ -1,6 +1,6 @@
 jasmineRequire.HtmlReporter = function(j$) {
   function ResultsStateBuilder() {
-    this.topResults = new j$.ResultsNode({}, '', null);
+    this.topResults = new j$.private.ResultsNode({}, '', null);
     this.currentParent = this.topResults;
     this.specsExecuted = 0;
     this.failureCount = 0;
