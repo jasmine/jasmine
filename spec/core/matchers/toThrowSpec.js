@@ -1,6 +1,6 @@
 describe('toThrow', function() {
   it('throws an error when the actual is not a function', function() {
-    const matcher = jasmineUnderTest.matchers.toThrow();
+    const matcher = privateUnderTest.matchers.toThrow();
 
     expect(function() {
       matcher.compare({});
@@ -9,7 +9,7 @@ describe('toThrow', function() {
   });
 
   it('fails if actual does not throw', function() {
-    const matcher = jasmineUnderTest.matchers.toThrow(),
+    const matcher = privateUnderTest.matchers.toThrow(),
       fn = function() {
         return true;
       };
@@ -25,7 +25,7 @@ describe('toThrow', function() {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true),
         pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toThrow(matchersUtil),
+      matcher = privateUnderTest.matchers.toThrow(matchersUtil),
       fn = function() {
         throw 5;
       };
@@ -39,7 +39,7 @@ describe('toThrow', function() {
   });
 
   it('passes even if what is thrown is falsy', function() {
-    const matcher = jasmineUnderTest.matchers.toThrow({
+    const matcher = privateUnderTest.matchers.toThrow({
         pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {
@@ -58,7 +58,7 @@ describe('toThrow', function() {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true),
         pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toThrow(matchersUtil),
+      matcher = privateUnderTest.matchers.toThrow(matchersUtil),
       fn = function() {
         throw 5;
       };
@@ -74,7 +74,7 @@ describe('toThrow', function() {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
         pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toThrow(matchersUtil),
+      matcher = privateUnderTest.matchers.toThrow(matchersUtil),
       fn = function() {
         throw 5;
       };
@@ -92,7 +92,7 @@ describe('toThrow', function() {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
         pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toThrow(matchersUtil),
+      matcher = privateUnderTest.matchers.toThrow(matchersUtil),
       fn = function() {
         throw 5;
       };

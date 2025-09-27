@@ -1,6 +1,6 @@
 // describe('The jasmine namespace', function() {
 //   it('includes only expected properties', function() {
-//     const expectedKeys = [
+//     const expectedKeys = new Set([
 //       'DEFAULT_TIMEOUT_INTERVAL',
 //       'MAX_PRETTY_PRINT_ARRAY_LENGTH',
 //       'MAX_PRETTY_PRINT_CHARS',
@@ -18,10 +18,43 @@
 //       'private',
 //       'setDefaultSpyStrategy',
 //       'spyOnGlobalErrorsAsync',
+//
+//       // Asymmetric equality testers
+//       'any',
+//       'anything',
+//       'arrayContaining',
+//       'arrayWithExactContents',
+//       'empty',
+//       'falsy',
+//       'is',
+//       'mapContaining',
+//       'notEmpty',
+//       'objectContaining',
+//       'setContaining',
+//       'stringContaining',
+//       'stringMatching',
+//       'truthy'
+//
 //       // TODO probably a few more
-//     ];
-//     const actualKeys = Object.keys(jasmineUnderTest);
-//     actualKeys.sort();
-//     expect(actualKeys).toEqual(expectedKeys);
+//     ]);
+//     const actualKeys = new Set(Object.keys(jasmineUnderTest));
+//     // toEqual doesn't generate diffs for set comparisons. Check this way
+//     // instead so we get readable failure output.
+//     expect(setDifference(actualKeys, expectedKeys)).withContext('extra properties').toEqual(new Set());
+//     expect(setDifference(expectedKeys, actualKeys)).withContext('missing properties').toEqual(new Set());
 //   });
+//
+//   // Can't use Set#difference yet because it isn't available in Node <22,
+//   // Firefox <108, or Safari <17.
+//   function setDifference(a, b) {
+//     const result = new Set();
+//
+//     for (const v of a) {
+//       if (!b.has(v)) {
+//         result.add(v);
+//       }
+//     }
+//
+//     return result;
+//   }
 // });

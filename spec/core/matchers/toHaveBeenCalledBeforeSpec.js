@@ -1,6 +1,6 @@
 describe('toHaveBeenCalledBefore', function() {
   it('throws an exception when the actual is not a spy', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore({
+    const matcher = privateUnderTest.matchers.toHaveBeenCalledBefore({
         pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {},
@@ -12,7 +12,7 @@ describe('toHaveBeenCalledBefore', function() {
   });
 
   it('throws an exception when the expected is not a spy', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore({
+    const matcher = privateUnderTest.matchers.toHaveBeenCalledBefore({
         pp: privateUnderTest.makePrettyPrinter()
       }),
       spy = new privateUnderTest.Env().createSpy('a spy'),
@@ -24,7 +24,7 @@ describe('toHaveBeenCalledBefore', function() {
   });
 
   it('fails when the actual was not called', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+    const matcher = privateUnderTest.matchers.toHaveBeenCalledBefore(),
       firstSpy = new privateUnderTest.Spy('first spy'),
       secondSpy = new privateUnderTest.Spy('second spy');
 
@@ -38,7 +38,7 @@ describe('toHaveBeenCalledBefore', function() {
   });
 
   it('fails when the expected was not called', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+    const matcher = privateUnderTest.matchers.toHaveBeenCalledBefore(),
       firstSpy = new privateUnderTest.Spy('first spy'),
       secondSpy = new privateUnderTest.Spy('second spy');
 
@@ -52,7 +52,7 @@ describe('toHaveBeenCalledBefore', function() {
   });
 
   it('fails when the actual is called after the expected', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+    const matcher = privateUnderTest.matchers.toHaveBeenCalledBefore(),
       firstSpy = new privateUnderTest.Spy('first spy'),
       secondSpy = new privateUnderTest.Spy('second spy');
 
@@ -67,7 +67,7 @@ describe('toHaveBeenCalledBefore', function() {
   });
 
   it('fails when the actual is called before and after the expected', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+    const matcher = privateUnderTest.matchers.toHaveBeenCalledBefore(),
       firstSpy = new privateUnderTest.Spy('first spy'),
       secondSpy = new privateUnderTest.Spy('second spy');
 
@@ -83,7 +83,7 @@ describe('toHaveBeenCalledBefore', function() {
   });
 
   it('fails when the expected is called before and after the actual', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+    const matcher = privateUnderTest.matchers.toHaveBeenCalledBefore(),
       firstSpy = new privateUnderTest.Spy('first spy'),
       secondSpy = new privateUnderTest.Spy('second spy');
 
@@ -99,7 +99,7 @@ describe('toHaveBeenCalledBefore', function() {
   });
 
   it('passes when the actual is called before the expected', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+    const matcher = privateUnderTest.matchers.toHaveBeenCalledBefore(),
       firstSpy = new privateUnderTest.Spy('first spy'),
       secondSpy = new privateUnderTest.Spy('second spy');
 
@@ -114,7 +114,7 @@ describe('toHaveBeenCalledBefore', function() {
   });
 
   it('set the correct calls as verified when passing', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledBefore(),
+    const matcher = privateUnderTest.matchers.toHaveBeenCalledBefore(),
       firstSpy = new privateUnderTest.Spy('first spy'),
       secondSpy = new privateUnderTest.Spy('second spy');
 

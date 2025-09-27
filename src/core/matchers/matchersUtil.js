@@ -159,7 +159,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
    * @returns {boolean} True if the values are equal
    */
   MatchersUtil.prototype.equals = function(a, b, diffBuilder) {
-    diffBuilder = diffBuilder || j$.NullDiffBuilder();
+    diffBuilder = diffBuilder || j$.private.NullDiffBuilder();
     diffBuilder.setRoots(a, b);
 
     return this.eq_(a, b, [], [], diffBuilder);
@@ -379,7 +379,13 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
           if (
             j$.private.isAsymmetricEqualityTester(mapKey) ||
             (j$.private.isAsymmetricEqualityTester(cmpKey) &&
-              this.eq_(mapKey, cmpKey, aStack, bStack, j$.NullDiffBuilder()))
+              this.eq_(
+                mapKey,
+                cmpKey,
+                aStack,
+                bStack,
+                j$.private.NullDiffBuilder()
+              ))
           ) {
             mapValueB = b.get(cmpKey);
           } else {
@@ -390,7 +396,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
             mapValueB,
             aStack,
             bStack,
-            j$.NullDiffBuilder()
+            j$.private.NullDiffBuilder()
           );
         }
       }
@@ -435,7 +441,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
               otherValue,
               baseStack,
               otherStack,
-              j$.NullDiffBuilder()
+              j$.private.NullDiffBuilder()
             );
             if (!found && prevStackSize !== baseStack.length) {
               baseStack.splice(prevStackSize);

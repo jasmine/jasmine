@@ -1,6 +1,6 @@
 describe('toHaveSpyInteractions', function() {
   it('passes when there are spy interactions', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
@@ -12,7 +12,7 @@ describe('toHaveSpyInteractions', function() {
   });
 
   it('passes when there are multiple spy interactions', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
@@ -26,7 +26,7 @@ describe('toHaveSpyInteractions', function() {
   });
 
   it('fails when there are no spy interactions', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
@@ -39,7 +39,7 @@ describe('toHaveSpyInteractions', function() {
   });
 
   it('shows the right message is negated', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
@@ -55,7 +55,7 @@ describe('toHaveSpyInteractions', function() {
   });
 
   it('fails when only non-observed spy object interactions are interacted', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
@@ -71,7 +71,7 @@ describe('toHaveSpyInteractions', function() {
   });
 
   it('throws an error if a non-object is passed', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveSpyInteractions();
 
     expect(function() {
       matcher.compare(true);
@@ -87,7 +87,7 @@ describe('toHaveSpyInteractions', function() {
   });
 
   it('throws an error if arguments are passed', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
@@ -98,7 +98,7 @@ describe('toHaveSpyInteractions', function() {
   });
 
   it('throws an error if the spy object has no spies', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveSpyInteractions();
     const spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['notSpy']);

@@ -85,20 +85,20 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.private.TreeProcessor = jRequire.TreeProcessor(j$);
     j$.private.TreeRunner = jRequire.TreeRunner(j$);
     j$.version = jRequire.version();
-    j$.Order = jRequire.Order();
-    j$.DiffBuilder = jRequire.DiffBuilder(j$);
-    j$.NullDiffBuilder = jRequire.NullDiffBuilder(j$);
-    j$.ObjectPath = jRequire.ObjectPath(j$);
-    j$.MismatchTree = jRequire.MismatchTree(j$);
+    j$.private.Order = jRequire.Order();
+    j$.private.DiffBuilder = jRequire.DiffBuilder(j$);
+    j$.private.NullDiffBuilder = jRequire.NullDiffBuilder(j$);
+    j$.private.ObjectPath = jRequire.ObjectPath(j$);
+    j$.private.MismatchTree = jRequire.MismatchTree(j$);
     jRequire.GlobalErrors(j$);
-    j$.Truthy = jRequire.Truthy(j$);
-    j$.Falsy = jRequire.Falsy(j$);
-    j$.Empty = jRequire.Empty(j$);
-    j$.NotEmpty = jRequire.NotEmpty(j$);
-    j$.Is = jRequire.Is(j$);
+    j$.private.Truthy = jRequire.Truthy(j$);
+    j$.private.Falsy = jRequire.Falsy(j$);
+    j$.private.Empty = jRequire.Empty(j$);
+    j$.private.NotEmpty = jRequire.NotEmpty(j$);
+    j$.private.Is = jRequire.Is(j$);
 
-    j$.matchers = jRequire.requireMatchers(jRequire, j$);
-    j$.asyncMatchers = jRequire.requireAsyncMatchers(jRequire, j$);
+    j$.private.matchers = jRequire.requireMatchers(jRequire, j$);
+    j$.private.asyncMatchers = jRequire.requireAsyncMatchers(jRequire, j$);
 
     return j$;
   };

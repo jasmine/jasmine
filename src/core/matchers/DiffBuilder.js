@@ -3,8 +3,8 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
     constructor(config) {
       this.prettyPrinter_ =
         (config || {}).prettyPrinter || j$.private.makePrettyPrinter();
-      this.mismatches_ = new j$.MismatchTree();
-      this.path_ = new j$.ObjectPath();
+      this.mismatches_ = new j$.private.MismatchTree();
+      this.path_ = new j$.private.ObjectPath();
       this.actualRoot_ = undefined;
       this.expectedRoot_ = undefined;
     }

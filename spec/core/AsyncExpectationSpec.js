@@ -1,7 +1,7 @@
 describe('AsyncExpectation', function() {
   beforeEach(function() {
     privateUnderTest.Expectation.addAsyncCoreMatchers(
-      jasmineUnderTest.asyncMatchers
+      privateUnderTest.asyncMatchers
     );
   });
 

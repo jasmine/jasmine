@@ -3,7 +3,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.reject(new TypeError('foo'));
@@ -23,7 +23,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.reject(new TypeError('foo'));
@@ -43,7 +43,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.reject(new Error());
@@ -63,7 +63,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.reject(new Error('foo'));
@@ -83,7 +83,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.reject(new Error('foo'));
@@ -103,7 +103,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.reject(new Error());
@@ -123,7 +123,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.reject(new Error());
@@ -143,7 +143,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.resolve(new Error('foo'));
@@ -162,7 +162,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.reject('foo');
@@ -182,7 +182,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.reject(new Error('foo'));
@@ -202,7 +202,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = Promise.reject(new Error('foo'));
@@ -222,7 +222,7 @@ describe('#toBeRejectedWithError', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWithError(
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWithError(
         matchersUtil
       ),
       actual = 'not a promise';

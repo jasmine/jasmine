@@ -258,7 +258,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @function
    */
   j$.truthy = function() {
-    return new j$.Truthy();
+    return new j$.private.Truthy();
   };
 
   /**
@@ -271,7 +271,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @function
    */
   j$.falsy = function() {
-    return new j$.Falsy();
+    return new j$.private.Falsy();
   };
 
   /**
@@ -283,7 +283,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @function
    */
   j$.empty = function() {
-    return new j$.Empty();
+    return new j$.private.Empty();
   };
 
   /**
@@ -295,7 +295,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @param {Object} sample - The value to compare the actual to.
    */
   j$.is = function(sample) {
-    return new j$.Is(sample);
+    return new j$.private.Is(sample);
   };
 
   /**
@@ -307,7 +307,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @function
    */
   j$.notEmpty = function() {
-    return new j$.NotEmpty();
+    return new j$.private.NotEmpty();
   };
 
   /**

@@ -132,8 +132,8 @@ getJasmineRequireObj().Env = function(j$) {
       runableResources.customObjectFormatters().push(formatter);
     };
 
-    j$.private.Expectation.addCoreMatchers(j$.matchers);
-    j$.private.Expectation.addAsyncCoreMatchers(j$.asyncMatchers);
+    j$.private.Expectation.addCoreMatchers(j$.private.matchers);
+    j$.private.Expectation.addAsyncCoreMatchers(j$.private.asyncMatchers);
 
     const expectationFactory = function(actual, spec) {
       return j$.private.Expectation.factory({

@@ -742,7 +742,7 @@ describe('matchersUtil', function() {
             const a2 = new TypedArrayCtor(2);
             a1[0] = a2[0] = 0;
             a1[1] = a2[1] = 1;
-            const diffBuilder = new jasmineUnderTest.DiffBuilder();
+            const diffBuilder = new privateUnderTest.DiffBuilder();
             expect(matchersUtil.equals(a1, a2, diffBuilder)).toBe(true);
             jasmine.debugLog('Diff: ' + diffBuilder.getMessage());
           }
@@ -753,7 +753,7 @@ describe('matchersUtil', function() {
           const a1 = new TypedArrayCtor(2);
           const a2 = new TypedArrayCtor(1);
           a1[0] = a1[1] = a2[0] = 0;
-          const diffBuilder = new jasmineUnderTest.DiffBuilder();
+          const diffBuilder = new privateUnderTest.DiffBuilder();
           expect(matchersUtil.equals(a1, a2, diffBuilder)).toBe(false);
           jasmine.debugLog('Diff: ' + diffBuilder.getMessage());
         });
@@ -766,7 +766,7 @@ describe('matchersUtil', function() {
             const a2 = new TypedArrayCtor(1);
             a1[0] = 0;
             a2[0] = 1;
-            const diffBuilder = new jasmineUnderTest.DiffBuilder();
+            const diffBuilder = new privateUnderTest.DiffBuilder();
             expect(matchersUtil.equals(a1, a2, diffBuilder)).toBe(false);
             jasmine.debugLog('Diff: ' + diffBuilder.getMessage());
           }
@@ -967,7 +967,7 @@ describe('matchersUtil', function() {
     });
 
     it('uses a diffBuilder if one is provided as the third argument', function() {
-      const diffBuilder = new jasmineUnderTest.DiffBuilder(),
+      const diffBuilder = new privateUnderTest.DiffBuilder(),
         matchersUtil = new privateUnderTest.MatchersUtil();
 
       spyOn(diffBuilder, 'recordMismatch');

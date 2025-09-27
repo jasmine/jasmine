@@ -2,25 +2,25 @@ describe('MismatchTree', function() {
   describe('#add', function() {
     describe('When the path is empty', function() {
       it('flags the root node as mismatched', function() {
-        const tree = new jasmineUnderTest.MismatchTree();
-        tree.add(new jasmineUnderTest.ObjectPath([]));
+        const tree = new privateUnderTest.MismatchTree();
+        tree.add(new privateUnderTest.ObjectPath([]));
         expect(tree.isMismatch).toBe(true);
       });
     });
 
     describe('When the path is not empty', function() {
       it('flags the node as mismatched', function() {
-        const tree = new jasmineUnderTest.MismatchTree();
+        const tree = new privateUnderTest.MismatchTree();
 
-        tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']));
+        tree.add(new privateUnderTest.ObjectPath(['a', 'b']));
 
         expect(tree.child('a').child('b').isMismatch).toBe(true);
       });
 
       it('does not flag ancestors as mismatched', function() {
-        const tree = new jasmineUnderTest.MismatchTree();
+        const tree = new privateUnderTest.MismatchTree();
 
-        tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']));
+        tree.add(new privateUnderTest.ObjectPath(['a', 'b']));
 
         expect(tree.isMismatch).toBe(false);
         expect(tree.child('a').isMismatch).toBe(false);
@@ -28,9 +28,9 @@ describe('MismatchTree', function() {
     });
 
     it('stores the formatter on only the target node', function() {
-      const tree = new jasmineUnderTest.MismatchTree();
+      const tree = new privateUnderTest.MismatchTree();
 
-      tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']), formatter);
+      tree.add(new privateUnderTest.ObjectPath(['a', 'b']), formatter);
 
       expect(tree.formatter).toBeFalsy();
       expect(tree.child('a').formatter).toBeFalsy();
@@ -38,9 +38,9 @@ describe('MismatchTree', function() {
     });
 
     it('stores the path to the node', function() {
-      const tree = new jasmineUnderTest.MismatchTree();
+      const tree = new privateUnderTest.MismatchTree();
 
-      tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']), formatter);
+      tree.add(new privateUnderTest.ObjectPath(['a', 'b']), formatter);
 
       expect(tree.child('a').child('b').path.components).toEqual(['a', 'b']);
     });
@@ -48,37 +48,37 @@ describe('MismatchTree', function() {
 
   describe('#traverse', function() {
     it('calls the callback for all nodes that are or contain mismatches', function() {
-      const tree = new jasmineUnderTest.MismatchTree();
-      tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']), formatter);
-      tree.add(new jasmineUnderTest.ObjectPath(['c']));
+      const tree = new privateUnderTest.MismatchTree();
+      tree.add(new privateUnderTest.ObjectPath(['a', 'b']), formatter);
+      tree.add(new privateUnderTest.ObjectPath(['c']));
       const visit = jasmine.createSpy('visit').and.returnValue(true);
 
       tree.traverse(visit);
 
       expect(visit).toHaveBeenCalledWith(
-        new jasmineUnderTest.ObjectPath([]),
+        new privateUnderTest.ObjectPath([]),
         false,
         undefined
       );
       expect(visit).toHaveBeenCalledWith(
-        new jasmineUnderTest.ObjectPath(['a']),
+        new privateUnderTest.ObjectPath(['a']),
         false,
         undefined
       );
       expect(visit).toHaveBeenCalledWith(
-        new jasmineUnderTest.ObjectPath(['a', 'b']),
+        new privateUnderTest.ObjectPath(['a', 'b']),
         true,
         formatter
       );
       expect(visit).toHaveBeenCalledWith(
-        new jasmineUnderTest.ObjectPath(['c']),
+        new privateUnderTest.ObjectPath(['c']),
         true,
         undefined
       );
     });
 
     it('does not call the callback if there are no mismatches', function() {
-      const tree = new jasmineUnderTest.MismatchTree();
+      const tree = new privateUnderTest.MismatchTree();
       const visit = jasmine.createSpy('visit');
 
       tree.traverse(visit);
@@ -87,8 +87,8 @@ describe('MismatchTree', function() {
     });
 
     it('visits parents before children', function() {
-      const tree = new jasmineUnderTest.MismatchTree();
-      tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']));
+      const tree = new privateUnderTest.MismatchTree();
+      tree.add(new privateUnderTest.ObjectPath(['a', 'b']));
       const visited = [];
 
       tree.traverse(function(path) {
@@ -97,16 +97,16 @@ describe('MismatchTree', function() {
       });
 
       expect(visited).toEqual([
-        new jasmineUnderTest.ObjectPath([]),
-        new jasmineUnderTest.ObjectPath(['a']),
-        new jasmineUnderTest.ObjectPath(['a', 'b'])
+        new privateUnderTest.ObjectPath([]),
+        new privateUnderTest.ObjectPath(['a']),
+        new privateUnderTest.ObjectPath(['a', 'b'])
       ]);
     });
 
     it('visits children in the order they were recorded', function() {
-      const tree = new jasmineUnderTest.MismatchTree();
-      tree.add(new jasmineUnderTest.ObjectPath(['length']));
-      tree.add(new jasmineUnderTest.ObjectPath([1]));
+      const tree = new privateUnderTest.MismatchTree();
+      tree.add(new privateUnderTest.ObjectPath(['length']));
+      tree.add(new privateUnderTest.ObjectPath([1]));
       const visited = [];
 
       tree.traverse(function(path) {
@@ -115,15 +115,15 @@ describe('MismatchTree', function() {
       });
 
       expect(visited).toEqual([
-        new jasmineUnderTest.ObjectPath([]),
-        new jasmineUnderTest.ObjectPath(['length']),
-        new jasmineUnderTest.ObjectPath([1])
+        new privateUnderTest.ObjectPath([]),
+        new privateUnderTest.ObjectPath(['length']),
+        new privateUnderTest.ObjectPath([1])
       ]);
     });
 
     it('does not visit children if the callback returns falsy', function() {
-      const tree = new jasmineUnderTest.MismatchTree();
-      tree.add(new jasmineUnderTest.ObjectPath(['a', 'b']));
+      const tree = new privateUnderTest.MismatchTree();
+      tree.add(new privateUnderTest.ObjectPath(['a', 'b']));
       const visited = [];
 
       tree.traverse(function(path) {
@@ -132,8 +132,8 @@ describe('MismatchTree', function() {
       });
 
       expect(visited).toEqual([
-        new jasmineUnderTest.ObjectPath([]),
-        new jasmineUnderTest.ObjectPath(['a'])
+        new privateUnderTest.ObjectPath([]),
+        new privateUnderTest.ObjectPath(['a'])
       ]);
     });
   });

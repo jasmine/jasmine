@@ -1,7 +1,7 @@
 describe('toBe', function() {
   it('passes with no message when actual === expected', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil(),
-      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
+      matcher = privateUnderTest.matchers.toBe(matchersUtil),
       result = matcher.compare(1, 1);
     expect(result.pass).toBe(true);
   });
@@ -10,7 +10,7 @@ describe('toBe', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
+      matcher = privateUnderTest.matchers.toBe(matchersUtil),
       array = [1];
 
     const result = matcher.compare(array, array);
@@ -24,7 +24,7 @@ describe('toBe', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
+      matcher = privateUnderTest.matchers.toBe(matchersUtil),
       obj = { foo: 'bar' };
 
     const result = matcher.compare(obj, obj);
@@ -36,7 +36,7 @@ describe('toBe', function() {
 
   it('fails with no message when actual !== expected', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil(),
-      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
+      matcher = privateUnderTest.matchers.toBe(matchersUtil),
       result = matcher.compare(1, 2);
     expect(result.pass).toBe(false);
     expect(result.message).toBeUndefined();
@@ -46,7 +46,7 @@ describe('toBe', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
+      matcher = privateUnderTest.matchers.toBe(matchersUtil),
       result = matcher.compare([1], [1]);
 
     expect(result.pass).toBe(false);
@@ -59,7 +59,7 @@ describe('toBe', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
+      matcher = privateUnderTest.matchers.toBe(matchersUtil),
       result = matcher.compare({ foo: 'bar' }, { foo: 'bar' });
 
     expect(result.pass).toBe(false);
@@ -74,7 +74,7 @@ describe('toBe', function() {
       },
       prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]),
       matchersUtil = new privateUnderTest.MatchersUtil({ pp: prettyPrinter }),
-      matcher = jasmineUnderTest.matchers.toBe(matchersUtil),
+      matcher = privateUnderTest.matchers.toBe(matchersUtil),
       result = matcher.compare({ foo: 'bar' }, { foo: 'bar' });
 
     expect(result.pass).toBe(false);

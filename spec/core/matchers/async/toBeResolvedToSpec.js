@@ -1,7 +1,7 @@
 describe('#toBeResolvedTo', function() {
   it('passes if the promise is resolved to the expected value', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil(),
-      matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
+      matcher = privateUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = Promise.resolve({ foo: 42 });
 
     return matcher.compare(actual, { foo: 42 }).then(function(result) {
@@ -13,7 +13,7 @@ describe('#toBeResolvedTo', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
+      matcher = privateUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = Promise.reject(new Error('AsyncExpectationSpec error'));
 
     return matcher.compare(actual, '').then(function(result) {
@@ -32,7 +32,7 @@ describe('#toBeResolvedTo', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
+      matcher = privateUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = Promise.resolve({ foo: 17 });
 
     return matcher.compare(actual, { foo: 42 }).then(function(result) {
@@ -50,7 +50,7 @@ describe('#toBeResolvedTo', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
+      matcher = privateUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = Promise.resolve(true);
 
     return matcher.compare(actual, true).then(function(result) {
@@ -73,7 +73,7 @@ describe('#toBeResolvedTo', function() {
         customTesters: customEqualityTesters,
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
+      matcher = privateUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = Promise.resolve('actual');
 
     return matcher.compare(actual, 'expected').then(function(result) {
@@ -85,7 +85,7 @@ describe('#toBeResolvedTo', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
         pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
+      matcher = privateUnderTest.asyncMatchers.toBeResolvedTo(matchersUtil),
       actual = 'not a promise';
 
     function f() {

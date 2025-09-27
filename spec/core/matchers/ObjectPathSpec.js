@@ -1,5 +1,5 @@
 describe('ObjectPath', function() {
-  const ObjectPath = jasmineUnderTest.ObjectPath;
+  const ObjectPath = privateUnderTest.ObjectPath;
 
   it('represents the path to a node in an object tree', function() {
     expect(new ObjectPath(['foo', 'bar']).toString()).toEqual('$.foo.bar');

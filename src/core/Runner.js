@@ -64,7 +64,7 @@ getJasmineRequireObj().Runner = function(j$) {
         }
       }
 
-      const order = new j$.Order({
+      const order = new j$.private.Order({
         random: config.random,
         seed: j$.private.isNumber(config.seed) ? config.seed + '' : config.seed
       });
