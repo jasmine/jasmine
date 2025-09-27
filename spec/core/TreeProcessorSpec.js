@@ -28,7 +28,7 @@ describe('TreeProcessor', function() {
 
   it('processes a single leaf', function() {
     const leaf = new Leaf(),
-      processor = new jasmineUnderTest.TreeProcessor({
+      processor = new privateUnderTest.TreeProcessor({
         tree: leaf,
         runnableIds: [leaf.id]
       });
@@ -40,7 +40,7 @@ describe('TreeProcessor', function() {
 
   it('processes a single pending leaf', function() {
     const leaf = new Leaf({ markedPending: true }),
-      processor = new jasmineUnderTest.TreeProcessor({
+      processor = new privateUnderTest.TreeProcessor({
         tree: leaf,
         runnableIds: [leaf.id]
       });
@@ -52,7 +52,7 @@ describe('TreeProcessor', function() {
 
   it('processes a single non-specified leaf', function() {
     const leaf = new Leaf(),
-      processor = new jasmineUnderTest.TreeProcessor({
+      processor = new privateUnderTest.TreeProcessor({
         tree: leaf,
         runnableIds: []
       });
@@ -64,7 +64,7 @@ describe('TreeProcessor', function() {
 
   it('processes a single excluded leaf', function() {
     const leaf = new Leaf(),
-      processor = new jasmineUnderTest.TreeProcessor({
+      processor = new privateUnderTest.TreeProcessor({
         tree: leaf,
         runnableIds: [leaf.id],
         excludeNode: function() {
@@ -80,7 +80,7 @@ describe('TreeProcessor', function() {
   it('processes a tree with a single leaf with the root specified', function() {
     const leaf = new Leaf(),
       parent = new Node({ children: [leaf] }),
-      processor = new jasmineUnderTest.TreeProcessor({
+      processor = new privateUnderTest.TreeProcessor({
         tree: parent,
         runnableIds: [parent.id]
       });
@@ -95,7 +95,7 @@ describe('TreeProcessor', function() {
   it('processes a tree with a single pending leaf, with the root specified', function() {
     const leaf = new Leaf({ markedPending: true }),
       parent = new Node({ children: [leaf] }),
-      processor = new jasmineUnderTest.TreeProcessor({
+      processor = new privateUnderTest.TreeProcessor({
         tree: parent,
         runnableIds: [parent.id]
       });
@@ -111,7 +111,7 @@ describe('TreeProcessor', function() {
     const specified = new Leaf();
     const nonSpecified = new Leaf();
     const root = new Node({ children: [nonSpecified, specified] });
-    const processor = new jasmineUnderTest.TreeProcessor({
+    const processor = new privateUnderTest.TreeProcessor({
       tree: root,
       runnableIds: [specified.id]
     });
@@ -128,7 +128,7 @@ describe('TreeProcessor', function() {
     const leaf1 = new Leaf();
     const node = new Node({ children: [leaf1] });
     const root = new Node({ children: [node] });
-    const processor = new jasmineUnderTest.TreeProcessor({
+    const processor = new privateUnderTest.TreeProcessor({
       tree: root,
       runnableIds: []
     });
@@ -158,7 +158,7 @@ describe('TreeProcessor', function() {
         children: [childless, pendingNode]
       }),
       root = new Node({ children: [parent, parentOfPendings] }),
-      processor = new jasmineUnderTest.TreeProcessor({
+      processor = new privateUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [root.id]
       });
@@ -203,7 +203,7 @@ describe('TreeProcessor', function() {
       leaf3 = new Leaf(),
       reentered = new Node({ noReenter: true, children: [leaf1, leaf2] }),
       root = new Node({ children: [reentered, leaf3] }),
-      processor = new jasmineUnderTest.TreeProcessor({
+      processor = new privateUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [leaf1.id, leaf3.id, leaf2.id]
       });
@@ -221,7 +221,7 @@ describe('TreeProcessor', function() {
     const leaf3 = new Leaf();
     const reentered = new Node({ children: [leaf1, leaf2] });
     const root = new Node({ children: [reentered, leaf3] });
-    const processor = new jasmineUnderTest.TreeProcessor({
+    const processor = new privateUnderTest.TreeProcessor({
       tree: root,
       runnableIds: [leaf1.id, leaf3.id, leaf2.id]
     });
@@ -241,7 +241,7 @@ describe('TreeProcessor', function() {
       leaf3 = new Leaf(),
       noReentry = new Node({ noReenter: true }),
       root = new Node({ children: [noReentry] }),
-      processor = new jasmineUnderTest.TreeProcessor({
+      processor = new privateUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [leaf2.id, leaf1.id, leaf3.id]
       });
@@ -252,7 +252,7 @@ describe('TreeProcessor', function() {
   it("does not throw if a node which can't be re-entered is run directly", function() {
     const noReentry = new Node({ noReenter: true }),
       root = new Node({ children: [noReentry] }),
-      processor = new jasmineUnderTest.TreeProcessor({
+      processor = new privateUnderTest.TreeProcessor({
         tree: root,
         runnableIds: [root.id]
       });
@@ -288,7 +288,7 @@ describe('TreeProcessor', function() {
       ]
     });
     const runQueue = jasmine.createSpy('runQueue');
-    const processor = new jasmineUnderTest.TreeProcessor({
+    const processor = new privateUnderTest.TreeProcessor({
       tree: root,
       runnableIds: [root.id],
       runQueue,

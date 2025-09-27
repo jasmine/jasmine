@@ -195,7 +195,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       const parentSuite = this.currentDeclarationSuite_;
       const reportedParentSuiteId =
         parentSuite === this.topSuite ? null : parentSuite.id;
-      return new j$.Suite({
+      return new j$.private.Suite({
         id: 'suite' + this.nextSuiteId_++,
         description,
         filename,

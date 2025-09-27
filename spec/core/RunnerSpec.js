@@ -72,7 +72,7 @@ describe('Runner', function() {
         }),
         focusedRunables: () => [],
         totalSpecsDefined: () => 1,
-        TreeProcessor: jasmineUnderTest.TreeProcessor,
+        TreeProcessor: privateUnderTest.TreeProcessor,
         runableResources: {
           initForRunable: () => {},
           clearForRunable: () => {}

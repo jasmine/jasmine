@@ -78,11 +78,11 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     jRequire.SpyStrategy(j$);
     jRequire.StringMatching(j$);
     jRequire.StringContaining(j$);
-    j$.UserContext = jRequire.UserContext(j$);
-    j$.Suite = jRequire.Suite(j$);
-    j$.SuiteBuilder = jRequire.SuiteBuilder(j$);
+    j$.private.UserContext = jRequire.UserContext(j$);
+    j$.private.Suite = jRequire.Suite(j$);
+    j$.private.SuiteBuilder = jRequire.SuiteBuilder(j$);
     j$.Timer = jRequire.Timer();
-    j$.TreeProcessor = jRequire.TreeProcessor(j$);
+    j$.private.TreeProcessor = jRequire.TreeProcessor(j$);
     j$.TreeRunner = jRequire.TreeRunner(j$);
     j$.version = jRequire.version();
     j$.Order = jRequire.Order();

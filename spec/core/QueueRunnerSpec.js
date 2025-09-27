@@ -51,7 +51,7 @@ describe('QueueRunner', function() {
     queueRunner.execute();
 
     const context = queueableFn1.fn.calls.first().object;
-    expect(context).toEqual(new jasmineUnderTest.UserContext());
+    expect(context).toEqual(new privateUnderTest.UserContext());
     expect(queueableFn2.fn.calls.first().object).toBe(context);
     expect(asyncContext).toBe(context);
   });
@@ -1005,7 +1005,7 @@ describe('QueueRunner', function() {
 
       this.queueRunner.execute();
 
-      expect(context.constructor).toBe(jasmineUnderTest.UserContext);
+      expect(context.constructor).toBe(privateUnderTest.UserContext);
     });
   });
 
@@ -1015,7 +1015,7 @@ describe('QueueRunner', function() {
       let context;
 
       this.fn = fn;
-      this.context = context = new jasmineUnderTest.UserContext();
+      this.context = context = new privateUnderTest.UserContext();
       this.queueRunner = new privateUnderTest.QueueRunner({
         queueableFns: [{ fn: fn }],
         userContext: context

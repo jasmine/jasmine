@@ -325,7 +325,7 @@ getJasmineRequireObj().Env = function(j$) {
       new j$.private.QueueRunner(options).execute();
     }
 
-    const suiteBuilder = new j$.SuiteBuilder({
+    const suiteBuilder = new j$.private.SuiteBuilder({
       env: this,
       expectationFactory,
       asyncExpectationFactory,
@@ -369,7 +369,7 @@ getJasmineRequireObj().Env = function(j$) {
       runableResources,
       reportDispatcher,
       runQueue,
-      TreeProcessor: j$.TreeProcessor,
+      TreeProcessor: j$.private.TreeProcessor,
       globalErrors,
       getConfig: () => config
     });

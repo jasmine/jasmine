@@ -165,14 +165,14 @@ getJasmineRequireObj().Suite = function(j$) {
       if (!this.sharedContext) {
         this.sharedContext = this.parentSuite
           ? this.parentSuite.clonedSharedUserContext()
-          : new j$.UserContext();
+          : new j$.private.UserContext();
       }
 
       return this.sharedContext;
     }
 
     clonedSharedUserContext() {
-      return j$.UserContext.fromExisting(this.sharedUserContext());
+      return j$.private.UserContext.fromExisting(this.sharedUserContext());
     }
 
     handleException() {

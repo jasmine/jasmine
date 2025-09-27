@@ -38,7 +38,7 @@ describe('Env', function() {
       });
 
       const suite = env.topSuite();
-      expect(suite).not.toBeInstanceOf(jasmineUnderTest.Suite);
+      expect(suite).not.toBeInstanceOf(privateUnderTest.Suite);
       expect(suite.description).toEqual('Jasmine__TopLevel__Suite');
       expect(suite.getFullName()).toEqual('');
       expect(suite.children.length).toEqual(2);
@@ -48,7 +48,7 @@ describe('Env', function() {
       expect(suite.children[0].getFullName()).toEqual('a top level spec');
       expect(suite.children[0].children).toBeFalsy();
 
-      expect(suite.children[1]).not.toBeInstanceOf(jasmineUnderTest.Suite);
+      expect(suite.children[1]).not.toBeInstanceOf(privateUnderTest.Suite);
       expect(suite.children[1].description).toEqual('a suite');
       expect(suite.children[1].getFullName()).toEqual('a suite');
       expect(suite.children[1].parentSuite).toBe(suite);
@@ -114,9 +114,9 @@ describe('Env', function() {
   it('can configure suites to throw errors on expectation failures', function() {
     env.configure({ stopSpecOnExpectationFailure: true });
 
-    spyOn(jasmineUnderTest, 'Suite');
+    spyOn(privateUnderTest, 'Suite');
     env.describe('foo', function() {});
-    expect(jasmineUnderTest.Suite).toHaveBeenCalledWith(
+    expect(privateUnderTest.Suite).toHaveBeenCalledWith(
       jasmine.objectContaining({
         throwOnExpectationFailure: true
       })
@@ -160,9 +160,9 @@ describe('Env', function() {
   });
 
   it('defaults to multiple failures for suites', function() {
-    spyOn(jasmineUnderTest, 'Suite');
+    spyOn(privateUnderTest, 'Suite');
     env.describe('foo', function() {});
-    expect(jasmineUnderTest.Suite).toHaveBeenCalledWith(
+    expect(privateUnderTest.Suite).toHaveBeenCalledWith(
       jasmine.objectContaining({
         throwOnExpectationFailure: false
       })
@@ -337,7 +337,7 @@ describe('Env', function() {
 
     it('calls spec.exclude with "Temporarily disabled with xit"', function() {
       const excludeSpy = jasmine.createSpy();
-      spyOn(jasmineUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
+      spyOn(privateUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
         exclude: excludeSpy
       });
       env.xit('foo', function() {});
@@ -348,7 +348,7 @@ describe('Env', function() {
       const pendSpy = jasmine.createSpy();
       const realExclude = privateUnderTest.Spec.prototype.exclude;
 
-      spyOn(jasmineUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
+      spyOn(privateUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
         exclude: realExclude,
         pend: pendSpy
       });
@@ -729,7 +729,7 @@ describe('Env', function() {
       env.it('has a spec');
     });
 
-    expect(suiteThis).not.toBeInstanceOf(jasmineUnderTest.Suite);
+    expect(suiteThis).not.toBeInstanceOf(privateUnderTest.Suite);
   });
 
   describe('#execute', function() {
@@ -738,7 +738,7 @@ describe('Env', function() {
     });
 
     it('should reset the topSuite when run twice', function() {
-      spyOn(jasmineUnderTest.Suite.prototype, 'reset');
+      spyOn(privateUnderTest.Suite.prototype, 'reset');
       return env
         .execute() // 1
         .then(function() {
@@ -746,9 +746,9 @@ describe('Env', function() {
         })
         .then(function() {
           expect(
-            jasmineUnderTest.Suite.prototype.reset
+            privateUnderTest.Suite.prototype.reset
           ).toHaveBeenCalledOnceWith();
-          const id = jasmineUnderTest.Suite.prototype.reset.calls.thisFor(0).id;
+          const id = privateUnderTest.Suite.prototype.reset.calls.thisFor(0).id;
           expect(id).toBeTruthy();
           expect(id).toEqual(env.topSuite().id);
         });
@@ -757,9 +757,9 @@ describe('Env', function() {
     it('should not reset the topSuite if parallelReset was called since the last run', async function() {
       await env.execute();
       env.parallelReset();
-      spyOn(jasmineUnderTest.Suite.prototype, 'reset');
+      spyOn(privateUnderTest.Suite.prototype, 'reset');
       await env.execute();
-      expect(jasmineUnderTest.Suite.prototype.reset).not.toHaveBeenCalled();
+      expect(privateUnderTest.Suite.prototype.reset).not.toHaveBeenCalled();
     });
 
     describe('In parallel mode', function() {

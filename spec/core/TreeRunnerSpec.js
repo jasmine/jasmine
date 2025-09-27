@@ -166,8 +166,8 @@ describe('TreeRunner', function() {
   describe('Suite execution', function() {
     it('reports the duration of the suite', async function() {
       const timer = jasmine.createSpyObj('timer', ['start', 'elapsed']);
-      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
-      const suite = new jasmineUnderTest.Suite({
+      const topSuite = new privateUnderTest.Suite({ id: 'topSuite' });
+      const suite = new privateUnderTest.Suite({
         id: 'suite1',
         parentSuite: topSuite,
         timer
@@ -224,12 +224,12 @@ describe('TreeRunner', function() {
     });
 
     it('returns false if a suite failed', async function() {
-      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
-      const failingSuite = new jasmineUnderTest.Suite({
+      const topSuite = new privateUnderTest.Suite({ id: 'topSuite' });
+      const failingSuite = new privateUnderTest.Suite({
         id: 'failingSuite',
         parentSuite: topSuite
       });
-      const passingSuite = new jasmineUnderTest.Suite({
+      const passingSuite = new privateUnderTest.Suite({
         id: 'passingSuite',
         parentSuite: topSuite
       });
@@ -288,8 +288,8 @@ describe('TreeRunner', function() {
     });
 
     it('reports children when there is a beforeAll failure', async function() {
-      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
-      const suite = new jasmineUnderTest.Suite({
+      const topSuite = new privateUnderTest.Suite({ id: 'topSuite' });
+      const suite = new privateUnderTest.Suite({
         id: 'suite',
         parentSuite: topSuite
       });
@@ -354,8 +354,8 @@ describe('TreeRunner', function() {
     });
 
     it('throws if the wrong suite is completed', async function() {
-      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
-      const suite = new jasmineUnderTest.Suite({
+      const topSuite = new privateUnderTest.Suite({ id: 'topSuite' });
+      const suite = new privateUnderTest.Suite({
         id: 'suite',
         parentSuite: topSuite
       });
@@ -410,7 +410,7 @@ describe('TreeRunner', function() {
   });
 
   it('does not remove before and after fns from the top suite', async function() {
-    const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
+    const topSuite = new privateUnderTest.Suite({ id: 'topSuite' });
     spyOn(topSuite, 'cleanupBeforeAfter');
     const executionTree = {
       topSuite,
@@ -502,8 +502,8 @@ describe('TreeRunner', function() {
     });
 
     it('works for beforeAll when the detectLateRejectionHandling param is true', async function() {
-      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
-      const suite = new jasmineUnderTest.Suite({
+      const topSuite = new privateUnderTest.Suite({ id: 'topSuite' });
+      const suite = new privateUnderTest.Suite({
         id: 'suite',
         parentSuite: topSuite
       });
@@ -571,8 +571,8 @@ describe('TreeRunner', function() {
     });
 
     it('works for afterAll when the detectLateRejectionHandling param is true', async function() {
-      const topSuite = new jasmineUnderTest.Suite({ id: 'topSuite' });
-      const suite = new jasmineUnderTest.Suite({
+      const topSuite = new privateUnderTest.Suite({ id: 'topSuite' });
+      const suite = new privateUnderTest.Suite({
         id: 'suite',
         parentSuite: topSuite
       });
@@ -643,7 +643,7 @@ describe('TreeRunner', function() {
   function runSingleSpecSuite(spec, optionalConfig) {
     const topSuiteId = 'suite1';
     spec.parentSuiteId = topSuiteId;
-    const topSuite = new jasmineUnderTest.Suite({ id: topSuiteId });
+    const topSuite = new privateUnderTest.Suite({ id: topSuiteId });
     topSuite.addChild(spec);
     const executionTree = {
       topSuite,

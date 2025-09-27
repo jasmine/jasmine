@@ -260,7 +260,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     async #reportChildrenOfBeforeAllFailure(suite) {
       for (const child of suite.children) {
-        if (child instanceof j$.Suite) {
+        if (child instanceof j$.private.Suite) {
           await this.#reportDispatcher.suiteStarted(child.result);
           await this.#reportChildrenOfBeforeAllFailure(child);
 
