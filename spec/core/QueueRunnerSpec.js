@@ -227,7 +227,7 @@ describe('QueueRunner', function() {
     });
 
     it('does not cause an explicit fail if execution is being stopped', function() {
-      const err = new jasmineUnderTest.StopExecutionError('foo'),
+      const err = new privateUnderTest.StopExecutionError('foo'),
         queueableFn1 = {
           fn: function(done) {
             setTimeout(function() {
@@ -826,7 +826,7 @@ describe('QueueRunner', function() {
       expect(nextQueueableFn.fn).not.toHaveBeenCalled();
       expect(cleanupFn.fn).toHaveBeenCalled();
       expect(onComplete).toHaveBeenCalledWith(
-        jasmine.any(jasmineUnderTest.StopExecutionError)
+        jasmine.any(privateUnderTest.StopExecutionError)
       );
     });
 

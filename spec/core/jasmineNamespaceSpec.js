@@ -15,9 +15,12 @@
 //       'debugLog',
 //       'getEnv',
 //       'isSpy',
+//       'ParallelReportDispatcher',
 //       'private',
 //       'setDefaultSpyStrategy',
 //       'spyOnGlobalErrorsAsync',
+//       'Timer',
+//       'version',
 //
 //       // Asymmetric equality testers
 //       'any',
@@ -33,7 +36,10 @@
 //       'setContaining',
 //       'stringContaining',
 //       'stringMatching',
-//       'truthy'
+//       'truthy',
+//
+//       // Undocumented but used in browser boot files
+//       'getGlobal'
 //
 //       // TODO probably a few more
 //     ]);

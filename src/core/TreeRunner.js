@@ -78,7 +78,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         },
         onComplete: () => {
           if (spec.result.status === 'failed') {
-            specOverallDone(new j$.StopExecutionError('spec failed'));
+            specOverallDone(new j$.private.StopExecutionError('spec failed'));
           } else {
             specOverallDone();
           }

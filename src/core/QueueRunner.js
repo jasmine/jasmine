@@ -3,7 +3,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
   function StopExecutionError() {}
   StopExecutionError.prototype = new Error();
-  j$.StopExecutionError = StopExecutionError;
+  j$.private.StopExecutionError = StopExecutionError;
 
   function once(fn, onTwice) {
     let called = false;
