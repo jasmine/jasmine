@@ -45,7 +45,10 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       return DEFAULT_TIMEOUT_INTERVAL;
     },
     set: function(newValue) {
-      j$.util.validateTimeout(newValue, 'jasmine.DEFAULT_TIMEOUT_INTERVAL');
+      j$.private.util.validateTimeout(
+        newValue,
+        'jasmine.DEFAULT_TIMEOUT_INTERVAL'
+      );
       DEFAULT_TIMEOUT_INTERVAL = newValue;
     }
   });

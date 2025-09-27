@@ -48,7 +48,7 @@ getJasmineRequireObj().RunableResources = function(j$) {
         ];
 
         for (const k of toClone) {
-          newRes[k] = j$.util.clone(parentRes[k]);
+          newRes[k] = j$.private.util.clone(parentRes[k]);
         }
       }
     }

@@ -175,7 +175,7 @@ describe('ExceptionFormatter', function() {
     it('filters Jasmine stack frames in this environment', function() {
       const error = new Error('an error');
       const subject = new privateUnderTest.ExceptionFormatter({
-        jasmineFile: jasmine.util.jasmineFile()
+        jasmineFile: jasmine.private.util.jasmineFile()
       });
       const result = subject.stack(error);
       jasmine.debugLog('Original stack trace: ' + error.stack);
@@ -203,7 +203,7 @@ describe('ExceptionFormatter', function() {
         pending("Stack traces don't have messages in this environment");
       }
       const subject = new privateUnderTest.ExceptionFormatter({
-        jasmineFile: jasmine.util.jasmineFile()
+        jasmineFile: jasmine.private.util.jasmineFile()
       });
       const result = subject.stack(error);
       const lines = result.split('\n');
@@ -284,7 +284,7 @@ describe('ExceptionFormatter', function() {
       it('ensures that stack traces do not include the message in this environment', function() {
         const error = new Error('an error');
         const subject = new privateUnderTest.ExceptionFormatter({
-          jasmineFile: jasmine.util.jasmineFile()
+          jasmineFile: jasmine.private.util.jasmineFile()
         });
         const result = subject.stack(error, { omitMessage: true });
         expect(result).not.toContain('an error');

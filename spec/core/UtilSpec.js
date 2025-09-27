@@ -132,34 +132,34 @@ describe('util', function() {
 
   describe('cloneArgs', function() {
     it('clones primitives as-is', function() {
-      expect(jasmineUnderTest.util.cloneArgs([true, false])).toEqual([
+      expect(privateUnderTest.util.cloneArgs([true, false])).toEqual([
         true,
         false
       ]);
-      expect(jasmineUnderTest.util.cloneArgs([0, 1])).toEqual([0, 1]);
-      expect(jasmineUnderTest.util.cloneArgs(['str'])).toEqual(['str']);
+      expect(privateUnderTest.util.cloneArgs([0, 1])).toEqual([0, 1]);
+      expect(privateUnderTest.util.cloneArgs(['str'])).toEqual(['str']);
     });
 
     it('clones Regexp objects as-is', function() {
       const regex = /match/;
-      expect(jasmineUnderTest.util.cloneArgs([regex])).toEqual([regex]);
+      expect(privateUnderTest.util.cloneArgs([regex])).toEqual([regex]);
     });
 
     it('clones Date objects as-is', function() {
       const date = new Date(2022, 1, 1);
-      expect(jasmineUnderTest.util.cloneArgs([date])).toEqual([date]);
+      expect(privateUnderTest.util.cloneArgs([date])).toEqual([date]);
     });
 
     it('clones null and undefined', function() {
-      expect(jasmineUnderTest.util.cloneArgs([null])).toEqual([null]);
-      expect(jasmineUnderTest.util.cloneArgs([undefined])).toEqual([undefined]);
+      expect(privateUnderTest.util.cloneArgs([null])).toEqual([null]);
+      expect(privateUnderTest.util.cloneArgs([undefined])).toEqual([undefined]);
     });
   });
 
   describe('getPropertyDescriptor', function() {
     it('get property descriptor from object', function() {
       const obj = { prop: 1 },
-        actual = jasmineUnderTest.util.getPropertyDescriptor(obj, 'prop'),
+        actual = privateUnderTest.util.getPropertyDescriptor(obj, 'prop'),
         expected = Object.getOwnPropertyDescriptor(obj, 'prop');
 
       expect(actual).toEqual(expected);
@@ -167,7 +167,7 @@ describe('util', function() {
 
     it('get property descriptor from object property', function() {
       const proto = { prop: 1 },
-        actual = jasmineUnderTest.util.getPropertyDescriptor(proto, 'prop'),
+        actual = privateUnderTest.util.getPropertyDescriptor(proto, 'prop'),
         expected = Object.getOwnPropertyDescriptor(proto, 'prop');
 
       expect(actual).toEqual(expected);
@@ -178,8 +178,8 @@ describe('util', function() {
     it('returns the file containing jasmine.util', function() {
       // Chrome sometimes reports foo.js as foo.js/, so tolerate
       // a trailing slash if present.
-      expect(jasmineUnderTest.util.jasmineFile()).toMatch(/util.js\/?$/);
-      expect(jasmine.util.jasmineFile()).toMatch(/jasmine.js\/?$/);
+      expect(privateUnderTest.util.jasmineFile()).toMatch(/util.js\/?$/);
+      expect(jasmine.private.util.jasmineFile()).toMatch(/jasmine.js\/?$/);
     });
   });
 });

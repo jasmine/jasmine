@@ -92,7 +92,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       ensureIsFunctionOrAsync(fn, 'fit');
 
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
       const spec = this.specFactory_(description, fn, timeout, filename);
       this.currentDeclarationSuite_.addChild(spec);
@@ -105,7 +105,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       ensureIsFunctionOrAsync(beforeEachFunction, 'beforeEach');
 
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
 
       this.currentDeclarationSuite_.beforeEach({
@@ -118,7 +118,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       ensureIsFunctionOrAsync(beforeAllFunction, 'beforeAll');
 
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
 
       this.currentDeclarationSuite_.beforeAll({
@@ -131,7 +131,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       ensureIsFunctionOrAsync(afterEachFunction, 'afterEach');
 
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
 
       afterEachFunction.isCleanup = true;
@@ -145,7 +145,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       ensureIsFunctionOrAsync(afterAllFunction, 'afterAll');
 
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
 
       this.currentDeclarationSuite_.afterAll({
@@ -156,7 +156,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
 
     it_(description, fn, timeout, filename) {
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
 
       this.checkDuplicate_(description, 'spec');

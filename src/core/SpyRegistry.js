@@ -116,7 +116,10 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         throw new Error(getErrorMsg('No property name supplied'));
       }
 
-      const descriptor = j$.util.getPropertyDescriptor(obj, propertyName);
+      const descriptor = j$.private.util.getPropertyDescriptor(
+        obj,
+        propertyName
+      );
 
       if (!descriptor) {
         throw new Error(getErrorMsg(propertyName + ' property does not exist'));
@@ -151,7 +154,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         }
       }
 
-      const originalDescriptor = j$.util.clone(descriptor);
+      const originalDescriptor = j$.private.util.clone(descriptor);
       const spy = createSpy(propertyName, descriptor[accessType]);
       let restoreStrategy;
 

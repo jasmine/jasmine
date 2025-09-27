@@ -61,7 +61,7 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
         return;
       }
 
-      const thisArgs = j$.util.cloneArgs(args);
+      const thisArgs = j$.private.util.cloneArgs(args);
       if (fn.length <= 1) {
         fns.push({
           fn: function() {

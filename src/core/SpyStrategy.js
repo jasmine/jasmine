@@ -19,7 +19,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
 
     const cs = options.customStrategies || {};
     for (const k in cs) {
-      if (j$.util.has(cs, k) && !this[k]) {
+      if (j$.private.util.has(cs, k) && !this[k]) {
         this[k] = createCustomPlan(cs[k]);
       }
     }

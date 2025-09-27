@@ -494,7 +494,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
 
     for (const key of aKeys) {
       // Deep compare each member
-      if (!j$.util.has(b, key)) {
+      if (!j$.private.util.has(b, key)) {
         diffBuilder.recordMismatch(
           objectKeysAreDifferentFormatter.bind(null, this.pp)
         );
@@ -524,7 +524,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     const allKeys = (function(o) {
       const keys = [];
       for (const key in o) {
-        if (j$.util.has(o, key)) {
+        if (j$.private.util.has(o, key)) {
           keys.push(key);
         }
       }
@@ -565,7 +565,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
   // and not in objB.
   function extraKeysAndValues(objA, objB) {
     return MatchersUtil.keys(objA)
-      .filter(key => !j$.util.has(objB, key))
+      .filter(key => !j$.private.util.has(objB, key))
       .map(key => [key, objA[key]]);
   }
 

@@ -14,7 +14,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
 
   function ExceptionFormatter(options) {
     const jasmineFile =
-      (options && options.jasmineFile) || j$.util.jasmineFile();
+      (options && options.jasmineFile) || j$.private.util.jasmineFile();
     this.message = function(error) {
       let message = '';
 
