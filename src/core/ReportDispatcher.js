@@ -78,5 +78,5 @@ getJasmineRequireObj().ReportDispatcher = function(j$) {
     }
   }
 
-  return ReportDispatcher;
+  j$.private.ReportDispatcher = ReportDispatcher;
 };

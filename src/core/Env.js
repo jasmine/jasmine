@@ -322,7 +322,7 @@ getJasmineRequireObj().Env = function(j$) {
           (runner.currentRunable() || topSuite).handleException(e);
         };
 
-      new j$.QueueRunner(options).execute();
+      new j$.private.QueueRunner(options).execute();
     }
 
     const suiteBuilder = new j$.SuiteBuilder({
@@ -353,10 +353,10 @@ getJasmineRequireObj().Env = function(j$) {
      * @interface Reporter
      * @see custom_reporter
      */
-    reportDispatcher = new j$.ReportDispatcher(
-      j$.reporterEvents,
+    reportDispatcher = new j$.private.ReportDispatcher(
+      j$.private.reporterEvents,
       function(options) {
-        options.SkipPolicy = j$.NeverSkipPolicy;
+        options.SkipPolicy = j$.private.NeverSkipPolicy;
         return runQueue(options);
       },
       recordLateError

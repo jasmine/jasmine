@@ -193,7 +193,7 @@ describe('TreeRunner', function() {
         globalErrors: mockGlobalErrors(),
         runableResources: mockRunableResources(),
         reportDispatcher,
-        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        currentRunableTracker: new privateUnderTest.CurrentRunableTracker(),
         getConfig() {
           return {};
         },
@@ -253,7 +253,7 @@ describe('TreeRunner', function() {
         globalErrors: mockGlobalErrors(),
         runableResources: mockRunableResources(),
         reportDispatcher,
-        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        currentRunableTracker: new privateUnderTest.CurrentRunableTracker(),
         getConfig() {
           return {};
         },
@@ -324,7 +324,7 @@ describe('TreeRunner', function() {
         globalErrors: mockGlobalErrors(),
         runableResources: mockRunableResources(),
         reportDispatcher,
-        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        currentRunableTracker: new privateUnderTest.CurrentRunableTracker(),
         reportChildrenOfBeforeAllFailure,
         getConfig() {
           return {};
@@ -384,7 +384,7 @@ describe('TreeRunner', function() {
         globalErrors: mockGlobalErrors(),
         runableResources: mockRunableResources(),
         reportDispatcher,
-        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        currentRunableTracker: new privateUnderTest.CurrentRunableTracker(),
         getConfig() {
           return {};
         },
@@ -428,7 +428,7 @@ describe('TreeRunner', function() {
       globalErrors: mockGlobalErrors(),
       runableResources: mockRunableResources(),
       reportDispatcher: mockReportDispatcher(),
-      currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+      currentRunableTracker: new privateUnderTest.CurrentRunableTracker(),
       getConfig() {
         return {};
       }
@@ -535,7 +535,7 @@ describe('TreeRunner', function() {
         runableResources: mockRunableResources(),
         reportDispatcher,
         setTimeout,
-        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        currentRunableTracker: new privateUnderTest.CurrentRunableTracker(),
         getConfig() {
           return { detectLateRejectionHandling: true };
         },
@@ -604,7 +604,7 @@ describe('TreeRunner', function() {
         runableResources: mockRunableResources(),
         reportDispatcher,
         setTimeout,
-        currentRunableTracker: new jasmineUnderTest.CurrentRunableTracker(),
+        currentRunableTracker: new privateUnderTest.CurrentRunableTracker(),
         getConfig() {
           return { detectLateRejectionHandling: true };
         },
@@ -659,7 +659,7 @@ describe('TreeRunner', function() {
     const runableResources = mockRunableResources();
     const globalErrors = mockGlobalErrors();
     const setTimeout = jasmine.createSpy('setTimeout');
-    const currentRunableTracker = new jasmineUnderTest.CurrentRunableTracker();
+    const currentRunableTracker = new privateUnderTest.CurrentRunableTracker();
     const subject = new jasmineUnderTest.TreeRunner({
       executionTree,
       runQueue,
@@ -694,10 +694,10 @@ describe('TreeRunner', function() {
   function mockReportDispatcher() {
     const reportDispatcher = jasmine.createSpyObj(
       'reportDispatcher',
-      jasmineUnderTest.reporterEvents
+      privateUnderTest.reporterEvents
     );
 
-    for (const k of jasmineUnderTest.reporterEvents) {
+    for (const k of privateUnderTest.reporterEvents) {
       reportDispatcher[k].and.returnValue(Promise.resolve());
     }
 

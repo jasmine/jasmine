@@ -378,7 +378,7 @@ describe('matchersUtil', function() {
       const obj = new Map();
       obj.set(1, 2);
       obj.set('foo', 'bar');
-      const containing = new jasmineUnderTest.MapContaining(new Map());
+      const containing = new privateUnderTest.MapContaining(new Map());
       containing.sample.set('foo', 'bar');
 
       expect(matchersUtil.equals(obj, containing)).toBe(true);
@@ -390,7 +390,7 @@ describe('matchersUtil', function() {
       const obj = new Set();
       obj.add(1);
       obj.add('foo');
-      const containing = new jasmineUnderTest.SetContaining(new Set());
+      const containing = new privateUnderTest.SetContaining(new Set());
       containing.sample.add(1);
 
       expect(matchersUtil.equals(obj, containing)).toBe(true);
@@ -426,7 +426,7 @@ describe('matchersUtil', function() {
         matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(
-        matchersUtil.equals(arr, new jasmineUnderTest.ArrayContaining(['bar']))
+        matchersUtil.equals(arr, new privateUnderTest.ArrayContaining(['bar']))
       ).toBe(true);
     });
 

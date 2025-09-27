@@ -32,5 +32,5 @@ getJasmineRequireObj().ArrayWithExactContents = function(j$) {
     return '<jasmine.arrayWithExactContents(' + pp(this.sample) + ')>';
   };
 
-  return ArrayWithExactContents;
+  j$.private.ArrayWithExactContents = ArrayWithExactContents;
 };

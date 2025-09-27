@@ -24,7 +24,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#reportDispatcher = options.reportDispatcher;
       this.#getConfig = options.getConfig;
       this.#executedBefore = false;
-      this.#currentRunableTracker = new j$.CurrentRunableTracker();
+      this.#currentRunableTracker = new j$.private.CurrentRunableTracker();
     }
 
     currentSpec() {

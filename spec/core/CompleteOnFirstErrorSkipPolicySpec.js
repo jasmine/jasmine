@@ -2,7 +2,7 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
   describe('#skipTo', function() {
     describe('Before anything has errored', function() {
       it('returns the next index', function() {
-        const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
+        const policy = new privateUnderTest.CompleteOnFirstErrorSkipPolicy(
           arrayOfArbitraryFns(4),
           4
         );
@@ -15,7 +15,7 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
         const fns = arrayOfArbitraryFns(4);
         fns[2].type = arbitraryCleanupType();
         fns[3].type = arbitraryCleanupType();
-        const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(fns);
+        const policy = new privateUnderTest.CompleteOnFirstErrorSkipPolicy(fns);
 
         policy.fnErrored(0);
         expect(policy.skipTo(0)).toEqual(2);
@@ -27,7 +27,7 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
         it(`does not skip ${type} fns`, function() {
           const fns = arrayOfArbitraryFns(2);
           fns[1].type = type;
-          const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
+          const policy = new privateUnderTest.CompleteOnFirstErrorSkipPolicy(
             fns
           );
 
@@ -58,7 +58,7 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
               type: arbitraryCleanupType()
             }
           ];
-          const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
+          const policy = new privateUnderTest.CompleteOnFirstErrorSkipPolicy(
             fns
           );
 
@@ -90,7 +90,7 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
               type: arbitraryCleanupType()
             }
           ];
-          const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(
+          const policy = new privateUnderTest.CompleteOnFirstErrorSkipPolicy(
             fns
           );
 
@@ -107,7 +107,7 @@ describe('CompleteOnFirstErrorSkipPolicy', function() {
             type: arbitraryCleanupType()
           }
         ];
-        const policy = new jasmineUnderTest.CompleteOnFirstErrorSkipPolicy(fns);
+        const policy = new privateUnderTest.CompleteOnFirstErrorSkipPolicy(fns);
 
         policy.fnErrored(0);
         expect(policy.skipTo(0)).toEqual(1);

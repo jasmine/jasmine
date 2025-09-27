@@ -1,4 +1,4 @@
-getJasmineRequireObj().reporterEvents = function() {
+getJasmineRequireObj().reporterEvents = function(j$) {
   /**
    * Used to tell Jasmine what optional or uncommonly implemented features
    * the reporter supports. If not specified, the defaults described in
@@ -92,5 +92,5 @@ getJasmineRequireObj().reporterEvents = function() {
     'specDone'
   ];
   Object.freeze(events);
-  return events;
+  j$.private.reporterEvents = events;
 };

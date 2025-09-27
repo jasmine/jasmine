@@ -67,7 +67,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       popListener: emptyFn
     };
 
-    const SkipPolicy = attrs.SkipPolicy || j$.NeverSkipPolicy;
+    const SkipPolicy = attrs.SkipPolicy || j$.private.NeverSkipPolicy;
     this.skipPolicy_ = new SkipPolicy(this.queueableFns);
     this.errored_ = false;
 
@@ -307,5 +307,5 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     );
   }
 
-  return QueueRunner;
+  j$.private.QueueRunner = QueueRunner;
 };

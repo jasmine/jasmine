@@ -1,4 +1,4 @@
-getJasmineRequireObj().CurrentRunableTracker = function() {
+getJasmineRequireObj().CurrentRunableTracker = function(j$) {
   class CurrentRunableTracker {
     #currentSpec;
     #currentlyExecutingSuites;
@@ -34,5 +34,5 @@ getJasmineRequireObj().CurrentRunableTracker = function() {
     }
   }
 
-  return CurrentRunableTracker;
+  j$.private.CurrentRunableTracker = CurrentRunableTracker;
 };

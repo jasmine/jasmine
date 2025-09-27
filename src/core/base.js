@@ -359,7 +359,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @param {Array} sample
    */
   j$.arrayContaining = function(sample) {
-    return new j$.ArrayContaining(sample);
+    return new j$.private.ArrayContaining(sample);
   };
 
   /**
@@ -373,7 +373,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @param {Array} sample
    */
   j$.arrayWithExactContents = function(sample) {
-    return new j$.ArrayWithExactContents(sample);
+    return new j$.private.ArrayWithExactContents(sample);
   };
 
   /**
@@ -387,7 +387,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @param {Map} sample - The subset of items that _must_ be in the actual.
    */
   j$.mapContaining = function(sample) {
-    return new j$.MapContaining(sample);
+    return new j$.private.MapContaining(sample);
   };
 
   /**
@@ -401,7 +401,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @param {Set} sample - The subset of items that _must_ be in the actual.
    */
   j$.setContaining = function(sample) {
-    return new j$.SetContaining(sample);
+    return new j$.private.SetContaining(sample);
   };
 
   /**

@@ -32,5 +32,5 @@ getJasmineRequireObj().ArrayContaining = function(j$) {
     return '<jasmine.arrayContaining(' + pp(this.sample) + ')>';
   };
 
-  return ArrayContaining;
+  j$.private.ArrayContaining = ArrayContaining;
 };

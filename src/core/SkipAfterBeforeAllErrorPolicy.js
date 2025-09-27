@@ -34,5 +34,5 @@ getJasmineRequireObj().SkipAfterBeforeAllErrorPolicy = function(j$) {
     }
   };
 
-  return SkipAfterBeforeAllErrorPolicy;
+  j$.private.SkipAfterBeforeAllErrorPolicy = SkipAfterBeforeAllErrorPolicy;
 };

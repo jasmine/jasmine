@@ -47,5 +47,5 @@ getJasmineRequireObj().CompleteOnFirstErrorSkipPolicy = function(j$) {
     }
   }
 
-  return CompleteOnFirstErrorSkipPolicy;
+  j$.private.CompleteOnFirstErrorSkipPolicy = CompleteOnFirstErrorSkipPolicy;
 };

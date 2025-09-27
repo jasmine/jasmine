@@ -57,22 +57,18 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     j$.basicPrettyPrinter_ = j$.private.makePrettyPrinter();
     jRequire.MatchersUtil(j$);
     jRequire.ObjectContaining(j$);
-    j$.ArrayContaining = jRequire.ArrayContaining(j$);
-    j$.ArrayWithExactContents = jRequire.ArrayWithExactContents(j$);
-    j$.MapContaining = jRequire.MapContaining(j$);
-    j$.SetContaining = jRequire.SetContaining(j$);
-    j$.QueueRunner = jRequire.QueueRunner(j$);
-    j$.NeverSkipPolicy = jRequire.NeverSkipPolicy(j$);
-    j$.SkipAfterBeforeAllErrorPolicy = jRequire.SkipAfterBeforeAllErrorPolicy(
-      j$
-    );
-    j$.CompleteOnFirstErrorSkipPolicy = jRequire.CompleteOnFirstErrorSkipPolicy(
-      j$
-    );
-    j$.reporterEvents = jRequire.reporterEvents(j$);
-    j$.ReportDispatcher = jRequire.ReportDispatcher(j$);
-    j$.ParallelReportDispatcher = jRequire.ParallelReportDispatcher(j$);
-    j$.CurrentRunableTracker = jRequire.CurrentRunableTracker();
+    jRequire.ArrayContaining(j$);
+    jRequire.ArrayWithExactContents(j$);
+    jRequire.MapContaining(j$);
+    jRequire.SetContaining(j$);
+    jRequire.QueueRunner(j$);
+    jRequire.NeverSkipPolicy(j$);
+    jRequire.SkipAfterBeforeAllErrorPolicy(j$);
+    jRequire.CompleteOnFirstErrorSkipPolicy(j$);
+    jRequire.reporterEvents(j$);
+    jRequire.ReportDispatcher(j$);
+    jRequire.ParallelReportDispatcher(j$);
+    jRequire.CurrentRunableTracker(j$);
     j$.RunableResources = jRequire.RunableResources(j$);
     j$.Runner = jRequire.Runner(j$);
     j$.Spec = jRequire.Spec(j$);

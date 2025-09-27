@@ -85,7 +85,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         },
         userContext: spec.userContext(),
         runnableName: spec.getFullName.bind(spec),
-        SkipPolicy: j$.CompleteOnFirstErrorSkipPolicy
+        SkipPolicy: j$.private.CompleteOnFirstErrorSkipPolicy
       });
     }
 
@@ -292,9 +292,9 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     #suiteSkipPolicy() {
       if (this.#getConfig().stopOnSpecFailure) {
-        return j$.CompleteOnFirstErrorSkipPolicy;
+        return j$.private.CompleteOnFirstErrorSkipPolicy;
       } else {
-        return j$.SkipAfterBeforeAllErrorPolicy;
+        return j$.private.SkipAfterBeforeAllErrorPolicy;
       }
     }
   }

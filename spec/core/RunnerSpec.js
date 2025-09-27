@@ -15,10 +15,10 @@ describe('Runner', function() {
       globalErrors = 'the global errors instance';
       reportDispatcher = jasmine.createSpyObj(
         'reportDispatcher',
-        jasmineUnderTest.reporterEvents
+        privateUnderTest.reporterEvents
       );
 
-      for (const k of jasmineUnderTest.reporterEvents) {
+      for (const k of privateUnderTest.reporterEvents) {
         reportDispatcher[k].and.returnValue(Promise.resolve());
       }
 
@@ -116,7 +116,7 @@ describe('Runner', function() {
       expect(runQueue).toHaveBeenCalledWith(
         jasmine.objectContaining({
           isLeaf: true,
-          SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy,
+          SkipPolicy: privateUnderTest.CompleteOnFirstErrorSkipPolicy,
           queueableFns: shouldBeExcluded
             ? arrayNotContaining(spec.queueableFn)
             : jasmine.arrayContaining([spec.queueableFn])
@@ -142,7 +142,7 @@ describe('Runner', function() {
         userContext: { root: 'context' },
         queueableFns: [{ fn: jasmine.any(Function) }],
         onMultipleDone: null,
-        SkipPolicy: jasmineUnderTest.SkipAfterBeforeAllErrorPolicy
+        SkipPolicy: privateUnderTest.SkipAfterBeforeAllErrorPolicy
       });
 
       const runQueueArgs = runQueue.calls.mostRecent().args[0];
@@ -169,7 +169,7 @@ describe('Runner', function() {
         userContext: { for: 'topSuite' },
         queueableFns: [{ fn: jasmine.any(Function) }],
         onMultipleDone: null,
-        SkipPolicy: jasmineUnderTest.SkipAfterBeforeAllErrorPolicy
+        SkipPolicy: privateUnderTest.SkipAfterBeforeAllErrorPolicy
       });
 
       const runQueueArgs = runQueue.calls.mostRecent().args[0];
@@ -182,7 +182,7 @@ describe('Runner', function() {
         userContext: { for: 'suite' },
         onException: jasmine.any(Function),
         onMultipleDone: null,
-        SkipPolicy: jasmineUnderTest.SkipAfterBeforeAllErrorPolicy
+        SkipPolicy: privateUnderTest.SkipAfterBeforeAllErrorPolicy
       });
 
       runQueue.calls.mostRecent().args[0].queueableFns[0].fn('foo');

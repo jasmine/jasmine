@@ -39,5 +39,5 @@ getJasmineRequireObj().SetContaining = function(j$) {
     return '<jasmine.setContaining(' + pp(this.sample) + ')>';
   };
 
-  return SetContaining;
+  j$.private.SetContaining = SetContaining;
 };

@@ -41,5 +41,5 @@ getJasmineRequireObj().MapContaining = function(j$) {
     return '<jasmine.mapContaining(' + pp(this.sample) + ')>';
   };
 
-  return MapContaining;
+  j$.private.MapContaining = MapContaining;
 };

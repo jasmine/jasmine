@@ -7,5 +7,5 @@ getJasmineRequireObj().NeverSkipPolicy = function(j$) {
 
   NeverSkipPolicy.prototype.fnErrored = function(fnIx) {};
 
-  return NeverSkipPolicy;
+  j$.private.NeverSkipPolicy = NeverSkipPolicy;
 };

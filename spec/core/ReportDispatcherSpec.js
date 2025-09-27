@@ -1,6 +1,6 @@
 describe('ReportDispatcher', function() {
   it('builds an interface of requested methods', function() {
-    const dispatcher = new jasmineUnderTest.ReportDispatcher([
+    const dispatcher = new privateUnderTest.ReportDispatcher([
       'foo',
       'bar',
       'baz'
@@ -13,7 +13,7 @@ describe('ReportDispatcher', function() {
 
   it('dispatches requested methods to added reporters', function() {
     const runQueue = jasmine.createSpy('runQueue'),
-      dispatcher = new jasmineUnderTest.ReportDispatcher(
+      dispatcher = new privateUnderTest.ReportDispatcher(
         ['foo', 'bar'],
         runQueue
       ),
@@ -68,7 +68,7 @@ describe('ReportDispatcher', function() {
 
   it("does not dispatch to a reporter if the reporter doesn't accept the method", function() {
     const runQueue = jasmine.createSpy('runQueue'),
-      dispatcher = new jasmineUnderTest.ReportDispatcher(['foo'], runQueue),
+      dispatcher = new privateUnderTest.ReportDispatcher(['foo'], runQueue),
       reporter = jasmine.createSpyObj('reporter', ['baz']);
 
     dispatcher.addReporter(reporter);
@@ -83,7 +83,7 @@ describe('ReportDispatcher', function() {
 
   it("allows providing a fallback reporter in case there's no other reporter", function() {
     const runQueue = jasmine.createSpy('runQueue'),
-      dispatcher = new jasmineUnderTest.ReportDispatcher(
+      dispatcher = new privateUnderTest.ReportDispatcher(
         ['foo', 'bar'],
         runQueue
       ),
@@ -106,7 +106,7 @@ describe('ReportDispatcher', function() {
 
   it('does not call fallback reporting methods when another reporter is provided', function() {
     const runQueue = jasmine.createSpy('runQueue'),
-      dispatcher = new jasmineUnderTest.ReportDispatcher(
+      dispatcher = new privateUnderTest.ReportDispatcher(
         ['foo', 'bar'],
         runQueue
       ),
@@ -132,7 +132,7 @@ describe('ReportDispatcher', function() {
 
   it('allows registered reporters to be cleared', function() {
     const runQueue = jasmine.createSpy('runQueue'),
-      dispatcher = new jasmineUnderTest.ReportDispatcher(
+      dispatcher = new privateUnderTest.ReportDispatcher(
         ['foo', 'bar'],
         runQueue
       ),
