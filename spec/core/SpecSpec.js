@@ -1,24 +1,24 @@
 describe('Spec', function() {
   it('#isPendingSpecException returns true for a pending spec exception', function() {
-    const e = new Error(jasmineUnderTest.Spec.pendingSpecExceptionMessage);
+    const e = new Error(privateUnderTest.Spec.pendingSpecExceptionMessage);
 
-    expect(jasmineUnderTest.Spec.isPendingSpecException(e)).toBe(true);
+    expect(privateUnderTest.Spec.isPendingSpecException(e)).toBe(true);
   });
 
   it('#isPendingSpecException returns true for a pending spec exception (even when FF bug is present)', function() {
     const fakeError = {
       toString: function() {
-        return 'Error: ' + jasmineUnderTest.Spec.pendingSpecExceptionMessage;
+        return 'Error: ' + privateUnderTest.Spec.pendingSpecExceptionMessage;
       }
     };
 
-    expect(jasmineUnderTest.Spec.isPendingSpecException(fakeError)).toBe(true);
+    expect(privateUnderTest.Spec.isPendingSpecException(fakeError)).toBe(true);
   });
 
   it('#isPendingSpecException returns true for a pending spec exception with a custom message', function() {
     expect(
-      jasmineUnderTest.Spec.isPendingSpecException(
-        jasmineUnderTest.Spec.pendingSpecExceptionMessage + 'foo'
+      privateUnderTest.Spec.isPendingSpecException(
+        privateUnderTest.Spec.pendingSpecExceptionMessage + 'foo'
       )
     ).toBe(true);
   });
@@ -26,16 +26,16 @@ describe('Spec', function() {
   it('#isPendingSpecException returns false for not a pending spec exception', function() {
     const e = new Error('foo');
 
-    expect(jasmineUnderTest.Spec.isPendingSpecException(e)).toBe(false);
+    expect(privateUnderTest.Spec.isPendingSpecException(e)).toBe(false);
   });
 
   it("#isPendingSpecException returns false for thrown values that don't have toString", function() {
-    expect(jasmineUnderTest.Spec.isPendingSpecException(void 0)).toBe(false);
+    expect(privateUnderTest.Spec.isPendingSpecException(void 0)).toBe(false);
   });
 
   describe('#executionFinished', function() {
     it('removes the fn if autoCleanClosures is true', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} },
         autoCleanClosures: true
       });
@@ -45,7 +45,7 @@ describe('Spec', function() {
     });
 
     it('removes the fn after execution if autoCleanClosures is undefined', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} },
         autoCleanClosures: undefined
       });
@@ -56,7 +56,7 @@ describe('Spec', function() {
 
     it('does not remove the fn after execution if autoCleanClosures is false', function() {
       function originalFn() {}
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: originalFn },
         autoCleanClosures: false
       });
@@ -68,7 +68,7 @@ describe('Spec', function() {
 
   describe('#getSpecProperty', function() {
     it('get the property value', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -79,7 +79,7 @@ describe('Spec', function() {
 
   describe('#setSpecProperty', function() {
     it('adds the property to the result', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -89,7 +89,7 @@ describe('Spec', function() {
     });
 
     it('replace the property result when it was previously set', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -104,7 +104,7 @@ describe('Spec', function() {
     });
 
     it('throws if the key is not structured-cloneable', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -114,7 +114,7 @@ describe('Spec', function() {
     });
 
     it('throws if the value is not structured-cloneable', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -126,14 +126,14 @@ describe('Spec', function() {
 
   describe('status', function() {
     it('is "passed" by default', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
       expect(spec.getResult().status).toBe('passed');
     });
 
     it('is "passed" if all expectations passed', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -143,7 +143,7 @@ describe('Spec', function() {
     });
 
     it('is "failed" if any expectation failed', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -156,7 +156,7 @@ describe('Spec', function() {
     it('is "pending" if created without a function body', function() {
       const startCallback = jasmine.createSpy('startCallback'),
         resultCallback = jasmine.createSpy('resultCallback'),
-        spec = new jasmineUnderTest.Spec({
+        spec = new privateUnderTest.Spec({
           onStart: startCallback,
           queueableFn: { fn: null },
           resultCallback: resultCallback
@@ -168,7 +168,7 @@ describe('Spec', function() {
 
   describe('#addExpectationResult', function() {
     it('keeps track of passed and failed expectations', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -185,7 +185,7 @@ describe('Spec', function() {
 
     describe("when 'throwOnExpectationFailure' is set", function() {
       it('throws an ExpectationFailed error', function() {
-        const spec = new jasmineUnderTest.Spec({
+        const spec = new privateUnderTest.Spec({
           queueableFn: { fn: () => {} },
           throwOnExpectationFailure: true
         });
@@ -193,7 +193,7 @@ describe('Spec', function() {
         spec.addExpectationResult(true, { message: 'passed' });
         expect(function() {
           spec.addExpectationResult(false, { message: 'failed' });
-        }).toThrowError(jasmineUnderTest.errors.ExpectationFailed);
+        }).toThrowError(jasmineUnderTest.private.errors.ExpectationFailed);
 
         expect(spec.result.failedExpectations).toEqual([
           jasmine.objectContaining({ message: 'failed' })
@@ -203,7 +203,7 @@ describe('Spec', function() {
 
     describe("when 'throwOnExpectationFailure' is not set", function() {
       it('does not throw', function() {
-        const spec = new jasmineUnderTest.Spec({
+        const spec = new privateUnderTest.Spec({
           queueableFn: { fn: () => {} }
         });
 
@@ -218,7 +218,7 @@ describe('Spec', function() {
 
   it('forwards late expectation failures to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
-    const spec = new jasmineUnderTest.Spec({
+    const spec = new privateUnderTest.Spec({
       onLateError,
       queueableFn: { fn: function() {} }
     });
@@ -243,7 +243,7 @@ describe('Spec', function() {
 
   it('does not forward non-late expectation failures to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
-    const spec = new jasmineUnderTest.Spec({
+    const spec = new privateUnderTest.Spec({
       onLateError,
       queueableFn: { fn: function() {} }
     });
@@ -262,7 +262,7 @@ describe('Spec', function() {
 
   it('forwards late handleException calls to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
-    const spec = new jasmineUnderTest.Spec({
+    const spec = new privateUnderTest.Spec({
       onLateError,
       queueableFn: { fn: function() {} }
     });
@@ -280,7 +280,7 @@ describe('Spec', function() {
 
   it('does not forward non-late handleException calls to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
-    const spec = new jasmineUnderTest.Spec({
+    const spec = new privateUnderTest.Spec({
       onLateError,
       queueableFn: { fn: function() {} }
     });
@@ -293,7 +293,7 @@ describe('Spec', function() {
   });
 
   it('clears the reportedDone flag when reset', function() {
-    const spec = new jasmineUnderTest.Spec({
+    const spec = new privateUnderTest.Spec({
       queueableFn: { fn: function() {} }
     });
     spec.reportedDone = true;
@@ -305,7 +305,7 @@ describe('Spec', function() {
 
   it('does not throw an ExpectationFailed error when handling an error', function() {
     const resultCallback = jasmine.createSpy('resultCallback'),
-      spec = new jasmineUnderTest.Spec({
+      spec = new privateUnderTest.Spec({
         queueableFn: { fn: function() {} },
         resultCallback: resultCallback,
         throwOnExpectationFailure: true
@@ -319,7 +319,7 @@ describe('Spec', function() {
       .createSpy('getPath')
       .and.returnValue(['expected', 'val']);
 
-    const spec = new jasmineUnderTest.Spec({
+    const spec = new privateUnderTest.Spec({
       getPath,
       queueableFn: { fn: null }
     });
@@ -333,7 +333,7 @@ describe('Spec', function() {
       .createSpy('getPath')
       .and.returnValue(['expected val']);
 
-    const spec = new jasmineUnderTest.Spec({
+    const spec = new privateUnderTest.Spec({
       getPath,
       queueableFn: { fn: null }
     });
@@ -346,7 +346,7 @@ describe('Spec', function() {
 
   describe('#handleException', function() {
     it('records a failure', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: {}
       });
 
@@ -364,11 +364,13 @@ describe('Spec', function() {
     });
 
     it('does not record an additional failure when the error is ExpectationFailed', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: {}
       });
 
-      spec.handleException(new jasmineUnderTest.errors.ExpectationFailed());
+      spec.handleException(
+        new jasmineUnderTest.private.errors.ExpectationFailed()
+      );
 
       expect(spec.result.failedExpectations).toEqual([]);
     });
@@ -377,7 +379,7 @@ describe('Spec', function() {
   describe('#debugLog', function() {
     it('adds the messages to the result', function() {
       const timer = jasmine.createSpyObj('timer', ['start', 'elapsed']);
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} },
         timer: timer
       });
@@ -400,7 +402,7 @@ describe('Spec', function() {
 
     describe('When the spec passes', function() {
       it('removes the logs from the result', function() {
-        const spec = new jasmineUnderTest.Spec({
+        const spec = new privateUnderTest.Spec({
           queueableFn: { fn: () => {} }
         });
 
@@ -414,7 +416,7 @@ describe('Spec', function() {
     describe('When the spec fails', function() {
       it('includes the messages in the result', function() {
         const timer = jasmine.createSpyObj('timer', ['start', 'elapsed']);
-        const spec = new jasmineUnderTest.Spec({
+        const spec = new privateUnderTest.Spec({
           queueableFn: { fn: () => {} },
           timer: timer
         });
@@ -435,7 +437,7 @@ describe('Spec', function() {
 
   describe('#startedEvent', function() {
     it('includes only properties that are known before execution', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         id: 'spec1',
         parentSuiteId: 'suite1',
         description: 'a spec',
@@ -464,7 +466,7 @@ describe('Spec', function() {
           return 123;
         }
       };
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         id: 'spec1',
         parentSuiteId: 'suite1',
         description: 'a spec',
@@ -514,7 +516,7 @@ describe('Spec', function() {
           return 123;
         }
       };
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         id: 'spec1',
         parentSuiteId: 'suite1',
         description: 'a spec',
@@ -571,7 +573,7 @@ describe('Spec', function() {
     });
 
     it("reports a status of 'pending' for a declaratively pended spec", function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: {}
       });
 
@@ -583,7 +585,7 @@ describe('Spec', function() {
     });
 
     it("reports a status of 'pending' for a spec pended by #pend", function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -596,7 +598,7 @@ describe('Spec', function() {
     });
 
     it("reports a status of 'excluded' for an excluded spec", function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -607,7 +609,7 @@ describe('Spec', function() {
 
     describe('When failSpecWithNoExpectations is true', function() {
       it("reports a status of 'failed' for a spec with no expectations", function() {
-        const spec = new jasmineUnderTest.Spec({
+        const spec = new privateUnderTest.Spec({
           queueableFn: { fn: () => {} }
         });
 
@@ -618,7 +620,7 @@ describe('Spec', function() {
     });
 
     it('includes deprecation warnings', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
@@ -643,7 +645,7 @@ describe('Spec', function() {
           return 123;
         }
       };
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         timer,
         queueableFn: { fn: () => {} }
       });
@@ -659,7 +661,7 @@ describe('Spec', function() {
     });
 
     it('includes spec properties', function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 

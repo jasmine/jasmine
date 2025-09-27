@@ -24,7 +24,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       if (
         global.process &&
         global.process.listeners &&
-        j$.isFunction_(global.process.on)
+        j$.private.isFunction(global.process.on)
       ) {
         this.#adapter = new NodeAdapter(global, dispatch);
       } else {
@@ -173,7 +173,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       const jasmineMessage = 'Unhandled promise rejection: ' + event.reason;
       let reason;
 
-      if (j$.isError_(event.reason)) {
+      if (j$.private.isError(event.reason)) {
         reason = event.reason;
         reason.jasmineMessage = jasmineMessage;
       } else {
@@ -252,7 +252,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         jasmineMessagePrefix = 'Uncaught exception';
       }
 
-      if (j$.isError_(error)) {
+      if (j$.private.isError(error)) {
         error.jasmineMessage = jasmineMessagePrefix + ': ' + error;
         return error;
       } else {

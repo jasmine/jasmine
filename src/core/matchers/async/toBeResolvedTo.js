@@ -14,7 +14,7 @@ getJasmineRequireObj().toBeResolvedTo = function(j$) {
   return function toBeResolvedTo(matchersUtil) {
     return {
       compare: function(actualPromise, expectedValue) {
-        if (!j$.isPromiseLike(actualPromise)) {
+        if (!j$.private.isPromiseLike(actualPromise)) {
           throw new Error(
             `Expected toBeResolvedTo to be called on a promise but was on a ${typeof actualPromise}.`
           );

@@ -1,13 +1,13 @@
 describe('buildExpectationResult', function() {
   it('defaults to passed', function() {
-    const result = jasmineUnderTest.buildExpectationResult({
+    const result = privateUnderTest.buildExpectationResult({
       passed: 'some-value'
     });
     expect(result.passed).toBe('some-value');
   });
 
   it('message defaults to Passed for passing specs', function() {
-    const result = jasmineUnderTest.buildExpectationResult({
+    const result = privateUnderTest.buildExpectationResult({
       passed: true,
       message: 'some-value'
     });
@@ -15,7 +15,7 @@ describe('buildExpectationResult', function() {
   });
 
   it('message returns the message for failing expectations', function() {
-    const result = jasmineUnderTest.buildExpectationResult({
+    const result = privateUnderTest.buildExpectationResult({
       passed: false,
       message: 'some-value'
     });
@@ -24,7 +24,7 @@ describe('buildExpectationResult', function() {
 
   describe('When the error property is provided', function() {
     it('sets the message to the formatted error', function() {
-      const result = jasmineUnderTest.buildExpectationResult({
+      const result = privateUnderTest.buildExpectationResult({
         passed: false,
         error: { message: 'foo', fileName: 'somefile.js' }
       });
@@ -33,7 +33,7 @@ describe('buildExpectationResult', function() {
     });
 
     it('delegates stack formatting to the provided formatter', function() {
-      const result = jasmineUnderTest.buildExpectationResult({
+      const result = privateUnderTest.buildExpectationResult({
         passed: false,
         error: { stack: 'foo', extra: 'wombat' }
       });
@@ -46,7 +46,7 @@ describe('buildExpectationResult', function() {
 
   describe('When the errorForStack property is provided', function() {
     it('builds the stack trace using errorForStack instead of Error', function() {
-      const result = jasmineUnderTest.buildExpectationResult({
+      const result = privateUnderTest.buildExpectationResult({
         passed: false,
         errorForStack: { stack: 'foo' },
         error: { stack: 'bar' }
@@ -57,7 +57,7 @@ describe('buildExpectationResult', function() {
   });
 
   it('matcherName returns passed matcherName', function() {
-    const result = jasmineUnderTest.buildExpectationResult({
+    const result = privateUnderTest.buildExpectationResult({
       matcherName: 'some-value'
     });
     expect(result.matcherName).toBe('some-value');
@@ -78,7 +78,7 @@ describe('buildExpectationResult', function() {
     expect(error.code).toEqual('ERR_ASSERTION');
     expect(error.operator).toEqual('==');
 
-    const result = jasmineUnderTest.buildExpectationResult({
+    const result = privateUnderTest.buildExpectationResult({
       passed: false,
       matcherName: '',
       error: error

@@ -8,7 +8,7 @@ describe('StackTrace', function() {
         '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
     };
 
-    const result = new jasmineUnderTest.StackTrace(error);
+    const result = new privateUnderTest.StackTrace(error);
 
     expect(result.message).toEqual('Error: nope');
     expect(result.style).toEqual('v8');
@@ -39,7 +39,7 @@ describe('StackTrace', function() {
         '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
     };
 
-    const result = new jasmineUnderTest.StackTrace(error);
+    const result = new privateUnderTest.StackTrace(error);
 
     expect(result.message).toEqual('Error: line 1\nline 2');
     const rawFrames = result.frames.map(function(f) {
@@ -60,7 +60,7 @@ describe('StackTrace', function() {
         '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
     };
 
-    const result = new jasmineUnderTest.StackTrace(error);
+    const result = new privateUnderTest.StackTrace(error);
 
     expect(result.message).toEqual('Error: line 1\n\nline 2');
     const rawFrames = result.frames.map(function(f) {
@@ -82,7 +82,7 @@ describe('StackTrace', function() {
         '  at Immediate.<anonymous> (/somewhere/jasmine/lib/jasmine-core/jasmine.js:4314:12)\n' +
         '  at runCallback (timers.js:672:20)'
     };
-    const result = new jasmineUnderTest.StackTrace(error);
+    const result = new privateUnderTest.StackTrace(error);
 
     expect(result.message).toEqual('Error');
     expect(result.style).toEqual('v8');
@@ -123,7 +123,7 @@ describe('StackTrace', function() {
         'http://localhost:8888/__spec__/core/UtilSpec.js:115:28\n' +
         'run@http://localhost:8888/__jasmine__/jasmine.js:4320:27'
     };
-    const result = new jasmineUnderTest.StackTrace(error);
+    const result = new privateUnderTest.StackTrace(error);
 
     expect(result.message).toBeFalsy();
     expect(result.style).toEqual('webkit');
@@ -150,7 +150,7 @@ describe('StackTrace', function() {
         '@http://localhost:8888/__spec__/core/FooSpec.js:164:24\n' +
         'attempt@http://localhost:8888/__jasmine__/jasmine.js:8074:44\n'
     };
-    const result = new jasmineUnderTest.StackTrace(error);
+    const result = new privateUnderTest.StackTrace(error);
 
     expect(result.message).toBeFalsy();
     expect(result.style).toEqual('webkit');
@@ -175,7 +175,7 @@ describe('StackTrace', function() {
       message: 'nope',
       stack: 'randomcharsnotincludingwhitespace'
     };
-    const result = new jasmineUnderTest.StackTrace(error);
+    const result = new privateUnderTest.StackTrace(error);
     expect(result.style).toBeNull();
     expect(result.frames).toEqual([{ raw: error.stack }]);
   });
@@ -187,7 +187,7 @@ describe('StackTrace', function() {
         '    at UserContext.<anonymous> (http://localhost:8888/__spec__/core/UtilSpec.js:115:19)\n'
     };
 
-    const result = new jasmineUnderTest.StackTrace(error);
+    const result = new privateUnderTest.StackTrace(error);
 
     expect(result.frames).toEqual([
       {
@@ -209,7 +209,7 @@ describe('StackTrace', function() {
         '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
     };
 
-    const result = new jasmineUnderTest.StackTrace(error);
+    const result = new privateUnderTest.StackTrace(error);
     expect(result.style).toEqual('v8');
     expect(result.frames).toEqual([
       {
@@ -241,7 +241,7 @@ describe('StackTrace', function() {
         '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
     };
 
-    const result = new jasmineUnderTest.StackTrace(error);
+    const result = new privateUnderTest.StackTrace(error);
 
     expect(result.message).toEqual('TypeError: nope');
     expect(result.frames).toEqual([
@@ -269,7 +269,7 @@ describe('StackTrace', function() {
         '    at QueueRunner.run (http://localhost:8888/__jasmine__/jasmine.js:4320:20)'
     };
 
-    const result_no_error = new jasmineUnderTest.StackTrace(no_error);
+    const result_no_error = new privateUnderTest.StackTrace(no_error);
 
     expect(result_no_error.message).not.toEqual(jasmine.anything());
   });

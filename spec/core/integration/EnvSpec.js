@@ -4,7 +4,7 @@ describe('Env integration', function() {
 
   beforeEach(function() {
     specHelpers.registerIntegrationMatchers();
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
   });
 
   afterEach(function() {
@@ -199,7 +199,7 @@ describe('Env integration', function() {
         } else {
           secondSpecContext = this;
         }
-        expect(this).toEqual(new jasmineUnderTest.UserContext());
+        expect(this).toEqual(new privateUnderTest.UserContext());
       });
 
       env.it('sync spec', function() {
@@ -229,7 +229,7 @@ describe('Env integration', function() {
 
       env.beforeEach(function() {
         specContext = this;
-        expect(this).toEqual(new jasmineUnderTest.UserContext());
+        expect(this).toEqual(new privateUnderTest.UserContext());
       });
 
       env.it('sync spec', function(underTestCallback) {
@@ -1110,7 +1110,7 @@ describe('Env integration', function() {
       );
 
     env.cleanup_();
-    env = new jasmineUnderTest.Env({
+    env = new privateUnderTest.Env({
       global: {
         setTimeout: globalSetTimeout,
         clearTimeout: clearTimeout,
@@ -1175,7 +1175,7 @@ describe('Env integration', function() {
       env.cleanup_();
       // explicitly pass in timing functions so we can make sure that clear stack always works
       // no matter how long the suite in the spec is
-      env = new jasmineUnderTest.Env({
+      env = new privateUnderTest.Env({
         global: {
           setTimeout: function(cb, t) {
             const stack = new Error().stack;
@@ -1271,7 +1271,9 @@ describe('Env integration', function() {
       await env.execute();
       expect(reporter.specDone).toHaveBeenCalledTimes(1);
       const event = reporter.specDone.calls.argsFor(0)[0];
-      jasmine.debugLog('Spec result: ' + jasmine.basicPrettyPrinter_(event));
+      jasmine.debugLog(
+        'Spec result: ' + jasmine.private.basicPrettyPrinter(event)
+      );
       expect(event).toEqual(jasmine.objectContaining({ status: 'passed' }));
       jasmine.clock().tick(1);
 
@@ -2335,7 +2337,7 @@ describe('Env integration', function() {
   });
 
   it('throws an exception if you try to getSpecProperty outside of a spec', async function() {
-    const env = new jasmineUnderTest.Env();
+    const env = new privateUnderTest.Env();
     let exception;
 
     env.describe('a suite', function() {
@@ -2356,7 +2358,7 @@ describe('Env integration', function() {
   });
 
   it('reports test properties on specs', async function() {
-    const env = new jasmineUnderTest.Env(),
+    const env = new privateUnderTest.Env(),
       reporter = jasmine.createSpyObj('reporter', ['suiteDone', 'specDone']);
 
     reporter.specDone.and.callFake(function(e) {
@@ -2389,7 +2391,7 @@ describe('Env integration', function() {
   });
 
   it('throws an exception if you try to setSpecProperty outside of a spec', async function() {
-    const env = new jasmineUnderTest.Env();
+    const env = new privateUnderTest.Env();
     let exception;
 
     env.describe('a suite', function() {
@@ -2410,7 +2412,7 @@ describe('Env integration', function() {
   });
 
   it('reports test properties on suites', async function() {
-    const env = new jasmineUnderTest.Env(),
+    const env = new privateUnderTest.Env(),
       reporter = jasmine.createSpyObj('reporter', [
         'jasmineDone',
         'suiteDone',
@@ -2437,7 +2439,7 @@ describe('Env integration', function() {
   });
 
   it('throws an exception if you try to setSuiteProperty outside of a suite', function(done) {
-    const env = new jasmineUnderTest.Env();
+    const env = new privateUnderTest.Env();
 
     try {
       env.setSuiteProperty('a', 'Bee');
@@ -2776,7 +2778,7 @@ describe('Env integration', function() {
         spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env();
         const reporter = jasmine.createSpyObj('reporter', [
           'jasmineDone',
           'suiteDone',
@@ -2877,7 +2879,7 @@ describe('Env integration', function() {
   });
 
   it('should report deprecation stack with an error object', async function() {
-    const exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
+    const exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
       reporter = jasmine.createSpyObj('reporter', [
         'jasmineDone',
         'suiteDone',
@@ -3167,7 +3169,7 @@ describe('Env integration', function() {
   });
 
   it('supports asymmetric equality testers that take a matchersUtil', async function() {
-    const env = new jasmineUnderTest.Env();
+    const env = new privateUnderTest.Env();
 
     env.it('spec using custom asymmetric equality tester', function() {
       const customEqualityFn = function(a, b) {
@@ -3224,17 +3226,17 @@ describe('Env integration', function() {
     });
 
     it('is resolved after the stack is cleared', function(done) {
-      const realClearStack = jasmineUnderTest.getClearStack(
+      const realClearStack = privateUnderTest.getClearStack(
           jasmineUnderTest.getGlobal()
         ),
         clearStackSpy = jasmine
           .createSpy('clearStack')
           .and.callFake(realClearStack);
-      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
+      spyOn(privateUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
 
       // Create a new env that has the clearStack defined above
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
 
       env.describe('suite', function() {
         env.it('spec', function() {});
@@ -3262,7 +3264,7 @@ describe('Env integration', function() {
 
       jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 123456; // a distinctive value
 
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
 
       env.describe('suite', function() {
         env.it('spec', function() {});
@@ -3333,17 +3335,17 @@ describe('Env integration', function() {
     });
 
     it('is called after the stack is cleared', async function() {
-      const realClearStack = jasmineUnderTest.getClearStack(
+      const realClearStack = privateUnderTest.getClearStack(
           jasmineUnderTest.getGlobal()
         ),
         clearStackSpy = jasmine
           .createSpy('clearStack')
           .and.callFake(realClearStack);
-      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
+      spyOn(privateUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
 
       // Create a new env that has the clearStack defined above
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
 
       env.describe('suite', function() {
         env.it('spec', function() {});
@@ -3371,7 +3373,7 @@ describe('Env integration', function() {
 
       jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 123456; // a distinctive value
 
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env();
 
       env.describe('suite', function() {
         env.it('spec', function() {});

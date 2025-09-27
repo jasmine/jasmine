@@ -2,7 +2,7 @@ describe('Exceptions:', function() {
   let env;
 
   beforeEach(function() {
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
   });
 
   afterEach(function() {

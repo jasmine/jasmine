@@ -2,7 +2,7 @@
 describe('Env', function() {
   let env;
   beforeEach(function() {
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
   });
 
   afterEach(function() {
@@ -13,14 +13,14 @@ describe('Env', function() {
     it('throws the Pending Spec exception', function() {
       expect(function() {
         env.pending();
-      }).toThrow(jasmineUnderTest.Spec.pendingSpecExceptionMessage);
+      }).toThrow(privateUnderTest.Spec.pendingSpecExceptionMessage);
     });
 
     it('throws the Pending Spec exception with a custom message', function() {
       expect(function() {
         env.pending('custom message');
       }).toThrow(
-        jasmineUnderTest.Spec.pendingSpecExceptionMessage + 'custom message'
+        privateUnderTest.Spec.pendingSpecExceptionMessage + 'custom message'
       );
     });
   });
@@ -38,24 +38,24 @@ describe('Env', function() {
       });
 
       const suite = env.topSuite();
-      expect(suite).not.toBeInstanceOf(jasmineUnderTest.Suite);
+      expect(suite).not.toBeInstanceOf(privateUnderTest.Suite);
       expect(suite.description).toEqual('Jasmine__TopLevel__Suite');
       expect(suite.getFullName()).toEqual('');
       expect(suite.children.length).toEqual(2);
 
-      expect(suite.children[0]).not.toBeInstanceOf(jasmineUnderTest.Spec);
+      expect(suite.children[0]).not.toBeInstanceOf(privateUnderTest.Spec);
       expect(suite.children[0].description).toEqual('a top level spec');
       expect(suite.children[0].getFullName()).toEqual('a top level spec');
       expect(suite.children[0].children).toBeFalsy();
 
-      expect(suite.children[1]).not.toBeInstanceOf(jasmineUnderTest.Suite);
+      expect(suite.children[1]).not.toBeInstanceOf(privateUnderTest.Suite);
       expect(suite.children[1].description).toEqual('a suite');
       expect(suite.children[1].getFullName()).toEqual('a suite');
       expect(suite.children[1].parentSuite).toBe(suite);
       expect(suite.children[1].children.length).toEqual(2);
 
       expect(suite.children[1].children[0]).not.toBeInstanceOf(
-        jasmineUnderTest.Spec
+        privateUnderTest.Spec
       );
       expect(suite.children[1].children[0].description).toEqual('a spec');
       expect(suite.children[1].children[0].getFullName()).toEqual(
@@ -102,9 +102,9 @@ describe('Env', function() {
   it('can configure specs to throw errors on expectation failures', function() {
     env.configure({ stopSpecOnExpectationFailure: true });
 
-    spyOn(jasmineUnderTest, 'Spec').and.callThrough();
+    spyOn(privateUnderTest, 'Spec').and.callThrough();
     env.it('foo', function() {});
-    expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(
+    expect(privateUnderTest.Spec).toHaveBeenCalledWith(
       jasmine.objectContaining({
         throwOnExpectationFailure: true
       })
@@ -114,9 +114,9 @@ describe('Env', function() {
   it('can configure suites to throw errors on expectation failures', function() {
     env.configure({ stopSpecOnExpectationFailure: true });
 
-    spyOn(jasmineUnderTest, 'Suite');
+    spyOn(privateUnderTest, 'Suite');
     env.describe('foo', function() {});
-    expect(jasmineUnderTest.Suite).toHaveBeenCalledWith(
+    expect(privateUnderTest.Suite).toHaveBeenCalledWith(
       jasmine.objectContaining({
         throwOnExpectationFailure: true
       })
@@ -150,9 +150,9 @@ describe('Env', function() {
   });
 
   it('defaults to multiple failures for specs', function() {
-    spyOn(jasmineUnderTest, 'Spec').and.callThrough();
+    spyOn(privateUnderTest, 'Spec').and.callThrough();
     env.it('bar', function() {});
-    expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(
+    expect(privateUnderTest.Spec).toHaveBeenCalledWith(
       jasmine.objectContaining({
         throwOnExpectationFailure: false
       })
@@ -160,9 +160,9 @@ describe('Env', function() {
   });
 
   it('defaults to multiple failures for suites', function() {
-    spyOn(jasmineUnderTest, 'Suite');
+    spyOn(privateUnderTest, 'Suite');
     env.describe('foo', function() {});
-    expect(jasmineUnderTest.Suite).toHaveBeenCalledWith(
+    expect(privateUnderTest.Suite).toHaveBeenCalledWith(
       jasmine.objectContaining({
         throwOnExpectationFailure: false
       })
@@ -337,7 +337,7 @@ describe('Env', function() {
 
     it('calls spec.exclude with "Temporarily disabled with xit"', function() {
       const excludeSpy = jasmine.createSpy();
-      spyOn(jasmineUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
+      spyOn(privateUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
         exclude: excludeSpy
       });
       env.xit('foo', function() {});
@@ -346,9 +346,9 @@ describe('Env', function() {
 
     it('calls spec.pend with "Temporarily disabled with xit"', function() {
       const pendSpy = jasmine.createSpy();
-      const realExclude = jasmineUnderTest.Spec.prototype.exclude;
+      const realExclude = privateUnderTest.Spec.prototype.exclude;
 
-      spyOn(jasmineUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
+      spyOn(privateUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
         exclude: realExclude,
         pend: pendSpy
       });
@@ -626,7 +626,7 @@ describe('Env', function() {
         'removeOverrideListener'
       ]);
       env.cleanup_();
-      env = new jasmineUnderTest.Env({
+      env = new privateUnderTest.Env({
         GlobalErrors: function() {
           return globalErrors;
         }
@@ -645,7 +645,7 @@ describe('Env', function() {
         'removeOverrideListener'
       ]);
       env.cleanup_();
-      env = new jasmineUnderTest.Env({
+      env = new privateUnderTest.Env({
         suppressLoadErrors: true,
         GlobalErrors: function() {
           return globalErrors;
@@ -661,12 +661,12 @@ describe('Env', function() {
     function customEqualityTester() {}
     function customObjectFormatter() {}
     function prettyPrinter() {}
-    const RealSpec = jasmineUnderTest.Spec;
+    const RealSpec = privateUnderTest.Spec;
     let specInstance;
     let expectationFactory;
-    spyOn(jasmineUnderTest, 'MatchersUtil');
-    spyOn(jasmineUnderTest, 'makePrettyPrinter').and.returnValue(prettyPrinter);
-    spyOn(jasmineUnderTest, 'Spec').and.callFake(function(options) {
+    spyOn(privateUnderTest, 'MatchersUtil');
+    spyOn(privateUnderTest, 'makePrettyPrinter').and.returnValue(prettyPrinter);
+    spyOn(privateUnderTest, 'Spec').and.callFake(function(options) {
       expectationFactory = options.expectationFactory;
       specInstance = new RealSpec(options);
       return specInstance;
@@ -679,10 +679,10 @@ describe('Env', function() {
     });
 
     await env.execute();
-    expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
+    expect(privateUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
       customObjectFormatter
     ]);
-    expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
+    expect(privateUnderTest.MatchersUtil).toHaveBeenCalledWith({
       customTesters: [customEqualityTester],
       pp: prettyPrinter
     });
@@ -692,12 +692,12 @@ describe('Env', function() {
     function customEqualityTester() {}
     function customObjectFormatter() {}
     function prettyPrinter() {}
-    const RealSpec = jasmineUnderTest.Spec;
+    const RealSpec = privateUnderTest.Spec;
     let specInstance;
     let asyncExpectationFactory;
-    spyOn(jasmineUnderTest, 'MatchersUtil');
-    spyOn(jasmineUnderTest, 'makePrettyPrinter').and.returnValue(prettyPrinter);
-    spyOn(jasmineUnderTest, 'Spec').and.callFake(function(options) {
+    spyOn(privateUnderTest, 'MatchersUtil');
+    spyOn(privateUnderTest, 'makePrettyPrinter').and.returnValue(prettyPrinter);
+    spyOn(privateUnderTest, 'Spec').and.callFake(function(options) {
       asyncExpectationFactory = options.asyncExpectationFactory;
       specInstance = new RealSpec(options);
       return specInstance;
@@ -711,10 +711,10 @@ describe('Env', function() {
 
     await env.execute();
 
-    expect(jasmineUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
+    expect(privateUnderTest.makePrettyPrinter).toHaveBeenCalledWith([
       customObjectFormatter
     ]);
-    expect(jasmineUnderTest.MatchersUtil).toHaveBeenCalledWith({
+    expect(privateUnderTest.MatchersUtil).toHaveBeenCalledWith({
       customTesters: [customEqualityTester],
       pp: prettyPrinter
     });
@@ -729,7 +729,7 @@ describe('Env', function() {
       env.it('has a spec');
     });
 
-    expect(suiteThis).not.toBeInstanceOf(jasmineUnderTest.Suite);
+    expect(suiteThis).not.toBeInstanceOf(privateUnderTest.Suite);
   });
 
   describe('#execute', function() {
@@ -738,7 +738,7 @@ describe('Env', function() {
     });
 
     it('should reset the topSuite when run twice', function() {
-      spyOn(jasmineUnderTest.Suite.prototype, 'reset');
+      spyOn(privateUnderTest.Suite.prototype, 'reset');
       return env
         .execute() // 1
         .then(function() {
@@ -746,9 +746,9 @@ describe('Env', function() {
         })
         .then(function() {
           expect(
-            jasmineUnderTest.Suite.prototype.reset
+            privateUnderTest.Suite.prototype.reset
           ).toHaveBeenCalledOnceWith();
-          const id = jasmineUnderTest.Suite.prototype.reset.calls.thisFor(0).id;
+          const id = privateUnderTest.Suite.prototype.reset.calls.thisFor(0).id;
           expect(id).toBeTruthy();
           expect(id).toEqual(env.topSuite().id);
         });
@@ -757,9 +757,9 @@ describe('Env', function() {
     it('should not reset the topSuite if parallelReset was called since the last run', async function() {
       await env.execute();
       env.parallelReset();
-      spyOn(jasmineUnderTest.Suite.prototype, 'reset');
+      spyOn(privateUnderTest.Suite.prototype, 'reset');
       await env.execute();
-      expect(jasmineUnderTest.Suite.prototype.reset).not.toHaveBeenCalled();
+      expect(privateUnderTest.Suite.prototype.reset).not.toHaveBeenCalled();
     });
 
     describe('In parallel mode', function() {

@@ -1,6 +1,6 @@
 describe('toThrow', function() {
   it('throws an error when the actual is not a function', function() {
-    const matcher = jasmineUnderTest.matchers.toThrow();
+    const matcher = privateUnderTest.matchers.toThrow();
 
     expect(function() {
       matcher.compare({});
@@ -9,7 +9,7 @@ describe('toThrow', function() {
   });
 
   it('fails if actual does not throw', function() {
-    const matcher = jasmineUnderTest.matchers.toThrow(),
+    const matcher = privateUnderTest.matchers.toThrow(),
       fn = function() {
         return true;
       };
@@ -23,9 +23,9 @@ describe('toThrow', function() {
   it('passes if it throws but there is no expected', function() {
     const matchersUtil = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true),
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toThrow(matchersUtil),
+      matcher = privateUnderTest.matchers.toThrow(matchersUtil),
       fn = function() {
         throw 5;
       };
@@ -39,8 +39,8 @@ describe('toThrow', function() {
   });
 
   it('passes even if what is thrown is falsy', function() {
-    const matcher = jasmineUnderTest.matchers.toThrow({
-        pp: jasmineUnderTest.makePrettyPrinter()
+    const matcher = privateUnderTest.matchers.toThrow({
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {
         throw undefined;
@@ -56,9 +56,9 @@ describe('toThrow', function() {
   it('passes if what is thrown is equivalent to what is expected', function() {
     const matchersUtil = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(true),
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toThrow(matchersUtil),
+      matcher = privateUnderTest.matchers.toThrow(matchersUtil),
       fn = function() {
         throw 5;
       };
@@ -72,9 +72,9 @@ describe('toThrow', function() {
   it('fails if what is thrown is not equivalent to what is expected', function() {
     const matchersUtil = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toThrow(matchersUtil),
+      matcher = privateUnderTest.matchers.toThrow(matchersUtil),
       fn = function() {
         throw 5;
       };
@@ -90,9 +90,9 @@ describe('toThrow', function() {
   it('fails if what is thrown is not equivalent to undefined', function() {
     const matchersUtil = {
         equals: jasmine.createSpy('delegated-equal').and.returnValue(false),
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toThrow(matchersUtil),
+      matcher = privateUnderTest.matchers.toThrow(matchersUtil),
       fn = function() {
         throw 5;
       };

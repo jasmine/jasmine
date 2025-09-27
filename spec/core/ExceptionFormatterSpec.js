@@ -7,7 +7,7 @@ describe('ExceptionFormatter', function() {
           message: 'you got your foo in my bar',
           name: 'A Classic Mistake'
         },
-        exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
+        exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
         message = exceptionFormatter.message(sampleFirefoxException);
 
       expect(message).toEqual(
@@ -22,7 +22,7 @@ describe('ExceptionFormatter', function() {
           message: 'you got your foo in my bar',
           name: 'A Classic Mistake'
         },
-        exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
+        exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
         message = exceptionFormatter.message(sampleWebkitException);
 
       expect(message).toEqual(
@@ -35,7 +35,7 @@ describe('ExceptionFormatter', function() {
           message: 'you got your foo in my bar',
           name: 'A Classic Mistake'
         },
-        exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
+        exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
         message = exceptionFormatter.message(sampleV8);
 
       expect(message).toEqual('A Classic Mistake: you got your foo in my bar');
@@ -44,7 +44,7 @@ describe('ExceptionFormatter', function() {
     it('formats unnamed exceptions with message', function() {
       const unnamedError = { message: 'This is an unnamed error message.' };
 
-      const exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
+      const exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
         message = exceptionFormatter.message(unnamedError);
 
       expect(message).toEqual('This is an unnamed error message.');
@@ -57,7 +57,7 @@ describe('ExceptionFormatter', function() {
       };
       const emptyError = new EmptyError();
 
-      const exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
+      const exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
         message = exceptionFormatter.message(emptyError);
 
       expect(message).toEqual('[EmptyError] thrown');
@@ -65,7 +65,7 @@ describe('ExceptionFormatter', function() {
 
     it("formats thrown exceptions that aren't errors", function() {
       const thrown = 'crazy error',
-        exceptionFormatter = new jasmineUnderTest.ExceptionFormatter(),
+        exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
         message = exceptionFormatter.message(thrown);
 
       expect(message).toEqual('crazy error thrown');
@@ -76,7 +76,7 @@ describe('ExceptionFormatter', function() {
     it('formats stack traces', function() {
       const error = new Error('an error');
 
-      expect(new jasmineUnderTest.ExceptionFormatter().stack(error)).toMatch(
+      expect(new privateUnderTest.ExceptionFormatter().stack(error)).toMatch(
         /ExceptionFormatterSpec\.js.*\d+/
       );
     });
@@ -96,7 +96,7 @@ describe('ExceptionFormatter', function() {
           '    at fn3 (C:\\__jasmine__\\lib\\jasmine-core\\jasmine.js:7575:25)\n' +
           '    at fn4 (node:internal/timers:462:21)\n'
       };
-      const subject = new jasmineUnderTest.ExceptionFormatter({
+      const subject = new privateUnderTest.ExceptionFormatter({
         jasmineFile: 'C:\\__jasmine__\\lib\\jasmine-core\\jasmine.js'
       });
       const result = subject.stack(error);
@@ -122,7 +122,7 @@ describe('ExceptionFormatter', function() {
           '    at fn3 (http://localhost:8888/__jasmine__/jasmine.js:4320:20)\n' +
           '    at fn4 (http://localhost:8888/__spec__/core/UtilSpec.js:110:19)\n'
       };
-      const subject = new jasmineUnderTest.ExceptionFormatter({
+      const subject = new privateUnderTest.ExceptionFormatter({
         jasmineFile: 'http://localhost:8888/__jasmine__/jasmine.js'
       });
       const result = subject.stack(error);
@@ -142,7 +142,7 @@ describe('ExceptionFormatter', function() {
           'fn2@http://localhost:8888/__jasmine__/jasmine.js:4320:27\n' +
           'http://localhost:8888/__spec__/core/UtilSpec.js:115:28'
       };
-      const subject = new jasmineUnderTest.ExceptionFormatter({
+      const subject = new privateUnderTest.ExceptionFormatter({
         jasmineFile: 'http://localhost:8888/__jasmine__/jasmine.js'
       });
       const result = subject.stack(error);
@@ -161,7 +161,7 @@ describe('ExceptionFormatter', function() {
           'setTimeout handler*fn2@http://localhost:8888/__jasmine__/jasmine.js:4320:27\n' +
           'http://localhost:8888/__spec__/core/UtilSpec.js:115:28'
       };
-      const subject = new jasmineUnderTest.ExceptionFormatter({
+      const subject = new privateUnderTest.ExceptionFormatter({
         jasmineFile: 'http://localhost:8888/__jasmine__/jasmine.js'
       });
       const result = subject.stack(error);
@@ -174,8 +174,8 @@ describe('ExceptionFormatter', function() {
 
     it('filters Jasmine stack frames in this environment', function() {
       const error = new Error('an error');
-      const subject = new jasmineUnderTest.ExceptionFormatter({
-        jasmineFile: jasmine.util.jasmineFile()
+      const subject = new privateUnderTest.ExceptionFormatter({
+        jasmineFile: jasmine.private.util.jasmineFile()
       });
       const result = subject.stack(error);
       jasmine.debugLog('Original stack trace: ' + error.stack);
@@ -202,8 +202,8 @@ describe('ExceptionFormatter', function() {
       if (error.stack.indexOf(msg) === -1) {
         pending("Stack traces don't have messages in this environment");
       }
-      const subject = new jasmineUnderTest.ExceptionFormatter({
-        jasmineFile: jasmine.util.jasmineFile()
+      const subject = new privateUnderTest.ExceptionFormatter({
+        jasmineFile: jasmine.private.util.jasmineFile()
       });
       const result = subject.stack(error);
       const lines = result.split('\n');
@@ -215,14 +215,14 @@ describe('ExceptionFormatter', function() {
     });
 
     it('returns null if no Error provided', function() {
-      expect(new jasmineUnderTest.ExceptionFormatter().stack()).toBeNull();
+      expect(new privateUnderTest.ExceptionFormatter().stack()).toBeNull();
     });
 
     it("includes the error's own properties in stack", function() {
       const error = new Error('an error');
       error.someProperty = 'hello there';
 
-      const result = new jasmineUnderTest.ExceptionFormatter().stack(error);
+      const result = new privateUnderTest.ExceptionFormatter().stack(error);
 
       expect(result).toMatch(/error properties:.*someProperty.*hello there/);
     });
@@ -236,7 +236,7 @@ describe('ExceptionFormatter', function() {
       CustomError.prototype.anInheritedProp = 'something';
       const error = new CustomError('nope');
 
-      const result = new jasmineUnderTest.ExceptionFormatter().stack(error);
+      const result = new privateUnderTest.ExceptionFormatter().stack(error);
       expect(result).not.toContain('anInheritedProp');
     });
 
@@ -251,7 +251,7 @@ describe('ExceptionFormatter', function() {
             '    at fn3 (http://localhost:8888/__jasmine__/jasmine.js:4320:20)\n' +
             '    at fn4 (http://localhost:8888/__spec__/core/UtilSpec.js:110:19)\n'
         };
-        const subject = new jasmineUnderTest.ExceptionFormatter({
+        const subject = new privateUnderTest.ExceptionFormatter({
           jasmineFile: 'http://localhost:8888/__jasmine__/jasmine.js'
         });
         const result = subject.stack(error, { omitMessage: true });
@@ -270,7 +270,7 @@ describe('ExceptionFormatter', function() {
             'fn2@http://localhost:8888/__jasmine__/jasmine.js:4320:27\n' +
             'http://localhost:8888/__spec__/core/UtilSpec.js:115:28'
         };
-        const subject = new jasmineUnderTest.ExceptionFormatter({
+        const subject = new privateUnderTest.ExceptionFormatter({
           jasmineFile: 'http://localhost:8888/__jasmine__/jasmine.js'
         });
         const result = subject.stack(error, { omitMessage: true });
@@ -283,8 +283,8 @@ describe('ExceptionFormatter', function() {
 
       it('ensures that stack traces do not include the message in this environment', function() {
         const error = new Error('an error');
-        const subject = new jasmineUnderTest.ExceptionFormatter({
-          jasmineFile: jasmine.util.jasmineFile()
+        const subject = new privateUnderTest.ExceptionFormatter({
+          jasmineFile: jasmine.private.util.jasmineFile()
         });
         const result = subject.stack(error, { omitMessage: true });
         expect(result).not.toContain('an error');
@@ -293,7 +293,7 @@ describe('ExceptionFormatter', function() {
 
     describe('when the error has a cause property', function() {
       it('recursively includes the cause in the stack trace in this environment', function() {
-        const subject = new jasmineUnderTest.ExceptionFormatter();
+        const subject = new privateUnderTest.ExceptionFormatter();
         const rootCause = new Error('root cause');
         const proximateCause = new Error('proximate cause', {
           cause: rootCause
@@ -327,7 +327,7 @@ describe('ExceptionFormatter', function() {
       });
 
       it('does not throw if cause is a non Error', function() {
-        const formatter = new jasmineUnderTest.ExceptionFormatter();
+        const formatter = new privateUnderTest.ExceptionFormatter();
 
         expect(function() {
           formatter.stack(

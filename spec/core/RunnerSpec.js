@@ -15,10 +15,10 @@ describe('Runner', function() {
       globalErrors = 'the global errors instance';
       reportDispatcher = jasmine.createSpyObj(
         'reportDispatcher',
-        jasmineUnderTest.reporterEvents
+        privateUnderTest.reporterEvents
       );
 
-      for (const k of jasmineUnderTest.reporterEvents) {
+      for (const k of privateUnderTest.reporterEvents) {
         reportDispatcher[k].and.returnValue(Promise.resolve());
       }
 
@@ -26,7 +26,7 @@ describe('Runner', function() {
       failSpecWithNoExpectations = false;
       detectLateRejectionHandling = false;
 
-      spyOn(jasmineUnderTest.TreeRunner.prototype, '_executeSpec');
+      spyOn(privateUnderTest.TreeRunner.prototype, '_executeSpec');
     });
 
     function StubSuite(attrs) {
@@ -72,7 +72,7 @@ describe('Runner', function() {
         }),
         focusedRunables: () => [],
         totalSpecsDefined: () => 1,
-        TreeProcessor: jasmineUnderTest.TreeProcessor,
+        TreeProcessor: privateUnderTest.TreeProcessor,
         runableResources: {
           initForRunable: () => {},
           clearForRunable: () => {}
@@ -81,7 +81,7 @@ describe('Runner', function() {
         globalErrors,
         runQueue
       };
-      return new jasmineUnderTest.Runner({
+      return new privateUnderTest.Runner({
         ...defaultOptions,
         topSuite
       });
@@ -90,7 +90,7 @@ describe('Runner', function() {
     function arrayNotContaining(item) {
       return {
         asymmetricMatch(other, matchersUtil) {
-          if (!jasmine.isArray_(other)) {
+          if (!jasmine.private.isArray(other)) {
             return false;
           }
 
@@ -105,9 +105,9 @@ describe('Runner', function() {
       };
     }
 
-    // Precondition: jasmineUnderTest.TreeRunner.prototype._executeSpec is a spy
+    // Precondition: privateUnderTest.TreeRunner.prototype._executeSpec is a spy
     function verifyAndFinishSpec(spec, queueableFn, shouldBeExcluded) {
-      const ex = jasmineUnderTest.TreeRunner.prototype._executeSpec;
+      const ex = privateUnderTest.TreeRunner.prototype._executeSpec;
       ex.withArgs(spec, 'onComplete').and.callThrough();
 
       queueableFn.fn('onComplete');
@@ -116,7 +116,7 @@ describe('Runner', function() {
       expect(runQueue).toHaveBeenCalledWith(
         jasmine.objectContaining({
           isLeaf: true,
-          SkipPolicy: jasmineUnderTest.CompleteOnFirstErrorSkipPolicy,
+          SkipPolicy: privateUnderTest.CompleteOnFirstErrorSkipPolicy,
           queueableFns: shouldBeExcluded
             ? arrayNotContaining(spec.queueableFn)
             : jasmine.arrayContaining([spec.queueableFn])
@@ -142,7 +142,7 @@ describe('Runner', function() {
         userContext: { root: 'context' },
         queueableFns: [{ fn: jasmine.any(Function) }],
         onMultipleDone: null,
-        SkipPolicy: jasmineUnderTest.SkipAfterBeforeAllErrorPolicy
+        SkipPolicy: privateUnderTest.SkipAfterBeforeAllErrorPolicy
       });
 
       const runQueueArgs = runQueue.calls.mostRecent().args[0];
@@ -169,7 +169,7 @@ describe('Runner', function() {
         userContext: { for: 'topSuite' },
         queueableFns: [{ fn: jasmine.any(Function) }],
         onMultipleDone: null,
-        SkipPolicy: jasmineUnderTest.SkipAfterBeforeAllErrorPolicy
+        SkipPolicy: privateUnderTest.SkipAfterBeforeAllErrorPolicy
       });
 
       const runQueueArgs = runQueue.calls.mostRecent().args[0];
@@ -182,7 +182,7 @@ describe('Runner', function() {
         userContext: { for: 'suite' },
         onException: jasmine.any(Function),
         onMultipleDone: null,
-        SkipPolicy: jasmineUnderTest.SkipAfterBeforeAllErrorPolicy
+        SkipPolicy: privateUnderTest.SkipAfterBeforeAllErrorPolicy
       });
 
       runQueue.calls.mostRecent().args[0].queueableFns[0].fn('foo');
@@ -266,7 +266,7 @@ describe('Runner', function() {
 
       queueableFns[1].fn('foo');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec, 'foo');
 
       await expectAsync(promise).toBePending();
@@ -362,16 +362,16 @@ describe('Runner', function() {
       queueableFns[0].fn('done');
 
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).not.toHaveBeenCalledWith(specs[0], jasmine.anything());
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(specs[1], 'done');
 
       queueableFns[1].fn('done');
 
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(specs[0], 'done');
 
       await expectAsync(promise).toBePending();
@@ -390,16 +390,16 @@ describe('Runner', function() {
       queueableFns[0].fn('done');
 
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).not.toHaveBeenCalledWith(nonSpecified, jasmine.anything());
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(specified, 'done');
 
       queueableFns[1].fn('done');
 
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(nonSpecified, 'done');
 
       await expectAsync(promise).toBePending();
@@ -424,12 +424,12 @@ describe('Runner', function() {
       const nodeQueueableFns = runQueue.calls.mostRecent().args[0].queueableFns;
       nodeQueueableFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(nonSpecifiedSpec, 'done');
 
       queueableFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(specifiedSpec, 'done');
 
       await expectAsync(promise).toBePending();
@@ -451,7 +451,7 @@ describe('Runner', function() {
 
       queueableFns[0].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec1, 'done');
 
       queueableFns[1].fn();
@@ -459,12 +459,12 @@ describe('Runner', function() {
       expect(childFns.length).toBe(3);
       childFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec2, 'done');
 
       childFns[2].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec3, 'done');
 
       await expectAsync(promise).toBePending();
@@ -496,12 +496,12 @@ describe('Runner', function() {
       expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
       runQueue.calls.mostRecent().args[0].queueableFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec1, 'done');
 
       queueableFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec4, 'done');
 
       queueableFns[2].fn();
@@ -509,12 +509,12 @@ describe('Runner', function() {
       expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
       runQueue.calls.mostRecent().args[0].queueableFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec2, 'done');
 
       queueableFns[3].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec5, 'done');
 
       queueableFns[4].fn();
@@ -522,7 +522,7 @@ describe('Runner', function() {
       expect(runQueue.calls.mostRecent().args[0].queueableFns.length).toBe(2);
       runQueue.calls.mostRecent().args[0].queueableFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec3, 'done');
 
       await expectAsync(promise).toBePending();
@@ -561,12 +561,12 @@ describe('Runner', function() {
 
       runQueue.calls.mostRecent().args[0].queueableFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec1, 'done');
 
       queueableFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec4, 'done');
 
       queueableFns[2].fn();
@@ -578,12 +578,12 @@ describe('Runner', function() {
 
       runQueue.calls.mostRecent().args[0].queueableFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec2, 'done');
 
       queueableFns[3].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec5, 'done');
 
       queueableFns[4].fn();
@@ -595,7 +595,7 @@ describe('Runner', function() {
 
       runQueue.calls.mostRecent().args[0].queueableFns[1].fn('done');
       expect(
-        jasmineUnderTest.TreeRunner.prototype._executeSpec
+        privateUnderTest.TreeRunner.prototype._executeSpec
       ).toHaveBeenCalledWith(spec3, 'done');
 
       await expectAsync(promise).toBePending();
@@ -620,7 +620,7 @@ describe('Runner', function() {
       for (let i = 0; i < 11; i++) {
         queueableFns[i].fn('done');
         expect(
-          jasmineUnderTest.TreeRunner.prototype._executeSpec
+          privateUnderTest.TreeRunner.prototype._executeSpec
         ).toHaveBeenCalledWith(specs[i], 'done');
       }
 

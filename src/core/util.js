@@ -27,7 +27,7 @@ getJasmineRequireObj().util = function(j$) {
       } else if (str === '[object Date]') {
         return new Date(arg.valueOf());
       } else {
-        return j$.util.clone(arg);
+        return j$.private.util.clone(arg);
       }
     });
   };
@@ -49,7 +49,7 @@ getJasmineRequireObj().util = function(j$) {
   };
 
   function callerFile() {
-    const trace = new j$.StackTrace(new Error());
+    const trace = new j$.private.StackTrace(new Error());
     return trace.frames[1].file;
   }
 

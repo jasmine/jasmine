@@ -15,7 +15,7 @@ describe('Configuration', function() {
   Object.freeze(allKeys);
 
   it('provides defaults', function() {
-    const subject = new jasmineUnderTest.Configuration();
+    const subject = new privateUnderTest.Configuration();
     expect(subject.random).toEqual(true);
     expect(subject.seed).toBeNull();
     expect(subject.stopOnSpecFailure).toEqual(false);
@@ -32,7 +32,7 @@ describe('Configuration', function() {
 
   describe('copy()', function() {
     it('returns a copy of the configuration as a plain old JS object', function() {
-      const subject = new jasmineUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration();
 
       const copy = subject.copy();
 
@@ -47,7 +47,7 @@ describe('Configuration', function() {
 
   describe('update()', function() {
     it('does not update properties that are absent from the parameter', function() {
-      const subject = new jasmineUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration();
       const originalValues = subject.copy();
 
       subject.update({});
@@ -56,7 +56,7 @@ describe('Configuration', function() {
 
     function booleanPropertyBehavior(key) {
       it('does not update the property if the specified value is undefined', function() {
-        const subject = new jasmineUnderTest.Configuration();
+        const subject = new privateUnderTest.Configuration();
         const orig = subject[key];
 
         subject.update({ [key]: undefined });
@@ -65,7 +65,7 @@ describe('Configuration', function() {
       });
 
       it('updates the property if the specified value is not undefined', function() {
-        const subject = new jasmineUnderTest.Configuration();
+        const subject = new privateUnderTest.Configuration();
         const orig = subject[key];
 
         subject.update({ [key]: !orig });
@@ -83,7 +83,7 @@ describe('Configuration', function() {
     }
 
     it('sets specFilter when truthy', function() {
-      const subject = new jasmineUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration();
       const orig = subject.specFilter;
 
       subject.update({ specFilter: undefined });
@@ -98,7 +98,7 @@ describe('Configuration', function() {
     });
 
     it('sets seed when not undefined', function() {
-      const subject = new jasmineUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration();
 
       subject.update({ seed: undefined });
       expect(subject.seed).toBeNull();

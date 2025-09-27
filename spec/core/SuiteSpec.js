@@ -2,7 +2,7 @@ describe('Suite', function() {
   let env;
 
   beforeEach(function() {
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
   });
 
   afterEach(function() {
@@ -10,7 +10,7 @@ describe('Suite', function() {
   });
 
   it('keeps its id', function() {
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
       env: env,
       id: 456,
       description: 'I am a suite'
@@ -20,7 +20,7 @@ describe('Suite', function() {
   });
 
   it('returns blank full name for top level suite', function() {
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
       env: env,
       description: 'I am a suite'
     });
@@ -29,12 +29,12 @@ describe('Suite', function() {
   });
 
   it('returns its full name when it has parent suites', function() {
-    const parentSuite = new jasmineUnderTest.Suite({
+    const parentSuite = new privateUnderTest.Suite({
         env: env,
         description: 'I am a parent suite',
         parentSuite: jasmine.createSpy('pretend top level suite')
       }),
-      suite = new jasmineUnderTest.Suite({
+      suite = new privateUnderTest.Suite({
         env: env,
         description: 'I am a suite',
         parentSuite: parentSuite
@@ -44,7 +44,7 @@ describe('Suite', function() {
   });
 
   it('adds beforeEach functions in order of needed execution', function() {
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
@@ -61,7 +61,7 @@ describe('Suite', function() {
   });
 
   it('adds beforeAll functions in order of needed execution', function() {
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
@@ -78,7 +78,7 @@ describe('Suite', function() {
   });
 
   it('adds afterEach functions in order of needed execution', function() {
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
@@ -95,7 +95,7 @@ describe('Suite', function() {
   });
 
   it('adds afterAll functions in order of needed execution', function() {
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
         env: env,
         description: 'I am a suite'
       }),
@@ -112,33 +112,33 @@ describe('Suite', function() {
   });
 
   it('has a status of failed if any expectations have failed', function() {
-    const suite = new jasmineUnderTest.Suite({});
+    const suite = new privateUnderTest.Suite({});
 
     suite.addExpectationResult(false, {});
     expect(suite.getResult().status).toBe('failed');
   });
 
   it('retrieves a result with updated status', function() {
-    const suite = new jasmineUnderTest.Suite({});
+    const suite = new privateUnderTest.Suite({});
 
     expect(suite.getResult().status).toBe('passed');
   });
 
   it('retrieves a result with pending status', function() {
-    const suite = new jasmineUnderTest.Suite({});
+    const suite = new privateUnderTest.Suite({});
     suite.pend();
 
     expect(suite.getResult().status).toBe('pending');
   });
 
   it('throws an ExpectationFailed when receiving a failed expectation when throwOnExpectationFailure is set', function() {
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
       throwOnExpectationFailure: true
     });
 
     expect(function() {
       suite.addExpectationResult(false, { message: 'failed' });
-    }).toThrowError(jasmineUnderTest.errors.ExpectationFailed);
+    }).toThrowError(jasmineUnderTest.private.errors.ExpectationFailed);
 
     expect(suite.getResult().status).toBe('failed');
     expect(suite.result.failedExpectations).toEqual([
@@ -147,16 +147,18 @@ describe('Suite', function() {
   });
 
   it('does not add an additional failure when an expectation fails', function() {
-    const suite = new jasmineUnderTest.Suite({});
+    const suite = new privateUnderTest.Suite({});
 
-    suite.handleException(new jasmineUnderTest.errors.ExpectationFailed());
+    suite.handleException(
+      new jasmineUnderTest.private.errors.ExpectationFailed()
+    );
 
     expect(suite.getResult().failedExpectations).toEqual([]);
   });
 
   it('forwards late expectation failures to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
-    const suite = new jasmineUnderTest.Suite({ onLateError });
+    const suite = new privateUnderTest.Suite({ onLateError });
     const data = {
       matcherName: '',
       passed: false,
@@ -178,7 +180,7 @@ describe('Suite', function() {
 
   it('does not forward non-late expectation failures to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
       onLateError
     });
     const data = {
@@ -197,7 +199,7 @@ describe('Suite', function() {
 
   it('forwards late handleException calls to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
       onLateError
     });
     const error = new Error('oops');
@@ -215,7 +217,7 @@ describe('Suite', function() {
 
   it('does not forward non-late handleException calls to onLateError', function() {
     const onLateError = jasmine.createSpy('onLateError');
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
       onLateError
     });
     const error = new Error('oops');
@@ -227,7 +229,7 @@ describe('Suite', function() {
   });
 
   it('clears the reportedDone flag when reset', function() {
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
       queueableFn: { fn: function() {} }
     });
     suite.reportedDone = true;
@@ -238,7 +240,7 @@ describe('Suite', function() {
   });
 
   it('calls timer to compute duration', function() {
-    const suite = new jasmineUnderTest.Suite({
+    const suite = new privateUnderTest.Suite({
       env: env,
       id: 456,
       description: 'I am a suite',
@@ -251,19 +253,19 @@ describe('Suite', function() {
 
   describe('#sharedUserContext', function() {
     beforeEach(function() {
-      this.suite = new jasmineUnderTest.Suite({});
+      this.suite = new privateUnderTest.Suite({});
     });
 
     it('returns a UserContext', function() {
       expect(this.suite.sharedUserContext().constructor).toBe(
-        jasmineUnderTest.UserContext
+        privateUnderTest.UserContext
       );
     });
   });
 
   describe('attr.autoCleanClosures', function() {
     function arrangeSuite(attrs) {
-      const suite = new jasmineUnderTest.Suite(attrs);
+      const suite = new privateUnderTest.Suite(attrs);
       suite.beforeAll(function() {});
       suite.beforeEach(function() {});
       suite.afterEach(function() {});
@@ -301,21 +303,21 @@ describe('Suite', function() {
 
   describe('#reset', function() {
     it('should reset the "pending" status', function() {
-      const suite = new jasmineUnderTest.Suite({});
+      const suite = new privateUnderTest.Suite({});
       suite.pend();
       suite.reset();
       expect(suite.getResult().status).toBe('passed');
     });
 
     it('should not reset the "pending" status when the suite was excluded', function() {
-      const suite = new jasmineUnderTest.Suite({});
+      const suite = new privateUnderTest.Suite({});
       suite.exclude();
       suite.reset();
       expect(suite.getResult().status).toBe('pending');
     });
 
     it('should also reset the children', function() {
-      const suite = new jasmineUnderTest.Suite({});
+      const suite = new privateUnderTest.Suite({});
       const child1 = jasmine.createSpyObj(['reset']);
       const child2 = jasmine.createSpyObj(['reset']);
       suite.addChild(child1);
@@ -328,7 +330,7 @@ describe('Suite', function() {
     });
 
     it('should reset the failedExpectations', function() {
-      const suite = new jasmineUnderTest.Suite({});
+      const suite = new privateUnderTest.Suite({});
       suite.handleException(new Error());
 
       suite.reset();
@@ -342,7 +344,7 @@ describe('Suite', function() {
   describe('#onMultipleDone', function() {
     it('reports a special error when it is the top suite', function() {
       const onLateError = jasmine.createSpy('onLateError');
-      const suite = new jasmineUnderTest.Suite({
+      const suite = new privateUnderTest.Suite({
         onLateError,
         parentSuite: null
       });
@@ -359,7 +361,7 @@ describe('Suite', function() {
 
     it('reports an error including the suite name when it is a normal suite', function() {
       const onLateError = jasmine.createSpy('onLateError');
-      const suite = new jasmineUnderTest.Suite({
+      const suite = new privateUnderTest.Suite({
         onLateError,
         description: 'the suite',
         parentSuite: {
@@ -381,7 +383,7 @@ describe('Suite', function() {
 
   describe('#hasChildWithDescription', function() {
     it('returns true if there is a child with the given description', function() {
-      const subject = new jasmineUnderTest.Suite({});
+      const subject = new privateUnderTest.Suite({});
       const description = 'a spec';
       subject.addChild({ description });
 
@@ -389,15 +391,15 @@ describe('Suite', function() {
     });
 
     it('returns false if there is no child with the given description', function() {
-      const subject = new jasmineUnderTest.Suite({});
+      const subject = new privateUnderTest.Suite({});
       subject.addChild({ description: 'a different spec' });
 
       expect(subject.hasChildWithDescription('a spec')).toBeFalse();
     });
 
     it('does not recurse into child suites', function() {
-      const subject = new jasmineUnderTest.Suite({});
-      const childSuite = new jasmineUnderTest.Suite({});
+      const subject = new privateUnderTest.Suite({});
+      const childSuite = new privateUnderTest.Suite({});
       subject.addChild(childSuite);
       const description = 'a spec';
       childSuite.addChild(description);
@@ -408,7 +410,7 @@ describe('Suite', function() {
 
   describe('#setSuiteProperty', function() {
     it('throws if the key is not structured-cloneable', function() {
-      const suite = new jasmineUnderTest.Suite({});
+      const suite = new privateUnderTest.Suite({});
 
       expect(function() {
         suite.setSuiteProperty(new Promise(() => {}), '');
@@ -416,7 +418,7 @@ describe('Suite', function() {
     });
 
     it('throws if the value is not structured-cloneable', function() {
-      const suite = new jasmineUnderTest.Suite({});
+      const suite = new privateUnderTest.Suite({});
 
       expect(function() {
         suite.setSuiteProperty('k', new Promise(() => {}));

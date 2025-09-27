@@ -53,7 +53,7 @@ getJasmineRequireObj().Spy = function(j$) {
         },
         matchersUtil
       ),
-      callTracker = new j$.CallTracker();
+      callTracker = new j$.private.CallTracker();
 
     function makeFunc(length, fn) {
       switch (length) {
@@ -145,9 +145,9 @@ getJasmineRequireObj().Spy = function(j$) {
   }
 
   function SpyStrategyDispatcher(strategyArgs, matchersUtil) {
-    const baseStrategy = new j$.SpyStrategy(strategyArgs);
+    const baseStrategy = new j$.private.SpyStrategy(strategyArgs);
     const argsStrategies = new StrategyDict(function() {
-      return new j$.SpyStrategy(strategyArgs);
+      return new j$.private.SpyStrategy(strategyArgs);
     }, matchersUtil);
 
     this.and = baseStrategy;

@@ -38,7 +38,7 @@ getJasmineRequireObj().Any = function(j$) {
   };
 
   Any.prototype.jasmineToString = function() {
-    return '<jasmine.any(' + j$.fnNameFor(this.expectedObject) + ')>';
+    return '<jasmine.any(' + j$.private.fnNameFor(this.expectedObject) + ')>';
   };
 
   return Any;

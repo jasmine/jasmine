@@ -1,6 +1,6 @@
 getJasmineRequireObj().StringMatching = function(j$) {
   function StringMatching(expected) {
-    if (!j$.isString_(expected) && !j$.isA_('RegExp', expected)) {
+    if (!j$.private.isString(expected) && !j$.private.isA('RegExp', expected)) {
       throw new Error('Expected is not a String or a RegExp');
     }
 

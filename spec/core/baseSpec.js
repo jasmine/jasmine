@@ -1,5 +1,5 @@
 describe('base helpers', function() {
-  describe('isError_', function() {
+  describe('isError', function() {
     it('correctly handles WebSocket events', function(done) {
       if (typeof jasmine.getGlobal().WebSocket === 'undefined') {
         pending('Environment does not provide WebSocket');
@@ -19,7 +19,7 @@ describe('base helpers', function() {
 
       const int = setInterval(function() {
         if (obj() || left === 0) {
-          const result = jasmineUnderTest.isError_(obj());
+          const result = privateUnderTest.isError(obj());
           expect(result).toBe(false);
           clearInterval(int);
           done();
@@ -32,11 +32,11 @@ describe('base helpers', function() {
     it('returns true for an Error subclass', function() {
       function MyError() {}
       MyError.prototype = new Error();
-      expect(jasmineUnderTest.isError_(new MyError())).toBe(true);
+      expect(privateUnderTest.isError(new MyError())).toBe(true);
     });
 
     it('returns true for an un-thrown Error with no message in this environment', function() {
-      expect(jasmineUnderTest.isError_(new Error())).toBe(true);
+      expect(privateUnderTest.isError(new Error())).toBe(true);
     });
 
     it('returns true for an Error that originated from another frame', function() {
@@ -50,102 +50,102 @@ describe('base helpers', function() {
 
       try {
         const error = iframe.contentWindow.eval('new Error()');
-        expect(jasmineUnderTest.isError_(error)).toBe(true);
+        expect(privateUnderTest.isError(error)).toBe(true);
       } finally {
         document.body.removeChild(iframe);
       }
     });
 
     it('returns false for a falsy value', function() {
-      expect(jasmineUnderTest.isError_(undefined)).toBe(false);
+      expect(privateUnderTest.isError(undefined)).toBe(false);
     });
 
     it('returns false for a non-Error object', function() {
-      expect(jasmineUnderTest.isError_({})).toBe(false);
+      expect(privateUnderTest.isError({})).toBe(false);
     });
   });
 
   describe('isAsymmetricEqualityTester_', function() {
     it('returns false when the argument is falsy', function() {
-      expect(jasmineUnderTest.isAsymmetricEqualityTester_(null)).toBe(false);
+      expect(privateUnderTest.isAsymmetricEqualityTester(null)).toBe(false);
     });
 
     it('returns false when the argument does not have a asymmetricMatch property', function() {
       const obj = {};
-      expect(jasmineUnderTest.isAsymmetricEqualityTester_(obj)).toBe(false);
+      expect(privateUnderTest.isAsymmetricEqualityTester(obj)).toBe(false);
     });
 
     it("returns false when the argument's asymmetricMatch is not a function", function() {
       const obj = { asymmetricMatch: 'yes' };
-      expect(jasmineUnderTest.isAsymmetricEqualityTester_(obj)).toBe(false);
+      expect(privateUnderTest.isAsymmetricEqualityTester(obj)).toBe(false);
     });
 
     it("returns true when the argument's asymmetricMatch is a function", function() {
       const obj = { asymmetricMatch: function() {} };
-      expect(jasmineUnderTest.isAsymmetricEqualityTester_(obj)).toBe(true);
+      expect(privateUnderTest.isAsymmetricEqualityTester(obj)).toBe(true);
     });
   });
 
   describe('isSet', function() {
     it('returns true when the object is a Set', function() {
-      expect(jasmineUnderTest.isSet(new Set())).toBe(true);
+      expect(privateUnderTest.isSet(new Set())).toBe(true);
     });
 
     it('returns false when the object is not a Set', function() {
-      expect(jasmineUnderTest.isSet({})).toBe(false);
+      expect(privateUnderTest.isSet({})).toBe(false);
     });
   });
 
   describe('isURL', function() {
     it('returns true when the object is a URL', function() {
-      expect(jasmineUnderTest.isURL(new URL('http://localhost/'))).toBe(true);
+      expect(privateUnderTest.isURL(new URL('http://localhost/'))).toBe(true);
     });
 
     it('returns false when the object is not a URL', function() {
-      expect(jasmineUnderTest.isURL({})).toBe(false);
+      expect(privateUnderTest.isURL({})).toBe(false);
     });
   });
 
-  describe('isIterable_', function() {
+  describe('isIterable', function() {
     it('returns true when the object is an Array', function() {
-      expect(jasmineUnderTest.isIterable_([])).toBe(true);
+      expect(privateUnderTest.isIterable([])).toBe(true);
     });
 
     it('returns true when the object is a Set', function() {
-      expect(jasmineUnderTest.isIterable_(new Set())).toBe(true);
+      expect(privateUnderTest.isIterable(new Set())).toBe(true);
     });
     it('returns true when the object is a Map', function() {
-      expect(jasmineUnderTest.isIterable_(new Map())).toBe(true);
+      expect(privateUnderTest.isIterable(new Map())).toBe(true);
     });
 
     it('returns true when the object implements @@iterator', function() {
       const myIterable = { [Symbol.iterator]: function() {} };
-      expect(jasmineUnderTest.isIterable_(myIterable)).toBe(true);
+      expect(privateUnderTest.isIterable(myIterable)).toBe(true);
     });
 
     it('returns false when the object does not implement @@iterator', function() {
-      expect(jasmineUnderTest.isIterable_({})).toBe(false);
+      expect(privateUnderTest.isIterable({})).toBe(false);
     });
   });
 
-  describe('isPending_', function() {
+  describe('isPending', function() {
     it('returns a promise that resolves to true when the promise is pending', function() {
       const promise = new Promise(function() {});
-      return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
+      return expectAsync(privateUnderTest.isPending(promise)).toBeResolvedTo(
         true
       );
     });
 
     it('returns a promise that resolves to false when the promise is resolved', function() {
       const promise = Promise.resolve();
-      return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
+      return expectAsync(privateUnderTest.isPending(promise)).toBeResolvedTo(
         false
       );
     });
 
     it('returns a promise that resolves to false when the promise is rejected', function() {
       const promise = Promise.reject(new Error('nope'));
-      return expectAsync(jasmineUnderTest.isPending_(promise)).toBeResolvedTo(
+      return expectAsync(privateUnderTest.isPending(promise)).toBeResolvedTo(
         false
       );
     });

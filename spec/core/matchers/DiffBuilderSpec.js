@@ -1,6 +1,6 @@
 describe('DiffBuilder', function() {
   it('records the actual and expected objects', function() {
-    const diffBuilder = new jasmineUnderTest.DiffBuilder();
+    const diffBuilder = new privateUnderTest.DiffBuilder();
     diffBuilder.setRoots({ x: 'actual' }, { x: 'expected' });
     diffBuilder.recordMismatch();
 
@@ -10,7 +10,7 @@ describe('DiffBuilder', function() {
   });
 
   it('prints the path at which the difference was found', function() {
-    const diffBuilder = new jasmineUnderTest.DiffBuilder();
+    const diffBuilder = new privateUnderTest.DiffBuilder();
     diffBuilder.setRoots({ foo: { x: 'actual' } }, { foo: { x: 'expected' } });
 
     diffBuilder.withPath('foo', function() {
@@ -23,7 +23,7 @@ describe('DiffBuilder', function() {
   });
 
   it('prints multiple messages, separated by newlines', function() {
-    const diffBuilder = new jasmineUnderTest.DiffBuilder();
+    const diffBuilder = new privateUnderTest.DiffBuilder();
     diffBuilder.setRoots({ foo: 1, bar: 3 }, { foo: 2, bar: 4 });
 
     diffBuilder.withPath('foo', function() {
@@ -40,7 +40,7 @@ describe('DiffBuilder', function() {
   });
 
   it('allows customization of the message', function() {
-    const diffBuilder = new jasmineUnderTest.DiffBuilder();
+    const diffBuilder = new privateUnderTest.DiffBuilder();
     diffBuilder.setRoots({ x: 'bar' }, { x: 'foo' });
 
     function darthVaderFormatter(actual, expected, path) {
@@ -68,7 +68,7 @@ describe('DiffBuilder', function() {
     const prettyPrinter = function(val) {
         return '|' + val + '|';
       },
-      diffBuilder = new jasmineUnderTest.DiffBuilder({
+      diffBuilder = new privateUnderTest.DiffBuilder({
         prettyPrinter: prettyPrinter
       });
     prettyPrinter.customFormat_ = function() {};
@@ -86,7 +86,7 @@ describe('DiffBuilder', function() {
   it('passes the injected pretty-printer to the diff formatter', function() {
     const diffFormatter = jasmine.createSpy('diffFormatter'),
       prettyPrinter = function() {},
-      diffBuilder = new jasmineUnderTest.DiffBuilder({
+      diffBuilder = new privateUnderTest.DiffBuilder({
         prettyPrinter: prettyPrinter
       });
     prettyPrinter.customFormat_ = function() {};
@@ -112,8 +112,8 @@ describe('DiffBuilder', function() {
         return '[number:' + x + ']';
       }
     };
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
-    const diffBuilder = new jasmineUnderTest.DiffBuilder({
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]);
+    const diffBuilder = new privateUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
 
@@ -131,8 +131,8 @@ describe('DiffBuilder', function() {
         return '[thing with a=' + x.a + ', b=' + JSON.stringify(x.b) + ']';
       }
     };
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
-    const diffBuilder = new jasmineUnderTest.DiffBuilder({
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]);
+    const diffBuilder = new privateUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
     const expectedMsg =
@@ -167,8 +167,8 @@ describe('DiffBuilder', function() {
         return '[number:' + x + ']';
       }
     };
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
-    const diffBuilder = new jasmineUnderTest.DiffBuilder({
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]);
+    const diffBuilder = new privateUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
 
@@ -186,8 +186,8 @@ describe('DiffBuilder', function() {
         return '[number:' + x + ']';
       }
     };
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
-    const diffBuilder = new jasmineUnderTest.DiffBuilder({
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]);
+    const diffBuilder = new privateUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
 
@@ -205,8 +205,8 @@ describe('DiffBuilder', function() {
         return '[number:' + x + ']';
       }
     };
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([formatter]);
-    const diffBuilder = new jasmineUnderTest.DiffBuilder({
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([formatter]);
+    const diffBuilder = new privateUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
 
@@ -219,8 +219,8 @@ describe('DiffBuilder', function() {
   });
 
   it('builds diffs involving asymmetric equality testers that implement valuesForDiff_ at the root', function() {
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([]),
-      diffBuilder = new jasmineUnderTest.DiffBuilder({
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([]),
+      diffBuilder = new privateUnderTest.DiffBuilder({
         prettyPrinter: prettyPrinter
       }),
       expectedMsg =
@@ -243,8 +243,8 @@ describe('DiffBuilder', function() {
   });
 
   it('builds diffs involving asymmetric equality testers that implement valuesForDiff_ below the root', function() {
-    const prettyPrinter = jasmineUnderTest.makePrettyPrinter([]),
-      diffBuilder = new jasmineUnderTest.DiffBuilder({
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([]),
+      diffBuilder = new privateUnderTest.DiffBuilder({
         prettyPrinter: prettyPrinter
       }),
       expectedMsg =

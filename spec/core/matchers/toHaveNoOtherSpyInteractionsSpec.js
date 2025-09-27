@@ -1,6 +1,6 @@
 describe('toHaveNoOtherSpyInteractions', function() {
   it('passes when there are no spy interactions', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
@@ -10,8 +10,8 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('passes when there are multiple spy interactions where checked by toHaveBeenCalled', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions();
-    let toHaveBeenCalledMatcher = jasmineUnderTest.matchers.toHaveBeenCalled();
+    let matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions();
+    let toHaveBeenCalledMatcher = privateUnderTest.matchers.toHaveBeenCalled();
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
@@ -26,10 +26,10 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('fails when there are spy interactions', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
-      pp: jasmineUnderTest.makePrettyPrinter()
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+      pp: privateUnderTest.makePrettyPrinter()
     });
-    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions(
+    let matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions(
       matchersUtil
     );
     let spyObj = jasmineUnderTest
@@ -47,10 +47,10 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('shows the right message is negated', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
-      pp: jasmineUnderTest.makePrettyPrinter()
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+      pp: privateUnderTest.makePrettyPrinter()
     });
-    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions(
+    let matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions(
       matchersUtil
     );
     let spyObj = jasmineUnderTest
@@ -70,7 +70,7 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('passes when only non-observed spy object interactions are interacted', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('NewClass', ['spyA', 'spyB']);
@@ -86,7 +86,7 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('throws an error if a non-object is passed', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions();
 
     expect(function() {
       matcher.compare(true);
@@ -102,7 +102,7 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('throws an error if arguments are passed', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions();
     let spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('mySpyObj', ['spyA', 'spyB']);
@@ -113,7 +113,7 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('throws an error if the spy object has no spies', function() {
-    let matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions();
+    let matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions();
     const spyObj = jasmineUnderTest
       .getEnv()
       .createSpyObj('mySpyObj', ['notSpy']);
@@ -129,13 +129,13 @@ describe('toHaveNoOtherSpyInteractions', function() {
   });
 
   it('handles multiple interactions with a single spy', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
-        pp: jasmineUnderTest.makePrettyPrinter()
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+        pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.matchers.toHaveNoOtherSpyInteractions(
+      matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions(
         matchersUtil
       ),
-      toHaveBeenCalledWithMatcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(
+      toHaveBeenCalledWithMatcher = privateUnderTest.matchers.toHaveBeenCalledWith(
         matchersUtil
       ),
       spyObj = jasmineUnderTest

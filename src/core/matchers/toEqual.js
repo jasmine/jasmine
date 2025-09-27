@@ -14,7 +14,9 @@ getJasmineRequireObj().toEqual = function(j$) {
         const result = {
             pass: false
           },
-          diffBuilder = new j$.DiffBuilder({ prettyPrinter: matchersUtil.pp });
+          diffBuilder = new j$.private.DiffBuilder({
+            prettyPrinter: matchersUtil.pp
+          });
 
         result.pass = matchersUtil.equals(actual, expected, diffBuilder);
 

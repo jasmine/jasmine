@@ -2,7 +2,7 @@ describe('Matchers (Integration)', function() {
   let env;
 
   beforeEach(function() {
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
   });
 
   afterEach(function() {
@@ -143,7 +143,7 @@ describe('Matchers (Integration)', function() {
 
   function verifyFailsWithCustomObjectFormattersAsync(config) {
     it('uses custom object formatters', async function() {
-      const env = new jasmineUnderTest.Env();
+      const env = new privateUnderTest.Env();
       env.it('a spec', function() {
         env.addCustomObjectFormatter(config.formatter);
         return config.expectations(env);

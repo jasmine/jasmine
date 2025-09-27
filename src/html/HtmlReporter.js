@@ -1,6 +1,6 @@
 jasmineRequire.HtmlReporter = function(j$) {
   function ResultsStateBuilder() {
-    this.topResults = new j$.ResultsNode({}, '', null);
+    this.topResults = new j$.private.ResultsNode({}, '', null);
     this.currentParent = this.topResults;
     this.specsExecuted = 0;
     this.failureCount = 0;
@@ -758,7 +758,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       const el = createElement(type);
       let children;
 
-      if (j$.isArray_(childrenArrayOrVarArgs)) {
+      if (j$.private.isArray(childrenArrayOrVarArgs)) {
         children = childrenArrayOrVarArgs;
       } else {
         children = [];

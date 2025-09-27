@@ -1,9 +1,9 @@
 getJasmineRequireObj().SpyRegistry = function(j$) {
-  const spyOnMsg = j$.formatErrorMsg(
+  const spyOnMsg = j$.private.formatErrorMsg(
     '<spyOn>',
     'spyOn(<object>, <methodName>)'
   );
-  const spyOnPropertyMsg = j$.formatErrorMsg(
+  const spyOnPropertyMsg = j$.private.formatErrorMsg(
     '<spyOnProperty>',
     'spyOnProperty(<object>, <propName>, [accessType])'
   );
@@ -43,7 +43,10 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
 
       // Spying on mock clock timing fns would prevent the real ones from being
       // restored.
-      if (obj[methodName] && obj[methodName][j$.Clock.IsMockClockTimingFn]) {
+      if (
+        obj[methodName] &&
+        obj[methodName][j$.private.Clock.IsMockClockTimingFn]
+      ) {
         throw new Error("Mock clock timing functions can't be spied on");
       }
 
@@ -94,7 +97,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
       // localStorage in Firefox and later Safari versions, have no-op setters.
       if (obj[methodName] !== spiedMethod) {
         throw new Error(
-          j$.formatErrorMsg('<spyOn>')(
+          j$.private.formatErrorMsg('<spyOn>')(
             `Can't spy on ${methodName} because assigning to it had no effect`
           )
         );
@@ -122,7 +125,10 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         throw new Error(getErrorMsg('No property name supplied'));
       }
 
-      const descriptor = j$.util.getPropertyDescriptor(obj, propertyName);
+      const descriptor = j$.private.util.getPropertyDescriptor(
+        obj,
+        propertyName
+      );
 
       if (!descriptor) {
         throw new Error(getErrorMsg(propertyName + ' property does not exist'));
@@ -157,7 +163,7 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         }
       }
 
-      const originalDescriptor = j$.util.clone(descriptor);
+      const originalDescriptor = j$.private.util.clone(descriptor);
       const spy = createSpy(propertyName, descriptor[accessType]);
       let restoreStrategy;
 

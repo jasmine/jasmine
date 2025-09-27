@@ -1,6 +1,6 @@
 describe('toThrowMatching', function() {
   it('throws an error when the actual is not a function', function() {
-    const matcher = jasmineUnderTest.matchers.toThrowMatching();
+    const matcher = privateUnderTest.matchers.toThrowMatching();
 
     expect(function() {
       matcher.compare({}, function() {
@@ -10,7 +10,7 @@ describe('toThrowMatching', function() {
   });
 
   it('throws an error when the expected is not a function', function() {
-    const matcher = jasmineUnderTest.matchers.toThrowMatching(),
+    const matcher = privateUnderTest.matchers.toThrowMatching(),
       fn = function() {
         throw new Error('foo');
       };
@@ -21,7 +21,7 @@ describe('toThrowMatching', function() {
   });
 
   it('fails if actual does not throw at all', function() {
-    const matcher = jasmineUnderTest.matchers.toThrowMatching(),
+    const matcher = privateUnderTest.matchers.toThrowMatching(),
       fn = function() {
         return true;
       };
@@ -35,8 +35,8 @@ describe('toThrowMatching', function() {
   });
 
   it('fails with the correct message if thrown is a falsy value', function() {
-    const matcher = jasmineUnderTest.matchers.toThrowMatching({
-        pp: jasmineUnderTest.makePrettyPrinter()
+    const matcher = privateUnderTest.matchers.toThrowMatching({
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {
         throw undefined;
@@ -52,7 +52,7 @@ describe('toThrowMatching', function() {
   });
 
   it('passes if the argument is a function that returns true when called with the error', function() {
-    const matcher = jasmineUnderTest.matchers.toThrowMatching(),
+    const matcher = privateUnderTest.matchers.toThrowMatching(),
       predicate = function(e) {
         return e.message === 'nope';
       },
@@ -69,8 +69,8 @@ describe('toThrowMatching', function() {
   });
 
   it('fails if the argument is a function that returns false when called with the error', function() {
-    const matcher = jasmineUnderTest.matchers.toThrowMatching({
-        pp: jasmineUnderTest.makePrettyPrinter()
+    const matcher = privateUnderTest.matchers.toThrowMatching({
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       predicate = function(e) {
         return e.message === 'oh no';

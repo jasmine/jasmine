@@ -1,12 +1,12 @@
 describe('toBeLessThan', function() {
   it('passes when actual < expected', function() {
-    const matcher = jasmineUnderTest.matchers.toBeLessThan();
+    const matcher = privateUnderTest.matchers.toBeLessThan();
     const result = matcher.compare(1, 2);
     expect(result.pass).toBe(true);
   });
 
   it('fails when actual <= expected', function() {
-    const matcher = jasmineUnderTest.matchers.toBeLessThan();
+    const matcher = privateUnderTest.matchers.toBeLessThan();
     let result;
 
     result = matcher.compare(1, 1);

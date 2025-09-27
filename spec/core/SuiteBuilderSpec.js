@@ -1,12 +1,12 @@
 describe('SuiteBuilder', function() {
   beforeEach(function() {
     // Rethrow exceptions to ease debugging
-    spyOn(jasmineUnderTest.Suite.prototype, 'handleException').and.callFake(
+    spyOn(privateUnderTest.Suite.prototype, 'handleException').and.callFake(
       function(e) {
         throw e;
       }
     );
-    spyOn(jasmineUnderTest.Spec.prototype, 'handleException').and.callFake(
+    spyOn(privateUnderTest.Spec.prototype, 'handleException').and.callFake(
       function(e) {
         throw e;
       }
@@ -15,9 +15,9 @@ describe('SuiteBuilder', function() {
 
   it('creates the top suite', function() {
     const env = { configuration: () => ({}) };
-    const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+    const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
-    expect(suiteBuilder.topSuite).toBeInstanceOf(jasmineUnderTest.Suite);
+    expect(suiteBuilder.topSuite).toBeInstanceOf(privateUnderTest.Suite);
     expect(suiteBuilder.topSuite.description).toEqual(
       'Jasmine__TopLevel__Suite'
     );
@@ -33,7 +33,7 @@ describe('SuiteBuilder', function() {
 
     it('focuses the suite', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
       const suite = suiteBuilder.fdescribe('a suite', function() {
         suiteBuilder.it('a spec');
@@ -45,7 +45,7 @@ describe('SuiteBuilder', function() {
 
     it('unfocuses any focused ancestor suite', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
       const grandparent = suiteBuilder.fdescribe('a suite', function() {
         suiteBuilder.describe('another suite', function() {
@@ -64,7 +64,7 @@ describe('SuiteBuilder', function() {
 
     it('excludes the suite', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
       const suite = suiteBuilder.xdescribe('a suite', function() {
         suiteBuilder.it('a spec');
@@ -75,7 +75,7 @@ describe('SuiteBuilder', function() {
 
     it('causes child suites to be marked excluded', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
       let suite;
       suiteBuilder.xdescribe('a suite', function() {
@@ -103,7 +103,7 @@ describe('SuiteBuilder', function() {
   function definesSuites(fnName) {
     it('links suites to their parents and children', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
       let child;
       const parent = suiteBuilder[fnName]('parent', function() {
@@ -120,7 +120,7 @@ describe('SuiteBuilder', function() {
 
     it('gives each suite a unique ID', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
       let child;
       const parent = suiteBuilder[fnName]('parent', function() {
@@ -142,7 +142,7 @@ describe('SuiteBuilder', function() {
   function definesSpecs(fnName) {
     it('adds the spec to its suite', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
       let spec;
       const suite = suiteBuilder.describe('a suite', function() {
@@ -154,7 +154,7 @@ describe('SuiteBuilder', function() {
 
     it('gives each spec a unique ID', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
       const spec1 = suiteBuilder[fnName]('a spec', function() {});
       const spec2 = suiteBuilder[fnName]('another spec', function() {});
@@ -166,7 +166,7 @@ describe('SuiteBuilder', function() {
 
     it('gives each spec a full path', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
       let spec;
 
       suiteBuilder.describe('a suite', function() {
@@ -199,7 +199,7 @@ describe('SuiteBuilder', function() {
       });
 
       it('forbids duplicate spec names', function() {
-        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+        const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
         expect(function() {
           suiteBuilder.describe('a suite', function() {
@@ -214,7 +214,7 @@ describe('SuiteBuilder', function() {
       });
 
       it('forbids duplicate spec names in the top suite', function() {
-        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+        const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
         expect(function() {
           suiteBuilder.it('another spec');
@@ -225,7 +225,7 @@ describe('SuiteBuilder', function() {
       });
 
       it('forbids duplicate suite names', function() {
-        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+        const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
         expect(function() {
           suiteBuilder.describe('a suite', function() {
@@ -244,7 +244,7 @@ describe('SuiteBuilder', function() {
       });
 
       it('forbids duplicate suite names in the top suite', function() {
-        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+        const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
         expect(function() {
           suiteBuilder.describe('a suite', function() {
@@ -257,7 +257,7 @@ describe('SuiteBuilder', function() {
       });
 
       it('allows spec and suite names to be duplicated in different suites', function() {
-        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+        const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
         expect(function() {
           suiteBuilder.describe('suite a', function() {
@@ -285,7 +285,7 @@ describe('SuiteBuilder', function() {
       });
 
       it('allows duplicate spec and suite names', function() {
-        const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+        const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
         expect(function() {
           suiteBuilder.describe('dupe suite', function() {
@@ -303,10 +303,10 @@ describe('SuiteBuilder', function() {
 
   describe('#parallelReset', function() {
     it('resets the top suite result', function() {
-      jasmineUnderTest.Suite.prototype.handleException.and.callThrough();
+      privateUnderTest.Suite.prototype.handleException.and.callThrough();
 
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
       suiteBuilder.topSuite.handleException(new Error('nope'));
       suiteBuilder.parallelReset();
@@ -326,7 +326,7 @@ describe('SuiteBuilder', function() {
 
     it('removes children of the top suite', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
       suiteBuilder.describe('a suite', function() {
         suiteBuilder.it('a nested spec');
       });
@@ -339,7 +339,7 @@ describe('SuiteBuilder', function() {
 
     it('preserves top suite befores and afters', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
       function beforeAll() {}
       function beforeEach() {}
@@ -369,7 +369,7 @@ describe('SuiteBuilder', function() {
 
     it('resets totalSpecsDefined', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
       suiteBuilder.it('a spec');
 
       suiteBuilder.parallelReset();
@@ -379,7 +379,7 @@ describe('SuiteBuilder', function() {
 
     it('resets focusedRunables', function() {
       const env = { configuration: () => ({}) };
-      const suiteBuilder = new jasmineUnderTest.SuiteBuilder({ env });
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
       suiteBuilder.fit('a spec', function() {});
 
       suiteBuilder.parallelReset();

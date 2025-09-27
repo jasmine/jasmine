@@ -1,7 +1,7 @@
 describe('toBeRejected', function() {
   it('passes if the actual is rejected', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejected(matchersUtil),
+    const matchersUtil = new privateUnderTest.MatchersUtil(),
+      matcher = privateUnderTest.asyncMatchers.toBeRejected(matchersUtil),
       actual = Promise.reject('AsyncExpectationSpec rejection');
 
     return matcher.compare(actual).then(function(result) {
@@ -10,8 +10,8 @@ describe('toBeRejected', function() {
   });
 
   it('fails if the actual is resolved', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejected(matchersUtil),
+    const matchersUtil = new privateUnderTest.MatchersUtil(),
+      matcher = privateUnderTest.asyncMatchers.toBeRejected(matchersUtil),
       actual = Promise.resolve();
 
     return matcher.compare(actual).then(function(result) {
@@ -20,8 +20,8 @@ describe('toBeRejected', function() {
   });
 
   it('fails if actual is not a promise', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejected(matchersUtil),
+    const matchersUtil = new privateUnderTest.MatchersUtil(),
+      matcher = privateUnderTest.asyncMatchers.toBeRejected(matchersUtil),
       actual = 'not a promise';
 
     function f() {

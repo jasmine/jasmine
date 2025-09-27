@@ -24,7 +24,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#reportDispatcher = options.reportDispatcher;
       this.#getConfig = options.getConfig;
       this.#executedBefore = false;
-      this.#currentRunableTracker = new j$.CurrentRunableTracker();
+      this.#currentRunableTracker = new j$.private.CurrentRunableTracker();
     }
 
     currentSpec() {
@@ -64,9 +64,9 @@ getJasmineRequireObj().Runner = function(j$) {
         }
       }
 
-      const order = new j$.Order({
+      const order = new j$.private.Order({
         random: config.random,
-        seed: j$.isNumber_(config.seed) ? config.seed + '' : config.seed
+        seed: j$.private.isNumber(config.seed) ? config.seed + '' : config.seed
       });
 
       const treeProcessor = new this.#TreeProcessor({
@@ -108,7 +108,7 @@ getJasmineRequireObj().Runner = function(j$) {
       });
 
       this.#currentRunableTracker.pushSuite(this.#topSuite);
-      const treeRunner = new j$.TreeRunner({
+      const treeRunner = new j$.private.TreeRunner({
         executionTree: this.#executionTree,
         globalErrors: this.#globalErrors,
         runableResources: this.#runableResources,

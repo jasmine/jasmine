@@ -34,8 +34,8 @@ getJasmineRequireObj().Suite = function(j$) {
       // Key and value will eventually be cloned during reporting. The error
       // thrown at that point if they aren't cloneable isn't very helpful.
       // Throw a better one now.
-      j$.util.assertStructuredCloneable(key, 'Key');
-      j$.util.assertStructuredCloneable(value, 'Value');
+      j$.private.util.assertStructuredCloneable(key, 'Key');
+      j$.private.util.assertStructuredCloneable(value, 'Value');
       this.result.properties = this.result.properties || {};
       this.result.properties[key] = value;
     }
@@ -170,18 +170,18 @@ getJasmineRequireObj().Suite = function(j$) {
       if (!this.sharedContext) {
         this.sharedContext = this.parentSuite
           ? this.parentSuite.clonedSharedUserContext()
-          : new j$.UserContext();
+          : new j$.private.UserContext();
       }
 
       return this.sharedContext;
     }
 
     clonedSharedUserContext() {
-      return j$.UserContext.fromExisting(this.sharedUserContext());
+      return j$.private.UserContext.fromExisting(this.sharedUserContext());
     }
 
     handleException() {
-      if (arguments[0] instanceof j$.errors.ExpectationFailed) {
+      if (arguments[0] instanceof j$.private.errors.ExpectationFailed) {
         return;
       }
 
@@ -190,7 +190,7 @@ getJasmineRequireObj().Suite = function(j$) {
         passed: false,
         error: arguments[0]
       };
-      const failedExpectation = j$.buildExpectationResult(data);
+      const failedExpectation = j$.private.buildExpectationResult(data);
 
       if (!this.parentSuite) {
         failedExpectation.globalErrorType = 'afterAll';
@@ -232,7 +232,7 @@ getJasmineRequireObj().Suite = function(j$) {
         return;
       }
 
-      const expectationResult = j$.buildExpectationResult(data);
+      const expectationResult = j$.private.buildExpectationResult(data);
 
       if (this.reportedDone) {
         this.onLateError(expectationResult);
@@ -246,7 +246,7 @@ getJasmineRequireObj().Suite = function(j$) {
       }
 
       if (this.#throwOnExpectationFailure) {
-        throw new j$.errors.ExpectationFailed();
+        throw new j$.private.errors.ExpectationFailed();
       }
     }
 
@@ -255,7 +255,7 @@ getJasmineRequireObj().Suite = function(j$) {
         deprecation = { message: deprecation };
       }
       this.result.deprecationWarnings.push(
-        j$.buildExpectationResult(deprecation)
+        j$.private.buildExpectationResult(deprecation)
       );
     }
 

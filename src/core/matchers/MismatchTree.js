@@ -8,7 +8,7 @@ getJasmineRequireObj().MismatchTree = function(j$) {
    */
   class MismatchTree {
     constructor(path) {
-      this.path = path || new j$.ObjectPath([]);
+      this.path = path || new j$.private.ObjectPath([]);
       this.formatter = undefined;
       this.children = [];
       this.isMismatch = false;

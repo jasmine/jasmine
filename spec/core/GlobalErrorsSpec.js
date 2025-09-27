@@ -2,7 +2,7 @@ describe('GlobalErrors', function() {
   it('calls the added handler on error', function() {
     const globals = browserGlobals();
     const handler = jasmine.createSpy('errorHandler');
-    const errors = new jasmineUnderTest.GlobalErrors(
+    const errors = new privateUnderTest.GlobalErrors(
       globals.global,
       () => ({})
     );
@@ -22,7 +22,7 @@ describe('GlobalErrors', function() {
   it('is not affected by overriding global.onerror', function() {
     const globals = browserGlobals();
     const handler = jasmine.createSpy('errorHandler');
-    const errors = new jasmineUnderTest.GlobalErrors(
+    const errors = new privateUnderTest.GlobalErrors(
       globals.global,
       () => ({})
     );
@@ -45,7 +45,7 @@ describe('GlobalErrors', function() {
     const globals = browserGlobals();
     const handler1 = jasmine.createSpy('errorHandler1');
     const handler2 = jasmine.createSpy('errorHandler2');
-    const errors = new jasmineUnderTest.GlobalErrors(
+    const errors = new privateUnderTest.GlobalErrors(
       globals.global,
       () => ({})
     );
@@ -68,7 +68,7 @@ describe('GlobalErrors', function() {
     const globals = browserGlobals();
     const handler1 = jasmine.createSpy('errorHandler1');
     const handler2 = jasmine.createSpy('errorHandler2');
-    const errors = new jasmineUnderTest.GlobalErrors(
+    const errors = new privateUnderTest.GlobalErrors(
       globals.global,
       () => ({})
     );
@@ -90,7 +90,7 @@ describe('GlobalErrors', function() {
   });
 
   it('throws when no listener is passed to #popListener', function() {
-    const errors = new jasmineUnderTest.GlobalErrors({});
+    const errors = new privateUnderTest.GlobalErrors({});
     expect(function() {
       errors.popListener();
     }).toThrowError('popListener expects a listener');
@@ -98,7 +98,7 @@ describe('GlobalErrors', function() {
 
   it('uninstalls itself', function() {
     const globals = browserGlobals();
-    const errors = new jasmineUnderTest.GlobalErrors(
+    const errors = new privateUnderTest.GlobalErrors(
       globals.global,
       () => ({})
     );
@@ -113,7 +113,7 @@ describe('GlobalErrors', function() {
 
   it('rethrows the original error when there is no handler', function() {
     const globals = browserGlobals();
-    const errors = new jasmineUnderTest.GlobalErrors(
+    const errors = new privateUnderTest.GlobalErrors(
       globals.global,
       () => ({})
     );
@@ -132,7 +132,7 @@ describe('GlobalErrors', function() {
 
   it('reports uncaught exceptions in node.js', function() {
     const globals = nodeGlobals();
-    const errors = new jasmineUnderTest.GlobalErrors(
+    const errors = new privateUnderTest.GlobalErrors(
       globals.global,
       () => ({})
     );
@@ -165,7 +165,7 @@ describe('GlobalErrors', function() {
   describe('Reporting unhandled promise rejections in node.js', function() {
     it('reports rejections with `Error` reasons', function() {
       const globals = nodeGlobals();
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -197,7 +197,7 @@ describe('GlobalErrors', function() {
 
     it('reports rejections with non-`Error` reasons', function() {
       const globals = nodeGlobals();
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -220,7 +220,7 @@ describe('GlobalErrors', function() {
 
     it('reports rejections with no reason provided', function() {
       const globals = nodeGlobals();
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -246,7 +246,7 @@ describe('GlobalErrors', function() {
 
       beforeEach(function() {
         globals = nodeGlobals();
-        errors = new jasmineUnderTest.GlobalErrors(globals.global, () => ({
+        errors = new privateUnderTest.GlobalErrors(globals.global, () => ({
           detectLateRejectionHandling: true
         }));
       });
@@ -379,7 +379,7 @@ describe('GlobalErrors', function() {
   describe('Reporting unhandled promise rejections in the browser', function() {
     it('subscribes and unsubscribes from the unhandledrejection event', function() {
       const globals = browserGlobals();
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -396,7 +396,7 @@ describe('GlobalErrors', function() {
     it('reports rejections whose reason is a string', function() {
       const globals = browserGlobals();
       const handler = jasmine.createSpy('errorHandler');
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -416,7 +416,7 @@ describe('GlobalErrors', function() {
     it('reports rejections whose reason is an Error', function() {
       const globals = browserGlobals();
       const handler = jasmine.createSpy('errorHandler');
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -443,7 +443,7 @@ describe('GlobalErrors', function() {
 
       beforeEach(function() {
         globals = browserGlobals();
-        errors = new jasmineUnderTest.GlobalErrors(globals.global, () => ({
+        errors = new privateUnderTest.GlobalErrors(globals.global, () => ({
           detectLateRejectionHandling: true
         }));
       });
@@ -556,7 +556,7 @@ describe('GlobalErrors', function() {
   describe('Reporting uncaught exceptions in node.js', function() {
     it('prepends a descriptive message when the error is not an `Error`', function() {
       const globals = nodeGlobals();
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -575,7 +575,7 @@ describe('GlobalErrors', function() {
 
     it('substitutes a descriptive message when the error is falsy', function() {
       const globals = nodeGlobals();
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -599,7 +599,7 @@ describe('GlobalErrors', function() {
       const handler0 = jasmine.createSpy('handler0');
       const handler1 = jasmine.createSpy('handler1');
       const overrideHandler = jasmine.createSpy('overrideHandler');
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -627,7 +627,7 @@ describe('GlobalErrors', function() {
       const handler0 = jasmine.createSpy('handler0');
       const handler1 = jasmine.createSpy('handler1');
       const overrideHandler = jasmine.createSpy('overrideHandler');
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -655,7 +655,7 @@ describe('GlobalErrors', function() {
       const globals = browserGlobals();
       const handler = jasmine.createSpy('handler');
       const overrideHandler = jasmine.createSpy('overrideHandler');
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -683,7 +683,7 @@ describe('GlobalErrors', function() {
       const handler0 = jasmine.createSpy('handler0');
       const handler1 = jasmine.createSpy('handler1');
       const overrideHandler = jasmine.createSpy('overrideHandler');
-      const errors = new jasmineUnderTest.GlobalErrors(
+      const errors = new privateUnderTest.GlobalErrors(
         globals.global,
         () => ({})
       );
@@ -701,7 +701,7 @@ describe('GlobalErrors', function() {
     });
 
     it('throws if there is already an override handler', function() {
-      const errors = new jasmineUnderTest.GlobalErrors(browserGlobals().global);
+      const errors = new privateUnderTest.GlobalErrors(browserGlobals().global);
 
       errors.setOverrideListener(() => {}, () => {});
       expect(function() {
@@ -713,7 +713,7 @@ describe('GlobalErrors', function() {
   describe('#removeOverrideListener', function() {
     it("calls the handler's onRemove callback", function() {
       const onRemove = jasmine.createSpy('onRemove');
-      const errors = new jasmineUnderTest.GlobalErrors(browserGlobals().global);
+      const errors = new privateUnderTest.GlobalErrors(browserGlobals().global);
 
       errors.setOverrideListener(() => {}, onRemove);
       errors.removeOverrideListener();
@@ -722,7 +722,7 @@ describe('GlobalErrors', function() {
     });
 
     it('does not throw if there is no handler', function() {
-      const errors = new jasmineUnderTest.GlobalErrors(browserGlobals().global);
+      const errors = new privateUnderTest.GlobalErrors(browserGlobals().global);
 
       expect(() => errors.removeOverrideListener()).not.toThrow();
     });

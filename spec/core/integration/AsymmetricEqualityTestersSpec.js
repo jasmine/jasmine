@@ -1,7 +1,7 @@
 describe('Asymmetric equality testers (Integration)', function() {
   function verifyPasses(expectations) {
     it('passes', async function() {
-      const env = new jasmineUnderTest.Env();
+      const env = new privateUnderTest.Env();
       env.it('a spec', function() {
         expectations(env);
       });
@@ -30,7 +30,7 @@ describe('Asymmetric equality testers (Integration)', function() {
 
   function verifyFails(expectations) {
     it('fails', async function() {
-      const env = new jasmineUnderTest.Env();
+      const env = new privateUnderTest.Env();
       env.it('a spec', function() {
         expectations(env);
       });

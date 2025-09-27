@@ -40,7 +40,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
   };
 
   ObjectContaining.prototype.valuesForDiff_ = function(other, pp) {
-    if (!j$.isObject_(other)) {
+    if (!j$.private.isObject(other)) {
       return {
         self: this.jasmineToString(pp),
         other: other

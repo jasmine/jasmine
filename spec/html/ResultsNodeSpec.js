@@ -4,7 +4,7 @@ describe('ResultsNode', function() {
         id: 123,
         message: 'foo'
       },
-      node = new jasmineUnderTest.ResultsNode(fakeResult, 'suite', null);
+      node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
 
     expect(node.result).toBe(fakeResult);
     expect(node.type).toEqual('suite');
@@ -19,7 +19,7 @@ describe('ResultsNode', function() {
         id: 456,
         message: 'bar'
       },
-      node = new jasmineUnderTest.ResultsNode(fakeResult, 'suite', null);
+      node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
 
     node.addChild(fakeChildResult, 'spec');
 
@@ -37,7 +37,7 @@ describe('ResultsNode', function() {
         id: 456,
         message: 'bar'
       },
-      node = new jasmineUnderTest.ResultsNode(fakeResult, 'suite', null);
+      node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
 
     node.addChild(fakeChildResult, 'spec');
 
@@ -53,7 +53,7 @@ describe('ResultsNode', function() {
         id: 456,
         message: 'bar'
       },
-      node = new jasmineUnderTest.ResultsNode(fakeResult, 'suite', null);
+      node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
 
     node.addChild(fakeChildResult, 'spec');
 

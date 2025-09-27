@@ -78,14 +78,14 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         },
         onComplete: () => {
           if (spec.result.status === 'failed') {
-            specOverallDone(new j$.StopExecutionError('spec failed'));
+            specOverallDone(new j$.private.StopExecutionError('spec failed'));
           } else {
             specOverallDone();
           }
         },
         userContext: spec.userContext(),
         runnableName: spec.getFullName.bind(spec),
-        SkipPolicy: j$.CompleteOnFirstErrorSkipPolicy
+        SkipPolicy: j$.private.CompleteOnFirstErrorSkipPolicy
       });
     }
 
@@ -260,7 +260,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     async #reportChildrenOfBeforeAllFailure(suite) {
       for (const child of suite.children) {
-        if (child instanceof j$.Suite) {
+        if (child instanceof j$.private.Suite) {
           await this.#reportDispatcher.suiteStarted(child.result);
           await this.#reportChildrenOfBeforeAllFailure(child);
 
@@ -292,9 +292,9 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     #suiteSkipPolicy() {
       if (this.#getConfig().stopOnSpecFailure) {
-        return j$.CompleteOnFirstErrorSkipPolicy;
+        return j$.private.CompleteOnFirstErrorSkipPolicy;
       } else {
-        return j$.SkipAfterBeforeAllErrorPolicy;
+        return j$.private.SkipAfterBeforeAllErrorPolicy;
       }
     }
   }

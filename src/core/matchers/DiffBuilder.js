@@ -2,9 +2,9 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
   class DiffBuilder {
     constructor(config) {
       this.prettyPrinter_ =
-        (config || {}).prettyPrinter || j$.makePrettyPrinter();
-      this.mismatches_ = new j$.MismatchTree();
-      this.path_ = new j$.ObjectPath();
+        (config || {}).prettyPrinter || j$.private.makePrettyPrinter();
+      this.mismatches_ = new j$.private.MismatchTree();
+      this.path_ = new j$.private.ObjectPath();
       this.actualRoot_ = undefined;
       this.expectedRoot_ = undefined;
     }
@@ -65,8 +65,8 @@ getJasmineRequireObj().DiffBuilder = function(j$) {
 
       const handleAsymmetricExpected = () => {
         if (
-          j$.isAsymmetricEqualityTester_(expected) &&
-          j$.isFunction_(expected.valuesForDiff_)
+          j$.private.isAsymmetricEqualityTester(expected) &&
+          j$.private.isFunction(expected.valuesForDiff_)
         ) {
           const asymmetricResult = expected.valuesForDiff_(
             actual,

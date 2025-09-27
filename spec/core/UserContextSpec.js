@@ -1,6 +1,6 @@
 describe('UserContext', function() {
   it('Behaves just like an plain object', function() {
-    const context = new jasmineUnderTest.UserContext(),
+    const context = new privateUnderTest.UserContext(),
       properties = [];
 
     for (const prop in context) {
@@ -15,9 +15,9 @@ describe('UserContext', function() {
   describe('.fromExisting', function() {
     describe('when using an already built context as model', function() {
       beforeEach(function() {
-        this.context = new jasmineUnderTest.UserContext();
+        this.context = new privateUnderTest.UserContext();
         this.context.key = 'value';
-        this.cloned = jasmineUnderTest.UserContext.fromExisting(this.context);
+        this.cloned = privateUnderTest.UserContext.fromExisting(this.context);
       });
 
       it('returns a cloned object', function() {
@@ -34,7 +34,7 @@ describe('UserContext', function() {
         this.context = {};
         this.value = 'value';
         this.context.key = this.value;
-        this.cloned = jasmineUnderTest.UserContext.fromExisting(this.context);
+        this.cloned = privateUnderTest.UserContext.fromExisting(this.context);
       });
 
       it('returns an object with the same attributes', function() {
@@ -46,7 +46,7 @@ describe('UserContext', function() {
       });
 
       it('returns an UserContext', function() {
-        expect(this.cloned.constructor).toBe(jasmineUnderTest.UserContext);
+        expect(this.cloned.constructor).toBe(privateUnderTest.UserContext);
       });
     });
   });
