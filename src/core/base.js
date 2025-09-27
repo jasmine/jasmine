@@ -66,8 +66,8 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @return {Env}
    */
   j$.getEnv = function(options) {
-    const env = (j$.currentEnv_ =
-      j$.currentEnv_ || new j$.private.Env(options));
+    const env = (j$.private.currentEnv_ =
+      j$.private.currentEnv_ || new j$.private.Env(options));
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
   };
