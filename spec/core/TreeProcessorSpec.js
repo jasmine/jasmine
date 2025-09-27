@@ -135,11 +135,9 @@ describe('TreeProcessor', function() {
 
     const result = processor.processTree();
 
-    expect(result.childrenOfTopSuite()).toEqual([
-      { suite: node, segmentNumber: 0 }
-    ]);
+    expect(result.childrenOfTopSuite()).toEqual([{ suite: node }]);
     expect(result.isExcluded(node)).toEqual(true);
-    expect(result.childrenOfSuiteSegment(node, 0)).toEqual([{ spec: leaf1 }]);
+    expect(result.childrenOfSuite(node)).toEqual([{ spec: leaf1 }]);
     expect(result.isExcluded(node)).toEqual(true);
   });
 
@@ -167,37 +165,37 @@ describe('TreeProcessor', function() {
 
     expect(result.isExcluded(parent)).toEqual(false);
     expect(result.childrenOfTopSuite()).toEqual([
-      { suite: parent, segmentNumber: 0 },
-      { suite: parentOfPendings, segmentNumber: 0 }
+      { suite: parent },
+      { suite: parentOfPendings }
     ]);
 
     expect(result.isExcluded(parentOfPendings)).toEqual(true);
-    expect(result.childrenOfSuiteSegment(parentOfPendings, 0)).toEqual([
-      { suite: childless, segmentNumber: 0 },
-      { suite: pendingNode, segmentNumber: 0 }
+    expect(result.childrenOfSuite(parentOfPendings)).toEqual([
+      { suite: childless },
+      { suite: pendingNode }
     ]);
 
     expect(result.isExcluded(childless)).toEqual(true);
-    expect(result.childrenOfSuiteSegment(childless, 0)).toEqual([]);
+    expect(result.childrenOfSuite(childless)).toEqual([]);
 
     expect(result.isExcluded(pendingLeaf)).toEqual(false);
     expect(result.isExcluded(executableLeaf)).toEqual(false);
 
     expect(result.isExcluded(parent)).toEqual(false);
-    expect(result.childrenOfSuiteSegment(parent, 0)).toEqual([
+    expect(result.childrenOfSuite(parent)).toEqual([
       { spec: pendingLeaf },
       { spec: executableLeaf }
     ]);
 
     expect(result.isExcluded(pendingNode)).toEqual(true);
-    expect(result.childrenOfSuiteSegment(pendingNode, 0)).toEqual([
+    expect(result.childrenOfSuite(pendingNode)).toEqual([
       { spec: childOfPending }
     ]);
 
     expect(result.isExcluded(childOfPending)).toEqual(false);
   });
 
-  it('throws if the specified order would re-enter a node that does not allow re-entry', function() {
+  it('throws if the specified order would re-enter a node', function() {
     const leaf1 = new Leaf(),
       leaf2 = new Leaf(),
       leaf3 = new Leaf(),
@@ -210,29 +208,7 @@ describe('TreeProcessor', function() {
 
     expect(function() {
       processor.processTree();
-    }).toThrowError(
-      'Invalid order: would cause a beforeAll or afterAll to be run multiple times'
-    );
-  });
-
-  it('does not throw if a node being re-entered allows re-entry', function() {
-    const leaf1 = new Leaf();
-    const leaf2 = new Leaf();
-    const leaf3 = new Leaf();
-    const reentered = new Node({ children: [leaf1, leaf2] });
-    const root = new Node({ children: [reentered, leaf3] });
-    const processor = new privateUnderTest.TreeProcessor({
-      tree: root,
-      runnableIds: [leaf1.id, leaf3.id, leaf2.id]
-    });
-    const env = jasmineUnderTest.getEnv();
-    spyOn(env, 'deprecated');
-
-    processor.processTree();
-
-    expect(env.deprecated).toHaveBeenCalledWith(
-      'The specified spec/suite order splits up a suite, running unrelated specs in the middle of it. This will become an error in a future release.'
-    );
+    }).toThrowError('Invalid order: would split up a suite');
   });
 
   it("does not throw if a node which can't be re-entered is only entered once", function() {

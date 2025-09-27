@@ -24,7 +24,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     async execute() {
       this.#hasFailures = false;
       await new Promise(resolve => {
-        this.#executeSuiteSegment(this.#executionTree.topSuite, 0, resolve);
+        this.#executeSuite(this.#executionTree.topSuite, resolve);
       });
       return { hasFailures: this.#hasFailures };
     }
@@ -34,7 +34,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         return {
           fn: done => {
             if (node.suite) {
-              this.#executeSuiteSegment(node.suite, node.segmentNumber, done);
+              this.#executeSuite(node.suite, done);
             } else {
               this._executeSpec(node.spec, done);
             }
@@ -124,7 +124,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       return fns;
     }
 
-    #executeSuiteSegment(suite, segmentNumber, done) {
+    #executeSuite(suite, done) {
       const isTopSuite = suite === this.#executionTree.topSuite;
       const isExcluded = this.#executionTree.isExcluded(suite);
       let befores = [];
@@ -146,7 +146,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
       const children = isTopSuite
         ? this.#executionTree.childrenOfTopSuite()
-        : this.#executionTree.childrenOfSuiteSegment(suite, segmentNumber);
+        : this.#executionTree.childrenOfSuite(suite);
       const queueableFns = [
         ...befores,
         ...this.#wrapNodes(children),

@@ -3,8 +3,7 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
   const defaultMax = 1 - Infinity;
 
   // Transforms the suite tree into an execution tree, which represents the set
-  // of specs and (possibly interleaved) suites to be run in the order they are
-  // to be run in.
+  // of specs and suites to be run in the order they are to be run in.
   class TreeProcessor {
     #tree;
     #runnableIds;
@@ -86,15 +85,7 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
         segmentChildren(node, orderedChildren, this.#stats, executableIndex);
 
         if (this.#stats[node.id].segments.length > 1) {
-          if (node.canBeReentered()) {
-            j$.getEnv().deprecated(
-              'The specified spec/suite order splits up a suite, running unrelated specs in the middle of it. This will become an error in a future release.'
-            );
-          } else {
-            throw new Error(
-              'Invalid order: would cause a beforeAll or afterAll to be run multiple times'
-            );
-          }
+          throw new Error('Invalid order: would split up a suite');
         }
       }
     }
@@ -112,15 +103,14 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
     }
 
     childrenOfTopSuite() {
-      return this.childrenOfSuiteSegment(this.topSuite, 0);
+      return this.childrenOfSuite(this.topSuite);
     }
 
-    childrenOfSuiteSegment(suite, segmentNumber) {
-      const segmentChildren = this.#stats[suite.id].segments[segmentNumber]
-        .nodes;
+    childrenOfSuite(suite) {
+      const segmentChildren = this.#stats[suite.id].segments[0].nodes;
       return segmentChildren.map(function(child) {
         if (child.owner.children) {
-          return { suite: child.owner, segmentNumber: child.index };
+          return { suite: child.owner };
         } else {
           return { spec: child.owner };
         }

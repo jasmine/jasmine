@@ -180,7 +180,7 @@ describe('TreeRunner', function() {
         childrenOfTopSuite() {
           return [{ suite }];
         },
-        childrenOfSuiteSegment() {
+        childrenOfSuite() {
           return [];
         },
         isExcluded() {
@@ -240,7 +240,7 @@ describe('TreeRunner', function() {
         childrenOfTopSuite() {
           return [{ suite: failingSuite }, { suite: passingSuite }];
         },
-        childrenOfSuiteSegment() {
+        childrenOfSuite() {
           return [];
         },
         isExcluded() {
@@ -308,7 +308,7 @@ describe('TreeRunner', function() {
         childrenOfTopSuite() {
           return [{ suite }];
         },
-        childrenOfSuiteSegment() {
+        childrenOfSuite() {
           return [{ spec }];
         },
         isExcluded() {
@@ -371,7 +371,7 @@ describe('TreeRunner', function() {
         childrenOfTopSuite() {
           return [{ suite }];
         },
-        childrenOfSuiteSegment() {
+        childrenOfSuite() {
           return [{ spec }];
         },
         isExcluded() {
@@ -519,7 +519,7 @@ describe('TreeRunner', function() {
         childrenOfTopSuite() {
           return [{ suite }];
         },
-        childrenOfSuiteSegment() {
+        childrenOfSuite() {
           return [{ spec }];
         },
         isExcluded() {
@@ -588,7 +588,7 @@ describe('TreeRunner', function() {
         childrenOfTopSuite() {
           return [{ suite }];
         },
-        childrenOfSuiteSegment() {
+        childrenOfSuite() {
           return [{ spec }];
         },
         isExcluded() {
