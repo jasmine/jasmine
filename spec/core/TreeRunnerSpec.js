@@ -187,7 +187,7 @@ describe('TreeRunner', function() {
       };
       const runQueue = jasmine.createSpy('runQueue');
       const reportDispatcher = mockReportDispatcher();
-      const subject = new jasmineUnderTest.TreeRunner({
+      const subject = new privateUnderTest.TreeRunner({
         executionTree,
         runQueue,
         globalErrors: mockGlobalErrors(),
@@ -247,7 +247,7 @@ describe('TreeRunner', function() {
       };
       const runQueue = jasmine.createSpy('runQueue');
       const reportDispatcher = mockReportDispatcher();
-      const subject = new jasmineUnderTest.TreeRunner({
+      const subject = new privateUnderTest.TreeRunner({
         executionTree,
         runQueue,
         globalErrors: mockGlobalErrors(),
@@ -318,7 +318,7 @@ describe('TreeRunner', function() {
       const reportChildrenOfBeforeAllFailure = jasmine
         .createSpy('reportChildrenOfBeforeAllFailure')
         .and.returnValue(Promise.resolve());
-      const subject = new jasmineUnderTest.TreeRunner({
+      const subject = new privateUnderTest.TreeRunner({
         executionTree,
         runQueue,
         globalErrors: mockGlobalErrors(),
@@ -378,7 +378,7 @@ describe('TreeRunner', function() {
       };
       const runQueue = jasmine.createSpy('runQueue');
       const reportDispatcher = mockReportDispatcher();
-      const subject = new jasmineUnderTest.TreeRunner({
+      const subject = new privateUnderTest.TreeRunner({
         executionTree,
         runQueue,
         globalErrors: mockGlobalErrors(),
@@ -422,7 +422,7 @@ describe('TreeRunner', function() {
       }
     };
     const runQueue = jasmine.createSpy('runQueue');
-    const subject = new jasmineUnderTest.TreeRunner({
+    const subject = new privateUnderTest.TreeRunner({
       executionTree,
       runQueue,
       globalErrors: mockGlobalErrors(),
@@ -528,7 +528,7 @@ describe('TreeRunner', function() {
       const reportDispatcher = mockReportDispatcher();
       const globalErrors = mockGlobalErrors();
       const setTimeout = jasmine.createSpy('setTimeout');
-      const subject = new jasmineUnderTest.TreeRunner({
+      const subject = new privateUnderTest.TreeRunner({
         executionTree,
         runQueue,
         globalErrors,
@@ -597,7 +597,7 @@ describe('TreeRunner', function() {
       const reportDispatcher = mockReportDispatcher();
       const globalErrors = mockGlobalErrors();
       const setTimeout = jasmine.createSpy('setTimeout');
-      const subject = new jasmineUnderTest.TreeRunner({
+      const subject = new privateUnderTest.TreeRunner({
         executionTree,
         runQueue,
         globalErrors,
@@ -660,7 +660,7 @@ describe('TreeRunner', function() {
     const globalErrors = mockGlobalErrors();
     const setTimeout = jasmine.createSpy('setTimeout');
     const currentRunableTracker = new privateUnderTest.CurrentRunableTracker();
-    const subject = new jasmineUnderTest.TreeRunner({
+    const subject = new privateUnderTest.TreeRunner({
       executionTree,
       runQueue,
       globalErrors,

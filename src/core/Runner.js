@@ -108,7 +108,7 @@ getJasmineRequireObj().Runner = function(j$) {
       });
 
       this.#currentRunableTracker.pushSuite(this.#topSuite);
-      const treeRunner = new j$.TreeRunner({
+      const treeRunner = new j$.private.TreeRunner({
         executionTree: this.#executionTree,
         globalErrors: this.#globalErrors,
         runableResources: this.#runableResources,
