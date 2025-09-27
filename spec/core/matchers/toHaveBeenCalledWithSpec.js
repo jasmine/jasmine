@@ -6,7 +6,7 @@ describe('toHaveBeenCalledWith', function() {
         pp: privateUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'b');
     const result = matcher.compare(calledSpy, 'a', 'b');
@@ -27,7 +27,7 @@ describe('toHaveBeenCalledWith', function() {
         customTesters: customEqualityTesters
       }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'b');
     const result = matcher.compare(calledSpy, 'a', 'b');
@@ -42,7 +42,7 @@ describe('toHaveBeenCalledWith', function() {
         pp: privateUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
-      uncalledSpy = new jasmineUnderTest.Spy('uncalled spy');
+      uncalledSpy = new privateUnderTest.Spy('uncalled spy');
 
     const result = matcher.compare(uncalledSpy);
     expect(result.pass).toBe(false);
@@ -56,7 +56,7 @@ describe('toHaveBeenCalledWith', function() {
         pp: privateUnderTest.makePrettyPrinter()
       }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
-      calledSpy = new jasmineUnderTest.Spy('called spy');
+      calledSpy = new privateUnderTest.Spy('called spy');
 
     calledSpy('a');
     calledSpy('c', 'd');
@@ -101,7 +101,7 @@ describe('toHaveBeenCalledWith', function() {
         pp: privateUnderTest.makePrettyPrinter()
       },
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'b');
     matcher.compare(calledSpy, 'a', 'b');

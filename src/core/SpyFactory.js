@@ -10,7 +10,7 @@ getJasmineRequireObj().SpyFactory = function(j$) {
         name = originalFn.name;
       }
 
-      return j$.Spy(name, getMatchersUtil(), {
+      return j$.private.Spy(name, getMatchersUtil(), {
         originalFn,
         customStrategies: getCustomStrategies(),
         defaultStrategyFn: getDefaultStrategyFn()
@@ -79,5 +79,5 @@ getJasmineRequireObj().SpyFactory = function(j$) {
     return result;
   }
 
-  return SpyFactory;
+  j$.private.SpyFactory = SpyFactory;
 };

@@ -50,7 +50,7 @@ describe('Spies', function() {
         TestClass.prototype.someFunction
       );
 
-      expect(spy.and).toEqual(jasmine.any(jasmineUnderTest.SpyStrategy));
+      expect(spy.and).toEqual(jasmine.any(privateUnderTest.SpyStrategy));
       expect(spy.calls).toEqual(jasmine.any(privateUnderTest.CallTracker));
     });
 
@@ -250,7 +250,7 @@ describe('Spies', function() {
         }
       ]
     });
-    const spy = new jasmineUnderTest.Spy('aSpy', matchersUtil);
+    const spy = new privateUnderTest.Spy('aSpy', matchersUtil);
     spy.and.returnValue('default strategy return value');
     spy.withArgs('bar').and.returnValue('custom strategy return value');
     expect(spy('foo')).toEqual('default strategy return value');

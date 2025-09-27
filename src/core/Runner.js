@@ -181,5 +181,5 @@ getJasmineRequireObj().Runner = function(j$) {
     }
   }
 
-  return Runner;
+  j$.private.Runner = Runner;
 };

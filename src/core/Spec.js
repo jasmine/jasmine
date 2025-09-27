@@ -305,5 +305,5 @@ getJasmineRequireObj().Spec = function(j$) {
     );
   };
 
-  return Spec;
+  j$.private.Spec = Spec;
 };

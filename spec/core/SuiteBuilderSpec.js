@@ -6,7 +6,7 @@ describe('SuiteBuilder', function() {
         throw e;
       }
     );
-    spyOn(jasmineUnderTest.Spec.prototype, 'handleException').and.callFake(
+    spyOn(privateUnderTest.Spec.prototype, 'handleException').and.callFake(
       function(e) {
         throw e;
       }

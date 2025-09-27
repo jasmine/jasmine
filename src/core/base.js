@@ -333,7 +333,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @param {RegExp|String} expected
    */
   j$.stringMatching = function(expected) {
-    return new j$.StringMatching(expected);
+    return new j$.private.StringMatching(expected);
   };
 
   /**
@@ -346,7 +346,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
    * @param {String} expected
    */
   j$.stringContaining = function(expected) {
-    return new j$.StringContaining(expected);
+    return new j$.private.StringContaining(expected);
   };
 
   /**
@@ -417,7 +417,7 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
       return false;
     }
     return (
-      putativeSpy.and instanceof j$.SpyStrategy &&
+      putativeSpy.and instanceof j$.private.SpyStrategy &&
       putativeSpy.calls instanceof j$.private.CallTracker
     );
   };

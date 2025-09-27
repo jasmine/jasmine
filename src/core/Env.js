@@ -50,7 +50,7 @@ getJasmineRequireObj().Env = function(j$) {
       };
     })();
 
-    const runableResources = new j$.RunableResources({
+    const runableResources = new j$.private.RunableResources({
       getCurrentRunableId: function() {
         const r = runner.currentRunable();
         return r ? r.id : null;
@@ -362,7 +362,7 @@ getJasmineRequireObj().Env = function(j$) {
       recordLateError
     );
 
-    runner = new j$.Runner({
+    runner = new j$.private.Runner({
       topSuite,
       totalSpecsDefined: () => suiteBuilder.totalSpecsDefined,
       focusedRunables: () => suiteBuilder.focusedRunables,
@@ -770,7 +770,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.pending = function(message) {
-      let fullMessage = j$.Spec.pendingSpecExceptionMessage;
+      let fullMessage = j$.private.Spec.pendingSpecExceptionMessage;
       if (message) {
         fullMessage += message;
       }

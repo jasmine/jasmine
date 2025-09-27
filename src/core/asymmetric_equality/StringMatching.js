@@ -15,5 +15,5 @@ getJasmineRequireObj().StringMatching = function(j$) {
     return '<jasmine.stringMatching(' + this.regexp + ')>';
   };
 
-  return StringMatching;
+  j$.private.StringMatching = StringMatching;
 };

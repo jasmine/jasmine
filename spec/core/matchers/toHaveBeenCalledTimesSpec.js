@@ -1,13 +1,13 @@
 describe('toHaveBeenCalledTimes', function() {
   it('passes when the actual 0 matches the expected 0 ', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      calledSpy = new jasmineUnderTest.Spy('called-spy'),
+      calledSpy = new privateUnderTest.Spy('called-spy'),
       result = matcher.compare(calledSpy, 0);
     expect(result.pass).toBeTruthy();
   });
   it('passes when the actual matches the expected', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
     calledSpy();
 
     const result = matcher.compare(calledSpy, 1);
@@ -16,7 +16,7 @@ describe('toHaveBeenCalledTimes', function() {
 
   it('fails when expected numbers is not supplied', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      spy = new jasmineUnderTest.Spy('spy');
+      spy = new privateUnderTest.Spy('spy');
 
     spy();
     expect(function() {
@@ -28,7 +28,7 @@ describe('toHaveBeenCalledTimes', function() {
 
   it('fails when the actual was called less than the expected', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      uncalledSpy = new jasmineUnderTest.Spy('uncalled spy');
+      uncalledSpy = new privateUnderTest.Spy('uncalled spy');
 
     const result = matcher.compare(uncalledSpy, 2);
     expect(result.pass).toBe(false);
@@ -36,7 +36,7 @@ describe('toHaveBeenCalledTimes', function() {
 
   it('fails when the actual was called more than expected', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      uncalledSpy = new jasmineUnderTest.Spy('uncalled spy');
+      uncalledSpy = new privateUnderTest.Spy('uncalled spy');
 
     uncalledSpy();
     uncalledSpy();
@@ -58,7 +58,7 @@ describe('toHaveBeenCalledTimes', function() {
 
   it('has a custom message on failure that tells it was called only once', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      spy = new jasmineUnderTest.Spy('sample-spy');
+      spy = new privateUnderTest.Spy('sample-spy');
     spy();
     spy();
     spy();
@@ -74,7 +74,7 @@ describe('toHaveBeenCalledTimes', function() {
 
   it('has a custom message on failure that tells how many times it was called', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      spy = new jasmineUnderTest.Spy('sample-spy');
+      spy = new privateUnderTest.Spy('sample-spy');
     spy();
     spy();
     spy();
@@ -90,7 +90,7 @@ describe('toHaveBeenCalledTimes', function() {
 
   it('set the correct calls as verified when passing', function() {
     const matcher = jasmineUnderTest.matchers.toHaveBeenCalledTimes(),
-      spy = new jasmineUnderTest.Spy('sample-spy');
+      spy = new privateUnderTest.Spy('sample-spy');
 
     spy();
     spy();

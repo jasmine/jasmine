@@ -20,5 +20,5 @@ getJasmineRequireObj().StringContaining = function(j$) {
     return '<jasmine.stringContaining("' + this.expected + '")>';
   };
 
-  return StringContaining;
+  j$.private.StringContaining = StringContaining;
 };

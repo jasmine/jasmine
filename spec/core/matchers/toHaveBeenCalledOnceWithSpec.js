@@ -3,7 +3,7 @@ describe('toHaveBeenCalledOnceWith', function() {
     const pp = privateUnderTest.makePrettyPrinter(),
       util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'b');
     const result = matcher.compare(calledSpy, 'a', 'b');
@@ -26,7 +26,7 @@ describe('toHaveBeenCalledOnceWith', function() {
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(
         matchersUtil
       ),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'b');
     const result = matcher.compare(calledSpy, 'a', 'a');
@@ -38,7 +38,7 @@ describe('toHaveBeenCalledOnceWith', function() {
     const pp = privateUnderTest.makePrettyPrinter(),
       util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     const result = matcher.compare(calledSpy, 'a', 'b');
 
@@ -52,7 +52,7 @@ describe('toHaveBeenCalledOnceWith', function() {
     const pp = privateUnderTest.makePrettyPrinter(),
       util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'c');
     const result = matcher.compare(calledSpy, 'a', 'b');
@@ -67,7 +67,7 @@ describe('toHaveBeenCalledOnceWith', function() {
     const pp = privateUnderTest.makePrettyPrinter(),
       util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'b');
     calledSpy('a', 'b');
@@ -83,7 +83,7 @@ describe('toHaveBeenCalledOnceWith', function() {
     const pp = privateUnderTest.makePrettyPrinter(),
       util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'b');
     calledSpy('a', 'c');
@@ -110,7 +110,7 @@ describe('toHaveBeenCalledOnceWith', function() {
     const pp = privateUnderTest.makePrettyPrinter(),
       util = new privateUnderTest.MatchersUtil({ pp: pp }),
       matcher = jasmineUnderTest.matchers.toHaveBeenCalledOnceWith(util),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('x');
 

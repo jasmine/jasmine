@@ -2,7 +2,7 @@ describe('TreeRunner', function() {
   describe('spec execution', function() {
     it('starts the timer, reports the spec started, and updates run state at the start of the queue', async function() {
       const timer = jasmine.createSpyObj('timer', ['start']);
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         id: 'spec1',
         queueableFn: {},
         timer
@@ -36,7 +36,7 @@ describe('TreeRunner', function() {
 
     it('stops the timer, updates run state, and reports the spec done at the end of the queue', async function() {
       const timer = jasmine.createSpyObj('timer', ['start', 'elapsed']);
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         id: 'spec1',
         queueableFn: {},
         timer
@@ -80,7 +80,7 @@ describe('TreeRunner', function() {
           expect(after).not.toHaveBeenCalled();
         })
       };
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: queueableFn,
         beforeAndAfterFns: function() {
           return { befores: [before], afters: [after] };
@@ -104,7 +104,7 @@ describe('TreeRunner', function() {
           spec.pend();
         }
       };
-      spec = new jasmineUnderTest.Spec({ queueableFn });
+      spec = new privateUnderTest.Spec({ queueableFn });
 
       const { runQueue, suiteRunQueueArgs } = runSingleSpecSuite(spec);
       suiteRunQueueArgs.queueableFns[0].fn();
@@ -125,7 +125,7 @@ describe('TreeRunner', function() {
           spec.pend('some reason');
         }
       };
-      spec = new jasmineUnderTest.Spec({ queueableFn });
+      spec = new privateUnderTest.Spec({ queueableFn });
 
       const { runQueue, suiteRunQueueArgs } = runSingleSpecSuite(spec);
       suiteRunQueueArgs.queueableFns[0].fn();
@@ -140,7 +140,7 @@ describe('TreeRunner', function() {
     });
 
     it('passes failSpecWithNoExp to Spec#executionFinished', async function() {
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         id: 'spec1',
         queueableFn: {}
       });
@@ -294,7 +294,7 @@ describe('TreeRunner', function() {
         parentSuite: topSuite
       });
       suite.beforeAll({ fn() {} });
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         id: 'spec',
         parentSuite: suite,
         queueableFn: { fn() {} }
@@ -359,7 +359,7 @@ describe('TreeRunner', function() {
         id: 'suite',
         parentSuite: topSuite
       });
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         id: 'spec',
         parentSuite: suite,
         queueableFn: { fn() {} }
@@ -458,7 +458,7 @@ describe('TreeRunner', function() {
           expect(after).not.toHaveBeenCalled();
         })
       };
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn,
         beforeAndAfterFns: function() {
           return { befores: [before], afters: [after] };
@@ -508,7 +508,7 @@ describe('TreeRunner', function() {
         parentSuite: topSuite
       });
       suite.beforeAll(function() {});
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn() {} },
         parentSuite: suite
       });
@@ -577,7 +577,7 @@ describe('TreeRunner', function() {
         parentSuite: topSuite
       });
       suite.afterAll(function() {});
-      const spec = new jasmineUnderTest.Spec({
+      const spec = new privateUnderTest.Spec({
         queueableFn: { fn() {} },
         parentSuite: suite
       });

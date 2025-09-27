@@ -371,12 +371,12 @@ describe('PrettyPrinter', function() {
         someFunction: function() {}
       };
 
-      const spyRegistry = new jasmineUnderTest.SpyRegistry({
+      const spyRegistry = new privateUnderTest.SpyRegistry({
         currentSpies: function() {
           return [];
         },
         createSpy: function(name, originalFn) {
-          return jasmineUnderTest.Spy(name, originalFn);
+          return privateUnderTest.Spy(name, originalFn);
         }
       });
 
@@ -393,12 +393,12 @@ describe('PrettyPrinter', function() {
         env = new privateUnderTest.Env(),
         pp = privateUnderTest.makePrettyPrinter();
 
-      const spyRegistry = new jasmineUnderTest.SpyRegistry({
+      const spyRegistry = new privateUnderTest.SpyRegistry({
         currentSpies: function() {
           return [];
         },
         createSpy: function(name, originalFn) {
-          return jasmineUnderTest.Spy(name, originalFn);
+          return privateUnderTest.Spy(name, originalFn);
         }
       });
 

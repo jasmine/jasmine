@@ -145,9 +145,9 @@ getJasmineRequireObj().Spy = function(j$) {
   }
 
   function SpyStrategyDispatcher(strategyArgs, matchersUtil) {
-    const baseStrategy = new j$.SpyStrategy(strategyArgs);
+    const baseStrategy = new j$.private.SpyStrategy(strategyArgs);
     const argsStrategies = new StrategyDict(function() {
-      return new j$.SpyStrategy(strategyArgs);
+      return new j$.private.SpyStrategy(strategyArgs);
     }, matchersUtil);
 
     this.and = baseStrategy;
@@ -209,5 +209,6 @@ getJasmineRequireObj().Spy = function(j$) {
     }
   };
 
-  return Spy;
+  // Spy instances are public but the constructor is private.
+  j$.private.Spy = Spy;
 };

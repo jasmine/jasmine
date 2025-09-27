@@ -81,7 +81,7 @@ describe('Runner', function() {
         globalErrors,
         runQueue
       };
-      return new jasmineUnderTest.Runner({
+      return new privateUnderTest.Runner({
         ...defaultOptions,
         topSuite
       });

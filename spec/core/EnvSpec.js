@@ -13,14 +13,14 @@ describe('Env', function() {
     it('throws the Pending Spec exception', function() {
       expect(function() {
         env.pending();
-      }).toThrow(jasmineUnderTest.Spec.pendingSpecExceptionMessage);
+      }).toThrow(privateUnderTest.Spec.pendingSpecExceptionMessage);
     });
 
     it('throws the Pending Spec exception with a custom message', function() {
       expect(function() {
         env.pending('custom message');
       }).toThrow(
-        jasmineUnderTest.Spec.pendingSpecExceptionMessage + 'custom message'
+        privateUnderTest.Spec.pendingSpecExceptionMessage + 'custom message'
       );
     });
   });
@@ -43,7 +43,7 @@ describe('Env', function() {
       expect(suite.getFullName()).toEqual('');
       expect(suite.children.length).toEqual(2);
 
-      expect(suite.children[0]).not.toBeInstanceOf(jasmineUnderTest.Spec);
+      expect(suite.children[0]).not.toBeInstanceOf(privateUnderTest.Spec);
       expect(suite.children[0].description).toEqual('a top level spec');
       expect(suite.children[0].getFullName()).toEqual('a top level spec');
       expect(suite.children[0].children).toBeFalsy();
@@ -55,7 +55,7 @@ describe('Env', function() {
       expect(suite.children[1].children.length).toEqual(2);
 
       expect(suite.children[1].children[0]).not.toBeInstanceOf(
-        jasmineUnderTest.Spec
+        privateUnderTest.Spec
       );
       expect(suite.children[1].children[0].description).toEqual('a spec');
       expect(suite.children[1].children[0].getFullName()).toEqual(
@@ -102,9 +102,9 @@ describe('Env', function() {
   it('can configure specs to throw errors on expectation failures', function() {
     env.configure({ stopSpecOnExpectationFailure: true });
 
-    spyOn(jasmineUnderTest, 'Spec').and.callThrough();
+    spyOn(privateUnderTest, 'Spec').and.callThrough();
     env.it('foo', function() {});
-    expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(
+    expect(privateUnderTest.Spec).toHaveBeenCalledWith(
       jasmine.objectContaining({
         throwOnExpectationFailure: true
       })
@@ -150,9 +150,9 @@ describe('Env', function() {
   });
 
   it('defaults to multiple failures for specs', function() {
-    spyOn(jasmineUnderTest, 'Spec').and.callThrough();
+    spyOn(privateUnderTest, 'Spec').and.callThrough();
     env.it('bar', function() {});
-    expect(jasmineUnderTest.Spec).toHaveBeenCalledWith(
+    expect(privateUnderTest.Spec).toHaveBeenCalledWith(
       jasmine.objectContaining({
         throwOnExpectationFailure: false
       })
@@ -346,7 +346,7 @@ describe('Env', function() {
 
     it('calls spec.pend with "Temporarily disabled with xit"', function() {
       const pendSpy = jasmine.createSpy();
-      const realExclude = jasmineUnderTest.Spec.prototype.exclude;
+      const realExclude = privateUnderTest.Spec.prototype.exclude;
 
       spyOn(jasmineUnderTest.SuiteBuilder.prototype, 'it_').and.returnValue({
         exclude: realExclude,
@@ -661,12 +661,12 @@ describe('Env', function() {
     function customEqualityTester() {}
     function customObjectFormatter() {}
     function prettyPrinter() {}
-    const RealSpec = jasmineUnderTest.Spec;
+    const RealSpec = privateUnderTest.Spec;
     let specInstance;
     let expectationFactory;
     spyOn(privateUnderTest, 'MatchersUtil');
     spyOn(privateUnderTest, 'makePrettyPrinter').and.returnValue(prettyPrinter);
-    spyOn(jasmineUnderTest, 'Spec').and.callFake(function(options) {
+    spyOn(privateUnderTest, 'Spec').and.callFake(function(options) {
       expectationFactory = options.expectationFactory;
       specInstance = new RealSpec(options);
       return specInstance;
@@ -692,12 +692,12 @@ describe('Env', function() {
     function customEqualityTester() {}
     function customObjectFormatter() {}
     function prettyPrinter() {}
-    const RealSpec = jasmineUnderTest.Spec;
+    const RealSpec = privateUnderTest.Spec;
     let specInstance;
     let asyncExpectationFactory;
     spyOn(privateUnderTest, 'MatchersUtil');
     spyOn(privateUnderTest, 'makePrettyPrinter').and.returnValue(prettyPrinter);
-    spyOn(jasmineUnderTest, 'Spec').and.callFake(function(options) {
+    spyOn(privateUnderTest, 'Spec').and.callFake(function(options) {
       asyncExpectationFactory = options.asyncExpectationFactory;
       specInstance = new RealSpec(options);
       return specInstance;

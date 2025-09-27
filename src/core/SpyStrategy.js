@@ -176,5 +176,5 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     return this.plan !== this._defaultPlan;
   };
 
-  return SpyStrategy;
+  j$.private.SpyStrategy = SpyStrategy;
 };

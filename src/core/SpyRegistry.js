@@ -264,5 +264,5 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
     return false;
   }
 
-  return SpyRegistry;
+  j$.private.SpyRegistry = SpyRegistry;
 };

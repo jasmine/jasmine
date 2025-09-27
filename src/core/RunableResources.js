@@ -5,7 +5,7 @@ getJasmineRequireObj().RunableResources = function(j$) {
       this.getCurrentRunableId_ = options.getCurrentRunableId;
       this.globalErrors_ = options.globalErrors;
 
-      this.spyFactory = new j$.SpyFactory(
+      this.spyFactory = new j$.private.SpyFactory(
         () => {
           if (this.getCurrentRunableId_()) {
             return this.customSpyStrategies();
@@ -17,7 +17,7 @@ getJasmineRequireObj().RunableResources = function(j$) {
         () => this.makeMatchersUtil()
       );
 
-      this.spyRegistry = new j$.SpyRegistry({
+      this.spyRegistry = new j$.private.SpyRegistry({
         currentSpies: () => this.spies(),
         createSpy: (name, originalFn) =>
           this.spyFactory.createSpy(name, originalFn)
@@ -151,5 +151,5 @@ getJasmineRequireObj().RunableResources = function(j$) {
     }
   }
 
-  return RunableResources;
+  j$.private.RunableResources = RunableResources;
 };

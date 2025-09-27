@@ -237,7 +237,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       const config = this.env_.configuration();
       const suite = this.currentDeclarationSuite_;
       const parentSuiteId = suite === this.topSuite ? null : suite.id;
-      const spec = new j$.Spec({
+      const spec = new j$.private.Spec({
         id: 'spec' + this.nextSpecId_++,
         filename,
         parentSuiteId,
