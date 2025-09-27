@@ -113,6 +113,18 @@ describe('Spec', function() {
       }).toThrowError("Key can't be cloned");
     });
 
+    it('throws if the key is not JSON-serializable', function() {
+      const spec = new privateUnderTest.Spec({
+        queueableFn: { fn: () => {} }
+      });
+
+      expect(function() {
+        const k = {};
+        k.self = k;
+        spec.setSpecProperty(k, '');
+      }).toThrowError("Key can't be cloned");
+    });
+
     it('throws if the value is not structured-cloneable', function() {
       const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
@@ -120,6 +132,18 @@ describe('Spec', function() {
 
       expect(function() {
         spec.setSpecProperty('k', new Promise(() => {}));
+      }).toThrowError("Value can't be cloned");
+    });
+
+    it('throws if the value is not JSON-serializable', function() {
+      const spec = new privateUnderTest.Spec({
+        queueableFn: { fn: () => {} }
+      });
+
+      expect(function() {
+        const v = {};
+        v.self = v;
+        spec.setSpecProperty('k', v);
       }).toThrowError("Value can't be cloned");
     });
   });

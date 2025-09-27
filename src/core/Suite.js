@@ -34,8 +34,8 @@ getJasmineRequireObj().Suite = function(j$) {
       // Key and value will eventually be cloned during reporting. The error
       // thrown at that point if they aren't cloneable isn't very helpful.
       // Throw a better one now.
-      j$.private.util.assertStructuredCloneable(key, 'Key');
-      j$.private.util.assertStructuredCloneable(value, 'Value');
+      j$.private.util.assertReporterCloneable(key, 'Key');
+      j$.private.util.assertReporterCloneable(value, 'Value');
       this.result.properties = this.result.properties || {};
       this.result.properties[key] = value;
     }
