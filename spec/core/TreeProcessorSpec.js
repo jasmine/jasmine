@@ -6,9 +6,6 @@ describe('TreeProcessor', function() {
     attrs = attrs || {};
     this.id = 'node' + nodeNumber++;
     this.children = attrs.children || [];
-    this.canBeReentered = function() {
-      return !attrs.noReenter;
-    };
     this.markedPending = attrs.markedPending || false;
     this.sharedUserContext = function() {
       return attrs.userContext || {};
@@ -193,47 +190,6 @@ describe('TreeProcessor', function() {
     ]);
 
     expect(result.isExcluded(childOfPending)).toEqual(false);
-  });
-
-  it('throws if the specified order would re-enter a node', function() {
-    const leaf1 = new Leaf(),
-      leaf2 = new Leaf(),
-      leaf3 = new Leaf(),
-      reentered = new Node({ noReenter: true, children: [leaf1, leaf2] }),
-      root = new Node({ children: [reentered, leaf3] }),
-      processor = new privateUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [leaf1.id, leaf3.id, leaf2.id]
-      });
-
-    expect(function() {
-      processor.processTree();
-    }).toThrowError('Invalid order: would split up a suite');
-  });
-
-  it("does not throw if a node which can't be re-entered is only entered once", function() {
-    const leaf1 = new Leaf(),
-      leaf2 = new Leaf(),
-      leaf3 = new Leaf(),
-      noReentry = new Node({ noReenter: true }),
-      root = new Node({ children: [noReentry] }),
-      processor = new privateUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [leaf2.id, leaf1.id, leaf3.id]
-      });
-
-    processor.processTree();
-  });
-
-  it("does not throw if a node which can't be re-entered is run directly", function() {
-    const noReentry = new Node({ noReenter: true }),
-      root = new Node({ children: [noReentry] }),
-      processor = new privateUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [root.id]
-      });
-
-    processor.processTree();
   });
 
   it('orders children according to orderChildren when specified', function() {

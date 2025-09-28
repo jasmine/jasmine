@@ -33,9 +33,6 @@ describe('Runner', function() {
       attrs = attrs || {};
       this.id = 'suite' + suiteNumber++;
       this.children = attrs.children || [];
-      this.canBeReentered = function() {
-        return !attrs.noReenter;
-      };
       this.markedPending = attrs.markedPending || false;
       this.sharedUserContext = function() {
         return attrs.userContext || {};
