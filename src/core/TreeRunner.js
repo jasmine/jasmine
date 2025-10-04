@@ -263,11 +263,6 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         if (child instanceof j$.private.Suite) {
           await this.#reportDispatcher.suiteStarted(child.startedEvent());
           await this.#reportChildrenOfBeforeAllFailure(child);
-
-          // Marking the suite passed is consistent with how suites that
-          // contain failed specs but no suite-level failures are reported.
-          child.result.status = 'passed';
-
           await this.#reportDispatcher.suiteDone(child.doneEvent());
         } else {
           /* a spec */

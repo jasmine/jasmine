@@ -37,11 +37,6 @@ describe('Runner', function() {
       this.sharedUserContext = function() {
         return attrs.userContext || {};
       };
-      // TODO remove
-      this.result = {
-        id: this.id,
-        failedExpectations: []
-      };
       this.startedEvent = jasmine.createSpy('startedEvent');
       this.doneEvent = jasmine.createSpy('doneEvent');
       this.hasOwnFailedExpectations = jasmine.createSpy(
@@ -132,6 +127,7 @@ describe('Runner', function() {
         children: [spec],
         userContext: { root: 'context' }
       });
+      topSuite.doneEvent.and.returnValue({});
       detectLateRejectionHandling = true;
       const subject = makeRunner(topSuite);
 
@@ -159,6 +155,7 @@ describe('Runner', function() {
         children: [suite],
         userContext: { for: 'topSuite' }
       });
+      topSuite.doneEvent.and.returnValue({});
       suite.parentSuite = topSuite;
       const subject = makeRunner(topSuite);
 
@@ -249,9 +246,11 @@ describe('Runner', function() {
 
       verifyAndFinishSpec(spec, queueableFns[1], true);
 
-      parent.doneEvent.and.returnValue(parent.result);
+      parent.doneEvent.and.returnValue('parent suite done event');
       runQueue.calls.argsFor(1)[0].onComplete();
-      expect(reportDispatcher.suiteDone).toHaveBeenCalledWith(parent.result);
+      expect(reportDispatcher.suiteDone).toHaveBeenCalledWith(
+        'parent suite done event'
+      );
       await expectAsync(promise).toBePending();
     });
 

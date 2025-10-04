@@ -137,6 +137,7 @@ getJasmineRequireObj().Runner = function(j$) {
         overallStatus = 'passed';
       }
 
+      const topSuiteResult = this.#topSuite.doneEvent();
       /**
        * Information passed to the {@link Reporter#jasmineDone} event.
        * @typedef JasmineDoneInfo
@@ -156,8 +157,8 @@ getJasmineRequireObj().Runner = function(j$) {
         incompleteReason: incompleteReason,
         incompleteCode: incompleteCode,
         order: orderForReporting(order),
-        failedExpectations: this.#topSuite.result.failedExpectations,
-        deprecationWarnings: this.#topSuite.result.deprecationWarnings
+        failedExpectations: topSuiteResult.failedExpectations,
+        deprecationWarnings: topSuiteResult.deprecationWarnings
       };
       this.#topSuite.reportedDone = true;
       await this.#reportDispatcher.jasmineDone(jasmineDoneInfo);

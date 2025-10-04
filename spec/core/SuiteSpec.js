@@ -115,20 +115,20 @@ describe('Suite', function() {
     const suite = new privateUnderTest.Suite({});
 
     suite.addExpectationResult(false, {});
-    expect(suite.getResult().status).toBe('failed');
+    expect(suite.doneEvent().status).toBe('failed');
   });
 
   it('retrieves a result with updated status', function() {
     const suite = new privateUnderTest.Suite({});
 
-    expect(suite.getResult().status).toBe('passed');
+    expect(suite.doneEvent().status).toBe('passed');
   });
 
   it('retrieves a result with pending status', function() {
     const suite = new privateUnderTest.Suite({});
     suite.pend();
 
-    expect(suite.getResult().status).toBe('pending');
+    expect(suite.doneEvent().status).toBe('pending');
   });
 
   it('throws an ExpectationFailed when receiving a failed expectation when throwOnExpectationFailure is set', function() {
@@ -140,8 +140,8 @@ describe('Suite', function() {
       suite.addExpectationResult(false, { message: 'failed' });
     }).toThrowError(jasmineUnderTest.private.errors.ExpectationFailed);
 
-    expect(suite.getResult().status).toBe('failed');
-    expect(suite.result.failedExpectations).toEqual([
+    expect(suite.doneEvent().status).toBe('failed');
+    expect(suite.doneEvent().failedExpectations).toEqual([
       jasmine.objectContaining({ message: 'failed' })
     ]);
   });
@@ -153,7 +153,7 @@ describe('Suite', function() {
       new jasmineUnderTest.private.errors.ExpectationFailed()
     );
 
-    expect(suite.getResult().failedExpectations).toEqual([]);
+    expect(suite.doneEvent().failedExpectations).toEqual([]);
   });
 
   it('forwards late expectation failures to onLateError', function() {
@@ -175,7 +175,7 @@ describe('Suite', function() {
         message: jasmine.stringMatching(/^Error: nope/)
       })
     );
-    expect(suite.result.failedExpectations).toEqual([]);
+    expect(suite.doneEvent().failedExpectations).toEqual([]);
   });
 
   it('does not forward non-late expectation failures to onLateError', function() {
@@ -194,7 +194,7 @@ describe('Suite', function() {
     suite.addExpectationResult(false, data, true);
 
     expect(onLateError).not.toHaveBeenCalled();
-    expect(suite.result.failedExpectations.length).toEqual(1);
+    expect(suite.doneEvent().failedExpectations.length).toEqual(1);
   });
 
   it('forwards late handleException calls to onLateError', function() {
@@ -212,7 +212,7 @@ describe('Suite', function() {
         message: jasmine.stringMatching(/^Error: oops/)
       })
     );
-    expect(suite.result.failedExpectations).toEqual([]);
+    expect(suite.doneEvent().failedExpectations).toEqual([]);
   });
 
   it('does not forward non-late handleException calls to onLateError', function() {
@@ -225,7 +225,7 @@ describe('Suite', function() {
     suite.handleException(error);
 
     expect(onLateError).not.toHaveBeenCalled();
-    expect(suite.result.failedExpectations.length).toEqual(1);
+    expect(suite.doneEvent().failedExpectations.length).toEqual(1);
   });
 
   it('clears the reportedDone flag when reset', function() {
@@ -248,7 +248,7 @@ describe('Suite', function() {
     });
     suite.startTimer();
     suite.endTimer();
-    expect(suite.getResult().duration).toEqual(77000);
+    expect(suite.doneEvent().duration).toEqual(77000);
   });
 
   describe('#sharedUserContext', function() {
@@ -306,14 +306,14 @@ describe('Suite', function() {
       const suite = new privateUnderTest.Suite({});
       suite.pend();
       suite.reset();
-      expect(suite.getResult().status).toBe('passed');
+      expect(suite.doneEvent().status).toBe('passed');
     });
 
     it('should not reset the "pending" status when the suite was excluded', function() {
       const suite = new privateUnderTest.Suite({});
       suite.exclude();
       suite.reset();
-      expect(suite.getResult().status).toBe('pending');
+      expect(suite.doneEvent().status).toBe('pending');
     });
 
     it('should also reset the children', function() {
@@ -335,7 +335,7 @@ describe('Suite', function() {
 
       suite.reset();
 
-      const result = suite.getResult();
+      const result = suite.doneEvent();
       expect(result.status).toBe('passed');
       expect(result.failedExpectations).toHaveSize(0);
     });

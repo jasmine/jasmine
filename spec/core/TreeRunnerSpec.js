@@ -218,7 +218,7 @@ describe('TreeRunner', function() {
       timer.elapsed.and.returnValue('the duration');
       suiteRunQueueOpts.onComplete();
       expect(timer.elapsed).toHaveBeenCalled();
-      const result = suite.getResult();
+      const result = suite.doneEvent();
       expect(result.duration).toEqual('the duration');
       expect(reportDispatcher.suiteDone).toHaveBeenCalledWith(result);
 

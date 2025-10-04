@@ -4,6 +4,7 @@ getJasmineRequireObj().Suite = function(j$) {
     #throwOnExpectationFailure;
     #autoCleanClosures;
     #timer;
+    #result;
 
     constructor(attrs) {
       this.id = attrs.id;
@@ -36,8 +37,8 @@ getJasmineRequireObj().Suite = function(j$) {
       // Throw a better one now.
       j$.private.util.assertReporterCloneable(key, 'Key');
       j$.private.util.assertReporterCloneable(value, 'Value');
-      this.result.properties = this.result.properties || {};
-      this.result.properties[key] = value;
+      this.#result.properties = this.#result.properties || {};
+      this.#result.properties[key] = value;
     }
 
     getFullName() {
@@ -87,7 +88,7 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     endTimer() {
-      this.result.duration = this.#timer.elapsed();
+      this.#result.duration = this.#timer.elapsed();
     }
 
     cleanupBeforeAfter() {
@@ -100,7 +101,7 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     reset() {
-      this.result = {
+      this.#result = {
         id: this.id,
         description: this.description,
         fullName: this.getFullName(),
@@ -168,7 +169,7 @@ getJasmineRequireObj().Suite = function(j$) {
       ];
 
       for (const k of toCopy) {
-        event[k] = this.result[k];
+        event[k] = this.#result[k];
       }
 
       return event;
@@ -197,7 +198,7 @@ getJasmineRequireObj().Suite = function(j$) {
         return 'pending';
       }
 
-      if (this.result.failedExpectations.length > 0) {
+      if (this.#result.failedExpectations.length > 0) {
         return 'failed';
       } else {
         return 'passed';
@@ -205,12 +206,7 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     hasOwnFailedExpectations() {
-      return this.result.failedExpectations.length > 0;
-    }
-
-    getResult() {
-      this.result.status = this.#status();
-      return this.result;
+      return this.#result.failedExpectations.length > 0;
     }
 
     sharedUserContext() {
@@ -246,7 +242,7 @@ getJasmineRequireObj().Suite = function(j$) {
       if (this.reportedDone) {
         this.onLateError(failedExpectation);
       } else {
-        this.result.failedExpectations.push(failedExpectation);
+        this.#result.failedExpectations.push(failedExpectation);
       }
     }
 
@@ -284,12 +280,7 @@ getJasmineRequireObj().Suite = function(j$) {
       if (this.reportedDone) {
         this.onLateError(expectationResult);
       } else {
-        this.result.failedExpectations.push(expectationResult);
-
-        // TODO: refactor so that we don't need to override cached status
-        if (this.result.status) {
-          this.result.status = 'failed';
-        }
+        this.#result.failedExpectations.push(expectationResult);
       }
 
       if (this.#throwOnExpectationFailure) {
@@ -301,7 +292,7 @@ getJasmineRequireObj().Suite = function(j$) {
       if (typeof deprecation === 'string') {
         deprecation = { message: deprecation };
       }
-      this.result.deprecationWarnings.push(
+      this.#result.deprecationWarnings.push(
         j$.private.buildExpectationResult(deprecation)
       );
     }

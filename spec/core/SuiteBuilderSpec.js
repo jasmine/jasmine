@@ -311,10 +311,11 @@ describe('SuiteBuilder', function() {
       suiteBuilder.topSuite.handleException(new Error('nope'));
       suiteBuilder.parallelReset();
 
-      expect(suiteBuilder.topSuite.result).toEqual({
+      expect(suiteBuilder.topSuite.doneEvent()).toEqual({
         id: suiteBuilder.topSuite.id,
         description: 'Jasmine__TopLevel__Suite',
         fullName: '',
+        status: 'passed',
         failedExpectations: [],
         deprecationWarnings: [],
         duration: null,
