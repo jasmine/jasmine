@@ -40,13 +40,6 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       this.#adapter.uninstall();
     }
 
-    // The listener at the top of the stack will be called with two arguments:
-    // the error and the event. Either of them may be falsy.
-    // The error will normally be provided, but will be falsy in the case of
-    // some browser load-time errors. The event will normally be provided in
-    // browsers but will be falsy in Node.
-    // Listeners that are pushed after spec files have been loaded should be
-    // able to just use the error parameter.
     pushListener(listener) {
       this.#handlers.push(listener);
     }
@@ -78,29 +71,23 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     }
 
     reportUnhandledRejections() {
-      for (const {
-        reason,
-        event
-      } of this.#pendingUnhandledRejections.values()) {
-        this.#dispatchError(reason, event);
+      for (const { reason } of this.#pendingUnhandledRejections.values()) {
+        this.#dispatchError(reason);
       }
 
       this.#pendingUnhandledRejections.clear();
     }
 
-    // Either error or event may be undefined
-    #onUncaughtException(error, event) {
-      this.#dispatchError(error, event);
+    #onUncaughtException(error) {
+      this.#dispatchError(error);
     }
 
-    // event or promise may be undefined
-    // event is passed through for backwards compatibility reasons. It's probably
-    // unnecessary, but user code could depend on it.
-    #onUnhandledRejection(reason, promise, event) {
+    // promise may be undefined
+    #onUnhandledRejection(reason, promise) {
       if (this.#detectLateRejectionHandling() && promise) {
-        this.#pendingUnhandledRejections.set(promise, { reason, event });
+        this.#pendingUnhandledRejections.set(promise, { reason });
       } else {
-        this.#dispatchError(reason, event);
+        this.#dispatchError(reason);
       }
     }
 
@@ -112,8 +99,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       this.#pendingUnhandledRejections.delete(promise);
     }
 
-    // Either error or event may be undefined
-    #dispatchError(error, event) {
+    #dispatchError(error) {
       if (this.#overrideHandler) {
         // See discussion of spyOnGlobalErrorsAsync in base.js
         this.#overrideHandler(error);
@@ -123,7 +109,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       const handler = this.#handlers[this.#handlers.length - 1];
 
       if (handler) {
-        handler(error, event);
+        handler(error);
       } else {
         throw error;
       }
@@ -140,7 +126,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
     constructor(global, dispatch) {
       this.#global = global;
       this.#dispatch = dispatch;
-      this.#onError = event => dispatch.onUncaughtException(event.error, event);
+      this.#onError = this.#errorHandler.bind(this);
       this.#onUnhandledRejection = this.#unhandledRejectionHandler.bind(this);
       this.#onRejectionHandled = this.#rejectionHandledHandler.bind(this);
     }
@@ -169,6 +155,28 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
       );
     }
 
+    #errorHandler(event) {
+      let error = event.error;
+
+      // event.error isn't guaranteed to be present in all browser load-time
+      // error events.
+      if (!error) {
+        error = {
+          message: event.message,
+          stack: `@${event.filename}:${event.lineno}`
+        };
+      }
+
+      if (event.filename) {
+        // filename and lineno can be more convenient than stack when reporting
+        // things like syntax errors. Pass them along.
+        error.filename = event.filename;
+        error.lineno = event.lineno;
+      }
+
+      this.#dispatch.onUncaughtException(error);
+    }
+
     #unhandledRejectionHandler(event) {
       const jasmineMessage = 'Unhandled promise rejection: ' + event.reason;
       let reason;
@@ -180,7 +188,7 @@ getJasmineRequireObj().GlobalErrors = function(j$) {
         reason = jasmineMessage;
       }
 
-      this.#dispatch.onUnhandledRejection(reason, event.promise, event);
+      this.#dispatch.onUnhandledRejection(reason, event.promise);
     }
 
     #rejectionHandledHandler(event) {

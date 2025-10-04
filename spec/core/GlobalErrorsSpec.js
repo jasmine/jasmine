@@ -13,10 +13,7 @@ describe('GlobalErrors', function() {
     const error = new Error('nope');
     dispatchEvent(globals.listeners, 'error', { error });
 
-    expect(handler).toHaveBeenCalledWith(
-      jasmine.is(error),
-      jasmine.objectContaining({ error: jasmine.is(error) })
-    );
+    expect(handler).toHaveBeenCalledWith(jasmine.is(error));
   });
 
   it('is not affected by overriding global.onerror', function() {
@@ -35,10 +32,7 @@ describe('GlobalErrors', function() {
     const error = new Error('nope');
     dispatchEvent(globals.listeners, 'error', { error });
 
-    expect(handler).toHaveBeenCalledWith(
-      jasmine.is(error),
-      jasmine.objectContaining({ error: jasmine.is(error) })
-    );
+    expect(handler).toHaveBeenCalledWith(jasmine.is(error));
   });
 
   it('only calls the most recent handler', function() {
@@ -58,10 +52,7 @@ describe('GlobalErrors', function() {
     dispatchEvent(globals.listeners, 'error', { error });
 
     expect(handler1).not.toHaveBeenCalled();
-    expect(handler2).toHaveBeenCalledWith(
-      jasmine.is(error),
-      jasmine.objectContaining({ error: jasmine.is(error) })
-    );
+    expect(handler2).toHaveBeenCalledWith(jasmine.is(error));
   });
 
   it('calls previous handlers when one is removed', function() {
@@ -82,10 +73,7 @@ describe('GlobalErrors', function() {
     const error = new Error('nope');
     dispatchEvent(globals.listeners, 'error', { error });
 
-    expect(handler1).toHaveBeenCalledWith(
-      jasmine.is(error),
-      jasmine.objectContaining({ error: jasmine.is(error) })
-    );
+    expect(handler1).toHaveBeenCalledWith(jasmine.is(error));
     expect(handler2).not.toHaveBeenCalled();
   });
 
@@ -130,6 +118,32 @@ describe('GlobalErrors', function() {
     errors.uninstall();
   });
 
+  it("reports browser error events that don't have errors", function() {
+    const globals = browserGlobals();
+    const handler = jasmine.createSpy('errorHandler');
+    const errors = new privateUnderTest.GlobalErrors(
+      globals.global,
+      () => ({})
+    );
+    errors.install();
+    errors.pushListener(handler);
+
+    const event = {
+      message: 'Uncaught SyntaxError: Unexpected end of input',
+      error: undefined,
+      filename: 'borkenSpec.js',
+      lineno: 42
+    };
+    dispatchEvent(globals.listeners, 'error', event);
+
+    expect(handler).toHaveBeenCalledWith({
+      message: 'Uncaught SyntaxError: Unexpected end of input',
+      filename: 'borkenSpec.js',
+      lineno: 42,
+      stack: '@borkenSpec.js:42'
+    });
+  });
+
   it('reports uncaught exceptions in node.js', function() {
     const globals = nodeGlobals();
     const errors = new privateUnderTest.GlobalErrors(
@@ -152,7 +166,7 @@ describe('GlobalErrors', function() {
 
     dispatchEvent(globals.listeners, 'uncaughtException', new Error('bar'));
 
-    expect(handler).toHaveBeenCalledWith(new Error('bar'), undefined);
+    expect(handler).toHaveBeenCalledWith(new Error('bar'));
     expect(handler.calls.argsFor(0)[0].jasmineMessage).toBe(
       'Uncaught exception: Error: bar'
     );
@@ -185,7 +199,7 @@ describe('GlobalErrors', function() {
 
       dispatchEvent(globals.listeners, 'unhandledRejection', new Error('bar'));
 
-      expect(handler).toHaveBeenCalledWith(new Error('bar'), undefined);
+      expect(handler).toHaveBeenCalledWith(new Error('bar'));
       expect(handler.calls.argsFor(0)[0].jasmineMessage).toBe(
         'Unhandled promise rejection: Error: bar'
       );
@@ -213,8 +227,7 @@ describe('GlobalErrors', function() {
           'Unhandled promise rejection: 17\n' +
             '(Tip: to get a useful stack trace, use ' +
             'Promise.reject(new Error(...)) instead of Promise.reject(...).)'
-        ),
-        undefined
+        )
       );
     });
 
@@ -236,8 +249,7 @@ describe('GlobalErrors', function() {
           'Unhandled promise rejection with no error or message\n' +
             '(Tip: to get a useful stack trace, use ' +
             'Promise.reject(new Error(...)) instead of Promise.reject().)'
-        ),
-        undefined
+        )
       );
     });
 
@@ -281,7 +293,7 @@ describe('GlobalErrors', function() {
             undefined
           );
 
-          expect(handler).toHaveBeenCalledWith(new Error('nope'), undefined);
+          expect(handler).toHaveBeenCalledWith(new Error('nope'));
           expect(handler.calls.argsFor(0)[0].jasmineMessage).toBe(
             'Unhandled promise rejection: Error: nope'
           );
@@ -324,7 +336,7 @@ describe('GlobalErrors', function() {
             );
             errors.reportUnhandledRejections();
 
-            expect(handler).toHaveBeenCalledWith(new Error('nope'), undefined);
+            expect(handler).toHaveBeenCalledWith(new Error('nope'));
             expect(handler.calls.argsFor(0)[0].jasmineMessage).toBe(
               'Unhandled promise rejection: Error: nope'
             );
@@ -407,10 +419,7 @@ describe('GlobalErrors', function() {
       const event = { reason: 'nope' };
       dispatchEvent(globals.listeners, 'unhandledrejection', event);
 
-      expect(handler).toHaveBeenCalledWith(
-        'Unhandled promise rejection: nope',
-        event
-      );
+      expect(handler).toHaveBeenCalledWith('Unhandled promise rejection: nope');
     });
 
     it('reports rejections whose reason is an Error', function() {
@@ -428,13 +437,15 @@ describe('GlobalErrors', function() {
       const event = { reason };
       dispatchEvent(globals.listeners, 'unhandledrejection', event);
 
-      expect(handler).toHaveBeenCalledWith(
+      expect(handler).toHaveBeenCalledTimes(1);
+      const received = handler.calls.argsFor(0)[0];
+      expect(received).toBeInstanceOf(Error);
+      expect(received).toEqual(
         jasmine.objectContaining({
           jasmineMessage: 'Unhandled promise rejection: Error: bar',
           message: reason.message,
           stack: reason.stack
-        }),
-        event
+        })
       );
     });
 
@@ -469,8 +480,7 @@ describe('GlobalErrors', function() {
           dispatchEvent(globals.listeners, 'unhandledrejection', event);
 
           expect(handler).toHaveBeenCalledWith(
-            'Unhandled promise rejection: nope',
-            event
+            'Unhandled promise rejection: nope'
           );
         });
       });
@@ -507,8 +517,7 @@ describe('GlobalErrors', function() {
             errors.reportUnhandledRejections();
 
             expect(handler).toHaveBeenCalledWith(
-              'Unhandled promise rejection: nope',
-              { reason: 'nope', promise }
+              'Unhandled promise rejection: nope'
             );
           });
 
@@ -567,10 +576,7 @@ describe('GlobalErrors', function() {
 
       dispatchEvent(globals.listeners, 'uncaughtException', 17);
 
-      expect(handler).toHaveBeenCalledWith(
-        new Error('Uncaught exception: 17'),
-        undefined
-      );
+      expect(handler).toHaveBeenCalledWith(new Error('Uncaught exception: 17'));
     });
 
     it('substitutes a descriptive message when the error is falsy', function() {
@@ -587,8 +593,7 @@ describe('GlobalErrors', function() {
       dispatchEvent(globals.listeners, 'uncaughtException', undefined);
 
       expect(handler).toHaveBeenCalledWith(
-        new Error('Uncaught exception with no error or message'),
-        undefined
+        new Error('Uncaught exception with no error or message')
       );
     });
   });
@@ -619,7 +624,7 @@ describe('GlobalErrors', function() {
       const event = { error: 'baz' };
       dispatchEvent(globals.listeners, 'error', event);
       expect(overrideHandler).not.toHaveBeenCalledWith('baz');
-      expect(handler1).toHaveBeenCalledWith('baz', event);
+      expect(handler1).toHaveBeenCalledWith('baz');
     });
 
     it('overrides the existing handlers in Node until removed', function() {
@@ -648,7 +653,7 @@ describe('GlobalErrors', function() {
 
       dispatchEvent(globals.listeners, 'uncaughtException', new Error('bar'));
       expect(overrideHandler).not.toHaveBeenCalled();
-      expect(handler1).toHaveBeenCalledWith(new Error('bar'), undefined);
+      expect(handler1).toHaveBeenCalledWith(new Error('bar'));
     });
 
     it('handles unhandled promise rejections in browsers', function() {

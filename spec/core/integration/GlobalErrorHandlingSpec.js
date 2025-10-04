@@ -53,7 +53,7 @@ describe('Global error handling (integration)', function() {
         passed: false,
         globalErrorType: 'load',
         message: 'Uncaught SyntaxError: Unexpected end of input',
-        stack: undefined,
+        stack: '@borkenSpec.js:42',
         filename: 'borkenSpec.js',
         lineno: 42
       },
