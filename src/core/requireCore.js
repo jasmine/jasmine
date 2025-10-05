@@ -8,20 +8,10 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     module.exports &&
     typeof exports !== 'undefined'
   ) {
-    if (typeof global !== 'undefined') {
-      jasmineGlobal = global;
-    } else {
-      jasmineGlobal = {};
-    }
+    // Node
     jasmineRequire = exports;
   } else {
-    if (
-      typeof window !== 'undefined' &&
-      typeof window.toString === 'function' &&
-      window.toString() === '[object GjsGlobal]'
-    ) {
-      jasmineGlobal = window;
-    }
+    // Browser
     jasmineRequire = jasmineGlobal.jasmineRequire = {};
   }
 
@@ -32,7 +22,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
   getJasmineRequire().core = function(jRequire) {
     const j$ = { private: {} };
 
-    jRequire.base(j$, jasmineGlobal);
+    jRequire.base(j$, globalThis);
     j$.private.util = jRequire.util(j$);
     j$.private.errors = jRequire.errors();
     j$.private.formatErrorMsg = jRequire.formatErrorMsg(j$);
