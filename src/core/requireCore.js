@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars,no-var
-var getJasmineRequireObj = (function(jasmineGlobal) {
+var getJasmineRequireObj = (function() {
   'use strict';
   let jasmineRequire;
 
@@ -12,7 +12,7 @@ var getJasmineRequireObj = (function(jasmineGlobal) {
     jasmineRequire = exports;
   } else {
     // Browser
-    jasmineRequire = jasmineGlobal.jasmineRequire = {};
+    jasmineRequire = globalThis.jasmineRequire = {};
   }
 
   function getJasmineRequire() {
