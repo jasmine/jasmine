@@ -10,13 +10,16 @@ jasmineRequire.HtmlExactSpecFilter = function() {
 
     /**
      * Create a filter instance.
-     * @param options Object with a queryString property, which should be an
-     * instance of {@link QueryString}.
+     * @param options Object with a filterString method, which should
+     * return the value of the "spec" query string parameter set by
+     * {@link HtmlReporter}.
      */
     constructor(options) {
-      this.#getFilterString = function() {
-        return options.queryString.getParam('spec');
-      };
+      if (typeof options?.filterString !== 'function') {
+        throw new Error('options.filterString must be a function');
+      }
+
+      this.#getFilterString = options.filterString;
     }
 
     /**
