@@ -1,4 +1,6 @@
 getJasmineRequireObj().JsApiReporter = function(j$) {
+  'use strict';
+
   /**
    * @name jsApiReporter
    * @classdesc {@link Reporter} added by default in `boot.js` to record results for retrieval in javascript code. An instance is made available as `jsApiReporter` on the global object.

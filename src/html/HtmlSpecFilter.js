@@ -1,4 +1,6 @@
 jasmineRequire.HtmlSpecFilter = function() {
+  'use strict';
+
   /**
    * @name HtmlSpecFilter
    * @classdesc Legacy HTML spec filter, for backward compatibility

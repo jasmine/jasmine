@@ -1,4 +1,6 @@
 getJasmineRequireObj().Suite = function(j$) {
+  'use strict';
+
   class Suite {
     #reportedParentSuiteId;
     #throwOnExpectationFailure;

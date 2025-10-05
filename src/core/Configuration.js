@@ -1,4 +1,6 @@
 getJasmineRequireObj().Configuration = function(j$) {
+  'use strict';
+
   /**
    * This represents the available options to configure Jasmine.
    * Options that are not provided will use their default values.

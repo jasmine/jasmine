@@ -1,4 +1,6 @@
 getJasmineRequireObj().Spy = function(j$) {
+  'use strict';
+
   const nextOrder = (function() {
     let order = 0;
 

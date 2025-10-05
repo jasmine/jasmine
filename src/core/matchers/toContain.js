@@ -1,4 +1,6 @@
 getJasmineRequireObj().toContain = function() {
+  'use strict';
+
   /**
    * {@link expect} the actual value to contain a specific value.
    * @function

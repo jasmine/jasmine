@@ -1,4 +1,6 @@
 getJasmineRequireObj().errors = function() {
+  'use strict';
+
   function ExpectationFailed() {}
 
   ExpectationFailed.prototype = new Error();

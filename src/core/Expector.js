@@ -1,4 +1,6 @@
 getJasmineRequireObj().Expector = function(j$) {
+  'use strict';
+
   function Expector(options) {
     this.matchersUtil = options.matchersUtil || {
       buildFailureMessage: function() {}

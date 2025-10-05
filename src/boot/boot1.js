@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  This file finishes 'booting' Jasmine, performing all of the necessary
  initialization before executing the loaded environment and all of a project's

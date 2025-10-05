@@ -1,4 +1,6 @@
 getJasmineRequireObj().reporterEvents = function(j$) {
+  'use strict';
+
   /**
    * Used to tell Jasmine what optional or uncommonly implemented features
    * the reporter supports. If not specified, the defaults described in

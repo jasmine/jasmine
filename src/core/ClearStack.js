@@ -1,4 +1,6 @@
 getJasmineRequireObj().clearStack = function(j$) {
+  'use strict';
+
   const maxInlineCallCount = 10;
 
   function browserQueueMicrotaskImpl(global) {

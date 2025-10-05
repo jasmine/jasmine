@@ -1,5 +1,7 @@
 //TODO: expectation result may make more sense as a presentation of an expectation.
 getJasmineRequireObj().buildExpectationResult = function(j$) {
+  'use strict';
+
   function buildExpectationResult(options) {
     const exceptionFormatter = new j$.private.ExceptionFormatter();
 

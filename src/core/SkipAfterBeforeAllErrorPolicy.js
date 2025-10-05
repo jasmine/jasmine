@@ -1,4 +1,6 @@
 getJasmineRequireObj().SkipAfterBeforeAllErrorPolicy = function(j$) {
+  'use strict';
+
   function SkipAfterBeforeAllErrorPolicy(queueableFns) {
     this.queueableFns_ = queueableFns;
     this.skipping_ = false;

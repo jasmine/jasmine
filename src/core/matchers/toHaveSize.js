@@ -1,4 +1,6 @@
 getJasmineRequireObj().toHaveSize = function(j$) {
+  'use strict';
+
   /**
    * {@link expect} the actual size to be equal to the expected, using array-like length or object keys size.
    * @function

@@ -1,4 +1,6 @@
 getJasmineRequireObj().DiffBuilder = function(j$) {
+  'use strict';
+
   class DiffBuilder {
     constructor(config) {
       this.prettyPrinter_ =

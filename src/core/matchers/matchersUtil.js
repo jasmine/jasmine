@@ -1,4 +1,6 @@
 getJasmineRequireObj().MatchersUtil = function(j$) {
+  'use strict';
+
   /**
    * @class MatchersUtil
    * @classdesc Utilities for use in implementing matchers.<br>

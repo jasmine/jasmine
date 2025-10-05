@@ -1,4 +1,6 @@
 getJasmineRequireObj().SpyStrategy = function(j$) {
+  'use strict';
+
   /**
    * @interface SpyStrategy
    */

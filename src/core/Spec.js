@@ -1,4 +1,6 @@
 getJasmineRequireObj().Spec = function(j$) {
+  'use strict';
+
   class Spec {
     #autoCleanClosures;
     #throwOnExpectationFailure;

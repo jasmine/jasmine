@@ -1,4 +1,6 @@
 getJasmineRequireObj().toHaveClasses = function(j$) {
+  'use strict';
+
   /**
    * {@link expect} the actual value to be a DOM element that has the expected classes
    * @function

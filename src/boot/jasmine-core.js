@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Note: Only available on Node.
  * @module jasmine-core

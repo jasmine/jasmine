@@ -1,4 +1,6 @@
 getJasmineRequireObj().NotEmpty = function(j$) {
+  'use strict';
+
   function NotEmpty() {}
 
   NotEmpty.prototype.asymmetricMatch = function(other) {

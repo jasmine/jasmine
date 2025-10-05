@@ -1,4 +1,6 @@
 getJasmineRequireObj().Expectation = function(j$) {
+  'use strict';
+
   /**
    * Matchers that come with Jasmine out of the box.
    * @namespace matchers

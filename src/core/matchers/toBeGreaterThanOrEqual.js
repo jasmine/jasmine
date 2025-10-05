@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBeGreaterThanOrEqual = function() {
+  'use strict';
+
   /**
    * {@link expect} the actual value to be greater than or equal to the expected value.
    * @function

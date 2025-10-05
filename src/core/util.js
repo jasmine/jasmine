@@ -1,4 +1,6 @@
 getJasmineRequireObj().util = function(j$) {
+  'use strict';
+
   const util = {};
 
   util.clone = function(obj) {

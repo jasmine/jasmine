@@ -1,4 +1,6 @@
 getJasmineRequireObj().TreeRunner = function(j$) {
+  'use strict';
+
   class TreeRunner {
     #executionTree;
     #setTimeout;

@@ -1,4 +1,6 @@
 getJasmineRequireObj().ArrayWithExactContents = function(j$) {
+  'use strict';
+
   function ArrayWithExactContents(sample) {
     this.sample = sample;
   }

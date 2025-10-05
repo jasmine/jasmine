@@ -1,4 +1,6 @@
 jasmineRequire.QueryString = function() {
+  'use strict';
+
   /**
    * Reads and manipulates the query string.
    * @since 2.0.0

@@ -1,4 +1,6 @@
 getJasmineRequireObj().RunableResources = function(j$) {
+  'use strict';
+
   class RunableResources {
     constructor(options) {
       this.byRunableId_ = {};

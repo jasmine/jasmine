@@ -1,4 +1,6 @@
 getJasmineRequireObj().toHaveNoOtherSpyInteractions = function(j$) {
+  'use strict';
+
   const getErrorMsg = j$.private.formatErrorMsg(
     '<toHaveNoOtherSpyInteractions>',
     'expect(<spyObj>).toHaveNoOtherSpyInteractions()'

@@ -1,4 +1,6 @@
 getJasmineRequireObj().requireAsyncMatchers = function(jRequire, j$) {
+  'use strict';
+
   const availableMatchers = [
       'toBePending',
       'toBeResolved',

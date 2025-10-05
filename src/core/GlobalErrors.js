@@ -1,4 +1,6 @@
 getJasmineRequireObj().GlobalErrors = function(j$) {
+  'use strict';
+
   class GlobalErrors {
     #getConfig;
     #adapter;

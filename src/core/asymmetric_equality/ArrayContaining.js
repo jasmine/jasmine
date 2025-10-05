@@ -1,4 +1,6 @@
 getJasmineRequireObj().ArrayContaining = function(j$) {
+  'use strict';
+
   function ArrayContaining(sample) {
     this.sample = sample;
   }

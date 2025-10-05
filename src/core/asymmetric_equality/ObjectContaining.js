@@ -1,4 +1,6 @@
 getJasmineRequireObj().ObjectContaining = function(j$) {
+  'use strict';
+
   function ObjectContaining(sample) {
     this.sample = sample;
   }

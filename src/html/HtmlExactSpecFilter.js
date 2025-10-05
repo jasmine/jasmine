@@ -1,4 +1,6 @@
 jasmineRequire.HtmlExactSpecFilter = function() {
+  'use strict';
+
   /**
    * Spec filter for use with {@link HtmlReporter}
    *

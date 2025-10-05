@@ -1,4 +1,6 @@
 getJasmineRequireObj().toEqual = function(j$) {
+  'use strict';
+
   /**
    * {@link expect} the actual value to be equal to the expected, using deep equality comparison.
    * @function

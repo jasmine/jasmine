@@ -1,4 +1,6 @@
 getJasmineRequireObj().Runner = function(j$) {
+  'use strict';
+
   class Runner {
     #topSuite;
     #getTotalSpecsDefined;

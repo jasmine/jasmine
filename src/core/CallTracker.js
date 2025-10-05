@@ -1,4 +1,6 @@
 getJasmineRequireObj().CallTracker = function(j$) {
+  'use strict';
+
   /**
    * @namespace Spy#calls
    * @since 2.0.0

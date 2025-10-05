@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBeResolved = function(j$) {
+  'use strict';
+
   /**
    * Expect a promise to be resolved.
    * @function

@@ -1,4 +1,6 @@
 getJasmineRequireObj().Order = function() {
+  'use strict';
+
   function Order(options) {
     this.random = 'random' in options ? options.random : true;
     const seed = (this.seed = options.seed || generateSeed());
