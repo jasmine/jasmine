@@ -23,6 +23,13 @@ getJasmineRequireObj().buildExpectationResult = function(j$) {
       globalErrorType: options.globalErrorType
     };
 
+    if (options.filename !== undefined) {
+      result.filename = options.filename;
+    }
+    if (options.lineno !== undefined) {
+      result.lineno = options.lineno;
+    }
+
     if (!result.passed) {
       if (options.error && !j$.private.isString(options.error)) {
         if ('code' in options.error) {

@@ -68,7 +68,7 @@ getJasmineRequireObj().Env = function(j$) {
     if (!envOptions.suppressLoadErrors) {
       installGlobalErrors();
       globalErrors.pushListener(function loadtimeErrorHandler(error) {
-        topSuite.result.failedExpectations.push({
+        topSuite.addExpectationResult(false, {
           passed: false,
           globalErrorType: 'load',
           message: error.message,

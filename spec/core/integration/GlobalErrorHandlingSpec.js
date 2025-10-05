@@ -53,17 +53,17 @@ describe('Global error handling (integration)', function() {
         passed: false,
         globalErrorType: 'load',
         message: 'Uncaught SyntaxError: Unexpected end of input',
-        stack: '@borkenSpec.js:42',
         filename: 'borkenSpec.js',
-        lineno: 42
+        lineno: 42,
+        matcherName: undefined,
+        stack: jasmine.any(String)
       },
       {
         passed: false,
         globalErrorType: 'load',
         message: 'ENOCHEESE',
-        stack: error.stack,
-        filename: undefined,
-        lineno: undefined
+        matcherName: undefined,
+        stack: jasmine.any(String)
       }
     ]);
   });
