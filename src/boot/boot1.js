@@ -81,14 +81,14 @@
   /**
    * Filter which specs will be run by matching the start of the full name against the `spec` query param.
    */
-  const specFilter = new jasmine.HtmlExactSpecFilter({
+  const specFilter = new jasmine.HtmlSpecFilter({
     filterString: function() {
       return queryString.getParam('spec');
     }
   });
 
   config.specFilter = function(spec) {
-    return specFilter.matches(spec);
+    return specFilter.matches(spec.getFullName());
   };
 
   env.configure(config);

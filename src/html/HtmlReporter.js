@@ -5,13 +5,11 @@ jasmineRequire.HtmlReporter = function(j$) {
     this.specsExecuted = 0;
     this.failureCount = 0;
     this.pendingSpecCount = 0;
-    this.suitesById = [];
   }
 
   ResultsStateBuilder.prototype.suiteStarted = function(result) {
     this.currentParent.addChild(result, 'suite');
     this.currentParent = this.currentParent.last();
-    this.suitesById[result.id] = this.currentParent;
   };
 
   ResultsStateBuilder.prototype.suiteDone = function(result) {
@@ -696,6 +694,21 @@ jasmineRequire.HtmlReporter = function(j$) {
       return wrapper;
     }
 
+    function suiteHref(suite) {
+      const els = [];
+
+      while (suite && suite.parent) {
+        els.unshift(suite.result.description);
+        suite = suite.parent;
+      }
+
+      // include window.location.pathname to fix issue with karma-jasmine-html-reporter in angular: see https://github.com/jasmine/jasmine/issues/1906
+      return (
+        (window.location.pathname || '') +
+        addToExistingQueryString('spec', els.join(' '))
+      );
+    }
+
     function addDeprecationWarnings(result, runnableType) {
       if (result && result.deprecationWarnings) {
         for (let i = 0; i < result.deprecationWarnings.length; i++) {
@@ -793,33 +806,11 @@ jasmineRequire.HtmlReporter = function(j$) {
       return '' + count + ' ' + word;
     }
 
-    function suitePath(suite) {
-      const els = [];
-
-      while (suite && suite.parent) {
-        els.unshift(suite.result.description);
-        suite = suite.parent;
-      }
-
-      return els;
-    }
-
-    function suiteHref(suite) {
-      return pathHref(suitePath(suite));
-    }
-
     function specHref(result) {
-      const suite = stateBuilder.suitesById[result.parentSuiteId];
-      const path = suitePath(suite);
-      path.push(result.description);
-      return pathHref(path);
-    }
-
-    function pathHref(path) {
       // include window.location.pathname to fix issue with karma-jasmine-html-reporter in angular: see https://github.com/jasmine/jasmine/issues/1906
       return (
         (window.location.pathname || '') +
-        addToExistingQueryString('spec', JSON.stringify(path))
+        addToExistingQueryString('spec', result.fullName)
       );
     }
 
