@@ -1,4 +1,6 @@
 getJasmineRequireObj().SpyRegistry = function(j$) {
+  'use strict';
+
   const spyOnMsg = j$.private.formatErrorMsg(
     '<spyOn>',
     'spyOn(<object>, <methodName>)'
@@ -81,7 +83,10 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         };
       } else {
         restoreStrategy = function() {
-          if (!delete obj[methodName]) {
+          try {
+            delete obj[methodName];
+            // eslint-disable-next-line no-unused-vars
+          } catch (e) {
             obj[methodName] = originalMethod;
           }
         };
