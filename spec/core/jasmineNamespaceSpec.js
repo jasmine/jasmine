@@ -54,7 +54,6 @@ describe('The jasmine namespace', function() {
       // jasmine-html.js
       result.add('HtmlReporter');
       result.add('HtmlSpecFilter');
-      result.add('HtmlExactSpecFilter');
       result.add('QueryString');
     }
 

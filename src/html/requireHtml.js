@@ -6,5 +6,4 @@ jasmineRequire.html = function(j$) {
   j$.HtmlReporter = jasmineRequire.HtmlReporter(j$);
   j$.QueryString = jasmineRequire.QueryString();
   j$.HtmlSpecFilter = jasmineRequire.HtmlSpecFilter();
-  j$.HtmlExactSpecFilter = jasmineRequire.HtmlExactSpecFilter();
 };
