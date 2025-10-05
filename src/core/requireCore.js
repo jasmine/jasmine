@@ -94,6 +94,9 @@ var getJasmineRequireObj = (function() {
     j$.private.matchers = jRequire.requireMatchers(jRequire, j$);
     j$.private.asyncMatchers = jRequire.requireAsyncMatchers(jRequire, j$);
 
+    j$.private.loadedAsBrowserEsm =
+      globalThis.document && !globalThis.document.currentScript;
+
     return j$;
   };
 

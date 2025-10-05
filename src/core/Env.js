@@ -402,6 +402,14 @@ getJasmineRequireObj().Env = function(j$) {
     this.execute = async function(runablesToRun) {
       installGlobalErrors();
 
+      // Karma incorrectly loads jasmine-core as an ES module. It isn't one,
+      // and we don't test that configuration. Warn about it.
+      if (j$.private.loadedAsBrowserEsm) {
+        this.deprecated(
+          "jasmine-core isn't an ES module but it was loaded as one. This is not a supported configuration."
+        );
+      }
+
       if (parallelLoadingState) {
         validateConfigForParallel();
       }
