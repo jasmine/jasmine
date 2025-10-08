@@ -86,7 +86,6 @@ jasmineRequire.HtmlReporter = function(j$) {
   class HtmlReporter {
     #env;
     #getContainer;
-    #domContext;
     #navigateWithNewParam;
     #urlBuilder;
     #filterSpecs;
@@ -104,7 +103,6 @@ jasmineRequire.HtmlReporter = function(j$) {
       this.#env = options.env;
 
       this.#getContainer = options.getContainer;
-      this.#domContext = new j$.private.DomContext();
       this.#navigateWithNewParam =
         options.navigateWithNewParam || function() {};
       this.#urlBuilder = new UrlBuilder(
@@ -124,11 +122,11 @@ jasmineRequire.HtmlReporter = function(j$) {
 
       this.#stateBuilder = new ResultsStateBuilder();
 
-      this.#alerts = new AlertsView(this.#domContext, this.#urlBuilder);
-      this.#symbols = new SymbolsView(this.#domContext);
-      this.#banner = new Banner(this.#domContext, this.#navigateWithNewParam);
-      this.#failures = new FailuresView(this.#domContext, this.#urlBuilder);
-      this.#htmlReporterMain = this.#domContext.create(
+      this.#alerts = new AlertsView(this.#urlBuilder);
+      this.#symbols = new SymbolsView();
+      this.#banner = new Banner(this.#navigateWithNewParam);
+      this.#failures = new FailuresView(this.#urlBuilder);
+      this.#htmlReporterMain = j$.private.createDom(
         'div',
         { className: 'jasmine_html-reporter' },
         this.#banner.rootEl,
@@ -204,11 +202,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       }
 
       const results = this.#find('.jasmine-results');
-      const summary = new SummaryTreeView(
-        this.#domContext,
-        this.#urlBuilder,
-        this.#filterSpecs
-      );
+      const summary = new SummaryTreeView(this.#urlBuilder, this.#filterSpecs);
       summary.addResults(this.#stateBuilder.topResults);
       results.appendChild(summary.rootEl);
 
@@ -280,13 +274,11 @@ jasmineRequire.HtmlReporter = function(j$) {
   }
 
   class AlertsView {
-    #domContext;
     #urlBuilder;
 
-    constructor(domContext, urlBuilder) {
-      this.#domContext = domContext;
+    constructor(urlBuilder) {
       this.#urlBuilder = urlBuilder;
-      this.rootEl = domContext.create('div', { className: 'jasmine-alert' });
+      this.rootEl = j$.private.createDom('div', { className: 'jasmine-alert' });
     }
 
     addDuration(ms) {
@@ -297,7 +289,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       // TODO: backfill tests for this
       this.add(
         'jasmine-bar jasmine-skipped',
-        this.#domContext.create(
+        j$.private.createDom(
           'a',
           { href: this.#urlBuilder.runAllHref(), title: 'Run all specs' },
           `Ran ${numExecuted} of ${numDefined} specs - run all`
@@ -306,12 +298,12 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     addFailureToggle(onClickFailures, onClickSpecList) {
-      const failuresLink = this.#domContext.create(
+      const failuresLink = j$.private.createDom(
         'a',
         { className: 'jasmine-failures-menu', href: '#' },
         'Failures'
       );
-      let specListLink = this.#domContext.create(
+      let specListLink = j$.private.createDom(
         'a',
         { className: 'jasmine-spec-list-menu', href: '#' },
         'Spec List'
@@ -328,12 +320,12 @@ jasmineRequire.HtmlReporter = function(j$) {
       };
 
       this.add('jasmine-menu jasmine-bar jasmine-spec-list', [
-        this.#domContext.create('span', {}, 'Spec List | '),
+        j$.private.createDom('span', {}, 'Spec List | '),
         failuresLink
       ]);
       this.add('jasmine-menu jasmine-bar jasmine-failure-list', [
         specListLink,
-        this.#domContext.create('span', {}, ' | Failures ')
+        j$.private.createDom('span', {}, ' | Failures ')
       ]);
     }
 
@@ -375,11 +367,11 @@ jasmineRequire.HtmlReporter = function(j$) {
 
       let seedBar;
       if (order && order.random) {
-        seedBar = this.#domContext.create(
+        seedBar = j$.private.createDom(
           'span',
           { className: 'jasmine-seed-bar' },
           ', randomized with seed ',
-          this.#domContext.create(
+          j$.private.createDom(
             'a',
             {
               title: 'randomized with seed ' + order.seed,
@@ -427,7 +419,7 @@ jasmineRequire.HtmlReporter = function(j$) {
 
       for (const line of dw.message.split('\n')) {
         children.push(line);
-        children.push(this.#domContext.create('br'));
+        children.push(j$.private.createDom('br'));
       }
 
       children[0] = 'DEPRECATION: ' + children[0];
@@ -443,21 +435,21 @@ jasmineRequire.HtmlReporter = function(j$) {
     // TODO private?
     add(className, children) {
       this.rootEl.appendChild(
-        this.#domContext.create('span', { className }, children)
+        j$.private.createDom('span', { className }, children)
       );
     }
 
     #createExpander(stackTrace) {
-      const expandLink = this.#domContext.create(
+      const expandLink = j$.private.createDom(
         'a',
         { href: '#' },
         'Show stack trace'
       );
-      const root = this.#domContext.create(
+      const root = j$.private.createDom(
         'div',
         { className: 'jasmine-expander' },
         expandLink,
-        this.#domContext.create(
+        j$.private.createDom(
           'div',
           { className: 'jasmine-expander-contents jasmine-stack-trace' },
           stackTrace
@@ -481,21 +473,23 @@ jasmineRequire.HtmlReporter = function(j$) {
   }
 
   class Banner {
-    #domContext;
     #navigateWithNewParam;
 
-    constructor(domContext, navigateWithNewParam) {
-      this.#domContext = domContext;
+    constructor(navigateWithNewParam) {
       this.#navigateWithNewParam = navigateWithNewParam;
-      this.rootEl = domContext.create(
+      this.rootEl = j$.private.createDom(
         'div',
         { className: 'jasmine-banner' },
-        domContext.create('a', {
+        j$.private.createDom('a', {
           className: 'jasmine-title',
           href: 'http://jasmine.github.io/',
           target: '_blank'
         }),
-        domContext.create('span', { className: 'jasmine-version' }, j$.version)
+        j$.private.createDom(
+          'span',
+          { className: 'jasmine-version' },
+          j$.version
+        )
       );
     }
 
@@ -504,68 +498,68 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     #optionsMenu(config) {
-      const optionsMenuDom = this.#domContext.create(
+      const optionsMenuDom = j$.private.createDom(
         'div',
         { className: 'jasmine-run-options' },
-        this.#domContext.create(
+        j$.private.createDom(
           'span',
           { className: 'jasmine-trigger' },
           'Options'
         ),
-        this.#domContext.create(
+        j$.private.createDom(
           'div',
           { className: 'jasmine-payload' },
-          this.#domContext.create(
+          j$.private.createDom(
             'div',
             { className: 'jasmine-stop-on-failure' },
-            this.#domContext.create('input', {
+            j$.private.createDom('input', {
               className: 'jasmine-fail-fast',
               id: 'jasmine-fail-fast',
               type: 'checkbox'
             }),
-            this.#domContext.create(
+            j$.private.createDom(
               'label',
               { className: 'jasmine-label', for: 'jasmine-fail-fast' },
               'stop execution on spec failure'
             )
           ),
-          this.#domContext.create(
+          j$.private.createDom(
             'div',
             { className: 'jasmine-throw-failures' },
-            this.#domContext.create('input', {
+            j$.private.createDom('input', {
               className: 'jasmine-throw',
               id: 'jasmine-throw-failures',
               type: 'checkbox'
             }),
-            this.#domContext.create(
+            j$.private.createDom(
               'label',
               { className: 'jasmine-label', for: 'jasmine-throw-failures' },
               'stop spec on expectation failure'
             )
           ),
-          this.#domContext.create(
+          j$.private.createDom(
             'div',
             { className: 'jasmine-random-order' },
-            this.#domContext.create('input', {
+            j$.private.createDom('input', {
               className: 'jasmine-random',
               id: 'jasmine-random-order',
               type: 'checkbox'
             }),
-            this.#domContext.create(
+            j$.private.createDom(
               'label',
               { className: 'jasmine-label', for: 'jasmine-random-order' },
               'run tests in random order'
             )
           ),
-          this.#domContext.create(
+          j$.private.createDom(
             'div',
             { className: 'jasmine-hide-disabled' },
-            this.#domContext.create('input', {
+            j$.private.createDom('input', {
               className: 'jasmine-disabled',
               id: 'jasmine-hide-disabled',
               type: 'checkbox'
             }),
-            this.#domContext.create(
+            j$.private.createDom(
               'label',
               { className: 'jasmine-label', for: 'jasmine-hide-disabled' },
               'hide disabled tests'
@@ -633,18 +627,15 @@ jasmineRequire.HtmlReporter = function(j$) {
   }
 
   class SymbolsView {
-    #domContext;
-
-    constructor(domContext) {
-      this.#domContext = domContext;
-      this.rootEl = domContext.create('ul', {
+    constructor() {
+      this.rootEl = j$.private.createDom('ul', {
         className: 'jasmine-symbol-summary'
       });
     }
 
     append(result, config) {
       this.rootEl.appendChild(
-        this.#domContext.create('li', {
+        j$.private.createDom('li', {
           className: this.#className(result, config),
           id: 'spec_' + result.id,
           title: result.fullName
@@ -668,15 +659,15 @@ jasmineRequire.HtmlReporter = function(j$) {
   }
 
   class SummaryTreeView {
-    #domContext;
     #urlBuilder;
     #filterSpecs;
 
-    constructor(domContext, urlBuilder, filterSpecs) {
-      this.#domContext = domContext;
+    constructor(urlBuilder, filterSpecs) {
       this.#urlBuilder = urlBuilder;
       this.#filterSpecs = filterSpecs;
-      this.rootEl = domContext.create('div', { className: 'jasmine-summary' });
+      this.rootEl = j$.private.createDom('div', {
+        className: 'jasmine-summary'
+      });
     }
 
     addResults(resultsTree) {
@@ -691,16 +682,16 @@ jasmineRequire.HtmlReporter = function(j$) {
           continue;
         }
         if (resultNode.type === 'suite') {
-          const suiteListNode = this.#domContext.create(
+          const suiteListNode = j$.private.createDom(
             'ul',
             { className: 'jasmine-suite', id: 'suite-' + resultNode.result.id },
-            this.#domContext.create(
+            j$.private.createDom(
               'li',
               {
                 className:
                   'jasmine-suite-detail jasmine-' + resultNode.result.status
               },
-              this.#domContext.create(
+              j$.private.createDom(
                 'a',
                 { href: this.#urlBuilder.specHref(resultNode.result) },
                 resultNode.result.description
@@ -713,7 +704,7 @@ jasmineRequire.HtmlReporter = function(j$) {
         }
         if (resultNode.type === 'spec') {
           if (domParent.getAttribute('class') !== 'jasmine-specs') {
-            specListNode = this.#domContext.create('ul', {
+            specListNode = j$.private.createDom('ul', {
               className: 'jasmine-specs'
             });
             domParent.appendChild(specListNode);
@@ -731,18 +722,18 @@ jasmineRequire.HtmlReporter = function(j$) {
             }
           }
           specListNode.appendChild(
-            this.#domContext.create(
+            j$.private.createDom(
               'li',
               {
                 className: 'jasmine-' + resultNode.result.status,
                 id: 'spec-' + resultNode.result.id
               },
-              this.#domContext.create(
+              j$.private.createDom(
                 'a',
                 { href: this.#urlBuilder.specHref(resultNode.result) },
                 specDescription
               ),
-              this.#domContext.create(
+              j$.private.createDom(
                 'span',
                 { className: 'jasmine-spec-duration' },
                 '(' + resultNode.result.duration + 'ms)'
@@ -755,18 +746,16 @@ jasmineRequire.HtmlReporter = function(j$) {
   }
 
   class FailuresView {
-    #domContext;
     #urlBuilder;
     #failureEls;
 
-    constructor(domContext, urlBuilder) {
-      this.#domContext = domContext;
+    constructor(urlBuilder) {
       this.#urlBuilder = urlBuilder;
       this.#failureEls = [];
-      this.rootEl = domContext.create(
+      this.rootEl = j$.private.createDom(
         'div',
         { className: 'jasmine-results' },
-        domContext.create('div', { className: 'jasmine-failures' })
+        j$.private.createDom('div', { className: 'jasmine-failures' })
       );
     }
 
@@ -789,25 +778,25 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     #makeFailureEl(result, parent) {
-      const failure = this.#domContext.create(
+      const failure = j$.private.createDom(
         'div',
         { className: 'jasmine-spec-detail jasmine-failed' },
         this.#failureDescription(result, parent),
-        this.#domContext.create('div', { className: 'jasmine-messages' })
+        j$.private.createDom('div', { className: 'jasmine-messages' })
       );
       const messages = failure.childNodes[1];
 
       for (let i = 0; i < result.failedExpectations.length; i++) {
         const expectation = result.failedExpectations[i];
         messages.appendChild(
-          this.#domContext.create(
+          j$.private.createDom(
             'div',
             { className: 'jasmine-result-message' },
             expectation.message
           )
         );
         messages.appendChild(
-          this.#domContext.create(
+          j$.private.createDom(
             'div',
             { className: 'jasmine-stack-trace' },
             expectation.stack
@@ -817,7 +806,7 @@ jasmineRequire.HtmlReporter = function(j$) {
 
       if (result.failedExpectations.length === 0) {
         messages.appendChild(
-          this.#domContext.create(
+          j$.private.createDom(
             'div',
             { className: 'jasmine-result-message' },
             'Spec has no expectations'
@@ -833,10 +822,10 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     #failureDescription(result, suite) {
-      const wrapper = this.#domContext.create(
+      const wrapper = j$.private.createDom(
         'div',
         { className: 'jasmine-description' },
-        this.#domContext.create(
+        j$.private.createDom(
           'a',
           {
             title: result.description,
@@ -852,7 +841,7 @@ jasmineRequire.HtmlReporter = function(j$) {
           document.createTextNode(' > '),
           wrapper.firstChild
         );
-        suiteLink = this.#domContext.create(
+        suiteLink = j$.private.createDom(
           'a',
           { href: this.#urlBuilder.suiteHref(suite) },
           suite.result.description
@@ -866,15 +855,15 @@ jasmineRequire.HtmlReporter = function(j$) {
     }
 
     #debugLogTable(debugLogs) {
-      const tbody = this.#domContext.create('tbody');
+      const tbody = j$.private.createDom('tbody');
 
       for (const entry of debugLogs) {
         tbody.appendChild(
-          this.#domContext.create(
+          j$.private.createDom(
             'tr',
             {},
-            this.#domContext.create('td', {}, entry.timestamp.toString()),
-            this.#domContext.create(
+            j$.private.createDom('td', {}, entry.timestamp.toString()),
+            j$.private.createDom(
               'td',
               { className: 'jasmine-debug-log-msg' },
               entry.message
@@ -883,25 +872,25 @@ jasmineRequire.HtmlReporter = function(j$) {
         );
       }
 
-      return this.#domContext.create(
+      return j$.private.createDom(
         'div',
         { className: 'jasmine-debug-log' },
-        this.#domContext.create(
+        j$.private.createDom(
           'div',
           { className: 'jasmine-debug-log-header' },
           'Debug logs'
         ),
-        this.#domContext.create(
+        j$.private.createDom(
           'table',
           {},
-          this.#domContext.create(
+          j$.private.createDom(
             'thead',
             {},
-            this.#domContext.create(
+            j$.private.createDom(
               'tr',
               {},
-              this.#domContext.create('th', {}, 'Time (ms)'),
-              this.#domContext.create('th', {}, 'Message')
+              j$.private.createDom('th', {}, 'Time (ms)'),
+              j$.private.createDom('th', {}, 'Message')
             )
           ),
           tbody
