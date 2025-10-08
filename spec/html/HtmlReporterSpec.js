@@ -16,13 +16,7 @@ describe('HtmlReporter', function() {
       },
       reporter = new jasmineUnderTest.HtmlReporter({
         env: env,
-        getContainer: getContainer,
-        createElement: function() {
-          return document.createElement.apply(document, arguments);
-        },
-        createTextNode: function() {
-          return document.createTextNode.apply(document, arguments);
-        }
+        getContainer: getContainer
       });
     reporter.initialize();
 
@@ -52,13 +46,7 @@ describe('HtmlReporter', function() {
       },
       reporter = new jasmineUnderTest.HtmlReporter({
         env: env,
-        getContainer: getContainer,
-        createElement: function() {
-          return document.createElement.apply(document, arguments);
-        },
-        createTextNode: function() {
-          return document.createTextNode.apply(document, arguments);
-        }
+        getContainer: getContainer
       });
     reporter.initialize();
     reporter.initialize();
@@ -79,12 +67,6 @@ describe('HtmlReporter', function() {
           env: env,
           getContainer: function() {
             return container;
-          },
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
           }
         });
 
@@ -132,13 +114,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
       reporter.initialize();
       reporter.specDone({
@@ -164,13 +140,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
       reporter.initialize();
 
@@ -193,13 +163,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
       reporter.initialize();
 
@@ -223,13 +187,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
 
       reporter.initialize();
@@ -255,13 +213,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
 
       reporter.initialize();
@@ -310,13 +262,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
 
       reporter.initialize();
@@ -360,13 +306,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
 
       reporter.initialize();
@@ -393,13 +333,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
 
       reporter.initialize();
@@ -434,13 +368,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
 
       spyOn(console, 'error');
@@ -478,13 +406,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
 
       reporter.initialize();
@@ -507,12 +429,6 @@ describe('HtmlReporter', function() {
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          },
           addToExistingQueryString: function(key, value) {
             return '?foo=bar&' + key + '=' + value;
           }
@@ -629,13 +545,7 @@ describe('HtmlReporter', function() {
         },
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
 
       reporter.initialize();
@@ -667,13 +577,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         reporter.initialize();
@@ -713,13 +617,7 @@ describe('HtmlReporter', function() {
         };
         const reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
 
         reporter.initialize();
@@ -757,13 +655,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         reporter.initialize();
@@ -799,13 +691,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         reporter.initialize();
@@ -822,13 +708,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         env.configure({ stopOnSpecFailure: true });
@@ -849,13 +729,7 @@ describe('HtmlReporter', function() {
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             navigateWithNewParam: navigationHandler,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         reporter.initialize();
@@ -879,13 +753,7 @@ describe('HtmlReporter', function() {
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             navigateWithNewParam: navigationHandler,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         env.configure({ stopOnSpecFailure: true });
@@ -911,13 +779,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         reporter.initialize();
@@ -936,13 +798,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         env.configure({ stopSpecOnExpectationFailure: true });
@@ -965,13 +821,7 @@ describe('HtmlReporter', function() {
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            navigateWithNewParam: navigateHandler,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            navigateWithNewParam: navigateHandler
           });
 
         reporter.initialize();
@@ -997,13 +847,7 @@ describe('HtmlReporter', function() {
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            navigateWithNewParam: navigateHandler,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            navigateWithNewParam: navigateHandler
           });
 
         env.configure({ stopSpecOnExpectationFailure: true });
@@ -1030,13 +874,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         env.configure({ hideDisabled: false });
@@ -1054,13 +892,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         env.configure({ hideDisabled: true });
@@ -1078,13 +910,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         env.configure({ hideDisabled: true });
@@ -1111,13 +937,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         env.configure({ random: false });
@@ -1135,13 +955,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         env.configure({ random: true });
@@ -1161,13 +975,7 @@ describe('HtmlReporter', function() {
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            navigateWithNewParam: navigateHandler,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            navigateWithNewParam: navigateHandler
           });
 
         env.configure({ random: false });
@@ -1189,13 +997,7 @@ describe('HtmlReporter', function() {
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
             getContainer: getContainer,
-            navigateWithNewParam: navigateHandler,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            navigateWithNewParam: navigateHandler
           });
 
         env.configure({ random: true });
@@ -1215,13 +1017,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         reporter.initialize();
@@ -1245,13 +1041,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         reporter.initialize();
@@ -1267,12 +1057,6 @@ describe('HtmlReporter', function() {
             env: env,
             getContainer: function() {
               return container;
-            },
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
             },
             addToExistingQueryString: function(key, value) {
               return '?foo=bar&' + key + '=' + value;
@@ -1298,13 +1082,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
         reporter.initialize();
 
@@ -1359,12 +1137,6 @@ describe('HtmlReporter', function() {
           env: env,
           getContainer: function() {
             return container;
-          },
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
           }
         };
         specStatus = {
@@ -1441,13 +1213,7 @@ describe('HtmlReporter', function() {
         };
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
-          getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          }
+          getContainer: getContainer
         });
         reporter.initialize();
 
@@ -1508,12 +1274,6 @@ describe('HtmlReporter', function() {
         reporter = new jasmineUnderTest.HtmlReporter({
           env: env,
           getContainer: getContainer,
-          createElement: function() {
-            return document.createElement.apply(document, arguments);
-          },
-          createTextNode: function() {
-            return document.createTextNode.apply(document, arguments);
-          },
           addToExistingQueryString: function(key, value) {
             return '?foo=bar&' + key + '=' + value;
           }
@@ -1703,12 +1463,6 @@ describe('HtmlReporter', function() {
       const reporter = new jasmineUnderTest.HtmlReporter({
         env: env,
         getContainer: getContainer,
-        createElement: function() {
-          return document.createElement.apply(document, arguments);
-        },
-        createTextNode: function() {
-          return document.createTextNode.apply(document, arguments);
-        },
         addToExistingQueryString: function(key, value) {
           return '?' + key + '=' + value;
         }
@@ -1760,13 +1514,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         reporter.initialize();
@@ -1790,13 +1538,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         reporter.initialize();
@@ -1820,13 +1562,7 @@ describe('HtmlReporter', function() {
           },
           reporter = new jasmineUnderTest.HtmlReporter({
             env: env,
-            getContainer: getContainer,
-            createElement: function() {
-              return document.createElement.apply(document, arguments);
-            },
-            createTextNode: function() {
-              return document.createTextNode.apply(document, arguments);
-            }
+            getContainer: getContainer
           });
 
         reporter.initialize();
