@@ -1,4 +1,4 @@
-jasmineRequire.createDom = function(j$) {
+jasmineRequire.htmlReporterUtils = function(j$) {
   'use strict';
 
   function createDom(type, attrs, childrenArrayOrVarArgs) {
@@ -38,5 +38,15 @@ jasmineRequire.createDom = function(j$) {
     return el;
   }
 
-  return createDom;
+  function noExpectations(result) {
+    const allExpectations =
+      result.failedExpectations.length + result.passedExpectations.length;
+
+    return (
+      allExpectations === 0 &&
+      (result.status === 'passed' || result.status === 'failed')
+    );
+  }
+
+  return { createDom, noExpectations };
 };
