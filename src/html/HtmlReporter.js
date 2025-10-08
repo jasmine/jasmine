@@ -104,10 +104,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       this.#env = options.env;
 
       this.#getContainer = options.getContainer;
-      this.#domContext = new j$.private.DomContext({
-        createElement: options.createElement,
-        createTextNode: options.createTextNode
-      });
+      this.#domContext = new j$.private.DomContext();
       this.#navigateWithNewParam =
         options.navigateWithNewParam || function() {};
       this.#urlBuilder = new UrlBuilder(
@@ -852,7 +849,7 @@ jasmineRequire.HtmlReporter = function(j$) {
 
       while (suite && suite.parent) {
         wrapper.insertBefore(
-          this.#domContext.createTextNode(' > '),
+          document.createTextNode(' > '),
           wrapper.firstChild
         );
         suiteLink = this.#domContext.create(

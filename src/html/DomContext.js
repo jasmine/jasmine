@@ -3,17 +3,8 @@ jasmineRequire.DomContext = function(j$) {
 
   //TODO maybe rename
   class DomContext {
-    #createElement;
-
-    constructor(options = {}) {
-      this.#createElement =
-        options.createElement || document.createElement.bind(document);
-      this.createTextNode =
-        options.createTextNode || document.createTextNode.bind(document);
-    }
-
     create(type, attrs, childrenArrayOrVarArgs) {
-      const el = this.#createElement(type);
+      const el = document.createElement(type);
       let children;
 
       if (j$.private.isArray(childrenArrayOrVarArgs)) {
@@ -30,7 +21,7 @@ jasmineRequire.DomContext = function(j$) {
         const child = children[i];
 
         if (typeof child === 'string') {
-          el.appendChild(this.createTextNode(child));
+          el.appendChild(document.createTextNode(child));
         } else {
           if (child) {
             el.appendChild(child);
