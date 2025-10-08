@@ -53,7 +53,7 @@
    * ## Reporters
    * The `HtmlReporter` builds all of the HTML UI for the runner page. This reporter paints the dots, stars, and x's for specs, as well as all spec names and all failures (if any).
    */
-  const htmlReporter = new jasmine.HtmlReporter({
+  const htmlReporter = new jasmine.HtmlReporterV2({
     env: env,
     navigateWithNewParam: function(key, value) {
       return queryString.navigateWithNewParam(key, value);
@@ -77,7 +77,7 @@
   /**
    * Filter which specs will be run by matching the start of the full name against the `spec` query param.
    */
-  const specFilter = new jasmine.HtmlSpecFilter({
+  const specFilter = new jasmine.HtmlSpecFilterV2({
     filterString: function() {
       return queryString.getParam('spec');
     }

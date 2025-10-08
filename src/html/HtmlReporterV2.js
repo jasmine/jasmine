@@ -1,16 +1,16 @@
-jasmineRequire.HtmlReporter = function(j$) {
+jasmineRequire.HtmlReporterV2 = function(j$) {
   'use strict';
 
   const { createDom, noExpectations } = j$.private.htmlReporterUtils;
 
   /**
-   * @class HtmlReporter
+   * @class HtmlReporterV2
    * @classdesc Displays results and allows re-running individual specs and suites.
    * @implements {Reporter}
    * @param options Options object. See lib/jasmine-core/boot1.js for details.
-   * @since 1.2.0
+   * @since 6.0.0
    */
-  class HtmlReporter {
+  class HtmlReporterV2 {
     #env;
     #getContainer;
     #navigateWithNewParam;
@@ -209,5 +209,5 @@ jasmineRequire.HtmlReporter = function(j$) {
     return '?' + key + '=' + value;
   }
 
-  return HtmlReporter;
+  return HtmlReporterV2;
 };
