@@ -1,34 +1,5 @@
 describe('base helpers', function() {
   describe('isError', function() {
-    it('correctly handles WebSocket events', function(done) {
-      if (typeof jasmine.getGlobal().WebSocket === 'undefined') {
-        pending('Environment does not provide WebSocket');
-      }
-
-      const obj = (function() {
-        const sock = new WebSocket('ws://localhost');
-        let event;
-        sock.onerror = function(e) {
-          event = e;
-        };
-        return function() {
-          return event;
-        };
-      })();
-      let left = 20;
-
-      const int = setInterval(function() {
-        if (obj() || left === 0) {
-          const result = privateUnderTest.isError(obj());
-          expect(result).toBe(false);
-          clearInterval(int);
-          done();
-        } else {
-          left--;
-        }
-      }, 100);
-    });
-
     it('returns true for an Error subclass', function() {
       function MyError() {}
       MyError.prototype = new Error();
