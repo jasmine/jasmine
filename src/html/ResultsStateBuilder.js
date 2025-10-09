@@ -5,6 +5,7 @@ jasmineRequire.ResultsStateBuilder = function(j$) {
     constructor() {
       this.topResults = new j$.private.ResultsNode({}, '', null);
       this.currentParent = this.topResults;
+      this.suitesById = {};
       this.totalSpecsDefined = 0;
       this.specsExecuted = 0;
       this.failureCount = 0;
@@ -15,6 +16,7 @@ jasmineRequire.ResultsStateBuilder = function(j$) {
     suiteStarted(result) {
       this.currentParent.addChild(result, 'suite');
       this.currentParent = this.currentParent.last();
+      this.suitesById[result.id] = this.currentParent;
     }
 
     suiteDone(result) {
