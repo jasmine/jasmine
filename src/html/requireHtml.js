@@ -11,8 +11,9 @@ jasmineRequire.html = function(j$) {
   j$.private.SummaryTreeView = jasmineRequire.SummaryTreeView(j$);
   j$.private.FailuresView = jasmineRequire.FailuresView(j$);
   j$.HtmlReporter = jasmineRequire.HtmlReporter(j$);
+  j$.HtmlReporterV2Urls = jasmineRequire.HtmlReporterV2Urls(j$);
   j$.HtmlReporterV2 = jasmineRequire.HtmlReporterV2(j$);
   j$.QueryString = jasmineRequire.QueryString();
   j$.HtmlSpecFilter = jasmineRequire.HtmlSpecFilter();
-  j$.HtmlSpecFilterV2 = jasmineRequire.HtmlSpecFilterV2();
+  j$.private.HtmlSpecFilterV2 = jasmineRequire.HtmlSpecFilterV2();
 };

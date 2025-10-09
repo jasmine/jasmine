@@ -54,8 +54,8 @@ describe('The jasmine namespace', function() {
       // jasmine-html.js
       result.add('HtmlReporter');
       result.add('HtmlReporterV2');
+      result.add('HtmlReporterV2Urls');
       result.add('HtmlSpecFilter');
-      result.add('HtmlSpecFilterV2');
       result.add('QueryString');
     }
 

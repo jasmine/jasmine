@@ -12,8 +12,8 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
    */
   class HtmlReporterV2 {
     #env;
-    #getContainer;
-    #navigateWithNewParam;
+    #container;
+    #queryString;
     #urlBuilder;
     #filterSpecs;
     #stateBuilder;
@@ -29,13 +29,16 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
     constructor(options) {
       this.#env = options.env;
 
-      this.#getContainer = options.getContainer;
-      this.#navigateWithNewParam =
-        options.navigateWithNewParam || function() {};
-      this.#urlBuilder = new UrlBuilder(
-        options.addToExistingQueryString || defaultQueryString
-      );
-      this.#filterSpecs = options.filterSpecs;
+      this.#container = options.container;
+      this.#queryString =
+        options.queryString ||
+        new j$.QueryString({
+          getWindowLocation() {
+            return window.location;
+          }
+        });
+      this.#urlBuilder = new UrlBuilder(this.#queryString);
+      this.#filterSpecs = options.urls.filteringSpecs();
     }
 
     /**
@@ -51,7 +54,9 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
       this.#alerts = new j$.private.AlertsView(this.#urlBuilder);
       this.#symbols = new j$.private.SymbolsView();
-      this.#banner = new j$.private.Banner(this.#navigateWithNewParam);
+      this.#banner = new j$.private.Banner(
+        this.#queryString.navigateWithNewParam.bind(this.#queryString)
+      );
       this.#failures = new j$.private.FailuresView(this.#urlBuilder);
       this.#htmlReporterMain = createDom(
         'div',
@@ -61,7 +66,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
         this.#alerts.rootEl,
         this.#failures.rootEl
       );
-      this.#getContainer().appendChild(this.#htmlReporterMain);
+      this.#container.appendChild(this.#htmlReporterMain);
     }
 
     jasmineStarted(options) {
@@ -148,7 +153,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
     }
 
     #find(selector) {
-      return this.#getContainer().querySelector(
+      return this.#container.querySelector(
         '.jasmine_html-reporter ' + selector
       );
     }
@@ -157,7 +162,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       const oldReporter = this.#find('');
 
       if (oldReporter) {
-        this.#getContainer().removeChild(oldReporter);
+        this.#container.removeChild(oldReporter);
       }
     }
 
@@ -170,15 +175,10 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
   }
 
   class UrlBuilder {
-    #addToExistingQueryString;
+    #queryString;
 
-    constructor(addToExistingQueryString) {
-      this.#addToExistingQueryString = function(k, v) {
-        // include window.location.pathname to fix issue with karma-jasmine-html-reporter in angular: see https://github.com/jasmine/jasmine/issues/1906
-        return (
-          (window.location.pathname || '') + addToExistingQueryString(k, v)
-        );
-      };
+    constructor(queryString) {
+      this.#queryString = queryString;
     }
 
     suiteHref(suite) {
@@ -203,10 +203,14 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
     seedHref(seed) {
       return this.#addToExistingQueryString('seed', seed);
     }
-  }
 
-  function defaultQueryString(key, value) {
-    return '?' + key + '=' + value;
+    #addToExistingQueryString(k, v) {
+      // include window.location.pathname to fix issue with karma-jasmine-html-reporter in angular: see https://github.com/jasmine/jasmine/issues/1906
+      return (
+        (window.location.pathname || '') +
+        this.#queryString.fullStringWithNewParam(k, v)
+      );
+    }
   }
 
   return HtmlReporterV2;

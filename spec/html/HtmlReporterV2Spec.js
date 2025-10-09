@@ -1,9 +1,10 @@
 describe('HtmlReporterV2', function() {
-  let env, container;
+  let env, container, location;
 
   beforeEach(function() {
     container = document.createElement('div');
     env = new privateUnderTest.Env();
+    location = { search: '' };
   });
 
   afterEach(function() {
@@ -12,10 +13,14 @@ describe('HtmlReporterV2', function() {
 
   function setup(options = {}) {
     return new jasmineUnderTest.HtmlReporterV2({
-      env: env,
-      getContainer() {
-        return container;
-      },
+      env,
+      container,
+      urls: new jasmineUnderTest.HtmlReporterV2Urls(),
+      queryString: new jasmineUnderTest.QueryString({
+        getWindowLocation() {
+          return location;
+        }
+      }),
       ...options
     });
   }
@@ -426,7 +431,7 @@ describe('HtmlReporterV2', function() {
       const suiteDetail = outerSuite.childNodes[0];
       const suiteLink = suiteDetail.childNodes[0];
       expect(suiteLink.innerHTML).toEqual('A Suite');
-      expect(suiteLink.getAttribute('href')).toEqual('/?foo=bar&spec=A Suite');
+      expect(suiteLink.getAttribute('href')).toEqual('/?spec=A%20Suite');
 
       const specs = outerSuite.childNodes[1];
       const spec = specs.childNodes[0];
@@ -436,7 +441,7 @@ describe('HtmlReporterV2', function() {
       const specLink = spec.childNodes[0];
       expect(specLink.innerHTML).toEqual('with a spec');
       expect(specLink.getAttribute('href')).toEqual(
-        '/?foo=bar&spec=A Suite with a spec'
+        '/?spec=A%20Suite%20with%20a%20spec'
       );
 
       const specDuration = spec.childNodes[1];
@@ -578,10 +583,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and turn the setting on', function() {
-        const navigationHandler = jasmine.createSpy('navigate');
-        const reporter = setup({
-          navigateWithNewParam: navigationHandler
-        });
+        const reporter = setup();
 
         reporter.initialize();
         reporter.jasmineDone({});
@@ -589,18 +591,11 @@ describe('HtmlReporterV2', function() {
         const stopOnFailureUI = container.querySelector('.jasmine-fail-fast');
         stopOnFailureUI.click();
 
-        expect(navigationHandler).toHaveBeenCalledWith(
-          'stopOnSpecFailure',
-          true
-        );
+        expect(location.search).toEqual('?stopOnSpecFailure=true');
       });
 
       it('should navigate and turn the setting off', function() {
-        const navigationHandler = jasmine.createSpy('navigate');
-        const reporter = setup({
-          navigateWithNewParam: navigationHandler
-        });
-
+        const reporter = setup();
         env.configure({ stopOnSpecFailure: true });
 
         reporter.initialize();
@@ -609,10 +604,7 @@ describe('HtmlReporterV2', function() {
         const stopOnFailureUI = container.querySelector('.jasmine-fail-fast');
         stopOnFailureUI.click();
 
-        expect(navigationHandler).toHaveBeenCalledWith(
-          'stopOnSpecFailure',
-          false
-        );
+        expect(location.search).toEqual('?stopOnSpecFailure=false');
       });
     });
 
@@ -642,11 +634,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and change the setting to on', function() {
-        const navigateHandler = jasmine.createSpy('navigate');
-        const reporter = setup({
-          navigateWithNewParam: navigateHandler
-        });
-
+        const reporter = setup();
         reporter.initialize();
         reporter.jasmineDone({});
 
@@ -655,17 +643,11 @@ describe('HtmlReporterV2', function() {
         );
         throwingExpectationsUI.click();
 
-        expect(navigateHandler).toHaveBeenCalledWith(
-          'stopSpecOnExpectationFailure',
-          true
-        );
+        expect(location.search).toEqual('?stopSpecOnExpectationFailure=true');
       });
 
       it('should navigate and change the setting to off', function() {
-        const navigateHandler = jasmine.createSpy('navigate');
-        const reporter = setup({
-          navigateWithNewParam: navigateHandler
-        });
+        const reporter = setup();
 
         env.configure({ stopSpecOnExpectationFailure: true });
 
@@ -677,10 +659,7 @@ describe('HtmlReporterV2', function() {
         );
         throwingExpectationsUI.click();
 
-        expect(navigateHandler).toHaveBeenCalledWith(
-          'stopSpecOnExpectationFailure',
-          false
-        );
+        expect(location.search).toEqual('?stopSpecOnExpectationFailure=false');
       });
     });
 
@@ -746,10 +725,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and change the setting to on', function() {
-        const navigateHandler = jasmine.createSpy('navigate');
-        const reporter = setup({
-          navigateWithNewParam: navigateHandler
-        });
+        const reporter = setup();
 
         env.configure({ random: false });
         reporter.initialize();
@@ -758,14 +734,11 @@ describe('HtmlReporterV2', function() {
         const randomUI = container.querySelector('.jasmine-random');
         randomUI.click();
 
-        expect(navigateHandler).toHaveBeenCalledWith('random', true);
+        expect(location.search).toEqual('?random=true');
       });
 
       it('should navigate and change the setting to off', function() {
-        const navigateHandler = jasmine.createSpy('navigate');
-        const reporter = setup({
-          navigateWithNewParam: navigateHandler
-        });
+        const reporter = setup();
 
         env.configure({ random: true });
         reporter.initialize();
@@ -774,7 +747,7 @@ describe('HtmlReporterV2', function() {
         const randomUI = container.querySelector('.jasmine-random');
         randomUI.click();
 
-        expect(navigateHandler).toHaveBeenCalledWith('random', false);
+        expect(location.search).toEqual('?random=false');
       });
 
       it('should show the seed bar if randomizing', function() {
@@ -814,7 +787,7 @@ describe('HtmlReporterV2', function() {
         reporter.jasmineDone({ order: { random: true } });
 
         const skippedLink = container.querySelector('.jasmine-skipped a');
-        expect(skippedLink.getAttribute('href')).toEqual('/?foo=bar&spec=');
+        expect(skippedLink.getAttribute('href')).toEqual('/?spec=');
       });
     });
 
@@ -882,7 +855,11 @@ describe('HtmlReporterV2', function() {
       describe('when the specs are not filtered', function() {
         beforeEach(function() {
           reporter = setup({
-            filterSpecs: false
+            urls: {
+              filteringSpecs() {
+                return false;
+              }
+            }
           });
           reporter.initialize();
           reporter.jasmineStarted({ totalSpecsDefined: 1 });
@@ -900,7 +877,13 @@ describe('HtmlReporterV2', function() {
 
       describe('when the specs are filtered', function() {
         beforeEach(function() {
-          reporter = setup({ filterSpecs: true });
+          reporter = setup({
+            urls: {
+              filteringSpecs() {
+                return true;
+              }
+            }
+          });
           reporter.initialize();
           reporter.jasmineStarted({ totalSpecsDefined: 1 });
           reporter.specStarted(specStatus);
@@ -990,11 +973,7 @@ describe('HtmlReporterV2', function() {
       let reporter;
 
       beforeEach(function() {
-        reporter = setup({
-          addToExistingQueryString: function(key, value) {
-            return '?foo=bar&' + key + '=' + value;
-          }
-        });
+        reporter = setup();
         reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 1 });
@@ -1141,16 +1120,16 @@ describe('HtmlReporterV2', function() {
         expect(links.length).toEqual(3);
         expect(links[0].textContent).toEqual('A suite');
 
-        expect(links[0].getAttribute('href')).toMatch(/\?foo=bar&spec=A suite/);
+        expect(links[0].getAttribute('href')).toMatch(/\?spec=A%20suite/);
 
         expect(links[1].textContent).toEqual('inner suite');
         expect(links[1].getAttribute('href')).toMatch(
-          /\?foo=bar&spec=A suite inner suite/
+          /\?spec=A%20suite%20inner%20suite/
         );
 
         expect(links[2].textContent).toEqual('a failing spec');
         expect(links[2].getAttribute('href')).toMatch(
-          /\?foo=bar&spec=a suite inner suite a failing spec/
+          /\?spec=a%20suite%20inner%20suite%20a%20failing%20spec/
         );
       });
 
