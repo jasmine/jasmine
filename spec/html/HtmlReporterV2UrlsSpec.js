@@ -2,7 +2,6 @@ describe('HtmlReporterV2Urls', function() {
   describe('#configFromCurrentUrl', function() {
     passesThroughQueryParam('stopOnSpecFailure');
     passesThroughQueryParam('stopSpecOnExpectationFailure');
-    passesThroughQueryParam('hideDisabled');
     passesThroughQueryParam('random');
     ignoresEmpty('random');
     passesThroughQueryParam('seed');

@@ -35,7 +35,7 @@ describe('HtmlReporterV2', function() {
     expect(container.querySelector('div.jasmine-alert')).toBeTruthy();
     expect(container.querySelector('div.jasmine-results')).toBeTruthy();
 
-    expect(container.querySelector('ul.jasmine-symbol-summary')).toBeTruthy();
+    expect(container.querySelector('progress')).toBeTruthy();
 
     // title banner
     const banner = container.querySelector('.jasmine-banner');
@@ -72,7 +72,7 @@ describe('HtmlReporterV2', function() {
         reporter.initialize();
       });
 
-      it('should log warning to the console and print a special symbol when empty spec status is passed', function() {
+      it('logs a warning to the console when the spec passed', function() {
         reporter.specDone({
           status: 'passed',
           fullName: 'Some Name',
@@ -83,11 +83,9 @@ describe('HtmlReporterV2', function() {
         expect(console.warn).toHaveBeenCalledWith(
           "Spec 'Some Name' has no expectations."
         );
-        const specEl = container.querySelector('.jasmine-symbol-summary li');
-        expect(specEl.getAttribute('class')).toEqual('jasmine-empty');
       });
 
-      it('should log error to the console and print a failure symbol when empty spec status is failed', function() {
+      it('logs an error to the console when the spec failed', function() {
         reporter.specDone({
           status: 'failed',
           fullName: 'Some Name',
@@ -98,64 +96,32 @@ describe('HtmlReporterV2', function() {
         expect(console.error).toHaveBeenCalledWith(
           "Spec 'Some Name' has no expectations."
         );
-        const specEl = container.querySelector('.jasmine-symbol-summary li');
-        expect(specEl.getAttribute('class')).toEqual('jasmine-failed');
       });
     });
 
-    it('reports the status symbol of a excluded spec', function() {
+    it('updates the progress bar', function() {
       const reporter = setup();
       reporter.initialize();
-      reporter.specDone({
-        id: 789,
-        status: 'excluded',
-        fullName: 'symbols should have titles',
-        passedExpectations: [],
-        failedExpectations: []
-      });
-
-      const specEl = container.querySelector('.jasmine-symbol-summary li');
-      expect(specEl.getAttribute('class')).toEqual('jasmine-excluded');
-      expect(specEl.getAttribute('id')).toEqual('spec_789');
-      expect(specEl.getAttribute('title')).toEqual(
-        'symbols should have titles'
-      );
-    });
-
-    it('reports the status symbol of a pending spec', function() {
-      const reporter = setup();
-      reporter.initialize();
-
-      reporter.specDone({
-        id: 789,
-        status: 'pending',
-        passedExpectations: [],
-        failedExpectations: []
-      });
-
-      const specEl = container.querySelector('.jasmine-symbol-summary li');
-      expect(specEl.getAttribute('class')).toEqual('jasmine-pending');
-      expect(specEl.getAttribute('id')).toEqual('spec_789');
-    });
-
-    it('reports the status symbol of a passing spec', function() {
-      const reporter = setup();
-      reporter.initialize();
+      const progress = container.querySelector('progress');
 
       reporter.specDone({
         id: 123,
         status: 'passed',
-        passedExpectations: [{ passed: true }],
-        failedExpectations: []
+        failedExpectations: [],
+        passedExpectations: []
       });
+      expect(progress.getAttribute('value')).toEqual('1');
 
-      const statuses = container.querySelector('.jasmine-symbol-summary');
-      const specEl = statuses.querySelector('li');
-      expect(specEl.getAttribute('class')).toEqual('jasmine-passed');
-      expect(specEl.getAttribute('id')).toEqual('spec_123');
+      reporter.specDone({
+        id: 345,
+        status: 'passed',
+        failedExpectations: [],
+        passedExpectations: []
+      });
+      expect(progress.getAttribute('value')).toEqual('2');
     });
 
-    it('reports the status symbol of a failing spec', function() {
+    it('changes the progress bar status if the spec failed', function() {
       const reporter = setup();
       reporter.initialize();
 
@@ -166,9 +132,8 @@ describe('HtmlReporterV2', function() {
         passedExpectations: []
       });
 
-      const specEl = container.querySelector('.jasmine-symbol-summary li');
-      expect(specEl.getAttribute('class')).toEqual('jasmine-failed');
-      expect(specEl.getAttribute('id')).toEqual('spec_345');
+      const progress = container.querySelector('progress');
+      expect(progress).toHaveClass('failed');
     });
   });
 
@@ -177,7 +142,7 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       reporter.initialize();
 
-      reporter.jasmineStarted({});
+      reporter.jasmineStarted({ totalSpecsDefined: 0 });
       reporter.specDone({
         status: 'passed',
         fullName: 'a spec with a deprecation',
@@ -218,7 +183,7 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       reporter.initialize();
 
-      reporter.jasmineStarted({});
+      reporter.jasmineStarted({ totalSpecsDefined: 0 });
       reporter.jasmineDone({
         deprecationWarnings: [
           {
@@ -254,7 +219,7 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       reporter.initialize();
 
-      reporter.jasmineStarted({});
+      reporter.jasmineStarted({ totalSpecsDefined: 0 });
       reporter.jasmineDone({
         deprecationWarnings: [
           {
@@ -273,7 +238,7 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       reporter.initialize();
 
-      reporter.jasmineStarted({});
+      reporter.jasmineStarted({ totalSpecsDefined: 0 });
       reporter.jasmineDone({
         deprecationWarnings: [
           {
@@ -298,7 +263,7 @@ describe('HtmlReporterV2', function() {
       spyOn(console, 'error');
 
       reporter.initialize();
-      reporter.jasmineStarted({});
+      reporter.jasmineStarted({ totalSpecsDefined: 0 });
       reporter.suiteStarted({ id: 1 });
       reporter.specDone({
         id: 1,
@@ -322,7 +287,7 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       reporter.initialize();
 
-      reporter.jasmineStarted({});
+      reporter.jasmineStarted({ totalSpecsDefined: 0 });
 
       reporter.jasmineDone({ totalTime: 100 });
 
@@ -340,7 +305,7 @@ describe('HtmlReporterV2', function() {
       });
       reporter.initialize();
 
-      reporter.jasmineStarted({});
+      reporter.jasmineStarted({ totalSpecsDefined: 0 });
       reporter.suiteStarted({
         id: 1,
         description: 'A Suite',
@@ -471,7 +436,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({});
+        reporter.jasmineStarted({ totalSpecsDefined: 0 });
         reporter.jasmineDone({
           failedExpectations: [
             {
@@ -503,7 +468,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({});
+        reporter.jasmineStarted({ totalSpecsDefined: 0 });
         reporter.jasmineDone({
           failedExpectations: [
             { message: 'load error', globalErrorType: 'load' },
@@ -533,7 +498,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({});
+        reporter.jasmineStarted({ totalSpecsDefined: 0 });
         reporter.jasmineDone({
           failedExpectations: [
             {
@@ -655,46 +620,6 @@ describe('HtmlReporterV2', function() {
         throwingExpectationsUI.click();
 
         expect(location.search).toEqual('?stopSpecOnExpectationFailure=false');
-      });
-    });
-
-    describe('UI for hiding disabled specs', function() {
-      it('should be unchecked if not hiding disabled specs', function() {
-        const reporter = setup();
-        env.configure({ hideDisabled: false });
-        reporter.initialize();
-        reporter.jasmineDone({});
-
-        const disabledUI = container.querySelector('.jasmine-disabled');
-        expect(disabledUI.checked).toBe(false);
-      });
-
-      it('should be checked if hiding disabled', function() {
-        const reporter = setup();
-        env.configure({ hideDisabled: true });
-        reporter.initialize();
-        reporter.jasmineDone({});
-
-        const disabledUI = container.querySelector('.jasmine-disabled');
-        expect(disabledUI.checked).toBe(true);
-      });
-
-      it('should not display specs that have been disabled', function() {
-        const reporter = setup();
-        env.configure({ hideDisabled: true });
-        reporter.initialize();
-        reporter.specDone({
-          id: 789,
-          status: 'excluded',
-          fullName: 'symbols should have titles',
-          passedExpectations: [],
-          failedExpectations: []
-        });
-
-        const specEl = container.querySelector('.jasmine-symbol-summary li');
-        expect(specEl.getAttribute('class')).toEqual(
-          'jasmine-excluded-no-display'
-        );
       });
     });
 
@@ -1194,7 +1119,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({});
+        reporter.jasmineStarted({ totalSpecsDefined: 0 });
         reporter.jasmineDone({
           overallStatus: 'passed',
           failedExpectations: []
@@ -1210,7 +1135,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({});
+        reporter.jasmineStarted({ totalSpecsDefined: 0 });
         reporter.jasmineDone({
           overallStatus: 'failed',
           failedExpectations: []
@@ -1226,7 +1151,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({});
+        reporter.jasmineStarted({ totalSpecsDefined: 0 });
         reporter.jasmineDone({
           overallStatus: 'incomplete',
           incompleteReason: 'because nope',

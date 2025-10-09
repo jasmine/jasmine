@@ -22,8 +22,7 @@ jasmineRequire.HtmlReporterV2Urls = function(j$) {
         stopOnSpecFailure: this.queryString.getParam('stopOnSpecFailure'),
         stopSpecOnExpectationFailure: this.queryString.getParam(
           'stopSpecOnExpectationFailure'
-        ),
-        hideDisabled: this.queryString.getParam('hideDisabled')
+        )
       };
 
       const random = this.queryString.getParam('random');

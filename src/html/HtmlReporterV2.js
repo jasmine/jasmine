@@ -22,7 +22,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
     // Sub-views
     #alerts;
-    #symbols;
+    #progress;
     #banner;
     #failures;
 
@@ -56,16 +56,17 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       this.#stateBuilder = new j$.private.ResultsStateBuilder();
 
       this.#alerts = new j$.private.AlertsView(this.#urlBuilder);
-      this.#symbols = new j$.private.SymbolsView();
+      this.#progress = new ProgressView();
       this.#banner = new j$.private.Banner(
-        this.#queryString.navigateWithNewParam.bind(this.#queryString)
+        this.#queryString.navigateWithNewParam.bind(this.#queryString),
+        true
       );
       this.#failures = new j$.private.FailuresView(this.#urlBuilder);
       this.#htmlReporterMain = createDom(
         'div',
         { className: 'jasmine_html-reporter' },
         this.#banner.rootEl,
-        this.#symbols.rootEl,
+        this.#progress.rootEl,
         this.#alerts.rootEl,
         this.#failures.rootEl
       );
@@ -74,6 +75,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
     jasmineStarted(options) {
       this.#stateBuilder.jasmineStarted(options);
+      this.#progress.start(options.totalSpecsDefined);
     }
 
     suiteStarted(result) {
@@ -90,7 +92,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
     specDone(result) {
       this.#stateBuilder.specDone(result);
-      this.#symbols.append(result, this.#config);
+      this.#progress.specDone(result, this.#config);
 
       if (noExpectations(result)) {
         const noSpecMsg = "Spec '" + result.fullName + "' has no expectations.";
@@ -110,6 +112,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
     jasmineDone(doneResult) {
       this.#stateBuilder.jasmineDone(doneResult);
+      this.#progress.rootEl.style.visibility = 'hidden';
       this.#alerts.addDuration(doneResult.totalTime);
       this.#banner.showOptionsMenu(this.#config);
 
@@ -172,6 +175,25 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
         'class',
         'jasmine_html-reporter ' + mode
       );
+    }
+  }
+
+  class ProgressView {
+    constructor() {
+      this.rootEl = createDom('progress', { value: 0 });
+    }
+
+    start(totalSpecsDefined) {
+      this.rootEl.max = totalSpecsDefined;
+    }
+
+    specDone(result) {
+      this.rootEl.value = this.rootEl.value + 1;
+
+      if (result.status === 'failed') {
+        // TODO: also a non-color indicator
+        this.rootEl.classList.add('failed');
+      }
     }
   }
 

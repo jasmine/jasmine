@@ -5,9 +5,11 @@ jasmineRequire.Banner = function(j$) {
 
   class Banner {
     #navigateWithNewParam;
+    #omitHideDisabled;
 
-    constructor(navigateWithNewParam) {
+    constructor(navigateWithNewParam, omitHideDisabled) {
       this.#navigateWithNewParam = navigateWithNewParam;
+      this.#omitHideDisabled = omitHideDisabled;
       this.rootEl = createDom(
         'div',
         { className: 'jasmine-banner' },
@@ -25,55 +27,53 @@ jasmineRequire.Banner = function(j$) {
     }
 
     #optionsMenu(config) {
-      const optionsMenuDom = createDom(
-        'div',
-        { className: 'jasmine-run-options' },
-        createDom('span', { className: 'jasmine-trigger' }, 'Options'),
+      const items = [
         createDom(
           'div',
-          { className: 'jasmine-payload' },
+          { className: 'jasmine-stop-on-failure' },
+          createDom('input', {
+            className: 'jasmine-fail-fast',
+            id: 'jasmine-fail-fast',
+            type: 'checkbox'
+          }),
           createDom(
-            'div',
-            { className: 'jasmine-stop-on-failure' },
-            createDom('input', {
-              className: 'jasmine-fail-fast',
-              id: 'jasmine-fail-fast',
-              type: 'checkbox'
-            }),
-            createDom(
-              'label',
-              { className: 'jasmine-label', for: 'jasmine-fail-fast' },
-              'stop execution on spec failure'
-            )
-          ),
+            'label',
+            { className: 'jasmine-label', for: 'jasmine-fail-fast' },
+            'stop execution on spec failure'
+          )
+        ),
+        createDom(
+          'div',
+          { className: 'jasmine-throw-failures' },
+          createDom('input', {
+            className: 'jasmine-throw',
+            id: 'jasmine-throw-failures',
+            type: 'checkbox'
+          }),
           createDom(
-            'div',
-            { className: 'jasmine-throw-failures' },
-            createDom('input', {
-              className: 'jasmine-throw',
-              id: 'jasmine-throw-failures',
-              type: 'checkbox'
-            }),
-            createDom(
-              'label',
-              { className: 'jasmine-label', for: 'jasmine-throw-failures' },
-              'stop spec on expectation failure'
-            )
-          ),
+            'label',
+            { className: 'jasmine-label', for: 'jasmine-throw-failures' },
+            'stop spec on expectation failure'
+          )
+        ),
+        createDom(
+          'div',
+          { className: 'jasmine-random-order' },
+          createDom('input', {
+            className: 'jasmine-random',
+            id: 'jasmine-random-order',
+            type: 'checkbox'
+          }),
           createDom(
-            'div',
-            { className: 'jasmine-random-order' },
-            createDom('input', {
-              className: 'jasmine-random',
-              id: 'jasmine-random-order',
-              type: 'checkbox'
-            }),
-            createDom(
-              'label',
-              { className: 'jasmine-label', for: 'jasmine-random-order' },
-              'run tests in random order'
-            )
-          ),
+            'label',
+            { className: 'jasmine-label', for: 'jasmine-random-order' },
+            'run tests in random order'
+          )
+        )
+      ];
+
+      if (!this.#omitHideDisabled) {
+        items.push(
           createDom(
             'div',
             { className: 'jasmine-hide-disabled' },
@@ -88,7 +88,14 @@ jasmineRequire.Banner = function(j$) {
               'hide disabled tests'
             )
           )
-        )
+        );
+      }
+
+      const optionsMenuDom = createDom(
+        'div',
+        { className: 'jasmine-run-options' },
+        createDom('span', { className: 'jasmine-trigger' }, 'Options'),
+        createDom('div', { className: 'jasmine-payload' }, items)
       );
 
       const failFastCheckbox = optionsMenuDom.querySelector(
@@ -121,14 +128,16 @@ jasmineRequire.Banner = function(j$) {
         this.#navigateWithNewParam('random', !config.random);
       };
 
-      const hideDisabled = optionsMenuDom.querySelector(
-        '#jasmine-hide-disabled'
-      );
-      hideDisabled.checked = config.hideDisabled;
-      // TODO: backfill tests for this!
-      hideDisabled.onclick = () => {
-        this.#navigateWithNewParam('hideDisabled', !config.hideDisabled);
-      };
+      if (!this.#omitHideDisabled) {
+        const hideDisabled = optionsMenuDom.querySelector(
+          '#jasmine-hide-disabled'
+        );
+        hideDisabled.checked = config.hideDisabled;
+        // TODO: backfill tests for this!
+        hideDisabled.onclick = () => {
+          this.#navigateWithNewParam('hideDisabled', !config.hideDisabled);
+        };
+      }
 
       const optionsTrigger = optionsMenuDom.querySelector('.jasmine-trigger'),
         optionsPayload = optionsMenuDom.querySelector('.jasmine-payload'),

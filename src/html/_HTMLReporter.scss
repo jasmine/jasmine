@@ -26,6 +26,26 @@ $space: "\0020";
 $font-size: 11px;
 $large-font-size: 14px;
 
+// TODO: nope
+progress {
+  width: 100%;
+}
+progress[value] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+progress[value]::-webkit-progress-value, progress[value]::-moz-progress-bar {
+  background: $passing-color;
+
+  .failed & {
+    background: $failing-color;
+  }
+}
+progress.failed[value]::-webkit-progress-value, progress.failed[value]::-moz-progress-bar {
+    background: $failing-color;
+}
+
 body {
   overflow-y: scroll;
 }

@@ -73,6 +73,8 @@ getJasmineRequireObj().Configuration = function(j$) {
     specFilter: function() {
       return true;
     },
+
+    // TODO: remove hideDisabled when HtmlReporter is removed
     /**
      * Whether reporters should hide disabled specs from their output.
      * Currently only supported by Jasmine's HTMLReporter
@@ -80,6 +82,7 @@ getJasmineRequireObj().Configuration = function(j$) {
      * @since 3.3.0
      * @type Boolean
      * @default false
+     * @deprecated
      */
     hideDisabled: false,
     /**
