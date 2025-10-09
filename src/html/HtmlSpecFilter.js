@@ -1,7 +1,11 @@
-jasmineRequire.HtmlSpecFilter = function() {
+jasmineRequire.HtmlSpecFilter = function(j$) {
   'use strict';
 
   function HtmlSpecFilter(options) {
+    j$.getEnv().deprecated(
+      'HtmlReporter and HtmlSpecFilter are deprecated. Use HtmlReporterV2 instead.'
+    );
+
     const filterString =
       options &&
       options.filterString() &&
@@ -14,6 +18,7 @@ jasmineRequire.HtmlSpecFilter = function() {
      * @function
      * @param {string} specName The full name of the spec
      * @returns {boolean}
+     * @deprcated
      */
     this.matches = function(specName) {
       return filterPattern.test(specName);

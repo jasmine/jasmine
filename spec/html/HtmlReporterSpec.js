@@ -3,10 +3,27 @@ describe('HtmlReporter', function() {
 
   beforeEach(function() {
     env = new privateUnderTest.Env();
+    spyOn(env, 'deprecated');
   });
 
   afterEach(function() {
     env.cleanup_();
+  });
+
+  it('emits a deprecation warning', function() {
+    const container = document.createElement('div'),
+      getContainer = function() {
+        return container;
+      },
+      reporter = new jasmineUnderTest.HtmlReporter({
+        env: env,
+        getContainer: getContainer
+      });
+    reporter.initialize();
+
+    expect(env.deprecated).toHaveBeenCalledWith(
+      'HtmlReporter and HtmlSpecFilter are deprecated. Use HtmlReporterV2 instead.'
+    );
   });
 
   it('builds the initial DOM elements, including the title banner', function() {

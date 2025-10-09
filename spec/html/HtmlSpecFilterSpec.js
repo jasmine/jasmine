@@ -1,4 +1,15 @@
 describe('HtmlSpecFilter', function() {
+  beforeEach(function() {
+    spyOn(jasmineUnderTest.getEnv(), 'deprecated');
+  });
+
+  it('emits a deprecation warning', function() {
+    new jasmineUnderTest.HtmlSpecFilter();
+    expect(jasmineUnderTest.getEnv().deprecated).toHaveBeenCalledWith(
+      'HtmlReporter and HtmlSpecFilter are deprecated. Use HtmlReporterV2 instead.'
+    );
+  });
+
   it('should match when no string is provided', function() {
     const specFilter = new jasmineUnderTest.HtmlSpecFilter();
 

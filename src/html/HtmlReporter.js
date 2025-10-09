@@ -9,6 +9,7 @@ jasmineRequire.HtmlReporter = function(j$) {
    * @implements {Reporter}
    * @param options Options object. See lib/jasmine-core/boot1.js for details.
    * @since 1.2.0
+   * @deprecated
    */
   class HtmlReporter {
     #env;
@@ -44,6 +45,9 @@ jasmineRequire.HtmlReporter = function(j$) {
      * @name HtmlReporter#initialize
      */
     initialize() {
+      this.#env.deprecated(
+        'HtmlReporter and HtmlSpecFilter are deprecated. Use HtmlReporterV2 instead.'
+      );
       this.#clearPrior();
       this.#config = this.#env ? this.#env.configuration() : {};
 
