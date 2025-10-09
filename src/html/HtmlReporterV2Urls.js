@@ -1,6 +1,7 @@
 jasmineRequire.HtmlReporterV2Urls = function(j$) {
   'use strict';
 
+  // TODO unify with V2 UrlBuilder?
   // TODO jsdoc
   class HtmlReporterV2Urls {
     constructor(options = {}) {
@@ -38,19 +39,19 @@ jasmineRequire.HtmlReporterV2Urls = function(j$) {
 
       const specFilter = new j$.private.HtmlSpecFilterV2({
         filterString: () => {
-          return this.queryString.getParam('spec');
+          return this.queryString.getParam('path');
         }
       });
 
       config.specFilter = function(spec) {
-        return specFilter.matches(spec.getFullName());
+        return specFilter.matches(spec);
       };
 
       return config;
     }
 
     filteringSpecs() {
-      return !!this.queryString.getParam('spec');
+      return !!this.queryString.getParam('path');
     }
   }
 

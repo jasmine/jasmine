@@ -349,6 +349,7 @@ describe('HtmlReporterV2', function() {
 
       let specResult = {
         id: 123,
+        parentSuiteId: 1,
         description: 'with a spec',
         fullName: 'A Suite with a spec',
         status: 'passed',
@@ -423,7 +424,9 @@ describe('HtmlReporterV2', function() {
       const suiteDetail = outerSuite.childNodes[0];
       const suiteLink = suiteDetail.childNodes[0];
       expect(suiteLink.innerHTML).toEqual('A Suite');
-      expect(suiteLink.getAttribute('href')).toEqual('/?spec=A%20Suite');
+      expect(suiteLink.getAttribute('href')).toEqual(
+        `/?path=${encodeURIComponent('["A Suite"]')}`
+      );
 
       const specs = outerSuite.childNodes[1];
       const spec = specs.childNodes[0];
@@ -433,7 +436,7 @@ describe('HtmlReporterV2', function() {
       const specLink = spec.childNodes[0];
       expect(specLink.innerHTML).toEqual('with a spec');
       expect(specLink.getAttribute('href')).toEqual(
-        '/?spec=A%20Suite%20with%20a%20spec'
+        `/?path=${encodeURIComponent('["A Suite","with a spec"]')}`
       );
 
       const specDuration = spec.childNodes[1];
@@ -779,7 +782,7 @@ describe('HtmlReporterV2', function() {
         reporter.jasmineDone({ order: { random: true } });
 
         const skippedLink = container.querySelector('.jasmine-skipped a');
-        expect(skippedLink.getAttribute('href')).toEqual('/?spec=');
+        expect(skippedLink.getAttribute('href')).toEqual('/?path=');
       });
     });
 
@@ -985,6 +988,7 @@ describe('HtmlReporterV2', function() {
 
         const failingSpecResult = {
           id: 124,
+          parentSuiteId: 2,
           status: 'failed',
           description: 'a failing spec',
           fullName: 'a suite inner suite a failing spec',
@@ -1106,16 +1110,20 @@ describe('HtmlReporterV2', function() {
         expect(links.length).toEqual(3);
         expect(links[0].textContent).toEqual('A suite');
 
-        expect(links[0].getAttribute('href')).toMatch(/\?spec=A%20suite/);
+        expect(links[0].getAttribute('href')).toEqual(
+          `/?path=${encodeURIComponent('["A suite"]')}`
+        );
 
         expect(links[1].textContent).toEqual('inner suite');
-        expect(links[1].getAttribute('href')).toMatch(
-          /\?spec=A%20suite%20inner%20suite/
+        expect(links[1].getAttribute('href')).toEqual(
+          `/?path=${encodeURIComponent('["A suite","inner suite"]')}`
         );
 
         expect(links[2].textContent).toEqual('a failing spec');
-        expect(links[2].getAttribute('href')).toMatch(
-          /\?spec=a%20suite%20inner%20suite%20a%20failing%20spec/
+        expect(links[2].getAttribute('href')).toEqual(
+          `/?path=${encodeURIComponent(
+            '["A suite","inner suite","a failing spec"]'
+          )}`
         );
       });
 

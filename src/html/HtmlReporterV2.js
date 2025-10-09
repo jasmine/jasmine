@@ -37,7 +37,10 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
             return window.location;
           }
         });
-      this.#urlBuilder = new UrlBuilder(this.#queryString);
+      this.#urlBuilder = new UrlBuilder({
+        queryString: this.#queryString,
+        getSuiteById: id => this.#stateBuilder.suitesById[id]
+      });
       this.#filterSpecs = options.urls.filteringSpecs();
     }
 
@@ -174,32 +177,46 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
   class UrlBuilder {
     #queryString;
+    #getSuiteById;
 
-    constructor(queryString) {
-      this.#queryString = queryString;
+    constructor(options) {
+      this.#queryString = options.queryString;
+      this.#getSuiteById = options.getSuiteById;
     }
 
     suiteHref(suite) {
-      const els = [];
-
-      while (suite && suite.parent) {
-        els.unshift(suite.result.description);
-        suite = suite.parent;
-      }
-
-      return this.#addToExistingQueryString('spec', els.join(' '));
+      const path = this.#suitePath(suite);
+      return this.#specPathHref(path);
     }
 
-    specHref(result) {
-      return this.#addToExistingQueryString('spec', result.fullName);
+    specHref(specResult) {
+      const suite = this.#getSuiteById(specResult.parentSuiteId);
+      const path = this.#suitePath(suite);
+      path.push(specResult.description);
+      return this.#specPathHref(path);
     }
 
     runAllHref() {
-      return this.#addToExistingQueryString('spec', '');
+      return this.#addToExistingQueryString('path', '');
     }
 
     seedHref(seed) {
       return this.#addToExistingQueryString('seed', seed);
+    }
+
+    #suitePath(suite) {
+      const path = [];
+
+      while (suite && suite.parent) {
+        path.unshift(suite.result.description);
+        suite = suite.parent;
+      }
+
+      return path;
+    }
+
+    #specPathHref(specPath) {
+      return this.#addToExistingQueryString('path', JSON.stringify(specPath));
     }
 
     #addToExistingQueryString(k, v) {

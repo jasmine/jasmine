@@ -1,23 +1,40 @@
 jasmineRequire.HtmlSpecFilterV2 = function() {
-  'use strict';
+  class HtmlSpecFilterV2 {
+    #getFilterString;
 
-  function HtmlSpecFilterV2(options) {
-    const filterString =
-      options &&
-      options.filterString() &&
-      options.filterString().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-    const filterPattern = new RegExp(filterString);
+    constructor(options) {
+      this.#getFilterString = options.filterString;
+    }
 
     /**
      * Determines whether the spec with the specified name should be executed.
-     * @name HtmlSpecFilter#matches
+     * @name HtmlSpecFilterV2#matches
      * @function
-     * @param {string} specName The full name of the spec
+     * @param {Spec} spec
      * @returns {boolean}
      */
-    this.matches = function(specName) {
-      return filterPattern.test(specName);
-    };
+    matches(spec) {
+      const filterString = this.#getFilterString();
+
+      if (!filterString) {
+        return true;
+      }
+
+      const filterPath = JSON.parse(this.#getFilterString());
+      const specPath = spec.getPath();
+
+      if (filterPath.length > specPath.length) {
+        return false;
+      }
+
+      for (let i = 0; i < filterPath.length; i++) {
+        if (specPath[i] !== filterPath[i]) {
+          return false;
+        }
+      }
+
+      return true;
+    }
   }
 
   return HtmlSpecFilterV2;

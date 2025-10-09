@@ -10,17 +10,17 @@ describe('HtmlReporterV2Urls', function() {
 
     it('configures a matching spec filter', function() {
       const queryString = mockQueryString();
-      queryString.getParam.withArgs('spec').and.returnValue('foo');
+      queryString.getParam.withArgs('path').and.returnValue('["foo","bar"]');
       const subject = new jasmineUnderTest.HtmlReporterV2Urls({ queryString });
       const config = subject.configFromCurrentUrl();
       const matching = {
-        getFullName() {
-          return 'foobar';
+        getPath() {
+          return ['foo', 'bar'];
         }
       };
       const nonMatching = {
-        getFullName() {
-          return 'baz';
+        getPath() {
+          return ['foobar'];
         }
       };
       expect(config.specFilter(matching)).toEqual(true);
