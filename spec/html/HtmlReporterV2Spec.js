@@ -300,11 +300,6 @@ describe('HtmlReporterV2', function() {
       reporter.initialize();
       reporter.jasmineStarted({});
       reporter.suiteStarted({ id: 1 });
-      reporter.specStarted({
-        id: 1,
-        passedExpectations: [],
-        failedExpectations: []
-      });
       reporter.specDone({
         id: 1,
         status: 'passed',
@@ -361,7 +356,6 @@ describe('HtmlReporterV2', function() {
         passedExpectations: [{ passed: true }],
         duration: 1230
       };
-      reporter.specStarted(specResult);
       reporter.specDone(specResult);
 
       reporter.suiteStarted({
@@ -379,7 +373,6 @@ describe('HtmlReporterV2', function() {
         passedExpectations: [{ passed: true }],
         duration: 1240
       };
-      reporter.specStarted(specResult);
       reporter.specDone(specResult);
 
       reporter.suiteDone({
@@ -398,7 +391,6 @@ describe('HtmlReporterV2', function() {
         passedExpectations: [],
         duration: 2090
       };
-      reporter.specStarted(specResult);
       reporter.specDone(specResult);
 
       reporter.suiteDone({
@@ -863,7 +855,6 @@ describe('HtmlReporterV2', function() {
           });
           reporter.initialize();
           reporter.jasmineStarted({ totalSpecsDefined: 1 });
-          reporter.specStarted(specStatus);
           reporter.specDone(specStatus);
           reporter.jasmineDone({});
         });
@@ -886,7 +877,6 @@ describe('HtmlReporterV2', function() {
           });
           reporter.initialize();
           reporter.jasmineStarted({ totalSpecsDefined: 1 });
-          reporter.specStarted(specStatus);
           reporter.specDone(specStatus);
           reporter.jasmineDone({});
         });
@@ -914,7 +904,6 @@ describe('HtmlReporterV2', function() {
       }
 
       function reportWithSpecStatus(specStatus) {
-        reporter.specStarted(specStatus);
         reporter.specDone(specStatus);
         reporter.jasmineDone({});
       }
@@ -992,7 +981,6 @@ describe('HtmlReporterV2', function() {
           passedExpectations: [{ passed: true }],
           failedExpectations: []
         };
-        reporter.specStarted(passingSpecResult);
         reporter.specDone(passingSpecResult);
 
         const failingSpecResult = {
@@ -1037,12 +1025,10 @@ describe('HtmlReporterV2', function() {
           status: 'failed',
           failedExpectations: [{ message: 'My After All Exception' }]
         };
-        reporter.specStarted(failingSpecResult);
         reporter.specDone(failingSpecResult);
         reporter.suiteDone(passingSuiteResult);
         reporter.suiteDone(failingSuiteResult);
         reporter.suiteDone(passingSuiteResult);
-        reporter.specStarted(failingSpecResultWithDebugLogs);
         reporter.specDone(failingSpecResultWithDebugLogs);
         reporter.jasmineDone({});
       });
@@ -1175,7 +1161,6 @@ describe('HtmlReporterV2', function() {
         ]
       };
 
-      reporter.specStarted(failingSpecResult);
       reporter.specDone(failingSpecResult);
       reporter.jasmineDone({
         failedExpectations: [

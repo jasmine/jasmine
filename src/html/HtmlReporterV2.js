@@ -85,8 +85,6 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       }
     }
 
-    specStarted() {}
-
     specDone(result) {
       this.#stateBuilder.specDone(result);
       this.#symbols.append(result, this.#config);
