@@ -1,7 +1,8 @@
 describe('HtmlReporterV2', function() {
-  let env;
+  let env, container;
 
   beforeEach(function() {
+    container = document.createElement('div');
     env = new privateUnderTest.Env();
   });
 
@@ -9,15 +10,18 @@ describe('HtmlReporterV2', function() {
     env.cleanup_();
   });
 
-  it('builds the initial DOM elements, including the title banner', function() {
-    const container = document.createElement('div');
-    const getContainer = function() {
-      return container;
-    };
-    const reporter = new jasmineUnderTest.HtmlReporterV2({
+  function setup(options = {}) {
+    return new jasmineUnderTest.HtmlReporterV2({
       env: env,
-      getContainer: getContainer
+      getContainer() {
+        return container;
+      },
+      ...options
     });
+  }
+
+  it('builds the initial DOM elements, including the title banner', function() {
+    const reporter = setup();
     reporter.initialize();
 
     // Main top-level elements
@@ -40,14 +44,7 @@ describe('HtmlReporterV2', function() {
   });
 
   it('builds a single reporter even if initialized multiple times', function() {
-    const container = document.createElement('div');
-    const getContainer = function() {
-      return container;
-    };
-    const reporter = new jasmineUnderTest.HtmlReporterV2({
-      env: env,
-      getContainer: getContainer
-    });
+    const reporter = setup();
     reporter.initialize();
     reporter.initialize();
     reporter.initialize();
@@ -59,16 +56,10 @@ describe('HtmlReporterV2', function() {
 
   describe('when a spec is done', function() {
     describe('and no expectations ran', function() {
-      let container, reporter;
+      let reporter;
 
       beforeEach(function() {
-        container = document.createElement('div');
-        reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: function() {
-            return container;
-          }
-        });
+        reporter = setup();
 
         spyOn(console, 'warn');
         spyOn(console, 'error');
@@ -108,14 +99,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('reports the status symbol of a excluded spec', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
+      const reporter = setup();
       reporter.initialize();
       reporter.specDone({
         id: 789,
@@ -134,14 +118,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('reports the status symbol of a pending spec', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
+      const reporter = setup();
       reporter.initialize();
 
       reporter.specDone({
@@ -157,14 +134,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('reports the status symbol of a passing spec', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
+      const reporter = setup();
       reporter.initialize();
 
       reporter.specDone({
@@ -181,15 +151,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('reports the status symbol of a failing spec', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
-
+      const reporter = setup();
       reporter.initialize();
 
       reporter.specDone({
@@ -207,15 +169,7 @@ describe('HtmlReporterV2', function() {
 
   describe('when there are deprecation warnings', function() {
     it('displays the messages in their own alert bars', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
-
+      const reporter = setup();
       reporter.initialize();
 
       reporter.jasmineStarted({});
@@ -256,15 +210,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('displays expandable stack traces', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
-
+      const reporter = setup();
       reporter.initialize();
 
       reporter.jasmineStarted({});
@@ -300,15 +246,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('omits the expander when there is no stack trace', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
-
+      const reporter = setup();
       reporter.initialize();
 
       reporter.jasmineStarted({});
@@ -327,15 +265,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('nicely formats the verboseDeprecations note', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
-
+      const reporter = setup();
       reporter.initialize();
 
       reporter.jasmineStarted({});
@@ -359,18 +289,7 @@ describe('HtmlReporterV2', function() {
 
   describe('when Jasmine is done', function() {
     it('adds a warning to the link title of specs that have no expectations', function() {
-      if (!window.console) {
-        window.console = { error: function() {} };
-      }
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
-
+      const reporter = setup();
       spyOn(console, 'error');
 
       reporter.initialize();
@@ -400,15 +319,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('reports the run time', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
-
+      const reporter = setup();
       reporter.initialize();
 
       reporter.jasmineStarted({});
@@ -422,13 +333,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('reports the suite names with status, and spec names with status and duration', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer,
+      const reporter = setup({
         addToExistingQueryString: function(key, value) {
           return '?foo=bar&' + key + '=' + value;
         }
@@ -539,15 +444,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('has an options menu', function() {
-      const container = document.createElement('div');
-      const getContainer = function() {
-        return container;
-      };
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer
-      });
-
+      const reporter = setup();
       reporter.initialize();
       reporter.jasmineDone({});
 
@@ -571,15 +468,7 @@ describe('HtmlReporterV2', function() {
 
     describe('when there are global errors', function() {
       it('displays the exceptions in their own alert bars', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         reporter.initialize();
 
         reporter.jasmineStarted({});
@@ -611,15 +500,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('does not display the "AfterAll" prefix for other error types', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         reporter.initialize();
 
         reporter.jasmineStarted({});
@@ -649,15 +530,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('displays file and line information if available', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         reporter.initialize();
 
         reporter.jasmineStarted({});
@@ -685,15 +558,7 @@ describe('HtmlReporterV2', function() {
 
     describe('UI for stop on spec failure', function() {
       it('should be unchecked for full execution', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         reporter.initialize();
         reporter.jasmineDone({});
 
@@ -702,15 +567,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should be checked if stopping short', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         env.configure({ stopOnSpecFailure: true });
 
         reporter.initialize();
@@ -721,15 +578,9 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and turn the setting on', function() {
-        const container = document.createElement('div');
         const navigationHandler = jasmine.createSpy('navigate');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          navigateWithNewParam: navigationHandler,
-          getContainer: getContainer
+        const reporter = setup({
+          navigateWithNewParam: navigationHandler
         });
 
         reporter.initialize();
@@ -745,15 +596,9 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and turn the setting off', function() {
-        const container = document.createElement('div');
         const navigationHandler = jasmine.createSpy('navigate');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          navigateWithNewParam: navigationHandler,
-          getContainer: getContainer
+        const reporter = setup({
+          navigateWithNewParam: navigationHandler
         });
 
         env.configure({ stopOnSpecFailure: true });
@@ -773,15 +618,7 @@ describe('HtmlReporterV2', function() {
 
     describe('UI for throwing errors on expectation failures', function() {
       it('should be unchecked if not throwing', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         reporter.initialize();
         reporter.jasmineDone({});
 
@@ -792,15 +629,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should be checked if throwing', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         env.configure({ stopSpecOnExpectationFailure: true });
 
         reporter.initialize();
@@ -813,14 +642,8 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and change the setting to on', function() {
-        const container = document.createElement('div');
         const navigateHandler = jasmine.createSpy('navigate');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer,
+        const reporter = setup({
           navigateWithNewParam: navigateHandler
         });
 
@@ -839,14 +662,8 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and change the setting to off', function() {
-        const container = document.createElement('div');
         const navigateHandler = jasmine.createSpy('navigate');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer,
+        const reporter = setup({
           navigateWithNewParam: navigateHandler
         });
 
@@ -869,15 +686,7 @@ describe('HtmlReporterV2', function() {
 
     describe('UI for hiding disabled specs', function() {
       it('should be unchecked if not hiding disabled specs', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         env.configure({ hideDisabled: false });
         reporter.initialize();
         reporter.jasmineDone({});
@@ -887,15 +696,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should be checked if hiding disabled', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         env.configure({ hideDisabled: true });
         reporter.initialize();
         reporter.jasmineDone({});
@@ -905,15 +706,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should not display specs that have been disabled', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         env.configure({ hideDisabled: true });
         reporter.initialize();
         reporter.specDone({
@@ -933,15 +726,7 @@ describe('HtmlReporterV2', function() {
 
     describe('UI for running tests in random order', function() {
       it('should be unchecked if not randomizing', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         env.configure({ random: false });
         reporter.initialize();
         reporter.jasmineDone({});
@@ -951,15 +736,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should be checked if randomizing', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         env.configure({ random: true });
         reporter.initialize();
         reporter.jasmineDone({});
@@ -969,14 +746,8 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and change the setting to on', function() {
-        const container = document.createElement('div');
         const navigateHandler = jasmine.createSpy('navigate');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer,
+        const reporter = setup({
           navigateWithNewParam: navigateHandler
         });
 
@@ -991,14 +762,8 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and change the setting to off', function() {
-        const container = document.createElement('div');
         const navigateHandler = jasmine.createSpy('navigate');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer,
+        const reporter = setup({
           navigateWithNewParam: navigateHandler
         });
 
@@ -1013,15 +778,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should show the seed bar if randomizing', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         reporter.initialize();
         reporter.jasmineDone({
           order: {
@@ -1037,15 +794,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should not show the current seed bar if not randomizing', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         reporter.initialize();
         reporter.jasmineDone({});
 
@@ -1054,12 +803,7 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should include non-spec query params in the jasmine-skipped link when present', function() {
-        const container = document.createElement('div');
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: function() {
-            return container;
-          },
+        const reporter = setup({
           addToExistingQueryString: function(key, value) {
             return '?foo=bar&' + key + '=' + value;
           }
@@ -1075,17 +819,8 @@ describe('HtmlReporterV2', function() {
     });
 
     describe('and all specs pass', function() {
-      let container;
-
       beforeEach(function() {
-        container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
+        const reporter = setup();
         reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 2 });
@@ -1131,16 +866,9 @@ describe('HtmlReporterV2', function() {
     });
 
     describe('and there are excluded specs', function() {
-      let container, reporter, reporterConfig, specStatus;
+      let reporter, specStatus;
 
       beforeEach(function() {
-        container = document.createElement('div');
-        reporterConfig = {
-          env: env,
-          getContainer: function() {
-            return container;
-          }
-        };
         specStatus = {
           id: 123,
           description: 'with a excluded spec',
@@ -1153,8 +881,9 @@ describe('HtmlReporterV2', function() {
 
       describe('when the specs are not filtered', function() {
         beforeEach(function() {
-          reporterConfig.filterSpecs = false;
-          reporter = new jasmineUnderTest.HtmlReporterV2(reporterConfig);
+          reporter = setup({
+            filterSpecs: false
+          });
           reporter.initialize();
           reporter.jasmineStarted({ totalSpecsDefined: 1 });
           reporter.specStarted(specStatus);
@@ -1171,8 +900,7 @@ describe('HtmlReporterV2', function() {
 
       describe('when the specs are filtered', function() {
         beforeEach(function() {
-          reporterConfig.filterSpecs = true;
-          reporter = new jasmineUnderTest.HtmlReporterV2(reporterConfig);
+          reporter = setup({ filterSpecs: true });
           reporter.initialize();
           reporter.jasmineStarted({ totalSpecsDefined: 1 });
           reporter.specStarted(specStatus);
@@ -1189,7 +917,7 @@ describe('HtmlReporterV2', function() {
     });
 
     describe('and there are pending specs', function() {
-      let container, reporter;
+      let reporter;
 
       function pendingSpecStatus() {
         return {
@@ -1209,14 +937,7 @@ describe('HtmlReporterV2', function() {
       }
 
       beforeEach(function() {
-        container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
+        reporter = setup();
         reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 1 });
@@ -1266,16 +987,10 @@ describe('HtmlReporterV2', function() {
     });
 
     describe('and some tests fail', function() {
-      let container, reporter;
+      let reporter;
 
       beforeEach(function() {
-        container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer,
+        reporter = setup({
           addToExistingQueryString: function(key, value) {
             return '?foo=bar&' + key + '=' + value;
           }
@@ -1458,13 +1173,7 @@ describe('HtmlReporterV2', function() {
     });
 
     it('counts failures that are reported in the jasmineDone event', function() {
-      const container = document.createElement('div');
-      function getContainer() {
-        return container;
-      }
-      const reporter = new jasmineUnderTest.HtmlReporterV2({
-        env: env,
-        getContainer: getContainer,
+      const reporter = setup({
         addToExistingQueryString: function(key, value) {
           return '?' + key + '=' + value;
         }
@@ -1510,15 +1219,7 @@ describe('HtmlReporterV2', function() {
   describe('The overall result bar', function() {
     describe("When the jasmineDone event's overallStatus is 'passed'", function() {
       it('has class jasmine-passed', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         reporter.initialize();
 
         reporter.jasmineStarted({});
@@ -1534,15 +1235,7 @@ describe('HtmlReporterV2', function() {
 
     describe("When the jasmineDone event's overallStatus is 'failed'", function() {
       it('has class jasmine-failed', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         reporter.initialize();
 
         reporter.jasmineStarted({});
@@ -1558,15 +1251,7 @@ describe('HtmlReporterV2', function() {
 
     describe("When the jasmineDone event's overallStatus is 'incomplete'", function() {
       it('has class jasmine-incomplete', function() {
-        const container = document.createElement('div');
-        const getContainer = function() {
-          return container;
-        };
-        const reporter = new jasmineUnderTest.HtmlReporterV2({
-          env: env,
-          getContainer: getContainer
-        });
-
+        const reporter = setup();
         reporter.initialize();
 
         reporter.jasmineStarted({});
