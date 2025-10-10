@@ -50,14 +50,20 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     // Mark the suite with "pending" status
-    pend() {
+    pend(message) {
       this.markedPending = true;
+      if (message) {
+        this.result.pendingReason = message;
+      }
     }
 
     // Like pend(), but pending state will survive reset().
     // Useful for fdescribe, xdescribe, where pending state should remain.
-    exclude() {
-      this.pend();
+    exclude(message) {
+      if (this.message) {
+        this.excludeMessage = message;
+      }
+      this.pend(message);
       this.markedExcluding = true;
     }
 
