@@ -71,6 +71,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
         this.#failures.rootEl
       );
       this.#container.appendChild(this.#htmlReporterMain);
+      this.#failures.show();
     }
 
     jasmineStarted(options) {

@@ -6,10 +6,12 @@ jasmineRequire.FailuresView = function(j$) {
   class FailuresView {
     #urlBuilder;
     #failureEls;
+    #showing;
 
     constructor(urlBuilder) {
       this.#urlBuilder = urlBuilder;
       this.#failureEls = [];
+      this.#showing = false;
       this.rootEl = createDom(
         'div',
         { className: 'jasmine-results' },
@@ -18,8 +20,14 @@ jasmineRequire.FailuresView = function(j$) {
     }
 
     append(result, parent) {
-      // TODO: Figure out why the reuslt is wrong if we build the DOM node later
-      this.#failureEls.push(this.#makeFailureEl(result, parent));
+      // TODO: Figure out why the result is wrong if we build the DOM node later
+      const el = this.#makeFailureEl(result, parent);
+
+      if (this.#showing) {
+        this.rootEl.querySelector('.jasmine-failures').appendChild(el);
+      } else {
+        this.#failureEls.push(el);
+      }
     }
 
     show() {
@@ -28,6 +36,8 @@ jasmineRequire.FailuresView = function(j$) {
       for (const el of this.#failureEls) {
         failureNode.appendChild(el);
       }
+
+      this.#showing = true;
     }
 
     #makeFailureEl(result, parent) {
