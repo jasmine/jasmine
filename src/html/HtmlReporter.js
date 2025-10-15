@@ -140,7 +140,7 @@ jasmineRequire.HtmlReporter = function(j$) {
       summary.addResults(this.#stateBuilder.topResults);
       results.appendChild(summary.rootEl);
 
-      if (this.#failures.any()) {
+      if (this.#stateBuilder.anyNonTopSuiteFailures) {
         this.#alerts.addFailureToggle(
           () => this.#setMenuModeTo('jasmine-failure-list'),
           () => this.#setMenuModeTo('jasmine-spec-list')

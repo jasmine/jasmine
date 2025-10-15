@@ -22,11 +22,6 @@ jasmineRequire.FailuresView = function(j$) {
       this.#failureEls.push(this.#makeFailureEl(result, parent));
     }
 
-    // TODO move this to state builder or something
-    any() {
-      return this.#failureEls.length > 0;
-    }
-
     show() {
       const failureNode = this.rootEl.querySelector('.jasmine-failures');
 

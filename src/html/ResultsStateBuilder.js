@@ -9,6 +9,7 @@ jasmineRequire.ResultsStateBuilder = function(j$) {
       this.totalSpecsDefined = 0;
       this.specsExecuted = 0;
       this.failureCount = 0;
+      this.anyNonTopSuiteFailures = false;
       this.pendingSpecCount = 0;
       this.deprecationWarnings = [];
     }
@@ -29,6 +30,7 @@ jasmineRequire.ResultsStateBuilder = function(j$) {
 
       if (result.status === 'failed') {
         this.failureCount++;
+        this.anyNonTopSuiteFailures = true;
       }
     }
 
@@ -42,6 +44,7 @@ jasmineRequire.ResultsStateBuilder = function(j$) {
 
       if (result.status === 'failed') {
         this.failureCount++;
+        this.anyNonTopSuiteFailures = true;
       }
 
       if (result.status == 'pending') {
