@@ -883,16 +883,19 @@ describe('HtmlReporter', function() {
         );
       });
     });
+
     describe('UI for hiding disabled specs', function() {
       it('should be unchecked if not hiding disabled specs', function() {
-        const container = document.createElement('div'),
-          getContainer = function() {
-            return container;
-          },
-          reporter = new jasmineUnderTest.HtmlReporter({
-            env: env,
-            getContainer: getContainer
-          });
+        const container = document.createElement('div');
+        const getContainer = function() {
+          return container;
+        };
+        const navigateHandler = jasmine.createSpy('navigate');
+        const reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          navigateWithNewParam: navigateHandler
+        });
 
         env.configure({ hideDisabled: false });
         reporter.initialize();
@@ -900,17 +903,22 @@ describe('HtmlReporter', function() {
 
         const disabledUI = container.querySelector('.jasmine-disabled');
         expect(disabledUI.checked).toBe(false);
+
+        disabledUI.click();
+        expect(navigateHandler).toHaveBeenCalledWith('hideDisabled', true);
       });
 
       it('should be checked if hiding disabled', function() {
-        const container = document.createElement('div'),
-          getContainer = function() {
-            return container;
-          },
-          reporter = new jasmineUnderTest.HtmlReporter({
-            env: env,
-            getContainer: getContainer
-          });
+        const container = document.createElement('div');
+        const getContainer = function() {
+          return container;
+        };
+        const navigateHandler = jasmine.createSpy('navigate');
+        const reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: getContainer,
+          navigateWithNewParam: navigateHandler
+        });
 
         env.configure({ hideDisabled: true });
         reporter.initialize();
@@ -918,6 +926,9 @@ describe('HtmlReporter', function() {
 
         const disabledUI = container.querySelector('.jasmine-disabled');
         expect(disabledUI.checked).toBe(true);
+
+        disabledUI.click();
+        expect(navigateHandler).toHaveBeenCalledWith('hideDisabled', false);
       });
 
       it('should not display specs that have been disabled', function() {
@@ -946,6 +957,7 @@ describe('HtmlReporter', function() {
         );
       });
     });
+
     describe('UI for running tests in random order', function() {
       it('should be unchecked if not randomizing', function() {
         const container = document.createElement('div'),
@@ -1066,6 +1078,34 @@ describe('HtmlReporter', function() {
 
         const seedBar = container.querySelector('.jasmine-seed-bar');
         expect(seedBar).toBeNull();
+      });
+
+      it('includes the number of specs in the text of the jasmine-skipped link', function() {
+        const container = document.createElement('div');
+        const reporter = new jasmineUnderTest.HtmlReporter({
+          env: env,
+          getContainer: function() {
+            return container;
+          },
+          addToExistingQueryString: function(key, value) {
+            return '?foo=bar&' + key + '=' + value;
+          }
+        });
+
+        reporter.initialize();
+        const minimalSpecDone = {
+          failedExpectations: [],
+          passedExpectations: []
+        };
+
+        reporter.jasmineStarted({ totalSpecsDefined: 3 });
+        reporter.specDone({ ...minimalSpecDone });
+        reporter.specDone({ ...minimalSpecDone });
+        reporter.specDone({ ...minimalSpecDone, status: 'excluded' });
+        reporter.jasmineDone({});
+
+        const skippedLink = container.querySelector('.jasmine-skipped a');
+        expect(skippedLink.textContent).toEqual('Ran 2 of 3 specs - run all');
       });
 
       it('should include non-spec query params in the jasmine-skipped link when present', function() {

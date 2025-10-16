@@ -695,6 +695,25 @@ describe('HtmlReporterV2', function() {
         expect(seedBar).toBeNull();
       });
 
+      it('includes the number of specs in the text of the jasmine-skipped link', function() {
+        const reporter = setup();
+
+        reporter.initialize();
+        const minimalSpecDone = {
+          failedExpectations: [],
+          passedExpectations: []
+        };
+
+        reporter.jasmineStarted({ totalSpecsDefined: 3 });
+        reporter.specDone({ ...minimalSpecDone });
+        reporter.specDone({ ...minimalSpecDone });
+        reporter.specDone({ ...minimalSpecDone, status: 'excluded' });
+        reporter.jasmineDone({});
+
+        const skippedLink = container.querySelector('.jasmine-skipped a');
+        expect(skippedLink.textContent).toEqual('Ran 2 of 3 specs - run all');
+      });
+
       it('should include non-spec query params in the jasmine-skipped link when present', function() {
         const reporter = setup({
           addToExistingQueryString: function(key, value) {

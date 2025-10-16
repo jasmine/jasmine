@@ -18,7 +18,6 @@ jasmineRequire.AlertsView = function(j$) {
     }
 
     addSkipped(numExecuted, numDefined) {
-      // TODO: backfill tests for this
       this.add(
         'jasmine-bar jasmine-skipped',
         createDom(
@@ -65,7 +64,6 @@ jasmineRequire.AlertsView = function(j$) {
       this.add(errorBarClassName, this.#globalFailureMessage(failure));
     }
 
-    // TODO check test coverage
     addSeedBar(doneResult, stateBuilder, order) {
       let statusBarMessage = '';
       let statusBarClassName = 'jasmine-overall-result jasmine-bar ';
@@ -117,7 +115,6 @@ jasmineRequire.AlertsView = function(j$) {
       this.add(statusBarClassName, [statusBarMessage, seedBar]);
     }
 
-    // TODO check test coverage
     #globalFailureMessage(failure) {
       if (failure.globalErrorType === 'load') {
         const prefix = 'Error during loading: ' + failure.message;

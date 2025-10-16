@@ -133,7 +133,6 @@ jasmineRequire.Banner = function(j$) {
           '#jasmine-hide-disabled'
         );
         hideDisabled.checked = config.hideDisabled;
-        // TODO: backfill tests for this!
         hideDisabled.onclick = () => {
           this.#navigateWithNewParam('hideDisabled', !config.hideDisabled);
         };
