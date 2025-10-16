@@ -14,11 +14,11 @@ jasmineRequire.AlertsView = function(j$) {
     }
 
     addDuration(ms) {
-      this.add('jasmine-duration', 'finished in ' + ms / 1000 + 's');
+      this.#add('jasmine-duration', 'finished in ' + ms / 1000 + 's');
     }
 
     addSkipped(numExecuted, numDefined) {
-      this.add(
+      this.#add(
         'jasmine-bar jasmine-skipped',
         createDom(
           'a',
@@ -50,18 +50,18 @@ jasmineRequire.AlertsView = function(j$) {
         return false;
       };
 
-      this.add('jasmine-menu jasmine-bar jasmine-spec-list', [
+      this.#add('jasmine-menu jasmine-bar jasmine-spec-list', [
         createDom('span', {}, 'Spec List | '),
         failuresLink
       ]);
-      this.add('jasmine-menu jasmine-bar jasmine-failure-list', [
+      this.#add('jasmine-menu jasmine-bar jasmine-failure-list', [
         specListLink,
         createDom('span', {}, ' | Failures ')
       ]);
     }
 
     addGlobalFailure(failure) {
-      this.add(errorBarClassName, this.#globalFailureMessage(failure));
+      this.#add(errorBarClassName, this.#globalFailureMessage(failure));
     }
 
     addSeedBar(doneResult, stateBuilder, order) {
@@ -112,7 +112,7 @@ jasmineRequire.AlertsView = function(j$) {
         );
       }
 
-      this.add(statusBarClassName, [statusBarMessage, seedBar]);
+      this.#add(statusBarClassName, [statusBarMessage, seedBar]);
     }
 
     #globalFailureMessage(failure) {
@@ -158,11 +158,10 @@ jasmineRequire.AlertsView = function(j$) {
         children.push(this.#createExpander(dw.stack));
       }
 
-      this.add('jasmine-bar jasmine-warning', children);
+      this.#add('jasmine-bar jasmine-warning', children);
     }
 
-    // TODO private?
-    add(className, children) {
+    #add(className, children) {
       this.rootEl.appendChild(createDom('span', { className }, children));
     }
 
