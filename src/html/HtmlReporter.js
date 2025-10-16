@@ -9,7 +9,7 @@ jasmineRequire.HtmlReporter = function(j$) {
    * @implements {Reporter}
    * @param options Options object. See lib/jasmine-core/boot1.js for details.
    * @since 1.2.0
-   * @deprecated
+   * @deprecated Use {@link HtmlReporterV2} instead.
    */
   class HtmlReporter {
     #env;

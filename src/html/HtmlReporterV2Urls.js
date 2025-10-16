@@ -2,7 +2,11 @@ jasmineRequire.HtmlReporterV2Urls = function(j$) {
   'use strict';
 
   // TODO unify with V2 UrlBuilder?
-  // TODO jsdoc
+  /**
+   * @class HtmlReporterV2Urls
+   * @classdesc Processes URLs for {@link HtmlReporterV2}.
+   * @since 6.0.0
+   */
   class HtmlReporterV2Urls {
     constructor(options = {}) {
       // queryString is injectable for use in our own tests, but user code will
@@ -16,7 +20,13 @@ jasmineRequire.HtmlReporterV2Urls = function(j$) {
         });
     }
 
-    // TODO jsdoc. This is public.
+    /**
+     * Creates a {@link Configuration} from the current page's URL.
+     * @returns {Configuration}
+     * @example
+     * const urls = new jasmine.HtmlReporterV2Urls();
+     * env.configure(urls.configFromCurrentUrl());
+     */
     configFromCurrentUrl() {
       const config = {
         stopOnSpecFailure: this.queryString.getParam('stopOnSpecFailure'),

@@ -7,8 +7,16 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
    * @class HtmlReporterV2
    * @classdesc Displays results and allows re-running individual specs and suites.
    * @implements {Reporter}
-   * @param options Options object. See lib/jasmine-core/boot1.js for details.
+   * @param options Options object
    * @since 6.0.0
+   * @example
+   * const env = jasmine.getEnv();
+   * const urls = new jasmine.HtmlReporterV2Urls();
+   * const reporter = new jasmine.HtmlReporterV2({
+   *    env,
+   *    urls,
+   *    container: document.body
+   * });
    */
   class HtmlReporterV2 {
     #env;
