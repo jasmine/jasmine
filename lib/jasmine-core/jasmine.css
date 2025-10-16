@@ -1,25 +1,4 @@
 @charset "UTF-8";
-progress {
-  width: 100%;
-}
-
-progress[value] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-progress[value]::-webkit-progress-value, progress[value]::-moz-progress-bar {
-  background: #007069;
-}
-.failed progress[value]::-webkit-progress-value, .failed progress[value]::-moz-progress-bar {
-  background: #ca3a11;
-}
-
-progress.failed[value]::-webkit-progress-value, progress.failed[value]::-moz-progress-bar {
-  background: #ca3a11;
-}
-
 body {
   overflow-y: scroll;
 }
@@ -135,6 +114,23 @@ body {
 .jasmine_html-reporter .jasmine-symbol-summary li.jasmine-empty:before {
   color: #ba9d37;
   content: "•";
+}
+.jasmine_html-reporter progress {
+  width: 100%;
+}
+.jasmine_html-reporter progress[value] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+.jasmine_html-reporter progress[value]::-webkit-progress-value, .jasmine_html-reporter progress[value]::-moz-progress-bar {
+  background: #007069;
+}
+.failed .jasmine_html-reporter progress[value]::-webkit-progress-value, .failed .jasmine_html-reporter progress[value]::-moz-progress-bar {
+  background: #ca3a11;
+}
+.jasmine_html-reporter progress.failed[value]::-webkit-progress-value, .jasmine_html-reporter progress.failed[value]::-moz-progress-bar {
+  background: #ca3a11;
 }
 .jasmine_html-reporter .jasmine-run-options {
   float: right;

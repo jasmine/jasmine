@@ -26,26 +26,6 @@ $space: "\0020";
 $font-size: 11px;
 $large-font-size: 14px;
 
-// TODO: nope
-progress {
-  width: 100%;
-}
-progress[value] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-progress[value]::-webkit-progress-value, progress[value]::-moz-progress-bar {
-  background: $passing-color;
-
-  .failed & {
-    background: $failing-color;
-  }
-}
-progress.failed[value]::-webkit-progress-value, progress.failed[value]::-moz-progress-bar {
-    background: $failing-color;
-}
-
 body {
   overflow-y: scroll;
 }
@@ -126,7 +106,7 @@ body {
     padding-right: 9px;
   }
 
-  //--- Symbol summary ---//
+  //--- Symbol summary (v1 reporter) ---//
 
   .jasmine-symbol-summary {
     overflow: hidden;
@@ -190,6 +170,30 @@ body {
         }
       }
     }
+  }
+
+  //--- Progress bar (v2 reporter) ---//
+
+  progress {
+    width: 100%;
+  }
+
+  progress[value] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  progress[value]::-webkit-progress-value, progress[value]::-moz-progress-bar {
+    background: $passing-color;
+
+    .failed & {
+      background: $failing-color;
+    }
+  }
+
+  progress.failed[value]::-webkit-progress-value, progress.failed[value]::-moz-progress-bar {
+    background: $failing-color;
   }
 
   .jasmine-run-options {
