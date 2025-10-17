@@ -14,11 +14,11 @@ jasmineRequire.AlertsView = function(j$) {
     }
 
     addDuration(ms) {
-      this.#add('jasmine-duration', 'finished in ' + ms / 1000 + 's');
+      this.#createAndAdd('jasmine-duration', 'finished in ' + ms / 1000 + 's');
     }
 
     addSkipped(numExecuted, numDefined) {
-      this.#add(
+      this.#createAndAdd(
         'jasmine-bar jasmine-skipped',
         createDom(
           'a',
@@ -50,69 +50,21 @@ jasmineRequire.AlertsView = function(j$) {
         return false;
       };
 
-      this.#add('jasmine-menu jasmine-bar jasmine-spec-list', [
+      this.#createAndAdd('jasmine-menu jasmine-bar jasmine-spec-list', [
         createDom('span', {}, 'Spec List | '),
         failuresLink
       ]);
-      this.#add('jasmine-menu jasmine-bar jasmine-failure-list', [
+      this.#createAndAdd('jasmine-menu jasmine-bar jasmine-failure-list', [
         specListLink,
         createDom('span', {}, ' | Failures ')
       ]);
     }
 
     addGlobalFailure(failure) {
-      this.#add(errorBarClassName, this.#globalFailureMessage(failure));
-    }
-
-    addSeedBar(doneResult, stateBuilder, order) {
-      let statusBarMessage = '';
-      let statusBarClassName = 'jasmine-overall-result jasmine-bar ';
-      const globalFailures =
-        (doneResult && doneResult.failedExpectations) || [];
-      const failed = stateBuilder.failureCount + globalFailures.length > 0;
-
-      if (stateBuilder.totalSpecsDefined > 0 || failed) {
-        statusBarMessage +=
-          pluralize('spec', stateBuilder.specsExecuted) +
-          ', ' +
-          pluralize('failure', stateBuilder.failureCount);
-        if (stateBuilder.pendingSpecCount) {
-          statusBarMessage +=
-            ', ' + pluralize('pending spec', stateBuilder.pendingSpecCount);
-        }
-      }
-
-      if (doneResult.overallStatus === 'passed') {
-        statusBarClassName += ' jasmine-passed ';
-      } else if (doneResult.overallStatus === 'incomplete') {
-        statusBarClassName += ' jasmine-incomplete ';
-        statusBarMessage =
-          'Incomplete: ' +
-          doneResult.incompleteReason +
-          ', ' +
-          statusBarMessage;
-      } else {
-        statusBarClassName += ' jasmine-failed ';
-      }
-
-      let seedBar;
-      if (order && order.random) {
-        seedBar = createDom(
-          'span',
-          { className: 'jasmine-seed-bar' },
-          ', randomized with seed ',
-          createDom(
-            'a',
-            {
-              title: 'randomized with seed ' + order.seed,
-              href: this.#urlBuilder.seedHref(order.seed)
-            },
-            order.seed
-          )
-        );
-      }
-
-      this.#add(statusBarClassName, [statusBarMessage, seedBar]);
+      this.#createAndAdd(
+        errorBarClassName,
+        this.#globalFailureMessage(failure)
+      );
     }
 
     #globalFailureMessage(failure) {
@@ -158,10 +110,14 @@ jasmineRequire.AlertsView = function(j$) {
         children.push(this.#createExpander(dw.stack));
       }
 
-      this.#add('jasmine-bar jasmine-warning', children);
+      this.#createAndAdd('jasmine-bar jasmine-warning', children);
     }
 
-    #add(className, children) {
+    addBar(el) {
+      this.rootEl.appendChild(el);
+    }
+
+    #createAndAdd(className, children) {
       this.rootEl.appendChild(createDom('span', { className }, children));
     }
 
@@ -192,12 +148,6 @@ jasmineRequire.AlertsView = function(j$) {
 
       return root;
     }
-  }
-
-  function pluralize(singular, count) {
-    const word = count == 1 ? singular : singular + 's';
-
-    return '' + count + ' ' + word;
   }
 
   return AlertsView;

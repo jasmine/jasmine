@@ -120,7 +120,9 @@ jasmineRequire.HtmlReporter = function(j$) {
         );
       }
 
-      this.#alerts.addSeedBar(doneResult, this.#stateBuilder, doneResult.order);
+      const statusBar = new j$.private.OverallStatusBar(this.#urlBuilder);
+      statusBar.showDone(doneResult, this.#stateBuilder);
+      this.#alerts.addBar(statusBar.rootEl);
 
       if (doneResult.failedExpectations) {
         for (const f of doneResult.failedExpectations) {

@@ -6,6 +6,7 @@ jasmineRequire.html = function(j$) {
   j$.private.ResultsStateBuilder = jasmineRequire.ResultsStateBuilder(j$);
   j$.private.htmlReporterUtils = jasmineRequire.htmlReporterUtils(j$);
   j$.private.AlertsView = jasmineRequire.AlertsView(j$);
+  j$.private.OverallStatusBar = jasmineRequire.OverallStatusBar(j$);
   j$.private.Banner = jasmineRequire.Banner(j$);
   j$.private.SymbolsView = jasmineRequire.SymbolsView(j$);
   j$.private.SummaryTreeView = jasmineRequire.SummaryTreeView(j$);
