@@ -2,6 +2,7 @@ jasmineRequire.OverallStatusBar = function(j$) {
   'use strict';
 
   const { createDom } = j$.private.htmlReporterUtils;
+  const staticClassNames = 'jasmine-overall-result jasmine-bar';
 
   class OverallStatusBar {
     #urlBuilder;
@@ -9,11 +10,25 @@ jasmineRequire.OverallStatusBar = function(j$) {
     constructor(urlBuilder) {
       this.#urlBuilder = urlBuilder;
       this.rootEl = createDom('span', {
-        className: 'jasmine-overall-result jasmine-bar'
+        className: staticClassNames,
+        'aria-live': 'polite'
       });
     }
 
+    showRunning() {
+      this.rootEl.textContent = 'Running...';
+      this.rootEl.classList.add('jasmine-in-progress');
+    }
+
+    showFailing() {
+      this.rootEl.textContent = 'Failing...';
+      this.rootEl.classList.add('jasmine-failed');
+    }
+
     showDone(doneResult, stateBuilder) {
+      // Clear any classes added to represent in-progress state
+      this.rootEl.className = staticClassNames;
+
       let statusBarMessage = '';
       const globalFailures =
         (doneResult && doneResult.failedExpectations) || [];

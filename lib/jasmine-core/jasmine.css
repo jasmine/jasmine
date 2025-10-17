@@ -162,8 +162,12 @@ body {
   display: block;
   color: #eee;
 }
+.jasmine_html-reporter .jasmine-bar.jasmine-in-progress {
+  color: #333;
+}
 .jasmine_html-reporter .jasmine-bar.jasmine-failed, .jasmine_html-reporter .jasmine-bar.jasmine-errored {
   background-color: #ca3a11;
+  color: #eee;
   border-bottom: 1px solid #eee;
 }
 .jasmine_html-reporter .jasmine-bar.jasmine-passed {

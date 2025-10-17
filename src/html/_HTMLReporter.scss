@@ -233,8 +233,13 @@ body {
     display: block;
     color: #eee;
 
+    &.jasmine-in-progress {
+      color: $text-color;
+    }
+
     &.jasmine-failed, &.jasmine-errored {
       background-color: $failing-color;
+      color: #eee; // Override jasmine-in-progress
       border-bottom: 1px solid $page-background-color;
     }
 

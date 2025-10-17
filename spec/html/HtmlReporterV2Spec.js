@@ -1132,7 +1132,74 @@ describe('HtmlReporterV2', function() {
     });
   });
 
-  describe('The overall result bar', function() {
+  describe('The overall status bar', function() {
+    describe('Before the jasmineDone event fires', function() {
+      describe('When nothing has failed', function() {
+        it('shows "Running..." and the has class jasmine-in-progress', function() {
+          const reporter = setup();
+          reporter.initialize();
+          const alertBar = container.querySelector('.jasmine-overall-result');
+
+          expect(alertBar.textContent).toEqual('Running...');
+          expect(alertBar).not.toHaveClass('jasmine-passed');
+          expect(alertBar).not.toHaveClass('jasmine-failed');
+          expect(alertBar).toHaveClass('jasmine-in-progress');
+
+          for (const status of ['passed', 'excluded', 'pending']) {
+            reporter.specDone({
+              status,
+              fullName: `Some ${status} spec`,
+              passedExpectations: [],
+              failedExpectations: []
+            });
+          }
+
+          expect(alertBar.textContent).toEqual('Running...');
+          expect(alertBar).not.toHaveClass('jasmine-passed');
+          expect(alertBar).not.toHaveClass('jasmine-failed');
+          expect(alertBar).toHaveClass('jasmine-in-progress');
+        });
+      });
+
+      describe('When a spec has failed', function() {
+        it('shows "Failing..." and the has class jasmine-failed', function() {
+          const reporter = setup();
+          reporter.initialize();
+          const alertBar = container.querySelector('.jasmine-overall-result');
+
+          reporter.specDone({
+            status: 'failed',
+            fullName: 'Some failed spec',
+            passedExpectations: [],
+            failedExpectations: []
+          });
+
+          expect(alertBar.textContent).toEqual('Failing...');
+          expect(alertBar).toHaveClass('jasmine-failed');
+          expect(alertBar).not.toHaveClass('jasmine-passed');
+        });
+      });
+
+      describe('When a suite has failed', function() {
+        it('shows "Failing..." and the has class jasmine-failed', function() {
+          const reporter = setup();
+          reporter.initialize();
+          const alertBar = container.querySelector('.jasmine-overall-result');
+
+          reporter.suiteDone({
+            status: 'failed',
+            fullName: 'Some failed suite',
+            passedExpectations: [],
+            failedExpectations: []
+          });
+
+          expect(alertBar.textContent).toEqual('Failing...');
+          expect(alertBar).toHaveClass('jasmine-failed');
+          expect(alertBar).not.toHaveClass('jasmine-passed');
+        });
+      });
+    });
+
     describe("When the jasmineDone event's overallStatus is 'passed'", function() {
       it('has class jasmine-passed', function() {
         const reporter = setup();

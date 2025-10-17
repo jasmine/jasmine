@@ -30,6 +30,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
     // Sub-views
     #alerts;
+    #statusBar;
     #progress;
     #banner;
     #failures;
@@ -64,6 +65,9 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       this.#stateBuilder = new j$.private.ResultsStateBuilder();
 
       this.#alerts = new j$.private.AlertsView(this.#urlBuilder);
+      this.#statusBar = new j$.private.OverallStatusBar(this.#urlBuilder);
+      this.#statusBar.showRunning();
+      this.#alerts.addBar(this.#statusBar.rootEl);
       this.#progress = new ProgressView();
       this.#banner = new j$.private.Banner(
         this.#queryString.navigateWithNewParam.bind(this.#queryString),
@@ -96,6 +100,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
       if (result.status === 'failed') {
         this.#failures.append(result, this.#stateBuilder.currentParent);
+        this.#statusBar.showFailing();
       }
     }
 
@@ -116,6 +121,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
       if (result.status === 'failed') {
         this.#failures.append(result, this.#stateBuilder.currentParent);
+        this.#statusBar.showFailing();
       }
     }
 
@@ -134,9 +140,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
         );
       }
 
-      const statusBar = new j$.private.OverallStatusBar(this.#urlBuilder);
-      statusBar.showDone(doneResult, this.#stateBuilder);
-      this.#alerts.addBar(statusBar.rootEl);
+      this.#statusBar.showDone(doneResult, this.#stateBuilder);
 
       if (doneResult.failedExpectations) {
         for (const f of doneResult.failedExpectations) {
