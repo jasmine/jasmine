@@ -20,7 +20,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
    */
   class HtmlReporterV2 {
     #env;
-    #container;
+    #getContainer;
     #queryString;
     #urlBuilder;
     #filterSpecs;
@@ -38,7 +38,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
     constructor(options) {
       this.#env = options.env;
 
-      this.#container = options.container;
+      this.#getContainer = options.getContainer;
       this.#queryString =
         options.queryString ||
         new j$.QueryString({
@@ -82,7 +82,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
         this.#alerts.rootEl,
         this.#failures.rootEl
       );
-      this.#container.appendChild(this.#htmlReporterMain);
+      this.#getContainer().appendChild(this.#htmlReporterMain);
       this.#failures.show();
     }
 
@@ -171,7 +171,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
     }
 
     #find(selector) {
-      return this.#container.querySelector(
+      return this.#getContainer().querySelector(
         '.jasmine_html-reporter ' + selector
       );
     }
@@ -180,7 +180,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       const oldReporter = this.#find('');
 
       if (oldReporter) {
-        this.#container.removeChild(oldReporter);
+        this.#getContainer().removeChild(oldReporter);
       }
     }
 

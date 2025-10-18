@@ -24,7 +24,9 @@
   const htmlReporter = new jasmine.HtmlReporterV2({
     env,
     urls,
-    container: document.body
+    getContainer() {
+      return document.body;
+    }
   });
 
   /**

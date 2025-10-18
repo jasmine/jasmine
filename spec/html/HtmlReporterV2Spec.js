@@ -14,7 +14,9 @@ describe('HtmlReporterV2', function() {
   function setup(options = {}) {
     return new jasmineUnderTest.HtmlReporterV2({
       env,
-      container,
+      getContainer() {
+        return container;
+      },
       urls: new jasmineUnderTest.HtmlReporterV2Urls(),
       queryString: new jasmineUnderTest.QueryString({
         getWindowLocation() {
