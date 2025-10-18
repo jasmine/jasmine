@@ -63,6 +63,7 @@ body {
   float: right;
   line-height: 28px;
   padding-right: 9px;
+  font-size: 11px;
 }
 .jasmine_html-reporter .jasmine-symbol-summary {
   overflow: hidden;

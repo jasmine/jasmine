@@ -108,7 +108,6 @@ jasmineRequire.HtmlReporter = function(j$) {
 
     jasmineDone(doneResult) {
       this.#stateBuilder.jasmineDone(doneResult);
-      this.#alerts.addDuration(doneResult.totalTime);
       this.#banner.showOptionsMenu(this.#config);
 
       if (

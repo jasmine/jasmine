@@ -13,10 +13,6 @@ jasmineRequire.AlertsView = function(j$) {
       this.rootEl = createDom('div', { className: 'jasmine-alert' });
     }
 
-    addDuration(ms) {
-      this.#createAndAdd('jasmine-duration', 'finished in ' + ms / 1000 + 's');
-    }
-
     addSkipped(numExecuted, numDefined) {
       this.#createAndAdd(
         'jasmine-bar jasmine-skipped',

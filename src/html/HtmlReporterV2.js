@@ -128,7 +128,6 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
     jasmineDone(doneResult) {
       this.#stateBuilder.jasmineDone(doneResult);
       this.#progress.rootEl.style.visibility = 'hidden';
-      this.#alerts.addDuration(doneResult.totalTime);
       this.#banner.showOptionsMenu(this.#config);
 
       if (

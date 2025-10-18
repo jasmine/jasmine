@@ -58,26 +58,44 @@ jasmineRequire.OverallStatusBar = function(j$) {
         this.rootEl.classList.add('jasmine-failed');
       }
 
+      // Replace any existing children with the message
       this.rootEl.textContent = statusBarMessage;
 
       const order = doneResult.order;
       if (order && order.random) {
-        this.rootEl.appendChild(
-          createDom(
-            'span',
-            { className: 'jasmine-seed-bar' },
-            ', randomized with seed ',
-            createDom(
-              'a',
-              {
-                title: 'randomized with seed ' + order.seed,
-                href: this.#urlBuilder.seedHref(order.seed)
-              },
-              order.seed
-            )
-          )
-        );
+        this.#addSeedBar(order);
       }
+
+      this.#addDuration(doneResult);
+    }
+
+    #addSeedBar(order) {
+      this.rootEl.appendChild(
+        createDom(
+          'span',
+          { className: 'jasmine-seed-bar' },
+          ', randomized with seed ',
+          createDom(
+            'a',
+            {
+              title: 'randomized with seed ' + order.seed,
+              href: this.#urlBuilder.seedHref(order.seed)
+            },
+            order.seed
+          )
+        )
+      );
+    }
+
+    #addDuration(doneResult) {
+      const secs = doneResult.totalTime / 1000;
+      this.rootEl.appendChild(
+        createDom(
+          'span',
+          { className: 'jasmine-duration' },
+          `finished in ${secs}s`
+        )
+      );
     }
   }
 
