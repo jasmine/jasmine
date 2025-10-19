@@ -25,10 +25,9 @@ describe('Global error handling (integration)', function() {
       },
       onerror: function() {}
     };
-    spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
     env.cleanup_();
-    env = new privateUnderTest.Env();
+    env = new privateUnderTest.Env({ global });
     const reporter = jasmine.createSpyObj('reporter', [
       'jasmineDone',
       'suiteDone',
@@ -84,7 +83,6 @@ describe('Global error handling (integration)', function() {
         },
         onerror: originalOnerror
       };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
       const globalErrors = new privateUnderTest.GlobalErrors(global);
       const onerror = jasmine.createSpy('onerror');
       globalErrors.pushListener(onerror);
@@ -92,6 +90,7 @@ describe('Global error handling (integration)', function() {
       env.cleanup_();
       env = new privateUnderTest.Env({
         suppressLoadErrors: true,
+        global,
         GlobalErrors: function() {
           return globalErrors;
         }
@@ -127,9 +126,8 @@ describe('Global error handling (integration)', function() {
           queueMicrotask(fn);
         }
       };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
       env.cleanup_();
-      env = new privateUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -168,7 +166,6 @@ describe('Global error handling (integration)', function() {
             queueMicrotask(fn);
           }
         };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
         const realClearStack = privateUnderTest.getClearStack(global);
         const clearStackCallbacks = {};
@@ -184,7 +181,7 @@ describe('Global error handling (integration)', function() {
         });
 
         env.cleanup_();
-        env = new privateUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         let suiteErrors = [];
         env.addReporter({
@@ -232,9 +229,8 @@ describe('Global error handling (integration)', function() {
           queueMicrotask(fn);
         }
       };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
       env.cleanup_();
-      env = new privateUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -285,7 +281,6 @@ describe('Global error handling (integration)', function() {
             queueMicrotask(fn);
           }
         };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
         const realClearStack = privateUnderTest.getClearStack(global);
         const clearStackCallbacks = {};
@@ -301,7 +296,7 @@ describe('Global error handling (integration)', function() {
         });
 
         env.cleanup_();
-        env = new privateUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         let suiteErrors = [];
         env.addReporter({
@@ -353,9 +348,8 @@ describe('Global error handling (integration)', function() {
             queueMicrotask(fn);
           }
         };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
         env.cleanup_();
-        env = new privateUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         spyOn(console, 'error');
 
@@ -396,7 +390,6 @@ describe('Global error handling (integration)', function() {
           queueMicrotask(fn);
         }
       };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
       const realClearStack = privateUnderTest.getClearStack(global);
       let clearStackCallCount = 0;
@@ -419,7 +412,7 @@ describe('Global error handling (integration)', function() {
       spyOn(console, 'error');
 
       env.cleanup_();
-      env = new privateUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
 
       const receivedErrors = [];
       function logErrors(event) {
@@ -471,9 +464,8 @@ describe('Global error handling (integration)', function() {
           queueMicrotask(fn);
         }
       };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
       env.cleanup_();
-      env = new privateUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -514,7 +506,6 @@ describe('Global error handling (integration)', function() {
             queueMicrotask(fn);
           }
         };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
         const realClearStack = privateUnderTest.getClearStack(global);
         const clearStackCallbacks = {};
@@ -530,7 +521,7 @@ describe('Global error handling (integration)', function() {
         });
 
         env.cleanup_();
-        env = new privateUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         let suiteErrors = [];
         env.addReporter({
@@ -578,9 +569,8 @@ describe('Global error handling (integration)', function() {
           queueMicrotask(fn);
         }
       };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
       env.cleanup_();
-      env = new privateUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -633,7 +623,6 @@ describe('Global error handling (integration)', function() {
             queueMicrotask(fn);
           }
         };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
         const realClearStack = privateUnderTest.getClearStack(global);
         const clearStackCallbacks = {};
@@ -649,7 +638,7 @@ describe('Global error handling (integration)', function() {
         });
 
         env.cleanup_();
-        env = new privateUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         let suiteErrors = [];
         env.addReporter({
@@ -701,9 +690,8 @@ describe('Global error handling (integration)', function() {
             queueMicrotask(fn);
           }
         };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
         env.cleanup_();
-        env = new privateUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         spyOn(console, 'error');
 
@@ -746,7 +734,6 @@ describe('Global error handling (integration)', function() {
           queueMicrotask(fn);
         }
       };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
       const realClearStack = privateUnderTest.getClearStack(global);
       let clearStackCallCount = 0;
@@ -770,7 +757,7 @@ describe('Global error handling (integration)', function() {
       spyOn(console, 'error');
 
       env.cleanup_();
-      env = new privateUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
 
       const receivedErrors = [];
       function logErrors(event) {
@@ -831,9 +818,8 @@ describe('Global error handling (integration)', function() {
               queueMicrotask(fn);
             }
           };
-          spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
           env.cleanup_();
-          env = new privateUnderTest.Env();
+          env = new privateUnderTest.Env({ global });
           env.configure({ detectLateRejectionHandling: true });
 
           reporter = jasmine.createSpyObj('fakeReporter', [
@@ -978,9 +964,7 @@ describe('Global error handling (integration)', function() {
               queueMicrotask(fn);
             }
           };
-          spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-          env.cleanup_();
-          env = new privateUnderTest.Env();
+          env = new privateUnderTest.Env({ global });
           env.configure({ detectLateRejectionHandling: true });
           const reporter = jasmine.createSpyObj('fakeReporter', [
             'specDone',
@@ -1024,9 +1008,8 @@ describe('Global error handling (integration)', function() {
         queueMicrotask(fn);
       }
     };
-    spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
     env.cleanup_();
-    env = new privateUnderTest.Env();
+    env = new privateUnderTest.Env({ global });
     env.configure({ autoCleanClosures: false });
     const reporter = jasmine.createSpyObj('fakeReporter', ['specDone']);
 

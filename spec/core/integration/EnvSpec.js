@@ -1114,6 +1114,8 @@ describe('Env integration', function() {
       global: {
         setTimeout: globalSetTimeout,
         clearTimeout: clearTimeout,
+        addEventListener() {},
+        removeEventListener() {},
         queueMicrotask: function(fn) {
           queueMicrotask(fn);
         }
@@ -1188,6 +1190,8 @@ describe('Env integration', function() {
           clearTimeout: clearTimeout,
           setInterval: setInterval,
           clearInterval: clearInterval,
+          addEventListener() {},
+          removeEventListener() {},
           queueMicrotask: function(fn) {
             queueMicrotask(fn);
           }
@@ -2777,10 +2781,9 @@ describe('Env integration', function() {
             queueMicrotask(fn);
           }
         };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
 
         env.cleanup_();
-        env = new privateUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
         const reporter = jasmine.createSpyObj('reporter', [
           'jasmineDone',
           'suiteDone',
