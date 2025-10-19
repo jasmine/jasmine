@@ -409,12 +409,12 @@ describe('Suite', function() {
   });
 
   describe('#setSuiteProperty', function() {
-    it('throws if the key is not structured-cloneable', function() {
+    it('throws if the key is not a string', function() {
       const suite = new privateUnderTest.Suite({});
 
       expect(function() {
-        suite.setSuiteProperty(new Promise(() => {}), '');
-      }).toThrowError("Key can't be cloned");
+        suite.setSuiteProperty({}, '');
+      }).toThrowError('Key must be a string');
     });
 
     it('throws if the value is not structured-cloneable', function() {
@@ -422,6 +422,16 @@ describe('Suite', function() {
 
       expect(function() {
         suite.setSuiteProperty('k', new Promise(() => {}));
+      }).toThrowError("Value can't be cloned");
+    });
+
+    it('throws if the value is not JSON-serializable', function() {
+      const suite = new privateUnderTest.Suite({});
+
+      expect(function() {
+        const v = {};
+        v.self = v;
+        suite.setSuiteProperty('k', v);
       }).toThrowError("Value can't be cloned");
     });
   });

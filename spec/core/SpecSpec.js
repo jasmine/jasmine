@@ -103,26 +103,14 @@ describe('Spec', function() {
       });
     });
 
-    it('throws if the key is not structured-cloneable', function() {
+    it('throws if the key is not a string', function() {
       const spec = new privateUnderTest.Spec({
         queueableFn: { fn: () => {} }
       });
 
       expect(function() {
-        spec.setSpecProperty(new Promise(() => {}), '');
-      }).toThrowError("Key can't be cloned");
-    });
-
-    it('throws if the key is not JSON-serializable', function() {
-      const spec = new privateUnderTest.Spec({
-        queueableFn: { fn: () => {} }
-      });
-
-      expect(function() {
-        const k = {};
-        k.self = k;
-        spec.setSpecProperty(k, '');
-      }).toThrowError("Key can't be cloned");
+        spec.setSpecProperty({}, '');
+      }).toThrowError('Key must be a string');
     });
 
     it('throws if the value is not structured-cloneable', function() {
