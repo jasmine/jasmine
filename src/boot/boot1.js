@@ -34,6 +34,12 @@
    */
   env.addReporter(jsApiReporter);
   env.addReporter(htmlReporter);
+  /**
+   * Configures Jasmine based on the current set of query parameters. This
+   * supports all parameters set by the HTML reporter as well as
+   * spec=partialPath, which filters out specs whose paths don't contain the
+   * parameter.
+   */
   env.configure(urls.configFromCurrentUrl());
 
   /**

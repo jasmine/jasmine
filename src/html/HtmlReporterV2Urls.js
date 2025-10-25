@@ -21,7 +21,10 @@ jasmineRequire.HtmlReporterV2Urls = function(j$) {
     }
 
     /**
-     * Creates a {@link Configuration} from the current page's URL.
+     * Creates a {@link Configuration} from the current page's URL. Supported
+     * query string parameters include all those set by {@link HtmlReporterV2}
+     * as well as spec=partialPath, which filters out specs whose paths don't
+     * contain partialPath.
      * @returns {Configuration}
      * @example
      * const urls = new jasmine.HtmlReporterV2Urls();
@@ -47,9 +50,10 @@ jasmineRequire.HtmlReporterV2Urls = function(j$) {
       }
 
       const specFilter = new j$.private.HtmlSpecFilterV2({
-        filterString: () => {
-          return this.queryString.getParam('path');
-        }
+        filterParams: () => ({
+          path: this.queryString.getParam('path'),
+          spec: this.queryString.getParam('spec')
+        })
       });
 
       config.specFilter = function(spec) {

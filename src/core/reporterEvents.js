@@ -7,6 +7,7 @@ getJasmineRequireObj().reporterEvents = function(j$) {
    * {@link ReporterCapabilities} will apply.
    * @name Reporter#reporterCapabilities
    * @type ReporterCapabilities | undefined
+   * @optional
    * @since 5.0
    */
   /**
@@ -73,6 +74,7 @@ getJasmineRequireObj().reporterEvents = function(j$) {
     /**
      * `specStarted` is invoked when an `it` starts to run (including associated `beforeEach` functions)
      * @function
+     * @optional
      * @name Reporter#specStarted
      * @param {SpecStartedEvent} result Information about the individual {@link it} being run
      * @param {Function} [done] Used to specify to Jasmine that this callback is asynchronous and Jasmine should wait until it has been called before moving on.

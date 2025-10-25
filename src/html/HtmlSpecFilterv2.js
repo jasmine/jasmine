@@ -1,34 +1,34 @@
 jasmineRequire.HtmlSpecFilterV2 = function() {
   class HtmlSpecFilterV2 {
-    #getFilterString;
+    #getFilterParams;
 
     constructor(options) {
-      this.#getFilterString = options.filterString;
+      this.#getFilterParams = options.filterParams;
     }
 
-    /**
-     * Determines whether the spec with the specified name should be executed.
-     * @name HtmlSpecFilterV2#matches
-     * @function
-     * @param {Spec} spec
-     * @returns {boolean}
-     */
     matches(spec) {
-      const filterString = this.#getFilterString();
+      const params = this.#getFilterParams();
 
-      if (!filterString) {
-        return true;
+      if (params.path) {
+        return this.#matchesPath(spec, JSON.parse(params.path));
+      } else if (params.spec) {
+        // Like legacy HtmlSpecFilter, retained because it's convenient for
+        // hand-constructing filter URLs
+        return spec.getFullName().includes(params.spec);
       }
 
-      const filterPath = JSON.parse(this.#getFilterString());
+      return true;
+    }
+
+    #matchesPath(spec, path) {
       const specPath = spec.getPath();
 
-      if (filterPath.length > specPath.length) {
+      if (path.length > specPath.length) {
         return false;
       }
 
-      for (let i = 0; i < filterPath.length; i++) {
-        if (specPath[i] !== filterPath[i]) {
+      for (let i = 0; i < path.length; i++) {
+        if (specPath[i] !== path[i]) {
           return false;
         }
       }
