@@ -324,3 +324,11 @@ body {
 .jasmine_html-reporter .jasmine-debug-log .jasmine-debug-log-msg {
   white-space: pre;
 }
+
+.jasmine-hidden {
+  display: none;
+}
+
+.jasmine-tab + .jasmine-tab:before {
+  content: " | ";
+}

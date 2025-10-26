@@ -464,3 +464,11 @@ body {
     }
   }
 }
+
+.jasmine-hidden {
+  display: none;
+}
+
+.jasmine-tab + .jasmine-tab:before {
+  content: ' | ';
+}

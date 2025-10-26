@@ -24,6 +24,7 @@ jasmineRequire.AlertsView = function(j$) {
       );
     }
 
+    // TODO: remove this once HtmlReporterV2 doesn't use it
     addFailureToggle(onClickFailures, onClickSpecList) {
       const failuresLink = createDom(
         'a',
@@ -46,14 +47,20 @@ jasmineRequire.AlertsView = function(j$) {
         return false;
       };
 
-      this.#createAndAdd('jasmine-menu jasmine-bar jasmine-spec-list', [
-        createDom('span', {}, 'Spec List | '),
-        failuresLink
-      ]);
-      this.#createAndAdd('jasmine-menu jasmine-bar jasmine-failure-list', [
-        specListLink,
-        createDom('span', {}, ' | Failures ')
-      ]);
+      this.rootEl.appendChild(
+        createDom(
+          'span',
+          { className: 'jasmine-menu jasmine-bar jasmine-spec-list' },
+          [createDom('span', {}, 'Spec List | '), failuresLink]
+        )
+      );
+      this.rootEl.appendChild(
+        createDom(
+          'span',
+          { className: 'jasmine-menu jasmine-bar jasmine-failure-list' },
+          [specListLink, createDom('span', {}, ' | Failures ')]
+        )
+      );
     }
 
     addGlobalFailure(failure) {
