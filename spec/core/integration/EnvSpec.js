@@ -2277,6 +2277,34 @@ describe('Env integration', function() {
     await env.execute();
   });
 
+  it('Custom matchers set in top-level beforeAll should be available to all specs and suites', async function() {
+    const matchers = {
+      toFoo: function() {}
+    };
+
+    env.beforeAll(function() {
+      env.addMatchers(matchers);
+    });
+
+    env.describe('suite - top-level', function() {
+      env.it('has access to the custom matcher', function() {
+        expect(env.expect().toFoo).toBeDefined();
+      });
+
+      env.describe('suite - nested', function() {
+        env.it('has access to the custom matcher', function() {
+          expect(env.expect().toFoo).toBeDefined();
+        });
+      });
+    });
+
+    env.it('spec - top-level - has access to the custom matcher', function() {
+      expect(env.expect().toFoo).toBeDefined();
+    });
+
+    await env.execute();
+  });
+
   it('throws an exception if you try to create a spy outside of a runnable', async function() {
     const obj = { fn: function() {} };
     let exception;
