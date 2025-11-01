@@ -8,6 +8,7 @@
     "helpers/init.js",
     "helpers/domHelpers.js",
     "helpers/integrationMatchers.js",
+    "helpers/callerFilenameShim.js",
     "helpers/overrideConsoleLogForCircleCi.js",
     "helpers/nodeDefineJasmineUnderTest.js",
     "helpers/resetEnv.js"
