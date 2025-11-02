@@ -44,6 +44,18 @@ jobs:
           name: Run tests
           command: npm test
 
+  test_safari: &test_safari
+    parameters:
+      executor:
+        type: executor
+    executor: << parameters.executor >>
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run tests
+          command: JASMINE_BROWSER=safari npm run ci
+
   test_parallel: &test_parallel
     parameters:
       executor:
@@ -96,7 +108,7 @@ workflows:
       - build:
           executor: mac
           name: build_mac
-      - test_node:
+      - test_safari:
           executor: mac
           name: test_mac
           requires:
