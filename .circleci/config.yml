@@ -41,6 +41,10 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Enable Safari automation
+          command: |
+              echo "Not yet"
+      - run:
           name: Run tests
           command: npm test
 
