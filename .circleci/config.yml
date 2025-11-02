@@ -40,9 +40,9 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run:
-        # https://circleci.com/developer/orbs/orb/circleci/macos#commands-add-safari-permissions
-        name: Granting Safari permissions and enabling safaridriver
+      # https://circleci.com/developer/orbs/orb/circleci/macos#commands-add-safari-permissions
+      - name: Granting Safari permissions and enabling safaridriver
+        run:
         command: |
           #!/usr/bin/env bash
           
