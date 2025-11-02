@@ -23,9 +23,9 @@ executors:
 
 jobs:
   build:
+    macos:
+      xcode: 16.4
     parameters:
-      macos:
-        xcode: 16.4
       executor:
         type: executor
     executor: << parameters.executor >>
