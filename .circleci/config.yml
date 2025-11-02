@@ -41,10 +41,6 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Enable Safari automation
-          command: |
-              echo "Not yet"
-      - run:
           name: Run tests
           command: npm test
 
@@ -56,6 +52,9 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: Enable Safari automation
+          command: ./scripts/add-safari-permissions
       - run:
           name: Run tests
           command: JASMINE_BROWSER=safari npm run ci
