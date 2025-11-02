@@ -4,22 +4,9 @@
 version: 2.1
 
 executors:
-  node24:
-    docker:
-      - image: cimg/node:24.0.0
-    working_directory: ~/workspace
-  node22:
-    docker:
-      - image: cimg/node:22.0.0
-    working_directory: ~/workspace
-  node20:
-    docker:
-      - image: cimg/node:20.0.0
-    working_directory: ~/workspace
-  node18:
-    docker:
-      - image: cimg/node:18.20.5
-    working_directory: ~/workspace
+  mac:
+    macos:
+      xcode: 16.4
 
 jobs:
   build:
@@ -107,10 +94,10 @@ workflows:
   push:
     jobs:
       - build:
-          executor: node24
-          name: build_node_24
+          executor: mac
+          name: build_mac
       - test_node:
-          executor: node24
-          name: test_node_24
+          executor: mac
+          name: test_mac
           requires:
-            - build_node_24
+            - build_mac
