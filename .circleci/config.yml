@@ -17,6 +17,7 @@ jobs:
       executor:
         type: executor
     executor: << parameters.executor >>
+    resource_class: m4pro.medium
     steps:
       - checkout
       - run:
