@@ -1,4 +1,8 @@
 // TODO: Fix these unit tests!
+it('is in the right browser', function() {
+  expect(navigator.userAgent).toEqual('something');
+});
+
 describe('Env', function() {
   let env;
   beforeEach(function() {
