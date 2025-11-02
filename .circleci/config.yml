@@ -6,12 +6,12 @@ version: 2.1
 executors:
   mac:
     macos:
-      xcode: 16.4
+      xcode: 26.1.0
 
 jobs:
   build:
     macos:
-      xcode: 16.4
+      xcode: 26.1.0
     parameters:
       executor:
         type: executor
