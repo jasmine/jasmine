@@ -38,7 +38,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
         throw new Error('describe does not expect any arguments');
       }
       if (this.currentDeclarationSuite_.markedExcluding) {
-        suite.exclude();
+        suite.exclude(this.currentDeclarationSuite_.result.pendingReason);
       }
       this.addSpecsToSuite_(suite, definitionFn);
       return suite;
@@ -59,7 +59,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
     xdescribe(description, definitionFn, filename) {
       ensureIsFunction(definitionFn, 'xdescribe');
       const suite = this.suiteFactory_(description, filename);
-      suite.exclude();
+      suite.exclude('Temporarily disabled with xdescribe');
       this.addSpecsToSuite_(suite, definitionFn);
 
       return suite;
@@ -163,7 +163,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
 
       const spec = this.specFactory_(description, fn, timeout, filename);
       if (this.currentDeclarationSuite_.markedExcluding) {
-        spec.exclude();
+        spec.exclude(this.currentDeclarationSuite_.result.pendingReason);
       }
       this.currentDeclarationSuite_.addChild(spec);
 
