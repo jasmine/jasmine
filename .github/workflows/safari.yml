@@ -1,0 +1,21 @@
+name: Test in latest available Safari
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Report Safari version
+      run: osascript -e 'get version of application "Safari"'
+    - uses: actions/checkout@v4
+    - name: Use Node.js 22.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+    - run: npm install
+    - run: npm run build
+    - run: JASMINE_BROWSER=safari npm run ci
