@@ -13,7 +13,9 @@ describe('Configuration', function() {
     ...standardBooleanKeys,
     'seed',
     'specFilter',
-    'verboseDeprecations'
+    'verboseDeprecations',
+    'extraItStackFrames',
+    'extraDescribeStackFrames'
   ];
   Object.freeze(standardBooleanKeys);
   Object.freeze(allKeys);
@@ -32,6 +34,8 @@ describe('Configuration', function() {
     expect(subject.forbidDuplicateNames).toEqual(false);
     expect(subject.verboseDeprecations).toEqual(false);
     expect(subject.detectLateRejectionHandling).toEqual(false);
+    expect(subject.extraItStackFrames).toEqual(0);
+    expect(subject.extraDescribeStackFrames).toEqual(0);
   });
 
   describe('copy()', function() {
@@ -129,6 +133,26 @@ describe('Configuration', function() {
 
       subject.update({ seed: null });
       expect(subject.seed).toBeNull();
+    });
+
+    it('sets extraItStackFrames when not undefined', function() {
+      const subject = new jasmineUnderTest.Configuration();
+
+      subject.update({ extraItStackFrames: undefined });
+      expect(subject.extraItStackFrames).toEqual(0);
+
+      subject.update({ extraItStackFrames: 100000 });
+      expect(subject.extraItStackFrames).toEqual(100000);
+    });
+
+    it('sets extraDescribeStackFrames when not undefined', function() {
+      const subject = new jasmineUnderTest.Configuration();
+
+      subject.update({ extraDescribeStackFrames: undefined });
+      expect(subject.extraDescribeStackFrames).toEqual(0);
+
+      subject.update({ extraDescribeStackFrames: 100000 });
+      expect(subject.extraDescribeStackFrames).toEqual(100000);
     });
   });
 });

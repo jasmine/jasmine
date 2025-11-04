@@ -23,6 +23,7 @@ module.exports = {
     'helpers/BrowserFlags.js',
     'helpers/domHelpers.js',
     'helpers/integrationMatchers.js',
+    'helpers/callerFilenameShim.js',
     'helpers/defineJasmineUnderTest.js',
     'helpers/resetEnv.js'
   ],

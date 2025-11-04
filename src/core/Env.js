@@ -1,4 +1,6 @@
 getJasmineRequireObj().Env = function(j$) {
+  const DEFAULT_IT_DESCRIBE_STACK_DEPTH = 3;
+
   /**
    * @class Env
    * @since 2.0.0
@@ -594,14 +596,14 @@ getJasmineRequireObj().Env = function(j$) {
 
     this.describe = function(description, definitionFn) {
       ensureIsNotNested('describe');
-      const filename = callerCallerFilename();
+      const filename = indirectCallerFilename(describeStackDepth());
       return suiteBuilder.describe(description, definitionFn, filename)
         .metadata;
     };
 
     this.xdescribe = function(description, definitionFn) {
       ensureIsNotNested('xdescribe');
-      const filename = callerCallerFilename();
+      const filename = indirectCallerFilename(describeStackDepth());
       return suiteBuilder.xdescribe(description, definitionFn, filename)
         .metadata;
     };
@@ -609,29 +611,37 @@ getJasmineRequireObj().Env = function(j$) {
     this.fdescribe = function(description, definitionFn) {
       ensureIsNotNested('fdescribe');
       ensureNonParallel('fdescribe');
-      const filename = callerCallerFilename();
+      const filename = indirectCallerFilename(describeStackDepth());
       return suiteBuilder.fdescribe(description, definitionFn, filename)
         .metadata;
     };
 
     this.it = function(description, fn, timeout) {
       ensureIsNotNested('it');
-      const filename = callerCallerFilename();
+      const filename = indirectCallerFilename(itStackDepth());
       return suiteBuilder.it(description, fn, timeout, filename).metadata;
     };
 
     this.xit = function(description, fn, timeout) {
       ensureIsNotNested('xit');
-      const filename = callerCallerFilename();
+      const filename = indirectCallerFilename(itStackDepth());
       return suiteBuilder.xit(description, fn, timeout, filename).metadata;
     };
 
     this.fit = function(description, fn, timeout) {
       ensureIsNotNested('fit');
       ensureNonParallel('fit');
-      const filename = callerCallerFilename();
+      const filename = indirectCallerFilename(itStackDepth());
       return suiteBuilder.fit(description, fn, timeout, filename).metadata;
     };
+
+    function itStackDepth() {
+      return DEFAULT_IT_DESCRIBE_STACK_DEPTH + config.extraItStackFrames;
+    }
+
+    function describeStackDepth() {
+      return DEFAULT_IT_DESCRIBE_STACK_DEPTH + config.extraDescribeStackFrames;
+    }
 
     /**
      * Get a user-defined property as part of the properties field of {@link SpecResult}
@@ -818,11 +828,12 @@ getJasmineRequireObj().Env = function(j$) {
     };
   }
 
-  function callerCallerFilename() {
+  function indirectCallerFilename(depth) {
     const frames = new j$.StackTrace(new Error()).frames;
-    // frames[3] should always exist except in Jasmine's own tests, which bypass
-    // the global it/describe layer, but don't crash if it doesn't.
-    return frames[3] && frames[3].file;
+    // The specified frame should always exist except in Jasmine's own tests,
+    // which bypass the global it/describe layer, but could be absent in case
+    // of misconfiguration. Don't crash if it's absent.
+    return frames[depth] && frames[depth].file;
   }
 
   return Env;
