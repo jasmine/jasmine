@@ -1,5 +1,5 @@
 # Run tests against supported Node versions, and (except for pull requests)
-# against supported browsers.
+# against supported browsers that are available on Saucelabs.
 
 version: 2.1
 
@@ -89,7 +89,7 @@ jobs:
             export SAUCE_TUNNEL_NAME=$CIRCLE_WORKFLOW_JOB_ID
             scripts/start-sauce-connect
             set +o errexit
-            scripts/run-all-browsers
+            scripts/run-sauce-browsers
             exitcode=$?
             set -o errexit
             scripts/stop-sauce-connect

@@ -30,6 +30,7 @@ describe('The jasmine namespace', function() {
       'version',
 
       // Asymmetric equality testers
+      'allOf',
       'any',
       'anything',
       'arrayContaining',

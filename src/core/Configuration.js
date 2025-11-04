@@ -128,7 +128,30 @@ getJasmineRequireObj().Configuration = function(j$) {
      * @type Boolean
      * @default false
      */
-    detectLateRejectionHandling: false
+    detectLateRejectionHandling: false,
+
+    /**
+     * The number of extra stack frames inserted by a wrapper around {@link it}
+     * or by some other local modification. Jasmine uses this to determine the
+     * filename for {@link SpecStartedEvent} and {@link SpecDoneEvent}.
+     * @name Configuration#extraItStackFrames
+     * @since 5.13.0
+     * @type number
+     * @default 0
+     */
+    extraItStackFrames: 0,
+
+    /**
+     * The number of extra stack frames inserted by a wrapper around
+     * {@link describe} or by some other local modification. Jasmine uses this
+     * to determine the filename for {@link SpecStartedEvent} and
+     * {@link SpecDoneEvent}.
+     * @name Configuration#extraDescribeStackFrames
+     * @since 5.13.0
+     * @type number
+     * @default 0
+     */
+    extraDescribeStackFrames: 0
   };
   Object.freeze(defaultConfig);
 
@@ -178,6 +201,16 @@ getJasmineRequireObj().Configuration = function(j$) {
       // 0 and null are valid values, so a truthiness check wouldn't work
       if (typeof changes.seed !== 'undefined') {
         this.#values.seed = changes.seed;
+      }
+
+      // 0 is a valid value for both of these, so a truthiness check wouldn't work
+      if (typeof changes.extraItStackFrames !== 'undefined') {
+        this.#values.extraItStackFrames = changes.extraItStackFrames;
+      }
+
+      if (typeof changes.extraDescribeStackFrames !== 'undefined') {
+        this.#values.extraDescribeStackFrames =
+          changes.extraDescribeStackFrames;
       }
     }
   }

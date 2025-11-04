@@ -149,12 +149,11 @@ getJasmineRequireObj().Suite = function(j$) {
        * @property {String} description - The description text passed to the {@link describe} that made this suite.
        * @property {String} fullName - The full description including all ancestors of this suite.
        * @property {String|null} parentSuiteId - The ID of the suite containing this suite, or null if this is not in another describe().
-       * @property {String} filename - Deprecated. The name of the file the suite was defined in.
+       * @property {String} filename - The name of the file the suite was defined in.
        * Note: The value may be incorrect if zone.js is installed or
        * `describe`/`fdescribe`/`xdescribe` have been replaced with versions that
-       * don't maintain the same call stack height as the originals. This property
-       * may be removed in a future version unless there is enough user interest
-       * in keeping it. See {@link https://github.com/jasmine/jasmine/issues/2065}.
+       * don't maintain the same call stack height as the originals. You can fix
+       * that by setting {@link Configuration#extraDescribeStackFrames}.
        * @property {ExpectationResult[]} failedExpectations - The list of expectations that failed in an {@link afterAll} for this suite.
        * @property {ExpectationResult[]} deprecationWarnings - The list of deprecation warnings that occurred on this suite.
        * @property {String} status - Once the suite has completed, this string represents the pass/fail status of this suite.
@@ -362,6 +361,19 @@ getJasmineRequireObj().Suite = function(j$) {
        * @since 2.0.0
        */
       this.description = suite.description;
+
+      /**
+       * The name of the file the suite was defined in.
+       * Note: The value may be incorrect if zone.js is installed or
+       * `describe`/`fdescribe`/`xdescribe` have been replaced with versions
+       * that don't maintain the same call stack height as the originals. You
+       * can fix that by setting {@link Configuration#extraItStackFrames}.
+       * @name Suite#filename
+       * @readonly
+       * @type {string}
+       * @since 5.13.0
+       */
+      this.filename = suite.filename;
     }
 
     /**

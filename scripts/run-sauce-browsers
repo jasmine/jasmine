@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Run tests in supported browsers that are available on Saucelabs.
+# Note: The latest Safari version is tested via GitHub Actions because Saucelabs
+# only makes it available to paid enterprise accounts. See
+# .github/workflows/safari.yml.
+
 run_browser() {
 	browser=$1
 	version=$2

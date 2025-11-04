@@ -231,6 +231,19 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
 
   /**
    * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
+   * value being compared matches every provided equality tester.
+   * @name asymmetricEqualityTesters.allOf
+   * @emittedName jasmine.allOf
+   * @since 5.13.0
+   * @function
+   * @param {...*} arguments - The asymmetric equality checkers to compare.
+   */
+  j$.allOf = function() {
+    return new j$.AllOf(...arguments);
+  };
+
+  /**
+   * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
    * value being compared is an instance of the specified class/constructor.
    * @name asymmetricEqualityTesters.any
    * @emittedName jasmine.any

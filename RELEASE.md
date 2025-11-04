@@ -28,9 +28,18 @@ should also rev to that version.
 
 When ready to release - specs are all green and the stories are done:
 
-1. Update the release notes in `release_notes` - use the Anchorman gem to generate the markdown file and edit accordingly. Include a list of supported environments.
-1. Update the version in `package.json`
-1. Run `npm run build`.
+1. Update the release notes in `release_notes` - use the Anchorman gem to 
+   generate the Markdown file and edit accordingly. Include a list of supported
+   environments. Get that information from these places:
+   * For Node, see .circleci/config.yml or the README.
+   * For Firefox ESR and Safari <=17, see scripts/run-sauce-browsers or the README.
+   * For evergreen browsers, trigger a Circle CI run and check the
+     [Saucelabs dashboard](https://app.saucelabs.com/dashboard/tests?ownerId=90a771d55857492da3bd5251a2d92457&ownerType=user&ownerName=jasmine-js&start=last7days)
+     once it's finished.
+   * For Safari >17, trigger the [Safari action](https://github.com/jasmine/jasmine/actions/workflows/safari.yml)
+     and get the version from the output.
+2. Update the version in `package.json`
+3. Run `npm run build`.
 
 ### Commit and push core changes
 

@@ -1,4 +1,3 @@
-// TODO: Fix these unit tests!
 describe('Env', function() {
   let env;
   beforeEach(function() {
@@ -95,7 +94,7 @@ describe('Env', function() {
     });
   });
 
-  it('accepts its own current configureation', function() {
+  it('accepts its own current configuration', function() {
     env.configure(env.configuration());
   });
 
@@ -198,6 +197,29 @@ describe('Env', function() {
       expect(innerSuite.parentSuite).toBe(suite);
       expect(spec.getFullName()).toEqual('outer suite inner suite a spec');
     });
+
+    it('sets the caller filename correctly when extraDescribeStackFrames is not set', function() {
+      // IIFE is used to match the stack depth when global describe() is called
+      const suite = (function() {
+        return env[methodName]('a suite', function() {
+          env.it('a spec');
+        });
+      })();
+      expect(suite.filename).toMatch(/EnvSpec\.js$/);
+    });
+
+    it('sets the caller filename correctly when extraDescribeStackFrames is set', function() {
+      env.configure({ extraDescribeStackFrames: 2 });
+      // IIFE is used to match the stack depth when global describe() is called
+      const suite = (function() {
+        return specHelpers.callerFilenameShim(function() {
+          return env[methodName]('a suite', function() {
+            env.it('a spec');
+          });
+        });
+      })();
+      expect(suite.filename).toMatch(/EnvSpec\.js$/);
+    });
   }
 
   describe('#describe', function() {
@@ -299,6 +321,25 @@ describe('Env', function() {
         .withContext('id')
         .not.toEqual('');
       expect(spec.pend).toBeFalsy();
+    });
+
+    it('sets the caller filename correctly when extraItStackFrames is not set', function() {
+      // IIFE is used to match the stack depth when global it() is called
+      const spec = (function() {
+        return env[methodName]('a spec', function() {});
+      })();
+      expect(spec.filename).toMatch(/EnvSpec\.js$/);
+    });
+
+    it('sets the caller filename correctly when extraItStackFrames is set', function() {
+      env.configure({ extraItStackFrames: 2 });
+      // IIFE is used to match the stack depth when global it() is called
+      const spec = (function() {
+        return specHelpers.callerFilenameShim(function() {
+          return env[methodName]('a spec', function() {});
+        });
+      })();
+      expect(spec.filename).toMatch(/EnvSpec\.js$/);
     });
   }
 
