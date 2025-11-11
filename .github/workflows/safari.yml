@@ -3,7 +3,9 @@ name: Test in latest available Safari
 on:
   push:
   pull_request:
-
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
 jobs:
   build:
     runs-on: macos-latest
