@@ -1181,7 +1181,7 @@ describe('Env integration', function() {
         global: {
           setTimeout: function(cb, t) {
             const stack = new Error().stack;
-            if (stack.indexOf('ClearStack') >= 0) {
+            if (stack.indexOf('clearStack') >= 0) {
               return realSetTimeout(cb, t);
             } else {
               return setTimeout(cb, t);
@@ -3259,13 +3259,11 @@ describe('Env integration', function() {
     });
 
     it('is resolved after the stack is cleared', function(done) {
-      const realClearStack = privateUnderTest.getClearStack(
-          jasmineUnderTest.getGlobal()
-        ),
-        clearStackSpy = jasmine
-          .createSpy('clearStack')
-          .and.callFake(realClearStack);
-      spyOn(privateUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
+      const stackClearer = privateUnderTest.getStackClearer(
+        jasmineUnderTest.getGlobal()
+      );
+      spyOn(stackClearer, 'clearStack').and.callThrough();
+      spyOn(privateUnderTest, 'getStackClearer').and.returnValue(stackClearer);
 
       // Create a new env that has the clearStack defined above
       env.cleanup_();
@@ -3276,10 +3274,10 @@ describe('Env integration', function() {
       });
 
       env.execute(null).then(function() {
-        expect(clearStackSpy).toHaveBeenCalled(); // (many times)
-        clearStackSpy.calls.reset();
+        expect(stackClearer.clearStack).toHaveBeenCalled(); // (many times)
+        stackClearer.clearStack.calls.reset();
         setTimeout(function() {
-          expect(clearStackSpy).not.toHaveBeenCalled();
+          expect(stackClearer.clearStack).not.toHaveBeenCalled();
           done();
         });
       });
@@ -3368,13 +3366,11 @@ describe('Env integration', function() {
     });
 
     it('is called after the stack is cleared', async function() {
-      const realClearStack = privateUnderTest.getClearStack(
-          jasmineUnderTest.getGlobal()
-        ),
-        clearStackSpy = jasmine
-          .createSpy('clearStack')
-          .and.callFake(realClearStack);
-      spyOn(privateUnderTest, 'getClearStack').and.returnValue(clearStackSpy);
+      const stackClearer = privateUnderTest.getStackClearer(
+        jasmineUnderTest.getGlobal()
+      );
+      spyOn(stackClearer, 'clearStack').and.callThrough();
+      spyOn(privateUnderTest, 'getStackClearer').and.returnValue(stackClearer);
 
       // Create a new env that has the clearStack defined above
       env.cleanup_();
@@ -3386,12 +3382,12 @@ describe('Env integration', function() {
 
       await env.execute();
 
-      expect(clearStackSpy).toHaveBeenCalled(); // (many times)
-      clearStackSpy.calls.reset();
+      expect(stackClearer.clearStack).toHaveBeenCalled(); // (many times)
+      stackClearer.clearStack.calls.reset();
 
       await new Promise(resolve => setTimeout(resolve));
 
-      expect(clearStackSpy).not.toHaveBeenCalled();
+      expect(stackClearer.clearStack).not.toHaveBeenCalled();
     });
 
     it('is called after QueueRunner timeouts are cleared', async function() {

@@ -1,6 +1,6 @@
-describe('ClearStack', function() {
+describe('StackClearer', function() {
   it('works in an integrationy way', function(done) {
-    const clearStack = privateUnderTest.getClearStack(
+    const { clearStack } = privateUnderTest.getStackClearer(
       jasmineUnderTest.getGlobal()
     );
 
@@ -36,7 +36,7 @@ describe('ClearStack', function() {
         queueMicrotask
       };
 
-      const clearStack = privateUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
 
       for (let i = 0; i < 9; i++) {
         clearStack(function() {});
@@ -104,7 +104,7 @@ describe('ClearStack', function() {
         ...makeGlobal(),
         MessageChannel: fakeMessageChannel
       };
-      const clearStack = privateUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
       let called = false;
 
       clearStack(function() {
@@ -125,7 +125,7 @@ describe('ClearStack', function() {
           return fakeChannel;
         }
       };
-      const clearStack = privateUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
 
       for (let i = 0; i < 9; i++) {
         clearStack(function() {});
@@ -150,7 +150,7 @@ describe('ClearStack', function() {
         setTimeout,
         MessageChannel: fakeMessageChannel
       };
-      const clearStack = privateUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
       const fn = jasmine.createSpy('second clearStack function');
 
       clearStack(function() {
@@ -170,7 +170,7 @@ describe('ClearStack', function() {
           fn();
         }
       };
-      const clearStack = privateUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
       let called = false;
 
       clearStack(function() {
@@ -188,7 +188,7 @@ describe('ClearStack', function() {
         queueMicrotask,
         setTimeout
       };
-      const clearStack = privateUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
 
       for (let i = 0; i < 9; i++) {
         clearStack(function() {});
@@ -215,7 +215,7 @@ describe('ClearStack', function() {
           fn();
         }
       };
-      const clearStack = privateUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
       let called = false;
 
       clearStack(function() {
@@ -233,7 +233,7 @@ describe('ClearStack', function() {
         queueMicrotask,
         setTimeout
       };
-      const clearStack = privateUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
 
       clearStack(function() {});
       clearStack(function() {});

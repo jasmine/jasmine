@@ -51,11 +51,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     }
 
     this.onComplete = attrs.onComplete || emptyFn;
-    this.clearStack =
-      attrs.clearStack ||
-      function(fn) {
+    this.clearStack = attrs.clearStack || {
+      clearStack(fn) {
         fn();
-      };
+      }
+    };
     this.onException = attrs.onException || emptyFn;
     this.onMultipleDone = attrs.onMultipleDone || fallbackOnMultipleDone;
     this.userContext = attrs.userContext || new j$.private.UserContext();
@@ -235,7 +235,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       }
     }
 
-    this.clearStack(() => {
+    this.clearStack.clearStack(() => {
       this.globalErrors.popListener(this.handleFinalError);
 
       if (this.errored_) {

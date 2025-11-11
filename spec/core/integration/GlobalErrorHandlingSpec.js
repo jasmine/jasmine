@@ -167,10 +167,11 @@ describe('Global error handling (integration)', function() {
           }
         };
 
-        const realClearStack = privateUnderTest.getClearStack(global);
+        const stackClearer = privateUnderTest.getStackClearer(global);
+        const realClearStack = stackClearer.clearStack;
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -179,6 +180,9 @@ describe('Global error handling (integration)', function() {
 
           realClearStack(fn);
         });
+        spyOn(privateUnderTest, 'getStackClearer').and.returnValue(
+          stackClearer
+        );
 
         env.cleanup_();
         env = new privateUnderTest.Env({ global });
@@ -282,10 +286,11 @@ describe('Global error handling (integration)', function() {
           }
         };
 
-        const realClearStack = privateUnderTest.getClearStack(global);
+        const stackClearer = privateUnderTest.getStackClearer(global);
+        const realClearStack = stackClearer.clearStack;
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -294,6 +299,9 @@ describe('Global error handling (integration)', function() {
 
           realClearStack(fn);
         });
+        spyOn(privateUnderTest, 'getStackClearer').and.returnValue(
+          stackClearer
+        );
 
         env.cleanup_();
         env = new privateUnderTest.Env({ global });
@@ -391,12 +399,13 @@ describe('Global error handling (integration)', function() {
         }
       };
 
-      const realClearStack = privateUnderTest.getClearStack(global);
+      const stackClearer = privateUnderTest.getStackClearer(global);
+      const realClearStack = stackClearer.clearStack;
       let clearStackCallCount = 0;
       let jasmineDone = false;
       const expectedErrors = [];
       const expectedErrorsAfterJasmineDone = [];
-      spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
+      spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
         clearStackCallCount++;
         const msg = `Error in clearStack #${clearStackCallCount}`;
 
@@ -409,6 +418,7 @@ describe('Global error handling (integration)', function() {
         dispatchErrorEvent(global, 'error', { error: msg });
         realClearStack(fn);
       });
+      spyOn(privateUnderTest, 'getStackClearer').and.returnValue(stackClearer);
       spyOn(console, 'error');
 
       env.cleanup_();
@@ -507,10 +517,11 @@ describe('Global error handling (integration)', function() {
           }
         };
 
-        const realClearStack = privateUnderTest.getClearStack(global);
+        const stackClearer = privateUnderTest.getStackClearer(global);
+        const realClearStack = stackClearer.clearStack;
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -519,6 +530,9 @@ describe('Global error handling (integration)', function() {
 
           realClearStack(fn);
         });
+        spyOn(privateUnderTest, 'getStackClearer').and.returnValue(
+          stackClearer
+        );
 
         env.cleanup_();
         env = new privateUnderTest.Env({ global });
@@ -624,10 +638,11 @@ describe('Global error handling (integration)', function() {
           }
         };
 
-        const realClearStack = privateUnderTest.getClearStack(global);
+        const stackClearer = privateUnderTest.getStackClearer(global);
+        const realClearStack = stackClearer.clearStack;
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -636,6 +651,9 @@ describe('Global error handling (integration)', function() {
 
           realClearStack(fn);
         });
+        spyOn(privateUnderTest, 'getStackClearer').and.returnValue(
+          stackClearer
+        );
 
         env.cleanup_();
         env = new privateUnderTest.Env({ global });
@@ -735,12 +753,13 @@ describe('Global error handling (integration)', function() {
         }
       };
 
-      const realClearStack = privateUnderTest.getClearStack(global);
+      const stackClearer = privateUnderTest.getStackClearer(global);
+      const realClearStack = stackClearer.clearStack;
       let clearStackCallCount = 0;
       let jasmineDone = false;
       const expectedErrors = [];
       const expectedErrorsAfterJasmineDone = [];
-      spyOn(privateUnderTest, 'getClearStack').and.returnValue(function(fn) {
+      spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
         clearStackCallCount++;
         const reason = `Error in clearStack #${clearStackCallCount}`;
         const expectedMsg = `Unhandled promise rejection: ${reason} thrown`;
@@ -754,6 +773,7 @@ describe('Global error handling (integration)', function() {
         dispatchErrorEvent(global, 'unhandledrejection', { reason });
         realClearStack(fn);
       });
+      spyOn(privateUnderTest, 'getStackClearer').and.returnValue(stackClearer);
       spyOn(console, 'error');
 
       env.cleanup_();

@@ -1,4 +1,4 @@
-getJasmineRequireObj().clearStack = function(j$) {
+getJasmineRequireObj().StackClearer = function(j$) {
   'use strict';
 
   const maxInlineCallCount = 10;
@@ -7,14 +7,17 @@ getJasmineRequireObj().clearStack = function(j$) {
     const unclampedSetTimeout = getUnclampedSetTimeout(global);
     const { queueMicrotask } = global;
     let currentCallCount = 0;
-    return function clearStack(fn) {
-      currentCallCount++;
 
-      if (currentCallCount < maxInlineCallCount) {
-        queueMicrotask(fn);
-      } else {
-        currentCallCount = 0;
-        unclampedSetTimeout(fn);
+    return {
+      clearStack(fn) {
+        currentCallCount++;
+
+        if (currentCallCount < maxInlineCallCount) {
+          queueMicrotask(fn);
+        } else {
+          currentCallCount = 0;
+          unclampedSetTimeout(fn);
+        }
       }
     };
   }
@@ -22,8 +25,10 @@ getJasmineRequireObj().clearStack = function(j$) {
   function nodeQueueMicrotaskImpl(global) {
     const { queueMicrotask } = global;
 
-    return function(fn) {
-      queueMicrotask(fn);
+    return {
+      clearStack(fn) {
+        queueMicrotask(fn);
+      }
     };
   }
 
@@ -32,14 +37,17 @@ getJasmineRequireObj().clearStack = function(j$) {
     const postMessage = getPostMessage(global);
 
     let currentCallCount = 0;
-    return function clearStack(fn) {
-      currentCallCount++;
 
-      if (currentCallCount < maxInlineCallCount) {
-        postMessage(fn);
-      } else {
-        currentCallCount = 0;
-        setTimeout(fn);
+    return {
+      clearStack(fn) {
+        currentCallCount++;
+
+        if (currentCallCount < maxInlineCallCount) {
+          postMessage(fn);
+        } else {
+          currentCallCount = 0;
+          setTimeout(fn);
+        }
       }
     };
   }
@@ -88,7 +96,7 @@ getJasmineRequireObj().clearStack = function(j$) {
     };
   }
 
-  function getClearStack(global) {
+  function getStackClearer(global) {
     const NODE_JS =
       global.process &&
       global.process.versions &&
@@ -120,5 +128,5 @@ getJasmineRequireObj().clearStack = function(j$) {
     }
   }
 
-  return getClearStack;
+  return getStackClearer;
 };

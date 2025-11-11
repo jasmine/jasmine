@@ -486,7 +486,7 @@ describe('QueueRunner', function() {
             errorListeners.pop();
           }
         },
-        clearStack = jasmine.createSpy('clearStack'),
+        clearStack = jasmine.createSpyObj('clearStack', ['clearStack']),
         onException = jasmine.createSpy('onException'),
         queueRunner = new privateUnderTest.QueueRunner({
           queueableFns: [queueableFn],
@@ -498,10 +498,10 @@ describe('QueueRunner', function() {
 
       queueRunner.execute();
       jasmine.clock().tick();
-      expect(clearStack).toHaveBeenCalled();
+      expect(clearStack.clearStack).toHaveBeenCalled();
       expect(errorListeners.length).toEqual(1);
       errorListeners[0](error);
-      clearStack.calls.argsFor(0)[0]();
+      clearStack.clearStack.calls.argsFor(0)[0]();
       expect(onException).toHaveBeenCalledWith(error);
     });
   });
@@ -908,22 +908,22 @@ describe('QueueRunner', function() {
         },
         afterFn = { fn: jasmine.createSpy('afterFn') },
         completeCallback = jasmine.createSpy('completeCallback'),
-        clearStack = jasmine.createSpy('clearStack'),
+        clearStack = jasmine.createSpyObj('clearStack', ['clearStack']),
         queueRunner = new privateUnderTest.QueueRunner({
           queueableFns: [asyncFn, afterFn],
           clearStack: clearStack,
           onComplete: completeCallback
         });
 
-      clearStack.and.callFake(function(fn) {
+      clearStack.clearStack.and.callFake(function(fn) {
         fn();
       });
 
       queueRunner.execute();
       jasmine.clock().tick();
       expect(afterFn.fn).toHaveBeenCalled();
-      expect(clearStack).toHaveBeenCalled();
-      clearStack.calls.argsFor(0)[0]();
+      expect(clearStack.clearStack).toHaveBeenCalled();
+      clearStack.clearStack.calls.argsFor(0)[0]();
       expect(completeCallback).toHaveBeenCalled();
     });
   });
