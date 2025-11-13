@@ -141,12 +141,10 @@ getJasmineRequireObj().StackClearer = function(j$) {
       // Unlike browsers, Node doesn't require us to do a periodic setTimeout
       // so we avoid the overhead.
       return nodeQueueMicrotaskImpl(global);
-    } else if (SAFARI_OR_WIN_WEBKIT || !global.MessageChannel /* tests */) {
+    } else if (SAFARI_OR_WIN_WEBKIT) {
       // queueMicrotask is dramatically faster than MessageChannel in Safari
       // and other WebKit-based browsers, such as the one distributed by Playwright
       // to test Safari-like behavior on Windows.
-      // Some of our own integration tests provide a mock queueMicrotask in all
-      // environments because it's simpler to mock than MessageChannel.
       return browserQueueMicrotaskImpl(global);
     } else {
       // MessageChannel is faster than queueMicrotask in supported browsers

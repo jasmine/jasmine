@@ -1118,6 +1118,13 @@ describe('Env integration', function() {
         removeEventListener() {},
         queueMicrotask: function(fn) {
           queueMicrotask(fn);
+        },
+        // Enough Node globals to make getStackClearer() return the microtask
+        // implementation, which is the easiest to mock
+        process: {
+          versions: {
+            node: ''
+          }
         }
       }
     });
@@ -1194,6 +1201,13 @@ describe('Env integration', function() {
           removeEventListener() {},
           queueMicrotask: function(fn) {
             queueMicrotask(fn);
+          },
+          // Enough Node globals to make getStackClearer() return the microtask
+          // implementation, which is the easiest to mock
+          process: {
+            versions: {
+              node: ''
+            }
           }
         }
       });
@@ -2807,6 +2821,13 @@ describe('Env integration', function() {
           },
           queueMicrotask: function(fn) {
             queueMicrotask(fn);
+          },
+          // Enough Node globals to make getStackClearer() return the microtask
+          // implementation, which is the easiest to mock
+          process: {
+            versions: {
+              node: ''
+            }
           }
         };
 
