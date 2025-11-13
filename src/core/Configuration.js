@@ -151,7 +151,22 @@ getJasmineRequireObj().Configuration = function(j$) {
      * @type number
      * @default 0
      */
-    extraDescribeStackFrames: 0
+    extraDescribeStackFrames: 0,
+
+    /**
+     * The strategy to use in Safari and similar browsers to determine how often
+     * to yield control by calling setTimeout. If set to "count", the default,
+     * the frequency of setTimeout calls is based on the number of relevant
+     * function calls. If set to "time", the frequency of setTimeout calls is
+     * based on elapsed time. Using "time" may provide a significant performance
+     * improvement, but as of 6.0 it hasn't been tested with a wide variety of
+     * workloads and should be considered experimental.
+     * @name Configuration#safariYieldStrategy
+     * @since 6.0.0
+     * @type 'count' | 'time'
+     * @default 'count'
+     */
+    safariYieldStrategy: 'count'
   };
   Object.freeze(defaultConfig);
 
@@ -211,6 +226,18 @@ getJasmineRequireObj().Configuration = function(j$) {
       if (typeof changes.extraDescribeStackFrames !== 'undefined') {
         this.#values.extraDescribeStackFrames =
           changes.extraDescribeStackFrames;
+      }
+
+      if (typeof changes.safariYieldStrategy !== 'undefined') {
+        const v = changes.safariYieldStrategy;
+
+        if (v === 'count' || v === 'time') {
+          this.#values.safariYieldStrategy = v;
+        } else {
+          throw new Error(
+            "Invalid safariYieldStrategy value. Valid values are 'count' and 'time'."
+          );
+        }
       }
     }
   }

@@ -99,6 +99,7 @@ getJasmineRequireObj().Env = function(j$) {
 
       config.update(changes);
       deprecator.verboseDeprecations(config.verboseDeprecations);
+      stackClearer.setSafariYieldStrategy(config.safariYieldStrategy);
     };
 
     /**

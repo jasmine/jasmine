@@ -28,7 +28,8 @@ module.exports = {
     'helpers/resetEnv.js'
   ],
   env: {
-    forbidDuplicateNames: true
+    forbidDuplicateNames: true,
+    safariYieldStrategy: 'time'
   },
   random: true,
   browser: {

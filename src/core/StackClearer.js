@@ -2,21 +2,46 @@ getJasmineRequireObj().StackClearer = function(j$) {
   'use strict';
 
   const maxInlineCallCount = 10;
+  // 25ms gives a good balance of speed and UI responsiveness when running
+  // jasmine-core's own tests in Safari 18. The exact value isn't critical.
+  const safariYieldIntervalMs = 25;
 
   function browserQueueMicrotaskImpl(global) {
     const unclampedSetTimeout = getUnclampedSetTimeout(global);
     const { queueMicrotask } = global;
-    let currentCallCount = 0;
+    let yieldStrategy = 'count';
+    let currentCallCount = 0; // for count strategy
+    let nextSetTimeoutTime; // for time strategy
 
     return {
       clearStack(fn) {
         currentCallCount++;
+        let shouldSetTimeout;
 
-        if (currentCallCount < maxInlineCallCount) {
-          queueMicrotask(fn);
+        if (yieldStrategy === 'time') {
+          const now = new Date().getTime();
+          shouldSetTimeout = now >= nextSetTimeoutTime;
+          if (shouldSetTimeout) {
+            nextSetTimeoutTime = now + safariYieldIntervalMs;
+          }
         } else {
-          currentCallCount = 0;
+          shouldSetTimeout = currentCallCount >= maxInlineCallCount;
+          if (shouldSetTimeout) {
+            currentCallCount = 0;
+          }
+        }
+
+        if (shouldSetTimeout) {
           unclampedSetTimeout(fn);
+        } else {
+          queueMicrotask(fn);
+        }
+      },
+      setSafariYieldStrategy(strategy) {
+        yieldStrategy = strategy;
+
+        if (yieldStrategy === 'time') {
+          nextSetTimeoutTime = new Date().getTime() + safariYieldIntervalMs;
         }
       }
     };
@@ -28,7 +53,8 @@ getJasmineRequireObj().StackClearer = function(j$) {
     return {
       clearStack(fn) {
         queueMicrotask(fn);
-      }
+      },
+      setSafariYieldStrategy() {}
     };
   }
 
@@ -48,7 +74,8 @@ getJasmineRequireObj().StackClearer = function(j$) {
           currentCallCount = 0;
           setTimeout(fn);
         }
-      }
+      },
+      setSafariYieldStrategy() {}
     };
   }
 

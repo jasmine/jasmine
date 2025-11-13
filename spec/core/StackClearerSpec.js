@@ -180,30 +180,82 @@ describe('StackClearer', function() {
       expect(called).toBe(true);
     });
 
-    it('uses setTimeout instead of queueMicrotask every 10 calls to make sure we release the CPU', function() {
-      const queueMicrotask = jasmine.createSpy('queueMicrotask');
-      const setTimeout = jasmine.createSpy('setTimeout');
-      const global = {
-        ...makeGlobal(),
-        queueMicrotask,
-        setTimeout
-      };
-      const { clearStack } = privateUnderTest.getStackClearer(global);
+    function hasSetTimeoutBehavior(configure) {
+      it('uses setTimeout instead of queueMicrotask every 10 calls', function() {
+        const queueMicrotask = jasmine.createSpy('queueMicrotask');
+        const setTimeout = jasmine.createSpy('setTimeout');
+        const global = {
+          ...makeGlobal(),
+          queueMicrotask,
+          setTimeout
+        };
+        const stackClearer = privateUnderTest.getStackClearer(global);
 
-      for (let i = 0; i < 9; i++) {
-        clearStack(function() {});
-      }
+        if (configure) {
+          configure(stackClearer);
+        }
 
-      expect(queueMicrotask).toHaveBeenCalled();
-      expect(setTimeout).not.toHaveBeenCalled();
+        for (let i = 0; i < 9; i++) {
+          stackClearer.clearStack(function() {});
+        }
 
-      clearStack(function() {});
-      expect(queueMicrotask).toHaveBeenCalledTimes(9);
-      expect(setTimeout).toHaveBeenCalledTimes(1);
+        expect(queueMicrotask).toHaveBeenCalled();
+        expect(setTimeout).not.toHaveBeenCalled();
 
-      clearStack(function() {});
-      expect(queueMicrotask).toHaveBeenCalledTimes(10);
-      expect(setTimeout).toHaveBeenCalledTimes(1);
+        stackClearer.clearStack(function() {});
+        expect(queueMicrotask).toHaveBeenCalledTimes(9);
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+
+        stackClearer.clearStack(function() {});
+        expect(queueMicrotask).toHaveBeenCalledTimes(10);
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+      });
+    }
+
+    hasSetTimeoutBehavior();
+
+    describe('With yield strategy explicitly set to count', function() {
+      hasSetTimeoutBehavior(function(stackClearer) {
+        stackClearer.setSafariYieldStrategy('count');
+      });
+    });
+
+    describe('With yield strategy set to time', function() {
+      beforeEach(function() {
+        jasmine.clock().install();
+        jasmine.clock().mockDate();
+      });
+
+      afterEach(function() {
+        jasmine.clock().uninstall();
+      });
+
+      it('uses setTimeout instead of queueMicrotask every 25 milliseconds', function() {
+        const queueMicrotask = jasmine.createSpy('queueMicrotask');
+        const setTimeout = jasmine.createSpy('setTimeout');
+        const global = {
+          ...makeGlobal(),
+          queueMicrotask,
+          setTimeout
+        };
+        const stackClearer = privateUnderTest.getStackClearer(global);
+        stackClearer.setSafariYieldStrategy('time');
+
+        // 10+ counts should not trigger a setTimeout if they happen fast enough
+        jasmine.clock().tick(24);
+        for (let i = 0; i < 11; i++) {
+          stackClearer.clearStack(function() {});
+        }
+
+        expect(queueMicrotask).toHaveBeenCalled();
+        expect(setTimeout).not.toHaveBeenCalled();
+
+        queueMicrotask.calls.reset();
+        jasmine.clock().tick(1);
+        stackClearer.clearStack(function() {});
+        expect(queueMicrotask).not.toHaveBeenCalled();
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+      });
     });
   }
 
