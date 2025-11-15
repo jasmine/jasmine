@@ -167,18 +167,18 @@ describe('HtmlReporterV2', function() {
         '.jasmine-alert .jasmine-bar'
       );
 
-      expect(alertBars.length).toEqual(4);
-      expect(alertBars[1].innerHTML).toMatch(
+      expect(alertBars.length).toEqual(5);
+      expect(alertBars[2].innerHTML).toMatch(
         /spec deprecation.*\(in spec: a spec with a deprecation\)/
       );
-      expect(alertBars[1].getAttribute('class')).toEqual(
+      expect(alertBars[2].getAttribute('class')).toEqual(
         'jasmine-bar jasmine-warning'
       );
-      expect(alertBars[2].innerHTML).toMatch(
+      expect(alertBars[3].innerHTML).toMatch(
         /suite deprecation.*\(in suite: a suite with a deprecation\)/
       );
-      expect(alertBars[3].innerHTML).toMatch(/global deprecation/);
-      expect(alertBars[3].innerHTML).not.toMatch(/in /);
+      expect(alertBars[4].innerHTML).toMatch(/global deprecation/);
+      expect(alertBars[4].innerHTML).not.toMatch(/in /);
     });
 
     it('displays expandable stack traces', function() {
@@ -256,6 +256,214 @@ describe('HtmlReporterV2', function() {
       expect(alertBar.innerHTML).toMatch(
         /a deprecation<br>Note: This message will be shown only once/
       );
+    });
+  });
+
+  describe('The tab bar', function() {
+    function checkHidden(tabs, expected) {
+      const actual = Array.from(tabs).map(t =>
+        t.classList.contains('jasmine-hidden')
+      );
+      expect(actual)
+        .withContext('tab hiddenness')
+        .toEqual(expected);
+    }
+
+    describe('while Jasmine is running', function() {
+      it('hides all tabs', function() {
+        const reporter = setup();
+        reporter.initialize();
+        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        const tabs = container.querySelectorAll('.jasmine-tab');
+        expect(tabs.length).toEqual(3);
+        expect(tabs[0].textContent).toEqual('Spec List');
+        expect(tabs[1].textContent).toEqual('Failures');
+        expect(tabs[2].textContent).toEqual('Performance');
+        checkHidden(tabs, [true, true, true]);
+
+        // Results, even failures, should not show any tabs
+        reporter.specDone({
+          id: 1,
+          description: 'a failing spec',
+          fullName: 'a failing spec',
+          status: 'failed',
+          failedExpectations: [{}],
+          passedExpectations: []
+        });
+        checkHidden(tabs, [true, true, true]);
+      });
+    });
+
+    describe('when Jasmine is done', function() {
+      function hasSpecOrSuiteFailureBehavior(reportEvents) {
+        let reporter;
+
+        beforeEach(function() {
+          reporter = setup();
+          reporter.initialize();
+          reportEvents(reporter);
+        });
+
+        it('shows all three tabs', function() {
+          const tabs = container.querySelectorAll('.jasmine-tab');
+          checkHidden(tabs, [false, false, false]);
+        });
+
+        it('selects the Failures tab', function() {
+          const reporterNode = container.querySelector(
+            '.jasmine_html-reporter'
+          );
+          expect(reporterNode).toHaveClass('jasmine-failure-list');
+        });
+
+        it('switches between failure details and the spec summary', function() {
+          const tabs = container.querySelectorAll('.jasmine-tab');
+          let specListLink = () => tabs[0].querySelector('a');
+          let failuresLink = () => tabs[1].querySelector('a');
+          const reporterNode = container.querySelector(
+            '.jasmine_html-reporter'
+          );
+          expect(specListLink().textContent).toEqual('Spec List');
+          expect(failuresLink())
+            .withContext('failures link')
+            .toBeFalsy();
+
+          specListLink().click();
+          expect(reporterNode).toHaveClass('jasmine-spec-list');
+          expect(reporterNode).not.toHaveClass('jasmine-failure-list');
+          expect(specListLink())
+            .withContext('spec list link')
+            .toBeFalsy();
+          expect(failuresLink().textContent).toEqual('Failures');
+
+          failuresLink().click();
+          expect(reporterNode.getAttribute('class')).toMatch(
+            'jasmine-failure-list'
+          );
+          expect(failuresLink())
+            .withContext('failures link')
+            .toBeFalsy();
+          expect(specListLink().textContent).toEqual('Spec List');
+          expect(reporterNode).toHaveClass('jasmine-failure-list');
+          expect(reporterNode).not.toHaveClass('jasmine-spec-list');
+        });
+      }
+
+      function hasSpecAndSuiteSuccessBehavior(reportEvents) {
+        let reporter;
+
+        beforeEach(function() {
+          reporter = setup();
+          reporter.initialize();
+          reportEvents(reporter);
+        });
+
+        it('shows the Spec List and Performance tabs', function() {
+          const tabs = container.querySelectorAll('.jasmine-tab');
+          checkHidden(tabs, [false, true, false]);
+        });
+
+        it('shows the spec list view', function() {
+          const reporterNode = container.querySelector(
+            '.jasmine_html-reporter'
+          );
+          expect(reporterNode).toHaveClass('jasmine-spec-list');
+          expect(reporterNode).not.toHaveClass('jasmine-failure-list');
+        });
+      }
+
+      describe('with spec failures', function() {
+        hasSpecOrSuiteFailureBehavior(function(reporter) {
+          reporter.jasmineStarted({ totalSpecsDefined: 0 });
+          reporter.specDone({
+            id: 1,
+            description: 'a failing spec',
+            fullName: 'a failing spec',
+            status: 'failed',
+            failedExpectations: [{}],
+            passedExpectations: []
+          });
+          reporter.specDone({
+            id: 2,
+            description: 'a passing spec',
+            fullName: 'a passing spec',
+            status: 'passed',
+            failedExpectations: [],
+            passedExpectations: []
+          });
+          reporter.jasmineDone({});
+        });
+      });
+
+      describe('with suite failures', function() {
+        hasSpecOrSuiteFailureBehavior(function(reporter) {
+          reporter.jasmineStarted({ totalSpecsDefined: 0 });
+          reporter.specDone({
+            id: 1,
+            description: 'a failing spec',
+            fullName: 'a failing spec',
+            status: 'failed',
+            failedExpectations: [{}],
+            passedExpectations: []
+          });
+          reporter.specDone({
+            id: 2,
+            description: 'a passing spec',
+            fullName: 'a passing spec',
+            status: 'passed',
+            failedExpectations: [],
+            passedExpectations: []
+          });
+          reporter.jasmineDone({});
+        });
+      });
+
+      describe('without any failures', function() {
+        hasSpecAndSuiteSuccessBehavior(function(reporter) {
+          reporter.jasmineStarted({ totalSpecsDefined: 0 });
+          reporter.specDone({
+            id: 1,
+            description: 'a passing spec',
+            fullName: 'a passing spec',
+            status: 'passed',
+            failedExpectations: [],
+            passedExpectations: []
+          });
+          reporter.suiteDone({ id: 1 });
+          reporter.jasmineDone({});
+        });
+      });
+
+      describe('with only top suite failures', function() {
+        // Top suite failures are displayed in their own alert bars, so they
+        // don't cause the failures tab to be shown.
+        hasSpecAndSuiteSuccessBehavior(function(reporter) {
+          reporter.jasmineStarted({ totalSpecsDefined: 0 });
+          reporter.jasmineDone({
+            failedExpectations: [{}]
+          });
+        });
+      });
+
+      it('shows the slow spec view when the Performance tab is clicked', function() {
+        const reporter = setup();
+        reporter.initialize();
+        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.specDone({
+          duration: 1.2,
+          failedExpectations: [],
+          passedExpectations: []
+        });
+        reporter.jasmineDone({});
+        const tabs = container.querySelectorAll('.jasmine-tab');
+        let perfLink = tabs[2].querySelector('a');
+        const reporterNode = container.querySelector('.jasmine_html-reporter');
+        expect(perfLink.textContent).toEqual('Performance');
+        perfLink.click();
+        expect(reporterNode).toHaveClass('jasmine-performance');
+        expect(reporterNode.innerHTML).toContain('<h2>Performance</h2>');
+        expect(reporterNode.innerHTML).toContain('<td>1.2ms</td>');
+      });
     });
   });
 
@@ -449,21 +657,18 @@ describe('HtmlReporterV2', function() {
           ]
         });
 
-        const alertBars = container.querySelectorAll(
-          '.jasmine-alert .jasmine-bar'
+        const errorBars = container.querySelectorAll(
+          '.jasmine-alert .jasmine-bar.jasmine-errored'
         );
 
-        expect(alertBars.length).toEqual(3);
-        expect(alertBars[1].getAttribute('class')).toEqual(
-          'jasmine-bar jasmine-errored'
-        );
-        expect(alertBars[1].innerHTML).toMatch(
+        expect(errorBars.length).toEqual(2);
+        expect(errorBars[0].innerHTML).toMatch(
           /AfterAll Global After All Failure/
         );
-        expect(alertBars[2].innerHTML).toMatch(
+        expect(errorBars[1].innerHTML).toMatch(
           /Error during loading: Your JS is borken/
         );
-        expect(alertBars[2].innerHTML).not.toMatch(/line/);
+        expect(errorBars[1].innerHTML).not.toMatch(/line/);
       });
 
       it('does not display the "AfterAll" prefix for other error types', function() {
@@ -482,16 +687,16 @@ describe('HtmlReporterV2', function() {
           ]
         });
 
-        const alertBars = container.querySelectorAll(
-          '.jasmine-alert .jasmine-bar'
+        const errorBars = container.querySelectorAll(
+          '.jasmine-alert .jasmine-bar.jasmine-errored'
         );
 
-        expect(alertBars.length).toEqual(4);
-        expect(alertBars[1].textContent).toContain('load error');
-        expect(alertBars[2].textContent).toContain('lateExpectation error');
-        expect(alertBars[3].textContent).toContain('lateError error');
+        expect(errorBars.length).toEqual(3);
+        expect(errorBars[0].textContent).toContain('load error');
+        expect(errorBars[1].textContent).toContain('lateExpectation error');
+        expect(errorBars[2].textContent).toContain('lateError error');
 
-        for (let bar of alertBars) {
+        for (let bar of errorBars) {
           expect(bar.textContent).not.toContain('AfterAll');
         }
       });
@@ -512,12 +717,12 @@ describe('HtmlReporterV2', function() {
           ]
         });
 
-        const alertBars = container.querySelectorAll(
-          '.jasmine-alert .jasmine-bar'
+        const alertBar = container.querySelector(
+          '.jasmine-alert .jasmine-bar.jasmine-errored'
         );
 
-        expect(alertBars.length).toEqual(2);
-        expect(alertBars[1].innerHTML).toMatch(
+        expect(alertBar).toBeTruthy();
+        expect(alertBar.innerHTML).toMatch(
           /Error during loading: Your JS is borken in some\/file.js line 42/
         );
       });
@@ -758,12 +963,12 @@ describe('HtmlReporterV2', function() {
       });
 
       it('reports the specs counts', function() {
-        const alertBars = container.querySelectorAll(
-          '.jasmine-alert .jasmine-bar'
+        const resultBar = container.querySelector(
+          '.jasmine-alert .jasmine-bar.jasmine-overall-result'
         );
 
-        expect(alertBars.length).toEqual(1);
-        expect(alertBars[0].innerHTML).toMatch(/2 specs, 0 failures/);
+        expect(resultBar).toBeTruthy();
+        expect(resultBar.innerHTML).toMatch(/2 specs, 0 failures/);
       });
 
       it('reports no failure details', function() {
@@ -1070,23 +1275,6 @@ describe('HtmlReporterV2', function() {
           `/?path=${encodeURIComponent(
             '["A suite","inner suite","a failing spec"]'
           )}`
-        );
-      });
-
-      it('allows switching between failure details and the spec summary', function() {
-        const menuBar = container.querySelectorAll('.jasmine-bar')[1];
-
-        expect(menuBar.getAttribute('class')).not.toMatch(/hidden/);
-
-        const link = menuBar.querySelector('a');
-        expect(link.innerHTML).toEqual('Failures');
-        expect(link.getAttribute('href')).toEqual('#');
-      });
-
-      it("sets the reporter to 'Failures List' mode", function() {
-        const reporterNode = container.querySelector('.jasmine_html-reporter');
-        expect(reporterNode.getAttribute('class')).toMatch(
-          'jasmine-failure-list'
         );
       });
     });

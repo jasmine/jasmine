@@ -3,6 +3,10 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
   const { createDom, noExpectations } = j$.private.htmlReporterUtils;
 
+  const specListTabId = 'jasmine-specListTab';
+  const failuresTabId = 'jasmine-failuresTab';
+  const perfTabId = 'jasmine-perfTab';
+
   /**
    * @class HtmlReporterV2
    * @classdesc Displays results and allows re-running individual specs and suites.
@@ -31,6 +35,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
     // Sub-views
     #alerts;
     #statusBar;
+    #tabBar;
     #progress;
     #banner;
     #failures;
@@ -68,6 +73,25 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       this.#statusBar = new j$.private.OverallStatusBar(this.#urlBuilder);
       this.#statusBar.showRunning();
       this.#alerts.addBar(this.#statusBar.rootEl);
+
+      this.#tabBar = new j$.private.TabBar(
+        [
+          { id: specListTabId, label: 'Spec List' },
+          { id: failuresTabId, label: 'Failures' },
+          { id: perfTabId, label: 'Performance' }
+        ],
+        tabId => {
+          if (tabId === specListTabId) {
+            this.#setMenuModeTo('jasmine-spec-list');
+          } else if (tabId === failuresTabId) {
+            this.#setMenuModeTo('jasmine-failure-list');
+          } else {
+            this.#setMenuModeTo('jasmine-performance');
+          }
+        }
+      );
+      this.#alerts.addBar(this.#tabBar.rootEl);
+
       this.#progress = new ProgressView();
       this.#banner = new j$.private.Banner(
         this.#queryString.navigateWithNewParam.bind(this.#queryString),
@@ -158,15 +182,17 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       );
       summary.addResults(this.#stateBuilder.topResults);
       results.appendChild(summary.rootEl);
+      const perf = new j$.private.PerformanceView();
+      perf.addResults(this.#stateBuilder.topResults);
+      results.appendChild(perf.rootEl);
+      this.#tabBar.showTab(specListTabId);
+      this.#tabBar.showTab(perfTabId);
 
       if (this.#stateBuilder.anyNonTopSuiteFailures) {
-        this.#alerts.addFailureToggle(
-          () => this.#setMenuModeTo('jasmine-failure-list'),
-          () => this.#setMenuModeTo('jasmine-spec-list')
-        );
-
-        this.#setMenuModeTo('jasmine-failure-list');
-        this.#failures.show();
+        this.#tabBar.showTab(failuresTabId);
+        this.#tabBar.selectTab(failuresTabId);
+      } else {
+        this.#tabBar.selectTab(specListTabId);
       }
     }
 
@@ -205,7 +231,6 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       this.rootEl.value = this.rootEl.value + 1;
 
       if (result.status === 'failed') {
-        // TODO: also a non-color indicator
         this.rootEl.classList.add('failed');
       }
     }

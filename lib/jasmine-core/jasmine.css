@@ -198,11 +198,17 @@ body {
   color: white;
 }
 .jasmine_html-reporter.jasmine-spec-list .jasmine-bar.jasmine-menu.jasmine-failure-list,
-.jasmine_html-reporter.jasmine-spec-list .jasmine-results .jasmine-failures {
+.jasmine_html-reporter.jasmine-spec-list .jasmine-results .jasmine-failures,
+.jasmine_html-reporter.jasmine-spec-list .jasmine-performance-view {
   display: none;
 }
 .jasmine_html-reporter.jasmine-failure-list .jasmine-bar.jasmine-menu.jasmine-spec-list,
-.jasmine_html-reporter.jasmine-failure-list .jasmine-summary {
+.jasmine_html-reporter.jasmine-failure-list .jasmine-summary,
+.jasmine_html-reporter.jasmine-failure-list .jasmine-performance-view {
+  display: none;
+}
+.jasmine_html-reporter.jasmine-performance .jasmine-results .jasmine-failures,
+.jasmine_html-reporter.jasmine-performance .jasmine-summary {
   display: none;
 }
 .jasmine_html-reporter .jasmine-results {
@@ -323,4 +329,23 @@ body {
 }
 .jasmine_html-reporter .jasmine-debug-log .jasmine-debug-log-msg {
   white-space: pre;
+}
+
+.jasmine-hidden {
+  display: none;
+}
+
+.jasmine-tab + .jasmine-tab:before {
+  content: " | ";
+}
+
+.jasmine-performance-view h2, .jasmine-performance-view h3 {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.jasmine-performance-view table {
+  border-spacing: 5px;
+}
+.jasmine-performance-view th, .jasmine-performance-view td {
+  text-align: left;
 }

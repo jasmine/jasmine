@@ -142,14 +142,50 @@ jasmineRequire.HtmlReporter = function(j$) {
       results.appendChild(summary.rootEl);
 
       if (this.#stateBuilder.anyNonTopSuiteFailures) {
-        this.#alerts.addFailureToggle(
-          () => this.#setMenuModeTo('jasmine-failure-list'),
-          () => this.#setMenuModeTo('jasmine-spec-list')
-        );
-
+        this.#addFailureToggle();
         this.#setMenuModeTo('jasmine-failure-list');
         this.#failures.show();
       }
+    }
+
+    #addFailureToggle() {
+      const onClickFailures = () => this.#setMenuModeTo('jasmine-failure-list');
+      const onClickSpecList = () => this.#setMenuModeTo('jasmine-spec-list');
+      const failuresLink = createDom(
+        'a',
+        { className: 'jasmine-failures-menu', href: '#' },
+        'Failures'
+      );
+      let specListLink = createDom(
+        'a',
+        { className: 'jasmine-spec-list-menu', href: '#' },
+        'Spec List'
+      );
+
+      failuresLink.onclick = function() {
+        onClickFailures();
+        return false;
+      };
+
+      specListLink.onclick = function() {
+        onClickSpecList();
+        return false;
+      };
+
+      this.#alerts.addBar(
+        createDom(
+          'span',
+          { className: 'jasmine-menu jasmine-bar jasmine-spec-list' },
+          [createDom('span', {}, 'Spec List | '), failuresLink]
+        )
+      );
+      this.#alerts.addBar(
+        createDom(
+          'span',
+          { className: 'jasmine-menu jasmine-bar jasmine-failure-list' },
+          [specListLink, createDom('span', {}, ' | Failures ')]
+        )
+      );
     }
 
     #find(selector) {
