@@ -118,10 +118,8 @@ describe('The jasmine namespace', function() {
 
     if (includeHtml) {
       // jasmine-html.js
-      result.add('HtmlReporter');
       result.add('HtmlReporterV2');
       result.add('HtmlReporterV2Urls');
-      result.add('HtmlSpecFilter');
       result.add('QueryString');
     }
 

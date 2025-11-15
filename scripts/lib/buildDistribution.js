@@ -35,8 +35,6 @@ function concatFiles() {
     {
       src: [
         'src/html/requireHtml.js',
-        'src/html/HtmlReporter.js',
-        'src/html/HtmlSpecFilter.js',
         'src/html/ResultsNode.js',
         'src/html/QueryString.js',
         'src/html/**/*.js'

@@ -24,7 +24,6 @@ body {
   line-height: 14px;
 }
 .jasmine_html-reporter .jasmine-banner,
-.jasmine_html-reporter .jasmine-symbol-summary,
 .jasmine_html-reporter .jasmine-summary,
 .jasmine_html-reporter .jasmine-result-message,
 .jasmine_html-reporter .jasmine-spec .jasmine-description,
@@ -64,57 +63,6 @@ body {
   line-height: 28px;
   padding-right: 9px;
   font-size: 12px;
-}
-.jasmine_html-reporter .jasmine-symbol-summary {
-  overflow: hidden;
-  margin: 14px 0;
-}
-.jasmine_html-reporter .jasmine-symbol-summary li {
-  display: inline-block;
-  height: 10px;
-  width: 14px;
-  font-size: 16px;
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-passed {
-  font-size: 14px;
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-passed:before {
-  color: #007069;
-  content: "•";
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-failed {
-  line-height: 9px;
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-failed:before {
-  color: #ca3a11;
-  content: "×";
-  font-weight: bold;
-  margin-left: -1px;
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded {
-  font-size: 14px;
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded:before {
-  color: #bababa;
-  content: "•";
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-excluded-no-display {
-  font-size: 14px;
-  display: none;
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-pending {
-  line-height: 17px;
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-pending:before {
-  color: #ba9d37;
-  content: "*";
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-empty {
-  font-size: 14px;
-}
-.jasmine_html-reporter .jasmine-symbol-summary li.jasmine-empty:before {
-  color: #ba9d37;
-  content: "•";
 }
 .jasmine_html-reporter progress {
   width: 100%;
@@ -197,12 +145,10 @@ body {
 .jasmine_html-reporter .jasmine-bar a {
   color: white;
 }
-.jasmine_html-reporter.jasmine-spec-list .jasmine-bar.jasmine-menu.jasmine-failure-list,
 .jasmine_html-reporter.jasmine-spec-list .jasmine-results .jasmine-failures,
 .jasmine_html-reporter.jasmine-spec-list .jasmine-performance-view {
   display: none;
 }
-.jasmine_html-reporter.jasmine-failure-list .jasmine-bar.jasmine-menu.jasmine-spec-list,
 .jasmine_html-reporter.jasmine-failure-list .jasmine-summary,
 .jasmine_html-reporter.jasmine-failure-list .jasmine-performance-view {
   display: none;
