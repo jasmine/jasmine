@@ -338,3 +338,14 @@ body {
 .jasmine-tab + .jasmine-tab:before {
   content: " | ";
 }
+
+.jasmine-performance-view h2, .jasmine-performance-view h3 {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.jasmine-performance-view table {
+  border-spacing: 5px;
+}
+.jasmine-performance-view th, .jasmine-performance-view td {
+  text-align: left;
+}

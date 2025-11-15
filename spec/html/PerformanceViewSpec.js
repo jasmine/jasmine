@@ -44,6 +44,42 @@ describe('PerformanceView', function() {
     expect(subject.textContent).not.toContain('spec 0');
   });
 
+  it('shows mean and median run times for an odd number of specs', function() {
+    const stateBuilder = new privateUnderTest.ResultsStateBuilder();
+    const subject = new privateUnderTest.PerformanceView();
+
+    stateBuilder.specDone({ duration: 1 });
+    stateBuilder.specDone({ duration: 2 });
+    stateBuilder.specDone({ duration: 5 });
+    subject.addResults(stateBuilder.topResults);
+
+    expect(subject.rootEl.textContent).toContain('Mean spec run time: 3ms');
+    expect(subject.rootEl.textContent).toContain('Median spec run time: 2ms');
+  });
+
+  it('shows mean and median run times for an even number of specs', function() {
+    const stateBuilder = new privateUnderTest.ResultsStateBuilder();
+    const subject = new privateUnderTest.PerformanceView();
+
+    stateBuilder.specDone({ duration: 1 });
+    stateBuilder.specDone({ duration: 3 });
+    stateBuilder.specDone({ duration: 10 });
+    stateBuilder.specDone({ duration: 2 });
+    subject.addResults(stateBuilder.topResults);
+
+    expect(subject.rootEl.textContent).toContain('Mean spec run time: 4ms');
+    expect(subject.rootEl.textContent).toContain('Median spec run time: 2ms');
+  });
+
+  it('copes with 0 specs', function() {
+    const stateBuilder = new privateUnderTest.ResultsStateBuilder();
+    const subject = new privateUnderTest.PerformanceView();
+
+    expect(function() {
+      subject.addResults(stateBuilder.topResults);
+    }).not.toThrow();
+  });
+
   it('filters out excluded specs', function() {
     const stateBuilder = new privateUnderTest.ResultsStateBuilder();
     stateBuilder.specDone({
@@ -65,5 +101,7 @@ describe('PerformanceView', function() {
     const rows = Array.from(subject.rootEl.querySelectorAll('tbody tr'));
     const names = rows.map(r => r.querySelectorAll('td')[1].textContent);
     expect(names).toEqual(['spec C', 'spec A']);
+    expect(subject.rootEl.textContent).toContain('Mean spec run time: 3ms');
+    expect(subject.rootEl.textContent).toContain('Median spec run time: 2ms');
   });
 });
