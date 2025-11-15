@@ -5,6 +5,7 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
   const specListTabId = 'jasmine-specListTab';
   const failuresTabId = 'jasmine-failuresTab';
+  const perfTabId = 'jasmine-perfTab';
 
   /**
    * @class HtmlReporterV2
@@ -76,13 +77,16 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       this.#tabBar = new j$.private.TabBar(
         [
           { id: specListTabId, label: 'Spec List' },
-          { id: failuresTabId, label: 'Failures' }
+          { id: failuresTabId, label: 'Failures' },
+          { id: perfTabId, label: 'Performance' }
         ],
         tabId => {
           if (tabId === specListTabId) {
             this.#setMenuModeTo('jasmine-spec-list');
-          } else {
+          } else if (tabId === failuresTabId) {
             this.#setMenuModeTo('jasmine-failure-list');
+          } else {
+            this.#setMenuModeTo('jasmine-performance');
           }
         }
       );
@@ -178,9 +182,13 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       );
       summary.addResults(this.#stateBuilder.topResults);
       results.appendChild(summary.rootEl);
+      const perf = new j$.private.PerformanceView();
+      perf.addResults(this.#stateBuilder.topResults);
+      results.appendChild(perf.rootEl);
+      this.#tabBar.showTab(specListTabId);
+      this.#tabBar.showTab(perfTabId);
 
       if (this.#stateBuilder.anyNonTopSuiteFailures) {
-        this.#tabBar.showTab(specListTabId);
         this.#tabBar.showTab(failuresTabId);
         this.#tabBar.selectTab(failuresTabId);
       } else {

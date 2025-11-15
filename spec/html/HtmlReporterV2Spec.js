@@ -275,10 +275,11 @@ describe('HtmlReporterV2', function() {
         reporter.initialize();
         reporter.jasmineStarted({ totalSpecsDefined: 0 });
         const tabs = container.querySelectorAll('.jasmine-tab');
-        expect(tabs.length).toEqual(2);
+        expect(tabs.length).toEqual(3);
         expect(tabs[0].textContent).toEqual('Spec List');
         expect(tabs[1].textContent).toEqual('Failures');
-        checkHidden(tabs, [true, true]);
+        expect(tabs[2].textContent).toEqual('Performance');
+        checkHidden(tabs, [true, true, true]);
 
         // Results, even failures, should not show any tabs
         reporter.specDone({
@@ -289,7 +290,7 @@ describe('HtmlReporterV2', function() {
           failedExpectations: [{}],
           passedExpectations: []
         });
-        checkHidden(tabs, [true, true]);
+        checkHidden(tabs, [true, true, true]);
       });
     });
 
@@ -303,9 +304,9 @@ describe('HtmlReporterV2', function() {
           reportEvents(reporter);
         });
 
-        it('shows the Spec List and Failures tabs', function() {
+        it('shows all three tabs', function() {
           const tabs = container.querySelectorAll('.jasmine-tab');
-          checkHidden(tabs, [false, false]);
+          checkHidden(tabs, [false, false, false]);
         });
 
         it('selects the Failures tab', function() {
@@ -357,9 +358,9 @@ describe('HtmlReporterV2', function() {
           reportEvents(reporter);
         });
 
-        it('does not show any tabs', function() {
+        it('shows the Spec List and Performance tabs', function() {
           const tabs = container.querySelectorAll('.jasmine-tab');
-          checkHidden(tabs, [true, true]);
+          checkHidden(tabs, [false, true, false]);
         });
 
         it('shows the spec list view', function() {
@@ -442,6 +443,26 @@ describe('HtmlReporterV2', function() {
             failedExpectations: [{}]
           });
         });
+      });
+
+      it('shows the slow spec view when the Performance tab is clicked', function() {
+        const reporter = setup();
+        reporter.initialize();
+        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.specDone({
+          duration: 1.2,
+          failedExpectations: [],
+          passedExpectations: []
+        });
+        reporter.jasmineDone({});
+        const tabs = container.querySelectorAll('.jasmine-tab');
+        let perfLink = tabs[2].querySelector('a');
+        const reporterNode = container.querySelector('.jasmine_html-reporter');
+        expect(perfLink.textContent).toEqual('Performance');
+        perfLink.click();
+        expect(reporterNode).toHaveClass('jasmine-performance');
+        expect(reporterNode.innerHTML).toContain('<h2>Performance</h2>');
+        expect(reporterNode.innerHTML).toContain('<td>1.2ms</td>');
       });
     });
   });

@@ -198,11 +198,17 @@ body {
   color: white;
 }
 .jasmine_html-reporter.jasmine-spec-list .jasmine-bar.jasmine-menu.jasmine-failure-list,
-.jasmine_html-reporter.jasmine-spec-list .jasmine-results .jasmine-failures {
+.jasmine_html-reporter.jasmine-spec-list .jasmine-results .jasmine-failures,
+.jasmine_html-reporter.jasmine-spec-list .jasmine-performance-view {
   display: none;
 }
 .jasmine_html-reporter.jasmine-failure-list .jasmine-bar.jasmine-menu.jasmine-spec-list,
-.jasmine_html-reporter.jasmine-failure-list .jasmine-summary {
+.jasmine_html-reporter.jasmine-failure-list .jasmine-summary,
+.jasmine_html-reporter.jasmine-failure-list .jasmine-performance-view {
+  display: none;
+}
+.jasmine_html-reporter.jasmine-performance .jasmine-results .jasmine-failures,
+.jasmine_html-reporter.jasmine-performance .jasmine-summary {
   display: none;
 }
 .jasmine_html-reporter .jasmine-results {

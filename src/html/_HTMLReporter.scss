@@ -280,15 +280,25 @@ body {
   }
 
   // simplify toggle control between the two menu bars
+  // TODO: clean this up once HtmlReporter is removed
   &.jasmine-spec-list {
     .jasmine-bar.jasmine-menu.jasmine-failure-list,
-    .jasmine-results .jasmine-failures {
+    .jasmine-results .jasmine-failures,
+    .jasmine-performance-view {
       display: none;
     }
   }
 
   &.jasmine-failure-list {
     .jasmine-bar.jasmine-menu.jasmine-spec-list,
+    .jasmine-summary,
+    .jasmine-performance-view {
+      display: none;
+    }
+  }
+
+  &.jasmine-performance {
+    .jasmine-results .jasmine-failures,
     .jasmine-summary {
       display: none;
     }
