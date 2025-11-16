@@ -1635,16 +1635,31 @@ describe('Env integration', function() {
       });
     });
 
+    env.describe('Another Suite', function() {
+      env.describe('with xdescribes in it', function() {
+        env.xdescribe('xd out', function() {
+          env.describe('nested again', function() {
+            env.it('with a spec', function() {
+              env.expect().nothing();
+            });
+          });
+          env.it('with another spec', function() {
+            env.expect().nothing();
+          });
+        });
+      });
+    });
+
     await env.execute();
 
     expect(reporter.jasmineStarted).toHaveBeenCalledWith({
-      totalSpecsDefined: 6,
+      totalSpecsDefined: 8,
       order: jasmine.any(jasmineUnderTest.Order),
       parallel: false
     });
 
-    expect(reporter.specStarted.calls.count()).toBe(6);
-    expect(reporter.specDone.calls.count()).toBe(6);
+    expect(reporter.specStarted.calls.count()).toBe(8);
+    expect(reporter.specDone.calls.count()).toBe(8);
 
     const baseSpecEvent = {
       passedExpectations: [],
@@ -1762,9 +1777,31 @@ describe('Env integration', function() {
       pendingReason: 'Temporarily disabled with xit',
       duration: jasmine.any(Number)
     });
-
-    expect(reporter.suiteStarted.calls.count()).toBe(3);
-    expect(reporter.suiteDone.calls.count()).toBe(3);
+    expect(reporter.specDone.calls.argsFor(6)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'with a spec',
+      status: 'pending',
+      fullName:
+        'Another Suite with xdescribes in it xd out nested again with a spec',
+      parentSuiteId:
+        suiteFullNameToId[
+          'Another Suite with xdescribes in it xd out nested again'
+        ],
+      pendingReason: 'Temporarily disabled with xdescribe',
+      duration: jasmine.any(Number)
+    });
+    expect(reporter.specDone.calls.argsFor(7)[0]).toEqual({
+      ...baseSpecEvent,
+      description: 'with another spec',
+      status: 'pending',
+      fullName: 'Another Suite with xdescribes in it xd out with another spec',
+      parentSuiteId:
+        suiteFullNameToId['Another Suite with xdescribes in it xd out'],
+      pendingReason: 'Temporarily disabled with xdescribe',
+      duration: jasmine.any(Number)
+    });
+    expect(reporter.suiteStarted.calls.count()).toBe(7);
+    expect(reporter.suiteDone.calls.count()).toBe(7);
 
     const baseSuiteEvent = {
       id: jasmine.any(String),
