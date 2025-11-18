@@ -5,7 +5,7 @@ describe('Deprecator', function() {
       spyOn(console, 'error');
     });
 
-    it('logs the mesage without context when the runnable is the top suite', function() {
+    it('logs the message without context when the runnable is the top suite', function() {
       const runnable = { addDeprecationWarning: function() {} };
       const deprecator = new jasmineUnderTest.Deprecator(runnable);
       deprecator.verboseDeprecations(true);
