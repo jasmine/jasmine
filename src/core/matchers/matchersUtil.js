@@ -13,7 +13,7 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     this.customTesters_ = options.customTesters || [];
     /**
      * Formats a value for use in matcher failure messages and similar contexts,
-     * taking into account the current set of custom value formatters.
+     * taking into account the current set of custom object formatters.
      * @function
      * @name MatchersUtil#pp
      * @since 3.6.0

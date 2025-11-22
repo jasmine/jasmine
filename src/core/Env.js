@@ -821,6 +821,13 @@ getJasmineRequireObj().Env = function(j$) {
       }
     };
 
+    this.pp = function(value) {
+      const pp = runner.currentRunable()
+        ? runableResources.makePrettyPrinter()
+        : j$.private.basicPrettyPrinter;
+      return pp(value);
+    };
+
     this.cleanup_ = function() {
       uninstallGlobalErrors();
     };

@@ -3842,6 +3842,34 @@ describe('Env integration', function() {
     });
   });
 
+  describe('pp', function() {
+    it("pretty-prints using the current runable's custom object formatters", async function() {
+      env.it('a spec', function() {
+        env.addCustomObjectFormatter(function(x) {
+          if (x === 1) {
+            return 'hi!';
+          }
+        });
+        env.expect(env.pp(1)).toEqual('hi!');
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+
+      await env.execute();
+
+      expect(reporter.specDone).toHaveBeenCalledWith(
+        jasmine.objectContaining({
+          failedExpectations: []
+        })
+      );
+    });
+
+    it('works when there is no current runable', function() {
+      expect(env.pp({ some: 'thing' })).toEqual("Object({ some: 'thing' })");
+    });
+  });
+
   it('forbids duplicates when forbidDuplicateNames is true', function() {
     env.configure({ forbidDuplicateNames: true });
     env.it('a spec');

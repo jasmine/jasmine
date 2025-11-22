@@ -499,6 +499,21 @@ getJasmineRequireObj().interface = function(jasmine, env) {
   };
 
   /**
+   * Formats a value for display, taking into account the current set of
+   * custom object formatters.
+   *
+   * @name jasmine.pp
+   * @function
+   * @since 6.0.0
+   * @param {*} value The value to pretty-print
+   * @return {string} The pretty-printed value
+   * @see {MatchersUtil#pp}
+   */
+  jasmine.pp = function(value) {
+    return env.pp(value);
+  };
+
+  /**
    * {@link AsymmetricEqualityTester|Asymmetric equality testers} allow for
    * non-exact matching in matchers that use Jasmine's deep value equality
    * semantics, such as {@link matchers#toEqual|toEqual},
