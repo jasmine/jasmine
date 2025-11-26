@@ -1,4 +1,4 @@
-getJasmineRequireObj().Clock = function() {
+getJasmineRequireObj().Clock = function(j$) {
   'use strict';
 
   /* global process */
@@ -191,6 +191,9 @@ callbacks to execute _before_ running the next one.
     clearTimeout[IsMockClockTimingFn] = true;
     setInterval[IsMockClockTimingFn] = true;
     clearInterval[IsMockClockTimingFn] = true;
+
+    j$.private.deprecateMonkeyPatching(this);
+
     return this;
 
     // Advances the Clock's time until the mode changes.

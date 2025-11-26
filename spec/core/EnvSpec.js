@@ -26,8 +26,6 @@ describe('Env', function() {
 
   describe('#topSuite', function() {
     it('returns an object that describes the tree of suites and specs', function() {
-      spyOn(env, 'deprecated');
-
       env.it('a top level spec');
       env.describe('a suite', function() {
         env.it('a spec');
@@ -123,7 +121,6 @@ describe('Env', function() {
   });
 
   it('ignores configuration properties that are present but undefined', function() {
-    spyOn(env, 'deprecated');
     const initialConfig = {
       random: true,
       seed: '123',
@@ -763,7 +760,6 @@ describe('Env', function() {
 
   it("does not expose the suite as 'this'", function() {
     let suiteThis;
-    spyOn(env, 'deprecated');
 
     env.describe('a suite', function() {
       suiteThis = this;
@@ -877,5 +873,38 @@ describe('Env', function() {
         env.configure({});
       }).toThrowError('Jasmine cannot be configured via Env in parallel mode');
     });
+  });
+
+  describe('Warning about monkey patching', function() {
+    const names = [
+      'describe',
+      'xdescribe',
+      'fdescribe',
+      'it',
+      'xit',
+      'fit',
+      'beforeEach',
+      'afterEach',
+      'beforeAll',
+      'afterAll'
+    ];
+
+    for (const name of names) {
+      it(`warns if Env#${name} is monkey patched`, function() {
+        spyOn(console, 'error');
+        const patch = {};
+        env[name] = patch;
+
+        // eslint-disable-next-line no-console
+        expect(console.error).toHaveBeenCalledOnceWith(
+          jasmine.stringContaining('DEPRECATION: Monkey patching detected.')
+        );
+        // eslint-disable-next-line no-console
+        expect(console.error).toHaveBeenCalledOnceWith(
+          jasmine.stringContaining('EnvSpec.js')
+        );
+        expect(env[name]).toBe(patch);
+      });
+    }
   });
 });

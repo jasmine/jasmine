@@ -170,8 +170,15 @@ describe('base helpers', function() {
   });
 
   describe('debugLog', function() {
+    beforeEach(function() {
+      privateUnderTest.currentEnv_ = jasmine.createSpyObj('env', ['debugLog']);
+    });
+
+    afterEach(function() {
+      privateUnderTest.currentEnv_ = null;
+    });
+
     it("forwards to the current env's debugLog function", function() {
-      spyOn(jasmineUnderTest.getEnv(), 'debugLog');
       jasmineUnderTest.debugLog('a message');
       expect(jasmineUnderTest.getEnv().debugLog).toHaveBeenCalledWith(
         'a message'

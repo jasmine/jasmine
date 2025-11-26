@@ -20,9 +20,14 @@ var getJasmineRequireObj = (function() {
   }
 
   getJasmineRequire().core = function(jRequire) {
-    const j$ = { private: {} };
+    const j$ = {};
+    Object.defineProperty(j$, 'private', {
+      enumerable: true,
+      value: {}
+    });
 
     jRequire.base(j$, globalThis);
+    j$.private.deprecateMonkeyPatching = jRequire.deprecateMonkeyPatching(j$);
     j$.private.util = jRequire.util(j$);
     j$.private.errors = jRequire.errors();
     j$.private.formatErrorMsg = jRequire.formatErrorMsg(j$);
@@ -32,7 +37,7 @@ var getJasmineRequireObj = (function() {
     j$.private.CallTracker = jRequire.CallTracker(j$);
     j$.private.MockDate = jRequire.MockDate(j$);
     j$.private.getStackClearer = jRequire.StackClearer(j$);
-    j$.private.Clock = jRequire.Clock();
+    j$.private.Clock = jRequire.Clock(j$);
     j$.private.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler(j$);
     j$.private.Deprecator = jRequire.Deprecator(j$);
     j$.private.Configuration = jRequire.Configuration(j$);
@@ -97,6 +102,20 @@ var getJasmineRequireObj = (function() {
 
     j$.private.loadedAsBrowserEsm =
       globalThis.document && !globalThis.document.currentScript;
+
+    j$.private.deprecateMonkeyPatching(j$, [
+      // These are meant to be set by users.
+      'DEFAULT_TIMEOUT_INTERVAL',
+      'MAX_PRETTY_PRINT_ARRAY_LENGTH',
+      'MAX_PRETTY_PRINT_CHARS',
+      'MAX_PRETTY_PRINT_DEPTH',
+
+      // These are part of the deprecation warning mechanism. To avoid infinite
+      // recursion, they're separately protected in a way that doesn't emit
+      // deprecation warnings.
+      'private',
+      'getEnv'
+    ]);
 
     return j$;
   };

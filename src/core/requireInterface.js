@@ -369,6 +369,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      */
     jasmine: jasmine
   };
+  const existingKeys = Object.keys(jasmine);
 
   /**
    * Add a custom equality tester for the current scope of specs.
@@ -534,6 +535,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
    *
    * @namespace asymmetricEqualityTesters
    */
+
+  jasmine.private.deprecateMonkeyPatching(jasmine, existingKeys);
 
   return jasmineInterface;
 };

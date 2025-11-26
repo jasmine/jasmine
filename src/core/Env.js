@@ -296,10 +296,13 @@ getJasmineRequireObj().Env = function(j$) {
      * @param {String|Error} deprecation The deprecation message
      * @param {Object} [options] Optional extra options, as described above
      */
-    this.deprecated = function(deprecation, options) {
-      const runable = runner.currentRunable() || topSuite;
-      deprecator.addDeprecationWarning(runable, deprecation, options);
-    };
+    Object.defineProperty(this, 'deprecated', {
+      enumerable: true,
+      value: function(deprecation, options) {
+        const runable = runner.currentRunable() || topSuite;
+        deprecator.addDeprecationWarning(runable, deprecation, options);
+      }
+    });
 
     function runQueue(options) {
       options.clearStack = options.clearStack || stackClearer;
@@ -326,7 +329,8 @@ getJasmineRequireObj().Env = function(j$) {
       runQueue
     });
     topSuite = suiteBuilder.topSuite;
-    const deprecator = new j$.private.Deprecator(topSuite);
+    const deprecator =
+      envOptions?.deprecator ?? new j$.private.Deprecator(topSuite);
 
     /**
      * Provides the root suite, through which all suites and specs can be
@@ -831,6 +835,8 @@ getJasmineRequireObj().Env = function(j$) {
     this.cleanup_ = function() {
       uninstallGlobalErrors();
     };
+
+    j$.private.deprecateMonkeyPatching(this, ['deprecated']);
   }
 
   function indirectCallerFilename(depth) {

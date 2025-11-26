@@ -13,7 +13,72 @@ describe('The jasmine namespace', function() {
     expect(setDifference(actualKeys, expectedKeys())).toEqual(new Set());
   });
 
-  function expectedKeys() {
+  describe('Warning about monkey patching', function() {
+    beforeEach(function() {
+      spyOn(console, 'error');
+    });
+
+    for (const key of expectedKeys(false)) {
+      if (!key.startsWith('MAX_') && key !== 'private' && key !== 'getEnv') {
+        describe(`jasmine.${key}`, function() {
+          let orig;
+
+          beforeEach(function() {
+            orig = jasmineUnderTest[key];
+          });
+
+          afterEach(function() {
+            jasmineUnderTest[key] = orig;
+          });
+
+          it('warns if monkey patched', function() {
+            const patch = {};
+            jasmineUnderTest[key] = patch;
+
+            verifyDeprecation();
+            expect(jasmineUnderTest[key]).toBe(patch);
+          });
+        });
+      }
+    }
+
+    // These specs rely on jasmineRequire being exposed. That only happens
+    // in browsers.
+    if (typeof document !== 'undefined') {
+      const statics = ['addMatchers', 'clock', 'createSpyObj'];
+
+      for (const name of statics) {
+        describe(`jasmine.${name}`, function() {
+          let bootedCore, env, orig;
+
+          beforeEach(function() {
+            bootedCore = jasmineRequire.core(jasmineRequire);
+            env = bootedCore.getEnv();
+            jasmineRequire.interface(bootedCore, env);
+            orig = bootedCore[name];
+          });
+
+          afterEach(function() {
+            bootedCore[name] = orig;
+            env.cleanup_();
+          });
+
+          it(`warns if jasmine.${name} is monkey patched`, function() {
+            const patch = {};
+            bootedCore[name] = patch;
+
+            verifyDeprecation();
+            expect(bootedCore[name]).toBe(patch);
+          });
+        });
+      }
+    }
+  });
+
+  function expectedKeys(includeHtml) {
+    if (includeHtml === undefined) {
+      includeHtml = typeof window !== 'undefined';
+    }
     // Does not include properties added by requireInterface(), since that isn't
     // called by defineJasmineUnderTest.js/nodeDefineJasmineUnderTest.js.
     const result = new Set([
@@ -51,7 +116,7 @@ describe('The jasmine namespace', function() {
       'getGlobal'
     ]);
 
-    if (typeof window !== 'undefined') {
+    if (includeHtml) {
       // jasmine-html.js
       result.add('HtmlReporter');
       result.add('HtmlReporterV2');
@@ -75,5 +140,16 @@ describe('The jasmine namespace', function() {
     }
 
     return result;
+  }
+
+  function verifyDeprecation() {
+    // eslint-disable-next-line no-console
+    expect(console.error).toHaveBeenCalledOnceWith(
+      jasmine.stringContaining('DEPRECATION: Monkey patching detected.')
+    );
+    // eslint-disable-next-line no-console
+    expect(console.error).toHaveBeenCalledOnceWith(
+      jasmine.stringContaining('jasmineNamespaceSpec.js')
+    );
   }
 });

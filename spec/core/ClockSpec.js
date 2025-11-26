@@ -1247,4 +1247,25 @@ describe('Clock (acceptance)', function() {
 
     clock.tick(400);
   });
+
+  describe('Warning about monkey patching', function() {
+    for (const name of ['tick', 'mockDate', 'install', 'uninstall']) {
+      it(`warns if Clock#${name} is monkey patched`, function() {
+        spyOn(console, 'error');
+        const clock = new privateUnderTest.Clock({}, function() {}, {});
+        const patch = {};
+        clock[name] = patch;
+
+        // eslint-disable-next-line no-console
+        expect(console.error).toHaveBeenCalledOnceWith(
+          jasmine.stringContaining('DEPRECATION: Monkey patching detected.')
+        );
+        // eslint-disable-next-line no-console
+        expect(console.error).toHaveBeenCalledOnceWith(
+          jasmine.stringContaining('ClockSpec.js')
+        );
+        expect(clock[name]).toBe(patch);
+      });
+    }
+  });
 });

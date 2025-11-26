@@ -1,9 +1,12 @@
 describe('HtmlReporter', function() {
-  let env;
+  let env, deprecator;
 
   beforeEach(function() {
-    env = new privateUnderTest.Env();
-    spyOn(env, 'deprecated');
+    deprecator = jasmine.createSpyObj('deprecator', [
+      'verboseDeprecations',
+      'addDeprecationWarning'
+    ]);
+    env = new privateUnderTest.Env({ deprecator });
   });
 
   afterEach(function() {
@@ -21,8 +24,10 @@ describe('HtmlReporter', function() {
       });
     reporter.initialize();
 
-    expect(env.deprecated).toHaveBeenCalledWith(
-      'HtmlReporter and HtmlSpecFilter are deprecated. Use HtmlReporterV2 instead.'
+    expect(deprecator.addDeprecationWarning).toHaveBeenCalledWith(
+      jasmine.anything(),
+      'HtmlReporter and HtmlSpecFilter are deprecated. Use HtmlReporterV2 instead.',
+      undefined
     );
   });
 
