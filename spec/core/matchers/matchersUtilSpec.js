@@ -768,7 +768,14 @@ describe('matchersUtil', function() {
             a2[0] = 1;
             const diffBuilder = new jasmineUnderTest.DiffBuilder();
             expect(matchersUtil.equals(a1, a2, diffBuilder)).toBe(false);
-            jasmine.debugLog('Diff: ' + diffBuilder.getMessage());
+            jasmine.debugLog('a1 keys: ' + jasmine.basicPrettyPrinter_(
+              jasmineUnderTest.MatchersUtil.keys(a1)));
+            jasmine.debugLog('a2 keys: ' + jasmine.basicPrettyPrinter_(
+              jasmineUnderTest.MatchersUtil.keys(a2)));
+            jasmine.debugLog('a1 length:' + a1.length);
+            jasmine.debugLog('a2 length:' + a2.length);
+            jasmine.debugLog('a1[0]: ' + a1[0]);
+            jasmine.debugLog('a2[0]: ' + a2[0]);
           }
         );
 
