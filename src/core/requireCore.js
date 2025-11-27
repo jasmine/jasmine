@@ -47,7 +47,6 @@ var getJasmineRequireObj = (function() {
     j$.private.Expector = jRequire.Expector(j$);
     j$.private.Expectation = jRequire.Expectation(j$);
     j$.private.buildExpectationResult = jRequire.buildExpectationResult(j$);
-    j$.private.JsApiReporter = jRequire.JsApiReporter(j$);
     j$.private.makePrettyPrinter = jRequire.makePrettyPrinter(j$);
     j$.private.basicPrettyPrinter = j$.private.makePrettyPrinter();
     j$.private.MatchersUtil = jRequire.MatchersUtil(j$);

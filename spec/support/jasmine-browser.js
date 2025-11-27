@@ -7,7 +7,6 @@ module.exports = {
     'core/util.js',
     'core/Spec.js',
     'core/Env.js',
-    'core/JsApiReporter.js',
     'core/PrettyPrinter.js',
     'core/Suite.js',
     'core/**/*.js',

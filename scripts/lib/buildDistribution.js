@@ -51,7 +51,6 @@ function concatFiles() {
         'src/core/Spec.js',
         'src/core/Order.js',
         'src/core/Env.js',
-        'src/core/JsApiReporter.js',
         'src/core/PrettyPrinter',
         'src/core/Suite',
         'src/core/**/*.js',

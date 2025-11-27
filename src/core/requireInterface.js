@@ -354,10 +354,6 @@ getJasmineRequireObj().interface = function(jasmine, env) {
       return env.spyOnAllFunctions(obj, includeNonEnumerable);
     },
 
-    jsApiReporter: new jasmine.private.JsApiReporter({
-      timer: new jasmine.Timer()
-    }),
-
     /**
      * <p>Members of the jasmine global.</p>
      * <p>Note: The members of the
