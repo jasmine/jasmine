@@ -1557,6 +1557,7 @@ describe('Env integration', function() {
 
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
         totalSpecsDefined: 1,
+        numExcludedSpecs: 0,
         order: { random: true, seed: jasmine.any(String) },
         parallel: false
       });
@@ -1592,6 +1593,7 @@ describe('Env integration', function() {
 
       expect(reporter.jasmineStarted).toHaveBeenCalledWith({
         totalSpecsDefined: 1,
+        numExcludedSpecs: 0,
         order: { random: true, seed: jasmine.any(String) },
         parallel: false
       });
@@ -1648,6 +1650,7 @@ describe('Env integration', function() {
 
     expect(reporter.jasmineStarted).toHaveBeenCalledWith({
       totalSpecsDefined: 6,
+      numExcludedSpecs: 3,
       order: { random: false },
       parallel: false
     });
@@ -2061,6 +2064,7 @@ describe('Env integration', function() {
 
     expect(reporter.jasmineStarted).toHaveBeenCalledWith({
       totalSpecsDefined: 1,
+      numExcludedSpecs: 1,
       order: { random: true, seed: jasmine.any(String) },
       parallel: false
     });

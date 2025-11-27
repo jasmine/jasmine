@@ -246,4 +246,53 @@ describe('TreeProcessor', function() {
       { spec: leaf1 }
     ]);
   });
+
+  describe("The returned ExecutionTree's numExcludedSpecs method", function() {
+    it('counts filtered-out specs', function() {
+      const included = new Leaf();
+      const excluded1 = new Leaf();
+      const excluded2 = new Leaf();
+      const excluded3 = new Leaf();
+      const topSuite = new Node({
+        children: [
+          excluded1,
+          new Node({
+            children: [included, excluded2, new Node({ children: [excluded3] })]
+          })
+        ]
+      });
+      const processor = new privateUnderTest.TreeProcessor({
+        tree: topSuite,
+        runnableIds: [topSuite.id],
+        excludeNode(node) {
+          return node.id !== included.id;
+        }
+      });
+
+      const executionTree = processor.processTree();
+      expect(executionTree.numExcludedSpecs()).toEqual(3);
+    });
+
+    it("counts specs that aren't in or descendants of runnableIds", function() {
+      const includedSuite = new Node({
+        children: [new Node({ children: [new Leaf()] }), new Leaf()]
+      });
+      const directlyIncludedSpec = new Leaf();
+      const topSuite = new Node({
+        children: [
+          includedSuite,
+          new Node({
+            children: [new Leaf(), directlyIncludedSpec]
+          })
+        ]
+      });
+      const processor = new privateUnderTest.TreeProcessor({
+        tree: topSuite,
+        runnableIds: [includedSuite.id, directlyIncludedSpec.id]
+      });
+
+      const executionTree = processor.processTree();
+      expect(executionTree.numExcludedSpecs()).toEqual(1);
+    });
+  });
 });

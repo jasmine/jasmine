@@ -112,7 +112,9 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
     jasmineStarted(options) {
       this.#stateBuilder.jasmineStarted(options);
-      this.#progress.start(options.totalSpecsDefined);
+      this.#progress.start(
+        options.totalSpecsDefined - options.numExcludedSpecs
+      );
     }
 
     suiteStarted(result) {
@@ -228,7 +230,9 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
     }
 
     specDone(result) {
-      this.rootEl.value = this.rootEl.value + 1;
+      if (result.status !== 'excluded') {
+        this.rootEl.value = this.rootEl.value + 1;
+      }
 
       if (result.status === 'failed') {
         this.rootEl.classList.add('failed');

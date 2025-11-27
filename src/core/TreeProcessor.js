@@ -123,6 +123,23 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
       const nodeStats = this.#stats[node.id];
       return node.children ? !nodeStats.willExecute : nodeStats.excluded;
     }
+
+    numExcludedSpecs(node) {
+      if (!node) {
+        return this.numExcludedSpecs(this.topSuite);
+      } else if (node.children) {
+        let result = 0;
+
+        for (const child of node.children) {
+          result += this.numExcludedSpecs(child);
+        }
+
+        return result;
+      } else {
+        const nodeStats = this.#stats[node.id];
+        return nodeStats.willExecute ? 0 : 1;
+      }
+    }
   }
 
   function segmentChildren(node, orderedChildren, stats, executableIndex) {

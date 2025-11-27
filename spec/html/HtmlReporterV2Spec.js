@@ -144,7 +144,7 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       reporter.initialize();
 
-      reporter.jasmineStarted({ totalSpecsDefined: 0 });
+      reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.specDone({
         status: 'passed',
         fullName: 'a spec with a deprecation',
@@ -185,7 +185,7 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       reporter.initialize();
 
-      reporter.jasmineStarted({ totalSpecsDefined: 0 });
+      reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.jasmineDone({
         deprecationWarnings: [
           {
@@ -221,7 +221,7 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       reporter.initialize();
 
-      reporter.jasmineStarted({ totalSpecsDefined: 0 });
+      reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.jasmineDone({
         deprecationWarnings: [
           {
@@ -240,7 +240,7 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       reporter.initialize();
 
-      reporter.jasmineStarted({ totalSpecsDefined: 0 });
+      reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.jasmineDone({
         deprecationWarnings: [
           {
@@ -273,7 +273,7 @@ describe('HtmlReporterV2', function() {
       it('hides all tabs', function() {
         const reporter = setup();
         reporter.initialize();
-        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         const tabs = container.querySelectorAll('.jasmine-tab');
         expect(tabs.length).toEqual(3);
         expect(tabs[0].textContent).toEqual('Spec List');
@@ -374,7 +374,10 @@ describe('HtmlReporterV2', function() {
 
       describe('with spec failures', function() {
         hasSpecOrSuiteFailureBehavior(function(reporter) {
-          reporter.jasmineStarted({ totalSpecsDefined: 0 });
+          reporter.jasmineStarted({
+            totalSpecsDefined: 0,
+            numExcludedSpecs: 0
+          });
           reporter.specDone({
             id: 1,
             description: 'a failing spec',
@@ -397,7 +400,10 @@ describe('HtmlReporterV2', function() {
 
       describe('with suite failures', function() {
         hasSpecOrSuiteFailureBehavior(function(reporter) {
-          reporter.jasmineStarted({ totalSpecsDefined: 0 });
+          reporter.jasmineStarted({
+            totalSpecsDefined: 0,
+            numExcludedSpecs: 0
+          });
           reporter.specDone({
             id: 1,
             description: 'a failing spec',
@@ -420,7 +426,10 @@ describe('HtmlReporterV2', function() {
 
       describe('without any failures', function() {
         hasSpecAndSuiteSuccessBehavior(function(reporter) {
-          reporter.jasmineStarted({ totalSpecsDefined: 0 });
+          reporter.jasmineStarted({
+            totalSpecsDefined: 0,
+            numExcludedSpecs: 0
+          });
           reporter.specDone({
             id: 1,
             description: 'a passing spec',
@@ -438,7 +447,10 @@ describe('HtmlReporterV2', function() {
         // Top suite failures are displayed in their own alert bars, so they
         // don't cause the failures tab to be shown.
         hasSpecAndSuiteSuccessBehavior(function(reporter) {
-          reporter.jasmineStarted({ totalSpecsDefined: 0 });
+          reporter.jasmineStarted({
+            totalSpecsDefined: 0,
+            numExcludedSpecs: 0
+          });
           reporter.jasmineDone({
             failedExpectations: [{}]
           });
@@ -448,7 +460,7 @@ describe('HtmlReporterV2', function() {
       it('shows the slow spec view when the Performance tab is clicked', function() {
         const reporter = setup();
         reporter.initialize();
-        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.specDone({
           duration: 1.2,
           failedExpectations: [],
@@ -473,7 +485,7 @@ describe('HtmlReporterV2', function() {
       spyOn(console, 'error');
 
       reporter.initialize();
-      reporter.jasmineStarted({ totalSpecsDefined: 0 });
+      reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.suiteStarted({ id: 1 });
       reporter.specDone({
         id: 1,
@@ -497,7 +509,7 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       reporter.initialize();
 
-      reporter.jasmineStarted({ totalSpecsDefined: 0 });
+      reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
 
       reporter.jasmineDone({ totalTime: 100 });
 
@@ -515,7 +527,7 @@ describe('HtmlReporterV2', function() {
       });
       reporter.initialize();
 
-      reporter.jasmineStarted({ totalSpecsDefined: 0 });
+      reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.suiteStarted({
         id: 1,
         description: 'A Suite',
@@ -646,7 +658,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
           failedExpectations: [
             {
@@ -675,7 +687,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
           failedExpectations: [
             { message: 'load error', globalErrorType: 'load' },
@@ -705,7 +717,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
           failedExpectations: [
             {
@@ -911,7 +923,7 @@ describe('HtmlReporterV2', function() {
           passedExpectations: []
         };
 
-        reporter.jasmineStarted({ totalSpecsDefined: 3 });
+        reporter.jasmineStarted({ totalSpecsDefined: 3, numExcludedSpecs: 0 });
         reporter.specDone({ ...minimalSpecDone });
         reporter.specDone({ ...minimalSpecDone });
         reporter.specDone({ ...minimalSpecDone, status: 'excluded' });
@@ -929,7 +941,7 @@ describe('HtmlReporterV2', function() {
         });
 
         reporter.initialize();
-        reporter.jasmineStarted({ totalSpecsDefined: 1 });
+        reporter.jasmineStarted({ totalSpecsDefined: 1, numExcludedSpecs: 0 });
         reporter.jasmineDone({ order: { random: true } });
 
         const skippedLink = container.querySelector('.jasmine-skipped a');
@@ -942,7 +954,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({ totalSpecsDefined: 2 });
+        reporter.jasmineStarted({ totalSpecsDefined: 2, numExcludedSpecs: 0 });
         reporter.specDone({
           id: 123,
           description: 'with a spec',
@@ -1008,7 +1020,10 @@ describe('HtmlReporterV2', function() {
             }
           });
           reporter.initialize();
-          reporter.jasmineStarted({ totalSpecsDefined: 1 });
+          reporter.jasmineStarted({
+            totalSpecsDefined: 1,
+            numExcludedSpecs: 0
+          });
           reporter.specDone(specStatus);
           reporter.jasmineDone({});
         });
@@ -1030,7 +1045,10 @@ describe('HtmlReporterV2', function() {
             }
           });
           reporter.initialize();
-          reporter.jasmineStarted({ totalSpecsDefined: 1 });
+          reporter.jasmineStarted({
+            totalSpecsDefined: 1,
+            numExcludedSpecs: 0
+          });
           reporter.specDone(specStatus);
           reporter.jasmineDone({});
         });
@@ -1066,7 +1084,7 @@ describe('HtmlReporterV2', function() {
         reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({ totalSpecsDefined: 1 });
+        reporter.jasmineStarted({ totalSpecsDefined: 1, numExcludedSpecs: 0 });
       });
 
       it('reports the pending specs count', function() {
@@ -1119,7 +1137,7 @@ describe('HtmlReporterV2', function() {
         reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({ totalSpecsDefined: 1 });
+        reporter.jasmineStarted({ totalSpecsDefined: 1, numExcludedSpecs: 0 });
         reporter.suiteStarted({
           id: 1,
           description: 'A suite'
@@ -1287,7 +1305,7 @@ describe('HtmlReporterV2', function() {
       });
       reporter.initialize();
 
-      reporter.jasmineStarted({ totalSpecsDefined: 1 });
+      reporter.jasmineStarted({ totalSpecsDefined: 1, numExcludedSpecs: 0 });
 
       const failingSpecResult = {
         id: 124,
@@ -1395,7 +1413,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
           overallStatus: 'passed',
           failedExpectations: []
@@ -1411,7 +1429,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
           overallStatus: 'failed',
           failedExpectations: []
@@ -1427,7 +1445,7 @@ describe('HtmlReporterV2', function() {
         const reporter = setup();
         reporter.initialize();
 
-        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
           overallStatus: 'incomplete',
           incompleteReason: 'because nope',
