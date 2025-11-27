@@ -835,8 +835,6 @@ getJasmineRequireObj().Env = function(j$) {
     this.cleanup_ = function() {
       uninstallGlobalErrors();
     };
-
-    j$.private.deprecateMonkeyPatching(this, ['deprecated']);
   }
 
   function indirectCallerFilename(depth) {

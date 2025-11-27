@@ -192,8 +192,6 @@ callbacks to execute _before_ running the next one.
     setInterval[IsMockClockTimingFn] = true;
     clearInterval[IsMockClockTimingFn] = true;
 
-    j$.private.deprecateMonkeyPatching(this);
-
     return this;
 
     // Advances the Clock's time until the mode changes.
