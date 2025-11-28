@@ -14,9 +14,7 @@ describe('HtmlReporterV2', function() {
   function setup(options = {}) {
     return new jasmineUnderTest.HtmlReporterV2({
       env,
-      getContainer() {
-        return container;
-      },
+      container,
       urls: new jasmineUnderTest.HtmlReporterV2Urls(),
       queryString: new jasmineUnderTest.QueryString({
         getWindowLocation() {
@@ -28,8 +26,7 @@ describe('HtmlReporterV2', function() {
   }
 
   it('builds the initial DOM elements, including the title banner', function() {
-    const reporter = setup();
-    reporter.initialize();
+    setup();
 
     // Main top-level elements
     expect(container.querySelector('div.jasmine_html-reporter')).toBeTruthy();
@@ -50,17 +47,6 @@ describe('HtmlReporterV2', function() {
     expect(version.textContent).toEqual(jasmineUnderTest.version);
   });
 
-  it('builds a single reporter even if initialized multiple times', function() {
-    const reporter = setup();
-    reporter.initialize();
-    reporter.initialize();
-    reporter.initialize();
-
-    expect(
-      container.querySelectorAll('div.jasmine_html-reporter').length
-    ).toEqual(1);
-  });
-
   describe('when a spec is done', function() {
     describe('and no expectations ran', function() {
       let reporter;
@@ -70,8 +56,6 @@ describe('HtmlReporterV2', function() {
 
         spyOn(console, 'warn');
         spyOn(console, 'error');
-
-        reporter.initialize();
       });
 
       it('logs a warning to the console when the spec passed', function() {
@@ -103,7 +87,6 @@ describe('HtmlReporterV2', function() {
 
     it('updates the progress bar', function() {
       const reporter = setup();
-      reporter.initialize();
       const progress = container.querySelector('progress');
 
       reporter.specDone({
@@ -125,7 +108,6 @@ describe('HtmlReporterV2', function() {
 
     it('changes the progress bar status if the spec failed', function() {
       const reporter = setup();
-      reporter.initialize();
 
       reporter.specDone({
         id: 345,
@@ -142,7 +124,6 @@ describe('HtmlReporterV2', function() {
   describe('when there are deprecation warnings', function() {
     it('displays the messages in their own alert bars', function() {
       const reporter = setup();
-      reporter.initialize();
 
       reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.specDone({
@@ -183,7 +164,6 @@ describe('HtmlReporterV2', function() {
 
     it('displays expandable stack traces', function() {
       const reporter = setup();
-      reporter.initialize();
 
       reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.jasmineDone({
@@ -219,7 +199,6 @@ describe('HtmlReporterV2', function() {
 
     it('omits the expander when there is no stack trace', function() {
       const reporter = setup();
-      reporter.initialize();
 
       reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.jasmineDone({
@@ -238,7 +217,6 @@ describe('HtmlReporterV2', function() {
 
     it('nicely formats the verboseDeprecations note', function() {
       const reporter = setup();
-      reporter.initialize();
 
       reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.jasmineDone({
@@ -272,7 +250,6 @@ describe('HtmlReporterV2', function() {
     describe('while Jasmine is running', function() {
       it('hides all tabs', function() {
         const reporter = setup();
-        reporter.initialize();
         reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         const tabs = container.querySelectorAll('.jasmine-tab');
         expect(tabs.length).toEqual(3);
@@ -300,7 +277,6 @@ describe('HtmlReporterV2', function() {
 
         beforeEach(function() {
           reporter = setup();
-          reporter.initialize();
           reportEvents(reporter);
         });
 
@@ -354,7 +330,6 @@ describe('HtmlReporterV2', function() {
 
         beforeEach(function() {
           reporter = setup();
-          reporter.initialize();
           reportEvents(reporter);
         });
 
@@ -459,7 +434,6 @@ describe('HtmlReporterV2', function() {
 
       it('shows the slow spec view when the Performance tab is clicked', function() {
         const reporter = setup();
-        reporter.initialize();
         reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.specDone({
           duration: 1.2,
@@ -484,7 +458,6 @@ describe('HtmlReporterV2', function() {
       const reporter = setup();
       spyOn(console, 'error');
 
-      reporter.initialize();
       reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.suiteStarted({ id: 1 });
       reporter.specDone({
@@ -507,7 +480,6 @@ describe('HtmlReporterV2', function() {
 
     it('reports the run time', function() {
       const reporter = setup();
-      reporter.initialize();
 
       reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
 
@@ -525,7 +497,6 @@ describe('HtmlReporterV2', function() {
           return '?foo=bar&' + key + '=' + value;
         }
       });
-      reporter.initialize();
 
       reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
       reporter.suiteStarted({
@@ -632,7 +603,6 @@ describe('HtmlReporterV2', function() {
 
     it('has an options menu', function() {
       const reporter = setup();
-      reporter.initialize();
       reporter.jasmineDone({});
 
       const trigger = container.querySelector(
@@ -656,7 +626,6 @@ describe('HtmlReporterV2', function() {
     describe('when there are global errors', function() {
       it('displays the exceptions in their own alert bars', function() {
         const reporter = setup();
-        reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
@@ -685,7 +654,6 @@ describe('HtmlReporterV2', function() {
 
       it('does not display the "AfterAll" prefix for other error types', function() {
         const reporter = setup();
-        reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
@@ -715,7 +683,6 @@ describe('HtmlReporterV2', function() {
 
       it('displays file and line information if available', function() {
         const reporter = setup();
-        reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
@@ -743,7 +710,6 @@ describe('HtmlReporterV2', function() {
     describe('UI for stop on spec failure', function() {
       it('should be unchecked for full execution', function() {
         const reporter = setup();
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const stopOnFailureUI = container.querySelector('.jasmine-fail-fast');
@@ -751,10 +717,9 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should be checked if stopping short', function() {
-        const reporter = setup();
         env.configure({ stopOnSpecFailure: true });
+        const reporter = setup();
 
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const stopOnFailureUI = container.querySelector('.jasmine-fail-fast');
@@ -764,7 +729,6 @@ describe('HtmlReporterV2', function() {
       it('should navigate and turn the setting on', function() {
         const reporter = setup();
 
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const stopOnFailureUI = container.querySelector('.jasmine-fail-fast');
@@ -774,10 +738,9 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and turn the setting off', function() {
-        const reporter = setup();
         env.configure({ stopOnSpecFailure: true });
+        const reporter = setup();
 
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const stopOnFailureUI = container.querySelector('.jasmine-fail-fast');
@@ -790,7 +753,6 @@ describe('HtmlReporterV2', function() {
     describe('UI for throwing errors on expectation failures', function() {
       it('should be unchecked if not throwing', function() {
         const reporter = setup();
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const throwingExpectationsUI = container.querySelector(
@@ -800,10 +762,9 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should be checked if throwing', function() {
-        const reporter = setup();
         env.configure({ stopSpecOnExpectationFailure: true });
+        const reporter = setup();
 
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const throwingExpectationsUI = container.querySelector(
@@ -814,7 +775,6 @@ describe('HtmlReporterV2', function() {
 
       it('should navigate and change the setting to on', function() {
         const reporter = setup();
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const throwingExpectationsUI = container.querySelector(
@@ -826,11 +786,9 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and change the setting to off', function() {
+        env.configure({ stopSpecOnExpectationFailure: true });
         const reporter = setup();
 
-        env.configure({ stopSpecOnExpectationFailure: true });
-
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const throwingExpectationsUI = container.querySelector(
@@ -844,9 +802,8 @@ describe('HtmlReporterV2', function() {
 
     describe('UI for running tests in random order', function() {
       it('should be unchecked if not randomizing', function() {
-        const reporter = setup();
         env.configure({ random: false });
-        reporter.initialize();
+        const reporter = setup();
         reporter.jasmineDone({});
 
         const randomUI = container.querySelector('.jasmine-random');
@@ -854,9 +811,8 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should be checked if randomizing', function() {
-        const reporter = setup();
         env.configure({ random: true });
-        reporter.initialize();
+        const reporter = setup();
         reporter.jasmineDone({});
 
         const randomUI = container.querySelector('.jasmine-random');
@@ -864,10 +820,9 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and change the setting to on', function() {
+        env.configure({ random: false });
         const reporter = setup();
 
-        env.configure({ random: false });
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const randomUI = container.querySelector('.jasmine-random');
@@ -877,10 +832,9 @@ describe('HtmlReporterV2', function() {
       });
 
       it('should navigate and change the setting to off', function() {
+        env.configure({ random: true });
         const reporter = setup();
 
-        env.configure({ random: true });
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const randomUI = container.querySelector('.jasmine-random');
@@ -891,7 +845,6 @@ describe('HtmlReporterV2', function() {
 
       it('should show the seed bar if randomizing', function() {
         const reporter = setup();
-        reporter.initialize();
         reporter.jasmineDone({
           order: {
             random: true,
@@ -907,7 +860,6 @@ describe('HtmlReporterV2', function() {
 
       it('should not show the current seed bar if not randomizing', function() {
         const reporter = setup();
-        reporter.initialize();
         reporter.jasmineDone({});
 
         const seedBar = container.querySelector('.jasmine-seed-bar');
@@ -917,7 +869,6 @@ describe('HtmlReporterV2', function() {
       it('includes the number of specs in the text of the jasmine-skipped link', function() {
         const reporter = setup();
 
-        reporter.initialize();
         const minimalSpecDone = {
           failedExpectations: [],
           passedExpectations: []
@@ -940,7 +891,6 @@ describe('HtmlReporterV2', function() {
           }
         });
 
-        reporter.initialize();
         reporter.jasmineStarted({ totalSpecsDefined: 1, numExcludedSpecs: 0 });
         reporter.jasmineDone({ order: { random: true } });
 
@@ -952,7 +902,6 @@ describe('HtmlReporterV2', function() {
     describe('and all specs pass', function() {
       beforeEach(function() {
         const reporter = setup();
-        reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 2, numExcludedSpecs: 0 });
         reporter.specDone({
@@ -1019,7 +968,6 @@ describe('HtmlReporterV2', function() {
               }
             }
           });
-          reporter.initialize();
           reporter.jasmineStarted({
             totalSpecsDefined: 1,
             numExcludedSpecs: 0
@@ -1044,7 +992,6 @@ describe('HtmlReporterV2', function() {
               }
             }
           });
-          reporter.initialize();
           reporter.jasmineStarted({
             totalSpecsDefined: 1,
             numExcludedSpecs: 0
@@ -1082,7 +1029,6 @@ describe('HtmlReporterV2', function() {
 
       beforeEach(function() {
         reporter = setup();
-        reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 1, numExcludedSpecs: 0 });
       });
@@ -1135,7 +1081,6 @@ describe('HtmlReporterV2', function() {
 
       beforeEach(function() {
         reporter = setup();
-        reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 1, numExcludedSpecs: 0 });
         reporter.suiteStarted({
@@ -1303,7 +1248,6 @@ describe('HtmlReporterV2', function() {
           return '?' + key + '=' + value;
         }
       });
-      reporter.initialize();
 
       reporter.jasmineStarted({ totalSpecsDefined: 1, numExcludedSpecs: 0 });
 
@@ -1345,7 +1289,6 @@ describe('HtmlReporterV2', function() {
       describe('When nothing has failed', function() {
         it('shows "Running..." and the has class jasmine-in-progress', function() {
           const reporter = setup();
-          reporter.initialize();
           const alertBar = container.querySelector('.jasmine-overall-result');
 
           expect(alertBar.textContent).toEqual('Running...');
@@ -1372,7 +1315,6 @@ describe('HtmlReporterV2', function() {
       describe('When a spec has failed', function() {
         it('shows "Failing..." and the has class jasmine-failed', function() {
           const reporter = setup();
-          reporter.initialize();
           const alertBar = container.querySelector('.jasmine-overall-result');
 
           reporter.specDone({
@@ -1391,7 +1333,6 @@ describe('HtmlReporterV2', function() {
       describe('When a suite has failed', function() {
         it('shows "Failing..." and the has class jasmine-failed', function() {
           const reporter = setup();
-          reporter.initialize();
           const alertBar = container.querySelector('.jasmine-overall-result');
 
           reporter.suiteDone({
@@ -1411,7 +1352,6 @@ describe('HtmlReporterV2', function() {
     describe("When the jasmineDone event's overallStatus is 'passed'", function() {
       it('has class jasmine-passed', function() {
         const reporter = setup();
-        reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
@@ -1427,7 +1367,6 @@ describe('HtmlReporterV2', function() {
     describe("When the jasmineDone event's overallStatus is 'failed'", function() {
       it('has class jasmine-failed', function() {
         const reporter = setup();
-        reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
@@ -1443,7 +1382,6 @@ describe('HtmlReporterV2', function() {
     describe("When the jasmineDone event's overallStatus is 'incomplete'", function() {
       it('has class jasmine-incomplete', function() {
         const reporter = setup();
-        reporter.initialize();
 
         reporter.jasmineStarted({ totalSpecsDefined: 0, numExcludedSpecs: 0 });
         reporter.jasmineDone({
