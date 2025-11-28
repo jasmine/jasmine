@@ -876,6 +876,13 @@ describe('Env', function() {
   });
 
   describe('Warning about monkey patching', function() {
+    afterEach(function() {
+      // deprecateMonkeyPatching() uses jasmine.getEnv(), not the env from
+      // this suite. Clean it up so we don't leak event listeners.
+      jasmineUnderTest.getEnv().cleanup_();
+      privateUnderTest.currentEnv_ = null;
+    });
+
     const names = [
       'describe',
       'xdescribe',
