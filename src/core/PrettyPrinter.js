@@ -59,7 +59,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
         } else if (
           value.toString &&
           typeof value === 'object' &&
-          !j$.private.isArray(value) &&
+          !Array.isArray(value) &&
           hasCustomToString(value)
         ) {
           try {
@@ -71,15 +71,12 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
         } else if (this.seen.includes(value)) {
           this.emitScalar(
             '<circular reference: ' +
-              (j$.private.isArray(value) ? 'Array' : 'Object') +
+              (Array.isArray(value) ? 'Array' : 'Object') +
               '>'
           );
-        } else if (
-          j$.private.isArray(value) ||
-          j$.private.isA('Object', value)
-        ) {
+        } else if (Array.isArray(value) || j$.private.isA('Object', value)) {
           this.seen.push(value);
-          if (j$.private.isArray(value)) {
+          if (Array.isArray(value)) {
             this.emitArray(value);
           } else {
             this.emitObject(value);
@@ -102,10 +99,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     }
 
     iterateObject(obj, fn) {
-      const objKeys = j$.private.MatchersUtil.keys(
-        obj,
-        j$.private.isArray(obj)
-      );
+      const objKeys = j$.private.MatchersUtil.keys(obj, Array.isArray(obj));
       const length = Math.min(objKeys.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
 
       for (let i = 0; i < length; i++) {

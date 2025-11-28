@@ -1,20 +1,4 @@
 describe('util', function() {
-  describe('isArray', function() {
-    it('should return true if the argument is an array', function() {
-      expect(privateUnderTest.isArray([])).toBe(true);
-      expect(privateUnderTest.isArray(['a'])).toBe(true);
-    });
-
-    it('should return false if the argument is not an array', function() {
-      expect(privateUnderTest.isArray(undefined)).toBe(false);
-      expect(privateUnderTest.isArray({})).toBe(false);
-      expect(privateUnderTest.isArray(function() {})).toBe(false);
-      expect(privateUnderTest.isArray('foo')).toBe(false);
-      expect(privateUnderTest.isArray(5)).toBe(false);
-      expect(privateUnderTest.isArray(null)).toBe(false);
-    });
-  });
-
   describe('isObject', function() {
     it('should return true if the argument is an object', function() {
       expect(privateUnderTest.isObject({})).toBe(true);

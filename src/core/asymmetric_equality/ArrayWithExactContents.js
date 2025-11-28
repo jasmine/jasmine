@@ -9,7 +9,7 @@ getJasmineRequireObj().ArrayWithExactContents = function(j$) {
     other,
     matchersUtil
   ) {
-    if (!j$.private.isArray(this.sample)) {
+    if (!Array.isArray(this.sample)) {
       throw new Error(
         'You must provide an array to arrayWithExactContents, not ' +
           j$.private.basicPrettyPrinter(this.sample) +

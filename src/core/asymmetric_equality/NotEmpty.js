@@ -6,7 +6,7 @@ getJasmineRequireObj().NotEmpty = function(j$) {
   NotEmpty.prototype.asymmetricMatch = function(other) {
     if (
       j$.private.isString(other) ||
-      j$.private.isArray(other) ||
+      Array.isArray(other) ||
       j$.private.isTypedArray(other)
     ) {
       return other.length !== 0;

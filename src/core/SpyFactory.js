@@ -21,7 +21,7 @@ getJasmineRequireObj().SpyFactory = function(j$) {
 
     this.createSpyObj = function(baseName, methodNames, propertyNames) {
       const baseNameIsCollection =
-        j$.private.isObject(baseName) || j$.private.isArray(baseName);
+        j$.private.isObject(baseName) || Array.isArray(baseName);
 
       if (baseNameIsCollection) {
         propertyNames = methodNames;
@@ -67,7 +67,7 @@ getJasmineRequireObj().SpyFactory = function(j$) {
 
   function normalizeKeyValues(object) {
     const result = [];
-    if (j$.private.isArray(object)) {
+    if (Array.isArray(object)) {
       for (let i = 0; i < object.length; i++) {
         result.push([object[i]]);
       }

@@ -77,10 +77,6 @@ getJasmineRequireObj().base = function(j$, jasmineGlobal) {
     }
   });
 
-  j$.private.isArray = function(value) {
-    return j$.private.isA('Array', value);
-  };
-
   j$.private.isObject = function(value) {
     return (
       value !== undefined && value !== null && j$.private.isA('Object', value)
