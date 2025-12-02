@@ -1,4 +1,6 @@
 getJasmineRequireObj().toHaveClass = function(j$) {
+  'use strict';
+
   /**
    * {@link expect} the actual value to be a DOM element that has the expected class
    * @function
@@ -26,7 +28,9 @@ getJasmineRequireObj().toHaveClass = function(j$) {
 
   function isElement(maybeEl) {
     return (
-      maybeEl && maybeEl.classList && j$.isFunction_(maybeEl.classList.contains)
+      maybeEl &&
+      maybeEl.classList &&
+      j$.private.isFunction(maybeEl.classList.contains)
     );
   }
 

@@ -1,9 +1,12 @@
 getJasmineRequireObj().Suite = function(j$) {
+  'use strict';
+
   class Suite {
     #reportedParentSuiteId;
     #throwOnExpectationFailure;
     #autoCleanClosures;
     #timer;
+    #result;
 
     constructor(attrs) {
       this.id = attrs.id;
@@ -31,8 +34,16 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     setSuiteProperty(key, value) {
-      this.result.properties = this.result.properties || {};
-      this.result.properties[key] = value;
+      // Key and value will eventually be cloned during reporting. The error
+      // thrown at that point if they aren't cloneable isn't very helpful.
+      // Throw a better one now.
+      if (!j$.private.isString(key)) {
+        throw new Error('Key must be a string');
+      }
+      j$.private.util.assertReporterCloneable(value, 'Value');
+
+      this.#result.properties = this.#result.properties || {};
+      this.#result.properties[key] = value;
     }
 
     getFullName() {
@@ -82,7 +93,7 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     endTimer() {
-      this.result.duration = this.#timer.elapsed();
+      this.#result.duration = this.#timer.elapsed();
     }
 
     cleanupBeforeAfter() {
@@ -95,25 +106,7 @@ getJasmineRequireObj().Suite = function(j$) {
     }
 
     reset() {
-      /**
-       * @typedef SuiteResult
-       * @property {String} id - The unique id of this suite.
-       * @property {String} description - The description text passed to the {@link describe} that made this suite.
-       * @property {String} fullName - The full description including all ancestors of this suite.
-       * @property {String|null} parentSuiteId - The ID of the suite containing this suite, or null if this is not in another describe().
-       * @property {String} filename - The name of the file the suite was defined in.
-       * Note: The value may be incorrect if zone.js is installed or
-       * `describe`/`fdescribe`/`xdescribe` have been replaced with versions that
-       * don't maintain the same call stack height as the originals. You can fix
-       * that by setting {@link Configuration#extraDescribeStackFrames}.
-       * @property {ExpectationResult[]} failedExpectations - The list of expectations that failed in an {@link afterAll} for this suite.
-       * @property {ExpectationResult[]} deprecationWarnings - The list of deprecation warnings that occurred on this suite.
-       * @property {String} status - Once the suite has completed, this string represents the pass/fail status of this suite.
-       * @property {number} duration - The time in ms for Suite execution, including any before/afterAll, before/afterEach.
-       * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSuiteProperty}
-       * @since 2.0.0
-       */
-      this.result = {
+      this.#result = {
         id: this.id,
         description: this.description,
         fullName: this.getFullName(),
@@ -131,6 +124,71 @@ getJasmineRequireObj().Suite = function(j$) {
       this.reportedDone = false;
     }
 
+    startedEvent() {
+      /**
+       * @typedef SuiteStartedEvent
+       * @property {String} id - The unique id of this suite.
+       * @property {String} description - The description text passed to the {@link describe} that made this suite.
+       * @property {String} fullName - The full description including all ancestors of this suite.
+       * @property {String|null} parentSuiteId - The ID of the suite containing this suite, or null if this is not in another describe().
+       * @property {String} filename - Deprecated. The name of the file the suite was defined in.
+       * Note: The value may be incorrect if zone.js is installed or
+       * `describe`/`fdescribe`/`xdescribe` have been replaced with versions that
+       * don't maintain the same call stack height as the originals. This property
+       * may be removed in a future version unless there is enough user interest
+       * in keeping it. See {@link https://github.com/jasmine/jasmine/issues/2065}.
+       * @since 6.0.0
+       */
+      return this.#commonEventFields();
+    }
+
+    doneEvent() {
+      /**
+       * @typedef SuiteDoneEvent
+       * @property {String} id - The unique id of this suite.
+       * @property {String} description - The description text passed to the {@link describe} that made this suite.
+       * @property {String} fullName - The full description including all ancestors of this suite.
+       * @property {String|null} parentSuiteId - The ID of the suite containing this suite, or null if this is not in another describe().
+       * @property {String} filename - The name of the file the suite was defined in.
+       * Note: The value may be incorrect if zone.js is installed or
+       * `describe`/`fdescribe`/`xdescribe` have been replaced with versions that
+       * don't maintain the same call stack height as the originals. You can fix
+       * that by setting {@link Configuration#extraDescribeStackFrames}.
+       * @property {ExpectationResult[]} failedExpectations - The list of expectations that failed in an {@link afterAll} for this suite.
+       * @property {ExpectationResult[]} deprecationWarnings - The list of deprecation warnings that occurred on this suite.
+       * @property {String} status - Once the suite has completed, this string represents the pass/fail status of this suite.
+       * @property {number} duration - The time in ms for Suite execution, including any before/afterAll, before/afterEach.
+       * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSuiteProperty}
+       * @since 2.0.0
+       */
+      const event = {
+        ...this.#commonEventFields(),
+        status: this.#status()
+      };
+      const toCopy = [
+        'failedExpectations',
+        'deprecationWarnings',
+        'duration',
+        'properties'
+      ];
+
+      for (const k of toCopy) {
+        event[k] = this.#result[k];
+      }
+
+      return event;
+    }
+
+    #commonEventFields() {
+      return {
+        id: this.id,
+        description: this.description,
+        fullName: this.getFullName(),
+        parentSuiteId: this.#reportedParentSuiteId,
+        filename: this.filename
+      };
+    }
+
     removeChildren() {
       this.children = [];
     }
@@ -144,49 +202,42 @@ getJasmineRequireObj().Suite = function(j$) {
         return 'pending';
       }
 
-      if (this.result.failedExpectations.length > 0) {
+      if (this.#result.failedExpectations.length > 0) {
         return 'failed';
       } else {
         return 'passed';
       }
     }
 
-    getResult() {
-      this.result.status = this.#status();
-      return this.result;
-    }
-
-    canBeReentered() {
-      return this.beforeAllFns.length === 0 && this.afterAllFns.length === 0;
+    hasOwnFailedExpectations() {
+      return this.#result.failedExpectations.length > 0;
     }
 
     sharedUserContext() {
       if (!this.sharedContext) {
         this.sharedContext = this.parentSuite
           ? this.parentSuite.clonedSharedUserContext()
-          : new j$.UserContext();
+          : new j$.private.UserContext();
       }
 
       return this.sharedContext;
     }
 
     clonedSharedUserContext() {
-      return j$.UserContext.fromExisting(this.sharedUserContext());
+      return j$.private.UserContext.fromExisting(this.sharedUserContext());
     }
 
     handleException() {
-      if (arguments[0] instanceof j$.errors.ExpectationFailed) {
+      if (arguments[0] instanceof j$.private.errors.ExpectationFailed) {
         return;
       }
 
       const data = {
         matcherName: '',
         passed: false,
-        expected: '',
-        actual: '',
         error: arguments[0]
       };
-      const failedExpectation = j$.buildExpectationResult(data);
+      const failedExpectation = j$.private.buildExpectationResult(data);
 
       if (!this.parentSuite) {
         failedExpectation.globalErrorType = 'afterAll';
@@ -195,7 +246,7 @@ getJasmineRequireObj().Suite = function(j$) {
       if (this.reportedDone) {
         this.onLateError(failedExpectation);
       } else {
-        this.result.failedExpectations.push(failedExpectation);
+        this.#result.failedExpectations.push(failedExpectation);
       }
     }
 
@@ -221,25 +272,23 @@ getJasmineRequireObj().Suite = function(j$) {
       this.onLateError(new Error(msg));
     }
 
-    addExpectationResult() {
-      if (isFailure(arguments)) {
-        const data = arguments[1];
-        const expectationResult = j$.buildExpectationResult(data);
+    addExpectationResult(passed, data) {
+      if (passed) {
+        // Passed expectations are accepted for compatibility with
+        // Spec#addExpectationResult, but aren't recorded.
+        return;
+      }
 
-        if (this.reportedDone) {
-          this.onLateError(expectationResult);
-        } else {
-          this.result.failedExpectations.push(expectationResult);
+      const expectationResult = j$.private.buildExpectationResult(data);
 
-          // TODO: refactor so that we don't need to override cached status
-          if (this.result.status) {
-            this.result.status = 'failed';
-          }
-        }
+      if (this.reportedDone) {
+        this.onLateError(expectationResult);
+      } else {
+        this.#result.failedExpectations.push(expectationResult);
+      }
 
-        if (this.#throwOnExpectationFailure) {
-          throw new j$.errors.ExpectationFailed();
-        }
+      if (this.#throwOnExpectationFailure) {
+        throw new j$.private.errors.ExpectationFailed();
       }
     }
 
@@ -247,8 +296,8 @@ getJasmineRequireObj().Suite = function(j$) {
       if (typeof deprecation === 'string') {
         deprecation = { message: deprecation };
       }
-      this.result.deprecationWarnings.push(
-        j$.buildExpectationResult(deprecation)
+      this.#result.deprecationWarnings.push(
+        j$.private.buildExpectationResult(deprecation)
       );
     }
 
@@ -347,10 +396,6 @@ getJasmineRequireObj().Suite = function(j$) {
     get children() {
       return this.#suite.children.map(child => child.metadata);
     }
-  }
-
-  function isFailure(args) {
-    return !args[0];
   }
 
   return Suite;

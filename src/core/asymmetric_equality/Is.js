@@ -1,4 +1,6 @@
 getJasmineRequireObj().Is = function(j$) {
+  'use strict';
+
   class Is {
     constructor(expected) {
       this.expected_ = expected;

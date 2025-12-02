@@ -1,6 +1,6 @@
 describe('toBeFalsy', function() {
   it("passes for 'falsy' values", function() {
-    const matcher = jasmineUnderTest.matchers.toBeFalsy();
+    const matcher = privateUnderTest.matchers.toBeFalsy();
     let result;
 
     result = matcher.compare(false);
@@ -23,7 +23,7 @@ describe('toBeFalsy', function() {
   });
 
   it("fails for 'truthy' values", function() {
-    const matcher = jasmineUnderTest.matchers.toBeFalsy();
+    const matcher = privateUnderTest.matchers.toBeFalsy();
     let result;
 
     result = matcher.compare(true);

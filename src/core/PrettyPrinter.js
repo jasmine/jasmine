@@ -1,4 +1,6 @@
 getJasmineRequireObj().makePrettyPrinter = function(j$) {
+  'use strict';
+
   class SinglePrettyPrintRun {
     constructor(customObjectFormatters, pp) {
       this.customObjectFormatters_ = customObjectFormatters;
@@ -26,7 +28,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
           this.emitScalar('<global>');
         } else if (value.jasmineToString) {
           this.emitScalar(value.jasmineToString(this.pp_));
-        } else if (j$.isString_(value)) {
+        } else if (j$.private.isString(value)) {
           this.emitString(value);
         } else if (j$.isSpy(value)) {
           this.emitScalar('spy on ' + value.and.identity);
@@ -40,7 +42,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
           } else {
             this.emitScalar('Function');
           }
-        } else if (j$.isDomNode(value)) {
+        } else if (j$.private.isDomNode(value)) {
           if (value.tagName) {
             this.emitDomElement(value);
           } else {
@@ -48,16 +50,16 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
           }
         } else if (value instanceof Date) {
           this.emitScalar('Date(' + value + ')');
-        } else if (j$.isSet(value)) {
+        } else if (j$.private.isSet(value)) {
           this.emitSet(value);
-        } else if (j$.isMap(value)) {
+        } else if (j$.private.isMap(value)) {
           this.emitMap(value);
-        } else if (j$.isTypedArray_(value)) {
+        } else if (j$.private.isTypedArray(value)) {
           this.emitTypedArray(value);
         } else if (
           value.toString &&
           typeof value === 'object' &&
-          !j$.isArray_(value) &&
+          !Array.isArray(value) &&
           hasCustomToString(value)
         ) {
           try {
@@ -69,12 +71,12 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
         } else if (this.seen.includes(value)) {
           this.emitScalar(
             '<circular reference: ' +
-              (j$.isArray_(value) ? 'Array' : 'Object') +
+              (Array.isArray(value) ? 'Array' : 'Object') +
               '>'
           );
-        } else if (j$.isArray_(value) || j$.isA_('Object', value)) {
+        } else if (Array.isArray(value) || j$.private.isA('Object', value)) {
           this.seen.push(value);
-          if (j$.isArray_(value)) {
+          if (Array.isArray(value)) {
             this.emitArray(value);
           } else {
             this.emitObject(value);
@@ -97,7 +99,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     }
 
     iterateObject(obj, fn) {
-      const objKeys = j$.MatchersUtil.keys(obj, j$.isArray_(obj));
+      const objKeys = j$.private.MatchersUtil.keys(obj, Array.isArray(obj));
       const length = Math.min(objKeys.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
 
       for (let i = 0; i < length; i++) {
@@ -206,7 +208,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
       const ctor = obj.constructor;
       const constructorName =
         typeof ctor === 'function' && obj instanceof ctor
-          ? j$.fnNameFor(obj.constructor)
+          ? j$.private.fnNameFor(obj.constructor)
           : 'null';
 
       this.append(constructorName);
@@ -236,7 +238,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     }
 
     emitTypedArray(arr) {
-      const constructorName = j$.fnNameFor(arr.constructor);
+      const constructorName = j$.private.fnNameFor(arr.constructor);
       const limitedArray = Array.prototype.slice.call(
         arr,
         0,
@@ -305,7 +307,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     // iframe, web worker)
     try {
       return (
-        j$.isFunction_(value.toString) &&
+        j$.private.isFunction(value.toString) &&
         value.toString !== Object.prototype.toString &&
         value.toString() !== Object.prototype.toString.call(value)
       );

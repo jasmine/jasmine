@@ -1,4 +1,6 @@
 getJasmineRequireObj().SuiteBuilder = function(j$) {
+  'use strict';
+
   class SuiteBuilder {
     constructor(options) {
       this.env_ = options.env;
@@ -92,7 +94,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       ensureIsFunctionOrAsync(fn, 'fit');
 
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
       const spec = this.specFactory_(description, fn, timeout, filename);
       this.currentDeclarationSuite_.addChild(spec);
@@ -105,7 +107,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       ensureIsFunctionOrAsync(beforeEachFunction, 'beforeEach');
 
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
 
       this.currentDeclarationSuite_.beforeEach({
@@ -118,7 +120,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       ensureIsFunctionOrAsync(beforeAllFunction, 'beforeAll');
 
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
 
       this.currentDeclarationSuite_.beforeAll({
@@ -131,7 +133,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       ensureIsFunctionOrAsync(afterEachFunction, 'afterEach');
 
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
 
       afterEachFunction.isCleanup = true;
@@ -145,7 +147,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       ensureIsFunctionOrAsync(afterAllFunction, 'afterAll');
 
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
 
       this.currentDeclarationSuite_.afterAll({
@@ -156,7 +158,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
 
     it_(description, fn, timeout, filename) {
       if (timeout) {
-        j$.util.validateTimeout(timeout);
+        j$.private.util.validateTimeout(timeout);
       }
 
       this.checkDuplicate_(description, 'spec');
@@ -195,7 +197,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       const parentSuite = this.currentDeclarationSuite_;
       const reportedParentSuiteId =
         parentSuite === this.topSuite ? null : parentSuite.id;
-      return new j$.Suite({
+      return new j$.private.Suite({
         id: 'suite' + this.nextSuiteId_++,
         description,
         filename,
@@ -237,7 +239,7 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
       const config = this.env_.configuration();
       const suite = this.currentDeclarationSuite_;
       const parentSuiteId = suite === this.topSuite ? null : suite.id;
-      const spec = new j$.Spec({
+      const spec = new j$.private.Spec({
         id: 'spec' + this.nextSpecId_++,
         filename,
         parentSuiteId,
@@ -300,17 +302,21 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
   }
 
   function ensureIsFunction(fn, caller) {
-    if (!j$.isFunction_(fn)) {
+    if (!j$.private.isFunction(fn)) {
       throw new Error(
-        caller + ' expects a function argument; received ' + j$.getType_(fn)
+        caller +
+          ' expects a function argument; received ' +
+          j$.private.getType(fn)
       );
     }
   }
 
   function ensureIsFunctionOrAsync(fn, caller) {
-    if (!j$.isFunction_(fn) && !j$.isAsyncFunction_(fn)) {
+    if (!j$.private.isFunction(fn) && !j$.private.isAsyncFunction(fn)) {
       throw new Error(
-        caller + ' expects a function argument; received ' + j$.getType_(fn)
+        caller +
+          ' expects a function argument; received ' +
+          j$.private.getType(fn)
       );
     }
   }

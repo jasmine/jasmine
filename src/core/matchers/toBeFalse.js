@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBeFalse = function() {
+  'use strict';
+
   /**
    * {@link expect} the actual value to be `false`.
    * @function

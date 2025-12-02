@@ -1,4 +1,6 @@
 getJasmineRequireObj().Configuration = function(j$) {
+  'use strict';
+
   /**
    * This represents the available options to configure Jasmine.
    * Options that are not provided will use their default values.
@@ -71,6 +73,8 @@ getJasmineRequireObj().Configuration = function(j$) {
     specFilter: function() {
       return true;
     },
+
+    // TODO: remove hideDisabled when HtmlReporter is removed
     /**
      * Whether reporters should hide disabled specs from their output.
      * Currently only supported by Jasmine's HTMLReporter
@@ -78,6 +82,7 @@ getJasmineRequireObj().Configuration = function(j$) {
      * @since 3.3.0
      * @type Boolean
      * @default false
+     * @deprecated
      */
     hideDisabled: false,
     /**
@@ -95,9 +100,9 @@ getJasmineRequireObj().Configuration = function(j$) {
      * error.
      * @name Configuration#forbidDuplicateNames
      * @type boolean
-     * @default false
+     * @default true
      */
-    forbidDuplicateNames: false,
+    forbidDuplicateNames: true,
     /**
      * Whether to issue warnings for certain deprecated functionality
      * every time it's used. If not set or set to false, deprecation warnings
@@ -146,7 +151,22 @@ getJasmineRequireObj().Configuration = function(j$) {
      * @type number
      * @default 0
      */
-    extraDescribeStackFrames: 0
+    extraDescribeStackFrames: 0,
+
+    /**
+     * The strategy to use in Safari and similar browsers to determine how often
+     * to yield control by calling setTimeout. If set to "count", the default,
+     * the frequency of setTimeout calls is based on the number of relevant
+     * function calls. If set to "time", the frequency of setTimeout calls is
+     * based on elapsed time. Using "time" may provide a significant performance
+     * improvement, but as of 6.0 it hasn't been tested with a wide variety of
+     * workloads and should be considered experimental.
+     * @name Configuration#safariYieldStrategy
+     * @since 6.0.0
+     * @type 'count' | 'time'
+     * @default 'count'
+     */
+    safariYieldStrategy: 'count'
   };
   Object.freeze(defaultConfig);
 
@@ -179,7 +199,8 @@ getJasmineRequireObj().Configuration = function(j$) {
         'stopSpecOnExpectationFailure',
         'autoCleanClosures',
         'forbidDuplicateNames',
-        'detectLateRejectionHandling'
+        'detectLateRejectionHandling',
+        'verboseDeprecations'
       ];
 
       for (const k of booleanProps) {
@@ -197,12 +218,6 @@ getJasmineRequireObj().Configuration = function(j$) {
         this.#values.seed = changes.seed;
       }
 
-      // TODO: in the next major release, make verboseDeprecations work like
-      // other boolean properties.
-      if (changes.hasOwnProperty('verboseDeprecations')) {
-        this.#values.verboseDeprecations = changes.verboseDeprecations;
-      }
-
       // 0 is a valid value for both of these, so a truthiness check wouldn't work
       if (typeof changes.extraItStackFrames !== 'undefined') {
         this.#values.extraItStackFrames = changes.extraItStackFrames;
@@ -211,6 +226,18 @@ getJasmineRequireObj().Configuration = function(j$) {
       if (typeof changes.extraDescribeStackFrames !== 'undefined') {
         this.#values.extraDescribeStackFrames =
           changes.extraDescribeStackFrames;
+      }
+
+      if (typeof changes.safariYieldStrategy !== 'undefined') {
+        const v = changes.safariYieldStrategy;
+
+        if (v === 'count' || v === 'time') {
+          this.#values.safariYieldStrategy = v;
+        } else {
+          throw new Error(
+            "Invalid safariYieldStrategy value. Valid values are 'count' and 'time'."
+          );
+        }
       }
     }
   }

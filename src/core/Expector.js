@@ -1,11 +1,13 @@
 getJasmineRequireObj().Expector = function(j$) {
+  'use strict';
+
   function Expector(options) {
     this.matchersUtil = options.matchersUtil || {
       buildFailureMessage: function() {}
     };
     this.actual = options.actual;
     this.addExpectationResult = options.addExpectationResult || function() {};
-    this.filters = new j$.ExpectationFilterChain();
+    this.filters = new j$.private.ExpectationFilterChain();
   }
 
   Expector.prototype.instantiateMatcher = function(
@@ -39,7 +41,7 @@ getJasmineRequireObj().Expector = function(j$) {
           this.matchersUtil,
           args
         );
-      } else if (j$.isFunction_(result.message)) {
+      } else if (j$.private.isFunction(result.message)) {
         return result.message();
       } else {
         return result.message;
@@ -83,9 +85,7 @@ getJasmineRequireObj().Expector = function(j$) {
       passed: result.pass,
       message: message,
       error: errorForStack ? undefined : result.error,
-      errorForStack: errorForStack || undefined,
-      actual: this.actual,
-      expected: this.expected // TODO: this may need to be arrayified/sliced
+      errorForStack: errorForStack || undefined
     });
   };
 

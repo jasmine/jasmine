@@ -1,16 +1,18 @@
 getJasmineRequireObj().SpyFactory = function(j$) {
+  'use strict';
+
   function SpyFactory(
     getCustomStrategies,
     getDefaultStrategyFn,
     getMatchersUtil
   ) {
     this.createSpy = function(name, originalFn) {
-      if (j$.isFunction_(name) && originalFn === undefined) {
+      if (j$.private.isFunction(name) && originalFn === undefined) {
         originalFn = name;
         name = originalFn.name;
       }
 
-      return j$.Spy(name, getMatchersUtil(), {
+      return j$.private.Spy(name, getMatchersUtil(), {
         originalFn,
         customStrategies: getCustomStrategies(),
         defaultStrategyFn: getDefaultStrategyFn()
@@ -19,7 +21,7 @@ getJasmineRequireObj().SpyFactory = function(j$) {
 
     this.createSpyObj = function(baseName, methodNames, propertyNames) {
       const baseNameIsCollection =
-        j$.isObject_(baseName) || j$.isArray_(baseName);
+        j$.private.isObject(baseName) || Array.isArray(baseName);
 
       if (baseNameIsCollection) {
         propertyNames = methodNames;
@@ -65,11 +67,11 @@ getJasmineRequireObj().SpyFactory = function(j$) {
 
   function normalizeKeyValues(object) {
     const result = [];
-    if (j$.isArray_(object)) {
+    if (Array.isArray(object)) {
       for (let i = 0; i < object.length; i++) {
         result.push([object[i]]);
       }
-    } else if (j$.isObject_(object)) {
+    } else if (j$.private.isObject(object)) {
       for (const key in object) {
         if (object.hasOwnProperty(key)) {
           result.push([key, object[key]]);

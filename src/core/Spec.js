@@ -1,9 +1,12 @@
 getJasmineRequireObj().Spec = function(j$) {
+  'use strict';
+
   class Spec {
     #autoCleanClosures;
     #throwOnExpectationFailure;
     #timer;
     #metadata;
+    #executionState;
 
     constructor(attrs) {
       this.expectationFactory = attrs.expectationFactory;
@@ -35,44 +38,47 @@ getJasmineRequireObj().Spec = function(j$) {
       this.#throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
       this.#timer = attrs.timer || new j$.Timer();
 
+      this.reset();
+
       if (!this.queueableFn.fn) {
         this.exclude();
       }
-
-      this.reset();
     }
 
     addExpectationResult(passed, data, isError) {
-      const expectationResult = j$.buildExpectationResult(data);
+      const expectationResult = j$.private.buildExpectationResult(data);
 
       if (passed) {
-        this.result.passedExpectations.push(expectationResult);
+        this.#executionState.passedExpectations.push(expectationResult);
       } else {
         if (this.reportedDone) {
           this.onLateError(expectationResult);
         } else {
-          this.result.failedExpectations.push(expectationResult);
-
-          // TODO: refactor so that we don't need to override cached status
-          if (this.result.status) {
-            this.result.status = 'failed';
-          }
+          this.#executionState.failedExpectations.push(expectationResult);
         }
 
         if (this.#throwOnExpectationFailure && !isError) {
-          throw new j$.errors.ExpectationFailed();
+          throw new j$.private.errors.ExpectationFailed();
         }
       }
     }
 
     getSpecProperty(key) {
-      this.result.properties = this.result.properties || {};
-      return this.result.properties[key];
+      this.#executionState.properties = this.#executionState.properties || {};
+      return this.#executionState.properties[key];
     }
 
     setSpecProperty(key, value) {
-      this.result.properties = this.result.properties || {};
-      this.result.properties[key] = value;
+      // Key and value will eventually be cloned during reporting. The error
+      // thrown at that point if they aren't cloneable isn't very helpful.
+      // Throw a better one now.
+      if (!j$.private.isString(key)) {
+        throw new Error('Key must be a string');
+      }
+      j$.private.util.assertReporterCloneable(value, 'Value');
+
+      this.#executionState.properties = this.#executionState.properties || {};
+      this.#executionState.properties[key] = value;
     }
 
     executionStarted() {
@@ -80,21 +86,72 @@ getJasmineRequireObj().Spec = function(j$) {
     }
 
     executionFinished(excluded, failSpecWithNoExp) {
+      this.#executionState.dynamicallyExcluded = excluded;
+      this.#executionState.requireExpectations = failSpecWithNoExp;
+
       if (this.#autoCleanClosures) {
         this.queueableFn.fn = null;
       }
 
-      this.result.status = this.#status(excluded, failSpecWithNoExp);
-      this.result.duration = this.#timer.elapsed();
+      this.#executionState.duration = this.#timer.elapsed();
 
-      if (this.result.status !== 'failed') {
-        this.result.debugLogs = null;
+      if (this.status() !== 'failed') {
+        this.#executionState.debugLogs = null;
       }
     }
 
+    hadBeforeAllFailure() {
+      this.addExpectationResult(
+        false,
+        {
+          passed: false,
+          message:
+            'Not run because a beforeAll function failed. The ' +
+            'beforeAll failure will be reported on the suite that ' +
+            'caused it.'
+        },
+        true
+      );
+    }
+
     reset() {
+      this.#executionState = {
+        failedExpectations: [],
+        passedExpectations: [],
+        deprecationWarnings: [],
+        pendingReason: this.excludeMessage || '',
+        duration: null,
+        properties: null,
+        debugLogs: null,
+        // TODO: better naming. Don't make 'excluded' mean two things.
+        dynamicallyExcluded: false,
+        requireExpectations: false,
+        markedPending: this.markedExcluding
+      };
+      this.reportedDone = false;
+    }
+
+    startedEvent() {
       /**
-       * @typedef SpecResult
+       * @typedef SpecStartedEvent
+       * @property {String} id - The unique id of this spec.
+       * @property {String} description - The description passed to the {@link it} that created this spec.
+       * @property {String} fullName - The full description including all ancestors of this spec.
+       * @property {String|null} parentSuiteId - The ID of the suite containing this spec, or null if this spec is not in a describe().
+       * @property {String} filename - Deprecated. The name of the file the spec was defined in.
+       * Note: The value may be incorrect if zone.js is installed or
+       * `it`/`fit`/`xit` have been replaced with versions that don't maintain the
+       *  same call stack height as the originals. This property may be removed in
+       *  a future version unless there is enough user interest in keeping it.
+       *  See {@link https://github.com/jasmine/jasmine/issues/2065}.
+       * @since 2.0.0
+       */
+      return this.#commonEventFields();
+    }
+
+    doneEvent() {
+      /**
+       * @typedef SpecDoneEvent
        * @property {String} id - The unique id of this spec.
        * @property {String} description - The description passed to the {@link it} that created this spec.
        * @property {String} fullName - The full description including all ancestors of this spec.
@@ -108,28 +165,41 @@ getJasmineRequireObj().Spec = function(j$) {
        * @property {ExpectationResult[]} passedExpectations - The list of expectations that passed during execution of this spec.
        * @property {ExpectationResult[]} deprecationWarnings - The list of deprecation warnings that occurred during execution this spec.
        * @property {String} pendingReason - If the spec is {@link pending}, this will be the reason.
-       * @property {String} status - Once the spec has completed, this string represents the pass/fail status of this spec.
+       * @property {String} status - The result of this spec. May be 'passed', 'failed', 'pending', or 'excluded'.
        * @property {number} duration - The time in ms used by the spec execution, including any before/afterEach.
        * @property {Object} properties - User-supplied properties, if any, that were set using {@link Env#setSpecProperty}
        * @property {DebugLogEntry[]|null} debugLogs - Messages, if any, that were logged using {@link jasmine.debugLog} during a failing spec.
        * @since 2.0.0
        */
-      this.result = {
+      const event = {
+        ...this.#commonEventFields(),
+        status: this.status()
+      };
+      const toCopy = [
+        'failedExpectations',
+        'passedExpectations',
+        'deprecationWarnings',
+        'pendingReason',
+        'duration',
+        'properties',
+        'debugLogs'
+      ];
+
+      for (const k of toCopy) {
+        event[k] = this.#executionState[k];
+      }
+
+      return event;
+    }
+
+    #commonEventFields() {
+      return {
         id: this.id,
         description: this.description,
         fullName: this.getFullName(),
         parentSuiteId: this.parentSuiteId,
-        filename: this.filename,
-        failedExpectations: [],
-        passedExpectations: [],
-        deprecationWarnings: [],
-        pendingReason: this.excludeMessage || '',
-        duration: null,
-        properties: null,
-        debugLogs: null
+        filename: this.filename
       };
-      this.markedPending = this.markedExcluding;
-      this.reportedDone = false;
     }
 
     handleException(e) {
@@ -138,7 +208,7 @@ getJasmineRequireObj().Spec = function(j$) {
         return;
       }
 
-      if (e instanceof j$.errors.ExpectationFailed) {
+      if (e instanceof j$.private.errors.ExpectationFailed) {
         return;
       }
 
@@ -147,8 +217,6 @@ getJasmineRequireObj().Spec = function(j$) {
         {
           matcherName: '',
           passed: false,
-          expected: '',
-          actual: '',
           error: e
         },
         true
@@ -156,10 +224,14 @@ getJasmineRequireObj().Spec = function(j$) {
     }
 
     pend(message) {
-      this.markedPending = true;
+      this.#executionState.markedPending = true;
       if (message) {
-        this.result.pendingReason = message;
+        this.#executionState.pendingReason = message;
       }
+    }
+
+    get markedPending() {
+      return this.#executionState.markedPending;
     }
 
     // Like pend(), but pending state will survive reset().
@@ -172,15 +244,8 @@ getJasmineRequireObj().Spec = function(j$) {
       this.pend(message);
     }
 
-    // TODO: ensure that all access to result goes through .getResult()
-    // so that the status is correct.
-    getResult() {
-      this.result.status = this.#status();
-      return this.result;
-    }
-
-    #status(excluded, failSpecWithNoExpectations) {
-      if (excluded === true) {
+    status() {
+      if (this.#executionState.dynamicallyExcluded) {
         return 'excluded';
       }
 
@@ -189,10 +254,10 @@ getJasmineRequireObj().Spec = function(j$) {
       }
 
       if (
-        this.result.failedExpectations.length > 0 ||
-        (failSpecWithNoExpectations &&
-          this.result.failedExpectations.length +
-            this.result.passedExpectations.length ===
+        this.#executionState.failedExpectations.length > 0 ||
+        (this.#executionState.requireExpectations &&
+          this.#executionState.failedExpectations.length +
+            this.#executionState.passedExpectations.length ===
             0)
       ) {
         return 'failed';
@@ -209,14 +274,14 @@ getJasmineRequireObj().Spec = function(j$) {
       if (typeof deprecation === 'string') {
         deprecation = { message: deprecation };
       }
-      this.result.deprecationWarnings.push(
-        j$.buildExpectationResult(deprecation)
+      this.#executionState.deprecationWarnings.push(
+        j$.private.buildExpectationResult(deprecation)
       );
     }
 
     debugLog(msg) {
-      if (!this.result.debugLogs) {
-        this.result.debugLogs = [];
+      if (!this.#executionState.debugLogs) {
+        this.#executionState.debugLogs = [];
       }
 
       /**
@@ -225,7 +290,7 @@ getJasmineRequireObj().Spec = function(j$) {
        * @property {number} timestamp - The time when the entry was added, in
        * milliseconds from the spec's start time
        */
-      this.result.debugLogs.push({
+      this.#executionState.debugLogs.push({
         message: msg,
         timestamp: this.#timer.elapsed()
       });

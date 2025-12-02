@@ -1,6 +1,6 @@
-describe('ClearStack', function() {
+describe('StackClearer', function() {
   it('works in an integrationy way', function(done) {
-    const clearStack = jasmineUnderTest.getClearStack(
+    const { clearStack } = privateUnderTest.getStackClearer(
       jasmineUnderTest.getGlobal()
     );
 
@@ -36,7 +36,7 @@ describe('ClearStack', function() {
         queueMicrotask
       };
 
-      const clearStack = jasmineUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
 
       for (let i = 0; i < 9; i++) {
         clearStack(function() {});
@@ -73,17 +73,6 @@ describe('ClearStack', function() {
         }
       };
     });
-
-    describe('when MessageChannel is unavailable', function() {
-      usesQueueMicrotaskWithSetTimeout(function() {
-        return {
-          navigator: {
-            userAgent: 'CERN-LineMode/2.15 libwww/2.17b3',
-            MessageChannel: undefined
-          }
-        };
-      });
-    });
   });
 
   describe('in Node', function() {
@@ -104,7 +93,7 @@ describe('ClearStack', function() {
         ...makeGlobal(),
         MessageChannel: fakeMessageChannel
       };
-      const clearStack = jasmineUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
       let called = false;
 
       clearStack(function() {
@@ -125,7 +114,7 @@ describe('ClearStack', function() {
           return fakeChannel;
         }
       };
-      const clearStack = jasmineUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
 
       for (let i = 0; i < 9; i++) {
         clearStack(function() {});
@@ -150,7 +139,7 @@ describe('ClearStack', function() {
         setTimeout,
         MessageChannel: fakeMessageChannel
       };
-      const clearStack = jasmineUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
       const fn = jasmine.createSpy('second clearStack function');
 
       clearStack(function() {
@@ -170,7 +159,7 @@ describe('ClearStack', function() {
           fn();
         }
       };
-      const clearStack = jasmineUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
       let called = false;
 
       clearStack(function() {
@@ -180,30 +169,82 @@ describe('ClearStack', function() {
       expect(called).toBe(true);
     });
 
-    it('uses setTimeout instead of queueMicrotask every 10 calls to make sure we release the CPU', function() {
-      const queueMicrotask = jasmine.createSpy('queueMicrotask');
-      const setTimeout = jasmine.createSpy('setTimeout');
-      const global = {
-        ...makeGlobal(),
-        queueMicrotask,
-        setTimeout
-      };
-      const clearStack = jasmineUnderTest.getClearStack(global);
+    function hasSetTimeoutBehavior(configure) {
+      it('uses setTimeout instead of queueMicrotask every 10 calls', function() {
+        const queueMicrotask = jasmine.createSpy('queueMicrotask');
+        const setTimeout = jasmine.createSpy('setTimeout');
+        const global = {
+          ...makeGlobal(),
+          queueMicrotask,
+          setTimeout
+        };
+        const stackClearer = privateUnderTest.getStackClearer(global);
 
-      for (let i = 0; i < 9; i++) {
-        clearStack(function() {});
-      }
+        if (configure) {
+          configure(stackClearer);
+        }
 
-      expect(queueMicrotask).toHaveBeenCalled();
-      expect(setTimeout).not.toHaveBeenCalled();
+        for (let i = 0; i < 9; i++) {
+          stackClearer.clearStack(function() {});
+        }
 
-      clearStack(function() {});
-      expect(queueMicrotask).toHaveBeenCalledTimes(9);
-      expect(setTimeout).toHaveBeenCalledTimes(1);
+        expect(queueMicrotask).toHaveBeenCalled();
+        expect(setTimeout).not.toHaveBeenCalled();
 
-      clearStack(function() {});
-      expect(queueMicrotask).toHaveBeenCalledTimes(10);
-      expect(setTimeout).toHaveBeenCalledTimes(1);
+        stackClearer.clearStack(function() {});
+        expect(queueMicrotask).toHaveBeenCalledTimes(9);
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+
+        stackClearer.clearStack(function() {});
+        expect(queueMicrotask).toHaveBeenCalledTimes(10);
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+      });
+    }
+
+    hasSetTimeoutBehavior();
+
+    describe('With yield strategy explicitly set to count', function() {
+      hasSetTimeoutBehavior(function(stackClearer) {
+        stackClearer.setSafariYieldStrategy('count');
+      });
+    });
+
+    describe('With yield strategy set to time', function() {
+      beforeEach(function() {
+        jasmine.clock().install();
+        jasmine.clock().mockDate();
+      });
+
+      afterEach(function() {
+        jasmine.clock().uninstall();
+      });
+
+      it('uses setTimeout instead of queueMicrotask every 25 milliseconds', function() {
+        const queueMicrotask = jasmine.createSpy('queueMicrotask');
+        const setTimeout = jasmine.createSpy('setTimeout');
+        const global = {
+          ...makeGlobal(),
+          queueMicrotask,
+          setTimeout
+        };
+        const stackClearer = privateUnderTest.getStackClearer(global);
+        stackClearer.setSafariYieldStrategy('time');
+
+        // 10+ counts should not trigger a setTimeout if they happen fast enough
+        jasmine.clock().tick(24);
+        for (let i = 0; i < 11; i++) {
+          stackClearer.clearStack(function() {});
+        }
+
+        expect(queueMicrotask).toHaveBeenCalled();
+        expect(setTimeout).not.toHaveBeenCalled();
+
+        queueMicrotask.calls.reset();
+        jasmine.clock().tick(1);
+        stackClearer.clearStack(function() {});
+        expect(queueMicrotask).not.toHaveBeenCalled();
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+      });
     });
   }
 
@@ -215,7 +256,7 @@ describe('ClearStack', function() {
           fn();
         }
       };
-      const clearStack = jasmineUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
       let called = false;
 
       clearStack(function() {
@@ -233,7 +274,7 @@ describe('ClearStack', function() {
         queueMicrotask,
         setTimeout
       };
-      const clearStack = jasmineUnderTest.getClearStack(global);
+      const { clearStack } = privateUnderTest.getStackClearer(global);
 
       clearStack(function() {});
       clearStack(function() {});

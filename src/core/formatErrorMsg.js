@@ -1,4 +1,6 @@
 getJasmineRequireObj().formatErrorMsg = function() {
+  'use strict';
+
   function generateErrorMsg(domain, usage) {
     const usageDefinition = usage ? '\nUsage: ' + usage : '';
 

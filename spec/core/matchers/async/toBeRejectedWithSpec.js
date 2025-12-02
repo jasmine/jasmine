@@ -1,7 +1,7 @@
 describe('#toBeRejectedWith', function() {
   it('should return true if the promise is rejected with the expected value', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
+    const matchersUtil = new privateUnderTest.MatchersUtil(),
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
       actual = Promise.reject({ error: 'PEBCAK' });
 
     return matcher.compare(actual, { error: 'PEBCAK' }).then(function(result) {
@@ -10,8 +10,8 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should fail if the promise resolves', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil(),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
+    const matchersUtil = new privateUnderTest.MatchersUtil(),
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
       actual = Promise.resolve();
 
     return matcher.compare(actual, '').then(function(result) {
@@ -20,10 +20,10 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should fail if the promise is rejected with a different value', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
-        pp: jasmineUnderTest.makePrettyPrinter()
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+        pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
       actual = Promise.reject('A Bad Apple');
 
     return matcher.compare(actual, 'Some Cool Thing').then(function(result) {
@@ -38,10 +38,10 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('should build its error correctly when negated', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
-        pp: jasmineUnderTest.makePrettyPrinter()
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+        pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
       actual = Promise.reject(true);
 
     return matcher.compare(actual, true).then(function(result) {
@@ -60,10 +60,10 @@ describe('#toBeRejectedWith', function() {
           return true;
         }
       ],
-      matchersUtil = new jasmineUnderTest.MatchersUtil({
+      matchersUtil = new privateUnderTest.MatchersUtil({
         customTesters: customEqualityTesters
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
       actual = Promise.reject('actual');
 
     return matcher.compare(actual, 'expected').then(function(result) {
@@ -72,10 +72,10 @@ describe('#toBeRejectedWith', function() {
   });
 
   it('fails if actual is not a promise', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
-        pp: jasmineUnderTest.makePrettyPrinter()
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+        pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
+      matcher = privateUnderTest.asyncMatchers.toBeRejectedWith(matchersUtil),
       actual = 'not a promise';
 
     function f() {

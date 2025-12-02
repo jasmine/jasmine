@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  This file starts the process of "booting" Jasmine. It initializes Jasmine,
  makes its globals available, and creates the env. This file should be loaded

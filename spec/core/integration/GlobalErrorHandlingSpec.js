@@ -4,15 +4,15 @@ describe('Global error handling (integration)', function() {
 
   beforeEach(function() {
     specHelpers.registerIntegrationMatchers();
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
   });
 
   afterEach(function() {
     env.cleanup_();
   });
 
-  it('reports errors that occur during loading', async function() {
-    const global = {
+  function mockGlobal() {
+    return {
       ...browserEventMethods(),
       setTimeout: function(fn, delay) {
         return setTimeout(fn, delay);
@@ -23,12 +23,21 @@ describe('Global error handling (integration)', function() {
       queueMicrotask: function(fn) {
         queueMicrotask(fn);
       },
-      onerror: function() {}
+      onerror: function() {},
+      // Enough Node globals to make getStackClearer() return the microtask
+      // implementation, which is the easiest to mock
+      process: {
+        versions: {
+          node: ''
+        }
+      }
     };
-    spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+  }
 
+  it('reports errors that occur during loading', async function() {
+    const global = mockGlobal();
     env.cleanup_();
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env({ global });
     const reporter = jasmine.createSpyObj('reporter', [
       'jasmineDone',
       'suiteDone',
@@ -53,45 +62,34 @@ describe('Global error handling (integration)', function() {
         passed: false,
         globalErrorType: 'load',
         message: 'Uncaught SyntaxError: Unexpected end of input',
-        stack: undefined,
         filename: 'borkenSpec.js',
-        lineno: 42
+        lineno: 42,
+        matcherName: undefined,
+        stack: jasmine.any(String)
       },
       {
         passed: false,
         globalErrorType: 'load',
         message: 'ENOCHEESE',
-        stack: error.stack,
-        filename: undefined,
-        lineno: undefined
+        matcherName: undefined,
+        stack: jasmine.any(String)
       }
     ]);
   });
 
   describe('If suppressLoadErrors: true was passed', function() {
     it('does not install a global error handler during loading', async function() {
+      const global = mockGlobal();
       const originalOnerror = jasmine.createSpy('original onerror');
-      const global = {
-        ...browserEventMethods(),
-        setTimeout: function(fn, delay) {
-          return setTimeout(fn, delay);
-        },
-        clearTimeout: function(fn, delay) {
-          clearTimeout(fn, delay);
-        },
-        queueMicrotask: function(fn) {
-          queueMicrotask(fn);
-        },
-        onerror: originalOnerror
-      };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-      const globalErrors = new jasmineUnderTest.GlobalErrors(global);
+      global.onerror = originalOnerror;
+      const globalErrors = new privateUnderTest.GlobalErrors(global);
       const onerror = jasmine.createSpy('onerror');
       globalErrors.pushListener(onerror);
 
       env.cleanup_();
-      env = new jasmineUnderTest.Env({
+      env = new privateUnderTest.Env({
         suppressLoadErrors: true,
+        global,
         GlobalErrors: function() {
           return globalErrors;
         }
@@ -115,21 +113,9 @@ describe('Global error handling (integration)', function() {
 
   describe('Handling unhandled exceptions', function() {
     it('routes unhandled exceptions to the running spec', async function() {
-      const global = {
-        ...browserEventMethods(),
-        setTimeout: function(fn, delay) {
-          return setTimeout(fn, delay);
-        },
-        clearTimeout: function(fn, delay) {
-          clearTimeout(fn, delay);
-        },
-        queueMicrotask: function(fn) {
-          queueMicrotask(fn);
-        }
-      };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+      const global = mockGlobal();
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -156,24 +142,12 @@ describe('Global error handling (integration)', function() {
 
     describe('When the most recently running spec has reported specDone', function() {
       it('routes unhandled exceptions to an ancestor suite', async function() {
-        const global = {
-          ...browserEventMethods(),
-          setTimeout: function(fn, delay) {
-            return setTimeout(fn, delay);
-          },
-          clearTimeout: function(fn) {
-            clearTimeout(fn);
-          },
-          queueMicrotask: function(fn) {
-            queueMicrotask(fn);
-          }
-        };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-
-        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const global = mockGlobal();
+        const stackClearer = privateUnderTest.getStackClearer(global);
+        const realClearStack = stackClearer.clearStack;
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -182,9 +156,12 @@ describe('Global error handling (integration)', function() {
 
           realClearStack(fn);
         });
+        spyOn(privateUnderTest, 'getStackClearer').and.returnValue(
+          stackClearer
+        );
 
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         let suiteErrors = [];
         env.addReporter({
@@ -220,21 +197,9 @@ describe('Global error handling (integration)', function() {
     });
 
     it('routes unhandled exceptions to the running suite', async function() {
-      const global = {
-        ...browserEventMethods(),
-        setTimeout: function(fn, delay) {
-          return setTimeout(fn, delay);
-        },
-        clearTimeout: function(fn, delay) {
-          clearTimeout(fn, delay);
-        },
-        queueMicrotask: function(fn) {
-          queueMicrotask(fn);
-        }
-      };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+      const global = mockGlobal();
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -273,24 +238,12 @@ describe('Global error handling (integration)', function() {
 
     describe('When the most recently suite has reported suiteDone', function() {
       it('routes unhandled exceptions to an ancestor suite', async function() {
-        const global = {
-          ...browserEventMethods(),
-          setTimeout: function(fn, delay) {
-            return setTimeout(fn, delay);
-          },
-          clearTimeout: function(fn, delay) {
-            clearTimeout(fn, delay);
-          },
-          queueMicrotask: function(fn) {
-            queueMicrotask(fn);
-          }
-        };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-
-        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const global = mockGlobal();
+        const stackClearer = privateUnderTest.getStackClearer(global);
+        const realClearStack = stackClearer.clearStack;
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -299,9 +252,12 @@ describe('Global error handling (integration)', function() {
 
           realClearStack(fn);
         });
+        spyOn(privateUnderTest, 'getStackClearer').and.returnValue(
+          stackClearer
+        );
 
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         let suiteErrors = [];
         env.addReporter({
@@ -341,21 +297,9 @@ describe('Global error handling (integration)', function() {
 
     describe('When the env has started reporting jasmineDone', function() {
       it('logs the error to the console', async function() {
-        const global = {
-          ...browserEventMethods(),
-          setTimeout: function(fn, delay) {
-            return setTimeout(fn, delay);
-          },
-          clearTimeout: function(fn, delay) {
-            clearTimeout(fn, delay);
-          },
-          queueMicrotask: function(fn) {
-            queueMicrotask(fn);
-          }
-        };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+        const global = mockGlobal();
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         spyOn(console, 'error');
 
@@ -384,26 +328,14 @@ describe('Global error handling (integration)', function() {
     });
 
     it('routes all errors that occur during stack clearing somewhere', async function() {
-      const global = {
-        ...browserEventMethods(),
-        setTimeout: function(fn, delay) {
-          return setTimeout(fn, delay);
-        },
-        clearTimeout: function(fn) {
-          clearTimeout(fn);
-        },
-        queueMicrotask: function(fn) {
-          queueMicrotask(fn);
-        }
-      };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-
-      const realClearStack = jasmineUnderTest.getClearStack(global);
+      const global = mockGlobal();
+      const stackClearer = privateUnderTest.getStackClearer(global);
+      const realClearStack = stackClearer.clearStack;
       let clearStackCallCount = 0;
       let jasmineDone = false;
       const expectedErrors = [];
       const expectedErrorsAfterJasmineDone = [];
-      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+      spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
         clearStackCallCount++;
         const msg = `Error in clearStack #${clearStackCallCount}`;
 
@@ -416,10 +348,11 @@ describe('Global error handling (integration)', function() {
         dispatchErrorEvent(global, 'error', { error: msg });
         realClearStack(fn);
       });
+      spyOn(privateUnderTest, 'getStackClearer').and.returnValue(stackClearer);
       spyOn(console, 'error');
 
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
 
       const receivedErrors = [];
       function logErrors(event) {
@@ -459,21 +392,9 @@ describe('Global error handling (integration)', function() {
 
   describe('Handling unhandled promise rejections', function() {
     it('routes unhandled promise rejections to the running spec', async function() {
-      const global = {
-        ...browserEventMethods(),
-        setTimeout: function(fn, delay) {
-          return setTimeout(fn, delay);
-        },
-        clearTimeout: function(fn, delay) {
-          clearTimeout(fn, delay);
-        },
-        queueMicrotask: function(fn) {
-          queueMicrotask(fn);
-        }
-      };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+      const global = mockGlobal();
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -502,24 +423,12 @@ describe('Global error handling (integration)', function() {
 
     describe('When the most recently running spec has reported specDone', function() {
       it('routes unhandled promise rejections to an ancestor suite', async function() {
-        const global = {
-          ...browserEventMethods(),
-          setTimeout: function(fn, delay) {
-            return setTimeout(fn, delay);
-          },
-          clearTimeout: function(fn) {
-            clearTimeout(fn);
-          },
-          queueMicrotask: function(fn) {
-            queueMicrotask(fn);
-          }
-        };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-
-        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const global = mockGlobal();
+        const stackClearer = privateUnderTest.getStackClearer(global);
+        const realClearStack = stackClearer.clearStack;
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -528,9 +437,12 @@ describe('Global error handling (integration)', function() {
 
           realClearStack(fn);
         });
+        spyOn(privateUnderTest, 'getStackClearer').and.returnValue(
+          stackClearer
+        );
 
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         let suiteErrors = [];
         env.addReporter({
@@ -566,21 +478,9 @@ describe('Global error handling (integration)', function() {
     });
 
     it('routes unhandled promise rejections to the running suite', async function() {
-      const global = {
-        ...browserEventMethods(),
-        setTimeout: function(fn, delay) {
-          return setTimeout(fn, delay);
-        },
-        clearTimeout: function(fn, delay) {
-          clearTimeout(fn, delay);
-        },
-        queueMicrotask: function(fn) {
-          queueMicrotask(fn);
-        }
-      };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+      const global = mockGlobal();
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
       const reporter = jasmine.createSpyObj('fakeReporter', [
         'specDone',
         'suiteDone'
@@ -621,24 +521,12 @@ describe('Global error handling (integration)', function() {
 
     describe('When the most recently suite has reported suiteDone', function() {
       it('routes unhandled promise rejections to an ancestor suite', async function() {
-        const global = {
-          ...browserEventMethods(),
-          setTimeout: function(fn, delay) {
-            return setTimeout(fn, delay);
-          },
-          clearTimeout: function(fn, delay) {
-            clearTimeout(fn, delay);
-          },
-          queueMicrotask: function(fn) {
-            queueMicrotask(fn);
-          }
-        };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-
-        const realClearStack = jasmineUnderTest.getClearStack(global);
+        const global = mockGlobal();
+        const stackClearer = privateUnderTest.getStackClearer(global);
+        const realClearStack = stackClearer.clearStack;
         const clearStackCallbacks = {};
         let clearStackCallCount = 0;
-        spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+        spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
           clearStackCallCount++;
 
           if (clearStackCallbacks[clearStackCallCount]) {
@@ -647,9 +535,12 @@ describe('Global error handling (integration)', function() {
 
           realClearStack(fn);
         });
+        spyOn(privateUnderTest, 'getStackClearer').and.returnValue(
+          stackClearer
+        );
 
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         let suiteErrors = [];
         env.addReporter({
@@ -689,21 +580,9 @@ describe('Global error handling (integration)', function() {
 
     describe('When the env has started reporting jasmineDone', function() {
       it('logs the rejection to the console', async function() {
-        const global = {
-          ...browserEventMethods(),
-          setTimeout: function(fn, delay) {
-            return setTimeout(fn, delay);
-          },
-          clearTimeout: function(fn, delay) {
-            clearTimeout(fn, delay);
-          },
-          queueMicrotask: function(fn) {
-            queueMicrotask(fn);
-          }
-        };
-        spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+        const global = mockGlobal();
         env.cleanup_();
-        env = new jasmineUnderTest.Env();
+        env = new privateUnderTest.Env({ global });
 
         spyOn(console, 'error');
 
@@ -734,26 +613,14 @@ describe('Global error handling (integration)', function() {
     });
 
     it('routes all unhandled promise rejections that occur during stack clearing somewhere', async function() {
-      const global = {
-        ...browserEventMethods(),
-        setTimeout: function(fn, delay) {
-          return setTimeout(fn, delay);
-        },
-        clearTimeout: function(fn) {
-          clearTimeout(fn);
-        },
-        queueMicrotask: function(fn) {
-          queueMicrotask(fn);
-        }
-      };
-      spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-
-      const realClearStack = jasmineUnderTest.getClearStack(global);
+      const global = mockGlobal();
+      const stackClearer = privateUnderTest.getStackClearer(global);
+      const realClearStack = stackClearer.clearStack;
       let clearStackCallCount = 0;
       let jasmineDone = false;
       const expectedErrors = [];
       const expectedErrorsAfterJasmineDone = [];
-      spyOn(jasmineUnderTest, 'getClearStack').and.returnValue(function(fn) {
+      spyOn(stackClearer, 'clearStack').and.callFake(function(fn) {
         clearStackCallCount++;
         const reason = `Error in clearStack #${clearStackCallCount}`;
         const expectedMsg = `Unhandled promise rejection: ${reason} thrown`;
@@ -767,10 +634,11 @@ describe('Global error handling (integration)', function() {
         dispatchErrorEvent(global, 'unhandledrejection', { reason });
         realClearStack(fn);
       });
+      spyOn(privateUnderTest, 'getStackClearer').and.returnValue(stackClearer);
       spyOn(console, 'error');
 
       env.cleanup_();
-      env = new jasmineUnderTest.Env();
+      env = new privateUnderTest.Env({ global });
 
       const receivedErrors = [];
       function logErrors(event) {
@@ -819,21 +687,9 @@ describe('Global error handling (integration)', function() {
         let global, reporter;
 
         beforeEach(function() {
-          global = {
-            ...browserEventMethods(),
-            setTimeout: function(fn, delay) {
-              return setTimeout(fn, delay);
-            },
-            clearTimeout: function(fn, delay) {
-              clearTimeout(fn, delay);
-            },
-            queueMicrotask: function(fn) {
-              queueMicrotask(fn);
-            }
-          };
-          spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+          global = mockGlobal();
           env.cleanup_();
-          env = new jasmineUnderTest.Env();
+          env = new privateUnderTest.Env({ global });
           env.configure({ detectLateRejectionHandling: true });
 
           reporter = jasmine.createSpyObj('fakeReporter', [
@@ -966,21 +822,8 @@ describe('Global error handling (integration)', function() {
 
       describe("When the unhandled rejection event doesn't have a promise", function() {
         it('reports the rejection', async function() {
-          const global = {
-            ...browserEventMethods(),
-            setTimeout: function(fn, delay) {
-              return setTimeout(fn, delay);
-            },
-            clearTimeout: function(fn, delay) {
-              clearTimeout(fn, delay);
-            },
-            queueMicrotask: function(fn) {
-              queueMicrotask(fn);
-            }
-          };
-          spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
-          env.cleanup_();
-          env = new jasmineUnderTest.Env();
+          const global = mockGlobal();
+          env = new privateUnderTest.Env({ global });
           env.configure({ detectLateRejectionHandling: true });
           const reporter = jasmine.createSpyObj('fakeReporter', [
             'specDone',
@@ -1012,21 +855,9 @@ describe('Global error handling (integration)', function() {
   });
 
   it('works when the suite is run multiple times', async function() {
-    const global = {
-      ...browserEventMethods(),
-      setTimeout: function(fn, delay) {
-        return setTimeout(fn, delay);
-      },
-      clearTimeout: function(fn, delay) {
-        clearTimeout(fn, delay);
-      },
-      queueMicrotask: function(fn) {
-        queueMicrotask(fn);
-      }
-    };
-    spyOn(jasmineUnderTest, 'getGlobal').and.returnValue(global);
+    const global = mockGlobal();
     env.cleanup_();
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env({ global });
     env.configure({ autoCleanClosures: false });
     const reporter = jasmine.createSpyObj('fakeReporter', ['specDone']);
 

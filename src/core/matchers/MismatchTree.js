@@ -1,4 +1,6 @@
 getJasmineRequireObj().MismatchTree = function(j$) {
+  'use strict';
+
   /*
     To be able to apply custom object formatters at all possible levels of an
     object graph, DiffBuilder needs to be able to know not just where the
@@ -8,7 +10,7 @@ getJasmineRequireObj().MismatchTree = function(j$) {
    */
   class MismatchTree {
     constructor(path) {
-      this.path = path || new j$.ObjectPath([]);
+      this.path = path || new j$.private.ObjectPath([]);
       this.formatter = undefined;
       this.children = [];
       this.isMismatch = false;

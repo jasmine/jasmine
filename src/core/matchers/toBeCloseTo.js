@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBeCloseTo = function() {
+  'use strict';
+
   /**
    * {@link expect} the actual value to be within a specified precision of the expected value.
    * @function

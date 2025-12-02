@@ -70,6 +70,10 @@ function concatFiles() {
     {
       dest: 'lib/jasmine-core/boot1.js',
       src: ['src/boot/boot1.js'],
+    },
+    {
+      dest: 'lib/jasmine-core.js',
+      src: ['src/boot/jasmine-core.js'],
     }
   ];
   const licenseBanner = {

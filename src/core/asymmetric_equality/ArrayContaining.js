@@ -1,13 +1,15 @@
 getJasmineRequireObj().ArrayContaining = function(j$) {
+  'use strict';
+
   function ArrayContaining(sample) {
     this.sample = sample;
   }
 
   ArrayContaining.prototype.asymmetricMatch = function(other, matchersUtil) {
-    if (!j$.isArray_(this.sample)) {
+    if (!Array.isArray(this.sample)) {
       throw new Error(
         'You must provide an array to arrayContaining, not ' +
-          j$.basicPrettyPrinter_(this.sample) +
+          j$.private.basicPrettyPrinter(this.sample) +
           '.'
       );
     }
@@ -15,7 +17,7 @@ getJasmineRequireObj().ArrayContaining = function(j$) {
     // If the actual parameter is not an array, we can fail immediately, since it couldn't
     // possibly be an "array containing" anything. However, we also want an empty sample
     // array to match anything, so we need to double-check we aren't in that case
-    if (!j$.isArray_(other) && this.sample.length > 0) {
+    if (!Array.isArray(other) && this.sample.length > 0) {
       return false;
     }
 

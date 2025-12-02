@@ -1,9 +1,13 @@
 getJasmineRequireObj().JsApiReporter = function(j$) {
+  'use strict';
+
+  // TODO: remove in 7.0.
   /**
    * @name jsApiReporter
    * @classdesc {@link Reporter} added by default in `boot.js` to record results for retrieval in javascript code. An instance is made available as `jsApiReporter` on the global object.
    * @class
    * @hideconstructor
+   * @deprecated In most cases jsApiReporter can simply be removed. If necessary, it can be replaced with a {@link Reporter|custom reporter}.
    */
   function JsApiReporter(options) {
     const timer = options.timer || new j$.Timer();
@@ -96,7 +100,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
      * @function
      * @param {Number} index - The position in the specs list to start from.
      * @param {Number} length - Maximum number of specs results to return.
-     * @return {SpecResult[]}
+     * @return {SpecDoneEvent[]}
      */
     this.specResults = function(index, length) {
       return specs.slice(index, index + length);
@@ -107,7 +111,7 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
      * @name jsApiReporter#specs
      * @since 2.0.0
      * @function
-     * @return {SpecResult[]}
+     * @return {SpecDoneEvent[]}
      */
     this.specs = function() {
       return specs;

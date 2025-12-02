@@ -2,7 +2,7 @@ describe('Spies', function() {
   let env;
 
   beforeEach(function() {
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
   });
 
   afterEach(function() {
@@ -50,8 +50,8 @@ describe('Spies', function() {
         TestClass.prototype.someFunction
       );
 
-      expect(spy.and).toEqual(jasmine.any(jasmineUnderTest.SpyStrategy));
-      expect(spy.calls).toEqual(jasmine.any(jasmineUnderTest.CallTracker));
+      expect(spy.and).toEqual(jasmine.any(privateUnderTest.SpyStrategy));
+      expect(spy.calls).toEqual(jasmine.any(privateUnderTest.CallTracker));
     });
 
     it('tracks the argument of calls', function() {
@@ -241,7 +241,7 @@ describe('Spies', function() {
   });
 
   it('uses the provided matchersUtil selecting a strategy', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new privateUnderTest.MatchersUtil({
       customTesters: [
         function(a, b) {
           if ((a === 'bar' && b === 'baz') || (a === 'baz' && b === 'bar')) {
@@ -250,7 +250,7 @@ describe('Spies', function() {
         }
       ]
     });
-    const spy = new jasmineUnderTest.Spy('aSpy', matchersUtil);
+    const spy = new privateUnderTest.Spy('aSpy', matchersUtil);
     spy.and.returnValue('default strategy return value');
     spy.withArgs('bar').and.returnValue('custom strategy return value');
     expect(spy('foo')).toEqual('default strategy return value');

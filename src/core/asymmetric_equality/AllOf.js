@@ -1,4 +1,6 @@
 getJasmineRequireObj().AllOf = function(j$) {
+  'use strict';
+
   function AllOf() {
     const expectedValues = Array.from(arguments);
     if (expectedValues.length === 0) {

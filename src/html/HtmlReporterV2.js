@@ -1,0 +1,279 @@
+jasmineRequire.HtmlReporterV2 = function(j$) {
+  'use strict';
+
+  const { createDom, noExpectations } = j$.private.htmlReporterUtils;
+
+  const specListTabId = 'jasmine-specListTab';
+  const failuresTabId = 'jasmine-failuresTab';
+  const perfTabId = 'jasmine-perfTab';
+
+  /**
+   * @class HtmlReporterV2
+   * @classdesc Displays results and allows re-running individual specs and suites.
+   * @implements {Reporter}
+   * @param options Options object
+   * @since 6.0.0
+   * @example
+   * const env = jasmine.getEnv();
+   * const urls = new jasmine.HtmlReporterV2Urls();
+   * const reporter = new jasmine.HtmlReporterV2({
+   *    env,
+   *    urls,
+   *    // container is optional and defaults to document.body.
+   *    container: someElement
+   * });
+   */
+  class HtmlReporterV2 {
+    #container;
+    #queryString;
+    #urlBuilder;
+    #filterSpecs;
+    #stateBuilder;
+    #config;
+    #htmlReporterMain;
+
+    // Sub-views
+    #alerts;
+    #statusBar;
+    #tabBar;
+    #progress;
+    #banner;
+    #failures;
+
+    constructor(options) {
+      this.#container = options.container || document.body;
+      this.#queryString =
+        options.queryString ||
+        new j$.QueryString({
+          getWindowLocation() {
+            return window.location;
+          }
+        });
+      this.#urlBuilder = new UrlBuilder({
+        queryString: this.#queryString,
+        getSuiteById: id => this.#stateBuilder.suitesById[id]
+      });
+      this.#filterSpecs = options.urls.filteringSpecs();
+
+      this.#config = options.env ? options.env.configuration() : {};
+
+      this.#stateBuilder = new j$.private.ResultsStateBuilder();
+
+      this.#alerts = new j$.private.AlertsView(this.#urlBuilder);
+      this.#statusBar = new j$.private.OverallStatusBar(this.#urlBuilder);
+      this.#statusBar.showRunning();
+      this.#alerts.addBar(this.#statusBar.rootEl);
+
+      this.#tabBar = new j$.private.TabBar(
+        [
+          { id: specListTabId, label: 'Spec List' },
+          { id: failuresTabId, label: 'Failures' },
+          { id: perfTabId, label: 'Performance' }
+        ],
+        tabId => {
+          if (tabId === specListTabId) {
+            this.#setMenuModeTo('jasmine-spec-list');
+          } else if (tabId === failuresTabId) {
+            this.#setMenuModeTo('jasmine-failure-list');
+          } else {
+            this.#setMenuModeTo('jasmine-performance');
+          }
+        }
+      );
+      this.#alerts.addBar(this.#tabBar.rootEl);
+
+      this.#progress = new ProgressView();
+      this.#banner = new j$.private.Banner(
+        this.#queryString.navigateWithNewParam.bind(this.#queryString),
+        true
+      );
+      this.#failures = new j$.private.FailuresView(this.#urlBuilder);
+      this.#htmlReporterMain = createDom(
+        'div',
+        { className: 'jasmine_html-reporter' },
+        this.#banner.rootEl,
+        this.#progress.rootEl,
+        this.#alerts.rootEl,
+        this.#failures.rootEl
+      );
+      this.#container.appendChild(this.#htmlReporterMain);
+      this.#failures.show();
+    }
+
+    jasmineStarted(options) {
+      this.#stateBuilder.jasmineStarted(options);
+      this.#progress.start(
+        options.totalSpecsDefined - options.numExcludedSpecs
+      );
+    }
+
+    suiteStarted(result) {
+      this.#stateBuilder.suiteStarted(result);
+    }
+
+    suiteDone(result) {
+      this.#stateBuilder.suiteDone(result);
+
+      if (result.status === 'failed') {
+        this.#failures.append(result, this.#stateBuilder.currentParent);
+        this.#statusBar.showFailing();
+      }
+    }
+
+    specDone(result) {
+      this.#stateBuilder.specDone(result);
+      this.#progress.specDone(result, this.#config);
+
+      if (noExpectations(result)) {
+        const noSpecMsg = "Spec '" + result.fullName + "' has no expectations.";
+        if (result.status === 'failed') {
+          // eslint-disable-next-line no-console
+          console.error(noSpecMsg);
+        } else {
+          // eslint-disable-next-line no-console
+          console.warn(noSpecMsg);
+        }
+      }
+
+      if (result.status === 'failed') {
+        this.#failures.append(result, this.#stateBuilder.currentParent);
+        this.#statusBar.showFailing();
+      }
+    }
+
+    jasmineDone(doneResult) {
+      this.#stateBuilder.jasmineDone(doneResult);
+      this.#progress.rootEl.style.visibility = 'hidden';
+      this.#banner.showOptionsMenu(this.#config);
+
+      if (
+        this.#stateBuilder.specsExecuted < this.#stateBuilder.totalSpecsDefined
+      ) {
+        this.#alerts.addSkipped(
+          this.#stateBuilder.specsExecuted,
+          this.#stateBuilder.totalSpecsDefined
+        );
+      }
+
+      this.#statusBar.showDone(doneResult, this.#stateBuilder);
+
+      if (doneResult.failedExpectations) {
+        for (const f of doneResult.failedExpectations) {
+          this.#alerts.addGlobalFailure(f);
+        }
+      }
+
+      for (const dw of this.#stateBuilder.deprecationWarnings) {
+        this.#alerts.addDeprecationWarning(dw);
+      }
+
+      const results = this.#find('.jasmine-results');
+      const summary = new j$.private.SummaryTreeView(
+        this.#urlBuilder,
+        this.#filterSpecs
+      );
+      summary.addResults(this.#stateBuilder.topResults);
+      results.appendChild(summary.rootEl);
+      const perf = new j$.private.PerformanceView();
+      perf.addResults(this.#stateBuilder.topResults);
+      results.appendChild(perf.rootEl);
+      this.#tabBar.showTab(specListTabId);
+      this.#tabBar.showTab(perfTabId);
+
+      if (this.#stateBuilder.anyNonTopSuiteFailures) {
+        this.#tabBar.showTab(failuresTabId);
+        this.#tabBar.selectTab(failuresTabId);
+      } else {
+        this.#tabBar.selectTab(specListTabId);
+      }
+    }
+
+    #find(selector) {
+      return this.#container.querySelector(
+        '.jasmine_html-reporter ' + selector
+      );
+    }
+
+    #setMenuModeTo(mode) {
+      this.#htmlReporterMain.setAttribute(
+        'class',
+        'jasmine_html-reporter ' + mode
+      );
+    }
+  }
+
+  class ProgressView {
+    constructor() {
+      this.rootEl = createDom('progress', { value: 0 });
+    }
+
+    start(totalSpecsDefined) {
+      this.rootEl.max = totalSpecsDefined;
+    }
+
+    specDone(result) {
+      if (result.status !== 'excluded') {
+        this.rootEl.value = this.rootEl.value + 1;
+      }
+
+      if (result.status === 'failed') {
+        this.rootEl.classList.add('failed');
+      }
+    }
+  }
+
+  class UrlBuilder {
+    #queryString;
+    #getSuiteById;
+
+    constructor(options) {
+      this.#queryString = options.queryString;
+      this.#getSuiteById = options.getSuiteById;
+    }
+
+    suiteHref(suite) {
+      const path = this.#suitePath(suite);
+      return this.#specPathHref(path);
+    }
+
+    specHref(specResult) {
+      const suite = this.#getSuiteById(specResult.parentSuiteId);
+      const path = this.#suitePath(suite);
+      path.push(specResult.description);
+      return this.#specPathHref(path);
+    }
+
+    runAllHref() {
+      return this.#addToExistingQueryString('path', '');
+    }
+
+    seedHref(seed) {
+      return this.#addToExistingQueryString('seed', seed);
+    }
+
+    #suitePath(suite) {
+      const path = [];
+
+      while (suite && suite.parent) {
+        path.unshift(suite.result.description);
+        suite = suite.parent;
+      }
+
+      return path;
+    }
+
+    #specPathHref(specPath) {
+      return this.#addToExistingQueryString('path', JSON.stringify(specPath));
+    }
+
+    #addToExistingQueryString(k, v) {
+      // include window.location.pathname to fix issue with karma-jasmine-html-reporter in angular: see https://github.com/jasmine/jasmine/issues/1906
+      return (
+        (window.location.pathname || '') +
+        this.#queryString.fullStringWithNewParam(k, v)
+      );
+    }
+  }
+
+  return HtmlReporterV2;
+};

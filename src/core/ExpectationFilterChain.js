@@ -1,4 +1,6 @@
 getJasmineRequireObj().ExpectationFilterChain = function() {
+  'use strict';
+
   function ExpectationFilterChain(maybeFilter, prev) {
     this.filter_ = maybeFilter;
     this.prev_ = prev;

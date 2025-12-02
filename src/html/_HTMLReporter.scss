@@ -23,7 +23,7 @@ $failing-mark: "\d7";
 $pending-mark: "*";
 $space: "\0020";
 
-$font-size: 11px;
+$font-size: 12px;
 $large-font-size: 14px;
 
 body {
@@ -104,9 +104,10 @@ body {
     float: right;
     line-height: $line-height * 2;
     padding-right: 9px;
+    font-size: $font-size;
   }
 
-  //--- Symbol summary ---//
+  //--- Symbol summary (v1 reporter) ---//
 
   .jasmine-symbol-summary {
     overflow: hidden;
@@ -172,6 +173,30 @@ body {
     }
   }
 
+  //--- Progress bar (v2 reporter) ---//
+
+  progress {
+    width: 100%;
+  }
+
+  progress[value] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  progress[value]::-webkit-progress-value, progress[value]::-moz-progress-bar {
+    background: $passing-color;
+
+    .failed & {
+      background: $failing-color;
+    }
+  }
+
+  progress.failed[value]::-webkit-progress-value, progress.failed[value]::-moz-progress-bar {
+    background: $failing-color;
+  }
+
   .jasmine-run-options {
     float: right;
     margin-right: 5px;
@@ -209,8 +234,13 @@ body {
     display: block;
     color: #eee;
 
+    &.jasmine-in-progress {
+      color: $text-color;
+    }
+
     &.jasmine-failed, &.jasmine-errored {
       background-color: $failing-color;
+      color: #eee; // Override jasmine-in-progress
       border-bottom: 1px solid $page-background-color;
     }
 
@@ -250,15 +280,25 @@ body {
   }
 
   // simplify toggle control between the two menu bars
+  // TODO: clean this up once HtmlReporter is removed
   &.jasmine-spec-list {
     .jasmine-bar.jasmine-menu.jasmine-failure-list,
-    .jasmine-results .jasmine-failures {
+    .jasmine-results .jasmine-failures,
+    .jasmine-performance-view {
       display: none;
     }
   }
 
   &.jasmine-failure-list {
     .jasmine-bar.jasmine-menu.jasmine-spec-list,
+    .jasmine-summary,
+    .jasmine-performance-view {
+      display: none;
+    }
+  }
+
+  &.jasmine-performance {
+    .jasmine-results .jasmine-failures,
     .jasmine-summary {
       display: none;
     }
@@ -432,5 +472,28 @@ body {
     .jasmine-debug-log-msg {
       white-space: pre;
     }
+  }
+}
+
+.jasmine-hidden {
+  display: none;
+}
+
+.jasmine-tab + .jasmine-tab:before {
+  content: ' | ';
+}
+
+.jasmine-performance-view {
+  h2, h3 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  table {
+    border-spacing: 5px;
+  }
+
+  th, td {
+    text-align: left;
   }
 }

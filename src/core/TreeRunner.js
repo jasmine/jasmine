@@ -1,4 +1,6 @@
 getJasmineRequireObj().TreeRunner = function(j$) {
+  'use strict';
+
   class TreeRunner {
     #executionTree;
     #setTimeout;
@@ -24,7 +26,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     async execute() {
       this.#hasFailures = false;
       await new Promise(resolve => {
-        this.#executeSuiteSegment(this.#executionTree.topSuite, 0, resolve);
+        this.#executeSuite(this.#executionTree.topSuite, resolve);
       });
       return { hasFailures: this.#hasFailures };
     }
@@ -34,7 +36,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         return {
           fn: done => {
             if (node.suite) {
-              this.#executeSuiteSegment(node.suite, node.segmentNumber, done);
+              this.#executeSuite(node.suite, done);
             } else {
               this._executeSpec(node.spec, done);
             }
@@ -51,7 +53,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
           spec.id,
           spec.parentSuiteId || this.#executionTree.topSuite.id
         );
-        this.#reportDispatcher.specStarted(spec.result).then(next);
+        this.#reportDispatcher.specStarted(spec.startedEvent()).then(next);
       };
       const resultCallback = (result, next) => {
         this.#specComplete(spec).then(next);
@@ -80,15 +82,15 @@ getJasmineRequireObj().TreeRunner = function(j$) {
           );
         },
         onComplete: () => {
-          if (spec.result.status === 'failed') {
-            specOverallDone(new j$.StopExecutionError('spec failed'));
+          if (spec.status() === 'failed') {
+            specOverallDone(new j$.private.StopExecutionError('spec failed'));
           } else {
             specOverallDone();
           }
         },
         userContext: spec.userContext(),
         runnableName: spec.getFullName.bind(spec),
-        SkipPolicy: j$.CompleteOnFirstErrorSkipPolicy
+        SkipPolicy: j$.private.CompleteOnFirstErrorSkipPolicy
       });
     }
 
@@ -112,7 +114,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       const complete = {
         fn(done) {
           spec.executionFinished(excluded, config.failSpecWithNoExpectations);
-          resultCallback(spec.result, done);
+          resultCallback(spec.doneEvent(), done);
         },
         type: 'specCleanup'
       };
@@ -127,7 +129,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       return fns;
     }
 
-    #executeSuiteSegment(suite, segmentNumber, done) {
+    #executeSuite(suite, done) {
       const isTopSuite = suite === this.#executionTree.topSuite;
       const isExcluded = this.#executionTree.isExcluded(suite);
       let befores = [];
@@ -149,7 +151,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
       const children = isTopSuite
         ? this.#executionTree.childrenOfTopSuite()
-        : this.#executionTree.childrenOfSuiteSegment(suite, segmentNumber);
+        : this.#executionTree.childrenOfSuite(suite);
       const queueableFns = [
         ...befores,
         ...this.#wrapNodes(children),
@@ -166,7 +168,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
       this.#runQueue({
         onComplete: maybeError => {
-          this.#suiteSegmentComplete(suite, suite.getResult(), () => {
+          this.#suiteSegmentComplete(suite, () => {
             done(maybeError);
           });
         },
@@ -203,11 +205,12 @@ getJasmineRequireObj().TreeRunner = function(j$) {
     #suiteSegmentStart(suite, next) {
       this.#currentRunableTracker.pushSuite(suite);
       this.#runableResources.initForRunable(suite.id, suite.parentSuite.id);
-      this.#reportDispatcher.suiteStarted(suite.result).then(next);
+      this.#reportDispatcher.suiteStarted(suite.startedEvent()).then(next);
       suite.startTimer();
     }
 
-    #suiteSegmentComplete(suite, result, next) {
+    #suiteSegmentComplete(suite, next) {
+      suite.endTimer();
       const isTopSuite = suite === this.#executionTree.topSuite;
 
       if (!isTopSuite) {
@@ -223,15 +226,14 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         this.#runableResources.clearForRunable(suite.id);
         this.#currentRunableTracker.popSuite();
 
-        if (result.status === 'failed') {
+        if (suite.doneEvent().status === 'failed') {
           this.#hasFailures = true;
         }
-        suite.endTimer();
       }
 
       const finish = isTopSuite
         ? next
-        : () => this.#reportSuiteDone(suite, result, next);
+        : () => this.#reportSuiteDone(suite, next);
 
       if (suite.hadBeforeAllFailure) {
         this.#reportChildrenOfBeforeAllFailure(suite).then(finish);
@@ -240,16 +242,16 @@ getJasmineRequireObj().TreeRunner = function(j$) {
       }
     }
 
-    #reportSuiteDone(suite, result, next) {
+    #reportSuiteDone(suite, next) {
       suite.reportedDone = true;
-      this.#reportDispatcher.suiteDone(result).then(next);
+      this.#reportDispatcher.suiteDone(suite.doneEvent()).then(next);
     }
 
     async #specComplete(spec) {
       this.#runableResources.clearForRunable(spec.id);
       this.#currentRunableTracker.setCurrentSpec(null);
 
-      if (spec.result.status === 'failed') {
+      if (spec.status() === 'failed') {
         this.#hasFailures = true;
       }
 
@@ -258,36 +260,19 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     async #reportSpecDone(spec) {
       spec.reportedDone = true;
-      await this.#reportDispatcher.specDone(spec.result);
+      await this.#reportDispatcher.specDone(spec.doneEvent());
     }
 
     async #reportChildrenOfBeforeAllFailure(suite) {
       for (const child of suite.children) {
-        if (child instanceof j$.Suite) {
-          await this.#reportDispatcher.suiteStarted(child.result);
+        if (child instanceof j$.private.Suite) {
+          await this.#reportDispatcher.suiteStarted(child.startedEvent());
           await this.#reportChildrenOfBeforeAllFailure(child);
-
-          // Marking the suite passed is consistent with how suites that
-          // contain failed specs but no suite-level failures are reported.
-          child.result.status = 'passed';
-
-          await this.#reportDispatcher.suiteDone(child.result);
+          await this.#reportDispatcher.suiteDone(child.doneEvent());
         } else {
           /* a spec */
-          await this.#reportDispatcher.specStarted(child.result);
-
-          child.addExpectationResult(
-            false,
-            {
-              passed: false,
-              message:
-                'Not run because a beforeAll function failed. The ' +
-                'beforeAll failure will be reported on the suite that ' +
-                'caused it.'
-            },
-            true
-          );
-          child.result.status = 'failed';
+          await this.#reportDispatcher.specStarted(child.startedEvent());
+          child.hadBeforeAllFailure();
           await this.#reportSpecDone(child);
         }
       }
@@ -295,9 +280,9 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     #suiteSkipPolicy() {
       if (this.#getConfig().stopOnSpecFailure) {
-        return j$.CompleteOnFirstErrorSkipPolicy;
+        return j$.private.CompleteOnFirstErrorSkipPolicy;
       } else {
-        return j$.SkipAfterBeforeAllErrorPolicy;
+        return j$.private.SkipAfterBeforeAllErrorPolicy;
       }
     }
   }

@@ -1,5 +1,7 @@
 getJasmineRequireObj().toThrowMatching = function(j$) {
-  const usageError = j$.formatErrorMsg(
+  'use strict';
+
+  const usageError = j$.private.formatErrorMsg(
     '<toThrowMatching>',
     'expect(function() {<expectation>}).toThrowMatching(<Predicate>)'
   );
@@ -53,7 +55,7 @@ getJasmineRequireObj().toThrowMatching = function(j$) {
     function thrownDescription(thrown) {
       if (thrown && thrown.constructor) {
         return (
-          j$.fnNameFor(thrown.constructor) +
+          j$.private.fnNameFor(thrown.constructor) +
           ' with message ' +
           matchersUtil.pp(thrown.message)
         );

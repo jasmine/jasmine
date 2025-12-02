@@ -1,9 +1,20 @@
-jasmineRequire.HtmlSpecFilter = function() {
-  // Legacy HTML spec filter, preserved for backward compatibility with
-  // boot files that predate HtmlExactSpecFilterV2
+jasmineRequire.HtmlSpecFilter = function(j$) {
+  'use strict';
+
+  /**
+   * @class HtmlSpecFilter
+   * @param options Options object. See lib/jasmine-core/boot1.js for details.
+   * @deprecated Use {@link HtmlReporterV2Urls} instead.
+   */
   function HtmlSpecFilter(options) {
+    const env = options?.env ?? j$.getEnv();
+    env.deprecated(
+      'HtmlReporter and HtmlSpecFilter are deprecated. Use HtmlReporterV2 instead.'
+    );
+
     const filterString =
       options &&
+      options.filterString &&
       options.filterString() &&
       options.filterString().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
     const filterPattern = new RegExp(filterString);

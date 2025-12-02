@@ -8,7 +8,7 @@ body {
   background-color: #eee;
   padding: 5px;
   margin: -8px;
-  font-size: 11px;
+  font-size: 12px;
   font-family: Monaco, "Lucida Console", monospace;
   line-height: 14px;
   color: #333;
@@ -63,6 +63,7 @@ body {
   float: right;
   line-height: 28px;
   padding-right: 9px;
+  font-size: 12px;
 }
 .jasmine_html-reporter .jasmine-symbol-summary {
   overflow: hidden;
@@ -115,6 +116,23 @@ body {
   color: #ba9d37;
   content: "•";
 }
+.jasmine_html-reporter progress {
+  width: 100%;
+}
+.jasmine_html-reporter progress[value] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+.jasmine_html-reporter progress[value]::-webkit-progress-value, .jasmine_html-reporter progress[value]::-moz-progress-bar {
+  background: #007069;
+}
+.failed .jasmine_html-reporter progress[value]::-webkit-progress-value, .failed .jasmine_html-reporter progress[value]::-moz-progress-bar {
+  background: #ca3a11;
+}
+.jasmine_html-reporter progress.failed[value]::-webkit-progress-value, .jasmine_html-reporter progress.failed[value]::-moz-progress-bar {
+  background: #ca3a11;
+}
 .jasmine_html-reporter .jasmine-run-options {
   float: right;
   margin-right: 5px;
@@ -145,8 +163,12 @@ body {
   display: block;
   color: #eee;
 }
+.jasmine_html-reporter .jasmine-bar.jasmine-in-progress {
+  color: #333;
+}
 .jasmine_html-reporter .jasmine-bar.jasmine-failed, .jasmine_html-reporter .jasmine-bar.jasmine-errored {
   background-color: #ca3a11;
+  color: #eee;
   border-bottom: 1px solid #eee;
 }
 .jasmine_html-reporter .jasmine-bar.jasmine-passed {
@@ -176,11 +198,17 @@ body {
   color: white;
 }
 .jasmine_html-reporter.jasmine-spec-list .jasmine-bar.jasmine-menu.jasmine-failure-list,
-.jasmine_html-reporter.jasmine-spec-list .jasmine-results .jasmine-failures {
+.jasmine_html-reporter.jasmine-spec-list .jasmine-results .jasmine-failures,
+.jasmine_html-reporter.jasmine-spec-list .jasmine-performance-view {
   display: none;
 }
 .jasmine_html-reporter.jasmine-failure-list .jasmine-bar.jasmine-menu.jasmine-spec-list,
-.jasmine_html-reporter.jasmine-failure-list .jasmine-summary {
+.jasmine_html-reporter.jasmine-failure-list .jasmine-summary,
+.jasmine_html-reporter.jasmine-failure-list .jasmine-performance-view {
+  display: none;
+}
+.jasmine_html-reporter.jasmine-performance .jasmine-results .jasmine-failures,
+.jasmine_html-reporter.jasmine-performance .jasmine-summary {
   display: none;
 }
 .jasmine_html-reporter .jasmine-results {
@@ -301,4 +329,23 @@ body {
 }
 .jasmine_html-reporter .jasmine-debug-log .jasmine-debug-log-msg {
   white-space: pre;
+}
+
+.jasmine-hidden {
+  display: none;
+}
+
+.jasmine-tab + .jasmine-tab:before {
+  content: " | ";
+}
+
+.jasmine-performance-view h2, .jasmine-performance-view h3 {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.jasmine-performance-view table {
+  border-spacing: 5px;
+}
+.jasmine-performance-view th, .jasmine-performance-view td {
+  text-align: left;
 }

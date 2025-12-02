@@ -1,4 +1,6 @@
 getJasmineRequireObj().Runner = function(j$) {
+  'use strict';
+
   class Runner {
     #topSuite;
     #getTotalSpecsDefined;
@@ -24,7 +26,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#reportDispatcher = options.reportDispatcher;
       this.#getConfig = options.getConfig;
       this.#executedBefore = false;
-      this.#currentRunableTracker = new j$.CurrentRunableTracker();
+      this.#currentRunableTracker = new j$.private.CurrentRunableTracker();
     }
 
     currentSpec() {
@@ -64,9 +66,9 @@ getJasmineRequireObj().Runner = function(j$) {
         }
       }
 
-      const order = new j$.Order({
+      const order = new j$.private.Order({
         random: config.random,
-        seed: j$.isNumber_(config.seed) ? config.seed + '' : config.seed
+        seed: j$.private.isNumber(config.seed) ? config.seed + '' : config.seed
       });
 
       const treeProcessor = new this.#TreeProcessor({
@@ -76,7 +78,7 @@ getJasmineRequireObj().Runner = function(j$) {
           return order.sort(node.children);
         },
         excludeNode: function(spec) {
-          return !config.specFilter(spec);
+          return !config.specFilter(spec.metadata);
         }
       });
       this.#executionTree = treeProcessor.processTree();
@@ -94,7 +96,8 @@ getJasmineRequireObj().Runner = function(j$) {
       /**
        * Information passed to the {@link Reporter#jasmineStarted} event.
        * @typedef JasmineStartedInfo
-       * @property {Int} totalSpecsDefined - The total number of specs defined in this suite. Note that this property is not present when Jasmine is run in parallel mode.
+       * @property {int} totalSpecsDefined - The total number of specs defined in this suite. Note that this property is not present when Jasmine is run in parallel mode.
+       * @property {int} numExcludedSpecs - The number of specs that will be excluded from execution. Note that this property is not present when Jasmine is run in parallel mode.
        * @property {Order} order - Information about the ordering (random or not) of this execution of the suite. Note that this property is not present when Jasmine is run in parallel mode.
        * @property {Boolean} parallel - Whether Jasmine is being run in parallel mode.
        * @since 2.0.0
@@ -103,18 +106,13 @@ getJasmineRequireObj().Runner = function(j$) {
         // In parallel mode, the jasmineStarted event is separately dispatched
         // by jasmine-npm. This event only reaches reporters in non-parallel.
         totalSpecsDefined,
-        /**
-         * Information about the ordering (random or not) of this execution of the suite.
-         * @typedef Order
-         * @property {boolean} random - Whether the suite is running in random order
-         * @property {string} seed - The random seed
-         */
-        order: order,
+        numExcludedSpecs: this.#executionTree.numExcludedSpecs(),
+        order: orderForReporting(order),
         parallel: false
       });
 
       this.#currentRunableTracker.pushSuite(this.#topSuite);
-      const treeRunner = new j$.TreeRunner({
+      const treeRunner = new j$.private.TreeRunner({
         executionTree: this.#executionTree,
         globalErrors: this.#globalErrors,
         runableResources: this.#runableResources,
@@ -129,7 +127,7 @@ getJasmineRequireObj().Runner = function(j$) {
       this.#currentRunableTracker.popSuite();
       let overallStatus, incompleteReason, incompleteCode;
 
-      if (hasFailures || this.#topSuite.result.failedExpectations.length > 0) {
+      if (hasFailures || this.#topSuite.hasOwnFailedExpectations()) {
         overallStatus = 'failed';
       } else if (this.#getFocusedRunables().length > 0) {
         overallStatus = 'incomplete';
@@ -143,6 +141,7 @@ getJasmineRequireObj().Runner = function(j$) {
         overallStatus = 'passed';
       }
 
+      const topSuiteResult = this.#topSuite.doneEvent();
       /**
        * Information passed to the {@link Reporter#jasmineDone} event.
        * @typedef JasmineDoneInfo
@@ -161,13 +160,29 @@ getJasmineRequireObj().Runner = function(j$) {
         totalTime: jasmineTimer.elapsed(),
         incompleteReason: incompleteReason,
         incompleteCode: incompleteCode,
-        order: order,
-        failedExpectations: this.#topSuite.result.failedExpectations,
-        deprecationWarnings: this.#topSuite.result.deprecationWarnings
+        order: orderForReporting(order),
+        failedExpectations: topSuiteResult.failedExpectations,
+        deprecationWarnings: topSuiteResult.deprecationWarnings
       };
       this.#topSuite.reportedDone = true;
       await this.#reportDispatcher.jasmineDone(jasmineDoneInfo);
       return jasmineDoneInfo;
+    }
+  }
+
+  /**
+   * Information about the ordering (random or not) of this execution of the suite.
+   * @typedef Order
+   * @property {boolean} random - Whether the suite is running in random order
+   * @property {string} seed - The random seed
+   */
+  function orderForReporting(order) {
+    // Don't expose the actual Order object to reporters. That class is private
+    // and instances are not cloneable.
+    if (order.random) {
+      return { random: true, seed: order.seed };
+    } else {
+      return { random: false };
     }
   }
 

@@ -1,13 +1,13 @@
 describe('ArrayWithExactContents', function() {
   it('matches an array with the same items in a different order', function() {
-    const matcher = new jasmineUnderTest.ArrayWithExactContents(['a', 2, /a/]);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matcher = new privateUnderTest.ArrayWithExactContents(['a', 2, /a/]);
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(matcher.asymmetricMatch([2, 'a', /a/], matchersUtil)).toBe(true);
   });
 
   it('does not work when not passed an array', function() {
-    const matcher = new jasmineUnderTest.ArrayWithExactContents('foo');
+    const matcher = new privateUnderTest.ArrayWithExactContents('foo');
 
     expect(function() {
       matcher.asymmetricMatch([]);
@@ -15,8 +15,8 @@ describe('ArrayWithExactContents', function() {
   });
 
   it('does not match when an item is missing', function() {
-    const matcher = new jasmineUnderTest.ArrayWithExactContents(['a', 2, /a/]);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matcher = new privateUnderTest.ArrayWithExactContents(['a', 2, /a/]);
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(matcher.asymmetricMatch(['a', 2], matchersUtil)).toBe(false);
     expect(matcher.asymmetricMatch(['a', 2, undefined], matchersUtil)).toBe(
@@ -25,15 +25,15 @@ describe('ArrayWithExactContents', function() {
   });
 
   it('does not match when there is an extra item', function() {
-    const matcher = new jasmineUnderTest.ArrayWithExactContents(['a']);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const matcher = new privateUnderTest.ArrayWithExactContents(['a']);
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(matcher.asymmetricMatch(['a', 2], matchersUtil)).toBe(false);
   });
 
   it('jasmineToStrings itself', function() {
     const sample = [],
-      matcher = new jasmineUnderTest.ArrayWithExactContents(sample),
+      matcher = new privateUnderTest.ArrayWithExactContents(sample),
       pp = jasmine.createSpy('pp').and.returnValue('sample');
 
     expect(matcher.jasmineToString(pp)).toEqual(
@@ -54,8 +54,8 @@ describe('ArrayWithExactContents', function() {
         return true;
       }
     };
-    const matcher = new jasmineUnderTest.ArrayWithExactContents(['fooVal']);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matcher = new privateUnderTest.ArrayWithExactContents(['fooVal']);
+    const matchersUtil = new privateUnderTest.MatchersUtil({
       customTesters: [tester]
     });
 

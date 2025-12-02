@@ -1,4 +1,6 @@
 getJasmineRequireObj().Any = function(j$) {
+  'use strict';
+
   function Any(expectedObject) {
     if (typeof expectedObject === 'undefined') {
       throw new TypeError(
@@ -38,7 +40,7 @@ getJasmineRequireObj().Any = function(j$) {
   };
 
   Any.prototype.jasmineToString = function() {
-    return '<jasmine.any(' + j$.fnNameFor(this.expectedObject) + ')>';
+    return '<jasmine.any(' + j$.private.fnNameFor(this.expectedObject) + ')>';
   };
 
   return Any;

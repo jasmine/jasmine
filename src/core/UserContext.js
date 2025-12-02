@@ -1,4 +1,6 @@
 getJasmineRequireObj().UserContext = function(j$) {
+  'use strict';
+
   function UserContext() {}
 
   UserContext.fromExisting = function(oldContext) {

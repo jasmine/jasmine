@@ -1,7 +1,7 @@
 describe('toBeInstanceOf', function() {
   describe('when expecting Number', function() {
     it('passes for literal number', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(3, Number);
       expect(result).toEqual({
         pass: true,
@@ -10,8 +10,8 @@ describe('toBeInstanceOf', function() {
     });
 
     it('passes for NaN', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf({
-        pp: jasmineUnderTest.makePrettyPrinter()
+      const matcher = privateUnderTest.matchers.toBeInstanceOf({
+        pp: privateUnderTest.makePrettyPrinter()
       });
       const result = matcher.compare(NaN, Number);
       expect(result).toEqual({
@@ -21,7 +21,7 @@ describe('toBeInstanceOf', function() {
     });
 
     it('passes for Infinity', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(Infinity, Number);
       expect(result).toEqual({
         pass: true,
@@ -30,7 +30,7 @@ describe('toBeInstanceOf', function() {
     });
 
     it('fails for a non-number', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare('foo', Number);
       expect(result).toEqual({
         pass: false,
@@ -41,7 +41,7 @@ describe('toBeInstanceOf', function() {
 
   describe('when expecting String', function() {
     it('passes for a string', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare('foo', String);
       expect(result).toEqual({
         pass: true,
@@ -50,7 +50,7 @@ describe('toBeInstanceOf', function() {
     });
 
     it('fails for a non-string', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare({}, String);
       expect(result).toEqual({
         pass: false,
@@ -61,7 +61,7 @@ describe('toBeInstanceOf', function() {
 
   describe('when expecting Boolean', function() {
     it('passes for a boolean', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(true, Boolean);
       expect(result).toEqual({
         pass: true,
@@ -70,7 +70,7 @@ describe('toBeInstanceOf', function() {
     });
 
     it('fails for a non-boolean', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare('false', Boolean);
       expect(result).toEqual({
         pass: false,
@@ -81,7 +81,7 @@ describe('toBeInstanceOf', function() {
 
   describe('when expecting RegExp', function() {
     it('passes for a literal regular expression', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(/foo/, RegExp);
       expect(result).toEqual({
         pass: true,
@@ -94,7 +94,7 @@ describe('toBeInstanceOf', function() {
     it('passes for a function', function() {
       const fn = function() {};
 
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(fn, Function);
       expect(result).toEqual({
         pass: true,
@@ -108,7 +108,7 @@ describe('toBeInstanceOf', function() {
         return 'foo';
       }
 
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(fn, Function);
       expect(result).toEqual({
         pass: true,
@@ -122,7 +122,7 @@ describe('toBeInstanceOf', function() {
     function Animal() {}
 
     it('passes for any object', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare({ foo: 'bar' }, Object);
       expect(result).toEqual({
         pass: true,
@@ -131,7 +131,7 @@ describe('toBeInstanceOf', function() {
     });
 
     it('passes for an Error object', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(new Error('example'), Object);
       expect(result).toEqual({
         pass: true,
@@ -140,7 +140,7 @@ describe('toBeInstanceOf', function() {
     });
 
     it('passes for a user-defined class', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(new Animal(), Object);
       expect(result).toEqual({
         pass: true,
@@ -149,7 +149,7 @@ describe('toBeInstanceOf', function() {
     });
 
     it('fails for a non-object', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare('foo', Object);
       expect(result).toEqual({
         pass: false,
@@ -160,8 +160,8 @@ describe('toBeInstanceOf', function() {
     it('passes for objects with no constructor', function() {
       const object = Object.create(null);
 
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf({
-        pp: jasmineUnderTest.makePrettyPrinter()
+      const matcher = privateUnderTest.matchers.toBeInstanceOf({
+        pp: privateUnderTest.makePrettyPrinter()
       });
       const result = matcher.compare(object, Object);
       expect(result).toEqual({
@@ -190,7 +190,7 @@ describe('toBeInstanceOf', function() {
     Cat.prototype.constructor = Cat;
 
     it('passes for instances of that class', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(new Animal(), Animal);
       expect(result).toEqual({
         pass: true,
@@ -199,7 +199,7 @@ describe('toBeInstanceOf', function() {
     });
 
     it('passes for instances of a subclass', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(new Cat(), Animal);
       expect(result).toEqual({
         pass: true,
@@ -208,7 +208,7 @@ describe('toBeInstanceOf', function() {
     });
 
     it('does not pass for sibling classes', function() {
-      const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
       const result = matcher.compare(new Dog(), Cat);
       expect(result).toEqual({
         pass: false,
@@ -218,7 +218,7 @@ describe('toBeInstanceOf', function() {
   });
 
   it('raises an error if passed an invalid expected value', function() {
-    const matcher = jasmineUnderTest.matchers.toBeInstanceOf();
+    const matcher = privateUnderTest.matchers.toBeInstanceOf();
     expect(function() {
       matcher.compare({}, 'Error');
     }).toThrowError(
@@ -228,8 +228,8 @@ describe('toBeInstanceOf', function() {
   });
 
   it('raises an error if missing an expected value', function() {
-    const matcher = jasmineUnderTest.matchers.toBeInstanceOf({
-      pp: jasmineUnderTest.makePrettyPrinter()
+    const matcher = privateUnderTest.matchers.toBeInstanceOf({
+      pp: privateUnderTest.makePrettyPrinter()
     });
     expect(function() {
       matcher.compare({}, undefined);

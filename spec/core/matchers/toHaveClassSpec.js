@@ -1,6 +1,6 @@
 describe('toHaveClass', function() {
   it('fails for a DOM element that lacks the expected class', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveClass(),
+    const matcher = privateUnderTest.matchers.toHaveClass(),
       result = matcher.compare(
         specHelpers.domHelpers.createElementWithClassName(''),
         'foo'
@@ -10,7 +10,7 @@ describe('toHaveClass', function() {
   });
 
   it('passes for a DOM element that has the expected class', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveClass(),
+    const matcher = privateUnderTest.matchers.toHaveClass(),
       el = specHelpers.domHelpers.createElementWithClassName('foo bar baz');
 
     expect(matcher.compare(el, 'foo').pass).toBe(true);
@@ -19,15 +19,15 @@ describe('toHaveClass', function() {
   });
 
   it('fails for a DOM element that only has other classes', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveClass(),
+    const matcher = privateUnderTest.matchers.toHaveClass(),
       el = specHelpers.domHelpers.createElementWithClassName('foo bar');
 
     expect(matcher.compare(el, 'fo').pass).toBe(false);
   });
 
   it('throws an exception when actual is not a DOM element', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveClass({
-      pp: jasmineUnderTest.makePrettyPrinter()
+    const matcher = privateUnderTest.matchers.toHaveClass({
+      pp: privateUnderTest.makePrettyPrinter()
     });
 
     expect(function() {

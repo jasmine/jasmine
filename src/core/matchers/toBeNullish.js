@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBeNullish = function() {
+  'use strict';
+
   /**
    * {@link expect} the actual value to be `null` or `undefined`.
    * @function

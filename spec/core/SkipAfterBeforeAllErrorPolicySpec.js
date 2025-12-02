@@ -2,7 +2,7 @@ describe('SkipAfterBeforeAllErrorPolicy', function() {
   describe('#skipTo', function() {
     describe('When nothing has errored', function() {
       it('does not skip anything', function() {
-        const policy = new jasmineUnderTest.SkipAfterBeforeAllErrorPolicy(
+        const policy = new privateUnderTest.SkipAfterBeforeAllErrorPolicy(
           arrayOfArbitraryFns(4)
         );
 
@@ -15,7 +15,7 @@ describe('SkipAfterBeforeAllErrorPolicy', function() {
 
     describe('When anything but a beforeAll has errored', function() {
       it('does not skip anything', function() {
-        const policy = new jasmineUnderTest.SkipAfterBeforeAllErrorPolicy(
+        const policy = new privateUnderTest.SkipAfterBeforeAllErrorPolicy(
           arrayOfArbitraryFns(4)
         );
 
@@ -40,7 +40,7 @@ describe('SkipAfterBeforeAllErrorPolicy', function() {
           { type: 'afterAll', fn: () => {} },
           { type: 'afterAll', fn: () => {} }
         ];
-        const policy = new jasmineUnderTest.SkipAfterBeforeAllErrorPolicy(fns);
+        const policy = new privateUnderTest.SkipAfterBeforeAllErrorPolicy(fns);
 
         policy.fnErrored(0);
         expect(policy.skipTo(0)).toEqual(3);
@@ -54,7 +54,7 @@ describe('SkipAfterBeforeAllErrorPolicy', function() {
       it("sets the suite's hadBeforeAllFailure property to true", function() {
         const suite = {};
         const fns = [{ type: 'beforeAll', fn: () => {}, suite }];
-        const policy = new jasmineUnderTest.SkipAfterBeforeAllErrorPolicy(fns);
+        const policy = new privateUnderTest.SkipAfterBeforeAllErrorPolicy(fns);
 
         policy.fnErrored(0);
 
@@ -65,7 +65,7 @@ describe('SkipAfterBeforeAllErrorPolicy', function() {
     describe('When the fn is not a beforeAll', function() {
       it('does not try to access the suite, which is probably not there', function() {
         const fns = [{ fn: () => {} /* no suite */ }];
-        const policy = new jasmineUnderTest.SkipAfterBeforeAllErrorPolicy(fns);
+        const policy = new privateUnderTest.SkipAfterBeforeAllErrorPolicy(fns);
 
         expect(() => policy.fnErrored(0)).not.toThrow();
       });

@@ -1,7 +1,7 @@
 describe('MapContaining', function() {
   it('matches any actual map to an empty map', function() {
     const actualMap = new Map([['foo', 'bar']]);
-    const containing = new jasmineUnderTest.MapContaining(new Map());
+    const containing = new privateUnderTest.MapContaining(new Map());
 
     expect(containing.asymmetricMatch(actualMap)).toBe(true);
   });
@@ -17,8 +17,8 @@ describe('MapContaining', function() {
       [{ foo: 'bar' }, 'baz'],
       ['foo', [1, 2, 3]]
     ]);
-    const containing = new jasmineUnderTest.MapContaining(containingMap);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containing = new privateUnderTest.MapContaining(containingMap);
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(true);
   });
@@ -33,8 +33,8 @@ describe('MapContaining', function() {
       [{ foo: 'bar' }, 'baz'],
       ['foo', [1, 2, 3]]
     ]);
-    const containing = new jasmineUnderTest.MapContaining(containingMap);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containing = new privateUnderTest.MapContaining(containingMap);
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(false);
   });
@@ -43,8 +43,8 @@ describe('MapContaining', function() {
     const actualMap = new Map([['foo', [1, 2, 3]], [{ foo: 'bar' }, 'baz']]);
 
     const containingMap = new Map([[{ foo: 'bar' }, 'baz'], ['foo', [1, 2]]]);
-    const containing = new jasmineUnderTest.MapContaining(containingMap);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containing = new privateUnderTest.MapContaining(containingMap);
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(false);
   });
@@ -60,8 +60,8 @@ describe('MapContaining', function() {
       [jasmineUnderTest.stringMatching(/^foo\d/), 'bar'],
       ['baz', jasmineUnderTest.arrayContaining([2, 3])]
     ]);
-    const containing = new jasmineUnderTest.MapContaining(containingMap);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containing = new privateUnderTest.MapContaining(containingMap);
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(true);
   });
@@ -73,8 +73,8 @@ describe('MapContaining', function() {
       [jasmineUnderTest.stringMatching(/^foo\d/), 'bar'],
       ['baz', jasmineUnderTest.arrayContaining([2, 3])]
     ]);
-    const containing = new jasmineUnderTest.MapContaining(containingMap);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containing = new privateUnderTest.MapContaining(containingMap);
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(false);
   });
@@ -86,8 +86,8 @@ describe('MapContaining', function() {
       [jasmineUnderTest.stringMatching(/^foo\d/), 'bar'],
       ['baz', jasmineUnderTest.arrayContaining([4, 5])]
     ]);
-    const containing = new jasmineUnderTest.MapContaining(containingMap);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containing = new privateUnderTest.MapContaining(containingMap);
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(false);
   });
@@ -100,11 +100,11 @@ describe('MapContaining', function() {
     ]);
 
     const containingMap = new Map([
-      ['foo', new jasmineUnderTest.MapContaining(new Map([['foo1', 1]]))],
-      [new jasmineUnderTest.MapContaining(new Map([[2, 'bar2']])), 'bar']
+      ['foo', new privateUnderTest.MapContaining(new Map([['foo1', 1]]))],
+      [new privateUnderTest.MapContaining(new Map([[2, 'bar2']])), 'bar']
     ]);
-    const containing = new jasmineUnderTest.MapContaining(containingMap);
-    const matchersUtil = new jasmineUnderTest.MatchersUtil();
+    const containing = new privateUnderTest.MapContaining(containingMap);
+    const matchersUtil = new privateUnderTest.MatchersUtil();
 
     expect(containing.asymmetricMatch(actualMap, matchersUtil)).toBe(true);
   });
@@ -117,10 +117,10 @@ describe('MapContaining', function() {
         : a === b;
     }
     const actualMap = new Map([['foo', -1]]);
-    const containing = new jasmineUnderTest.MapContaining(
+    const containing = new privateUnderTest.MapContaining(
       new Map([['foo', -2]])
     );
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
+    const matchersUtil = new privateUnderTest.MatchersUtil({
       customTesters: [tester]
     });
 
@@ -130,13 +130,13 @@ describe('MapContaining', function() {
   it('does not match when actual is not a map', function() {
     const containingMap = new Map([['foo', 'bar']]);
     expect(
-      new jasmineUnderTest.MapContaining(containingMap).asymmetricMatch('foo')
+      new privateUnderTest.MapContaining(containingMap).asymmetricMatch('foo')
     ).toBe(false);
     expect(
-      new jasmineUnderTest.MapContaining(containingMap).asymmetricMatch(-1)
+      new privateUnderTest.MapContaining(containingMap).asymmetricMatch(-1)
     ).toBe(false);
     expect(
-      new jasmineUnderTest.MapContaining(containingMap).asymmetricMatch({
+      new privateUnderTest.MapContaining(containingMap).asymmetricMatch({
         foo: 'bar'
       })
     ).toBe(false);
@@ -144,7 +144,7 @@ describe('MapContaining', function() {
 
   it('throws an error when sample is not a map', function() {
     expect(function() {
-      new jasmineUnderTest.MapContaining({ foo: 'bar' }).asymmetricMatch(
+      new privateUnderTest.MapContaining({ foo: 'bar' }).asymmetricMatch(
         new Map()
       );
     }).toThrowError(/You must provide a map/);
@@ -152,7 +152,7 @@ describe('MapContaining', function() {
 
   it('defines a `jasmineToString` method', function() {
     const sample = new Map(),
-      containing = new jasmineUnderTest.MapContaining(sample),
+      containing = new privateUnderTest.MapContaining(sample),
       pp = jasmine.createSpy('pp').and.returnValue('sample');
 
     expect(containing.jasmineToString(pp)).toEqual(

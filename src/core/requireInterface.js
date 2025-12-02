@@ -1,4 +1,6 @@
 getJasmineRequireObj().interface = function(jasmine, env) {
+  'use strict';
+
   const jasmineInterface = {
     /**
      * Callback passed to parts of the Jasmine base interface.
@@ -352,7 +354,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
       return env.spyOnAllFunctions(obj, includeNonEnumerable);
     },
 
-    jsApiReporter: new jasmine.JsApiReporter({
+    jsApiReporter: new jasmine.private.JsApiReporter({
       timer: new jasmine.Timer()
     }),
 
@@ -367,6 +369,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      */
     jasmine: jasmine
   };
+  const existingKeys = Object.keys(jasmine);
 
   /**
    * Add a custom equality tester for the current scope of specs.
@@ -497,6 +500,21 @@ getJasmineRequireObj().interface = function(jasmine, env) {
   };
 
   /**
+   * Formats a value for display, taking into account the current set of
+   * custom object formatters.
+   *
+   * @name jasmine.pp
+   * @function
+   * @since 6.0.0
+   * @param {*} value The value to pretty-print
+   * @return {string} The pretty-printed value
+   * @see {MatchersUtil#pp}
+   */
+  jasmine.pp = function(value) {
+    return env.pp(value);
+  };
+
+  /**
    * {@link AsymmetricEqualityTester|Asymmetric equality testers} allow for
    * non-exact matching in matchers that use Jasmine's deep value equality
    * semantics, such as {@link matchers#toEqual|toEqual},
@@ -517,6 +535,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
    *
    * @namespace asymmetricEqualityTesters
    */
+
+  jasmine.private.deprecateMonkeyPatching(jasmine, existingKeys);
 
   return jasmineInterface;
 };

@@ -1,4 +1,6 @@
 getJasmineRequireObj().util = function(j$) {
+  'use strict';
+
   const util = {};
 
   util.clone = function(obj) {
@@ -27,7 +29,7 @@ getJasmineRequireObj().util = function(j$) {
       } else if (str === '[object Date]') {
         return new Date(arg.valueOf());
       } else {
-        return j$.util.clone(arg);
+        return j$.private.util.clone(arg);
       }
     });
   };
@@ -49,7 +51,7 @@ getJasmineRequireObj().util = function(j$) {
   };
 
   function callerFile() {
-    const trace = new j$.StackTrace(new Error());
+    const trace = new j$.private.StackTrace(new Error());
     return trace.frames[1].file;
   }
 
@@ -77,6 +79,17 @@ getJasmineRequireObj().util = function(j$) {
       throw new Error(
         (msgPrefix || 'Timeout value') + ' cannot be greater than ' + max
       );
+    }
+  };
+
+  util.assertReporterCloneable = function(v, msgPrefix) {
+    try {
+      // Reporter events are cloned internally via structuredClone, and it's
+      // common for reporters (including jasmine-browser-runner's) to JSON
+      // serialize them.
+      JSON.stringify(structuredClone(v));
+    } catch (e) {
+      throw new Error(`${msgPrefix} can't be cloned`, { cause: e });
     }
   };
 

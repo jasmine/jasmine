@@ -1,4 +1,6 @@
 getJasmineRequireObj().CurrentRunableTracker = function() {
+  'use strict';
+
   class CurrentRunableTracker {
     #currentSpec;
     #currentlyExecutingSuites;

@@ -1,4 +1,6 @@
 getJasmineRequireObj().toBeNull = function() {
+  'use strict';
+
   /**
    * {@link expect} the actual value to be `null`.
    * @function

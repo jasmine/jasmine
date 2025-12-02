@@ -3,10 +3,10 @@ describe('toHaveBeenCalledWith', function() {
     const matchersUtil = {
         contains: jasmine.createSpy('delegated-contains').and.returnValue(true),
         equals: jasmine.createSpy('delegated-equals').and.returnValue(true),
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      matcher = privateUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'b');
     const result = matcher.compare(calledSpy, 'a', 'b');
@@ -23,11 +23,11 @@ describe('toHaveBeenCalledWith', function() {
           return true;
         }
       ],
-      matchersUtil = new jasmineUnderTest.MatchersUtil({
+      matchersUtil = new privateUnderTest.MatchersUtil({
         customTesters: customEqualityTesters
       }),
-      matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      matcher = privateUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'b');
     const result = matcher.compare(calledSpy, 'a', 'b');
@@ -39,10 +39,10 @@ describe('toHaveBeenCalledWith', function() {
         contains: jasmine
           .createSpy('delegated-contains')
           .and.returnValue(false),
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
-      uncalledSpy = new jasmineUnderTest.Spy('uncalled spy');
+      matcher = privateUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
+      uncalledSpy = new privateUnderTest.Spy('uncalled spy');
 
     const result = matcher.compare(uncalledSpy);
     expect(result.pass).toBe(false);
@@ -52,11 +52,11 @@ describe('toHaveBeenCalledWith', function() {
   });
 
   it('fails when the actual was called with different parameters', function() {
-    const matchersUtil = new jasmineUnderTest.MatchersUtil({
-        pp: jasmineUnderTest.makePrettyPrinter()
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+        pp: privateUnderTest.makePrettyPrinter()
       }),
-      matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
-      calledSpy = new jasmineUnderTest.Spy('called spy');
+      matcher = privateUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
+      calledSpy = new privateUnderTest.Spy('called spy');
 
     calledSpy('a');
     calledSpy('c', 'd');
@@ -84,8 +84,8 @@ describe('toHaveBeenCalledWith', function() {
   });
 
   it('throws an exception when the actual is not a spy', function() {
-    const matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith({
-        pp: jasmineUnderTest.makePrettyPrinter()
+    const matcher = privateUnderTest.matchers.toHaveBeenCalledWith({
+        pp: privateUnderTest.makePrettyPrinter()
       }),
       fn = function() {};
 
@@ -98,10 +98,10 @@ describe('toHaveBeenCalledWith', function() {
     const matchersUtil = {
         contains: jasmine.createSpy('delegated-contains').and.returnValue(true),
         equals: jasmine.createSpy('delegated-equals').and.returnValue(true),
-        pp: jasmineUnderTest.makePrettyPrinter()
+        pp: privateUnderTest.makePrettyPrinter()
       },
-      matcher = jasmineUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
-      calledSpy = new jasmineUnderTest.Spy('called-spy');
+      matcher = privateUnderTest.matchers.toHaveBeenCalledWith(matchersUtil),
+      calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy('a', 'b');
     matcher.compare(calledSpy, 'a', 'b');

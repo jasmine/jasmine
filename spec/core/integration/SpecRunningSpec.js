@@ -3,7 +3,7 @@ describe('spec running', function() {
 
   beforeEach(function() {
     specHelpers.registerIntegrationMatchers();
-    env = new jasmineUnderTest.Env();
+    env = new privateUnderTest.Env();
     env.configure({ random: false });
   });
 
@@ -40,7 +40,7 @@ describe('spec running', function() {
         env.it('should run nested suites', function() {
           foo++;
         });
-        env.it('should run nested suites', function() {
+        env.it('should run nested suites 2', function() {
           bar++;
         });
       });
@@ -601,37 +601,7 @@ describe('spec running', function() {
     ]);
   });
 
-  it('re-enters suites that have no *Alls', async function() {
-    const actions = [];
-    let spec1;
-    let spec2;
-    let spec3;
-
-    env.describe('top', function() {
-      spec1 = env.it('spec1', function() {
-        actions.push('spec1');
-      });
-
-      spec2 = env.it('spec2', function() {
-        actions.push('spec2');
-      });
-    });
-
-    spec3 = env.it('spec3', function() {
-      actions.push('spec3');
-    });
-
-    spyOn(jasmineUnderTest.getEnv(), 'deprecated');
-
-    await env.execute([spec2.id, spec3.id, spec1.id]);
-
-    expect(actions).toEqual(['spec2', 'spec3', 'spec1']);
-    expect(jasmineUnderTest.getEnv().deprecated).toHaveBeenCalledWith(
-      'The specified spec/suite order splits up a suite, running unrelated specs in the middle of it. This will become an error in a future release.'
-    );
-  });
-
-  it('refuses to re-enter suites with a beforeAll', async function() {
+  it('refuses to re-enter suites', async function() {
     const actions = [];
     let spec1;
     let spec2;
@@ -654,34 +624,9 @@ describe('spec running', function() {
     });
 
     const promise = env.execute([spec2.id, spec3.id, spec1.id]);
-    await expectAsync(promise).toBeRejectedWithError(/beforeAll/);
-    expect(actions).toEqual([]);
-  });
-
-  it('refuses to re-enter suites with a afterAll', async function() {
-    const actions = [];
-    let spec1;
-    let spec2;
-    let spec3;
-
-    env.describe('top', function() {
-      env.afterAll(function() {});
-
-      spec1 = env.it('spec1', function() {
-        actions.push('spec1');
-      });
-
-      spec2 = env.it('spec2', function() {
-        actions.push('spec2');
-      });
-    });
-
-    spec3 = env.it('spec3', function() {
-      actions.push('spec3');
-    });
-
-    const promise = env.execute([spec2.id, spec3.id, spec1.id]);
-    await expectAsync(promise).toBeRejectedWithError(/afterAll/);
+    await expectAsync(promise).toBeRejectedWithError(
+      'Invalid order: would split up a suite'
+    );
     expect(actions).toEqual([]);
   });
 

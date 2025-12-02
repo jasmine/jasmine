@@ -1,18 +1,48 @@
-getJasmineRequireObj().clearStack = function(j$) {
+getJasmineRequireObj().StackClearer = function(j$) {
+  'use strict';
+
   const maxInlineCallCount = 10;
+  // 25ms gives a good balance of speed and UI responsiveness when running
+  // jasmine-core's own tests in Safari 18. The exact value isn't critical.
+  const safariYieldIntervalMs = 25;
 
   function browserQueueMicrotaskImpl(global) {
     const unclampedSetTimeout = getUnclampedSetTimeout(global);
     const { queueMicrotask } = global;
-    let currentCallCount = 0;
-    return function clearStack(fn) {
-      currentCallCount++;
+    let yieldStrategy = 'count';
+    let currentCallCount = 0; // for count strategy
+    let nextSetTimeoutTime; // for time strategy
 
-      if (currentCallCount < maxInlineCallCount) {
-        queueMicrotask(fn);
-      } else {
-        currentCallCount = 0;
-        unclampedSetTimeout(fn);
+    return {
+      clearStack(fn) {
+        currentCallCount++;
+        let shouldSetTimeout;
+
+        if (yieldStrategy === 'time') {
+          const now = new Date().getTime();
+          shouldSetTimeout = now >= nextSetTimeoutTime;
+          if (shouldSetTimeout) {
+            nextSetTimeoutTime = now + safariYieldIntervalMs;
+          }
+        } else {
+          shouldSetTimeout = currentCallCount >= maxInlineCallCount;
+          if (shouldSetTimeout) {
+            currentCallCount = 0;
+          }
+        }
+
+        if (shouldSetTimeout) {
+          unclampedSetTimeout(fn);
+        } else {
+          queueMicrotask(fn);
+        }
+      },
+      setSafariYieldStrategy(strategy) {
+        yieldStrategy = strategy;
+
+        if (yieldStrategy === 'time') {
+          nextSetTimeoutTime = new Date().getTime() + safariYieldIntervalMs;
+        }
       }
     };
   }
@@ -20,8 +50,11 @@ getJasmineRequireObj().clearStack = function(j$) {
   function nodeQueueMicrotaskImpl(global) {
     const { queueMicrotask } = global;
 
-    return function(fn) {
-      queueMicrotask(fn);
+    return {
+      clearStack(fn) {
+        queueMicrotask(fn);
+      },
+      setSafariYieldStrategy() {}
     };
   }
 
@@ -30,15 +63,19 @@ getJasmineRequireObj().clearStack = function(j$) {
     const postMessage = getPostMessage(global);
 
     let currentCallCount = 0;
-    return function clearStack(fn) {
-      currentCallCount++;
 
-      if (currentCallCount < maxInlineCallCount) {
-        postMessage(fn);
-      } else {
-        currentCallCount = 0;
-        setTimeout(fn);
-      }
+    return {
+      clearStack(fn) {
+        currentCallCount++;
+
+        if (currentCallCount < maxInlineCallCount) {
+          postMessage(fn);
+        } else {
+          currentCallCount = 0;
+          setTimeout(fn);
+        }
+      },
+      setSafariYieldStrategy() {}
     };
   }
 
@@ -86,7 +123,7 @@ getJasmineRequireObj().clearStack = function(j$) {
     };
   }
 
-  function getClearStack(global) {
+  function getStackClearer(global) {
     const NODE_JS =
       global.process &&
       global.process.versions &&
@@ -104,12 +141,10 @@ getJasmineRequireObj().clearStack = function(j$) {
       // Unlike browsers, Node doesn't require us to do a periodic setTimeout
       // so we avoid the overhead.
       return nodeQueueMicrotaskImpl(global);
-    } else if (SAFARI_OR_WIN_WEBKIT || !global.MessageChannel /* tests */) {
+    } else if (SAFARI_OR_WIN_WEBKIT) {
       // queueMicrotask is dramatically faster than MessageChannel in Safari
       // and other WebKit-based browsers, such as the one distributed by Playwright
       // to test Safari-like behavior on Windows.
-      // Some of our own integration tests provide a mock queueMicrotask in all
-      // environments because it's simpler to mock than MessageChannel.
       return browserQueueMicrotaskImpl(global);
     } else {
       // MessageChannel is faster than queueMicrotask in supported browsers
@@ -118,5 +153,5 @@ getJasmineRequireObj().clearStack = function(j$) {
     }
   }
 
-  return getClearStack;
+  return getStackClearer;
 };

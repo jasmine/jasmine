@@ -1,6 +1,8 @@
 getJasmineRequireObj().StringContaining = function(j$) {
+  'use strict';
+
   function StringContaining(expected) {
-    if (!j$.isString_(expected)) {
+    if (!j$.private.isString(expected)) {
       throw new Error('Expected is not a String');
     }
 
@@ -8,7 +10,7 @@ getJasmineRequireObj().StringContaining = function(j$) {
   }
 
   StringContaining.prototype.asymmetricMatch = function(other) {
-    if (!j$.isString_(other)) {
+    if (!j$.private.isString(other)) {
       // Arrays, etc. don't match no matter what their indexOf returns.
       return false;
     }
