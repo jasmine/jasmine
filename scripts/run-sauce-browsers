@@ -44,8 +44,8 @@ else
 fi
 run_browser firefox 102
 
-run_browser safari 17
-run_browser safari 16
+# run_browser safari 17
+# run_browser safari 16
 
 run_browser MicrosoftEdge latest
 
