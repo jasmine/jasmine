@@ -520,10 +520,6 @@ describe('ExceptionFormatter', function() {
       });
 
       it('works with native AggregateError constructor', function() {
-        if (typeof AggregateError === 'undefined') {
-          pending('AggregateError not available in this environment');
-        }
-
         const subject = new privateUnderTest.ExceptionFormatter();
         const error1 = new Error('first error');
         const error2 = new Error('second error');

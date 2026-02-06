@@ -12,10 +12,6 @@ describe('Exception formatting (integration)', function() {
 
   describe('AggregateError formatting', function() {
     it('formats AggregateError from Promise.any() with all individual errors', async function() {
-      if (typeof Promise.any === 'undefined') {
-        pending('Promise.any not available in this environment');
-      }
-
       env.it(
         'should format AggregateError from Promise.any()',
         async function() {
@@ -46,10 +42,6 @@ describe('Exception formatting (integration)', function() {
     });
 
     it('formats manually created AggregateError with individual errors', async function() {
-      if (typeof AggregateError === 'undefined') {
-        pending('AggregateError not available in this environment');
-      }
-
       env.it('should format manually created AggregateError', function() {
         const errors = [
           new Error('Database connection failed'),
@@ -81,10 +73,6 @@ describe('Exception formatting (integration)', function() {
     });
 
     it('formats nested AggregateError from async operations', async function() {
-      if (typeof AggregateError === 'undefined') {
-        pending('AggregateError not available in this environment');
-      }
-
       env.it('should format nested AggregateError', function() {
         const innerErrors = [
           new Error('Inner error 1'),
