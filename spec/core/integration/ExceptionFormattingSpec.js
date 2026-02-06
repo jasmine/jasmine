@@ -55,7 +55,7 @@ describe('Exception formatting (integration)', function() {
         const outerErrors = [
           innerAggregate,
           new Error('Outer error'),
-          new Error('Type error in outer operation')
+          new Error('Other outer error')
         ];
         throw new AggregateError(outerErrors, 'Multiple operations failed');
       });
@@ -70,14 +70,12 @@ describe('Exception formatting (integration)', function() {
 
       const failure = result.failedExpectations[0];
 
-      // Firefox & Safari don't preserve nested Error names
+      // Firefox & Safari don't preserve types for nested errors
       expect(failure.stack).toMatch(
         /Error 1: (AggregateError|Error): Inner operation failed/
       );
       expect(failure.stack).toContain('Error 2: Error: Outer error');
-      expect(failure.stack).toContain(
-        'Error 3: Error: Type error in outer operation'
-      );
+      expect(failure.stack).toContain('Error 3: Error: Other outer error');
 
       expect(failure.stack).toContain('Error 1: Error: Inner error 1');
       expect(failure.stack).toContain('Error 2: Error: Inner error 2');
