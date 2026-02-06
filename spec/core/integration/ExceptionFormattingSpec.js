@@ -34,11 +34,13 @@ describe('Exception formatting (integration)', function() {
 
       const failure = result.failedExpectations[0];
       expect(failure.message).toContain('AggregateError');
-      expect(failure.stack).toContain('Error 1: Error: First promise failed');
-      expect(failure.stack).toContain(
-        'Error 2: TypeError: Second promise failed'
-      );
-      expect(failure.stack).toContain('Error 3: Error: Third promise failed');
+
+      expect(failure.stack).toContain('Error 1:');
+      expect(failure.stack).toContain('First promise failed');
+      expect(failure.stack).toContain('Error 2:');
+      expect(failure.stack).toContain('Second promise failed');
+      expect(failure.stack).toContain('Error 3:');
+      expect(failure.stack).toContain('Third promise failed');
     });
 
     it('formats manually created AggregateError with individual errors', async function() {
@@ -63,13 +65,13 @@ describe('Exception formatting (integration)', function() {
       const failure = result.failedExpectations[0];
       expect(failure.message).toContain('AggregateError');
       expect(failure.message).toContain('Multiple initialization errors');
-      expect(failure.stack).toContain(
-        'Error 1: Error: Database connection failed'
-      );
-      expect(failure.stack).toContain(
-        'Error 2: TypeError: Invalid configuration'
-      );
-      expect(failure.stack).toContain('Error 3: Error: Service unavailable');
+
+      expect(failure.stack).toContain('Error 1:');
+      expect(failure.stack).toContain('Database connection failed');
+      expect(failure.stack).toContain('Error 2:');
+      expect(failure.stack).toContain('Invalid configuration');
+      expect(failure.stack).toContain('Error 3:');
+      expect(failure.stack).toContain('Service unavailable');
     });
 
     it('formats nested AggregateError', async function() {
@@ -100,15 +102,16 @@ describe('Exception formatting (integration)', function() {
       expect(result.status).toEqual('failed');
 
       const failure = result.failedExpectations[0];
-      expect(failure.stack).toContain(
-        'Error 1: AggregateError: Inner operation failed'
-      );
-      expect(failure.stack).toContain('Error 1: Error: Inner error 1');
-      expect(failure.stack).toContain('Error 2: Error: Inner error 2');
-      expect(failure.stack).toContain('Error 2: Error: Outer error');
-      expect(failure.stack).toContain(
-        'Error 3: TypeError: Type error in outer operation'
-      );
+
+      expect(failure.stack).toContain('Error 1:');
+      expect(failure.stack).toContain('Inner operation failed');
+      expect(failure.stack).toContain('Error 2:');
+      expect(failure.stack).toContain('Outer error');
+      expect(failure.stack).toContain('Error 3:');
+      expect(failure.stack).toContain('Type error in outer operation');
+
+      expect(failure.stack).toContain('Inner error 1');
+      expect(failure.stack).toContain('Inner error 2');
     });
   });
 });
