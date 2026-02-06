@@ -70,8 +70,9 @@ describe('Exception formatting (integration)', function() {
 
       const failure = result.failedExpectations[0];
 
-      expect(failure.stack).toContain(
-        'Error 1: AggregateError: Inner operation failed'
+      // Firefox & Safari don't preserve nested Error names
+      expect(failure.stack).toMatch(
+        /Error 1: (AggregateError|Error): Inner operation failed/
       );
       expect(failure.stack).toContain('Error 2: Error: Outer error');
       expect(failure.stack).toContain(
