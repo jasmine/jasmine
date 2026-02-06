@@ -11,7 +11,7 @@ describe('Exception formatting (integration)', function() {
   });
 
   describe('AggregateError formatting', function() {
-    it('formats AggregateError from Promise.any() with all individual errors', async function() {
+    it('formats AggregateError from Promise.any() with all errors', async function() {
       env.it(
         'should format AggregateError from Promise.any()',
         async function() {
@@ -72,7 +72,7 @@ describe('Exception formatting (integration)', function() {
       expect(failure.stack).toContain('Error 3: Error: Service unavailable');
     });
 
-    it('formats nested AggregateError from async operations', async function() {
+    it('formats nested AggregateError', async function() {
       env.it('should format nested AggregateError', function() {
         const innerErrors = [
           new Error('Inner error 1'),

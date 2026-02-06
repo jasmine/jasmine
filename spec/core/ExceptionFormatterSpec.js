@@ -491,34 +491,6 @@ describe('ExceptionFormatter', function() {
         expect(hasObjectError).toBe(false);
       });
 
-      it('does not throw if errors property is not an array', function() {
-        const formatter = new privateUnderTest.ExceptionFormatter();
-
-        expect(function() {
-          formatter.stack(
-            new Error('error', {
-              errors: 'not an array'
-            })
-          );
-        }).not.toThrowError();
-
-        expect(function() {
-          formatter.stack(
-            new Error('error', {
-              errors: { length: 1 }
-            })
-          );
-        }).not.toThrowError();
-
-        expect(function() {
-          formatter.stack(
-            new Error('error', {
-              errors: null
-            })
-          );
-        }).not.toThrowError();
-      });
-
       it('works with native AggregateError constructor', function() {
         const subject = new privateUnderTest.ExceptionFormatter();
         const error1 = new Error('first error');

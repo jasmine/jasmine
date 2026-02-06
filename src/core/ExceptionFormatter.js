@@ -78,7 +78,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
         lines = lines.concat(substack);
       }
 
-      if (error.errors && Array.isArray(error.errors)) {
+      if (Array.isArray(error.errors)) {
         error.errors.forEach((aggregatedError, index) => {
           if (aggregatedError instanceof Error) {
             const substack = this.stack_(aggregatedError, {
