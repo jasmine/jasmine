@@ -350,48 +350,52 @@ describe('ExceptionFormatter', function() {
     describe('when the error has an errors array (AggregateError)', function() {
       it('includes all aggregated errors in the stack trace', function() {
         const subject = new privateUnderTest.ExceptionFormatter();
-        const error1 = new Error('first error');
-        const error2 = new Error('second error');
-        const error3 = new Error('third error');
-        const aggregateError = new Error('Multiple errors occurred');
-        aggregateError.errors = [error1, error2, error3];
+        const error1 = (function fn1() {
+          return new Error('first error');
+        })();
+        const error2 = (function fn2() {
+          return new Error('second error');
+        })();
+        const aggregateError = (function fn3() {
+          return new Error('Multiple errors occurred');
+        })();
+        aggregateError.errors = [error1, error2];
 
         const lines = subject.stack(aggregateError).split('\n');
+
+        // TODO: be consistent across environments about whether the message is
+        // included in the stack trace
+        if (lines[0] === 'Error: Multiple errors occurred') {
+          lines.shift();
+        }
+
+        for (let i = 0; i < lines.length; i++) {
+          jasmine.debugLog(`Line ${i}: ${lines[i]}`);
+        }
+
+        expect(lines[0])
+          .withContext('first stack frame of the overall error')
+          .toMatch(/fn3.*core\/ExceptionFormatterSpec\.js/);
 
         const error1MsgIx = lines.findIndex(line =>
           line.includes('Error 1: Error: first error')
         );
         expect(error1MsgIx)
-          .withContext('first error message')
+          .withContext('first nested error message')
           .toBeGreaterThan(-1);
+        expect(lines[error1MsgIx + 1])
+          .withContext('first stack frame of first nested error')
+          .toMatch(/fn1.*core\/ExceptionFormatterSpec\.js/);
 
         const error2MsgIx = lines.findIndex(line =>
           line.includes('Error 2: Error: second error')
         );
         expect(error2MsgIx)
-          .withContext('second error message')
+          .withContext('second nested error message')
           .toBeGreaterThan(error1MsgIx);
-
-        const error3MsgIx = lines.findIndex(line =>
-          line.includes('Error 3: Error: third error')
-        );
-        expect(error3MsgIx)
-          .withContext('third error message')
-          .toBeGreaterThan(error2MsgIx);
-      });
-
-      it('handles AggregateError with single error', function() {
-        const subject = new privateUnderTest.ExceptionFormatter();
-        const error1 = new Error('single error');
-        const aggregateError = new Error('One error occurred');
-        aggregateError.errors = [error1];
-
-        const lines = subject.stack(aggregateError).split('\n');
-
-        const error1MsgIx = lines.findIndex(line =>
-          line.includes('Error 1: Error: single error')
-        );
-        expect(error1MsgIx).toBeGreaterThan(-1);
+        expect(lines[error2MsgIx + 1])
+          .withContext('first stack frame of second nested error')
+          .toMatch(/fn2.*core\/ExceptionFormatterSpec\.js/);
       });
 
       it('handles empty errors array', function() {
