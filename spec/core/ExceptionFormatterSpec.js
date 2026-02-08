@@ -369,7 +369,13 @@ describe('ExceptionFormatter', function() {
           lines.shift();
         }
 
-        const filteredLines = lines.filter(x => !x.includes('/jasmine.js:'));
+        // Exclude lines that vary from environment to environment
+        const filteredLines = lines.filter(
+          x =>
+            !x.includes('/jasmine.js:') &&
+            // Some Node 20 and 22 minors when running in parallel
+            !x.includes('process.processTicksAndRejections')
+        );
 
         for (let i = 0; i < filteredLines.length; i++) {
           jasmine.debugLog(`Line ${i} after filtering: ${filteredLines[i]}`);
