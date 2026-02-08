@@ -369,33 +369,35 @@ describe('ExceptionFormatter', function() {
           lines.shift();
         }
 
-        for (let i = 0; i < lines.length; i++) {
-          jasmine.debugLog(`Line ${i}: ${lines[i]}`);
+        const filteredLines = lines.filter(x => !x.includes('/jasmine.js:'));
+
+        for (let i = 0; i < filteredLines.length; i++) {
+          jasmine.debugLog(`Line ${i} after filtering: ${filteredLines[i]}`);
         }
 
-        expect(lines[0])
-          .withContext('first stack frame of the overall error')
-          .toMatch(/fn3.*core\/ExceptionFormatterSpec\.js/);
+        // Inexact matching because stack frame formatting varies from runtime
+        // to runtime
+        const expectedPatterns = [
+          // Overall error
+          /fn3.*ExceptionFormatterSpec\.js/,
+          /ExceptionFormatterSpec\.js/,
+          /^$/,
 
-        const error1MsgIx = lines.findIndex(line =>
-          line.includes('Error 1: Error: first error')
-        );
-        expect(error1MsgIx)
-          .withContext('first nested error message')
-          .toBeGreaterThan(-1);
-        expect(lines[error1MsgIx + 1])
-          .withContext('first stack frame of first nested error')
-          .toMatch(/fn1.*core\/ExceptionFormatterSpec\.js/);
+          // First nested error
+          /^   Error 1: Error: first error$/,
+          /^   .*fn1.*ExceptionFormatterSpec\.js/,
+          /^   .*ExceptionFormatterSpec\.js/,
+          /^$/,
 
-        const error2MsgIx = lines.findIndex(line =>
-          line.includes('Error 2: Error: second error')
+          // Second nested error
+          /^   .*Error 2: Error: second error$/,
+          /^   .*fn2.*ExceptionFormatterSpec\.js/,
+          /^   .*ExceptionFormatterSpec\.js/,
+        ];
+
+        expect(filteredLines).toEqual(
+          expectedPatterns.map(p => jasmine.stringMatching(p)),
         );
-        expect(error2MsgIx)
-          .withContext('second nested error message')
-          .toBeGreaterThan(error1MsgIx);
-        expect(lines[error2MsgIx + 1])
-          .withContext('first stack frame of second nested error')
-          .toMatch(/fn2.*core\/ExceptionFormatterSpec\.js/);
       });
 
       it('handles empty errors array', function() {

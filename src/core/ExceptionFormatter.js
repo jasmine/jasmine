@@ -79,15 +79,16 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
       }
 
       if (Array.isArray(error.errors)) {
-        error.errors.forEach((aggregatedError, index) => {
-          if (aggregatedError instanceof Error) {
-            const substack = this.stack_(aggregatedError, {
+        for (let i = 0; i < error.errors.length; i++) {
+          if (error.errors[i] instanceof Error) {
+            lines.push('');
+            const substack = this.stack_(error.errors[i], {
               messageHandling: 'require'
             });
-            substack[0] = 'Error ' + (index + 1) + ': ' + substack[0];
-            lines = lines.concat(substack);
+            substack[0] = 'Error ' + (i + 1) + ': ' + substack[0];
+            lines = lines.concat(substack.map(x => '   ' + x));
           }
-        });
+        }
       }
 
       return lines;
