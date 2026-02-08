@@ -392,11 +392,11 @@ describe('ExceptionFormatter', function() {
           // Second nested error
           /^   .*Error 2: Error: second error$/,
           /^   .*fn2.*ExceptionFormatterSpec\.js/,
-          /^   .*ExceptionFormatterSpec\.js/,
+          /^   .*ExceptionFormatterSpec\.js/
         ];
 
         expect(filteredLines).toEqual(
-          expectedPatterns.map(p => jasmine.stringMatching(p)),
+          expectedPatterns.map(p => jasmine.stringMatching(p))
         );
       });
 
