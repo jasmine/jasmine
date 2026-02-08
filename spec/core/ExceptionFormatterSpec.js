@@ -346,5 +346,172 @@ describe('ExceptionFormatter', function() {
         }).not.toThrowError();
       });
     });
+
+    describe('when the error has an errors array (AggregateError)', function() {
+      it('includes all aggregated errors in the stack trace', function() {
+        const subject = new privateUnderTest.ExceptionFormatter();
+        const error1 = new Error('first error');
+        const error2 = new Error('second error');
+        const error3 = new Error('third error');
+        const aggregateError = new Error('Multiple errors occurred');
+        aggregateError.errors = [error1, error2, error3];
+
+        const lines = subject.stack(aggregateError).split('\n');
+
+        const error1MsgIx = lines.findIndex(line =>
+          line.includes('Error 1: Error: first error')
+        );
+        expect(error1MsgIx)
+          .withContext('first error message')
+          .toBeGreaterThan(-1);
+
+        const error2MsgIx = lines.findIndex(line =>
+          line.includes('Error 2: Error: second error')
+        );
+        expect(error2MsgIx)
+          .withContext('second error message')
+          .toBeGreaterThan(error1MsgIx);
+
+        const error3MsgIx = lines.findIndex(line =>
+          line.includes('Error 3: Error: third error')
+        );
+        expect(error3MsgIx)
+          .withContext('third error message')
+          .toBeGreaterThan(error2MsgIx);
+      });
+
+      it('handles AggregateError with single error', function() {
+        const subject = new privateUnderTest.ExceptionFormatter();
+        const error1 = new Error('single error');
+        const aggregateError = new Error('One error occurred');
+        aggregateError.errors = [error1];
+
+        const lines = subject.stack(aggregateError).split('\n');
+
+        const error1MsgIx = lines.findIndex(line =>
+          line.includes('Error 1: Error: single error')
+        );
+        expect(error1MsgIx).toBeGreaterThan(-1);
+      });
+
+      it('handles empty errors array', function() {
+        const subject = new privateUnderTest.ExceptionFormatter();
+        const aggregateError = new Error('No errors');
+        aggregateError.errors = [];
+
+        expect(function() {
+          subject.stack(aggregateError);
+        }).not.toThrowError();
+      });
+
+      it('handles nested AggregateError', function() {
+        const subject = new privateUnderTest.ExceptionFormatter();
+        const innerError1 = new Error('inner error 1');
+        const innerError2 = new Error('inner error 2');
+        const innerAggregate = new Error('Inner aggregate');
+        innerAggregate.errors = [innerError1, innerError2];
+
+        const outerError = new Error('outer error');
+        const outerAggregate = new Error('Outer aggregate');
+        outerAggregate.errors = [innerAggregate, outerError];
+
+        const lines = subject.stack(outerAggregate).split('\n');
+
+        const innerAggMsgIx = lines.findIndex(line =>
+          line.includes('Error 1: Error: Inner aggregate')
+        );
+        expect(innerAggMsgIx).toBeGreaterThan(-1);
+
+        const innerError1MsgIx = lines.findIndex(line =>
+          line.includes('Error 1: Error: inner error 1')
+        );
+        expect(innerError1MsgIx).toBeGreaterThan(innerAggMsgIx);
+
+        const innerError2MsgIx = lines.findIndex(line =>
+          line.includes('Error 2: Error: inner error 2')
+        );
+        expect(innerError2MsgIx).toBeGreaterThan(innerError1MsgIx);
+
+        const outerErrorMsgIx = lines.findIndex(line =>
+          line.includes('Error 2: Error: outer error')
+        );
+        expect(outerErrorMsgIx).toBeGreaterThan(innerError2MsgIx);
+      });
+
+      it('handles AggregateError containing error with cause', function() {
+        const subject = new privateUnderTest.ExceptionFormatter();
+        const rootCause = new Error('root cause');
+        const errorWithCause = new Error('error with cause', {
+          cause: rootCause
+        });
+        const aggregateError = new Error('Aggregate with cause chain');
+        aggregateError.errors = [errorWithCause];
+
+        const lines = subject.stack(aggregateError).split('\n');
+
+        const error1MsgIx = lines.findIndex(line =>
+          line.includes('Error 1: Error: error with cause')
+        );
+        expect(error1MsgIx).toBeGreaterThan(-1);
+
+        const causeMsgIx = lines.findIndex(line =>
+          line.includes('Caused by: Error: root cause')
+        );
+        expect(causeMsgIx).toBeGreaterThan(error1MsgIx);
+      });
+
+      it('skips non-Error items in errors array', function() {
+        const subject = new privateUnderTest.ExceptionFormatter();
+        const error1 = new Error('real error');
+        const aggregateError = new Error('Mixed array');
+        aggregateError.errors = [
+          error1,
+          'string error',
+          { message: 'object error' },
+          null,
+          undefined,
+          42
+        ];
+
+        const lines = subject.stack(aggregateError).split('\n');
+
+        const error1MsgIx = lines.findIndex(line =>
+          line.includes('Error 1: Error: real error')
+        );
+        expect(error1MsgIx).toBeGreaterThan(-1);
+
+        const hasStringError = lines.some(line =>
+          line.includes('string error')
+        );
+        expect(hasStringError).toBe(false);
+
+        const hasObjectError = lines.some(line =>
+          line.includes('object error')
+        );
+        expect(hasObjectError).toBe(false);
+      });
+
+      it('works with native AggregateError constructor', function() {
+        const subject = new privateUnderTest.ExceptionFormatter();
+        const error1 = new Error('first error');
+        const error2 = new Error('second error');
+        const aggregateError = new AggregateError(
+          [error1, error2],
+          'Multiple errors'
+        );
+
+        const lines = subject.stack(aggregateError).split('\n');
+
+        const error1MsgIx = lines.findIndex(line =>
+          line.includes('Error 1: Error: first error')
+        );
+        expect(error1MsgIx).toBeGreaterThan(-1);
+
+        const error2MsgIx = lines.findIndex(line =>
+          line.includes('Error 2: Error: second error')
+        );
+        expect(error2MsgIx).toBeGreaterThan(error1MsgIx);
+      });
+    });
   });
 });
