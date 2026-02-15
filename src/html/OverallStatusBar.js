@@ -1,7 +1,7 @@
-jasmineRequire.OverallStatusBar = function(j$) {
+getJasmineHtmlRequireObj().OverallStatusBar = function(j$, private$) {
   'use strict';
 
-  const { createDom } = j$.private.htmlReporterUtils;
+  const { createDom } = private$.htmlReporterUtils;
   const staticClassNames = 'jasmine-overall-result jasmine-bar';
 
   class OverallStatusBar {

@@ -1,7 +1,7 @@
-getJasmineRequireObj().toThrowError = function(j$) {
+getJasmineRequireObj().toThrowError = function(j$, private$) {
   'use strict';
 
-  const getErrorMsg = j$.private.formatErrorMsg(
+  const getErrorMsg = private$.formatErrorMsg(
     '<toThrowError>',
     'expect(function() {<expectation>}).toThrowError(<ErrorConstructor>, <message>)'
   );
@@ -38,7 +38,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
           thrown = e;
         }
 
-        if (!j$.private.isError(thrown)) {
+        if (!private$.isError(thrown)) {
           return fail(function() {
             return (
               'Expected function to throw an Error, but it threw ' +
@@ -81,7 +81,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
         match: function(error) {
           return pass(
             'Expected function not to throw an Error, but it threw ' +
-              j$.private.fnNameFor(error) +
+              private$.fnNameFor(error) +
               '.'
           );
         }
@@ -110,12 +110,12 @@ getJasmineRequireObj().toThrowError = function(j$) {
       }
 
       const errorTypeDescription = errorType
-        ? j$.private.fnNameFor(errorType)
+        ? private$.fnNameFor(errorType)
         : 'an exception';
 
       function thrownDescription(thrown) {
         const thrownName = errorType
-          ? j$.private.fnNameFor(thrown.constructor)
+          ? private$.fnNameFor(thrown.constructor)
           : 'an exception';
         let thrownMessage = '';
 
@@ -181,7 +181,7 @@ getJasmineRequireObj().toThrowError = function(j$) {
 
       const Surrogate = function() {};
       Surrogate.prototype = type.prototype;
-      return j$.private.isError(new Surrogate());
+      return private$.isError(new Surrogate());
     }
   }
 

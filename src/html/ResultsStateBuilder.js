@@ -1,9 +1,9 @@
-jasmineRequire.ResultsStateBuilder = function(j$) {
+getJasmineHtmlRequireObj().ResultsStateBuilder = function(j$, private$) {
   'use strict';
 
   class ResultsStateBuilder {
     constructor() {
-      this.topResults = new j$.private.ResultsNode({}, '', null);
+      this.topResults = new private$.ResultsNode({}, '', null);
       this.currentParent = this.topResults;
       this.suitesById = {};
       this.totalSpecsDefined = 0;

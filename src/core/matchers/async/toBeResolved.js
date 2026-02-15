@@ -1,4 +1,4 @@
-getJasmineRequireObj().toBeResolved = function(j$) {
+getJasmineRequireObj().toBeResolved = function(j$, private$) {
   'use strict';
 
   /**
@@ -15,7 +15,7 @@ getJasmineRequireObj().toBeResolved = function(j$) {
   return function toBeResolved(matchersUtil) {
     return {
       compare: function(actual) {
-        if (!j$.private.isPromiseLike(actual)) {
+        if (!private$.isPromiseLike(actual)) {
           throw new Error(
             `Expected toBeResolved to be called on a promise but was on a ${typeof actual}.`
           );

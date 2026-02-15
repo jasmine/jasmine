@@ -1,4 +1,4 @@
-getJasmineRequireObj().Env = function(j$) {
+getJasmineRequireObj().Env = function(j$, private$) {
   'use strict';
 
   const DEFAULT_IT_DESCRIBE_STACK_DEPTH = 3;
@@ -15,18 +15,18 @@ getJasmineRequireObj().Env = function(j$) {
     envOptions = envOptions || {};
 
     const self = this;
-    const GlobalErrors = envOptions.GlobalErrors || j$.private.GlobalErrors;
+    const GlobalErrors = envOptions.GlobalErrors || private$.GlobalErrors;
     const global = envOptions.global || j$.getGlobal();
 
     const realSetTimeout = global.setTimeout;
     const realClearTimeout = global.clearTimeout;
-    const stackClearer = j$.private.getStackClearer(global);
-    this.clock = new j$.private.Clock(
+    const stackClearer = private$.getStackClearer(global);
+    this.clock = new private$.Clock(
       global,
       function() {
-        return new j$.private.DelayedFunctionScheduler();
+        return new private$.DelayedFunctionScheduler();
       },
-      new j$.private.MockDate(global)
+      new private$.MockDate(global)
     );
 
     const globalErrors = new GlobalErrors(
@@ -54,7 +54,7 @@ getJasmineRequireObj().Env = function(j$) {
       };
     })();
 
-    const runableResources = new j$.private.RunableResources({
+    const runableResources = new private$.RunableResources({
       getCurrentRunableId: function() {
         const r = runner.currentRunable();
         return r ? r.id : null;
@@ -67,7 +67,7 @@ getJasmineRequireObj().Env = function(j$) {
     let runner;
     let parallelLoadingState = null; // 'specs', 'helpers', or null for non-parallel
 
-    const config = new j$.private.Configuration();
+    const config = new private$.Configuration();
 
     if (!envOptions.suppressLoadErrors) {
       installGlobalErrors();
@@ -137,11 +137,11 @@ getJasmineRequireObj().Env = function(j$) {
       runableResources.customObjectFormatters().push(formatter);
     };
 
-    j$.private.Expectation.addCoreMatchers(j$.private.matchers);
-    j$.private.Expectation.addAsyncCoreMatchers(j$.private.asyncMatchers);
+    private$.Expectation.addCoreMatchers(private$.matchers);
+    private$.Expectation.addAsyncCoreMatchers(private$.asyncMatchers);
 
     const expectationFactory = function(actual, spec) {
-      return j$.private.Expectation.factory({
+      return private$.Expectation.factory({
         matchersUtil: runableResources.makeMatchersUtil(),
         customMatchers: runableResources.customMatchers(),
         actual: actual,
@@ -174,7 +174,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     const throwUnlessFactory = function(actual, spec) {
-      return j$.private.Expectation.factory({
+      return private$.Expectation.factory({
         matchersUtil: runableResources.makeMatchersUtil(),
         customMatchers: runableResources.customMatchers(),
         actual: actual,
@@ -183,7 +183,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     const throwUnlessAsyncFactory = function(actual, spec) {
-      return j$.private.Expectation.asyncFactory({
+      return private$.Expectation.asyncFactory({
         matchersUtil: runableResources.makeMatchersUtil(),
         customAsyncMatchers: runableResources.customAsyncMatchers(),
         actual: actual,
@@ -198,7 +198,7 @@ getJasmineRequireObj().Env = function(j$) {
         error.matcherName !== undefined && error.passed !== undefined;
       const result = isExpectationResult
         ? error
-        : j$.private.buildExpectationResult({
+        : private$.buildExpectationResult({
             error,
             passed: false,
             matcherName: '',
@@ -259,7 +259,7 @@ getJasmineRequireObj().Env = function(j$) {
     }
 
     const asyncExpectationFactory = function(actual, spec, runableType) {
-      return j$.private.Expectation.asyncFactory({
+      return private$.Expectation.asyncFactory({
         matchersUtil: runableResources.makeMatchersUtil(),
         customAsyncMatchers: runableResources.customAsyncMatchers(),
         actual: actual,
@@ -318,10 +318,10 @@ getJasmineRequireObj().Env = function(j$) {
           (runner.currentRunable() || topSuite).handleException(e);
         };
 
-      new j$.private.QueueRunner(options).execute();
+      new private$.QueueRunner(options).execute();
     }
 
-    const suiteBuilder = new j$.private.SuiteBuilder({
+    const suiteBuilder = new private$.SuiteBuilder({
       env: this,
       expectationFactory,
       asyncExpectationFactory,
@@ -330,7 +330,7 @@ getJasmineRequireObj().Env = function(j$) {
     });
     topSuite = suiteBuilder.topSuite;
     const deprecator =
-      envOptions?.deprecator ?? new j$.private.Deprecator(topSuite);
+      envOptions?.deprecator ?? new private$.Deprecator(topSuite);
 
     /**
      * Provides the root suite, through which all suites and specs can be
@@ -350,23 +350,23 @@ getJasmineRequireObj().Env = function(j$) {
      * @interface Reporter
      * @see custom_reporter
      */
-    reportDispatcher = new j$.private.ReportDispatcher(
-      j$.private.reporterEvents,
+    reportDispatcher = new private$.ReportDispatcher(
+      private$.reporterEvents,
       function(options) {
-        options.SkipPolicy = j$.private.NeverSkipPolicy;
+        options.SkipPolicy = private$.NeverSkipPolicy;
         return runQueue(options);
       },
       recordLateError
     );
 
-    runner = new j$.private.Runner({
+    runner = new private$.Runner({
       topSuite,
       totalSpecsDefined: () => suiteBuilder.totalSpecsDefined,
       focusedRunables: () => suiteBuilder.focusedRunables,
       runableResources,
       reportDispatcher,
       runQueue,
-      TreeProcessor: j$.private.TreeProcessor,
+      TreeProcessor: private$.TreeProcessor,
       globalErrors,
       getConfig: () => config
     });
@@ -411,7 +411,7 @@ getJasmineRequireObj().Env = function(j$) {
 
       // Karma incorrectly loads jasmine-core as an ES module. It isn't one,
       // and we don't test that configuration. Warn about it.
-      if (j$.private.loadedAsBrowserEsm) {
+      if (private$.loadedAsBrowserEsm) {
         this.deprecated(
           "jasmine-core isn't an ES module but it was loaded as one. This is not a supported configuration."
         );
@@ -540,7 +540,7 @@ getJasmineRequireObj().Env = function(j$) {
       try {
         const maybePromise = fn(spy);
 
-        if (!j$.private.isPromiseLike(maybePromise)) {
+        if (!private$.isPromiseLike(maybePromise)) {
           throw new Error(
             'The callback to spyOnGlobalErrorsAsync must be an async or promise-returning function'
           );
@@ -783,7 +783,7 @@ getJasmineRequireObj().Env = function(j$) {
     };
 
     this.pending = function(message) {
-      let fullMessage = j$.private.Spec.pendingSpecExceptionMessage;
+      let fullMessage = private$.Spec.pendingSpecExceptionMessage;
       if (message) {
         fullMessage += message;
       }
@@ -802,7 +802,7 @@ getJasmineRequireObj().Env = function(j$) {
         message += ': ';
         if (error.message) {
           message += error.message;
-        } else if (j$.private.isString(error)) {
+        } else if (private$.isString(error)) {
           message += error;
         } else {
           // pretty print all kind of objects. This includes arrays.
@@ -828,7 +828,7 @@ getJasmineRequireObj().Env = function(j$) {
     this.pp = function(value) {
       const pp = runner.currentRunable()
         ? runableResources.makePrettyPrinter()
-        : j$.private.basicPrettyPrinter;
+        : private$.basicPrettyPrinter;
       return pp(value);
     };
 
@@ -838,7 +838,7 @@ getJasmineRequireObj().Env = function(j$) {
   }
 
   function indirectCallerFilename(depth) {
-    const frames = new j$.private.StackTrace(new Error()).frames;
+    const frames = new private$.StackTrace(new Error()).frames;
     // The specified frame should always exist except in Jasmine's own tests,
     // which bypass the global it/describe layer, but could be absent in case
     // of misconfiguration. Don't crash if it's absent.

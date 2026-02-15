@@ -1,4 +1,4 @@
-getJasmineRequireObj().ParallelReportDispatcher = function(j$) {
+getJasmineRequireObj().ParallelReportDispatcher = function(j$, private$) {
   'use strict';
 
   /**
@@ -16,12 +16,11 @@ getJasmineRequireObj().ParallelReportDispatcher = function(j$) {
    * @param onError {function} Function called when an unhandled exception, unhandled promise rejection, or explicit reporter failure occurs
    */
   function ParallelReportDispatcher(onError, deps = {}) {
-    const ReportDispatcher =
-      deps.ReportDispatcher || j$.private.ReportDispatcher;
-    const QueueRunner = deps.QueueRunner || j$.private.QueueRunner;
-    const globalErrors = deps.globalErrors || new j$.private.GlobalErrors();
+    const ReportDispatcher = deps.ReportDispatcher || private$.ReportDispatcher;
+    const QueueRunner = deps.QueueRunner || private$.QueueRunner;
+    const globalErrors = deps.globalErrors || new private$.GlobalErrors();
     const dispatcher = new ReportDispatcher(
-      j$.private.reporterEvents,
+      private$.reporterEvents,
       function(queueRunnerOptions) {
         queueRunnerOptions = {
           ...queueRunnerOptions,
@@ -85,7 +84,7 @@ getJasmineRequireObj().ParallelReportDispatcher = function(j$) {
       }
     };
 
-    for (const eventName of j$.private.reporterEvents) {
+    for (const eventName of private$.reporterEvents) {
       self[eventName] = dispatcher[eventName].bind(dispatcher);
     }
 

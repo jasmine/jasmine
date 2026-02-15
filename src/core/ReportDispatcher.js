@@ -1,4 +1,4 @@
-getJasmineRequireObj().ReportDispatcher = function(j$) {
+getJasmineRequireObj().ReportDispatcher = function(j$, private$) {
   'use strict';
 
   function ReportDispatcher(methods, runQueue, onLateError) {

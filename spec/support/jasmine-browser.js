@@ -12,7 +12,9 @@ module.exports = {
     'core/**/*.js',
     'html/**/*.js',
     '**/*.js',
-    '!boot/**.js'
+    '!boot/**.js',
+    '!core/requireSuffix.js',
+    '!html/requireSuffix.js'
   ],
   specDir: 'spec',
   specFiles: ['**/*[Ss]pec.js', '!npmPackage/**/*'],

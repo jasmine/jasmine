@@ -1,7 +1,7 @@
-jasmineRequire.HtmlReporterV2 = function(j$) {
+getJasmineHtmlRequireObj().HtmlReporterV2 = function(j$, private$) {
   'use strict';
 
-  const { createDom, noExpectations } = j$.private.htmlReporterUtils;
+  const { createDom, noExpectations } = private$.htmlReporterUtils;
 
   const specListTabId = 'jasmine-specListTab';
   const failuresTabId = 'jasmine-failuresTab';
@@ -57,14 +57,14 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
 
       this.#config = options.env ? options.env.configuration() : {};
 
-      this.#stateBuilder = new j$.private.ResultsStateBuilder();
+      this.#stateBuilder = new private$.ResultsStateBuilder();
 
-      this.#alerts = new j$.private.AlertsView(this.#urlBuilder);
-      this.#statusBar = new j$.private.OverallStatusBar(this.#urlBuilder);
+      this.#alerts = new private$.AlertsView(this.#urlBuilder);
+      this.#statusBar = new private$.OverallStatusBar(this.#urlBuilder);
       this.#statusBar.showRunning();
       this.#alerts.addBar(this.#statusBar.rootEl);
 
-      this.#tabBar = new j$.private.TabBar(
+      this.#tabBar = new private$.TabBar(
         [
           { id: specListTabId, label: 'Spec List' },
           { id: failuresTabId, label: 'Failures' },
@@ -83,11 +83,11 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       this.#alerts.addBar(this.#tabBar.rootEl);
 
       this.#progress = new ProgressView();
-      this.#banner = new j$.private.Banner(
+      this.#banner = new private$.Banner(
         this.#queryString.navigateWithNewParam.bind(this.#queryString),
         true
       );
-      this.#failures = new j$.private.FailuresView(this.#urlBuilder);
+      this.#failures = new private$.FailuresView(this.#urlBuilder);
       this.#htmlReporterMain = createDom(
         'div',
         { className: 'jasmine_html-reporter' },
@@ -168,13 +168,13 @@ jasmineRequire.HtmlReporterV2 = function(j$) {
       }
 
       const results = this.#find('.jasmine-results');
-      const summary = new j$.private.SummaryTreeView(
+      const summary = new private$.SummaryTreeView(
         this.#urlBuilder,
         this.#filterSpecs
       );
       summary.addResults(this.#stateBuilder.topResults);
       results.appendChild(summary.rootEl);
-      const perf = new j$.private.PerformanceView();
+      const perf = new private$.PerformanceView();
       perf.addResults(this.#stateBuilder.topResults);
       results.appendChild(perf.rootEl);
       this.#tabBar.showTab(specListTabId);

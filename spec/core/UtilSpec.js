@@ -163,7 +163,6 @@ describe('util', function() {
       // Chrome sometimes reports foo.js as foo.js/, so tolerate
       // a trailing slash if present.
       expect(privateUnderTest.util.jasmineFile()).toMatch(/util.js\/?$/);
-      expect(jasmine.private.util.jasmineFile()).toMatch(/jasmine.js\/?$/);
     });
   });
 });

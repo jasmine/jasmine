@@ -1,5 +1,5 @@
-jasmineRequire.PerformanceView = function(j$) {
-  const createDom = j$.private.htmlReporterUtils.createDom;
+getJasmineHtmlRequireObj().PerformanceView = function(j$, private$) {
+  const createDom = private$.htmlReporterUtils.createDom;
   const MAX_SLOW_SPECS = 20;
 
   class PerformanceView {

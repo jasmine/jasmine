@@ -1,4 +1,4 @@
-jasmineRequire.HtmlSpecFilterV2 = function() {
+getJasmineHtmlRequireObj().HtmlSpecFilterV2 = function() {
   class HtmlSpecFilterV2 {
     #getFilterParams;
 

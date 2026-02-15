@@ -173,10 +173,13 @@ describe('ExceptionFormatter', function() {
     });
 
     it('filters Jasmine stack frames in this environment', function() {
+      const jasmineFile = (function() {
+        const trace = new privateUnderTest.StackTrace(new Error());
+        return trace.frames[2].file;
+      })();
+      expect(jasmineFile).toMatch(/\/jasmine.js$/);
       const error = new Error('an error');
-      const subject = new privateUnderTest.ExceptionFormatter({
-        jasmineFile: jasmine.private.util.jasmineFile()
-      });
+      const subject = new privateUnderTest.ExceptionFormatter({ jasmineFile });
       const result = subject.stack(error);
       jasmine.debugLog('Original stack trace: ' + error.stack);
       jasmine.debugLog('Filtered stack trace: ' + result);
@@ -196,15 +199,18 @@ describe('ExceptionFormatter', function() {
     });
 
     it('handles multiline error messages in this environment', function() {
+      const jasmineFile = (function() {
+        const trace = new privateUnderTest.StackTrace(new Error());
+        return trace.frames[2].file;
+      })();
+      expect(jasmineFile).toMatch(/\/jasmine.js$/);
       const msg = 'an error\nwith two lines';
       const error = new Error(msg);
 
       if (error.stack.indexOf(msg) === -1) {
         pending("Stack traces don't have messages in this environment");
       }
-      const subject = new privateUnderTest.ExceptionFormatter({
-        jasmineFile: jasmine.private.util.jasmineFile()
-      });
+      const subject = new privateUnderTest.ExceptionFormatter({ jasmineFile });
       const result = subject.stack(error);
       const lines = result.split('\n');
 
@@ -284,7 +290,7 @@ describe('ExceptionFormatter', function() {
       it('ensures that stack traces do not include the message in this environment', function() {
         const error = new Error('an error');
         const subject = new privateUnderTest.ExceptionFormatter({
-          jasmineFile: jasmine.private.util.jasmineFile()
+          jasmineFile: "doesn't matter"
         });
         const result = subject.stack(error, { omitMessage: true });
         expect(result).not.toContain('an error');

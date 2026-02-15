@@ -1,4 +1,4 @@
-getJasmineRequireObj().requireAsyncMatchers = function(jRequire, j$) {
+getJasmineRequireObj().requireAsyncMatchers = function(jRequire, j$, private$) {
   'use strict';
 
   const availableMatchers = [
@@ -12,7 +12,7 @@ getJasmineRequireObj().requireAsyncMatchers = function(jRequire, j$) {
     matchers = {};
 
   for (const name of availableMatchers) {
-    matchers[name] = jRequire[name](j$);
+    matchers[name] = jRequire[name](j$, private$);
   }
 
   return matchers;

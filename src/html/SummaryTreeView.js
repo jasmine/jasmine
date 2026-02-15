@@ -1,7 +1,7 @@
-jasmineRequire.SummaryTreeView = function(j$) {
+getJasmineHtmlRequireObj().SummaryTreeView = function(j$, private$) {
   'use strict';
 
-  const { createDom, noExpectations } = j$.private.htmlReporterUtils;
+  const { createDom, noExpectations } = private$.htmlReporterUtils;
 
   class SummaryTreeView {
     #urlBuilder;

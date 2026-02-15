@@ -1,4 +1,4 @@
-getJasmineRequireObj().NeverSkipPolicy = function(j$) {
+getJasmineRequireObj().NeverSkipPolicy = function(j$, private$) {
   'use strict';
 
   function NeverSkipPolicy(queueableFns) {}

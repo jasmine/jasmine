@@ -1,5 +1,5 @@
-// eslint-disable-next-line no-unused-vars,no-var
-var getJasmineRequireObj = (function() {
+// eslint-disable-next-line no-unused-vars
+const getJasmineRequireObj = (function() {
   'use strict';
   let jasmineRequire;
 
@@ -12,7 +12,7 @@ var getJasmineRequireObj = (function() {
     jasmineRequire = exports;
   } else {
     // Browser
-    jasmineRequire = globalThis.jasmineRequire = {};
+    jasmineRequire = {};
   }
 
   function getJasmineRequire() {
@@ -20,88 +20,101 @@ var getJasmineRequireObj = (function() {
   }
 
   getJasmineRequire().core = function(jRequire) {
+    const private$ = {};
     const j$ = {};
-    Object.defineProperty(j$, 'private', {
-      enumerable: true,
-      value: {}
-    });
 
-    jRequire.base(j$, globalThis);
-    j$.private.util = jRequire.util(j$);
-    j$.private.errors = jRequire.errors();
-    j$.private.formatErrorMsg = jRequire.formatErrorMsg(j$);
-    j$.private.AllOf = jRequire.AllOf(j$);
-    j$.private.Any = jRequire.Any(j$);
-    j$.private.Anything = jRequire.Anything(j$);
-    j$.private.CallTracker = jRequire.CallTracker(j$);
-    j$.private.MockDate = jRequire.MockDate(j$);
-    j$.private.getStackClearer = jRequire.StackClearer(j$);
-    j$.private.Clock = jRequire.Clock(j$);
-    j$.private.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler(j$);
-    j$.private.Deprecator = jRequire.Deprecator(j$);
-    j$.private.Configuration = jRequire.Configuration(j$);
-    j$.private.Env = jRequire.Env(j$);
-    j$.private.StackTrace = jRequire.StackTrace(j$);
-    j$.private.ExceptionFormatter = jRequire.ExceptionFormatter(j$);
-    j$.private.ExpectationFilterChain = jRequire.ExpectationFilterChain();
-    j$.private.Expector = jRequire.Expector(j$);
-    j$.private.Expectation = jRequire.Expectation(j$);
-    j$.private.buildExpectationResult = jRequire.buildExpectationResult(j$);
-    j$.private.makePrettyPrinter = jRequire.makePrettyPrinter(j$);
-    j$.private.basicPrettyPrinter = j$.private.makePrettyPrinter();
-    j$.private.MatchersUtil = jRequire.MatchersUtil(j$);
-    j$.private.ObjectContaining = jRequire.ObjectContaining(j$);
-    j$.private.ArrayContaining = jRequire.ArrayContaining(j$);
-    j$.private.ArrayWithExactContents = jRequire.ArrayWithExactContents(j$);
-    j$.private.MapContaining = jRequire.MapContaining(j$);
-    j$.private.SetContaining = jRequire.SetContaining(j$);
-    j$.private.QueueRunner = jRequire.QueueRunner(j$);
-    j$.private.NeverSkipPolicy = jRequire.NeverSkipPolicy(j$);
-    j$.private.SkipAfterBeforeAllErrorPolicy = jRequire.SkipAfterBeforeAllErrorPolicy(
+    jRequire.base(j$, private$, globalThis);
+    private$.util = jRequire.util(j$, private$);
+    private$.errors = jRequire.errors();
+    private$.formatErrorMsg = jRequire.formatErrorMsg(j$, private$);
+    private$.AllOf = jRequire.AllOf(j$, private$);
+    private$.Any = jRequire.Any(j$, private$);
+    private$.Anything = jRequire.Anything(j$, private$);
+    private$.CallTracker = jRequire.CallTracker(j$, private$);
+    private$.MockDate = jRequire.MockDate(j$, private$);
+    private$.getStackClearer = jRequire.StackClearer(j$, private$);
+    private$.Clock = jRequire.Clock(j$, private$);
+    private$.DelayedFunctionScheduler = jRequire.DelayedFunctionScheduler(
+      j$,
+      private$
+    );
+    private$.Deprecator = jRequire.Deprecator(j$, private$);
+    private$.Configuration = jRequire.Configuration(j$, private$);
+    private$.Env = jRequire.Env(j$, private$);
+    private$.StackTrace = jRequire.StackTrace(j$, private$);
+    private$.ExceptionFormatter = jRequire.ExceptionFormatter(j$, private$);
+    private$.ExpectationFilterChain = jRequire.ExpectationFilterChain();
+    private$.Expector = jRequire.Expector(j$, private$);
+    private$.Expectation = jRequire.Expectation(j$, private$);
+    private$.buildExpectationResult = jRequire.buildExpectationResult(
+      j$,
+      private$
+    );
+    private$.makePrettyPrinter = jRequire.makePrettyPrinter(j$, private$);
+    private$.basicPrettyPrinter = private$.makePrettyPrinter();
+    private$.MatchersUtil = jRequire.MatchersUtil(j$, private$);
+    private$.ObjectContaining = jRequire.ObjectContaining(j$, private$);
+    private$.ArrayContaining = jRequire.ArrayContaining(j$, private$);
+    private$.ArrayWithExactContents = jRequire.ArrayWithExactContents(
+      j$,
+      private$
+    );
+    private$.MapContaining = jRequire.MapContaining(j$, private$);
+    private$.SetContaining = jRequire.SetContaining(j$, private$);
+    private$.QueueRunner = jRequire.QueueRunner(j$, private$);
+    private$.NeverSkipPolicy = jRequire.NeverSkipPolicy(j$, private$);
+    private$.SkipAfterBeforeAllErrorPolicy = jRequire.SkipAfterBeforeAllErrorPolicy(
       j$
     );
-    j$.private.CompleteOnFirstErrorSkipPolicy = jRequire.CompleteOnFirstErrorSkipPolicy(
+    private$.CompleteOnFirstErrorSkipPolicy = jRequire.CompleteOnFirstErrorSkipPolicy(
       j$
     );
-    j$.private.reporterEvents = jRequire.reporterEvents(j$);
-    j$.private.ReportDispatcher = jRequire.ReportDispatcher(j$);
-    j$.ParallelReportDispatcher = jRequire.ParallelReportDispatcher(j$);
-    j$.private.CurrentRunableTracker = jRequire.CurrentRunableTracker();
-    j$.private.RunableResources = jRequire.RunableResources(j$);
-    j$.private.Runner = jRequire.Runner(j$);
-    j$.private.Spec = jRequire.Spec(j$);
-    j$.private.Spy = jRequire.Spy(j$);
-    j$.private.SpyFactory = jRequire.SpyFactory(j$);
-    j$.private.SpyRegistry = jRequire.SpyRegistry(j$);
-    j$.private.SpyStrategy = jRequire.SpyStrategy(j$);
-    j$.private.StringMatching = jRequire.StringMatching(j$);
-    j$.private.StringContaining = jRequire.StringContaining(j$);
-    j$.private.UserContext = jRequire.UserContext(j$);
-    j$.private.Suite = jRequire.Suite(j$);
-    j$.private.SuiteBuilder = jRequire.SuiteBuilder(j$);
+    private$.reporterEvents = jRequire.reporterEvents(j$, private$);
+    private$.ReportDispatcher = jRequire.ReportDispatcher(j$, private$);
+    j$.ParallelReportDispatcher = jRequire.ParallelReportDispatcher(
+      j$,
+      private$
+    );
+    private$.CurrentRunableTracker = jRequire.CurrentRunableTracker();
+    private$.RunableResources = jRequire.RunableResources(j$, private$);
+    private$.Runner = jRequire.Runner(j$, private$);
+    private$.Spec = jRequire.Spec(j$, private$);
+    private$.Spy = jRequire.Spy(j$, private$);
+    private$.SpyFactory = jRequire.SpyFactory(j$, private$);
+    private$.SpyRegistry = jRequire.SpyRegistry(j$, private$);
+    private$.SpyStrategy = jRequire.SpyStrategy(j$, private$);
+    private$.StringMatching = jRequire.StringMatching(j$, private$);
+    private$.StringContaining = jRequire.StringContaining(j$, private$);
+    private$.UserContext = jRequire.UserContext(j$, private$);
+    private$.Suite = jRequire.Suite(j$, private$);
+    private$.SuiteBuilder = jRequire.SuiteBuilder(j$, private$);
     j$.Timer = jRequire.Timer();
-    j$.private.TreeProcessor = jRequire.TreeProcessor(j$);
-    j$.private.TreeRunner = jRequire.TreeRunner(j$);
+    private$.TreeProcessor = jRequire.TreeProcessor(j$, private$);
+    private$.TreeRunner = jRequire.TreeRunner(j$, private$);
     j$.version = jRequire.version();
-    j$.private.Order = jRequire.Order();
-    j$.private.DiffBuilder = jRequire.DiffBuilder(j$);
-    j$.private.NullDiffBuilder = jRequire.NullDiffBuilder(j$);
-    j$.private.ObjectPath = jRequire.ObjectPath(j$);
-    j$.private.MismatchTree = jRequire.MismatchTree(j$);
-    j$.private.GlobalErrors = jRequire.GlobalErrors(j$);
-    j$.private.Truthy = jRequire.Truthy(j$);
-    j$.private.Falsy = jRequire.Falsy(j$);
-    j$.private.Empty = jRequire.Empty(j$);
-    j$.private.NotEmpty = jRequire.NotEmpty(j$);
-    j$.private.Is = jRequire.Is(j$);
+    private$.Order = jRequire.Order();
+    private$.DiffBuilder = jRequire.DiffBuilder(j$, private$);
+    private$.NullDiffBuilder = jRequire.NullDiffBuilder(j$, private$);
+    private$.ObjectPath = jRequire.ObjectPath(j$, private$);
+    private$.MismatchTree = jRequire.MismatchTree(j$, private$);
+    private$.GlobalErrors = jRequire.GlobalErrors(j$, private$);
+    private$.Truthy = jRequire.Truthy(j$, private$);
+    private$.Falsy = jRequire.Falsy(j$, private$);
+    private$.Empty = jRequire.Empty(j$, private$);
+    private$.NotEmpty = jRequire.NotEmpty(j$, private$);
+    private$.Is = jRequire.Is(j$, private$);
 
-    j$.private.matchers = jRequire.requireMatchers(jRequire, j$);
-    j$.private.asyncMatchers = jRequire.requireAsyncMatchers(jRequire, j$);
+    private$.matchers = jRequire.requireMatchers(jRequire, j$, private$);
+    private$.asyncMatchers = jRequire.requireAsyncMatchers(
+      jRequire,
+      j$,
+      private$
+    );
 
-    j$.private.loadedAsBrowserEsm =
+    private$.loadedAsBrowserEsm =
       globalThis.document && !globalThis.document.currentScript;
 
-    return j$;
+    return { jasmine: j$, private: private$ };
   };
 
   return getJasmineRequire;

@@ -1,4 +1,4 @@
-getJasmineRequireObj().Any = function(j$) {
+getJasmineRequireObj().Any = function(j$, private$) {
   'use strict';
 
   function Any(expectedObject) {
@@ -40,7 +40,7 @@ getJasmineRequireObj().Any = function(j$) {
   };
 
   Any.prototype.jasmineToString = function() {
-    return '<jasmine.any(' + j$.private.fnNameFor(this.expectedObject) + ')>';
+    return '<jasmine.any(' + private$.fnNameFor(this.expectedObject) + ')>';
   };
 
   return Any;

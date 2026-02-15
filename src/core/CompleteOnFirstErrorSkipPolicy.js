@@ -1,4 +1,4 @@
-getJasmineRequireObj().CompleteOnFirstErrorSkipPolicy = function(j$) {
+getJasmineRequireObj().CompleteOnFirstErrorSkipPolicy = function(j$, private$) {
   'use strict';
 
   function CompleteOnFirstErrorSkipPolicy(queueableFns) {

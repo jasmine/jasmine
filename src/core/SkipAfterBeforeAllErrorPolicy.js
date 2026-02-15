@@ -1,4 +1,4 @@
-getJasmineRequireObj().SkipAfterBeforeAllErrorPolicy = function(j$) {
+getJasmineRequireObj().SkipAfterBeforeAllErrorPolicy = function(j$, private$) {
   'use strict';
 
   function SkipAfterBeforeAllErrorPolicy(queueableFns) {

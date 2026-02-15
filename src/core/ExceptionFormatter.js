@@ -1,4 +1,4 @@
-getJasmineRequireObj().ExceptionFormatter = function(j$) {
+getJasmineRequireObj().ExceptionFormatter = function(j$, private$) {
   'use strict';
 
   const ignoredProperties = [
@@ -16,7 +16,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
 
   function ExceptionFormatter(options) {
     const jasmineFile =
-      (options && options.jasmineFile) || j$.private.util.jasmineFile();
+      (options && options.jasmineFile) || private$.util.jasmineFile();
     this.message = function(error) {
       let message = '';
 
@@ -60,7 +60,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
         lines.pop();
       }
 
-      const stackTrace = new j$.private.StackTrace(error);
+      const stackTrace = new private$.StackTrace(error);
       lines = lines.concat(filterJasmine(stackTrace));
 
       if (messageHandling === 'require') {
@@ -114,7 +114,7 @@ getJasmineRequireObj().ExceptionFormatter = function(j$) {
 
       if (!empty) {
         return (
-          'error properties: ' + j$.private.basicPrettyPrinter(result) + '\n'
+          'error properties: ' + private$.basicPrettyPrinter(result) + '\n'
         );
       }
 

@@ -24,7 +24,6 @@ describe('The jasmine namespace', function() {
       'getEnv',
       'isSpy',
       'ParallelReportDispatcher',
-      'private',
       'spyOnGlobalErrorsAsync',
       'Timer',
       'version',

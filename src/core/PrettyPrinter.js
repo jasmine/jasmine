@@ -1,4 +1,4 @@
-getJasmineRequireObj().makePrettyPrinter = function(j$) {
+getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
   'use strict';
 
   class SinglePrettyPrintRun {
@@ -28,7 +28,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
           this.emitScalar('<global>');
         } else if (value.jasmineToString) {
           this.emitScalar(value.jasmineToString(this.pp_));
-        } else if (j$.private.isString(value)) {
+        } else if (private$.isString(value)) {
           this.emitString(value);
         } else if (j$.isSpy(value)) {
           this.emitScalar('spy on ' + value.and.identity);
@@ -42,7 +42,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
           } else {
             this.emitScalar('Function');
           }
-        } else if (j$.private.isDomNode(value)) {
+        } else if (private$.isDomNode(value)) {
           if (value.tagName) {
             this.emitDomElement(value);
           } else {
@@ -50,11 +50,11 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
           }
         } else if (value instanceof Date) {
           this.emitScalar('Date(' + value + ')');
-        } else if (j$.private.isSet(value)) {
+        } else if (private$.isSet(value)) {
           this.emitSet(value);
-        } else if (j$.private.isMap(value)) {
+        } else if (private$.isMap(value)) {
           this.emitMap(value);
-        } else if (j$.private.isTypedArray(value)) {
+        } else if (private$.isTypedArray(value)) {
           this.emitTypedArray(value);
         } else if (
           value.toString &&
@@ -74,7 +74,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
               (Array.isArray(value) ? 'Array' : 'Object') +
               '>'
           );
-        } else if (Array.isArray(value) || j$.private.isA('Object', value)) {
+        } else if (Array.isArray(value) || private$.isA('Object', value)) {
           this.seen.push(value);
           if (Array.isArray(value)) {
             this.emitArray(value);
@@ -99,7 +99,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     }
 
     iterateObject(obj, fn) {
-      const objKeys = j$.private.MatchersUtil.keys(obj, Array.isArray(obj));
+      const objKeys = private$.MatchersUtil.keys(obj, Array.isArray(obj));
       const length = Math.min(objKeys.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
 
       for (let i = 0; i < length; i++) {
@@ -208,7 +208,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
       const ctor = obj.constructor;
       const constructorName =
         typeof ctor === 'function' && obj instanceof ctor
-          ? j$.private.fnNameFor(obj.constructor)
+          ? private$.fnNameFor(obj.constructor)
           : 'null';
 
       this.append(constructorName);
@@ -238,7 +238,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     }
 
     emitTypedArray(arr) {
-      const constructorName = j$.private.fnNameFor(arr.constructor);
+      const constructorName = private$.fnNameFor(arr.constructor);
       const limitedArray = Array.prototype.slice.call(
         arr,
         0,
@@ -307,7 +307,7 @@ getJasmineRequireObj().makePrettyPrinter = function(j$) {
     // iframe, web worker)
     try {
       return (
-        j$.private.isFunction(value.toString) &&
+        private$.isFunction(value.toString) &&
         value.toString !== Object.prototype.toString &&
         value.toString() !== Object.prototype.toString.call(value)
       );

@@ -1,4 +1,4 @@
-getJasmineRequireObj().reporterEvents = function(j$) {
+getJasmineRequireObj().reporterEvents = function(j$, private$) {
   'use strict';
 
   /**

@@ -1,4 +1,4 @@
-getJasmineRequireObj().Configuration = function(j$) {
+getJasmineRequireObj().Configuration = function(j$, private$) {
   'use strict';
 
   /**

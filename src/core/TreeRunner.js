@@ -1,4 +1,4 @@
-getJasmineRequireObj().TreeRunner = function(j$) {
+getJasmineRequireObj().TreeRunner = function(j$, private$) {
   'use strict';
 
   class TreeRunner {
@@ -83,14 +83,14 @@ getJasmineRequireObj().TreeRunner = function(j$) {
         },
         onComplete: () => {
           if (spec.status() === 'failed') {
-            specOverallDone(new j$.private.StopExecutionError('spec failed'));
+            specOverallDone(new private$.StopExecutionError('spec failed'));
           } else {
             specOverallDone();
           }
         },
         userContext: spec.userContext(),
         runnableName: spec.getFullName.bind(spec),
-        SkipPolicy: j$.private.CompleteOnFirstErrorSkipPolicy
+        SkipPolicy: private$.CompleteOnFirstErrorSkipPolicy
       });
     }
 
@@ -265,7 +265,7 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     async #reportChildrenOfBeforeAllFailure(suite) {
       for (const child of suite.children) {
-        if (child instanceof j$.private.Suite) {
+        if (child instanceof private$.Suite) {
           await this.#reportDispatcher.suiteStarted(child.startedEvent());
           await this.#reportChildrenOfBeforeAllFailure(child);
           await this.#reportDispatcher.suiteDone(child.doneEvent());
@@ -280,9 +280,9 @@ getJasmineRequireObj().TreeRunner = function(j$) {
 
     #suiteSkipPolicy() {
       if (this.#getConfig().stopOnSpecFailure) {
-        return j$.private.CompleteOnFirstErrorSkipPolicy;
+        return private$.CompleteOnFirstErrorSkipPolicy;
       } else {
-        return j$.private.SkipAfterBeforeAllErrorPolicy;
+        return private$.SkipAfterBeforeAllErrorPolicy;
       }
     }
   }

@@ -1,4 +1,4 @@
-getJasmineRequireObj().Spec = function(j$) {
+getJasmineRequireObj().Spec = function(j$, private$) {
   'use strict';
 
   class Spec {
@@ -46,7 +46,7 @@ getJasmineRequireObj().Spec = function(j$) {
     }
 
     addExpectationResult(passed, data, isError) {
-      const expectationResult = j$.private.buildExpectationResult(data);
+      const expectationResult = private$.buildExpectationResult(data);
 
       if (passed) {
         this.#executionState.passedExpectations.push(expectationResult);
@@ -58,7 +58,7 @@ getJasmineRequireObj().Spec = function(j$) {
         }
 
         if (this.#throwOnExpectationFailure && !isError) {
-          throw new j$.private.errors.ExpectationFailed();
+          throw new private$.errors.ExpectationFailed();
         }
       }
     }
@@ -72,10 +72,10 @@ getJasmineRequireObj().Spec = function(j$) {
       // Key and value will eventually be cloned during reporting. The error
       // thrown at that point if they aren't cloneable isn't very helpful.
       // Throw a better one now.
-      if (!j$.private.isString(key)) {
+      if (!private$.isString(key)) {
         throw new Error('Key must be a string');
       }
-      j$.private.util.assertReporterCloneable(value, 'Value');
+      private$.util.assertReporterCloneable(value, 'Value');
 
       this.#executionState.properties = this.#executionState.properties || {};
       this.#executionState.properties[key] = value;
@@ -208,7 +208,7 @@ getJasmineRequireObj().Spec = function(j$) {
         return;
       }
 
-      if (e instanceof j$.private.errors.ExpectationFailed) {
+      if (e instanceof private$.errors.ExpectationFailed) {
         return;
       }
 
@@ -275,7 +275,7 @@ getJasmineRequireObj().Spec = function(j$) {
         deprecation = { message: deprecation };
       }
       this.#executionState.deprecationWarnings.push(
-        j$.private.buildExpectationResult(deprecation)
+        private$.buildExpectationResult(deprecation)
       );
     }
 

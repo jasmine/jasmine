@@ -1,4 +1,4 @@
-getJasmineRequireObj().RunableResources = function(j$) {
+getJasmineRequireObj().RunableResources = function(j$, private$) {
   'use strict';
 
   class RunableResources {
@@ -7,7 +7,7 @@ getJasmineRequireObj().RunableResources = function(j$) {
       this.getCurrentRunableId_ = options.getCurrentRunableId;
       this.globalErrors_ = options.globalErrors;
 
-      this.spyFactory = new j$.private.SpyFactory(
+      this.spyFactory = new private$.SpyFactory(
         () => {
           if (this.getCurrentRunableId_()) {
             return this.customSpyStrategies();
@@ -19,7 +19,7 @@ getJasmineRequireObj().RunableResources = function(j$) {
         () => this.makeMatchersUtil()
       );
 
-      this.spyRegistry = new j$.private.SpyRegistry({
+      this.spyRegistry = new private$.SpyRegistry({
         currentSpies: () => this.spies(),
         createSpy: (name, originalFn) =>
           this.spyFactory.createSpy(name, originalFn)
@@ -50,7 +50,7 @@ getJasmineRequireObj().RunableResources = function(j$) {
         ];
 
         for (const k of toClone) {
-          newRes[k] = j$.private.util.clone(parentRes[k]);
+          newRes[k] = private$.util.clone(parentRes[k]);
         }
       }
     }
@@ -128,18 +128,18 @@ getJasmineRequireObj().RunableResources = function(j$) {
     }
 
     makePrettyPrinter() {
-      return j$.private.makePrettyPrinter(this.customObjectFormatters());
+      return private$.makePrettyPrinter(this.customObjectFormatters());
     }
 
     makeMatchersUtil() {
       if (this.getCurrentRunableId_()) {
-        return new j$.private.MatchersUtil({
+        return new private$.MatchersUtil({
           customTesters: this.customEqualityTesters(),
           pp: this.makePrettyPrinter()
         });
       } else {
-        return new j$.private.MatchersUtil({
-          pp: j$.private.basicPrettyPrinter
+        return new private$.MatchersUtil({
+          pp: private$.basicPrettyPrinter
         });
       }
     }

@@ -1,4 +1,4 @@
-jasmineRequire.QueryString = function() {
+getJasmineHtmlRequireObj().QueryString = function() {
   'use strict';
 
   /**

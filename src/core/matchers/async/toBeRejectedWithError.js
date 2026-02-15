@@ -1,4 +1,4 @@
-getJasmineRequireObj().toBeRejectedWithError = function(j$) {
+getJasmineRequireObj().toBeRejectedWithError = function(j$, private$) {
   'use strict';
 
   /**
@@ -19,7 +19,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
   return function toBeRejectedWithError(matchersUtil) {
     return {
       compare: function(actualPromise, arg1, arg2) {
-        if (!j$.private.isPromiseLike(actualPromise)) {
+        if (!private$.isPromiseLike(actualPromise)) {
           throw new Error(
             `Expected toBeRejectedWithError to be called on a promise but was on a ${typeof actualPromise}.`
           );
@@ -43,14 +43,14 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
   };
 
   function matchError(actual, expected, matchersUtil) {
-    if (!j$.private.isError(actual)) {
+    if (!private$.isError(actual)) {
       return fail(expected, 'rejected with ' + matchersUtil.pp(actual));
     }
 
     if (!(actual instanceof expected.error)) {
       return fail(
         expected,
-        'rejected with type ' + j$.private.fnNameFor(actual.constructor)
+        'rejected with type ' + private$.fnNameFor(actual.constructor)
       );
     }
 
@@ -110,7 +110,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
       error: error,
       message: message,
       printValue:
-        j$.private.fnNameFor(error) +
+        private$.fnNameFor(error) +
         (typeof message === 'undefined' ? '' : ': ' + matchersUtil.pp(message))
     };
   }
@@ -118,7 +118,7 @@ getJasmineRequireObj().toBeRejectedWithError = function(j$) {
   function isErrorConstructor(value) {
     return (
       typeof value === 'function' &&
-      (value === Error || j$.private.isError(value.prototype))
+      (value === Error || private$.isError(value.prototype))
     );
   }
 };

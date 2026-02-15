@@ -28,6 +28,9 @@
   "description": "Simple JavaScript testing framework for browsers and node.js",
   "homepage": "https://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
+  "exports": {
+    ".": "./lib/jasmine-core.js"
+  },
   "files": [
     "LICENSE",
     "README.md",
@@ -45,7 +48,7 @@
     "eslint-plugin-compat": "^6.0.2",
     "glob": "^10.2.3",
     "globals": "^16.0.0",
-    "jasmine": "github:jasmine/jasmine-npm#6.0",
+    "jasmine": "file:../jasmine-npm",
     "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner#4.0",
     "jsdom": "^26.0.0",
     "prettier": "1.17.1",

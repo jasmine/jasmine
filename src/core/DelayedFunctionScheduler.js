@@ -1,4 +1,4 @@
-getJasmineRequireObj().DelayedFunctionScheduler = function(j$) {
+getJasmineRequireObj().DelayedFunctionScheduler = function(j$, private$) {
   'use strict';
 
   function DelayedFunctionScheduler() {

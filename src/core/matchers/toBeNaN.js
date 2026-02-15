@@ -1,4 +1,4 @@
-getJasmineRequireObj().toBeNaN = function(j$) {
+getJasmineRequireObj().toBeNaN = function(j$, private$) {
   'use strict';
 
   /**

@@ -1,7 +1,7 @@
-getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
+getJasmineRequireObj().toHaveBeenCalledWith = function(j$, private$) {
   'use strict';
 
-  const getErrorMsg = j$.private.formatErrorMsg(
+  const getErrorMsg = private$.formatErrorMsg(
     '<toHaveBeenCalledWith>',
     'expect(<spyObj>).toHaveBeenCalledWith(...arguments)'
   );
@@ -73,7 +73,7 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$) {
             const diffs = actual.calls
               .allArgs()
               .map(function(argsForCall, callIx) {
-                const diffBuilder = new j$.private.DiffBuilder();
+                const diffBuilder = new private$.DiffBuilder();
                 matchersUtil.equals(argsForCall, expectedArgs, diffBuilder);
                 return (
                   'Call ' +

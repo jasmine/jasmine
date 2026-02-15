@@ -34,16 +34,20 @@ function concatFiles() {
   const configs = [
     {
       src: [
+        { literal: '(function() {' },
         'src/html/requireHtml.js',
         'src/html/ResultsNode.js',
         'src/html/QueryString.js',
-        'src/html/**/*.js'
+        { glob: 'src/html/**/*.js', exclude: 'src/html/requireSuffix.js' },
+        'src/html/requireSuffix.js',
+        { literal: '})()' },
       ],
       dest: 'lib/jasmine-core/jasmine-html.js',
     },
     {
       dest: 'lib/jasmine-core/jasmine.js',
       src: [
+        { literal: '(function() {' },
         'src/core/requireCore.js',
         'src/core/matchers/requireMatchers.js',
         'src/core/base.js',
@@ -53,20 +57,18 @@ function concatFiles() {
         'src/core/Env.js',
         'src/core/PrettyPrinter',
         'src/core/Suite',
-        'src/core/**/*.js',
+        { glob: 'src/core/**/*.js', exclude: 'src/core/requireSuffix.js'},
         {
           template: 'src/version.js',
           data: {version: pkg.version}
         },
+        'src/core/requireSuffix.js',
+        { literal: '})()' },
       ],
     },
     {
-      dest: 'lib/jasmine-core/boot0.js',
-      src: ['src/boot/boot0.js'],
-    },
-    {
-      dest: 'lib/jasmine-core/boot1.js',
-      src: ['src/boot/boot1.js'],
+      dest: 'lib/jasmine-core/boot.js',
+      src: ['src/boot/boot.js'],
     },
     {
       dest: 'lib/jasmine-core.js',
@@ -82,25 +84,28 @@ function concatFiles() {
     src.unshift(licenseBanner);
 
     function expand(srcListEntry) {
-      if (typeof srcListEntry === 'object') {
+      if (typeof srcListEntry === 'object' && !srcListEntry.glob) {
         return srcListEntry;
       }
 
-      return glob.sync(srcListEntry)
-        .sort(function (a, b) {
-          // Match the sort order of previous build tools, so that the
-          // output is the same.
-          a = a.toLowerCase();
-          b = b.toLowerCase();
+      const matches =  glob.sync(
+        srcListEntry.glob ?? srcListEntry,
+        {ignore: srcListEntry.exclude}
+      );
+      return matches.sort(function (a, b) {
+        // Match the sort order of previous build tools, so that the
+        // output is the same.
+        a = a.toLowerCase();
+        b = b.toLowerCase();
 
-          if (a < b) {
-            return -1;
-          } else if (a === b) {
-            return 0;
-          } else {
-            return 1;
-          }
-        });
+        if (a < b) {
+          return -1;
+        } else if (a === b) {
+          return 0;
+        } else {
+          return 1;
+        }
+      });
     }
 
     const srcs = src.flatMap(expand);
@@ -114,6 +119,8 @@ function concatFiles() {
         if (s.template) {
           const template = fs.readFileSync(s.template, {encoding: 'utf8'});
           content = ejs.render(template, s.data);
+        } else if (s.literal) {
+          content = s.literal;
         } else {
           content = fs.readFileSync(s, {encoding: 'utf8'});
         }

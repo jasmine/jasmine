@@ -1,7 +1,7 @@
-jasmineRequire.Banner = function(j$) {
+getJasmineHtmlRequireObj().Banner = function(j$, private$) {
   'use strict';
 
-  const { createDom } = j$.private.htmlReporterUtils;
+  const { createDom } = private$.htmlReporterUtils;
 
   class Banner {
     #navigateWithNewParam;

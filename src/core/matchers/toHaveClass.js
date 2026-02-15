@@ -1,4 +1,4 @@
-getJasmineRequireObj().toHaveClass = function(j$) {
+getJasmineRequireObj().toHaveClass = function(j$, private$) {
   'use strict';
 
   /**
@@ -30,7 +30,7 @@ getJasmineRequireObj().toHaveClass = function(j$) {
     return (
       maybeEl &&
       maybeEl.classList &&
-      j$.private.isFunction(maybeEl.classList.contains)
+      private$.isFunction(maybeEl.classList.contains)
     );
   }
 

@@ -1,4 +1,4 @@
-getJasmineRequireObj().toBePositiveInfinity = function(j$) {
+getJasmineRequireObj().toBePositiveInfinity = function(j$, private$) {
   'use strict';
 
   /**

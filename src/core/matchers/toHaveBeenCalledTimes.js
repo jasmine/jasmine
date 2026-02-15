@@ -1,7 +1,7 @@
-getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
+getJasmineRequireObj().toHaveBeenCalledTimes = function(j$, private$) {
   'use strict';
 
-  const getErrorMsg = j$.private.formatErrorMsg(
+  const getErrorMsg = private$.formatErrorMsg(
     '<toHaveBeenCalledTimes>',
     'expect(<spyObj>).toHaveBeenCalledTimes(<Number>)'
   );
@@ -29,7 +29,7 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
         const args = Array.prototype.slice.call(arguments, 0),
           result = { pass: false };
 
-        if (!j$.private.isNumber(expected)) {
+        if (!private$.isNumber(expected)) {
           throw new Error(
             getErrorMsg(
               'The expected times failed is a required argument and must be a number.'

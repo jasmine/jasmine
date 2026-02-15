@@ -1,8 +1,9 @@
-verifyNoGlobals(() => require('../lib/jasmine-core.js').noGlobals());
+let jasmineCore;
+verifyNoGlobals(() => { jasmineCore = require('../lib/jasmine-core.js'); });
+jasmineCore.installGlobals();
 
 const Jasmine = require('jasmine');
-const jasmineCore = require('../lib/jasmine-core.js');
-const runner = new Jasmine({jasmineCore: jasmineCore});
+const runner = new Jasmine({jasmineCore});
 
 runner.loadConfigFile('./spec/support/jasmine.json');
 runner.exitOnCompletion = false;

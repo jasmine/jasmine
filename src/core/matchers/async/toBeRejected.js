@@ -1,4 +1,4 @@
-getJasmineRequireObj().toBeRejected = function(j$) {
+getJasmineRequireObj().toBeRejected = function(j$, private$) {
   'use strict';
 
   /**
@@ -15,7 +15,7 @@ getJasmineRequireObj().toBeRejected = function(j$) {
   return function toBeRejected() {
     return {
       compare: function(actual) {
-        if (!j$.private.isPromiseLike(actual)) {
+        if (!private$.isPromiseLike(actual)) {
           throw new Error(
             `Expected toBeRejected to be called on a promise but was on a ${typeof actual}.`
           );

@@ -1,5 +1,5 @@
-jasmineRequire.TabBar = function(j$) {
-  const createDom = j$.private.htmlReporterUtils.createDom;
+getJasmineHtmlRequireObj().TabBar = function(j$, private$) {
+  const createDom = private$.htmlReporterUtils.createDom;
 
   class TabBar {
     #tabs;

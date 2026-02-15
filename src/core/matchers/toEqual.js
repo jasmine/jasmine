@@ -1,4 +1,4 @@
-getJasmineRequireObj().toEqual = function(j$) {
+getJasmineRequireObj().toEqual = function(j$, private$) {
   'use strict';
 
   /**
@@ -16,7 +16,7 @@ getJasmineRequireObj().toEqual = function(j$) {
         const result = {
             pass: false
           },
-          diffBuilder = new j$.private.DiffBuilder({
+          diffBuilder = new private$.DiffBuilder({
             prettyPrinter: matchersUtil.pp
           });
 

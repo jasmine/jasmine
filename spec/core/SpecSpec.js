@@ -278,7 +278,7 @@ describe('Spec', function() {
         spec.addExpectationResult(true, { message: 'passed' });
         expect(function() {
           spec.addExpectationResult(false, { message: 'failed' });
-        }).toThrowError(jasmineUnderTest.private.errors.ExpectationFailed);
+        }).toThrowError(privateUnderTest.errors.ExpectationFailed);
 
         expect(spec.doneEvent().failedExpectations).toEqual([
           jasmine.objectContaining({ message: 'failed' })
@@ -453,9 +453,7 @@ describe('Spec', function() {
         queueableFn: {}
       });
 
-      spec.handleException(
-        new jasmineUnderTest.private.errors.ExpectationFailed()
-      );
+      spec.handleException(new privateUnderTest.errors.ExpectationFailed());
 
       expect(spec.doneEvent().failedExpectations).toEqual([]);
     });

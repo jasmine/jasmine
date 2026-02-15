@@ -1,4 +1,4 @@
-getJasmineRequireObj().Clock = function(j$) {
+getJasmineRequireObj().Clock = function(j$, private$) {
   'use strict';
 
   /* global process */
