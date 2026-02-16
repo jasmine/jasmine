@@ -7,7 +7,8 @@ getJasmineRequireObj().requireAsyncMatchers = function(jRequire, j$) {
       'toBeRejected',
       'toBeResolvedTo',
       'toBeRejectedWith',
-      'toBeRejectedWithError'
+      'toBeRejectedWithError',
+      'toBeRejectedWithMatching'
     ],
     matchers = {};
 
