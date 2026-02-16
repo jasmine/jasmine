@@ -1247,4 +1247,8 @@ describe('Clock (acceptance)', function() {
 
     clock.tick(400);
   });
+
+  isNonMonkeyPatchableClass(privateUnderTest.Clock, function() {
+    return new privateUnderTest.Clock({}, function() {}, {});
+  });
 });

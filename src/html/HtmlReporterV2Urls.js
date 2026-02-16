@@ -18,6 +18,8 @@ getJasmineHtmlRequireObj().HtmlReporterV2Urls = function(j$, private$) {
             return window.location;
           }
         });
+
+      Object.freeze(this);
     }
 
     /**
@@ -68,5 +70,6 @@ getJasmineHtmlRequireObj().HtmlReporterV2Urls = function(j$, private$) {
     }
   }
 
+  Object.freeze(HtmlReporterV2Urls.prototype);
   return HtmlReporterV2Urls;
 };

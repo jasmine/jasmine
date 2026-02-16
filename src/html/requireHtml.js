@@ -25,10 +25,16 @@ const getJasmineHtmlRequireObj = (function() {
     private$.FailuresView = htmlRequire.FailuresView(j$, private$);
     private$.PerformanceView = htmlRequire.PerformanceView(j$, private$);
     private$.TabBar = htmlRequire.TabBar(j$, private$);
-    j$.HtmlReporterV2Urls = htmlRequire.HtmlReporterV2Urls(j$, private$);
-    j$.HtmlReporterV2 = htmlRequire.HtmlReporterV2(j$, private$);
-    j$.QueryString = htmlRequire.QueryString();
     private$.HtmlSpecFilterV2 = htmlRequire.HtmlSpecFilterV2();
+
+    for (const k of ['HtmlReporterV2Urls', 'HtmlReporterV2', 'QueryString']) {
+      Object.defineProperty(j$, k, {
+        enumerable: true,
+        configurable: false,
+        writable: false,
+        value: htmlRequire[k](j$, private$)
+      });
+    }
   };
 
   return getJasmineHtmlRequire;

@@ -87,8 +87,11 @@ getJasmineRequireObj().ParallelReportDispatcher = function(j$, private$) {
       for (const eventName of private$.reporterEvents) {
         this[eventName] = dispatcher[eventName].bind(dispatcher);
       }
+
+      Object.freeze(this);
     }
   }
 
+  Object.freeze(ParallelReportDispatcher.prototype);
   return ParallelReportDispatcher;
 };

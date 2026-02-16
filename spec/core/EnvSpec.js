@@ -874,4 +874,8 @@ describe('Env', function() {
       }).toThrowError('Jasmine cannot be configured via Env in parallel mode');
     });
   });
+
+  isNonMonkeyPatchableClass(privateUnderTest.Env, function() {
+    return new privateUnderTest.Env();
+  });
 });

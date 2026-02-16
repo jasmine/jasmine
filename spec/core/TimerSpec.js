@@ -30,4 +30,8 @@ describe('Timer', function() {
       expect(timer.elapsed()).toEqual(jasmine.any(Number));
     });
   });
+
+  isNonMonkeyPatchableClass(jasmineUnderTest.Timer, function() {
+    return new jasmineUnderTest.Timer();
+  });
 });

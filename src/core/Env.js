@@ -835,6 +835,8 @@ getJasmineRequireObj().Env = function(j$, private$) {
     this.cleanup_ = function() {
       uninstallGlobalErrors();
     };
+
+    Object.freeze(this);
   }
 
   function indirectCallerFilename(depth) {
@@ -845,5 +847,7 @@ getJasmineRequireObj().Env = function(j$, private$) {
     return frames[depth] && frames[depth].file;
   }
 
+  Object.freeze(Env);
+  Object.freeze(Env.prototype);
   return Env;
 };

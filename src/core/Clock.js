@@ -192,6 +192,8 @@ callbacks to execute _before_ running the next one.
     setInterval[IsMockClockTimingFn] = true;
     clearInterval[IsMockClockTimingFn] = true;
 
+    Object.freeze(this);
+
     return this;
 
     // Advances the Clock's time until the mode changes.
@@ -345,5 +347,7 @@ callbacks to execute _before_ running the next one.
   };
 
   Clock.IsMockClockTimingFn = IsMockClockTimingFn;
+  Object.freeze(Clock);
+  Object.freeze(Clock.prototype);
   return Clock;
 };

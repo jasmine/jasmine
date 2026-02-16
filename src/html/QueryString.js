@@ -14,6 +14,7 @@ getJasmineHtmlRequireObj().QueryString = function() {
      */
     constructor(options) {
       this.#getWindowLocation = options.getWindowLocation;
+      Object.freeze(this);
     }
 
     /**
@@ -81,5 +82,6 @@ getJasmineHtmlRequireObj().QueryString = function() {
     return '?' + qStrPairs.join('&');
   }
 
+  Object.freeze(QueryString.prototype);
   return QueryString;
 };

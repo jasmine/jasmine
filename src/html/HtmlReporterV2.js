@@ -98,6 +98,8 @@ getJasmineHtmlRequireObj().HtmlReporterV2 = function(j$, private$) {
       );
       this.#container.appendChild(this.#htmlReporterMain);
       this.#failures.show();
+
+      Object.freeze(this);
     }
 
     jasmineStarted(options) {
@@ -275,5 +277,6 @@ getJasmineHtmlRequireObj().HtmlReporterV2 = function(j$, private$) {
     }
   }
 
+  Object.freeze(HtmlReporterV2.prototype);
   return HtmlReporterV2;
 };

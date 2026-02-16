@@ -25,6 +25,7 @@ module.exports = {
     'helpers/domHelpers.js',
     'helpers/integrationMatchers.js',
     'helpers/callerFilenameShim.js',
+    'helpers/monkeyPatchingSpecs.js',
     'helpers/defineJasmineUnderTest.js',
     'helpers/resetEnv.js'
   ],

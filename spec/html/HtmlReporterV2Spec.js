@@ -1396,4 +1396,6 @@ describe('HtmlReporterV2', function() {
       });
     });
   });
+
+  isNonMonkeyPatchableClass(jasmineUnderTest.HtmlReporterV2, setup);
 });

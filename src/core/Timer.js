@@ -39,7 +39,11 @@ getJasmineRequireObj().Timer = function() {
     this.elapsed = function() {
       return now() - startTime;
     };
+
+    Object.freeze(this);
   }
 
+  Object.freeze(Timer);
+  Object.freeze(Timer.prototype);
   return Timer;
 };

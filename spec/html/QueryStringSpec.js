@@ -77,4 +77,12 @@ describe('QueryString', function() {
       expect(queryString.getParam('baz')).toBeFalsy();
     });
   });
+
+  isNonMonkeyPatchableClass(jasmineUnderTest.QueryString, function() {
+    return new jasmineUnderTest.QueryString({
+      getWindowLocation: function() {
+        return { search: '' };
+      }
+    });
+  });
 });

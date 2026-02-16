@@ -116,6 +116,28 @@ const getJasmineRequireObj = (function() {
 
     private$.loadedAsBrowserEsm = loadedAsBrowserEsm;
 
+    // Prevent monkey patching of existing properties but allow adding new ones.
+    // jasmine-html.js needs to be able to add to the jasmine namespace.
+    // jasmine-ajax also installs itself this way.
+    const writeable = [
+      'DEFAULT_TIMEOUT_INTERVAL',
+      'MAX_PRETTY_PRINT_ARRAY_LENGTH',
+      'MAX_PRETTY_PRINT_CHARS',
+      'MAX_PRETTY_PRINT_DEPTH'
+    ];
+    const descriptors = Object.getOwnPropertyDescriptors(j$);
+
+    for (const [k, d] of Object.entries(descriptors)) {
+      if (!writeable.includes(k)) {
+        Object.defineProperty(j$, k, {
+          value: d.value,
+          enumerable: d.enumerable,
+          configurable: false,
+          writable: false
+        });
+      }
+    }
+
     return { jasmine: j$, private: private$ };
   };
 

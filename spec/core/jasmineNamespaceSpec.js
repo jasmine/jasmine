@@ -13,13 +13,61 @@ describe('The jasmine namespace', function() {
     expect(setDifference(actualKeys, expectedKeys())).toEqual(new Set());
   });
 
+  describe('Preventing monkey patching', function() {
+    const mutable = mutableKeys();
+
+    for (const key of expectedKeys()) {
+      if (mutable.includes(key)) {
+        it(`allows overwriting of jasmine.${key}`, function() {
+          const existingVal = jasmineUnderTest[key];
+
+          try {
+            jasmineUnderTest[key] = 'new value';
+            expect(jasmineUnderTest[key]).toEqual('new value');
+          } finally {
+            jasmineUnderTest[key] = existingVal;
+          }
+        });
+      } else {
+        it(`prevents overwriting of jasmine.${key}`, function() {
+          const existingVal = jasmineUnderTest[key];
+
+          try {
+            jasmineUnderTest[key] = 'monkey patch';
+            expect(jasmineUnderTest[key]).toBe(existingVal);
+          } finally {
+            // This will be a no-op if the test passed, but will prevent state
+            // leakage if it failed.
+            jasmineUnderTest[key] = existingVal;
+          }
+        });
+      }
+    }
+
+    it('allows additions', function() {
+      try {
+        jasmineUnderTest.Ajax = 'it worked';
+        expect(jasmineUnderTest.Ajax).toEqual('it worked');
+      } finally {
+        delete jasmineUnderTest.Ajax;
+      }
+    });
+  });
+
+  function mutableKeys() {
+    return [
+      'MAX_PRETTY_PRINT_ARRAY_LENGTH',
+      'MAX_PRETTY_PRINT_CHARS',
+      'MAX_PRETTY_PRINT_DEPTH',
+      'DEFAULT_TIMEOUT_INTERVAL'
+    ];
+  }
+
   function expectedKeys() {
     // Does not include properties added by requireInterface(), since that isn't
     // called by defineJasmineUnderTest.js/nodeDefineJasmineUnderTest.js.
     const result = new Set([
-      'MAX_PRETTY_PRINT_ARRAY_LENGTH',
-      'MAX_PRETTY_PRINT_CHARS',
-      'MAX_PRETTY_PRINT_DEPTH',
+      ...mutableKeys(),
       'debugLog',
       'getEnv',
       'isSpy',
