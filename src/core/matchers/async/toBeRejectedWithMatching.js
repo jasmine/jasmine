@@ -36,7 +36,7 @@ getJasmineRequireObj().toBeRejectedWithMatching = function(j$) {
             };
           },
           function(actualError) {
-            var pass = predicate(actualError);
+            const pass = predicate(actualError);
             return {
               pass: pass,
               message: pass 

@@ -70,7 +70,7 @@ describe('#toBeRejectedWithMatching', function() {
         pp: privateUnderTest.makePrettyPrinter()
       }),
       matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching(matchersUtil),
-      actual = Promise.reject(new Error('test'));
+      actual = Promise.resolve(); 
 
     function f() {
       return matcher.compare(actual, 'not a function');
