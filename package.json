@@ -1,7 +1,7 @@
 {
   "name": "jasmine-core",
   "license": "MIT",
-  "version": "6.0.0-alpha.2",
+  "version": "6.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/jasmine/jasmine.git"
@@ -46,10 +46,10 @@
     "ejs": "^3.1.10",
     "eslint": "^9.24.0",
     "eslint-plugin-compat": "^6.0.2",
-    "glob": "^10.2.3",
+    "glob": "^13.0.0",
     "globals": "^16.0.0",
     "jasmine": "file:../jasmine-npm",
-    "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner#4.0",
+    "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner",
     "jsdom": "^26.0.0",
     "prettier": "1.17.1",
     "sass": "^1.58.3"

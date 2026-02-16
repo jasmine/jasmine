@@ -20,6 +20,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 1.3.0
      * @function
      * @global
+     * @overwritable
      * @param {String} description Textual description of the group
      * @param {Function} specDefinitions Function for Jasmine to invoke that will define inner suites and specs
      */
@@ -35,6 +36,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 1.3.0
      * @function
      * @global
+     * @overwritable
      * @param {String} description Textual description of the group
      * @param {Function} specDefinitions Function for Jasmine to invoke that will define inner suites and specs
      */
@@ -51,6 +53,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 2.1.0
      * @function
      * @global
+     * @overwritable
      * @param {String} description Textual description of the group
      * @param {Function} specDefinitions Function for Jasmine to invoke that will define inner suites and specs
      */
@@ -69,6 +72,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 1.3.0
      * @function
      * @global
+     * @overwritable
      * @param {String} description Textual description of what this spec is checking
      * @param {implementationCallback} [testFunction] Function that contains the code of your test. If not provided the test will be `pending`.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
@@ -86,6 +90,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 1.3.0
      * @function
      * @global
+     * @overwritable
      * @param {String} description Textual description of what this spec is checking.
      * @param {implementationCallback} [testFunction] Function that contains the code of your test. Will not be executed.
      */
@@ -101,6 +106,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 2.1.0
      * @function
      * @global
+     * @overwritable
      * @param {String} description Textual description of what this spec is checking.
      * @param {implementationCallback} testFunction Function that contains the code of your test.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
@@ -116,6 +122,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 1.3.0
      * @function
      * @global
+     * @overwritable
      * @param {implementationCallback} [function] Function that contains the code to setup your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeEach.
      * @see async
@@ -130,6 +137,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 1.3.0
      * @function
      * @global
+     * @overwritable
      * @param {implementationCallback} [function] Function that contains the code to teardown your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterEach.
      * @see async
@@ -146,6 +154,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 2.1.0
      * @function
      * @global
+     * @overwritable
      * @param {implementationCallback} [function] Function that contains the code to setup your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeAll.
      * @see async
@@ -162,6 +171,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 2.1.0
      * @function
      * @global
+     * @overwritable
      * @param {implementationCallback} [function] Function that contains the code to teardown your specs.
      * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterAll.
      * @see async
@@ -175,6 +185,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @name getSpecProperty
      * @since 5.10.0
      * @function
+     * @global
+     * @overwritable
      * @param {String} key The name of the property
      * @returns {*} The value of the property
      */
@@ -187,6 +199,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @name setSpecProperty
      * @since 3.6.0
      * @function
+     * @global
+     * @overwritable
      * @param {String} key The name of the property
      * @param {*} value The value of the property
      */
@@ -199,6 +213,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @name setSuiteProperty
      * @since 3.6.0
      * @function
+     * @global
+     * @overwritable
      * @param {String} key The name of the property
      * @param {*} value The value of the property
      */
@@ -212,6 +228,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 1.3.0
      * @function
      * @global
+     * @overwritable
      * @param {Object} actual - Actual computed value to test expectations against.
      * @return {matchers}
      */
@@ -228,6 +245,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 3.3.0
      * @function
      * @global
+     * @overwritable
      * @param {Object} actual - Actual computed value to test expectations against.
      * @return {async-matchers}
      * @example
@@ -254,8 +272,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @name throwUnlessAsync
      * @since 5.1.0
      * @function
-     * @param actual
      * @global
+     * @overwritable
      * @param {Object} actual - Actual computed value to test expectations against.
      * @return {matchers}
      */
@@ -278,8 +296,8 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @name throwUnless
      * @since 5.1.0
      * @function
-     * @param actual
      * @global
+     * @overwritable
      * @param {Object} actual - Actual computed value to test expectations against.
      * @return {matchers}
      */
@@ -293,6 +311,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 2.0.0
      * @function
      * @global
+     * @overwritable
      * @param {String} [message] - Reason the spec is pending.
      */
     pending: function() {
@@ -305,6 +324,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 2.1.0
      * @function
      * @global
+     * @overwritable
      * @param {String|Error} [error] - Reason for the failure.
      */
     fail: function() {
@@ -317,6 +337,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 1.3.0
      * @function
      * @global
+     * @overwritable
      * @param {Object} obj - The object upon which to install the {@link Spy}.
      * @param {String} methodName - The name of the method to replace with a {@link Spy}.
      * @returns {Spy}
@@ -331,6 +352,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 2.6.0
      * @function
      * @global
+     * @overwritable
      * @param {Object} obj - The object upon which to install the {@link Spy}
      * @param {String} propertyName - The name of the property to replace with a {@link Spy}.
      * @param {String} [accessType=get] - The access type (get|set) of the property to {@link Spy} on.
@@ -346,6 +368,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @since 3.2.1
      * @function
      * @global
+     * @overwritable
      * @param {Object} obj - The object upon which to install the {@link Spy}s
      * @param {boolean} includeNonEnumerable - Whether or not to add spies to non-enumerable properties
      * @returns {Object} the spied object

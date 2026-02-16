@@ -19,6 +19,9 @@ const getJasmineRequireObj = (function() {
     return jasmineRequire;
   }
 
+  const loadedAsBrowserEsm =
+    globalThis.document && !globalThis.document.currentScript;
+
   getJasmineRequire().core = function(jRequire) {
     const private$ = {};
     const j$ = {};
@@ -111,8 +114,7 @@ const getJasmineRequireObj = (function() {
       private$
     );
 
-    private$.loadedAsBrowserEsm =
-      globalThis.document && !globalThis.document.currentScript;
+    private$.loadedAsBrowserEsm = loadedAsBrowserEsm;
 
     return { jasmine: j$, private: private$ };
   };
