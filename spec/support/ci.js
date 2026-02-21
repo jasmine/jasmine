@@ -1,4 +1,3 @@
-/* eslint-env node, es6 */
 const path = require('path'),
   jasmineBrowser = require('jasmine-browser-runner'),
   jasmineCore = require('../../lib/jasmine-core');
