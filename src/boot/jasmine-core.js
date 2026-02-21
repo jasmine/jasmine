@@ -5,6 +5,7 @@ const fs = require('fs');
 const {
   globals,
   installGlobals,
+  version,
   private$
 } = require('./jasmine-core/jasmine.js');
 
@@ -51,6 +52,11 @@ module.exports = {
    * @param {object} [dest] - The object to copy globals to.
    */
   installGlobals,
+  /**
+   * Returns the jasmine-core version.
+   * @function
+   */
+  version,
   /**
    * Resets all of jasmine-core's state, including removing specs, suites, and
    * reporters, and resetting configuration to the default.

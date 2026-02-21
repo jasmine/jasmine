@@ -16,6 +16,7 @@
     return {
       jasmine,
       globals,
+      version: jasmineRequire.version,
       installGlobals(dest) {
         dest = dest ?? globalThis;
 
