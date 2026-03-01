@@ -372,7 +372,7 @@ describe('ExceptionFormatter', function() {
         // Exclude lines that vary from environment to environment
         const filteredLines = lines.filter(
           x =>
-            !x.includes('/jasmine.js:') &&
+            !x.match(/[\/\\]jasmine\.js:/) &&
             // Some Node 20 and 22 minors when running in parallel
             !x.includes('process.processTicksAndRejections')
         );
