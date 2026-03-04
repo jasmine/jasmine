@@ -135,6 +135,11 @@ workflows:
           executor: node20
           name: build_node_20
       - test_node:
+          executor: node24
+          name: test_node_24
+          requires:
+            - build_node_24
+      - test_node:
           executor: node22
           name: test_node_22
           requires:
