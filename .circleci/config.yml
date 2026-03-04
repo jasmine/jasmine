@@ -3,6 +3,9 @@
 
 version: 2.1
 
+orbs:
+  win: circleci/windows@5.0.0
+
 executors:
   node24:
     docker:
@@ -47,6 +50,28 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: Run tests
+          command: npm test
+
+  test_win:
+    executor:
+      name: win/default
+      shell: bash.exe
+    steps:
+      - checkout
+      - run:
+          name: Install Node.js
+          command: nvm install 20.0.0 && nvm use 20.0.0
+      - run:
+          name: Report Node and NPM versions
+          command: echo "Using Node $(node --version) and NPM $(npm --version)"
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Build
+          command: npm run build
       - run:
           name: Run tests
           command: npm test
@@ -145,3 +170,4 @@ workflows:
           filters:
             branches:
               ignore: /pull\/.*/ # Don't run on pull requests.
+      - test_win
