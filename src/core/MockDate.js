@@ -1,8 +1,9 @@
 getJasmineRequireObj().MockDate = function(j$) {
   'use strict';
 
-  function MockDate(global) {
+  function MockDate(global, getConfig) {
     let currentTime = 0;
+    let originalDateTimeFormat = null;
 
     if (!global || !global.Date) {
       this.install = function() {};
@@ -28,6 +29,10 @@ getJasmineRequireObj().MockDate = function(j$) {
       }
 
       global.Date = FakeDate;
+
+      if (getConfig && getConfig().mockIntlDateTimeFormat) {
+        this.installIntl();
+      }
     };
 
     this.tick = function(millis) {
@@ -38,6 +43,38 @@ getJasmineRequireObj().MockDate = function(j$) {
     this.uninstall = function() {
       currentTime = 0;
       global.Date = GlobalDate;
+
+      if (originalDateTimeFormat !== null) {
+        global.Intl.DateTimeFormat = originalDateTimeFormat;
+        originalDateTimeFormat = null;
+      }
+    };
+
+    this.installIntl = function() {
+      const NativeDateTimeFormat = global.Intl.DateTimeFormat;
+      originalDateTimeFormat = NativeDateTimeFormat;
+      global.Intl.DateTimeFormat = new Proxy(NativeDateTimeFormat, {
+        construct(target, argArray, newTarget) {
+          const realFormatter = Reflect.construct(target, argArray, newTarget);
+          return new Proxy(realFormatter, {
+            get(formatterTarget, prop, receiver) {
+              if (prop === 'format' || prop === 'formatToParts') {
+                const originalMethod = formatterTarget[prop];
+                return function(date) {
+                  return originalMethod.call(
+                    formatterTarget,
+                    date || new FakeDate()
+                  );
+                };
+              }
+              const value = Reflect.get(formatterTarget, prop, receiver);
+              return typeof value === 'function'
+                ? value.bind(formatterTarget)
+                : value;
+            }
+          });
+        }
+      });
     };
 
     createDateProperties();

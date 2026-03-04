@@ -8,7 +8,8 @@ describe('Configuration', function() {
     'autoCleanClosures',
     'forbidDuplicateNames',
     'detectLateRejectionHandling',
-    'verboseDeprecations'
+    'verboseDeprecations',
+    'mockIntlDateTimeFormat'
   ];
   const allKeys = [
     ...standardBooleanKeys,
@@ -38,6 +39,7 @@ describe('Configuration', function() {
     expect(subject.extraItStackFrames).toEqual(0);
     expect(subject.extraDescribeStackFrames).toEqual(0);
     expect(subject.safariYieldStrategy).toEqual('count');
+    expect(subject.mockIntlDateTimeFormat).toEqual(false);
   });
 
   describe('copy()', function() {
