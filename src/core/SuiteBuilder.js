@@ -323,9 +323,9 @@ getJasmineRequireObj().SuiteBuilder = function(j$) {
 
   function beforeAndAfterFns(targetSuite) {
     return function() {
-      let befores = [],
-        afters = [],
-        suite = targetSuite;
+      let befores = [];
+      let afters = [];
+      let suite = targetSuite;
 
       while (suite) {
         befores = befores.concat(suite.beforeFns);

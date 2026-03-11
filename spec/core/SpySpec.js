@@ -106,8 +106,8 @@ describe('Spies', function() {
       ];
 
       for (let arity = 0; arity < functions.length; arity++) {
-        const someFunction = functions[arity],
-          spy = env.createSpy(someFunction.name, someFunction);
+        const someFunction = functions[arity];
+        const spy = env.createSpy(someFunction.name, someFunction);
 
         expect(spy.length).toEqual(arity);
       }

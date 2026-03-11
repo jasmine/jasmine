@@ -145,8 +145,8 @@ describe('base helpers', function() {
     });
 
     it('is consistent with setTimeout in this environment', function(done) {
-      const f1 = jasmine.createSpy('setTimeout callback for ' + max),
-        f2 = jasmine.createSpy('setTimeout callback for ' + (max + 1));
+      const f1 = jasmine.createSpy('setTimeout callback for ' + max);
+      const f2 = jasmine.createSpy('setTimeout callback for ' + (max + 1));
 
       // Suppress printing of TimeoutOverflowWarning in node
       if (typeof process !== 'undefined' && process.emitWarning) {

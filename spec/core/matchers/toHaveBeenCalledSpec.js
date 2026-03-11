@@ -1,7 +1,7 @@
 describe('toHaveBeenCalled', function() {
   it('passes when the actual was called, with a custom .not fail message', function() {
-    const matcher = privateUnderTest.matchers.toHaveBeenCalled(),
-      calledSpy = new privateUnderTest.Spy('called-spy');
+    const matcher = privateUnderTest.matchers.toHaveBeenCalled();
+    const calledSpy = new privateUnderTest.Spy('called-spy');
 
     calledSpy();
 
@@ -13,8 +13,8 @@ describe('toHaveBeenCalled', function() {
   });
 
   it('fails when the actual was not called', function() {
-    const matcher = privateUnderTest.matchers.toHaveBeenCalled(),
-      uncalledSpy = new privateUnderTest.Spy('uncalled spy');
+    const matcher = privateUnderTest.matchers.toHaveBeenCalled();
+    const uncalledSpy = new privateUnderTest.Spy('uncalled spy');
 
     const result = matcher.compare(uncalledSpy);
     expect(result.pass).toBe(false);
@@ -22,9 +22,9 @@ describe('toHaveBeenCalled', function() {
 
   it('throws an exception when the actual is not a spy', function() {
     const matcher = privateUnderTest.matchers.toHaveBeenCalled({
-        pp: privateUnderTest.makePrettyPrinter()
-      }),
-      fn = function() {};
+      pp: privateUnderTest.makePrettyPrinter()
+    });
+    const fn = function() {};
 
     expect(function() {
       matcher.compare(fn);
@@ -32,8 +32,8 @@ describe('toHaveBeenCalled', function() {
   });
 
   it('throws an exception when invoked with any arguments', function() {
-    const matcher = privateUnderTest.matchers.toHaveBeenCalled(),
-      spy = new privateUnderTest.Spy('sample spy');
+    const matcher = privateUnderTest.matchers.toHaveBeenCalled();
+    const spy = new privateUnderTest.Spy('sample spy');
 
     expect(function() {
       matcher.compare(spy, 'foo');
@@ -41,8 +41,8 @@ describe('toHaveBeenCalled', function() {
   });
 
   it('has a custom message on failure', function() {
-    const matcher = privateUnderTest.matchers.toHaveBeenCalled(),
-      spy = new privateUnderTest.Spy('sample-spy');
+    const matcher = privateUnderTest.matchers.toHaveBeenCalled();
+    const spy = new privateUnderTest.Spy('sample-spy');
 
     const result = matcher.compare(spy);
 
@@ -52,8 +52,8 @@ describe('toHaveBeenCalled', function() {
   });
 
   it('set the correct calls as verified when passing', function() {
-    const matcher = privateUnderTest.matchers.toHaveBeenCalled(),
-      spy = new privateUnderTest.Spy('sample-spy');
+    const matcher = privateUnderTest.matchers.toHaveBeenCalled();
+    const spy = new privateUnderTest.Spy('sample-spy');
 
     spy();
 

@@ -76,14 +76,14 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
   };
 
   MatchersUtil.prototype.buildFailureMessage = function() {
-    const args = Array.prototype.slice.call(arguments, 0),
-      matcherName = args[0],
-      isNot = args[1],
-      actual = args[2],
-      expected = args.slice(3),
-      englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) {
-        return ' ' + s.toLowerCase();
-      });
+    const args = Array.prototype.slice.call(arguments, 0);
+    const matcherName = args[0];
+    const isNot = args[1];
+    const actual = args[2];
+    const expected = args.slice(3);
+    const englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) {
+      return ' ' + s.toLowerCase();
+    });
 
     let message =
       'Expected ' +
@@ -465,8 +465,8 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
     } else {
       // Objects with different constructors are not equivalent, but `Object`s
       // or `Array`s from different frames are.
-      const aCtor = a.constructor,
-        bCtor = b.constructor;
+      const aCtor = a.constructor;
+      const bCtor = b.constructor;
       if (
         aCtor !== bCtor &&
         isFunction(aCtor) &&
@@ -572,11 +572,11 @@ getJasmineRequireObj().MatchersUtil = function(j$) {
   }
 
   function objectKeysAreDifferentFormatter(pp, actual, expected, path) {
-    const missingProperties = extraKeysAndValues(expected, actual),
-      extraProperties = extraKeysAndValues(actual, expected),
-      missingPropertiesMessage = formatKeyValuePairs(pp, missingProperties),
-      extraPropertiesMessage = formatKeyValuePairs(pp, extraProperties),
-      messages = [];
+    const missingProperties = extraKeysAndValues(expected, actual);
+    const extraProperties = extraKeysAndValues(actual, expected);
+    const missingPropertiesMessage = formatKeyValuePairs(pp, missingProperties);
+    const extraPropertiesMessage = formatKeyValuePairs(pp, extraProperties);
+    const messages = [];
 
     if (!path.depth()) {
       path = 'object';

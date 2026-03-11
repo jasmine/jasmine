@@ -200,10 +200,10 @@ getJasmineRequireObj().SpyRegistry = function(j$) {
         );
       }
 
-      let pointer = obj,
-        propsToSpyOn = [],
-        properties,
-        propertiesToSkip = [];
+      let pointer = obj;
+      let propsToSpyOn = [];
+      let properties;
+      let propertiesToSkip = [];
 
       while (
         pointer &&

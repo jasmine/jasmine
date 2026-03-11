@@ -30,26 +30,26 @@ describe('Suite', function() {
 
   it('returns its full name when it has parent suites', function() {
     const parentSuite = new privateUnderTest.Suite({
-        env: env,
-        description: 'I am a parent suite',
-        parentSuite: jasmine.createSpy('pretend top level suite')
-      }),
-      suite = new privateUnderTest.Suite({
-        env: env,
-        description: 'I am a suite',
-        parentSuite: parentSuite
-      });
+      env: env,
+      description: 'I am a parent suite',
+      parentSuite: jasmine.createSpy('pretend top level suite')
+    });
+    const suite = new privateUnderTest.Suite({
+      env: env,
+      description: 'I am a suite',
+      parentSuite: parentSuite
+    });
 
     expect(suite.getFullName()).toEqual('I am a parent suite I am a suite');
   });
 
   it('adds beforeEach functions in order of needed execution', function() {
     const suite = new privateUnderTest.Suite({
-        env: env,
-        description: 'I am a suite'
-      }),
-      outerBefore = { fn: 'outerBeforeEach' },
-      innerBefore = { fn: 'insideBeforeEach' };
+      env: env,
+      description: 'I am a suite'
+    });
+    const outerBefore = { fn: 'outerBeforeEach' };
+    const innerBefore = { fn: 'insideBeforeEach' };
 
     suite.beforeEach(outerBefore);
     suite.beforeEach(innerBefore);
@@ -62,11 +62,11 @@ describe('Suite', function() {
 
   it('adds beforeAll functions in order of needed execution', function() {
     const suite = new privateUnderTest.Suite({
-        env: env,
-        description: 'I am a suite'
-      }),
-      outerBefore = { fn: 'outerBeforeAll' },
-      innerBefore = { fn: 'insideBeforeAll' };
+      env: env,
+      description: 'I am a suite'
+    });
+    const outerBefore = { fn: 'outerBeforeAll' };
+    const innerBefore = { fn: 'insideBeforeAll' };
 
     suite.beforeAll(outerBefore);
     suite.beforeAll(innerBefore);
@@ -79,11 +79,11 @@ describe('Suite', function() {
 
   it('adds afterEach functions in order of needed execution', function() {
     const suite = new privateUnderTest.Suite({
-        env: env,
-        description: 'I am a suite'
-      }),
-      outerAfter = { fn: 'outerAfterEach' },
-      innerAfter = { fn: 'insideAfterEach' };
+      env: env,
+      description: 'I am a suite'
+    });
+    const outerAfter = { fn: 'outerAfterEach' };
+    const innerAfter = { fn: 'insideAfterEach' };
 
     suite.afterEach(outerAfter);
     suite.afterEach(innerAfter);
@@ -96,11 +96,11 @@ describe('Suite', function() {
 
   it('adds afterAll functions in order of needed execution', function() {
     const suite = new privateUnderTest.Suite({
-        env: env,
-        description: 'I am a suite'
-      }),
-      outerAfter = { fn: 'outerAfterAll' },
-      innerAfter = { fn: 'insideAfterAl' };
+      env: env,
+      description: 'I am a suite'
+    });
+    const outerAfter = { fn: 'outerAfterAll' };
+    const innerAfter = { fn: 'insideAfterAl' };
 
     suite.afterAll(outerAfter);
     suite.afterAll(innerAfter);

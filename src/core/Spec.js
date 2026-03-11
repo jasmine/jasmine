@@ -364,10 +364,12 @@ getJasmineRequireObj().Spec = function(j$) {
   }
 
   const extractCustomPendingMessage = function(e) {
-    const fullMessage = e.toString(),
-      boilerplateStart = fullMessage.indexOf(Spec.pendingSpecExceptionMessage),
-      boilerplateEnd =
-        boilerplateStart + Spec.pendingSpecExceptionMessage.length;
+    const fullMessage = e.toString();
+    const boilerplateStart = fullMessage.indexOf(
+      Spec.pendingSpecExceptionMessage
+    );
+    const boilerplateEnd =
+      boilerplateStart + Spec.pendingSpecExceptionMessage.length;
 
     return fullMessage.slice(boilerplateEnd);
   };

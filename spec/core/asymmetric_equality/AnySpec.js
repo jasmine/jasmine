@@ -54,8 +54,8 @@ describe('Any', function() {
   });
 
   it('matches another constructed object', function() {
-    const Thing = function() {},
-      any = new privateUnderTest.Any(Thing);
+    const Thing = function() {};
+    const any = new privateUnderTest.Any(Thing);
 
     expect(any.asymmetricMatch(new Thing())).toBe(true);
   });

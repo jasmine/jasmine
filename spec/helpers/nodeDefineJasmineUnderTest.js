@@ -1,6 +1,6 @@
 (function() {
-  const path = require('path'),
-    glob = require('glob');
+  const path = require('path');
+  const glob = require('glob');
 
   const jasmineUnderTestRequire = require(path.join(
     __dirname,

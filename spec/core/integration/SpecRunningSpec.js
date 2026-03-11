@@ -517,8 +517,8 @@ describe('spec running', function() {
   });
 
   it('should allow top level suites to be disabled', async function() {
-    const specInADisabledSuite = jasmine.createSpy('specInADisabledSuite'),
-      otherSpec = jasmine.createSpy('otherSpec');
+    const specInADisabledSuite = jasmine.createSpy('specInADisabledSuite');
+    const otherSpec = jasmine.createSpy('otherSpec');
 
     env.xdescribe('A disabled suite', function() {
       env.it('spec inside a disabled suite', specInADisabledSuite);
@@ -551,8 +551,8 @@ describe('spec running', function() {
   });
 
   it('should recover gracefully when there are errors in describe functions', async function() {
-    const specs = [],
-      reporter = jasmine.createSpyObj(['specDone', 'suiteDone']);
+    const specs = [];
+    const reporter = jasmine.createSpyObj(['specDone', 'suiteDone']);
 
     reporter.specDone.and.callFake(function(result) {
       specs.push(result.fullName);

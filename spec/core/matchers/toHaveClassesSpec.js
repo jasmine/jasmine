@@ -1,24 +1,24 @@
 describe('toHaveClasses', function() {
   it('fails for a DOM element that lacks all the expected classes', function() {
-    const matcher = privateUnderTest.matchers.toHaveClasses(),
-      result = matcher.compare(
-        specHelpers.domHelpers.createElementWithClassName(''),
-        ['foo', 'bar']
-      );
+    const matcher = privateUnderTest.matchers.toHaveClasses();
+    const result = matcher.compare(
+      specHelpers.domHelpers.createElementWithClassName(''),
+      ['foo', 'bar']
+    );
 
     expect(result.pass).toBe(false);
   });
 
   it('passes for a DOM element that has all the expected classes', function() {
-    const matcher = privateUnderTest.matchers.toHaveClasses(),
-      el = specHelpers.domHelpers.createElementWithClassName('foo bar baz');
+    const matcher = privateUnderTest.matchers.toHaveClasses();
+    const el = specHelpers.domHelpers.createElementWithClassName('foo bar baz');
 
     expect(matcher.compare(el, ['foo', 'bar']).pass).toBe(true);
   });
 
   it('fails for a DOM element that only has some matching classes', function() {
-    const matcher = privateUnderTest.matchers.toHaveClasses(),
-      el = specHelpers.domHelpers.createElementWithClassName('foo bar');
+    const matcher = privateUnderTest.matchers.toHaveClasses();
+    const el = specHelpers.domHelpers.createElementWithClassName('foo bar');
 
     expect(matcher.compare(el, ['foo', 'can']).pass).toBe(false);
   });

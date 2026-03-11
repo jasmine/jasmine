@@ -2,13 +2,13 @@ describe('ExceptionFormatter', function() {
   describe('#message', function() {
     it('formats Firefox exception messages', function() {
       const sampleFirefoxException = {
-          fileName: 'foo.js',
-          lineNumber: '1978',
-          message: 'you got your foo in my bar',
-          name: 'A Classic Mistake'
-        },
-        exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
-        message = exceptionFormatter.message(sampleFirefoxException);
+        fileName: 'foo.js',
+        lineNumber: '1978',
+        message: 'you got your foo in my bar',
+        name: 'A Classic Mistake'
+      };
+      const exceptionFormatter = new privateUnderTest.ExceptionFormatter();
+      const message = exceptionFormatter.message(sampleFirefoxException);
 
       expect(message).toEqual(
         'A Classic Mistake: you got your foo in my bar in foo.js (line 1978)'
@@ -17,13 +17,13 @@ describe('ExceptionFormatter', function() {
 
     it('formats Webkit exception messages', function() {
       const sampleWebkitException = {
-          sourceURL: 'foo.js',
-          line: '1978',
-          message: 'you got your foo in my bar',
-          name: 'A Classic Mistake'
-        },
-        exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
-        message = exceptionFormatter.message(sampleWebkitException);
+        sourceURL: 'foo.js',
+        line: '1978',
+        message: 'you got your foo in my bar',
+        name: 'A Classic Mistake'
+      };
+      const exceptionFormatter = new privateUnderTest.ExceptionFormatter();
+      const message = exceptionFormatter.message(sampleWebkitException);
 
       expect(message).toEqual(
         'A Classic Mistake: you got your foo in my bar in foo.js (line 1978)'
@@ -32,11 +32,11 @@ describe('ExceptionFormatter', function() {
 
     it('formats V8 exception messages', function() {
       const sampleV8 = {
-          message: 'you got your foo in my bar',
-          name: 'A Classic Mistake'
-        },
-        exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
-        message = exceptionFormatter.message(sampleV8);
+        message: 'you got your foo in my bar',
+        name: 'A Classic Mistake'
+      };
+      const exceptionFormatter = new privateUnderTest.ExceptionFormatter();
+      const message = exceptionFormatter.message(sampleV8);
 
       expect(message).toEqual('A Classic Mistake: you got your foo in my bar');
     });
@@ -44,8 +44,8 @@ describe('ExceptionFormatter', function() {
     it('formats unnamed exceptions with message', function() {
       const unnamedError = { message: 'This is an unnamed error message.' };
 
-      const exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
-        message = exceptionFormatter.message(unnamedError);
+      const exceptionFormatter = new privateUnderTest.ExceptionFormatter();
+      const message = exceptionFormatter.message(unnamedError);
 
       expect(message).toEqual('This is an unnamed error message.');
     });
@@ -57,16 +57,16 @@ describe('ExceptionFormatter', function() {
       };
       const emptyError = new EmptyError();
 
-      const exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
-        message = exceptionFormatter.message(emptyError);
+      const exceptionFormatter = new privateUnderTest.ExceptionFormatter();
+      const message = exceptionFormatter.message(emptyError);
 
       expect(message).toEqual('[EmptyError] thrown');
     });
 
     it("formats thrown exceptions that aren't errors", function() {
-      const thrown = 'crazy error',
-        exceptionFormatter = new privateUnderTest.ExceptionFormatter(),
-        message = exceptionFormatter.message(thrown);
+      const thrown = 'crazy error';
+      const exceptionFormatter = new privateUnderTest.ExceptionFormatter();
+      const message = exceptionFormatter.message(thrown);
 
       expect(message).toEqual('crazy error thrown');
     });

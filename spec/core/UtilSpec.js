@@ -142,17 +142,17 @@ describe('util', function() {
 
   describe('getPropertyDescriptor', function() {
     it('get property descriptor from object', function() {
-      const obj = { prop: 1 },
-        actual = privateUnderTest.util.getPropertyDescriptor(obj, 'prop'),
-        expected = Object.getOwnPropertyDescriptor(obj, 'prop');
+      const obj = { prop: 1 };
+      const actual = privateUnderTest.util.getPropertyDescriptor(obj, 'prop');
+      const expected = Object.getOwnPropertyDescriptor(obj, 'prop');
 
       expect(actual).toEqual(expected);
     });
 
     it('get property descriptor from object property', function() {
-      const proto = { prop: 1 },
-        actual = privateUnderTest.util.getPropertyDescriptor(proto, 'prop'),
-        expected = Object.getOwnPropertyDescriptor(proto, 'prop');
+      const proto = { prop: 1 };
+      const actual = privateUnderTest.util.getPropertyDescriptor(proto, 'prop');
+      const expected = Object.getOwnPropertyDescriptor(proto, 'prop');
 
       expect(actual).toEqual(expected);
     });

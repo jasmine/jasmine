@@ -210,15 +210,15 @@ describe('Custom Matchers (Integration)', function() {
 
   it('passes the jasmine utility to the matcher factory', async function() {
     const matcherFactory = function() {
-        return {
-          compare: function() {
-            return { pass: true };
-          }
-        };
-      },
-      matcherFactorySpy = jasmine
-        .createSpy('matcherFactorySpy')
-        .and.callFake(matcherFactory);
+      return {
+        compare: function() {
+          return { pass: true };
+        }
+      };
+    };
+    const matcherFactorySpy = jasmine
+      .createSpy('matcherFactorySpy')
+      .and.callFake(matcherFactory);
 
     env.it('spec with expectation', function() {
       env.addMatchers({
@@ -236,17 +236,17 @@ describe('Custom Matchers (Integration)', function() {
 
   it('provides custom equality testers to the matcher factory via matchersUtil', async function() {
     const matcherFactory = function(matchersUtil) {
-        return {
-          compare: function(actual, expected) {
-            return { pass: matchersUtil.equals(actual[0], expected) };
-          }
-        };
-      },
-      customEqualityFn = jasmine
-        .createSpy('customEqualityFn')
-        .and.callFake(function(a, b) {
-          return a.toString() === b;
-        });
+      return {
+        compare: function(actual, expected) {
+          return { pass: matchersUtil.equals(actual[0], expected) };
+        }
+      };
+    };
+    const customEqualityFn = jasmine
+      .createSpy('customEqualityFn')
+      .and.callFake(function(a, b) {
+        return a.toString() === b;
+      });
 
     env.it('spec with expectation', function() {
       env.addCustomEqualityTester(customEqualityFn);

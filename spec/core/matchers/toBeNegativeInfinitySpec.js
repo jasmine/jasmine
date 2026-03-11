@@ -15,16 +15,16 @@ describe('toBeNegativeInfinity', function() {
 
   it('has a custom message on failure', function() {
     const matcher = privateUnderTest.matchers.toBeNegativeInfinity({
-        pp: privateUnderTest.makePrettyPrinter()
-      }),
-      result = matcher.compare(0);
+      pp: privateUnderTest.makePrettyPrinter()
+    });
+    const result = matcher.compare(0);
 
     expect(result.message()).toEqual('Expected 0 to be -Infinity.');
   });
 
   it('succeeds for -Infinity', function() {
-    const matcher = privateUnderTest.matchers.toBeNegativeInfinity(),
-      result = matcher.compare(Number.NEGATIVE_INFINITY);
+    const matcher = privateUnderTest.matchers.toBeNegativeInfinity();
+    const result = matcher.compare(Number.NEGATIVE_INFINITY);
 
     expect(result.pass).toBe(true);
     expect(result.message).toEqual('Expected actual not to be -Infinity.');

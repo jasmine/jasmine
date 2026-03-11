@@ -66,11 +66,11 @@ describe('DiffBuilder', function() {
 
   it('uses the injected pretty-printer', function() {
     const prettyPrinter = function(val) {
-        return '|' + val + '|';
-      },
-      diffBuilder = new privateUnderTest.DiffBuilder({
-        prettyPrinter: prettyPrinter
-      });
+      return '|' + val + '|';
+    };
+    const diffBuilder = new privateUnderTest.DiffBuilder({
+      prettyPrinter: prettyPrinter
+    });
     prettyPrinter.customFormat_ = function() {};
 
     diffBuilder.setRoots({ foo: 'actual' }, { foo: 'expected' });
@@ -84,11 +84,11 @@ describe('DiffBuilder', function() {
   });
 
   it('passes the injected pretty-printer to the diff formatter', function() {
-    const diffFormatter = jasmine.createSpy('diffFormatter'),
-      prettyPrinter = function() {},
-      diffBuilder = new privateUnderTest.DiffBuilder({
-        prettyPrinter: prettyPrinter
-      });
+    const diffFormatter = jasmine.createSpy('diffFormatter');
+    const prettyPrinter = function() {};
+    const diffBuilder = new privateUnderTest.DiffBuilder({
+      prettyPrinter: prettyPrinter
+    });
     prettyPrinter.customFormat_ = function() {};
 
     diffBuilder.setRoots({ x: 'bar' }, { x: 'foo' });
@@ -219,13 +219,13 @@ describe('DiffBuilder', function() {
   });
 
   it('builds diffs involving asymmetric equality testers that implement valuesForDiff_ at the root', function() {
-    const prettyPrinter = privateUnderTest.makePrettyPrinter([]),
-      diffBuilder = new privateUnderTest.DiffBuilder({
-        prettyPrinter: prettyPrinter
-      }),
-      expectedMsg =
-        'Expected $.foo = 1 to equal 2.\n' +
-        'Expected $.baz = undefined to equal 3.';
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([]);
+    const diffBuilder = new privateUnderTest.DiffBuilder({
+      prettyPrinter: prettyPrinter
+    });
+    const expectedMsg =
+      'Expected $.foo = 1 to equal 2.\n' +
+      'Expected $.baz = undefined to equal 3.';
 
     diffBuilder.setRoots(
       { foo: 1, bar: 2 },
@@ -243,13 +243,13 @@ describe('DiffBuilder', function() {
   });
 
   it('builds diffs involving asymmetric equality testers that implement valuesForDiff_ below the root', function() {
-    const prettyPrinter = privateUnderTest.makePrettyPrinter([]),
-      diffBuilder = new privateUnderTest.DiffBuilder({
-        prettyPrinter: prettyPrinter
-      }),
-      expectedMsg =
-        'Expected $.x.foo = 1 to equal 2.\n' +
-        'Expected $.x.baz = undefined to equal 3.';
+    const prettyPrinter = privateUnderTest.makePrettyPrinter([]);
+    const diffBuilder = new privateUnderTest.DiffBuilder({
+      prettyPrinter: prettyPrinter
+    });
+    const expectedMsg =
+      'Expected $.x.foo = 1 to equal 2.\n' +
+      'Expected $.x.baz = undefined to equal 3.';
 
     diffBuilder.setRoots(
       { x: { foo: 1, bar: 2 } },

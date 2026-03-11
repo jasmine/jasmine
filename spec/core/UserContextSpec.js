@@ -1,7 +1,7 @@
 describe('UserContext', function() {
   it('Behaves just like an plain object', function() {
-    const context = new privateUnderTest.UserContext(),
-      properties = [];
+    const context = new privateUnderTest.UserContext();
+    const properties = [];
 
     for (const prop in context) {
       if (obj.hasOwnProperty(prop)) {

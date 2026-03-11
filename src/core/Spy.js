@@ -40,22 +40,22 @@ getJasmineRequireObj().Spy = function(j$) {
     };
     const { originalFn, customStrategies, defaultStrategyFn } = optionals || {};
 
-    const numArgs = typeof originalFn === 'function' ? originalFn.length : 0,
-      wrapper = makeFunc(numArgs, function(context, args, invokeNew) {
-        return spy(context, args, invokeNew);
-      }),
-      strategyDispatcher = new SpyStrategyDispatcher(
-        {
-          name: name,
-          fn: originalFn,
-          getSpy: function() {
-            return wrapper;
-          },
-          customStrategies: customStrategies
+    const numArgs = typeof originalFn === 'function' ? originalFn.length : 0;
+    const wrapper = makeFunc(numArgs, function(context, args, invokeNew) {
+      return spy(context, args, invokeNew);
+    });
+    const strategyDispatcher = new SpyStrategyDispatcher(
+      {
+        name: name,
+        fn: originalFn,
+        getSpy: function() {
+          return wrapper;
         },
-        matchersUtil
-      ),
-      callTracker = new j$.private.CallTracker();
+        customStrategies: customStrategies
+      },
+      matchersUtil
+    );
+    const callTracker = new j$.private.CallTracker();
 
     function makeFunc(length, fn) {
       switch (length) {

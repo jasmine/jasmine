@@ -82,11 +82,11 @@ describe('Custom Spy Strategies (Integration)', function() {
   });
 
   it('allows multiple custom strategies to be used', async function() {
-    const plan1 = jasmine.createSpy('plan 1').and.returnValue(42),
-      strategy1 = jasmine.createSpy('strat 1').and.returnValue(plan1),
-      plan2 = jasmine.createSpy('plan 2').and.returnValue(24),
-      strategy2 = jasmine.createSpy('strat 2').and.returnValue(plan2),
-      specDone = jasmine.createSpy('specDone');
+    const plan1 = jasmine.createSpy('plan 1').and.returnValue(42);
+    const strategy1 = jasmine.createSpy('strat 1').and.returnValue(plan1);
+    const plan2 = jasmine.createSpy('plan 2').and.returnValue(24);
+    const strategy2 = jasmine.createSpy('strat 2').and.returnValue(plan2);
+    const specDone = jasmine.createSpy('specDone');
 
     env.beforeEach(function() {
       env.addSpyStrategy('frobnicate', strategy1);

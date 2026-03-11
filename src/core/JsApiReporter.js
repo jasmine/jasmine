@@ -43,8 +43,8 @@ getJasmineRequireObj().JsApiReporter = function(j$) {
       return status;
     };
 
-    const suites = [],
-      suites_hash = {};
+    const suites = [];
+    const suites_hash = {};
 
     this.suiteStarted = function(result) {
       suites_hash[result.id] = result;

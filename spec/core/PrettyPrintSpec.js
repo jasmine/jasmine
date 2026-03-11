@@ -227,26 +227,26 @@ describe('PrettyPrinter', function() {
 
   it('should not serialize more objects after hitting MAX_PRETTY_PRINT_CHARS', function() {
     const a = {
-        jasmineToString: function() {
-          return 'object a';
-        }
-      },
-      b = {
-        jasmineToString: function() {
-          return 'object b';
-        }
-      },
-      c = {
-        jasmineToString: jasmine
-          .createSpy('c jasmineToString')
-          .and.returnValue('')
-      },
-      d = {
-        jasmineToString: jasmine
-          .createSpy('d jasmineToString')
-          .and.returnValue('')
-      },
-      pp = privateUnderTest.makePrettyPrinter();
+      jasmineToString: function() {
+        return 'object a';
+      }
+    };
+    const b = {
+      jasmineToString: function() {
+        return 'object b';
+      }
+    };
+    const c = {
+      jasmineToString: jasmine
+        .createSpy('c jasmineToString')
+        .and.returnValue('')
+    };
+    const d = {
+      jasmineToString: jasmine
+        .createSpy('d jasmineToString')
+        .and.returnValue('')
+    };
+    const pp = privateUnderTest.makePrettyPrinter();
 
     withMaxChars(30, function() {
       pp([{ a: a, b: b, c: c }, d]);
@@ -388,10 +388,10 @@ describe('PrettyPrinter', function() {
 
     it('should stringify spyOn toString properly', function() {
       const TestObject = {
-          someFunction: function() {}
-        },
-        env = new privateUnderTest.Env(),
-        pp = privateUnderTest.makePrettyPrinter();
+        someFunction: function() {}
+      };
+      const env = new privateUnderTest.Env();
+      const pp = privateUnderTest.makePrettyPrinter();
 
       const spyRegistry = new privateUnderTest.SpyRegistry({
         currentSpies: function() {
@@ -535,30 +535,30 @@ describe('PrettyPrinter', function() {
   describe('Custom object formatters', function() {
     it('should use the first custom object formatter that does not return undefined', function() {
       const customObjectFormatters = [
-          function() {
-            return undefined;
-          },
-          function(obj) {
-            return '2nd: ' + obj.foo;
-          },
-          function(obj) {
-            return '3rd: ' + obj.foo;
-          }
-        ],
-        pp = privateUnderTest.makePrettyPrinter(customObjectFormatters),
-        obj = { foo: 'bar' };
+        function() {
+          return undefined;
+        },
+        function(obj) {
+          return '2nd: ' + obj.foo;
+        },
+        function(obj) {
+          return '3rd: ' + obj.foo;
+        }
+      ];
+      const pp = privateUnderTest.makePrettyPrinter(customObjectFormatters);
+      const obj = { foo: 'bar' };
 
       expect(pp(obj)).toEqual('2nd: bar');
     });
 
     it('should fall back to built in logic if all custom object formatters return undefined', function() {
       const customObjectFormatters = [
-          function() {
-            return undefined;
-          }
-        ],
-        pp = privateUnderTest.makePrettyPrinter(customObjectFormatters),
-        obj = { foo: 'bar' };
+        function() {
+          return undefined;
+        }
+      ];
+      const pp = privateUnderTest.makePrettyPrinter(customObjectFormatters);
+      const obj = { foo: 'bar' };
 
       expect(pp(obj)).toEqual("Object({ foo: 'bar' })");
     });
@@ -567,30 +567,30 @@ describe('PrettyPrinter', function() {
   describe('#customFormat_', function() {
     it('should use the first custom object formatter that does not return undefined', function() {
       const customObjectFormatters = [
-          function() {
-            return undefined;
-          },
-          function(obj) {
-            return '2nd: ' + obj.foo;
-          },
-          function(obj) {
-            return '3rd: ' + obj.foo;
-          }
-        ],
-        pp = privateUnderTest.makePrettyPrinter(customObjectFormatters),
-        obj = { foo: 'bar' };
+        function() {
+          return undefined;
+        },
+        function(obj) {
+          return '2nd: ' + obj.foo;
+        },
+        function(obj) {
+          return '3rd: ' + obj.foo;
+        }
+      ];
+      const pp = privateUnderTest.makePrettyPrinter(customObjectFormatters);
+      const obj = { foo: 'bar' };
 
       expect(pp.customFormat_(obj)).toEqual('2nd: bar');
     });
 
     it('should return undefined if all custom object formatters return undefined', function() {
       const customObjectFormatters = [
-          function() {
-            return undefined;
-          }
-        ],
-        pp = privateUnderTest.makePrettyPrinter(customObjectFormatters),
-        obj = { foo: 'bar' };
+        function() {
+          return undefined;
+        }
+      ];
+      const pp = privateUnderTest.makePrettyPrinter(customObjectFormatters);
+      const obj = { foo: 'bar' };
 
       expect(pp.customFormat_(obj)).toBeUndefined();
     });

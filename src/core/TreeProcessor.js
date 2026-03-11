@@ -144,15 +144,15 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
 
   function segmentChildren(node, orderedChildren, stats, executableIndex) {
     let currentSegment = {
-        index: 0,
-        owner: node,
-        nodes: [],
-        min: startingMin(executableIndex),
-        max: startingMax(executableIndex)
-      },
-      result = [currentSegment],
-      lastMax = defaultMax,
-      orderedChildSegments = orderChildSegments(orderedChildren, stats);
+      index: 0,
+      owner: node,
+      nodes: [],
+      min: startingMin(executableIndex),
+      max: startingMax(executableIndex)
+    };
+    let result = [currentSegment];
+    let lastMax = defaultMax;
+    let orderedChildSegments = orderChildSegments(orderedChildren, stats);
 
     function isSegmentBoundary(minIndex) {
       return (
@@ -163,9 +163,9 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
     }
 
     for (let i = 0; i < orderedChildSegments.length; i++) {
-      const childSegment = orderedChildSegments[i],
-        maxIndex = childSegment.max,
-        minIndex = childSegment.min;
+      const childSegment = orderedChildSegments[i];
+      const maxIndex = childSegment.max;
+      const minIndex = childSegment.min;
 
       if (isSegmentBoundary(minIndex)) {
         currentSegment = {
@@ -188,12 +188,12 @@ getJasmineRequireObj().TreeProcessor = function(j$) {
   }
 
   function orderChildSegments(children, stats) {
-    const specifiedOrder = [],
-      unspecifiedOrder = [];
+    const specifiedOrder = [];
+    const unspecifiedOrder = [];
 
     for (let i = 0; i < children.length; i++) {
-      const child = children[i],
-        segments = stats[child.id].segments;
+      const child = children[i];
+      const segments = stats[child.id].segments;
 
       for (let j = 0; j < segments.length; j++) {
         const seg = segments[j];

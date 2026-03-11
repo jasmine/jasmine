@@ -1,8 +1,8 @@
 describe('#toBeRejectedWithMatching', function() {
   it('passes if the promise is rejected with something matching the predicate', function() {
-    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching(),
-      actual = Promise.reject(new Error('nope')),
-      predicate = value => value.message === 'nope';
+    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching();
+    const actual = Promise.reject(new Error('nope'));
+    const predicate = value => value.message === 'nope';
 
     return matcher.compare(actual, predicate).then(function(result) {
       expect(result).toEqual(jasmine.objectContaining({ pass: true }));
@@ -10,9 +10,9 @@ describe('#toBeRejectedWithMatching', function() {
   });
 
   it('fails if the promise resolves', function() {
-    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching(),
-      actual = Promise.resolve(),
-      predicate = () => true;
+    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching();
+    const actual = Promise.resolve();
+    const predicate = () => true;
 
     return matcher.compare(actual, predicate).then(function(result) {
       expect(result).toEqual(jasmine.objectContaining({ pass: false }));
@@ -20,9 +20,9 @@ describe('#toBeRejectedWithMatching', function() {
   });
 
   it('fails if the promise is rejected with something not matching the predicate', function() {
-    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching(),
-      actual = Promise.reject('A Bad Apple'),
-      predicate = value => value === 'A Good Orange';
+    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching();
+    const actual = Promise.reject('A Bad Apple');
+    const predicate = value => value === 'A Good Orange';
 
     return matcher.compare(actual, predicate).then(function(result) {
       expect(result).toEqual(
@@ -36,9 +36,9 @@ describe('#toBeRejectedWithMatching', function() {
   });
 
   it('should build its error correctly when negated', function() {
-    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching(),
-      actual = Promise.reject(true),
-      predicate = () => true;
+    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching();
+    const actual = Promise.reject(true);
+    const predicate = () => true;
 
     return matcher.compare(actual, predicate).then(function(result) {
       expect(result).toEqual(
@@ -52,8 +52,8 @@ describe('#toBeRejectedWithMatching', function() {
   });
 
   it('fails if actual is not a promise', function() {
-    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching(),
-      actual = 'not a promise';
+    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching();
+    const actual = 'not a promise';
 
     function f() {
       return matcher.compare(actual);
@@ -65,9 +65,9 @@ describe('#toBeRejectedWithMatching', function() {
   });
 
   it('fails if predicate is not a function', function() {
-    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching(),
-      actual = Promise.resolve(),
-      predicate = 'not a function';
+    const matcher = privateUnderTest.asyncMatchers.toBeRejectedWithMatching();
+    const actual = Promise.resolve();
+    const predicate = 'not a function';
 
     function f() {
       return matcher.compare(actual, predicate);

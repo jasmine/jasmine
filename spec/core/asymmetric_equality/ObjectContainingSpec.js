@@ -53,9 +53,9 @@ describe('ObjectContaining', function() {
   });
 
   it("jasmineToString's itself", function() {
-    const sample = {},
-      matcher = new privateUnderTest.ObjectContaining(sample),
-      pp = jasmine.createSpy('pp').and.returnValue('sample');
+    const sample = {};
+    const matcher = new privateUnderTest.ObjectContaining(sample);
+    const pp = jasmine.createSpy('pp').and.returnValue('sample');
 
     expect(matcher.jasmineToString(pp)).toEqual(
       '<jasmine.objectContaining(sample)>'
@@ -144,9 +144,9 @@ describe('ObjectContaining', function() {
   describe('valuesForDiff_', function() {
     describe('when other is not an object', function() {
       it('sets self to jasmineToString()', function() {
-        const containing = new privateUnderTest.ObjectContaining({}),
-          pp = privateUnderTest.makePrettyPrinter(),
-          result = containing.valuesForDiff_('a', pp);
+        const containing = new privateUnderTest.ObjectContaining({});
+        const pp = privateUnderTest.makePrettyPrinter();
+        const result = containing.valuesForDiff_('a', pp);
 
         expect(result).toEqual({
           self: '<jasmine.objectContaining(Object({  }))>',
@@ -157,10 +157,10 @@ describe('ObjectContaining', function() {
 
     describe('when other is an object', function() {
       it('includes keys that are present in both other and sample', function() {
-        const sample = { a: 1, b: 2 },
-          other = { a: 3, b: 4 },
-          containing = new privateUnderTest.ObjectContaining(sample),
-          result = containing.valuesForDiff_(other);
+        const sample = { a: 1, b: 2 };
+        const other = { a: 3, b: 4 };
+        const containing = new privateUnderTest.ObjectContaining(sample);
+        const result = containing.valuesForDiff_(other);
 
         expect(result.self).not.toBeInstanceOf(
           privateUnderTest.ObjectContaining
@@ -172,10 +172,10 @@ describe('ObjectContaining', function() {
       });
 
       it('includes keys that are present only in sample', function() {
-        const sample = { a: 1, b: 2 },
-          other = { a: 3 },
-          containing = new privateUnderTest.ObjectContaining(sample),
-          result = containing.valuesForDiff_(other);
+        const sample = { a: 1, b: 2 };
+        const other = { a: 3 };
+        const containing = new privateUnderTest.ObjectContaining(sample);
+        const result = containing.valuesForDiff_(other);
 
         expect(result.self).not.toBeInstanceOf(
           privateUnderTest.ObjectContaining
@@ -190,10 +190,10 @@ describe('ObjectContaining', function() {
       });
 
       it('omits keys that are present only in other', function() {
-        const sample = { a: 1, b: 2 },
-          other = { a: 3, b: 4, c: 5 },
-          containing = new privateUnderTest.ObjectContaining(sample),
-          result = containing.valuesForDiff_(other);
+        const sample = { a: 1, b: 2 };
+        const other = { a: 3, b: 4, c: 5 };
+        const containing = new privateUnderTest.ObjectContaining(sample);
+        const result = containing.valuesForDiff_(other);
 
         expect(result.self).not.toBeInstanceOf(
           privateUnderTest.ObjectContaining

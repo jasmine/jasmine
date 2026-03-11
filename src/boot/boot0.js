@@ -14,8 +14,8 @@
    *
    * Require Jasmine's core files. Specifically, this requires and attaches all of Jasmine's code to the `jasmine` reference.
    */
-  const jasmine = jasmineRequire.core(jasmineRequire),
-    global = jasmine.getGlobal();
+  const jasmine = jasmineRequire.core(jasmineRequire);
+  const global = jasmine.getGlobal();
   global.jasmine = jasmine;
 
   /**

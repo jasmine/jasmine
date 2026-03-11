@@ -20,8 +20,8 @@ getJasmineRequireObj().util = function(j$) {
 
   util.cloneArgs = function(args) {
     return Array.from(args).map(function(arg) {
-      const str = Object.prototype.toString.apply(arg),
-        primitives = /^\[object (Boolean|String|RegExp|Number)/;
+      const str = Object.prototype.toString.apply(arg);
+      const primitives = /^\[object (Boolean|String|RegExp|Number)/;
 
       // All falsey values are either primitives, `null`, or `undefined.
       if (!arg || str.match(primitives)) {
@@ -35,8 +35,8 @@ getJasmineRequireObj().util = function(j$) {
   };
 
   util.getPropertyDescriptor = function(obj, methodName) {
-    let descriptor,
-      proto = obj;
+    let descriptor;
+    let proto = obj;
 
     do {
       descriptor = Object.getOwnPropertyDescriptor(proto, methodName);

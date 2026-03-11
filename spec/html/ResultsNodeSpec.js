@@ -1,10 +1,10 @@
 describe('ResultsNode', function() {
   it('wraps a result', function() {
     const fakeResult = {
-        id: 123,
-        message: 'foo'
-      },
-      node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
+      id: 123,
+      message: 'foo'
+    };
+    const node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
 
     expect(node.result).toBe(fakeResult);
     expect(node.type).toEqual('suite');
@@ -12,14 +12,14 @@ describe('ResultsNode', function() {
 
   it('can add children with a type', function() {
     const fakeResult = {
-        id: 123,
-        message: 'foo'
-      },
-      fakeChildResult = {
-        id: 456,
-        message: 'bar'
-      },
-      node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
+      id: 123,
+      message: 'foo'
+    };
+    const fakeChildResult = {
+      id: 456,
+      message: 'bar'
+    };
+    const node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
 
     node.addChild(fakeChildResult, 'spec');
 
@@ -30,14 +30,14 @@ describe('ResultsNode', function() {
 
   it('has a pointer back to its parent ResultNode', function() {
     const fakeResult = {
-        id: 123,
-        message: 'foo'
-      },
-      fakeChildResult = {
-        id: 456,
-        message: 'bar'
-      },
-      node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
+      id: 123,
+      message: 'foo'
+    };
+    const fakeChildResult = {
+      id: 456,
+      message: 'bar'
+    };
+    const node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
 
     node.addChild(fakeChildResult, 'spec');
 
@@ -46,14 +46,14 @@ describe('ResultsNode', function() {
 
   it('can provide the most recent child', function() {
     const fakeResult = {
-        id: 123,
-        message: 'foo'
-      },
-      fakeChildResult = {
-        id: 456,
-        message: 'bar'
-      },
-      node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
+      id: 123,
+      message: 'foo'
+    };
+    const fakeChildResult = {
+      id: 456,
+      message: 'bar'
+    };
+    const node = new privateUnderTest.ResultsNode(fakeResult, 'suite', null);
 
     node.addChild(fakeChildResult, 'spec');
 

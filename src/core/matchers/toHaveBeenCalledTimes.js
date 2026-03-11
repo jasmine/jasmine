@@ -26,8 +26,8 @@ getJasmineRequireObj().toHaveBeenCalledTimes = function(j$) {
           );
         }
 
-        const args = Array.prototype.slice.call(arguments, 0),
-          result = { pass: false };
+        const args = Array.prototype.slice.call(arguments, 0);
+        const result = { pass: false };
 
         if (!j$.private.isNumber(expected)) {
           throw new Error(

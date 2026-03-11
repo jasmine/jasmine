@@ -137,20 +137,20 @@ describe('JsApiReporter', function() {
 
   describe('#executionTime', function() {
     it('should start the timer when jasmine starts', function() {
-      const timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
-        reporter = new privateUnderTest.JsApiReporter({
-          timer: timerSpy
-        });
+      const timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+      const reporter = new privateUnderTest.JsApiReporter({
+        timer: timerSpy
+      });
 
       reporter.jasmineStarted();
       expect(timerSpy.start).toHaveBeenCalled();
     });
 
     it('should return the time it took the specs to run, in ms', function() {
-      const timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
-        reporter = new privateUnderTest.JsApiReporter({
-          timer: timerSpy
-        });
+      const timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+      const reporter = new privateUnderTest.JsApiReporter({
+        timer: timerSpy
+      });
 
       timerSpy.elapsed.and.returnValue(1000);
       reporter.jasmineDone();
@@ -159,10 +159,10 @@ describe('JsApiReporter', function() {
 
     describe("when the specs haven't finished being run", function() {
       it('should return undefined', function() {
-        const timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']),
-          reporter = new privateUnderTest.JsApiReporter({
-            timer: timerSpy
-          });
+        const timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+        const reporter = new privateUnderTest.JsApiReporter({
+          timer: timerSpy
+        });
 
         expect(reporter.executionTime()).toBeUndefined();
       });
