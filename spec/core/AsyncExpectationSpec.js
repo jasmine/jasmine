@@ -7,14 +7,14 @@ describe('AsyncExpectation', function() {
 
   describe('#not', function() {
     it('converts a pass to a fail', function() {
-      const addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.resolve(),
-        pp = privateUnderTest.makePrettyPrinter(),
-        expectation = privateUnderTest.Expectation.asyncFactory({
-          matchersUtil: new privateUnderTest.MatchersUtil({ pp: pp }),
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const actual = Promise.resolve();
+      const pp = privateUnderTest.makePrettyPrinter();
+      const expectation = privateUnderTest.Expectation.asyncFactory({
+        matchersUtil: new privateUnderTest.MatchersUtil({ pp: pp }),
+        actual: actual,
+        addExpectationResult: addExpectationResult
+      });
 
       return expectation.not.toBeResolved().then(function() {
         expect(addExpectationResult).toHaveBeenCalledWith(
@@ -28,15 +28,15 @@ describe('AsyncExpectation', function() {
     });
 
     it('converts a fail to a pass', function() {
-      const addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.reject(new Error('nope')),
-        expectation = privateUnderTest.Expectation.asyncFactory({
-          matchersUtil: new privateUnderTest.MatchersUtil({
-            pp: function() {}
-          }),
-          actual: actual,
-          addExpectationResult: addExpectationResult
-        });
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const actual = Promise.reject(new Error('nope'));
+      const expectation = privateUnderTest.Expectation.asyncFactory({
+        matchersUtil: new privateUnderTest.MatchersUtil({
+          pp: function() {}
+        }),
+        actual: actual,
+        addExpectationResult: addExpectationResult
+      });
 
       return expectation.not.toBeResolved().then(function() {
         expect(addExpectationResult).toHaveBeenCalledWith(
@@ -53,12 +53,12 @@ describe('AsyncExpectation', function() {
   it('propagates rejections from the comparison function', function() {
     const error = new Error('ExpectationSpec failure');
 
-    const addExpectationResult = jasmine.createSpy('addExpectationResult'),
-      actual = dummyPromise(),
-      expectation = privateUnderTest.Expectation.asyncFactory({
-        actual: actual,
-        addExpectationResult: addExpectationResult
-      });
+    const addExpectationResult = jasmine.createSpy('addExpectationResult');
+    const actual = dummyPromise();
+    const expectation = privateUnderTest.Expectation.asyncFactory({
+      actual: actual,
+      addExpectationResult: addExpectationResult
+    });
 
     spyOn(expectation, 'toBeResolved').and.returnValue(Promise.reject(error));
 
@@ -75,16 +75,16 @@ describe('AsyncExpectation', function() {
   describe('#withContext', function() {
     it('prepends the context to the generated failure message', function() {
       const matchersUtil = {
-          pp: function(val) {
-            return val.toString();
-          }
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = privateUnderTest.Expectation.asyncFactory({
-          actual: Promise.reject('rejected'),
-          addExpectationResult: addExpectationResult,
-          matchersUtil: matchersUtil
-        });
+        pp: function(val) {
+          return val.toString();
+        }
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const expectation = privateUnderTest.Expectation.asyncFactory({
+        actual: Promise.reject('rejected'),
+        addExpectationResult: addExpectationResult,
+        matchersUtil: matchersUtil
+      });
 
       return expectation
         .withContext('Some context')
@@ -102,17 +102,17 @@ describe('AsyncExpectation', function() {
 
     it('prepends the context to a custom failure message', function() {
       const matchersUtil = {
-          buildFailureMessage: function() {
-            return 'failure message';
-          },
-          pp: privateUnderTest.makePrettyPrinter()
+        buildFailureMessage: function() {
+          return 'failure message';
         },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = privateUnderTest.Expectation.asyncFactory({
-          actual: Promise.reject('b'),
-          addExpectationResult: addExpectationResult,
-          matchersUtil: matchersUtil
-        });
+        pp: privateUnderTest.makePrettyPrinter()
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const expectation = privateUnderTest.Expectation.asyncFactory({
+        actual: Promise.reject('b'),
+        addExpectationResult: addExpectationResult,
+        matchersUtil: matchersUtil
+      });
 
       return expectation
         .withContext('Some context')
@@ -159,14 +159,14 @@ describe('AsyncExpectation', function() {
     });
 
     it('works with #not', function() {
-      const addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.resolve(),
-        pp = privateUnderTest.makePrettyPrinter(),
-        expectation = privateUnderTest.Expectation.asyncFactory({
-          actual: actual,
-          addExpectationResult: addExpectationResult,
-          matchersUtil: new privateUnderTest.MatchersUtil({ pp: pp })
-        });
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const actual = Promise.resolve();
+      const pp = privateUnderTest.makePrettyPrinter();
+      const expectation = privateUnderTest.Expectation.asyncFactory({
+        actual: actual,
+        addExpectationResult: addExpectationResult,
+        matchersUtil: new privateUnderTest.MatchersUtil({ pp: pp })
+      });
 
       return expectation
         .withContext('Some context')
@@ -183,15 +183,15 @@ describe('AsyncExpectation', function() {
     });
 
     it('works with #not and a custom message', function() {
-      const addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        actual = Promise.resolve('a'),
-        expectation = privateUnderTest.Expectation.asyncFactory({
-          actual: actual,
-          addExpectationResult: addExpectationResult,
-          matchersUtil: new privateUnderTest.MatchersUtil({
-            pp: privateUnderTest.makePrettyPrinter()
-          })
-        });
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const actual = Promise.resolve('a');
+      const expectation = privateUnderTest.Expectation.asyncFactory({
+        actual: actual,
+        addExpectationResult: addExpectationResult,
+        matchersUtil: new privateUnderTest.MatchersUtil({
+          pp: privateUnderTest.makePrettyPrinter()
+        })
+      });
 
       return expectation
         .withContext('Some context')
@@ -211,12 +211,12 @@ describe('AsyncExpectation', function() {
   describe('async matchers', function() {
     it('makes custom matchers available to this expectation', function() {
       const asyncMatchers = {
-          toFoo: function() {},
-          toBar: function() {}
-        },
-        expectation = privateUnderTest.Expectation.asyncFactory({
-          customAsyncMatchers: asyncMatchers
-        });
+        toFoo: function() {},
+        toBar: function() {}
+      };
+      const expectation = privateUnderTest.Expectation.asyncFactory({
+        customAsyncMatchers: asyncMatchers
+      });
 
       expect(expectation.toFoo).toBeDefined();
       expect(expectation.toBar).toBeDefined();
@@ -224,24 +224,24 @@ describe('AsyncExpectation', function() {
 
     it("wraps matchers's compare functions, passing in matcher dependencies", function() {
       const fakeCompare = function() {
-          return Promise.resolve({ pass: true });
-        },
-        matcherFactory = jasmine
-          .createSpy('matcher')
-          .and.returnValue({ compare: fakeCompare }),
-        matchers = {
-          toFoo: matcherFactory
-        },
-        matchersUtil = {
-          buildFailureMessage: jasmine.createSpy('buildFailureMessage')
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = privateUnderTest.Expectation.asyncFactory({
-          matchersUtil: matchersUtil,
-          customAsyncMatchers: matchers,
-          actual: 'an actual',
-          addExpectationResult: addExpectationResult
-        });
+        return Promise.resolve({ pass: true });
+      };
+      const matcherFactory = jasmine
+        .createSpy('matcher')
+        .and.returnValue({ compare: fakeCompare });
+      const matchers = {
+        toFoo: matcherFactory
+      };
+      const matchersUtil = {
+        buildFailureMessage: jasmine.createSpy('buildFailureMessage')
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const expectation = privateUnderTest.Expectation.asyncFactory({
+        matchersUtil: matchersUtil,
+        customAsyncMatchers: matchers,
+        actual: 'an actual',
+        addExpectationResult: addExpectationResult
+      });
 
       return expectation.toFoo('hello').then(function() {
         expect(matcherFactory).toHaveBeenCalledWith(matchersUtil);
@@ -250,25 +250,25 @@ describe('AsyncExpectation', function() {
 
     it("wraps matchers's compare functions, passing the actual and expected", function() {
       const fakeCompare = jasmine
-          .createSpy('fake-compare')
-          .and.returnValue(Promise.resolve({ pass: true })),
-        matchers = {
-          toFoo: function() {
-            return {
-              compare: fakeCompare
-            };
-          }
-        },
-        matchersUtil = {
-          buildFailureMessage: jasmine.createSpy('buildFailureMessage')
-        },
-        addExpectationResult = jasmine.createSpy('addExpectationResult'),
-        expectation = privateUnderTest.Expectation.asyncFactory({
-          matchersUtil: matchersUtil,
-          customAsyncMatchers: matchers,
-          actual: 'an actual',
-          addExpectationResult: addExpectationResult
-        });
+        .createSpy('fake-compare')
+        .and.returnValue(Promise.resolve({ pass: true }));
+      const matchers = {
+        toFoo: function() {
+          return {
+            compare: fakeCompare
+          };
+        }
+      };
+      const matchersUtil = {
+        buildFailureMessage: jasmine.createSpy('buildFailureMessage')
+      };
+      const addExpectationResult = jasmine.createSpy('addExpectationResult');
+      const expectation = privateUnderTest.Expectation.asyncFactory({
+        matchersUtil: matchersUtil,
+        customAsyncMatchers: matchers,
+        actual: 'an actual',
+        addExpectationResult: addExpectationResult
+      });
 
       return expectation.toFoo('hello').then(function() {
         expect(fakeCompare).toHaveBeenCalledWith('an actual', 'hello');
@@ -310,19 +310,19 @@ describe('AsyncExpectation', function() {
 
     it('reports a failing result to the spec when the comparison fails', function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({ pass: false });
-              }
-            };
-          }
-        },
-        matchersUtil = {
-          buildFailureMessage: function() {
-            return '';
-          }
-        };
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({ pass: false });
+            }
+          };
+        }
+      };
+      const matchersUtil = {
+        buildFailureMessage: function() {
+          return '';
+        }
+      };
       const addExpectationResult = jasmine.createSpy('addExpectationResult');
 
       const expectation = privateUnderTest.Expectation.asyncFactory({
@@ -440,19 +440,19 @@ describe('AsyncExpectation', function() {
 
     it('reports a failing result to the spec when the comparison passes for a negative expectation', function() {
       const matchers = {
-          toFoo: function() {
-            return {
-              compare: function() {
-                return Promise.resolve({ pass: true });
-              }
-            };
-          }
-        },
-        matchersUtil = {
-          buildFailureMessage: function() {
-            return 'default message';
-          }
-        };
+        toFoo: function() {
+          return {
+            compare: function() {
+              return Promise.resolve({ pass: true });
+            }
+          };
+        }
+      };
+      const matchersUtil = {
+        buildFailureMessage: function() {
+          return 'default message';
+        }
+      };
       const addExpectationResult = jasmine.createSpy('addExpectationResult');
 
       const expectation = privateUnderTest.Expectation.asyncFactory({

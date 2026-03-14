@@ -1,17 +1,17 @@
 describe('toHaveClass', function() {
   it('fails for a DOM element that lacks the expected class', function() {
-    const matcher = privateUnderTest.matchers.toHaveClass(),
-      result = matcher.compare(
-        specHelpers.domHelpers.createElementWithClassName(''),
-        'foo'
-      );
+    const matcher = privateUnderTest.matchers.toHaveClass();
+    const result = matcher.compare(
+      specHelpers.domHelpers.createElementWithClassName(''),
+      'foo'
+    );
 
     expect(result.pass).toBe(false);
   });
 
   it('passes for a DOM element that has the expected class', function() {
-    const matcher = privateUnderTest.matchers.toHaveClass(),
-      el = specHelpers.domHelpers.createElementWithClassName('foo bar baz');
+    const matcher = privateUnderTest.matchers.toHaveClass();
+    const el = specHelpers.domHelpers.createElementWithClassName('foo bar baz');
 
     expect(matcher.compare(el, 'foo').pass).toBe(true);
     expect(matcher.compare(el, 'bar').pass).toBe(true);
@@ -19,8 +19,8 @@ describe('toHaveClass', function() {
   });
 
   it('fails for a DOM element that only has other classes', function() {
-    const matcher = privateUnderTest.matchers.toHaveClass(),
-      el = specHelpers.domHelpers.createElementWithClassName('foo bar');
+    const matcher = privateUnderTest.matchers.toHaveClass();
+    const el = specHelpers.domHelpers.createElementWithClassName('foo bar');
 
     expect(matcher.compare(el, 'fo').pass).toBe(false);
   });

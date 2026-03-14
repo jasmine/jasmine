@@ -606,11 +606,11 @@ describe('HtmlReporterV2', function() {
       reporter.jasmineDone({});
 
       const trigger = container.querySelector(
-          '.jasmine-run-options .jasmine-trigger'
-        ),
-        payload = container.querySelector(
-          '.jasmine-run-options .jasmine-payload'
-        );
+        '.jasmine-run-options .jasmine-trigger'
+      );
+      const payload = container.querySelector(
+        '.jasmine-run-options .jasmine-payload'
+      );
 
       expect(payload).not.toHaveClass('jasmine-open');
 
@@ -1202,9 +1202,9 @@ describe('HtmlReporterV2', function() {
 
       it('reports traces when present', function() {
         const specFailure = container.querySelectorAll(
-            '.jasmine-spec-detail.jasmine-failed'
-          )[2],
-          debugLogs = specFailure.querySelector('.jasmine-debug-log table');
+          '.jasmine-spec-detail.jasmine-failed'
+        )[2];
+        const debugLogs = specFailure.querySelector('.jasmine-debug-log table');
 
         expect(debugLogs).toBeTruthy();
         const rows = debugLogs.querySelectorAll('tbody tr');

@@ -1,7 +1,7 @@
 describe('Timer', function() {
   it('reports the time elapsed', function() {
-    const fakeNow = jasmine.createSpy('fake Date.now'),
-      timer = new jasmineUnderTest.Timer({ now: fakeNow });
+    const fakeNow = jasmine.createSpy('fake Date.now');
+    const timer = new jasmineUnderTest.Timer({ now: fakeNow });
 
     fakeNow.and.returnValue(100);
     timer.start();

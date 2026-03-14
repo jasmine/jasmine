@@ -130,17 +130,17 @@ describe('toHaveNoOtherSpyInteractions', function() {
 
   it('handles multiple interactions with a single spy', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil({
-        pp: privateUnderTest.makePrettyPrinter()
-      }),
-      matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions(
-        matchersUtil
-      ),
-      toHaveBeenCalledWithMatcher = privateUnderTest.matchers.toHaveBeenCalledWith(
-        matchersUtil
-      ),
-      spyObj = jasmineUnderTest
-        .getEnv()
-        .createSpyObj('NewClass', ['spyA', 'spyB']);
+      pp: privateUnderTest.makePrettyPrinter()
+    });
+    const matcher = privateUnderTest.matchers.toHaveNoOtherSpyInteractions(
+      matchersUtil
+    );
+    const toHaveBeenCalledWithMatcher = privateUnderTest.matchers.toHaveBeenCalledWith(
+      matchersUtil
+    );
+    const spyObj = jasmineUnderTest
+      .getEnv()
+      .createSpyObj('NewClass', ['spyA', 'spyB']);
 
     spyObj.spyA('x');
     spyObj.spyA('y');

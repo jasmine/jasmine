@@ -12,13 +12,13 @@ describe('ReportDispatcher', function() {
   });
 
   it('dispatches requested methods to added reporters', function() {
-    const runQueue = jasmine.createSpy('runQueue'),
-      dispatcher = new privateUnderTest.ReportDispatcher(
-        ['foo', 'bar'],
-        runQueue
-      ),
-      reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']),
-      anotherReporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
+    const runQueue = jasmine.createSpy('runQueue');
+    const dispatcher = new privateUnderTest.ReportDispatcher(
+      ['foo', 'bar'],
+      runQueue
+    );
+    const reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
+    const anotherReporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
 
     dispatcher.addReporter(reporter);
     dispatcher.addReporter(anotherReporter);
@@ -100,9 +100,9 @@ describe('ReportDispatcher', function() {
   });
 
   it("does not dispatch to a reporter if the reporter doesn't accept the method", function() {
-    const runQueue = jasmine.createSpy('runQueue'),
-      dispatcher = new privateUnderTest.ReportDispatcher(['foo'], runQueue),
-      reporter = jasmine.createSpyObj('reporter', ['baz']);
+    const runQueue = jasmine.createSpy('runQueue');
+    const dispatcher = new privateUnderTest.ReportDispatcher(['foo'], runQueue);
+    const reporter = jasmine.createSpyObj('reporter', ['baz']);
 
     dispatcher.addReporter(reporter);
 
@@ -115,12 +115,12 @@ describe('ReportDispatcher', function() {
   });
 
   it("allows providing a fallback reporter in case there's no other reporter", function() {
-    const runQueue = jasmine.createSpy('runQueue'),
-      dispatcher = new privateUnderTest.ReportDispatcher(
-        ['foo', 'bar'],
-        runQueue
-      ),
-      reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
+    const runQueue = jasmine.createSpy('runQueue');
+    const dispatcher = new privateUnderTest.ReportDispatcher(
+      ['foo', 'bar'],
+      runQueue
+    );
+    const reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
 
     dispatcher.provideFallbackReporter(reporter);
     dispatcher.foo({ an: 'event' });
@@ -138,13 +138,16 @@ describe('ReportDispatcher', function() {
   });
 
   it('does not call fallback reporting methods when another reporter is provided', function() {
-    const runQueue = jasmine.createSpy('runQueue'),
-      dispatcher = new privateUnderTest.ReportDispatcher(
-        ['foo', 'bar'],
-        runQueue
-      ),
-      reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']),
-      fallbackReporter = jasmine.createSpyObj('otherReporter', ['foo', 'bar']);
+    const runQueue = jasmine.createSpy('runQueue');
+    const dispatcher = new privateUnderTest.ReportDispatcher(
+      ['foo', 'bar'],
+      runQueue
+    );
+    const reporter = jasmine.createSpyObj('reporter', ['foo', 'bar']);
+    const fallbackReporter = jasmine.createSpyObj('otherReporter', [
+      'foo',
+      'bar'
+    ]);
 
     dispatcher.provideFallbackReporter(fallbackReporter);
     dispatcher.addReporter(reporter);
@@ -164,13 +167,13 @@ describe('ReportDispatcher', function() {
   });
 
   it('allows registered reporters to be cleared', function() {
-    const runQueue = jasmine.createSpy('runQueue'),
-      dispatcher = new privateUnderTest.ReportDispatcher(
-        ['foo', 'bar'],
-        runQueue
-      ),
-      reporter1 = jasmine.createSpyObj('reporter1', ['foo', 'bar']),
-      reporter2 = jasmine.createSpyObj('reporter2', ['foo', 'bar']);
+    const runQueue = jasmine.createSpy('runQueue');
+    const dispatcher = new privateUnderTest.ReportDispatcher(
+      ['foo', 'bar'],
+      runQueue
+    );
+    const reporter1 = jasmine.createSpyObj('reporter1', ['foo', 'bar']);
+    const reporter2 = jasmine.createSpyObj('reporter2', ['foo', 'bar']);
 
     dispatcher.addReporter(reporter1);
     dispatcher.foo({ an: 'event' });

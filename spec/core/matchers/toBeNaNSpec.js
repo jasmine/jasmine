@@ -28,9 +28,9 @@ describe('toBeNaN', function() {
 
   it('has a custom message on failure', function() {
     const matcher = privateUnderTest.matchers.toBeNaN({
-        pp: privateUnderTest.makePrettyPrinter()
-      }),
-      result = matcher.compare(0);
+      pp: privateUnderTest.makePrettyPrinter()
+    });
+    const result = matcher.compare(0);
 
     expect(result.message()).toEqual('Expected 0 to be NaN.');
   });

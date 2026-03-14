@@ -181,13 +181,13 @@ describe('Spec', function() {
     });
 
     it('is "pending" if created without a function body', function() {
-      const startCallback = jasmine.createSpy('startCallback'),
-        resultCallback = jasmine.createSpy('resultCallback'),
-        spec = new privateUnderTest.Spec({
-          onStart: startCallback,
-          queueableFn: { fn: null },
-          resultCallback: resultCallback
-        });
+      const startCallback = jasmine.createSpy('startCallback');
+      const resultCallback = jasmine.createSpy('resultCallback');
+      const spec = new privateUnderTest.Spec({
+        onStart: startCallback,
+        queueableFn: { fn: null },
+        resultCallback: resultCallback
+      });
 
       expect(spec.status())
         .withContext('status()')
@@ -389,12 +389,12 @@ describe('Spec', function() {
   });
 
   it('does not throw an ExpectationFailed error when handling an error', function() {
-    const resultCallback = jasmine.createSpy('resultCallback'),
-      spec = new privateUnderTest.Spec({
-        queueableFn: { fn: function() {} },
-        resultCallback: resultCallback,
-        throwOnExpectationFailure: true
-      });
+    const resultCallback = jasmine.createSpy('resultCallback');
+    const spec = new privateUnderTest.Spec({
+      queueableFn: { fn: function() {} },
+      resultCallback: resultCallback,
+      throwOnExpectationFailure: true
+    });
 
     spec.handleException('failing exception');
   });

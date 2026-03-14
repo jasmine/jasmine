@@ -42,9 +42,9 @@ describe('ArrayContaining', function() {
   });
 
   it('jasmineToStrings itself', function() {
-    const sample = [],
-      matcher = new privateUnderTest.ArrayContaining(sample),
-      pp = jasmine.createSpy('pp').and.returnValue('sample');
+    const sample = [];
+    const matcher = new privateUnderTest.ArrayContaining(sample);
+    const pp = jasmine.createSpy('pp').and.returnValue('sample');
 
     expect(matcher.jasmineToString(pp)).toEqual(
       '<jasmine.arrayContaining(sample)>'

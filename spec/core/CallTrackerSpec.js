@@ -33,8 +33,8 @@ describe('CallTracker', function() {
   it("tracks the 'this' object from each execution", function() {
     const callTracker = new privateUnderTest.CallTracker();
 
-    const this0 = {},
-      this1 = {};
+    const this0 = {};
+    const this1 = {};
     callTracker.track({ object: this0, args: [] });
     callTracker.track({ object: this1, args: [] });
     callTracker.track({ args: [] });
@@ -120,8 +120,8 @@ describe('CallTracker', function() {
     const callTracker = new privateUnderTest.CallTracker();
     callTracker.saveArgumentsByValue();
 
-    const objectArg = { foo: 'bar' },
-      arrayArg = ['foo', 'bar'];
+    const objectArg = { foo: 'bar' };
+    const arrayArg = ['foo', 'bar'];
 
     callTracker.track({
       object: {},
@@ -138,8 +138,8 @@ describe('CallTracker', function() {
     const callTracker = new privateUnderTest.CallTracker();
     callTracker.saveArgumentsByValue(args => JSON.parse(JSON.stringify(args)));
 
-    const objectArg = { foo: { bar: { baz: ['qux'] } } },
-      arrayArg = ['foo', 'bar'];
+    const objectArg = { foo: { bar: { baz: ['qux'] } } };
+    const arrayArg = ['foo', 'bar'];
 
     callTracker.track({
       object: {},
@@ -161,9 +161,9 @@ describe('CallTracker', function() {
     const callTracker = new privateUnderTest.CallTracker();
     callTracker.saveArgumentsByValue(JSON.stringify);
 
-    const objectArg = { foo: { bar: { baz: ['qux'] } } },
-      arrayArg = ['foo', 'bar'],
-      args = [objectArg, arrayArg, false, undefined, null, NaN, '', 0, 1.0];
+    const objectArg = { foo: { bar: { baz: ['qux'] } } };
+    const arrayArg = ['foo', 'bar'];
+    const args = [objectArg, arrayArg, false, undefined, null, NaN, '', 0, 1.0];
 
     callTracker.track({ object: {}, args });
 
@@ -171,8 +171,8 @@ describe('CallTracker', function() {
   });
 
   it('saves primitive arguments by value', function() {
-    const callTracker = new privateUnderTest.CallTracker(),
-      args = [undefined, null, false, '', /\s/, 0, 1.2, NaN];
+    const callTracker = new privateUnderTest.CallTracker();
+    const args = [undefined, null, false, '', /\s/, 0, 1.2, NaN];
 
     callTracker.saveArgumentsByValue();
     callTracker.track({ object: {}, args: args });

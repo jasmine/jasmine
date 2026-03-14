@@ -103,9 +103,9 @@ describe('SetContaining', function() {
   });
 
   it('defines a `jasmineToString` method', function() {
-    const sample = new Set(),
-      containing = new privateUnderTest.SetContaining(sample),
-      pp = jasmine.createSpy('pp').and.returnValue('sample');
+    const sample = new Set();
+    const containing = new privateUnderTest.SetContaining(sample);
+    const pp = jasmine.createSpy('pp').and.returnValue('sample');
 
     expect(containing.jasmineToString(pp)).toEqual(
       '<jasmine.setContaining(sample)>'

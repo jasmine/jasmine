@@ -151,9 +151,9 @@ describe('MapContaining', function() {
   });
 
   it('defines a `jasmineToString` method', function() {
-    const sample = new Map(),
-      containing = new privateUnderTest.MapContaining(sample),
-      pp = jasmine.createSpy('pp').and.returnValue('sample');
+    const sample = new Map();
+    const containing = new privateUnderTest.MapContaining(sample);
+    const pp = jasmine.createSpy('pp').and.returnValue('sample');
 
     expect(containing.jasmineToString(pp)).toEqual(
       '<jasmine.mapContaining(sample)>'

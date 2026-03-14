@@ -3,6 +3,9 @@
 
 version: 2.1
 
+orbs:
+  win: circleci/windows@5.0.0
+
 executors:
   node24:
     docker:
@@ -48,6 +51,31 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Report Node and NPM versions
+          command: echo "Using Node $(node --version) and NPM $(npm --version)"
+      - run:
+          name: Run tests
+          command: npm test
+
+  test_win:
+    executor:
+      name: win/default
+      shell: bash.exe
+    steps:
+      - checkout
+      - run:
+          name: Install Node.js
+          command: nvm install 20.0.0 && nvm use 20.0.0
+      - run:
+          name: Report Node and NPM versions
+          command: echo "Using Node $(node --version) and NPM $(npm --version)"
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Build
+          command: npm run build
+      - run:
           name: Run tests
           command: npm test
 
@@ -59,6 +87,9 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: Report Node and NPM versions
+          command: echo "Using Node $(node --version) and NPM $(npm --version)"
       - run:
           name: Run tests in parallel
           command: npm run test:parallel
@@ -101,47 +132,25 @@ workflows:
   push:
     jobs:
       - build:
-          executor: node24
-          name: build_node_24
-      - build:
-          executor: node22
-          name: build_node_22
-      - build:
-          executor: node20
-          name: build_node_20
+          matrix:
+            parameters:
+              executor: [node20, node22, node24]
       - test_node:
-          executor: node22
-          name: test_node_22
+          matrix:
+            parameters:
+              executor: [node20, node22, node24]
           requires:
-            - build_node_22
-      - test_node:
-          executor: node20
-          name: test_node_20
-          requires:
-            - build_node_20
+            - build-<< matrix.executor >>
       - test_parallel:
-          executor: node24
-          name: test_parallel_node_24
+          matrix:
+            parameters:
+              executor: [node20, node22, node24]
           requires:
-            - build_node_24
-      - test_parallel:
-          executor: node22
-          name: test_parallel_node_22
-          requires:
-            - build_node_22
-      - test_parallel:
-          executor: node20
-          name: test_parallel_node_20
-          requires:
-            - build_node_20
-      - test_parallel:
-          executor: node20
-          name: test_parallel_node_20
-          requires:
-            - build_node_20
+            - build-<< matrix.executor >>
       - test_browsers:
           requires:
-             - build_node_20
+             - build-node20
           filters:
             branches:
               ignore: /pull\/.*/ # Don't run on pull requests.
+      - test_win

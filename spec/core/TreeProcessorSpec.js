@@ -1,6 +1,6 @@
 describe('TreeProcessor', function() {
-  let nodeNumber = 0,
-    leafNumber = 0;
+  let nodeNumber = 0;
+  let leafNumber = 0;
 
   function Node(attrs) {
     attrs = attrs || {};
@@ -24,11 +24,11 @@ describe('TreeProcessor', function() {
   }
 
   it('processes a single leaf', function() {
-    const leaf = new Leaf(),
-      processor = new privateUnderTest.TreeProcessor({
-        tree: leaf,
-        runnableIds: [leaf.id]
-      });
+    const leaf = new Leaf();
+    const processor = new privateUnderTest.TreeProcessor({
+      tree: leaf,
+      runnableIds: [leaf.id]
+    });
 
     const result = processor.processTree();
 
@@ -36,11 +36,11 @@ describe('TreeProcessor', function() {
   });
 
   it('processes a single pending leaf', function() {
-    const leaf = new Leaf({ markedPending: true }),
-      processor = new privateUnderTest.TreeProcessor({
-        tree: leaf,
-        runnableIds: [leaf.id]
-      });
+    const leaf = new Leaf({ markedPending: true });
+    const processor = new privateUnderTest.TreeProcessor({
+      tree: leaf,
+      runnableIds: [leaf.id]
+    });
 
     const result = processor.processTree();
 
@@ -48,11 +48,11 @@ describe('TreeProcessor', function() {
   });
 
   it('processes a single non-specified leaf', function() {
-    const leaf = new Leaf(),
-      processor = new privateUnderTest.TreeProcessor({
-        tree: leaf,
-        runnableIds: []
-      });
+    const leaf = new Leaf();
+    const processor = new privateUnderTest.TreeProcessor({
+      tree: leaf,
+      runnableIds: []
+    });
 
     const result = processor.processTree();
 
@@ -60,14 +60,14 @@ describe('TreeProcessor', function() {
   });
 
   it('processes a single excluded leaf', function() {
-    const leaf = new Leaf(),
-      processor = new privateUnderTest.TreeProcessor({
-        tree: leaf,
-        runnableIds: [leaf.id],
-        excludeNode: function() {
-          return true;
-        }
-      });
+    const leaf = new Leaf();
+    const processor = new privateUnderTest.TreeProcessor({
+      tree: leaf,
+      runnableIds: [leaf.id],
+      excludeNode: function() {
+        return true;
+      }
+    });
 
     const result = processor.processTree();
 
@@ -75,12 +75,12 @@ describe('TreeProcessor', function() {
   });
 
   it('processes a tree with a single leaf with the root specified', function() {
-    const leaf = new Leaf(),
-      parent = new Node({ children: [leaf] }),
-      processor = new privateUnderTest.TreeProcessor({
-        tree: parent,
-        runnableIds: [parent.id]
-      });
+    const leaf = new Leaf();
+    const parent = new Node({ children: [leaf] });
+    const processor = new privateUnderTest.TreeProcessor({
+      tree: parent,
+      runnableIds: [parent.id]
+    });
 
     const result = processor.processTree();
 
@@ -90,12 +90,12 @@ describe('TreeProcessor', function() {
   });
 
   it('processes a tree with a single pending leaf, with the root specified', function() {
-    const leaf = new Leaf({ markedPending: true }),
-      parent = new Node({ children: [leaf] }),
-      processor = new privateUnderTest.TreeProcessor({
-        tree: parent,
-        runnableIds: [parent.id]
-      });
+    const leaf = new Leaf({ markedPending: true });
+    const parent = new Node({ children: [leaf] });
+    const processor = new privateUnderTest.TreeProcessor({
+      tree: parent,
+      runnableIds: [parent.id]
+    });
 
     const result = processor.processTree();
 
@@ -139,24 +139,24 @@ describe('TreeProcessor', function() {
   });
 
   it('processes a complicated tree with the root specified', function() {
-    const pendingLeaf = new Leaf({ markedPending: true }),
-      executableLeaf = new Leaf({ markedPending: false }),
-      parent = new Node({ children: [pendingLeaf, executableLeaf] }),
-      childless = new Node(),
-      childOfPending = new Leaf({ markedPending: true }),
-      pendingNode = new Node({
-        markedPending: true,
-        children: [childOfPending]
-      }),
-      parentOfPendings = new Node({
-        markedPending: false,
-        children: [childless, pendingNode]
-      }),
-      root = new Node({ children: [parent, parentOfPendings] }),
-      processor = new privateUnderTest.TreeProcessor({
-        tree: root,
-        runnableIds: [root.id]
-      });
+    const pendingLeaf = new Leaf({ markedPending: true });
+    const executableLeaf = new Leaf({ markedPending: false });
+    const parent = new Node({ children: [pendingLeaf, executableLeaf] });
+    const childless = new Node();
+    const childOfPending = new Leaf({ markedPending: true });
+    const pendingNode = new Node({
+      markedPending: true,
+      children: [childOfPending]
+    });
+    const parentOfPendings = new Node({
+      markedPending: false,
+      children: [childless, pendingNode]
+    });
+    const root = new Node({ children: [parent, parentOfPendings] });
+    const processor = new privateUnderTest.TreeProcessor({
+      tree: root,
+      runnableIds: [root.id]
+    });
 
     const result = processor.processTree();
 

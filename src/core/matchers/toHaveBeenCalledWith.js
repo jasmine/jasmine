@@ -18,10 +18,10 @@ getJasmineRequireObj().toHaveBeenCalledWith = function(j$, private$) {
   function toHaveBeenCalledWith(matchersUtil) {
     return {
       compare: function() {
-        const args = Array.prototype.slice.call(arguments, 0),
-          actual = args[0],
-          expectedArgs = args.slice(1),
-          result = { pass: false };
+        const args = Array.prototype.slice.call(arguments, 0);
+        const actual = args[0];
+        const expectedArgs = args.slice(1);
+        const result = { pass: false };
 
         if (!j$.isSpy(actual)) {
           throw new Error(

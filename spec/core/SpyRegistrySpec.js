@@ -14,8 +14,8 @@ describe('SpyRegistry', function() {
     });
 
     it('checks that a method name was passed', function() {
-      const spyRegistry = new privateUnderTest.SpyRegistry(),
-        target = {};
+      const spyRegistry = new privateUnderTest.SpyRegistry();
+      const target = {};
 
       expect(function() {
         spyRegistry.spyOn(target);
@@ -30,8 +30,8 @@ describe('SpyRegistry', function() {
     });
 
     it('checks that the method name is not `null`', function() {
-      const spyRegistry = new privateUnderTest.SpyRegistry(),
-        target = {};
+      const spyRegistry = new privateUnderTest.SpyRegistry();
+      const target = {};
 
       expect(function() {
         spyRegistry.spyOn(target, null);
@@ -39,8 +39,8 @@ describe('SpyRegistry', function() {
     });
 
     it('checks for the existence of the method', function() {
-      const spyRegistry = new privateUnderTest.SpyRegistry(),
-        target = {};
+      const spyRegistry = new privateUnderTest.SpyRegistry();
+      const target = {};
 
       expect(function() {
         spyRegistry.spyOn(target, 'pants');
@@ -48,14 +48,14 @@ describe('SpyRegistry', function() {
     });
 
     it('checks if it has already been spied upon', function() {
-      const spies = [],
-        spyRegistry = new privateUnderTest.SpyRegistry({
-          currentSpies: function() {
-            return spies;
-          },
-          createSpy: createSpy
-        }),
-        target = { spiedFunc: function() {} };
+      const spies = [];
+      const spyRegistry = new privateUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return spies;
+        },
+        createSpy: createSpy
+      });
+      const target = { spiedFunc: function() {} };
 
       spyRegistry.spyOn(target, 'spiedFunc');
 
@@ -77,13 +77,13 @@ describe('SpyRegistry', function() {
         }
       });
 
-      const spies = [],
-        spyRegistry = new privateUnderTest.SpyRegistry({
-          currentSpies: function() {
-            return spies;
-          }
-        }),
-        target = { spiedFunc: scope.myFunc };
+      const spies = [];
+      const spyRegistry = new privateUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return spies;
+        }
+      });
+      const target = { spiedFunc: scope.myFunc };
 
       expect(function() {
         spyRegistry.spyOn(scope, 'myFunc');
@@ -158,8 +158,8 @@ describe('SpyRegistry', function() {
     });
 
     it('checks that a property name was passed', function() {
-      const spyRegistry = new privateUnderTest.SpyRegistry(),
-        target = {};
+      const spyRegistry = new privateUnderTest.SpyRegistry();
+      const target = {};
 
       expect(function() {
         spyRegistry.spyOnProperty(target);
@@ -167,8 +167,8 @@ describe('SpyRegistry', function() {
     });
 
     it('checks for the existence of the method', function() {
-      const spyRegistry = new privateUnderTest.SpyRegistry(),
-        target = {};
+      const spyRegistry = new privateUnderTest.SpyRegistry();
+      const target = {};
 
       expect(function() {
         spyRegistry.spyOnProperty(target, 'pants');
@@ -176,8 +176,8 @@ describe('SpyRegistry', function() {
     });
 
     it('checks for the existence of access type', function() {
-      const spyRegistry = new privateUnderTest.SpyRegistry(),
-        target = {};
+      const spyRegistry = new privateUnderTest.SpyRegistry();
+      const target = {};
 
       Object.defineProperty(target, 'pants', {
         get: function() {
@@ -216,10 +216,10 @@ describe('SpyRegistry', function() {
 
     it('overrides the property getter on the object and returns the spy', function() {
       const spyRegistry = new privateUnderTest.SpyRegistry({
-          createSpy: createSpy
-        }),
-        target = {},
-        returnValue = 1;
+        createSpy: createSpy
+      });
+      const target = {};
+      const returnValue = 1;
 
       Object.defineProperty(target, 'spiedProperty', {
         get: function() {
@@ -240,10 +240,10 @@ describe('SpyRegistry', function() {
 
     it('overrides the property setter on the object and returns the spy', function() {
       const spyRegistry = new privateUnderTest.SpyRegistry({
-          createSpy: createSpy
-        }),
-        target = {},
-        returnValue = 1;
+        createSpy: createSpy
+      });
+      const target = {};
+      const returnValue = 1;
 
       Object.defineProperty(target, 'spiedProperty', {
         get: function() {
@@ -264,9 +264,9 @@ describe('SpyRegistry', function() {
     describe('when the property is already spied upon', function() {
       it('throws an error if respy is not allowed', function() {
         const spyRegistry = new privateUnderTest.SpyRegistry({
-            createSpy: createSpy
-          }),
-          target = {};
+          createSpy: createSpy
+        });
+        const target = {};
 
         Object.defineProperty(target, 'spiedProp', {
           get: function() {
@@ -284,9 +284,9 @@ describe('SpyRegistry', function() {
 
       it('returns the original spy if respy is allowed', function() {
         const spyRegistry = new privateUnderTest.SpyRegistry({
-            createSpy: createSpy
-          }),
-          target = {};
+          createSpy: createSpy
+        });
+        const target = {};
 
         spyRegistry.allowRespy(true);
 
@@ -564,15 +564,15 @@ describe('SpyRegistry', function() {
 
   describe('#clearSpies', function() {
     it('restores the original functions on the spied-upon objects', function() {
-      const spies = [],
-        spyRegistry = new privateUnderTest.SpyRegistry({
-          currentSpies: function() {
-            return spies;
-          },
-          createSpy: createSpy
-        }),
-        originalFunction = function() {},
-        target = { spiedFunc: originalFunction };
+      const spies = [];
+      const spyRegistry = new privateUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return spies;
+        },
+        createSpy: createSpy
+      });
+      const originalFunction = function() {};
+      const target = { spiedFunc: originalFunction };
 
       spyRegistry.spyOn(target, 'spiedFunc');
       spyRegistry.clearSpies();
@@ -581,15 +581,15 @@ describe('SpyRegistry', function() {
     });
 
     it('restores the original functions, even when that spy has been replace and re-spied upon', function() {
-      const spies = [],
-        spyRegistry = new privateUnderTest.SpyRegistry({
-          currentSpies: function() {
-            return spies;
-          },
-          createSpy: createSpy
-        }),
-        originalFunction = function() {},
-        target = { spiedFunc: originalFunction };
+      const spies = [];
+      const spyRegistry = new privateUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return spies;
+        },
+        createSpy: createSpy
+      });
+      const originalFunction = function() {};
+      const target = { spiedFunc: originalFunction };
 
       spyRegistry.spyOn(target, 'spiedFunc');
 
@@ -605,15 +605,15 @@ describe('SpyRegistry', function() {
     });
 
     it("does not add a property that the spied-upon object didn't originally have", function() {
-      const spies = [],
-        spyRegistry = new privateUnderTest.SpyRegistry({
-          currentSpies: function() {
-            return spies;
-          },
-          createSpy: createSpy
-        }),
-        originalFunction = function() {},
-        targetParent = { spiedFunc: originalFunction };
+      const spies = [];
+      const spyRegistry = new privateUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return spies;
+        },
+        createSpy: createSpy
+      });
+      const originalFunction = function() {};
+      const targetParent = { spiedFunc: originalFunction };
 
       const target = Object.create(targetParent);
 
@@ -627,15 +627,15 @@ describe('SpyRegistry', function() {
     });
 
     it("restores the original function when it's inherited and cannot be deleted", function() {
-      const spies = [],
-        spyRegistry = new privateUnderTest.SpyRegistry({
-          currentSpies: function() {
-            return spies;
-          },
-          createSpy: createSpy
-        }),
-        originalFunction = function() {},
-        targetParent = { spiedFunc: originalFunction };
+      const spies = [];
+      const spyRegistry = new privateUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return spies;
+        },
+        createSpy: createSpy
+      });
+      const originalFunction = function() {};
+      const targetParent = { spiedFunc: originalFunction };
 
       const target = Object.create(targetParent);
 
@@ -655,15 +655,15 @@ describe('SpyRegistry', function() {
       function FakeWindow() {}
       FakeWindow.prototype.onerror = function() {};
 
-      const spies = [],
-        global = new FakeWindow(),
-        spyRegistry = new privateUnderTest.SpyRegistry({
-          currentSpies: function() {
-            return spies;
-          },
-          createSpy: createSpy,
-          global: global
-        });
+      const spies = [];
+      const global = new FakeWindow();
+      const spyRegistry = new privateUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return spies;
+        },
+        createSpy: createSpy,
+        global: global
+      });
 
       spyRegistry.spyOn(global, 'onerror');
       spyRegistry.clearSpies();
@@ -674,15 +674,15 @@ describe('SpyRegistry', function() {
 
   describe('spying on properties', function() {
     it('restores the original properties on the spied-upon objects', function() {
-      const spies = [],
-        spyRegistry = new privateUnderTest.SpyRegistry({
-          currentSpies: function() {
-            return spies;
-          },
-          createSpy: createSpy
-        }),
-        originalReturn = 1,
-        target = {};
+      const spies = [];
+      const spyRegistry = new privateUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return spies;
+        },
+        createSpy: createSpy
+      });
+      const originalReturn = 1;
+      const target = {};
 
       Object.defineProperty(target, 'spiedProp', {
         get: function() {
@@ -698,15 +698,15 @@ describe('SpyRegistry', function() {
     });
 
     it("does not add a property that the spied-upon object didn't originally have", function() {
-      const spies = [],
-        spyRegistry = new privateUnderTest.SpyRegistry({
-          currentSpies: function() {
-            return spies;
-          },
-          createSpy: createSpy
-        }),
-        originalReturn = 1,
-        targetParent = {};
+      const spies = [];
+      const spyRegistry = new privateUnderTest.SpyRegistry({
+        currentSpies: function() {
+          return spies;
+        },
+        createSpy: createSpy
+      });
+      const originalReturn = 1;
+      const targetParent = {};
 
       Object.defineProperty(targetParent, 'spiedProp', {
         get: function() {

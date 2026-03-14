@@ -1,6 +1,6 @@
-const path = require('path'),
-  jasmineBrowser = require('jasmine-browser-runner'),
-  jasmineCore = require('../../lib/jasmine-core.js');
+const path = require('path');
+const jasmineBrowser = require('jasmine-browser-runner');
+const jasmineCore = require('../../lib/jasmine-core.js');
 
 const configFile = process.argv[2] || 'jasmine-browser.js';
 

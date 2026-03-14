@@ -560,16 +560,16 @@ describe('Matchers (Integration)', function() {
 
   describe('toHaveBeenCalledBefore', function() {
     verifyPasses(function(env) {
-      const a = env.createSpy('a'),
-        b = env.createSpy('b');
+      const a = env.createSpy('a');
+      const b = env.createSpy('b');
       a();
       b();
       env.expect(a).toHaveBeenCalledBefore(b);
     });
 
     verifyFails(function(env) {
-      const a = env.createSpy('a'),
-        b = env.createSpy('b');
+      const a = env.createSpy('a');
+      const b = env.createSpy('b');
       b();
       a();
       env.expect(a).toHaveBeenCalledBefore(b);

@@ -1,7 +1,7 @@
 describe('matchersUtil', function() {
   it('exposes the injected pretty-printer as .pp', function() {
-    const pp = function() {},
-      matchersUtil = new privateUnderTest.MatchersUtil({ pp: pp });
+    const pp = function() {};
+    const matchersUtil = new privateUnderTest.MatchersUtil({ pp: pp });
 
     expect(matchersUtil.pp).toBe(pp);
   });
@@ -86,8 +86,8 @@ describe('matchersUtil', function() {
     });
 
     it('passes for Arrays that are equivalent, with elements added by changing length', function() {
-      const foo = [],
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const foo = [];
+      const matchersUtil = new privateUnderTest.MatchersUtil();
       foo.length = 1;
 
       expect(matchersUtil.equals(foo, [undefined])).toBe(true);
@@ -104,9 +104,9 @@ describe('matchersUtil', function() {
     });
 
     it('fails for Arrays whose contents are equivalent, but have differing properties', function() {
-      const one = [1, 2, 3],
-        two = [1, 2, 3],
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const one = [1, 2, 3];
+      const two = [1, 2, 3];
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       one.foo = 'bar';
       two.foo = 'baz';
@@ -115,9 +115,9 @@ describe('matchersUtil', function() {
     });
 
     it('passes for Arrays with equivalent contents and properties', function() {
-      const one = [1, 2, 3],
-        two = [1, 2, 3],
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const one = [1, 2, 3];
+      const two = [1, 2, 3];
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       one.foo = 'bar';
       two.foo = 'bar';
@@ -126,9 +126,9 @@ describe('matchersUtil', function() {
     });
 
     it('handles symbol keys in Arrays', function() {
-      const matchersUtil = new privateUnderTest.MatchersUtil(),
-        sym = Symbol('foo'),
-        arr1 = [];
+      const matchersUtil = new privateUnderTest.MatchersUtil();
+      const sym = Symbol('foo');
+      const arr1 = [];
       let arr2 = [];
 
       arr1[sym] = 'bar';
@@ -200,9 +200,9 @@ describe('matchersUtil', function() {
     });
 
     it('passes for Objects that are equivalent (with cycles)', function() {
-      const actual = { a: 'foo' },
-        expected = { a: 'foo' },
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const actual = { a: 'foo' };
+      const expected = { a: 'foo' };
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       actual.b = actual;
       expected.b = actual;
@@ -211,9 +211,9 @@ describe('matchersUtil', function() {
     });
 
     it('fails for Objects that are not equivalent (with cycles)', function() {
-      const actual = { a: 'foo' },
-        expected = { a: 'bar' },
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const actual = { a: 'foo' };
+      const expected = { a: 'bar' };
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       actual.b = actual;
       expected.b = actual;
@@ -222,26 +222,26 @@ describe('matchersUtil', function() {
     });
 
     it('fails for Objects that have the same number of keys, but different keys/values', function() {
-      const expected = { a: undefined },
-        actual = { b: 1 },
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const expected = { a: undefined };
+      const actual = { b: 1 };
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(actual, expected)).toBe(false);
     });
 
     it('fails when comparing an empty object to an empty array (issue #114)', function() {
-      const emptyObject = {},
-        emptyArray = [],
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const emptyObject = {};
+      const emptyArray = [];
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(emptyObject, emptyArray)).toBe(false);
       expect(matchersUtil.equals(emptyArray, emptyObject)).toBe(false);
     });
 
     it('passes for equivalent frozen objects (GitHub issue #266)', function() {
-      const a = { foo: 1 },
-        b = { foo: 1 },
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const a = { foo: 1 };
+      const b = { foo: 1 };
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       Object.freeze(a);
       Object.freeze(b);
@@ -250,9 +250,9 @@ describe('matchersUtil', function() {
     });
 
     it('passes for equivalent Promises (GitHub issue #1314)', function() {
-      const p1 = new Promise(function() {}),
-        p2 = new Promise(function() {}),
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const p1 = new Promise(function() {});
+      const p2 = new Promise(function() {});
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(p1, p1)).toBe(true);
       expect(matchersUtil.equals(p1, p2)).toBe(false);
@@ -344,18 +344,18 @@ describe('matchersUtil', function() {
     });
 
     it('passes when Any is used', function() {
-      const number = 3,
-        anyNumber = new privateUnderTest.Any(Number),
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const number = 3;
+      const anyNumber = new privateUnderTest.Any(Number);
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(number, anyNumber)).toBe(true);
       expect(matchersUtil.equals(anyNumber, number)).toBe(true);
     });
 
     it('fails when Any is compared to something unexpected', function() {
-      const number = 3,
-        anyString = new privateUnderTest.Any(String),
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const number = 3;
+      const anyString = new privateUnderTest.Any(String);
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(number, anyString)).toBe(false);
       expect(matchersUtil.equals(anyString, number)).toBe(false);
@@ -363,11 +363,11 @@ describe('matchersUtil', function() {
 
     it('passes when ObjectContaining is used', function() {
       const obj = {
-          foo: 3,
-          bar: 7
-        },
-        containing = new privateUnderTest.ObjectContaining({ foo: 3 }),
-        matchersUtil = new privateUnderTest.MatchersUtil();
+        foo: 3,
+        bar: 7
+      };
+      const containing = new privateUnderTest.ObjectContaining({ foo: 3 });
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(obj, containing)).toBe(true);
       expect(matchersUtil.equals(containing, obj)).toBe(true);
@@ -399,11 +399,11 @@ describe('matchersUtil', function() {
 
     it('passes when an asymmetric equality tester returns true', function() {
       const tester = {
-          asymmetricMatch: function() {
-            return true;
-          }
-        },
-        matchersUtil = new privateUnderTest.MatchersUtil();
+        asymmetricMatch: function() {
+          return true;
+        }
+      };
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(false, tester)).toBe(true);
       expect(matchersUtil.equals(tester, false)).toBe(true);
@@ -411,19 +411,19 @@ describe('matchersUtil', function() {
 
     it('fails when an asymmetric equality tester returns false', function() {
       const tester = {
-          asymmetricMatch: function() {
-            return false;
-          }
-        },
-        matchersUtil = new privateUnderTest.MatchersUtil();
+        asymmetricMatch: function() {
+          return false;
+        }
+      };
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(true, tester)).toBe(false);
       expect(matchersUtil.equals(tester, true)).toBe(false);
     });
 
     it('passes when ArrayContaining is used', function() {
-      const arr = ['foo', 'bar'],
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const arr = ['foo', 'bar'];
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(
         matchersUtil.equals(arr, new privateUnderTest.ArrayContaining(['bar']))
@@ -432,12 +432,12 @@ describe('matchersUtil', function() {
 
     it('passes when a custom equality matcher returns true', function() {
       const tester = function() {
-          return true;
-        },
-        matchersUtil = new privateUnderTest.MatchersUtil({
-          customTesters: [tester],
-          pp: function() {}
-        });
+        return true;
+      };
+      const matchersUtil = new privateUnderTest.MatchersUtil({
+        customTesters: [tester],
+        pp: function() {}
+      });
 
       expect(matchersUtil.equals(1, 2)).toBe(true);
     });
@@ -463,46 +463,46 @@ describe('matchersUtil', function() {
 
     it('fails for equivalents when a custom equality matcher returns false', function() {
       const tester = function() {
-          return false;
-        },
-        matchersUtil = new privateUnderTest.MatchersUtil({
-          customTesters: [tester],
-          pp: function() {}
-        });
+        return false;
+      };
+      const matchersUtil = new privateUnderTest.MatchersUtil({
+        customTesters: [tester],
+        pp: function() {}
+      });
 
       expect(matchersUtil.equals(1, 1)).toBe(false);
     });
 
     it('passes for an asymmetric equality tester that returns true when a custom equality tester return false', function() {
       const asymmetricTester = {
-          asymmetricMatch: function() {
-            return true;
-          }
-        },
-        symmetricTester = function() {
-          return false;
-        },
-        matchersUtil = new privateUnderTest.MatchersUtil({
-          customTesters: [symmetricTester()],
-          pp: function() {}
-        });
+        asymmetricMatch: function() {
+          return true;
+        }
+      };
+      const symmetricTester = function() {
+        return false;
+      };
+      const matchersUtil = new privateUnderTest.MatchersUtil({
+        customTesters: [symmetricTester()],
+        pp: function() {}
+      });
 
       expect(matchersUtil.equals(asymmetricTester, true)).toBe(true);
       expect(matchersUtil.equals(true, asymmetricTester)).toBe(true);
     });
 
     it('passes when an Any is compared to an Any that checks for the same type', function() {
-      const any1 = new privateUnderTest.Any(Function),
-        any2 = new privateUnderTest.Any(Function),
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const any1 = new privateUnderTest.Any(Function);
+      const any2 = new privateUnderTest.Any(Function);
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       expect(matchersUtil.equals(any1, any2)).toBe(true);
     });
 
     it('passes for null prototype objects with same properties', function() {
-      const objA = Object.create(null),
-        objB = Object.create(null),
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const objA = Object.create(null);
+      const objB = Object.create(null);
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       objA.name = 'test';
       objB.name = 'test';
@@ -511,9 +511,9 @@ describe('matchersUtil', function() {
     });
 
     it('fails for null prototype objects with different properties', function() {
-      const objA = Object.create(null),
-        objB = Object.create(null),
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const objA = Object.create(null);
+      const objB = Object.create(null);
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       objA.name = 'test';
       objB.test = 'name';
@@ -673,8 +673,8 @@ describe('matchersUtil', function() {
     });
 
     it('fails when comparing two different URLs', function() {
-      const matchersUtil = new privateUnderTest.MatchersUtil(),
-        url1 = new URL('http://localhost/1');
+      const matchersUtil = new privateUnderTest.MatchersUtil();
+      const url1 = new URL('http://localhost/1');
 
       expect(matchersUtil.equals(url1, new URL('http://localhost/2'))).toBe(
         false
@@ -914,24 +914,24 @@ describe('matchersUtil', function() {
     describe('Building diffs for asymmetric equality testers', function() {
       it('diffs the values returned by valuesForDiff_', function() {
         const tester = {
-            asymmetricMatch: function() {
-              return false;
-            },
-            valuesForDiff_: function() {
-              return {
-                self: 'asymmetric tester value',
-                other: 'other value'
-              };
-            }
+          asymmetricMatch: function() {
+            return false;
           },
-          actual = { x: 42 },
-          expected = { x: tester },
-          diffBuilder = jasmine.createSpyObj('diffBuilder', [
-            'recordMismatch',
-            'withPath',
-            'setRoots'
-          ]),
-          matchersUtil = new privateUnderTest.MatchersUtil();
+          valuesForDiff_: function() {
+            return {
+              self: 'asymmetric tester value',
+              other: 'other value'
+            };
+          }
+        };
+        const actual = { x: 42 };
+        const expected = { x: tester };
+        const diffBuilder = jasmine.createSpyObj('diffBuilder', [
+          'recordMismatch',
+          'withPath',
+          'setRoots'
+        ]);
+        const matchersUtil = new privateUnderTest.MatchersUtil();
 
         diffBuilder.withPath.and.callFake(function(p, block) {
           block();
@@ -948,18 +948,18 @@ describe('matchersUtil', function() {
 
       it('records both objects when the tester does not implement valuesForDiff', function() {
         const tester = {
-            asymmetricMatch: function() {
-              return false;
-            }
-          },
-          actual = { x: 42 },
-          expected = { x: tester },
-          diffBuilder = jasmine.createSpyObj('diffBuilder', [
-            'recordMismatch',
-            'withPath',
-            'setRoots'
-          ]),
-          matchersUtil = new privateUnderTest.MatchersUtil();
+          asymmetricMatch: function() {
+            return false;
+          }
+        };
+        const actual = { x: 42 };
+        const expected = { x: tester };
+        const diffBuilder = jasmine.createSpyObj('diffBuilder', [
+          'recordMismatch',
+          'withPath',
+          'setRoots'
+        ]);
+        const matchersUtil = new privateUnderTest.MatchersUtil();
 
         diffBuilder.withPath.and.callFake(function(p, block) {
           block();
@@ -976,8 +976,8 @@ describe('matchersUtil', function() {
     });
 
     it('uses a diffBuilder if one is provided as the third argument', function() {
-      const diffBuilder = new privateUnderTest.DiffBuilder(),
-        matchersUtil = new privateUnderTest.MatchersUtil();
+      const diffBuilder = new privateUnderTest.DiffBuilder();
+      const matchersUtil = new privateUnderTest.MatchersUtil();
 
       spyOn(diffBuilder, 'recordMismatch');
       spyOn(diffBuilder, 'withPath').and.callThrough();
@@ -1026,12 +1026,12 @@ describe('matchersUtil', function() {
 
     it('uses custom equality testers if actual is an Array', function() {
       const customTester = function() {
-          return true;
-        },
-        matchersUtil = new privateUnderTest.MatchersUtil({
-          customTesters: [customTester],
-          pp: function() {}
-        });
+        return true;
+      };
+      const matchersUtil = new privateUnderTest.MatchersUtil({
+        customTesters: [customTester],
+        pp: function() {}
+      });
 
       expect(matchersUtil.contains([1, 2], 3)).toBe(true);
     });
@@ -1091,59 +1091,59 @@ describe('matchersUtil', function() {
 
   describe('buildFailureMessage', function() {
     it('builds an English sentence for a failure case', function() {
-      const actual = 'foo',
-        name = 'toBar',
-        pp = privateUnderTest.makePrettyPrinter(),
-        matchersUtil = new privateUnderTest.MatchersUtil({ pp: pp }),
-        message = matchersUtil.buildFailureMessage(name, false, actual);
+      const actual = 'foo';
+      const name = 'toBar';
+      const pp = privateUnderTest.makePrettyPrinter();
+      const matchersUtil = new privateUnderTest.MatchersUtil({ pp: pp });
+      const message = matchersUtil.buildFailureMessage(name, false, actual);
 
       expect(message).toEqual("Expected 'foo' to bar.");
     });
 
     it("builds an English sentence for a 'not' failure case", function() {
-      const actual = 'foo',
-        name = 'toBar',
-        isNot = true,
-        pp = privateUnderTest.makePrettyPrinter(),
-        matchersUtil = new privateUnderTest.MatchersUtil({ pp: pp }),
-        message = matchersUtil.buildFailureMessage(name, isNot, actual);
+      const actual = 'foo';
+      const name = 'toBar';
+      const isNot = true;
+      const pp = privateUnderTest.makePrettyPrinter();
+      const matchersUtil = new privateUnderTest.MatchersUtil({ pp: pp });
+      const message = matchersUtil.buildFailureMessage(name, isNot, actual);
 
       expect(message).toEqual("Expected 'foo' not to bar.");
     });
 
     it('builds an English sentence for an arbitrary array of expected arguments', function() {
-      const actual = 'foo',
-        name = 'toBar',
-        pp = privateUnderTest.makePrettyPrinter(),
-        matchersUtil = new privateUnderTest.MatchersUtil({ pp: pp }),
-        message = matchersUtil.buildFailureMessage(
-          name,
-          false,
-          actual,
-          'quux',
-          'corge'
-        );
+      const actual = 'foo';
+      const name = 'toBar';
+      const pp = privateUnderTest.makePrettyPrinter();
+      const matchersUtil = new privateUnderTest.MatchersUtil({ pp: pp });
+      const message = matchersUtil.buildFailureMessage(
+        name,
+        false,
+        actual,
+        'quux',
+        'corge'
+      );
 
       expect(message).toEqual("Expected 'foo' to bar 'quux', 'corge'.");
     });
 
     it('uses the injected pretty-printer to format the expecteds and actual', function() {
-      const actual = 'foo',
-        expected1 = 'qux',
-        expected2 = 'grault',
-        name = 'toBar',
-        isNot = false,
-        pp = function(value) {
-          return '<' + value + '>';
-        },
-        matchersUtil = new privateUnderTest.MatchersUtil({ pp: pp }),
-        message = matchersUtil.buildFailureMessage(
-          name,
-          isNot,
-          actual,
-          expected1,
-          expected2
-        );
+      const actual = 'foo';
+      const expected1 = 'qux';
+      const expected2 = 'grault';
+      const name = 'toBar';
+      const isNot = false;
+      const pp = function(value) {
+        return '<' + value + '>';
+      };
+      const matchersUtil = new privateUnderTest.MatchersUtil({ pp: pp });
+      const message = matchersUtil.buildFailureMessage(
+        name,
+        isNot,
+        actual,
+        expected1,
+        expected2
+      );
 
       expect(message).toEqual('Expected <foo> to bar <qux>, <grault>.');
     });
