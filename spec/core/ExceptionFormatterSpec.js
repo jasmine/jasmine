@@ -177,7 +177,7 @@ describe('ExceptionFormatter', function() {
         const trace = new privateUnderTest.StackTrace(new Error());
         return trace.frames[2].file;
       })();
-      expect(jasmineFile).toMatch(/\/jasmine.js$/);
+      expect(jasmineFile).toMatch(/[\/\\]jasmine.js$/);
       const error = new Error('an error');
       const subject = new privateUnderTest.ExceptionFormatter({ jasmineFile });
       const result = subject.stack(error);
@@ -203,7 +203,7 @@ describe('ExceptionFormatter', function() {
         const trace = new privateUnderTest.StackTrace(new Error());
         return trace.frames[2].file;
       })();
-      expect(jasmineFile).toMatch(/\/jasmine.js$/);
+      expect(jasmineFile).toMatch(/[\/\\]jasmine.js$/);
       const msg = 'an error\nwith two lines';
       const error = new Error(msg);
 
