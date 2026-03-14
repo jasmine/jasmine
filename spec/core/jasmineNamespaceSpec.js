@@ -128,8 +128,7 @@ describe('The jasmine namespace', function() {
     return result;
   }
 
-  // Can't use Set#difference yet because it isn't available in Node <22,
-  // Firefox <108, or Safari <17.
+  // Can't use Set#difference yet because it isn't available in Node <22
   function setDifference(a, b) {
     const result = new Set();
 

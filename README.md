@@ -32,7 +32,7 @@ Microsoft Edge) as well as Node.
 | Node              | 20, 22, 24                       |
 | Safari            | 26*                              |
 | Chrome            | Evergreen                        |
-| Firefox           | Evergreen, 102*, 115*, 128*, 140 |
+| Firefox           | Evergreen, 140                   |
 | Edge              | Evergreen                        |
 
 For evergreen browsers, each version of Jasmine is tested against the version of the browser that is available to us

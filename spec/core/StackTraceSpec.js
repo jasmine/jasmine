@@ -116,7 +116,7 @@ describe('StackTrace', function() {
     ]);
   });
 
-  it('understands Safari <=14/Firefox style traces', function() {
+  it('understands Firefox style traces', function() {
     const error = {
       message: 'nope',
       stack:
