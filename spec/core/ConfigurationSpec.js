@@ -37,7 +37,7 @@ describe('Configuration', function() {
     expect(subject.detectLateRejectionHandling).toEqual(false);
     expect(subject.extraItStackFrames).toEqual(0);
     expect(subject.extraDescribeStackFrames).toEqual(0);
-    expect(subject.safariYieldStrategy).toEqual('count');
+    expect(subject.safariYieldStrategy).toEqual('time');
   });
 
   describe('copy()', function() {
@@ -144,13 +144,13 @@ describe('Configuration', function() {
       const subject = new privateUnderTest.Configuration();
 
       subject.update({ safariYieldStrategy: undefined });
-      expect(subject.safariYieldStrategy).toEqual('count');
-
-      subject.update({ safariYieldStrategy: 'time' });
       expect(subject.safariYieldStrategy).toEqual('time');
 
       subject.update({ safariYieldStrategy: 'count' });
       expect(subject.safariYieldStrategy).toEqual('count');
+
+      subject.update({ safariYieldStrategy: 'time' });
+      expect(subject.safariYieldStrategy).toEqual('time');
     });
 
     it('rejcts invalid safariYieldStrategy values', function() {

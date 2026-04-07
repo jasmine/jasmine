@@ -155,18 +155,16 @@ getJasmineRequireObj().Configuration = function(j$, private$) {
 
     /**
      * The strategy to use in Safari and similar browsers to determine how often
-     * to yield control by calling setTimeout. If set to "count", the default,
-     * the frequency of setTimeout calls is based on the number of relevant
-     * function calls. If set to "time", the frequency of setTimeout calls is
-     * based on elapsed time. Using "time" may provide a significant performance
-     * improvement, but as of 6.0 it hasn't been tested with a wide variety of
-     * workloads and should be considered experimental.
+     * to yield control by calling setTimeout. If set to "time", the default,
+     * the frequency of setTimeout calls is based on elapsed time. If set to
+     * "count", the frequency of setTimeout calls is based on the number of
+     * relevant function calls.
      * @name Configuration#safariYieldStrategy
      * @since 6.0.0
      * @type 'count' | 'time'
-     * @default 'count'
+     * @default 'time'
      */
-    safariYieldStrategy: 'count'
+    safariYieldStrategy: 'time'
   };
   Object.freeze(defaultConfig);
 
