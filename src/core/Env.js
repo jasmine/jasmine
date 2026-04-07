@@ -67,7 +67,11 @@ getJasmineRequireObj().Env = function(j$, private$) {
     let runner;
     let parallelLoadingState = null; // 'specs', 'helpers', or null for non-parallel
 
-    const config = new private$.Configuration();
+    const config = new private$.Configuration({
+      deprecated: function() {
+        return self.deprecated.apply(self, arguments);
+      }
+    });
 
     if (!envOptions.suppressLoadErrors) {
       installGlobalErrors();

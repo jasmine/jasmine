@@ -21,7 +21,7 @@ describe('Configuration', function() {
   Object.freeze(allKeys);
 
   it('provides defaults', function() {
-    const subject = new privateUnderTest.Configuration();
+    const subject = new privateUnderTest.Configuration(options());
     expect(subject.random).toEqual(true);
     expect(subject.seed).toBeNull();
     expect(subject.stopOnSpecFailure).toEqual(false);
@@ -40,7 +40,7 @@ describe('Configuration', function() {
 
   describe('copy()', function() {
     it('returns a copy of the configuration as a plain old JS object', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
 
       const copy = subject.copy();
 
@@ -55,7 +55,7 @@ describe('Configuration', function() {
 
   describe('update()', function() {
     it('does not update properties that are absent from the parameter', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
       const originalValues = subject.copy();
 
       subject.update({});
@@ -64,7 +64,7 @@ describe('Configuration', function() {
 
     function booleanPropertyBehavior(key) {
       it('does not update the property if the specified value is undefined', function() {
-        const subject = new privateUnderTest.Configuration();
+        const subject = new privateUnderTest.Configuration(options());
         const orig = subject[key];
 
         subject.update({ [key]: undefined });
@@ -73,7 +73,7 @@ describe('Configuration', function() {
       });
 
       it('updates the property if the specified value is not undefined', function() {
-        const subject = new privateUnderTest.Configuration();
+        const subject = new privateUnderTest.Configuration(options());
         const orig = subject[key];
 
         subject.update({ [key]: !orig });
@@ -91,7 +91,7 @@ describe('Configuration', function() {
     }
 
     it('sets specFilter when truthy', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
       const orig = subject.specFilter;
 
       subject.update({ specFilter: undefined });
@@ -106,7 +106,7 @@ describe('Configuration', function() {
     });
 
     it('sets seed when not undefined', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
 
       subject.update({ seed: undefined });
       expect(subject.seed).toBeNull();
@@ -119,7 +119,7 @@ describe('Configuration', function() {
     });
 
     it('sets extraItStackFrames when not undefined', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
 
       subject.update({ extraItStackFrames: undefined });
       expect(subject.extraItStackFrames).toEqual(0);
@@ -129,7 +129,7 @@ describe('Configuration', function() {
     });
 
     it('sets extraDescribeStackFrames when not undefined', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
 
       subject.update({ extraDescribeStackFrames: undefined });
       expect(subject.extraDescribeStackFrames).toEqual(0);
@@ -139,20 +139,25 @@ describe('Configuration', function() {
     });
 
     it('sets safariYieldStrategy when valid', function() {
-      const subject = new privateUnderTest.Configuration();
+      const deprecated = jasmine.createSpy('deprecated');
+      const subject = new privateUnderTest.Configuration({ deprecated });
 
       subject.update({ safariYieldStrategy: undefined });
       expect(subject.safariYieldStrategy).toEqual('time');
 
+      expect(deprecated).not.toHaveBeenCalled();
       subject.update({ safariYieldStrategy: 'count' });
       expect(subject.safariYieldStrategy).toEqual('count');
+      expect(deprecated).toHaveBeenCalledWith(
+        'safariYieldStrategy: "count" is deprecated. If you need this option, please submit a bug report.'
+      );
 
       subject.update({ safariYieldStrategy: 'time' });
       expect(subject.safariYieldStrategy).toEqual('time');
     });
 
     it('rejcts invalid safariYieldStrategy values', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
 
       expect(function() {
         subject.update({ safariYieldStrategy: 'thyme' });
@@ -161,4 +166,10 @@ describe('Configuration', function() {
       );
     });
   });
+
+  function options() {
+    return {
+      deprecated: () => {}
+    };
+  }
 });
