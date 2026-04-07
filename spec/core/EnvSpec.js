@@ -126,8 +126,7 @@ describe('Env', function() {
       seed: '123',
       failSpecWithNoExpectations: true,
       stopSpecOnExpectationFailure: true,
-      stopOnSpecFailure: true,
-      hideDisabled: true
+      stopOnSpecFailure: true
     };
     env.configure(initialConfig);
 
@@ -136,8 +135,7 @@ describe('Env', function() {
       seed: undefined,
       failSpecWithNoExpectations: undefined,
       stopSpecOnExpectationFailure: undefined,
-      stopOnSpecFailure: undefined,
-      hideDisabled: undefined
+      stopOnSpecFailure: undefined
     });
 
     expect(env.configuration()).toEqual(

@@ -84,8 +84,7 @@ getJasmineHtmlRequireObj().HtmlReporterV2 = function(j$, private$) {
 
       this.#progress = new ProgressView();
       this.#banner = new private$.Banner(
-        this.#queryString.navigateWithNewParam.bind(this.#queryString),
-        true
+        this.#queryString.navigateWithNewParam.bind(this.#queryString)
       );
       this.#failures = new private$.FailuresView(this.#urlBuilder);
       this.#htmlReporterMain = createDom(

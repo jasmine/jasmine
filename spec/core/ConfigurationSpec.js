@@ -4,7 +4,6 @@ describe('Configuration', function() {
     'stopOnSpecFailure',
     'stopSpecOnExpectationFailure',
     'failSpecWithNoExpectations',
-    'hideDisabled',
     'autoCleanClosures',
     'forbidDuplicateNames',
     'detectLateRejectionHandling',
@@ -30,7 +29,6 @@ describe('Configuration', function() {
     expect(subject.failSpecWithNoExpectations).toEqual(false);
     expect(subject.specFilter).toEqual(jasmine.any(Function));
     expect(subject.specFilter()).toEqual(true);
-    expect(subject.hideDisabled).toEqual(false);
     expect(subject.autoCleanClosures).toEqual(true);
     expect(subject.forbidDuplicateNames).toEqual(true);
     expect(subject.verboseDeprecations).toEqual(false);
