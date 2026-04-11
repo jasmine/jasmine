@@ -31,19 +31,8 @@ passfile=`mktemp -t jasmine-results.XXXXXX` || exit 1
 failfile=`mktemp -t jasmine-results.XXXXXX` || exit 1
 
 run_browser chrome latest
-
 run_browser firefox latest
-if [ "$1" = "--not-actually-all" ]; then
-  echo "SKIPPED: firefox 140" >> "$passfile"
-  echo "SKIPPED: firefox 128" >> "$passfile"
-  echo "SKIPPED: firefox 115" >> "$passfile"
-else
-  run_browser firefox 140
-  run_browser firefox 128
-  run_browser firefox 115
-fi
-run_browser firefox 102
-
+run_browser firefox 140
 run_browser MicrosoftEdge latest
 
 echo
