@@ -14,8 +14,8 @@
     "bdd"
   ],
   "scripts": {
-    "posttest": "eslint \"src/**/*.js\" \"spec/**/*.js\" && prettier --check \"src/**/*.js\" \"spec/**/*.js\"",
-    "test": "node scripts/runSpecsInNode.js",
+    "lint": "eslint \"src/**/*.js\" \"spec/**/*.js\" && prettier --check \"src/**/*.js\" \"spec/**/*.js\"",
+    "test": "node scripts/runSpecsInNode.js && npm run lint",
     "test:parallel": "node scripts/runSpecsInParallel.js",
     "cleanup": "prettier --write \"src/**/*.js\" \"spec/**/*.js\"",
     "build": "node scripts/buildDistribution.js",
