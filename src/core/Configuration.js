@@ -166,7 +166,18 @@ getJasmineRequireObj().Configuration = function(j$) {
      * @type 'count' | 'time'
      * @default 'count'
      */
-    safariYieldStrategy: 'count'
+    safariYieldStrategy: 'count',
+
+    /**
+     * Whether to mock Intl.DateTimeFormat when the mock clock is installed.
+     * When enabled, Intl.DateTimeFormat.format() and formatToParts() methods
+     * will use the mocked date when called without arguments, ensuring
+     * consistent behavior with other date APIs.
+     * @name Configuration#mockIntlDateTimeFormat
+     * @type Boolean
+     * @default false
+     */
+    mockIntlDateTimeFormat: false
   };
   Object.freeze(defaultConfig);
 
@@ -200,7 +211,8 @@ getJasmineRequireObj().Configuration = function(j$) {
         'autoCleanClosures',
         'forbidDuplicateNames',
         'detectLateRejectionHandling',
-        'verboseDeprecations'
+        'verboseDeprecations',
+        'mockIntlDateTimeFormat'
       ];
 
       for (const k of booleanProps) {

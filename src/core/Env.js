@@ -26,7 +26,7 @@ getJasmineRequireObj().Env = function(j$) {
       function() {
         return new j$.private.DelayedFunctionScheduler();
       },
-      new j$.private.MockDate(global)
+      new j$.private.MockDate(global, () => this.configuration())
     );
 
     const globalErrors = new GlobalErrors(
