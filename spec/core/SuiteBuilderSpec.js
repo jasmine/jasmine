@@ -96,6 +96,7 @@ describe('SuiteBuilder', function() {
         spec = suiteBuilder.it('a spec');
       });
 
+      spec.reset();
       expect(spec.doneEvent().pendingReason).toEqual(
         'Temporarily disabled with xdescribe'
       );
