@@ -67,9 +67,12 @@ getJasmineRequireObj().Suite = function(j$) {
 
     // Like pend(), but pending state will survive reset().
     // Useful for fdescribe, xdescribe, where pending state should remain.
-    exclude() {
+    exclude(message) {
       this.pend();
       this.markedExcluding = true;
+      if (message) {
+        this.excludeMessage = message;
+      }
     }
 
     beforeEach(fn) {
