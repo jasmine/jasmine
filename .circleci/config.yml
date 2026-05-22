@@ -7,6 +7,10 @@ orbs:
   win: circleci/windows@5.0.0
 
 executors:
+  node26:
+    docker:
+      - image: cimg/node:26.0.0
+    working_directory: ~/workspace
   node24:
     docker:
       - image: cimg/node:24.0.0
@@ -134,17 +138,17 @@ workflows:
       - build:
           matrix:
             parameters:
-              executor: [node20, node22, node24]
+              executor: [node20, node22, node24, node26]
       - test_node:
           matrix:
             parameters:
-              executor: [node20, node22, node24]
+              executor: [node20, node22, node24, node26]
           requires:
             - build-<< matrix.executor >>
       - test_parallel:
           matrix:
             parameters:
-              executor: [node20, node22, node24]
+              executor: [node20, node22, node24, node26]
           requires:
             - build-<< matrix.executor >>
       - test_browsers:
