@@ -87,7 +87,7 @@ describe('SuiteBuilder', function() {
       expect(suite.markedExcluding).toBeTrue();
     });
 
-    it('sets pendingReason to "Temporarily disabled with xdescribe"', function() {
+    it('sets each spec\'s pendingReason to "Temporarily disabled with xdescribe"', function() {
       const env = { configuration: () => ({}) };
       const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
 
