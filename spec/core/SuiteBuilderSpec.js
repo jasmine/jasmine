@@ -86,6 +86,21 @@ describe('SuiteBuilder', function() {
 
       expect(suite.markedExcluding).toBeTrue();
     });
+
+    it('sets pendingReason to "Temporarily disabled with xdescribe"', function() {
+      const env = { configuration: () => ({}) };
+      const suiteBuilder = new privateUnderTest.SuiteBuilder({ env });
+
+      let spec;
+      suiteBuilder.xdescribe('a suite', function() {
+        spec = suiteBuilder.it('a spec');
+      });
+
+      spec.reset();
+      expect(spec.doneEvent().pendingReason).toEqual(
+        'Temporarily disabled with xdescribe'
+      );
+    });
   });
 
   describe('#it', function() {

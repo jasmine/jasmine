@@ -238,7 +238,7 @@ getJasmineRequireObj().Spec = function(j$) {
     // Useful for fit, xit, where pending state remains.
     exclude(message) {
       this.markedExcluding = true;
-      if (this.message) {
+      if (message) {
         this.excludeMessage = message;
       }
       this.pend(message);
