@@ -1,6 +1,8 @@
 getJasmineRequireObj().Env = function(j$, private$) {
   'use strict';
 
+  console.log('hello');
+
   const DEFAULT_IT_DESCRIBE_STACK_DEPTH = 3;
 
   /**
