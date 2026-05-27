@@ -1,17 +1,13 @@
 describe('Global error handling (integration)', function() {
   const isBrowser = typeof window !== 'undefined';
   let env;
-  let oldTimeout;
 
   beforeEach(function() {
     specHelpers.registerIntegrationMatchers();
     env = new privateUnderTest.Env();
-    oldTimeout = jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL;
-    jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = 30 * 1000;
   });
 
   afterEach(function() {
-    jasmineUnderTest.DEFAULT_TIMEOUT_INTERVAL = oldTimeout;
     env.cleanup_();
   });
 
