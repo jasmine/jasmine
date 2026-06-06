@@ -1,7 +1,7 @@
 {
   "name": "jasmine-core",
   "license": "MIT",
-  "version": "6.3.0",
+  "version": "7.0.0-pre.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/jasmine/jasmine.git"
@@ -28,6 +28,9 @@
   "description": "Simple JavaScript testing framework for browsers and node.js",
   "homepage": "https://jasmine.github.io",
   "main": "./lib/jasmine-core.js",
+  "exports": {
+    ".": "./lib/jasmine-core.js"
+  },
   "files": [
     "LICENSE",
     "README.md",
@@ -45,8 +48,8 @@
     "eslint-plugin-compat": "^6.0.2",
     "glob": "^13.0.0",
     "globals": "^16.0.0",
-    "jasmine": "github:jasmine/jasmine-npm",
-    "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner",
+    "jasmine": "github:jasmine/jasmine-npm#7.0",
+    "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner#5.0",
     "jsdom": "^26.0.0",
     "prettier": "1.17.1",
     "sass": "^1.58.3"

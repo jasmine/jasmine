@@ -1,22 +1,41 @@
-// eslint-disable-next-line no-var
-var jasmineRequire = window.jasmineRequire || require('./jasmine.js');
+// eslint-disable-next-line no-unused-vars
+const getJasmineHtmlRequireObj = (function() {
+  'use strict';
+  const htmlRequire = {};
 
-jasmineRequire.html = function(j$) {
-  j$.private.ResultsNode = jasmineRequire.ResultsNode();
-  j$.private.ResultsStateBuilder = jasmineRequire.ResultsStateBuilder(j$);
-  j$.private.htmlReporterUtils = jasmineRequire.htmlReporterUtils(j$);
-  j$.private.AlertsView = jasmineRequire.AlertsView(j$);
-  j$.private.OverallStatusBar = jasmineRequire.OverallStatusBar(j$);
-  j$.private.Banner = jasmineRequire.Banner(j$);
-  j$.private.SymbolsView = jasmineRequire.SymbolsView(j$);
-  j$.private.SummaryTreeView = jasmineRequire.SummaryTreeView(j$);
-  j$.private.FailuresView = jasmineRequire.FailuresView(j$);
-  j$.private.PerformanceView = jasmineRequire.PerformanceView(j$);
-  j$.private.TabBar = jasmineRequire.TabBar(j$);
-  j$.HtmlReporter = jasmineRequire.HtmlReporter(j$);
-  j$.HtmlReporterV2Urls = jasmineRequire.HtmlReporterV2Urls(j$);
-  j$.HtmlReporterV2 = jasmineRequire.HtmlReporterV2(j$);
-  j$.QueryString = jasmineRequire.QueryString();
-  j$.HtmlSpecFilter = jasmineRequire.HtmlSpecFilter(j$);
-  j$.private.HtmlSpecFilterV2 = jasmineRequire.HtmlSpecFilterV2();
-};
+  function getJasmineHtmlRequire() {
+    return htmlRequire;
+  }
+
+  htmlRequire.html = function(j$, private$) {
+    if (!private$) {
+      private$ = {};
+    }
+
+    private$.ResultsNode = htmlRequire.ResultsNode();
+    private$.ResultsStateBuilder = htmlRequire.ResultsStateBuilder(
+      j$,
+      private$
+    );
+    private$.htmlReporterUtils = htmlRequire.htmlReporterUtils(j$, private$);
+    private$.AlertsView = htmlRequire.AlertsView(j$, private$);
+    private$.OverallStatusBar = htmlRequire.OverallStatusBar(j$, private$);
+    private$.Banner = htmlRequire.Banner(j$, private$);
+    private$.SummaryTreeView = htmlRequire.SummaryTreeView(j$, private$);
+    private$.FailuresView = htmlRequire.FailuresView(j$, private$);
+    private$.PerformanceView = htmlRequire.PerformanceView(j$, private$);
+    private$.TabBar = htmlRequire.TabBar(j$, private$);
+    private$.HtmlSpecFilterV2 = htmlRequire.HtmlSpecFilterV2();
+
+    for (const k of ['HtmlReporterV2Urls', 'HtmlReporterV2', 'QueryString']) {
+      Object.defineProperty(j$, k, {
+        enumerable: true,
+        configurable: false,
+        writable: false,
+        value: htmlRequire[k](j$, private$)
+      });
+    }
+  };
+
+  return getJasmineHtmlRequire;
+})();

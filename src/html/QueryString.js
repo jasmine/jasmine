@@ -1,4 +1,4 @@
-jasmineRequire.QueryString = function() {
+getJasmineHtmlRequireObj().QueryString = function() {
   'use strict';
 
   /**
@@ -14,6 +14,7 @@ jasmineRequire.QueryString = function() {
      */
     constructor(options) {
       this.#getWindowLocation = options.getWindowLocation;
+      Object.freeze(this);
     }
 
     /**
@@ -81,5 +82,6 @@ jasmineRequire.QueryString = function() {
     return '?' + qStrPairs.join('&');
   }
 
+  Object.freeze(QueryString.prototype);
   return QueryString;
 };

@@ -1,4 +1,4 @@
-getJasmineRequireObj().StackClearer = function(j$) {
+getJasmineRequireObj().StackClearer = function(j$, private$) {
   'use strict';
 
   const maxInlineCallCount = 10;

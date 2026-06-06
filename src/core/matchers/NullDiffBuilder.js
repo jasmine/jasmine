@@ -1,4 +1,4 @@
-getJasmineRequireObj().NullDiffBuilder = function(j$) {
+getJasmineRequireObj().NullDiffBuilder = function(j$, private$) {
   'use strict';
 
   return function() {

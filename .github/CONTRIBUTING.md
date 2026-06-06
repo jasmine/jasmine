@@ -41,13 +41,11 @@ Jasmine tests itself. The files in `lib` are loaded first, defining the referenc
 
 The tests should always use `jasmineUnderTest` to refer to the objects and functions that are being tested. But the tests can use functions on `jasmine` as needed. _Be careful how you structure any new test code_. Copy the patterns you see in the existing code - this ensures that the code you're testing is not leaking into the `jasmine` reference and vice-versa.
 
-### `boot0.js` and `boot1.js`
+### `boot.js`
 
-These files file does all of the setup necessary for Jasmine to work in a
-browser. They load all of the code, create an `Env`, attach the global
-functions, and build the reporter. It also sets up the execution of the 
-`Env` - for browsers this is in `window.onload`. While the default in `lib`
-is appropriate for browsers, projects may wish to customize this file.
+This file does all the setup necessary for Jasmine to work in a browser. While
+the default in `lib`is appropriate for most uses, users may wish to customize
+this file.
 
 ### Compatibility
 

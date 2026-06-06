@@ -1,7 +1,7 @@
-getJasmineRequireObj().toBeRejectedWithMatching = function(j$) {
+getJasmineRequireObj().toBeRejectedWithMatching = function(j$, private$) {
   'use strict';
 
-  const usageError = j$.private.formatErrorMsg(
+  const usageError = private$.formatErrorMsg(
     '<toBeRejectedWithMatching>',
     'expect(function() {<expectation>}).toBeRejectedWithMatching(<Predicate>)'
   );
@@ -21,7 +21,7 @@ getJasmineRequireObj().toBeRejectedWithMatching = function(j$) {
   return function toBeRejectedWithMatching() {
     return {
       compare: function(actualPromise, predicate) {
-        if (!j$.private.isPromiseLike(actualPromise)) {
+        if (!private$.isPromiseLike(actualPromise)) {
           throw new Error(
             `Expected toBeRejectedWithMatching to be called on a promise but was on a ${typeof actualPromise}.`
           );

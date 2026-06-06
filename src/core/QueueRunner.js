@@ -1,11 +1,11 @@
-getJasmineRequireObj().QueueRunner = function(j$) {
+getJasmineRequireObj().QueueRunner = function(j$, private$) {
   'use strict';
 
   let nextid = 1;
 
   function StopExecutionError() {}
   StopExecutionError.prototype = new Error();
-  j$.private.StopExecutionError = StopExecutionError;
+  private$.StopExecutionError = StopExecutionError;
 
   function once(fn, onTwice) {
     let called = false;
@@ -58,7 +58,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
     };
     this.onException = attrs.onException || emptyFn;
     this.onMultipleDone = attrs.onMultipleDone || fallbackOnMultipleDone;
-    this.userContext = attrs.userContext || new j$.private.UserContext();
+    this.userContext = attrs.userContext || new private$.UserContext();
     this.timeout = attrs.timeout || {
       setTimeout: setTimeout,
       clearTimeout: clearTimeout
@@ -69,7 +69,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       popListener: emptyFn
     };
 
-    const SkipPolicy = attrs.SkipPolicy || j$.private.NeverSkipPolicy;
+    const SkipPolicy = attrs.SkipPolicy || private$.NeverSkipPolicy;
     this.skipPolicy_ = new SkipPolicy(this.queueableFns);
     this.errored_ = false;
 
@@ -192,7 +192,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
       if (queueableFn.fn.length === 0) {
         maybeThenable = queueableFn.fn.call(this.userContext);
 
-        if (maybeThenable && j$.private.isFunction(maybeThenable.then)) {
+        if (maybeThenable && private$.isFunction(maybeThenable.then)) {
           maybeThenable.then(
             wrapInPromiseResolutionHandler(next),
             onPromiseRejection
@@ -262,11 +262,11 @@ getJasmineRequireObj().QueueRunner = function(j$) {
   };
 
   QueueRunner.prototype.diagnoseConflictingAsync_ = function(fn, retval) {
-    if (retval && j$.private.isFunction(retval.then)) {
+    if (retval && private$.isFunction(retval.then)) {
       // Issue a warning that matches the user's code.
       // Omit the stack trace because there's almost certainly no user code
       // on the stack at this point.
-      if (j$.private.isAsyncFunction(fn)) {
+      if (private$.isAsyncFunction(fn)) {
         this.onException(
           new Error(
             'An asynchronous before/it/after ' +
@@ -290,7 +290,7 @@ getJasmineRequireObj().QueueRunner = function(j$) {
 
   function wrapInPromiseResolutionHandler(fn) {
     return function(maybeArg) {
-      if (j$.private.isError(maybeArg)) {
+      if (private$.isError(maybeArg)) {
         fn(maybeArg);
       } else {
         fn();

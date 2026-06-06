@@ -1,4 +1,4 @@
-jasmineRequire.HtmlReporterV2Urls = function(j$) {
+getJasmineHtmlRequireObj().HtmlReporterV2Urls = function(j$, private$) {
   'use strict';
 
   // TODO unify with V2 UrlBuilder?
@@ -18,6 +18,8 @@ jasmineRequire.HtmlReporterV2Urls = function(j$) {
             return window.location;
           }
         });
+
+      Object.freeze(this);
     }
 
     /**
@@ -49,7 +51,7 @@ jasmineRequire.HtmlReporterV2Urls = function(j$) {
         config.seed = seed;
       }
 
-      const specFilter = new j$.private.HtmlSpecFilterV2({
+      const specFilter = new private$.HtmlSpecFilterV2({
         filterParams: () => ({
           path: this.queryString.getParam('path'),
           spec: this.queryString.getParam('spec')
@@ -68,5 +70,6 @@ jasmineRequire.HtmlReporterV2Urls = function(j$) {
     }
   }
 
+  Object.freeze(HtmlReporterV2Urls.prototype);
   return HtmlReporterV2Urls;
 };

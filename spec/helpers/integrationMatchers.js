@@ -43,9 +43,9 @@
                 : 'Expected runnable "' +
                   fullName +
                   '" to have failures ' +
-                  jasmine.private.basicPrettyPrinter(expectedFailures) +
+                  jasmine.pp(expectedFailures) +
                   ' but it had ' +
-                  jasmine.private.basicPrettyPrinter(foundFailures)
+                  jasmine.pp(foundFailures)
             };
           }
         };

@@ -1,4 +1,4 @@
-getJasmineRequireObj().TreeProcessor = function(j$) {
+getJasmineRequireObj().TreeProcessor = function(j$, private$) {
   'use strict';
 
   const defaultMin = Infinity;

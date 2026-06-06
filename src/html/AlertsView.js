@@ -1,7 +1,7 @@
-jasmineRequire.AlertsView = function(j$) {
+getJasmineHtmlRequireObj().AlertsView = function(j$, private$) {
   'use strict';
 
-  const { createDom } = j$.private.htmlReporterUtils;
+  const { createDom } = private$.htmlReporterUtils;
   const errorBarClassName = 'jasmine-bar jasmine-errored';
   const afterAllMessagePrefix = 'AfterAll ';
 

@@ -1,7 +1,7 @@
-getJasmineRequireObj().toBeInstanceOf = function(j$) {
+getJasmineRequireObj().toBeInstanceOf = function(j$, private$) {
   'use strict';
 
-  const usageError = j$.private.formatErrorMsg(
+  const usageError = private$.formatErrorMsg(
     '<toBeInstanceOf>',
     'expect(value).toBeInstanceOf(<ConstructorFunction>)'
   );
@@ -22,16 +22,16 @@ getJasmineRequireObj().toBeInstanceOf = function(j$) {
       compare: function(actual, expected) {
         const actualType =
           actual && actual.constructor
-            ? j$.private.fnNameFor(actual.constructor)
+            ? private$.fnNameFor(actual.constructor)
             : matchersUtil.pp(actual);
         const expectedType = expected
-          ? j$.private.fnNameFor(expected)
+          ? private$.fnNameFor(expected)
           : matchersUtil.pp(expected);
         let expectedMatcher;
         let pass;
 
         try {
-          expectedMatcher = new j$.private.Any(expected);
+          expectedMatcher = new private$.Any(expected);
           pass = expectedMatcher.asymmetricMatch(actual);
           // eslint-disable-next-line no-unused-vars
         } catch (error) {

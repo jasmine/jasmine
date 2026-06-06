@@ -1,4 +1,4 @@
-getJasmineRequireObj().ArrayWithExactContents = function(j$) {
+getJasmineRequireObj().ArrayWithExactContents = function(j$, private$) {
   'use strict';
 
   function ArrayWithExactContents(sample) {
@@ -12,7 +12,7 @@ getJasmineRequireObj().ArrayWithExactContents = function(j$) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
         'You must provide an array to arrayWithExactContents, not ' +
-          j$.private.basicPrettyPrinter(this.sample) +
+          private$.basicPrettyPrinter(this.sample) +
           '.'
       );
     }

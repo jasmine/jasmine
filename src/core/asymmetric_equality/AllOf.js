@@ -1,4 +1,4 @@
-getJasmineRequireObj().AllOf = function(j$) {
+getJasmineRequireObj().AllOf = function(j$, private$) {
   'use strict';
 
   function AllOf() {

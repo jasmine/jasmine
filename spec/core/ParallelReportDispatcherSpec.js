@@ -160,6 +160,13 @@ describe('ParallelReportDispatcher', function() {
     );
   });
 
+  isNonMonkeyPatchableClass(
+    jasmineUnderTest.ParallelReportDispatcher,
+    function() {
+      return new jasmineUnderTest.ParallelReportDispatcher();
+    }
+  );
+
   function mockGlobalErrors() {
     const globalErrors = jasmine.createSpyObj('globalErrors', [
       'install',

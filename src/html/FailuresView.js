@@ -1,7 +1,7 @@
-jasmineRequire.FailuresView = function(j$) {
+getJasmineHtmlRequireObj().FailuresView = function(j$, private$) {
   'use strict';
 
-  const { createDom } = j$.private.htmlReporterUtils;
+  const { createDom } = private$.htmlReporterUtils;
 
   class FailuresView {
     #urlBuilder;

@@ -6,13 +6,14 @@ module.exports = {
     'core/util.js',
     'core/Spec.js',
     'core/Env.js',
-    'core/JsApiReporter.js',
     'core/PrettyPrinter.js',
     'core/Suite.js',
     'core/**/*.js',
     'html/**/*.js',
     '**/*.js',
-    '!boot/**.js'
+    '!boot/**.js',
+    '!core/requireSuffix.js',
+    '!html/requireSuffix.js'
   ],
   specDir: 'spec',
   specFiles: ['**/*[Ss]pec.js', '!npmPackage/**/*'],
@@ -23,13 +24,10 @@ module.exports = {
     'helpers/domHelpers.js',
     'helpers/integrationMatchers.js',
     'helpers/callerFilenameShim.js',
+    'helpers/monkeyPatchingSpecs.js',
     'helpers/defineJasmineUnderTest.js',
     'helpers/resetEnv.js'
   ],
-  env: {
-    forbidDuplicateNames: true,
-    safariYieldStrategy: 'time'
-  },
   random: true,
   browser: {
     name: process.env.JASMINE_BROWSER || 'firefox',

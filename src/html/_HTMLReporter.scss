@@ -55,7 +55,6 @@ body {
   }
 
   .jasmine-banner,
-  .jasmine-symbol-summary,
   .jasmine-summary,
   .jasmine-result-message,
   .jasmine-spec .jasmine-description,
@@ -107,73 +106,7 @@ body {
     font-size: $font-size;
   }
 
-  //--- Symbol summary (v1 reporter) ---//
-
-  .jasmine-symbol-summary {
-    overflow: hidden;
-    margin: $line-height 0;
-
-    li {
-      display: inline-block;
-      height: math.div($line-height, 2) + 3;
-      width: $line-height;
-
-      font-size: 16px;
-
-      &.jasmine-passed {
-        font-size: 14px;
-
-        &:before {
-          color: $passing-color;
-          content: $passing-mark;
-        }
-      }
-
-      &.jasmine-failed {
-        line-height: math.div($line-height, 2) + 2;
-
-        &:before {
-          color: $failing-color;
-          content: $failing-mark;
-          font-weight: bold;
-          margin-left: -1px;
-        }
-      }
-
-       &.jasmine-excluded {
-          font-size: 14px;
-
-          &:before {
-            color: $neutral-color;
-            content: $passing-mark;
-          }
-        }
-
-        &.jasmine-excluded-no-display {
-          font-size: 14px;
-          display: none;
-        }
-
-      &.jasmine-pending {
-        line-height: 17px;
-        &:before {
-          color: $pending-color;
-          content: $pending-mark;
-        }
-      }
-
-      &.jasmine-empty {
-        font-size: 14px;
-
-        &:before {
-          color: $pending-color;
-          content: $passing-mark;
-        }
-      }
-    }
-  }
-
-  //--- Progress bar (v2 reporter) ---//
+  //--- Progress bar ---//
 
   progress {
     width: 100%;
@@ -279,10 +212,8 @@ body {
     }
   }
 
-  // simplify toggle control between the two menu bars
-  // TODO: clean this up once HtmlReporter is removed
+  // Switch between the three tabs
   &.jasmine-spec-list {
-    .jasmine-bar.jasmine-menu.jasmine-failure-list,
     .jasmine-results .jasmine-failures,
     .jasmine-performance-view {
       display: none;
@@ -290,7 +221,6 @@ body {
   }
 
   &.jasmine-failure-list {
-    .jasmine-bar.jasmine-menu.jasmine-spec-list,
     .jasmine-summary,
     .jasmine-performance-view {
       display: none;

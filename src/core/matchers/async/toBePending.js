@@ -1,4 +1,4 @@
-getJasmineRequireObj().toBePending = function(j$) {
+getJasmineRequireObj().toBePending = function(j$, private$) {
   'use strict';
 
   /**
@@ -13,7 +13,7 @@ getJasmineRequireObj().toBePending = function(j$) {
   return function toBePending() {
     return {
       compare: function(actual) {
-        if (!j$.private.isPromiseLike(actual)) {
+        if (!private$.isPromiseLike(actual)) {
           throw new Error(
             `Expected toBePending to be called on a promise but was on a ${typeof actual}.`
           );

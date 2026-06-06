@@ -126,8 +126,7 @@ describe('Env', function() {
       seed: '123',
       failSpecWithNoExpectations: true,
       stopSpecOnExpectationFailure: true,
-      stopOnSpecFailure: true,
-      hideDisabled: true
+      stopOnSpecFailure: true
     };
     env.configure(initialConfig);
 
@@ -136,8 +135,7 @@ describe('Env', function() {
       seed: undefined,
       failSpecWithNoExpectations: undefined,
       stopSpecOnExpectationFailure: undefined,
-      stopOnSpecFailure: undefined,
-      hideDisabled: undefined
+      stopOnSpecFailure: undefined
     });
 
     expect(env.configuration()).toEqual(
@@ -875,43 +873,7 @@ describe('Env', function() {
     });
   });
 
-  describe('Warning about monkey patching', function() {
-    afterEach(function() {
-      // deprecateMonkeyPatching() uses jasmine.getEnv(), not the env from
-      // this suite. Clean it up so we don't leak event listeners.
-      jasmineUnderTest.getEnv().cleanup_();
-      privateUnderTest.currentEnv_ = null;
-    });
-
-    const names = [
-      'describe',
-      'xdescribe',
-      'fdescribe',
-      'it',
-      'xit',
-      'fit',
-      'beforeEach',
-      'afterEach',
-      'beforeAll',
-      'afterAll'
-    ];
-
-    for (const name of names) {
-      it(`warns if Env#${name} is monkey patched`, function() {
-        spyOn(console, 'error');
-        const patch = {};
-        env[name] = patch;
-
-        // eslint-disable-next-line no-console
-        expect(console.error).toHaveBeenCalledOnceWith(
-          jasmine.stringContaining('DEPRECATION: Monkey patching detected.')
-        );
-        // eslint-disable-next-line no-console
-        expect(console.error).toHaveBeenCalledOnceWith(
-          jasmine.stringContaining('EnvSpec.js')
-        );
-        expect(env[name]).toBe(patch);
-      });
-    }
+  isNonMonkeyPatchableClass(privateUnderTest.Env, function() {
+    return new privateUnderTest.Env();
   });
 });

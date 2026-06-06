@@ -1,4 +1,4 @@
-getJasmineRequireObj().ObjectContaining = function(j$) {
+getJasmineRequireObj().ObjectContaining = function(j$, private$) {
   'use strict';
 
   function ObjectContaining(sample) {
@@ -42,7 +42,7 @@ getJasmineRequireObj().ObjectContaining = function(j$) {
   };
 
   ObjectContaining.prototype.valuesForDiff_ = function(other, pp) {
-    if (!j$.private.isObject(other)) {
+    if (!private$.isObject(other)) {
       return {
         self: this.jasmineToString(pp),
         other: other

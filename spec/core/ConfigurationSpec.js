@@ -4,7 +4,6 @@ describe('Configuration', function() {
     'stopOnSpecFailure',
     'stopSpecOnExpectationFailure',
     'failSpecWithNoExpectations',
-    'hideDisabled',
     'autoCleanClosures',
     'forbidDuplicateNames',
     'detectLateRejectionHandling',
@@ -22,7 +21,7 @@ describe('Configuration', function() {
   Object.freeze(allKeys);
 
   it('provides defaults', function() {
-    const subject = new privateUnderTest.Configuration();
+    const subject = new privateUnderTest.Configuration(options());
     expect(subject.random).toEqual(true);
     expect(subject.seed).toBeNull();
     expect(subject.stopOnSpecFailure).toEqual(false);
@@ -30,19 +29,18 @@ describe('Configuration', function() {
     expect(subject.failSpecWithNoExpectations).toEqual(false);
     expect(subject.specFilter).toEqual(jasmine.any(Function));
     expect(subject.specFilter()).toEqual(true);
-    expect(subject.hideDisabled).toEqual(false);
     expect(subject.autoCleanClosures).toEqual(true);
     expect(subject.forbidDuplicateNames).toEqual(true);
     expect(subject.verboseDeprecations).toEqual(false);
     expect(subject.detectLateRejectionHandling).toEqual(false);
     expect(subject.extraItStackFrames).toEqual(0);
     expect(subject.extraDescribeStackFrames).toEqual(0);
-    expect(subject.safariYieldStrategy).toEqual('count');
+    expect(subject.safariYieldStrategy).toEqual('time');
   });
 
   describe('copy()', function() {
     it('returns a copy of the configuration as a plain old JS object', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
 
       const copy = subject.copy();
 
@@ -57,7 +55,7 @@ describe('Configuration', function() {
 
   describe('update()', function() {
     it('does not update properties that are absent from the parameter', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
       const originalValues = subject.copy();
 
       subject.update({});
@@ -66,7 +64,7 @@ describe('Configuration', function() {
 
     function booleanPropertyBehavior(key) {
       it('does not update the property if the specified value is undefined', function() {
-        const subject = new privateUnderTest.Configuration();
+        const subject = new privateUnderTest.Configuration(options());
         const orig = subject[key];
 
         subject.update({ [key]: undefined });
@@ -75,7 +73,7 @@ describe('Configuration', function() {
       });
 
       it('updates the property if the specified value is not undefined', function() {
-        const subject = new privateUnderTest.Configuration();
+        const subject = new privateUnderTest.Configuration(options());
         const orig = subject[key];
 
         subject.update({ [key]: !orig });
@@ -93,7 +91,7 @@ describe('Configuration', function() {
     }
 
     it('sets specFilter when truthy', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
       const orig = subject.specFilter;
 
       subject.update({ specFilter: undefined });
@@ -108,7 +106,7 @@ describe('Configuration', function() {
     });
 
     it('sets seed when not undefined', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
 
       subject.update({ seed: undefined });
       expect(subject.seed).toBeNull();
@@ -121,7 +119,7 @@ describe('Configuration', function() {
     });
 
     it('sets extraItStackFrames when not undefined', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
 
       subject.update({ extraItStackFrames: undefined });
       expect(subject.extraItStackFrames).toEqual(0);
@@ -131,7 +129,7 @@ describe('Configuration', function() {
     });
 
     it('sets extraDescribeStackFrames when not undefined', function() {
-      const subject = new privateUnderTest.Configuration();
+      const subject = new privateUnderTest.Configuration(options());
 
       subject.update({ extraDescribeStackFrames: undefined });
       expect(subject.extraDescribeStackFrames).toEqual(0);
@@ -141,20 +139,25 @@ describe('Configuration', function() {
     });
 
     it('sets safariYieldStrategy when valid', function() {
-      const subject = new privateUnderTest.Configuration();
+      const deprecated = jasmine.createSpy('deprecated');
+      const subject = new privateUnderTest.Configuration({ deprecated });
 
       subject.update({ safariYieldStrategy: undefined });
+      expect(subject.safariYieldStrategy).toEqual('time');
+
+      expect(deprecated).not.toHaveBeenCalled();
+      subject.update({ safariYieldStrategy: 'count' });
       expect(subject.safariYieldStrategy).toEqual('count');
+      expect(deprecated).toHaveBeenCalledWith(
+        'safariYieldStrategy: "count" is deprecated. If you need this option, please submit a bug report.'
+      );
 
       subject.update({ safariYieldStrategy: 'time' });
       expect(subject.safariYieldStrategy).toEqual('time');
-
-      subject.update({ safariYieldStrategy: 'count' });
-      expect(subject.safariYieldStrategy).toEqual('count');
     });
 
-    it('rejcts invalid safariYieldStrategy values', function() {
-      const subject = new privateUnderTest.Configuration();
+    it('rejects invalid safariYieldStrategy values', function() {
+      const subject = new privateUnderTest.Configuration(options());
 
       expect(function() {
         subject.update({ safariYieldStrategy: 'thyme' });
@@ -162,5 +165,32 @@ describe('Configuration', function() {
         "Invalid safariYieldStrategy value. Valid values are 'count' and 'time'."
       );
     });
+
+    it('emits a deprecation warning when forbidDuplicateNames is set to false', function() {
+      const deprecated = jasmine.createSpy('deprecated');
+      const subject = new privateUnderTest.Configuration({ deprecated });
+
+      subject.update({ forbidDuplicateNames: false });
+
+      expect(deprecated).toHaveBeenCalledWith(
+        'The forbidDuplicateNames configuration setting is deprecated and will be removed in a future release.'
+      );
+    });
+
+    it('does not emit a deprecation warning when forbidDuplicateNames is set to true or undefined', function() {
+      const deprecated = jasmine.createSpy('deprecated');
+      const subject = new privateUnderTest.Configuration({ deprecated });
+
+      subject.update({ forbidDuplicateNames: true });
+      subject.update({ forbidDuplicateNames: undefined });
+
+      expect(deprecated).not.toHaveBeenCalled();
+    });
   });
+
+  function options() {
+    return {
+      deprecated: () => {}
+    };
+  }
 });

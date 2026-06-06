@@ -1,4 +1,4 @@
-getJasmineRequireObj().SpyStrategy = function(j$) {
+getJasmineRequireObj().SpyStrategy = function(j$, private$) {
   'use strict';
 
   /**
@@ -21,7 +21,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
 
     const cs = options.customStrategies || {};
     for (const k in cs) {
-      if (j$.private.util.has(cs, k) && !this[k]) {
+      if (private$.util.has(cs, k) && !this[k]) {
         this[k] = createCustomPlan(cs[k]);
       }
     }
@@ -59,7 +59,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
     return function() {
       const plan = factory.apply(null, arguments);
 
-      if (!j$.private.isFunction(plan)) {
+      if (!private$.isFunction(plan)) {
         throw new Error('Spy strategy must return a function');
       }
 
@@ -131,7 +131,7 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
    * @param {Error|Object|String} something Thing to throw
    */
   SpyStrategy.prototype.throwError = function(something) {
-    const error = j$.private.isString(something)
+    const error = private$.isString(something)
       ? new Error(something)
       : something;
     this.plan = function() {
@@ -150,9 +150,9 @@ getJasmineRequireObj().SpyStrategy = function(j$) {
   SpyStrategy.prototype.callFake = function(fn) {
     if (
       !(
-        j$.private.isFunction(fn) ||
-        j$.private.isAsyncFunction(fn) ||
-        j$.private.isGeneratorFunction(fn)
+        private$.isFunction(fn) ||
+        private$.isAsyncFunction(fn) ||
+        private$.isGeneratorFunction(fn)
       )
     ) {
       throw new Error(

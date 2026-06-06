@@ -1,4 +1,4 @@
-getJasmineRequireObj().ArrayContaining = function(j$) {
+getJasmineRequireObj().ArrayContaining = function(j$, private$) {
   'use strict';
 
   function ArrayContaining(sample) {
@@ -9,7 +9,7 @@ getJasmineRequireObj().ArrayContaining = function(j$) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
         'You must provide an array to arrayContaining, not ' +
-          j$.private.basicPrettyPrinter(this.sample) +
+          private$.basicPrettyPrinter(this.sample) +
           '.'
       );
     }

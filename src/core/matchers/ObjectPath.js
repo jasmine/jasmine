@@ -1,4 +1,4 @@
-getJasmineRequireObj().ObjectPath = function(j$) {
+getJasmineRequireObj().ObjectPath = function(j$, private$) {
   'use strict';
 
   class ObjectPath {

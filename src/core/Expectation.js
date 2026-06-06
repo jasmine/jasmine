@@ -1,4 +1,4 @@
-getJasmineRequireObj().Expectation = function(j$) {
+getJasmineRequireObj().Expectation = function(j$, private$) {
   'use strict';
 
   /**
@@ -6,7 +6,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * @namespace matchers
    */
   function Expectation(options) {
-    this.expector = new j$.private.Expector(options);
+    this.expector = new private$.Expector(options);
 
     const customMatchers = options.customMatchers || {};
     for (const matcherName in customMatchers) {
@@ -82,7 +82,7 @@ getJasmineRequireObj().Expectation = function(j$) {
    * @namespace async-matchers
    */
   function AsyncExpectation(options) {
-    this.expector = new j$.private.Expector(options);
+    this.expector = new private$.Expector(options);
 
     const customAsyncMatchers = options.customAsyncMatchers || {};
     for (const matcherName in customAsyncMatchers) {
@@ -175,7 +175,7 @@ getJasmineRequireObj().Expectation = function(j$) {
 
   function negatedFailureMessage(result, matcherName, args, matchersUtil) {
     if (result.message) {
-      if (j$.private.isFunction(result.message)) {
+      if (private$.isFunction(result.message)) {
         return result.message();
       } else {
         return result.message;
@@ -220,7 +220,7 @@ getJasmineRequireObj().Expectation = function(j$) {
       return function(actual) {
         const matcherArgs = arguments;
 
-        return j$.private.isPending(actual).then(function(isPending) {
+        return private$.isPending(actual).then(function(isPending) {
           if (isPending) {
             return {
               pass: false,

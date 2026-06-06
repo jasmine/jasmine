@@ -1,4 +1,4 @@
-getJasmineRequireObj().util = function(j$) {
+getJasmineRequireObj().util = function(j$, private$) {
   'use strict';
 
   const util = {};
@@ -29,7 +29,7 @@ getJasmineRequireObj().util = function(j$) {
       } else if (str === '[object Date]') {
         return new Date(arg.valueOf());
       } else {
-        return j$.private.util.clone(arg);
+        return private$.util.clone(arg);
       }
     });
   };
@@ -51,7 +51,7 @@ getJasmineRequireObj().util = function(j$) {
   };
 
   function callerFile() {
-    const trace = new j$.private.StackTrace(new Error());
+    const trace = new private$.StackTrace(new Error());
     return trace.frames[1].file;
   }
 

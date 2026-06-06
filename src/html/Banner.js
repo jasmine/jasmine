@@ -1,15 +1,13 @@
-jasmineRequire.Banner = function(j$) {
+getJasmineHtmlRequireObj().Banner = function(j$, private$) {
   'use strict';
 
-  const { createDom } = j$.private.htmlReporterUtils;
+  const { createDom } = private$.htmlReporterUtils;
 
   class Banner {
     #navigateWithNewParam;
-    #omitHideDisabled;
 
-    constructor(navigateWithNewParam, omitHideDisabled) {
+    constructor(navigateWithNewParam) {
       this.#navigateWithNewParam = navigateWithNewParam;
-      this.#omitHideDisabled = omitHideDisabled;
       this.rootEl = createDom(
         'div',
         { className: 'jasmine-banner' },
@@ -72,25 +70,6 @@ jasmineRequire.Banner = function(j$) {
         )
       ];
 
-      if (!this.#omitHideDisabled) {
-        items.push(
-          createDom(
-            'div',
-            { className: 'jasmine-hide-disabled' },
-            createDom('input', {
-              className: 'jasmine-disabled',
-              id: 'jasmine-hide-disabled',
-              type: 'checkbox'
-            }),
-            createDom(
-              'label',
-              { className: 'jasmine-label', for: 'jasmine-hide-disabled' },
-              'hide disabled tests'
-            )
-          )
-        );
-      }
-
       const optionsMenuDom = createDom(
         'div',
         { className: 'jasmine-run-options' },
@@ -127,16 +106,6 @@ jasmineRequire.Banner = function(j$) {
       randomCheckbox.onclick = () => {
         this.#navigateWithNewParam('random', !config.random);
       };
-
-      if (!this.#omitHideDisabled) {
-        const hideDisabled = optionsMenuDom.querySelector(
-          '#jasmine-hide-disabled'
-        );
-        hideDisabled.checked = config.hideDisabled;
-        hideDisabled.onclick = () => {
-          this.#navigateWithNewParam('hideDisabled', !config.hideDisabled);
-        };
-      }
 
       const optionsTrigger = optionsMenuDom.querySelector('.jasmine-trigger');
       const optionsPayload = optionsMenuDom.querySelector('.jasmine-payload');

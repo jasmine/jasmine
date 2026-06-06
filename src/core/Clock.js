@@ -1,4 +1,4 @@
-getJasmineRequireObj().Clock = function(j$) {
+getJasmineRequireObj().Clock = function(j$, private$) {
   'use strict';
 
   /* global process */
@@ -192,7 +192,7 @@ callbacks to execute _before_ running the next one.
     setInterval[IsMockClockTimingFn] = true;
     clearInterval[IsMockClockTimingFn] = true;
 
-    j$.private.deprecateMonkeyPatching(this);
+    Object.freeze(this);
 
     return this;
 
@@ -347,5 +347,7 @@ callbacks to execute _before_ running the next one.
   };
 
   Clock.IsMockClockTimingFn = IsMockClockTimingFn;
+  Object.freeze(Clock);
+  Object.freeze(Clock.prototype);
   return Clock;
 };

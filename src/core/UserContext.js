@@ -1,4 +1,4 @@
-getJasmineRequireObj().UserContext = function(j$) {
+getJasmineRequireObj().UserContext = function(j$, private$) {
   'use strict';
 
   function UserContext() {}

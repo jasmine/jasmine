@@ -13,83 +13,65 @@ describe('The jasmine namespace', function() {
     expect(setDifference(actualKeys, expectedKeys())).toEqual(new Set());
   });
 
-  describe('Warning about monkey patching', function() {
-    beforeEach(function() {
-      spyOn(console, 'error');
+  describe('Preventing monkey patching', function() {
+    const mutable = mutableKeys();
+
+    for (const key of expectedKeys()) {
+      if (mutable.includes(key)) {
+        it(`allows overwriting of jasmine.${key}`, function() {
+          const existingVal = jasmineUnderTest[key];
+
+          try {
+            jasmineUnderTest[key] = 'new value';
+            expect(jasmineUnderTest[key]).toEqual('new value');
+          } finally {
+            jasmineUnderTest[key] = existingVal;
+          }
+        });
+      } else {
+        it(`prevents overwriting of jasmine.${key}`, function() {
+          const existingVal = jasmineUnderTest[key];
+
+          try {
+            jasmineUnderTest[key] = 'monkey patch';
+            expect(jasmineUnderTest[key]).toBe(existingVal);
+          } finally {
+            // This will be a no-op if the test passed, but will prevent state
+            // leakage if it failed.
+            jasmineUnderTest[key] = existingVal;
+          }
+        });
+      }
+    }
+
+    it('allows additions', function() {
+      try {
+        jasmineUnderTest.Ajax = 'it worked';
+        expect(jasmineUnderTest.Ajax).toEqual('it worked');
+      } finally {
+        delete jasmineUnderTest.Ajax;
+      }
     });
-
-    for (const key of expectedKeys(false)) {
-      if (!key.startsWith('MAX_') && key !== 'private' && key !== 'getEnv') {
-        describe(`jasmine.${key}`, function() {
-          let orig;
-
-          beforeEach(function() {
-            orig = jasmineUnderTest[key];
-          });
-
-          afterEach(function() {
-            jasmineUnderTest[key] = orig;
-          });
-
-          it('warns if monkey patched', function() {
-            const patch = {};
-            jasmineUnderTest[key] = patch;
-
-            verifyDeprecation();
-            expect(jasmineUnderTest[key]).toBe(patch);
-          });
-        });
-      }
-    }
-
-    // These specs rely on jasmineRequire being exposed. That only happens
-    // in browsers.
-    if (typeof document !== 'undefined') {
-      const statics = ['addMatchers', 'clock', 'createSpyObj'];
-
-      for (const name of statics) {
-        describe(`jasmine.${name}`, function() {
-          let bootedCore, env, orig;
-
-          beforeEach(function() {
-            bootedCore = jasmineRequire.core(jasmineRequire);
-            env = bootedCore.getEnv();
-            jasmineRequire.interface(bootedCore, env);
-            orig = bootedCore[name];
-          });
-
-          afterEach(function() {
-            bootedCore[name] = orig;
-            env.cleanup_();
-          });
-
-          it(`warns if jasmine.${name} is monkey patched`, function() {
-            const patch = {};
-            bootedCore[name] = patch;
-
-            verifyDeprecation();
-            expect(bootedCore[name]).toBe(patch);
-          });
-        });
-      }
-    }
   });
 
-  function expectedKeys(includeHtml) {
-    if (includeHtml === undefined) {
-      includeHtml = typeof window !== 'undefined';
-    }
-    // Does not include properties added by requireInterface(), since that isn't
-    // called by defineJasmineUnderTest.js/nodeDefineJasmineUnderTest.js.
-    const result = new Set([
+  function mutableKeys() {
+    return [
       'MAX_PRETTY_PRINT_ARRAY_LENGTH',
       'MAX_PRETTY_PRINT_CHARS',
       'MAX_PRETTY_PRINT_DEPTH',
+      'DEFAULT_TIMEOUT_INTERVAL'
+    ];
+  }
+
+  function expectedKeys() {
+    // Does not include properties added by requireInterface(), since that isn't
+    // called by defineJasmineUnderTest.js/nodeDefineJasmineUnderTest.js.
+    const result = new Set([
+      ...mutableKeys(),
       'debugLog',
       'getEnv',
       'isSpy',
       'ParallelReportDispatcher',
-      'private',
       'spyOnGlobalErrorsAsync',
       'Timer',
       'version',
@@ -116,12 +98,10 @@ describe('The jasmine namespace', function() {
       'getGlobal'
     ]);
 
-    if (includeHtml) {
+    if (typeof window !== 'undefined') {
       // jasmine-html.js
-      result.add('HtmlReporter');
       result.add('HtmlReporterV2');
       result.add('HtmlReporterV2Urls');
-      result.add('HtmlSpecFilter');
       result.add('QueryString');
     }
 
@@ -139,16 +119,5 @@ describe('The jasmine namespace', function() {
     }
 
     return result;
-  }
-
-  function verifyDeprecation() {
-    // eslint-disable-next-line no-console
-    expect(console.error).toHaveBeenCalledOnceWith(
-      jasmine.stringContaining('DEPRECATION: Monkey patching detected.')
-    );
-    // eslint-disable-next-line no-console
-    expect(console.error).toHaveBeenCalledOnceWith(
-      jasmine.stringContaining('jasmineNamespaceSpec.js')
-    );
   }
 });

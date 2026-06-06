@@ -1,4 +1,4 @@
-jasmineRequire.htmlReporterUtils = function(j$) {
+getJasmineHtmlRequireObj().htmlReporterUtils = function(j$, private$) {
   'use strict';
 
   function createDom(type, attrs, childrenArrayOrVarArgs) {

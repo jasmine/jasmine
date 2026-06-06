@@ -63,4 +63,8 @@ describe('HtmlReporterV2Urls', function() {
       return qs;
     }
   });
+
+  isNonMonkeyPatchableClass(jasmineUnderTest.HtmlReporterV2Urls, function() {
+    return new jasmineUnderTest.HtmlReporterV2Urls({});
+  });
 });

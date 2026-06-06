@@ -1,4 +1,4 @@
-getJasmineRequireObj().Configuration = function(j$) {
+getJasmineRequireObj().Configuration = function(j$, private$) {
   'use strict';
 
   /**
@@ -74,17 +74,6 @@ getJasmineRequireObj().Configuration = function(j$) {
       return true;
     },
 
-    // TODO: remove hideDisabled when HtmlReporter is removed
-    /**
-     * Whether reporters should hide disabled specs from their output.
-     * Currently only supported by Jasmine's HTMLReporter
-     * @name Configuration#hideDisabled
-     * @since 3.3.0
-     * @type Boolean
-     * @default false
-     * @deprecated
-     */
-    hideDisabled: false,
     /**
      * Clean closures when a suite is done running (done by clearing the stored function reference).
      * This prevents memory leaks, but you won't be able to run jasmine multiple times.
@@ -155,25 +144,25 @@ getJasmineRequireObj().Configuration = function(j$) {
 
     /**
      * The strategy to use in Safari and similar browsers to determine how often
-     * to yield control by calling setTimeout. If set to "count", the default,
-     * the frequency of setTimeout calls is based on the number of relevant
-     * function calls. If set to "time", the frequency of setTimeout calls is
-     * based on elapsed time. Using "time" may provide a significant performance
-     * improvement, but as of 6.0 it hasn't been tested with a wide variety of
-     * workloads and should be considered experimental.
+     * to yield control by calling setTimeout. If set to "time", the default,
+     * the frequency of setTimeout calls is based on elapsed time. If set to
+     * "count", the frequency of setTimeout calls is based on the number of
+     * relevant function calls.
      * @name Configuration#safariYieldStrategy
      * @since 6.0.0
      * @type 'count' | 'time'
-     * @default 'count'
+     * @default 'time'
      */
-    safariYieldStrategy: 'count'
+    safariYieldStrategy: 'time'
   };
   Object.freeze(defaultConfig);
 
   class Configuration {
+    #deprecated;
     #values;
 
-    constructor() {
+    constructor(options) {
+      this.#deprecated = options.deprecated;
       this.#values = { ...defaultConfig };
 
       for (const k of Object.keys(defaultConfig)) {
@@ -194,7 +183,6 @@ getJasmineRequireObj().Configuration = function(j$) {
       const booleanProps = [
         'random',
         'failSpecWithNoExpectations',
-        'hideDisabled',
         'stopOnSpecFailure',
         'stopSpecOnExpectationFailure',
         'autoCleanClosures',
@@ -233,11 +221,23 @@ getJasmineRequireObj().Configuration = function(j$) {
 
         if (v === 'count' || v === 'time') {
           this.#values.safariYieldStrategy = v;
+
+          if (v === 'count') {
+            this.#deprecated(
+              'safariYieldStrategy: "count" is deprecated. If you need this option, please submit a bug report.'
+            );
+          }
         } else {
           throw new Error(
             "Invalid safariYieldStrategy value. Valid values are 'count' and 'time'."
           );
         }
+      }
+
+      if (changes.forbidDuplicateNames === false) {
+        this.#deprecated(
+          'The forbidDuplicateNames configuration setting is deprecated and will be removed in a future release.'
+        );
       }
     }
   }

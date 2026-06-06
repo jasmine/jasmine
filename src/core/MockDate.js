@@ -1,4 +1,4 @@
-getJasmineRequireObj().MockDate = function(j$) {
+getJasmineRequireObj().MockDate = function(j$, private$) {
   'use strict';
 
   function MockDate(global) {
