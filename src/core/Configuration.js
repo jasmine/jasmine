@@ -233,12 +233,6 @@ getJasmineRequireObj().Configuration = function(j$, private$) {
           );
         }
       }
-
-      if (changes.forbidDuplicateNames === false) {
-        this.#deprecated(
-          'The forbidDuplicateNames configuration setting is deprecated and will be removed in a future release.'
-        );
-      }
     }
   }
 

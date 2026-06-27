@@ -156,7 +156,7 @@ describe('Configuration', function() {
       expect(subject.safariYieldStrategy).toEqual('time');
     });
 
-    it('rejects invalid safariYieldStrategy values', function() {
+    it('rejcts invalid safariYieldStrategy values', function() {
       const subject = new privateUnderTest.Configuration(options());
 
       expect(function() {
@@ -164,27 +164,6 @@ describe('Configuration', function() {
       }).toThrowError(
         "Invalid safariYieldStrategy value. Valid values are 'count' and 'time'."
       );
-    });
-
-    it('emits a deprecation warning when forbidDuplicateNames is set to false', function() {
-      const deprecated = jasmine.createSpy('deprecated');
-      const subject = new privateUnderTest.Configuration({ deprecated });
-
-      subject.update({ forbidDuplicateNames: false });
-
-      expect(deprecated).toHaveBeenCalledWith(
-        'The forbidDuplicateNames configuration setting is deprecated and will be removed in a future release.'
-      );
-    });
-
-    it('does not emit a deprecation warning when forbidDuplicateNames is set to true or undefined', function() {
-      const deprecated = jasmine.createSpy('deprecated');
-      const subject = new privateUnderTest.Configuration({ deprecated });
-
-      subject.update({ forbidDuplicateNames: true });
-      subject.update({ forbidDuplicateNames: undefined });
-
-      expect(deprecated).not.toHaveBeenCalled();
     });
   });
 
