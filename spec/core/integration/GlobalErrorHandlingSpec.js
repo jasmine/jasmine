@@ -301,7 +301,7 @@ describe('Global error handling (integration)', function() {
         env.cleanup_();
         env = new privateUnderTest.Env({ global });
 
-        spyOn(console, 'error');
+        spyOn(privateUnderTest, 'consoleError');
 
         env.addReporter({
           jasmineDone: function() {
@@ -313,12 +313,10 @@ describe('Global error handling (integration)', function() {
 
         await env.execute();
 
-        /* eslint-disable-next-line no-console */
-        expect(console.error).toHaveBeenCalledWith(
+        expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
           'Jasmine received a result after the suite finished:'
         );
-        /* eslint-disable-next-line no-console */
-        expect(console.error).toHaveBeenCalledWith(
+        expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
           jasmine.objectContaining({
             message: 'a very late error thrown',
             globalErrorType: 'afterAll'
@@ -349,7 +347,7 @@ describe('Global error handling (integration)', function() {
         realClearStack(fn);
       });
       spyOn(privateUnderTest, 'getStackClearer').and.returnValue(stackClearer);
-      spyOn(console, 'error');
+      spyOn(privateUnderTest, 'consoleError');
 
       env.cleanup_();
       env = new privateUnderTest.Env({ global });
@@ -382,8 +380,7 @@ describe('Global error handling (integration)', function() {
       }
 
       for (const message of expectedErrorsAfterJasmineDone) {
-        /* eslint-disable-next-line no-console */
-        expect(console.error).toHaveBeenCalledWith(
+        expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
           jasmine.objectContaining({ message })
         );
       }
@@ -584,7 +581,7 @@ describe('Global error handling (integration)', function() {
         env.cleanup_();
         env = new privateUnderTest.Env({ global });
 
-        spyOn(console, 'error');
+        spyOn(privateUnderTest, 'consoleError');
 
         env.addReporter({
           jasmineDone: function() {
@@ -598,12 +595,10 @@ describe('Global error handling (integration)', function() {
 
         await env.execute();
 
-        /* eslint-disable-next-line no-console */
-        expect(console.error).toHaveBeenCalledWith(
+        expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
           'Jasmine received a result after the suite finished:'
         );
-        /* eslint-disable-next-line no-console */
-        expect(console.error).toHaveBeenCalledWith(
+        expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
           jasmine.objectContaining({
             message: 'Unhandled promise rejection: a very late error thrown',
             globalErrorType: 'afterAll'
@@ -635,7 +630,7 @@ describe('Global error handling (integration)', function() {
         realClearStack(fn);
       });
       spyOn(privateUnderTest, 'getStackClearer').and.returnValue(stackClearer);
-      spyOn(console, 'error');
+      spyOn(privateUnderTest, 'consoleError');
 
       env.cleanup_();
       env = new privateUnderTest.Env({ global });
@@ -668,8 +663,7 @@ describe('Global error handling (integration)', function() {
       }
 
       for (const message of expectedErrorsAfterJasmineDone) {
-        /* eslint-disable-next-line no-console */
-        expect(console.error).toHaveBeenCalledWith(
+        expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
           jasmine.objectContaining({ message })
         );
       }

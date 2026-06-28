@@ -229,6 +229,11 @@ getJasmineRequireObj().base = function(j$, private$, jasmineGlobal) {
     );
   };
 
+  private$.consoleError = function(...args) {
+    // eslint-disable-next-line no-console
+    console.error(...args);
+  };
+
   /**
    * Get an {@link AsymmetricEqualityTester} that will succeed if the actual
    * value being compared matches every provided equality tester.

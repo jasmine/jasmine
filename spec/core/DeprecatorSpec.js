@@ -1,8 +1,7 @@
-/* eslint no-console: 0 */
 describe('Deprecator', function() {
   describe('#deprecate', function() {
     beforeEach(function() {
-      spyOn(console, 'error');
+      spyOn(privateUnderTest, 'consoleError');
     });
 
     it('logs the mesage without context when the runnable is the top suite', function() {
@@ -14,7 +13,9 @@ describe('Deprecator', function() {
         omitStackTrace: true
       });
 
-      expect(console.error).toHaveBeenCalledWith('DEPRECATION: the message');
+      expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
+        'DEPRECATION: the message'
+      );
     });
 
     it('logs the message in a descendant suite', function() {
@@ -32,7 +33,7 @@ describe('Deprecator', function() {
         omitStackTrace: true
       });
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
         'DEPRECATION: the message (in suite: the suite)'
       );
     });
@@ -51,7 +52,7 @@ describe('Deprecator', function() {
         omitStackTrace: true
       });
 
-      expect(console.error).toHaveBeenCalledWith(
+      expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
         'DEPRECATION: the message (in spec: the spec)'
       );
     });
@@ -78,10 +79,10 @@ describe('Deprecator', function() {
         })
       );
       expect(runnable.addDeprecationWarning).not.toHaveBeenCalled();
-      expect(console.error).toHaveBeenCalledWith(
+      expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
         jasmine.stringMatching(/the message/)
       );
-      expect(console.error).not.toHaveBeenCalledWith(
+      expect(privateUnderTest.consoleError).not.toHaveBeenCalledWith(
         jasmine.stringMatching(/a spec/)
       );
     });
@@ -176,8 +177,8 @@ describe('Deprecator', function() {
       expect(
         runnable.addDeprecationWarning.calls.argsFor(0)[0].message
       ).toContain(verboseDeprecationsNote());
-      expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error.calls.argsFor(0)[0]).toContain(
+      expect(privateUnderTest.consoleError).toHaveBeenCalledTimes(1);
+      expect(privateUnderTest.consoleError.calls.argsFor(0)[0]).toContain(
         verboseDeprecationsNote()
       );
     });
@@ -196,8 +197,8 @@ describe('Deprecator', function() {
       expect(
         runnable.addDeprecationWarning.calls.argsFor(0)[0].message
       ).not.toContain(verboseDeprecationsNote());
-      expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error.calls.argsFor(0)[0]).not.toContain(
+      expect(privateUnderTest.consoleError).toHaveBeenCalledTimes(1);
+      expect(privateUnderTest.consoleError.calls.argsFor(0)[0]).not.toContain(
         verboseDeprecationsNote()
       );
     });
@@ -230,11 +231,13 @@ describe('Deprecator', function() {
         expect(runnable.addDeprecationWarning.calls.argsFor(0)[0].stack).toBe(
           originalStack
         );
-        expect(console.error).toHaveBeenCalledTimes(1);
-        expect(console.error.calls.argsFor(0)[0].message).toEqual(
-          'the deprecation'
+        expect(privateUnderTest.consoleError).toHaveBeenCalledTimes(1);
+        expect(
+          privateUnderTest.consoleError.calls.argsFor(0)[0].message
+        ).toEqual('the deprecation');
+        expect(privateUnderTest.consoleError.calls.argsFor(0)[0].stack).toEqual(
+          originalStack
         );
-        expect(console.error.calls.argsFor(0)[0].stack).toEqual(originalStack);
       });
 
       it('reports the deprecation every time, regardless of config.verboseDeprecations', function() {
@@ -255,7 +258,7 @@ describe('Deprecator', function() {
         deprecator.addDeprecationWarning(runnable, deprecation);
 
         expect(runnable.addDeprecationWarning).toHaveBeenCalledTimes(2);
-        expect(console.error).toHaveBeenCalledTimes(2);
+        expect(privateUnderTest.consoleError).toHaveBeenCalledTimes(2);
       });
 
       it('omits the note about verboseDeprecations', function() {
@@ -278,8 +281,8 @@ describe('Deprecator', function() {
         expect(
           runnable.addDeprecationWarning.calls.argsFor(0)[0].message
         ).not.toContain(verboseDeprecationsNote());
-        expect(console.error).toHaveBeenCalledTimes(1);
-        expect(console.error.calls.argsFor(0)[0]).not.toContain(
+        expect(privateUnderTest.consoleError).toHaveBeenCalledTimes(1);
+        expect(privateUnderTest.consoleError.calls.argsFor(0)[0]).not.toContain(
           verboseDeprecationsNote()
         );
       });
@@ -305,9 +308,13 @@ describe('Deprecator', function() {
         message: jasmine.stringMatching(/^the message/),
         omitStackTrace: false
       });
-      expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error.calls.argsFor(0)[0]).toContain('the message');
-      expect(console.error.calls.argsFor(0)[0]).toContain('DeprecatorSpec.js');
+      expect(privateUnderTest.consoleError).toHaveBeenCalledTimes(1);
+      expect(privateUnderTest.consoleError.calls.argsFor(0)[0]).toContain(
+        'the message'
+      );
+      expect(privateUnderTest.consoleError.calls.argsFor(0)[0]).toContain(
+        'DeprecatorSpec.js'
+      );
     }
 
     function testNoStackTrace(options) {

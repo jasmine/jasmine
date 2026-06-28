@@ -1,4 +1,3 @@
-/* eslint no-console: 0 */
 describe('Deprecation (integration)', function() {
   let env;
 
@@ -13,7 +12,7 @@ describe('Deprecation (integration)', function() {
   it('reports a deprecation on the top suite', async function() {
     const reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
     env.addReporter(reporter);
-    spyOn(console, 'error');
+    spyOn(privateUnderTest, 'consoleError');
 
     env.beforeAll(function() {
       env.deprecated('the message');
@@ -31,7 +30,7 @@ describe('Deprecation (integration)', function() {
         ]
       })
     );
-    expect(console.error).toHaveBeenCalledWith(
+    expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
       jasmine.stringMatching(/^DEPRECATION: the message/)
     );
   });
@@ -39,7 +38,7 @@ describe('Deprecation (integration)', function() {
   it('reports a deprecation on a descendent suite', async function() {
     const reporter = jasmine.createSpyObj('reporter', ['suiteDone']);
     env.addReporter(reporter);
-    spyOn(console, 'error');
+    spyOn(privateUnderTest, 'consoleError');
 
     env.describe('a suite', function() {
       env.beforeAll(function() {
@@ -59,7 +58,7 @@ describe('Deprecation (integration)', function() {
         ]
       })
     );
-    expect(console.error).toHaveBeenCalledWith(
+    expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
       jasmine.stringMatching(/^DEPRECATION: the message \(in suite: a suite\)/)
     );
   });
@@ -67,7 +66,7 @@ describe('Deprecation (integration)', function() {
   it('reports a deprecation on a spec', async function() {
     const reporter = jasmine.createSpyObj('reporter', ['specDone']);
     env.addReporter(reporter);
-    spyOn(console, 'error');
+    spyOn(privateUnderTest, 'consoleError');
 
     env.describe('a suite', function() {
       env.it('a spec', function() {
@@ -86,7 +85,7 @@ describe('Deprecation (integration)', function() {
         ]
       })
     );
-    expect(console.error).toHaveBeenCalledWith(
+    expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
       jasmine.stringMatching(
         /^DEPRECATION: the message \(in spec: a suite a spec\)/
       )
@@ -96,7 +95,7 @@ describe('Deprecation (integration)', function() {
   it('omits the suite or spec context when ignoreRunnable is true', async function() {
     const reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
     env.addReporter(reporter);
-    spyOn(console, 'error');
+    spyOn(privateUnderTest, 'consoleError');
 
     env.it('a spec', function() {
       env.deprecated('the message', { ignoreRunnable: true });
@@ -113,10 +112,10 @@ describe('Deprecation (integration)', function() {
         ]
       })
     );
-    expect(console.error).toHaveBeenCalledWith(
+    expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
       jasmine.stringMatching(/the message/)
     );
-    expect(console.error).not.toHaveBeenCalledWith(
+    expect(privateUnderTest.consoleError).not.toHaveBeenCalledWith(
       jasmine.stringMatching(/a spec/)
     );
   });
@@ -124,7 +123,7 @@ describe('Deprecation (integration)', function() {
   it('includes the stack trace', async function() {
     const reporter = jasmine.createSpyObj('reporter', ['specDone']);
     env.addReporter(reporter);
-    spyOn(console, 'error');
+    spyOn(privateUnderTest, 'consoleError');
 
     env.describe('a suite', function() {
       env.it('a spec', function() {
@@ -143,8 +142,10 @@ describe('Deprecation (integration)', function() {
         ]
       })
     );
-    expect(console.error).toHaveBeenCalled();
-    expect(console.error.calls.argsFor(0)[0].replace(/\n/g, 'NL')).toMatch(
+    expect(privateUnderTest.consoleError).toHaveBeenCalled();
+    expect(
+      privateUnderTest.consoleError.calls.argsFor(0)[0].replace(/\n/g, 'NL')
+    ).toMatch(
       /^DEPRECATION: the message \(in spec: a suite a spec\)NL.*DeprecationSpec.js/
     );
   });
@@ -152,7 +153,7 @@ describe('Deprecation (integration)', function() {
   it('excludes the stack trace when omitStackTrace is true', async function() {
     const reporter = jasmine.createSpyObj('reporter', ['specDone']);
     env.addReporter(reporter);
-    spyOn(console, 'error');
+    spyOn(privateUnderTest, 'consoleError');
 
     env.describe('a suite', function() {
       env.it('a spec', function() {
@@ -171,8 +172,8 @@ describe('Deprecation (integration)', function() {
         ]
       })
     );
-    expect(console.error).toHaveBeenCalled();
-    expect(console.error).not.toHaveBeenCalledWith(
+    expect(privateUnderTest.consoleError).toHaveBeenCalled();
+    expect(privateUnderTest.consoleError).not.toHaveBeenCalledWith(
       jasmine.stringMatching(/DeprecationSpec.js/)
     );
   });
@@ -183,7 +184,7 @@ describe('Deprecation (integration)', function() {
       'suiteDone'
     ]);
     env.addReporter(reporter);
-    spyOn(console, 'error');
+    spyOn(privateUnderTest, 'consoleError');
 
     env.describe('a suite', function() {
       env.beforeAll(function() {
@@ -219,11 +220,11 @@ describe('Deprecation (integration)', function() {
         ]
       })
     );
-    expect(console.error).toHaveBeenCalledTimes(2);
-    expect(console.error).toHaveBeenCalledWith(
+    expect(privateUnderTest.consoleError).toHaveBeenCalledTimes(2);
+    expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
       jasmine.stringMatching(/^DEPRECATION: the message \(in suite: a suite\)/)
     );
-    expect(console.error).toHaveBeenCalledWith(
+    expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
       jasmine.stringMatching(
         /^DEPRECATION: a different message \(in spec: a suite a spec\)/
       )
@@ -236,7 +237,7 @@ describe('Deprecation (integration)', function() {
       'suiteDone'
     ]);
     env.addReporter(reporter);
-    spyOn(console, 'error');
+    spyOn(privateUnderTest, 'consoleError');
 
     env.configure({ verboseDeprecations: true });
 
@@ -274,17 +275,17 @@ describe('Deprecation (integration)', function() {
         ]
       })
     );
-    expect(console.error).toHaveBeenCalledTimes(3);
-    expect(console.error.calls.argsFor(0)[0]).toMatch(
+    expect(privateUnderTest.consoleError).toHaveBeenCalledTimes(3);
+    expect(privateUnderTest.consoleError.calls.argsFor(0)[0]).toMatch(
       /^DEPRECATION: the message \(in suite: a suite\)/
     );
-    expect(console.error.calls.argsFor(1)[0]).toMatch(
+    expect(privateUnderTest.consoleError.calls.argsFor(1)[0]).toMatch(
       /^DEPRECATION: the message \(in suite: a suite\)/
     );
-    expect(console.error.calls.argsFor(2)[0]).toMatch(
+    expect(privateUnderTest.consoleError.calls.argsFor(2)[0]).toMatch(
       /^DEPRECATION: the message \(in spec: a suite a spec\)/
     );
-    expect(console.error.calls.argsFor(2)[0]).toMatch(
+    expect(privateUnderTest.consoleError.calls.argsFor(2)[0]).toMatch(
       /^DEPRECATION: the message \(in spec: a suite a spec\)/
     );
   });
@@ -292,7 +293,7 @@ describe('Deprecation (integration)', function() {
   it('handles deprecations that occur before execute() is called', async function() {
     const reporter = jasmine.createSpyObj('reporter', ['jasmineDone']);
     env.addReporter(reporter);
-    spyOn(console, 'error');
+    spyOn(privateUnderTest, 'consoleError');
 
     env.deprecated('the message');
     env.it('a spec', function() {});
@@ -308,7 +309,7 @@ describe('Deprecation (integration)', function() {
         ]
       })
     );
-    expect(console.error).toHaveBeenCalledWith(
+    expect(privateUnderTest.consoleError).toHaveBeenCalledWith(
       jasmine.stringMatching(/^DEPRECATION: the message/)
     );
   });

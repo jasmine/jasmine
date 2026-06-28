@@ -152,7 +152,7 @@ describe('base helpers', function() {
       if (typeof process !== 'undefined' && process.emitWarning) {
         spyOn(process, 'emitWarning'); // Node 22
       }
-      spyOn(console, 'error'); // Node <22
+      spyOn(privateUnderTest, 'consoleError'); // Node <22
 
       let id = setTimeout(f1, max);
       setTimeout(function() {
