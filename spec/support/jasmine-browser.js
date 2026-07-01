@@ -21,6 +21,7 @@ module.exports = {
     'helpers/init.js',
     'helpers/generator.js',
     'helpers/BrowserFlags.js',
+    'helpers/checkForUrl.js',
     'helpers/domHelpers.js',
     'helpers/integrationMatchers.js',
     'helpers/callerFilenameShim.js',

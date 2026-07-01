@@ -69,6 +69,7 @@ describe('base helpers', function() {
 
   describe('isURL', function() {
     it('returns true when the object is a URL', function() {
+      specHelpers.requireUrls();
       expect(privateUnderTest.isURL(new URL('http://localhost/'))).toBe(true);
     });
 
