@@ -38,8 +38,7 @@ getJasmineRequireObj().Deprecator = function(j$, private$) {
 
   Deprecator.prototype.log_ = function(runnable, deprecation, options) {
     if (private$.isError(deprecation)) {
-      // eslint-disable-next-line no-console
-      console.error(deprecation);
+      private$.consoleError(deprecation);
       return;
     }
 
@@ -61,8 +60,7 @@ getJasmineRequireObj().Deprecator = function(j$, private$) {
       context += '\n' + verboseNote;
     }
 
-    // eslint-disable-next-line no-console
-    console.error('DEPRECATION: ' + deprecation + context);
+    private$.consoleError('DEPRECATION: ' + deprecation + context);
   };
 
   Deprecator.prototype.stackTrace_ = function() {

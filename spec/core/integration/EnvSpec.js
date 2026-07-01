@@ -2949,7 +2949,7 @@ describe('Env integration', function() {
     const specLevelError = new Error('spec level deprecation');
 
     // prevent deprecation from being displayed
-    spyOn(console, 'error');
+    spyOn(privateUnderTest, 'consoleError');
 
     env.addReporter(reporter);
 
