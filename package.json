@@ -42,7 +42,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.24.0",
     "@jasminejs/reporters": "github:jasmine/reporters",
-    "archiver": "^7.0.1",
+    "archiver": "^8.0.0",
     "css-url-embed": "^0.1.0",
     "ejs": "^3.1.10",
     "eslint": "^9.24.0",
