@@ -58,7 +58,7 @@ async function zipStandaloneDist(jasmineVersion) {
 
   const destPath = `./dist/jasmine-standalone-${jasmineVersion}.zip`;
   const output = fs.createWriteStream(destPath);
-  const archive = archiver('zip');
+  const archive = new archiver.ZipArchive();
 
   const done = new Promise(function(resolve, reject) {
     output.on('close', resolve);
