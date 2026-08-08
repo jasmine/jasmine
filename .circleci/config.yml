@@ -29,6 +29,19 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Delete .npmrc
+          command: |
+            # jasmine-core's .npmrc requires NPM 12.
+            # We can't reliably install NPM 12 on anything before Node 26:
+            # * NPM 12 won't run on any Node 20 version, or on older 22 and
+            #   24 minors.
+            # * npm install -g fails on cimg/node:24.* due to permissions.
+            # Removing .npmrc theoretically leaves CI vulnerable to supply
+            # chain attacks, but CI produces no artifacts and has no access
+            # to credentials (except for the Saucelabs API key, and that's
+            # only provided to trusted invocations.)
+            rm .npmrc
+      - run:
           name: Report Node and NPM versions
           command: echo "Using Node $(node --version) and NPM $(npm --version)"
       - run:
