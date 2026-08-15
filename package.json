@@ -41,7 +41,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.24.0",
-    "@jasminejs/reporters": "github:jasmine/reporters",
+    "@jasminejs/reporters": "^1.1.0",
     "archiver": "^8.0.0",
     "css-url-embed": "^0.1.0",
     "ejs": "^3.1.10",
@@ -49,8 +49,8 @@
     "eslint-plugin-compat": "^6.0.2",
     "glob": "^13.0.0",
     "globals": "^16.0.0",
-    "jasmine": "github:jasmine/jasmine-npm#7.0",
-    "jasmine-browser-runner": "github:jasmine/jasmine-browser-runner#5.0",
+    "jasmine": "^7.0.0",
+    "jasmine-browser-runner": "^5.0.0",
     "jsdom": "^26.0.0",
     "prettier": "1.17.1",
     "sass": "^1.58.3"
