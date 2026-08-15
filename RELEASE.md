@@ -32,11 +32,11 @@ When ready to release - specs are all green and the stories are done:
    generate the Markdown file and edit accordingly. Include a list of supported
    environments. Get that information from these places:
    * For Node, see .circleci/config.yml or the README.
-   * For Firefox ESR and Safari <=17, see scripts/run-sauce-browsers or the README.
+   * For Firefox ESR, see scripts/run-sauce-browsers or the README.
    * For evergreen browsers, trigger a Circle CI run and check the
      [Saucelabs dashboard](https://app.saucelabs.com/dashboard/tests?ownerId=90a771d55857492da3bd5251a2d92457&ownerType=user&ownerName=jasmine-js&start=last7days)
      once it's finished.
-   * For Safari >17, trigger the [Safari action](https://github.com/jasmine/jasmine/actions/workflows/safari.yml)
+   * For Safari, trigger the [Safari action](https://github.com/jasmine/jasmine/actions/workflows/safari.yml)
      and get the version from the output.
 2. Update the version in `package.json`
 3. Run `npm run build`.
