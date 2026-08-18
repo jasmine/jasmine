@@ -5,13 +5,19 @@
   const jasmineRequire = getJasmineRequireObj();
 
   function bootJasmine(options) {
-    const jasmine = jasmineRequire.core(jasmineRequire).jasmine;
+    const { jasmine, private: private$ } = jasmineRequire.core(jasmineRequire);
     const env = jasmine.getEnv(options);
     const jasmineInterface = jasmineRequire.interface(jasmine, env);
     const globals = {
       jasmine,
-      ...jasmineInterface
+      ...jasmineInterface.members
     };
+
+    function reset() {
+      private$.currentEnv_ = null;
+      jasmine.getEnv({ suppressLoadErrors: true });
+      jasmineInterface.rebindEnv(private$.currentEnv_);
+    }
 
     return {
       jasmine,
@@ -23,7 +29,8 @@
         for (const [k, v] of Object.entries(globals)) {
           dest[k] = v;
         }
-      }
+      },
+      reset
     };
   }
 

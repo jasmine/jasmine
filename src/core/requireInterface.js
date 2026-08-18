@@ -569,5 +569,10 @@ getJasmineRequireObj().interface = function(jasmine, env) {
    * @namespace asymmetricEqualityTesters
    */
 
-  return jasmineInterface;
+  return {
+    members: jasmineInterface,
+    rebindEnv: function(newEnv) {
+      env = newEnv;
+    }
+  };
 };
