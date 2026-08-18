@@ -49,6 +49,22 @@ describe('npm package', function() {
     );
   });
 
+  it('resets the environment and rebinds the interface', function() {
+    const sandbox = {};
+    this.packagedCore.installGlobals(sandbox);
+
+    const before = this.packagedCore.jasmine.getEnv();
+    const previousDescribe = this.packagedCore.describe;
+    const previousInstalledDescribe = sandbox.describe;
+
+    this.packagedCore.reset();
+
+    expect(this.packagedCore.jasmine.getEnv()).not.toBe(before);
+    expect(this.packagedCore.describe).not.toBe(previousDescribe);
+    expect(sandbox.describe).not.toBe(previousInstalledDescribe);
+    expect(sandbox.describe).toBe(this.packagedCore.describe);
+  });
+
   it('has a bootDir', function() {
     expect(this.packagedCore.files.bootDir).toEqual(
       fs.realpathSync(path.resolve(this.tmpDir, 'package/lib/jasmine-core'))

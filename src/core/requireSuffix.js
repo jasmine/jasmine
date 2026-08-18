@@ -5,25 +5,47 @@
   const jasmineRequire = getJasmineRequireObj();
 
   function bootJasmine(options) {
-    const jasmine = jasmineRequire.core(jasmineRequire).jasmine;
-    const env = jasmine.getEnv(options);
-    const jasmineInterface = jasmineRequire.interface(jasmine, env);
+    const core = jasmineRequire.core(jasmineRequire);
+    const jasmine = core.jasmine;
+    const private$ = core.private;
     const globals = {
       jasmine,
-      ...jasmineInterface
+      ...jasmineRequire.interface(jasmine, jasmine.getEnv(options))
     };
+    const installedDestinations = new Set();
+
+    function installGlobals(dest) {
+      dest = dest ?? globalThis;
+      installedDestinations.add(dest);
+
+      for (const [k, v] of Object.entries(globals)) {
+        dest[k] = v;
+      }
+    }
+
+    function reset() {
+      private$.currentEnv_ = null;
+      const env = jasmine.getEnv({ suppressLoadErrors: true });
+      const jasmineInterface = jasmineRequire.interface(jasmine, env);
+
+      for (const key of Object.keys(globals)) {
+        if (key !== 'jasmine') {
+          delete globals[key];
+        }
+      }
+      Object.assign(globals, { jasmine, ...jasmineInterface });
+
+      for (const dest of installedDestinations) {
+        installGlobals(dest);
+      }
+    }
 
     return {
       jasmine,
       globals,
       version: jasmineRequire.version,
-      installGlobals(dest) {
-        dest = dest ?? globalThis;
-
-        for (const [k, v] of Object.entries(globals)) {
-          dest[k] = v;
-        }
-      }
+      installGlobals,
+      reset
     };
   }
 
