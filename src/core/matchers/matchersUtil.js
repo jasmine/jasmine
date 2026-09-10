@@ -84,10 +84,17 @@ getJasmineRequireObj().MatchersUtil = function(j$, private$) {
     const englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) {
       return ' ' + s.toLowerCase();
     });
+    const comparison =
+      matcherName === 'toBe' &&
+      !isNot &&
+      expected.length === 1 &&
+      typeof this.pp.formatComparison_ === 'function'
+        ? this.pp.formatComparison_(actual, expected[0])
+        : null;
 
     let message =
       'Expected ' +
-      this.pp(actual) +
+      (comparison ? comparison.actual : this.pp(actual)) +
       (isNot ? ' not ' : ' ') +
       englishyPredicate;
 
@@ -96,7 +103,8 @@ getJasmineRequireObj().MatchersUtil = function(j$, private$) {
         if (i > 0) {
           message += ',';
         }
-        message += ' ' + this.pp(expected[i]);
+        message +=
+          ' ' + (comparison ? comparison.expected : this.pp(expected[i]));
       }
     }
 

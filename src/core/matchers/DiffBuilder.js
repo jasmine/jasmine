@@ -91,6 +91,14 @@ getJasmineRequireObj().DiffBuilder = function(j$, private$) {
     }
 
     defaultFormatter_(actual, expected, path) {
+      if (typeof this.prettyPrinter_.formatComparison_ === 'function') {
+        const formatted = this.prettyPrinter_.formatComparison_(
+          actual,
+          expected
+        );
+        return wrapPrettyPrinted(formatted.actual, formatted.expected, path);
+      }
+
       return wrapPrettyPrinted(
         this.prettyPrinter_(actual),
         this.prettyPrinter_(expected),

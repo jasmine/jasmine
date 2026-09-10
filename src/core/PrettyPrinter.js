@@ -29,7 +29,10 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
         } else if (value.jasmineToString) {
           this.emitScalar(value.jasmineToString(this.pp_));
         } else if (private$.isString(value)) {
-          this.emitString(value);
+          this.emitString(
+            value,
+            this.ppNestLevel_ === 1 && customFormatResult === undefined
+          );
         } else if (j$.isSpy(value)) {
           this.emitScalar('spy on ' + value.and.identity);
         } else if (j$.isSpy(value.toString)) {
@@ -114,8 +117,13 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
       this.append(value);
     }
 
-    emitString(value) {
-      this.append("'" + value + "'");
+    emitString(value, trackString) {
+      const text = "'" + value + "'";
+      if (trackString) {
+        this.stringValue_ =
+          typeof value === 'string' ? value : text.slice(1, -1);
+      }
+      this.append(text);
     }
 
     emitArrayLike(array, typeName) {
@@ -328,6 +336,73 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
     return { value: s, truncated: true };
   }
 
+  function formatStringComparison(actual, expected) {
+    const budget = j$.MAX_PRETTY_PRINT_CHARS;
+    if (
+      typeof actual !== 'string' ||
+      typeof expected !== 'string' ||
+      actual === expected ||
+      !Number.isFinite(budget) ||
+      budget < 8 ||
+      Math.max(actual.length, expected.length) + 2 <= budget
+    ) {
+      return;
+    }
+
+    const limit = Math.floor(budget);
+    const length = Math.min(actual.length, expected.length);
+    let difference = 0;
+    while (
+      difference < length &&
+      actual.charCodeAt(difference) === expected.charCodeAt(difference)
+    ) {
+      difference++;
+    }
+
+    // The opening quote and final ' ...' use five characters of the budget.
+    if (difference < limit - 5) {
+      return;
+    }
+
+    const countedPrefix = count => '...(' + count + ' chars omitted)... ';
+    const countFits = countedPrefix(difference).length + 8 <= limit;
+    const prefixLength = countFits ? countedPrefix(difference).length : 1;
+    const context = Math.max(0, Math.floor((limit - prefixLength - 8) / 2));
+    let start = difference - context;
+    if (
+      splitsSurrogatePair(actual, start) ||
+      splitsSurrogatePair(expected, start)
+    ) {
+      start--;
+    }
+    const prefix = countFits ? countedPrefix(start) : '…';
+
+    function format(value) {
+      const text = "'" + prefix + value.substring(start) + "'";
+      let valueLimit = limit;
+      if (
+        text.length > valueLimit &&
+        splitsSurrogatePair(text, valueLimit - 4)
+      ) {
+        valueLimit--;
+      }
+      return truncate(text, valueLimit).value;
+    }
+
+    return { actual: format(actual), expected: format(expected) };
+  }
+
+  function splitsSurrogatePair(value, index) {
+    const previous = value.charCodeAt(index - 1);
+    const current = value.charCodeAt(index);
+    return (
+      previous >= 0xd800 &&
+      previous <= 0xdbff &&
+      current >= 0xdc00 &&
+      current <= 0xdfff
+    );
+  }
+
   function MaxCharsReachedError() {
     this.message =
       'Exceeded ' +
@@ -355,12 +430,30 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
     customObjectFormatters = customObjectFormatters || [];
 
     const pp = function(value) {
+      return prettyPrintRun(value).stringParts.join('');
+    };
+
+    function prettyPrintRun(value) {
       const prettyPrinter = new SinglePrettyPrintRun(
         customObjectFormatters,
         pp
       );
       prettyPrinter.format(value);
-      return prettyPrinter.stringParts.join('');
+      return prettyPrinter;
+    }
+
+    pp.formatComparison_ = function(actual, expected) {
+      const actualRun = prettyPrintRun(actual);
+      const expectedRun = prettyPrintRun(expected);
+      return (
+        formatStringComparison(
+          actualRun.stringValue_,
+          expectedRun.stringValue_
+        ) || {
+          actual: actualRun.stringParts.join(''),
+          expected: expectedRun.stringParts.join('')
+        }
+      );
     };
 
     pp.customFormat_ = function(value) {
