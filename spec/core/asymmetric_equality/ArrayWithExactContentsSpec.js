@@ -6,6 +6,30 @@ describe('ArrayWithExactContents', function() {
     expect(matcher.asymmetricMatch([2, 'a', /a/], matchersUtil)).toBe(true);
   });
 
+  [
+    { description: 'null', actual: null, sample: [] },
+    { description: 'undefined', actual: undefined, sample: [] },
+    { description: 'an empty string', actual: '', sample: [] },
+    { description: 'a string', actual: 'ab', sample: ['a', 'b'] },
+    { description: 'an array-like object', actual: { length: 0 }, sample: [] },
+    {
+      description: 'a typed array',
+      actual: new Uint8Array([1, 2]),
+      sample: [1, 2]
+    }
+  ].forEach(function(testCase) {
+    it('does not match ' + testCase.description, function() {
+      const matcher = new privateUnderTest.ArrayWithExactContents(
+        testCase.sample
+      );
+      const matchersUtil = new privateUnderTest.MatchersUtil();
+
+      expect(matcher.asymmetricMatch(testCase.actual, matchersUtil)).toBe(
+        false
+      );
+    });
+  });
+
   it('does not work when not passed an array', function() {
     const matcher = new privateUnderTest.ArrayWithExactContents('foo');
 

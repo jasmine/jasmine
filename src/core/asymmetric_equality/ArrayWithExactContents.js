@@ -17,7 +17,7 @@ getJasmineRequireObj().ArrayWithExactContents = function(j$, private$) {
       );
     }
 
-    if (this.sample.length !== other.length) {
+    if (!Array.isArray(other) || this.sample.length !== other.length) {
       return false;
     }
 
