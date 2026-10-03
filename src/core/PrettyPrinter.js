@@ -2,60 +2,67 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
   'use strict';
 
   class SinglePrettyPrintRun {
+    #customObjectFormatters;
+    #pp;
+    #nestingLevel;
+    #seen;
+    #length;
+    #stringParts;
+
     constructor(customObjectFormatters, pp) {
-      this.customObjectFormatters_ = customObjectFormatters;
-      this.ppNestLevel_ = 0;
-      this.seen = [];
-      this.length = 0;
-      this.stringParts = [];
-      this.pp_ = pp;
+      this.#customObjectFormatters = customObjectFormatters;
+      this.#pp = pp;
+      this.#nestingLevel = 0;
+      this.#seen = [];
+      this.#length = 0;
+      this.#stringParts = [];
     }
 
     format(value) {
-      this.ppNestLevel_++;
+      this.#nestingLevel++;
       try {
-        const customFormatResult = this.applyCustomFormatters_(value);
+        const customFormatResult = this.#applyCustomFormatters(value);
 
         if (customFormatResult) {
-          this.emitScalar(customFormatResult);
+          this.#emitScalar(customFormatResult);
         } else if (value === undefined) {
-          this.emitScalar('undefined');
+          this.#emitScalar('undefined');
         } else if (value === null) {
-          this.emitScalar('null');
+          this.#emitScalar('null');
         } else if (value === 0 && 1 / value === -Infinity) {
-          this.emitScalar('-0');
+          this.#emitScalar('-0');
         } else if (value === j$.getGlobal()) {
-          this.emitScalar('<global>');
+          this.#emitScalar('<global>');
         } else if (value.jasmineToString) {
-          this.emitScalar(value.jasmineToString(this.pp_));
+          this.#emitScalar(value.jasmineToString(this.#pp));
         } else if (private$.isString(value)) {
-          this.emitString(value);
+          this.#emitString(value);
         } else if (j$.isSpy(value)) {
-          this.emitScalar('spy on ' + value.and.identity);
+          this.#emitScalar('spy on ' + value.and.identity);
         } else if (j$.isSpy(value.toString)) {
-          this.emitScalar('spy on ' + value.toString.and.identity);
+          this.#emitScalar('spy on ' + value.toString.and.identity);
         } else if (value instanceof RegExp) {
-          this.emitScalar(value.toString());
+          this.#emitScalar(value.toString());
         } else if (typeof value === 'function') {
           if (value.name) {
-            this.emitScalar(`Function '${value.name}'`);
+            this.#emitScalar(`Function '${value.name}'`);
           } else {
-            this.emitScalar('Function');
+            this.#emitScalar('Function');
           }
         } else if (private$.isDomNode(value)) {
           if (value.tagName) {
-            this.emitDomElement(value);
+            this.#emitDomElement(value);
           } else {
-            this.emitScalar('HTMLNode');
+            this.#emitScalar('HTMLNode');
           }
         } else if (value instanceof Date) {
-          this.emitScalar('Date(' + value + ')');
+          this.#emitScalar('Date(' + value + ')');
         } else if (private$.isSet(value)) {
-          this.emitSet(value);
+          this.#emitSet(value);
         } else if (private$.isMap(value)) {
-          this.emitMap(value);
+          this.#emitMap(value);
         } else if (private$.isTypedArray(value)) {
-          this.emitTypedArray(value);
+          this.#emitTypedArray(value);
         } else if (
           value.toString &&
           typeof value === 'object' &&
@@ -63,43 +70,47 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
           hasCustomToString(value)
         ) {
           try {
-            this.emitScalar(value.toString());
+            this.#emitScalar(value.toString());
             // eslint-disable-next-line no-unused-vars
           } catch (e) {
-            this.emitScalar('has-invalid-toString-method');
+            this.#emitScalar('has-invalid-toString-method');
           }
-        } else if (this.seen.includes(value)) {
-          this.emitScalar(
+        } else if (this.#seen.includes(value)) {
+          this.#emitScalar(
             '<circular reference: ' +
               (Array.isArray(value) ? 'Array' : 'Object') +
               '>'
           );
         } else if (isArrayLike(value) || private$.isA('Object', value)) {
-          this.seen.push(value);
+          this.#seen.push(value);
           const typeName = private$.isA('NodeList', value) ? 'NodeList' : '';
           if (isArrayLike(value)) {
-            this.emitArrayLike(value, typeName);
+            this.#emitArrayLike(value, typeName);
           } else {
-            this.emitObject(value);
+            this.#emitObject(value);
           }
-          this.seen.pop();
+          this.#seen.pop();
         } else {
-          this.emitScalar(value.toString());
+          this.#emitScalar(value.toString());
         }
       } catch (e) {
-        if (this.ppNestLevel_ > 1 || !(e instanceof MaxCharsReachedError)) {
+        if (this.#nestingLevel > 1 || !(e instanceof MaxCharsReachedError)) {
           throw e;
         }
       } finally {
-        this.ppNestLevel_--;
+        this.#nestingLevel--;
       }
     }
 
-    applyCustomFormatters_(value) {
-      return customFormat(value, this.customObjectFormatters_);
+    result() {
+      return this.#stringParts.join('');
     }
 
-    iterateObject(obj, fn) {
+    #applyCustomFormatters(value) {
+      return customFormat(value, this.#customObjectFormatters);
+    }
+
+    #iterateObject(obj, fn) {
       const objKeys = private$.MatchersUtil.keys(obj, isArrayLike(obj));
       const length = Math.min(objKeys.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
 
@@ -110,57 +121,57 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
       return objKeys.length > length;
     }
 
-    emitScalar(value) {
-      this.append(value);
+    #emitScalar(value) {
+      this.#append(value);
     }
 
-    emitString(value) {
-      this.append("'" + value + "'");
+    #emitString(value) {
+      this.#append("'" + value + "'");
     }
 
-    emitArrayLike(array, typeName) {
-      if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
-        this.append(typeName || 'Array');
+    #emitArrayLike(array, typeName) {
+      if (this.#nestingLevel > j$.MAX_PRETTY_PRINT_DEPTH) {
+        this.#append(typeName || 'Array');
         return;
       }
 
       const length = Math.min(array.length, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
-      this.append(typeName + '[ ');
+      this.#append(typeName + '[ ');
 
       for (let i = 0; i < length; i++) {
         if (i > 0) {
-          this.append(', ');
+          this.#append(', ');
         }
         this.format(array[i]);
       }
       if (array.length > length) {
-        this.append(', ...');
+        this.#append(', ...');
       }
 
       let first = array.length === 0;
-      const wasTruncated = this.iterateObject(array, property => {
+      const wasTruncated = this.#iterateObject(array, property => {
         if (first) {
           first = false;
         } else {
-          this.append(', ');
+          this.#append(', ');
         }
 
-        this.formatProperty(array, property);
+        this.#formatProperty(array, property);
       });
 
       if (wasTruncated) {
-        this.append(', ...');
+        this.#append(', ...');
       }
 
-      this.append(' ]');
+      this.#append(' ]');
     }
 
-    emitSet(set) {
-      if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
-        this.append('Set');
+    #emitSet(set) {
+      if (this.#nestingLevel > j$.MAX_PRETTY_PRINT_DEPTH) {
+        this.#append('Set');
         return;
       }
-      this.append('Set( ');
+      this.#append('Set( ');
       const size = Math.min(set.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
       let i = 0;
       set.forEach(function(value, key) {
@@ -168,24 +179,24 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
           return;
         }
         if (i > 0) {
-          this.append(', ');
+          this.#append(', ');
         }
         this.format(value);
 
         i++;
       }, this);
       if (set.size > size) {
-        this.append(', ...');
+        this.#append(', ...');
       }
-      this.append(' )');
+      this.#append(' )');
     }
 
-    emitMap(map) {
-      if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
-        this.append('Map');
+    #emitMap(map) {
+      if (this.#nestingLevel > j$.MAX_PRETTY_PRINT_DEPTH) {
+        this.#append('Map');
         return;
       }
-      this.append('Map( ');
+      this.#append('Map( ');
       const size = Math.min(map.size, j$.MAX_PRETTY_PRINT_ARRAY_LENGTH);
       let i = 0;
       map.forEach(function(value, key) {
@@ -193,52 +204,52 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
           return;
         }
         if (i > 0) {
-          this.append(', ');
+          this.#append(', ');
         }
         this.format([key, value]);
 
         i++;
       }, this);
       if (map.size > size) {
-        this.append(', ...');
+        this.#append(', ...');
       }
-      this.append(' )');
+      this.#append(' )');
     }
 
-    emitObject(obj) {
+    #emitObject(obj) {
       const ctor = obj.constructor;
       const constructorName =
         typeof ctor === 'function' && obj instanceof ctor
           ? private$.fnNameFor(obj.constructor)
           : 'null';
 
-      this.append(constructorName);
+      this.#append(constructorName);
 
-      if (this.ppNestLevel_ > j$.MAX_PRETTY_PRINT_DEPTH) {
+      if (this.#nestingLevel > j$.MAX_PRETTY_PRINT_DEPTH) {
         return;
       }
 
-      this.append('({ ');
+      this.#append('({ ');
       let first = true;
 
-      const wasTruncated = this.iterateObject(obj, property => {
+      const wasTruncated = this.#iterateObject(obj, property => {
         if (first) {
           first = false;
         } else {
-          this.append(', ');
+          this.#append(', ');
         }
 
-        this.formatProperty(obj, property);
+        this.#formatProperty(obj, property);
       });
 
       if (wasTruncated) {
-        this.append(', ...');
+        this.#append(', ...');
       }
 
-      this.append(' })');
+      this.#append(' })');
     }
 
-    emitTypedArray(arr) {
+    #emitTypedArray(arr) {
       const constructorName = private$.fnNameFor(arr.constructor);
       const limitedArray = Array.prototype.slice.call(
         arr,
@@ -251,10 +262,10 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
         itemsString += ', ...';
       }
 
-      this.append(constructorName + ' [ ' + itemsString + ' ]');
+      this.#append(constructorName + ' [ ' + itemsString + ' ]');
     }
 
-    emitDomElement(el) {
+    #emitDomElement(el) {
       const tagName = el.tagName.toLowerCase();
       let out = '<' + tagName;
 
@@ -272,30 +283,30 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
         out += '...</' + tagName + '>';
       }
 
-      this.append(out);
+      this.#append(out);
     }
 
-    formatProperty(obj, property) {
+    #formatProperty(obj, property) {
       if (typeof property === 'symbol') {
-        this.append(property.toString());
+        this.#append(property.toString());
       } else {
-        this.append(property);
+        this.#append(property);
       }
 
-      this.append(': ');
+      this.#append(': ');
       this.format(obj[property]);
     }
 
-    append(value) {
+    #append(value) {
       // This check protects us from the rare case where an object has overriden
       // `toString()` with an invalid implementation (returning a non-string).
       if (typeof value !== 'string') {
         value = Object.prototype.toString.call(value);
       }
 
-      const result = truncate(value, j$.MAX_PRETTY_PRINT_CHARS - this.length);
-      this.length += result.value.length;
-      this.stringParts.push(result.value);
+      const result = truncate(value, j$.MAX_PRETTY_PRINT_CHARS - this.#length);
+      this.#length += result.value.length;
+      this.#stringParts.push(result.value);
 
       if (result.truncated) {
         throw new MaxCharsReachedError();
@@ -355,15 +366,14 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
     customObjectFormatters = customObjectFormatters || [];
 
     const pp = function(value) {
-      const prettyPrinter = new SinglePrettyPrintRun(
-        customObjectFormatters,
-        pp
-      );
-      prettyPrinter.format(value);
-      return prettyPrinter.stringParts.join('');
+      const run = new SinglePrettyPrintRun(customObjectFormatters, pp);
+      run.format(value);
+      return run.result();
     };
 
-    pp.customFormat_ = function(value) {
+    // TODO: split this out. It doesn't really have anything to do with
+    // pretty-printing.
+    pp.applyCustomObjectFormatters = function(value) {
       return customFormat(value, customObjectFormatters);
     };
 

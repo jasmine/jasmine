@@ -620,7 +620,7 @@ describe('PrettyPrinter', function() {
       });
     });
 
-    describe('#customFormat_', function() {
+    describe('#applyCustomObjectFormatters', function() {
       it('uses the first custom object formatter that does not return undefined', function() {
         const customObjectFormatters = [
           function() {
@@ -636,7 +636,7 @@ describe('PrettyPrinter', function() {
         const pp = privateUnderTest.makePrettyPrinter(customObjectFormatters);
         const obj = { foo: 'bar' };
 
-        expect(pp.customFormat_(obj)).toEqual('2nd: bar');
+        expect(pp.applyCustomObjectFormatters(obj)).toEqual('2nd: bar');
       });
 
       it('returns undefined if all custom object formatters return undefined', function() {
@@ -648,7 +648,7 @@ describe('PrettyPrinter', function() {
         const pp = privateUnderTest.makePrettyPrinter(customObjectFormatters);
         const obj = { foo: 'bar' };
 
-        expect(pp.customFormat_(obj)).toBeUndefined();
+        expect(pp.applyCustomObjectFormatters(obj)).toBeUndefined();
       });
     });
   });

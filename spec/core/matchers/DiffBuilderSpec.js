@@ -71,7 +71,7 @@ describe('DiffBuilder', function() {
     const diffBuilder = new privateUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
-    prettyPrinter.customFormat_ = function() {};
+    prettyPrinter.applyCustomObjectFormatters = function() {};
 
     diffBuilder.setRoots({ foo: 'actual' }, { foo: 'expected' });
     diffBuilder.withPath('foo', function() {
@@ -89,7 +89,7 @@ describe('DiffBuilder', function() {
     const diffBuilder = new privateUnderTest.DiffBuilder({
       prettyPrinter: prettyPrinter
     });
-    prettyPrinter.customFormat_ = function() {};
+    prettyPrinter.applyCustomObjectFormatters = function() {};
 
     diffBuilder.setRoots({ x: 'bar' }, { x: 'foo' });
     diffBuilder.withPath('x', function() {

@@ -2,50 +2,60 @@ getJasmineRequireObj().DiffBuilder = function(j$, private$) {
   'use strict';
 
   class DiffBuilder {
+    #prettyPrinter;
+    #mismatches;
+    #path;
+    #actualRoot;
+    #expectedRoot;
+
     constructor(config) {
-      this.prettyPrinter_ =
+      this.#prettyPrinter =
         (config || {}).prettyPrinter || private$.makePrettyPrinter();
-      this.mismatches_ = new private$.MismatchTree();
-      this.path_ = new private$.ObjectPath();
-      this.actualRoot_ = undefined;
-      this.expectedRoot_ = undefined;
+      this.#mismatches = new private$.MismatchTree();
+      this.#path = new private$.ObjectPath();
+      this.#actualRoot = undefined;
+      this.#expectedRoot = undefined;
     }
 
     setRoots(actual, expected) {
-      this.actualRoot_ = actual;
-      this.expectedRoot_ = expected;
+      this.#actualRoot = actual;
+      this.#expectedRoot = expected;
     }
 
     recordMismatch(formatter) {
-      this.mismatches_.add(this.path_, formatter);
+      this.#mismatches.add(this.#path, formatter);
     }
 
     getMessage() {
       const messages = [];
 
-      this.mismatches_.traverse((path, isLeaf, formatter) => {
-        const { actual, expected } = this.dereferencePath_(path);
+      this.#mismatches.traverse((path, isLeaf, formatter) => {
+        const { actual, expected } = this.#dereferencePath(path);
 
         if (formatter) {
-          messages.push(formatter(actual, expected, path, this.prettyPrinter_));
+          messages.push(formatter(actual, expected, path, this.#prettyPrinter));
           return true;
         }
 
-        const actualCustom = this.prettyPrinter_.customFormat_(actual);
-        const expectedCustom = this.prettyPrinter_.customFormat_(expected);
+        const actualCustom = this.#prettyPrinter.applyCustomObjectFormatters(
+          actual
+        );
+        const expectedCustom = this.#prettyPrinter.applyCustomObjectFormatters(
+          expected
+        );
         const useCustom =
           actualCustom !== undefined || expectedCustom !== undefined;
 
         if (useCustom) {
-          const prettyActual = actualCustom || this.prettyPrinter_(actual);
+          const prettyActual = actualCustom || this.#prettyPrinter(actual);
           const prettyExpected =
-            expectedCustom || this.prettyPrinter_(expected);
+            expectedCustom || this.#prettyPrinter(expected);
           messages.push(wrapPrettyPrinted(prettyActual, prettyExpected, path));
           return false; // don't recurse further
         }
 
         if (isLeaf) {
-          messages.push(this.defaultFormatter_(actual, expected, path));
+          messages.push(this.#defaultFormatter(actual, expected, path));
         }
 
         return true;
@@ -55,15 +65,15 @@ getJasmineRequireObj().DiffBuilder = function(j$, private$) {
     }
 
     withPath(pathComponent, block) {
-      const oldPath = this.path_;
-      this.path_ = this.path_.add(pathComponent);
+      const oldPath = this.#path;
+      this.#path = this.#path.add(pathComponent);
       block();
-      this.path_ = oldPath;
+      this.#path = oldPath;
     }
 
-    dereferencePath_(objectPath) {
-      let actual = this.actualRoot_;
-      let expected = this.expectedRoot_;
+    #dereferencePath(objectPath) {
+      let actual = this.#actualRoot;
+      let expected = this.#expectedRoot;
 
       const handleAsymmetricExpected = () => {
         if (
@@ -72,7 +82,7 @@ getJasmineRequireObj().DiffBuilder = function(j$, private$) {
         ) {
           const asymmetricResult = expected.valuesForDiff_(
             actual,
-            this.prettyPrinter_
+            this.#prettyPrinter
           );
           expected = asymmetricResult.self;
           actual = asymmetricResult.other;
@@ -90,10 +100,10 @@ getJasmineRequireObj().DiffBuilder = function(j$, private$) {
       return { actual: actual, expected: expected };
     }
 
-    defaultFormatter_(actual, expected, path) {
+    #defaultFormatter(actual, expected, path) {
       return wrapPrettyPrinted(
-        this.prettyPrinter_(actual),
-        this.prettyPrinter_(expected),
+        this.#prettyPrinter(actual),
+        this.#prettyPrinter(expected),
         path
       );
     }
