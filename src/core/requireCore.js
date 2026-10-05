@@ -55,6 +55,7 @@ const getJasmineRequireObj = (function() {
     );
     private$.makePrettyPrinter = jRequire.makePrettyPrinter(j$, private$);
     private$.basicPrettyPrinter = private$.makePrettyPrinter();
+    private$.diffAwareTruncate = jRequire.diffAwareTruncate(j$, private$);
     private$.MatchersUtil = jRequire.MatchersUtil(j$, private$);
     private$.ObjectContaining = jRequire.ObjectContaining(j$, private$);
     private$.ArrayContaining = jRequire.ArrayContaining(j$, private$);

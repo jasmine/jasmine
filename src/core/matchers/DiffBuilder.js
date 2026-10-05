@@ -55,7 +55,7 @@ getJasmineRequireObj().DiffBuilder = function(j$, private$) {
         }
 
         if (isLeaf) {
-          messages.push(this.#defaultFormatter(actual, expected, path));
+          messages.push(this.#defaultLeafFormatter(actual, expected, path));
         }
 
         return true;
@@ -100,12 +100,32 @@ getJasmineRequireObj().DiffBuilder = function(j$, private$) {
       return { actual: actual, expected: expected };
     }
 
-    #defaultFormatter(actual, expected, path) {
-      return wrapPrettyPrinted(
-        this.#prettyPrinter(actual),
-        this.#prettyPrinter(expected),
-        path
-      );
+    #defaultLeafFormatter(actual, expected, path) {
+      // If both values are strings, truncate after pretty-printing so we can
+      // ensure that at least part of the difference is included. Otherwise,
+      // let prettyPrinter do it. Non-string leaf nodes are typically due to
+      // type mismatches. prettyPrinter's truncation strategy works fine for
+      // that and is more efficient when either value is a large object graph.
+      const truncateAfterDiff =
+        typeof actual === 'string' && typeof expected === 'string';
+
+      let prettyActual = this.#prettyPrinter(actual, {
+        ignoreMaxChars: truncateAfterDiff
+      });
+      let prettyExpected = this.#prettyPrinter(expected, {
+        ignoreMaxChars: truncateAfterDiff
+      });
+
+      if (truncateAfterDiff) {
+        [prettyActual, prettyExpected] = private$.diffAwareTruncate(
+          prettyActual,
+          prettyExpected,
+          j$.MAX_PRETTY_PRINT_CHARS,
+          16 // preferred minimum chunk length, somewhat arbitrary
+        );
+      }
+
+      return wrapPrettyPrinted(prettyActual, prettyExpected, path);
     }
   }
 

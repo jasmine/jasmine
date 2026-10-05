@@ -4,14 +4,16 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
   class SinglePrettyPrintRun {
     #customObjectFormatters;
     #pp;
+    #ignoreMaxChars;
     #nestingLevel;
     #seen;
     #length;
     #stringParts;
 
-    constructor(customObjectFormatters, pp) {
+    constructor(customObjectFormatters, pp, options) {
       this.#customObjectFormatters = customObjectFormatters;
       this.#pp = pp;
+      this.#ignoreMaxChars = options && options.ignoreMaxChars;
       this.#nestingLevel = 0;
       this.#seen = [];
       this.#length = 0;
@@ -304,7 +306,14 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
         value = Object.prototype.toString.call(value);
       }
 
-      const result = truncate(value, j$.MAX_PRETTY_PRINT_CHARS - this.#length);
+      let result;
+
+      if (this.#ignoreMaxChars) {
+        result = { value, truncated: false };
+      } else {
+        result = truncate(value, j$.MAX_PRETTY_PRINT_CHARS - this.#length);
+      }
+
       this.#length += result.value.length;
       this.#stringParts.push(result.value);
 
@@ -365,8 +374,8 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
   return function(customObjectFormatters) {
     customObjectFormatters = customObjectFormatters || [];
 
-    const pp = function(value) {
-      const run = new SinglePrettyPrintRun(customObjectFormatters, pp);
+    const pp = function(value, options) {
+      const run = new SinglePrettyPrintRun(customObjectFormatters, pp, options);
       run.format(value);
       return run.result();
     };

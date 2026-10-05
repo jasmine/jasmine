@@ -267,4 +267,37 @@ describe('DiffBuilder', function() {
 
     expect(diffBuilder.getMessage()).toEqual(expectedMsg);
   });
+
+  describe('Truncation of differing elements', function() {
+    beforeEach(function() {
+      this.originalLimit = jasmineUnderTest.MAX_PRETTY_PRINT_CHARS;
+    });
+
+    afterEach(function() {
+      jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = this.originalLimit;
+    });
+
+    it("includes the parts of long strings that don't match", function() {
+      jasmineUnderTest.MAX_PRETTY_PRINT_CHARS = 36;
+      const prettyPrinter = privateUnderTest.makePrettyPrinter([]);
+      const diffBuilder = new privateUnderTest.DiffBuilder({
+        prettyPrinter: prettyPrinter
+      });
+      const prefix = '-'.repeat(20);
+      const suffix = '_'.repeat(20);
+      const a = prefix + 'a' + suffix;
+      const b = prefix + 'b' + suffix;
+      expect(b.length).toEqual(a.length);
+
+      diffBuilder.setRoots({ x: a }, { x: b });
+      diffBuilder.withPath('x', function() {
+        diffBuilder.recordMismatch();
+      });
+
+      expect(diffBuilder.getMessage()).toEqual(
+        "Expected $.x = '…----------------a_________________…' " +
+          "to equal '…----------------b_________________…'."
+      );
+    });
+  });
 });

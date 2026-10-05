@@ -398,6 +398,17 @@ describe('PrettyPrinter', function() {
       });
     });
 
+    it("doesn't truncate when the ignoreMaxChars: true option is passed", function() {
+      const pp = privateUnderTest.makePrettyPrinter();
+      const big = [{ a: 1, b: 'a long string' }];
+
+      withMaxChars(34, function() {
+        expect(pp(big, { ignoreMaxChars: true })).toEqual(
+          "[ Object({ a: 1, b: 'a long string' }) ]"
+        );
+      });
+    });
+
     it('stops serializing objects after hitting MAX_PRETTY_PRINT_CHARS', function() {
       const a = {
         jasmineToString: function() {
