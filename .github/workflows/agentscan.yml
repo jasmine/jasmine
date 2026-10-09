@@ -1,0 +1,36 @@
+name: AgentScan
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+  issues:
+    types:
+      - opened
+
+jobs:
+  agentscan:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+      contents: read
+    steps:
+      - name: Cache AgentScan analysis
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        with:
+          path: .agentscan-cache
+          key: agentscan-cache-${{ github.actor }}
+          restore-keys: agentscan-cache-
+      - name: AgentScan
+        uses: MatteoGabriele/agentscan-action@c7d61446e7aece6bdd3edcee4558bbfc0392615e
+        with:
+          cache-path: ".agentscan-cache"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-close: false
+          scan-issues: true
+          label-automation: "spam: automated account"
+          label-community-flagged: "spam: community flagged"
+          label-mixed: "spam: mixed signals"
+          trusted-author-associations: "member,owner,collaborator"
