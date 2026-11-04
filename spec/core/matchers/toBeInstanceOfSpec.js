@@ -79,6 +79,26 @@ describe('toBeInstanceOf', function() {
     });
   });
 
+  describe('when expecting BigInt', function() {
+    it('passes for a bigint', function() {
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
+      const result = matcher.compare(BigInt(10), BigInt);
+      expect(result).toEqual({
+        pass: true,
+        message: 'Expected instance of BigInt not to be an instance of BigInt'
+      });
+    });
+
+    it('fails for a number', function() {
+      const matcher = privateUnderTest.matchers.toBeInstanceOf();
+      const result = matcher.compare(10, BigInt);
+      expect(result).toEqual({
+        pass: false,
+        message: 'Expected instance of Number to be an instance of BigInt'
+      });
+    });
+  });
+
   describe('when expecting RegExp', function() {
     it('passes for a literal regular expression', function() {
       const matcher = privateUnderTest.matchers.toBeInstanceOf();

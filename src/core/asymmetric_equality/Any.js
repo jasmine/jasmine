@@ -36,6 +36,10 @@ getJasmineRequireObj().Any = function(j$, private$) {
       return typeof other == 'symbol';
     }
 
+    if (this.expectedObject == BigInt) {
+      return typeof other == 'bigint';
+    }
+
     return other instanceof this.expectedObject;
   };
 

@@ -53,6 +53,13 @@ describe('Any', function() {
     expect(any.asymmetricMatch(Symbol())).toBe(true);
   });
 
+  it('matches a BigInt', function() {
+    const any = new privateUnderTest.Any(BigInt);
+
+    expect(any.asymmetricMatch(BigInt(1))).toBe(true);
+    expect(any.asymmetricMatch(1)).toBe(false);
+  });
+
   it('matches another constructed object', function() {
     const Thing = function() {};
     const any = new privateUnderTest.Any(Thing);
