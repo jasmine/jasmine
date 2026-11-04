@@ -82,5 +82,11 @@ getJasmineRequireObj().util = function(j$, private$) {
     }
   };
 
+  util.isStartOfSurrogatePair = function(s, i) {
+    // Subscripting works on UTF-16 code units, not characters.
+    // That's what we want.
+    return i + 1 < s.length && s[i] >= '\uD800' && s[i] <= '\uDBFF';
+  };
+
   return util;
 };

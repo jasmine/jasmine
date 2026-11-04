@@ -93,7 +93,7 @@ getJasmineRequireObj().diffAwareTruncate = function(j$, private$) {
   }
 
   function truncateLeft(s, charsToRemove) {
-    if (isStartOfSurrogatePair(s, charsToRemove - 1)) {
+    if (private$.util.isStartOfSurrogatePair(s, charsToRemove - 1)) {
       // Keep the whole surrogate pair rather than splitting it.
       charsToRemove--;
     }
@@ -106,7 +106,7 @@ getJasmineRequireObj().diffAwareTruncate = function(j$, private$) {
   }
 
   function truncateRight(s, maxLen) {
-    if (isStartOfSurrogatePair(s, maxLen - 2)) {
+    if (private$.util.isStartOfSurrogatePair(s, maxLen - 2)) {
       // Keep the whole surrogate pair rather than splitting it.
       maxLen++;
     }
@@ -116,11 +116,5 @@ getJasmineRequireObj().diffAwareTruncate = function(j$, private$) {
     }
 
     return s.slice(0, maxLen - 1) + ELLIPSIS;
-  }
-
-  function isStartOfSurrogatePair(s, i) {
-    // Subscripting works on UTF-16 code units, not characters.
-    // That's what we want.
-    return i + 1 < s.length && s[i] >= '\uD800' && s[i] <= '\uDBFF';
   }
 };

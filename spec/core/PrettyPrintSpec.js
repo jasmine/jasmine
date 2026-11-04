@@ -398,6 +398,19 @@ describe('PrettyPrinter', function() {
       });
     });
 
+    it("doesn't split a surrogate pair when truncating", function() {
+      const firstPair = '\uD800\uDC00';
+      const lastPair = '\uDBFF\uDC00';
+      const pp = privateUnderTest.makePrettyPrinter();
+
+      for (const pair of [firstPair, lastPair]) {
+        const big = [{ a: 1, b: `a long s${pair}tring` }, {}];
+        withMaxChars(34, function() {
+          expect(pp(big)).toEqual(`[ Object({ a: 1, b: 'a long s${pair} ...`);
+        });
+      }
+    });
+
     it("doesn't truncate when the ignoreMaxChars: true option is passed", function() {
       const pp = privateUnderTest.makePrettyPrinter();
       const big = [{ a: 1, b: 'a long string' }];

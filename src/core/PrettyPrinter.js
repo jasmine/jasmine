@@ -344,6 +344,11 @@ getJasmineRequireObj().makePrettyPrinter = function(j$, private$) {
       return { value: s, truncated: false };
     }
 
+    if (private$.util.isStartOfSurrogatePair(s, maxlen - 5)) {
+      // Keep the whole surrogate pair rather than splitting it.
+      maxlen++;
+    }
+
     s = s.substring(0, maxlen - 4) + ' ...';
     return { value: s, truncated: true };
   }
