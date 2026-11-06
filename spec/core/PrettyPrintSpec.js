@@ -316,6 +316,40 @@ describe('PrettyPrinter', function() {
 
       expect(pp(obj)).toEqual("null({ foo: 'bar' })");
     });
+
+    it('handles objects with null prototype and a Symbol.toStringTag', function() {
+      const pp = privateUnderTest.makePrettyPrinter();
+      const obj = Object.create(null, {
+        [Symbol.toStringTag]: { value: 'Module' },
+        foo: { value: 'bar', enumerable: true }
+      });
+
+      expect(pp(obj)).toEqual('[object Module]');
+      expect(pp({ ns: obj })).toEqual('Object({ ns: [object Module] })');
+    });
+
+    it("handles objects with a Symbol.toStringTag and a toString that isn't a function", function() {
+      const pp = privateUnderTest.makePrettyPrinter();
+      const obj = Object.create(null, {
+        [Symbol.toStringTag]: { value: 'Thing' },
+        toString: { value: 'foo' }
+      });
+
+      expect(pp(obj)).toEqual('[object Thing]');
+    });
+
+    describe('when running in Node', function() {
+      beforeEach(function() {
+        specHelpers.requiresNode();
+      });
+
+      it('handles module namespace objects', async function() {
+        const pp = privateUnderTest.makePrettyPrinter();
+        const ns = await import('node:path');
+
+        expect(pp(ns)).toEqual('[object Module]');
+      });
+    });
   });
 
   describe('for a function', function() {

@@ -34,6 +34,22 @@ describe('toBe', function() {
     );
   });
 
+  it('passes with a custom message when expected is a null-prototype object with a Symbol.toStringTag', function() {
+    const matchersUtil = new privateUnderTest.MatchersUtil({
+      pp: privateUnderTest.makePrettyPrinter()
+    });
+    const matcher = privateUnderTest.matchers.toBe(matchersUtil);
+    const obj = Object.create(null, {
+      [Symbol.toStringTag]: { value: 'Module' }
+    });
+
+    const result = matcher.compare(obj, obj);
+    expect(result.pass).toBe(true);
+    expect(result.message).toBe(
+      'Expected [object Module] not to be [object Module]. Tip: To check for deep equality, use .toEqual() instead of .toBe().'
+    );
+  });
+
   it('fails with no message when actual !== expected', function() {
     const matchersUtil = new privateUnderTest.MatchersUtil();
     const matcher = privateUnderTest.matchers.toBe(matchersUtil);
