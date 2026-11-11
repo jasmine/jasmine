@@ -167,6 +167,25 @@ getJasmineRequireObj().MatchersUtil = function(j$, private$) {
     return this.eq_(a, b, [], [], diffBuilder);
   };
 
+  /**
+   * Compares two values using the same deep equality logic as
+   * {@link MatchersUtil#equals}, and describes any differences.
+   * @function
+   * @name MatchersUtil#equalsWithDiff
+   * @param {*} actual The actual value
+   * @param {*} expected The expected value
+   * @returns {{pass: boolean, diff: string}} Whether the values are equal and a
+   * description of their differences. The diff is empty when they are equal.
+   * @example
+   * const result = matchersUtil.equalsWithDiff(actual, expected);
+   * return { pass: result.pass, message: result.diff };
+   */
+  MatchersUtil.prototype.equalsWithDiff = function(actual, expected) {
+    const diffBuilder = new private$.DiffBuilder({ prettyPrinter: this.pp });
+    const pass = this.equals(actual, expected, diffBuilder);
+    return { pass: pass, diff: diffBuilder.getMessage() };
+  };
+
   // Equality function lovingly adapted from isEqual in
   //   [Underscore](http://underscorejs.org)
   MatchersUtil.prototype.eq_ = function(a, b, aStack, bStack, diffBuilder) {

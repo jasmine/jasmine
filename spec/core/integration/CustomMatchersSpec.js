@@ -48,6 +48,86 @@ describe('Custom Matchers (Integration)', function() {
     );
   });
 
+  it('provides diffs to a custom matcher that transforms its inputs', async function() {
+    env.it('compares objects without empty properties', function() {
+      function stripEmptyProperties(value) {
+        const result = {};
+        for (const key of Object.keys(value)) {
+          if (value[key] !== '') {
+            result[key] = value[key];
+          }
+        }
+        return result;
+      }
+
+      env.addMatchers({
+        toEqualExcludingEmpty: function(matchersUtil) {
+          return {
+            compare: function(actual, expected) {
+              const result = matchersUtil.equalsWithDiff(
+                stripEmptyProperties(actual),
+                stripEmptyProperties(expected)
+              );
+              return { pass: result.pass, message: result.diff };
+            }
+          };
+        }
+      });
+
+      env.expect({ x: 1, empty: '' }).toEqualExcludingEmpty({ x: 1 });
+      env.expect({ x: 1, empty: '' }).toEqualExcludingEmpty({ x: 2 });
+    });
+
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    env.addReporter(reporter);
+    await env.execute();
+
+    const result = reporter.specDone.calls.argsFor(0)[0];
+    expect(result.passedExpectations.length).toBe(1);
+    expect(result.failedExpectations.length).toBe(1);
+    expect(result.failedExpectations[0].message).toBe(
+      'Expected $.x = 1 to equal 2.'
+    );
+  });
+
+  it('passes custom equality testers and object formatters to equalsWithDiff', async function() {
+    env.it('uses the spec customizations in a custom matcher', function() {
+      env.addCustomEqualityTester(function(a, b) {
+        if (typeof a === 'string' && typeof b === 'string') {
+          return a.toLowerCase() === b.toLowerCase();
+        }
+      });
+      env.addCustomObjectFormatter(function(value) {
+        if (typeof value === 'number') {
+          return 'number(' + value + ')';
+        }
+      });
+      env.addMatchers({
+        toEqualWithDiff: function(matchersUtil) {
+          return {
+            compare: function(actual, expected) {
+              const result = matchersUtil.equalsWithDiff(actual, expected);
+              return { pass: result.pass, message: result.diff };
+            }
+          };
+        }
+      });
+      env.expect({ x: 'ABC' }).toEqualWithDiff({ x: 'abc' });
+      env.expect({ x: 1 }).toEqualWithDiff({ x: 2 });
+    });
+
+    const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+    env.addReporter(reporter);
+    await env.execute();
+
+    const result = reporter.specDone.calls.argsFor(0)[0];
+    expect(result.passedExpectations.length).toBe(1);
+    expect(result.failedExpectations.length).toBe(1);
+    expect(result.failedExpectations[0].message).toBe(
+      'Expected $.x = number(1) to equal number(2).'
+    );
+  });
+
   it('passes the spec if the custom matcher passes', async function() {
     env.it('spec using custom matcher', function() {
       env.addMatchers({

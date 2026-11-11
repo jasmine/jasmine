@@ -6,6 +6,128 @@ describe('matchersUtil', function() {
     expect(matchersUtil.pp).toBe(pp);
   });
 
+  describe('equalsWithDiff', function() {
+    let util;
+
+    beforeEach(function() {
+      util = new privateUnderTest.MatchersUtil({
+        pp: privateUnderTest.makePrettyPrinter()
+      });
+    });
+
+    it('returns a passing result with an empty diff for equal values', function() {
+      expect(util.equalsWithDiff({ a: [1, 2] }, { a: [1, 2] })).toEqual({
+        pass: true,
+        diff: ''
+      });
+    });
+
+    it('reports the path and values of nested differences', function() {
+      expect(util.equalsWithDiff({ a: { b: 1 } }, { a: { b: 2 } })).toEqual({
+        pass: false,
+        diff: 'Expected $.a.b = 1 to equal 2.'
+      });
+    });
+
+    it('reports all differences, including missing and extra properties', function() {
+      const result = util.equalsWithDiff(
+        { x: 1, extra: true },
+        { x: 2, missing: 3 }
+      );
+      expect(result.pass).toBeFalse();
+      expect(result.diff).toContain('Expected $.x = 1 to equal 2.');
+      expect(result.diff).toContain('missing: 3');
+      expect(result.diff).toContain('extra: true');
+    });
+
+    it('honors custom equality testers', function() {
+      util = new privateUnderTest.MatchersUtil({
+        customTesters: [
+          function(a, b) {
+            if (typeof a === 'string' && typeof b === 'string') {
+              return a.toLowerCase() === b.toLowerCase();
+            }
+          }
+        ],
+        pp: privateUnderTest.makePrettyPrinter()
+      });
+      expect(util.equalsWithDiff({ x: 'ABC' }, { x: 'abc' })).toEqual({
+        pass: true,
+        diff: ''
+      });
+      expect(util.equalsWithDiff({ x: 'ABC' }, { x: 'def' }).pass).toBeFalse();
+    });
+
+    it('honors asymmetric equality testers', function() {
+      expect(
+        util.equalsWithDiff(
+          { x: 1 },
+          {
+            x: jasmineUnderTest.any(Number)
+          }
+        )
+      ).toEqual({ pass: true, diff: '' });
+      expect(
+        util.equalsWithDiff(
+          { x: 'no' },
+          {
+            x: jasmineUnderTest.any(Number)
+          }
+        ).pass
+      ).toBeFalse();
+    });
+
+    it('uses custom object formatters for the diff', function() {
+      util = new privateUnderTest.MatchersUtil({
+        pp: privateUnderTest.makePrettyPrinter([
+          function(value) {
+            if (typeof value === 'number') {
+              return 'number(' + value + ')';
+            }
+          }
+        ])
+      });
+      expect(util.equalsWithDiff({ x: 1 }, { x: 2 }).diff).toBe(
+        'Expected $.x = number(1) to equal number(2).'
+      );
+    });
+
+    it('handles cyclic objects without changing them', function() {
+      const actual = { x: 1 };
+      const expected = { x: 2 };
+      actual.self = actual;
+      expected.self = expected;
+      expect(util.equalsWithDiff(actual, expected)).toEqual({
+        pass: false,
+        diff: 'Expected $.x = 1 to equal 2.'
+      });
+      expect(actual.self).toBe(actual);
+      expect(expected.self).toBe(expected);
+    });
+
+    it('keeps differences isolated between calls', function() {
+      const first = util.equalsWithDiff({ x: 1 }, { x: 2 });
+      const second = util.equalsWithDiff({ y: 3 }, { y: 4 });
+      expect(second.diff).toBe('Expected $.y = 3 to equal 4.');
+      expect(util.equalsWithDiff(1, 1)).toEqual({ pass: true, diff: '' });
+      expect(first.diff).toBe('Expected $.x = 1 to equal 2.');
+    });
+
+    it('reports enumerable symbol properties', function() {
+      const key = Symbol('key');
+      expect(util.equalsWithDiff({ [key]: 1 }, { [key]: 2 }).diff).toBe(
+        'Expected $[Symbol(key)] = 1 to equal 2.'
+      );
+    });
+
+    it('reports primitive differences', function() {
+      expect(util.equalsWithDiff(1, 2)).toEqual({
+        pass: false,
+        diff: 'Expected 1 to equal 2.'
+      });
+    });
+  });
+
   describe('equals', function() {
     it('passes for literals that are triple-equal', function() {
       const matchersUtil = new privateUnderTest.MatchersUtil();
