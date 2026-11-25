@@ -216,7 +216,10 @@ getJasmineRequireObj().Expectation = function(j$, private$) {
   };
 
   const expectSettledPromiseFilter = {
-    selectComparisonFunc: function(matcher) {
+    // Wraps whatever comparison `not` (or the matcher) selected, so
+    // `already` and `not` both apply. `selectComparisonFunc` is first-match
+    // and would drop one of them.
+    wrapComparisonFunc: function(comparison) {
       return function(actual) {
         const matcherArgs = arguments;
 
@@ -229,7 +232,7 @@ getJasmineRequireObj().Expectation = function(j$, private$) {
                 'expectAsync(...).already) but it was pending.'
             };
           } else {
-            return matcher.compare.apply(null, matcherArgs);
+            return comparison.apply(null, matcherArgs);
           }
         });
       };

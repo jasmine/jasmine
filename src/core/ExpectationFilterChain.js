@@ -11,7 +11,31 @@ getJasmineRequireObj().ExpectationFilterChain = function() {
   };
 
   ExpectationFilterChain.prototype.selectComparisonFunc = function(matcher) {
-    return this.callFirst_('selectComparisonFunc', arguments).result;
+    const selected = this.callFirst_('selectComparisonFunc', arguments).result;
+    const wraps = this.collectFns_('wrapComparisonFunc');
+
+    if (wraps.length === 0) {
+      return selected;
+    }
+
+    let comparison = selected || matcher.compare;
+
+    for (let i = 0; i < wraps.length; i++) {
+      comparison = wraps[i](comparison, matcher);
+    }
+
+    return comparison;
+  };
+
+  // Oldest wrap first, so a later filter is the outer wrapper.
+  ExpectationFilterChain.prototype.collectFns_ = function(fname) {
+    const fns = this.prev_ ? this.prev_.collectFns_(fname) : [];
+
+    if (this.filter_ && typeof this.filter_[fname] === 'function') {
+      fns.push(this.filter_[fname]);
+    }
+
+    return fns;
   };
 
   ExpectationFilterChain.prototype.buildFailureMessage = function(

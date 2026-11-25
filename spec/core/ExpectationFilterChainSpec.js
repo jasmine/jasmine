@@ -48,6 +48,45 @@ describe('ExpectationFilterChain', function() {
         expect(second).not.toHaveBeenCalled();
         expect(result).toEqual('first');
       });
+
+      it('applies wrapComparisonFunc around the selected comparison', function() {
+        const inner = jasmine.createSpy('inner').and.returnValue('inner');
+        const select = jasmine.createSpy('select').and.returnValue(inner);
+        const wrap = jasmine
+          .createSpy('wrap')
+          .and.callFake(function(comparison) {
+            return function() {
+              return 'wrapped ' + comparison();
+            };
+          });
+        const chain = new privateUnderTest.ExpectationFilterChain()
+          .addFilter({ wrapComparisonFunc: wrap })
+          .addFilter({ selectComparisonFunc: select });
+        const matcher = {};
+        const result = chain.selectComparisonFunc(matcher);
+
+        expect(select).toHaveBeenCalledWith(matcher);
+        expect(wrap).toHaveBeenCalledWith(inner, matcher);
+        expect(result()).toEqual('wrapped inner');
+      });
+
+      it('wraps matcher.compare when no filter selects a comparison', function() {
+        const compare = jasmine.createSpy('compare').and.returnValue('cmp');
+        const wrap = jasmine
+          .createSpy('wrap')
+          .and.callFake(function(comparison) {
+            return comparison;
+          });
+        const matcher = { compare: compare };
+        const chain = new privateUnderTest.ExpectationFilterChain().addFilter({
+          wrapComparisonFunc: wrap
+        });
+        const result = chain.selectComparisonFunc(matcher);
+
+        expect(wrap).toHaveBeenCalledWith(compare, matcher);
+        expect(result).toBe(compare);
+        expect(result()).toEqual('cmp');
+      });
     });
   });
 

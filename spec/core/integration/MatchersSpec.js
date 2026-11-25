@@ -884,5 +884,111 @@ describe('Matchers (Integration)', function() {
         .withContext('Matcher name')
         .not.toEqual('');
     });
+
+    it('inverts the matcher when a resolved promise is already.not resolved', async function() {
+      env.it('a spec', function() {
+        return env.expectAsync(Promise.resolve(1)).already.not.toBeResolved();
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+      await env.execute();
+
+      expect(reporter.specDone).toHaveBeenCalledTimes(1);
+      const result = reporter.specDone.calls.argsFor(0)[0];
+      expect(result.status).toEqual('failed');
+      expect(result.failedExpectations[0].message).toEqual(
+        'Expected [object Promise] not to be resolved.'
+      );
+    });
+
+    it('passes when a rejected promise is already.not resolved', async function() {
+      env.it('a spec', function() {
+        return env
+          .expectAsync(Promise.reject(new Error('nope')))
+          .already.not.toBeResolved();
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+      await env.execute();
+
+      expect(reporter.specDone).toHaveBeenCalledTimes(1);
+      const result = reporter.specDone.calls.argsFor(0)[0];
+      expect(result.status).toEqual('passed');
+    });
+
+    it('fails immediately when already.not waits on a pending promise', async function() {
+      const promise = new Promise(function() {});
+
+      env.it('a spec', function() {
+        return env.expectAsync(promise).already.not.toBeResolved();
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+      await env.execute();
+
+      expect(reporter.specDone).toHaveBeenCalledTimes(1);
+      const result = reporter.specDone.calls.argsFor(0)[0];
+      expect(result.status).toEqual('failed');
+      expect(result.failedExpectations[0].message).toEqual(
+        'Expected a promise to be settled ' +
+          '(via expectAsync(...).already) but it was pending.'
+      );
+    });
+
+    it('inverts the matcher when not.already sees a resolved promise', async function() {
+      env.it('a spec', function() {
+        return env.expectAsync(Promise.resolve(1)).not.already.toBeResolved();
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+      await env.execute();
+
+      expect(reporter.specDone).toHaveBeenCalledTimes(1);
+      const result = reporter.specDone.calls.argsFor(0)[0];
+      expect(result.status).toEqual('failed');
+      expect(result.failedExpectations[0].message).toEqual(
+        'Expected [object Promise] not to be resolved.'
+      );
+    });
+
+    it('passes when not.already sees a rejected promise', async function() {
+      env.it('a spec', function() {
+        return env
+          .expectAsync(Promise.reject(new Error('nope')))
+          .not.already.toBeResolved();
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+      await env.execute();
+
+      expect(reporter.specDone).toHaveBeenCalledTimes(1);
+      const result = reporter.specDone.calls.argsFor(0)[0];
+      expect(result.status).toEqual('passed');
+    });
+
+    it('fails immediately when not.already waits on a pending promise', async function() {
+      const promise = new Promise(function() {});
+
+      env.it('a spec', function() {
+        return env.expectAsync(promise).not.already.toBeResolved();
+      });
+
+      const reporter = jasmine.createSpyObj('reporter', ['specDone']);
+      env.addReporter(reporter);
+      await env.execute();
+
+      expect(reporter.specDone).toHaveBeenCalledTimes(1);
+      const result = reporter.specDone.calls.argsFor(0)[0];
+      expect(result.status).toEqual('failed');
+      expect(result.failedExpectations[0].message).toEqual(
+        'Expected a promise to be settled ' +
+          '(via expectAsync(...).already) but it was pending.'
+      );
+    });
   });
 });
